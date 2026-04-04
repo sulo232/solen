@@ -52,7 +52,7 @@ export default function BrowseByCitySection() {
     <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-ink/[0.08]">
       {/* Section Header */}
       <div className="mb-8">
-        <h2 className="font-heading font-semibold text-[22px] tracking-tight text-s-ink" style={{ lineHeight: "1.1" }}>
+        <h2 className="font-heading font-semibold text-xl tracking-tight text-s-ink" style={{ lineHeight: "1.1" }}>
           {t("cities.title") || "Salons in deiner Nähe"}
         </h2>
       </div>
@@ -63,7 +63,7 @@ export default function BrowseByCitySection() {
           <Link
             key={city.slug}
             href={`/${locale}/${city.slug}/coiffeur`}
-            className="group relative overflow-hidden rounded-[16px] h-[200px] flex flex-col items-end justify-end p-6 hover:-translate-y-[5px] hover:shadow-[0_4px_12px_rgba(26,18,9,.06),0_16px_40px_rgba(26,18,9,.08)] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+            className="group relative overflow-hidden rounded-card h-[200px] flex flex-col items-end justify-end p-6 hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
           >
             {/* Gradient Background */}
             <div
@@ -73,10 +73,10 @@ export default function BrowseByCitySection() {
 
             {/* Content Overlay */}
             <div className="relative z-10 w-full text-center">
-              <h3 className={`font-heading font-bold text-[28px] ${city.textColor} mb-1`}>
+              <h3 className={`font-heading font-bold text-3xl ${city.textColor} mb-1`}>
                 {city.name}
               </h3>
-              <p className={`font-body text-[14px] ${city.textColor} opacity-90`}>
+              <p className={`font-body text-sm ${city.textColor} opacity-90`}>
                 {city.salonCount} {city.salonCount === 1 ? "Salon" : "Salons"}
               </p>
             </div>
@@ -92,7 +92,7 @@ export default function BrowseByCitySection() {
               <div key={category.slug} className="flex items-center gap-2">
                 <Link
                   href={`/${locale}/${city.slug}/${category.slug}`}
-                  className="text-[13px] text-[#6A6A6A] hover:text-s-ink transition-colors duration-150"
+                  className="text-sm text-s-ink/60 hover:text-s-ink transition-colors duration-150"
                 >
                   {category.label}
                 </Link>

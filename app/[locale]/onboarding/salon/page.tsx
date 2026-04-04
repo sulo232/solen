@@ -34,11 +34,11 @@ const STEP_META = [
 function StepContainer({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
   return (
     <div className="max-w-xl mx-auto">
-      <div className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/[0.07] dark:border-white/[0.06] p-6 sm:p-8"
+      <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.07] dark:border-white/[0.06] p-6 sm:p-8"
         style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 16px rgba(26,18,9,.06)" }}
         role="form">
         {subtitle && (
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 dark:text-s-dm-text/30 mb-1.5">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 dark:text-s-dm-text/50 mb-1.5">
             {subtitle}
           </p>
         )}
@@ -113,10 +113,9 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 className={[
                   "px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-colors active:scale-[0.98]",
                   data.categories.includes(c.value)
-                    ? "bg-s-coral text-white border-s-coral"
+                    ? "bg-s-coral text-white border-s-coral shadow-coral-glow"
                     : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/50",
                 ].join(" ")}
-                style={data.categories.includes(c.value) ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
               >
                 {c.label}
               </button>
@@ -246,7 +245,7 @@ function Step3({ data, onChange, category, t }: {
           {suggested && data.service_name && (
             <div className="flex items-center gap-1.5 mt-1.5">
               <Sparkles size={10} className="text-s-coral" />
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/35">
+              <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/45">
                 KI-Vorschlag · anpassbar
               </p>
             </div>
@@ -551,7 +550,7 @@ export default function SalonOnboardingPage() {
         </div>
         {/* Card skeleton */}
         <div className="px-4 py-8">
-          <div className="max-w-xl mx-auto rounded-[16px] border border-s-ink/[0.06] bg-white dark:bg-s-dm-surface p-8 animate-pulse">
+          <div className="max-w-xl mx-auto rounded-card border border-s-ink/[0.06] bg-white dark:bg-s-dm-surface p-8 animate-pulse">
             <div className="h-2 w-24 bg-s-bg-sunken rounded mb-3" />
             <div className="h-7 w-48 bg-s-bg-sunken rounded mb-8" />
             <div className="space-y-5">
@@ -609,12 +608,11 @@ export default function SalonOnboardingPage() {
                 <p className="text-xs font-body text-s-ink/45 dark:text-s-dm-text/45 max-w-xs mt-2 leading-relaxed">
                   {t("done.subtitle")}
                 </p>
-                <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mt-3">
+                <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 mt-3">
                   {t("done.dashboardHint")}
                 </p>
                 <Link href={`/${locale}/dashboard?onboarded=1`}
-                  className="mt-4 px-6 py-3 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150"
-                  style={{ boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
+                  className="mt-4 px-6 py-3 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow">
                   Zum Dashboard →
                 </Link>
               </div>
@@ -642,7 +640,7 @@ export default function SalonOnboardingPage() {
             <span className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">
               solen<span className="text-s-coral">.</span>ch
             </span>
-            <span className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/35 dark:text-s-dm-text/35">
+            <span className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/45 dark:text-s-dm-text/45">
               {t("header.stepOf", { step, total: TOTAL_STEPS })}
             </span>
           </div>
@@ -658,7 +656,7 @@ export default function SalonOnboardingPage() {
               />
             ))}
           </div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 dark:text-s-dm-text/35 mt-2 text-center">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 dark:text-s-dm-text/45 mt-2 text-center">
             {t(`progress.${STEP_META[step - 1]?.label}` as any)}
           </p>
         </div>
@@ -722,8 +720,7 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goNext}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-[transform,filter] group"
-              style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-[transform,filter] group shadow-coral-glow"
             >
               <span>{t("nav.next")}</span>
               <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />

@@ -17,6 +17,7 @@ import { getNeighborhood } from "@/lib/basel-neighborhoods";
 import type { SalonCard as SalonCardType } from "@/lib/types";
 import { useCompare } from "@/components/compare/CompareContext";
 import SalonBadge from "@/components/ui/SalonBadge";
+import ImageFallback from "@/components/ui/ImageFallback";
 
 const BLUR_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSI1IiB2aWV3Qm94PSIwIDAgOCA1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjUiIGZpbGw9IiNFOEU0REYiLz48L3N2Zz4=";
 
@@ -117,8 +118,10 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         className="flex items-center gap-3 p-3 rounded-card bg-white border border-s-ink/[0.08] group"
       >
         <div className="relative w-16 h-16 rounded-input overflow-hidden shrink-0 bg-s-bg-sunken img-hover-zoom">
-          {salon.cover_photo_url && (
+          {salon.cover_photo_url ? (
             <Image src={salon.cover_photo_url} alt={salon.name} fill sizes="64px" className="object-cover" />
+          ) : (
+            <ImageFallback category={salon.categories?.[0]} salonName={salon.name} className="absolute inset-0" showInitial={false} />
           )}
         </div>
         <div className="min-w-0">
@@ -192,15 +195,11 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               ))}
             </div>
           ) : (
-            <div
-              className="absolute inset-0 flex flex-col items-center justify-center gap-2"
-              style={{ background: getCategoryFallbackGradient(salon.categories) }}
-            >
-              <Scissors className="w-10 h-10 text-s-ink/20" />
-              <span className="text-xs font-body font-medium text-s-ink/25 uppercase tracking-wider">
-                {salon.categories?.[0] || "Salon"}
-              </span>
-            </div>
+            <ImageFallback
+              category={salon.categories?.[0]}
+              salonName={salon.name}
+              className="absolute inset-0"
+            />
           )}
 
           {/* Phase 2.1 — Priority badge system via SalonBadge */}
@@ -246,7 +245,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               <Heart
                 className={`w-[26px] h-[26px] transition-colors duration-200 ${
                   isFavorited
-                    ? "fill-[#FF385C] stroke-[#FF385C]"
+                    ? "fill-s-coral stroke-s-coral"
                     : "fill-transparent stroke-white hover:fill-white/20"
                 }`}
                 strokeWidth={2}

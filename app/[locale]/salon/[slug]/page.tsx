@@ -90,7 +90,7 @@ function Stars({ rating, size = "md" }: { rating: number; size?: "sm" | "md" }) 
   return (
     <span className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} className={[sz, i <= rounded ? "fill-s-coral text-s-coral" : "text-[#222222]/20"].join(" ")} />
+        <Star key={i} className={[sz, i <= rounded ? "fill-s-coral text-s-coral" : "text-s-ink/20"].join(" ")} />
       ))}
     </span>
   );
@@ -149,9 +149,8 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
   if (!slot || !remaining) return null;
 
   return (
-    <div className="flex items-center gap-4 px-5 py-4 rounded-[20px]"
-      style={{ background: "rgba(232,98,74,.08)", border: "1px solid rgba(232,98,74,.18)",
-               boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)" }}>
+    <div className="flex items-center gap-4 px-5 py-4 rounded-card-lg shadow-elevation-1"
+      style={{ background: "rgba(232,98,74,.08)", border: "1px solid rgba(232,98,74,.18)" }}>
       <div className="relative shrink-0">
         <div className="w-10 h-10 rounded-full flex items-center justify-center"
           style={{ background: "rgba(232,98,74,.15)" }}>
@@ -160,16 +159,16 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
         <div className="absolute inset-0 rounded-full animate-pulse" style={{ boxShadow: "0 0 0 4px rgba(232,98,74,.15)" }} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-heading font-bold text-sm text-[#222222]">
+        <p className="font-heading font-bold text-sm text-s-ink">
           {t("offPeakDiscount", { percent: slot.discount_percent })}
         </p>
-        <p className="text-xs text-[#222222]/50 mt-0.5">
+        <p className="text-xs text-s-ink/50 mt-0.5">
           {t("offPeakToday", { start: slot.start_time, end: slot.end_time })}
         </p>
       </div>
       <div className="shrink-0 text-right">
         <div className="font-display text-[32px] leading-none text-s-coral">{remaining}</div>
-        <div className="text-[10px] font-heading font-semibold uppercase tracking-[.14em] text-[#222222]/35 mt-0.5">{t("remaining")}</div>
+        <div className="text-[10px] font-heading font-semibold uppercase tracking-[.14em] text-s-ink/45 mt-0.5">{t("remaining")}</div>
       </div>
     </div>
   );
@@ -188,30 +187,30 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
   }, [member.id]);
 
   return (
-    <div className="rounded-[20px] p-4"
+    <div className="rounded-card-lg p-4"
       style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                WebkitBackdropFilter: "blur(16px) saturate(1.2)",
                border: "1px solid rgba(255,255,255,.55)",
                boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), inset 0 1px 0 rgba(255,255,255,.70)" }}>
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-10 h-10 rounded-full bg-[#F0F0F0] overflow-hidden shrink-0 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-full bg-s-bg-surface overflow-hidden shrink-0 flex items-center justify-center">
           {member.avatar_url ? (
             <Image src={member.avatar_url} alt={member.name} width={40} height={40} className="object-cover w-full h-full" />
           ) : (
-            <span className="text-sm font-bold text-[#222222]/30">{member.name[0]}</span>
+            <span className="text-sm font-bold text-s-ink/50">{member.name[0]}</span>
           )}
         </div>
         <div className="min-w-0">
-          <p className="font-heading font-semibold text-sm text-[#222222] truncate">{member.name}</p>
+          <p className="font-heading font-semibold text-sm text-s-ink truncate">{member.name}</p>
           {member.specialties?.length > 0 && (
-            <p className="text-xs text-[#222222]/50 truncate">{member.specialties.join(", ")}</p>
+            <p className="text-xs text-s-ink/50 truncate">{member.specialties.join(", ")}</p>
           )}
         </div>
       </div>
       {previewImages.length > 0 && (
         <div className="grid grid-cols-3 gap-1.5 mb-3">
           {previewImages.map((img) => (
-            <div key={img.id} className="aspect-square rounded-[12px] overflow-hidden bg-[#F0F0F0]">
+            <div key={img.id} className="aspect-square rounded-input overflow-hidden bg-s-bg-surface">
               <Image src={img.image_url} alt="" width={120} height={120} className="object-cover w-full h-full" />
             </div>
           ))}
@@ -220,7 +219,7 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
       <div className="flex gap-2">
         <Link
           href={`/${locale}/nail-tech/${member.id}`}
-          className="flex-1 text-center text-xs py-1.5 rounded-btn border border-[#222222]/10 text-[#222222]/70 hover:border-s-coral/30 transition-colors duration-150"
+          className="flex-1 text-center text-xs py-1.5 rounded-btn border border-s-ink/10 text-s-ink/70 hover:border-s-coral/30 transition-colors duration-150"
         >
           {t("viewAllDesigns")}
         </Link>
@@ -327,12 +326,11 @@ export default function SalonProfilePage() {
   if (!salon) {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-6 px-4">
-        <div className="font-display text-[80px] leading-none text-[#222222]/10">404</div>
-        <p className="font-heading font-bold text-[#222222] text-2xl">{t("notFound")}</p>
-        <p className="font-body text-[#222222]/50 text-sm text-center max-w-xs">{t("notFoundMessage")}</p>
+        <div className="font-display text-[80px] leading-none text-s-ink/10">404</div>
+        <p className="font-heading font-bold text-s-ink text-2xl">{t("notFound")}</p>
+        <p className="font-body text-s-ink/50 text-sm text-center max-w-xs">{t("notFoundMessage")}</p>
         <Link href={`/${locale}/coiffeur`}
-          className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em]"
-          style={{ boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}>
+          className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-coral-glow">
           {t("viewAllSalons")}
         </Link>
       </div>
@@ -390,16 +388,16 @@ export default function SalonProfilePage() {
           {/* Breadcrumb */}
           <nav aria-label="Breadcrumb" className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-3">
             <ol className="flex items-center gap-1.5 text-[11px] font-heading font-semibold uppercase tracking-[.12em]">
-              <li><Link href={`/${locale}`} className="text-[#222222]/35 hover:text-s-coral transition-colors duration-150">Home</Link></li>
-              <li aria-hidden><ChevronRight className="w-3 h-3 text-[#222222]/20" /></li>
+              <li><Link href={`/${locale}`} className="text-s-ink/45 hover:text-s-coral transition-colors duration-150">Home</Link></li>
+              <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
               {salon.categories[0] && (
                 <>
                   <li><Link href={`/${locale}/${salon.categories[0]}`}
-                    className="text-[#222222]/35 hover:text-s-coral capitalize transition-colors duration-150">{salon.categories[0]}</Link></li>
-                  <li aria-hidden><ChevronRight className="w-3 h-3 text-[#222222]/20" /></li>
+                    className="text-s-ink/45 hover:text-s-coral capitalize transition-colors duration-150">{salon.categories[0]}</Link></li>
+                  <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
                 </>
               )}
-              <li className="text-[#222222]/70 truncate max-w-[200px]" aria-current="page">{salon.name}</li>
+              <li className="text-s-ink/70 truncate max-w-[200px]" aria-current="page">{salon.name}</li>
             </ol>
           </nav>
 
@@ -415,9 +413,9 @@ export default function SalonProfilePage() {
                 {/* Name + meta */}
                 <div>
                   <div className="flex items-center gap-3">
-                    <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.1] tracking-[-0.02em] text-[#222222]">{salon.name}</h1>
-                    <span className={`flex items-center gap-1.5 text-xs font-medium ${isOpen ? "text-[#2E7D32]" : "text-[#222222]/40"}`}>
-                      <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-[#2E7D32]" : "bg-[#222222]/20"}`} />
+                    <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.1] tracking-[-0.02em] text-s-ink">{salon.name}</h1>
+                    <span className={`flex items-center gap-1.5 text-xs font-medium ${isOpen ? "text-s-success" : "text-s-ink/40"}`}>
+                      <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-s-success" : "bg-s-ink/20"}`} />
                       {isOpen ? t("open") : t("closed")}
                     </span>
                   </div>
@@ -436,10 +434,10 @@ export default function SalonProfilePage() {
                   <div className="flex flex-wrap items-center gap-4 mt-3">
                     <div className="flex items-center gap-1.5">
                       <Stars rating={salon.average_rating} />
-                      <span className="data-text font-semibold text-[#222222] text-sm">{salon.average_rating.toFixed(1)}</span>
-                      <button onClick={() => handleTabClick("bewertungen")} className="text-[#222222]/40 text-xs hover:text-s-coral transition-colors duration-150">({salon.review_count})</button>
+                      <span className="data-text font-semibold text-s-ink text-sm">{salon.average_rating.toFixed(1)}</span>
+                      <button onClick={() => handleTabClick("bewertungen")} className="text-s-ink/40 text-xs hover:text-s-coral transition-colors duration-150">({salon.review_count})</button>
                     </div>
-                    <span className="flex items-center gap-1 text-[#222222]/50 text-sm">
+                    <span className="flex items-center gap-1 text-s-ink/50 text-sm">
                       <MapPin className="w-3.5 h-3.5" />
                       <span className="capitalize">{(salon as any).quartier?.replace("_", " ")}</span>
                     </span>
@@ -448,37 +446,37 @@ export default function SalonProfilePage() {
                     {salon.address && (
                       <a href={`https://maps.google.com/?q=${encodeURIComponent(salon.address + " Basel")}`}
                         target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-[#222222]/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]">
                         <MapPin className="w-4 h-4" />{salon.address}
                       </a>
                     )}
                     {salon.phone && (
-                      <a href={`tel:${salon.phone}`} className="flex items-center gap-1.5 text-sm text-[#222222]/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
+                      <a href={`tel:${salon.phone}`} className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]">
                         <Phone className="w-4 h-4" />{salon.phone}
                       </a>
                     )}
                     {salon.instagram_url && (
                       <a href={salon.instagram_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-[#222222]/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]">
                         <Instagram className="w-4 h-4" />Instagram
                       </a>
                     )}
                     {(salon as any).facebook_url && (
                       <a href={(salon as any).facebook_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-[#222222]/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]">
                         <Facebook className="w-4 h-4" />Facebook
                       </a>
                     )}
                     {(salon as any).tiktok_url && (
                       <a href={(salon as any).tiktok_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-[#222222]/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]">
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.88-2.88 2.89 2.89 0 012.88-2.88c.28 0 .56.04.82.11v-3.5a6.37 6.37 0 00-.82-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.78a8.18 8.18 0 003.76.92V6.25a4.82 4.82 0 01-.01.44z"/></svg>
                         TikTok
                       </a>
                     )}
                     {(salon as any).website_url && (
                       <a href={(salon as any).website_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-[#222222]/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]">
                         <Globe className="w-4 h-4" />Website
                       </a>
                     )}
@@ -487,7 +485,7 @@ export default function SalonProfilePage() {
                     {/* Share button */}
                     <button
                       onClick={handleShare}
-                      className="flex items-center gap-1.5 text-sm text-[#222222]/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]"
+                      className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]"
                     >
                       <Share2 className="w-4 h-4" />{t("shareProfile")}
                     </button>
@@ -508,9 +506,9 @@ export default function SalonProfilePage() {
                 {/* About section */}
                 <div id="section-info" className="scroll-mt-[180px]">
                   {(salon.about_text_de || salon.about_text_en || salon.about_text_fr || salon.about_text_it) && (
-                    <div className="mb-8 p-6 rounded-[20px] bg-white border border-[#222222]/5 shadow-elevation-1">
-                      <h2 className="font-heading font-semibold text-base text-[#222222] mb-3">{t("aboutUs")}</h2>
-                      <p className="text-sm text-[#222222]/70 leading-relaxed whitespace-pre-wrap">
+                    <div className="mb-8 p-6 rounded-card-lg bg-white border border-s-ink/5 shadow-elevation-1">
+                      <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("aboutUs")}</h2>
+                      <p className="text-sm text-s-ink/70 leading-relaxed whitespace-pre-wrap">
                         {(salon as any)[`about_text_${locale}`] || salon.about_text_en || salon.about_text_de}
                       </p>
                     </div>
@@ -523,63 +521,63 @@ export default function SalonProfilePage() {
                 {/* Salon info — atmosphere, expertise, products, transport */}
                 {((salon as any).atmosphere || (salon as any).expertise || (salon as any).products || (salon as any).nearest_transport) && (
                   <div>
-                    <h2 className="font-heading font-semibold text-base text-[#222222] mb-3 flex items-center gap-2">
+                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3 flex items-center gap-2">
                       <Info className="w-4 h-4 text-s-coral" />{t("salonInfo")}
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {(salon as any).atmosphere && (
-                        <div className="flex items-start gap-3 p-4 rounded-[16px]"
+                        <div className="flex items-start gap-3 p-4 rounded-card"
                           style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
-                          <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
+                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
                             <Sparkles className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
-                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-[#222222]/35 mb-1">{t("atmosphere")}</p>
-                            <p className="text-sm text-[#222222] leading-snug">{(salon as any).atmosphere}</p>
+                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("atmosphere")}</p>
+                            <p className="text-sm text-s-ink leading-snug">{(salon as any).atmosphere}</p>
                           </div>
                         </div>
                       )}
                       {(salon as any).expertise && (
-                        <div className="flex items-start gap-3 p-4 rounded-[16px]"
+                        <div className="flex items-start gap-3 p-4 rounded-card"
                           style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
-                          <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
+                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
                             <Award className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
-                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-[#222222]/35 mb-1">{t("expertise")}</p>
-                            <p className="text-sm text-[#222222] leading-snug">{(salon as any).expertise}</p>
+                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("expertise")}</p>
+                            <p className="text-sm text-s-ink leading-snug">{(salon as any).expertise}</p>
                           </div>
                         </div>
                       )}
                       {(salon as any).products && (
-                        <div className="flex items-start gap-3 p-4 rounded-[16px]"
+                        <div className="flex items-start gap-3 p-4 rounded-card"
                           style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
-                          <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
+                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
                             <Droplets className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
-                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-[#222222]/35 mb-1">{t("products")}</p>
-                            <p className="text-sm text-[#222222] leading-snug">{(salon as any).products}</p>
+                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("products")}</p>
+                            <p className="text-sm text-s-ink leading-snug">{(salon as any).products}</p>
                           </div>
                         </div>
                       )}
                       {(salon as any).nearest_transport && (
-                        <div className="flex items-start gap-3 p-4 rounded-[16px]"
+                        <div className="flex items-start gap-3 p-4 rounded-card"
                           style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
-                          <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
+                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
                             <Bus className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
-                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-[#222222]/35 mb-1">{t("publicTransport")}</p>
-                            <p className="text-sm text-[#222222] leading-snug">{(salon as any).nearest_transport}</p>
+                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("publicTransport")}</p>
+                            <p className="text-sm text-s-ink leading-snug">{(salon as any).nearest_transport}</p>
                           </div>
                         </div>
                       )}
@@ -590,7 +588,7 @@ export default function SalonProfilePage() {
                 {/* Staff/Team */}
                 {salon.staff.length > 0 && (
                   <div id="section-team" className="scroll-mt-[180px]">
-                    <h2 className="font-heading font-semibold text-base text-[#222222] mb-3">Team</h2>
+                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">Team</h2>
                     <div className="mt-3 md:mt-0">
                       <StaffSection
                         staff={salon.staff}
@@ -605,7 +603,7 @@ export default function SalonProfilePage() {
                 {/* Nail Artists — only for nail salons */}
                 {salon.categories?.includes("nails") && salon.staff.length > 0 && (
                   <div id="section-nail-artists" className="scroll-mt-[180px]">
-                    <h2 className="font-heading font-semibold text-base text-[#222222] mb-3">{t("team")}</h2>
+                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("team")}</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 md:mt-0">
                       {salon.staff.map((m) => (
                         <NailArtistPreviewCard key={m.id} member={m} locale={locale}
@@ -618,23 +616,23 @@ export default function SalonProfilePage() {
                 {/* Barber Roster — only for barbershops */}
                 {salon.categories?.includes("barbershop") && salon.staff.length > 0 && (
                   <div id="section-barbers" className="scroll-mt-[180px]">
-                    <h2 className="font-heading font-semibold text-base text-[#222222] mb-3">{t("team")}</h2>
+                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("team")}</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3 md:mt-0">
                       {salon.staff.map((m) => (
                         <Link key={m.id} href={`/${locale}/salon/${slug}/barber/${(m as any).slug ?? m.id}`}
-                          className="group glass-frost rounded-[20px] p-4 text-center hover:-translate-y-[5px] hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]">
-                          <div className="w-14 h-14 rounded-full bg-[#F0F0F0] mx-auto mb-3 overflow-hidden ring-2 ring-transparent group-hover:ring-s-coral/40 transition-[box-shadow,transform]">
+                          className="group glass-frost rounded-card-lg p-4 text-center hover:-translate-y-[5px] hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]">
+                          <div className="w-14 h-14 rounded-full bg-s-bg-surface mx-auto mb-3 overflow-hidden ring-2 ring-transparent group-hover:ring-s-coral/40 transition-[box-shadow,transform]">
                             {m.avatar_url ? (
                               <Image src={m.avatar_url} alt={m.name} width={56} height={56} className="object-cover w-full h-full" />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-[#222222]/20">
+                              <div className="w-full h-full flex items-center justify-center text-s-ink/20">
                                 <Scissors size={20} />
                               </div>
                             )}
                           </div>
-                          <p className="text-sm font-medium text-[#222222] truncate">{m.name}</p>
+                          <p className="text-sm font-medium text-s-ink truncate">{m.name}</p>
                           {m.specialties?.length > 0 && (
-                            <p className="text-xs text-[#222222]/50 truncate mt-0.5">{m.specialties[0]}</p>
+                            <p className="text-xs text-s-ink/50 truncate mt-0.5">{m.specialties[0]}</p>
                           )}
                         </Link>
                       ))}
@@ -645,7 +643,7 @@ export default function SalonProfilePage() {
                 {/* Walk-in Queue — only for barbershops */}
                 {salon.categories?.includes("barbershop") && (
                   <div id="section-walkin" className="scroll-mt-[180px]">
-                    <h2 className="font-heading font-semibold text-base text-[#222222] mb-3">Walk-in</h2>
+                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">Walk-in</h2>
                     <div className="space-y-4 mt-3 md:mt-0">
                       <WaitTimeDisplay salonId={salon.id} />
                       <RemoteQueueJoin
@@ -669,19 +667,19 @@ export default function SalonProfilePage() {
                 {/* Packages & Gift Cards */}
                 <div className="flex gap-3 my-4">
                   <Link href={`/${locale}/salon/${slug}/gift-card`}
-                    className="flex-1 flex items-center gap-3 p-3 rounded-[16px] border border-s-coral/15 bg-s-coral/5 hover:bg-s-coral/10 transition-colors duration-150">
+                    className="flex-1 flex items-center gap-3 p-3 rounded-card border border-s-coral/15 bg-s-coral/5 hover:bg-s-coral/10 transition-colors duration-150">
                     <Gift size={18} className="text-s-coral shrink-0" />
                     <div>
-                      <p className="text-sm font-medium text-[#222222]">{t("giftCard")}</p>
-                      <p className="text-xs text-[#222222]/40">{t("book")}</p>
+                      <p className="text-sm font-medium text-s-ink">{t("giftCard")}</p>
+                      <p className="text-xs text-s-ink/40">{t("book")}</p>
                     </div>
                   </Link>
                   <Link href={`/${locale}/salon/${slug}/packages`}
-                    className="flex-1 flex items-center gap-3 p-3 rounded-[16px] border border-[#222222]/5 bg-white hover:bg-[#F0F0F0] transition-colors duration-150">
+                    className="flex-1 flex items-center gap-3 p-3 rounded-card border border-s-ink/5 bg-white hover:bg-s-bg-surface transition-colors duration-150">
                     <Package size={18} className="text-s-blue shrink-0" />
                     <div>
-                      <p className="text-sm font-medium text-[#222222]">{t("packages")}</p>
-                      <p className="text-xs text-[#222222]/40">{t("book")}</p>
+                      <p className="text-sm font-medium text-s-ink">{t("packages")}</p>
+                      <p className="text-xs text-s-ink/40">{t("book")}</p>
                     </div>
                   </Link>
                 </div>
@@ -704,11 +702,11 @@ export default function SalonProfilePage() {
                 {/* Location / Map */}
                 {salon.latitude && salon.longitude && (
                   <div id="section-standort" className="scroll-mt-[180px]">
-                    <h2 className="font-heading font-semibold text-base text-[#222222] mb-3">{t("location")}</h2>
+                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("location")}</h2>
                     <a
                       href={`https://maps.google.com/?q=${salon.latitude},${salon.longitude}`}
                       target="_blank" rel="noopener noreferrer"
-                      className="block w-full aspect-[2/1] rounded-[16px] overflow-hidden bg-[#F0F0F0] border border-[#EBEBEB] hover:border-[#E8624A]/30 transition-colors duration-150 relative group"
+                      className="block w-full aspect-[2/1] rounded-card overflow-hidden bg-s-bg-surface border border-s-ink/[0.08] hover:border-s-coral/30 transition-colors duration-150 relative group"
                     >
                       <img
                         src={`https://api.mapbox.com/styles/v1/mapbox/light-v11/static/pin-s+E8624A(${salon.longitude},${salon.latitude})/${salon.longitude},${salon.latitude},14,0/600x300@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''}`}
@@ -719,7 +717,7 @@ export default function SalonProfilePage() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
                     </a>
                     {salon.address && (
-                      <p className="text-sm text-[#222222]/60 mt-2">{salon.address}</p>
+                      <p className="text-sm text-s-ink/60 mt-2">{salon.address}</p>
                     )}
                   </div>
                 )}

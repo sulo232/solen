@@ -57,7 +57,7 @@ export default function PartnerPage() {
               {t("hero_subtitle")}
             </p>
             <PartnerSignupForm />
-            <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/35 dark:text-s-dm-text/35 mt-3">
+            <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/45 dark:text-s-dm-text/45 mt-3">
               {t("hero_subtext")}
             </p>
           </div>
@@ -96,7 +96,7 @@ export default function PartnerPage() {
       {/* Features */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
         <div className="text-center mb-10">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
             {t("section_features")}
           </p>
           <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
@@ -129,7 +129,7 @@ export default function PartnerPage() {
       <div className="py-16 bg-s-bg-base dark:bg-s-dm-bg">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
               {t("section_categories")}
             </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
@@ -162,7 +162,7 @@ export default function PartnerPage() {
       <div className="py-16 bg-s-bg-surface dark:bg-s-dm-surface">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
               {t("section_how_it_works")}
             </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
@@ -180,8 +180,8 @@ export default function PartnerPage() {
             {/* Connecting line — vertical on mobile */}
             <div className="md:hidden absolute top-10 bottom-10 left-6 w-0.5 border-l-2 border-dashed border-s-coral/20" aria-hidden="true" />
             {/* Chevron arrows — desktop only, positioned over the connecting line */}
-            <ChevronRight className="hidden md:block absolute top-[18px] left-[calc(33.3%-12px)] w-5 h-5 text-s-ink/30" aria-hidden="true" />
-            <ChevronRight className="hidden md:block absolute top-[18px] left-[calc(66.6%-12px)] w-5 h-5 text-s-ink/30" aria-hidden="true" />
+            <ChevronRight className="hidden md:block absolute top-[18px] left-[calc(33.3%-12px)] w-5 h-5 text-s-ink/50" aria-hidden="true" />
+            <ChevronRight className="hidden md:block absolute top-[18px] left-[calc(66.6%-12px)] w-5 h-5 text-s-ink/50" aria-hidden="true" />
 
             {/* Step 1 */}
             <div className="relative text-center md:text-center pl-16 md:pl-0">
@@ -250,7 +250,7 @@ export default function PartnerPage() {
       <div className="py-16 bg-white dark:bg-s-dm-bg">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
               {t("section_testimonials")}
             </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
@@ -285,7 +285,7 @@ export default function PartnerPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* Section header */}
           <div className="text-center mb-12">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
               {t("section_pricing")}
             </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
@@ -404,7 +404,7 @@ export default function PartnerPage() {
       <div className="py-16 bg-s-bg-surface dark:bg-s-dm-bg">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
               {t("section_faq")}
             </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
@@ -433,7 +433,7 @@ export default function PartnerPage() {
                       {t(`${key}_q` as any)}
                     </h3>
                     <ChevronDown
-                      className={`w-4 h-4 shrink-0 text-s-ink/30 dark:text-s-dm-text/30 transition-transform duration-300 ${
+                      className={`w-4 h-4 shrink-0 text-s-ink/50 dark:text-s-dm-text/50 transition-transform duration-300 ${
                         expandedFaq === i ? "rotate-180 text-s-coral" : ""
                       }`}
                     />
@@ -455,7 +455,7 @@ export default function PartnerPage() {
       </div>
 
       {/* Sticky bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-s-dm-surface border-t border-s-ink/[0.06] dark:border-white/[0.06] shadow-[0_-2px_12px_rgba(26,18,9,.06)] p-3 flex justify-center z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-s-dm-surface border-t border-s-ink/[0.06] dark:border-white/[0.06] shadow-elevation-1 p-3 flex justify-center z-50">
         <a
           href="#contact"
           className="bg-s-coral text-white font-heading font-semibold text-sm px-7 py-3 rounded-btn hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
@@ -487,7 +487,7 @@ export default function PartnerPage() {
       <div className="py-20"
         style={{ background: "linear-gradient(180deg, rgba(26,18,9,.025) 0%, rgba(232,98,74,.05) 100%)" }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
             {t("section_start")}
           </p>
           <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">

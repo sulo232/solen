@@ -6,6 +6,7 @@ export { default as ExpandableTabs } from "@/components/ui/ExpandableTabs";
 export type { Tab } from "@/components/ui/ExpandableTabs";
 export { default as GlassModal } from "@/components/ui/GlassModal";
 export { default as EmptyState } from "@/components/ui/EmptyState";
+export { default as ImageFallback } from "@/components/ui/ImageFallback";
 export { default as InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 export { default as Skeleton } from "@/components/ui/Skeleton";
 export { default as TrustBadges } from "@/components/ui/TrustBadges";

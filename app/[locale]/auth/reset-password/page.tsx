@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Lock, Eye, EyeOff, Check } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/Toast";
 
 export default function ResetPasswordPage() {
   const locale = useLocale();
+  const tc = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams();
   const toast = useToast();
@@ -57,7 +58,7 @@ export default function ResetPasswordPage() {
     setLoading(false);
 
     if (error) {
-      toast(error.message || "Fehler beim Zurücksetzen", "error");
+      toast(error.message || tc("errorResetPassword"), "error");
     } else {
       setSuccess(true);
       setTimeout(() => router.push(`/${locale}/auth/login`), 2500);
@@ -70,9 +71,9 @@ export default function ResetPasswordPage() {
         <div className="w-full max-w-sm text-center">
           <div className="mx-auto w-16 h-16 rounded-[20px] flex items-center justify-center mb-4"
             style={{ background: "rgba(76,175,111,.12)" }}>
-            <Check size={28} className="text-[#4CAF6F]" />
+            <Check size={28} className="text-s-sage" />
           </div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-[#4CAF6F] mb-2">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-sage mb-2">
             Erfolgreich
           </p>
           <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Passwort geändert</p>
@@ -114,7 +115,7 @@ export default function ResetPasswordPage() {
               style={{ background: "rgba(232,98,74,.10)" }}>
               <Lock size={24} className="text-s-coral" />
             </div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-2">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/45 mb-2">
               Konto-Wiederherstellung
             </p>
             <p className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">Neues Passwort</p>
@@ -142,7 +143,7 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink/60 dark:hover:text-s-dm-text/60 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink/60 dark:hover:text-s-dm-text/60 transition-colors"
                   aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -177,8 +178,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={loading || !passwordValid || !passwordsMatch}
-                className="w-full py-4 rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-coral-glow"
-                style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
+                className="w-full py-4 rounded-pill bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
                 {loading ? <Spinner size="sm" invert /> : null}
                 Passwort ändern
               </button>

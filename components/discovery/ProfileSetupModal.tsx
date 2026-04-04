@@ -113,11 +113,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-s-ink/40" onClick={onClose}>
       <div
-        className="relative w-full sm:max-w-md rounded-t-[16px] sm:rounded-[18px] overflow-hidden max-h-[85vh] overflow-y-auto"
-        style={{
-          background: "#FFFFFF",
-          boxShadow: "0 8px 24px rgba(26,18,9,.12), 0 32px 72px rgba(26,18,9,.10)"
-        }}
+        className="relative w-full sm:max-w-md rounded-t-card sm:rounded-[18px] overflow-hidden max-h-[85vh] overflow-y-auto bg-white shadow-v5-float"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -191,8 +187,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
             {t.skip}
           </button>
           <button onClick={handleSave}
-            className="flex-1 py-4 rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 shadow-coral-glow"
-            style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
+            className="flex-1 py-4 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 shadow-coral-glow">
             {t.save}
           </button>
         </div>

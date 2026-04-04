@@ -54,6 +54,7 @@ const WAS_CATEGORIES = [
 export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts, onSearchActiveChange }: AirbnbSearchBarProps) {
   const t = useTranslations("home.guidedSearch") as any;
   const tNav = useTranslations("navigation") as any;
+  const tc = useTranslations("common");
   const router = useRouter();
 
   const [query, setQuery] = useState("");
@@ -113,7 +114,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
               "flex items-stretch overflow-visible relative transition-[background-color,box-shadow] duration-200",
               activeSegment === null
                 ? "bg-[--raised] rounded-search border border-s-ink/[0.08] shadow-elevation-2 hover:shadow-elevation-3 hover:scale-[1.005] transition-[box-shadow,transform] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]"
-                : "bg-s-ink/[0.05] border border-transparent shadow-none rounded-[32px]"
+                : "bg-s-ink/[0.05] border border-transparent shadow-none rounded-search"
             )}
             style={{ height: 64 }}
           >
@@ -123,7 +124,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                 className={cn(
                   "h-full flex flex-col justify-center px-6 cursor-text transition-colors duration-150",
                   activeSegment === 'category'
-                    ? "bg-white rounded-[32px] shadow-[0px_2px_16px_0px_rgba(0,0,0,0.12)]"
+                    ? "bg-white rounded-search shadow-elevation-2"
                     : activeSegment !== null
                       ? "hover:bg-s-ink/[0.12] rounded-full"
                       : ""
@@ -156,7 +157,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                     className="absolute top-[calc(100%+8px)] left-0 bg-[--raised] rounded-input border border-s-ink/[0.08] shadow-v5-float z-50 overflow-hidden min-w-[280px]"
                   >
                     <p className="px-3 pt-3 pb-1 text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40">
-                      {locale === "de" ? "Kategorie wählen" : locale === "fr" ? "Choisir une catégorie" : locale === "it" ? "Scegli una categoria" : "Choose a category"}
+                      {tc("chooseCategory")}
                     </p>
                     <div className="grid grid-cols-3 gap-2 p-3">
                       {WAS_CATEGORIES.map(({ key, emoji }) => (
@@ -219,7 +220,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                 className={cn(
                   "flex flex-col justify-center px-6 h-full transition-colors duration-150",
                   activeSegment === 'city'
-                    ? "bg-white rounded-[32px] shadow-[0px_2px_16px_0px_rgba(0,0,0,0.12)]"
+                    ? "bg-white rounded-search shadow-elevation-2"
                     : activeSegment !== null
                       ? "hover:bg-s-ink/[0.12] rounded-full cursor-pointer"
                       : "hover:bg-s-ink/[0.03] transition-colors rounded-none cursor-pointer"
@@ -232,7 +233,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                 <span className="flex items-center gap-1.5 text-[14px] font-body font-medium text-s-ink">
                   <MapPin size={13} className="text-s-coral shrink-0" />
                   {city === "all"
-                    ? (locale === "de" ? "Überall" : locale === "fr" ? "Partout" : "Everywhere")
+                    ? tc("everywhere")
                     : getCityName(city as any, locale)}
                 </span>
               </button>
@@ -263,7 +264,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                       )}
                     >
                       <span className={cn("w-2 h-2 rounded-full shrink-0", city === "all" ? "bg-s-coral" : "bg-transparent")} />
-                      {locale === "de" ? "Überall (Schweizweit)" : locale === "fr" ? "Partout (Suisse)" : "Everywhere (CH)"}
+                      {tc("everywhereCH")}
                     </button>
                     <div className="border-t border-s-ink/[0.06] my-1" />
                     {CITY_SLUGS.map((slug) => (
@@ -300,7 +301,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                 className={cn(
                   "flex flex-col justify-center px-6 h-full transition-colors duration-150",
                   activeSegment === 'date'
-                    ? "bg-white rounded-[32px] shadow-[0px_2px_16px_0px_rgba(0,0,0,0.12)]"
+                    ? "bg-white rounded-search shadow-elevation-2"
                     : activeSegment !== null
                       ? "hover:bg-s-ink/[0.12] rounded-full cursor-pointer"
                       : "hover:bg-s-ink/[0.03] transition-colors rounded-none cursor-pointer"
@@ -347,7 +348,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                     {/* Calendar for custom date */}
                     <div className="border-t border-s-ink/[0.07] px-3 pb-3 pt-2">
                       <p className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mb-2">
-                        {locale === "de" ? "Anderes Datum" : locale === "fr" ? "Autre date" : "Other date"}
+                        {tc("otherDate")}
                       </p>
                       <DayPicker
                         mode="single"

@@ -117,9 +117,8 @@ export default function TipPage() {
           <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{serviceName}</p>
         </div>
 
-        <div className="bg-white dark:bg-s-dm-surface rounded-[16px] p-5"
-          style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 20px rgba(26,18,9,.07)" }}>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/35 dark:text-s-dm-text/35 mb-3">
+        <div className="bg-white dark:bg-s-dm-surface rounded-card p-5 shadow-v5-card">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/45 dark:text-s-dm-text/45 mb-3">
             {l.give}
           </p>
 
@@ -130,10 +129,9 @@ export default function TipPage() {
                 onClick={() => { setSelectedAmount(amount); setUseCustom(false); }}
                 className={`py-3 rounded-btn text-xs font-heading font-bold transition-colors ${
                   !useCustom && selectedAmount === amount
-                    ? "bg-s-coral text-white"
+                    ? "bg-s-coral text-white shadow-coral-glow"
                     : "border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/65 dark:text-s-dm-text/65 hover:border-s-coral/50"
-                }`}
-                style={(!useCustom && selectedAmount === amount) ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}>
+                }`}>
                 {formatCurrency(amount / 100, locale)}
               </button>
             ))}
@@ -151,7 +149,7 @@ export default function TipPage() {
           </button>
           {useCustom && (
             <div className="relative mb-3">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-heading font-bold text-s-ink/35 dark:text-s-dm-text/35">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-heading font-bold text-s-ink/45 dark:text-s-dm-text/45">
                 CHF
               </span>
               <input type="number" min="1" step="0.5"
@@ -172,8 +170,7 @@ export default function TipPage() {
 
           <button onClick={handlePay}
             disabled={paying || tipAmount < 100}
-            className="w-full py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2"
-            style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
+            className="w-full py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2 shadow-coral-glow">
             {paying ? <Spinner size="sm" invert /> : <Heart size={13} />}
             {formatCurrency(tipAmount / 100, locale)} — {l.send}
           </button>

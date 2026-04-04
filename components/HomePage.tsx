@@ -234,7 +234,7 @@ export default function HomePage({ initialData }: HomePageProps) {
               {t("discover.title")}
             </h2>
             <Link href={`/${locale}/discover`}
-              className="inline-flex items-center gap-1 text-[14px] font-body font-semibold text-s-ink hover:text-[s-ink/60] transition-colors duration-150 shrink-0">
+              className="inline-flex items-center gap-1 text-sm font-body font-semibold text-s-ink hover:text-s-ink/60 transition-colors duration-150 shrink-0">
               {t("discover.catalogCta")}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
             </Link>
@@ -253,10 +253,10 @@ export default function HomePage({ initialData }: HomePageProps) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-heading font-medium text-s-ink text-[15px]">{t("rebook.title")}</p>
-                <p className="text-[14px] text-[s-ink/60] font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
+                <p className="text-sm text-s-ink/60 font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
               </div>
               <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}
-                className="shrink-0 px-4 py-2.5 rounded-lg bg-s-coral text-white text-[14px] font-heading font-semibold transition-transform hover:scale-[1.02]"
+                className="shrink-0 px-4 py-2.5 rounded-lg bg-s-coral text-white text-sm font-heading font-semibold transition-transform hover:scale-[1.02]"
                 aria-label={t("rebook.cta")}>
                 {t("rebook.cta")}
               </Link>
@@ -280,7 +280,7 @@ export default function HomePage({ initialData }: HomePageProps) {
           <div
             className="rounded-[20px] overflow-hidden relative"
             style={{
-              background: "linear-gradient(135deg, #FFF8F6 0%, #FFF5F0 60%, #FFF9F7 100%)",
+              background: "linear-gradient(135deg, #FFF8F6 0%, #FFF5F0 60%, #FFF9F7 100%)" /* gradient — no token */,
               border: "1px solid rgba(232,98,74,0.12)",
             }}
           >
@@ -288,13 +288,13 @@ export default function HomePage({ initialData }: HomePageProps) {
               {/* Left: copy */}
               <div className="flex-1">
                 {/* Eyebrow */}
-                <span className="inline-block text-[11px] font-heading font-bold uppercase tracking-[.12em] text-s-coral mb-3">
+                <span className="inline-block text-xs font-heading font-bold uppercase tracking-[.12em] text-s-coral mb-3">
                   {t("partner.forSalonsStudios")}
                 </span>
-                <h2 className="font-heading font-extrabold text-[28px] sm:text-[34px] leading-[1.1] tracking-tight text-[#1A1A1A] mb-3">
+                <h2 className="font-heading font-extrabold text-3xl sm:text-4xl leading-[1.1] tracking-tight text-s-ink mb-3">
                   {t("partner.title")}
                 </h2>
-                <p className="font-body text-[15px] sm:text-[16px] text-[s-ink/60] max-w-[420px] leading-relaxed mb-6">
+                <p className="font-body text-[15px] sm:text-base text-s-ink/60 max-w-[420px] leading-relaxed mb-6">
                   {t("partner.teaserPrompt") || "Erreiche Tausende Kunden, fülle deinen Kalender und verwalte dein Geschäft – alles an einem Ort."}
                 </p>
 
@@ -305,7 +305,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                     t("partner.checklistBookings"),
                     t("partner.checklistVisibility"),
                   ].map((item) => (
-                    <li key={item} className="flex items-center gap-2.5 text-[14px] font-body text-[#555555]">
+                    <li key={item} className="flex items-center gap-2.5 text-sm font-body text-s-ink/60">
                       <span
                         className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center"
                         style={{ background: "rgba(232,98,74,0.12)" }}
@@ -322,7 +322,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
                 <Link
                   href={`/${locale}/partner`}
-                  className="inline-flex items-center justify-center h-[46px] px-7 rounded-pill bg-s-coral text-white font-heading font-bold text-[14px] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 self-start"
+                  className="inline-flex items-center justify-center h-[46px] px-7 rounded-pill bg-s-coral text-white font-heading font-bold text-sm hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 self-start"
                   style={{ boxShadow: "0 2px 12px rgba(232,98,74,.28)" }}
                 >
                   {t("partner.cta")} →
@@ -335,18 +335,18 @@ export default function HomePage({ initialData }: HomePageProps) {
                   {/* Main card */}
                   <div
                     className="absolute top-0 left-0 right-0 bg-white rounded-[16px] p-5"
-                    style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.08)", border: "1px solid rgba(0,0,0,0.05)" }}
+                    style={{ boxShadow: "0 4px 24px rgba(26,18,9,0.08)", border: "1px solid rgba(26,18,9,0.05)" }}
                   >
-                    <p className="text-[11px] font-heading font-bold uppercase tracking-wider text-[#AAAAAA] mb-1">{t("partner.newBookings")}</p>
-                    <p className="font-heading font-extrabold text-[28px] text-[#1A1A1A] leading-tight">+47%</p>
-                    <p className="text-[12px] font-body text-[s-ink/60] mt-0.5">{t("partner.firstMonth")}</p>
+                    <p className="text-xs font-heading font-bold uppercase tracking-wider text-s-ink/40 mb-1">{t("partner.newBookings")}</p>
+                    <p className="font-heading font-extrabold text-3xl text-s-ink leading-tight">+47%</p>
+                    <p className="text-xs font-body text-s-ink/60 mt-0.5">{t("partner.firstMonth")}</p>
                   </div>
                   {/* Floating stat */}
                   <div
                     className="absolute bottom-0 right-0 bg-white rounded-[14px] px-4 py-3"
-                    style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.09)", border: "1px solid rgba(0,0,0,0.05)" }}
+                    style={{ boxShadow: "0 4px 20px rgba(26,18,9,0.09)", border: "1px solid rgba(26,18,9,0.05)" }}
                   >
-                    <p className="text-[11px] font-heading font-bold uppercase tracking-wider text-[#AAAAAA] mb-0.5">{t("partner.newCustomers")}</p>
+                    <p className="text-xs font-heading font-bold uppercase tracking-wider text-s-ink/40 mb-0.5">{t("partner.newCustomers")}</p>
                     <p className="font-heading font-extrabold text-[22px] text-s-coral leading-tight">120+</p>
                   </div>
                 </div>

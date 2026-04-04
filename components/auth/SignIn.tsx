@@ -110,7 +110,7 @@ export default function SignIn() {
     return (
       <div className="flex flex-col gap-4 w-full">
         <div className="text-center mb-2">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-2">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/45 mb-2">
             Konto-Wiederherstellung
           </p>
           <p className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">Passwort vergessen?</p>
@@ -130,15 +130,14 @@ export default function SignIn() {
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
-            style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
+            className="w-full py-4 rounded-btn bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
             {loading ? <Spinner size="sm" invert /> : <Mail size={15} />}
             Reset-Link senden
           </button>
         </form>
         <button
           onClick={() => setResetMode(false)}
-          className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/35 dark:text-s-dm-text/35 hover:text-s-ink dark:hover:text-s-dm-text text-center transition-colors">
+          className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 dark:text-s-dm-text/45 hover:text-s-ink dark:hover:text-s-dm-text text-center transition-colors">
           Zurück zur Anmeldung
         </button>
       </div>
@@ -168,7 +167,7 @@ export default function SignIn() {
 
       <div className="flex items-center gap-3 my-1">
         <div className="flex-1 h-px bg-s-ink/[0.07] dark:bg-white/10" />
-        <span className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/30 dark:text-s-dm-text/30">{t("or")}</span>
+        <span className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50 dark:text-s-dm-text/50">{t("or")}</span>
         <div className="flex-1 h-px bg-s-ink/[0.07] dark:bg-white/10" />
       </div>
 
@@ -194,7 +193,7 @@ export default function SignIn() {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink/60 dark:hover:text-s-dm-text/60 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink/60 dark:hover:text-s-dm-text/60 transition-colors"
             aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
           >
             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -203,8 +202,7 @@ export default function SignIn() {
         <button
           type="submit"
           disabled={loading || !email || !password}
-          className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
-          style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
+          className="w-full py-4 rounded-btn bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
           {loading ? <Spinner size="sm" invert /> : null}
           Anmelden
         </button>
@@ -212,11 +210,11 @@ export default function SignIn() {
 
       <button
         onClick={() => setResetMode(true)}
-        className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/35 dark:text-s-dm-text/35 hover:text-s-coral transition-colors text-center">
+        className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 dark:text-s-dm-text/45 hover:text-s-coral transition-colors text-center">
         Passwort vergessen?
       </button>
 
-      <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center font-body">{t("terms")}</p>
+      <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 text-center font-body">{t("terms")}</p>
     </div>
   );
 }

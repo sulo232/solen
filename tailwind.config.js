@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: false,
+  darkMode: 'class',
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx}",
@@ -42,13 +42,14 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
         // ── Solen V4 Design System ──
-        card: "12px",      // V4: Salon cards, listing cards, content blocks
+        card: "16px",      // V5: Salon cards, listing cards, content blocks
         "card-lg": "20px", // Hero cards, feature cards, modals
         panel: "16px",     // Inner panels within a card, review cards
         search: "99px",    // Search bar outer container fully rounded
         pill: "9999px",    // availability pills, tags
         btn:  "99px",      // CTA buttons, action buttons
-        input: "10px",     // form inputs, dashboard cards
+        input: "12px",     // form inputs, dashboard cards
+        sheet: "28px",     // Bottom sheets
       },
       boxShadow: {
         // ── Legacy warm aliases (renamed for V3 clarity) ──

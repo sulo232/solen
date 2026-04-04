@@ -157,7 +157,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-2">{t("title")}</h2>
       <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">{t("subtitle")}</p>
 
-      <div className="bg-s-bg-surface dark:bg-s-dm-surface rounded-[12px] p-4 mb-6 text-left">
+      <div className="bg-s-bg-surface dark:bg-s-dm-surface rounded-input p-4 mb-6 text-left">
         <p className="font-medium text-s-ink dark:text-s-dm-text">{props.serviceName}</p>
         <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-1">{props.salonName}</p>
         <div className="flex items-center gap-4 mt-3 text-sm text-s-ink/50 dark:text-s-dm-text/50">
@@ -167,7 +167,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
         </div>
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-ink/5 dark:border-white/5">
           <div className="flex items-center gap-2">
-            <CreditCard size={14} className="text-s-ink/30 dark:text-s-dm-text/30" />
+            <CreditCard size={14} className="text-s-ink/50 dark:text-s-dm-text/50" />
             <span className="text-sm text-s-ink/50 dark:text-s-dm-text/50">
               {props.cardLast4 ? `•••• ${props.cardLast4}` : t("payment")}
             </span>
@@ -185,7 +185,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       </div>
 
       {/* Referral CTA */}
-      <div className="bg-s-coral/5 rounded-[12px] p-4 mb-4 text-left border border-s-coral/10">
+      <div className="bg-s-coral/5 rounded-input p-4 mb-4 text-left border border-s-coral/10">
         <div className="flex items-center gap-2 mb-1">
           <Gift size={14} className="text-s-coral" />
           <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("referralTitle")}</p>

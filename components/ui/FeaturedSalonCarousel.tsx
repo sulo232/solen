@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
 import type { SalonCard } from "@/lib/types";
 import { DEMO_SALONS } from "@/lib/demo-data";
+import ImageFallback from "@/components/ui/ImageFallback";
 
 interface FeaturedSalonCarouselProps {
   salons: SalonCard[];
@@ -136,7 +137,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
       <div
         className="relative w-full aspect-[4/5] rounded-[12px] overflow-hidden bg-s-bg-sunken"
       >
-        {photo && (
+        {photo ? (
           <Image
             src={photo}
             alt={salon.name}
@@ -145,6 +146,8 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
             className="object-cover"
             priority={index < 2}
           />
+        ) : (
+          <ImageFallback category={salon.categories?.[0]} salonName={salon.name} className="absolute inset-0" />
         )}
 
         {/* Badge: top-left */}

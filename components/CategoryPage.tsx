@@ -60,7 +60,7 @@ function DirectoryCard({ entry, t }: { entry: SalonDirectoryEntry; t: (key: stri
   return (
     <motion.div
       variants={itemVariants}
-      className="rounded-[20px] overflow-hidden hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms]"
+      className="rounded-card-lg overflow-hidden hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-[250ms]"
       style={{ border: "1.5px dashed rgba(26,18,9,.12)",
                background: "var(--glass-bg-subtle)",
                boxShadow: "0 1px 3px rgba(26,18,9,.06)" }}
@@ -88,9 +88,9 @@ function DirectoryCard({ entry, t }: { entry: SalonDirectoryEntry; t: (key: stri
             <Star className="w-3 h-3 fill-s-amber text-s-amber" />
             <span className="text-xs data-text font-bold text-s-ink/70">{entry.google_rating}</span>
             {entry.google_review_count != null && entry.google_review_count > 0 && (
-              <span className="text-xs text-s-ink/35">({entry.google_review_count})</span>
+              <span className="text-xs text-s-ink/45">({entry.google_review_count})</span>
             )}
-            <span className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/30 ml-1">Google</span>
+            <span className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/50 ml-1">Google</span>
           </div>
         )}
         <div className="flex gap-2">
@@ -353,11 +353,11 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           {/* Breadcrumb — eyebrow style */}
           <nav aria-label="Breadcrumb" className="mb-4">
             <ol className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-[.12em] flex-wrap">
-              <li><Link href={`/${locale}`} className="text-s-ink/30 hover:text-s-ink/55 transition-colors duration-150">{tCategory("homepage")}</Link></li>
+              <li><Link href={`/${locale}`} className="text-s-ink/50 hover:text-s-ink/55 transition-colors duration-150">{tCategory("homepage")}</Link></li>
               <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
               {city && (
                 <>
-                  <li><span className="text-s-ink/30">{cityName}</span></li>
+                  <li><span className="text-s-ink/50">{cityName}</span></li>
                   <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
                 </>
               )}
@@ -382,7 +382,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
 
           {/* Count line */}
           {(total > 0 || dirTotal > 0) && (
-            <p className="font-body italic text-s-ink/50 mt-3 text-[15px] leading-[1.82]">
+            <p className="font-body italic text-s-ink/50 mt-3 text-base leading-relaxed">
               {total} {tCategory("salonCountSingular", { count: total })} {city ? `in ${cityName}` : tCategory("inSwitzerland")} {tCategory("onSolen")}
               {dirTotal > 0 && ` · ${dirTotal} ${tCategory("more")}`}
             </p>
@@ -494,6 +494,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
         <div className="max-w-5xl mx-auto px-5 md:px-6 lg:px-10 pt-4">
           <button
             onClick={() => setFiltersExpanded(!filtersExpanded)}
+            aria-expanded={filtersExpanded}
             className="text-xs font-heading font-semibold text-s-coral hover:text-s-coral-hover transition-colors mb-2"
           >
             {filtersExpanded ? t("lessFilters") : t("moreFiltersToggle")}

@@ -153,10 +153,10 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           </div>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#EDE5D8" vertical={false} />
               <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#1A1209", fillOpacity: 0.4 }} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: "#1A1209", fillOpacity: 0.4 }} tickLine={false} axisLine={false} />
-              <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
+              <Tooltip contentStyle={{ borderRadius: "12px", border: "1px solid #EDE5D8" }} />
               <Bar
                 dataKey={columns.find((c) => c.key === sortBy)?.label ?? t("value")}
                 fill={CHART_CORAL}

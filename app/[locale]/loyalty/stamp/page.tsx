@@ -70,7 +70,7 @@ export default function LoyaltyStampPage() {
 
         {status === "ready" && (
           <div
-            className="rounded-[16px] bg-white dark:bg-s-dm-surface p-8 text-center"
+            className="rounded-card bg-white dark:bg-s-dm-surface p-8 text-center"
             style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 28px rgba(26,18,9,.08)" }}
           >
             {/* Icon box */}
@@ -80,7 +80,7 @@ export default function LoyaltyStampPage() {
             >
               <Award size={30} className="text-s-coral" />
             </div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
               Stempelkarte
             </p>
             <h1 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">
@@ -91,11 +91,7 @@ export default function LoyaltyStampPage() {
             </p>
             <button
               onClick={handleStamp}
-              className="w-full rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] py-3.5 hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter]"
-              style={{
-                background: "#E8624A",
-                boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)",
-              }}
+              className="w-full rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] py-3.5 hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] shadow-coral-glow"
             >
               Stempel vergeben
             </button>
@@ -104,7 +100,7 @@ export default function LoyaltyStampPage() {
 
         {status === "stamped" && (
           <div
-            className="rounded-[16px] bg-white dark:bg-s-dm-surface p-8 text-center"
+            className="rounded-card bg-white dark:bg-s-dm-surface p-8 text-center"
             style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 28px rgba(26,18,9,.08)" }}
           >
             {/* ✅ NO scale animation — opacity+translateY only */}
@@ -115,9 +111,9 @@ export default function LoyaltyStampPage() {
                 animation: "fade-in-up 0.35s cubic-bezier(0.25,1,0.5,1) both",
               }}
             >
-              <Check size={28} className="text-[#4CAF6F]" />
+              <Check size={28} className="text-s-sage" />
             </div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-[#4CAF6F] mb-2">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-sage mb-2">
               Gestempelt
             </p>
             <h1 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-3">
@@ -141,7 +137,7 @@ export default function LoyaltyStampPage() {
 
         {status === "error" && (
           <div
-            className="rounded-[16px] bg-white dark:bg-s-dm-surface p-8 text-center"
+            className="rounded-card bg-white dark:bg-s-dm-surface p-8 text-center"
             style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 28px rgba(26,18,9,.08)" }}
           >
             <div

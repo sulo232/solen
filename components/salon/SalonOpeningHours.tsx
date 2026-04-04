@@ -49,12 +49,13 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
       <div className="md:hidden">
         <button
           onClick={() => setHoursExpanded(!hoursExpanded)}
+          aria-expanded={hoursExpanded}
           className="w-full flex items-center justify-between py-2 text-sm"
         >
           <span className="flex items-center gap-2 text-s-ink/70">
             <span
               className={`w-1.5 h-1.5 rounded-full ${
-                isOpen ? "bg-[#2ECC71] shadow-[0_0_4px_rgba(46,204,113,0.4)]" : "bg-s-ink/30"
+                isOpen ? "bg-s-sage shadow-[0_0_4px_rgba(46,204,113,0.4)]" : "bg-s-ink/30"
               }`}
             />
             {t("todayPrefix")}: {todayHours ? `${todayHours.open}–${todayHours.close}` : t("closed")}
@@ -78,7 +79,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
                 >
                   <div className="flex items-center gap-2">
                     <span
-                      className={`w-1.5 h-1.5 rounded-full ${h ? "bg-[#2ECC71]" : "bg-s-ink/15"} ${
+                      className={`w-1.5 h-1.5 rounded-full ${h ? "bg-s-sage" : "bg-s-ink/15"} ${
                         isToday && h ? "shadow-[0_0_4px_rgba(46,204,113,0.4)]" : ""
                       }`}
                     />
@@ -115,7 +116,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
             >
               <div className="flex items-center gap-2">
                 <span
-                  className={`w-1.5 h-1.5 rounded-full ${h ? "bg-[#2ECC71]" : "bg-s-ink/15"} ${
+                  className={`w-1.5 h-1.5 rounded-full ${h ? "bg-s-sage" : "bg-s-ink/15"} ${
                     isToday && h ? "shadow-[0_0_4px_rgba(46,204,113,0.4)]" : ""
                   }`}
                 />

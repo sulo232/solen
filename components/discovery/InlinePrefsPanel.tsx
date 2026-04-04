@@ -88,8 +88,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
         transition={{ duration: 0.4, delay: 0.3 }}
         className="overflow-hidden"
       >
-        <div className="rounded-[12px] border border-[#4CAF6F]/20 p-4 flex items-center gap-3"
-          style={{ background: "rgba(76,175,111,.06)" }}>
+        <div className="rounded-[12px] border border-[#4CAF6F]/20 p-4 flex items-center gap-3 bg-s-sage/[0.06]">
           <Check size={16} className="text-[#4CAF6F]" />
           <p className="text-sm font-heading font-semibold text-[#4CAF6F]">Gespeichert!</p>
         </div>
@@ -98,15 +97,14 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
   }
 
   return (
-    <div className="rounded-[12px] border border-s-coral/15 overflow-hidden"
-      style={{ background: "rgba(232,98,74,.03)" }}>
+    <div className="rounded-[12px] border border-s-coral/15 overflow-hidden bg-s-coral/[0.03]">
       {/* Collapsed banner */}
       <button
         onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
         className="w-full flex items-center gap-3 px-4 py-3.5 text-left"
       >
-        <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0"
-          style={{ background: "rgba(232,98,74,.10)" }}>
+        <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 bg-s-coral/10">
           <Sparkles size={14} className="text-s-coral" />
         </div>
         <div className="flex-1 min-w-0">
@@ -121,7 +119,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
           )}
           <ChevronDown
             size={14}
-            className={`text-s-ink/30 dark:text-s-dm-text/30 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
+            className={`text-s-ink/50 dark:text-s-dm-text/50 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
           />
         </div>
       </button>
@@ -139,7 +137,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
             <div className="px-4 pb-4 space-y-4 border-t border-s-ink/[0.05] dark:border-white/[0.05] pt-3">
               {/* Gender */}
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">{t.genderLabel}</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t.genderLabel}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { v: "female", l: t.female },
@@ -155,7 +153,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
 
               {/* Texture */}
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">{t.textureLabel}</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t.textureLabel}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { v: "straight", l: t.straight },
@@ -172,7 +170,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
 
               {/* Length */}
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">{t.lengthLabel}</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t.lengthLabel}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { v: "short", l: t.short },
@@ -196,8 +194,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
                 </button>
                 <button
                   onClick={handleSave}
-                  className="flex-1 py-2.5 rounded-pill text-white text-[10px] font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150"
-                  style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" }}
+                  className="flex-1 py-2.5 rounded-pill text-white text-[10px] font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 bg-s-coral shadow-coral-glow"
                 >
                   {t.save}
                 </button>

@@ -412,16 +412,16 @@ export default function KitInventory({ salonId }: { salonId: string }) {
               {/* Usage log accordion */}
               {logsOpen && (
                 <div className="border-t border-s-ink/[0.04] dark:border-s-dm-text/[0.04] px-3 pb-3 pt-2">
-                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
                     {t("kit_history")}
                   </p>
                   {logs.length === 0 ? (
-                    <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">{t("kit_history_empty")}</p>
+                    <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{t("kit_history_empty")}</p>
                   ) : (
                     <div className="space-y-1.5">
                       {logs.slice(0, 8).map((log) => (
                         <div key={log.id} className="flex items-center gap-2 text-[11px]">
-                          <span className="text-s-ink/30 dark:text-s-dm-text/30 tabular-nums shrink-0">{log.used_at}</span>
+                          <span className="text-s-ink/50 dark:text-s-dm-text/50 tabular-nums shrink-0">{log.used_at}</span>
                           <span className="text-s-coral font-semibold shrink-0">−{log.quantity_used}</span>
                           {log.notes && <span className="text-s-ink/50 dark:text-s-dm-text/50 truncate">{log.notes}</span>}
                         </div>
@@ -434,7 +434,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
           );
         })}
         {filtered.length === 0 && (
-          <p className="text-center text-xs text-s-ink/30 dark:text-s-dm-text/30 py-6">
+          <p className="text-center text-xs text-s-ink/50 dark:text-s-dm-text/50 py-6">
             {t("kit_empty")}
           </p>
         )}
@@ -447,7 +447,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
           aria-modal="true"
           className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-s-ink/40 backdrop-blur-[6px]"
         >
-          <div className="w-full max-w-sm rounded-[16px] bg-[--raised] dark:bg-s-dm-surface p-5 space-y-4 shadow-[0_8px_32px_rgba(26,18,9,0.18)]">
+          <div className="w-full max-w-sm rounded-card bg-[--raised] dark:bg-s-dm-surface p-5 space-y-4 shadow-v5-float">
             <div className="flex items-center justify-between">
               <p className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
                 {t("kit_checkout_title")}
@@ -464,7 +464,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
               {checkoutItem.brand} — {checkoutItem.product_name}
             </p>
             <div className="space-y-2">
-              <label className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/35 dark:text-s-dm-text/35">
+              <label className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/45 dark:text-s-dm-text/45">
                 {t("kit_qty_used")}
               </label>
               <input

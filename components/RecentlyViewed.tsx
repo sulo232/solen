@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Clock, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import ImageFallback from "@/components/ui/ImageFallback";
 
 interface RecentSalon {
   id: string;
@@ -111,9 +112,7 @@ export default function RecentlyViewed() {
                     sizes="160px"
                   />
                 ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-s-ink/10 dark:text-s-dm-text/10 font-heading text-3xl">
-                    {salon.name[0]}
-                  </div>
+                  <ImageFallback salonName={salon.name} className="absolute inset-0" />
                 )}
               </div>
               <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate group-hover:text-s-coral transition-colors">

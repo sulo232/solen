@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import PhotoLightbox from "@/components/ui/PhotoLightbox";
+import ImageFallback from "@/components/ui/ImageFallback";
 
 interface SalonHeroProps {
   photos: string[];
@@ -102,11 +103,7 @@ export default function SalonHero({ photos, salonName }: SalonHeroProps) {
           </AnimatePresence>
 
           {photos.length === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="font-display text-[80px] text-s-ink/10">
-                {salonName[0]}
-              </span>
-            </div>
+            <ImageFallback salonName={salonName} className="absolute inset-0" />
           )}
 
           {hasMultiple && (

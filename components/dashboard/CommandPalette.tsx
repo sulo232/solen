@@ -103,10 +103,10 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
       className="fixed inset-0 z-[200] flex items-start justify-center pt-[10vh] px-4 bg-s-ink/50 backdrop-blur-[4px]"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="w-full max-w-[560px] bg-[--raised] dark:bg-s-dm-surface rounded-[16px] border border-s-ink/[0.08] dark:border-white/[0.08] shadow-[0_20px_60px_rgba(26,18,9,0.2)] overflow-hidden">
+      <div className="w-full max-w-[560px] bg-[--raised] dark:bg-s-dm-surface rounded-card border border-s-ink/[0.08] dark:border-white/[0.08] shadow-v5-float overflow-hidden">
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-ink/[0.06] dark:border-white/[0.06]">
-          <Search size={15} className="text-s-ink/30 shrink-0" />
+          <Search size={15} className="text-s-ink/50 shrink-0" />
           <input
             ref={inputRef}
             value={query}
@@ -123,7 +123,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
         {/* Results */}
         <div ref={listRef} className="max-h-[400px] overflow-y-auto py-2">
           {filtered.length === 0 ? (
-            <p className="px-4 py-8 text-center text-[11px] font-heading text-s-ink/30 uppercase tracking-[.10em]">
+            <p className="px-4 py-8 text-center text-[11px] font-heading text-s-ink/50 uppercase tracking-[.10em]">
               {t("noResults")}
             </p>
           ) : (
@@ -160,7 +160,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
                         </div>
                         <span className="flex-1 text-sm font-heading font-medium">{cmd.label}</span>
                         {cmd.shortcut && (
-                          <kbd className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.06] dark:bg-white/[0.06] text-s-ink/35 dark:text-s-dm-text/35 font-mono">
+                          <kbd className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.06] dark:bg-white/[0.06] text-s-ink/45 dark:text-s-dm-text/45 font-mono">
                             {cmd.shortcut}
                           </kbd>
                         )}

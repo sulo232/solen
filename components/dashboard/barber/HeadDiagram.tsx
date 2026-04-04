@@ -81,7 +81,7 @@ export default function HeadDiagram({ zoneGuards, onZoneGuardChange }: HeadDiagr
   if (!svgSource) {
     return (
       <div className="rounded-[12px] border border-dashed border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-6 text-center">
-        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">{t("diagrams_coming_soon")}</p>
+        <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{t("diagrams_coming_soon")}</p>
       </div>
     );
   }
@@ -103,7 +103,7 @@ export default function HeadDiagram({ zoneGuards, onZoneGuardChange }: HeadDiagr
 
       {/* Guard size dropdown for active zone */}
       {activeZone && (
-        <div className="absolute top-2 right-2 z-10 rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface p-2 shadow-[0_4px_12px_rgba(26,18,9,0.08)]">
+        <div className="absolute top-2 right-2 z-10 rounded-input border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface p-2 shadow-elevation-2">
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40 mb-1">
             {t("guard_size")}
           </p>

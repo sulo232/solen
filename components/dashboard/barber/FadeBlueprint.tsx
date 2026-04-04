@@ -138,7 +138,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
   };
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface p-4">
+    <div className="rounded-input border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface p-4">
       <div className="flex items-center justify-between mb-4">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
           {t("fade_blueprint")}
@@ -227,7 +227,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
 
           {/* Guard dropdown */}
           {activeZone && activeZone !== "neckline" && (
-            <div className="absolute top-2 right-2 z-10 rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface p-2 shadow-[0_4px_12px_rgba(26,18,9,0.08)]">
+            <div className="absolute top-2 right-2 z-10 rounded-input border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface p-2 shadow-elevation-2">
               <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40 mb-1">
                 {t("guard_size")}
               </p>

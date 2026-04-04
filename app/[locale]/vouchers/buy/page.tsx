@@ -73,7 +73,7 @@ function CheckoutForm({ clientSecret, voucherCode }: CheckoutFormProps) {
       <button
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.98] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-[0_2px_4px_rgba(232,98,74,.28),0_4px_12px_rgba(232,98,74,.16)] transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.98] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-coral-glow transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
         style={{
           background: "linear-gradient(135deg, #E8624A 0%, #D4870A 100%)",
         }}
@@ -162,7 +162,7 @@ export default function VoucherBuyPage() {
 
         {!clientSecret ? (
           /* Step 1: Configure Voucher */
-          <div className="rounded-[16px] bg-white dark:bg-s-dm-surface p-8 shadow-[0_2px_4px_rgba(26,18,9,.06),0_8px_32px_rgba(26,18,9,.09)]">
+          <div className="rounded-card bg-white dark:bg-s-dm-surface p-8 shadow-v5-float">
             {/* Discount Type Selector */}
             <div className="mb-6">
               <label className="block font-heading uppercase text-[9px] tracking-[.20em] text-s-ink/60 dark:text-s-dm-text/60 mb-3">
@@ -174,7 +174,7 @@ export default function VoucherBuyPage() {
                   onClick={() => setDiscountType("fixed")}
                   className={`rounded-[12px] px-6 py-4 border-2 transition-[background-color,border-color,box-shadow] ${
                     discountType === "fixed"
-                      ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 shadow-[0_2px_4px_rgba(232,98,74,.28),0_4px_12px_rgba(232,98,74,.16)]"
+                      ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 shadow-coral-glow"
                       : "border-s-ink/[0.08] dark:border-white/10 hover:border-s-ink/20"
                   }`}
                 >
@@ -192,7 +192,7 @@ export default function VoucherBuyPage() {
                   onClick={() => setDiscountType("percent")}
                   className={`rounded-[12px] px-6 py-4 border-2 transition-[background-color,border-color,box-shadow] ${
                     discountType === "percent"
-                      ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 shadow-[0_2px_4px_rgba(232,98,74,.28),0_4px_12px_rgba(232,98,74,.16)]"
+                      ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 shadow-coral-glow"
                       : "border-s-ink/[0.08] dark:border-white/10 hover:border-s-ink/20"
                   }`}
                 >
@@ -279,7 +279,7 @@ export default function VoucherBuyPage() {
             <button
               onClick={handleCreateVoucher}
               disabled={loading || (isGift && !recipientEmail)}
-              className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.98] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-[0_2px_4px_rgba(232,98,74,.28),0_4px_12px_rgba(232,98,74,.16)] transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.98] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-coral-glow transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background: "linear-gradient(135deg, #E8624A 0%, #D4870A 100%)",
               }}
@@ -289,7 +289,7 @@ export default function VoucherBuyPage() {
           </div>
         ) : (
           /* Step 2: Payment */
-          <div className="rounded-[16px] bg-white dark:bg-s-dm-surface p-8 shadow-[0_2px_4px_rgba(26,18,9,.06),0_8px_32px_rgba(26,18,9,.09)]">
+          <div className="rounded-card bg-white dark:bg-s-dm-surface p-8 shadow-v5-float">
             <div className="mb-6">
               <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">
                 Zahlung

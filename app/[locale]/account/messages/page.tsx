@@ -77,7 +77,7 @@ export default function MessagesPage() {
           style={{ background: "rgba(232,98,74,.08)" }}>
           <MessageCircle size={28} className="text-s-coral/70" />
         </div>
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30">
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50">
           Nachrichten
         </p>
         <p className="font-heading font-bold text-lg text-s-ink">Noch keine Nachrichten</p>
@@ -85,8 +85,7 @@ export default function MessagesPage() {
           Wenn du einen Salon kontaktierst, erscheinen deine Unterhaltungen hier.
         </p>
         <Link href={`/${locale}/coiffeur`}
-          className="mt-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150"
-          style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 12px rgba(232,98,74,.15)" }}>
+          className="mt-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 shadow-coral-glow">
           Salons entdecken
         </Link>
       </div>
@@ -97,7 +96,7 @@ export default function MessagesPage() {
     <div className="min-h-screen bg-s-bg-surface">
       <div className="max-w-5xl mx-auto pt-6 pb-8 px-4 sm:px-6">
         <div className="mb-6">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 mb-1">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 mb-1">
             Account
           </p>
           <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">Nachrichten</h1>
@@ -168,7 +167,7 @@ export default function MessagesPage() {
                     <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">
                       {selectedConv?.other_party_name}
                     </p>
-                    <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/30">Salon</p>
+                    <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/50">Salon</p>
                   </div>
                 </div>
                 <div className="h-[calc(100%-36px)]">

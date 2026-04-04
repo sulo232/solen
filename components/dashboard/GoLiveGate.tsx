@@ -101,11 +101,11 @@ export default function GoLiveGate() {
       <div className="px-4 py-4 space-y-2">
         {requirements.map(({ key, label, done, href, Icon }) => (
           <div key={key} className={`flex items-center gap-3 ${done ? "opacity-50" : ""}`}>
-            <div className={`w-5 h-5 rounded-[6px] flex items-center justify-center shrink-0 ${done ? "bg-[#4CAF6F]" : "border border-s-ink/15"}`}>
+            <div className={`w-5 h-5 rounded-[6px] flex items-center justify-center shrink-0 ${done ? "bg-s-sage" : "border border-s-ink/15"}`}>
               {done && <CheckCircle2 size={11} className="text-white" />}
             </div>
             <div className="flex-1 flex items-center gap-2">
-              <Icon size={13} className={done ? "text-s-coral" : "text-s-ink/30 dark:text-s-dm-text/30"} />
+              <Icon size={13} className={done ? "text-s-coral" : "text-s-ink/50 dark:text-s-dm-text/50"} />
               <span className={`text-xs font-heading font-semibold ${done ? "text-s-ink dark:text-s-dm-text" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
                 {label}
               </span>
@@ -129,7 +129,7 @@ export default function GoLiveGate() {
             "w-full py-3 rounded-[8px] text-xs font-heading font-bold uppercase tracking-[.04em] flex items-center justify-center gap-2 transition-colors",
             status.can_go_live
               ? "bg-s-coral text-white hover:brightness-[1.06] cursor-pointer"
-              : "bg-s-ink/5 dark:bg-white/5 text-s-ink/30 dark:text-s-dm-text/30 cursor-not-allowed",
+              : "bg-s-ink/5 dark:bg-white/5 text-s-ink/50 dark:text-s-dm-text/50 cursor-not-allowed",
           ].join(" ")}
         >
           {activating ? <Spinner size="sm" invert={status.can_go_live} /> : <Rocket size={15} />}

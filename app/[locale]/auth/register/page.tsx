@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { z } from "zod";
@@ -38,7 +38,7 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
   return (
     <div className="flex flex-col gap-5">
       <div className="text-center mb-2">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 dark:text-s-dm-text/35 mb-2">
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/45 dark:text-s-dm-text/45 mb-2">
           Registrierung
         </p>
         <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">
@@ -81,6 +81,7 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
 // Step 0.5 — Register Email/Pass/DOB (NEW)
 // ─────────────────────────────────────────
 function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boolean }) {
+  const tc = useTranslations("common");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [birthday, setBirthday] = useState("");
@@ -124,13 +125,13 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         return;
       }
       if (!res.ok) {
-        toast(data.message || "Registrierung fehlgeschlagen", "error");
+        toast(data.message || tc("errorProcessing"), "error");
         setSaving(false);
         return;
       }
       setSuccess(true);
     } catch {
-      toast("Netzwerkfehler", "error");
+      toast(tc("networkError"), "error");
     }
     setSaving(false);
   };
@@ -212,13 +213,12 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       <button
         type="submit"
         disabled={!email || !password || (isSalon ? !salonName : !birthday) || saving}
-        className="w-full py-4 rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-coral-glow"
-        style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
+        className="w-full py-4 rounded-pill bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
         {saving && <Spinner size="sm" invert />}
         Registrieren
       </button>
 
-      <p className="text-center text-xs text-s-ink/30 dark:text-s-dm-text/30 font-body mt-2">
+      <p className="text-center text-xs text-s-ink/50 dark:text-s-dm-text/50 font-body mt-2">
         Du hast bereits ein Konto?{" "}
         <a href="/auth/login" className="text-s-coral hover:underline">
           Anmelden
@@ -232,6 +232,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
 // Step 1 — Name + Avatar + Bio
 // ─────────────────────────────────────────
 function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string; avatar_url: string }) => void }) {
+  const tc = useTranslations("common");
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -248,12 +249,12 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
         body: JSON.stringify({ display_name: name, bio, avatar_url: avatarUrl || null }),
       });
       if (!res.ok) {
-        toast("Profil konnte nicht gespeichert werden", "error");
+        toast(tc("profileSaveError"), "error");
         setSaving(false);
         return;
       }
     } catch {
-      toast("Netzwerkfehler", "error");
+      toast(tc("networkError"), "error");
       setSaving(false);
       return;
     }
@@ -263,14 +264,14 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Wie heisst du?</h2>
+      <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">{tc("yourName")}</h2>
 
       <div className="flex items-center gap-4">
         <div className="w-16 h-16 rounded-full bg-s-bg-sunken dark:bg-white/5 overflow-hidden shrink-0 flex items-center justify-center text-s-ink/20">
           {avatarUrl ? (
             <Image src={avatarUrl} alt="" width={64} height={64} className="object-cover" />
           ) : (
-            <User size={24} className="text-s-ink/30 dark:text-s-dm-text/30" />
+            <User size={24} className="text-s-ink/50 dark:text-s-dm-text/50" />
           )}
         </div>
         <input
@@ -304,7 +305,7 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
         className="w-full py-3 rounded-pill bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
       >
         {saving && <Spinner size="sm" invert />}
-        Weiter
+        {tc("next")}
       </button>
     </form>
   );
@@ -365,6 +366,7 @@ function SelectPill<T extends string>({
 }
 
 function Step2({ onNext }: { onNext: () => void }) {
+  const tc = useTranslations("common");
   const [gender, setGender] = useState<Gender | null>(null);
   const [hair, setHair] = useState<HairType | null>(null);
   const [saving, setSaving] = useState(false);
@@ -380,12 +382,12 @@ function Step2({ onNext }: { onNext: () => void }) {
         body: JSON.stringify({ gender, hair_type: hair }),
       });
       if (!res.ok) {
-        toast("Profil konnte nicht gespeichert werden", "error");
+        toast(tc("profileSaveError"), "error");
         setSaving(false);
         return;
       }
     } catch {
-      toast("Netzwerkfehler", "error");
+      toast(tc("networkError"), "error");
       setSaving(false);
       return;
     }
@@ -395,14 +397,14 @@ function Step2({ onNext }: { onNext: () => void }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Erzähl uns mehr</h2>
+      <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">{tc("details")}</h2>
 
       <div>
-        <p className="text-sm font-body font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-2">Geschlecht</p>
+        <p className="text-sm font-body font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-2">{tc("gender")}</p>
         <SelectPill options={GENDER_OPTIONS} value={gender} onChange={setGender} />
       </div>
       <div>
-        <p className="text-sm font-body font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-2">Haartyp</p>
+        <p className="text-sm font-body font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-2">{tc("hair")}</p>
         <SelectPill options={HAIR_OPTIONS} value={hair} onChange={setHair} />
       </div>
 
@@ -412,7 +414,7 @@ function Step2({ onNext }: { onNext: () => void }) {
           onClick={onNext}
           className="flex-1 py-3 rounded-pill border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-[background-color,color,border-color] duration-150"
         >
-          Überspringen
+          {tc("skip")}
         </button>
         <button
           type="submit"
@@ -420,7 +422,7 @@ function Step2({ onNext }: { onNext: () => void }) {
           className="flex-1 py-3 rounded-pill bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
         >
           {saving && <Spinner size="sm" invert />}
-          Weiter
+          {tc("next")}
         </button>
       </div>
     </form>
@@ -441,6 +443,7 @@ const CATEGORY_OPTIONS: { value: SalonCategory; label: string; icon: React.React
 ];
 
 function Step3({ onComplete }: { onComplete: () => void }) {
+  const tc = useTranslations("common");
   const [selected, setSelected] = useState<SalonCategory[]>([]);
   const [saving, setSaving] = useState(false);
   const toast = useToast();
@@ -460,12 +463,12 @@ function Step3({ onComplete }: { onComplete: () => void }) {
         body: JSON.stringify({ favorite_categories: selected, onboarding_completed: true }),
       });
       if (!res.ok) {
-        toast("Profil konnte nicht gespeichert werden", "error");
+        toast(tc("profileSaveError"), "error");
         setSaving(false);
         return;
       }
     } catch {
-      toast("Netzwerkfehler", "error");
+      toast(tc("networkError"), "error");
       setSaving(false);
       return;
     }
@@ -511,7 +514,7 @@ function Step3({ onComplete }: { onComplete: () => void }) {
           onClick={onComplete}
           className="flex-1 py-3 rounded-pill border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-[background-color,color,border-color] duration-150"
         >
-          Überspringen
+          {tc("skip")}
         </button>
         <button
           type="submit"
@@ -519,7 +522,7 @@ function Step3({ onComplete }: { onComplete: () => void }) {
           className="flex-1 py-3 rounded-pill bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
         >
           {saving && <Spinner size="sm" invert />}
-          Fertig
+          {tc("done")}
         </button>
       </div>
     </form>
@@ -539,12 +542,12 @@ function DoneScreen() {
         transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
         className="w-16 h-16 rounded-[20px] flex items-center justify-center"
         style={{ background: "rgba(76,175,111,.12)" }}>
-        <PartyPopper size={28} className="text-[#4CAF6F]" />
+        <PartyPopper size={28} className="text-s-sage" />
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.15 }}>
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-[#4CAF6F] mb-2">
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-sage mb-2">
           Konto erstellt
         </p>
         <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Willkommen bei solen.ch!</p>
@@ -635,11 +638,10 @@ export default function RegisterPage() {
           <div className="mb-5 px-1">
             <div className="flex gap-1">
               {[1, 2, 3].map((s) => (
-                <div key={s} className="flex-1 h-1 rounded-full transition-[width] duration-[350ms]"
-                  style={{ background: (s as number) <= (step as number) ? "#E8624A" : "rgba(26,18,9,.08)" }} />
+                <div key={s} className={`flex-1 h-1 rounded-full transition-[width] duration-[350ms] ${(s as number) <= (step as number) ? "bg-s-coral" : "bg-s-ink/[0.08]"}`} />
               ))}
             </div>
-            <p className="text-right text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 dark:text-s-dm-text/30 mt-1.5">
+            <p className="text-right text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 dark:text-s-dm-text/50 mt-1.5">
               Schritt {currentStepNum} von {totalSteps}
             </p>
           </div>
@@ -654,7 +656,7 @@ export default function RegisterPage() {
             {(step === 2 || step === 3) && (
               <button
                 onClick={() => goTo((step - 1) as WizardStep)}
-                className="flex items-center gap-1.5 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/35 dark:text-s-dm-text/35 hover:text-s-ink dark:hover:text-s-dm-text transition-colors mb-4">
+                className="flex items-center gap-1.5 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 dark:text-s-dm-text/45 hover:text-s-ink dark:hover:text-s-dm-text transition-colors mb-4">
                 <ArrowLeft size={12} /> Zurück
               </button>
             )}
@@ -686,7 +688,7 @@ export default function RegisterPage() {
 
         {step !== "done" && step === -1 && (
           <p className="text-center mt-6">
-            <span className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/30 dark:text-s-dm-text/30">
+            <span className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/50 dark:text-s-dm-text/50">
               Bereits registriert?{" "}
             </span>
             <Link href={`/${locale}/auth/login`}

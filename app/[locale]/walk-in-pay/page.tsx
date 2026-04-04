@@ -142,8 +142,7 @@ export default function WalkInPayPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
-        className="bg-white dark:bg-s-dm-surface rounded-[16px] max-w-md w-full p-6"
-        style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 32px rgba(26,18,9,.09)" }}
+        className="bg-white dark:bg-s-dm-surface rounded-card max-w-md w-full p-6 shadow-v5-float"
       >
         {loading ? (
           <div className="flex items-center justify-center gap-1.5 py-14">
@@ -194,7 +193,7 @@ export default function WalkInPayPage() {
                 <CreditCard size={17} className="text-s-coral" />
               </div>
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/30 dark:text-s-dm-text/30 mb-0.5">
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50 dark:text-s-dm-text/50 mb-0.5">
                   Walk-in
                 </p>
                 <h1 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{l.title}</h1>
@@ -204,17 +203,17 @@ export default function WalkInPayPage() {
             <div className="rounded-[12px] p-4 mb-6 space-y-3" style={{ background: "rgba(26,18,9,.03)" }}>
               {/* Salon row */}
               <div className="flex justify-between items-center">
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/30 dark:text-s-dm-text/30">{l.salon}</span>
+                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50">{l.salon}</span>
                 <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{booking.salon_name}</span>
               </div>
               {/* Service row */}
               <div className="flex justify-between items-center">
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/30 dark:text-s-dm-text/30">{l.service}</span>
+                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50">{l.service}</span>
                 <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{booking.service_name}</span>
               </div>
               {/* Time row */}
               <div className="flex justify-between items-center">
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/30 dark:text-s-dm-text/30">{l.time}</span>
+                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50">{l.time}</span>
                 <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text flex items-center gap-1">
                   <Clock size={11} className="text-s-ink/40" />
                   {new Date(booking.starts_at).toLocaleTimeString(locale === "de" ? "de-CH" : "en-GB", { hour: "2-digit", minute: "2-digit" })}
@@ -222,7 +221,7 @@ export default function WalkInPayPage() {
               </div>
               {/* Amount row */}
               <div className="border-t border-s-ink/[0.07] dark:border-white/[0.06] pt-3 flex justify-between items-center">
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/30 dark:text-s-dm-text/30">{l.amount}</span>
+                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50">{l.amount}</span>
                 <span className="font-heading font-bold text-lg text-s-coral">{formatCurrency(booking.amount, locale)}</span>
               </div>
             </div>
@@ -230,8 +229,7 @@ export default function WalkInPayPage() {
             <button
               onClick={handlePay}
               disabled={paying}
-              className="w-full px-4 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 transition-[transform,filter]"
-              style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}
+              className="w-full px-4 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 transition-[transform,filter] shadow-coral-glow"
             >
               {paying ? <Spinner size="sm" invert /> : <CreditCard size={15} />}
               {l.pay}

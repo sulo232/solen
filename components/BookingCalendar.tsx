@@ -120,8 +120,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">{t("stepPayment")}</p>
 
       {/* Stripe sandbox — wrapper only */}
-      <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4"
-        style={{ background: "#FFFFFF", boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
+      <div className="rounded-input border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white shadow-elevation-1">
         <PaymentElement options={{ layout: "tabs" }} />
       </div>
 
@@ -129,14 +128,13 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
         type="button"
         onClick={handleSubmit}
         disabled={processing || !stripe}
-        className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
-        style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.30), 0 6px 20px rgba(232,98,74,.20)" }}
+        className="w-full py-4 rounded-btn bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
       >
         {processing ? <Spinner size="sm" invert /> : <CreditCard size={14} />}
         {processing ? t("processing") : t("payNow")}
       </button>
 
-      <p className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35 text-center">
+      <p className="text-[10px] text-s-ink/45 dark:text-s-dm-text/45 text-center">
         {t("stripeEncrypted")}
       </p>
     </div>
@@ -592,12 +590,11 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
     // Fallback: props not available (e.g. embedded without salonName/salonSlug)
     return (
       <div className="text-center px-4 py-8 space-y-4">
-        <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center"
-          style={{ background: "rgba(76,175,111,.12)" }}>
-          <PartyPopper size={28} className="text-[#4CAF6F]" />
+        <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center bg-s-sage/[0.12]">
+          <PartyPopper size={28} className="text-s-sage" />
         </div>
         <div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-[#4CAF6F] mb-2">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-sage mb-2">
             {t("bookingConfirmed")}
           </p>
           <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">{t("allGood")}</p>
@@ -626,7 +623,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
                   i <= stepIndex ? "bg-s-coral" : "bg-s-ink/10 dark:bg-white/10"
                 }`} />
                 <p className={`text-[9px] font-heading uppercase tracking-[.12em] mt-1 ${
-                  i === stepIndex ? "text-s-coral font-bold" : "text-s-ink/30 dark:text-s-dm-text/30"
+                  i === stepIndex ? "text-s-coral font-bold" : "text-s-ink/50 dark:text-s-dm-text/50"
                 }`}>{label}</p>
               </div>
             );
@@ -769,7 +766,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
                           className={[
                             "px-4 py-2.5 rounded-[12px] text-xs font-heading font-bold transition-[transform,filter,border-color,background-color] duration-150 border",
                             isSelected
-                              ? "bg-s-coral text-white border-s-coral shadow-[0_2px_4px_rgba(232,98,74,.20)]"
+                              ? "bg-s-coral text-white border-s-coral shadow-coral-glow"
                               : offPeakPct
                                 ? "bg-s-sage-subtle border-s-sage/20 text-s-ink hover:border-s-sage/40 hover:text-s-sage-text dark:bg-s-sage/10 dark:text-s-dm-text dark:border-s-sage/20"
                                 : "bg-white dark:bg-s-dm-bg border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral/50 hover:text-s-coral",
@@ -974,8 +971,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
             <button
               onClick={handleProceedToPayment}
               disabled={confirming}
-              className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
-              style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.30), 0 6px 20px rgba(232,98,74,.20)" }}
+              className="w-full py-4 rounded-btn bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {confirming && <Spinner size="sm" invert />}
               {confirming ? t("preparing") : isMoreThan7Days ? t("saveCardAndBook") : t("toPayment")}

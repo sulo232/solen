@@ -11,7 +11,7 @@ export default function Footer() {
   const t = useTranslations("footer") as any;
 
   return (
-    <footer className="bg-[#2C2825] text-white">
+    <footer className="bg-s-dm-bg text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
 
         {/* ── Logo + tagline ── */}
@@ -95,8 +95,8 @@ export default function Footer() {
             </p>
             <span className="text-white/15 text-[11px]">·</span>
             <div className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4CAF6F] shrink-0" aria-hidden="true" />
-              <p className="text-[10px] font-heading uppercase tracking-[.06em]" style={{ color: "rgba(76,175,111,.55)" }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-s-sage shrink-0" aria-hidden="true" />
+              <p className="text-[10px] font-heading uppercase tracking-[.06em] text-s-sage/55">
                 {t("fadpCompliant")}
               </p>
             </div>

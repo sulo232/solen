@@ -59,10 +59,10 @@ export default function PackageRedeemBanner({
         style={{ background: "rgba(212,135,10,.08)", border: "1px solid rgba(212,135,10,.20)" }}>
         <div className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0"
           style={{ background: "rgba(76,175,111,.14)" }}>
-          <Check size={15} className="text-[#4CAF6F]" />
+          <Check size={15} className="text-s-sage" />
         </div>
         <div>
-          <p className="text-xs font-heading font-bold text-[#4CAF6F]">{t("redeemed")}</p>
+          <p className="text-xs font-heading font-bold text-s-sage">{t("redeemed")}</p>
           <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("noAdditionalCharge")}</p>
         </div>
       </div>
@@ -95,8 +95,7 @@ export default function PackageRedeemBanner({
       <button
         onClick={handleRedeem}
         disabled={redeeming}
-        className="px-3 py-2 rounded-pill active:scale-[0.98] text-white text-[10px] font-heading font-bold uppercase tracking-[.04em] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center gap-1.5 shrink-0"
-        style={{ background: "#D4870A", boxShadow: "0 2px 4px rgba(212,135,10,.22)" }}
+        className="px-3 py-2 rounded-pill active:scale-[0.98] bg-s-amber text-white text-[10px] font-heading font-bold uppercase tracking-[.04em] shadow-elevation-1 transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center gap-1.5 shrink-0"
       >
         {redeeming && <Spinner size="sm" invert />}
         {t("redeemNow")}

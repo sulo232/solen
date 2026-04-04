@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -97,7 +97,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
         className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-60"
       />
 
-      <p className="text-[9px] text-center font-heading uppercase tracking-[.10em] text-s-ink/30 mt-3">
+      <p className="text-[9px] text-center font-heading uppercase tracking-[.10em] text-s-ink/50 mt-3">
         Kostenlose Stornierung bis {intent.free_cancel_hours ?? 24}h vorher
       </p>
     </form>
@@ -110,6 +110,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
 
 export default function CheckoutPage() {
   const locale = useLocale();
+  const tc = useTranslations("common");
   const searchParams = useSearchParams();
   const [intent, setIntent] = useState<BookingIntent | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -136,13 +137,13 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     const raw = searchParams.get("booking_intent");
-    if (!raw) { setError("Keine Buchungsdaten gefunden."); setLoading(false); return; }
+    if (!raw) { setError(tc("noBookingData")); setLoading(false); return; }
 
     let parsed: BookingIntent;
     try {
       parsed = JSON.parse(decodeURIComponent(raw));
     } catch {
-      setError("Ungültige Buchungsdaten."); setLoading(false); return;
+      setError(tc("errorValidation")); setLoading(false); return;
     }
     setIntent(parsed);
 
@@ -172,7 +173,7 @@ export default function CheckoutPage() {
         setClientSecret(data.client_secret);
         setPaymentIntentId(data.payment_intent_id);
       })
-      .catch(() => setError("Fehler beim Laden der Zahlungsseite."))
+      .catch(() => setError(tc("errorPaymentLoading")))
       .finally(() => setLoading(false));
   }, [searchParams]);
 
@@ -209,10 +210,10 @@ export default function CheckoutPage() {
       if (data.valid) {
         setPromoResult({ valid: true, discount_amount: data.discount_amount, code: data.code });
       } else {
-        setPromoError(data.message ?? "Ungültiger Code");
+        setPromoError(data.message ?? tc("errorValidation"));
       }
     } catch {
-      setPromoError("Fehler bei der Validierung");
+      setPromoError(tc("errorValidation"));
     } finally {
       setPromoLoading(false);
     }
@@ -244,10 +245,10 @@ export default function CheckoutPage() {
           message: data.message,
         });
       } else {
-        setVoucherError(data.message ?? "Ungültiger Gutscheincode");
+        setVoucherError(data.message ?? tc("errorValidation"));
       }
     } catch {
-      setVoucherError("Fehler bei der Validierung");
+      setVoucherError(tc("errorValidation"));
     } finally {
       setVoucherLoading(false);
     }
@@ -267,10 +268,10 @@ export default function CheckoutPage() {
           staff_member_id: intent.staff_member_id,
         }),
       });
-      if (!res.ok) throw new Error((await res.json()).message ?? "Fehler");
+      if (!res.ok) throw new Error((await res.json()).message ?? tc("errorGeneric"));
       setAtSalonConfirmed(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Buchung fehlgeschlagen");
+      setError(e instanceof Error ? e.message : tc("errorProcessing"));
     } finally {
       setConfirmingAtSalon(false);
     }
@@ -360,8 +361,7 @@ export default function CheckoutPage() {
               <p className="text-xs font-body text-s-ink/50 mt-1 leading-relaxed">Du zahlst direkt im Salon. Bis bald!</p>
             </div>
             <Link href={`/${locale}/profile`}
-              className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] transition-[transform,filter] hover:brightness-[1.06]"
-              style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
+              className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] transition-[transform,filter] hover:brightness-[1.06] shadow-coral-glow">
               Meine Buchungen
             </Link>
           </div>
@@ -380,7 +380,7 @@ export default function CheckoutPage() {
       {/* P15 — Breadcrumb */}
       <div className="max-w-lg mx-auto mb-4 flex items-center gap-1.5">
         <Link href={`/${locale}`}
-          className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/30 hover:text-s-coral transition-colors">
+          className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50 hover:text-s-coral transition-colors">
           Startseite
         </Link>
         <ChevronRight className="w-2.5 h-2.5 text-s-ink/20" />
@@ -393,7 +393,7 @@ export default function CheckoutPage() {
         {/* P2 — Booking summary card */}
         <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md">
           <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05]">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 mb-1">
               Deine Buchung
             </p>
             <h1 className="font-heading font-bold text-base text-s-ink">Buchungsübersicht</h1>
@@ -652,10 +652,10 @@ export default function CheckoutPage() {
             <div className="flex items-start gap-3 mb-4">
               <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
                 style={{ background: "rgba(76,175,111,.10)" }}>
-                <Wallet size={17} className="text-[#4CAF6F]" />
+                <Wallet size={17} className="text-s-sage" />
               </div>
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/30 mb-0.5">
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50 mb-0.5">
                   Zahlungsart
                 </p>
                 <h2 className="font-heading font-bold text-base text-s-ink">Zahlung vor Ort</h2>
@@ -672,7 +672,7 @@ export default function CheckoutPage() {
             <InteractiveHoverButton
               onClick={handleAtSalonConfirm}
               disabled={confirmingAtSalon}
-              text={confirmingAtSalon ? "Wird bestätigt..." : "Termin bestätigen"}
+              text={confirmingAtSalon ? tc("confirming") : tc("confirmAppointment")}
               className="w-full py-4 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-60"
             />
             <p className="text-[10px] text-center font-heading uppercase tracking-[.10em] text-s-ink/25 mt-3">
@@ -683,8 +683,8 @@ export default function CheckoutPage() {
           // P10 — Payment card (Stripe Elements) — header only, DO NOT touch Elements/appearance
           <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md overflow-hidden">
             <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05] flex items-center gap-2">
-              <Lock size={13} className="text-s-ink/35 shrink-0" />
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/35">
+              <Lock size={13} className="text-s-ink/45 shrink-0" />
+              <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/45">
                 Sichere Zahlung
               </p>
             </div>
