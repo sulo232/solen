@@ -88,9 +88,9 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
         transition={{ duration: 0.4, delay: 0.3 }}
         className="overflow-hidden"
       >
-        <div className="rounded-[12px] border border-[#4CAF6F]/20 p-4 flex items-center gap-3 bg-s-sage/[0.06]">
-          <Check size={16} className="text-[#4CAF6F]" />
-          <p className="text-sm font-heading font-semibold text-[#4CAF6F]">Gespeichert!</p>
+        <div className="rounded-input border border-s-sage/20 p-4 flex items-center gap-3 bg-s-sage/[0.06]">
+          <Check size={16} className="text-s-sage" />
+          <p className="text-sm font-heading font-semibold text-s-sage">Gespeichert!</p>
         </div>
       </motion.div>
     );

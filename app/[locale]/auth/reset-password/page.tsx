@@ -106,7 +106,7 @@ export default function ResetPasswordPage() {
         </div>
 
         {/* Auth card — Zone 3, warm shadow */}
-        <div className="rounded-[16px] border border-white/70 dark:border-white/10 p-8"
+        <div className="rounded-card border border-white/70 dark:border-white/10 p-8"
           style={{ background: "rgba(255,255,255,.90)", backdropFilter: "blur(20px) saturate(1.2)",
                    WebkitBackdropFilter: "blur(20px) saturate(1.2)",
                    boxShadow: "0 4px 12px rgba(26,18,9,.08), 0 16px 40px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.90)" }}>

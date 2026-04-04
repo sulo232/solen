@@ -3745,7 +3745,7 @@
     "flagSubmit": "Segnala",
     "flagCancel": "Annulla",
     "flagSuccess": "Segnalato",
-    "flagError": "Errore",
+    "flagError": "Segnalazione fallita. Riprova.",
     "writeReview": "Scrivi una recensione",
     "showMoreReviews": "Carica altre recensioni",
     "sortNewest": "Più recenti",

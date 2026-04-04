@@ -32,8 +32,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         </div>
 
         {/* Auth card — Zone 3, warm shadow */}
-        <div className="rounded-[16px] border border-s-ink/[0.06] dark:border-white/[0.08] p-8 bg-white dark:bg-s-dm-surface"
-          style={{ boxShadow: "0 4px 12px rgba(26,18,9,.08), 0 16px 40px rgba(26,18,9,.06)" }}>
+        <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.08] p-8 bg-white dark:bg-s-dm-surface shadow-elevation-3">
           <Suspense>
             <SignIn />
           </Suspense>

@@ -156,7 +156,7 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
           style={{ background: "rgba(232,98,74,.15)" }}>
           <Clock size={18} className="text-s-coral" />
         </div>
-        <div className="absolute inset-0 rounded-full animate-pulse" style={{ boxShadow: "0 0 0 4px rgba(232,98,74,.15)" }} />
+        <div className="absolute inset-0 rounded-full animate-pulse shadow-coral-glow" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-heading font-bold text-sm text-s-ink">

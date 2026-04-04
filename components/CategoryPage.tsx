@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Phone, Globe, Building2, Star, Scissors, Map as MapIcon, List, MapPin } from "lucide-react";
+import { ChevronRight, Phone, Globe, Building2, Star, Scissors, Map as MapIcon, List, MapPin, AlertCircle } from "lucide-react";
 import dynamic from "next/dynamic";
 import FilterBar from "@/components/ui/FilterBar";
 import SearchAutocomplete from "@/components/ui/SearchAutocomplete";
@@ -178,6 +178,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   const [dirPage, setDirPage] = useState(1);
   const [dirLoading, setDirLoading] = useState(false);
   const [dirLoadingMore, setDirLoadingMore] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [filtersExpanded, setFiltersExpanded] = useState(false);
@@ -240,6 +241,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    setFetchError(null);
     setPage(1);
     fetch(buildUrl(1))
       .then((r) => r.ok ? r.json() : null)
@@ -254,7 +256,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
         setTotal(openNow ? filteredItems.length : (data.total ?? 0));
         setLoading(false);
       })
-      .catch((err) => { console.error("[CategoryPage] failed to fetch salons:", err); if (!cancelled) setLoading(false); });
+      .catch((err) => { console.error("[CategoryPage] failed to fetch salons:", err); if (!cancelled) { setFetchError(tc("errorLoading")); setLoading(false); } });
     return () => { cancelled = true; };
   }, [buildUrl, searchParams]);
 
@@ -559,6 +561,14 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
         ) : loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => <Skeleton key={i} variant="card" />)}
+          </div>
+        ) : fetchError ? (
+          <div className="flex items-center gap-2 p-4 rounded-input bg-[color:var(--color-error)]/10 text-[color:var(--color-error)] text-sm">
+            <AlertCircle size={16} className="shrink-0" />
+            <span>{fetchError}</span>
+            <button onClick={() => { setFetchError(null); setLoading(true); fetch(buildUrl(1)).then((r) => r.ok ? r.json() : null).then((data) => { if (data) { setSalons(data.items ?? []); setTotal(data.total ?? 0); } setLoading(false); }).catch(() => { setFetchError(tc("errorLoading")); setLoading(false); }); }} className="ml-auto text-xs underline whitespace-nowrap">
+              {tc("retry")}
+            </button>
           </div>
         ) : salons.length === 0 && dirEntries.length === 0 ? (
           <EmptyState

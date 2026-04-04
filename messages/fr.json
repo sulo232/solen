@@ -3756,7 +3756,7 @@
     "flagSubmit": "Signaler",
     "flagCancel": "Annuler",
     "flagSuccess": "Signalé",
-    "flagError": "Erreur",
+    "flagError": "Signalement échoué. Veuillez réessayer.",
     "writeReview": "Écrire un avis",
     "showMoreReviews": "Charger plus d'avis",
     "sortNewest": "Plus récents",

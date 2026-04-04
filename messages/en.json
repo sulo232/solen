@@ -3773,7 +3773,7 @@
     "flagSubmit": "Report",
     "flagCancel": "Cancel",
     "flagSuccess": "Reported",
-    "flagError": "Error",
+    "flagError": "Report failed. Please try again.",
     "writeReview": "Write a review",
     "showMoreReviews": "Load more reviews",
     "sortNewest": "Newest",

@@ -91,6 +91,7 @@ export default function SalonReviews({
   const [flagReason, setFlagReason] = useState("");
   const [flagLoading, setFlagLoading] = useState(false);
   const [flagSuccess, setFlagSuccess] = useState(false);
+  const [flagError, setFlagError] = useState(false);
 
   const sortedReviews = [...reviews].sort((a, b) => {
     if (reviewSort === "highest") return b.rating - a.rating;
@@ -120,8 +121,9 @@ export default function SalonReviews({
         setFlaggingReviewId(null);
         setFlagSuccess(false);
       }, 2000);
-    } catch {
-      // keep form open on error
+    } catch (err) {
+      console.error("[SalonReviews] flag error:", err);
+      setFlagError(true);
     } finally {
       setFlagLoading(false);
     }
@@ -294,6 +296,9 @@ export default function SalonReviews({
                                   {flagLoading ? "…" : t("flagSubmit")}
                                 </button>
                               </div>
+                              {flagError && (
+                                <p className="text-xs text-[color:var(--color-error)] mt-1">{t("flagError")}</p>
+                              )}
                             </>
                           )}
                         </div>

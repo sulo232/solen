@@ -188,7 +188,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           }}
         />
       ) : (
-        <div className="max-w-[260px] sm:max-w-[300px] aspect-square mx-auto rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] overflow-hidden bg-[--base] dark:bg-s-dm-bg relative">
+        <div className="max-w-[260px] sm:max-w-[300px] aspect-square mx-auto rounded-input border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] overflow-hidden bg-[--base] dark:bg-s-dm-bg relative">
           <svg viewBox="0 0 200 170" className="w-full h-full">
             {HEAD_ZONES.map((zone) => {
               const guard = getZoneGuard(zone.id);

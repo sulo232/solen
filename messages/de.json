@@ -3795,7 +3795,7 @@
     "flagSubmit": "Melden",
     "flagCancel": "Abbrechen",
     "flagSuccess": "Gemeldet",
-    "flagError": "Fehler",
+    "flagError": "Meldung fehlgeschlagen. Bitte erneut versuchen.",
     "writeReview": "Bewertung schreiben",
     "shareProfile": "Profil teilen",
     "linkCopied": "Link kopiert!",

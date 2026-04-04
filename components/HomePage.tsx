@@ -203,7 +203,7 @@ export default function HomePage({ initialData }: HomePageProps) {
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden bg-white">
+    <div className="min-h-screen relative overflow-x-hidden bg-white dark:bg-s-dm-bg">
       {/* GuidedSearch sheet — sheet-only, trigger rendered inline in header */}
       <GuidedSearch categoryCounts={categoryCounts} hideTrigger />
 
@@ -228,13 +228,13 @@ export default function HomePage({ initialData }: HomePageProps) {
         <TrustStatsBanner />
 
         {/* ── 2. Entdecken — Pinterest-style Discovery intro (secondary, after listings) ── */}
-        <section className="animate-in mx-auto px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-ink/[0.08] relative z-[2]" style={{ animationDelay: "120ms" }}>
+        <section className="animate-in mx-auto px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-ink/[0.08] dark:border-white/[0.08] relative z-[2]" style={{ animationDelay: "120ms" }}>
           <div className="mb-4 flex items-center justify-between gap-4">
-            <h2 className="font-heading font-semibold text-[22px] tracking-tight text-s-ink" style={{ lineHeight: "1.1" }}>
+            <h2 className="font-heading font-semibold text-[22px] tracking-tight text-s-ink dark:text-s-dm-text" style={{ lineHeight: "1.1" }}>
               {t("discover.title")}
             </h2>
             <Link href={`/${locale}/discover`}
-              className="inline-flex items-center gap-1 text-sm font-body font-semibold text-s-ink hover:text-s-ink/60 transition-colors duration-150 shrink-0">
+              className="inline-flex items-center gap-1 text-sm font-body font-semibold text-s-ink dark:text-s-dm-text hover:text-s-ink/60 dark:hover:text-s-dm-text/60 transition-colors duration-150 shrink-0">
               {t("discover.catalogCta")}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
             </Link>
@@ -245,15 +245,15 @@ export default function HomePage({ initialData }: HomePageProps) {
 
         {/* ── 3. Wieder buchen? (logged-in users with past booking) ── */}
         {sections.rebook && lastBookedSalon && (
-          <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-s-ink/[0.08]">
+          <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-s-ink/[0.08] dark:border-white/[0.08]">
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-              className="flex items-center gap-4 p-4 border border-s-ink/[0.08] rounded-[16px] bg-white">
+              className="flex items-center gap-4 p-4 border border-s-ink/[0.08] dark:border-white/[0.08] rounded-[16px] bg-white dark:bg-s-dm-surface">
               <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-s-bg-sunken">
-                <RefreshCw size={18} className="text-s-ink" />
+                <RefreshCw size={18} className="text-s-ink dark:text-s-dm-text" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-heading font-medium text-s-ink text-[15px]">{t("rebook.title")}</p>
-                <p className="text-sm text-s-ink/60 font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
+                <p className="font-heading font-medium text-s-ink dark:text-s-dm-text text-[15px]">{t("rebook.title")}</p>
+                <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
               </div>
               <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}
                 className="shrink-0 px-4 py-2.5 rounded-lg bg-s-coral text-white text-sm font-heading font-semibold transition-transform hover:scale-[1.02]"
@@ -265,7 +265,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         )}
 
         {/* ── 4. Recently Viewed ── */}
-        <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-s-ink/[0.08]">
+        <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-s-ink/[0.08] dark:border-white/[0.08]">
           <RecentlyViewed />
         </section>
 
@@ -276,7 +276,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         <TestimonialCarousel />
 
         {/* ── 5. Partner CTA ── */}
-        <section className="py-12 px-5 md:px-6 lg:px-10 xl:px-20 border-t border-s-ink/[0.08]">
+        <section className="py-12 px-5 md:px-6 lg:px-10 xl:px-20 border-t border-s-ink/[0.08] dark:border-white/[0.08]">
           <div
             className="rounded-[20px] overflow-hidden relative"
             style={{
@@ -291,10 +291,10 @@ export default function HomePage({ initialData }: HomePageProps) {
                 <span className="inline-block text-xs font-heading font-bold uppercase tracking-[.12em] text-s-coral mb-3">
                   {t("partner.forSalonsStudios")}
                 </span>
-                <h2 className="font-heading font-extrabold text-3xl sm:text-4xl leading-[1.1] tracking-tight text-s-ink mb-3">
+                <h2 className="font-heading font-extrabold text-3xl sm:text-4xl leading-[1.1] tracking-tight text-s-ink dark:text-s-dm-text mb-3">
                   {t("partner.title")}
                 </h2>
-                <p className="font-body text-[15px] sm:text-base text-s-ink/60 max-w-[420px] leading-relaxed mb-6">
+                <p className="font-body text-[15px] sm:text-base text-s-ink/60 dark:text-s-dm-text/60 max-w-[420px] leading-relaxed mb-6">
                   {t("partner.teaserPrompt") || "Erreiche Tausende Kunden, fülle deinen Kalender und verwalte dein Geschäft – alles an einem Ort."}
                 </p>
 
@@ -305,7 +305,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                     t("partner.checklistBookings"),
                     t("partner.checklistVisibility"),
                   ].map((item) => (
-                    <li key={item} className="flex items-center gap-2.5 text-sm font-body text-s-ink/60">
+                    <li key={item} className="flex items-center gap-2.5 text-sm font-body text-s-ink/60 dark:text-s-dm-text/60">
                       <span
                         className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center"
                         style={{ background: "rgba(232,98,74,0.12)" }}
@@ -334,19 +334,19 @@ export default function HomePage({ initialData }: HomePageProps) {
                 <div className="relative w-[220px] h-[220px]">
                   {/* Main card */}
                   <div
-                    className="absolute top-0 left-0 right-0 bg-white rounded-[16px] p-5"
+                    className="absolute top-0 left-0 right-0 bg-white dark:bg-s-dm-surface rounded-[16px] p-5"
                     style={{ boxShadow: "0 4px 24px rgba(26,18,9,0.08)", border: "1px solid rgba(26,18,9,0.05)" }}
                   >
-                    <p className="text-xs font-heading font-bold uppercase tracking-wider text-s-ink/40 mb-1">{t("partner.newBookings")}</p>
-                    <p className="font-heading font-extrabold text-3xl text-s-ink leading-tight">+47%</p>
-                    <p className="text-xs font-body text-s-ink/60 mt-0.5">{t("partner.firstMonth")}</p>
+                    <p className="text-xs font-heading font-bold uppercase tracking-wider text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("partner.newBookings")}</p>
+                    <p className="font-heading font-extrabold text-3xl text-s-ink dark:text-s-dm-text leading-tight">+47%</p>
+                    <p className="text-xs font-body text-s-ink/60 dark:text-s-dm-text/60 mt-0.5">{t("partner.firstMonth")}</p>
                   </div>
                   {/* Floating stat */}
                   <div
-                    className="absolute bottom-0 right-0 bg-white rounded-[14px] px-4 py-3"
+                    className="absolute bottom-0 right-0 bg-white dark:bg-s-dm-surface rounded-[14px] px-4 py-3"
                     style={{ boxShadow: "0 4px 20px rgba(26,18,9,0.09)", border: "1px solid rgba(26,18,9,0.05)" }}
                   >
-                    <p className="text-xs font-heading font-bold uppercase tracking-wider text-s-ink/40 mb-0.5">{t("partner.newCustomers")}</p>
+                    <p className="text-xs font-heading font-bold uppercase tracking-wider text-s-ink/40 dark:text-s-dm-text/40 mb-0.5">{t("partner.newCustomers")}</p>
                     <p className="font-heading font-extrabold text-[22px] text-s-coral leading-tight">120+</p>
                   </div>
                 </div>

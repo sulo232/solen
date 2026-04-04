@@ -264,6 +264,20 @@
 - **Why it happened**: Did not check existing translations first. The `salon` namespace is for generic salon listing/card labels. The `salonDetail` namespace (used by `/salon/[slug]` detail page components) contains all the detailed view strings.
 - **Fix**: Before adding i18n keys, search the messages files for existing keys: `grep -r "keyName" messages/`. If a key exists, use it. Do not add duplicates to different namespaces. Components in `components/salon/` use `useTranslations("salonDetail")`, so all salon detail strings go in the `salonDetail` namespace, not `salon`.
 
+### Inline i18n objects (`const L = { de, en, fr, it }`) are a valid pattern — don't fight IDE reversions
+- **Date**: 2026-04-04
+- **File(s)**: `components/discovery/ProfileSetupModal.tsx`, `components/ui/SortDropdown.tsx`, `components/TestimonialCarousel.tsx`
+- **What happened**: During R4 i18n sweep, converted inline i18n objects to `useTranslations("common")`. The IDE/linter auto-reverted these files back to their inline pattern. Repeated edits kept getting reverted.
+- **Why it happened**: The IDE's auto-formatter restores files from their saved state when external edits conflict with format-on-save behavior.
+- **Fix**: The inline i18n pattern (`const L = { de: {...}, en: {...}, fr: {...}, it: {...} }; const t = L[locale] ?? L.de;`) is VALID — it provides 4-locale translations without depending on `next-intl`. Don't waste time converting files that use this pattern if the IDE keeps reverting. Focus on files that use `useTranslations()` already.
+
+### next-intl `tc("key")` fails TypeScript if key is not in the namespace's type definition
+- **Date**: 2026-04-04
+- **File(s)**: `components/discovery/ProfileSetupModal.tsx`
+- **What happened**: Agent used `tc("allPref")`, `tc("straight")`, etc. from `useTranslations("common")` but these keys weren't in `common` namespace yet. TypeScript errored because `next-intl` generates strict message key types.
+- **Why it happened**: The keys were added to locale JSON files AFTER the component was modified, creating a race condition. Also, `next-intl` type-checks keys at compile time.
+- **Fix**: When using `useTranslations("namespace")`, either: (1) add all needed keys to locale files FIRST, then reference them in components, or (2) use `as any` cast on the translations function (`const tc = useTranslations("common") as any;`) — this is the existing codebase pattern for dynamic/numerous keys.
+
 ### Temporary test files in root must be removed before committing
 - **Date**: 2026-04-02
 - **File(s)**: `tmp2.tsx` (root)

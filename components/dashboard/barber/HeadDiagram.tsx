@@ -80,7 +80,7 @@ export default function HeadDiagram({ zoneGuards, onZoneGuardChange }: HeadDiagr
 
   if (!svgSource) {
     return (
-      <div className="rounded-[12px] border border-dashed border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-6 text-center">
+      <div className="rounded-input border border-dashed border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-6 text-center">
         <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{t("diagrams_coming_soon")}</p>
       </div>
     );
