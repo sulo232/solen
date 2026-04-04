@@ -298,3 +298,17 @@
 - **What happened**: 182 `useTranslations("namespace") as any` casts exist. Only 4 using `useTranslations("common")` could be safely removed. The rest use nested paths like `"barber.queue"`, `"chat.clientTags"` that cause TypeScript errors without `as any`.
 - **Why it happened**: `next-intl` generates strict message key types from JSON files. Nested namespace paths (dot-separated) don't resolve correctly in the type system.
 - **Fix**: Only remove `as any` from `useTranslations("common")` and other top-level namespaces where all keys are guaranteed to exist. For nested namespaces, `as any` is the pragmatic workaround until next-intl type generation is configured properly.
+
+### IDE auto-reverts multiple edits to the same file in one session
+- **Date**: 2026-04-04
+- **File(s)**: `components/layout/Header.tsx`, `app/[locale]/salon/[slug]/page.tsx`
+- **What happened**: During R5, edits to Header.tsx (emoji → SVG icons) and salon page were repeatedly reverted by the IDE linter between tool calls. Files would show changes applied, then revert on next read.
+- **Why it happened**: The IDE's format-on-save triggers after each write and sometimes rolls back structural JSX changes it can't parse cleanly in one pass.
+- **Fix**: After editing a large JSX block, immediately verify with `grep` for key identifiers (e.g. `grep -c "CoiffeurIcon" file.tsx`). If the count is wrong, re-apply. Multiple reads + edits in rapid succession cause more reversions than a single comprehensive edit.
+
+### SalonTabBar vs SalonSectionNav — keep SalonSectionNav (IntersectionObserver-based)
+- **Date**: 2026-04-04
+- **File(s)**: `components/salon/SalonTabBar.tsx`, `components/salon/SalonSectionNav.tsx`, `app/[locale]/salon/[slug]/page.tsx`
+- **What happened**: Salon page had two competing navigation systems — SalonTabBar (click-driven, uses external activeTab state) and SalonSectionNav (IntersectionObserver-driven, self-contained). R5 removed SalonTabBar.
+- **Why it happened**: Two components were created at different times without coordination.
+- **Fix**: Use SalonSectionNav. It passes `sections={TABS.map(t => ({ id: \`section-\${t.key}\`, label: t.label }))}`. Section divs must have matching `id="section-{key}"` and `scroll-mt-[80px]`.
