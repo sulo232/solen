@@ -238,7 +238,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             <button
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavoriteToggle(salon.id); }}
-              className="absolute top-1 right-1 z-10 p-2 transition-transform duration-200 hover:scale-105 active:scale-95 solen-press-effect flex items-center justify-center"
+              className="absolute top-1 right-1 z-10 p-2 hover:bg-s-ink/[0.06] active:scale-[0.92] transition-[transform,background-color] duration-150 rounded-full flex items-center justify-center"
               aria-label={isFavorited ? t("removeFromFavorites") : t("addToFavorites")}
               style={{ minWidth: "44px", minHeight: "44px" }}
             >
@@ -292,7 +292,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               onClick={(e) => { e.preventDefault(); e.stopPropagation();
                 scrollContainerRef.current?.scrollTo({ left: (photoIndex - 1) * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
               }}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-[2] hover:bg-white hover:scale-105"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92]"
               aria-label="Previous photo"
             >
               <ChevronLeft size={18} />
@@ -304,7 +304,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               onClick={(e) => { e.preventDefault(); e.stopPropagation();
                 scrollContainerRef.current?.scrollTo({ left: (photoIndex + 1) * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
               }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-[2] hover:bg-white hover:scale-105"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92]"
               aria-label="Next photo"
             >
               <ChevronRight size={18} />

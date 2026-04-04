@@ -108,7 +108,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
             {/* Book button */}
             <button
               onClick={(e) => { e.preventDefault(); onBook?.(m.id); }}
-              className="w-full mt-3 py-2 rounded-full active:scale-[0.98] bg-[#E8624A]/10 text-[#E8624A] hover:bg-[#E8624A] hover:text-white text-[12px] font-semibold uppercase tracking-[.06em] transition-[background-color,color] duration-150"
+              className="w-full mt-3 py-2 rounded-full active:scale-[0.97] bg-[#E8624A]/10 text-[#E8624A] hover:bg-[#E8624A] hover:text-white text-[12px] font-semibold uppercase tracking-[.06em] transition-[background-color,color,transform] duration-150"
             >
               Wählen
             </button>

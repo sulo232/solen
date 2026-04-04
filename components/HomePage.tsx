@@ -234,7 +234,7 @@ export default function HomePage({ initialData }: HomePageProps) {
               {t("discover.title")}
             </h2>
             <Link href={`/${locale}/discover`}
-              className="inline-flex items-center gap-1 text-sm font-body font-semibold text-s-ink dark:text-s-dm-text hover:text-s-ink/60 dark:hover:text-s-dm-text/60 transition-colors duration-150 shrink-0">
+              className="inline-flex items-center gap-1 text-sm font-body font-semibold text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-coral transition-colors duration-150 shrink-0">
               {t("discover.catalogCta")}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
             </Link>
@@ -256,7 +256,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                 <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
               </div>
               <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}
-                className="shrink-0 px-4 py-2.5 rounded-lg bg-s-coral text-white text-sm font-heading font-semibold transition-transform hover:scale-[1.02]"
+                className="shrink-0 px-4 py-2.5 rounded-lg bg-s-coral text-white text-sm font-heading font-semibold hover:brightness-[1.08] active:scale-[0.97] transition-[transform,filter] duration-150"
                 aria-label={t("rebook.cta")}>
                 {t("rebook.cta")}
               </Link>
@@ -322,7 +322,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
                 <Link
                   href={`/${locale}/partner`}
-                  className="inline-flex items-center justify-center h-[46px] px-7 rounded-pill bg-s-coral text-white font-heading font-bold text-sm hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 self-start"
+                  className="inline-flex items-center justify-center h-[46px] px-7 rounded-pill bg-s-coral text-white font-heading font-bold text-sm hover:brightness-[1.08] active:scale-[0.97] transition-[transform,filter] duration-150 self-start"
                   style={{ boxShadow: "0 2px 12px rgba(232,98,74,.28)" }}
                 >
                   {t("partner.cta")} →
