@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Search, MapPin, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { popoverVariants } from "@/lib/animations";
 import { CITY_SLUGS, getCityName, type CitySlug } from "@/lib/cities";
 import { getPersistedCity } from "@/lib/city-cookie";
 import { cn } from "@/lib/utils";
@@ -20,21 +21,7 @@ interface AirbnbSearchBarProps {
   onSearchActiveChange?: (active: boolean) => void;
 }
 
-const airbnbPopoverVariants = {
-  hidden: { opacity: 0, scale: 0.96, y: 10 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { duration: 0.25, ease: [0.2, 0, 0, 1] },
-  },
-  exit: {
-    opacity: 0,
-    scale: 0.96,
-    y: 10,
-    transition: { duration: 0.15, ease: "easeOut" },
-  },
-};
+const airbnbPopoverVariants = popoverVariants;
 
 const DATE_OPTIONS = [
   { key: "today",   labelKey: "wannDefault" },
