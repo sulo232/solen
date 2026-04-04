@@ -97,43 +97,65 @@ export default function TrustStatsBanner() {
     return () => observer.disconnect();
   }, [animateNumbers, hasAnimated]);
 
-  if (!stats) return null;
+  if (!stats) return (
+    <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-8 border-t border-s-ink/[0.08] dark:border-white/[0.08]">
+      <div className="flex gap-3.5 justify-center flex-wrap">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-[72px] w-40 rounded-[16px] bg-s-ink/[0.04] dark:bg-white/[0.04] animate-pulse" />
+        ))}
+      </div>
+    </section>
+  );
 
   return (
     <section
       ref={sectionRef}
-      className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-s-ink/[0.08]"
+      className="px-5 md:px-6 lg:px-10 xl:px-20 py-8 border-t border-s-ink/[0.08] dark:border-white/[0.08]"
     >
-      <div className="flex flex-col sm:flex-row justify-center items-center gap-10 sm:gap-16">
-        {/* Stat 1: Salons */}
-        <div className="flex flex-col items-center gap-1">
-          <p className="font-heading font-bold text-[32px] md:text-[40px] text-s-ink">
-            {animatedValues.salons}+
-          </p>
-          <p className="font-body text-[14px] text-[#6A6A6A]">
-            {t("trust_stats.salons") || "Salons"}
-          </p>
+      <div className="flex gap-3.5 justify-center flex-wrap">
+
+        {/* Salons */}
+        <div
+          className="flex items-center gap-3 px-5 py-3.5 rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/[0.08] dark:border-white/[0.08]"
+          style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.04)", minWidth: "152px" }}
+        >
+          <div className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ background: "rgba(232,98,74,.08)" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8624A" strokeWidth="2.2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div>
+            <p className="font-heading font-extrabold text-[22px] text-s-ink dark:text-s-dm-text leading-none">{animatedValues.salons}+</p>
+            <p className="font-body text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("trust_stats.salons") || "Salons"}</p>
+          </div>
         </div>
 
-        {/* Stat 2: Reviews */}
-        <div className="flex flex-col items-center gap-1">
-          <p className="font-heading font-bold text-[32px] md:text-[40px] text-s-ink">
-            {animatedValues.reviews}+
-          </p>
-          <p className="font-body text-[14px] text-[#6A6A6A]">
-            {t("trust_stats.reviews") || "Bewertungen"}
-          </p>
+        {/* Reviews */}
+        <div
+          className="flex items-center gap-3 px-5 py-3.5 rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/[0.08] dark:border-white/[0.08]"
+          style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.04)", minWidth: "152px" }}
+        >
+          <div className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ background: "rgba(232,98,74,.08)" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8624A" strokeWidth="2.2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div>
+            <p className="font-heading font-extrabold text-[22px] text-s-ink dark:text-s-dm-text leading-none">{animatedValues.reviews}+</p>
+            <p className="font-body text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("trust_stats.reviews") || "Bewertungen"}</p>
+          </div>
         </div>
 
-        {/* Stat 3: Bookings */}
-        <div className="flex flex-col items-center gap-1">
-          <p className="font-heading font-bold text-[32px] md:text-[40px] text-s-ink">
-            {animatedValues.bookings}+
-          </p>
-          <p className="font-body text-[14px] text-[#6A6A6A]">
-            {t("trust_stats.bookings") || "Buchungen"}
-          </p>
+        {/* Bookings */}
+        <div
+          className="flex items-center gap-3 px-5 py-3.5 rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/[0.08] dark:border-white/[0.08]"
+          style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.04)", minWidth: "152px" }}
+        >
+          <div className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ background: "rgba(232,98,74,.08)" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8624A" strokeWidth="2.2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div>
+            <p className="font-heading font-extrabold text-[22px] text-s-ink dark:text-s-dm-text leading-none">{animatedValues.bookings}+</p>
+            <p className="font-body text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("trust_stats.bookings") || "Buchungen"}</p>
+          </div>
         </div>
+
       </div>
     </section>
   );
