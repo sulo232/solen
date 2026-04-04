@@ -144,7 +144,7 @@ export default function SalonReviews({
   };
 
   return (
-    <div id="section-bewertungen" className="scroll-mt-[180px]">
+    <div id="section-bewertungen" className="scroll-mt-[80px]">
       <div className="mb-4">
         <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
           {t("reviews")}
@@ -336,8 +336,8 @@ export default function SalonReviews({
                           : (rev as any).salon_response ?? null;
                       if (!reply) return null;
                       return (
-                        <div className="mt-3 pl-4 border-l-2 border-s-coral/30">
-                          <p className="text-xs text-s-coral font-medium flex items-center gap-1 mb-1">
+                        <div className="mt-3 pl-4 border-l-2 border-s-sage/30">
+                          <p className="text-xs text-s-sage font-medium flex items-center gap-1 mb-1">
                             <ShieldCheck className="w-3 h-3" />
                             {t("salonReplied")}
                           </p>

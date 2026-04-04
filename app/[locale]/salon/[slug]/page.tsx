@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -24,8 +24,8 @@ import { motion } from "framer-motion";
 import { usePostHog } from "posthog-js/react";
 import type { Salon, Service, StaffMember, Review, SalonCategory, OpeningHours } from "@/lib/types";
 import { generateSalonSchema } from "@/lib/seo";
-import { useSectionObserver } from "@/hooks/useSectionObserver";
-import SalonTabBar from "@/components/salon/SalonTabBar";
+import SalonSectionNav from "@/components/salon/SalonSectionNav";
+import SalonPageSkeleton from "@/components/salon/SalonPageSkeleton";
 
 // ── Extracted components ──
 import SalonHero from "@/components/salon/SalonHero";
@@ -259,16 +259,11 @@ export default function SalonProfilePage() {
   const [selectedService, setSelectedService] = useState<string | undefined>();
   const [selectedStaff, setSelectedStaff] = useState<string | undefined>();
   const [calendarOpen, setCalendarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("angebot");
   const [unreviewedBookingId, setUnreviewedBookingId] = useState<string | null>(null);
   const [isOwner, setIsOwner] = useState(false);
   const [nextSlot, setNextSlot] = useState<any>(null);
 
-  const sectionIds = useMemo(() => ["angebot", "bewertungen", "team", "fotos", "portfolio", "standort", "info"].map(key => `section-${key}`), []);
-  const activeSection = useSectionObserver(sectionIds);
-
   const handleTabClick = (key: string) => {
-    setActiveTab(key);
     document.getElementById(`section-${key}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -320,7 +315,7 @@ export default function SalonProfilePage() {
 
   // ── Loading / 404 ──
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>;
+    return <div className="min-h-screen bg-white"><SalonPageSkeleton /></div>;
   }
 
   if (!salon) {
@@ -406,7 +401,7 @@ export default function SalonProfilePage() {
             <SalonHero photos={photos} salonName={salon.name} />
 
             {/* Two-column grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
               {/* ── Left: info ── */}
               <div className="lg:col-span-2 flex flex-col gap-8">
 
@@ -496,15 +491,13 @@ export default function SalonProfilePage() {
                 {/* Off-peak countdown */}
                 <OffPeakCountdown salonId={salon.id} />
 
-                {/* Tab bar */}
-                <SalonTabBar
-                  activeTab={activeSection}
-                  onTabClick={handleTabClick}
-                  tabs={TABS as any}
+                {/* Section nav */}
+                <SalonSectionNav
+                  sections={TABS.map((tab) => ({ id: `section-${tab.key}`, label: tab.label }))}
                 />
 
                 {/* About section */}
-                <div id="section-info" className="scroll-mt-[180px]">
+                <div id="section-info" className="scroll-mt-[80px]">
                   {(salon.about_text_de || salon.about_text_en || salon.about_text_fr || salon.about_text_it) && (
                     <div className="mb-8 p-6 rounded-card-lg bg-white border border-s-ink/5 shadow-elevation-1">
                       <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("aboutUs")}</h2>
@@ -587,7 +580,7 @@ export default function SalonProfilePage() {
 
                 {/* Staff/Team */}
                 {salon.staff.length > 0 && (
-                  <div id="section-team" className="scroll-mt-[180px]">
+                  <div id="section-team" className="scroll-mt-[80px]">
                     <h2 className="font-heading font-semibold text-base text-s-ink mb-3">Team</h2>
                     <div className="mt-3 md:mt-0">
                       <StaffSection
@@ -602,7 +595,7 @@ export default function SalonProfilePage() {
 
                 {/* Nail Artists — only for nail salons */}
                 {salon.categories?.includes("nails") && salon.staff.length > 0 && (
-                  <div id="section-nail-artists" className="scroll-mt-[180px]">
+                  <div id="section-nail-artists" className="scroll-mt-[80px]">
                     <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("team")}</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 md:mt-0">
                       {salon.staff.map((m) => (
@@ -615,7 +608,7 @@ export default function SalonProfilePage() {
 
                 {/* Barber Roster — only for barbershops */}
                 {salon.categories?.includes("barbershop") && salon.staff.length > 0 && (
-                  <div id="section-barbers" className="scroll-mt-[180px]">
+                  <div id="section-barbers" className="scroll-mt-[80px]">
                     <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("team")}</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3 md:mt-0">
                       {salon.staff.map((m) => (
@@ -642,7 +635,7 @@ export default function SalonProfilePage() {
 
                 {/* Walk-in Queue — only for barbershops */}
                 {salon.categories?.includes("barbershop") && (
-                  <div id="section-walkin" className="scroll-mt-[180px]">
+                  <div id="section-walkin" className="scroll-mt-[80px]">
                     <h2 className="font-heading font-semibold text-base text-s-ink mb-3">Walk-in</h2>
                     <div className="space-y-4 mt-3 md:mt-0">
                       <WaitTimeDisplay salonId={salon.id} />
@@ -701,7 +694,7 @@ export default function SalonProfilePage() {
 
                 {/* Location / Map */}
                 {salon.latitude && salon.longitude && (
-                  <div id="section-standort" className="scroll-mt-[180px]">
+                  <div id="section-standort" className="scroll-mt-[80px]">
                     <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("location")}</h2>
                     <a
                       href={`https://maps.google.com/?q=${salon.latitude},${salon.longitude}`}
@@ -724,7 +717,7 @@ export default function SalonProfilePage() {
 
                 {/* Portfolio placeholder for nail/makeup salons */}
                 {(salon.categories?.includes("nails") || salon.categories?.includes("makeup")) && (
-                  <div id="section-portfolio" className="scroll-mt-[180px]">
+                  <div id="section-portfolio" className="scroll-mt-[80px]">
                     {/* Portfolio content is handled by the nail-artists section above */}
                   </div>
                 )}

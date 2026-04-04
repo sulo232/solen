@@ -39,7 +39,7 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
 
   if (services.length === 0) {
     return (
-      <div id="section-angebot" className="scroll-mt-[180px]">
+      <div id="section-angebot" className="scroll-mt-[80px]">
         <EmptyState
           icon={Scissors}
           title={t("noServicesYet")}
@@ -51,7 +51,7 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
   }
 
   return (
-    <div id="section-angebot" className="scroll-mt-[180px]">
+    <div id="section-angebot" className="scroll-mt-[80px]">
       <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("services")}</h2>
       <ServiceCategoryFilter
         categories={filterCategories}
