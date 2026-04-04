@@ -12,6 +12,7 @@ import TOSUpdateBanner from "@/components/global/TOSUpdateBanner";
 import { CompareProvider } from "@/components/compare/CompareContext";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import PageTransitionWrapper from "@/components/layout/PageTransitionWrapper";
+import MotionProvider from "@/components/layout/MotionProvider";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -28,6 +29,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
+    <MotionProvider>
     <NextIntlClientProvider messages={messages}>
       <PostHogProvider>
         <ToastProvider>
@@ -55,5 +57,6 @@ export default async function LocaleLayout({
         </ToastProvider>
       </PostHogProvider>
     </NextIntlClientProvider>
+    </MotionProvider>
   );
 }
