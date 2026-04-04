@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface StampCardProps {
   salonName: string;
@@ -92,18 +93,19 @@ export default function StampCard({
             const isFilled = i < stampsCollected;
             const isNewest = i === stampsCollected - 1;
             return (
-              <div
+              <motion.div
                 key={i}
                 className={[
-                  "w-9 h-9 rounded-full flex items-center justify-center transition-colors",
+                  "w-9 h-9 rounded-full flex items-center justify-center",
                   isFilled
                     ? "bg-s-coral text-white"
                     : "border-2 border-dashed border-s-ink/10 dark:border-white/20",
-                  isNewest ? "stamp-new" : "",
                 ].join(" ")}
+                animate={isNewest ? { scale: [0.7, 1.15, 1] } : {}}
+                transition={isNewest ? { type: "spring", stiffness: 400, damping: 20, duration: 0.5 } : {}}
               >
                 {isFilled && <Check className="w-4 h-4" />}
-              </div>
+              </motion.div>
             );
           })}
         </div>
