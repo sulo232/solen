@@ -289,25 +289,27 @@ export default function HomePage({ initialData }: HomePageProps) {
         <TestimonialCarousel />
 
         {/* ── 5. Partner CTA ── */}
-        <section className="py-12 px-5 md:px-6 lg:px-10 xl:px-20 border-t border-s-ink/[0.08] dark:border-white/[0.08]">
+        <section className="py-12 px-5 md:px-6 lg:px-10 xl:px-20">
           <div
             className="rounded-[20px] overflow-hidden relative"
-            style={{
-              background: "linear-gradient(135deg, #FFF8F6 0%, #FFF5F0 60%, #FFF9F7 100%)" /* gradient — no token */,
-              border: "1px solid rgba(232,98,74,0.12)",
-            }}
+            style={{ background: "#1A0806" }}
           >
-            <div className="px-8 py-10 sm:px-12 sm:py-12 flex flex-col md:flex-row items-start md:items-center gap-8">
+            {/* Ambient coral glow */}
+            <div
+              className="pointer-events-none absolute -top-20 -right-16 w-[400px] h-[400px] rounded-full"
+              style={{ background: "radial-gradient(circle, rgba(232,98,74,.18) 0%, transparent 60%)" }}
+              aria-hidden="true"
+            />
+            <div className="relative px-8 py-10 sm:px-12 sm:py-12 flex flex-col md:flex-row items-start md:items-center gap-8">
               {/* Left: copy */}
               <div className="flex-1">
-                {/* Eyebrow */}
-                <span className="inline-block text-xs font-heading font-bold uppercase tracking-[.12em] text-s-coral mb-3">
+                <span className="inline-block text-[10px] font-heading font-bold uppercase tracking-[.14em] mb-3" style={{ color: "rgba(232,98,74,.7)" }}>
                   {t("partner.forSalonsStudios")}
                 </span>
-                <h2 className="font-heading font-extrabold text-3xl sm:text-4xl leading-[1.1] tracking-tight text-s-ink dark:text-s-dm-text mb-3">
+                <h2 className="font-heading font-extrabold text-3xl sm:text-4xl leading-[1.1] tracking-tight text-white mb-3">
                   {t("partner.title")}
                 </h2>
-                <p className="font-body text-[15px] sm:text-base text-s-ink/60 dark:text-s-dm-text/60 max-w-[420px] leading-relaxed mb-6">
+                <p className="font-body text-[15px] sm:text-base max-w-[420px] leading-relaxed mb-6" style={{ color: "rgba(255,255,255,.55)" }}>
                   {t("partner.teaserPrompt") || "Erreiche Tausende Kunden, fülle deinen Kalender und verwalte dein Geschäft – alles an einem Ort."}
                 </p>
 
@@ -318,10 +320,10 @@ export default function HomePage({ initialData }: HomePageProps) {
                     t("partner.checklistBookings"),
                     t("partner.checklistVisibility"),
                   ].map((item) => (
-                    <li key={item} className="flex items-center gap-2.5 text-sm font-body text-s-ink/60 dark:text-s-dm-text/60">
+                    <li key={item} className="flex items-center gap-2.5 text-sm font-body" style={{ color: "rgba(255,255,255,.55)" }}>
                       <span
                         className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center"
-                        style={{ background: "rgba(232,98,74,0.12)" }}
+                        style={{ background: "rgba(232,98,74,.2)" }}
                         aria-hidden="true"
                       >
                         <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
@@ -336,30 +338,30 @@ export default function HomePage({ initialData }: HomePageProps) {
                 <Link
                   href={`/${locale}/partner`}
                   className="inline-flex items-center justify-center h-[46px] px-7 rounded-pill bg-s-coral text-white font-heading font-bold text-sm hover:brightness-[1.08] active:scale-[0.97] transition-[transform,filter] duration-150 self-start"
-                  style={{ boxShadow: "0 2px 12px rgba(232,98,74,.28)" }}
+                  style={{ boxShadow: "0 2px 16px rgba(232,98,74,.4)" }}
                 >
                   {t("partner.cta")} →
                 </Link>
               </div>
 
-              {/* Right: decorative stat cards */}
+              {/* Right: stat cards */}
               <div className="hidden md:flex flex-shrink-0 items-center justify-center">
                 <div className="relative w-[220px] h-[220px]">
-                  {/* Main card */}
+                  {/* Main stat card */}
                   <div
-                    className="absolute top-0 left-0 right-0 bg-white dark:bg-s-dm-surface rounded-[16px] p-5"
-                    style={{ boxShadow: "0 4px 24px rgba(26,18,9,0.08)", border: "1px solid rgba(26,18,9,0.05)" }}
+                    className="absolute top-0 left-0 right-0 rounded-[16px] p-5"
+                    style={{ background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.1)" }}
                   >
-                    <p className="text-xs font-heading font-bold uppercase tracking-wider text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("partner.newBookings")}</p>
-                    <p className="font-heading font-extrabold text-3xl text-s-ink dark:text-s-dm-text leading-tight">+47%</p>
-                    <p className="text-xs font-body text-s-ink/60 dark:text-s-dm-text/60 mt-0.5">{t("partner.firstMonth")}</p>
+                    <p className="text-xs font-heading font-bold uppercase tracking-wider mb-1" style={{ color: "rgba(255,255,255,.4)" }}>{t("partner.newBookings")}</p>
+                    <p className="font-heading font-extrabold text-3xl text-white leading-tight">+47%</p>
+                    <p className="text-xs font-body mt-0.5" style={{ color: "rgba(255,255,255,.4)" }}>{t("partner.firstMonth")}</p>
                   </div>
                   {/* Floating stat */}
                   <div
-                    className="absolute bottom-0 right-0 bg-white dark:bg-s-dm-surface rounded-[14px] px-4 py-3"
-                    style={{ boxShadow: "0 4px 20px rgba(26,18,9,0.09)", border: "1px solid rgba(26,18,9,0.05)" }}
+                    className="absolute bottom-0 right-0 rounded-[14px] px-4 py-3"
+                    style={{ background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.1)" }}
                   >
-                    <p className="text-xs font-heading font-bold uppercase tracking-wider text-s-ink/40 dark:text-s-dm-text/40 mb-0.5">{t("partner.newCustomers")}</p>
+                    <p className="text-xs font-heading font-bold uppercase tracking-wider mb-0.5" style={{ color: "rgba(255,255,255,.4)" }}>{t("partner.newCustomers")}</p>
                     <p className="font-heading font-extrabold text-[22px] text-s-coral leading-tight">120+</p>
                   </div>
                 </div>
