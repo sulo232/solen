@@ -205,39 +205,48 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               </div>
 
 
-              {/* DESKTOP (≥ md): Emoji tabs when unscrolled | compact pill when scrolled */}
+              {/* DESKTOP (≥ md): SVG icon tabs when unscrolled | compact pill when scrolled */}
               <div className="hidden md:block w-full">
-                {/* Emoji category tabs — visible when NOT scrolled */}
+                {/* SVG category tabs — visible when NOT scrolled */}
                 <div className={cn(
                   "flex items-center justify-center gap-6 overflow-x-auto scrollbar-hide px-2 transition-[opacity] duration-300",
                   scrolled ? "opacity-0 pointer-events-none absolute" : "opacity-100"
                 )}>
                   {[
-                    { key: "all",        href: "/",           icon: "✨", label: "Entdecken" },
-                    { key: "coiffeur",   href: "/coiffeur",   icon: "✂️", label: "Coiffeur" },
-                    { key: "nails",      href: "/nails",       icon: "💅", label: "Nails" },
-                    { key: "barbershop", href: "/barbershop",  icon: "💈", label: "Barbershop" },
-                    { key: "makeup",     href: "/makeup",      icon: "💄", label: "Makeup" },
-                    { key: "waxing",     href: "/waxing",      icon: "🍯", label: "Waxing" },
-                  ].map(({ key, href, icon, label }) => {
+                    { key: "all",        href: "/",           Icon: Compass,      label: t("discover") },
+                    { key: "coiffeur",   href: "/coiffeur",   Icon: CoiffeurIcon, label: t("coiffeur") },
+                    { key: "nails",      href: "/nails",       Icon: NailsIcon,   label: t("nails") },
+                    { key: "barbershop", href: "/barbershop",  Icon: BarberIcon,  label: t("barbershop") },
+                    { key: "makeup",     href: "/makeup",      Icon: MakeupIcon,  label: t("makeup") },
+                    { key: "waxing",     href: "/waxing",      Icon: WaxingIcon,  label: t("waxing") },
+                  ].map(({ key, href, Icon, label }) => {
                     const isActive = withoutLocale === href || (withoutLocale.startsWith(href) && href !== "/");
                     return (
                       <Link
                         key={key}
                         href={`/${locale}${href}`}
-                        className="flex flex-col items-center gap-1 shrink-0 group cursor-pointer py-2"
+                        className="flex flex-col items-center gap-1 shrink-0 group cursor-pointer py-2 relative"
                       >
-                        <span className="text-[26px] leading-none h-[30px] mb-1 transition-transform duration-200 origin-bottom group-hover:scale-110 overflow-hidden inline-block">
-                          {icon}
-                        </span>
+                        <Icon
+                          width={24} height={24}
+                          className={cn(
+                            "transition-colors duration-150",
+                            isActive ? "text-s-ink" : "text-s-ink/50 group-hover:text-s-ink/70"
+                          )}
+                        />
                         <span className={cn(
-                          "text-[12px] font-body font-semibold pb-2 border-b-2 transition-colors duration-200 whitespace-nowrap",
-                          isActive
-                            ? "text-s-ink border-s-ink"
-                            : "text-s-ink/60 border-transparent group-hover:text-s-ink group-hover:border-s-ink/[0.08]"
+                          "text-[12px] font-body font-semibold pb-2 transition-colors duration-200 whitespace-nowrap",
+                          isActive ? "text-s-ink" : "text-s-ink/60 group-hover:text-s-ink"
                         )}>
                           {label}
                         </span>
+                        {isActive && (
+                          <motion.div
+                            layoutId="header-tab-indicator"
+                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-ink rounded-full"
+                            transition={{ type: "tween", duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                          />
+                        )}
                       </Link>
                     );
                   })}
@@ -262,15 +271,15 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               </div>
             </div>
           ) : isCategoryPage ? (
-            /* Category page — text tabs, emoji collapses on scroll, city-aware */
+            /* Category page — SVG icon tabs, icon hides on scroll, city-aware */
             <div className="flex items-stretch gap-6 overflow-x-auto scrollbar-hide px-2">
               {[
-                { key: "coiffeur",   icon: "✂️", label: "Coiffeur" },
-                { key: "nails",      icon: "💅", label: "Nails" },
-                { key: "barbershop", icon: "💈", label: "Barbershop" },
-                { key: "makeup",     icon: "💄", label: "Makeup" },
-                { key: "waxing",     icon: "🍯", label: "Waxing" },
-              ].map(({ key, icon, label }) => {
+                { key: "coiffeur",   Icon: CoiffeurIcon, label: t("coiffeur") },
+                { key: "nails",      Icon: NailsIcon,    label: t("nails") },
+                { key: "barbershop", Icon: BarberIcon,   label: t("barbershop") },
+                { key: "makeup",     Icon: MakeupIcon,   label: t("makeup") },
+                { key: "waxing",     Icon: WaxingIcon,   label: t("waxing") },
+              ].map(({ key, Icon, label }) => {
                 const isActive = withoutLocale.startsWith(`/${key}`);
                 const href = persistedCity
                   ? `/${locale}/${persistedCity}/${key}`
@@ -279,22 +288,29 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                   <Link
                     key={key}
                     href={href}
-                    className="flex flex-col items-center gap-1 shrink-0 group cursor-pointer py-2"
+                    className="flex flex-col items-center gap-1 shrink-0 group cursor-pointer py-2 relative"
                   >
+                    <Icon
+                      width={24} height={24}
+                      className={cn(
+                        "transition-[opacity,transform] duration-300",
+                        scrolled ? "opacity-0 scale-50 h-0" : "opacity-100 scale-100 h-6",
+                        isActive ? "text-s-ink" : "text-s-ink/50 group-hover:text-s-ink/70"
+                      )}
+                    />
                     <span className={cn(
-                      "text-[28px] leading-none transition-[height,opacity,transform,margin] duration-300 origin-bottom group-hover:scale-110 overflow-hidden",
-                      scrolled ? "h-0 opacity-0 scale-50 mb-0" : "h-[32px] opacity-100 scale-100 mb-1"
-                    )}>
-                      {icon}
-                    </span>
-                    <span className={cn(
-                      "text-[12px] font-body font-semibold pb-2 border-b-2 transition-colors duration-200 whitespace-nowrap",
-                      isActive
-                        ? "text-s-ink border-s-ink"
-                        : "text-s-ink/60 border-transparent group-hover:text-s-ink group-hover:border-s-ink/[0.08]"
+                      "text-[12px] font-body font-semibold pb-2 transition-colors duration-200 whitespace-nowrap",
+                      isActive ? "text-s-ink" : "text-s-ink/60 group-hover:text-s-ink"
                     )}>
                       {label}
                     </span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="header-tab-indicator"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-ink rounded-full"
+                        transition={{ type: "tween", duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                      />
+                    )}
                   </Link>
                 );
               })}
@@ -336,7 +352,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                       animate="visible"
                       exit="exit"
                       style={{ transformOrigin: "top right" }}
-                      className="absolute right-0 top-[calc(100%+8px)] w-52 rounded-2xl z-[80] overflow-hidden bg-white shadow-v5-float ring-1 ring-black/5"
+                      className="absolute right-0 top-[calc(100%+8px)] w-52 max-w-[calc(100vw-32px)] rounded-2xl z-[80] overflow-hidden bg-white shadow-v5-float ring-1 ring-black/5"
                     >
                       <nav className="py-2" role="menu">
                         {[

@@ -560,7 +560,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           </div>
         ) : loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => <Skeleton key={i} variant="card" />)}
+            {[...Array(typeof window !== "undefined" && window.innerWidth < 768 ? 4 : 8)].map((_, i) => <Skeleton key={i} variant="card" />)}
           </div>
         ) : fetchError ? (
           <div className="flex items-center gap-2 p-4 rounded-input bg-[color:var(--color-error)]/10 text-[color:var(--color-error)] text-sm">

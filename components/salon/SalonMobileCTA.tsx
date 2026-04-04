@@ -74,6 +74,9 @@ export default function SalonMobileCTA({
         </div>
       </div>
 
+      {/* Spacer to prevent sticky CTA from overlapping last section */}
+      <div className="lg:hidden pb-[calc(env(safe-area-inset-bottom)+80px)]" aria-hidden="true" />
+
       {/* Mobile bottom sheet */}
       <BottomSheet isOpen={mobileSheetOpen} onClose={() => setMobileSheetOpen(false)} title={t("bookAppointment")}>
         <BookingCalendar

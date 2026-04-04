@@ -318,7 +318,7 @@ export default function DashboardPage() {
                       <div className="w-px h-8 bg-s-ink/[0.07] shrink-0" />
                       <div className="flex-1 min-w-0 overflow-hidden">
                         <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">{b.customer_name}</p>
-                        <p className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 truncate mt-0.5 max-w-[160px] sm:max-w-none">{b.service_name}</p>
+                        <p className="text-xs font-heading uppercase tracking-[.08em] text-s-ink/40 truncate mt-0.5 max-w-[160px] sm:max-w-none">{b.service_name}</p>
                       </div>
                       <div className="shrink-0 flex items-center gap-2">
                         {b.is_first_visit && (

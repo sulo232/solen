@@ -70,7 +70,7 @@ export default function TestimonialCarousel() {
           {[...TESTIMONIALS, ...TESTIMONIALS].map((testimonial, idx) => (
             <div
               key={idx}
-              className="flex-shrink-0 w-[300px] bg-white border border-s-ink/[0.08] rounded-[16px] p-6"
+              className="flex-shrink-0 w-[85vw] max-w-[300px] bg-white border border-s-ink/[0.08] rounded-[16px] p-6"
             >
               <p className="font-body text-[15px] text-s-ink mb-4 leading-relaxed">
                 &ldquo;{testimonial.quote}&rdquo;

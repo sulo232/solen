@@ -29,7 +29,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
           <Link
             key={m.id}
             href={`/${locale}/salon/${salonSlug}/staff/${m.id}`}
-            className="shrink-0 w-[200px] flex flex-col rounded-[16px] border border-s-ink/[0.08] bg-white p-4 hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+            className="shrink-0 w-[160px] sm:w-[200px] flex flex-col rounded-[16px] border border-s-ink/[0.08] bg-white p-4 hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
           >
             {/* Avatar */}
             <div className="block">

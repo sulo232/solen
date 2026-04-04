@@ -28,7 +28,7 @@ export const LooksGrid: React.FC<LooksGridProps> = ({ looks = [], onAddLook }) =
   const t = useTranslations('account.beauty') as any;
 
   return (
-    <div className="grid grid-cols-3 gap-2.5 pb-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pb-6">
       {looks.map((look) => {
         const styles = CATEGORY_STYLES[look.category] || CATEGORY_STYLES.hair;
 

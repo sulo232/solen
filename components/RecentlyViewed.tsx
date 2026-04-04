@@ -100,9 +100,9 @@ export default function RecentlyViewed() {
           >
             <Link
               href={`/${locale}/salon/${salon.slug}`}
-              className="block w-[160px] group"
+              className="block w-[140px] sm:w-[160px] group"
             >
-              <div className="relative w-[160px] h-[100px] rounded-[12px] overflow-hidden bg-s-bg-sunken dark:bg-s-dm-surface mb-2">
+              <div className="relative w-[140px] sm:w-[160px] h-[100px] rounded-[12px] overflow-hidden bg-s-bg-sunken dark:bg-s-dm-surface mb-2">
                 {salon.cover_photo_url ? (
                   <Image
                     src={salon.cover_photo_url}

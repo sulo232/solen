@@ -76,7 +76,7 @@ export default function BottomTabBar() {
       <nav
         className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
         style={{
-          paddingBottom: "env(safe-area-inset-bottom)",
+          paddingBottom: "max(16px,env(safe-area-inset-bottom))",
           // Liquid glass
           background: "var(--glass-bg)",
           backdropFilter: "blur(20px) saturate(180%)",

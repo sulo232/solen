@@ -27,7 +27,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale, onEdi
       {/* Avatar with gradient ring */}
       <div className="relative">
         <div
-          className="w-[90px] h-[90px] rounded-full p-[2.5px]"
+          className="w-16 h-16 sm:w-[90px] sm:h-[90px] rounded-full p-[2.5px]"
           style={{
             background: 'linear-gradient(145deg, #C8614A 0%, #E8C49A 55%, #E8927A 100%)'
           }}

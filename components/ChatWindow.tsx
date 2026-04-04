@@ -388,7 +388,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
               className={["group flex gap-2", isOwn(msg) ? "flex-row-reverse" : "flex-row"].join(" ")}
             >
               <div className={[
-                "max-w-[75%] px-3 py-2 rounded-[12px] text-sm leading-relaxed",
+                "max-w-[85%] lg:max-w-[60%] px-3 py-2 rounded-[12px] text-sm leading-relaxed",
                 isOwn(msg) ? "bg-s-coral text-white rounded-tr-sm" : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text rounded-tl-sm",
               ].join(" ")}>
                 {msg.message_type === "image" && msg.image_url ? (
@@ -516,7 +516,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         )}
 
         {/* Compose bar */}
-        <div className="px-4 py-3 border-t border-s-ink/5 dark:border-white/10 backdrop-blur-sm bg-white/90 dark:bg-s-dm-surface/90 shadow-warm-sm flex items-end gap-2">
+        <div className="sticky bottom-0 px-4 py-3 border-t border-s-ink/5 dark:border-white/10 backdrop-blur-sm bg-white/90 dark:bg-s-dm-surface/90 shadow-warm-sm flex items-end gap-2">
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
