@@ -147,8 +147,9 @@ export default function BookingSuccess(props: BookingSuccessProps) {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="max-w-md mx-auto text-center py-8 px-4"
+      exit={{ opacity: 0, scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 280, damping: 26, mass: 0.8 }}
+      className="max-w-lg mx-auto text-center py-8 px-4"
     >
       <div className="w-16 h-16 rounded-full bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
         <CheckCircle size={32} className="text-s-coral" />
@@ -157,8 +158,8 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-2">{t("title")}</h2>
       <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">{t("subtitle")}</p>
 
-      <div className="bg-s-bg-surface dark:bg-s-dm-surface rounded-input p-4 mb-6 text-left">
-        <p className="font-medium text-s-ink dark:text-s-dm-text">{props.serviceName}</p>
+      <div className="bg-s-bg-surface dark:bg-s-dm-surface rounded-card p-4 mb-6 text-left">
+        <p className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">{props.serviceName}</p>
         <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-1">{props.salonName}</p>
         <div className="flex items-center gap-4 mt-3 text-sm text-s-ink/50 dark:text-s-dm-text/50">
           <span>{dateStr}</span>

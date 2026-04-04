@@ -101,8 +101,8 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
 
       <div 
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 md:px-12 pb-8 pt-4 hide-scrollbar"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 md:px-12 pb-8 pt-4 [&::-webkit-scrollbar]:hidden"
+        style={{ scrollbarWidth: "none" }}
       >
         {isLoading ? (
           Array.from({ length: 5 }).map((_, i) => (
@@ -172,11 +172,6 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
         </Link>
       </div>
 
-      <style jsx>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </div>
   );
 }

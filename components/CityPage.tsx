@@ -85,7 +85,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
       {/* City header */}
       <section className="max-w-5xl mx-auto px-4 pt-12 pb-8">
         <div className="flex items-center gap-2 mb-2">
-          <MapPin size={16} className="text-s-coral" />
+          <MapPin size={16} className="text-s-ink/60 dark:text-s-dm-text/60" />
           <span className="font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber">
             {cityName}
           </span>

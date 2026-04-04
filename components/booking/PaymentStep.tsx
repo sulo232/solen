@@ -113,7 +113,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
               : 'border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-coral/40 bg-[--raised] dark:bg-s-dm-surface'
           }`}
         >
-          <CreditCard size={24} className="text-s-coral" />
+          <CreditCard size={24} className="text-s-ink/60 dark:text-s-dm-text/60" />
           <div className="flex-1 text-left">
             <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
               {t('online')}

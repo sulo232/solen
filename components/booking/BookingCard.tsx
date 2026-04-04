@@ -160,16 +160,16 @@ export default function BookingCard({
       {/* Date, Time, Address */}
       <div className="px-4 py-3 space-y-2">
         <div className="flex items-center gap-3 text-sm text-s-ink dark:text-s-dm-text">
-          <Calendar size={16} className="text-s-coral flex-shrink-0" />
+          <Calendar size={16} className="text-s-ink/60 dark:text-s-dm-text/60 flex-shrink-0" />
           <span>{formattedDate}</span>
         </div>
         <div className="flex items-center gap-3 text-sm text-s-ink dark:text-s-dm-text">
-          <Clock size={16} className="text-s-coral flex-shrink-0" />
+          <Clock size={16} className="text-s-ink/60 dark:text-s-dm-text/60 flex-shrink-0" />
           <span>{formattedTime}</span>
         </div>
         {booking.salon?.address && (
           <div className="flex items-start gap-3 text-sm text-s-ink dark:text-s-dm-text">
-            <MapPin size={16} className="text-s-coral flex-shrink-0 mt-0.5" />
+            <MapPin size={16} className="text-s-ink/60 dark:text-s-dm-text/60 flex-shrink-0 mt-0.5" />
             <span>{booking.salon.address}</span>
           </div>
         )}
@@ -189,7 +189,7 @@ export default function BookingCard({
       <div className="px-4 py-3 border-t border-s-ink/[0.06] dark:border-white/[0.08] flex items-center justify-between">
         <button
           onClick={() => onRebook?.(booking)}
-          className="px-4 py-2 rounded-pill bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
+          className="px-4 py-2 rounded-pill bg-s-coral text-white text-sm font-semibold hover:brightness-[1.08] active:scale-[0.97] transition-[transform,filter] duration-150"
         >
           {t('rebook')}
         </button>
@@ -197,7 +197,7 @@ export default function BookingCard({
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-2 hover:bg-s-ink/[0.05] dark:hover:bg-white/[0.08] rounded-pill transition-colors"
+            className="p-2 hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.08] active:scale-[0.92] rounded-pill transition-[transform,background-color] duration-150"
             aria-label="More options"
           >
             <MoreVertical size={18} className="text-s-ink dark:text-s-dm-text" />

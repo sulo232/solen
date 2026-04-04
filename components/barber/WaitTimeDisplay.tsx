@@ -48,7 +48,7 @@ export default function WaitTimeDisplay({ salonId }: WaitTimeDisplayProps) {
 
   return (
     <div className="flex items-center gap-3 rounded-input bg-s-bg-surface dark:bg-s-dm-surface px-4 py-3 border border-s-ink/10 dark:border-s-dm-text/10">
-      <Clock size={18} className="text-s-coral shrink-0" />
+      <Clock size={18} className="text-s-ink/60 dark:text-s-dm-text/60 shrink-0" />
       <div className="text-sm text-s-ink dark:text-s-dm-text">
         <span className="font-medium">
           {t("currentWaitTime", { minutes: waitData.estimated_wait_minutes })}
