@@ -32,7 +32,7 @@ export default function SalonSectionNav({ sections }: SalonSectionNavProps) {
             setActiveId(id);
           }
         },
-        { rootMargin: "-120px 0px -60% 0px", threshold: 0 }
+        { rootMargin: "-80px 0px -40% 0px", threshold: 0 }
       );
 
       observer.observe(el);
@@ -104,7 +104,7 @@ export default function SalonSectionNav({ sections }: SalonSectionNavProps) {
                 "relative shrink-0 px-4 py-4 text-[14px] font-body font-medium whitespace-nowrap transition-colors duration-150",
                 activeId === id
                   ? "text-s-ink font-semibold"
-                  : "text-[#6A6A6A] hover:text-s-ink"
+                  : "text-s-ink/55 hover:text-s-ink"
               )}
             >
               {label}
