@@ -11,7 +11,7 @@ export default function Footer() {
   const t = useTranslations("footer") as any;
 
   return (
-    <footer className="bg-s-dm-bg text-white">
+    <footer className="text-white" style={{ background: "#2C2825" }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
 
         {/* ── Logo + tagline ── */}

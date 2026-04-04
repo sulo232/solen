@@ -1,52 +1,44 @@
 "use client";
 import React from "react";
 
-/**
- * CoiffeurIcon — animated scissors that snip open/closed when `animate` is true
- */
-export function CoiffeurIcon({
-  animate = false,
-  ...props
-}: React.SVGProps<SVGSVGElement> & { animate?: boolean }) {
+export function CoiffeurIcon({ animate = false, ...props }: React.SVGProps<SVGSVGElement> & { animate?: boolean }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      viewBox="0 0 40 40"
       fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      style={{ filter: "drop-shadow(0px 3px 3px rgba(80,12,4,0.28))" }}
       {...props}
     >
-      <style>{`
-        @keyframes scissor-top {
-          0%, 100% { transform-origin: 20px 4px; transform: rotate(0deg); }
-          30% { transform-origin: 20px 4px; transform: rotate(14deg); }
-          60% { transform-origin: 20px 4px; transform: rotate(-4deg); }
-        }
-        @keyframes scissor-bot {
-          0%, 100% { transform-origin: 20px 20px; transform: rotate(0deg); }
-          30% { transform-origin: 20px 20px; transform: rotate(-14deg); }
-          60% { transform-origin: 20px 20px; transform: rotate(4deg); }
-        }
-      `}</style>
+      {/* Lower ring (blade 1 handle) */}
+      <circle cx="8" cy="29.5" r="5.5" fill="#C44A34" />
+      <circle cx="8" cy="29.5" r="3.2" fill="white" opacity="0.9" />
 
-      {/* Pivot circles */}
-      <circle cx="6" cy="6" r="3" />
-      <circle cx="6" cy="18" r="3" />
+      {/* Upper ring (blade 2 handle) */}
+      <circle cx="8" cy="10.5" r="5.5" fill="#E8624A" />
+      <circle cx="8" cy="10.5" r="3.2" fill="white" opacity="0.9" />
 
-      {/* Top blade */}
-      <line
-        x1="20" y1="4" x2="8.12" y2="15.88"
-        style={animate ? { animation: "scissor-top 0.55s ease-in-out infinite" } : undefined}
+      {/* Blade 1 — darker, goes lower-left to upper-right */}
+      <path
+        d="M 13,27 L 35,10 L 35,13 L 13,31 Q 11,30 11,28.5 Q 11,27 13,27 Z"
+        fill="#B83020"
       />
-      {/* Bot blade */}
-      <line
-        x1="20" y1="20" x2="14.47" y2="14.48"
-        style={animate ? { animation: "scissor-bot 0.55s ease-in-out infinite" } : undefined}
+      {/* Blade 2 — coral, goes upper-left to lower-right */}
+      <path
+        d="M 13,13 L 35,30 L 35,27 L 13,9 Q 11,10 11,11.5 Q 11,13 13,13 Z"
+        fill="#E8624A"
       />
-      <line x1="8.12" y1="8.12" x2="12" y2="12" />
+      {/* Blade 2 highlight */}
+      <path
+        d="M 13,11 L 26,19.5 L 25,21 L 12,12.5 Z"
+        fill="white"
+        opacity="0.2"
+      />
+
+      {/* Pivot bolt */}
+      <circle cx="20" cy="20" r="5" fill="#5A1005" />
+      <circle cx="20" cy="20" r="3.2" fill="#FAEAE6" />
+      <circle cx="20" cy="20" r="1.4" fill="#C44A34" />
     </svg>
   );
 }

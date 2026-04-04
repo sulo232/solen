@@ -1,35 +1,41 @@
 "use client";
 import React from "react";
 
-export function NailsIcon({
-  animate = false,
-  ...props
-}: React.SVGProps<SVGSVGElement> & { animate?: boolean }) {
+export function NailsIcon({ animate = false, ...props }: React.SVGProps<SVGSVGElement> & { animate?: boolean }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      viewBox="0 0 40 40"
       fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      style={{ filter: "drop-shadow(0px 3px 3px rgba(80,12,4,0.28))" }}
       {...props}
     >
-      <style>{`
-        @keyframes nail-drip {
-          0%, 100% { transform: scale(1); transform-origin: 12px 22px; }
-          30% { transform: scale(1.18) translateY(1px); transform-origin: 12px 22px; }
-          60% { transform: scale(0.96); transform-origin: 12px 22px; }
-        }
-      `}</style>
-      <path d="M8 8V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4" />
-      <rect
-        x="6" y="8" width="12" height="14" rx="3"
-        style={animate ? { animation: "nail-drip 0.55s ease-in-out" } : undefined}
-      />
-      <path d="M10 14h4" />
-      <circle cx="12" cy="18" r="1" fill="currentColor" />
+      <defs>
+        <linearGradient id="body-na-g" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#C44A34" />
+          <stop offset="40%" stopColor="#E8624A" />
+          <stop offset="100%" stopColor="#D45540" />
+        </linearGradient>
+      </defs>
+
+      {/* Body shadow depth */}
+      <rect x="12" y="17" width="8" height="19" rx="4" fill="#9A2010" />
+      {/* Body main */}
+      <rect x="12" y="17" width="16" height="19" rx="5" fill="url(#body-na-g)" />
+      {/* Body shine */}
+      <rect x="15" y="20" width="4.5" height="11" rx="2.25" fill="white" opacity="0.22" />
+
+      {/* Neck */}
+      <rect x="16" y="13" width="8" height="6" rx="2" fill="#C44A34" />
+
+      {/* Cap */}
+      <rect x="13" y="3" width="14" height="12" rx="4" fill="#1A0806" />
+      <rect x="15" y="5.5" width="5" height="4.5" rx="1.5" fill="#3A1A0C" opacity="0.7" />
+      {/* Cap shine */}
+      <rect x="24" y="5" width="2" height="8" rx="1" fill="white" opacity="0.1" />
+
+      {/* Drip */}
+      <ellipse cx="20" cy="36.5" rx="3.5" ry="2.2" fill="#B83020" />
     </svg>
   );
 }

@@ -48,7 +48,8 @@
     "hero": {
       "byline": "Deine Schweizer Salon-Plattform",
       "headlineWord1": "DEIN NÄCHSTER",
-      "headlineWord2": "TERMIN",
+      "headlineAccent": "TERMIN",
+      "headlineWord2": "WARTET",
       "hello": "Hallo",
       "welcome": "Willkommen {name}",
       "subtitle": "Coiffeur, Barber, Nails & Spa — buche jetzt in deiner Stadt.",
@@ -174,8 +175,12 @@
     },
     "carousel": {
       "previousSalons": "Vorherige Salons",
-      "nextSalons": "Nächste Salons"
+      "nextSalons": "Nächste Salons",
+      "viewAll": "Alle ansehen",
+      "topRated": "Top bewertet · Sofort buchbar"
     },
+    "addFavorite": "Zu Favoriten hinzufügen",
+    "removeFavorite": "Von Favoriten entfernen",
     "new": "Neu",
     "search": {
       "placeholder": "Suche Salon in Basel...",

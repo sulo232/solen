@@ -48,7 +48,8 @@
     "hero": {
       "byline": "Ta plateforme suisse de salons",
       "headlineWord1": "VOTRE PROCHAIN",
-      "headlineWord2": "RENDEZ-VOUS",
+      "headlineAccent": "RENDEZ-VOUS",
+      "headlineWord2": "ATTEND",
       "hello": "Bonjour",
       "welcome": "Bienvenue {name}",
       "subtitle": "Coiffeur, barbier, ongles & spa — réservez maintenant dans votre ville.",
@@ -174,8 +175,12 @@
     },
     "carousel": {
       "previousSalons": "Salons précédents",
-      "nextSalons": "Salons suivants"
+      "nextSalons": "Salons suivants",
+      "viewAll": "Voir tout",
+      "topRated": "Mieux noté · Réservez maintenant"
     },
+    "addFavorite": "Ajouter aux favoris",
+    "removeFavorite": "Retirer des favoris",
     "new": "Nouveau",
     "search": {
       "placeholder": "Rechercher un salon à Bâle...",

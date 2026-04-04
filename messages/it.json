@@ -48,7 +48,8 @@
     "hero": {
       "byline": "La tua piattaforma svizzera di saloni",
       "headlineWord1": "IL TUO PROSSIMO",
-      "headlineWord2": "APPUNTAMENTO",
+      "headlineAccent": "APPUNTAMENTO",
+      "headlineWord2": "ASPETTA",
       "hello": "Ciao",
       "welcome": "Benvenuto {name}",
       "subtitle": "Parrucchiere, barbiere, unghie & spa — prenota ora nella tua città.",
@@ -174,8 +175,12 @@
     },
     "carousel": {
       "previousSalons": "Saloni precedenti",
-      "nextSalons": "Saloni successivi"
+      "nextSalons": "Saloni successivi",
+      "viewAll": "Vedi tutto",
+      "topRated": "Più votato · Prenota subito"
     },
+    "addFavorite": "Aggiungi ai preferiti",
+    "removeFavorite": "Rimuovi dai preferiti",
     "new": "Nuovo",
     "search": {
       "placeholder": "Cerca un salone a Basilea...",

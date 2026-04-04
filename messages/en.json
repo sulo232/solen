@@ -48,7 +48,8 @@
     "hero": {
       "byline": "Your Swiss Salon Platform",
       "headlineWord1": "YOUR NEXT",
-      "headlineWord2": "APPOINTMENT",
+      "headlineAccent": "APPOINTMENT",
+      "headlineWord2": "AWAITS",
       "hello": "Hello",
       "welcome": "Welcome {name}",
       "subtitle": "Hair, Barber, Nails & Spa — book now in your city.",
@@ -174,8 +175,12 @@
     },
     "carousel": {
       "previousSalons": "Previous salons",
-      "nextSalons": "Next salons"
+      "nextSalons": "Next salons",
+      "viewAll": "View all",
+      "topRated": "Top rated · Book instantly"
     },
+    "addFavorite": "Add to favorites",
+    "removeFavorite": "Remove from favorites",
     "new": "New",
     "search": {
       "placeholder": "Search salons in Basel...",

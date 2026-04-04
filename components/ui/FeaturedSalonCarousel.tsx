@@ -65,26 +65,39 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
   };
 
   return (
-    <div className="mt-8 -mx-4 group/section relative">
-      <div className="flex items-center justify-between px-6 mb-5">
-        <div className="flex items-center gap-1">
-          <h2 className="font-heading font-semibold text-[22px] tracking-tight text-s-ink">
+    <div className="mt-10 -mx-4 group/section relative">
+      <div className="flex items-end justify-between px-6 mb-5">
+        {/* Title + subtitle */}
+        <div>
+          <h2 className="font-heading font-semibold text-s-ink tracking-tight" style={{ fontSize: "22px" }}>
             {title || t("heroCarousel.label")}
           </h2>
+          <p className="font-body mt-0.5" style={{ fontSize: "13px", color: "#9A7A60" }}>
+            {t("carousel.topRated") || "Top bewertet · Sofort buchbar"}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* View all text link */}
           {viewAllHref && (
-            <Link href={viewAllHref} className="ml-1 hover:bg-black/5 rounded-full p-1.5 transition-colors" aria-label={`View all ${title}`}>
-              <ChevronRight size={18} className="text-s-ink" />
+            <Link
+              href={viewAllHref}
+              className="font-heading font-semibold transition-colors duration-150 hover:text-s-coral"
+              style={{ fontSize: "13px", color: "#E8624A" }}
+              aria-label={`Alle ${title} ansehen`}
+            >
+              {t("carousel.viewAll") || "Alle"} →
             </Link>
           )}
-        </div>
-        {/* Navigation Arrows — Airbnb spec: 32px white circle, light border, subtle shadow */}
-        <div className="hidden md:flex items-center gap-2">
-          <button onClick={() => scroll("left")} aria-label={t("carousel.previousSalons")} className="w-[32px] h-[32px] min-w-[44px] min-h-[44px] rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 transition-shadow active:scale-95">
-            <ChevronLeft size={16} aria-hidden="true" />
-          </button>
-          <button onClick={() => scroll("right")} aria-label={t("carousel.nextSalons")} className="w-[32px] h-[32px] min-w-[44px] min-h-[44px] rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 transition-shadow active:scale-95">
-            <ChevronRight size={16} aria-hidden="true" />
-          </button>
+          {/* Nav arrows */}
+          <div className="hidden md:flex items-center gap-1.5">
+            <button onClick={() => scroll("left")} aria-label={t("carousel.previousSalons")} className="w-8 h-8 rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 active:scale-[0.95] transition-[box-shadow,transform] duration-150">
+              <ChevronLeft size={15} aria-hidden="true" />
+            </button>
+            <button onClick={() => scroll("right")} aria-label={t("carousel.nextSalons")} className="w-8 h-8 rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 active:scale-[0.95] transition-[box-shadow,transform] duration-150">
+              <ChevronRight size={15} aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </div>
 

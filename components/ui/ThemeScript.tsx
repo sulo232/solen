@@ -9,8 +9,7 @@ export default function ThemeScript() {
     "(function(){",
     "try{",
     "var t=localStorage.getItem('solen_theme');",
-    "var d=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches);",
-    "if(d)document.documentElement.classList.add('dark')",
+    "if(t==='dark')document.documentElement.classList.add('dark')",
     "}catch(e){}",
     "})()",
   ].join("");

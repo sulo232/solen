@@ -149,13 +149,18 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   return (
     <>
     <header className={cn(
-      "fixed top-0 left-0 right-0 z-50 w-full flex flex-col transition-[transform,background-color,border-color,box-shadow] duration-200 ease-[cubic-bezier(.4,0,.2,1)]",
+      "fixed top-0 left-0 right-0 z-50 w-full flex flex-col transition-[transform,background-color,border-color,box-shadow,backdrop-filter] duration-200 ease-[cubic-bezier(.4,0,.2,1)]",
       isHeaderVisible ? "translate-y-0" : "-translate-y-full",
       scrolled
-        ? "bg-white border-b border-s-ink/[0.08] shadow-sm"
-        : "bg-white border-transparent"
+        ? "border-b border-s-ink/[0.08] shadow-sm"
+        : "border-transparent"
     )}
-    style={{ paddingTop: "env(safe-area-inset-top)" }}
+    style={{
+      paddingTop: "env(safe-area-inset-top)",
+      background: "rgba(255,255,255,0.82)",
+      backdropFilter: "blur(20px) saturate(1.4)",
+      WebkitBackdropFilter: "blur(20px) saturate(1.4)",
+    }}
     >
       {/* ── Top Row: Logo, (Small Pill if scrolled), Profile ── */}
       <div className={cn(
@@ -217,10 +222,10 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                         className="flex flex-col items-center gap-1 shrink-0 group cursor-pointer py-2 relative"
                       >
                         <Icon
-                          width={24} height={24}
+                          width={28} height={28}
                           className={cn(
-                            "transition-colors duration-150",
-                            isActive ? "text-s-ink" : "text-s-ink/50 group-hover:text-s-ink/70"
+                            "transition-opacity duration-150",
+                            isActive ? "opacity-100" : "opacity-70 group-hover:opacity-90"
                           )}
                         />
                         <span className={cn(
@@ -280,11 +285,11 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                     className="flex flex-col items-center gap-1 shrink-0 group cursor-pointer py-2 relative"
                   >
                     <Icon
-                      width={24} height={24}
+                      width={28} height={28}
                       className={cn(
                         "transition-[opacity,transform] duration-300",
-                        scrolled ? "opacity-0 scale-50 h-0" : "opacity-100 scale-100 h-6",
-                        isActive ? "text-s-ink" : "text-s-ink/50 group-hover:text-s-ink/70"
+                        scrolled ? "opacity-0 scale-50 h-0 pointer-events-none" : "opacity-100 scale-100",
+                        isActive ? "opacity-100" : "opacity-60 group-hover:opacity-90"
                       )}
                     />
                     <span className={cn(
@@ -390,47 +395,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       </div>
 
 
-      {/* ── Desktop Search Bar (Homepage + Unscrolled) ── */}
-      {!scrolled && isHomepage && (
-        <div className="hidden md:flex w-full justify-center pb-6 mt-4 relative z-[60]">
-          <div className="max-w-4xl w-full px-6">
-            <AirbnbSearchBar scrolledPast80={scrolled} locale={locale} onSearchActiveChange={(active) => setSearchActive(active)} />
-          </div>
-        </div>
-      )}
-
-      {/* ── Mobile Category Strip (Homepage + Unscrolled) ── */}
-      {isHomepage && !scrolled && (
-        <div className="md:hidden overflow-x-auto scrollbar-hide pb-3 pt-1 px-3 border-b border-s-ink/[0.08] overscroll-x-contain snap-x">
-          <div className="flex items-center gap-1 w-max">
-            {[
-              { key: "all",        href: "/",           Icon: Compass,      label: t("discover") },
-              { key: "coiffeur",   href: "/coiffeur",   Icon: CoiffeurIcon, label: t("coiffeur") },
-              { key: "nails",      href: "/nails",       Icon: NailsIcon,   label: t("nails") },
-              { key: "barbershop", href: "/barbershop",  Icon: BarberIcon,  label: t("barbershop") },
-              { key: "makeup",     href: "/makeup",      Icon: MakeupIcon,  label: t("makeup") },
-              { key: "waxing",     href: "/waxing",      Icon: WaxingIcon,  label: t("waxing") },
-            ].map(({ key, href, Icon, label }) => {
-              const isActive = withoutLocale === href || (withoutLocale.startsWith(href) && href !== "/");
-              return (
-                <Link
-                  key={key}
-                  href={`/${locale}${href}`}
-                  className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-heading font-semibold whitespace-nowrap shrink-0 transition-[background-color,color] duration-150",
-                    isActive
-                      ? "bg-s-ink text-white"
-                      : "bg-s-bg-surface text-s-ink/55 hover:bg-s-ink/[0.08]"
-                  )}
-                >
-                  <Icon width={14} height={14} className="shrink-0" />
-                  {label}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      {/* Search bar lives in HomepageHero — not in the header */}
 
 
       {/* ── Lights-Out Overlay (Airbnb §1.1) ── */}

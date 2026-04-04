@@ -4,6 +4,66 @@
 
 ---
 
+## 🎨 VISUAL ASSETS — READ BEFORE TOUCHING ANY ICON, ANIMATION, OR ILLUSTRATION
+
+**Full guide: `_rules/GENERATION_TOOLS.md`** — read this before generating or sourcing any asset.
+
+### Asset Folders (source of truth)
+| Asset type | Folder | Tool |
+|---|---|---|
+| Category icons (SVG) | `public/icons/category/` | Recraft.ai API (`RECRAFT_API_KEY` in `.env.local`) |
+| UI icons | lucide-react only | `import { X } from 'lucide-react'` |
+| Lottie animations | `public/animations/` | LottieFiles.com |
+| Brand illustrations | `public/illustrations/` | Recraft.ai or designer |
+
+### Mandatory asset check
+Before writing any component that needs an icon or animation:
+1. **Check if the file exists** in the folder above
+2. **If missing** → tell the user: *"I need `[filename]` in `public/icons/category/` — generate it using the approved prompt in `_rules/GENERATION_TOOLS.md`"*
+3. **Never** generate icons by writing SVG bezier coordinates manually or via Figma Plugin API — the output will be wrong
+4. **Never** generate icons without reading the prompt engineering guide in `_rules/GENERATION_TOOLS.md` first
+
+---
+
+## 🖼️ FIGMA-FIRST DESIGN WORKFLOW (MANDATORY — ALL UI WORK)
+
+**Skill: `.agents/skills/figma-solen-workflow/SKILL.md`**
+**Figma file key: `k5j0ZrEEX583cL0lxXCxJC`** ("Solen — Design System & Homepage")
+
+Any time you are about to create or modify a UI component for the homepage or any customer-facing page, **invoke the `figma-solen-workflow` skill first**. The mandatory loop is:
+
+1. **Design in Figma** — use `use_figma` (always load `figma-use` skill first) to create/update the design
+2. **Screenshot** — call `get_screenshot` and show the user the Figma result
+3. **Wait for approval** — do NOT write code until the user confirms the design
+4. **Implement** — use `figma-implement-design` skill to write the code
+5. **Validate** — compare live page to Figma screenshot
+
+**Installed Figma skills** (in `.agents/skills/`):
+- `figma-use` — MANDATORY prerequisite before every `use_figma` call
+- `figma-implement-design` — code implementation from Figma specs
+- `figma-solen-workflow` — Solen-specific design→approve→code loop
+
+**Available from Figma** (install via GitHub zip if needed): `figma-generate-design`, `figma-generate-library`, `figma-code-connect-components`, `figma-create-design-system-rules`
+See: https://help.figma.com/hc/en-us/articles/39166810751895-Figma-skills-for-MCP
+
+---
+
+## 🎨 HOMEPAGE VISUAL WORK — TIGHT LOOP PROTOCOL (MANDATORY)
+
+**File: `_tasks/homepage-visual-tracker.md`**
+
+Any time you touch `components/HomePage.tsx`, `components/ui/HomepageHero.tsx`, `components/TrustStatsBanner.tsx`, `components/TestimonialCarousel.tsx`, `components/BrowseByCitySection.tsx`, `components/ui/LastMinuteStrip.tsx`, or any homepage-related component:
+
+1. **READ `_tasks/homepage-visual-tracker.md` first** — it has current visual state, known gaps, and screenshot log
+2. **Use the tight loop, NOT a roadmap**: fix one visible thing at a time, verify in code, move on
+3. **Ask for a screenshot every 3–4 changes** or when a section feels complete — do NOT ask after every single change
+4. **Target reference**: `.superpowers/brainstorm/22806-1775308737/content/homepage-vision.html` — this is the approved visual target. Open it at localhost:49642 to compare.
+5. **Update the tracker file** after each session with current status
+
+**Why**: Roadmaps compound visual uncertainty. Screenshot-driven tight loops catch regressions immediately. Never batch more than 3–4 visual changes without verifying.
+
+---
+
 ## 🚨 LESSONS LEARNED — READ AND MAINTAIN (MANDATORY)
 
 **File: `_rules/LESSONS_LEARNED.md`**

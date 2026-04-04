@@ -56,42 +56,44 @@ export default function TestimonialCarousel() {
       aria-labelledby="testimonials-heading"
     >
       {/* Header */}
-      <span className="block font-heading text-[10px] font-bold uppercase tracking-[.14em] text-s-coral mb-1.5">
-        {t("testimonials.eyebrow") || "Echte Bewertungen"}
-      </span>
-      <h2
-        id="testimonials-heading"
-        className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text tracking-tight mb-7"
-        style={{ lineHeight: "1.1", letterSpacing: "-.01em" }}
-      >
-        {t("testimonials.title") || "Was unsere Nutzer sagen"}
-      </h2>
+      <div className="mb-8">
+        <span className="block font-heading text-[10px] font-bold uppercase tracking-[.14em] text-s-coral mb-2">
+          {t("testimonials.eyebrow") || "Echte Bewertungen"}
+        </span>
+        <h2
+          id="testimonials-heading"
+          className="font-heading font-bold text-s-ink"
+          style={{ fontSize: "26px", lineHeight: "1.1", letterSpacing: "-.01em" }}
+        >
+          {t("testimonials.title") || "Was unsere Nutzer sagen"}
+        </h2>
+      </div>
 
       {/* 3-col grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {TESTIMONIALS.map((testimonial) => (
           <article
             key={testimonial.name}
-            className="bg-white dark:bg-s-dm-surface border border-s-ink/[0.08] dark:border-white/[0.08] rounded-[16px] p-6 flex flex-col gap-3.5 transition-[transform,box-shadow] duration-[300ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:-translate-y-[3px] hover:shadow-[0_4px_16px_rgba(26,18,9,.07)]"
-            style={{ boxShadow: "0 1px 3px rgba(26,18,9,.04)" }}
+            className="bg-white border border-s-ink/[0.08] rounded-[16px] p-6 flex flex-col gap-4 transition-[transform,box-shadow] duration-[300ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:-translate-y-[3px] hover:shadow-[0_4px_20px_rgba(26,18,9,.08)] active:scale-[0.99]"
+            style={{ boxShadow: "0 1px 3px rgba(26,18,9,.04), 0 2px 8px rgba(26,18,9,.03)" }}
           >
             <StarRow />
-            <p className="font-body text-sm leading-relaxed text-s-ink dark:text-s-dm-text italic flex-1">
+            <p className="font-body text-[14px] leading-relaxed flex-1" style={{ color: "#3A2010" }}>
               &ldquo;{testimonial.quote}&rdquo;
             </p>
-            <div className="flex items-center gap-2.5 pt-3 border-t border-s-ink/[0.08] dark:border-white/[0.08]">
+            <div className="flex items-center gap-3 pt-4 border-t border-s-ink/[0.07]">
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-heading font-bold text-[13px] text-white"
+                className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 font-heading font-bold text-[14px] text-white"
                 style={{ background: testimonial.avatarColor }}
                 aria-hidden="true"
               >
                 {testimonial.initial}
               </div>
               <div>
-                <p className="font-heading font-semibold text-[13px] text-s-ink dark:text-s-dm-text leading-tight">
+                <p className="font-heading font-semibold text-[13px] text-s-ink leading-tight">
                   {testimonial.name}
                 </p>
-                <p className="font-body text-[11px] text-s-ink/40 dark:text-s-dm-text/40 leading-tight">
+                <p className="font-body text-[11px] leading-tight" style={{ color: "#9A7A60" }}>
                   {testimonial.city}
                 </p>
               </div>

@@ -55,3 +55,4 @@ supabase/.temp/
 _archive/
 node_modules_old/
 .vercel
+docs/design-specs/CLAUDE_CODE_PROMPT.md

@@ -25,37 +25,40 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
 
   return (
     <section
-      className="px-5 md:px-6 lg:px-10 xl:px-20 pt-12 pb-10 text-center"
+      className="px-5 md:px-6 lg:px-10 xl:px-20 pt-14 pb-12 text-center"
       aria-label={t("sub")}
+      style={{
+        background: [
+          "radial-gradient(ellipse 70% 60% at 10% 80%, rgba(232,98,74,.07) 0%, transparent 65%)",
+          "radial-gradient(ellipse 55% 45% at 88% 20%, rgba(242,193,68,.05) 0%, transparent 60%)",
+          "radial-gradient(ellipse 40% 50% at 55% 100%, rgba(107,163,200,.04) 0%, transparent 70%)",
+          "#ffffff",
+        ].join(", "),
+      }}
     >
       {/* Eyebrow */}
-      <div className="inline-flex items-center gap-1.5 mb-3.5" aria-hidden="true">
-        <span className="w-1.5 h-1.5 rounded-full bg-s-coral opacity-60" />
+      <div className="inline-flex items-center gap-1.5 mb-4" aria-hidden="true">
+        <span className="w-[5px] h-[5px] rounded-full bg-s-coral opacity-60" />
         <span className="font-heading text-[11px] font-bold uppercase tracking-[.12em] text-s-coral">
           {t("eyebrow")}
         </span>
-        <span className="w-1.5 h-1.5 rounded-full bg-s-coral opacity-60" />
+        <span className="w-[5px] h-[5px] rounded-full bg-s-coral opacity-60" />
       </div>
 
-      {/* Headline — Bebas Neue, coral accent on last word */}
+      {/* Headline — Bebas Neue, 3-line dramatic layout matching vision */}
       <h1
-        className="font-display text-s-ink dark:text-s-dm-text mb-3.5 leading-[.88] tracking-[.01em]"
-        style={{ fontSize: "clamp(56px, 8vw, 100px)" }}
+        className="font-display text-s-ink mb-4 tracking-[.01em]"
+        style={{ fontSize: "clamp(64px, 9vw, 108px)", lineHeight: 0.88 }}
       >
-        {(() => {
-          const words = t("headlineWord1") as string;
-          const accent = t("headlineWord2") as string;
-          return (
-            <>
-              {words}{" "}
-              <span className="text-s-coral">{accent}</span>
-            </>
-          );
-        })()}
+        {t("headlineWord1")}
+        <br />
+        <em className="text-s-coral not-italic">{t("headlineAccent")}</em>
+        <br />
+        {t("headlineWord2")}
       </h1>
 
       {/* Subtitle */}
-      <p className="font-body text-[15px] text-s-ink/60 dark:text-s-dm-text/60 max-w-[420px] mx-auto mb-8 leading-relaxed">
+      <p className="font-body text-base text-s-ink/60 max-w-[420px] mx-auto mb-8 leading-relaxed">
         {t("sub")}
       </p>
 
@@ -70,7 +73,7 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
 
       {/* Category quick-chips */}
       <div
-        className="flex flex-wrap justify-center gap-2 mb-4"
+        className="flex flex-wrap justify-center gap-2 mb-5"
         role="navigation"
         aria-label={tNav("categories")}
       >
@@ -78,12 +81,22 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
           <Link
             key={key}
             href={`/${locale}/${key}`}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-xs font-heading font-semibold
-              bg-s-ink/[0.04] dark:bg-white/[0.06]
-              text-s-ink/60 dark:text-s-dm-text/60
-              border border-s-ink/[0.08] dark:border-white/[0.08]
-              hover:bg-s-coral/[0.08] hover:text-s-coral hover:border-s-coral/20
-              transition-[background,color,border-color] duration-150"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-xs font-heading font-semibold border transition-[background,color,border-color] duration-150 active:scale-[0.97]"
+            style={{
+              background: "#FAF6EF",
+              color: "#6A5040",
+              borderColor: "#E8D8CC",
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.background = "rgba(232,98,74,.08)";
+              (e.currentTarget as HTMLElement).style.color = "#E8624A";
+              (e.currentTarget as HTMLElement).style.borderColor = "rgba(232,98,74,.25)";
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.background = "#FAF6EF";
+              (e.currentTarget as HTMLElement).style.color = "#6A5040";
+              (e.currentTarget as HTMLElement).style.borderColor = "#E8D8CC";
+            }}
             aria-label={tNav(key)}
           >
             {icon}
@@ -94,7 +107,8 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
 
       {/* Micro trust signal */}
       <div
-        className="flex items-center justify-center gap-2.5 text-xs text-s-ink/40 dark:text-s-dm-text/40 font-body font-medium"
+        className="flex items-center justify-center gap-2.5 font-body font-medium"
+        style={{ fontSize: "12px", color: "#9A7A60" }}
         aria-label="Platform trust statistics"
       >
         <span className="flex items-center gap-1">
@@ -103,9 +117,9 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
           </svg>
           4.8 {t("trustRating")}
         </span>
-        <span className="w-1 h-1 rounded-full bg-s-ink/[0.15] dark:bg-white/[0.15]" aria-hidden="true" />
+        <span className="w-1 h-1 rounded-full" style={{ background: "#D4C4B4" }} aria-hidden="true" />
         <span>{reviewCount.toLocaleString()}+ {t("trustReviews")}</span>
-        <span className="w-1 h-1 rounded-full bg-s-ink/[0.15] dark:bg-white/[0.15]" aria-hidden="true" />
+        <span className="w-1 h-1 rounded-full" style={{ background: "#D4C4B4" }} aria-hidden="true" />
         <span>{t("trustFree")}</span>
       </div>
     </section>
