@@ -55,7 +55,7 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
         <button
           onClick={handleBack}
           aria-label={t('back')}
-          className="p-2 rounded-pill hover:bg-s-ink/[0.04] dark:hover:bg-white/[0.04] transition-colors"
+          className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.06] transition-colors"
         >
           <ChevronLeft size={20} className="text-s-ink dark:text-s-dm-text" />
         </button>
