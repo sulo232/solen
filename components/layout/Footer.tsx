@@ -27,7 +27,7 @@ export default function Footer() {
 
           {/* Column 1: Platform */}
           <div>
-            <h3 className="font-heading font-semibold text-[12px] uppercase tracking-[1.5px] text-white/40 mb-4">
+            <h3 className="font-heading font-semibold text-[12px] uppercase tracking-wider text-white/40 mb-4">
               {t("platform")}
             </h3>
             <ul className="space-y-2.5">
@@ -38,7 +38,7 @@ export default function Footer() {
                 { label: t("platformLastMinute"), href: `/${locale}/angebote` },
               ].map(({ label, href }) => (
                 <li key={label}>
-                  <Link href={href} className="font-body text-[13px] text-white/60 hover:text-white/90 transition-colors duration-150">
+                  <Link href={href} className="font-body text-[13px] text-white/60 hover:text-white transition-colors duration-150">
                     {label}
                   </Link>
                 </li>
@@ -48,7 +48,7 @@ export default function Footer() {
 
           {/* Column 2: Für Salons */}
           <div>
-            <h3 className="font-heading font-semibold text-[12px] uppercase tracking-[1.5px] text-white/40 mb-4">
+            <h3 className="font-heading font-semibold text-[12px] uppercase tracking-wider text-white/40 mb-4">
               {t("forSalonsTitle")}
             </h3>
             <ul className="space-y-2.5">
@@ -57,7 +57,7 @@ export default function Footer() {
                 { label: t("forSalonsDashboard"), href: `/${locale}/dashboard` },
               ].map(({ label, href }) => (
                 <li key={label}>
-                  <Link href={href} className="font-body text-[13px] text-white/60 hover:text-white/90 transition-colors duration-150">
+                  <Link href={href} className="font-body text-[13px] text-white/60 hover:text-white transition-colors duration-150">
                     {label}
                   </Link>
                 </li>
@@ -67,7 +67,7 @@ export default function Footer() {
 
           {/* Column 3: Legal */}
           <div>
-            <h3 className="font-heading font-semibold text-[12px] uppercase tracking-[1.5px] text-white/40 mb-4">
+            <h3 className="font-heading font-semibold text-[12px] uppercase tracking-wider text-white/40 mb-4">
               {t("legalTitle")}
             </h3>
             <ul className="space-y-2.5">
@@ -78,7 +78,7 @@ export default function Footer() {
                 { label: t("privacy"), href: `/${locale}/datenschutz` },
               ].map(({ label, href }) => (
                 <li key={label}>
-                  <Link href={href} className="font-body text-[13px] text-white/60 hover:text-white/90 transition-colors duration-150">
+                  <Link href={href} className="font-body text-[13px] text-white/60 hover:text-white transition-colors duration-150">
                     {label}
                   </Link>
                 </li>
