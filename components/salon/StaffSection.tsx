@@ -70,7 +70,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
               {m.languages && m.languages.length > 0 && (
                 <div className="flex flex-wrap justify-center gap-1 mt-1">
                   {m.languages.map((lang: string) => (
-                    <span key={lang} className="text-[9px] font-heading font-bold uppercase tracking-[.06em] px-1.5 py-0.5 rounded-sm bg-s-bg-surface text-[#6A6A6A]">
+                    <span key={lang} className="text-xs font-heading font-bold uppercase tracking-[.06em] px-2 py-1 rounded-sm bg-s-bg-surface text-[#6A6A6A]">
                       {lang}
                     </span>
                   ))}

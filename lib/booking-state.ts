@@ -4,7 +4,7 @@
  * Defines the shape of data flowing through the multi-step booking context
  */
 
-export type BookingStep = 'services' | 'staff' | 'date' | 'time' | 'confirm' | 'payment';
+export type BookingStep = 'services' | 'staff' | 'date' | 'time' | 'confirm' | 'payment' | 'services-staff' | 'datetime';
 
 export interface SelectedService {
   id: string;

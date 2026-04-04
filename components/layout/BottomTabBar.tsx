@@ -191,7 +191,7 @@ export default function BottomTabBar() {
               <button
                 onClick={() => setLoginSheet(s => ({ ...s, open: false }))}
                 aria-label={tAuth("close")}
-                className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-s-bg-surface dark:bg-s-dm-surface hover:bg-s-ink/[0.08] transition-colors"
+                className="absolute top-4 right-4 w-11 h-11 flex items-center justify-center rounded-full bg-s-bg-surface dark:bg-s-dm-surface hover:bg-s-ink/[0.08] transition-colors"
               >
                 <X size={15} className="text-s-ink/60 dark:text-s-dm-text/60" />
               </button>

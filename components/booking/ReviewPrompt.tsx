@@ -76,7 +76,7 @@ export default function ReviewPrompt({
       {/* Close button */}
       <button
         onClick={handleDismiss}
-        className="absolute top-4 right-4 p-1 hover:bg-s-ink/[0.05] dark:hover:bg-white/[0.08] rounded-pill transition-colors"
+        className="absolute top-4 right-4 p-3 hover:bg-s-ink/[0.05] dark:hover:bg-white/[0.08] rounded-pill transition-colors"
         aria-label={t('close')}
       >
         <X size={20} className="text-s-ink dark:text-s-dm-text" />

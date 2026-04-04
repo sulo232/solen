@@ -76,7 +76,7 @@ export default function SolenDatePicker({
           <CalendarGrid className="w-full">
             <CalendarGridHeader>
               {(day) => (
-                <CalendarHeaderCell className="text-[10px] font-medium text-s-ink/40 pb-2 w-9 text-center">
+                <CalendarHeaderCell className="text-[10px] font-medium text-s-ink/40 pb-2 w-11 text-center">
                   {day}
                 </CalendarHeaderCell>
               )}
@@ -87,7 +87,7 @@ export default function SolenDatePicker({
                   date={date}
                   className={({ isSelected, isDisabled, isUnavailable, isFocusVisible }) =>
                     cn(
-                      "w-9 h-9 flex items-center justify-center rounded-btn text-sm data-text transition-colors cursor-pointer outline-none",
+                      "w-11 h-11 flex items-center justify-center rounded-btn text-sm data-text transition-colors cursor-pointer outline-none",
                       isSelected && "bg-s-coral text-white font-semibold",
                       !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-coral/10 text-s-ink",
                       isUnavailable && "text-s-ink/20 bg-s-bg-sunken cursor-default line-through",
@@ -151,7 +151,7 @@ export default function SolenDatePicker({
             <CalendarGrid className="w-full">
               <CalendarGridHeader>
                 {(day) => (
-                  <CalendarHeaderCell className="text-[10px] font-medium text-s-ink/40 pb-2 w-9 text-center">
+                  <CalendarHeaderCell className="text-[10px] font-medium text-s-ink/40 pb-2 w-11 text-center">
                     {day}
                   </CalendarHeaderCell>
                 )}
@@ -162,7 +162,7 @@ export default function SolenDatePicker({
                     date={date}
                     className={({ isSelected, isDisabled, isUnavailable, isFocusVisible }) =>
                       cn(
-                        "w-9 h-9 flex items-center justify-center rounded-btn text-sm data-text transition-colors cursor-pointer outline-none",
+                        "w-11 h-11 flex items-center justify-center rounded-btn text-sm data-text transition-colors cursor-pointer outline-none",
                         isSelected && "bg-s-coral text-white font-semibold",
                         !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-coral/10 text-s-ink",
                         isUnavailable && "text-s-ink/20 bg-s-bg-sunken cursor-default line-through",

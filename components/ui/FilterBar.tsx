@@ -164,7 +164,7 @@ export default function FilterBar({
               {f.label}
               <button
                 onClick={() => removeFilter(f)}
-                className="ml-0.5 hover:text-s-coral"
+                className="ml-0.5 p-2 hover:text-s-coral"
                 aria-label={t('removeFilter', { name: f.label })}
               >
                 <X size={11} aria-hidden />

@@ -78,10 +78,10 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
         </div>
         {/* Navigation Arrows — Airbnb spec: 32px white circle, light border, subtle shadow */}
         <div className="hidden md:flex items-center gap-2">
-          <button onClick={() => scroll("left")} aria-label={t("carousel.previousSalons")} className="w-[32px] h-[32px] rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 transition-shadow active:scale-95">
+          <button onClick={() => scroll("left")} aria-label={t("carousel.previousSalons")} className="w-[32px] h-[32px] min-w-[44px] min-h-[44px] rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 transition-shadow active:scale-95">
             <ChevronLeft size={16} aria-hidden="true" />
           </button>
-          <button onClick={() => scroll("right")} aria-label={t("carousel.nextSalons")} className="w-[32px] h-[32px] rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 transition-shadow active:scale-95">
+          <button onClick={() => scroll("right")} aria-label={t("carousel.nextSalons")} className="w-[32px] h-[32px] min-w-[44px] min-h-[44px] rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 transition-shadow active:scale-95">
             <ChevronRight size={16} aria-hidden="true" />
           </button>
         </div>

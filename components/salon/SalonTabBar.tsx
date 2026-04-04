@@ -43,7 +43,7 @@ export default function SalonTabBar({ activeTab, onTabClick, tabs }: SalonTabBar
               data-tab={tab.key}
               onClick={() => onTabClick(tab.key)}
               className={`
-                relative whitespace-nowrap pb-3 text-[14px] font-heading font-semibold transition-colors duration-150 snap-center
+                relative whitespace-nowrap pb-3 min-h-[44px] flex items-end text-[14px] font-heading font-semibold transition-colors duration-150 snap-center
                 ${isActive
                   ? "text-s-ink"
                   : "text-[#6A6A6A] hover:text-s-ink"
