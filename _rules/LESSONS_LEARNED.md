@@ -284,3 +284,17 @@
 - **What happened**: A temporary test file `tmp2.tsx` in the repo root caused build failures: TypeScript tried to type-check it, found undefined properties, and errored. Build couldn't proceed.
 - **Why it happened**: Likely created during debugging/testing and forgot to remove before pushing.
 - **Fix**: Before `npm run build`, remove any `tmp*.tsx`, `test*.tsx`, or files with obvious temp names from the root and `components/` directory. Use `ls -la | grep tmp` to find them. Build validation should always check that only production code exists.
+
+### Linter/IDE auto-reverts ImageFallback imports — re-apply after each edit
+- **Date**: 2026-04-04
+- **File(s)**: `components/ui/FeaturedSalonCarousel.tsx`, `components/salon/SalonHero.tsx`, `components/RecentlyViewed.tsx`
+- **What happened**: Added `import ImageFallback from "@/components/ui/ImageFallback"` and replaced fallback JSX. The linter/IDE removed the import and reverted the JSX changes. Had to re-apply 3 times.
+- **Why it happened**: The IDE's format-on-save or auto-import cleanup removes imports it considers unused if the JSX referencing them was also reverted in the same save cycle.
+- **Fix**: When adding imports + JSX changes to a file, verify with `grep ImageFallback <file>` after each save. If the import disappears, re-add it and the JSX together in a single edit operation.
+
+### `as any` on useTranslations is the established pattern for nested namespaces
+- **Date**: 2026-04-04
+- **File(s)**: 162 files across `components/`
+- **What happened**: 182 `useTranslations("namespace") as any` casts exist. Only 4 using `useTranslations("common")` could be safely removed. The rest use nested paths like `"barber.queue"`, `"chat.clientTags"` that cause TypeScript errors without `as any`.
+- **Why it happened**: `next-intl` generates strict message key types from JSON files. Nested namespace paths (dot-separated) don't resolve correctly in the type system.
+- **Fix**: Only remove `as any` from `useTranslations("common")` and other top-level namespaces where all keys are guaranteed to exist. For nested namespaces, `as any` is the pragmatic workaround until next-intl type generation is configured properly.
