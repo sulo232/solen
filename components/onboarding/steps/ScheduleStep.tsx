@@ -56,7 +56,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
-          <Calendar size={22} className="text-s-coral" />
+          <Calendar size={22} className="text-s-ink/60" />
         </div>
         <div>
           <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">

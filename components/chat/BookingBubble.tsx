@@ -30,7 +30,7 @@ export default function BookingBubble({ salonName, salonSlug, conversationId, me
 
   return (
     <div className="mx-4 mb-2 p-3 rounded-[12px] bg-s-coral/5 border border-s-coral/15 flex items-center gap-3">
-      <Calendar size={18} className="text-s-coral shrink-0" />
+      <Calendar size={18} className="text-s-ink/50 shrink-0" />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("title", { salonName })}</p>
       </div>

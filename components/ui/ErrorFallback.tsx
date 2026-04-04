@@ -19,8 +19,8 @@ export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
         transition={{ duration: 0.35 }}
         className="max-w-md w-full text-center bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md p-8"
       >
-        <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-s-coral/10 flex items-center justify-center">
-          <AlertTriangle size={28} className="text-s-coral" />
+        <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-s-amber/10 flex items-center justify-center">
+          <AlertTriangle size={28} className="text-s-amber" />
         </div>
         <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text mb-2">
           {t("title")}

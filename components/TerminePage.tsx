@@ -319,7 +319,7 @@ export default function TerminePage() {
           animate={{ opacity: 1, y: 0 }}
           className="font-heading font-bold text-xl text-s-ink mb-6 flex items-center gap-2"
         >
-          <Calendar size={20} className="text-s-coral" />
+          <Calendar size={20} className="text-s-ink/60" />
           {t("title")}
         </motion.h1>
 
