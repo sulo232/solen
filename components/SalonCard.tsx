@@ -239,22 +239,24 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavoriteToggle(salon.id); }}
               className="absolute top-1 right-1 z-10 p-2 hover:bg-s-ink/[0.06] active:scale-[0.92] transition-[transform,background-color] duration-150 rounded-full flex items-center justify-center"
+              aria-pressed={isFavorited}
               aria-label={isFavorited ? t("removeFromFavorites") : t("addToFavorites")}
               style={{ minWidth: "44px", minHeight: "44px" }}
             >
-              <Heart
-                className={`w-[26px] h-[26px] transition-colors duration-200 ${
-                  isFavorited
-                    ? "fill-s-coral stroke-s-coral"
-                    : "fill-transparent stroke-white hover:fill-white/20"
-                }`}
-                strokeWidth={2}
-                style={{
-                  filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.45))",
-                  transform: heartBouncing ? "scale(1.3)" : "scale(1)",
-                  transition: "transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1)",
-                }}
-              />
+              <motion.div
+                animate={heartBouncing ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                transition={heartBouncing ? { type: "spring", stiffness: 400, damping: 15, duration: 0.4 } : { duration: 0 }}
+              >
+                <Heart
+                  className={`w-[26px] h-[26px] transition-colors duration-200 ${
+                    isFavorited
+                      ? "fill-s-coral stroke-s-coral"
+                      : "fill-transparent stroke-white hover:fill-white/20"
+                  }`}
+                  strokeWidth={2}
+                  style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.45))" }}
+                />
+              </motion.div>
             </button>
           )}
 
