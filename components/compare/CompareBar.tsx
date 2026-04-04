@@ -12,7 +12,7 @@ interface CompareBarProps {
 }
 
 export default function CompareBar({ salons, onRemove, onCompare }: CompareBarProps) {
-  const t = useTranslations("common") as any;
+  const t = useTranslations("common");
 
   if (salons.length === 0) return null;
 

@@ -24,7 +24,7 @@ const GENDER_OPTIONS = ["female", "male"];
 
 export default function ProfileDiscoverySections({ userId, profile }: ProfileDiscoverySectionsProps) {
   const t = useTranslations("discover") as any;
-  const tc = useTranslations("common") as any;
+  const tc = useTranslations("common");
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({
     disc_gender: profile.disc_gender ?? "",
