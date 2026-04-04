@@ -21,6 +21,8 @@ import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
 import TrustStatsBanner from "@/components/TrustStatsBanner";
 import BrowseByCitySection from "@/components/BrowseByCitySection";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
+import HomepageHero from "@/components/ui/HomepageHero";
+import LastMinuteStrip from "@/components/ui/LastMinuteStrip";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation variants
@@ -203,12 +205,23 @@ export default function HomePage({ initialData }: HomePageProps) {
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden bg-white dark:bg-s-dm-bg">
+    <div className="min-h-screen relative overflow-x-hidden bg-white dark:bg-s-dm-bg hero-cinematic">
       {/* GuidedSearch sheet — sheet-only, trigger rendered inline in header */}
       <GuidedSearch categoryCounts={categoryCounts} hideTrigger />
 
       <main className="max-w-[2520px] mx-auto pb-16">
-        
+
+        {/* ── 0. Hero ── */}
+        <HomepageHero
+          categoryCounts={categoryCounts}
+          reviewCount={2400}
+        />
+
+        {/* ── 0.5. Last Minute Strip ── */}
+        {sections.last_minute && lastMinuteSlots.length > 0 && (
+          <LastMinuteStrip slots={lastMinuteSlots} />
+        )}
+
         {/* ── 1. Category Snapshot Rows (Core Product — shown first) ── */}
         <section className="px-5 md:px-6 lg:px-10 xl:px-20 pt-6 pb-12 space-y-16">
           {orderedSectionKeys.map(({ key, label }) => {
