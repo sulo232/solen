@@ -277,6 +277,74 @@ solen/
 - **Inline Calendar**: `<SolenDatePicker inline>` renders an inline calendar without popover. Used inside the GuidedSearch bottom sheet (Step 3 / Wann). The `inline` prop skips the `<Popover>` and renders the `<Calendar>` directly.
 - **CategoryStickyRow**: `<CategoryStickyRow>` in `components/layout/CategoryStickyRow.tsx` — Airbnb-style category icon row that appears in the header when the homepage category grid scrolls out of view. Listens for `CustomEvent("categoryGridVisibility")` dispatched by `HomePage.tsx` IntersectionObserver. On category pages (`/coiffeur`, `/nails`, etc.) it's always visible. Zone 1 only (glass + animation allowed).
 
+#### Anti-Slop Animation & Interaction Rules (MANDATORY — embedded from `emil-design-eng` skill)
+
+These 5 patterns are the difference between polished UI and generic AI slop. They apply to every component, every time. No invocation needed — they are always in effect.
+
+**1. Nothing enters from nothing — always start from near-final state**
+```css
+/* ❌ SLOP — element appears out of thin air */
+.entering { transform: scale(0); opacity: 0; }
+
+/* ✅ RIGHT — element was always there, just barely */
+.entering { transform: scale(0.95); opacity: 0; }
+/* Even scale(0.97) is fine. The exact value matters less than the principle. */
+```
+
+**2. Ease-out for entering UI — never ease-in, never `transition-all`**
+```css
+/* ❌ SLOP — starts slow, feels broken */
+transition: all 300ms ease-in;
+
+/* ✅ RIGHT — instant response, smooth landing */
+transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1),
+            opacity 200ms cubic-bezier(0.23, 1, 0.32, 1);
+/* Named properties only. Never `all`. */
+```
+
+**3. Under 300ms for all UI interactions — no exceptions**
+```
+Button press:        100–150ms
+Tooltip/popover:     125–200ms
+Dropdown:            150–250ms
+Modal/sheet:         200–300ms
+Page transitions:    200–300ms
+Marketing sections:  can be longer
+```
+If you feel the urge to write `duration-500` on a UI element — don't.
+
+**4. Every pressable element needs `:active` scale feedback**
+```tsx
+/* ❌ SLOP — button doesn't respond to press */
+<button className="bg-s-coral text-white">Book</button>
+
+/* ✅ RIGHT — button confirms the press */
+<button className="bg-s-coral text-white active:scale-[0.97] transition-transform duration-100">Book</button>
+/* This applies to cards, pills, links — anything the user taps. */
+```
+
+**5. State a design intent before writing any new component**
+
+Before the first line of code, write one sentence (in a comment or just mentally):
+> *"This component should feel ______ because ______."*
+
+Examples:
+- *"This strip should feel urgent because last-minute slots are time-sensitive."*
+- *"This card should feel editorial because we're showcasing curated salons."*
+- *"This banner should feel grounded and trustworthy because it's quoting real customers."*
+
+If you can't answer this, invoke the `frontend-design` skill before proceeding. Generic components that were written without design intent are the definition of slop.
+
+**Banned CSS patterns — if you write any of these, stop and fix:**
+```
+transition: all ...           → name specific properties
+ease-in on entering elements  → use ease-out
+scale(0) on entering          → use scale(0.95) or higher
+duration-500 on UI            → max 300ms
+shadow-md / shadow-lg         → use shadow-elevation-* or shadow-v5-*
+hover:opacity-80              → use hover:brightness-[1.06] or shadow change
+```
+
 ### 3.4 Design System (Legacy — ARCHIVED, DO NOT USE)
 
 > ⚠️ The old monolith design (wine-red `#9B1D30`, gold, DM Serif Display) is **retired**. It lives in `_archive/monolith-v1.html` for reference only. **ALL new code must use the Next.js design system (Section 3.3).**
@@ -1044,6 +1112,9 @@ className="bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.98] tra
 Before committing ANY new component, verify ALL of these:
 
 ```
+□ DESIGN INTENT stated: "This component should feel ___ because ___"
+  (If you can't answer, invoke frontend-design skill before writing)
+
 □ Uses useTranslations() — ZERO hardcoded strings
 □ Keys added to de.json, en.json, fr.json, it.json (all 4)
 □ Translations are ACTUAL (not empty strings or German copies)
@@ -1057,6 +1128,13 @@ Before committing ANY new component, verify ALL of these:
 □ No banned tokens (see UI_RULES.md §20)
 □ npm run build passes
 □ Component is actually imported + rendered by a page (Rule 41)
+
+Animation/interaction (anti-slop):
+□ Entering elements start from scale(0.95+) not scale(0)
+□ All transitions name specific properties — never `transition-all`
+□ Easing is ease-out / cubic-bezier(0.23,1,0.32,1) — never ease-in
+□ All UI animation durations ≤ 300ms
+□ Every pressable element has active:scale-[0.97] or active:scale-[0.98]
 ```
 
 **If you cannot satisfy all items** (e.g., page isn't ready yet), move the component to `components/_staging/` and log it in `_tasks/INCOMPLETE_FEATURES.md`.
@@ -1065,11 +1143,16 @@ Before committing ANY new component, verify ALL of these:
 # Quick verification script after creating a new component:
 FILE="components/MyNewComponent.tsx"
 echo "=== Checking $FILE ==="
-grep -c "useTranslations\|getTranslations" "$FILE"     # Must be ≥ 1
-grep -c "rgba(255,255,255" "$FILE"                      # Must be 0
-grep -c "text-black\|bg-white[^/]" "$FILE"              # Must be 0
-grep -c "hover:bg-s-coral/90\|hover:scale-\[" "$FILE"   # Must be 0
-grep -c "aria-label" "$FILE"                             # Must be ≥ 1
+grep -c "useTranslations\|getTranslations" "$FILE"              # Must be ≥ 1
+grep -c "rgba(255,255,255" "$FILE"                               # Must be 0
+grep -c "text-black\|bg-white[^/]" "$FILE"                       # Must be 0
+grep -c "hover:bg-s-coral/90\|hover:scale-\[" "$FILE"            # Must be 0
+grep -c "aria-label" "$FILE"                                      # Must be ≥ 1
+# Anti-slop animation checks:
+grep -c "transition-all\|transition: all" "$FILE"                 # Must be 0
+grep -c "ease-in\b" "$FILE"                                       # Must be 0 (ease-in-out is OK)
+grep -c "scale(0)[^.]" "$FILE"                                    # Must be 0
+grep -c "duration-500\|duration-700\|duration-1000" "$FILE"      # Must be 0 (UI elements)
 echo "=== Done ==="
 ```
 
