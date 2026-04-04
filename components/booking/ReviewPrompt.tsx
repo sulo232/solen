@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { slideUp } from '@/lib/animations';
 import { useTranslations } from 'next-intl';
 import { Star, X } from 'lucide-react';
 
@@ -64,15 +66,20 @@ export default function ReviewPrompt({
     }
   };
 
-  if (!isVisible) return null;
-
   return (
-    <div
-      className="fixed bottom-6 right-6 z-50 max-w-sm bg-[--raised] dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.08] shadow-elevation-3 p-6 animate-[slideUp_0.3s_ease-out]"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="review-prompt-title"
-    >
+    <AnimatePresence>
+      {isVisible && (
+      <motion.div
+        className="fixed bottom-6 right-6 z-50 max-w-sm bg-[--raised] dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.08] shadow-elevation-3 p-6"
+        variants={slideUp}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="review-prompt-title"
+      >
       {/* Close button */}
       <button
         onClick={handleDismiss}
@@ -154,6 +161,8 @@ export default function ReviewPrompt({
       >
         {isSubmitting ? `${t('submit')}...` : t('submit')}
       </button>
-    </div>
+      </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

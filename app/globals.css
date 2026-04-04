@@ -454,6 +454,12 @@ html {
 .stamp-new { animation: stampBounce 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
 .confetti  { animation: confettiFall 1.5s ease-out forwards; }
 
+/* ── General utility animations ──────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 /* ── Warum-Solen page animations ───────────────────────────────────── */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(24px); }
