@@ -497,7 +497,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           <button
             onClick={() => setFiltersExpanded(!filtersExpanded)}
             aria-expanded={filtersExpanded}
-            className="text-xs font-heading font-semibold text-s-coral hover:text-s-coral-hover transition-colors mb-2"
+            className="text-xs font-heading font-semibold text-s-ink/60 hover:text-s-ink transition-colors mb-2"
           >
             {filtersExpanded ? t("lessFilters") : t("moreFiltersToggle")}
           </button>

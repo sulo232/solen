@@ -218,7 +218,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                   {t("segWo") ?? "Wo"}
                 </span>
                 <span className="flex items-center gap-1.5 text-[14px] font-body font-medium text-s-ink">
-                  <MapPin size={13} className="text-s-coral shrink-0" />
+                  <MapPin size={13} className="text-s-ink/50 shrink-0" />
                   {city === "all"
                     ? tc("everywhere")
                     : getCityName(city as any, locale)}
@@ -299,7 +299,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                   {t("segWann") ?? "Wann"}
                 </span>
                 <span className="flex items-center gap-1.5 text-[14px] font-body font-medium text-s-ink">
-                  <Calendar size={13} className="text-s-coral shrink-0" />
+                  <Calendar size={13} className="text-s-ink/50 shrink-0" />
                   {dateLabel}
                 </span>
               </button>

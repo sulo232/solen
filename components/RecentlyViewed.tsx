@@ -80,7 +80,7 @@ export default function RecentlyViewed() {
   return (
     <section className="max-w-5xl mx-auto px-4 py-6">
       <div className="flex items-center gap-2 mb-4">
-        <Clock size={18} className="text-s-coral" />
+        <Clock size={18} className="text-s-ink/50 dark:text-s-dm-text/50" />
         <h2 className="font-heading font-semibold text-lg text-s-ink dark:text-s-dm-text">
           {t("title")}
         </h2>

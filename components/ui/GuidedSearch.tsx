@@ -841,7 +841,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                               : "border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-ink/20 dark:hover:border-white/20"
                           }`}
                         >
-                          <MapPin size={20} className={city === null ? "text-s-coral" : "text-s-ink/40 dark:text-s-dm-text/40"} aria-hidden="true" />
+                          <MapPin size={20} className="text-s-ink/40 dark:text-s-dm-text/40" aria-hidden="true" />
                           <span className="flex-1 text-left text-[14px] font-body font-medium text-s-ink dark:text-s-dm-text">
                             {t("steps.where.allSwitzerland")}
                           </span>

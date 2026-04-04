@@ -198,10 +198,10 @@ export default function SalonReviews({
                     setReviewSort(s);
                     setReviewPage(1);
                   }}
-                  className={`px-3 py-1.5 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] transition-colors ${
+                  className={`px-3 py-1.5 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150 ${
                     reviewSort === s
                       ? "bg-s-coral text-white"
-                      : "bg-s-bg-surface border border-s-ink/[0.08] text-s-ink/60 hover:border-s-ink/20"
+                      : "bg-s-bg-surface border border-s-ink/[0.08] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral"
                   }`}
                 >
                   {s === "newest" ? t("sortNewest") : s === "highest" ? t("sortHighest") : t("sortLowest")}
@@ -245,7 +245,7 @@ export default function SalonReviews({
                         {needsTruncation && (
                           <button
                             onClick={() => toggleExpanded(rev.id)}
-                            className="ml-1 text-s-coral font-medium hover:underline"
+                            className="ml-1 text-s-ink/60 font-medium hover:text-s-ink hover:underline"
                           >
                             {isExpanded ? t("readLess") : t("readMore")}
                           </button>
@@ -305,7 +305,7 @@ export default function SalonReviews({
                       ) : (
                         <button
                           onClick={() => handleFlagReview(rev.id)}
-                          className="text-xs text-s-ink/30 hover:text-s-coral transition-colors duration-150 font-heading font-semibold uppercase tracking-[.08em]"
+                          className="text-xs text-s-ink/30 hover:text-s-ink/60 transition-colors duration-150 font-heading font-semibold uppercase tracking-[.08em]"
                         >
                           {t("flagReview")}
                         </button>
@@ -319,7 +319,7 @@ export default function SalonReviews({
                           <button
                             key={photo.id}
                             onClick={() => onLightbox?.(photo.photo_url)}
-                            className="relative w-16 h-16 rounded-[12px] overflow-hidden bg-s-bg-surface hover:opacity-80 transition-opacity duration-150 shrink-0"
+                            className="relative w-16 h-16 rounded-[12px] overflow-hidden bg-s-bg-surface hover:bg-s-ink/[0.06] active:scale-[0.92] transition-[transform,background-color] duration-150 shrink-0"
                             aria-label={t("enlargePhoto")}
                           >
                             <Image src={photo.photo_url} alt="" fill className="object-cover" sizes="64px" />
@@ -357,7 +357,7 @@ export default function SalonReviews({
             {reviews.length > reviewsVisible.length && (
               <button
                 onClick={() => setReviewPage((p) => p + 1)}
-                className="mt-4 w-full py-2.5 border border-s-ink/10 rounded-btn text-sm text-s-ink/60 hover:border-s-coral transition-colors duration-150"
+                className="mt-4 w-full py-2.5 border border-s-ink/10 rounded-btn text-sm text-s-ink/60 hover:border-s-ink/[0.18] hover:text-s-ink/80 active:scale-[0.97] transition-[border-color,color,transform] duration-150"
               >
                 {t("showMoreReviews")}
               </button>
