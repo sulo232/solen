@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from "framer-motion";
+import { modalVariants } from "@/lib/animations";
 import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { beautyIconMap } from '@/components/ui/beauty-icons';
@@ -143,16 +145,22 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
   };
 
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-s-ink/40 dark:bg-black/60 z-modal-backdrop"
-        onClick={onClose}
-      />
+    <AnimatePresence>
+      {isOpen && (
+      <>
+        {/* Backdrop */}
+        <motion.div
+          className="fixed inset-0 bg-s-ink/40 dark:bg-black/60 z-modal-backdrop"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={onClose}
+        />
 
-      {/* Modal */}
-      <div className="fixed inset-0 flex items-end sm:items-center justify-center z-modal p-4">
-        <div role="dialog" aria-modal="true" className="bg-[--raised] dark:bg-s-dm-surface rounded-[18px] w-full max-w-md max-h-[90vh] overflow-y-auto shadow-warm-lg">
+        {/* Modal */}
+        <div className="fixed inset-0 flex items-end sm:items-center justify-center z-modal p-4">
+          <motion.div role="dialog" aria-modal="true" variants={modalVariants} initial="hidden" animate="visible" exit="exit" className="bg-[--raised] dark:bg-s-dm-surface rounded-[18px] w-full max-w-md max-h-[90vh] overflow-y-auto shadow-warm-lg">
           {/* Header */}
           <div className="sticky top-0 bg-[--raised] dark:bg-s-dm-surface border-b border-s-ink/10 dark:border-white/10 px-6 py-4 flex items-center justify-between rounded-t-[18px]">
             <h2 className="font-heading text-[18px] font-bold text-s-ink dark:text-s-dm-text">
@@ -274,8 +282,10 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
               {isSaving ? t("saving") : t("save")}
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </>
+      </>
+      )}
+    </AnimatePresence>
   );
-};
+}

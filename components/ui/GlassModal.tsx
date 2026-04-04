@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { modalVariants } from "@/lib/animations";
+import { modalVariants, DURATION_NORMAL } from "@/lib/animations";
 
 // ── Focus trap hook ──────────────────────────
 function useFocusTrap(ref: React.RefObject<HTMLDivElement | null>, isOpen: boolean) {
@@ -109,7 +109,7 @@ export default function GlassModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: DURATION_NORMAL }}
             onClick={onClose}
           />
 

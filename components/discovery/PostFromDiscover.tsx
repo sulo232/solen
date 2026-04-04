@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { modalVariants } from "@/lib/animations";
 import { Plus, X, Upload, Link as LinkIcon, Loader2 } from "lucide-react";
 import { useLocale } from "next-intl";
 import ToSCheckbox from "./ToSCheckbox";
@@ -160,11 +162,23 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
       </button>
 
       {/* Modal */}
+      <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-          <div className="absolute inset-0 bg-s-ink/40" onClick={() => setOpen(false)} />
-          <div
+          <motion.div
+            className="absolute inset-0 bg-s-ink/40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setOpen(false)}
+          />
+          <motion.div
             className="relative w-full sm:max-w-md bg-white dark:bg-s-dm-surface rounded-t-[16px] sm:rounded-[16px] p-5 max-h-[85vh] overflow-y-auto"
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             role="dialog"
             aria-modal="true"
             aria-label={t.newPost}
@@ -292,9 +306,10 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                 </button>
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
       )}
+      </AnimatePresence>
     </>
   );
 }

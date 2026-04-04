@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { EASE_SOLEN } from "@/lib/animations";
 import { motion, AnimatePresence, useMotionValue, useTransform, animate, PanInfo } from "framer-motion";
 import { X } from "lucide-react";
 
@@ -69,7 +70,7 @@ export default function BottomSheet({
     animate(sheetY, windowHeight * (1 - target), {
       type: "tween",
       duration: 0.3,
-      ease: [0.32, 0.72, 0, 1],
+      ease: [...EASE_SOLEN],
     });
   };
 
@@ -85,7 +86,7 @@ export default function BottomSheet({
       animate(sheetY, windowHeightRef.current * (1 - initialPercent), {
         type: "tween",
         duration: 0.3,
-        ease: [0.32, 0.72, 0, 1],
+        ease: [...EASE_SOLEN],
       });
     }
   }, [isOpen, initialDetent, sheetY]);
