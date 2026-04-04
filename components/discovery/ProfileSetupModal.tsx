@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { modalVariants } from "@/lib/animations";
 import { X } from "lucide-react";
 import { useLocale } from "next-intl";
 
@@ -111,14 +113,26 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
     `px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[color,background-color,border-color] duration-150 ${active ? "border-s-coral bg-s-coral/[0.08] text-s-coral" : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/40"}`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-s-ink/40" onClick={onClose}>
-      <div
-        className="relative w-full sm:max-w-md rounded-t-card sm:rounded-[18px] overflow-hidden max-h-[85vh] overflow-y-auto bg-white shadow-v5-float"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-label={t.title}
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-s-ink/40"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        onClick={onClose}
       >
+        <motion.div
+          className="relative w-full sm:max-w-md rounded-t-card sm:rounded-[18px] overflow-hidden max-h-[85vh] overflow-y-auto bg-white shadow-v5-float"
+          variants={modalVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          onClick={(e) => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          aria-label={t.title}
+        >
         {/* Header */}
         <div className="px-6 pt-6 pb-4 border-b border-s-ink/[0.06] flex items-start justify-between">
           <div>
@@ -192,7 +206,8 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
           </button>
         </div>
         </div>
-      </div>
-    </div>
+          </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
