@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Star, Heart, Award, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
 import type { SalonCard } from "@/lib/types";
@@ -122,6 +123,7 @@ interface SalonHeroCardProps {
 
 function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, isDemo }: SalonHeroCardProps) {
   const t = useTranslations("home") as any;
+  const [heartBouncing, setHeartBouncing] = useState(false);
   const tCommon = useTranslations("common");
   const photo = salon.cover_photo_url ?? salon.gallery_urls?.[0] ?? null;
   const showRating = (salon.review_count ?? 0) >= 3;
@@ -167,18 +169,30 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
         {!isDemo && onFavoriteToggle && (
           <button
             type="button"
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavoriteToggle(salon.id); }}
-            className="absolute top-2 right-2 z-[2] p-2 rounded-full bg-black/10 backdrop-blur-md flex items-center justify-center transition-[background-color,transform] duration-200 hover:bg-black/20 hover:scale-110 active:scale-95 shadow-sm"
-            aria-label="Toggle Favorite"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onFavoriteToggle(salon.id);
+              setHeartBouncing(true);
+              setTimeout(() => setHeartBouncing(false), 500);
+            }}
+            className="absolute top-2 right-2 z-[2] p-2 rounded-full bg-black/10 backdrop-blur-md flex items-center justify-center transition-[background-color] duration-200 hover:bg-black/20 shadow-sm"
+            aria-pressed={isFavorited}
+            aria-label={isFavorited ? t("removeFavorite") : t("addFavorite")}
             style={{ minWidth: "44px", minHeight: "44px" }}
           >
-            <Heart
-              className={`w-6 h-6 transition-colors duration-200 ${
-                isFavorited ? "fill-s-coral stroke-s-coral" : "fill-transparent stroke-white"
-              }`}
-              strokeWidth={2}
-              style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.45))" }}
-            />
+            <motion.div
+              animate={heartBouncing ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+              transition={heartBouncing ? { type: "spring", stiffness: 400, damping: 15, duration: 0.4 } : { duration: 0 }}
+            >
+              <Heart
+                className={`w-6 h-6 transition-colors duration-200 ${
+                  isFavorited ? "fill-s-coral stroke-s-coral" : "fill-transparent stroke-white"
+                }`}
+                strokeWidth={2}
+                style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.45))" }}
+              />
+            </motion.div>
           </button>
         )}
       </div>
