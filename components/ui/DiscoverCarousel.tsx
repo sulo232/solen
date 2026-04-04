@@ -8,6 +8,8 @@ import VideoCard from "@/components/discovery/VideoCard";
 import Skeleton from "@/components/ui/Skeleton";
 import type { DiscoveryItem } from "@/lib/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { containerVariants, itemVariants } from "@/lib/animations";
 import { DEMO_DISCOVER_ITEMS } from "@/lib/demo-data";
 
 export default function DiscoverCarousel({ locale }: { locale: string }) {
@@ -123,15 +125,17 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
               </Link>
             );
           })
-        ) : (
-          items.map((item, index) => {
+        ) : null}
+        {!isLoading && items.length > 0 && (
+          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="flex gap-4">
+          {items.map((item, index) => {
             const isExpanded = hoveredIndex !== null ? hoveredIndex === index : activeIndex === index;
             return (
+              <motion.div key={item.id} variants={itemVariants} className="shrink-0 snap-center">
               <Link
                 href={`/${locale}/discover?id=${item.id}`}
                 prefetch={false}
-                key={item.id}
-                className="shrink-0 snap-center group relative block w-[44vw] max-w-[200px] aspect-[4/5]"
+                className="group relative block w-[44vw] max-w-[200px] aspect-[4/5]"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
@@ -143,8 +147,10 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
                   )}
                 </div>
               </Link>
+              </motion.div>
             );
-          })
+          })}
+          </motion.div>
         )}
 
         {/* Final card: "Go to Entdecken" — clean monochrome */}
