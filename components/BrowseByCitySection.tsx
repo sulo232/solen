@@ -2,107 +2,146 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { ArrowRight } from "lucide-react";
 
-interface CityCard {
-  slug: string;
-  name: string;
-  salonCount: number;
-  gradient: string;
-  textColor: string;
-}
+const CITIES = [
+  { slug: "basel",  name: "Basel",  count: 42 },
+  { slug: "zurich", name: "Zürich", count: 38 },
+  { slug: "bern",   name: "Bern",   count: 28 },
+] as const;
 
-const CITIES: CityCard[] = [
-  {
-    slug: "basel",
-    name: "Basel",
-    salonCount: 42,
-    gradient: "from-s-coral to-s-amber",
-    textColor: "text-white",
-  },
-  {
-    slug: "zurich",
-    name: "Zürich",
-    salonCount: 38,
-    gradient: "from-s-blue to-indigo-600",
-    textColor: "text-white",
-  },
-  {
-    slug: "bern",
-    name: "Bern",
-    salonCount: 28,
-    gradient: "from-s-sage to-teal-600",
-    textColor: "text-white",
-  },
-];
-
-const CATEGORIES = [
-  { slug: "coiffeur", label: "Coiffeur" },
-  { slug: "nails", label: "Nägel" },
-  { slug: "barbershop", label: "Barbershop" },
-  { slug: "spa", label: "Spa" },
-  { slug: "makeup", label: "Makeup" },
-  { slug: "waxing", label: "Waxing" },
-];
+const CATEGORY_KEYS = [
+  "coiffeur", "nails", "barbershop", "spa", "makeup", "waxing",
+] as const;
 
 export default function BrowseByCitySection() {
   const locale = useLocale();
   const t = useTranslations("home");
+  const tNav = useTranslations("navigation");
 
   return (
-    <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-ink/[0.08] dark:border-white/[0.08]">
-      {/* Section Header */}
-      <div className="mb-8">
-        <h2 className="font-heading font-semibold text-xl tracking-tight text-s-ink dark:text-s-dm-text" style={{ lineHeight: "1.1" }}>
-          {t("cities.title") || "Salons in deiner Nähe"}
-        </h2>
-      </div>
+    <section
+      className="relative overflow-hidden"
+      style={{ background: "#100602" }}
+      aria-labelledby="city-section-heading"
+    >
+      {/* Coral glow — top right */}
+      <div
+        className="pointer-events-none absolute -top-32 -right-20 w-[560px] h-[560px] rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(232,98,74,.14) 0%, transparent 60%)" }}
+        aria-hidden="true"
+      />
+      {/* Blue glow — bottom left */}
+      <div
+        className="pointer-events-none absolute -bottom-20 -left-10 w-[320px] h-[320px] rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(107,163,200,.06) 0%, transparent 65%)" }}
+        aria-hidden="true"
+      />
 
-      {/* City Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {CITIES.map((city) => (
-          <Link
-            key={city.slug}
-            href={`/${locale}/${city.slug}/coiffeur`}
-            className="group relative overflow-hidden rounded-card h-[200px] flex flex-col items-end justify-end p-6 hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+      <div className="relative px-5 md:px-6 lg:px-10 xl:px-20 py-16 md:py-20">
+
+        {/* Eyebrow with line */}
+        <div className="flex items-center gap-4 mb-12">
+          <span
+            id="city-section-heading"
+            className="font-heading text-[10px] font-bold uppercase tracking-[.16em]"
+            style={{ color: "rgba(232,98,74,.7)" }}
           >
-            {/* Gradient Background */}
-            <div
-              className={`absolute inset-0 bg-gradient-to-br ${city.gradient}`}
-              aria-hidden="true"
-            />
+            {t("cities.title") || "Wo suchst du?"}
+          </span>
+          <div className="h-px flex-1 max-w-[200px]" style={{ background: "rgba(255,255,255,.05)" }} aria-hidden="true" />
+        </div>
 
-            {/* Content Overlay */}
-            <div className="relative z-10 w-full text-center">
-              <h3 className={`font-heading font-bold text-3xl ${city.textColor} mb-1`}>
+        {/* City list */}
+        <div role="list">
+          {CITIES.map((city, idx) => (
+            <Link
+              key={city.slug}
+              href={`/${locale}/${city.slug}/coiffeur`}
+              role="listitem"
+              aria-label={`${city.name} — ${city.count} Salons`}
+              className="group flex items-center py-5 relative"
+              style={{
+                borderTop: idx === 0 ? "1px solid rgba(255,255,255,.05)" : "none",
+                borderBottom: "1px solid rgba(255,255,255,.05)",
+                paddingLeft: "0px",
+                transition: "padding-left 300ms cubic-bezier(0.23,1,0.32,1)",
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.paddingLeft = "20px"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.paddingLeft = "0px"; }}
+            >
+              {/* Left accent bar */}
+              <div
+                className="absolute left-0 top-0 bottom-0 w-0.5 bg-s-coral origin-bottom scale-y-0 group-hover:scale-y-100"
+                style={{ transition: "transform 280ms cubic-bezier(0.23,1,0.32,1)" }}
+                aria-hidden="true"
+              />
+
+              {/* City name */}
+              <span
+                className="font-display flex-1 group-hover:text-white"
+                style={{
+                  fontSize: "clamp(48px, 7vw, 76px)",
+                  lineHeight: ".85",
+                  letterSpacing: ".01em",
+                  color: "rgba(255,255,255,.8)",
+                  transition: "color 200ms ease",
+                }}
+              >
                 {city.name}
-              </h3>
-              <p className={`font-body text-sm ${city.textColor} opacity-90`}>
-                {city.salonCount} {city.salonCount === 1 ? "Salon" : "Salons"}
-              </p>
-            </div>
-          </Link>
-        ))}
-      </div>
+              </span>
 
-      {/* Category Sub-links */}
-      <div className="space-y-4">
-        {CITIES.map((city) => (
-          <div key={city.slug} className="flex flex-wrap items-center gap-2 justify-center md:justify-start">
-            {CATEGORIES.map((category, idx) => (
-              <div key={category.slug} className="flex items-center gap-2">
-                <Link
-                  href={`/${locale}/${city.slug}/${category.slug}`}
-                  className="text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors duration-150"
+              {/* Count + arrow */}
+              <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                <span
+                  className="font-body text-xs tracking-[.04em]"
+                  style={{ color: "rgba(255,255,255,.28)" }}
                 >
-                  {category.label}
-                </Link>
-                {idx < CATEGORIES.length - 1 && (
-                  <span className="text-s-ink/[0.08] dark:text-white/[0.08]">·</span>
-                )}
+                  {city.count} Salons
+                </span>
+                <span
+                  className="flex items-center gap-1.5 font-heading text-[11px] font-bold uppercase tracking-[.04em] text-s-coral opacity-0 -translate-x-2.5 group-hover:opacity-100 group-hover:translate-x-0"
+                  style={{ transition: "opacity 200ms ease, transform 260ms cubic-bezier(0.23,1,0.32,1)" }}
+                  aria-hidden="true"
+                >
+                  Entdecken <ArrowRight size={13} />
+                </span>
               </div>
-            ))}
-          </div>
-        ))}
+            </Link>
+          ))}
+        </div>
+
+        {/* Category pills */}
+        <div className="flex flex-wrap gap-2 mt-11">
+          {CATEGORY_KEYS.map((key) => (
+            <Link
+              key={key}
+              href={`/${locale}/${key}`}
+              className="px-3.5 py-1.5 rounded-pill font-heading text-xs font-medium"
+              style={{
+                background: "rgba(255,255,255,.05)",
+                color: "rgba(255,255,255,.4)",
+                border: "1px solid rgba(255,255,255,.07)",
+                transition: "background 150ms ease, color 150ms ease, border-color 150ms ease",
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLAnchorElement;
+                el.style.background = "rgba(232,98,74,.18)";
+                el.style.color = "rgba(232,98,74,.95)";
+                el.style.borderColor = "rgba(232,98,74,.28)";
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLAnchorElement;
+                el.style.background = "rgba(255,255,255,.05)";
+                el.style.color = "rgba(255,255,255,.4)";
+                el.style.borderColor = "rgba(255,255,255,.07)";
+              }}
+              aria-label={tNav(key)}
+            >
+              {tNav(key)}
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );
