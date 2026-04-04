@@ -441,7 +441,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                     <button
                       onClick={() => handleTranslate(msg.id, msg.content)}
                       disabled={translating === msg.id}
-                      className={["ml-1 opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 transition-opacity",
+                      className={["ml-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:opacity-100 focus:opacity-100 transition-opacity",
                         isOwn(msg) ? "text-white/40 hover:text-white/70" : "text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-ink/50 dark:hover:text-s-dm-text/50"
                       ].join(" ")}
                       title={t("translate")}

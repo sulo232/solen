@@ -102,7 +102,13 @@ export default function GlassModal({
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center p-4">
+        <div
+          className="fixed inset-0 z-60 flex items-center justify-center p-4"
+          style={{
+            paddingTop: "max(16px, env(safe-area-inset-top))",
+            paddingBottom: "max(16px, env(safe-area-inset-bottom))",
+          }}
+        >
           {/* Backdrop */}
           <motion.div
             className="absolute inset-0 bg-s-ink/30 backdrop-blur-[6px]"

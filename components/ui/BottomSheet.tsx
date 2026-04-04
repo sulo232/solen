@@ -115,7 +115,13 @@ export default function BottomSheet({
           >
             {/* Drag handle */}
             <div className="flex justify-center pt-5 pb-2 sticky top-0 z-10 rounded-t-[28px] glass-frost cursor-grab active:cursor-grabbing">
-              <div className="w-10 h-1 rounded-full bg-s-ink/15" />
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label="Drag to close"
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClose(); } }}
+                className="w-10 h-1 rounded-full bg-s-ink/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+              />
             </div>
             {/* Header */}
             {title && (
@@ -130,7 +136,7 @@ export default function BottomSheet({
                 </button>
               </div>
             )}
-            <div className="px-4 pb-8">{children}</div>
+            <div className="px-4" style={{ paddingBottom: "max(32px, env(safe-area-inset-bottom))" }}>{children}</div>
           </motion.div>
         </div>
       )}

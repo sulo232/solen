@@ -154,7 +154,9 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       scrolled
         ? "bg-white border-b border-s-ink/[0.08] shadow-sm"
         : "bg-white border-transparent"
-    )}>
+    )}
+    style={{ paddingTop: "env(safe-area-inset-top)" }}
+    >
       {/* ── Top Row: Logo, (Small Pill if scrolled), Profile ── */}
       <div className={cn(
         "max-w-[2520px] mx-auto px-5 md:px-6 lg:px-10 xl:px-20 w-full flex items-center justify-between gap-4 transition-[padding-top] duration-300 relative z-[60]",

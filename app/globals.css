@@ -873,14 +873,14 @@ html {
   animation-play-state: paused;
 }
 
-/* ── Global focus-visible ring (keyboard accessibility) ────────────── */
+/* ── Global focus-visible ring (WCAG AAA keyboard accessibility) ────── */
 *:focus-visible {
-  outline: 2px solid #222222;
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline: none;
+  box-shadow: 0 0 0 2px #FAF6EF, 0 0 0 4px #E8624A;
 }
 button:focus-visible,
 a:focus-visible {
-  outline-offset: 3px;
+  outline: none;
+  box-shadow: 0 0 0 2px #FAF6EF, 0 0 0 4px #E8624A;
 }
 

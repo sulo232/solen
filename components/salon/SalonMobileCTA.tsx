@@ -47,7 +47,7 @@ export default function SalonMobileCTA({
           WebkitBackdropFilter: "blur(20px) saturate(180%)",
           borderTop: "1px solid rgba(0,0,0,0.08)",
           boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
-          paddingBottom: "env(safe-area-inset-bottom)",
+          paddingBottom: "max(16px, env(safe-area-inset-bottom))",
         }}
       >
         <div className="flex items-center justify-between px-5 py-3">

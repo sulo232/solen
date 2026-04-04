@@ -294,7 +294,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               onClick={(e) => { e.preventDefault(); e.stopPropagation();
                 scrollContainerRef.current?.scrollTo({ left: (photoIndex - 1) * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
               }}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92]"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
               aria-label="Previous photo"
             >
               <ChevronLeft size={18} />
@@ -306,7 +306,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               onClick={(e) => { e.preventDefault(); e.stopPropagation();
                 scrollContainerRef.current?.scrollTo({ left: (photoIndex + 1) * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
               }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92]"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
               aria-label="Next photo"
             >
               <ChevronRight size={18} />
