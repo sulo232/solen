@@ -109,12 +109,13 @@ export default function BookingSuccess(props: BookingSuccessProps) {
     }, 4000);
   }, []);
 
-  const dateStr = new Date(props.dateTime).toLocaleDateString("de-CH", {
+  const localeCode = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
+  const dateStr = new Date(props.dateTime).toLocaleDateString(localeCode, {
     weekday: "long",
     day: "numeric",
     month: "long",
   });
-  const timeStr = new Date(props.dateTime).toLocaleTimeString("de-CH", {
+  const timeStr = new Date(props.dateTime).toLocaleTimeString(localeCode, {
     hour: "2-digit",
     minute: "2-digit",
   });
