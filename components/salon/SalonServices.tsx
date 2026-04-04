@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Clock } from "lucide-react";
+import { Clock, Scissors } from "lucide-react";
+import EmptyState from "@/components/ui/EmptyState";
 import { useTranslations, useLocale } from "next-intl";
 import { usePostHog } from "posthog-js/react";
 import { formatCurrency } from "@/lib/format-currency";
@@ -36,7 +37,18 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
     ? { [activeCategory]: servicesByCategory[activeCategory] }
     : servicesByCategory;
 
-  if (services.length === 0) return null;
+  if (services.length === 0) {
+    return (
+      <div id="section-angebot" className="scroll-mt-[180px]">
+        <EmptyState
+          icon={Scissors}
+          title={t("noServicesYet")}
+          message={t("noServicesMessage")}
+          zone={3}
+        />
+      </div>
+    );
+  }
 
   return (
     <div id="section-angebot" className="scroll-mt-[180px]">

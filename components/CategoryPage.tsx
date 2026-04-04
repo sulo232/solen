@@ -564,7 +564,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           <EmptyState
             icon={Scissors}
             title={tc("noSalonsFound")}
-            message="Versuche andere Filteroptionen oder eine andere Stadt."
+            message={tc("noSalonsFoundMessage")}
           />
         ) : (
           <div>

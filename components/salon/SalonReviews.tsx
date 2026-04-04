@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Star, ShieldCheck } from "lucide-react";
+import { Star, ShieldCheck, MessageSquare } from "lucide-react";
+import EmptyState from "@/components/ui/EmptyState";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import ReviewBreakdown from "@/components/ReviewBreakdown";
@@ -155,7 +156,12 @@ export default function SalonReviews({
       </div>
       <div className="mt-3 md:mt-0">
         {reviews.length === 0 ? (
-          <p className="text-sm text-s-ink/40">{t("noReviews")}</p>
+          <EmptyState
+            icon={MessageSquare}
+            title={t("noReviews")}
+            message={t("noReviewsMessage")}
+            zone={3}
+          />
         ) : (
           <>
             <ReviewBreakdown
