@@ -793,6 +793,8 @@
   "booking": {
     "back": "Back",
     "stepOf": "Step {current} of {total}",
+    "stepServicesStaff": "Service & Stylist",
+    "stepDatetime": "Date & Time",
     "stepServices": "Choose service",
     "stepStaff": "Choose stylist",
     "stepDate": "Choose date",

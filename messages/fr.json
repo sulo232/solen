@@ -777,6 +777,8 @@
   "booking": {
     "back": "Retour",
     "stepOf": "Étape {current} sur {total}",
+    "stepServicesStaff": "Service & Styliste",
+    "stepDatetime": "Date & Heure",
     "stepServices": "Choisir un service",
     "stepStaff": "Choisir un styliste",
     "stepDate": "Choisir une date",

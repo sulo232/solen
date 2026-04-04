@@ -759,6 +759,8 @@
   "booking": {
     "back": "Indietro",
     "stepOf": "Passaggio {current} di {total}",
+    "stepServicesStaff": "Servizio & Stilista",
+    "stepDatetime": "Data & Ora",
     "stepServices": "Scegli servizio",
     "stepStaff": "Scegli stilista",
     "stepDate": "Scegli data",

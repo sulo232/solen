@@ -803,6 +803,8 @@
   "booking": {
     "back": "Zurück",
     "stepOf": "Schritt {current} von {total}",
+    "stepServicesStaff": "Service & Stylist",
+    "stepDatetime": "Datum & Uhrzeit",
     "stepServices": "Service wählen",
     "stepStaff": "Stylist wählen",
     "stepDate": "Datum wählen",
