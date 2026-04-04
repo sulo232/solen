@@ -312,3 +312,16 @@
 - **What happened**: Salon page had two competing navigation systems — SalonTabBar (click-driven, uses external activeTab state) and SalonSectionNav (IntersectionObserver-driven, self-contained). R5 removed SalonTabBar.
 - **Why it happened**: Two components were created at different times without coordination.
 - **Fix**: Use SalonSectionNav. It passes `sections={TABS.map(t => ({ id: \`section-\${t.key}\`, label: t.label }))}`. Section divs must have matching `id="section-{key}"` and `scroll-mt-[80px]`.
+
+### Coral rebalance — errors use s-amber not s-coral
+- **Date**: 2026-04-04
+- **File(s)**: `components/ui/ErrorFallback.tsx`
+- **What happened**: AlertTriangle in ErrorFallback used `text-s-coral` / `bg-s-coral/10`. Coral is the brand primary, not an error color.
+- **Why it happened**: Quick implementation without semantic color system consideration.
+- **Fix**: Error states → `text-s-amber` / `bg-s-amber/10`. Coral is ONLY for: Book Now CTAs, active filter pills, progress bars, star ratings, active hearts, price highlights, "open now" status.
+
+### Booking date/time formatting must use dynamic locale
+- **Date**: 2026-04-04
+- **File(s)**: `components/BookingSuccess.tsx:112`
+- **What happened**: `toLocaleDateString("de-CH")` was hardcoded regardless of the user's locale, showing German date format to English/French/Italian users.
+- **Fix**: Derive `localeCode` from `useLocale()` → `de-CH / fr-CH / it-CH / en-GB`. Apply to all date/time formatting in user-facing components.
