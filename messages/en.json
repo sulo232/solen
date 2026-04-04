@@ -55,7 +55,12 @@
       "nextBooking": "Your next appointment: {date} at {salon}",
       "welcomeBack": "Welcome back — what are you looking for today?",
       "bookings": "Bookings",
-      "aiTagline": "Coiffeur, Barber, Nails & Spa near you."
+      "aiTagline": "Coiffeur, Barber, Nails & Spa near you.",
+      "eyebrow": "Beauty Booking Platform · Switzerland",
+      "sub": "Find and book the best salons in your city — instantly, no phone needed.",
+      "trustRating": "avg rating",
+      "trustReviews": "reviews",
+      "trustFree": "Free to book"
     },
     "cta": {
       "findSalon": "Find salon",
@@ -89,7 +94,8 @@
       "eyebrow": "Offers",
       "title": "Save up to 50%",
       "viewAll": "View all",
-      "viewOffers": "View offers"
+      "viewOffers": "View offers",
+      "badge": "Last Minute"
     },
     "trending": {
       "eyebrow": "Trending",
@@ -272,7 +278,8 @@
       "title": "Salons near you"
     },
     "testimonials": {
-      "title": "What our users say"
+      "title": "What our users say",
+      "eyebrow": "Real Reviews"
     }
   },
   "breadcrumb": {

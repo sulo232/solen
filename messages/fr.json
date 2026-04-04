@@ -55,7 +55,12 @@
       "nextBooking": "Votre prochain rendez-vous: {date} chez {salon}",
       "welcomeBack": "Bienvenue — que cherchez-vous aujourd'hui?",
       "bookings": "Réservations",
-      "aiTagline": "Coiffeur, Barber, Ongles & Spa près de chez vous."
+      "aiTagline": "Coiffeur, Barber, Ongles & Spa près de chez vous.",
+      "eyebrow": "Plateforme beauté · Suisse",
+      "sub": "Trouvez et réservez les meilleurs salons — instantanément, sans téléphone.",
+      "trustRating": "note moy.",
+      "trustReviews": "avis",
+      "trustFree": "Réservation gratuite"
     },
     "cta": {
       "findSalon": "Trouver un salon",
@@ -89,7 +94,8 @@
       "eyebrow": "Offres",
       "title": "Économisez jusqu'à 50%",
       "viewAll": "Voir tout",
-      "viewOffers": "Voir les offres"
+      "viewOffers": "Voir les offres",
+      "badge": "Dernière minute"
     },
     "trending": {
       "eyebrow": "Tendance",
@@ -272,7 +278,8 @@
       "title": "Salons près de vous"
     },
     "testimonials": {
-      "title": "Ce que disent nos utilisateurs"
+      "title": "Ce que disent nos utilisateurs",
+      "eyebrow": "Vrais avis"
     }
   },
   "breadcrumb": {

@@ -55,7 +55,12 @@
       "nextBooking": "Il tuo prossimo appuntamento: {date} presso {salon}",
       "welcomeBack": "Bentornato — cosa stai cercando oggi?",
       "bookings": "Prenotazioni",
-      "aiTagline": "Coiffeur, Barber, Unghie & Spa vicino a te."
+      "aiTagline": "Coiffeur, Barber, Unghie & Spa vicino a te.",
+      "eyebrow": "Piattaforma beauty · Svizzera",
+      "sub": "Trova e prenota i migliori saloni della tua città — subito, senza telefonate.",
+      "trustRating": "valut. media",
+      "trustReviews": "recensioni",
+      "trustFree": "Prenota gratis"
     },
     "cta": {
       "findSalon": "Trova salone",
@@ -89,7 +94,8 @@
       "eyebrow": "Offerte",
       "title": "Risparmia fino al 50%",
       "viewAll": "Vedi tutto",
-      "viewOffers": "Vedi offerte"
+      "viewOffers": "Vedi offerte",
+      "badge": "Ultimo minuto"
     },
     "trending": {
       "eyebrow": "Tendenza",
@@ -272,7 +278,8 @@
       "title": "Saloni vicino a te"
     },
     "testimonials": {
-      "title": "Cosa dicono i nostri utenti"
+      "title": "Cosa dicono i nostri utenti",
+      "eyebrow": "Recensioni vere"
     }
   },
   "common": {

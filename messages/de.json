@@ -55,7 +55,12 @@
       "nextBooking": "Dein nächster Termin: {date} bei {salon}",
       "welcomeBack": "Willkommen zurück — was darf's heute sein?",
       "bookings": "Buchungen",
-      "aiTagline": "Coiffeur, Barber, Nails & Spa in deiner Nähe."
+      "aiTagline": "Coiffeur, Barber, Nails & Spa in deiner Nähe.",
+      "eyebrow": "Beauty Buchungsplattform · Schweiz",
+      "sub": "Finde und buche die besten Salons in deiner Stadt — sofort und ohne Telefon.",
+      "trustRating": "Ø Bewertung",
+      "trustReviews": "Bewertungen",
+      "trustFree": "Kostenlos buchen"
     },
     "cta": {
       "findSalon": "Salon finden",
@@ -89,7 +94,8 @@
       "eyebrow": "Angebote",
       "title": "Spare bis zu 50%",
       "viewAll": "Alle ansehen",
-      "viewOffers": "Angebote ansehen"
+      "viewOffers": "Angebote ansehen",
+      "badge": "Last Minute"
     },
     "trending": {
       "eyebrow": "Trending",
@@ -272,7 +278,8 @@
       "title": "Salons in deiner Nähe"
     },
     "testimonials": {
-      "title": "Was unsere Nutzer sagen"
+      "title": "Was unsere Nutzer sagen",
+      "eyebrow": "Echte Bewertungen"
     }
   },
   "breadcrumb": {
