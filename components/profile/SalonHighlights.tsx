@@ -36,8 +36,10 @@ export const SalonHighlights: React.FC<SalonHighlightsProps> = ({ favorites, loc
 
   return (
     <div className="py-4">
-      {/* Horizontal scroll container */}
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+      {/* Horizontal scroll container with fade indicators */}
+      <div className="relative">
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none z-10" />
+      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide overscroll-x-contain">
         {favorites.slice(0, 6).map((salon) => {
           const colors = CATEGORY_COLORS[salon.category] || CATEGORY_COLORS.coiffeur;
 
@@ -77,6 +79,7 @@ export const SalonHighlights: React.FC<SalonHighlightsProps> = ({ favorites, loc
             {t("more")}
           </span>
         </Link>
+      </div>
       </div>
     </div>
   );

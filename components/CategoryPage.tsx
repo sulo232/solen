@@ -398,13 +398,13 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
 
           {/* City selector pills */}
           <div
-            className="flex gap-2 overflow-x-auto pb-2"
+            className="flex gap-2 overflow-x-auto pb-2 snap-x snap-mandatory overscroll-x-contain"
             style={{ scrollbarWidth: "none" } as React.CSSProperties}
           >
             {/* All cities */}
             <button
               onClick={() => routerNav.push(`/${locale}/${category}`)}
-              className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,border-color] duration-150"
+              className="snap-start shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,border-color] duration-150"
               style={{
                 border: !city ? "1.5px solid #1A1209" : "1.5px solid rgba(26,18,9,0.12)",
                 background: !city ? "#1A1209" : "var(--raised)",
@@ -423,7 +423,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                 <button
                   key={slug}
                   onClick={() => routerNav.push(`/${locale}/${slug}/${category}`)}
-                  className="shrink-0 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,border-color] duration-150"
+                  className="snap-start shrink-0 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,border-color] duration-150"
                   style={{
                     border: isActive ? "1.5px solid #E8624A" : "1.5px solid rgba(26,18,9,0.12)",
                     background: isActive ? "#E8624A" : "var(--raised)",

@@ -83,7 +83,7 @@ export default function FilterBar({
   return (
     <div className={`relative w-full scroll-fade-right ${className}`}>
       {/* Pill row */}
-      <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1">
+      <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1 snap-x overscroll-x-contain">
         {visibleNonSortPills.map((pill) => {
           const active = isPillActive(pill.id);
           return (
@@ -91,7 +91,7 @@ export default function FilterBar({
               key={pill.id}
               onClick={() => handlePillClick(pill)}
               className={[
-                'flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading font-bold whitespace-nowrap shrink-0 cursor-pointer',
+                'snap-start flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading font-bold whitespace-nowrap shrink-0 cursor-pointer',
                 'transition-colors duration-150 active:scale-[0.96]',
                 motionClass,
                 hoverLift,

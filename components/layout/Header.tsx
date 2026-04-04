@@ -23,22 +23,9 @@ import { WaxingIcon } from "@/components/icons/category/WaxingIcon";
 import AirbnbSearchBar from "@/components/ui/AirbnbSearchBar";
 import { getPersistedCity } from "@/lib/city-cookie";
 import { motion, AnimatePresence } from "framer-motion";
+import { popoverVariants } from "@/lib/animations";
 
-const airbnbPopoverVariants = {
-  hidden: { opacity: 0, scale: 0.96, y: 10 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { duration: 0.25, ease: [0.2, 0, 0, 1] },
-  },
-  exit: {
-    opacity: 0,
-    scale: 0.96,
-    y: 10,
-    transition: { duration: 0.15, ease: "easeOut" },
-  },
-};
+const airbnbPopoverVariants = popoverVariants;
 
 interface HeaderProps {
   locale: string;
@@ -209,7 +196,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               <div className="hidden md:block w-full">
                 {/* SVG category tabs — visible when NOT scrolled */}
                 <div className={cn(
-                  "flex items-center justify-center gap-6 overflow-x-auto scrollbar-hide px-2 transition-[opacity] duration-300",
+                  "flex items-center justify-center gap-6 overflow-x-auto scrollbar-hide px-2 transition-[opacity] duration-300 overscroll-x-contain",
                   scrolled ? "opacity-0 pointer-events-none absolute" : "opacity-100"
                 )}>
                   {[
@@ -272,7 +259,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             </div>
           ) : isCategoryPage ? (
             /* Category page — SVG icon tabs, icon hides on scroll, city-aware */
-            <div className="flex items-stretch gap-6 overflow-x-auto scrollbar-hide px-2">
+            <div className="flex items-stretch gap-6 overflow-x-auto scrollbar-hide px-2 overscroll-x-contain">
               {[
                 { key: "coiffeur",   Icon: CoiffeurIcon, label: t("coiffeur") },
                 { key: "nails",      Icon: NailsIcon,    label: t("nails") },
@@ -412,16 +399,16 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
       {/* ── Mobile Category Strip (Homepage + Unscrolled) ── */}
       {isHomepage && !scrolled && (
-        <div className="md:hidden overflow-x-auto scrollbar-hide pb-3 pt-1 px-3 border-b border-s-ink/[0.08]">
+        <div className="md:hidden overflow-x-auto scrollbar-hide pb-3 pt-1 px-3 border-b border-s-ink/[0.08] overscroll-x-contain snap-x">
           <div className="flex items-center gap-1 w-max">
             {[
-              { key: "all",        href: "/",           icon: "✨", label: "Entdecken" },
-              { key: "coiffeur",   href: "/coiffeur",   icon: "✂️", label: "Coiffeur" },
-              { key: "nails",      href: "/nails",       icon: "💅", label: "Nägel" },
-              { key: "barbershop", href: "/barbershop",  icon: "💈", label: "Barbershop" },
-              { key: "makeup",     href: "/makeup",      icon: "💄", label: "Makeup" },
-              { key: "waxing",     href: "/waxing",      icon: "🍯", label: "Waxing" },
-            ].map(({ key, href, icon, label }) => {
+              { key: "all",        href: "/",           Icon: Compass,      label: t("discover") },
+              { key: "coiffeur",   href: "/coiffeur",   Icon: CoiffeurIcon, label: t("coiffeur") },
+              { key: "nails",      href: "/nails",       Icon: NailsIcon,   label: t("nails") },
+              { key: "barbershop", href: "/barbershop",  Icon: BarberIcon,  label: t("barbershop") },
+              { key: "makeup",     href: "/makeup",      Icon: MakeupIcon,  label: t("makeup") },
+              { key: "waxing",     href: "/waxing",      Icon: WaxingIcon,  label: t("waxing") },
+            ].map(({ key, href, Icon, label }) => {
               const isActive = withoutLocale === href || (withoutLocale.startsWith(href) && href !== "/");
               return (
                 <Link
@@ -434,7 +421,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                       : "bg-s-bg-surface text-s-ink/55 hover:bg-s-ink/[0.08]"
                   )}
                 >
-                  <span className="text-[14px] leading-none">{icon}</span>
+                  <Icon width={14} height={14} className="shrink-0" />
                   {label}
                 </Link>
               );

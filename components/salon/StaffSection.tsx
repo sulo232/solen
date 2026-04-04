@@ -24,7 +24,9 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
         Unser Team
       </h2>
 
-      <div className="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+      <div className="relative">
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none z-10" />
+      <div className="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide overscroll-x-contain">
         {staff.map((m) => (
           <Link
             key={m.id}
@@ -112,6 +114,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
             </button>
           </Link>
         ))}
+      </div>
       </div>
     </div>
   );

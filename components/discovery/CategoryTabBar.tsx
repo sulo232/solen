@@ -30,7 +30,7 @@ export default function CategoryTabBar({ activeCategory, onChange }: CategoryTab
   return (
     <div
       ref={scrollRef}
-      className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none"
+      className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none overscroll-x-contain"
       role="tablist"
       aria-label={td("tablist")}
     >
