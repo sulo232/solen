@@ -25,7 +25,7 @@ const initialFormData: BookingFormData = {
 };
 
 const initialState = {
-  currentStep: 'services' as BookingStep,
+  currentStep: 'services-staff' as BookingStep,
   formData: initialFormData,
   isLoading: false,
   error: null,

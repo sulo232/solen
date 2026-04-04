@@ -4,7 +4,9 @@
  * Defines the shape of data flowing through the multi-step booking context
  */
 
-export type BookingStep = 'services' | 'staff' | 'date' | 'time' | 'confirm' | 'payment' | 'services-staff' | 'datetime';
+// Active 4-step flow uses: 'services-staff' | 'datetime' | 'confirm' | 'payment'
+// Legacy step names retained for backwards compatibility with old step components
+export type BookingStep = 'services-staff' | 'datetime' | 'confirm' | 'payment' | 'services' | 'staff' | 'date' | 'time';
 
 export interface SelectedService {
   id: string;
@@ -18,7 +20,7 @@ export interface BookingFormData {
   services: SelectedService[];
   selectedStaffId: string | 'any'; // 'any' = next available
   selectedDate: Date | null;
-  selectedTime: string | null; // "09:00", "09:30", etc.
+  selectedTime: string | null; // '09:00', '09:30', etc.
   totalDuration: number;
   totalPrice: number;
   addonIds: string[];

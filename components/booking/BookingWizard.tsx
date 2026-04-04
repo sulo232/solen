@@ -5,22 +5,19 @@ import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import {
-  ServiceSelectionStep,
-  StaffSelectionStep,
-  DateSelectionStep,
-  TimeSelectionStep,
+  ServicesStaffStep,
+  DateTimeStep,
   ConfirmationStep,
   PaymentStep,
 } from '@/components/booking';
 import type { Salon, StaffMember } from '@/lib/types';
 
-const STEPS = ['services', 'staff', 'date', 'time', 'confirm', 'payment'] as const;
+const STEPS = ['services-staff', 'datetime', 'confirm', 'payment'] as const;
+type ActiveStep = typeof STEPS[number];
 
 const STEP_KEYS: Record<string, string> = {
-  services: 'stepServices',
-  staff: 'stepStaff',
-  date: 'stepDate',
-  time: 'stepTime',
+  'services-staff': 'stepServicesStaff',
+  datetime: 'stepDatetime',
   confirm: 'stepConfirm',
   payment: 'stepPayment',
 };
@@ -61,13 +58,16 @@ export default function BookingWizard({
   staffList,
   salon,
 }: BookingWizardProps) {
-  const t = useTranslations('booking');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const t = useTranslations('booking') as any;
   const { currentStep, goToStep, formData } = useBooking();
 
-  const currentIndex = STEPS.indexOf(currentStep as typeof STEPS[number]);
+  const activeStep: ActiveStep = STEPS.includes(currentStep as ActiveStep)
+    ? (currentStep as ActiveStep)
+    : STEPS[0];
+  const currentIndex = STEPS.indexOf(activeStep);
   const progress = ((currentIndex + 1) / STEPS.length) * 100;
 
-  // Get selected staff object
   const selectedStaff =
     formData.selectedStaffId && formData.selectedStaffId !== 'any'
       ? staffList.find((s) => s.id === formData.selectedStaffId) || null
@@ -82,15 +82,17 @@ export default function BookingWizard({
   };
 
   const renderStep = () => {
-    switch (currentStep) {
-      case 'services':
-        return <ServiceSelectionStep services={services} salonId={salon.id} />;
-      case 'staff':
-        return <StaffSelectionStep staffList={staffList} salonId={salon.id} />;
-      case 'date':
-        return <DateSelectionStep salonId={salon.id} />;
-      case 'time':
-        return <TimeSelectionStep salonId={salon.id} />;
+    switch (activeStep) {
+      case 'services-staff':
+        return (
+          <ServicesStaffStep
+            services={services}
+            staffList={staffList}
+            salonId={salon.id}
+          />
+        );
+      case 'datetime':
+        return <DateTimeStep salonId={salon.id} />;
       case 'confirm':
         return <ConfirmationStep salon={salon} staff={selectedStaff} />;
       case 'payment':
@@ -102,8 +104,8 @@ export default function BookingWizard({
 
   return (
     <div className="w-full">
-      {/* ── Progress bar ── */}
-      <div className="w-full h-1 bg-s-bg-surface rounded-full overflow-hidden mb-1">
+      {/* Progress bar — h-1.5 (6px), animated fill */}
+      <div className="w-full h-1.5 bg-s-ink/[0.06] rounded-full overflow-hidden mb-1">
         <motion.div
           className="h-full bg-s-coral rounded-full"
           initial={{ width: 0 }}
@@ -112,54 +114,55 @@ export default function BookingWizard({
         />
       </div>
 
-      {/* ── Step header ── */}
+      {/* Step header */}
       <div className="flex items-center gap-3 px-1 py-3 mb-4">
         {canGoBack && (
           <button
             onClick={handleBack}
-            className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-s-bg-sunken transition-colors"
+            className="w-11 h-11 rounded-full flex items-center justify-center hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.06] transition-colors"
             aria-label={t('back')}
           >
-            <ChevronLeft className="w-5 h-5 text-s-ink" />
+            <ChevronLeft className="w-5 h-5 text-s-ink dark:text-s-dm-text" />
           </button>
         )}
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/60">
+          <p className="text-xs font-heading font-bold uppercase tracking-[.08em] text-s-ink/50 dark:text-s-dm-text/50">
             {t('stepOf', { current: currentIndex + 1, total: STEPS.length })}
           </p>
-          <h3 className="text-[17px] font-heading font-semibold text-s-ink truncate">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {t(STEP_KEYS[currentStep] as any)}
+          <h3 className="text-lg font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">
+            {t(STEP_KEYS[activeStep])}
           </h3>
         </div>
       </div>
 
-      {/* ── Step dots ── */}
+      {/* Step dots — spring animation on active width */}
       <div className="flex items-center justify-center gap-1.5 mb-6">
         {STEPS.map((step, i) => (
-          <div
+          <motion.div
             key={step}
-            className={`h-[3px] rounded-full transition-[width,background-color] duration-300 ${
-              i < currentIndex
-                ? "w-3 bg-s-coral"
-                : i === currentIndex
-                ? "w-6 bg-s-coral"
-                : "w-3 bg-s-ink/[0.08]"
-            }`}
+            animate={{
+              width: i === currentIndex ? 32 : 16,
+              backgroundColor:
+                i <= currentIndex
+                  ? 'rgb(232, 98, 74)'
+                  : 'rgba(26, 18, 9, 0.08)',
+            }}
+            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+            className="h-1 rounded-full"
           />
         ))}
       </div>
 
-      {/* ── Step content with animation ── */}
+      {/* Step content with slide animation */}
       <AnimatePresence mode="wait" custom={1}>
         <motion.div
-          key={currentStep}
+          key={activeStep}
           custom={1}
           variants={slideVariants}
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+          transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
         >
           {renderStep()}
         </motion.div>
