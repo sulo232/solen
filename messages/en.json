@@ -72,7 +72,8 @@
       "label": "CATEGORIES",
       "title": "What are you looking for?",
       "salonsCount": "Salons",
-      "comingSoon": "Coming soon"
+      "comingSoon": "Coming soon",
+      "more": "Discover more categories"
     },
     "rebook": {
       "title": "Book again?",

@@ -2,20 +2,32 @@
 
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { Scissors, Sparkles, FlowerIcon, Brush } from "lucide-react";
-import AirbnbSearchBar from "@/components/ui/AirbnbSearchBar";
+import { Scissors, Sparkles, FlowerIcon, Brush, Droplets } from "lucide-react";
+
+/**
+ * HomepageHero — Component Map §02 + §04
+ *
+ * Design intent: "This hero should feel confident and direct because
+ * it's the first thing users see — left-aligned, no-nonsense, Bebas Neue."
+ *
+ * - Background: #F5F0EB (warm beige, NOT white, NOT gradient)
+ * - Headline: Bebas Neue, left-aligned, max 1 coral accent word
+ * - Subtitle: DM Sans 16px/400, max 320px, left-aligned
+ * - Category pills: horizontal scroll, frosted white glass, SVG + label
+ */
 
 interface HomepageHeroProps {
   categoryCounts?: Record<string, number>;
   reviewCount?: number;
 }
 
-const CATEGORY_CHIPS = [
-  { key: "coiffeur",   icon: <Scissors size={12} aria-hidden="true" /> },
-  { key: "nails",      icon: <Sparkles size={12} aria-hidden="true" /> },
-  { key: "barbershop", icon: <Scissors size={12} aria-hidden="true" /> },
-  { key: "spa",        icon: <FlowerIcon size={12} aria-hidden="true" /> },
-  { key: "makeup",     icon: <Brush size={12} aria-hidden="true" /> },
+const CATEGORY_PILLS = [
+  { key: "coiffeur",   icon: <Scissors size={18} strokeWidth={1.8} aria-hidden="true" /> },
+  { key: "nails",      icon: <Sparkles size={18} strokeWidth={1.8} aria-hidden="true" /> },
+  { key: "barbershop", icon: <Scissors size={18} strokeWidth={1.8} aria-hidden="true" /> },
+  { key: "spa",        icon: <FlowerIcon size={18} strokeWidth={1.8} aria-hidden="true" /> },
+  { key: "makeup",     icon: <Brush size={18} strokeWidth={1.8} aria-hidden="true" /> },
+  { key: "waxing",     icon: <Droplets size={18} strokeWidth={1.8} aria-hidden="true" /> },
 ] as const;
 
 export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: HomepageHeroProps) {
@@ -25,101 +37,100 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
 
   return (
     <section
-      className="px-5 md:px-6 lg:px-10 xl:px-20 pt-14 pb-12 text-center"
+      className="px-5 md:px-10 lg:px-20 pt-14 pb-0 text-left"
       aria-label={t("sub")}
-      style={{
-        background: [
-          "radial-gradient(ellipse 70% 60% at 10% 80%, rgba(232,98,74,.07) 0%, transparent 65%)",
-          "radial-gradient(ellipse 55% 45% at 88% 20%, rgba(242,193,68,.05) 0%, transparent 60%)",
-          "radial-gradient(ellipse 40% 50% at 55% 100%, rgba(107,163,200,.04) 0%, transparent 70%)",
-          "#ffffff",
-        ].join(", "),
-      }}
+      style={{ background: "#F5F0EB" }}
     >
-      {/* Eyebrow */}
-      <div className="inline-flex items-center gap-1.5 mb-4" aria-hidden="true">
-        <span className="w-[5px] h-[5px] rounded-full bg-s-coral opacity-60" />
-        <span className="font-heading text-[11px] font-bold uppercase tracking-[.12em] text-s-coral">
-          {t("eyebrow")}
-        </span>
-        <span className="w-[5px] h-[5px] rounded-full bg-s-coral opacity-60" />
-      </div>
-
-      {/* Headline — Bebas Neue, 3-line dramatic layout matching vision */}
+      {/* ── Headline — Bebas Neue, left-aligned, 1 coral word max ── */}
       <h1
-        className="font-display text-s-ink mb-4 tracking-[.01em]"
-        style={{ fontSize: "clamp(64px, 9vw, 108px)", lineHeight: 0.88 }}
+        className="font-display text-s-ink"
+        style={{
+          fontSize: "clamp(48px, 8vw, 64px)",
+          lineHeight: 0.95,
+          letterSpacing: "0.5px",
+        }}
       >
         {t("headlineWord1")}
         <br />
-        <em className="text-s-coral not-italic">{t("headlineAccent")}</em>
+        <span style={{ color: "#E8735A" }}>{t("headlineAccent")}</span>
         <br />
         {t("headlineWord2")}
       </h1>
 
-      {/* Subtitle */}
-      <p className="font-body text-base text-s-ink/60 max-w-[420px] mx-auto mb-8 leading-relaxed">
+      {/* ── Subtitle — DM Sans 16px, max 320px ── */}
+      <p
+        className="font-body text-base leading-relaxed"
+        style={{
+          color: "#6B5E54",
+          marginTop: 16,
+          maxWidth: 320,
+        }}
+      >
         {t("sub")}
       </p>
 
-      {/* Search bar — hero mode (not scrolled) */}
-      <div className="max-w-[680px] mx-auto mb-4">
-        <AirbnbSearchBar
-          scrolledPast80={false}
-          locale={locale}
-          categoryCounts={categoryCounts}
-        />
-      </div>
-
-      {/* Category quick-chips */}
+      {/* ── Category Pills — horizontal scroll, frosted white glass ── */}
       <div
-        className="flex flex-wrap justify-center gap-2 mb-5"
+        className="flex gap-2 overflow-x-auto pb-2 -mx-5 px-5 md:-mx-10 md:px-10 lg:-mx-20 lg:px-20"
+        style={{
+          marginTop: 24,
+          scrollbarWidth: "none",
+          WebkitOverflowScrolling: "touch",
+          maskImage: "linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 32px), transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 32px), transparent 100%)",
+        }}
         role="navigation"
         aria-label={tNav("categories")}
       >
-        {CATEGORY_CHIPS.map(({ key, icon }) => (
+        {CATEGORY_PILLS.map(({ key, icon }) => (
           <Link
             key={key}
             href={`/${locale}/${key}`}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-xs font-heading font-semibold border transition-[background,color,border-color] duration-150 active:scale-[0.97]"
+            className="flex-shrink-0 inline-flex items-center gap-1.5 font-body text-sm font-medium active:scale-[0.97] transition-[transform,background,border-color] duration-150"
             style={{
-              background: "#FAF6EF",
-              color: "#6A5040",
-              borderColor: "#E8D8CC",
+              height: 40,
+              padding: "0 16px",
+              borderRadius: 99,
+              border: "1.5px solid #D9D0C7",
+              background: "rgba(255,255,255,0.55)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              color: "#2C2420",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.5)",
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.background = "rgba(232,98,74,.08)";
-              (e.currentTarget as HTMLElement).style.color = "#E8624A";
-              (e.currentTarget as HTMLElement).style.borderColor = "rgba(232,98,74,.25)";
+              const el = e.currentTarget as HTMLElement;
+              el.style.background = "#FAF0EC";
+              el.style.borderColor = "#E8735A";
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.background = "#FAF6EF";
-              (e.currentTarget as HTMLElement).style.color = "#6A5040";
-              (e.currentTarget as HTMLElement).style.borderColor = "#E8D8CC";
+              const el = e.currentTarget as HTMLElement;
+              el.style.background = "rgba(255,255,255,0.55)";
+              el.style.borderColor = "#D9D0C7";
             }}
             aria-label={tNav(key)}
           >
-            {icon}
+            <span style={{ color: "#8C8279" }}>{icon}</span>
             {tNav(key)}
           </Link>
         ))}
       </div>
 
-      {/* Micro trust signal */}
+      {/* ── Micro trust signal ── */}
       <div
-        className="flex items-center justify-center gap-2.5 font-body font-medium"
-        style={{ fontSize: "12px", color: "#9A7A60" }}
+        className="flex items-center gap-2.5 font-body font-medium"
+        style={{ fontSize: 12, color: "#6B5E54", marginTop: 24, paddingBottom: 24 }}
         aria-label="Platform trust statistics"
       >
         <span className="flex items-center gap-1">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="#E8624A" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="#E8735A" aria-hidden="true">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
           4.8 {t("trustRating")}
         </span>
-        <span className="w-1 h-1 rounded-full" style={{ background: "#D4C4B4" }} aria-hidden="true" />
-        <span>{reviewCount.toLocaleString()}+ {t("trustReviews")}</span>
-        <span className="w-1 h-1 rounded-full" style={{ background: "#D4C4B4" }} aria-hidden="true" />
+        <span className="w-1 h-1 rounded-full" style={{ background: "#D9D0C7" }} aria-hidden="true" />
+        <span>{reviewCount.toLocaleString("de-CH")}+ {t("trustReviews")}</span>
+        <span className="w-1 h-1 rounded-full" style={{ background: "#D9D0C7" }} aria-hidden="true" />
         <span>{t("trustFree")}</span>
       </div>
     </section>

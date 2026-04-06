@@ -2,12 +2,25 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowRight } from "lucide-react";
+
+/**
+ * City Selector — Component Map §16
+ *
+ * Design intent: "This section should feel premium and expansive because
+ * it's showing the cities where Solen operates."
+ *
+ * - Full-width dark glass: rgba(44,36,32,0.85) + blur(20px)
+ * - Basel = active (coral left border permanent, 'Entdecken →' visible)
+ * - Zürich/Bern = hover only shows coral border
+ * - City font: Bebas Neue 48px
+ * - Category pills: single row, no wrap, overflow-x auto
+ * - Coral label header: Syne 12px/700 uppercase
+ */
 
 const CITIES = [
-  { slug: "basel",  name: "Basel",  count: 42 },
-  { slug: "zurich", name: "Zürich", count: 38 },
-  { slug: "bern",   name: "Bern",   count: 28 },
+  { slug: "basel",  name: "BASEL",  count: 42, active: true },
+  { slug: "zurich", name: "ZÜRICH", count: 38, active: false },
+  { slug: "bern",   name: "BERN",   count: 28, active: false },
 ] as const;
 
 const CATEGORY_KEYS = [
@@ -22,35 +35,23 @@ export default function BrowseByCitySection() {
   return (
     <section
       className="relative overflow-hidden"
-      style={{ background: "#100602" }}
+      style={{
+        background: "rgba(44,36,32,0.92)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+      }}
       aria-labelledby="city-section-heading"
     >
-      {/* Coral glow — top right */}
-      <div
-        className="pointer-events-none absolute -top-32 -right-20 w-[560px] h-[560px] rounded-full"
-        style={{ background: "radial-gradient(circle, rgba(232,98,74,.14) 0%, transparent 60%)" }}
-        aria-hidden="true"
-      />
-      {/* Blue glow — bottom left */}
-      <div
-        className="pointer-events-none absolute -bottom-20 -left-10 w-[320px] h-[320px] rounded-full"
-        style={{ background: "radial-gradient(circle, rgba(107,163,200,.06) 0%, transparent 65%)" }}
-        aria-hidden="true"
-      />
+      <div className="px-5 md:px-10 lg:px-20 py-12 md:py-16">
 
-      <div className="relative px-5 md:px-6 lg:px-10 xl:px-20 py-16 md:py-20">
-
-        {/* Eyebrow with line */}
-        <div className="flex items-center gap-4 mb-12">
-          <span
-            id="city-section-heading"
-            className="font-heading text-[10px] font-bold uppercase tracking-[.16em]"
-            style={{ color: "rgba(232,98,74,.7)" }}
-          >
-            {t("cities.title") || "Wo suchst du?"}
-          </span>
-          <div className="h-px flex-1 max-w-[200px]" style={{ background: "rgba(255,255,255,.05)" }} aria-hidden="true" />
-        </div>
+        {/* Coral label */}
+        <span
+          id="city-section-heading"
+          className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-8 md:mb-12"
+          style={{ color: "#E8735A" }}
+        >
+          {t("cities.title") || "Salons in deiner Nähe"}
+        </span>
 
         {/* City list */}
         <div role="list">
@@ -60,81 +61,102 @@ export default function BrowseByCitySection() {
               href={`/${locale}/${city.slug}/coiffeur`}
               role="listitem"
               aria-label={`${city.name} — ${city.count} Salons`}
-              className="group flex items-center py-5 relative"
+              className="group flex items-center justify-between py-4 relative"
               style={{
-                borderTop: idx === 0 ? "1px solid rgba(255,255,255,.05)" : "none",
-                borderBottom: "1px solid rgba(255,255,255,.05)",
-                paddingLeft: "0px",
-                transition: "padding-left 300ms cubic-bezier(0.23,1,0.32,1)",
+                borderTop: "1px solid rgba(255,255,255,0.08)",
+                borderBottom: idx === CITIES.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",
+                borderLeft: city.active ? "4px solid #E8735A" : "4px solid transparent",
+                paddingLeft: city.active ? 12 : 0,
+                transition: "padding-left 200ms ease, border-color 200ms ease",
               }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.paddingLeft = "20px"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.paddingLeft = "0px"; }}
+              onMouseEnter={(e) => {
+                if (!city.active) {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.borderLeft = "4px solid #E8735A";
+                  el.style.paddingLeft = "12px";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!city.active) {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.borderLeft = "4px solid transparent";
+                  el.style.paddingLeft = "0px";
+                }
+              }}
             >
-              {/* Left accent bar */}
-              <div
-                className="absolute left-0 top-0 bottom-0 w-0.5 bg-s-coral origin-bottom scale-y-0 group-hover:scale-y-100"
-                style={{ transition: "transform 280ms cubic-bezier(0.23,1,0.32,1)" }}
-                aria-hidden="true"
-              />
-
               {/* City name */}
               <span
-                className="font-display flex-1 group-hover:text-white"
+                className="font-display group-hover:text-white"
                 style={{
-                  fontSize: "clamp(48px, 7vw, 76px)",
-                  lineHeight: ".85",
-                  letterSpacing: ".01em",
-                  color: "rgba(255,255,255,.8)",
+                  fontSize: "clamp(36px, 6vw, 48px)",
+                  lineHeight: 0.85,
+                  color: city.active ? "#FFFFFF" : "rgba(255,255,255,0.85)",
                   transition: "color 200ms ease",
                 }}
               >
                 {city.name}
               </span>
 
-              {/* Count + arrow */}
-              <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+              {/* Count + Entdecken link */}
+              <div className="flex flex-col items-end gap-1 flex-shrink-0">
                 <span
-                  className="font-body text-xs tracking-[.04em]"
-                  style={{ color: "rgba(255,255,255,.28)" }}
+                  className="font-body text-xs"
+                  style={{ color: "#8C8279" }}
                 >
                   {city.count} Salons
                 </span>
+                {/* Active city always shows 'Entdecken →', others on hover only */}
                 <span
-                  className="flex items-center gap-1.5 font-heading text-[11px] font-bold uppercase tracking-[.04em] text-s-coral opacity-0 -translate-x-2.5 group-hover:opacity-100 group-hover:translate-x-0"
-                  style={{ transition: "opacity 200ms ease, transform 260ms cubic-bezier(0.23,1,0.32,1)" }}
-                  aria-hidden="true"
+                  className={`font-heading text-[11px] font-bold uppercase tracking-[.04em] ${
+                    city.active
+                      ? "opacity-100"
+                      : "opacity-0 group-hover:opacity-100"
+                  }`}
+                  style={{
+                    color: "#E8735A",
+                    transition: "opacity 200ms ease",
+                  }}
+                  aria-hidden={!city.active}
                 >
-                  Entdecken <ArrowRight size={13} />
+                  Entdecken →
                 </span>
               </div>
             </Link>
           ))}
         </div>
 
-        {/* Category pills */}
-        <div className="flex flex-wrap gap-2 mt-11">
+        {/* Category pills — single row, no wrap */}
+        <div
+          className="flex gap-2 overflow-x-auto mt-8 md:mt-11"
+          style={{
+            scrollbarWidth: "none",
+            WebkitOverflowScrolling: "touch",
+            flexWrap: "nowrap",
+          }}
+        >
           {CATEGORY_KEYS.map((key) => (
             <Link
               key={key}
               href={`/${locale}/${key}`}
-              className="px-3.5 py-1.5 rounded-pill font-heading text-xs font-medium"
+              className="flex-shrink-0 font-body text-[13px] font-medium active:scale-[0.97] transition-[transform,background,color,border-color] duration-150"
               style={{
-                background: "rgba(255,255,255,.05)",
-                color: "rgba(255,255,255,.4)",
-                border: "1px solid rgba(255,255,255,.07)",
-                transition: "background 150ms ease, color 150ms ease, border-color 150ms ease",
+                padding: "5px 12px",
+                borderRadius: 99,
+                border: "1px solid rgba(255,255,255,0.2)",
+                color: "rgba(255,255,255,0.6)",
+                background: "transparent",
               }}
               onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLAnchorElement;
-                el.style.background = "rgba(232,98,74,.18)";
-                el.style.color = "rgba(232,98,74,.95)";
-                el.style.borderColor = "rgba(232,98,74,.28)";
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = "rgba(232,115,90,0.18)";
+                el.style.color = "rgba(232,115,90,0.95)";
+                el.style.borderColor = "rgba(232,115,90,0.28)";
               }}
               onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLAnchorElement;
-                el.style.background = "rgba(255,255,255,.05)";
-                el.style.color = "rgba(255,255,255,.4)";
-                el.style.borderColor = "rgba(255,255,255,.07)";
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = "transparent";
+                el.style.color = "rgba(255,255,255,0.6)";
+                el.style.borderColor = "rgba(255,255,255,0.2)";
               }}
               aria-label={tNav(key)}
             >

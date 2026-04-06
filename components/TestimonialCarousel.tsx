@@ -1,44 +1,41 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
-interface Testimonial {
-  quote: string;
-  name: string;
-  city: string;
-  initial: string;
-  avatarColor: string;
+/**
+ * Testimonials — Component Map §17
+ *
+ * Design intent: "This section should feel authentic and trustworthy because
+ * it's quoting real customers — no fake reviews."
+ *
+ * - HORIZONTAL CAROUSEL (not vertical stack)
+ * - Only renders when ≥3 real reviews exist in DB
+ * - Warm white glass cards: rgba(255,255,255,0.65) + blur(14px)
+ * - ALL avatars: coral #E8735A with white Syne letter
+ * - Stars: 5× SVG 14px, fill coral
+ * - Quote: DM Sans 15px/400 italic
+ * - Section heading: DM Sans 28px/700 (Pattern A)
+ * - Coral label: Syne 12px/700 uppercase
+ *
+ * P0: DELETE all fake testimonials. Show only from DB.
+ * Pre-launch fallback: hide section entirely (render null).
+ */
+
+interface ReviewData {
+  id: string;
+  rating: number;
+  comment: string;
+  reviewer_name: string;
+  city?: string;
+  created_at: string;
 }
 
-const TESTIMONIALS: Testimonial[] = [
-  {
-    quote: "Endlich eine App wo ich alle Salons vergleichen kann. Hab meinen Lieblingssalon gefunden und buche jetzt nur noch über Solen.",
-    name: "Mira S.",
-    city: "Basel",
-    initial: "M",
-    avatarColor: "#E8624A",
-  },
-  {
-    quote: "Super einfach zu buchen, immer aktuelle Verfügbarkeit. Benutze es jede Woche — kein Telefonieren mehr!",
-    name: "Lisa M.",
-    city: "Bern",
-    initial: "L",
-    avatarColor: "#D4870A",
-  },
-  {
-    quote: "Sogar Last-Minute Angebote mit Rabatt gefunden. Mega Plattform für die Schweiz — so eine App hat gefehlt!",
-    name: "Elena P.",
-    city: "Winterthur",
-    initial: "E",
-    avatarColor: "#4A1E3C",
-  },
-];
-
-function StarRow() {
+function StarRow({ count = 5 }: { count?: number }) {
   return (
-    <div className="flex gap-0.5" role="img" aria-label="5 von 5 Sternen">
+    <div className="flex gap-0.5" role="img" aria-label={`${count} von 5 Sternen`}>
       {[1, 2, 3, 4, 5].map((i) => (
-        <svg key={i} width="13" height="13" viewBox="0 0 24 24" fill="#E8624A" aria-hidden="true">
+        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={i <= count ? "#E8735A" : "#E8E2DC"} aria-hidden="true">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
       ))}
@@ -46,55 +43,119 @@ function StarRow() {
   );
 }
 
+function getTimeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  if (days < 1) return "heute";
+  if (days === 1) return "gestern";
+  if (days < 7) return `vor ${days} Tagen`;
+  const weeks = Math.floor(days / 7);
+  if (weeks === 1) return "vor 1 Woche";
+  if (weeks < 5) return `vor ${weeks} Wochen`;
+  const months = Math.floor(days / 30);
+  if (months === 1) return "vor 1 Monat";
+  return `vor ${months} Monaten`;
+}
+
 export default function TestimonialCarousel() {
   const t = useTranslations("home");
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    // Fetch real reviews from DB — homepage only shows 4+ star, max 6
+    fetch("/api/reviews/homepage")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.reviews && Array.isArray(data.reviews)) {
+          setReviews(data.reviews);
+        }
+        setLoaded(true);
+      })
+      .catch((err) => {
+        console.error("[TestimonialCarousel] Failed to fetch reviews:", err);
+        setLoaded(true);
+      });
+  }, []);
+
+  // Don't render until loaded; if <3 real reviews, hide entirely
+  if (!loaded) return null;
+  if (reviews.length < 3) return null;
 
   return (
     <section
-      className="px-5 md:px-6 lg:px-10 xl:px-20 py-16"
-      style={{ background: "#FDFAF6" }}
+      className="py-8"
+      style={{ background: "#F5F0EB" }}
       aria-labelledby="testimonials-heading"
     >
-      {/* Header */}
-      <div className="mb-8">
-        <span className="block font-heading text-[10px] font-bold uppercase tracking-[.14em] text-s-coral mb-2">
+      <div className="px-5 md:px-10 lg:px-20">
+        {/* Section header — Pattern A */}
+        <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] text-s-coral mb-1">
           {t("testimonials.eyebrow") || "Echte Bewertungen"}
         </span>
         <h2
           id="testimonials-heading"
-          className="font-heading font-bold text-s-ink"
-          style={{ fontSize: "26px", lineHeight: "1.1", letterSpacing: "-.01em" }}
+          className="font-body font-bold text-s-ink"
+          style={{ fontSize: 28, lineHeight: 1.15, letterSpacing: "-.01em" }}
         >
           {t("testimonials.title") || "Was unsere Nutzer sagen"}
         </h2>
       </div>
 
-      {/* 3-col grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {TESTIMONIALS.map((testimonial) => (
+      {/* Horizontal carousel */}
+      <div
+        className="flex gap-3 overflow-x-auto pb-2 mt-4"
+        style={{
+          paddingLeft: 20,
+          paddingRight: 20,
+          scrollSnapType: "x mandatory",
+          scrollbarWidth: "none",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
+        {reviews.slice(0, 6).map((review) => (
           <article
-            key={testimonial.name}
-            className="bg-white border border-s-ink/[0.08] rounded-[16px] p-6 flex flex-col gap-4 transition-[transform,box-shadow] duration-[300ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:-translate-y-[3px] hover:shadow-[0_4px_20px_rgba(26,18,9,.08)] active:scale-[0.99]"
-            style={{ boxShadow: "0 1px 3px rgba(26,18,9,.04), 0 2px 8px rgba(26,18,9,.03)" }}
+            key={review.id}
+            className="flex-shrink-0 flex flex-col gap-3 active:scale-[0.99] transition-transform duration-150"
+            style={{
+              width: 300,
+              padding: 20,
+              borderRadius: 16,
+              background: "rgba(255,255,255,0.65)",
+              backdropFilter: "blur(14px)",
+              WebkitBackdropFilter: "blur(14px)",
+              border: "1px solid rgba(232,226,220,0.45)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.5)",
+              scrollSnapAlign: "start",
+            }}
           >
-            <StarRow />
-            <p className="font-body text-[14px] leading-relaxed flex-1" style={{ color: "#3A2010" }}>
-              &ldquo;{testimonial.quote}&rdquo;
+            <StarRow count={review.rating} />
+
+            <p
+              className="font-body text-[15px] leading-relaxed flex-1"
+              style={{ color: "#2C2420", fontStyle: "italic" }}
+            >
+              &ldquo;{review.comment}&rdquo;
             </p>
-            <div className="flex items-center gap-3 pt-4 border-t border-s-ink/[0.07]">
+
+            {/* Divider */}
+            <div style={{ width: "100%", height: 1, background: "#E8E2DC", margin: "4px 0" }} aria-hidden="true" />
+
+            {/* Author — ALL avatars coral */}
+            <div className="flex items-center gap-3">
               <div
-                className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 font-heading font-bold text-[14px] text-white"
-                style={{ background: testimonial.avatarColor }}
+                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-heading font-semibold text-[14px] text-white"
+                style={{ background: "#E8735A" }}
                 aria-hidden="true"
               >
-                {testimonial.initial}
+                {review.reviewer_name.charAt(0).toUpperCase()}
               </div>
               <div>
-                <p className="font-heading font-semibold text-[13px] text-s-ink leading-tight">
-                  {testimonial.name}
+                <p className="font-body font-semibold text-[14px] leading-tight" style={{ color: "#2C2420" }}>
+                  {review.reviewer_name}
                 </p>
-                <p className="font-body text-[11px] leading-tight" style={{ color: "#9A7A60" }}>
-                  {testimonial.city}
+                <p className="font-body text-[12px] leading-tight" style={{ color: "#8C8279" }}>
+                  {review.city || "Basel"} · {getTimeAgo(review.created_at)}
                 </p>
               </div>
             </div>
