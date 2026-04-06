@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 /**
  * Floating Nav Pill — Component Map §06
@@ -74,12 +75,15 @@ export default function FloatingNavPill() {
   const pathname = usePathname();
 
   return (
-    <nav
+    <motion.nav
       className="fixed left-1/2 z-50 lg:hidden"
       style={{
         bottom: "calc(16px + env(safe-area-inset-bottom, 0px))",
-        transform: "translateX(-50%)",
+        x: "-50%",
       }}
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.4, delay: 0.3, ease: [0.23, 1, 0.32, 1] }}
       aria-label="Navigation"
     >
       <div
@@ -113,6 +117,6 @@ export default function FloatingNavPill() {
           );
         })}
       </div>
-    </nav>
+    </motion.nav>
   );
 }

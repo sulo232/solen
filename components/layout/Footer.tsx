@@ -26,7 +26,7 @@ export default function Footer() {
 
   return (
     <footer style={{ background: "#2C2420" }}>
-      <div className="max-w-[1200px] mx-auto px-5 md:px-10 lg:px-20 py-12">
+      <div className="max-w-[1200px] mx-auto px-5 md:px-10 lg:px-20 pt-12 pb-8">
 
         {/* ── Brand wordmark ── */}
         <div className="mb-8">

@@ -38,7 +38,7 @@ export default function HowItWorks({ hidden }: HowItWorksProps) {
   return (
     <section className="px-5 md:px-10 lg:px-20">
       {/* Section header — Pattern A */}
-      <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] text-s-coral mb-1">
+      <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#B84A35" }}>
         {t("eyebrow") || "Für Neukunden"}
       </span>
       <h2
@@ -65,7 +65,7 @@ export default function HowItWorks({ hidden }: HowItWorksProps) {
 
             {/* Step number + title */}
             <p className="font-body font-semibold text-base text-s-ink">
-              <span style={{ color: "#E8735A" }}>{i + 1}.</span>{" "}
+              <span style={{ color: "#B84A35" }}>{i + 1}.</span>{" "}
               {t(`step${i + 1}.title`) || ["Finde", "Buche", "Geniesse"][i]}
             </p>
 

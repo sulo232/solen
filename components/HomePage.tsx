@@ -189,7 +189,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 32 }}>
           <div className="mb-4 flex items-end justify-between gap-4">
             <div>
-              <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] text-s-coral mb-1">
+              <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#B84A35" }}>
                 {t("discover.eyebrow")}
               </span>
               <h2
@@ -202,7 +202,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             <Link
               href={`/${locale}/discover`}
               className="font-body text-sm font-medium shrink-0 transition-colors duration-150 hover:text-[#D4654D]"
-              style={{ color: "#E8735A" }}
+              style={{ color: "#B84A35" }}
             >
               {t("discover.catalogCta")} →
             </Link>

@@ -106,11 +106,17 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
         role="navigation"
         aria-label={tNav("categories")}
       >
-        {CATEGORY_PILLS.map(({ key, icon }) => (
-          <Link
+        {CATEGORY_PILLS.map(({ key, icon }, pillIdx) => (
+          <motion.div
             key={key}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: 0.5 + pillIdx * 0.05, ease: [0.23, 1, 0.32, 1] }}
+            className="flex-shrink-0"
+          >
+          <Link
             href={`/${locale}/${key}`}
-            className="flex-shrink-0 inline-flex items-center gap-1.5 font-body text-sm font-medium active:scale-[0.97] transition-[transform,background,border-color] duration-150"
+            className="inline-flex items-center gap-1.5 font-body text-sm font-medium active:scale-[0.97] transition-[transform,background,border-color] duration-150"
             style={{
               height: 40,
               padding: "0 16px",
@@ -137,6 +143,7 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
             <span style={{ color: "#8C8279" }}>{icon}</span>
             {tNav(key)}
           </Link>
+          </motion.div>
         ))}
       </div>
 

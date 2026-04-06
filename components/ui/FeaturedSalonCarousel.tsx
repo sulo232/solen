@@ -73,7 +73,7 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
             {title || t("heroCarousel.label")}
           </h2>
           <p className="font-body mt-1" style={{ fontSize: 14, color: "#6B5E54" }}>
-            <span style={{ color: "#E8735A" }}>{t("carousel.topRated") || "Top bewertet"}</span>
+            <span style={{ color: "#B84A35" }}>{t("carousel.topRated") || "Top bewertet"}</span>
             <span style={{ color: "#6B5E54" }}> · Sofort buchbar</span>
           </p>
         </div>
@@ -105,7 +105,7 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
       {/* Horizontal scroll container */}
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto scrollbar-hide px-6 pb-4 snap-x snap-mandatory"
+        className="flex gap-3 overflow-x-auto scrollbar-hide px-6 pb-4 snap-x snap-mandatory"
         style={{ WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain" } as React.CSSProperties}
       >
         {salonsToShow.map((salon, index) => (
@@ -147,7 +147,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   // Dynamic badge from DB conditions (spec §12) — max 1 badge per card
   const badge = (() => {
     if (salon.average_rating >= 4.9 && salon.review_count >= 5)
-      return { text: "★ Höchste Bewertung", color: "#E8735A" };
+      return { text: "★ Höchste Bewertung", color: "#B84A35" };
     if (salon.review_count > 50)
       return { text: "Beliebt", color: "#2C2420" };
     // "Neu" = created within last 30 days
@@ -160,10 +160,14 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   })();
 
   const cardContent = (
-    <>
-      {/* ── Image (4:5 portrait) ── */}
+    <div
+      className="rounded-[16px] overflow-hidden bg-white"
+      style={{ boxShadow: "0 2px 12px rgba(44,36,32,0.08)" }}
+    >
+      {/* ── Image (200px fixed height) ── */}
       <div
-        className="relative w-full aspect-[4/5] rounded-[12px] overflow-hidden bg-s-bg-sunken"
+        className="relative w-full overflow-hidden bg-s-bg-sunken"
+        style={{ height: 200 }}
       >
         {photo ? (
           <Image
@@ -208,17 +212,17 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
               setHeartBouncing(true);
               setTimeout(() => setHeartBouncing(false), 500);
             }}
-            className="absolute top-2 right-2 z-[2] p-2 rounded-full bg-black/10 backdrop-blur-md flex items-center justify-center transition-[background-color] duration-200 hover:bg-black/20 shadow-sm"
+            className="absolute top-2 right-2 z-[2] rounded-full flex items-center justify-center transition-[background-color] duration-200 hover:bg-black/30 shadow-sm"
+            style={{ width: 36, height: 36, minWidth: 44, minHeight: 44, background: "rgba(0,0,0,0.25)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
             aria-pressed={isFavorited}
             aria-label={isFavorited ? t("removeFavorite") : t("addFavorite")}
-            style={{ minWidth: "44px", minHeight: "44px" }}
           >
             <motion.div
               animate={heartBouncing ? { scale: [1, 1.3, 1] } : { scale: 1 }}
               transition={heartBouncing ? { type: "spring", stiffness: 400, damping: 15, duration: 0.4 } : { duration: 0 }}
             >
               <Heart
-                className={`w-6 h-6 transition-colors duration-200 ${
+                className={`w-[18px] h-[18px] transition-colors duration-200 ${
                   isFavorited ? "fill-s-coral stroke-s-coral" : "fill-transparent stroke-white"
                 }`}
                 strokeWidth={2}
@@ -230,7 +234,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
       </div>
 
       {/* ── Text below image ── */}
-      <div className="mt-3 flex flex-col gap-0.5">
+      <div style={{ padding: "12px 14px 14px" }} className="flex flex-col gap-0.5">
         <h3 className="font-body font-semibold text-[16px] text-s-ink truncate leading-6" style={{ color: "#2C2420" }}>
           {salon.name}
         </h3>
@@ -251,13 +255,12 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
           {showRating ? (
             <span className="text-s-ink font-medium ml-1">
               <span className="text-s-ink/60 font-normal mr-1">·</span>
-              <Star className="inline w-[11px] h-[11px] fill-s-ink text-s-ink mb-[2px] mr-[3px]" />
               {(Math.round(salon.average_rating * 10) / 10).toFixed(1)}
             </span>
           ) : null}
         </div>
       </div>
-    </>
+    </div>
   );
 
   if (isDemo) {
@@ -274,7 +277,8 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   return (
     <Link
       href={`/${locale}/salon/${salon.slug}`}
-      className="flex-shrink-0 snap-start group cursor-pointer w-[240px] md:w-[280px] lg:w-[300px] hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-200"
+      className="flex-shrink-0 snap-start group cursor-pointer w-[240px] md:w-[280px] lg:w-[300px] hover:-translate-y-1 transition-[transform,box-shadow] duration-200"
+      style={{ ["--hover-shadow" as string]: "0 4px 20px rgba(44,36,32,0.12)" }}
       aria-label={salon.name}
       prefetch={false}
     >

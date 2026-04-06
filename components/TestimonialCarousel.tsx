@@ -90,7 +90,7 @@ export default function TestimonialCarousel() {
     >
       <div className="px-5 md:px-10 lg:px-20">
         {/* Section header — Pattern A */}
-        <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] text-s-coral mb-1">
+        <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#B84A35" }}>
           {t("testimonials.eyebrow") || "Echte Bewertungen"}
         </span>
         <h2
@@ -119,6 +119,8 @@ export default function TestimonialCarousel() {
             className="flex-shrink-0 flex flex-col gap-3 active:scale-[0.99] transition-transform duration-150"
             style={{
               width: 300,
+              minWidth: 300,
+              maxWidth: 340,
               padding: 20,
               borderRadius: 16,
               background: "rgba(255,255,255,0.65)",
@@ -133,13 +135,20 @@ export default function TestimonialCarousel() {
 
             <p
               className="font-body text-[15px] leading-relaxed flex-1"
-              style={{ color: "#2C2420", fontStyle: "italic" }}
+              style={{
+                color: "#2C2420",
+                fontStyle: "italic",
+                display: "-webkit-box",
+                WebkitLineClamp: 4,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
             >
               &ldquo;{review.comment}&rdquo;
             </p>
 
             {/* Divider */}
-            <div style={{ width: "100%", height: 1, background: "#E8E2DC", margin: "4px 0" }} aria-hidden="true" />
+            <div style={{ width: "100%", height: 1, background: "#E8E2DC", margin: "12px 0" }} aria-hidden="true" />
 
             {/* Author — ALL avatars coral */}
             <div className="flex items-center gap-3">
