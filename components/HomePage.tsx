@@ -21,6 +21,7 @@ import TestimonialCarousel from "@/components/TestimonialCarousel";
 import HomepageHero from "@/components/ui/HomepageHero";
 import LastMinuteStrip from "@/components/ui/LastMinuteStrip";
 import FloatingNavPill from "@/components/layout/FloatingNavPill";
+import HowItWorks from "@/components/ui/HowItWorks";
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -178,6 +179,11 @@ export default function HomePage({ initialData }: HomePageProps) {
             </div>
           )}
         </section>
+
+        {/* ── 2.5. So funktioniert's — PRE-LAUNCH ONLY ── */}
+        <div style={{ marginTop: 32 }}>
+          <HowItWorks />
+        </div>
 
         {/* ── 3. Entdecken / Inspiration ── */}
         <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 32 }}>

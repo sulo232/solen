@@ -75,6 +75,22 @@
       "comingSoon": "Bientôt disponible",
       "more": "Découvrir plus de catégories"
     },
+    "howItWorks": {
+      "eyebrow": "Pour les nouveaux clients",
+      "title": "Comment ça marche",
+      "step1": {
+        "title": "Trouvez",
+        "desc": "Découvrez les salons près de chez vous."
+      },
+      "step2": {
+        "title": "Réservez",
+        "desc": "Choisissez votre créneau et service en ligne."
+      },
+      "step3": {
+        "title": "Profitez",
+        "desc": "Détendez-vous et profitez."
+      }
+    },
     "rebook": {
       "title": "Réserver à nouveau?",
       "lastVisit": "Votre dernière visite: {name}",

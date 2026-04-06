@@ -67,13 +67,14 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
   return (
     <div className="mt-10 -mx-4 group/section relative">
       <div className="flex items-end justify-between px-6 mb-5">
-        {/* Title + subtitle */}
+        {/* Title + subtitle — Pattern A: DM Sans 28px/700 */}
         <div>
-          <h2 className="font-heading font-semibold text-s-ink tracking-tight" style={{ fontSize: "22px" }}>
+          <h2 className="font-body font-bold text-s-ink" style={{ fontSize: 28, lineHeight: 1.15 }}>
             {title || t("heroCarousel.label")}
           </h2>
-          <p className="font-body mt-0.5" style={{ fontSize: "13px", color: "#9A7A60" }}>
-            {t("carousel.topRated") || "Top bewertet · Sofort buchbar"}
+          <p className="font-body mt-1" style={{ fontSize: 14, color: "#6B5E54" }}>
+            <span style={{ color: "#E8735A" }}>{t("carousel.topRated") || "Top bewertet"}</span>
+            <span style={{ color: "#6B5E54" }}> · Sofort buchbar</span>
           </p>
         </div>
 
@@ -82,11 +83,11 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
           {viewAllHref && (
             <Link
               href={viewAllHref}
-              className="font-heading font-semibold transition-colors duration-150 hover:text-s-coral"
-              style={{ fontSize: "13px", color: "#E8624A" }}
+              className="font-body font-medium transition-colors duration-150 hover:text-[#D4654D]"
+              style={{ fontSize: 14, color: "#E8735A" }}
               aria-label={`Alle ${title} ansehen`}
             >
-              {t("carousel.viewAll") || "Alle"} →
+              {t("carousel.viewAll") || "Alle ansehen"} →
             </Link>
           )}
           {/* Nav arrows */}
@@ -143,8 +144,20 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   const locationParts = [salon.quartier, salon.city_name ?? "Basel"].filter(Boolean);
   const locationText = locationParts.join(", ");
 
-  const isGuestFavorite = salon.average_rating >= 4.9 && salon.review_count > 50;
-  const isNew = salon.review_count === 0;
+  // Dynamic badge from DB conditions (spec §12) — max 1 badge per card
+  const badge = (() => {
+    if (salon.average_rating >= 4.9 && salon.review_count >= 5)
+      return { text: "★ Höchste Bewertung", color: "#E8735A" };
+    if (salon.review_count > 50)
+      return { text: "Beliebt", color: "#2C2420" };
+    // "Neu" = created within last 30 days
+    if (salon.created_at) {
+      const age = Date.now() - new Date(salon.created_at).getTime();
+      if (age < 30 * 24 * 60 * 60 * 1000) return { text: "Neu", color: "#2C2420" };
+    }
+    if (salon.review_count === 0) return { text: t("new"), color: "#2C2420" };
+    return null;
+  })();
 
   const cardContent = (
     <>
@@ -155,28 +168,34 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
         {photo ? (
           <Image
             src={photo}
-            alt={salon.name}
+            alt={`${salon.name} — Salon in ${salon.quartier || "Basel"}`}
             fill
             sizes="(max-width: 768px) 100vw, 320px"
             className="object-cover"
+            style={{ objectPosition: "center top" }}
             priority={index < 2}
           />
         ) : (
           <ImageFallback category={salon.categories?.[0]} salonName={salon.name} className="absolute inset-0" />
         )}
 
-        {/* Badge: top-left */}
-        <div className="absolute top-3 left-3 z-[2]">
-          {isGuestFavorite ? (
-            <span className="flex items-center gap-1 font-heading font-semibold text-[13px] text-s-ink bg-white px-2 py-1 rounded-pill shadow-md">
-              {t("heroCarousel.guestFavorite")}
+        {/* Badge: top-left — dynamic from DB, glass pill */}
+        {badge && (
+          <div className="absolute top-3 left-3 z-[2]">
+            <span
+              className="font-heading font-semibold text-[11px] px-3 py-1 rounded-pill"
+              style={{
+                background: "rgba(255,255,255,0.92)",
+                backdropFilter: "blur(6px)",
+                WebkitBackdropFilter: "blur(6px)",
+                color: badge.color,
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.5)",
+              }}
+            >
+              {badge.text}
             </span>
-          ) : isNew ? (
-            <span className="font-heading font-semibold text-[13px] text-white bg-s-ink px-2.5 py-1 rounded-pill shadow-md">
-              {t("new")}
-            </span>
-          ) : null}
-        </div>
+          </div>
+        )}
 
         {/* Favorite heart: top-right — hidden on demo cards */}
         {!isDemo && onFavoriteToggle && (

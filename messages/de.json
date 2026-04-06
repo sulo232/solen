@@ -75,6 +75,22 @@
       "comingSoon": "Bald verfügbar",
       "more": "Mehr Kategorien entdecken"
     },
+    "howItWorks": {
+      "eyebrow": "Für Neukunden",
+      "title": "So funktioniert's",
+      "step1": {
+        "title": "Finde",
+        "desc": "Entdecke Salons in deiner Nähe."
+      },
+      "step2": {
+        "title": "Buche",
+        "desc": "Wähle Termin & Service online."
+      },
+      "step3": {
+        "title": "Geniesse",
+        "desc": "Lehn dich zurück & geniesse."
+      }
+    },
     "rebook": {
       "title": "Wieder buchen?",
       "lastVisit": "Dein letzter Besuch: {name}",

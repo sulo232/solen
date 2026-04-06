@@ -75,6 +75,22 @@
       "comingSoon": "Presto disponibile",
       "more": "Scopri più categorie"
     },
+    "howItWorks": {
+      "eyebrow": "Per i nuovi clienti",
+      "title": "Come funziona",
+      "step1": {
+        "title": "Trova",
+        "desc": "Scopri i saloni vicino a te."
+      },
+      "step2": {
+        "title": "Prenota",
+        "desc": "Scegli data e servizio online."
+      },
+      "step3": {
+        "title": "Goditi",
+        "desc": "Rilassati e goditi il momento."
+      }
+    },
     "rebook": {
       "title": "Prenotare di nuovo?",
       "lastVisit": "La tua ultima visita: {name}",

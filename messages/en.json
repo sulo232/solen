@@ -75,6 +75,22 @@
       "comingSoon": "Coming soon",
       "more": "Discover more categories"
     },
+    "howItWorks": {
+      "eyebrow": "For new customers",
+      "title": "How it works",
+      "step1": {
+        "title": "Find",
+        "desc": "Discover salons near you."
+      },
+      "step2": {
+        "title": "Book",
+        "desc": "Choose your date & service online."
+      },
+      "step3": {
+        "title": "Enjoy",
+        "desc": "Sit back & enjoy."
+      }
+    },
     "rebook": {
       "title": "Book again?",
       "lastVisit": "Your last visit: {name}",
