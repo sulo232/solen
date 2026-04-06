@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
+import { motion } from "framer-motion";
 import { Scissors, Sparkles, FlowerIcon, Brush, Droplets } from "lucide-react";
 
 /**
@@ -50,24 +51,47 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
           letterSpacing: "0.5px",
         }}
       >
-        {t("headlineWord1")}
-        <br />
-        <span style={{ color: "#E8735A" }}>{t("headlineAccent")}</span>
-        <br />
-        {t("headlineWord2")}
+        <motion.span
+          className="block"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+        >
+          {t("headlineWord1")}
+        </motion.span>
+        <motion.span
+          className="block"
+          style={{ color: "#E8735A" }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3, delay: 0.25, type: "spring", stiffness: 400, damping: 25 }}
+        >
+          {t("headlineAccent")}
+        </motion.span>
+        <motion.span
+          className="block"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
+        >
+          {t("headlineWord2")}
+        </motion.span>
       </h1>
 
       {/* ── Subtitle — DM Sans 16px, max 320px ── */}
-      <p
+      <motion.p
         className="font-body text-base leading-relaxed"
         style={{
           color: "#6B5E54",
           marginTop: 16,
           maxWidth: 320,
         }}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.4, ease: [0.23, 1, 0.32, 1] }}
       >
         {t("sub")}
-      </p>
+      </motion.p>
 
       {/* ── Category Pills — horizontal scroll, frosted white glass ── */}
       <div

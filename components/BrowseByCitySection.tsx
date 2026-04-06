@@ -36,13 +36,13 @@ export default function BrowseByCitySection() {
     <section
       className="relative overflow-hidden"
       style={{
-        background: "rgba(44,36,32,0.92)",
+        background: "rgba(44,36,32,0.85)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
       }}
       aria-labelledby="city-section-heading"
     >
-      <div className="px-5 md:px-10 lg:px-20 py-12 md:py-16">
+      <div className="px-5 md:px-10 lg:px-20 py-12">
 
         {/* Coral label */}
         <span

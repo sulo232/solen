@@ -84,7 +84,7 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
             <Link
               href={viewAllHref}
               className="font-body font-medium transition-colors duration-150 hover:text-[#D4654D]"
-              style={{ fontSize: 14, color: "#E8735A" }}
+              style={{ fontSize: 14, color: "#B84A35" }}
               aria-label={`Alle ${title} ansehen`}
             >
               {t("carousel.viewAll") || "Alle ansehen"} →
@@ -231,10 +231,10 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
 
       {/* ── Text below image ── */}
       <div className="mt-3 flex flex-col gap-0.5">
-        <h3 className="font-heading font-semibold text-[15px] text-s-ink truncate leading-6">
+        <h3 className="font-body font-semibold text-[16px] text-s-ink truncate leading-6" style={{ color: "#2C2420" }}>
           {salon.name}
         </h3>
-        <p className="font-body text-[15px] text-s-ink/60 leading-6 truncate">
+        <p className="font-body text-[13px] truncate" style={{ color: "#8C8279", lineHeight: 1.5 }}>
           {locationText}
         </p>
         <div className="flex items-center text-[15px] leading-6 mt-[2px]">
@@ -252,7 +252,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
             <span className="text-s-ink font-medium ml-1">
               <span className="text-s-ink/60 font-normal mr-1">·</span>
               <Star className="inline w-[11px] h-[11px] fill-s-ink text-s-ink mb-[2px] mr-[3px]" />
-              {salon.average_rating.toFixed(2)}
+              {(Math.round(salon.average_rating * 10) / 10).toFixed(1)}
             </span>
           ) : null}
         </div>
@@ -263,7 +263,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   if (isDemo) {
     return (
       <div
-        className="flex-shrink-0 snap-start select-none w-[180px] sm:w-[220px] lg:w-[260px]"
+        className="flex-shrink-0 snap-start select-none w-[240px] md:w-[280px] lg:w-[300px]"
         aria-hidden="true"
       >
         {cardContent}
@@ -274,7 +274,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   return (
     <Link
       href={`/${locale}/salon/${salon.slug}`}
-      className="flex-shrink-0 snap-start group cursor-pointer w-[180px] sm:w-[220px] lg:w-[260px] hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-200"
+      className="flex-shrink-0 snap-start group cursor-pointer w-[240px] md:w-[280px] lg:w-[300px] hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-200"
       aria-label={salon.name}
       prefetch={false}
     >

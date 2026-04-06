@@ -154,7 +154,7 @@ export default function HomePage({ initialData }: HomePageProps) {
           {hasMoreCategories && (
             <div className="flex justify-center" style={{ marginTop: 32 }}>
               <Link
-                href={`/${locale}/search`}
+                href={`/${locale}/suchen?city=basel`}
                 className="inline-flex items-center gap-2 font-body text-sm font-medium active:scale-[0.97] transition-[transform,background,border-color] duration-150"
                 style={{
                   padding: "0 24px",

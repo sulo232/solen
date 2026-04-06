@@ -25,7 +25,7 @@ export default function Footer() {
   const t = useTranslations("footer") as any;
 
   return (
-    <footer style={{ background: "#2C2825" }}>
+    <footer style={{ background: "#2C2420" }}>
       <div className="max-w-[1200px] mx-auto px-5 md:px-10 lg:px-20 py-12">
 
         {/* ── Brand wordmark ── */}
@@ -41,7 +41,7 @@ export default function Footer() {
               SOLEN
             </span>
           </Link>
-          <p className="font-body text-sm mt-2" style={{ color: "#8C8279" }}>
+          <p className="font-body text-sm mt-2" style={{ color: "#9E958C" }}>
             {t("tagline") || "Die Schweizer Salon-Plattform."}
           </p>
         </div>
@@ -52,7 +52,7 @@ export default function Footer() {
           <div>
             <h3
               className="font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-4"
-              style={{ color: "#8C8279" }}
+              style={{ color: "#9E958C" }}
             >
               {t("platform") || "Plattform"}
             </h3>
@@ -80,7 +80,7 @@ export default function Footer() {
           <div>
             <h3
               className="font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-4"
-              style={{ color: "#8C8279" }}
+              style={{ color: "#9E958C" }}
             >
               {t("forSalonsTitle") || "Für Salons"}
             </h3>
@@ -107,7 +107,7 @@ export default function Footer() {
         <div className="mb-6" style={{ marginTop: 24 }}>
           <h3
             className="font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-3"
-            style={{ color: "#8C8279" }}
+            style={{ color: "#9E958C" }}
           >
             {t("legalTitle") || "Rechtliches"}
           </h3>
@@ -135,7 +135,7 @@ export default function Footer() {
           className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-4"
           style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
         >
-          <p className="font-body text-xs" style={{ color: "#8C8279" }}>
+          <p className="font-body text-xs" style={{ color: "#9E958C" }}>
             © {new Date().getFullYear()} solen.ch — Alle Rechte vorbehalten.
           </p>
           <LanguageSwitcher locale={locale} variant="footer" />
