@@ -186,23 +186,17 @@ export default function HomePage({ initialData }: HomePageProps) {
         </div>
 
         {/* ── 3. Entdecken / Inspiration ── */}
-        <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 32 }}>
-          <div className="mb-4 flex items-end justify-between gap-4">
-            <div>
-              <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#E8624A" }}>
-                {t("discover.eyebrow")}
-              </span>
-              <h2
-                className="font-display text-s-ink"
-                style={{ fontSize: 32, lineHeight: 1 }}
-              >
-                {t("discover.title")}
-              </h2>
-            </div>
+        <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 48 }}>
+          <div className="mb-5 flex items-end justify-between gap-4">
+            <h2
+              className="font-heading font-bold text-s-ink"
+              style={{ fontSize: 24, lineHeight: 1.2 }}
+            >
+              {t("discover.title")}
+            </h2>
             <Link
               href={`/${locale}/discover`}
-              className="font-body text-sm font-medium shrink-0 transition-colors duration-150 hover:text-[#D4654D]"
-              style={{ color: "#E8624A" }}
+              className="font-body text-sm font-medium shrink-0 text-s-ink hover:underline transition-colors duration-150"
             >
               {t("discover.catalogCta")} →
             </Link>
@@ -213,7 +207,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
         {/* ── 4. Wieder buchen? (logged-in users with past booking) ── */}
         {sections.rebook && lastBookedSalon && (
-          <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 32 }}>
+          <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 48 }}>
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
               className="flex items-center gap-4 p-4 border border-s-ink/[0.08] rounded-[16px] bg-white">
               <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-s-bg-sunken">
@@ -224,7 +218,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                 <p className="text-sm text-s-ink/60 font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
               </div>
               <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}
-                className="shrink-0 px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-heading font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+                className="shrink-0 px-5 py-2.5 rounded-[10px] bg-s-coral text-white text-sm font-heading font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
                 aria-label={t("rebook.cta")}>
                 {t("rebook.cta")}
               </Link>
@@ -233,17 +227,17 @@ export default function HomePage({ initialData }: HomePageProps) {
         )}
 
         {/* ── 5. Recently Viewed ── */}
-        <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 32 }}>
+        <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 48 }}>
           <RecentlyViewed />
         </section>
 
         {/* ── 6. City Selector (dark) ── */}
-        <div style={{ marginTop: 32 }}>
+        <div style={{ marginTop: 48 }}>
           <BrowseByCitySection />
         </div>
 
-        {/* 32px light gap between two dark sections */}
-        <div style={{ height: 32, background: "#F5F0EB" }} aria-hidden="true" />
+        {/* Breathing gap between dark sections */}
+        <div style={{ height: 48 }} aria-hidden="true" />
 
         {/* ── 7. Testimonials ── */}
         <TestimonialCarousel />

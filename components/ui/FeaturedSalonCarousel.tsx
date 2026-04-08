@@ -83,8 +83,8 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
           {viewAllHref && (
             <Link
               href={viewAllHref}
-              className="font-body font-medium transition-colors duration-150 hover:text-[#D4654D]"
-              style={{ fontSize: 14, color: "#E8624A" }}
+              className="font-body font-medium text-s-ink hover:underline transition-colors duration-150"
+              style={{ fontSize: 14 }}
               aria-label={`Alle ${title} ansehen`}
             >
               {t("carousel.viewAll") || "Alle ansehen"} →

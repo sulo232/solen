@@ -38,7 +38,7 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
 
   return (
     <section
-      className="px-5 md:px-10 lg:px-20 pt-14 pb-0 text-left"
+      className="px-5 md:px-10 lg:px-20 pt-20 pb-0 text-left"
       aria-label={t("sub")}
       style={{
         background: "radial-gradient(ellipse 120% 100% at 50% -20%, rgba(232,98,74,0.06) 0%, transparent 60%), #FFFFFF",
@@ -48,9 +48,9 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
       <h1
         className="font-display text-s-ink"
         style={{
-          fontSize: "clamp(48px, 8vw, 64px)",
-          lineHeight: 0.95,
-          letterSpacing: "0.5px",
+          fontSize: "clamp(56px, 7.5vw, 88px)",
+          lineHeight: 0.9,
+          letterSpacing: "0.01em",
         }}
       >
         <motion.span
@@ -64,9 +64,9 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
         <motion.span
           className="block"
           style={{ color: "#E8624A" }}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3, delay: 0.25, type: "spring", stiffness: 400, damping: 25 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
         >
           {t("headlineAccent")}
         </motion.span>
@@ -85,8 +85,8 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
         className="font-body text-base leading-relaxed"
         style={{
           color: "rgba(26,18,9,0.55)",
-          marginTop: 16,
-          maxWidth: 320,
+          marginTop: 24,
+          maxWidth: 360,
         }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -152,7 +152,7 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
       {/* ── Micro trust signal ── */}
       <div
         className="flex items-center gap-2.5 font-body font-medium"
-        style={{ fontSize: 12, color: "rgba(26,18,9,0.55)", marginTop: 24, paddingBottom: 24 }}
+        style={{ fontSize: 13, color: "rgba(26,18,9,0.45)", marginTop: 20, paddingBottom: 32 }}
         aria-label="Platform trust statistics"
       >
         <span className="flex items-center gap-1">

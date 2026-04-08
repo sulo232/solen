@@ -89,14 +89,10 @@ export default function TestimonialCarousel() {
       aria-labelledby="testimonials-heading"
     >
       <div className="px-5 md:px-10 lg:px-20">
-        {/* Section header — Pattern A */}
-        <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#E8624A" }}>
-          {t("testimonials.eyebrow") || "Echte Bewertungen"}
-        </span>
         <h2
           id="testimonials-heading"
           className="font-heading font-bold text-s-ink"
-          style={{ fontSize: 24, lineHeight: 1.1, letterSpacing: "-.01em" }}
+          style={{ fontSize: 24, lineHeight: 1.2 }}
         >
           {t("testimonials.title") || "Was unsere Nutzer sagen"}
         </h2>
@@ -123,11 +119,9 @@ export default function TestimonialCarousel() {
               maxWidth: 340,
               padding: 20,
               borderRadius: 16,
-              background: "rgba(255,255,255,0.65)",
-              backdropFilter: "blur(14px)",
-              WebkitBackdropFilter: "blur(14px)",
-              border: "1px solid rgba(232,226,220,0.45)",
-              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.5)",
+              background: "#FFFFFF",
+              border: "1px solid rgba(26,18,9,0.08)",
+              boxShadow: "0 1px 3px rgba(26,18,9,.04)",
               scrollSnapAlign: "start",
             }}
           >
