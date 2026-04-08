@@ -23,7 +23,7 @@ import { WaxingIcon } from "@/components/icons/category/WaxingIcon";
 import AirbnbSearchBar from "@/components/ui/AirbnbSearchBar";
 import { getPersistedCity } from "@/lib/city-cookie";
 import { motion, AnimatePresence } from "framer-motion";
-import { popoverVariants } from "@/lib/animations";
+import { popoverVariants, EASE_SOLEN } from "@/lib/animations";
 
 const airbnbPopoverVariants = popoverVariants;
 
@@ -203,7 +203,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               <div className="hidden md:block w-full">
                 {/* SVG category tabs — visible when NOT scrolled */}
                 <div className={cn(
-                  "flex items-center justify-center gap-6 overflow-x-auto scrollbar-hide px-2 transition-[opacity] duration-300 overscroll-x-contain",
+                  "flex items-center justify-center gap-6 overflow-x-auto scrollbar-hide px-2 transition-opacity duration-200 overscroll-x-contain",
                   scrolled ? "opacity-0 pointer-events-none absolute" : "opacity-100"
                 )}>
                   {[
@@ -248,21 +248,56 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
                 {/* Compact search pill — visible when scrolled */}
                 <div className={cn(
-                  "flex justify-center transition-[opacity] duration-300",
+                  "flex justify-center transition-opacity duration-200",
                   scrolled ? "opacity-100" : "opacity-0 pointer-events-none absolute"
                 )}>
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => setSearchExpanded(true)}
-                    className="flex items-center gap-2.5 bg-white border border-s-ink/[0.08] shadow-elevation-1 rounded-full px-4 py-2 hover:shadow-elevation-2 active:scale-[0.98] transition-[shadow,transform] duration-150 w-[380px]"
+                    className="flex items-center gap-2.5 bg-white border border-s-ink/[0.08] shadow-elevation-1 rounded-full px-4 py-2 transition-shadow duration-150 w-[380px]"
                     aria-label="Suche öffnen"
                   >
                     <Search className="w-4 h-4 text-s-ink shrink-0" />
                     <span className="text-[14px] font-body font-semibold text-s-ink/60 truncate text-left flex-1">
                       {t("search")}
                     </span>
-                  </button>
+                  </motion.button>
                 </div>
               </div>
+
+              {/* ── Mobile Category Strip (Homepage + Unscrolled) ── */}
+              {!scrolled && (
+                <div className="md:hidden overflow-x-auto scrollbar-hide pb-3 pt-2 px-3 border-t border-s-ink/[0.06] overscroll-x-contain snap-x mt-2">
+                  <div className="flex items-center gap-1.5 w-max">
+                    {[
+                      { key: "all",        href: "/",           Icon: Compass,      label: t("discover") },
+                      { key: "coiffeur",   href: "/coiffeur",   Icon: CoiffeurIcon, label: t("coiffeur") },
+                      { key: "nails",      href: "/nails",       Icon: NailsIcon,   label: t("nails") },
+                      { key: "barbershop", href: "/barbershop",  Icon: BarberIcon,  label: t("barbershop") },
+                      { key: "makeup",     href: "/makeup",      Icon: MakeupIcon,  label: t("makeup") },
+                      { key: "waxing",     href: "/waxing",      Icon: WaxingIcon,  label: t("waxing") },
+                    ].map(({ key, href, Icon, label }) => {
+                      const isActive = withoutLocale === href || (withoutLocale.startsWith(href) && href !== "/");
+                      return (
+                        <Link
+                          key={key}
+                          href={`/${locale}${href}`}
+                          className={cn(
+                            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-heading font-semibold whitespace-nowrap shrink-0 transition-[background-color,color] duration-150 active:scale-[0.97]",
+                            isActive
+                              ? "bg-s-ink text-white"
+                              : "bg-s-ink/[0.04] text-s-ink/55 hover:bg-s-ink/[0.08]"
+                          )}
+                        >
+                          <Icon width={14} height={14} className="shrink-0" />
+                          {label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           ) : isCategoryPage ? (
             /* Category page — SVG icon tabs, icon hides on scroll, city-aware */
@@ -430,7 +465,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             initial={{ opacity: 0, y: -8, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
-            transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+            transition={{ duration: 0.22, ease: EASE_SOLEN as unknown as number[] }}
             className="fixed top-[80px] left-0 right-0 z-[46] flex justify-center px-6 pointer-events-none"
           >
             <div className="max-w-4xl w-full pointer-events-auto">
