@@ -12,7 +12,7 @@ import { useTranslations } from "next-intl";
  * - HORIZONTAL CAROUSEL (not vertical stack)
  * - Only renders when ≥3 real reviews exist in DB
  * - Warm white glass cards: rgba(255,255,255,0.65) + blur(14px)
- * - ALL avatars: coral #E8735A with white Syne letter
+ * - ALL avatars: coral #E8624A with white Syne letter
  * - Stars: 5× SVG 14px, fill coral
  * - Quote: DM Sans 15px/400 italic
  * - Section heading: DM Sans 28px/700 (Pattern A)
@@ -35,7 +35,7 @@ function StarRow({ count = 5 }: { count?: number }) {
   return (
     <div className="flex gap-0.5" role="img" aria-label={`${count} von 5 Sternen`}>
       {[1, 2, 3, 4, 5].map((i) => (
-        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={i <= count ? "#E8735A" : "#E8E2DC"} aria-hidden="true">
+        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={i <= count ? "#E8624A" : "#E8E2DC"} aria-hidden="true">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
       ))}
@@ -85,18 +85,18 @@ export default function TestimonialCarousel() {
   return (
     <section
       className="py-8"
-      style={{ background: "#F5F0EB" }}
+      style={{ background: "#FFFFFF" }}
       aria-labelledby="testimonials-heading"
     >
       <div className="px-5 md:px-10 lg:px-20">
         {/* Section header — Pattern A */}
-        <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#B84A35" }}>
+        <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#E8624A" }}>
           {t("testimonials.eyebrow") || "Echte Bewertungen"}
         </span>
         <h2
           id="testimonials-heading"
-          className="font-body font-bold text-s-ink"
-          style={{ fontSize: 28, lineHeight: 1.15, letterSpacing: "-.01em" }}
+          className="font-heading font-bold text-s-ink"
+          style={{ fontSize: 24, lineHeight: 1.1, letterSpacing: "-.01em" }}
         >
           {t("testimonials.title") || "Was unsere Nutzer sagen"}
         </h2>
@@ -154,7 +154,7 @@ export default function TestimonialCarousel() {
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-heading font-semibold text-[14px] text-white"
-                style={{ background: "#E8735A" }}
+                style={{ background: "#E8624A" }}
                 aria-hidden="true"
               >
                 {review.reviewer_name.charAt(0).toUpperCase()}

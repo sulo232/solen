@@ -48,7 +48,7 @@ export default function BrowseByCitySection() {
         <span
           id="city-section-heading"
           className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-8 md:mb-12"
-          style={{ color: "#E8735A" }}
+          style={{ color: "#E8624A" }}
         >
           {t("cities.title") || "Salons in deiner Nähe"}
         </span>
@@ -65,14 +65,14 @@ export default function BrowseByCitySection() {
               style={{
                 borderTop: "1px solid rgba(255,255,255,0.08)",
                 borderBottom: idx === CITIES.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",
-                borderLeft: city.active ? "4px solid #E8735A" : "4px solid transparent",
+                borderLeft: city.active ? "4px solid #E8624A" : "4px solid transparent",
                 paddingLeft: city.active ? 12 : 0,
                 transition: "padding-left 200ms ease, border-color 200ms ease",
               }}
               onMouseEnter={(e) => {
                 if (!city.active) {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.borderLeft = "4px solid #E8735A";
+                  el.style.borderLeft = "4px solid #E8624A";
                   el.style.paddingLeft = "12px";
                 }
               }}
@@ -113,12 +113,12 @@ export default function BrowseByCitySection() {
                       : "opacity-0 group-hover:opacity-100"
                   }`}
                   style={{
-                    color: "#E8735A",
+                    color: "#E8624A",
                     transition: "opacity 200ms ease",
                   }}
                   aria-hidden={!city.active}
                 >
-                  Entdecken →
+                  {tNav("discover") || "Entdecken"} →
                 </span>
               </div>
             </Link>

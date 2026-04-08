@@ -40,7 +40,9 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
     <section
       className="px-5 md:px-10 lg:px-20 pt-14 pb-0 text-left"
       aria-label={t("sub")}
-      style={{ background: "#F5F0EB" }}
+      style={{
+        background: "radial-gradient(ellipse 120% 100% at 50% -20%, rgba(232,98,74,0.06) 0%, transparent 60%), #FFFFFF",
+      }}
     >
       {/* ── Headline — Bebas Neue, left-aligned, 1 coral word max ── */}
       <h1
@@ -61,7 +63,7 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
         </motion.span>
         <motion.span
           className="block"
-          style={{ color: "#E8735A" }}
+          style={{ color: "#E8624A" }}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3, delay: 0.25, type: "spring", stiffness: 400, damping: 25 }}
@@ -82,7 +84,7 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
       <motion.p
         className="font-body text-base leading-relaxed"
         style={{
-          color: "#6B5E54",
+          color: "rgba(26,18,9,0.55)",
           marginTop: 16,
           maxWidth: 320,
         }}
@@ -131,7 +133,7 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
             onMouseEnter={e => {
               const el = e.currentTarget as HTMLElement;
               el.style.background = "#FAF0EC";
-              el.style.borderColor = "#E8735A";
+              el.style.borderColor = "#E8624A";
             }}
             onMouseLeave={e => {
               const el = e.currentTarget as HTMLElement;
@@ -150,11 +152,11 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
       {/* ── Micro trust signal ── */}
       <div
         className="flex items-center gap-2.5 font-body font-medium"
-        style={{ fontSize: 12, color: "#6B5E54", marginTop: 24, paddingBottom: 24 }}
+        style={{ fontSize: 12, color: "rgba(26,18,9,0.55)", marginTop: 24, paddingBottom: 24 }}
         aria-label="Platform trust statistics"
       >
         <span className="flex items-center gap-1">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="#E8735A" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="#E8624A" aria-hidden="true">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
           4.8 {t("trustRating")}

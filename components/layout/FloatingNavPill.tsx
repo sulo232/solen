@@ -13,7 +13,7 @@ import { motion } from "framer-motion";
  *
  * - Floating frost glass pill, centered at bottom
  * - Icons only — no text labels
- * - Active icon: coral #E8735A (filled variant)
+ * - Active icon: coral #E8624A (filled variant)
  * - Inactive icon: warm gray #8C8279 (outline)
  * - Always visible on mobile, HIDDEN on desktop (1024px+)
  * - 4 icons: Home, Entdecken, Suchen, Profil
@@ -24,7 +24,7 @@ import { motion } from "framer-motion";
  */
 
 function HomeIcon({ active }: { active: boolean }) {
-  const c = active ? "#E8735A" : "#8C8279";
+  const c = active ? "#E8624A" : "#8C8279";
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? c : "none"} stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 12l9-8 9 8" />
@@ -34,7 +34,7 @@ function HomeIcon({ active }: { active: boolean }) {
 }
 
 function DiscoverIcon({ active }: { active: boolean }) {
-  const c = active ? "#E8735A" : "#8C8279";
+  const c = active ? "#E8624A" : "#8C8279";
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8">
       <circle cx="12" cy="12" r="10" />
@@ -44,7 +44,7 @@ function DiscoverIcon({ active }: { active: boolean }) {
 }
 
 function SearchIcon({ active }: { active: boolean }) {
-  const c = active ? "#E8735A" : "#8C8279";
+  const c = active ? "#E8624A" : "#8C8279";
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round">
       <circle cx="11" cy="11" r="8" />
@@ -54,7 +54,7 @@ function SearchIcon({ active }: { active: boolean }) {
 }
 
 function ProfileIcon({ active }: { active: boolean }) {
-  const c = active ? "#E8735A" : "#8C8279";
+  const c = active ? "#E8624A" : "#8C8279";
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round">
       <circle cx="12" cy="8" r="4" fill={active ? c : "none"} />

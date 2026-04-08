@@ -69,12 +69,12 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
       <div className="flex items-end justify-between px-6 mb-5">
         {/* Title + subtitle — Pattern A: DM Sans 28px/700 */}
         <div>
-          <h2 className="font-body font-bold text-s-ink" style={{ fontSize: 28, lineHeight: 1.15 }}>
+          <h2 className="font-heading font-bold text-s-ink" style={{ fontSize: 24, lineHeight: 1.2 }}>
             {title || t("heroCarousel.label")}
           </h2>
-          <p className="font-body mt-1" style={{ fontSize: 14, color: "#6B5E54" }}>
-            <span style={{ color: "#B84A35" }}>{t("carousel.topRated") || "Top bewertet"}</span>
-            <span style={{ color: "#6B5E54" }}> · Sofort buchbar</span>
+          <p className="font-body mt-1" style={{ fontSize: 14, color: "rgba(26,18,9,0.55)" }}>
+            <span style={{ color: "#E8624A" }}>{t("carousel.topRated") || "Top bewertet"}</span>
+            <span style={{ color: "rgba(26,18,9,0.55)" }}> · Sofort buchbar</span>
           </p>
         </div>
 
@@ -84,7 +84,7 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
             <Link
               href={viewAllHref}
               className="font-body font-medium transition-colors duration-150 hover:text-[#D4654D]"
-              style={{ fontSize: 14, color: "#B84A35" }}
+              style={{ fontSize: 14, color: "#E8624A" }}
               aria-label={`Alle ${title} ansehen`}
             >
               {t("carousel.viewAll") || "Alle ansehen"} →
@@ -147,7 +147,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   // Dynamic badge from DB conditions (spec §12) — max 1 badge per card
   const badge = (() => {
     if (salon.average_rating >= 4.9 && salon.review_count >= 5)
-      return { text: "★ Höchste Bewertung", color: "#B84A35" };
+      return { text: "★ Höchste Bewertung", color: "#E8624A" };
     if (salon.review_count > 50)
       return { text: "Beliebt", color: "#2C2420" };
     // "Neu" = created within last 30 days

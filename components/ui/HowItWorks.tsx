@@ -38,12 +38,12 @@ export default function HowItWorks({ hidden }: HowItWorksProps) {
   return (
     <section className="px-5 md:px-10 lg:px-20">
       {/* Section header — Pattern A */}
-      <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#B84A35" }}>
+      <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#E8624A" }}>
         {t("eyebrow") || "Für Neukunden"}
       </span>
       <h2
-        className="font-body font-bold text-s-ink mb-6"
-        style={{ fontSize: 28, lineHeight: 1.15 }}
+        className="font-heading font-bold text-s-ink mb-6"
+        style={{ fontSize: 24, lineHeight: 1.2 }}
       >
         {t("title") || "So funktioniert's"}
       </h2>
@@ -60,19 +60,19 @@ export default function HowItWorks({ hidden }: HowItWorksProps) {
               className="w-12 h-12 rounded-full flex items-center justify-center mb-3"
               style={{ background: "rgba(232,115,90,0.1)" }}
             >
-              <Icon size={24} strokeWidth={1.8} style={{ color: "#E8735A" }} aria-hidden="true" />
+              <Icon size={24} strokeWidth={1.8} style={{ color: "#E8624A" }} aria-hidden="true" />
             </div>
 
             {/* Step number + title */}
             <p className="font-body font-semibold text-base text-s-ink">
-              <span style={{ color: "#B84A35" }}>{i + 1}.</span>{" "}
+              <span style={{ color: "#E8624A" }}>{i + 1}.</span>{" "}
               {t(`step${i + 1}.title`) || ["Finde", "Buche", "Geniesse"][i]}
             </p>
 
             {/* Description */}
             <p
               className="font-body text-[13px] leading-relaxed mt-1"
-              style={{ color: "#6B5E54", maxWidth: 260 }}
+              style={{ color: "rgba(26,18,9,0.55)", maxWidth: 260 }}
             >
               {t(`step${i + 1}.desc`) || [
                 "Entdecke Salons in deiner Nähe.",

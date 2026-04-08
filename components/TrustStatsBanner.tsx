@@ -158,10 +158,10 @@ export default function TrustStatsBanner() {
     <section
       ref={sectionRef}
       style={{
-        background: "rgba(245,240,235,0.5)",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-        padding: "24px 20px",
+        background: "#FFFFFF",
+        borderTop: "1px solid rgba(26,18,9,0.06)",
+        borderBottom: "1px solid rgba(26,18,9,0.06)",
+        padding: "40px 48px",
       }}
     >
       <div className="flex items-center justify-center gap-4 md:gap-6 flex-wrap">
@@ -178,7 +178,7 @@ export default function TrustStatsBanner() {
                   </p>
                   <p
                     className="font-body mt-1"
-                    style={{ fontSize: 13, color: "#6B5E54" }}
+                    style={{ fontSize: 13, color: "rgba(26,18,9,0.55)" }}
                   >
                     {item.label}
                   </p>
@@ -187,14 +187,14 @@ export default function TrustStatsBanner() {
               {item.type === "rating" && (
                 <>
                   <div className="flex items-center gap-1">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#E8735A" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#E8624A" aria-hidden="true">
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
                     <span className="font-body font-bold" style={{ fontSize: 16, color: "#2C2420" }}>
                       4.8
                     </span>
                   </div>
-                  <p className="font-body mt-1" style={{ fontSize: 13, color: "#6B5E54" }}>
+                  <p className="font-body mt-1" style={{ fontSize: 13, color: "rgba(26,18,9,0.55)" }}>
                     {item.label}
                   </p>
                 </>
@@ -204,7 +204,7 @@ export default function TrustStatsBanner() {
                   <p className="font-body font-bold" style={{ fontSize: 16, color: "#2C2420" }}>
                     Kostenlos
                   </p>
-                  <p className="font-body mt-1" style={{ fontSize: 13, color: "#6B5E54" }}>
+                  <p className="font-body mt-1" style={{ fontSize: 13, color: "rgba(26,18,9,0.55)" }}>
                     {item.label}
                   </p>
                 </>

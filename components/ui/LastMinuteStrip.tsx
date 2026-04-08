@@ -76,11 +76,11 @@ export default function LastMinuteStrip({ slots }: LastMinuteStripProps) {
                 href={`/${locale}/salon/${slot.salon.slug}?service=${slot.service_id}`}
                 className="flex-shrink-0 flex items-center gap-2.5 px-3.5 py-2.5 rounded-[12px] whitespace-nowrap active:scale-[0.97] transition-[transform,background] duration-150"
                 style={{
-                  background: "rgba(255,255,255,.12)",
-                  border: "1px solid rgba(255,255,255,.18)",
+                  background: "rgba(255,255,255,.15)",
+                  border: "1px solid rgba(255,255,255,.22)",
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,.2)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,.12)"; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,.22)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,.15)"; }}
                 aria-label={`${slot.salon.name} — ${formatSlotTime(slot.starts_at, locale)}`}
               >
                 <div>

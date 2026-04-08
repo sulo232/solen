@@ -112,7 +112,7 @@ export default function HomePage({ initialData }: HomePageProps) {
   const hasMoreCategories = orderedSectionKeys.length > MAX_CATEGORY_SECTIONS;
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden" style={{ background: "#F5F0EB" }}>
+    <div className="min-h-screen relative overflow-x-hidden bg-white">
       {/* GuidedSearch sheet — sheet-only, trigger rendered inline in header */}
       <GuidedSearch categoryCounts={categoryCounts} hideTrigger />
 
@@ -166,7 +166,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                 }}
                 onMouseEnter={e => {
                   (e.currentTarget as HTMLElement).style.background = "#FAF0EC";
-                  (e.currentTarget as HTMLElement).style.borderColor = "#E8735A";
+                  (e.currentTarget as HTMLElement).style.borderColor = "#E8624A";
                 }}
                 onMouseLeave={e => {
                   (e.currentTarget as HTMLElement).style.background = "transparent";
@@ -189,7 +189,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 32 }}>
           <div className="mb-4 flex items-end justify-between gap-4">
             <div>
-              <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#B84A35" }}>
+              <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#E8624A" }}>
                 {t("discover.eyebrow")}
               </span>
               <h2
@@ -202,7 +202,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             <Link
               href={`/${locale}/discover`}
               className="font-body text-sm font-medium shrink-0 transition-colors duration-150 hover:text-[#D4654D]"
-              style={{ color: "#B84A35" }}
+              style={{ color: "#E8624A" }}
             >
               {t("discover.catalogCta")} →
             </Link>
