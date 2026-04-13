@@ -1,20 +1,19 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
-import { Scissors, Sparkles, FlowerIcon, Brush, Droplets } from "lucide-react";
+import { Search, MapPin, Scissors, Sparkles, Heart } from "lucide-react";
 
 /**
- * HomepageHero — Component Map §02 + §04
+ * HomepageHero — Fresha-inspired Design
  *
- * Design intent: "This hero should feel confident and direct because
- * it's the first thing users see — left-aligned, no-nonsense, Bebas Neue."
- *
- * - Background: #F5F0EB (warm beige, NOT white, NOT gradient)
- * - Headline: Bebas Neue, left-aligned, max 1 coral accent word
- * - Subtitle: DM Sans 16px/400, max 320px, left-aligned
- * - Category pills: horizontal scroll, frosted white glass, SVG + label
+ * Clean, centered layout with:
+ * - Bold centered headline
+ * - Large search bar
+ * - Social proof stats
+ * - Category quick links
  */
 
 interface HomepageHeroProps {
@@ -22,149 +21,162 @@ interface HomepageHeroProps {
   reviewCount?: number;
 }
 
-const CATEGORY_PILLS = [
-  { key: "coiffeur",   icon: <Scissors size={18} strokeWidth={1.8} aria-hidden="true" /> },
-  { key: "nails",      icon: <Sparkles size={18} strokeWidth={1.8} aria-hidden="true" /> },
-  { key: "barbershop", icon: <Scissors size={18} strokeWidth={1.8} aria-hidden="true" /> },
-  { key: "spa",        icon: <FlowerIcon size={18} strokeWidth={1.8} aria-hidden="true" /> },
-  { key: "makeup",     icon: <Brush size={18} strokeWidth={1.8} aria-hidden="true" /> },
-  { key: "waxing",     icon: <Droplets size={18} strokeWidth={1.8} aria-hidden="true" /> },
-] as const;
-
 export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: HomepageHeroProps) {
   const t = useTranslations("home.hero") as any;
   const tNav = useTranslations("navigation") as any;
   const locale = useLocale();
+  const [appointmentsToday, setAppointmentsToday] = useState(0);
+
+  // Animate counter
+  useEffect(() => {
+    const target = 1247;
+    const duration = 2000;
+    const start = Date.now();
+    
+    const animate = () => {
+      const elapsed = Date.now() - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setAppointmentsToday(Math.floor(target * eased));
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    
+    requestAnimationFrame(animate);
+  }, []);
+
+  const categories = [
+    { key: "coiffeur", label: tNav("coiffeur") || "Hair Salons", icon: Scissors },
+    { key: "nails", label: tNav("nails") || "Nail Salons", icon: Sparkles },
+    { key: "barbershop", label: tNav("barbershop") || "Barbers", icon: Scissors },
+    { key: "spa", label: tNav("spa") || "Spa & Wellness", icon: Heart },
+    { key: "makeup", label: tNav("makeup") || "Makeup", icon: Sparkles },
+  ];
 
   return (
-    <section
-      className="px-5 md:px-10 lg:px-20 pt-20 pb-0 text-left"
-      aria-label={t("sub")}
-      style={{
-        background: "radial-gradient(ellipse 120% 100% at 50% -20%, rgba(232,98,74,0.06) 0%, transparent 60%), #FFFFFF",
-      }}
-    >
-      {/* ── Headline — Bebas Neue, left-aligned, 1 coral word max ── */}
-      <h1
-        className="font-display text-s-ink"
+    <section className="relative bg-white pt-24 md:pt-32 pb-16 md:pb-24 overflow-hidden">
+      {/* Subtle background pattern */}
+      <div 
+        className="absolute inset-0 opacity-[0.02]"
         style={{
-          fontSize: "clamp(56px, 7.5vw, 88px)",
-          lineHeight: 0.9,
-          letterSpacing: "0.01em",
+          backgroundImage: `radial-gradient(circle at 1px 1px, #101010 1px, transparent 0)`,
+          backgroundSize: '40px 40px',
         }}
-      >
-        <motion.span
-          className="block"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-        >
-          {t("headlineWord1")}
-        </motion.span>
-        <motion.span
-          className="block"
-          style={{ color: "#E8624A" }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
-        >
-          {t("headlineAccent")}
-        </motion.span>
-        <motion.span
-          className="block"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
-        >
-          {t("headlineWord2")}
-        </motion.span>
-      </h1>
+      />
 
-      {/* ── Subtitle — DM Sans 16px, max 320px ── */}
-      <motion.p
-        className="font-body text-base leading-relaxed"
-        style={{
-          color: "rgba(26,18,9,0.55)",
-          marginTop: 24,
-          maxWidth: 360,
-        }}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.4, ease: [0.23, 1, 0.32, 1] }}
-      >
-        {t("sub")}
-      </motion.p>
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* Main Headline */}
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#101010] tracking-tight leading-[1.1]"
+        >
+          {t("headlineWord1") || "Book local"}
+          <br />
+          <span className="text-[#101010]">
+            {t("headlineAccent") || "selfcare services"}
+          </span>
+        </motion.h1>
 
-      {/* ── Category Pills — horizontal scroll, frosted white glass ── */}
-      <div
-        className="flex gap-2 overflow-x-auto pb-2 -mx-5 px-5 md:-mx-10 md:px-10 lg:-mx-20 lg:px-20"
-        style={{
-          marginTop: 24,
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
-          maskImage: "linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 32px), transparent 100%)",
-          WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 32px), transparent 100%)",
-        }}
-        role="navigation"
-        aria-label={tNav("categories")}
-      >
-        {CATEGORY_PILLS.map(({ key, icon }, pillIdx) => (
-          <motion.div
-            key={key}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.5 + pillIdx * 0.05, ease: [0.23, 1, 0.32, 1] }}
-            className="flex-shrink-0"
+        {/* Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
+          className="mt-6 text-lg md:text-xl text-[#717171] max-w-2xl mx-auto"
+        >
+          {t("sub") || "Discover top-rated salons, barbers, medspas, wellness studios and beauty experts trusted by millions worldwide"}
+        </motion.p>
+
+        {/* Search Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
+          className="mt-10"
+        >
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))}
+            className="w-full max-w-xl mx-auto flex items-center gap-4 px-6 py-4 bg-white rounded-full border border-[#E8E8E8] shadow-lg hover:shadow-xl transition-all duration-300 group"
           >
-          <Link
-            href={`/${locale}/${key}`}
-            className="inline-flex items-center gap-1.5 font-body text-sm font-medium active:scale-[0.97] transition-[transform,background,border-color] duration-150"
-            style={{
-              height: 40,
-              padding: "0 16px",
-              borderRadius: 99,
-              border: "1.5px solid #D9D0C7",
-              background: "rgba(255,255,255,0.55)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-              color: "#2C2420",
-              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.5)",
-            }}
-            onMouseEnter={e => {
-              const el = e.currentTarget as HTMLElement;
-              el.style.background = "#FAF0EC";
-              el.style.borderColor = "#E8624A";
-            }}
-            onMouseLeave={e => {
-              const el = e.currentTarget as HTMLElement;
-              el.style.background = "rgba(255,255,255,0.55)";
-              el.style.borderColor = "#D9D0C7";
-            }}
-            aria-label={tNav(key)}
-          >
-            <span style={{ color: "#8C8279" }}>{icon}</span>
-            {tNav(key)}
-          </Link>
-          </motion.div>
-        ))}
-      </div>
+            <Search className="w-5 h-5 text-[#101010]" />
+            <span className="flex-1 text-left text-[#717171] text-base md:text-lg">
+              {t("searchPlaceholder") || "Search treatments, salons..."}
+            </span>
+            <span className="hidden sm:flex items-center gap-2 px-4 py-2 bg-[#101010] text-white text-sm font-semibold rounded-full group-hover:bg-[#2a2a2a] transition-colors">
+              <Search className="w-4 h-4" />
+              Search
+            </span>
+          </button>
+        </motion.div>
 
-      {/* ── Micro trust signal ── */}
-      <div
-        className="flex items-center gap-2.5 font-body font-medium"
-        style={{ fontSize: 13, color: "rgba(26,18,9,0.45)", marginTop: 20, paddingBottom: 32 }}
-        aria-label="Platform trust statistics"
-      >
-        <span className="flex items-center gap-1">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="#E8624A" aria-hidden="true">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-          </svg>
-          4.8 {t("trustRating")}
-        </span>
-        <span className="w-1 h-1 rounded-full" style={{ background: "#D9D0C7" }} aria-hidden="true" />
-        <span>{reviewCount.toLocaleString("de-CH")}+ {t("trustReviews")}</span>
-        <span className="w-1 h-1 rounded-full" style={{ background: "#D9D0C7" }} aria-hidden="true" />
-        <span>{t("trustFree")}</span>
+        {/* Social Proof */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-8 flex items-center justify-center gap-2 text-sm text-[#717171]"
+        >
+          <span className="inline-flex items-center gap-1.5">
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span className="font-semibold text-[#101010]">{appointmentsToday.toLocaleString("de-CH")}</span>
+          </span>
+          <span>{t("appointmentsToday") || "appointments booked today"}</span>
+        </motion.div>
+
+        {/* Category Pills */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="mt-12 flex flex-wrap items-center justify-center gap-3"
+        >
+          {categories.map(({ key, label, icon: Icon }, index) => (
+            <motion.div
+              key={key}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: 0.6 + index * 0.05 }}
+            >
+              <Link
+                href={`/${locale}/${key}`}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F7F7F7] hover:bg-[#EBEBEB] text-[#101010] text-sm font-medium rounded-full transition-all duration-200 hover:-translate-y-0.5"
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Trust badges */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+          className="mt-16 pt-8 border-t border-[#E8E8E8] flex flex-wrap items-center justify-center gap-8 md:gap-12"
+        >
+          <div className="flex items-center gap-2">
+            <div className="flex -space-x-1">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <svg key={i} className="w-5 h-5 text-[#FFC107]" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            <span className="text-sm text-[#717171]">
+              <span className="font-semibold text-[#101010]">4.8</span> average rating
+            </span>
+          </div>
+          
+          <div className="text-sm text-[#717171]">
+            <span className="font-semibold text-[#101010]">{reviewCount.toLocaleString("de-CH")}+</span> reviews
+          </div>
+          
+          <div className="text-sm text-[#717171]">
+            <span className="font-semibold text-[#101010]">Free</span> to book
+          </div>
+        </motion.div>
       </div>
     </section>
   );

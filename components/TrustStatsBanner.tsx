@@ -2,21 +2,12 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { Building2, Star, CalendarCheck, Shield } from "lucide-react";
 
 /**
- * Platform Stats — Component Map §05 (merged Trust Bar + Stats Banner)
+ * TrustStatsBanner — Fresha-inspired stats section
  *
- * Design intent: "This strip should feel grounded and trustworthy because
- * it's showing real platform numbers to build confidence."
- *
- * - Single horizontal row, center aligned
- * - Sand glass background: rgba(245,240,235,0.5) + blur(10px)
- * - Numbers: Bebas Neue 28px (counts), DM Sans 16px/700 (rating)
- * - Labels: DM Sans 13px/400
- * - Separators: 1px solid #E8E2DC, height 28px
- * - Any stat with value 0 → hidden
- * - ALL stats 0 → render null
- * - Count-up animation: 0→value, 1000ms ease-out, stagger 150ms
+ * Clean, modern layout with animated counters
  */
 
 interface TrustStats {
@@ -51,30 +42,24 @@ export default function TrustStatsBanner() {
     if (!stats || hasAnimated) return;
     setHasAnimated(true);
 
-    const duration = 1000;
+    const duration = 1500;
     const startTime = Date.now();
-    const stagger = 150;
 
-    const animateValue = (
-      targetValue: number,
-      startDelay: number,
-      onUpdate: (value: number) => void
-    ) => {
-      const animate = () => {
-        const elapsed = Date.now() - startTime - startDelay;
-        if (elapsed < 0) { requestAnimationFrame(animate); return; }
-        if (elapsed >= duration) { onUpdate(targetValue); return; }
-        const progress = elapsed / duration;
-        const eased = 1 - Math.pow(1 - progress, 3);
-        onUpdate(Math.floor(targetValue * eased));
-        requestAnimationFrame(animate);
-      };
-      requestAnimationFrame(animate);
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+
+      setAnimatedValues({
+        salons: Math.floor(stats.salons * eased),
+        reviews: Math.floor(stats.reviews * eased),
+        bookings: Math.floor(stats.bookings_all_time * eased),
+      });
+
+      if (progress < 1) requestAnimationFrame(animate);
     };
 
-    animateValue(stats.salons, 0, (v) => setAnimatedValues((p) => ({ ...p, salons: v })));
-    animateValue(stats.reviews, stagger, (v) => setAnimatedValues((p) => ({ ...p, reviews: v })));
-    animateValue(stats.bookings_all_time, stagger * 2, (v) => setAnimatedValues((p) => ({ ...p, bookings: v })));
+    requestAnimationFrame(animate);
   }, [stats, hasAnimated]);
 
   useEffect(() => {
@@ -86,47 +71,59 @@ export default function TrustStatsBanner() {
           observer.disconnect();
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.3 }
     );
     observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, [animateNumbers, hasAnimated]);
 
-  // Build stat items, filtering out zeros
-  const allItems = [
-    { value: animatedValues.salons, rawValue: stats?.salons ?? 0, label: t("trust_stats.salons") || "Salons", isBebas: true },
-    {
-      value: 0, rawValue: 1, label: t("trust_stats.reviews") ? "Bewertung" : "Bewertung",
-      isRating: true,
-    },
-    { value: animatedValues.reviews, rawValue: stats?.reviews ?? 0, label: t("trust_stats.reviews") || "Bewertungen", isBebas: true },
-    { value: 0, rawValue: 1, label: "buchen", isFree: true },
-  ];
-
-  // If stats loaded, check if ALL are zero → render null
   if (stats && stats.salons === 0 && stats.reviews === 0 && stats.bookings_all_time === 0) {
     return null;
   }
 
+  const formatNumber = (n: number) => {
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + "M+";
+    if (n >= 1000) return (n / 1000).toFixed(0) + "K+";
+    return n.toLocaleString("de-CH") + "+";
+  };
+
+  const statItems = [
+    {
+      icon: Building2,
+      value: stats ? formatNumber(animatedValues.salons) : "---",
+      label: t("trust_stats.salons") || "Partner salons",
+      show: !stats || stats.salons > 0,
+    },
+    {
+      icon: Star,
+      value: "4.8",
+      label: t("trust_stats.rating") || "Average rating",
+      show: true,
+    },
+    {
+      icon: CalendarCheck,
+      value: stats ? formatNumber(animatedValues.bookings) : "---",
+      label: t("trust_stats.bookings") || "Appointments booked",
+      show: !stats || stats.bookings_all_time > 0,
+    },
+    {
+      icon: Shield,
+      value: "Free",
+      label: t("trust_stats.free") || "To use",
+      show: true,
+    },
+  ].filter(item => item.show);
+
   // Loading skeleton
   if (!stats) {
     return (
-      <section
-        style={{
-          background: "rgba(245,240,235,0.5)",
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)",
-          padding: "24px 20px",
-        }}
-      >
-        <div className="flex items-center justify-center gap-6 flex-wrap">
-          {[1, 2, 3].map((i, idx) => (
-            <div key={i} className="flex items-center gap-6">
-              <div className="flex flex-col items-center gap-1">
-                <div className="h-7 w-12 rounded-[4px]" style={{ background: "#E8E2DC" }} />
-                <div className="h-3 w-16 rounded-[4px]" style={{ background: "#E8E2DC", opacity: 0.6 }} />
-              </div>
-              {idx < 2 && <div style={{ width: 1, height: 28, background: "#E8E2DC" }} aria-hidden="true" />}
+      <section ref={sectionRef} className="py-12 bg-[#F7F7F7] rounded-3xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-full bg-[#E8E8E8] animate-pulse mb-4" />
+              <div className="h-8 w-16 bg-[#E8E8E8] rounded animate-pulse mb-2" />
+              <div className="h-4 w-24 bg-[#E8E8E8] rounded animate-pulse" />
             </div>
           ))}
         </div>
@@ -134,89 +131,20 @@ export default function TrustStatsBanner() {
     );
   }
 
-  // Build visible stats (hide zeros)
-  const visibleStats: Array<{
-    type: "count" | "rating" | "free";
-    value?: number;
-    label: string;
-  }> = [];
-
-  if (stats.salons > 0) {
-    visibleStats.push({ type: "count", value: animatedValues.salons, label: t("trust_stats.salons") || "Salons" });
-  }
-  // Always show rating (hardcoded 4.8 for now, like hero)
-  visibleStats.push({ type: "rating", label: "Bewertung" });
-  if (stats.reviews > 0) {
-    visibleStats.push({ type: "count", value: animatedValues.reviews, label: t("trust_stats.reviews") || "Bewertungen" });
-  }
-  // Always show "Kostenlos buchen"
-  visibleStats.push({ type: "free", label: "buchen" });
-
-  const formatSwiss = (n: number) => n.toLocaleString("de-CH");
-
   return (
-    <section
-      ref={sectionRef}
-      style={{
-        background: "#FFFFFF",
-        borderTop: "1px solid rgba(26,18,9,0.06)",
-        borderBottom: "1px solid rgba(26,18,9,0.06)",
-        padding: "40px 48px",
-      }}
-    >
-      <div className="flex items-center justify-center gap-4 md:gap-6 flex-wrap">
-        {visibleStats.map((item, idx) => (
-          <div key={idx} className="flex items-center gap-4 md:gap-6">
-            <div className="flex flex-col items-center text-center">
-              {item.type === "count" && (
-                <>
-                  <p
-                    className="font-display leading-none"
-                    style={{ fontSize: 28, color: "#2C2420" }}
-                  >
-                    {formatSwiss(item.value ?? 0)}+
-                  </p>
-                  <p
-                    className="font-body mt-1"
-                    style={{ fontSize: 13, color: "rgba(26,18,9,0.55)" }}
-                  >
-                    {item.label}
-                  </p>
-                </>
-              )}
-              {item.type === "rating" && (
-                <>
-                  <div className="flex items-center gap-1">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#E8624A" aria-hidden="true">
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                    </svg>
-                    <span className="font-body font-bold" style={{ fontSize: 16, color: "#2C2420" }}>
-                      4.8
-                    </span>
-                  </div>
-                  <p className="font-body mt-1" style={{ fontSize: 13, color: "rgba(26,18,9,0.55)" }}>
-                    {item.label}
-                  </p>
-                </>
-              )}
-              {item.type === "free" && (
-                <>
-                  <p className="font-body font-bold" style={{ fontSize: 16, color: "#2C2420" }}>
-                    Kostenlos
-                  </p>
-                  <p className="font-body mt-1" style={{ fontSize: 13, color: "rgba(26,18,9,0.55)" }}>
-                    {item.label}
-                  </p>
-                </>
-              )}
+    <section ref={sectionRef} className="py-12 md:py-16 bg-[#F7F7F7] rounded-3xl">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
+        {statItems.map((item, index) => (
+          <div key={index} className="flex flex-col items-center text-center">
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm">
+              <item.icon className="w-6 h-6 text-[#101010]" />
             </div>
-            {/* Separator between stats */}
-            {idx < visibleStats.length - 1 && (
-              <div
-                style={{ width: 1, height: 28, background: "#E8E2DC", flexShrink: 0 }}
-                aria-hidden="true"
-              />
-            )}
+            <p className="text-3xl md:text-4xl font-bold text-[#101010] tracking-tight">
+              {item.value}
+            </p>
+            <p className="mt-1 text-sm text-[#717171]">
+              {item.label}
+            </p>
           </div>
         ))}
       </div>

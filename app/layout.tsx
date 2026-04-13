@@ -9,21 +9,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" suppressHydrationWarning>
+    <html lang="de" suppressHydrationWarning className="bg-white">
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="preload" href="/logo.svg" as="image" type="image/svg+xml" />
-        {/* Preload critical Google Fonts */}
+        {/* Preload Inter font */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="preload"
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
           as="style"
         />
         <ThemeScript />
       </head>
-      <body style={{ margin: 0, padding: 0 }} className="bg-s-bg-base text-s-ink dark:bg-s-dm-bg dark:text-s-dm-text">
+      <body style={{ margin: 0, padding: 0 }} className="bg-white text-[#484848] dark:bg-[#0A0A0A] dark:text-[#A1A1A1]">
         {children}
       </body>
     </html>
