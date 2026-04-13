@@ -35,7 +35,9 @@
     "mobileNavigation": "Navigation",
     "loginToSave": "Melde dich an, um Salons zu speichern",
     "loginToProfile": "Melde dich an, um dein Profil zu sehen",
-    "loginCta": "Jetzt anmelden"
+    "loginCta": "Jetzt anmelden",
+    "searchPlaceholder": "Salons suchen...",
+    "forBusiness": "Für Salons"
   },
   "home": {
     "hero_title": "Dein Salon in Basel",
@@ -1821,7 +1823,7 @@
     "tab_settings": "Einstellungen",
     "select_client": "Kunde auswählen",
     "search_client": "Kunde suchen...",
-    "select_client_prompt": "Bitte wähle einen Kunden aus",
+    "select_client_prompt": "Bitte w��hle einen Kunden aus",
     "unknown_client": "Unbekannter Kunde",
     "zone_selector": "Zonen-Auswahl",
     "zones": {

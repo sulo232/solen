@@ -35,7 +35,9 @@
     "mobileNavigation": "Navigation",
     "loginToSave": "Sign in to save salons",
     "loginToProfile": "Sign in to view your profile",
-    "loginCta": "Sign in now"
+    "loginCta": "Sign in now",
+    "searchPlaceholder": "Search salons...",
+    "forBusiness": "For business"
   },
   "home": {
     "hero_title": "Your salon in Basel",
