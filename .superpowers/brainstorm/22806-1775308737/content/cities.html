@@ -1,0 +1,139 @@
+<h2>Section 4: BrowseByCitySection</h2>
+<p class="subtitle">Currently: 3 flat gradient boxes, hardcoded counts, plain dot-links. Two directions.</p>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+  .city-card {
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px;
+    cursor: pointer;
+    transition: transform 400ms cubic-bezier(0.23,1,0.32,1), box-shadow 400ms cubic-bezier(0.23,1,0.32,1);
+  }
+  .city-card:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(26,18,9,.06), 0 16px 40px rgba(26,18,9,.08); }
+  .city-name { font-family:'Bebas Neue',sans-serif; font-size:36px; letter-spacing:.02em; line-height:.9; }
+  .city-count { font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; margin-top:4px; }
+  .cat-pill {
+    padding: 5px 12px; border-radius: 9999px;
+    font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500;
+    background: rgba(26,18,9,0.05); color: rgba(26,18,9,0.6);
+    border: 1px solid rgba(26,18,9,0.07);
+    white-space: nowrap; cursor:pointer;
+    transition: background 150ms, color 150ms;
+  }
+  .cat-pill:hover { background: rgba(232,98,74,0.08); color: #C04A2E; border-color: rgba(232,98,74,0.2); }
+  .eyebrow { font-family:'Syne',sans-serif; font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#E8624A; margin-bottom:6px; }
+  .section-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; color:#1A1209; letter-spacing:-.01em; margin-bottom:20px; }
+</style>
+
+<div class="cards">
+
+  <!-- C1: Dark photo-style cards (image placeholder) + pill links -->
+  <div class="card" data-choice="c1" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:20px 20px 16px;">
+      <div class="eyebrow">Standorte</div>
+      <div class="section-title">Salons in deiner Stadt</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+
+        <!-- Basel — dark with coral tint -->
+        <div class="city-card" style="background:linear-gradient(160deg,#2C1008 0%,#1A0806 100%);">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 30% 40%,rgba(232,98,74,0.25) 0%,transparent 70%);"></div>
+          <div style="position:relative;">
+            <div class="city-name" style="color:white;">Basel</div>
+            <div class="city-count" style="color:rgba(255,255,255,0.55);">42 Salons</div>
+          </div>
+        </div>
+
+        <!-- Zürich — dark with blue tint -->
+        <div class="city-card" style="background:linear-gradient(160deg,#0A1828 0%,#060E18 100%);">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 30% 40%,rgba(107,163,200,0.25) 0%,transparent 70%);"></div>
+          <div style="position:relative;">
+            <div class="city-name" style="color:white;">Zürich</div>
+            <div class="city-count" style="color:rgba(255,255,255,0.55);">38 Salons</div>
+          </div>
+        </div>
+
+        <!-- Bern — dark with sage tint -->
+        <div class="city-card" style="background:linear-gradient(160deg,#081A0E 0%,#041008 100%);">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 30% 40%,rgba(123,166,136,0.28) 0%,transparent 70%);"></div>
+          <div style="position:relative;">
+            <div class="city-name" style="color:white;">Bern</div>
+            <div class="city-count" style="color:rgba(255,255,255,0.55);">28 Salons</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Category pills (one row, not per-city) -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span class="cat-pill">Coiffeur</span>
+        <span class="cat-pill">Nails</span>
+        <span class="cat-pill">Barbershop</span>
+        <span class="cat-pill">Spa</span>
+        <span class="cat-pill">Makeup</span>
+        <span class="cat-pill">Waxing</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C1 — Dark city cards + single pill row</h3>
+      <p>Dark backgrounds with subtle brand-color radial glows per city (coral for Basel, blue for Zürich, sage for Bern). Bebas Neue city names. Category pills consolidated to one row instead of 3× repeated. Cards get the V5 hover lift.</p>
+    </div>
+  </div>
+
+  <!-- C2: Minimal — just bold city names as large text links + pill row -->
+  <div class="card" data-choice="c2" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:20px 20px 16px;">
+      <div class="eyebrow">Standorte</div>
+      <div class="section-title">Wo suchst du?</div>
+
+      <!-- City name links — large typography -->
+      <div style="display:flex;flex-direction:column;gap:0;margin-bottom:20px;border-top:1px solid rgba(26,18,9,0.06);">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(26,18,9,0.06);cursor:pointer;">
+          <div style="display:flex;align-items:baseline;gap:10px;">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#1A1209;letter-spacing:.02em;">Basel</span>
+            <span style="font-size:12px;color:rgba(26,18,9,0.4);font-family:'DM Sans',sans-serif;">42 Salons</span>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.25)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(26,18,9,0.06);cursor:pointer;">
+          <div style="display:flex;align-items:baseline;gap:10px;">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#1A1209;letter-spacing:.02em;">Zürich</span>
+            <span style="font-size:12px;color:rgba(26,18,9,0.4);font-family:'DM Sans',sans-serif;">38 Salons</span>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.25)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(26,18,9,0.06);cursor:pointer;">
+          <div style="display:flex;align-items:baseline;gap:10px;">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#1A1209;letter-spacing:.02em;">Bern</span>
+            <span style="font-size:12px;color:rgba(26,18,9,0.4);font-family:'DM Sans',sans-serif;">28 Salons</span>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.25)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+
+      <!-- Category pills -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span class="cat-pill">Coiffeur</span>
+        <span class="cat-pill">Nails</span>
+        <span class="cat-pill">Barbershop</span>
+        <span class="cat-pill">Spa</span>
+        <span class="cat-pill">Makeup</span>
+        <span class="cat-pill">Waxing</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C2 — List with Bebas city names + chevron</h3>
+      <p>No gradient boxes — just a clean list of city names in Bebas Neue with counts + chevron. Lighter, faster. Category pills below. Very Airbnb destination-list style.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:20px;">Both consolidate the 3× repeated category links into one row. C1 keeps cards but makes them dark + on-brand. C2 drops cards entirely for a cleaner list.</p>

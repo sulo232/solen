@@ -40,7 +40,7 @@ interface AnalyticsData {
   posthog_conversion_rate?: number;
 }
 
-const CORAL = "#E8624A";
+const CORAL = "#E8735A";
 const AMBER = "#D4870A";
 
 const TABS: { key: AnalyticsTab; label: string; icon: typeof Calendar }[] = [
@@ -219,8 +219,8 @@ export default function AnalyticsPage() {
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={data.revenue_by_week}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                  <XAxis dataKey="week" tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} axisLine={false} />
+                  <XAxis dataKey="week" tick={{ fontSize: 10, fill: "#22222266" }} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "#22222266" }} tickLine={false} axisLine={false} />
                   <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }}
                     formatter={(v: number, name: string) => [formatCurrency(Number(v), locale), name === "revenue" ? "Aktuell" : "Vorperiode"]} />
                   <Bar dataKey="revenue" fill={CORAL} radius={[4, 4, 0, 0]} name="revenue" />
@@ -256,8 +256,8 @@ export default function AnalyticsPage() {
               <ResponsiveContainer width="100%" height={200}>
                 <LineChart data={data.bookings_by_day}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} axisLine={false} />
+                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#22222266" }} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "#22222266" }} tickLine={false} axisLine={false} />
                   <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
                   <Line type="monotone" dataKey="count" stroke={CORAL} strokeWidth={2} dot={false} name="Termine" />
                   {priorData && (
@@ -280,8 +280,8 @@ export default function AnalyticsPage() {
                 <ResponsiveContainer width="100%" height={180}>
                   <BarChart data={data.last_minute_performance}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                    <XAxis dataKey="week" tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} />
-                    <YAxis tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} axisLine={false} />
+                    <XAxis dataKey="week" tick={{ fontSize: 10, fill: "#22222266" }} tickLine={false} />
+                    <YAxis tick={{ fontSize: 10, fill: "#22222266" }} tickLine={false} axisLine={false} />
                     <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
                     <Bar dataKey="booked" fill={CORAL} radius={[4, 4, 0, 0]} stackId="a" name="Gebucht" />
                     <Bar dataKey="expired" fill={AMBER} radius={[4, 4, 0, 0]} stackId="a" name="Abgelaufen" />
@@ -327,8 +327,8 @@ export default function AnalyticsPage() {
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={data.acquisition_sources}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                      <XAxis dataKey="source" tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} />
-                      <YAxis tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} axisLine={false} />
+                      <XAxis dataKey="source" tick={{ fontSize: 10, fill: "#22222266" }} tickLine={false} />
+                      <YAxis tick={{ fontSize: 10, fill: "#22222266" }} tickLine={false} axisLine={false} />
                       <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
                       <Bar dataKey="count" fill={CORAL} radius={[4, 4, 0, 0]} />
                     </BarChart>
@@ -351,8 +351,8 @@ export default function AnalyticsPage() {
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={data.top_services} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
-                  <XAxis type="number" tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} />
-                  <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} width={80} />
+                  <XAxis type="number" tick={{ fontSize: 10, fill: "#22222266" }} tickLine={false} />
+                  <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: "#22222266" }} tickLine={false} width={80} />
                   <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
                   <Bar dataKey="bookings" fill={CORAL} radius={[0, 4, 4, 0]} />
                 </BarChart>

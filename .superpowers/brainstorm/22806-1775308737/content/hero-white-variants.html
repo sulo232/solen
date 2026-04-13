@@ -1,0 +1,118 @@
+<h2>Hero — White base, real options</h2>
+<p class="subtitle">Background stays white. These add presence on top of that, not underneath it.</p>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+  .hmock {
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    position: relative;
+    height: 290px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 28px 24px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .hl { font-family: 'Syne', sans-serif; font-weight: 800; line-height: 1.05; letter-spacing: -.02em; margin-bottom: 18px; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 10px; padding: 4px 10px; border-radius: 9999px; }
+  .pill { padding: 6px 14px; border-radius: 9999px; font-size: 12px; font-weight: 600; display: inline-block; }
+  .sbar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-radius: 9999px; font-size: 13px; max-width: 360px; }
+  .sbar-btn { margin-left: auto; padding: 6px 14px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: #E8624A; color: white; white-space: nowrap; flex-shrink: 0; }
+  svg { flex-shrink: 0; }
+</style>
+
+<div class="cards">
+
+  <!-- Option 1: Glass card floating on white -->
+  <div class="card" data-choice="g1" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;">
+      <div class="hmock" style="background:#ffffff; justify-content:flex-end; align-items:flex-start;">
+        <!-- Top ambient coral wash -->
+        <div style="position:absolute;top:0;left:0;right:0;height:180px;background:linear-gradient(180deg, rgba(232,98,74,0.07) 0%, transparent 100%);pointer-events:none;"></div>
+        <!-- Right ambient plum -->
+        <div style="position:absolute;top:-30px;right:-30px;width:200px;height:200px;background:radial-gradient(circle, rgba(74,30,60,0.08) 0%, transparent 65%);pointer-events:none;border-radius:50%;"></div>
+
+        <div style="position:relative;width:100%;">
+          <div class="tag" style="background:rgba(232,98,74,0.10);color:#B84030;">✦ Beauty in Basel</div>
+          <div class="hl" style="color:#1A1209;font-size:32px;">Deinen Salon<br/>finden & buchen.</div>
+
+          <!-- Category pills -->
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+            <span class="pill" style="background:#E8624A;color:white;">Coiffeur</span>
+            <span class="pill" style="background:rgba(26,18,9,0.06);color:#1A1209;">Nails</span>
+            <span class="pill" style="background:rgba(26,18,9,0.06);color:#1A1209;">Barbershop</span>
+            <span class="pill" style="background:rgba(26,18,9,0.06);color:#1A1209;">Spa</span>
+            <span class="pill" style="background:rgba(26,18,9,0.06);color:#1A1209;">Makeup</span>
+          </div>
+
+          <!-- Frosted glass search bar -->
+          <div class="sbar" style="background:var(--glass-bg,rgba(255,255,255,0.88));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(26,18,9,0.09);box-shadow:0 4px 24px rgba(26,18,9,0.09),inset 0 1px 0 rgba(255,255,255,.9);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span style="color:#aaa;">Salon oder Service …</span>
+            <div class="sbar-btn">Suchen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>G1 — White + ambient top wash</h3>
+      <p>White background. Very subtle coral gradient bleeds from the top edge — gives depth without changing the base. Glass search pill. Category pills for fast navigation. Clean but not flat.</p>
+    </div>
+  </div>
+
+  <!-- Option 2: Frosted glass hero card on white -->
+  <div class="card" data-choice="g2" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;">
+      <div class="hmock" style="background:#ffffff; justify-content:center; align-items:flex-start; padding-top:24px;">
+        <!-- Full ambient coral top-left -->
+        <div style="position:absolute;top:-60px;left:-40px;width:280px;height:280px;background:radial-gradient(circle, rgba(232,98,74,0.11) 0%, transparent 65%);pointer-events:none;border-radius:50%;"></div>
+
+        <!-- Frosted CARD that contains the hero content -->
+        <div style="position:relative;width:calc(100% - 0px);background:rgba(255,255,255,0.75);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.95);border-radius:20px;padding:20px 20px 16px;box-shadow:0 8px 32px rgba(26,18,9,0.08),inset 0 1px 0 rgba(255,255,255,.8);">
+          <div class="tag" style="background:rgba(232,98,74,0.10);color:#B84030;margin-bottom:8px;">Solen.ch</div>
+          <div class="hl" style="color:#1A1209;font-size:26px;margin-bottom:14px;">Salon buchen in Basel</div>
+          <div class="sbar" style="background:rgba(255,255,255,0.95);border:1px solid rgba(26,18,9,0.08);box-shadow:0 2px 12px rgba(26,18,9,0.06);padding:10px 14px;max-width:none;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span style="color:#bbb;font-size:12px;">Was suchst du?</span>
+            <div class="sbar-btn" style="padding:5px 12px;">→</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>G2 — Glass card hero on white</h3>
+      <p>The hero content lives inside a frosted glass card, floating on white. The glass is the statement — not the background. Coral radial glow bleeds from behind the card.</p>
+    </div>
+  </div>
+
+  <!-- Option 3: Full-width coral gradient band at top, white below -->
+  <div class="card" data-choice="g3" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;">
+      <div class="hmock" style="background:#ffffff; padding:0; flex-direction:column; justify-content:flex-start;">
+        <!-- Top coral gradient band -->
+        <div style="width:100%;padding:28px 24px 24px;background:linear-gradient(135deg, #1A0A06 0%, #3A1510 40%, #2A0E28 100%);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-20px;right:-20px;width:180px;height:180px;background:radial-gradient(circle,rgba(232,98,74,0.3) 0%,transparent 65%);border-radius:50%;pointer-events:none;"></div>
+          <div class="tag" style="background:rgba(232,98,74,0.2);color:#F09080;margin-bottom:8px;">✦ Basel · Zürich · Bern</div>
+          <div class="hl" style="color:white;font-size:28px;margin-bottom:0;">Beauty auf<br/>Abruf.</div>
+        </div>
+        <!-- White bottom with search bar -->
+        <div style="padding:16px 24px;background:white;">
+          <div class="sbar" style="background:white;border:1.5px solid rgba(26,18,9,0.10);box-shadow:0 4px 20px rgba(26,18,9,0.08);max-width:none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span style="color:#bbb;">Salon, Service oder Termin …</span>
+            <div class="sbar-btn">Suchen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>G3 — Dark editorial band + white search dock</h3>
+      <p>Dark rich plum/coral gradient band at the top for visual drama, then clean white below with the search bar docked at the seam. Bold contrast. Feels like a real product. Background stays white.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:20px;">All on white base. G1 is the most seamless upgrade. G3 has the most personality. Pick one or mix ideas.</p>

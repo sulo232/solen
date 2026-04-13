@@ -69,12 +69,11 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
       <div className="flex items-end justify-between px-6 mb-5">
         {/* Title + subtitle — Pattern A: DM Sans 28px/700 */}
         <div>
-          <h2 className="font-heading font-bold text-s-ink" style={{ fontSize: 24, lineHeight: 1.2 }}>
+          <h2 className="font-heading font-bold text-s-ink" style={{ fontSize: 22, lineHeight: 1.25 }}>
             {title || t("heroCarousel.label")}
           </h2>
-          <p className="font-body mt-1" style={{ fontSize: 14, color: "rgba(26,18,9,0.55)" }}>
-            <span style={{ color: "#E8624A" }}>{t("carousel.topRated") || "Top bewertet"}</span>
-            <span style={{ color: "rgba(26,18,9,0.55)" }}> · Sofort buchbar</span>
+          <p className="font-body mt-1 text-[14px] text-s-ink-secondary">
+            {t("carousel.topRated") || "Top bewertet"}
           </p>
         </div>
 
@@ -105,7 +104,7 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
       {/* Horizontal scroll container */}
       <div
         ref={scrollRef}
-        className="flex gap-3 overflow-x-auto scrollbar-hide px-6 pb-4 snap-x snap-mandatory"
+        className="flex gap-4 overflow-x-auto scrollbar-hide px-6 pb-4 snap-x snap-mandatory"
         style={{ WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain" } as React.CSSProperties}
       >
         {salonsToShow.map((salon, index) => (
@@ -144,31 +143,19 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   const locationParts = [salon.quartier, salon.city_name ?? "Basel"].filter(Boolean);
   const locationText = locationParts.join(", ");
 
-  // Dynamic badge from DB conditions (spec §12) — max 1 badge per card
+  // DESIGN_SPEC §3.1: max 1 badge per card, only on 4.9+ rating OR 50+ reviews
   const badge = (() => {
-    if (salon.average_rating >= 4.9 && salon.review_count >= 5)
-      return { text: "★ Höchste Bewertung", color: "#E8624A" };
+    if (salon.average_rating >= 4.9 && salon.review_count >= 10)
+      return { text: "Top bewertet", color: "#E8735A" };
     if (salon.review_count > 50)
-      return { text: "Beliebt", color: "#2C2420" };
-    // "Neu" = created within last 30 days
-    if (salon.created_at) {
-      const age = Date.now() - new Date(salon.created_at).getTime();
-      if (age < 30 * 24 * 60 * 60 * 1000) return { text: "Neu", color: "#2C2420" };
-    }
-    if (salon.review_count === 0) return { text: t("new"), color: "#2C2420" };
+      return { text: "Beliebt", color: "#1A8754" };
     return null;
   })();
 
   const cardContent = (
-    <div
-      className="rounded-[16px] overflow-hidden bg-white"
-      style={{ boxShadow: "0 2px 12px rgba(44,36,32,0.08)" }}
-    >
-      {/* ── Image (200px fixed height) ── */}
-      <div
-        className="relative w-full overflow-hidden bg-s-bg-sunken"
-        style={{ height: 200 }}
-      >
+    <div className="rounded-card overflow-hidden bg-white shadow-elevation-1">
+      {/* ── Image (4:3 — DESIGN_SPEC 3.1) ── */}
+      <div className="relative w-full aspect-[4/3] overflow-hidden bg-s-bg-sunken rounded-t-card">
         {photo ? (
           <Image
             src={photo}
@@ -183,17 +170,16 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
           <ImageFallback category={salon.categories?.[0]} salonName={salon.name} className="absolute inset-0" />
         )}
 
-        {/* Badge: top-left — dynamic from DB, glass pill */}
+        {/* Badge: top-left, max 1, frosted pill — DESIGN_SPEC 3.5 */}
         {badge && (
           <div className="absolute top-3 left-3 z-[2]">
             <span
-              className="font-heading font-semibold text-[11px] px-3 py-1 rounded-pill"
+              className="font-body font-semibold text-[11px] uppercase tracking-[0.5px] px-3 py-1 rounded-pill"
               style={{
-                background: "rgba(255,255,255,0.92)",
+                background: "rgba(255,255,255,0.9)",
                 backdropFilter: "blur(6px)",
                 WebkitBackdropFilter: "blur(6px)",
                 color: badge.color,
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.5)",
               }}
             >
               {badge.text}
@@ -201,7 +187,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
           </div>
         )}
 
-        {/* Favorite heart: top-right — hidden on demo cards */}
+        {/* Heart: white circle — DESIGN_SPEC 3.1 */}
         {!isDemo && onFavoriteToggle && (
           <button
             type="button"
@@ -212,8 +198,8 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
               setHeartBouncing(true);
               setTimeout(() => setHeartBouncing(false), 500);
             }}
-            className="absolute top-2 right-2 z-[2] rounded-full flex items-center justify-center transition-[background-color] duration-200 hover:bg-black/30 shadow-sm"
-            style={{ width: 36, height: 36, minWidth: 44, minHeight: 44, background: "rgba(0,0,0,0.25)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
+            className="absolute top-3 right-3 z-[2] rounded-full flex items-center justify-center shadow-elevation-1"
+            style={{ width: 36, height: 36, minWidth: 44, minHeight: 44, background: "rgba(255,255,255,0.9)" }}
             aria-pressed={isFavorited}
             aria-label={isFavorited ? t("removeFavorite") : t("addFavorite")}
           >
@@ -223,42 +209,49 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
             >
               <Heart
                 className={`w-[18px] h-[18px] transition-colors duration-200 ${
-                  isFavorited ? "fill-s-coral stroke-s-coral" : "fill-transparent stroke-white"
+                  isFavorited ? "fill-s-coral stroke-s-coral" : "fill-transparent stroke-s-ink/30"
                 }`}
                 strokeWidth={2}
-                style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.45))" }}
               />
             </motion.div>
           </button>
         )}
       </div>
 
-      {/* ── Text below image ── */}
-      <div style={{ padding: "12px 14px 14px" }} className="flex flex-col gap-0.5">
-        <h3 className="font-body font-semibold text-[16px] text-s-ink truncate leading-6" style={{ color: "#2C2420" }}>
+      {/* ── Content — DESIGN_SPEC 3.1 ── */}
+      <div className="flex flex-col gap-1" style={{ padding: "14px 16px 16px" }}>
+        {/* Name — DM Sans 16px/600 */}
+        <h3 className="font-body font-semibold text-[16px] leading-[1.25] truncate text-s-ink">
           {salon.name}
         </h3>
-        <p className="font-body text-[13px] truncate" style={{ color: "#8C8279", lineHeight: 1.5 }}>
-          {locationText}
-        </p>
-        <div className="flex items-center text-[15px] leading-6 mt-[2px]">
-          {salon.min_price != null ? (() => {
-            const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
-            return (
-              <span className="font-semibold text-s-ink">
-                {tCommon("fromPrice", { price: formatCurrency(salon.min_price, currencyLocale) })}
-              </span>
-            );
-          })() : (
-            <span className="font-semibold text-s-ink">$$</span>
-          )}
-          {showRating ? (
-            <span className="text-s-ink font-medium ml-1">
-              <span className="text-s-ink/60 font-normal mr-1">·</span>
+
+        {/* Rating — coral star + score + count */}
+        {showRating && (
+          <div className="flex items-center gap-1">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#E8735A" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <span className="font-body font-semibold text-[14px] text-s-ink">
               {(Math.round(salon.average_rating * 10) / 10).toFixed(1)}
             </span>
-          ) : null}
-        </div>
+            <span className="font-body text-[14px] text-s-ink-secondary">
+              ({salon.review_count ?? 0})
+            </span>
+          </div>
+        )}
+
+        {/* Location — DM Sans 14px/400 */}
+        <p className="font-body text-[14px] truncate text-s-ink-secondary">
+          {locationText}
+        </p>
+
+        {/* Price — DM Sans 14px/400 */}
+        <p className="font-body text-[14px] text-s-ink-secondary">
+          {salon.min_price != null ? (() => {
+            const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
+            return tCommon("fromPrice", { price: formatCurrency(salon.min_price, currencyLocale) });
+          })() : "Ab CHF 45.–"}
+        </p>
       </div>
     </div>
   );
@@ -277,8 +270,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   return (
     <Link
       href={`/${locale}/salon/${salon.slug}`}
-      className="flex-shrink-0 snap-start group cursor-pointer w-[240px] md:w-[280px] lg:w-[300px] hover:-translate-y-1 transition-[transform,box-shadow] duration-200"
-      style={{ ["--hover-shadow" as string]: "0 4px 20px rgba(44,36,32,0.12)" }}
+      className="flex-shrink-0 snap-start group cursor-pointer w-[240px] md:w-[280px] lg:w-[300px] transition-[transform,box-shadow] duration-[250ms] ease-out-warm hover:-translate-y-[2px] hover:shadow-elevation-2"
       aria-label={salon.name}
       prefetch={false}
     >

@@ -76,7 +76,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
     container.style.cssText = "position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden";
     document.body.appendChild(container);
 
-    const colors = ["#E8624A", "#D4870A", "#FFD93D", "#6BCB77", "#6BA3C8"];
+    const colors = ["#E8735A", "#D4870A", "#FFD93D", "#6BCB77", "#6BA3C8"];
     for (let i = 0; i < 50; i++) {
       const el = document.createElement("div");
       const size = Math.random() * 8 + 4;

@@ -93,7 +93,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8, height: 0 }}
-          transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
           className="block"
         >
           <div
@@ -376,7 +376,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                 style={{
                   boxShadow: "0 2px 8px rgba(232,98,74,.35)",
                 }}
-                transition={{ layout: { duration: 0.2, ease: [0.23, 1, 0.32, 1] } }}
+                transition={{ layout: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
               >
                 <Search size={16} strokeWidth={3} className="text-white shrink-0" />
                 <AnimatePresence>

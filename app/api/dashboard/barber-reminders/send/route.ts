@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
             <h2 style="font-family: Syne, sans-serif; color: #1A1209;">Hey ${profile?.display_name ?? ""}!</h2>
             <p style="color: #666;">Es ist wieder Zeit für einen frischen Schnitt bei <strong>${salon.name}</strong>.</p>
             <a href="https://www.solen.ch/de/barbershop"
-              style="display: inline-block; background: #E8624A; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
+              style="display: inline-block; background: #C05038; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
               Jetzt Termin buchen
             </a>
             <p style="color: #999; font-size: 12px; margin-top: 24px;">— Dein Solen Team</p>

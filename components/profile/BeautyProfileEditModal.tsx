@@ -130,7 +130,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
         onClick={onClick}
         className={`
           inline-flex items-center gap-1.5 px-[11px] py-[6px] rounded-pill text-[13px] font-body transition-[background-color,color,box-shadow,opacity] duration-150
-          ${isActive ? 'ring-2 ring-s-coral' : 'hover:brightness-95'}
+          ${isActive ? 'ring-2 ring-s-coral' : 'hover:brightness-[1.06]'}
         `}
         style={{
           background: isActive ? bgColor : `${bgColor}80`,

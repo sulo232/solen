@@ -124,7 +124,7 @@ export default function DashboardPage() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             className="mb-6 rounded-[12px] px-4 py-4 flex items-center gap-3"
-            style={{ background: "#E8624A" }}
+            style={{ background: "#E8735A" }}
           >
             <PartyPopper size={20} className="shrink-0 text-white/80" />
             <div>
@@ -188,7 +188,7 @@ export default function DashboardPage() {
                   color: "text-s-coral",
                   bg: "bg-s-coral/5",
                   sparklineData: stats.trends?.bookings,
-                  sparklineColor: "#E8624A",
+                  sparklineColor: "#E8735A",
                   delta: prior ? { value: Math.abs(prior.bookings), direction: deltaDir(prior.bookings) } : undefined,
                 },
                 {

@@ -38,14 +38,14 @@ export async function GET(
       <title>Rechnung - ${payoutId}</title>
       <style>
         body { font-family: sans-serif; padding: 40px; color: #333; }
-        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #E8624A; padding-bottom: 20px; margin-bottom: 30px; }
-        .logo { font-size: 24px; font-weight: bold; color: #E8624A; }
+        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #C05038; padding-bottom: 20px; margin-bottom: 30px; }
+        .logo { font-size: 24px; font-weight: bold; color: #C05038; }
         table { width: 100%; border-collapse: collapse; margin-top: 30px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background: #f9f9f9; }
         .totals { margin-top: 30px; width: 50%; float: right; }
         .totals-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
-        .totals-row.final { font-weight: bold; font-size: 1.1em; border-top: 2px solid #E8624A; border-bottom: none; }
+        .totals-row.final { font-weight: bold; font-size: 1.1em; border-top: 2px solid #C05038; border-bottom: none; }
         @media print {
           .no-print { display: none; }
         }
@@ -53,7 +53,7 @@ export async function GET(
     </head>
     <body>
       <div class="no-print" style="margin-bottom: 20px;">
-        <button onclick="window.print()" style="padding: 10px 20px; background: #E8624A; color: white; border: none; border-radius: 6px; cursor: pointer;">Drucken / PDF speichern</button>
+        <button onclick="window.print()" style="padding: 10px 20px; background: #C05038; color: white; border: none; border-radius: 6px; cursor: pointer;">Drucken / PDF speichern</button>
       </div>
 
       <div class="header">
@@ -104,11 +104,11 @@ export async function GET(
         </div>
         <div class="totals-row">
           <span>Plattformkommission (${payout.commission_percent}%)</span>
-          <span style="color: #E8624A;">- CHF ${payout.commission_amount.toFixed(2)}</span>
+          <span style="color: #C05038;">- CHF ${payout.commission_amount.toFixed(2)}</span>
         </div>
         <div class="totals-row">
           <span>Stripe Gateway Gebühren</span>
-          <span style="color: #E8624A;">(durch Stripe abgezogen)</span>
+          <span style="color: #C05038;">(durch Stripe abgezogen)</span>
         </div>
         <div class="totals-row final">
           <span>Netto-Auszahlungsbetrag</span>

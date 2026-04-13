@@ -1,0 +1,168 @@
+<h2>Hero — matching the actual design system</h2>
+<p class="subtitle">White base, glass-frost on floating elements, glass-search for the bar, ambient-v5 radial glows. These match what R1-R6 built.</p>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+  .hmock {
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    position: relative;
+    background: #ffffff;
+    font-family: 'DM Sans', sans-serif;
+    padding: 32px 24px 28px;
+  }
+  /* ambient-v5: subtle radial glows only */
+  .ambient-coral { position:absolute; border-radius:50%; background:radial-gradient(circle, rgba(232,98,74,0.09) 0%, transparent 65%); pointer-events:none; }
+  .ambient-plum  { position:absolute; border-radius:50%; background:radial-gradient(circle, rgba(74,30,60,0.07)  0%, transparent 65%); pointer-events:none; }
+
+  /* glass-frost: floating UI */
+  .glass-frost {
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid rgba(255,255,255,0.50);
+    box-shadow: 0 1px 3px rgba(26,18,9,0.04), 0 8px 24px rgba(26,18,9,0.06);
+  }
+  /* glass-search: solid white bar */
+  .glass-search {
+    background: #ffffff;
+    border: 1.5px solid rgba(26,18,9,0.12);
+    box-shadow: 0 1px 2px rgba(26,18,9,0.06), 0 4px 16px rgba(26,18,9,0.06);
+  }
+  /* glass-pill: filter pills */
+  .glass-pill {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(26,18,9,0.09);
+    border-radius: 9999px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1A1209;
+    display: inline-block;
+  }
+  .glass-pill-active {
+    background: #E8624A;
+    border-color: transparent;
+    color: white;
+  }
+  .syne { font-family: 'Syne', sans-serif; }
+  .bebas { font-family: 'Bebas Neue', sans-serif; letter-spacing: .02em; }
+  .tag { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #E8624A; margin-bottom: 10px; display: block; }
+  .sbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px; border-radius: 9999px; font-size: 13px;
+    max-width: 400px; cursor: pointer;
+  }
+  .sbar-btn {
+    margin-left: auto; padding: 7px 16px; border-radius: 9999px;
+    font-size: 12px; font-weight: 700; background: #E8624A; color: white;
+    white-space: nowrap; flex-shrink: 0;
+  }
+</style>
+
+<div class="cards">
+
+  <!-- H1: Bebas headline + glass-search pill -->
+  <div class="card" data-choice="h1" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;">
+      <div class="hmock" style="min-height:270px;">
+        <!-- ambient-v5 radial glows -->
+        <div class="ambient-coral" style="top:-60px;right:-40px;width:240px;height:240px;"></div>
+        <div class="ambient-plum"  style="bottom:-40px;left:-40px;width:200px;height:200px;"></div>
+
+        <div style="position:relative;">
+          <span class="tag">Beauty & Wellness · Basel</span>
+          <div class="bebas" style="font-size:58px;line-height:.9;color:#1A1209;margin-bottom:20px;">DEINEN SALON<br/>FINDEN &amp; BUCHEN.</div>
+
+          <!-- Category pills: glass-pill -->
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;">
+            <span class="glass-pill glass-pill-active">Coiffeur</span>
+            <span class="glass-pill">Nails</span>
+            <span class="glass-pill">Barbershop</span>
+            <span class="glass-pill">Spa</span>
+            <span class="glass-pill">Makeup</span>
+          </div>
+
+          <!-- glass-search bar -->
+          <div class="sbar glass-search" style="border-radius:9999px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2.5" style="flex-shrink:0;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span style="color:#bbb;">Salon oder Service …</span>
+            <div class="sbar-btn">Suchen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>H1 — Bebas display + glass-search</h3>
+      <p>Bebas Neue headline (58px, uppercase — exactly what UI_RULES §3 specifies for display ≥36px). glass-pill category row. glass-search bar. ambient-v5 coral + plum glows on white. No gradients, no colors on the background.</p>
+    </div>
+  </div>
+
+  <!-- H2: Syne heading + glass-frost pill -->
+  <div class="card" data-choice="h2" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;">
+      <div class="hmock" style="min-height:270px;">
+        <div class="ambient-coral" style="top:-40px;left:-30px;width:260px;height:260px;opacity:0.8;"></div>
+
+        <div style="position:relative;">
+          <span class="tag">✦ Solen.ch</span>
+          <div class="syne" style="font-size:34px;font-weight:800;line-height:1.05;letter-spacing:-.02em;color:#1A1209;margin-bottom:8px;">Dein nächster Termin<br/>in Basel.</div>
+          <p style="font-size:14px;color:rgba(26,18,9,0.55);margin-bottom:20px;font-family:'DM Sans',sans-serif;">Coiffeur, Nails, Spa & mehr — sofort buchbar.</p>
+
+          <!-- glass-frost floating search pill -->
+          <div class="sbar glass-frost" style="border-radius:9999px;max-width:380px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" style="flex-shrink:0;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span style="color:#aaa;">Wonach suchst du?</span>
+            <div class="sbar-btn">→</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>H2 — Syne heading + glass-frost pill</h3>
+      <p>Syne 800 heading with a short subtitle. glass-frost on the search pill (it's floating UI = glass allowed per UI_RULES). Single ambient coral glow top-left. Cleaner, more Fresha-like.</p>
+    </div>
+  </div>
+
+  <!-- H3: Split — Bebas left, AirbnbSearchBar-style right segments -->
+  <div class="card" data-choice="h3" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;">
+      <div class="hmock" style="min-height:270px;padding:0;">
+        <div class="ambient-coral" style="top:-50px;right:-20px;width:220px;height:220px;z-index:0;"></div>
+
+        <div style="position:relative;display:flex;flex-direction:column;height:100%;padding:32px 24px 28px;">
+          <span class="tag">Beauty · Basel · Zürich · Bern</span>
+          <div class="bebas" style="font-size:48px;line-height:.9;color:#1A1209;margin-bottom:24px;flex:1;">SALON BUCHEN.<br/>SO EINFACH.</div>
+
+          <!-- AirbnbSearchBar-style 3-segment pill -->
+          <div class="glass-search" style="border-radius:9999px;display:flex;align-items:stretch;overflow:hidden;max-width:440px;">
+            <div style="flex:1;padding:10px 16px;border-right:1px solid rgba(26,18,9,0.08);">
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#1A1209;margin-bottom:2px;">Was</div>
+              <div style="font-size:12px;color:rgba(26,18,9,0.45);">Service …</div>
+            </div>
+            <div style="flex:1;padding:10px 16px;border-right:1px solid rgba(26,18,9,0.08);">
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#1A1209;margin-bottom:2px;">Wann</div>
+              <div style="font-size:12px;color:rgba(26,18,9,0.45);">Heute</div>
+            </div>
+            <div style="display:flex;align-items:center;padding:6px 8px 6px 12px;">
+              <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#1A1209;margin-right:8px;">Wo</div>
+              <div style="background:#E8624A;border-radius:9999px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>H3 — Bebas + Airbnb 3-segment search bar</h3>
+      <p>Uses the same 3-segment pill structure as AirbnbSearchBar (Was/Wann/Wo) already in the header. Coral search button. This reuses the existing component logic — no new UI patterns needed.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:20px;">All white base, all using existing design tokens. H1 has the most personality. H3 reuses the most existing code. Pick or mix.</p>

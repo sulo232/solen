@@ -61,7 +61,7 @@ export function buildZoneStyles(
     /* Zone 4: only opacity transition */
     `.izd-zone { cursor: pointer; transition: opacity 150ms; }`,
     `.izd-zone:hover { opacity: 0.85; }`,
-    `.izd-zone:focus-visible { outline: 2px solid var(--coral, #E8624A); outline-offset: 1px; }`,
+    `.izd-zone:focus-visible { outline: 2px solid var(--coral, #E8735A); outline-offset: 1px; }`,
   ];
 
   for (const zone of zones) {

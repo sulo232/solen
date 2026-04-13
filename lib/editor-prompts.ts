@@ -90,7 +90,7 @@ Every API route MUST include ALL 6 layers in order:
 6. Input validation: validateBody() with zod schema
 
 ## Design System Tokens (NEVER deviate)
-- Primary: coral #E8624A (class: s-coral)
+- Primary: coral #E8735A (class: s-coral)
 - Accent: amber #D4870A (s-amber), blue #6BA3C8 (s-blue)
 - Text: ink #1A1209 (s-ink), dark mode: #F5EEE4 (s-dm-text)
 - Backgrounds: cream #FAF6EF (s-bg-base), white (cards), dark #151009 (s-dm-bg)

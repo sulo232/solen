@@ -26,7 +26,7 @@ type SortKey = keyof Omit<BarberStats, "staff_id" | "staff_name">;
 type Period = "week" | "month";
 type ViewMode = "table" | "chart";
 
-const CHART_CORAL = "#E8624A";
+const CHART_CORAL = "#E8735A";
 
 export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   const t = useTranslations("dashboard.barber_leaderboard") as any;
@@ -154,8 +154,8 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#EDE5D8" vertical={false} />
-              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#1A1209", fillOpacity: 0.4 }} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: "#1A1209", fillOpacity: 0.4 }} tickLine={false} axisLine={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#222222", fillOpacity: 0.4 }} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: "#222222", fillOpacity: 0.4 }} tickLine={false} axisLine={false} />
               <Tooltip contentStyle={{ borderRadius: "12px", border: "1px solid #EDE5D8" }} />
               <Bar
                 dataKey={columns.find((c) => c.key === sortBy)?.label ?? t("value")}

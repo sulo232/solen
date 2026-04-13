@@ -290,7 +290,7 @@ export default function SalonReviews({
                                 <button
                                   onClick={submitFlag}
                                   disabled={flagLoading || flagReason.trim().length < 5}
-                                  className="text-xs text-white font-heading font-bold uppercase tracking-[.08em] px-4 py-1.5 rounded-btn bg-s-coral disabled:opacity-50 transition-[transform,filter]"
+                                  className="text-xs text-white font-body font-semibold uppercase tracking-[.08em] px-4 py-1.5 rounded-btn bg-s-coral-button hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 transition-[transform,filter] duration-150"
                                   style={{ boxShadow: "0 2px 8px rgba(232,98,74,.25)" }}
                                 >
                                   {flagLoading ? "…" : t("flagSubmit")}

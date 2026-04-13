@@ -15,7 +15,7 @@ interface WalkinHourlyChartProps {
 }
 
 const HOURS = Array.from({ length: 13 }, (_, i) => i + 8); // 8..20
-const CHART_CORAL = "#E8624A"; // peak hour bar
+const CHART_CORAL = "#E8735A"; // peak hour bar
 const CHART_AMBER = "#D4870A"; // standard hour bar
 
 export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {

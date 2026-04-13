@@ -94,7 +94,7 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
                 formatter={(v: number) => [fmt(v), t("retail_revenue")]}
                 contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid rgba(26,18,9,0.08)" }}
               />
-              <Bar dataKey="revenue" fill="#E8624A" radius={[4, 4, 0, 0]} maxBarSize={24} />
+              <Bar dataKey="revenue" fill="#E8735A" radius={[4, 4, 0, 0]} maxBarSize={24} />
             </BarChart>
           </ResponsiveContainer>
         )}

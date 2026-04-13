@@ -35,11 +35,7 @@ export default function BrowseByCitySection() {
   return (
     <section
       className="relative overflow-hidden"
-      style={{
-        background: "rgba(44,36,32,0.85)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-      }}
+      style={{ background: "#2C2825" }}
       aria-labelledby="city-section-heading"
     >
       <div className="px-5 md:px-10 lg:px-20 py-12">
@@ -48,7 +44,7 @@ export default function BrowseByCitySection() {
         <span
           id="city-section-heading"
           className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-8 md:mb-12"
-          style={{ color: "#E8624A" }}
+          style={{ color: "#E8735A" }}
         >
           {t("cities.title") || "Salons in deiner Nähe"}
         </span>
@@ -65,14 +61,14 @@ export default function BrowseByCitySection() {
               style={{
                 borderTop: "1px solid rgba(255,255,255,0.08)",
                 borderBottom: idx === CITIES.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",
-                borderLeft: city.active ? "4px solid #E8624A" : "4px solid transparent",
+                borderLeft: city.active ? "4px solid #E8735A" : "4px solid transparent",
                 paddingLeft: city.active ? 12 : 0,
                 transition: "padding-left 200ms ease, border-color 200ms ease",
               }}
               onMouseEnter={(e) => {
                 if (!city.active) {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.borderLeft = "4px solid #E8624A";
+                  el.style.borderLeft = "4px solid #E8735A";
                   el.style.paddingLeft = "12px";
                 }
               }}
@@ -101,7 +97,7 @@ export default function BrowseByCitySection() {
               <div className="flex flex-col items-end gap-1 flex-shrink-0">
                 <span
                   className="font-body text-xs"
-                  style={{ color: "#8C8279" }}
+                  style={{ color: "#767676" }}
                 >
                   {city.count} Salons
                 </span>
@@ -113,7 +109,7 @@ export default function BrowseByCitySection() {
                       : "opacity-0 group-hover:opacity-100"
                   }`}
                   style={{
-                    color: "#E8624A",
+                    color: "#E8735A",
                     transition: "opacity 200ms ease",
                   }}
                   aria-hidden={!city.active}

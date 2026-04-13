@@ -26,14 +26,7 @@ const BADGE_ICONS: Record<string, LucideIcon> = {
   Flame, Zap, ThumbsUp, BadgeCheck, Trophy, Gem, Medal,
 };
 
-/* ── V5 Animation Variants — snappy native-app feel ────────────────── */
-const cardReveal = {
-  hidden: { opacity: 0, y: 8 },
-  visible: {
-    opacity: 1, y: 0,
-    transition: { duration: 0.22, ease: [0.2, 0.8, 0.2, 1] },
-  },
-};
+/* ── DESIGN_SPEC §5.3: No card entrance animations — content just appears ── */
 
 interface SalonCardProps {
   salon: SalonCardType;
@@ -84,7 +77,7 @@ function getCategoryFallbackGradient(categories?: string[]): string {
 }
 
 
-export default function SalonCard({ salon, variant = "default", locale = "de", showCompare = false, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason, animated = true, photos }: SalonCardProps) {
+export default function SalonCard({ salon, variant = "default", locale = "de", showCompare = false, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason, photos }: SalonCardProps) {
   const t = useTranslations("salon") as any;
   const tCommon = useTranslations("common");
   const tEmpty = useTranslations("emptyStates");
@@ -144,10 +137,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
   /* ── Default variant — V4 Clean Card ─────────────────────────────── */
   return (
-    <motion.div
-      variants={cardReveal}
-      initial={animated ? "hidden" : false}
-      animate="visible"
+    <div
       className={`relative card-listing cursor-pointer group ${solenTier === "gold" ? "ring-2 ring-s-yellow/50" : ""}`}
       onMouseEnter={() => { if (!prefetched.current) { prefetched.current = true; router.prefetch(href); } }}
     >
@@ -168,8 +158,8 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       )}
 
       <Link href={href} className="block w-full h-full">
-        {/* Cover photo — V5 design: 4:5 portrait for mobile-first aesthetics */}
-        <div className="relative w-full aspect-[4/5] bg-s-bg-sunken overflow-hidden rounded-[12px] group/carousel img-hover-zoom gpu">
+        {/* Cover photo — DESIGN_SPEC §3.1: 4:3 compact, info-dense */}
+        <div className="relative w-full aspect-[4/3] bg-s-bg-sunken overflow-hidden rounded-t-[16px] group/carousel img-hover-zoom gpu">
           {allPhotos.length > 0 ? (
             <div
               ref={scrollContainerRef}
@@ -315,10 +305,11 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         </div>
 
         {/* ── Info Section — Roadmap 02 Typography Matrix ─────────────────────── */}
-        <div className="mt-3 flex flex-col gap-0.5">
+        {/* DESIGN_SPEC §3.1: content padding 14px 16px 16px, gap 4px */}
+        <div className="flex flex-col gap-1" style={{ padding: "14px 16px 16px" }}>
           {/* Line 1: Name + Rating (right-aligned, Airbnb pattern) */}
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-heading font-semibold text-s-ink text-base leading-6 truncate">
+            <h3 className="font-body font-semibold text-s-ink text-base leading-5 truncate">
               {salon.name}
             </h3>
             {salon.average_rating > 0 ? (
@@ -334,8 +325,8 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             ) : null}
           </div>
 
-          {/* Line 2: Business type · Quartier (Phase 3.2 — type first, then location) */}
-          <p className="text-sm text-s-ink/60 leading-6 truncate">
+          {/* Line 2: Business type · Quartier */}
+          <p className="text-sm text-s-ink-secondary leading-5 truncate">
             {showDistance && salon.distance_km != null
               ? `${salon.quartier ?? getNeighborhood(salon.postal_code)} · ${salon.distance_km.toFixed(1)} km`
               : `${((c: string) => c.charAt(0).toUpperCase() + c.slice(1))(salon.categories?.[0] || "Salon")} · ${salon.quartier ?? getNeighborhood(salon.postal_code)}`}
@@ -345,7 +336,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           {priceToShow != null && (() => {
             const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
             return (
-              <p className="text-sm text-s-ink/60 leading-6">
+              <p className="text-sm text-s-ink-secondary leading-5">
                 {tCommon("fromPrice", { price: formatCurrency(priceToShow, currencyLocale) })}
               </p>
             );
@@ -382,6 +373,6 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           )}
         </div>
       </Link>
-    </motion.div>
+    </div>
   );
 }

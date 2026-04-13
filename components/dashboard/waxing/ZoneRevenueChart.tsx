@@ -15,7 +15,7 @@ interface ZoneRevenueChartProps {
   salonId: string;
 }
 
-const COLORS = ["#E8624A", "#D4870A", "#6BA3C8", "#7BA688", "#4A1E3C", "#F2C144"];
+const COLORS = ["#E8735A", "#D4870A", "#6BA3C8", "#7BA688", "#4A1E3C", "#F2C144"];
 
 export default function ZoneRevenueChart({ salonId }: ZoneRevenueChartProps) {
   const t = useTranslations("dashboardWaxing") as any;

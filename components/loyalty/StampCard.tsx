@@ -17,7 +17,7 @@ interface StampCardProps {
 }
 
 const CONFETTI_COLORS = [
-  "#E8624A", "#D4870A", "#F6E05E", "#68D391", "#6BA3C8",
+  "#E8735A", "#D4870A", "#F6E05E", "#68D391", "#6BA3C8",
   "#FC8181", "#B794F4", "#F687B3", "#7BA688", "#FBD38D",
   "#9AE6B4", "#FEB2B2",
 ];

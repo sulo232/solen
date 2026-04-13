@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
       subject: `Einladung als Mitarbeiter bei ${salon.name} — solen.ch`,
       html: `<p>Hallo${validated.staff_name ? ` ${validated.staff_name}` : ""},</p>
 <p><strong>${salon.name}</strong> lädt dich ein, als Mitarbeiter auf solen.ch beizutreten.</p>
-<p><a href="${inviteUrl}" style="display:inline-block;padding:12px 24px;background:#E8624A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">Einladung annehmen →</a></p>
+<p><a href="${inviteUrl}" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">Einladung annehmen →</a></p>
 <p style="color:#999;font-size:12px;">Dieser Link ist 7 Tage gültig.</p>`,
     });
   } catch { /* email failure logged but non-fatal */ }

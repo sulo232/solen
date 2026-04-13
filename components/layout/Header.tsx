@@ -152,14 +152,16 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       "fixed top-0 left-0 right-0 z-50 w-full flex flex-col transition-[transform,background-color,border-color,box-shadow,backdrop-filter] duration-200 ease-[cubic-bezier(.4,0,.2,1)]",
       isHeaderVisible ? "translate-y-0" : "-translate-y-full",
       scrolled
-        ? "border-b border-s-ink/[0.08] shadow-sm"
+        ? "border-b border-s-ink/[0.08]"
         : "border-transparent"
     )}
     style={{
       paddingTop: "env(safe-area-inset-top)",
-      background: "rgba(255,255,255,0.82)",
-      backdropFilter: "blur(20px) saturate(1.4)",
-      WebkitBackdropFilter: "blur(20px) saturate(1.4)",
+      /* DESIGN_SPEC §3.4: solid #FAFAF8 default, glass only on scroll */
+      background: scrolled ? "rgba(250,250,248,0.8)" : "#FAFAF8",
+      backdropFilter: scrolled ? "blur(12px)" : "none",
+      WebkitBackdropFilter: scrolled ? "blur(12px)" : "none",
+      boxShadow: scrolled ? "var(--shadow-rest)" : "none",
     }}
     >
       {/* ── Top Row: Logo, (Small Pill if scrolled), Profile ── */}

@@ -27,11 +27,16 @@
     --card-foreground: 28 30% 7%;
     --radius: 12px;
 
-    /* ── Border-radius tokens ────────────────────────────────── */
-    --radius-card: 12px;
+    /* ── Border-radius tokens (DESIGN_SPEC §6.3) ──────────────── */
+    --radius-card: 16px;
     --radius-card-outer: 16px;
     --radius-pill: 9999px;
-    --radius-input: 10px;
+    --radius-input: 16px;
+
+    /* ── Shadow tokens (DESIGN_SPEC §1.4) ────────────────────── */
+    --shadow-rest: 0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03);
+    --shadow-hover: 0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04);
+    --shadow-floating: 0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06);
 
     /* ── Typography scale ─────────────────────────────────────── */
     --text-xs: 0.75rem;       /* 12px — badges, metadata */
@@ -44,8 +49,8 @@
 
     /* ── Text color tokens ────────────────────────────────────── */
     --color-heading: #222222;
-    --color-body: #484848;
-    --color-muted: #6A6A6A;   /* 5.0:1 contrast on white (WCAG AA) */
+    --color-body: #222222;    /* DESIGN_SPEC primary text */
+    --color-muted: #767676;   /* DESIGN_SPEC secondary text — 4.54:1 on #FAFAF8 (WCAG AA) */
     --color-border: #EBEBEB;
     --color-hover-bg: #F7F7F7;
     --color-error: #D32F2F;
@@ -66,8 +71,8 @@
     --glass-shadow-inset: inset 0 1px 0 rgba(255,255,255,.70);
     --raised: rgba(255,255,255,.95);
 
-    /* ── Motion tokens ───────────────────────────────────────── */
-    --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+    /* ── Motion tokens (DESIGN_SPEC §5.1) ──────────────────── */
+    --ease-out-strong: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
     --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
     --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -366,7 +371,7 @@
   textarea:focus-visible,
   select:focus-visible {
     outline: none;
-    border-color: #E8624A;
+    border-color: #E8735A;
     box-shadow: 0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), 0 0 0 3px #FAECE7;
   }
 
@@ -508,15 +513,16 @@ html {
 
 /* ── V5 Listing Card — Airbnb style, no elevation ───────────────────── */
 .card-listing {
-  background: transparent;
+  background: #FFFFFF;
   border: none;
-  border-radius: var(--radius-card, 12px);
-  box-shadow: none;
-  transition: transform 200ms var(--ease-out-strong, cubic-bezier(0.23, 1, 0.32, 1));
+  border-radius: var(--radius-card, 16px);
+  box-shadow: var(--shadow-rest);
+  transition: transform 250ms var(--ease-out-strong), box-shadow 250ms var(--ease-out-strong);
 }
 @media (hover: hover) and (pointer: fine) {
   .card-listing:hover {
     transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
   }
 }
 
@@ -709,7 +715,7 @@ html {
 
 /* ── Driver.js theme override ─────────────────────────────────────── */
 .driver-popover {
-  --driver-theme-color: #E8624A;
+  --driver-theme-color: #E8735A;
 }
 
 .solen-tour-popover {
@@ -757,7 +763,7 @@ html {
 }
 
 .solen-tour-popover .driver-popover-next-btn {
-  background-color: #E8624A !important;
+  background-color: #E8735A !important;
   color: white !important;
   border: none !important;
   text-shadow: none !important;
@@ -876,11 +882,11 @@ html {
 /* ── Global focus-visible ring (WCAG AAA keyboard accessibility) ────── */
 *:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #FAF6EF, 0 0 0 4px #E8624A;
+  box-shadow: 0 0 0 2px #FAFAF8, 0 0 0 4px #C05038;
 }
 button:focus-visible,
 a:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #FAF6EF, 0 0 0 4px #E8624A;
+  box-shadow: 0 0 0 2px #FAFAF8, 0 0 0 4px #C05038;
 }
 

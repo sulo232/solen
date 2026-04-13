@@ -36,7 +36,7 @@ export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProp
     return (
       <span
         className="flex items-center gap-1 font-heading font-bold text-[11px] uppercase tracking-wide text-white px-2.5 py-1 rounded-full"
-        style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(0,0,0,0.15)" }}
+        style={{ background: "#C05038", boxShadow: "0 2px 4px rgba(0,0,0,0.15)" }}
       >
         ★ Top
       </span>

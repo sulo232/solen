@@ -15,7 +15,7 @@ export function CoiffeurIcon({ animate = false, ...props }: React.SVGProps<SVGSV
       <circle cx="8" cy="29.5" r="3.2" fill="white" opacity="0.9" />
 
       {/* Upper ring (blade 2 handle) */}
-      <circle cx="8" cy="10.5" r="5.5" fill="#E8624A" />
+      <circle cx="8" cy="10.5" r="5.5" fill="#E8735A" />
       <circle cx="8" cy="10.5" r="3.2" fill="white" opacity="0.9" />
 
       {/* Blade 1 — darker, goes lower-left to upper-right */}
@@ -26,7 +26,7 @@ export function CoiffeurIcon({ animate = false, ...props }: React.SVGProps<SVGSV
       {/* Blade 2 — coral, goes upper-left to lower-right */}
       <path
         d="M 13,13 L 35,30 L 35,27 L 13,9 Q 11,10 11,11.5 Q 11,13 13,13 Z"
-        fill="#E8624A"
+        fill="#E8735A"
       />
       {/* Blade 2 highlight */}
       <path

@@ -38,7 +38,7 @@ export default function HowItWorks({ hidden }: HowItWorksProps) {
   return (
     <section className="px-5 md:px-10 lg:px-20">
       {/* Section header — Pattern A */}
-      <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#E8624A" }}>
+      <span className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-1" style={{ color: "#E8735A" }}>
         {t("eyebrow") || "Für Neukunden"}
       </span>
       <h2
@@ -60,12 +60,12 @@ export default function HowItWorks({ hidden }: HowItWorksProps) {
               className="w-12 h-12 rounded-full flex items-center justify-center mb-3"
               style={{ background: "rgba(232,115,90,0.1)" }}
             >
-              <Icon size={24} strokeWidth={1.8} style={{ color: "#E8624A" }} aria-hidden="true" />
+              <Icon size={24} strokeWidth={1.8} style={{ color: "#E8735A" }} aria-hidden="true" />
             </div>
 
             {/* Step number + title */}
             <p className="font-body font-semibold text-base text-s-ink">
-              <span style={{ color: "#E8624A" }}>{i + 1}.</span>{" "}
+              <span style={{ color: "#E8735A" }}>{i + 1}.</span>{" "}
               {t(`step${i + 1}.title`) || ["Finde", "Buche", "Geniesse"][i]}
             </p>
 

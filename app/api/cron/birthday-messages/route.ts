@@ -43,11 +43,11 @@ export async function GET(req: NextRequest) {
         to: email,
         subject: `Alles Gute zum Geburtstag, ${profile.display_name ?? ""}! 🎂`,
         html: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center">
-<h2 style="color:#E8624A">Happy Birthday!</h2>
+<h2 style="color:#C05038">Happy Birthday!</h2>
 <p>Liebe/r ${profile.display_name ?? "Kunde/in"},</p>
 <p>Wir wünschen dir alles Gute zum Geburtstag! 🎉</p>
 <p>Als kleines Geschenk haben wir eine Überraschung für dich.</p>
-<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#E8624A;color:#fff;border-radius:8px;text-decoration:none">Jetzt entdecken →</a></p>
+<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none">Jetzt entdecken →</a></p>
 </div>`,
       });
       sent++;

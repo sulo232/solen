@@ -57,7 +57,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
       label: t("walkin_rate"),
       value: `${stats.total_walkins}/${stats.total_appointments}`,
       icon: Users,
-      color: "#E8624A",
+      color: "#E8735A",
       trend: trends?.walkins,
     },
     {

@@ -44,10 +44,10 @@ export default function BookingSidebar({
         )}
         {avgRating != null && avgRating > 0 && (
           <span className="flex items-center gap-1 text-[14px] text-s-ink">
-            <Star className="w-[13px] h-[13px] fill-[#E8624A] text-[#E8624A]" />
+            <Star className="w-[13px] h-[13px] fill-s-coral text-s-coral" />
             <span className="font-semibold">{avgRating.toFixed(1)}</span>
             {reviewCount != null && (
-              <span className="text-[#6A6A6A] font-normal">
+              <span className="text-[#767676] font-normal">
                 ({reviewCount})
               </span>
             )}
@@ -76,7 +76,7 @@ export default function BookingSidebar({
       {/* Book button */}
       <button
         onClick={onBook}
-        className="w-full h-12 rounded-[12px] bg-[#E8624A] text-white font-heading font-bold text-[16px] hover:brightness-95 active:scale-[0.98] transition-[transform,filter] duration-150 mb-4"
+        className="w-full h-12 rounded-btn bg-s-coral-button text-white font-body font-semibold text-[15px] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 mb-4"
         style={{ boxShadow: "0 2px 12px rgba(232,98,74,0.32)" }}
       >
         Jetzt buchen
@@ -85,18 +85,18 @@ export default function BookingSidebar({
       {/* Quick info badges */}
       <div className="space-y-3 pt-3 border-t border-s-ink/[0.08]">
         {nextSlotLabel && (
-          <div className="flex items-center gap-2.5 text-[13px] text-[#484848]">
-            <Clock className="w-4 h-4 text-[#6A6A6A] shrink-0" />
+          <div className="flex items-center gap-2.5 text-[13px] text-[#767676]">
+            <Clock className="w-4 h-4 text-[#767676] shrink-0" />
             <span>Nächster Termin: <span className="font-semibold text-[#2E7D32]">{nextSlotLabel}</span></span>
           </div>
         )}
-        <div className="flex items-center gap-2.5 text-[13px] text-[#484848]">
-          <Zap className="w-4 h-4 text-[#6A6A6A] shrink-0" />
+        <div className="flex items-center gap-2.5 text-[13px] text-[#767676]">
+          <Zap className="w-4 h-4 text-[#767676] shrink-0" />
           <span>Sofort buchbar — Bestätigung in Sekunden</span>
         </div>
         {bookingsThisWeek != null && bookingsThisWeek >= 3 && (
-          <div className="flex items-center gap-2.5 text-[13px] text-[#484848]">
-            <Users className="w-4 h-4 text-[#6A6A6A] shrink-0" />
+          <div className="flex items-center gap-2.5 text-[13px] text-[#767676]">
+            <Users className="w-4 h-4 text-[#767676] shrink-0" />
             <span>{bookingsThisWeek}× diese Woche gebucht</span>
           </div>
         )}

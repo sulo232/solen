@@ -56,3 +56,9 @@ _archive/
 node_modules_old/
 .vercel
 docs/design-specs/CLAUDE_CODE_PROMPT.md
+
+# Playwright — keep baselines, ignore artifacts
+e2e/visual/test-results/
+e2e/visual/report/
+playwright-report/
+blob-report/

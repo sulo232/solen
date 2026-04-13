@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
           <p><strong>Ursprünglicher Preis:</strong> CHF ${booking.estimated_price?.toFixed(2)}</p>
           <p><strong>Neuer Preis:</strong> CHF ${validated.final_price.toFixed(2)}</p>
           <p>Bitte bestätige die Anpassung innerhalb von 48 Stunden:</p>
-          <p><a href="${approveUrl}" style="display:inline-block;padding:12px 24px;background:#E8624A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Preiserhöhung bestätigen →</a></p>
+          <p><a href="${approveUrl}" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Preiserhöhung bestätigen →</a></p>
           <p style="color:#888;font-size:12px">Wenn du nicht reagierst, wird die Zahlung nach 48 Stunden automatisch freigegeben.</p>
         `,
       });

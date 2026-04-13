@@ -83,15 +83,15 @@ export async function POST(req: NextRequest) {
         to: validated.recipient_email,
         subject: `Du hast eine Geschenkkarte von ${salon.name} erhalten!`,
         html: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center">
-<h2 style="color:#E8624A">Geschenkkarte</h2>
+<h2 style="color:#C05038">Geschenkkarte</h2>
 <p>Hallo ${validated.recipient_name},</p>
 <p>Du hast eine Geschenkkarte für <strong>${salon.name}</strong> erhalten!</p>
 <div style="background:#FAF6EF;border-radius:12px;padding:20px;margin:16px 0">
-<p style="font-size:24px;font-weight:bold;color:#E8624A;margin:0">CHF ${(validated.amount / 100).toFixed(2)}</p>
+<p style="font-size:24px;font-weight:bold;color:#C05038;margin:0">CHF ${(validated.amount / 100).toFixed(2)}</p>
 <p style="font-size:14px;color:#999;margin:4px 0 0">Code: <strong>${code}</strong></p>
 </div>
 ${validated.message ? `<p style="color:#666;font-style:italic">"${validated.message}"</p>` : ""}
-<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#E8624A;color:#fff;border-radius:8px;text-decoration:none">Jetzt einlösen →</a></p>
+<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none">Jetzt einlösen →</a></p>
 <p style="font-size:11px;color:#999">Gültig bis ${new Date(expiresAt).toLocaleDateString("de-CH")}</p>
 </div>`,
       });

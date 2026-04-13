@@ -697,7 +697,7 @@ export default function CheckoutPage() {
                   appearance: {
                     theme: "stripe",
                     variables: {
-                      colorPrimary: "#E8624A",
+                      colorPrimary: "#C05038",
                       colorDanger: "#A32D2D",
                       borderRadius: "12px",
                       fontFamily: "DM Sans, sans-serif",

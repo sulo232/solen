@@ -1,0 +1,16 @@
+import { chromium } from 'playwright';
+const browser = await chromium.launch();
+const page = await browser.newPage();
+await page.setViewportSize({ width: 1440, height: 900 });
+await page.goto('http://localhost:3005/de/');
+await page.waitForTimeout(9000);
+await page.evaluate(() => window.scrollTo(0, 700));
+await page.waitForTimeout(600);
+await page.screenshot({ path: '_tasks/screenshots/trust-area.png' });
+await page.evaluate(() => window.scrollTo(0, 1800));
+await page.waitForTimeout(600);
+await page.screenshot({ path: '_tasks/screenshots/mid-area.png' });
+await page.evaluate(() => window.scrollTo(0, 3000));
+await page.waitForTimeout(600);
+await page.screenshot({ path: '_tasks/screenshots/testimonials-area.png' });
+await browser.close();

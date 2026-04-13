@@ -4,6 +4,71 @@
 
 ---
 
+## 🚨 SURGICAL EDITS ONLY — READ THIS BEFORE TOUCHING ANYTHING
+
+**These rules exist because previous AI sessions destroyed working code by making sweeping rewrites instead of targeted fixes. Violation = irreversible damage.**
+
+### Rule 1: Never rewrite any file. Ever.
+- **Allowed:** Change specific lines that cause the reported bug
+- **Forbidden:** Deleting and recreating a file. Replacing entire component logic. Rewriting "to improve" unrequested code. "Cleaning up" surrounding code while fixing something else.
+- If you feel the urge to improve code beyond the exact request — **STOP. Don't.**
+
+### Rule 2: Match the exact scope of the request
+- Padding fix → change only the padding class, nothing else
+- Translation fix → touch only the translation key
+- Shadow token fix → change only that one class
+- One bug = one targeted line change. That's it.
+
+### Rule 3: Read before editing
+- Open the file, find the exact lines, confirm the code matches what you expect, then change only those lines
+- If the file doesn't match what the instructions say, **stop and report it** — do not invent a fix
+
+### Rule 4: Never run `npm run build` unless explicitly asked
+- Dev server is already running on port 3010
+- Building mid-session can break the dev server and create junk files in the root
+
+### Rule 5: After each fix, verify only that one thing changed
+- `git diff` the file before committing
+- If you see more than the intended lines in the diff, you've done too much — revert the extra changes
+
+---
+
+## 🎯 SOLEN VISUAL IDENTITY — Read every session before writing any UI
+
+This is Solen.ch — a premium Swiss beauty marketplace. The design should feel like **Airbnb meets Fresha**: warm, confident, native-app quality. NOT a startup SaaS template, NOT generic booking software.
+
+### Design DNA (non-negotiable)
+| Token | Value | Never use |
+|---|---|---|
+| Background | Off-white `#FAFAF8`. NOT pure white, NOT cold gray. | Cold grays, blue-whites |
+| Primary text | `#222222` (warm near-black) | Pure black `#000000` |
+| Coral accent | `#E8735A` (icons, stars), `#C05038` (buttons), `#B84A35` (text) | Other reds, oranges |
+| Display font | `Bebas Neue` — UPPERCASE only, city section + SOLEN logo only (NOT hero) | Mixed case Bebas |
+| Body font | `DM Sans` — all other text | System fonts, Inter |
+| Border radius | Cards: `rounded-card` (16px). Buttons/pills: `rounded-full`. | Arbitrary values like `rounded-[12px]` |
+| Shadows | `shadow-elevation-1`, `shadow-elevation-2` tokens only | `shadow-sm`, `shadow-md`, `shadow-lg` |
+
+### Animation Standards (`@emil-design-eng`)
+- Easing: always `cubic-bezier(0.23, 1, 0.32, 1)` for enter, never `ease-in`
+- Duration: 200-350ms for UI transitions, never over 500ms for repeated interactions
+- Enter from: `opacity:0, y:12` → `opacity:1, y:0`. Never from `scale(0)` or `opacity:0` alone
+- Active/press states: `scale(0.97)` on buttons — always
+- Stagger: 40-60ms between list items. Never all-at-once
+
+### What it should feel like
+- Open iPhone → open Airbnb. That **responsiveness, warmth, confidence**. Not a website. A product.
+- Every interaction should have a micro-response (hover lift, press scale, focus ring)
+- No placeholder UI. No generic empty states. No lorem ipsum color schemes.
+
+### Skills to invoke
+- **`@emil-design-eng`** — any animation, transition, or interaction work
+- **`@design`** — color, spacing, typography, component structure
+- **`@review`** — before finalizing any component change
+
+---
+
+
+
 ## 🎨 VISUAL ASSETS — READ BEFORE TOUCHING ANY ICON, ANIMATION, OR ILLUSTRATION
 
 **Full guide: `_rules/GENERATION_TOOLS.md`** — read this before generating or sourcing any asset.
@@ -28,7 +93,7 @@ Before writing any component that needs an icon or animation:
 ## 🖼️ FIGMA-FIRST DESIGN WORKFLOW (MANDATORY — ALL UI WORK)
 
 **Skill: `.agents/skills/figma-solen-workflow/SKILL.md`**
-**Figma file key: `k5j0ZrEEX583cL0lxXCxJC`** ("Solen — Design System & Homepage")
+**Figma file key: `cInKwtgkD8TjUSSLDT40eF`** ("Solen-DESIGN")
 
 Any time you are about to create or modify a UI component for the homepage or any customer-facing page, **invoke the `figma-solen-workflow` skill first**. The mandatory loop is:
 
@@ -61,6 +126,75 @@ Any time you touch `components/HomePage.tsx`, `components/ui/HomepageHero.tsx`, 
 5. **Update the tracker file** after each session with current status
 
 **Why**: Roadmaps compound visual uncertainty. Screenshot-driven tight loops catch regressions immediately. Never batch more than 3–4 visual changes without verifying.
+
+---
+
+## 🧰 SYSTEMS — AUTO-ACTIVATION (MANDATORY)
+
+**Full reference: `_rules/SYSTEMS.md`** — read it at the start of every session.
+
+**When you set up a new tool**, add it to `_rules/SYSTEMS.md` and add a trigger rule below.
+
+### 🚨 FIGMA IS YOUR TASTE (NON-NEGOTIABLE)
+
+**You have no design taste. You cannot judge whether UI looks good or bad. Figma is your taste.**
+
+- **NEVER** say "looks good" or "looks fine" about any UI without having screenshotted the Figma equivalent and compared
+- **NEVER** make visual improvement decisions (colors, spacing, layout, typography) based on your own judgment — always compare to the Figma design file first
+- **"Improve" = compare to Figma, find where code doesn't match, fix the gaps.** NOT "audit tokens and guess"
+- When the user says anything about visual quality ("make it better", "improve", "polish", "it looks wrong"), your FIRST action is: screenshot the Figma section → screenshot the live site (Playwright) → show both → ask user what to fix
+- **Figma file key:** `cInKwtgkD8TjUSSLDT40eF` — use discovery script in `_rules/FIGMA_CODE_SYNC.md` to find current node IDs
+
+### Auto-Activation Rules
+
+**When the user's message matches a trigger, activate that system IMMEDIATELY — don't ask, just start the first step.** Multiple triggers can fire at once (e.g., "redesign the hero" activates both Figma First AND Design Tokens).
+
+| Trigger keywords | System | First step (do this immediately) |
+|---|---|---|
+| "design", "redesign", "new component", "make it look", "mockup", "figma" | **Figma First** | Load `figma-use` skill → run discovery script from `_rules/FIGMA_CODE_SYNC.md` |
+| "compare to figma", "match the design", "does it match", "drift", "sync" | **Figma Sync** | Run discovery script → `get_screenshot` of the relevant Figma section |
+| "check for regressions", "did I break", "visual test", "playwright" | **Playwright** | Run `npx playwright test` → report results |
+| "looks wrong", "fix the", "spacing is off", "broken layout", "visual bug" | **QA Registry** | Read `_tasks/VISUAL_QA_REGISTRY.md` → read the component file → fix one thing |
+| "wrong color", "wrong font", "wrong token", "design system", "banned" | **Design Tokens** | Read `_rules/DESIGN_SPEC.md` section D (tokens) → grep the file for violations → fix |
+| "animation", "hover", "transition", "easing", "interaction", "polish" | **Animation** | Load `emil-design-eng` skill → read the component → apply rules |
+| "build", "add a page", "new feature", "new API", "implement" | **Feature Dev** | Read `_rules/CODE_SAFETY.md` + `_tasks/INCOMPLETE_FEATURES.md` → check if half-built |
+| "make it better", "improve", "polish", "clean up" (on a UI component) | **Design Spec + Playwright** | Read `_rules/DESIGN_SPEC.md` for the component spec → implement exact values → Playwright screenshot → show user → fix what user says |
+| "fix component", "component by component", "implement design" | **Design Spec** | Read `_rules/DESIGN_SPEC.md` section for that component → implement exact values → Playwright verify |
+| homepage visual work (any component in `components/HomePage.tsx` or its children) | **QA Registry** + **tight loop** | Read `_tasks/homepage-visual-tracker.md` → fix one thing → verify → next. Ask for screenshot every 3-4 changes. |
+
+### Priority when multiple triggers match
+
+If a message matches multiple systems, follow this priority (highest first):
+1. **Figma Comparison** — always wins for visual work. Compare to Figma before anything else.
+2. **QA Registry** — if there are open findings, fix those before auditing new stuff.
+3. **Design Tokens / Animation** — apply after Figma comparison confirms what to fix.
+4. **Feature Dev** — only if the task is clearly functional, not visual.
+
+### How activation works
+
+1. User sends a message
+2. You match it against the trigger table above
+3. If multiple match, follow the priority order above
+4. You announce: "Activating [System Name]" (one line, no explanation)
+5. You execute the first step listed
+6. You continue following that system's loop from `_rules/SYSTEMS.md`
+
+If no trigger matches, just respond normally. Don't force a system where none applies.
+
+### 🚨 THREE HARD GATES (NEVER SKIP)
+
+**Gate 1: Screenshot → Write what's wrong → Fix THAT → Screenshot again**
+After EVERY component change, take a Playwright screenshot and write one sentence about what looks wrong. Fix that specific thing. Screenshot again. Do NOT move to the next component until the current one looks right on screen. If you catch yourself batching multiple component changes before screenshotting — STOP. You're skipping the gate.
+
+**Gate 2: Content reality check before redesigning**
+Before touching ANY component, look at it on localhost first. Answer these three questions:
+- How many items have real images vs placeholders?
+- What does it look like with actual data (or lack of it)?
+- What's the worst case (zero data, all placeholders)?
+Design for reality, not the ideal. If 50% of cards have no photos, the design must look good with 50% gray rectangles.
+
+**Gate 3: Never delete visible UI without a tested replacement**
+Before removing any visible element (headline, section, component), screenshot the page WITH it. Make your change. Screenshot WITHOUT it. Compare. If the page looks emptier/worse without it, you need a replacement — don't just delete. "The spec says remove it" is not enough. The screen has to look better.
 
 ---
 
@@ -204,12 +338,12 @@ solen/
 
 > **Active Roadmap**: `V5_DESIGN_ROADMAP.md` in project root. Read it before making any UI changes.
 
-#### Colors (unchanged — keep ALL brand colors)
-- **Primary**: Terracotta Coral `#E8624A` (class: `s-coral`)
+#### Colors (see `_rules/DESIGN_SPEC.md` section 1 for complete spec)
+- **Coral**: 3-tier system — `#E8735A` (accent/icons/stars), `#C05038` (buttons), `#B84A35` (text)
 - **Accents**: Amber `#D4870A` (`s-amber`), Basel Blue `#6BA3C8` (`s-blue`)
-- **Text**: Warm Ink `#1A1209` (`s-ink`)
-- **Extended**: Yellow `#F2C144` (`s-yellow`), Plum `#4A1E3C` (`s-plum`), Sage `#7BA688` (`s-sage`), Sand `#C9A96E` (`s-sand`). Each has `DEFAULT`, `hover`, `subtle`, `text` variants.
-- **Backgrounds**: Cream `#FAF6EF` (base), White `#FFFFFF` (cards/raised), `#EDE5D8` (sunken inputs)
+- **Text**: `#222222` (`s-ink`), secondary `#767676` (`s-ink-secondary`)
+- **Extended**: Yellow `#F2C144`, Plum `#4A1E3C`, Sage `#7BA688`, Sand `#C9A96E`
+- **Backgrounds**: Off-white `#FAFAF8` (base), White `#FFFFFF` (cards), `#EDE5D8` (sunken inputs)
 - **Dark mode**: Warm dark base `#151009` (`s-dm-bg`), surface `#1E1710` (`s-dm-surface`), text `#F5EEE4` (`s-dm-text`). NEVER use cool grey or pure black.
 
 #### Typography (unchanged)
@@ -411,7 +545,7 @@ hover:opacity-80              → use hover:brightness-[1.06] or shadow change
 
 ### 3.5 Key Features
 
-> **V5 HOMEPAGE HERO**: The homepage hero uses a **cinematic warm gradient background** (cream → coral blush → plum shadow) — NOT a flat white background. The search bar is ALWAYS visible as a floating glass pill (not hidden until hover). A photo/video background may be swapped in later once licensed assets are available.
+> **HOMEPAGE HERO**: The search bar IS the hero (Airbnb pattern). No Bebas Neue headline in the hero. Clean `#FAFAF8` background, search pill centered, trust line below. Bebas Neue only appears in the city section + SOLEN logo. See `_rules/DESIGN_SPEC.md` section 4 for full spec.
 
 1. **Discovery & Booking**: Salon cards + multi-step booking wizard with multi-service, add-ons, guest checkout.
 2. **Direct Messaging**: In-app chat with media upload, price offers, and dispute resolution.
@@ -423,7 +557,7 @@ hover:opacity-80              → use hover:brightness-[1.06] or shadow change
 8. **Review Replies**: Salon owners can reply to reviews (public or private).
 9. **Off-Peak Discounts**: Salons set discounted hours for specific days of the week.
 10. **Help Center**: Public help articles with admin CMS, search, and category sections.
-11. **Dark Mode**: System/manual toggle via `ThemeToggle` in Header. `darkMode: 'class'` in Tailwind.
+11. **Dark Mode**: MAINTENANCE MODE — `ThemeToggle` is hidden from users. Code remains, toggle disabled. `darkMode: 'class'` in Tailwind.
 12. **Dashboard Calendar**: Weekly grid with staff colors, slot detail modal, reschedule, and day blocking.
 13. **Review Photos**: Customers can upload photos with reviews; stored in Supabase Storage `review-photos` bucket.
 14. **Recently Viewed**: Horizontal scroll of last 5 viewed salons from localStorage. Shows on HomePage and ProfilePage.
@@ -752,7 +886,7 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 
 ### Rule 12: SINGLE DESIGN SYSTEM
 - There is only ONE design system: **Next.js** (Section 3.3)
-- Colors: Terracotta Coral `#E8624A` (primary, `s-coral`), Amber `#D4870A` (accent, `s-amber`), Blue `#6BA3C8` (accent, `s-blue`), Warm Ink `#1A1209` (text, `s-ink`)
+- Colors: Coral `#E8735A` (accent), `#C05038` (buttons), `#B84A35` (text). Amber `#D4870A`, Blue `#6BA3C8`. Text `#222222` (`s-ink`). See `_rules/DESIGN_SPEC.md`.
 - Fonts: Bebas Neue (display ≥40px), Syne (headings), DM Sans (body + data with `data-text`)
 - The old teal/coral design (`#38B2AC`, `#FF6B6B`) and the monolith wine-red design are **RETIRED**
 - **NEVER** use teal, old coral `#FF6B6B`, wine red, gold, DM Serif Display, or Space Grotesk in any new code
@@ -1220,9 +1354,9 @@ echo "=== Done ==="
 
 > **CONTEXT**: The Solen.ch homepage (`components/HomePage.tsx`) underwent a major redesign to adhere strictly to V5.
 
-1. **Aesthetics:** Page background is Warm Beige (`#F5F0EB`). NO shadows on cards (use simple 1px borders). ALL interactive elements must be pill shapes (`rounded-pill` / `rounded-btn`). Blobs are RETIRED, use `.ambient-v5` gradients only.
-2. **Hero:** Has a solid `#F5F0EB` background (no images/fade-ups). Features a horizontal scroll-snap featured salon carousel. Header is strictly Bebas Neue 42px.
-3. **Header/Navigation:** Max height `56px`. Background is `#F5F0EB` glass frost. The header morphs its content: when the hero search bar is out of view, the header shows a compact Search Pill. `CategoryStickyRow` inside the header is deleted. `Zurück` button must never render on `/`.
+1. **Aesthetics:** Page background is `#FAFAF8` (off-white, warm tint — per DESIGN_SPEC.md locked decision B1). NO shadows on cards (use simple 1px borders). ALL interactive elements must be pill shapes (`rounded-pill` / `rounded-btn`). Blobs are RETIRED, use `.ambient-v5` gradients only.
+2. **Hero:** The search bar IS the hero (Airbnb pattern). Solid `#FAFAF8` background, no Bebas Neue headline, no images/fade-ups. Search pill centered, trust line below. See DESIGN_SPEC.md section 4.
+3. **Header/Navigation:** Max height `64px`. Background is `#FAFAF8`, glass on scroll: `rgba(250,250,248,0.8) + blur(12px)`. The header morphs its content: when the hero search bar is out of view, the header shows a compact Search Pill. `CategoryStickyRow` inside the header is deleted. `Zurück` button must never render on `/`.
 4. **Icons:** Category SVG icons must render perfectly solid in Coral (`#E8735A`) without any opacity layers.
 5. **Footer:** Background is strictly `#2C2825`. Leftover trust pills are removed. Instagram natively inside legal links.
 6. **Mobile Tab Bar:** Background `#FFFFFF` glass frost, 1px top border (no shadow), active states Coral (`#E8735A`), `z-index: 50`.
@@ -1443,7 +1577,7 @@ grep -rn "w-\[6px\]\|p-1\(\|h-6\|w-7" components/ app/
 #### Text Contrast — WCAG AAA for All Text
 ```tsx
 // ✅ CORRECT — meet 7:1 contrast (AAA) on white background
-<p className="text-s-ink" />              // #1A1209 on white = 11.3:1 ✓
+<p className="text-s-ink" />              // #222222 on white = 13.5:1 ✓
 <p className="text-s-ink/60" />           // Medium gray, ~5:1 ✓ (WCAG AA)
 <label className="text-sm text-s-ink/70" /> // Slightly lighter but acceptable
 

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>City Section</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f5f5f5; font-family: 'DM Sans', sans-serif; padding: 32px 24px; }
+
+  .label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .16em; text-transform: uppercase;
+    color: #E8624A; margin-bottom: 32px;
+    display: block;
+  }
+
+  /* ── OPTION A: Editorial typographic list ─────────────────── */
+  .option-a {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 40px 32px;
+    margin-bottom: 32px;
+    border: 1px solid rgba(26,18,9,0.07);
+  }
+  .option-a .tag {
+    font-family:'DM Sans',sans-serif; font-size:10px; font-weight:600;
+    letter-spacing:.14em; text-transform:uppercase;
+    color:rgba(26,18,9,0.35); margin-bottom:8px; display:block;
+  }
+  .city-row {
+    display: flex; align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(26,18,9,0.07);
+    cursor: pointer;
+    transition: padding-left 250ms cubic-bezier(0.23,1,0.32,1);
+    position: relative;
+    overflow: hidden;
+  }
+  .city-row::before {
+    content:'';
+    position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:#E8624A;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 250ms cubic-bezier(0.23,1,0.32,1);
+  }
+  .city-row:hover { padding-left: 14px; }
+  .city-row:hover::before { transform: scaleY(1); }
+  .city-name-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px; line-height: .9;
+    letter-spacing: .01em;
+    color: #1A1209;
+    flex: 1;
+    transition: color 200ms ease;
+  }
+  .city-row:hover .city-name-big { color: #E8624A; }
+  .city-meta {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+  }
+  .city-count {
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    color: rgba(26,18,9,0.4);
+  }
+  .city-arrow {
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 200ms ease, transform 200ms cubic-bezier(0.23,1,0.32,1);
+  }
+  .city-row:hover .city-arrow { opacity: 1; transform: translateX(0); }
+
+  /* cat pills */
+  .pills { display:flex; gap:7px; flex-wrap:wrap; padding-top:20px; }
+  .pill {
+    padding: 6px 14px; border-radius: 9999px; font-size: 12px; font-weight: 500;
+    font-family:'DM Sans',sans-serif;
+    background: rgba(26,18,9,0.05); color: rgba(26,18,9,0.6);
+    border: 1px solid rgba(26,18,9,0.07);
+    cursor:pointer;
+    transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+  .pill:hover { background: rgba(232,98,74,0.08); color:#C04A2E; border-color:rgba(232,98,74,0.18); }
+
+  /* ── OPTION B: Photo cards with grain ─────────────────────── */
+  .option-b {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 40px 32px;
+    border: 1px solid rgba(26,18,9,0.07);
+  }
+  .city-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:20px; }
+  .city-card {
+    border-radius: 14px; overflow:hidden; position:relative;
+    height: 200px; cursor:pointer;
+    transition: transform 400ms cubic-bezier(0.23,1,0.32,1),
+                box-shadow 400ms cubic-bezier(0.23,1,0.32,1);
+  }
+  .city-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(26,18,9,.07), 0 16px 40px rgba(26,18,9,.10);
+  }
+  .city-card img {
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition: transform 500ms cubic-bezier(0.23,1,0.32,1);
+    filter: brightness(0.72) saturate(0.9);
+  }
+  .city-card:hover img { transform: scale(1.04); filter: brightness(0.62) saturate(0.85); }
+  /* grain overlay */
+  .city-card::after {
+    content:'';
+    position:absolute; inset:0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+    pointer-events:none;
+    z-index:1;
+  }
+  /* gradient scrim */
+  .city-card .scrim {
+    position:absolute; inset:0;
+    background: linear-gradient(to top, rgba(16,6,4,0.85) 0%, rgba(16,6,4,0.1) 55%, transparent 100%);
+    z-index:2;
+  }
+  .city-card .card-text {
+    position:absolute; bottom:0; left:0; right:0; padding:14px 16px; z-index:3;
+  }
+  .card-city-name {
+    font-family:'Bebas Neue',sans-serif; font-size:42px; line-height:.85;
+    color:white; letter-spacing:.02em; display:block;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.3);
+  }
+  .card-city-count {
+    font-family:'DM Sans',sans-serif; font-size:11px; font-weight:500;
+    color:rgba(255,255,255,0.55); display:block; margin-top:3px;
+  }
+  /* coral tag on hover */
+  .city-card .hover-tag {
+    position:absolute; top:12px; right:12px; z-index:3;
+    background:#E8624A; color:white;
+    font-family:'DM Sans',sans-serif; font-size:10px; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase;
+    padding:4px 9px; border-radius:9999px;
+    opacity:0; transform: translateY(-4px);
+    transition: opacity 200ms ease, transform 200ms cubic-bezier(0.23,1,0.32,1);
+  }
+  .city-card:hover .hover-tag { opacity:1; transform:translateY(0); }
+
+  .option-label {
+    display:inline-block;
+    background: rgba(26,18,9,0.06);
+    color: rgba(26,18,9,0.5);
+    font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600;
+    padding: 4px 10px; border-radius: 6px;
+    margin-bottom: 16px;
+    letter-spacing:.04em;
+  }
+</style>
+</head>
+<body>
+
+<span class="label">Section 4 — Browse by City</span>
+
+<!-- ── OPTION A ──────────────────────────────────────── -->
+<div class="option-a">
+  <span class="option-label">Option A</span>
+  <span class="tag">Wo suchst du?</span>
+
+  <div>
+    <div class="city-row">
+      <span class="city-name-big">Basel</span>
+      <div class="city-meta">
+        <span class="city-count">42 Salons</span>
+        <svg class="city-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8624A" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </div>
+    <div class="city-row">
+      <span class="city-name-big">Zürich</span>
+      <div class="city-meta">
+        <span class="city-count">38 Salons</span>
+        <svg class="city-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8624A" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </div>
+    <div class="city-row" style="border-bottom:none;">
+      <span class="city-name-big">Bern</span>
+      <div class="city-meta">
+        <span class="city-count">28 Salons</span>
+        <svg class="city-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8624A" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="pills">
+    <span class="pill">Coiffeur</span>
+    <span class="pill">Nails</span>
+    <span class="pill">Barbershop</span>
+    <span class="pill">Spa</span>
+    <span class="pill">Makeup</span>
+    <span class="pill">Waxing</span>
+  </div>
+</div>
+
+<!-- ── OPTION B ──────────────────────────────────────── -->
+<div class="option-b">
+  <span class="option-label">Option B</span>
+  <span class="tag" style="margin-bottom:16px;display:block;">Salons in deiner Stadt</span>
+
+  <div class="city-grid">
+    <div class="city-card">
+      <img src="https://images.unsplash.com/photo-1503803548695-c2a7b4a5b875?w=600&q=80" alt="Basel">
+      <div class="scrim"></div>
+      <div class="card-text">
+        <span class="card-city-name">Basel</span>
+        <span class="card-city-count">42 Salons</span>
+      </div>
+      <span class="hover-tag">Entdecken →</span>
+    </div>
+    <div class="city-card">
+      <img src="https://images.unsplash.com/photo-1515488764276-beab7607c1e6?w=600&q=80" alt="Zürich">
+      <div class="scrim"></div>
+      <div class="card-text">
+        <span class="card-city-name">Zürich</span>
+        <span class="card-city-count">38 Salons</span>
+      </div>
+      <span class="hover-tag">Entdecken →</span>
+    </div>
+    <div class="city-card">
+      <img src="https://images.unsplash.com/photo-1606820854416-439b3305ff39?w=600&q=80" alt="Bern">
+      <div class="scrim"></div>
+      <div class="card-text">
+        <span class="card-city-name">Bern</span>
+        <span class="card-city-count">28 Salons</span>
+      </div>
+      <span class="hover-tag">Entdecken →</span>
+    </div>
+  </div>
+
+  <div class="pills">
+    <span class="pill">Coiffeur</span>
+    <span class="pill">Nails</span>
+    <span class="pill">Barbershop</span>
+    <span class="pill">Spa</span>
+    <span class="pill">Makeup</span>
+    <span class="pill">Waxing</span>
+  </div>
+</div>
+
+</body>
+</html>

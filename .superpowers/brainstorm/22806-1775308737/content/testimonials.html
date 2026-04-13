@@ -1,0 +1,195 @@
+<h2>Section 2: TestimonialCarousel</h2>
+<p class="subtitle">Current: static div, emoji ★ stars, hardcoded German, no scroll animation. Two directions to fix it.</p>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+  .tcard {
+    flex-shrink: 0;
+    width: 280px;
+    background: #fff;
+    border: 1px solid rgba(26,18,9,0.08);
+    border-radius: 16px;
+    padding: 20px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .stars { display:flex; gap:2px; margin-bottom:12px; }
+  .star-svg { width:14px; height:14px; fill:#E8624A; }
+  .quote { font-size:14px; line-height:1.55; color:#1A1209; margin-bottom:16px; font-style:italic; }
+  .author-name { font-size:13px; font-weight:600; color:#1A1209; }
+  .author-city { font-size:12px; color:rgba(26,18,9,0.45); margin-top:2px; }
+  .avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:white; flex-shrink:0; }
+  .scroll-row { display:flex; gap:16px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; }
+  .scroll-row::-webkit-scrollbar { display:none; }
+
+  /* marquee animation */
+  @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+  .marquee-inner { display:flex; gap:16px; animation: marquee 28s linear infinite; width:max-content; }
+  .marquee-inner:hover { animation-play-state: paused; }
+
+  .section-eyebrow {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #E8624A;
+    margin-bottom: 6px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A1209;
+    letter-spacing: -.01em;
+    margin-bottom: 20px;
+  }
+</style>
+
+<!-- shared star SVG helper -->
+<svg style="display:none">
+  <symbol id="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></symbol>
+</svg>
+
+<div class="cards">
+
+  <!-- Option T1: Auto-scrolling marquee (infinite, pauses on hover) -->
+  <div class="card" data-choice="t1" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:20px 20px 12px; overflow:hidden;">
+
+      <div class="section-eyebrow">Was Nutzer sagen</div>
+      <div class="section-title" style="margin-bottom:16px;">Tausende buchen bereits via Solen.</div>
+
+      <div style="overflow:hidden; margin: 0 -20px;">
+        <div class="marquee-inner">
+          <!-- set 1 -->
+          <div class="tcard">
+            <div class="stars">
+              <svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg>
+            </div>
+            <p class="quote">"Endlich eine App wo ich alle Salons vergleichen kann!"</p>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="avatar" style="background:#E8624A;">M</div>
+              <div><div class="author-name">Mira S.</div><div class="author-city">Basel</div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="stars">
+              <svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg>
+            </div>
+            <p class="quote">"Super einfach zu buchen, immer aktuelle Verfügbarkeit."</p>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="avatar" style="background:#D4870A;">L</div>
+              <div><div class="author-name">Lisa M.</div><div class="author-city">Bern</div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="stars">
+              <svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg>
+            </div>
+            <p class="quote">"Sogar Last-Minute Angebote mit Rabatt gefunden. Mega!"</p>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="avatar" style="background:#6BA3C8;">E</div>
+              <div><div class="author-name">Elena P.</div><div class="author-city">Winterthur</div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="stars">
+              <svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg>
+            </div>
+            <p class="quote">"Die beste Salon-Plattform der Schweiz!"</p>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="avatar" style="background:#4A1E3C;">J</div>
+              <div><div class="author-name">Julia T.</div><div class="author-city">Basel</div></div>
+            </div>
+          </div>
+          <!-- set 2 (duplicate for infinite loop) -->
+          <div class="tcard">
+            <div class="stars">
+              <svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg>
+            </div>
+            <p class="quote">"Endlich eine App wo ich alle Salons vergleichen kann!"</p>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="avatar" style="background:#E8624A;">M</div>
+              <div><div class="author-name">Mira S.</div><div class="author-city">Basel</div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="stars">
+              <svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg>
+            </div>
+            <p class="quote">"Super einfach zu buchen, immer aktuelle Verfügbarkeit."</p>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="avatar" style="background:#D4870A;">L</div>
+              <div><div class="author-name">Lisa M.</div><div class="author-city">Bern</div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="stars">
+              <svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg>
+            </div>
+            <p class="quote">"Sogar Last-Minute Angebote mit Rabatt gefunden. Mega!"</p>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="avatar" style="background:#6BA3C8;">E</div>
+              <div><div class="author-name">Elena P.</div><div class="author-city">Winterthur</div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="stars">
+              <svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg>
+            </div>
+            <p class="quote">"Die beste Salon-Plattform der Schweiz!"</p>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="avatar" style="background:#4A1E3C;">J</div>
+              <div><div class="author-name">Julia T.</div><div class="author-city">Basel</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>T1 — Auto-scroll marquee (pauses on hover)</h3>
+      <p>Infinite CSS marquee. Lucide Star icons filled coral. Avatar initials with brand colors. Eyebrow + title above. Pauses on hover so users can read. Zero JS — pure CSS animation.</p>
+    </div>
+  </div>
+
+  <!-- Option T2: Static 3-col grid (no animation, just clean) -->
+  <div class="card" data-choice="t2" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:20px;">
+
+      <div class="section-eyebrow">Bewertungen</div>
+      <div class="section-title" style="font-size:18px;margin-bottom:16px;">Was unsere Nutzerinnen sagen</div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+        <div style="background:#fff;border:1px solid rgba(26,18,9,0.08);border-radius:14px;padding:14px;">
+          <div class="stars" style="margin-bottom:8px;">
+            <svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg>
+          </div>
+          <p style="font-size:12px;color:#1A1209;line-height:1.5;font-style:italic;margin-bottom:10px;">"Alle Salons vergleichen — endlich!"</p>
+          <div style="font-size:11px;font-weight:600;color:#1A1209;">Mira S. · Basel</div>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(26,18,9,0.08);border-radius:14px;padding:14px;">
+          <div class="stars" style="margin-bottom:8px;">
+            <svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg>
+          </div>
+          <p style="font-size:12px;color:#1A1209;line-height:1.5;font-style:italic;margin-bottom:10px;">"Super einfach, immer Verfügbarkeit."</p>
+          <div style="font-size:11px;font-weight:600;color:#1A1209;">Lisa M. · Bern</div>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(26,18,9,0.08);border-radius:14px;padding:14px;">
+          <div class="stars" style="margin-bottom:8px;">
+            <svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg><svg class="star-svg"><use href="#star"/></svg>
+          </div>
+          <p style="font-size:12px;color:#1A1209;line-height:1.5;font-style:italic;margin-bottom:10px;">"Last-Minute Rabatte — mega!"</p>
+          <div style="font-size:11px;font-weight:600;color:#1A1209;">Elena P. · Winterthur</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>T2 — Static 3-col grid</h3>
+      <p>Clean 3-column grid, no animation. Simpler. Works better on desktop. On mobile collapses to a single scrollable row. Less flashy but more readable.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:20px;">Both fix: Lucide Star icons (no emoji), avatar initials, eyebrow above title, i18n-ready. T1 has motion, T2 is static.</p>

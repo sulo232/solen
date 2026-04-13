@@ -17,45 +17,43 @@ Instead of roadmaps, use this loop:
 
 1. Pick the **single most broken thing** visible in the current screenshot
 2. Fix only that one thing (one component, one CSS property if possible)
-3. Verify the fix makes sense by re-reading the changed file
-4. If confident → move to next item. If uncertain → ask user to screenshot
-5. Ask for a screenshot every **3–4 changes max**, or whenever a section feels done
+3. Verify the fix by running Playwright: `npx playwright test --update-snapshots --project=desktop`
+4. Read the baseline PNG yourself (`e2e/visual/baselines/...`) to confirm the fix visually
+5. Every **3–4 changes**, compare Figma screenshot to Playwright screenshot and show the user both
 6. Update this file after each session
 
-**Ask user for screenshot when:**
-- A section feels complete and you want to confirm before moving on
-- You made a structural change (not just a color/size tweak)
-- You're uncertain whether a fix helped or hurt
-
-**Don't ask for screenshot when:**
-- Fixing a known wrong value (e.g., wrong font size number)
-- Removing a class that's clearly wrong (e.g., `hidden md:block`)
-- Adding a missing CSS property you can verify by reading the vision HTML
+**Use Playwright for verification (NOT user screenshots):**
+- Run `npx playwright test --update-snapshots` after fixes to capture new state
+- Read the PNG baselines with the Read tool — you can see images
+- Compare to Figma screenshots (`get_screenshot`) for design accuracy
+- Only ask the user for their opinion on design direction, not for screenshots
 
 ---
 
 ## Section Status
 
-Last updated: 2026-04-04 (session 2)
+Last updated: 2026-04-13 (conflict resolution)
 
-| Section | Target (vision) | Current status | Known gaps |
+> **Authority:** `_rules/DESIGN_SPEC.md` is the source of truth. "Vision" targets below have been reconciled with DESIGN_SPEC locked decisions.
+
+| Section | Target (DESIGN_SPEC) | Current status | Known gaps |
 |---------|----------------|----------------|------------|
-| **Hero background** | White + 3 radial gradients (coral 7%, gold 5%, blue 4%) | ✅ Fixed — hardcoded in HomepageHero.tsx | — |
-| **Hero headline** | 3 lines: "DEIN NÄCHSTER" / coral "TERMIN" / "WARTET", 108px max | ✅ Fixed — clamp(64px,9vw,108px), 3-line structure | — |
-| **Hero search bar** | 3-segment pill (Was/Wo/Wann), always visible | ✅ Fixed — removed `hidden md:block` | May still look different from vision's clean pill |
+| **Hero background** | `#FAFAF8` (clean, no gradients — DESIGN_SPEC §4) | ⚠️ CONFLICT — code has radial gradients, spec says no gradients | Need to remove gradient, set solid `#FAFAF8` |
+| **Hero headline** | **KILLED** — search bar IS the hero, no Bebas headline (DESIGN_SPEC locked decision) | ⚠️ CONFLICT — code has 108px Bebas "DEIN NÄCHSTER TERMIN WARTET" | Remove Bebas headline, center search bar as visual anchor |
+| **Hero search bar** | 3-segment pill (Was/Wo/Wann), centered, prominent | ✅ Fixed — removed `hidden md:block` | May still look different from DESIGN_SPEC's clean pill |
 | **Hero chips** | Small pills below search, hover coral | ✅ Implemented | — |
-| **Hero trust signal** | Stars · reviews · free, subtle | ✅ Implemented | — |
+| **Hero trust signal** | Stars · reviews · free, subtle line below search | ✅ Implemented | — |
 | **Last Minute strip** | Coral gradient bg, badge + scrollable cards | ✅ Implemented | Only shows when real data exists |
-| **Carousel sections** | Horizontal scroll, Airbnb-style 4:5 cards, 200px wide | ⚠️ Unknown | Need screenshot to compare card design |
-| **Trust stats** | Between carousel 1 and 2, 3 white cards with coral icon wrap | ✅ Fixed position | — |
-| **Discover section** | Inspo cards, 3:4 ratio, dark scrim overlay | ⚠️ Unknown | Need screenshot |
-| **Browse by City** | Dark #100602 bg, Bebas Neue 76px city names, hover interactions | ✅ Implemented | — |
-| **Testimonials** | #FDFAF6 bg, 3-col grid, SVG stars, avatar initials | ✅ Implemented | — |
-| **Partner CTA** | Dark #1A0806 gradient, Bebas Neue 56px title, frosted stat cards | ✅ Fixed title font | — |
-| **Header** | 56px, frosted glass, "SOLEN" logo, "Salon eintragen" pill | ✅ Fixed — frosted glass rgba(255,255,255,.82) + backdrop-blur | CategoryStickyRow is dead import only, category icons are main nav |
-| **Discover section header** | Coral eyebrow + bold title + view-all link | ✅ Fixed — eyebrow added matching vision pattern | — |
-| **Footer** | Dark #2C2825 background | ✅ Fixed — was bg-s-dm-bg (#151009), now #2C2825 | — |
-| **Overall spacing** | Generous padding, airy | ✅ Looks correct | Hero: pt-14 pb-12 = 56px/48px matches vision |
+| **Carousel sections** | Horizontal scroll, 4:3 cards (DESIGN_SPEC §3.1), fluid `minmax(260px,1fr)` | ⚠️ Unknown | Need screenshot to compare card design |
+| **Trust stats banner** | **KILLED** per DESIGN_SPEC §4 line 296 — "hide until 500+ salons" | ⚠️ CONFLICT — marked "fixed" in previous session but spec says killed | Remove or hide behind feature flag |
+| **"So funktioniert's"** | **KILLED** per DESIGN_SPEC §4 line 296 | ✅ Dead import, not rendered | Clean up dead import |
+| **Discover section** | **KILLED** per DESIGN_SPEC §4 line 296 — "cards ARE the discovery" | ⚠️ Unknown — may still be imported | Clean up dead import if present |
+| **"Mehr Kategorien" button** | **KILLED** per DESIGN_SPEC §4 line 296 | ⚠️ Unknown | Verify removed from JSX |
+| **Browse by City** | Dark warm bg, Bebas Neue 48px city names (DESIGN_SPEC §2.2) | ✅ Implemented | — |
+| **Testimonials** | Only if 3+ real reviews exist (DESIGN_SPEC §4) | ✅ Implemented | — |
+| **Header** | 64px, `#FAFAF8`, glass on scroll (DESIGN_SPEC §3.4) | ✅ Fixed — frosted glass + backdrop-blur | — |
+| **Footer** | Dark #2C2825 background | ✅ Fixed | — |
+| **Overall spacing** | Generous padding, airy | ✅ Looks correct | — |
 
 ---
 

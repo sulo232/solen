@@ -955,7 +955,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
                     {t("stripeUnavailable")}
                   </p>
                 ) : (
-                  <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#E8624A" } } }}>
+                  <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#C05038" } } }}>
                     <StripePaymentForm
                       onSuccess={handlePaymentSuccess}
                       onError={(msg) => setError(msg)}

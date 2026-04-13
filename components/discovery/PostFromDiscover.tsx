@@ -153,7 +153,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
         onClick={handleOpen}
         className="fixed bottom-24 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center text-white active:scale-[0.96] transition-[transform,filter] duration-150 shadow-coral-glow"
         style={{
-          background: "#E8624A",
+          background: "#C05038",
           boxShadow: "0 4px 12px rgba(232,98,74,.40), 0 12px 32px rgba(232,98,74,.22)"
         }}
         aria-label={t.newPost}

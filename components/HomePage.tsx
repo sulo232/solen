@@ -4,8 +4,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { usePostHog } from "posthog-js/react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-import { RefreshCw, ChevronRight } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import Footer from "@/components/layout/Footer";
 import GuidedSearch from "@/components/ui/GuidedSearch";
 import RecentlyViewed from "@/components/RecentlyViewed";
@@ -14,19 +13,17 @@ import TutorialTour from "@/components/TutorialTour";
 import FeaturedSalonCarousel from "@/components/ui/FeaturedSalonCarousel";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 import { useRecentVisits } from "@/hooks/useRecentVisits";
-import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
-import TrustStatsBanner from "@/components/TrustStatsBanner";
+// KILLED per DESIGN_SPEC §4: DiscoverCarousel, TrustStatsBanner, HowItWorks removed
 import BrowseByCitySection from "@/components/BrowseByCitySection";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import HomepageHero from "@/components/ui/HomepageHero";
 import LastMinuteStrip from "@/components/ui/LastMinuteStrip";
 import FloatingNavPill from "@/components/layout/FloatingNavPill";
-import HowItWorks from "@/components/ui/HowItWorks";
 
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HomePage component — V5 Component Map rebuild
-// Background: #F5F0EB · No dividers · 32px section gaps · 88px bottom pad
+// Background: #FAFAF8 · No dividers · 32-48px section gaps · 88px bottom pad
 // ─────────────────────────────────────────────────────────────────────────────
 
 type HomePageProps = {
@@ -112,117 +109,55 @@ export default function HomePage({ initialData }: HomePageProps) {
   const hasMoreCategories = orderedSectionKeys.length > MAX_CATEGORY_SECTIONS;
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden bg-white">
+    <div className="min-h-screen relative overflow-x-hidden" style={{ background: "#FAFAF8" }}>
       {/* GuidedSearch sheet — sheet-only, trigger rendered inline in header */}
       <GuidedSearch categoryCounts={categoryCounts} hideTrigger />
 
-      <main className="max-w-[1200px] mx-auto" style={{ paddingBottom: 88 }}>
+      <main className="max-w-[1280px] mx-auto" style={{ paddingBottom: 88 }}>
 
-        {/* ── 1. Hero ── */}
+        {/* ── 1. Hero (search IS the hero — DESIGN_SPEC §4) ── */}
         <HomepageHero
           categoryCounts={categoryCounts}
           reviewCount={2400}
         />
 
-        {/* ── 1.5. Last Minute Strip ── */}
+        {/* ── 2. Last Minute Strip (conditional) ── */}
         {sections.last_minute && lastMinuteSlots.length > 0 && (
           <div style={{ marginTop: 32 }}>
             <LastMinuteStrip slots={lastMinuteSlots} />
           </div>
         )}
 
-        {/* ── 2. Category Sections (max 3) ── */}
-        <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 32 }}>
+        {/* ── 3. Category Sections — DESIGN_SPEC §4 ── */}
+        <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 40 }}>
           {visibleSections.map(({ key, label }, index) => {
             const salonsForCategory = categorySalons[key] || [];
 
             return (
-              <div key={key} style={{ marginTop: index === 0 ? 0 : 32 }}>
+              <div key={key} style={{ marginTop: index === 0 ? 0 : 40 }}>
                 <FeaturedSalonCarousel salons={salonsForCategory} locale={locale} title={label} viewAllHref={`/${locale}/${key}`} />
-
-                {/* Platform Stats after first carousel */}
-                {index === 0 && (
-                  <div style={{ marginTop: 32 }}>
-                    <TrustStatsBanner />
-                  </div>
-                )}
               </div>
             );
           })}
-
-          {/* "Mehr Kategorien" button */}
-          {hasMoreCategories && (
-            <div className="flex justify-center" style={{ marginTop: 32 }}>
-              <Link
-                href={`/${locale}/suchen?city=basel`}
-                className="inline-flex items-center gap-2 font-body text-sm font-medium active:scale-[0.97] transition-[transform,background,border-color] duration-150"
-                style={{
-                  padding: "0 24px",
-                  height: 48,
-                  borderRadius: 99,
-                  border: "1.5px solid #D9D0C7",
-                  color: "#2C2420",
-                  background: "transparent",
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.background = "#FAF0EC";
-                  (e.currentTarget as HTMLElement).style.borderColor = "#E8624A";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.background = "transparent";
-                  (e.currentTarget as HTMLElement).style.borderColor = "#D9D0C7";
-                }}
-              >
-                {t("categories.more") || "Mehr Kategorien entdecken"}
-                <ChevronRight size={16} />
-              </Link>
-            </div>
-          )}
-        </section>
-
-        {/* ── 2.5. So funktioniert's — PRE-LAUNCH ONLY ── */}
-        <div style={{ marginTop: 32 }}>
-          <HowItWorks />
-        </div>
-
-        {/* ── 3. Entdecken / Inspiration ── */}
-        <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 48 }}>
-          <div className="mb-5 flex items-end justify-between gap-4">
-            <h2
-              className="font-heading font-bold text-s-ink"
-              style={{ fontSize: 24, lineHeight: 1.2 }}
-            >
-              {t("discover.title")}
-            </h2>
-            <Link
-              href={`/${locale}/discover`}
-              className="font-body text-sm font-medium shrink-0 text-s-ink hover:underline transition-colors duration-150"
-            >
-              {t("discover.catalogCta")} →
-            </Link>
-          </div>
-
-          <DiscoverCarousel locale={locale} />
         </section>
 
         {/* ── 4. Wieder buchen? (logged-in users with past booking) ── */}
         {sections.rebook && lastBookedSalon && (
           <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 48 }}>
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-              className="flex items-center gap-4 p-4 border border-s-ink/[0.08] rounded-[16px] bg-white">
+            <div className="flex items-center gap-4 p-4 border border-s-ink/[0.08] rounded-card bg-white shadow-elevation-1">
               <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-s-bg-sunken">
                 <RefreshCw size={18} className="text-s-ink" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-heading font-medium text-s-ink text-[15px]">{t("rebook.title")}</p>
-                <p className="text-sm text-s-ink/60 font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
+                <p className="text-sm text-s-ink-secondary font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
               </div>
               <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}
-                className="shrink-0 px-5 py-2.5 rounded-[10px] bg-s-coral text-white text-sm font-heading font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+                className="shrink-0 px-5 py-2.5 rounded-btn bg-s-coral-button text-white text-sm font-body font-semibold hover:bg-s-coral-button-hover active:scale-[0.97] transition-[transform,background] duration-150"
                 aria-label={t("rebook.cta")}>
                 {t("rebook.cta")}
               </Link>
-            </motion.div>
+            </div>
           </section>
         )}
 
@@ -231,15 +166,15 @@ export default function HomePage({ initialData }: HomePageProps) {
           <RecentlyViewed />
         </section>
 
-        {/* ── 6. City Selector (dark) ── */}
+        {/* ── 6. City Selector (dark) — DESIGN_SPEC §4 ── */}
         <div style={{ marginTop: 48 }}>
           <BrowseByCitySection />
         </div>
 
-        {/* Breathing gap between dark sections */}
+        {/* Breathing gap */}
         <div style={{ height: 48 }} aria-hidden="true" />
 
-        {/* ── 7. Testimonials ── */}
+        {/* ── 7. Testimonials (only if real reviews exist) ── */}
         <TestimonialCarousel />
 
       </main>

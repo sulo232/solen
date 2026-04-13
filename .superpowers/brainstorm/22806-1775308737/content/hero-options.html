@@ -1,0 +1,139 @@
+<h2>Section 1: Hero + Background</h2>
+<p class="subtitle">Right now the homepage has no hero — it opens cold on carousels. Here are 3 directions to fix that.</p>
+
+<style>
+  .hero-mock {
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 24px;
+    margin-bottom: 12px;
+    font-family: sans-serif;
+  }
+  .hero-mock .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: .7;
+  }
+  .hero-mock .headline {
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -.01em;
+    margin-bottom: 16px;
+  }
+  .hero-mock .search-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 600;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    cursor: pointer;
+    width: fit-content;
+  }
+  .hero-mock .search-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    margin-bottom: 12px;
+  }
+</style>
+
+<div class="cards">
+
+  <!-- Option A: Cinematic warm gradient (CLAUDE.md spec) -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;overflow:hidden;border-radius:12px 12px 0 0;">
+      <div class="hero-mock" style="background: linear-gradient(160deg, #FAF6EF 0%, #F5E8DF 40%, #E8C8BB 70%, #2C1A30 100%); border-radius:0;">
+        <div style="color: #1A1209;">
+          <div class="eyebrow" style="color: #E8624A;">Beauty & Wellness · Basel</div>
+          <div class="headline" style="color: #1A1209; font-family: Georgia, serif;">Finde deinen<br/>Lieblingssalon.</div>
+          <div class="search-pill" style="background: rgba(255,255,255,0.82); border: 1px solid rgba(26,18,9,0.1); color: #1A1209; box-shadow: 0 4px 24px rgba(26,18,9,0.08);">
+            <span style="color:#999;font-size:12px;">🔍</span>
+            <span style="color:#888;">Wonach suchst du?</span>
+            <span style="margin-left:auto; background:#E8624A; color:white; border-radius:9999px; padding:4px 12px; font-size:12px;">Suchen</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Cinematic gradient</h3>
+      <p>Cream → coral blush → plum shadow, exactly per CLAUDE.md V5 spec. Warm, editorial, luxury feel. Search pill always visible. Background uses CSS gradients — no images needed.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Full-bleed photo with overlay -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;overflow:hidden;border-radius:12px 12px 0 0;">
+      <div class="hero-mock" style="background: linear-gradient(160deg, #3d1f1f 0%, #7a3a25 50%, #1a0f0f 100%); border-radius:0;">
+        <!-- simulated photo texture -->
+        <div style="position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22100%25%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/><feColorMatrix type=%22saturate%22 values=%220%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%220.06%22/></svg>') center/cover; opacity:0.4;border-radius:0;"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(20,8,8,.85) 0%, rgba(20,8,8,.2) 60%, transparent 100%);border-radius:0;"></div>
+        <div style="position:relative;color:white;">
+          <div class="badge" style="background:rgba(232,98,74,.2);color:#E8624A;border:1px solid rgba(232,98,74,.3);">✦ Basel · Schweiz</div>
+          <div class="headline" style="color:white;font-family:Georgia,serif;">Beauty auf<br/>Abruf.</div>
+          <div class="search-pill" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:white;">
+            <span style="font-size:12px;">🔍</span>
+            <span style="opacity:.7;font-size:13px;">Salon, Service oder Termin …</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Dark editorial</h3>
+      <p>Rich dark plum/brown tones with a simulated photo overlay effect. High-contrast white text. Bold, magazine-cover feel. Requires licensed photo later but works with gradient now.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Minimal hero (Fresha-style) -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0;overflow:hidden;border-radius:12px 12px 0 0;">
+      <div class="hero-mock" style="background: #F5F0EB; border-radius:0; justify-content:center; align-items:flex-start; padding: 32px 24px 24px;">
+        <div style="color: #1A1209; width:100%;">
+          <div class="eyebrow" style="color: #E8624A; margin-bottom:6px;">Solen.ch</div>
+          <div class="headline" style="color: #1A1209; font-family:Georgia,serif; font-size:28px; margin-bottom:20px;">Salon buchen in Basel</div>
+          <!-- Category pills row -->
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+            <span style="padding:6px 14px;border-radius:9999px;background:#E8624A;color:white;font-size:12px;font-weight:700;">Coiffeur</span>
+            <span style="padding:6px 14px;border-radius:9999px;background:rgba(26,18,9,0.06);color:#1A1209;font-size:12px;font-weight:600;">Nails</span>
+            <span style="padding:6px 14px;border-radius:9999px;background:rgba(26,18,9,0.06);color:#1A1209;font-size:12px;font-weight:600;">Barbershop</span>
+            <span style="padding:6px 14px;border-radius:9999px;background:rgba(26,18,9,0.06);color:#1A1209;font-size:12px;font-weight:600;">Spa</span>
+          </div>
+          <div class="search-pill" style="background:white;border:1px solid rgba(26,18,9,0.12);color:#888;box-shadow:0 2px 12px rgba(26,18,9,0.06); width:100%; max-width:380px;">
+            <span style="font-size:12px;opacity:.5;">🔍</span>
+            <span style="font-size:13px;">Was suchst du?</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Minimal / Fresha-style</h3>
+      <p>Warm beige background (#F5F0EB), compact headline, category pill row, and search bar. Clean and fast. No visual drama — purely functional. Feels more like a utility than a brand.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:24px;">💡 My recommendation: <strong>A</strong> — it's exactly the V5 spec and zero extra work (pure CSS, no assets). Click your pick and let me know in the terminal.</p>

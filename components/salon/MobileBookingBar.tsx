@@ -41,8 +41,8 @@ export default function MobileBookingBar({
             </span>
           )}
           {avgRating != null && avgRating > 0 && (
-            <span className="flex items-center gap-1 text-[12px] text-[#6A6A6A]">
-              <Star className="w-[10px] h-[10px] fill-[#E8624A] text-[#E8624A]" />
+            <span className="flex items-center gap-1 text-[12px] text-[#767676]">
+              <Star className="w-[10px] h-[10px] fill-s-coral text-s-coral" />
               <span className="font-medium">{avgRating.toFixed(1)}</span>
               {reviewCount != null && (
                 <span>({reviewCount})</span>
@@ -54,7 +54,7 @@ export default function MobileBookingBar({
         {/* Right: Book button */}
         <button
           onClick={onBook}
-          className="h-[44px] px-6 rounded-[10px] bg-[#E8624A] text-white font-heading font-bold text-[14px] hover:brightness-95 active:scale-[0.97] transition-[transform,filter] duration-150"
+          className="h-[44px] px-6 rounded-btn bg-s-coral-button text-white font-body font-semibold text-[15px] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
           style={{ boxShadow: "0 2px 8px rgba(232,98,74,0.28)" }}
         >
           Buchen

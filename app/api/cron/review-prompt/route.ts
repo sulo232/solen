@@ -142,7 +142,7 @@ export async function GET(req: NextRequest) {
                 <p style="color: #666;">${lang.greeting}</p>
                 <p style="color: #666;">${lang.googleBody1}</p>
                 <a href="${googleReviewUrl}"
-                  style="display: inline-block; background: #E8624A; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
+                  style="display: inline-block; background: #C05038; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
                   ${lang.googleBtn}
                 </a>
                 <p style="color: #999; font-size: 12px; margin-top: 24px;">${lang.signature}</p>
@@ -170,7 +170,7 @@ export async function GET(req: NextRequest) {
                 <p style="color: #666;">${lang.greeting}</p>
                 <p style="color: #666;">${lang.solenBody1}</p>
                 <a href="https://www.solen.ch/${userLocale}/salon/${salon?.slug}#bewertungen"
-                  style="display: inline-block; background: #E8624A; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
+                  style="display: inline-block; background: #C05038; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
                   ${lang.solenBtn}
                 </a>
                 <p style="color: #999; font-size: 12px; margin-top: 24px;">${lang.signature}</p>

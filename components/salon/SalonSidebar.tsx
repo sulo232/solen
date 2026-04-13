@@ -78,9 +78,9 @@ export default function SalonSidebar({
                 )}
                 {averageRating > 0 && (
                   <span className="flex items-center gap-1 text-[14px] text-s-ink">
-                    <Star className="w-[13px] h-[13px] fill-[#E8624A] text-[#E8624A]" />
+                    <Star className="w-[13px] h-[13px] fill-s-coral text-s-coral" />
                     <span className="font-semibold">{averageRating.toFixed(1)}</span>
-                    <span className="text-[#6A6A6A]">({reviewCount})</span>
+                    <span className="text-[#767676]">({reviewCount})</span>
                   </span>
                 )}
               </div>
@@ -95,7 +95,7 @@ export default function SalonSidebar({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={onOpenCalendar}
-                className="w-full h-12 rounded-[12px] bg-[#E8624A] text-white font-heading font-bold text-[16px] hover:brightness-95 transition-[transform,filter] duration-150"
+                className="w-full h-12 rounded-btn bg-s-coral-button text-white font-body font-semibold text-[15px] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
                 style={{ boxShadow: "0 2px 12px rgba(232,98,74,0.32)" }}
               >
                 {t("bookNow")}
@@ -105,17 +105,17 @@ export default function SalonSidebar({
               {nextSlot && (
                 <button
                   onClick={() => onQuickBook?.(nextSlot)}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-[12px] border border-s-ink/10 text-sm font-body text-s-ink hover:border-[#E8624A]/40 hover:text-[#E8624A] transition-colors duration-150"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-[12px] border border-s-ink/10 text-sm font-body text-s-ink hover:border-s-coral/40 hover:text-s-coral-text transition-colors duration-150"
                 >
-                  <Zap size={14} className="text-[#E8624A]" />
+                  <Zap size={14} className="text-s-coral" />
                   {t("nextAvailable")}: {formatDate(nextSlot.starts_at)}
                 </button>
               )}
 
               {/* Quick info */}
               <div className="space-y-2 pt-3 border-t border-s-ink/[0.08]">
-                <div className="flex items-center gap-2 text-[13px] text-[#484848]">
-                  <Zap className="w-4 h-4 text-[#6A6A6A]" />
+                <div className="flex items-center gap-2 text-[13px] text-[#767676]">
+                  <Zap className="w-4 h-4 text-[#767676]" />
                   <span>{t("instantBooking")}</span>
                 </div>
               </div>

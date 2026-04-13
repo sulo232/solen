@@ -406,8 +406,8 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               onClick={() => routerNav.push(`/${locale}/${category}`)}
               className="snap-start shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150"
               style={{
-                border: !city ? "1.5px solid #1A1209" : "1.5px solid rgba(26,18,9,0.12)",
-                background: !city ? "#1A1209" : "var(--raised)",
+                border: !city ? "1.5px solid #222222" : "1.5px solid rgba(26,18,9,0.12)",
+                background: !city ? "#222222" : "var(--raised)",
                 color: !city ? "#FFFFFF" : "rgba(26,18,9,0.55)",
               }}
             >
@@ -425,8 +425,8 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                   onClick={() => routerNav.push(`/${locale}/${slug}/${category}`)}
                   className="snap-start shrink-0 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150"
                   style={{
-                    border: isActive ? "1.5px solid #E8624A" : "1.5px solid rgba(26,18,9,0.12)",
-                    background: isActive ? "#E8624A" : "var(--raised)",
+                    border: isActive ? "1.5px solid #C05038" : "1.5px solid rgba(26,18,9,0.12)",
+                    background: isActive ? "#C05038" : "var(--raised)",
                     color: isActive ? "#FFFFFF" : "rgba(26,18,9,0.55)",
                     boxShadow: isActive ? "0 2px 6px rgba(232,98,74,.25)" : undefined,
                   }}
@@ -480,7 +480,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
             }}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150"
             style={{ border: "1px solid rgba(26,18,9,.10)",
-                     background: isMapView ? "#E8624A" : "var(--glass-bg-card)",
+                     background: isMapView ? "#C05038" : "var(--glass-bg-card)",
                      color: isMapView ? "#fff" : "rgba(26,18,9,.65)",
                      boxShadow: isMapView
                        ? "0 2px 4px rgba(232,98,74,.25)"

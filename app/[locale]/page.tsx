@@ -63,7 +63,13 @@ export default async function Page() {
   // Lean cols without services join — used for category carousel queries (much faster)
   const SALON_COLS_LEAN = "id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, postal_code, booking_confirmation_mode";
 
-  // Parallel DB queries
+  // Parallel DB queries — wrapped with 8s timeout to prevent SSR hang
+  const withTimeout = <T,>(promise: PromiseLike<T>, fallback: T): Promise<T> =>
+    Promise.race([Promise.resolve(promise), new Promise<T>((resolve) => setTimeout(() => resolve(fallback), 8000))]);
+
+  const emptyResult = { data: null, error: null } as any;
+  const emptyCount = { count: 0, error: null } as any;
+
   const [
     { data: popularData, error: pError },
     { data: lastMinuteData, error: lmError },
@@ -79,19 +85,19 @@ export default async function Page() {
     { data: makeupData },
     { data: waxingData },
   ] = await Promise.all([
-    supabase.from("salons").select(SALON_COLS).eq("is_active", true).eq("is_test", false).order("average_rating", { ascending: false }).limit(24),
-    supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, last_minute_discount_percent, quartier").eq("is_active", true).eq("is_test", false).gt("last_minute_discount_percent", 0).order("last_minute_discount_percent", { ascending: false }).limit(4),
-    supabase.from("salons").select(SALON_COLS).eq("is_active", true).eq("is_test", false).order("created_at", { ascending: false }).limit(6),
-    supabase.from("site_settings").select("value").eq("key", "homepage_sections").single().then((res) => ({ data: res.error ? null : res.data })),
-    supabase.from("salons").select("*", { count: "exact", head: true }).eq("is_active", true).eq("is_test", false).not("latitude", "is", null).gt("latitude", 0),
-    supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, solen_score, is_active").eq("is_active", true).eq("is_test", false).order("solen_score", { ascending: false, nullsFirst: false }).limit(8),
-    supabase.from("cities").select("id, slug"),
+    withTimeout(supabase.from("salons").select(SALON_COLS).eq("is_active", true).eq("is_test", false).order("average_rating", { ascending: false }).limit(24), emptyResult),
+    withTimeout(supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, last_minute_discount_percent, quartier").eq("is_active", true).eq("is_test", false).gt("last_minute_discount_percent", 0).order("last_minute_discount_percent", { ascending: false }).limit(4), emptyResult),
+    withTimeout(supabase.from("salons").select(SALON_COLS).eq("is_active", true).eq("is_test", false).order("created_at", { ascending: false }).limit(6), emptyResult),
+    withTimeout(supabase.from("site_settings").select("value").eq("key", "homepage_sections").single().then((res) => ({ data: res.error ? null : res.data })), { data: null }),
+    withTimeout(supabase.from("salons").select("*", { count: "exact", head: true }).eq("is_active", true).eq("is_test", false).not("latitude", "is", null).gt("latitude", 0), emptyCount),
+    withTimeout(supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, solen_score, is_active").eq("is_active", true).eq("is_test", false).order("solen_score", { ascending: false, nullsFirst: false }).limit(8), emptyResult),
+    withTimeout(supabase.from("cities").select("id, slug"), emptyResult),
     // Category-specific queries — lean cols, no services join
-    supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["coiffeur"]).order("average_rating", { ascending: false }).limit(8),
-    supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["nails"]).order("average_rating", { ascending: false }).limit(8),
-    supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["barbershop"]).order("average_rating", { ascending: false }).limit(8),
-    supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["makeup"]).order("average_rating", { ascending: false }).limit(8),
-    supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["waxing"]).order("average_rating", { ascending: false }).limit(8),
+    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["coiffeur"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
+    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["nails"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
+    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["barbershop"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
+    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["makeup"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
+    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["waxing"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
   ]);
 
   if (pError) console.error("SSR popular salons query failed:", pError.message);

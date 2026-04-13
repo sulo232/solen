@@ -12,7 +12,7 @@ import { useTranslations } from "next-intl";
  * - HORIZONTAL CAROUSEL (not vertical stack)
  * - Only renders when ≥3 real reviews exist in DB
  * - Warm white glass cards: rgba(255,255,255,0.65) + blur(14px)
- * - ALL avatars: coral #E8624A with white Syne letter
+ * - ALL avatars: coral #E8735A with white Syne letter
  * - Stars: 5× SVG 14px, fill coral
  * - Quote: DM Sans 15px/400 italic
  * - Section heading: DM Sans 28px/700 (Pattern A)
@@ -35,7 +35,7 @@ function StarRow({ count = 5 }: { count?: number }) {
   return (
     <div className="flex gap-0.5" role="img" aria-label={`${count} von 5 Sternen`}>
       {[1, 2, 3, 4, 5].map((i) => (
-        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={i <= count ? "#E8624A" : "#E8E2DC"} aria-hidden="true">
+        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={i <= count ? "#E8735A" : "#EBEBEB"} aria-hidden="true">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
       ))}
@@ -85,14 +85,14 @@ export default function TestimonialCarousel() {
   return (
     <section
       className="py-8"
-      style={{ background: "#FFFFFF" }}
+      style={{ background: "#FAFAF8" }}
       aria-labelledby="testimonials-heading"
     >
       <div className="px-5 md:px-10 lg:px-20">
         <h2
           id="testimonials-heading"
           className="font-heading font-bold text-s-ink"
-          style={{ fontSize: 24, lineHeight: 1.2 }}
+          style={{ fontSize: 22, lineHeight: 1.25 }}
         >
           {t("testimonials.title") || "Was unsere Nutzer sagen"}
         </h2>
@@ -100,7 +100,7 @@ export default function TestimonialCarousel() {
 
       {/* Horizontal carousel */}
       <div
-        className="flex gap-3 overflow-x-auto pb-2 mt-4"
+        className="flex gap-4 overflow-x-auto pb-2 mt-4"
         style={{
           paddingLeft: 20,
           paddingRight: 20,
@@ -121,7 +121,7 @@ export default function TestimonialCarousel() {
               borderRadius: 16,
               background: "#FFFFFF",
               border: "1px solid rgba(26,18,9,0.08)",
-              boxShadow: "0 1px 3px rgba(26,18,9,.04)",
+              boxShadow: "var(--shadow-rest)",
               scrollSnapAlign: "start",
             }}
           >
@@ -130,7 +130,7 @@ export default function TestimonialCarousel() {
             <p
               className="font-body text-[15px] leading-relaxed flex-1"
               style={{
-                color: "#2C2420",
+                color: "#222222",
                 fontStyle: "italic",
                 display: "-webkit-box",
                 WebkitLineClamp: 4,
@@ -142,22 +142,22 @@ export default function TestimonialCarousel() {
             </p>
 
             {/* Divider */}
-            <div style={{ width: "100%", height: 1, background: "#E8E2DC", margin: "12px 0" }} aria-hidden="true" />
+            <div style={{ width: "100%", height: 1, background: "#EBEBEB", margin: "12px 0" }} aria-hidden="true" />
 
             {/* Author — ALL avatars coral */}
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-heading font-semibold text-[14px] text-white"
-                style={{ background: "#E8624A" }}
+                style={{ background: "#E8735A" }}
                 aria-hidden="true"
               >
                 {review.reviewer_name.charAt(0).toUpperCase()}
               </div>
               <div>
-                <p className="font-body font-semibold text-[14px] leading-tight" style={{ color: "#2C2420" }}>
+                <p className="font-body font-semibold text-[14px] leading-tight" style={{ color: "#222222" }}>
                   {review.reviewer_name}
                 </p>
-                <p className="font-body text-[12px] leading-tight" style={{ color: "#8C8279" }}>
+                <p className="font-body text-[12px] leading-tight" style={{ color: "#767676" }}>
                   {review.city || "Basel"} · {getTimeAgo(review.created_at)}
                 </p>
               </div>

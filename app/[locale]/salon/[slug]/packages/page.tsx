@@ -165,7 +165,7 @@ function PurchaseModal({
             <span>{intentError}</span>
           </div>
         ) : clientSecret && stripePromise ? (
-          <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#E8624A" } } }}>
+          <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#C05038" } } }}>
             {payError && (
               <div className="flex items-start gap-2 p-3 mb-4 bg-red-50 dark:bg-red-950/30 rounded-input text-red-600 dark:text-red-400 text-sm">
                 <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />

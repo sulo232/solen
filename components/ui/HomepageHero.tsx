@@ -1,20 +1,17 @@
 "use client";
 
-import Link from "next/link";
-import { useTranslations, useLocale } from "next-intl";
-import { motion } from "framer-motion";
-import { Scissors, Sparkles, FlowerIcon, Brush, Droplets } from "lucide-react";
+import { useTranslations } from "next-intl";
+import AirbnbSearchBar from "@/components/ui/AirbnbSearchBar";
 
 /**
- * HomepageHero — Component Map §02 + §04
+ * HomepageHero — DESIGN_SPEC section 4
  *
- * Design intent: "This hero should feel confident and direct because
- * it's the first thing users see — left-aligned, no-nonsense, Bebas Neue."
+ * Design intent: "The search bar IS the hero. Clean, confident, immediate utility.
+ * No Bebas headline. No category pills. Just search + trust line."
  *
- * - Background: #F5F0EB (warm beige, NOT white, NOT gradient)
- * - Headline: Bebas Neue, left-aligned, max 1 coral accent word
- * - Subtitle: DM Sans 16px/400, max 320px, left-aligned
- * - Category pills: horizontal scroll, frosted white glass, SVG + label
+ * - Background: #FAFAF8 (off-white)
+ * - Search pill: centered, prominent
+ * - Trust line: below search, DM Sans 13px, muted
  */
 
 interface HomepageHeroProps {
@@ -22,148 +19,43 @@ interface HomepageHeroProps {
   reviewCount?: number;
 }
 
-const CATEGORY_PILLS = [
-  { key: "coiffeur",   icon: <Scissors size={18} strokeWidth={1.8} aria-hidden="true" /> },
-  { key: "nails",      icon: <Sparkles size={18} strokeWidth={1.8} aria-hidden="true" /> },
-  { key: "barbershop", icon: <Scissors size={18} strokeWidth={1.8} aria-hidden="true" /> },
-  { key: "spa",        icon: <FlowerIcon size={18} strokeWidth={1.8} aria-hidden="true" /> },
-  { key: "makeup",     icon: <Brush size={18} strokeWidth={1.8} aria-hidden="true" /> },
-  { key: "waxing",     icon: <Droplets size={18} strokeWidth={1.8} aria-hidden="true" /> },
-] as const;
-
 export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: HomepageHeroProps) {
   const t = useTranslations("home.hero") as any;
-  const tNav = useTranslations("navigation") as any;
-  const locale = useLocale();
 
   return (
     <section
-      className="px-5 md:px-10 lg:px-20 pt-20 pb-0 text-left"
+      className="flex flex-col items-center justify-center px-5 md:px-10 lg:px-20"
+      style={{ paddingTop: 120, paddingBottom: 48, background: "#FAFAF8" }}
       aria-label={t("sub")}
-      style={{
-        background: "radial-gradient(ellipse 120% 100% at 50% -20%, rgba(232,98,74,0.06) 0%, transparent 60%), #FFFFFF",
-      }}
     >
-      {/* ── Headline — Bebas Neue, left-aligned, 1 coral word max ── */}
-      <h1
-        className="font-display text-s-ink"
-        style={{
-          fontSize: "clamp(56px, 7.5vw, 88px)",
-          lineHeight: 0.9,
-          letterSpacing: "0.01em",
-        }}
-      >
-        <motion.span
-          className="block"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-        >
-          {t("headlineWord1")}
-        </motion.span>
-        <motion.span
-          className="block"
-          style={{ color: "#E8624A" }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
-        >
-          {t("headlineAccent")}
-        </motion.span>
-        <motion.span
-          className="block"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
-        >
-          {t("headlineWord2")}
-        </motion.span>
-      </h1>
-
-      {/* ── Subtitle — DM Sans 16px, max 320px ── */}
-      <motion.p
-        className="font-body text-base leading-relaxed"
-        style={{
-          color: "rgba(26,18,9,0.55)",
-          marginTop: 24,
-          maxWidth: 360,
-        }}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.4, ease: [0.23, 1, 0.32, 1] }}
+      {/* ── Subtitle — warm, inviting, centered ── */}
+      <p
+        className="font-body text-[15px] text-center mb-6"
+        style={{ color: "#767676", maxWidth: 360 }}
       >
         {t("sub")}
-      </motion.p>
+      </p>
 
-      {/* ── Category Pills — horizontal scroll, frosted white glass ── */}
-      <div
-        className="flex gap-2 overflow-x-auto pb-2 -mx-5 px-5 md:-mx-10 md:px-10 lg:-mx-20 lg:px-20"
-        style={{
-          marginTop: 24,
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
-          maskImage: "linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 32px), transparent 100%)",
-          WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 32px), transparent 100%)",
-        }}
-        role="navigation"
-        aria-label={tNav("categories")}
-      >
-        {CATEGORY_PILLS.map(({ key, icon }, pillIdx) => (
-          <motion.div
-            key={key}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.5 + pillIdx * 0.05, ease: [0.23, 1, 0.32, 1] }}
-            className="flex-shrink-0"
-          >
-          <Link
-            href={`/${locale}/${key}`}
-            className="inline-flex items-center gap-1.5 font-body text-sm font-medium active:scale-[0.97] transition-[transform,background,border-color] duration-150"
-            style={{
-              height: 40,
-              padding: "0 16px",
-              borderRadius: 99,
-              border: "1.5px solid #D9D0C7",
-              background: "rgba(255,255,255,0.55)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-              color: "#2C2420",
-              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.5)",
-            }}
-            onMouseEnter={e => {
-              const el = e.currentTarget as HTMLElement;
-              el.style.background = "#FAF0EC";
-              el.style.borderColor = "#E8624A";
-            }}
-            onMouseLeave={e => {
-              const el = e.currentTarget as HTMLElement;
-              el.style.background = "rgba(255,255,255,0.55)";
-              el.style.borderColor = "#D9D0C7";
-            }}
-            aria-label={tNav(key)}
-          >
-            <span style={{ color: "#8C8279" }}>{icon}</span>
-            {tNav(key)}
-          </Link>
-          </motion.div>
-        ))}
+      {/* ── Search Bar — THIS IS THE HERO ── */}
+      <div className="w-full max-w-[560px]">
+        <AirbnbSearchBar />
       </div>
 
-      {/* ── Micro trust signal ── */}
+      {/* ── Trust line — DESIGN_SPEC section 4 ── */}
       <div
-        className="flex items-center gap-2.5 font-body font-medium"
-        style={{ fontSize: 13, color: "rgba(26,18,9,0.45)", marginTop: 20, paddingBottom: 32 }}
+        className="flex items-center gap-2.5 font-body font-medium mt-5"
+        style={{ fontSize: 13, color: "#767676" }}
         aria-label="Platform trust statistics"
       >
         <span className="flex items-center gap-1">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="#E8624A" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="#E8735A" aria-hidden="true">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
           4.8 {t("trustRating")}
         </span>
-        <span className="w-1 h-1 rounded-full" style={{ background: "#D9D0C7" }} aria-hidden="true" />
+        <span className="w-1 h-1 rounded-full" style={{ background: "#EBEBEB" }} aria-hidden="true" />
         <span>{reviewCount.toLocaleString("de-CH")}+ {t("trustReviews")}</span>
-        <span className="w-1 h-1 rounded-full" style={{ background: "#D9D0C7" }} aria-hidden="true" />
+        <span className="w-1 h-1 rounded-full" style={{ background: "#EBEBEB" }} aria-hidden="true" />
         <span>{t("trustFree")}</span>
       </div>
     </section>

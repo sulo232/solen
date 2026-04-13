@@ -17,7 +17,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
 
   return (
     <div>
-      <p className="text-[11px] font-heading font-bold uppercase tracking-[0.12em] text-[#E8624A] mb-2">
+      <p className="text-[11px] font-heading font-bold uppercase tracking-[0.12em] text-s-coral-text mb-2">
         Team
       </p>
       <h2 className="font-heading font-bold text-[20px] text-s-ink mb-4">
@@ -55,7 +55,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
                 {/* Rating badge overlay */}
                 {m.average_rating != null && m.average_rating > 0 && (
                   <div className="absolute -bottom-1 -right-1 flex items-center gap-0.5 bg-white px-1.5 py-0.5 rounded-full shadow-sm border border-s-ink/[0.08]">
-                    <Star size={8} className="fill-[#E8624A] text-[#E8624A]" />
+                    <Star size={8} className="fill-s-coral text-s-coral-text" />
                     <span className="text-[9px] font-semibold text-s-ink">
                       {m.average_rating.toFixed(1)}
                     </span>
@@ -72,7 +72,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
               {m.languages && m.languages.length > 0 && (
                 <div className="flex flex-wrap justify-center gap-1 mt-1">
                   {m.languages.map((lang: string) => (
-                    <span key={lang} className="text-xs font-heading font-bold uppercase tracking-[.06em] px-2 py-1 rounded-sm bg-s-bg-surface text-[#6A6A6A]">
+                    <span key={lang} className="text-xs font-heading font-bold uppercase tracking-[.06em] px-2 py-1 rounded-sm bg-s-bg-surface text-[#767676]">
                       {lang}
                     </span>
                   ))}
@@ -81,7 +81,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
 
               {/* Specialties */}
               {m.specialties?.length > 0 && (
-                <p className="text-[11px] text-[#6A6A6A] text-center truncate mt-1">
+                <p className="text-[11px] text-[#767676] text-center truncate mt-1">
                   {m.specialties.slice(0, 2).join(", ")}
                 </p>
               )}
@@ -91,16 +91,16 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
             <div className="flex items-center justify-between mt-auto pt-3 border-t border-s-ink/[0.08]">
               {m.average_rating != null && m.average_rating > 0 ? (
                 <div className="flex items-center gap-1">
-                  <Star size={12} className="fill-[#E8624A] text-[#E8624A]" />
+                  <Star size={12} className="fill-s-coral text-s-coral-text" />
                   <span className="text-[12px] font-medium text-s-ink">{m.average_rating.toFixed(1)}</span>
                 </div>
               ) : (
-                <span className="text-[12px] text-[#6A6A6A]">Neu</span>
+                <span className="text-[12px] text-[#767676]">Neu</span>
               )}
 
               {/* Next slot mock - in prod this would fetch from an API */}
               <div className="text-right">
-                <p className="text-[9px] font-heading font-semibold uppercase tracking-wider text-[#6A6A6A]">Nächster Termin</p>
+                <p className="text-[9px] font-heading font-semibold uppercase tracking-wider text-[#767676]">Nächster Termin</p>
                 <p className="text-[12px] font-medium text-[#2E7D32]">Morgen, 10:00</p>
               </div>
             </div>
@@ -108,7 +108,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
             {/* Book button */}
             <button
               onClick={(e) => { e.preventDefault(); onBook?.(m.id); }}
-              className="w-full mt-3 py-2 rounded-full active:scale-[0.97] bg-[#E8624A]/10 text-[#E8624A] hover:bg-[#E8624A] hover:text-white text-[12px] font-semibold uppercase tracking-[.06em] transition-[background-color,color,transform] duration-150"
+              className="w-full mt-3 py-2 rounded-full active:scale-[0.97] bg-s-coral/10 text-s-coral-text hover:bg-s-coral-button hover:text-white text-[12px] font-semibold uppercase tracking-[.06em] transition-[background-color,color,transform] duration-150"
             >
               Wählen
             </button>
