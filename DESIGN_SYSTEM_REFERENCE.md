@@ -48,13 +48,15 @@ Visual render of the above: visit **`/design-system`** in any locale.
 | `s-sand` | `#C9A96E` | makeup / partnership | `-subtle`, `-text` |
 | `s-yellow` | `#F2C144` | top rated / achievement | `-subtle`, `-text` |
 
-### Surfaces
+### Surfaces (white-first, no cream)
 
 | Token | Hex | Use |
 |---|---|---|
-| `s-bg-base` | `#FAF6EF` | page background (cream) |
-| `s-bg-raised` | `#FFFFFF` | cards |
-| `s-bg-sunken` | `#EDE5D8` | inputs, wells |
+| `s-bg-base` | `#FFFFFF` | page background (white) |
+| `s-bg-raised` | `#FFFFFF` | cards (same as base — separation via 1px border, not surface tint) |
+| `s-bg-sunken` | `#F4F4F2` | inputs, wells, code blocks (barely off-white) |
+
+> Cream `#FAF6EF` and sunken `#EDE5D8` are deprecated. Codebase still references them — they're being phased out. New components: white only.
 
 ### Dark mode
 
@@ -116,17 +118,21 @@ Brand colors brighten slightly in dark mode. Plum inverts to lavender `#C090B4`.
 
 ---
 
-## 4. Shadow tokens
+## 4. Shadow tokens (use sparingly — only on truly floating UI)
 
 | Tailwind | Use |
 |---|---|
 | `shadow-elevation-1` | popovers, dropdowns, subtle elevated UI |
-| `shadow-elevation-2` | active dropdowns, focused cards |
-| `shadow-elevation-3` | card hover (if needed), floating elements |
-| `shadow-v5-card` | legacy card rest shadow (deprecated — use `.card` class) |
-| `shadow-v5-card-hover` | legacy card hover shadow |
-| `shadow-v5-float` | modals, search dropdown, floating overlays |
-| `shadow-coral-glow` | coral CTA glow |
+| `shadow-elevation-2` | modals, floating panels |
+| `shadow-elevation-3` | rarely — peak elevation overlays |
+
+**Deprecated (do not use in new code):**
+
+| Token | Why deprecated |
+|---|---|
+| `shadow-v5-card` / `shadow-v5-card-hover` | cards at rest are now flat with 1px border — no shadow |
+| `shadow-coral-glow` | colored-glow shadows on buttons are slop — fill + active scale is the affordance |
+| `shadow-md` / `shadow-lg` / `shadow-xl` (Tailwind defaults) | too generic, too dark, wrong tint |
 
 ---
 
@@ -183,14 +189,16 @@ See `DESIGN_SYSTEM.md §9` for principle.
 
 ---
 
-## 9. Typography size → typeface map
+## 9. Typography size → typeface map (TWO fonts — Syne removed)
 
 | Range | Typeface | Tailwind | Example |
 |---|---|---|---|
 | ≥40px | Bebas Neue | `font-display` | hero headlines, impact headers |
-| 16–36px | Syne | `font-heading` | card titles, section headings |
-| 12–15px | DM Sans | `font-body` | body, metadata, forms |
-| data/numbers | DM Sans `tabular-nums` | `data-text` | prices, ratings, counts |
+| 16–36px (headings) | DM Sans 600/700 | `font-heading` (alias for DM Sans) | card titles, section headings |
+| 12–15px (body) | DM Sans 400/500 | `font-body` | body, metadata, forms, buttons |
+| data / numbers | DM Sans `tabular-nums` | `data-text` | prices, ratings, counts |
+
+> Syne is deprecated. `font-heading` now resolves to DM Sans. Codebase still references `"Syne"` directly in some places — phase out on touch.
 
 ---
 
