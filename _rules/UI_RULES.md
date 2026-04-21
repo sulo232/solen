@@ -84,7 +84,7 @@
 
 ## 6. Layout Specifics
 - **Login:** Centered, single glassmorphic card.
-- **Salon Cards:** Must display: Cover photo + Name + Rating + Glass Category Pills + Location. The cover photo MUST use a strict `3:2` aspect ratio (`aspect-[3/2] relative overflow-hidden`) with `object-cover` to prevent stretching.
+- **Salon Cards:** Must display: Cover photo + Name + Rating + Glass Category Pills + Location. The cover photo MUST use a strict **1:1 square** aspect ratio (`aspect-square relative overflow-hidden`) with `object-cover` — enforced on all viewports, no responsive breakpoint variants. Skeletons must match (`aspect-square`) for CLS parity.
 - **Category Icons/Tiles:** Must use a strict `1:1` aspect ratio (`aspect-square relative overflow-hidden`) with `object-cover` so images fit like a profile picture without stretching.
 - **Dashboard Stats:** Must include count-up number animations and mini sparkline charts.
 - **Last-Minute:** Must include an urgency timer counting down to when the appointment *starts*. 

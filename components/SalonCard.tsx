@@ -168,8 +168,8 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       )}
 
       <Link href={href} className="block w-full h-full">
-        {/* Cover photo — V5 design: 4:5 portrait for mobile-first aesthetics */}
-        <div className="relative w-full aspect-[4/5] bg-s-bg-sunken overflow-hidden rounded-[12px] group/carousel img-hover-zoom gpu">
+        {/* Cover photo — 1:1 square (enforced, all viewports) */}
+        <div className="relative w-full aspect-square bg-s-bg-sunken overflow-hidden rounded-[12px] group/carousel img-hover-zoom gpu">
           {allPhotos.length > 0 ? (
             <div
               ref={scrollContainerRef}
