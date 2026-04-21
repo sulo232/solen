@@ -1,5 +1,7 @@
 # 🎨 Solen Design System — Single Source of Truth
 
+> **Companion file**: [`_rules/BRAND_BRIEF.md`](./BRAND_BRIEF.md) — the **soul** of Solen (mood, references, color stories, component archetypes, ready-to-paste AI prompts). Read it first when generating fresh UI or when something "doesn't feel like Solen". This file is the rules; the brief is the feel.
+>
 > **This file supersedes** `_rules/UI_RULES.md`, `_rules/GENERATION_TOOLS.md`, `_rules/search-bar-rules.md`, and CLAUDE.md §3.3 / §13 / §17.
 > Every AI agent (Claude Code, Cursor, Gemini, etc.) and every human developer MUST read this before writing UI code.
 > If you find a rule in an old file that contradicts this one — **this file wins**.

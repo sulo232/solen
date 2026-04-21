@@ -4,9 +4,14 @@
 
 ---
 
-## 🎨 DESIGN SYSTEM — SINGLE SOURCE OF TRUTH
+## 🎨 DESIGN SYSTEM — TWO FILES, TWO JOBS
 
-**Every UI decision flows from `_rules/DESIGN_SYSTEM.md`.** Read it before writing any component, every time. It consolidates what used to live in `UI_RULES.md`, `GENERATION_TOOLS.md`, `search-bar-rules.md`, and CLAUDE.md §3.3 / §13 / §17.
+- **`_rules/BRAND_BRIEF.md`** — the **soul** of Solen. Mood, references, color stories, adjective clusters, component archetypes, ready-to-paste prompts for Claude Design / AI design tools. Read this when you're generating fresh UI from scratch or when something "doesn't feel like Solen".
+- **`_rules/DESIGN_SYSTEM.md`** — the **rules**. Tokens, banned patterns, motion specs, accessibility, pre-commit checklist. Read this when writing or reviewing code.
+
+**Brief = what Solen IS. System = what tokens to use.** Both must stay true. If they drift, the brief wins — update the system to match.
+
+Every UI decision flows through these two files. They consolidate what used to live in `UI_RULES.md`, `GENERATION_TOOLS.md`, `search-bar-rules.md`, and CLAUDE.md §3.3 / §13 / §17.
 
 Key non-obvious rules (the ones most often violated):
 - **Salon/store cards are always `aspect-square` (1:1)** on all breakpoints. No `aspect-[4/5]`, no `aspect-[20/19] md:aspect-square`.
