@@ -71,6 +71,11 @@ public/
 - For generated illustrations → Recraft.ai with `digital_illustration` style
 - Output folder: `public/illustrations/`
 
+**Prompt contract (guideline — not a locked template):**
+- **Constants (never vary):** terracotta coral `#E8624A` line weight, cream `#FAF6EF` background, 2px stroke weight, rounded line caps, centered composition, transparent where needed, no text.
+- **Variables (per illustration):** subject, composition framing, secondary accent color drawn from the matching reserved palette (`s-plum` for barbershop, `s-sage` for spa, `s-sand` for makeup/partnership, `s-yellow` for achievement).
+- **Rule:** the constants must appear verbatim in every prompt so the output stays cohesive across categories. The first person to skip a constant accidentally sets a new aesthetic — don't be that person.
+
 ### Photos & Salon Images
 **Tool: Unsplash API** (already integrated) or licensed stock
 - Never use AI-generated photorealistic people in production
