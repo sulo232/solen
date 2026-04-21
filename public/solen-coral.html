@@ -84,9 +84,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
 .btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--b3);box-shadow:var(--sh-xs)}
 .btn-outline:hover{background:var(--ink);color:var(--bg);box-shadow:var(--sh-md);transform:translateY(-1px)}
 
-/* ═══ DECO BLOBS ═══ */
+/* ═══ DECO BLOBS — allowed only in hero + dark sections (lm-sec, qrt-sec) + Instagram ═══ */
 .blobs{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
 .blob{position:absolute;border-radius:50%}
+/* Kill blobs in banned sections per SOLEN_DESIGN §7 */
+.stats-band .blobs,.cats-sec .blobs,.cards-sec .blobs,.slots-sec .blobs,.rev-sec .blobs{display:none}
 
 /* ═══ SECTIONS ═══ */
 .sec{position:relative;overflow:hidden}
@@ -229,8 +231,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
 .tag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:var(--r99);font-family:'Fraunces',Georgia,serif;box-shadow:var(--sh-xs)}
 
 /* Last Minute card */
-.lm-card{background:rgba(74,30,60,.92);backdrop-filter:var(--g2-blur);-webkit-backdrop-filter:var(--g2-blur);border:1px solid rgba(255,255,255,.10);border-radius:var(--r20);padding:22px 20px;position:relative;overflow:hidden;cursor:pointer;box-shadow:var(--sh-lg);transition:box-shadow 250ms var(--e),transform 250ms var(--e)}
-.lm-card:hover{box-shadow:var(--sh-xl);transform:translateY(-4px)}
+.lm-card{background:rgba(74,30,60,.92);backdrop-filter:var(--g2-blur);-webkit-backdrop-filter:var(--g2-blur);border:1px solid rgba(255,255,255,.10);border-radius:var(--r20);padding:22px 20px;position:relative;overflow:hidden;cursor:pointer;transition:border-color 250ms var(--e),transform 250ms var(--e)}
+.lm-card:hover{border-color:rgba(232,98,74,.5);transform:translateY(-3px)}
 .lm-c1{position:absolute;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.05);right:-40px;top:-40px;pointer-events:none}
 .lm-c2{position:absolute;width:80px;height:80px;border-radius:50%;background:rgba(232,98,74,.18);left:-20px;bottom:-20px;pointer-events:none}
 .lm-eye{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);font-family:'Fraunces',Georgia,serif;font-weight:600;margin-bottom:8px;position:relative;z-index:1}
@@ -280,10 +282,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
 .rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .rev-card{
   background:var(--raised);border:1px solid var(--b);border-radius:var(--r20);
-  padding:22px 20px;box-shadow:var(--sh-sm);
-  transition:box-shadow 250ms var(--e),transform 250ms var(--e)
+  padding:22px 20px;
+  transition:border-color 250ms var(--e),transform 250ms var(--e)
 }
-.rev-card:hover{box-shadow:var(--sh-lg);transform:translateY(-3px)}
+.rev-card:hover{border-color:rgba(232,98,74,.35);transform:translateY(-2px)}
 .rev-stars{font-size:14px;color:var(--amber);margin-bottom:10px;letter-spacing:.06em}
 .rev-text{font-family:'DM Sans',sans-serif;font-style:italic;font-size:14px;color:var(--ink2);line-height:1.8;margin-bottom:14px}
 .rev-author{display:flex;align-items:center;gap:10px}
@@ -294,8 +296,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
 /* ═══ INSTAGRAM / SOCIAL TILES ═══ */
 .insta-sec{background:var(--bg);padding:80px 48px}
 .insta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.insta-tile{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;cursor:pointer;box-shadow:var(--sh-md);transition:box-shadow 300ms var(--e),transform 300ms var(--e)}
-.insta-tile:hover{box-shadow:var(--sh-xl);transform:scale(1.04)}
+.insta-tile{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;cursor:pointer;transition:box-shadow 300ms var(--e),transform 300ms var(--e),filter 300ms var(--e)}
+.insta-tile:hover{box-shadow:var(--sh-sm);transform:scale(1.04);filter:saturate(1.08)}
 .it-text{font-family:'Bebas Neue',sans-serif;font-size:clamp(24px,3.2vw,40px);line-height:.87;color:#fff;letter-spacing:.01em;margin-bottom:8px}
 .it-sub{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.65);font-family:'Fraunces',Georgia,serif;font-weight:600}
 
@@ -342,8 +344,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
 
 /* ═══ FOOTER ═══ */
 .footer{background:var(--ink);padding:72px 48px 40px;position:relative;overflow:hidden}
-.footer-deco1{position:absolute;width:500px;height:500px;border-radius:50%;right:-120px;top:-120px;background:rgba(232,98,74,.08);pointer-events:none}
-.footer-deco2{position:absolute;width:320px;height:320px;border-radius:50%;left:-80px;bottom:-80px;background:rgba(107,163,200,.06);pointer-events:none}
+.footer-deco1{position:absolute;width:360px;height:360px;border-radius:50%;right:-120px;top:-120px;background:rgba(232,98,74,.04);pointer-events:none}
+.footer-deco2{display:none}
 .footer-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px;margin-bottom:56px}
 .footer-brand{}
 .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,6vw,80px);line-height:.87;letter-spacing:.01em;margin-bottom:14px}
@@ -412,9 +414,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
 <!-- HERO -->
 <section class="hero sec" id="hero">
   <div class="blobs">
-    <div class="blob" style="width:560px;height:560px;right:-140px;top:-140px;background:rgba(232,98,74,.13)"></div>
-    <div class="blob" style="width:400px;height:400px;left:-100px;bottom:-80px;background:rgba(107,163,200,.15)"></div>
-    <div class="blob" style="width:220px;height:220px;left:40%;top:10%;background:rgba(212,135,10,.09)"></div>
+    <div class="blob" style="width:560px;height:560px;right:-140px;top:-140px;background:rgba(232,98,74,.08)"></div>
+    <div class="blob" style="width:400px;height:400px;left:-100px;bottom:-80px;background:rgba(107,163,200,.09)"></div>
   </div>
   <div class="hero-inner w" style="padding-top:0;padding-bottom:0">
     <div>
