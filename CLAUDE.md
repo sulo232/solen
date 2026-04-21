@@ -4,9 +4,26 @@
 
 ---
 
+## 🎨 DESIGN SYSTEM — SINGLE SOURCE OF TRUTH
+
+**Every UI decision flows from `_rules/DESIGN_SYSTEM.md`.** Read it before writing any component, every time. It consolidates what used to live in `UI_RULES.md`, `GENERATION_TOOLS.md`, `search-bar-rules.md`, and CLAUDE.md §3.3 / §13 / §17.
+
+Key non-obvious rules (the ones most often violated):
+- **Salon/store cards are always `aspect-square` (1:1)** on all breakpoints. No `aspect-[4/5]`, no `aspect-[20/19] md:aspect-square`.
+- **2 modes, not 4 zones**: `marketing` (animated, glass allowed) vs `app` (static, solid). Shared components take a `mode` prop.
+- **Shadows**: `shadow-elevation-1/2/3` + `shadow-coral-glow`. No `shadow-md/lg/xl`. Old `shadow-warm-*` / `shadow-v5-*` kept for backward compat but do NOT use in new code.
+- **Motion**: 150ms hover · 200ms modal · 250ms card lift · 300ms sheet. Easing = `EASE_SOLEN` `[0.23,1,0.32,1]`. Stagger 60ms. Never >300ms on UI. Never `transition-all`. Never `ease-in` on entering elements.
+- **Hover lift**: `hover:-translate-y-[4px]` (not -5px, not -1px).
+- **Active scale**: `active:scale-[0.97]` on every pressable element (buttons, cards, pills, links).
+- **Glass**: `.glass-frost` (floating UI) + `.glass-pill` (interactive pills) only. Never on content cards. Never in app mode.
+- **Icons**: lucide-react for UI chrome; custom beauty-icons for hair/nail/skin domain; Recraft for category tiles (coral `#E8624A`, not `#E8735A`).
+- **Image hover zoom is retired.** Card lift alone provides feedback.
+
+---
+
 ## 🎨 VISUAL ASSETS — READ BEFORE TOUCHING ANY ICON, ANIMATION, OR ILLUSTRATION
 
-**Full guide: `_rules/GENERATION_TOOLS.md`** — read this before generating or sourcing any asset.
+**Full guide: `_rules/DESIGN_SYSTEM.md` §10** (was `_rules/GENERATION_TOOLS.md`, now a stub redirect) — read this before generating or sourcing any asset.
 
 ### Asset Folders (source of truth)
 | Asset type | Folder | Tool |
@@ -200,9 +217,11 @@ solen/
 └── vercel.json         # Vercel deployment config
 ```
 
-### 3.3 Design System (V5 — Fresha × Airbnb Overhaul)
+### 3.3 Design System
 
-> **Active Roadmap**: `V5_DESIGN_ROADMAP.md` in project root. Read it before making any UI changes.
+> ⚠️ **This section is now a summary.** The full, authoritative design system lives in `_rules/DESIGN_SYSTEM.md`. If you see a drift between the two, **`DESIGN_SYSTEM.md` wins** — update this section to match, never the reverse.
+>
+> **Active Roadmap**: `V5_DESIGN_ROADMAP.md` in project root.
 
 #### Colors (unchanged — keep ALL brand colors)
 - **Primary**: Terracotta Coral `#E8624A` (class: `s-coral`)
@@ -322,7 +341,7 @@ solen/
 #### Component Standards
 - **Icons**: `lucide-react` for ALL icons. No emoji icons.
 - **Loading**: Use `<Skeleton variant="card" />` for full-page loading. Skeletons MUST have pixel-perfect dimensional parity (exact aspect ratios and border radii) with their populated counterparts to prevent CLS. (See `docs/superpowers/specs/2026-03-30-airbnb-skeleton-loaders.md`)
-- **Image Ratios**: Strictly enforce `aspect-[20/19]` on mobile and `md:aspect-square` on desktop for all image cards. No arbitrary heights. (See `docs/superpowers/specs/2026-03-30-airbnb-image-aspect-ratio.md`)
+- **Image Ratios**: Salon/store cards, category tiles, review photos, staff portfolio, and chat gallery tiles MUST use `aspect-square` (1:1) on ALL breakpoints. See `_rules/DESIGN_SYSTEM.md` §11.1 for the full table. The old `aspect-[20/19] md:aspect-square` rule is retired. Discovery masonry carousels may keep `aspect-[4/5]` as they read as a photo stream, not a venue grid.
 - **Pagination**: Image carousels on cards must use scroll-snap with native pagination dots indicating the current index. (See `docs/superpowers/specs/2026-03-30-airbnb-pagination-dots.md`)
 - **CTAs**: Use `<InteractiveHoverButton>` for all primary CTA buttons.
 - **Mobile nav**: **V5 UPDATED** — Mobile uses a **frosted-glass bottom tab bar** with max 4 tabs (Discover, Search, Saved, Account). The hamburger menu is **deprecated on mobile**. Desktop keeps the top pill nav. The bottom tab bar is a NEW component: `components/layout/BottomTabBar.tsx`.
@@ -836,9 +855,9 @@ After ALL phases complete:
 
 ## 13. 🎨 DESIGN TOKEN CONSISTENCY RULES (MANDATORY)
 
-> ➡️ **Moved to `_rules/UI_RULES.md`**
-> All legacy Tailwind color tokens (like `text-dark`, `bg-black`, standard shapes) are strictly banned. Everything related to visual frontend modifications must strictly obey the design tokens architecture (e.g., `s-ink`, `rounded-card`, `rounded-blob-a`).
-> **Before writing ANY UI code, you MUST check `_rules/UI_RULES.md`.** It acts as the single source of truth for all frontend consistency logic.
+> ➡️ **Moved to `_rules/DESIGN_SYSTEM.md`** §16 (banned tokens), §3 (colors), §5 (radii), §6 (shadows).
+> All legacy Tailwind tokens (`text-dark`, `bg-black`, `rounded-lg`, `shadow-md`, blob shapes) are strictly banned. Everything visual must use the design tokens (`s-ink`, `rounded-card`, `shadow-elevation-*`).
+> **Before writing ANY UI code, check `_rules/DESIGN_SYSTEM.md`.** It is the single source of truth.
 
 ---
 
@@ -1309,6 +1328,9 @@ For destructive or sensitive profile actions (like account deletion), use a dedi
 
 ## 17. 🚨 DESIGN SYSTEM ENFORCEMENT & QUALITY STANDARDS (MANDATORY)
 
+> ➡️ **Rules 48–56 below have been consolidated into `_rules/DESIGN_SYSTEM.md`** (§16 banned tokens, §12 accessibility, §13 mobile, §8 motion, §9.7 inline errors, §19 pre-commit checklist, §20 migration notes, §22 file source map).
+> **`DESIGN_SYSTEM.md` is the single source of truth.** The rules below remain as indexed references (agents cite "Rule 50" etc.) but their full enforcement content lives in the new file.
+
 > **CONTEXT**: On 2026-04-03, a comprehensive UI audit identified 20+ design quality issues stemming from inconsistent token usage, accessibility failures, and desktop-first design thinking. Root causes: design systems defined AFTER components were built, no migration path for old code, and lack of enforcement tooling. These rules prevent recurring design debt.
 
 ### Rule 48: DESIGN TOKEN USAGE IS NON-NEGOTIABLE
@@ -1493,8 +1515,8 @@ npm run build && npx lighthoused https://localhost:3000 --view
 #### Responsive Images & Aspect Ratios
 ```tsx
 // ✅ CORRECT — responsive aspect ratio
-<img className="aspect-[4/5]" />        // Always 4:5, scales to screen width
-<img className="aspect-square md:aspect-[20/19]" /> // Different on mobile/desktop
+<img className="aspect-square" />       // Salon/store cards, category tiles — 1:1 all breakpoints
+<img className="aspect-[4/5]" />        // Discovery masonry carousels only
 
 // ❌ BANNED — fixed heights (don't scale)
 <img className="h-40 w-full" />         // Mobile: too tall. Desktop: too short.
