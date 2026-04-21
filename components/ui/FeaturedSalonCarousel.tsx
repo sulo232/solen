@@ -153,9 +153,9 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   })();
 
   const cardContent = (
-    <div className="rounded-card overflow-hidden bg-white shadow-elevation-1">
-      {/* ── Image (4:3 — DESIGN_SPEC 3.1) ── */}
-      <div className="relative w-full aspect-[4/3] overflow-hidden bg-s-bg-sunken rounded-t-card">
+    <div className="">
+      {/* ── Image (1:1 SQUARE — locked 2026-04-20, no box wrapper — text floats on page bg) ── */}
+      <div className="relative w-full aspect-square overflow-hidden bg-s-bg-sunken rounded-[18px]">
         {photo ? (
           <Image
             src={photo}
@@ -218,10 +218,10 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
         )}
       </div>
 
-      {/* ── Content — DESIGN_SPEC 3.1 ── */}
-      <div className="flex flex-col gap-1" style={{ padding: "14px 16px 16px" }}>
-        {/* Name — DM Sans 16px/600 */}
-        <h3 className="font-body font-semibold text-[16px] leading-[1.25] truncate text-s-ink">
+      {/* ── Content — no box, floats on page bg (SOLEN_DESIGN locked 2026-04-21) ── */}
+      <div className="flex flex-col gap-1" style={{ padding: "12px 2px 0" }}>
+        {/* Name — Fraunces 15px/700 (serif heading, warm editorial) */}
+        <h3 className="font-heading font-bold text-[15px] leading-[1.25] truncate text-s-ink">
           {salon.name}
         </h3>
 
@@ -259,7 +259,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   if (isDemo) {
     return (
       <div
-        className="flex-shrink-0 snap-start select-none w-[240px] md:w-[280px] lg:w-[300px]"
+        className="flex-shrink-0 snap-start select-none w-[200px] md:w-[240px] lg:w-[260px]"
         aria-hidden="true"
       >
         {cardContent}
@@ -270,7 +270,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   return (
     <Link
       href={`/${locale}/salon/${salon.slug}`}
-      className="flex-shrink-0 snap-start group cursor-pointer w-[240px] md:w-[280px] lg:w-[300px] transition-[transform,box-shadow] duration-[250ms] ease-out-warm hover:-translate-y-[2px] hover:shadow-elevation-2"
+      className="flex-shrink-0 snap-start group cursor-pointer w-[200px] md:w-[240px] lg:w-[260px] transition-transform duration-[250ms] ease-out-warm hover:-translate-y-[3px]"
       aria-label={salon.name}
       prefetch={false}
     >

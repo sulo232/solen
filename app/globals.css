@@ -1,5 +1,5 @@
 /* Solen Design System — globals.css */
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -57,8 +57,8 @@
     --color-success: #2E7D32;
     --color-warning: #ED6C02;
 
-    /* Base / raised surface tokens */
-    --bg: #FFFFFF;
+    /* Base / raised surface tokens — cream page bg, white cards */
+    --bg: #FAF6EF;
     --base: #FFFFFF;
 
     /* Glass CSS custom properties */
@@ -134,7 +134,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: "Syne", sans-serif;
+    font-family: "Fraunces", Georgia, serif;
     color: var(--color-heading);
     letter-spacing: -0.02em;
   }
@@ -163,7 +163,7 @@
 
 @layer utilities {
   .font-heading {
-    font-family: "Syne", sans-serif;
+    font-family: "Fraunces", Georgia, serif;
   }
   .font-body {
     font-family: "DM Sans", sans-serif;
@@ -737,7 +737,7 @@ html {
 }
 
 .solen-tour-popover .driver-popover-title {
-  font-family: "Syne", sans-serif !important;
+  font-family: "Fraunces", Georgia, serif !important;
   font-size: 1.25rem !important;
   font-weight: 700 !important;
   margin-bottom: 8px !important;

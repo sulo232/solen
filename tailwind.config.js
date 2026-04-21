@@ -32,7 +32,7 @@ module.exports = {
         "s-error": { DEFAULT: "#C62828", bg: "#FFEBEE" },
       },
       fontFamily: {
-        heading: ["Syne", "sans-serif"],
+        heading: ["Fraunces", "Georgia", "serif"],
         body: ["DM Sans", "sans-serif"],
         display: ["Bebas Neue", "sans-serif"],
       },

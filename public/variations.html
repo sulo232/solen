@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — Layout & Card Variations</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#FAF6EF; --sur:#F3EDE2; --raised:#FFF;
+    --ink:#1A1209; --ink2:#4A3D2E; --ink3:#8A7A66;
+    --coral:#E8624A; --coral-s:#FAECE7;
+    --amber:#D4870A; --amber-s:#FEF4E0; --amber-t:#6B4005;
+    --blue:#6BA3C8; --blue-s:#EAF3FB; --blue-t:#1A4D72;
+    --plum:#4A1E3C; --sage:#7BA688; --sage-s:#EBF5EE; --sage-t:#2E5E3A;
+    --yellow:#F2C144; --yellow-t:#7A5C00;
+    --b:rgba(26,18,9,.08); --b2:rgba(26,18,9,.15);
+    --sh-xs:0 1px 2px rgba(26,18,9,.06);
+    --sh-sm:0 1px 3px rgba(26,18,9,.07),0 2px 8px rgba(26,18,9,.05);
+    --e:cubic-bezier(.4,0,.2,1);
+    --r20:20px; --r99:99px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;padding-bottom:80px}
+
+  .pageHead{padding:40px 24px 20px;max-width:1280px;margin:0 auto}
+  .pageEye{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);font-family:'Fraunces',Georgia,serif;font-weight:700;display:block;margin-bottom:8px}
+  .pageH{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,7vw,72px);line-height:.9;color:var(--ink);letter-spacing:.01em}
+  .pageSub{font-size:15px;font-family:'DM Sans',sans-serif;color:var(--ink2);margin-top:10px;max-width:680px;line-height:1.6}
+  .pageSub em{color:var(--coral);font-style:normal;font-weight:600}
+
+  .variant{padding:48px 24px 12px;max-width:1280px;margin:0 auto}
+  .variantHead{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--b)}
+  .variantLabel{display:inline-block;padding:4px 12px;background:var(--coral-s);color:var(--coral);font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.1em;border-radius:var(--r99)}
+  .variantLabel.green{background:var(--sage-s);color:var(--sage-t)}
+  .variantLabel.amber{background:var(--amber-s);color:var(--amber-t)}
+  .variantLabel.plum{background:#F0E8F0;color:var(--plum)}
+  .variantH{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:24px;color:var(--ink);letter-spacing:-.01em;margin:10px 0 4px}
+  .variantDesc{font-size:14px;color:var(--ink3);max-width:720px;line-height:1.5}
+  .variantDesc code{background:var(--sur);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink2)}
+
+  /* ── Section header (for carousel rows) ── */
+  .sh{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px;gap:12px}
+  .sh-l{flex:1;min-width:0}
+  .sh-eye{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);font-family:'Fraunces',Georgia,serif;font-weight:700;display:block;margin-bottom:6px}
+  .sh-h{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:22px;color:var(--ink);letter-spacing:-.01em;line-height:1.2}
+  .sh-sub{font-size:13px;color:var(--ink3);margin-top:4px}
+  .sh-link{font-size:14px;color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:500;text-decoration:none;white-space:nowrap}
+  .sh-link:hover{color:var(--coral)}
+
+  /* ── Carousel row ── */
+  .row{display:flex;gap:14px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+  .row::-webkit-scrollbar{display:none}
+  .row > *{scroll-snap-align:start;flex-shrink:0}
+
+  /* ──────────────────────────────────────────────────────────
+     VARIANT A — CURRENT (with white box) — baseline reference
+     ────────────────────────────────────────────────────────── */
+  .cardA{width:240px}
+  .cardA-wrap{background:var(--raised);border-radius:var(--r20);overflow:hidden;border:1px solid var(--b);box-shadow:var(--sh-xs);transition:box-shadow 250ms var(--e),transform 250ms var(--e),border-color 250ms var(--e);cursor:pointer}
+  .cardA-wrap:hover{box-shadow:var(--sh-sm);transform:translateY(-3px);border-color:rgba(232,98,74,.4)}
+  .cardA-img{aspect-ratio:4/3;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:48px;color:rgba(255,255,255,.92);letter-spacing:.03em}
+  .cardA-body{padding:14px 16px 16px}
+  .cardA-name{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:4px;letter-spacing:-.01em}
+  .cardA-rating{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--ink);font-weight:600;margin-bottom:4px}
+  .cardA-rating::before{content:"★";color:var(--coral)}
+  .cardA-meta{font-size:12px;color:var(--ink3);margin-bottom:2px}
+  .cardA-price{font-size:13px;color:var(--ink2);margin-top:2px}
+  .cardA-price strong{color:var(--ink);font-weight:600}
+  .cardA-heart,.cardB-heart{position:absolute;top:10px;right:10px;width:32px;height:32px;background:rgba(255,255,255,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);cursor:pointer;transition:transform 150ms var(--e)}
+  .cardA-heart:hover,.cardB-heart:hover{transform:scale(1.12)}
+  .cardA-badge,.cardB-badge{position:absolute;top:10px;left:10px;padding:4px 10px;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--coral);font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:var(--r99);font-family:'Fraunces',Georgia,serif}
+
+  /* ──────────────────────────────────────────────────────────
+     VARIANT B — NO WHITE BOX — image + text floats on bg
+     ────────────────────────────────────────────────────────── */
+  .cardB{width:200px;cursor:pointer}
+  .cardB-img{aspect-ratio:1/1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:46px;color:rgba(255,255,255,.92);letter-spacing:.03em;border-radius:18px;transition:transform 500ms var(--e);box-shadow:var(--sh-xs)}
+  .cardB:hover .cardB-img{transform:scale(1.02);box-shadow:var(--sh-sm)}
+  .cardB-info{padding:10px 2px 0}
+  .cardB-head{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:2px}
+  .cardB-name{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:15px;color:var(--ink);letter-spacing:-.01em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cardB-rating{display:flex;align-items:center;gap:2px;font-size:13px;color:var(--ink);font-weight:600;white-space:nowrap}
+  .cardB-rating::before{content:"★";color:var(--coral);font-size:13px}
+  .cardB-meta{font-size:12px;color:var(--ink3);margin-bottom:2px}
+  .cardB-price{font-size:13px;color:var(--ink2);font-weight:500}
+  .cardB-price strong{color:var(--ink);font-weight:600}
+
+  /* ──────────────────────────────────────────────────────────
+     VARIANT C — EXTRA MINIMAL — just image + name underneath
+     ────────────────────────────────────────────────────────── */
+  .cardC{width:180px;cursor:pointer}
+  .cardC-img{aspect-ratio:1/1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:42px;color:rgba(255,255,255,.92);letter-spacing:.03em;border-radius:18px;transition:transform 500ms var(--e)}
+  .cardC:hover .cardC-img{transform:scale(1.02)}
+  .cardC-info{padding:8px 2px 0}
+  .cardC-name{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:14px;color:var(--ink);letter-spacing:-.01em;margin-bottom:2px}
+  .cardC-meta{font-size:12px;color:var(--ink3);display:flex;align-items:center;gap:6px}
+  .cardC-meta .star{color:var(--coral);font-weight:600}
+
+  /* ──────────────────────────────────────────────────────────
+     VARIANT D — DISCOVERY (tall portrait 3:4 with overlay)
+     ────────────────────────────────────────────────────────── */
+  .cardD{width:200px;cursor:pointer;border-radius:18px;overflow:hidden;position:relative;aspect-ratio:3/4;box-shadow:var(--sh-xs);transition:box-shadow 250ms var(--e),transform 250ms var(--e)}
+  .cardD:hover{box-shadow:var(--sh-sm);transform:translateY(-3px)}
+  .cardD-bg{position:absolute;inset:0}
+  .cardD-overlay{position:absolute;left:0;right:0;bottom:0;padding:16px;background:linear-gradient(to top,rgba(26,18,9,.78) 0%,transparent 100%)}
+  .cardD-title{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:15px;color:#fff;margin-bottom:2px;letter-spacing:-.005em}
+  .cardD-salon{font-size:11px;color:rgba(255,255,255,.75);margin-bottom:10px}
+  .cardD-cta{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:var(--coral);color:#fff;border-radius:var(--r99);font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em}
+
+  /* ──────────────────────────────────────────────────────────
+     VARIANT E — RECENTLY VISITED (tiny with date pill)
+     ────────────────────────────────────────────────────────── */
+  .cardE{width:140px;cursor:pointer}
+  .cardE-img{aspect-ratio:1/1;position:relative;overflow:hidden;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:32px;color:rgba(255,255,255,.92)}
+  .cardE-info{padding:8px 2px 0}
+  .cardE-name{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:13px;color:var(--ink);line-height:1.2;margin-bottom:3px}
+  .cardE-date{display:inline-block;padding:2px 7px;background:var(--sur);color:var(--ink3);font-size:10px;border-radius:var(--r99);font-family:'DM Sans',sans-serif;font-weight:500}
+  .cardE-meta{font-size:11px;color:var(--ink3);margin-top:3px}
+
+  /* ── Gradient backgrounds (stand-ins for real photos) ── */
+  .bg1{background:linear-gradient(135deg,#D4870A,#E8624A)}
+  .bg2{background:linear-gradient(135deg,#4A1E3C,#6BA3C8)}
+  .bg3{background:linear-gradient(135deg,#7BA688,#6BA3C8)}
+  .bg4{background:linear-gradient(135deg,#E8624A,#F2C144)}
+  .bg5{background:linear-gradient(135deg,#C9A96E,#E8624A)}
+  .bg6{background:linear-gradient(135deg,#4A1E3C,#7BA688)}
+  .bg7{background:linear-gradient(135deg,#6BA3C8,#4A1E3C)}
+  .bg8{background:linear-gradient(135deg,#7BA688,#D4870A)}
+
+  /* ── Callouts ── */
+  .callout{background:var(--coral-s);border-left:3px solid var(--coral);padding:14px 18px;border-radius:6px;margin:16px 0;font-size:13px;color:var(--ink);line-height:1.6}
+  .callout strong{font-family:'Fraunces',Georgia,serif;font-weight:700;color:var(--coral)}
+
+  /* ── Device frame (mobile width preview) ── */
+  .phoneFrame{max-width:390px;margin:0 auto;background:var(--bg);border:8px solid var(--ink);border-radius:36px;padding:14px;position:relative;box-shadow:0 20px 60px rgba(26,18,9,.12)}
+  .phoneFrame::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:90px;height:20px;background:var(--ink);border-radius:0 0 18px 18px}
+  .phoneFrame .row{padding-left:16px;padding-right:0}
+</style>
+</head>
+<body>
+
+<div class="pageHead">
+  <span class="pageEye">Layout & Card Variations — 2026-04-21</span>
+  <h1 class="pageH">Pick your cards.<br>Pick your rows.</h1>
+  <p class="pageSub">
+    Scrollable category rows (already built in <code>FeaturedSalonCarousel</code>) + <em>no-box card</em> (new per your direction).
+    Below: every card variant side-by-side with real gradient placeholders, so you can point at which one to use where.
+  </p>
+</div>
+
+<!-- ═══════════════════════════════════════
+     VARIANT A — Current (white box)
+════════════════════════════════════════ -->
+<div class="variant">
+  <div class="variantHead">
+    <span class="variantLabel">Variant A · Current (exists in code)</span>
+    <div class="variantH">Card with white box</div>
+    <p class="variantDesc">
+      What <code>FeaturedSalonCarousel.tsx</code> renders right now: image at top, info in a white wrapper box below with its own border + shadow. <strong>This is what you said "no"&nbsp;to.</strong>
+    </p>
+  </div>
+
+  <div class="sh">
+    <div class="sh-l">
+      <span class="sh-eye">Top in Basel</span>
+      <h2 class="sh-h">Coiffeur</h2>
+      <p class="sh-sub">Top bewertet</p>
+    </div>
+    <a class="sh-link">Alle ansehen →</a>
+  </div>
+
+  <div class="row">
+    <div class="cardA"><div class="cardA-wrap"><div class="cardA-img bg1">AMARA<span class="cardA-badge">Top Pick</span><span class="cardA-heart">♡</span></div><div class="cardA-body"><div class="cardA-name">Salon Amara</div><div class="cardA-rating">4.9 <span style="color:var(--ink3);font-weight:400">(28)</span></div><div class="cardA-meta">Kleinbasel · Basel</div><div class="cardA-price">Ab <strong>CHF 45</strong></div></div></div></div>
+    <div class="cardA"><div class="cardA-wrap"><div class="cardA-img bg2">NORI<span class="cardA-heart">♡</span></div><div class="cardA-body"><div class="cardA-name">Nori Coiffeur</div><div class="cardA-rating">4.8 <span style="color:var(--ink3);font-weight:400">(56)</span></div><div class="cardA-meta">Gundeldingen · Basel</div><div class="cardA-price">Ab <strong>CHF 55</strong></div></div></div></div>
+    <div class="cardA"><div class="cardA-wrap"><div class="cardA-img bg4">LINA<span class="cardA-badge">Beliebt</span><span class="cardA-heart">♡</span></div><div class="cardA-body"><div class="cardA-name">Studio Lina</div><div class="cardA-rating">4.7 <span style="color:var(--ink3);font-weight:400">(42)</span></div><div class="cardA-meta">St. Johann · Basel</div><div class="cardA-price">Ab <strong>CHF 38</strong></div></div></div></div>
+    <div class="cardA"><div class="cardA-wrap"><div class="cardA-img bg3">MARA<span class="cardA-heart">♡</span></div><div class="cardA-body"><div class="cardA-name">Salon Mara</div><div class="cardA-rating">4.8 <span style="color:var(--ink3);font-weight:400">(35)</span></div><div class="cardA-meta">Iselin · Basel</div><div class="cardA-price">Ab <strong>CHF 60</strong></div></div></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     VARIANT B — NO WHITE BOX (recommended)
+════════════════════════════════════════ -->
+<div class="variant">
+  <div class="variantHead">
+    <span class="variantLabel green">Variant B · No white box (new)</span>
+    <div class="variantH">Rounded square image · text floats on cream</div>
+    <p class="variantDesc">
+      Image is the card. Text below sits directly on the cream bg — <strong>no border, no shadow, no wrapper</strong>. Your direction. Also switches cover photo aspect from <code>4:3</code> → <code>1:1 square</code>.
+    </p>
+  </div>
+
+  <div class="sh">
+    <div class="sh-l">
+      <span class="sh-eye">Top in Basel</span>
+      <h2 class="sh-h">Coiffeur</h2>
+      <p class="sh-sub">Top bewertet</p>
+    </div>
+    <a class="sh-link">Alle ansehen →</a>
+  </div>
+
+  <div class="row">
+    <div class="cardB"><div class="cardB-img bg1">AMARA<span class="cardB-badge">Top Pick</span><span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Salon Amara</span><span class="cardB-rating">4.9</span></div><div class="cardB-meta">Kleinbasel, Basel</div><div class="cardB-price">Ab <strong>CHF 45</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg2">NORI<span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Nori Coiffeur</span><span class="cardB-rating">4.8</span></div><div class="cardB-meta">Gundeldingen, Basel</div><div class="cardB-price">Ab <strong>CHF 55</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg4">LINA<span class="cardB-badge">Beliebt</span><span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Studio Lina</span><span class="cardB-rating">4.7</span></div><div class="cardB-meta">St. Johann, Basel</div><div class="cardB-price">Ab <strong>CHF 38</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg3">MARA<span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Salon Mara</span><span class="cardB-rating">4.8</span></div><div class="cardB-meta">Iselin, Basel</div><div class="cardB-price">Ab <strong>CHF 60</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg5">KORU<span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Koru Hair</span><span class="cardB-rating">4.9</span></div><div class="cardB-meta">Breite, Basel</div><div class="cardB-price">Ab <strong>CHF 52</strong></div></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     VARIANT C — Ultra minimal (no price)
+════════════════════════════════════════ -->
+<div class="variant">
+  <div class="variantHead">
+    <span class="variantLabel amber">Variant C · Ultra-minimal</span>
+    <div class="variantH">Image + name + rating only</div>
+    <p class="variantDesc">
+      Strips everything except name + rating pair. Smaller card (180px). Better when many rows stack (Netflix-thumb feel). Price only visible on salon detail page.
+    </p>
+  </div>
+
+  <div class="sh">
+    <div class="sh-l">
+      <span class="sh-eye">Kategorie</span>
+      <h2 class="sh-h">Barber</h2>
+    </div>
+    <a class="sh-link">Alle →</a>
+  </div>
+
+  <div class="row">
+    <div class="cardC"><div class="cardC-img bg2">NORI</div><div class="cardC-info"><div class="cardC-name">Nori Barber</div><div class="cardC-meta">Gundeldingen · <span class="star">★ 4.8</span></div></div></div>
+    <div class="cardC"><div class="cardC-img bg7">KURT</div><div class="cardC-info"><div class="cardC-name">Kurt &amp; Co.</div><div class="cardC-meta">Kleinbasel · <span class="star">★ 4.7</span></div></div></div>
+    <div class="cardC"><div class="cardC-img bg4">RAD</div><div class="cardC-info"><div class="cardC-name">Rad Barber</div><div class="cardC-meta">Grossbasel · <span class="star">★ 4.9</span></div></div></div>
+    <div class="cardC"><div class="cardC-img bg6">OLD</div><div class="cardC-info"><div class="cardC-name">Old School</div><div class="cardC-meta">Breite · <span class="star">★ 4.6</span></div></div></div>
+    <div class="cardC"><div class="cardC-img bg5">NOBLE</div><div class="cardC-info"><div class="cardC-name">Noble Cuts</div><div class="cardC-meta">Iselin · <span class="star">★ 4.8</span></div></div></div>
+    <div class="cardC"><div class="cardC-img bg1">BYRON</div><div class="cardC-info"><div class="cardC-name">Byron Barber</div><div class="cardC-meta">St. Johann · <span class="star">★ 4.7</span></div></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     VARIANT D — Discovery (3:4 portrait)
+════════════════════════════════════════ -->
+<div class="variant">
+  <div class="variantHead">
+    <span class="variantLabel plum">Variant D · Discovery preview</span>
+    <div class="variantH">Tall portrait — 3:4 with overlay + "Direkt buchen"</div>
+    <p class="variantDesc">
+      Inspired by <code>DiscoverCarousel.tsx</code>. Used for "Lass dich inspirieren" section — <strong>style name + salon + CTA pill</strong>. Entire image is dark-enough at bottom for white text to read. Photo-first, bookmarkable moments.
+    </p>
+  </div>
+
+  <div class="sh">
+    <div class="sh-l">
+      <span class="sh-eye">Entdecken</span>
+      <h2 class="sh-h">Lass dich inspirieren</h2>
+      <p class="sh-sub">Looks aus Basel — direkt buchen</p>
+    </div>
+    <a class="sh-link">Alle ansehen →</a>
+  </div>
+
+  <div class="row">
+    <div class="cardD"><div class="cardD-bg bg1"></div><div class="cardD-overlay"><div class="cardD-title">Balayage Warm Honey</div><div class="cardD-salon">Salon Amara · Kleinbasel</div><span class="cardD-cta">Direkt buchen →</span></div></div>
+    <div class="cardD"><div class="cardD-bg bg2"></div><div class="cardD-overlay"><div class="cardD-title">Clean Fade mit Bart</div><div class="cardD-salon">Nori Barber · Gundeldingen</div><span class="cardD-cta">Direkt buchen →</span></div></div>
+    <div class="cardD"><div class="cardD-bg bg4"></div><div class="cardD-overlay"><div class="cardD-title">French Gel Tip Almond</div><div class="cardD-salon">Studio Léa · St. Johann</div><span class="cardD-cta">Direkt buchen →</span></div></div>
+    <div class="cardD"><div class="cardD-bg bg3"></div><div class="cardD-overlay"><div class="cardD-title">Hot Stone &amp; Deep Tissue</div><div class="cardD-salon">Koru Spa · Bruderholz</div><span class="cardD-cta">Direkt buchen →</span></div></div>
+    <div class="cardD"><div class="cardD-bg bg5"></div><div class="cardD-overlay"><div class="cardD-title">Natural Glow Makeup</div><div class="cardD-salon">Studio Mila · Grossbasel</div><span class="cardD-cta">Direkt buchen →</span></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     VARIANT E — Recently Visited (tiny + date pill)
+════════════════════════════════════════ -->
+<div class="variant">
+  <div class="variantHead">
+    <span class="variantLabel">Variant E · Recently visited</span>
+    <div class="variantH">Tiny cards · date pill · location</div>
+    <p class="variantDesc">
+      Equivalent of <code>RecentlyViewed.tsx</code>. Small (140px), only date pill + salon name + quartier. Shows only if user is logged in + has past visits. Tap → rebook shortcut.
+    </p>
+  </div>
+
+  <div class="sh">
+    <div class="sh-l">
+      <span class="sh-eye">Zuletzt</span>
+      <h2 class="sh-h">Wieder buchen?</h2>
+    </div>
+    <a class="sh-link">Alle →</a>
+  </div>
+
+  <div class="row">
+    <div class="cardE"><div class="cardE-img bg1">AMARA</div><div class="cardE-info"><div class="cardE-name">Salon Amara</div><span class="cardE-date">Mi., 12. Mär</span><div class="cardE-meta">Kleinbasel</div></div></div>
+    <div class="cardE"><div class="cardE-img bg2">NORI</div><div class="cardE-info"><div class="cardE-name">Nori Barber</div><span class="cardE-date">Sa., 8. Feb</span><div class="cardE-meta">Gundeldingen</div></div></div>
+    <div class="cardE"><div class="cardE-img bg3">KORU</div><div class="cardE-info"><div class="cardE-name">Koru Spa</div><span class="cardE-date">Fr., 31. Jan</span><div class="cardE-meta">Bruderholz</div></div></div>
+    <div class="cardE"><div class="cardE-img bg4">LINA</div><div class="cardE-info"><div class="cardE-name">Studio Lina</div><span class="cardE-date">Do., 16. Jan</span><div class="cardE-meta">St. Johann</div></div></div>
+    <div class="cardE"><div class="cardE-img bg6">MILA</div><div class="cardE-info"><div class="cardE-name">Studio Mila</div><span class="cardE-date">Di., 7. Jan</span><div class="cardE-meta">Grossbasel</div></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     HOMEPAGE STACK — 3 category rows of Variant B
+════════════════════════════════════════ -->
+<div class="variant" style="background:var(--sur);border-radius:28px;padding:48px 24px;margin-top:40px">
+  <div class="variantHead" style="border-color:var(--b2)">
+    <span class="variantLabel green">Homepage stack preview</span>
+    <div class="variantH">Category row · Category row · Category row (no-box cards)</div>
+    <p class="variantDesc">
+      This is what the homepage looks like if we use <strong>Variant B cards inside category-by-category carousels</strong> — the pattern you said you wanted + remembered. Each row = one category. Rows bubble up based on your recent visits (already coded in <code>useRecentVisits.bubbleRank</code>).
+    </p>
+  </div>
+
+  <div class="sh">
+    <div class="sh-l"><span class="sh-eye">Top in Basel</span><h2 class="sh-h">Coiffeur</h2></div>
+    <a class="sh-link">Alle ansehen →</a>
+  </div>
+  <div class="row" style="margin-bottom:40px">
+    <div class="cardB"><div class="cardB-img bg1">AMARA<span class="cardB-badge">Top Pick</span><span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Salon Amara</span><span class="cardB-rating">4.9</span></div><div class="cardB-meta">Kleinbasel</div><div class="cardB-price">Ab <strong>CHF 45</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg4">LINA<span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Studio Lina</span><span class="cardB-rating">4.7</span></div><div class="cardB-meta">St. Johann</div><div class="cardB-price">Ab <strong>CHF 38</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg5">KORU<span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Koru Hair</span><span class="cardB-rating">4.9</span></div><div class="cardB-meta">Breite</div><div class="cardB-price">Ab <strong>CHF 52</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg3">MARA<span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Salon Mara</span><span class="cardB-rating">4.8</span></div><div class="cardB-meta">Iselin</div><div class="cardB-price">Ab <strong>CHF 60</strong></div></div></div>
+  </div>
+
+  <div class="sh">
+    <div class="sh-l"><span class="sh-eye">Top in Basel</span><h2 class="sh-h">Barber</h2></div>
+    <a class="sh-link">Alle ansehen →</a>
+  </div>
+  <div class="row" style="margin-bottom:40px">
+    <div class="cardB"><div class="cardB-img bg2">NORI<span class="cardB-badge">Beliebt</span><span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Nori Barber</span><span class="cardB-rating">4.8</span></div><div class="cardB-meta">Gundeldingen</div><div class="cardB-price">Ab <strong>CHF 35</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg7">KURT<span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Kurt &amp; Co.</span><span class="cardB-rating">4.7</span></div><div class="cardB-meta">Kleinbasel</div><div class="cardB-price">Ab <strong>CHF 38</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg6">OLD<span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Old School</span><span class="cardB-rating">4.6</span></div><div class="cardB-meta">Breite</div><div class="cardB-price">Ab <strong>CHF 32</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg8">NOBLE<span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Noble Cuts</span><span class="cardB-rating">4.8</span></div><div class="cardB-meta">Iselin</div><div class="cardB-price">Ab <strong>CHF 40</strong></div></div></div>
+  </div>
+
+  <div class="sh">
+    <div class="sh-l"><span class="sh-eye">Top in Basel</span><h2 class="sh-h">Nails</h2></div>
+    <a class="sh-link">Alle ansehen →</a>
+  </div>
+  <div class="row">
+    <div class="cardB"><div class="cardB-img bg4">LEA<span class="cardB-badge">Top Pick</span><span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Studio Léa</span><span class="cardB-rating">4.9</span></div><div class="cardB-meta">St. Johann</div><div class="cardB-price">Ab <strong>CHF 55</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg5">MIA<span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Mia Nails</span><span class="cardB-rating">4.7</span></div><div class="cardB-meta">Grossbasel</div><div class="cardB-price">Ab <strong>CHF 45</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg1">ROSE<span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Rose &amp; Co.</span><span class="cardB-rating">4.8</span></div><div class="cardB-meta">Breite</div><div class="cardB-price">Ab <strong>CHF 48</strong></div></div></div>
+    <div class="cardB"><div class="cardB-img bg6">INK<span class="cardB-heart">♡</span></div><div class="cardB-info"><div class="cardB-head"><span class="cardB-name">Ink &amp; Shine</span><span class="cardB-rating">4.7</span></div><div class="cardB-meta">Iselin</div><div class="cardB-price">Ab <strong>CHF 62</strong></div></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SUMMARY + DECISIONS
+════════════════════════════════════════ -->
+<div class="variant">
+  <div class="callout">
+    <strong>What already exists in the codebase:</strong>
+    <br>• <code>FeaturedSalonCarousel.tsx</code> (280 lines) — category carousel with title + "Alle ansehen →" + nav arrows
+    <br>• <code>HomePage.tsx</code> loops over <code>visibleSections</code> and renders one carousel per category (with <code>bubbleRank</code> ordering based on user's recent visits)
+    <br>• <code>DiscoverCarousel.tsx</code> (177 lines) + <code>discovery/ItemCard.tsx</code> (144 lines) — discovery preview carousel
+    <br>• <code>RecentlyViewed.tsx</code> (131 lines) — recently visited row
+    <br>• <code>LastMinuteCard.tsx</code>, <code>TestimonialCarousel.tsx</code>, <code>CityCarouselSection.tsx</code> — all pre-built
+    <br><br>
+    <strong>What needs the change:</strong>
+    <br>• Swap card style inside <code>FeaturedSalonCarousel</code> from Variant A (white box, 4:3) → Variant B (no box, 1:1 square) or Variant C (ultra-minimal)
+    <br>• Update card aspect ratio from <code>aspect-[4/3]</code> → <code>aspect-square</code> / <code>aspect-[1/1]</code>
+    <br>• Drop the white wrapper <code>bg-white shadow-elevation-1 rounded-card</code> from <code>SalonHeroCard</code>
+  </div>
+</div>
+
+</body>
+</html>
