@@ -111,14 +111,14 @@ const CancelModal = memo(function CancelModal({
         <div className="flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150"
+            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
           >
             {t("cancel")}
           </button>
           <button
             onClick={handleCancel}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
+            className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
           >
             {loading && <Spinner size="sm" invert />}
             {t("confirmCancel")}
@@ -216,21 +216,21 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
       <div className="grid grid-cols-3 gap-2">
         <button
           onClick={shareWhatsApp}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.04em] text-white active:scale-[0.98] hover:brightness-[1.06] transition-[transform,filter] duration-150"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.04em] text-white active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150"
           style={{ background: "#25D366" }}
         >
           <Share2 size={12} /> WhatsApp
         </button>
         <button
           onClick={shareSMS}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.04em] text-white active:scale-[0.98] hover:brightness-[1.06] transition-[transform,filter] duration-150"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.04em] text-white active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150"
           style={{ background: "#0A84FF" }}
         >
           <MessageCircle size={12} /> SMS
         </button>
         <button
           onClick={copyCode}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
         >
           <Copy size={12} /> {t("copyCode")}
         </button>
@@ -630,7 +630,7 @@ const SettingsSection = memo(function SettingsSection({
         <button
           type="submit"
           disabled={!name || saving}
-          className="px-5 py-2.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-coral-glow"
+          className="px-5 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-coral-glow"
         >
           {saving && <Spinner size="sm" invert />}
           {t("save")}
@@ -646,7 +646,7 @@ const SettingsSection = memo(function SettingsSection({
         <button
           type="button"
           onClick={onDeleteClick}
-          className="px-4 py-2.5 rounded-pill active:scale-[0.98] bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-red-100 dark:hover:bg-red-950/40 transition-[background-color,transform] duration-150"
+          className="px-4 py-2.5 rounded-pill active:scale-[0.97] bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-red-100 dark:hover:bg-red-950/40 transition-[background-color,transform] duration-150"
         >
           {t("deleteAccount")}
         </button>
@@ -1114,7 +1114,7 @@ export default function ProfilePage() {
                     await supabase.auth.signOut();
                     window.location.href = `/${locale}`;
                   }}
-                  className="w-full py-3 rounded-pill border border-s-error/30 dark:border-s-error/20 text-s-error text-sm font-heading font-medium hover:bg-s-error-bg dark:hover:bg-s-error/10 active:scale-[0.98] transition-[transform,background-color] duration-150"
+                  className="w-full py-3 rounded-pill border border-s-error/30 dark:border-s-error/20 text-s-error text-sm font-heading font-medium hover:bg-s-error-bg dark:hover:bg-s-error/10 active:scale-[0.97] transition-[transform,background-color] duration-150"
                 >
                   Abmelden
                 </button>

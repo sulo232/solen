@@ -20,8 +20,8 @@ export default function Skeleton({ variant = "text", className, style }: Skeleto
   if (variant === "card") {
     return (
       <div className={cn("rounded-[20px] overflow-hidden border border-s-ink/5", className)} style={style}>
-        {/* Photo placeholder — matches SalonCard aspect-[4/5] */}
-        <div className={cn(base, "w-full aspect-[4/5] rounded-none")} />
+        {/* Photo placeholder — matches SalonCard 1:1 square */}
+        <div className={cn(base, "w-full aspect-square rounded-none")} />
         {/* Text lines */}
         <div className="p-4 space-y-3">
           <div className={cn(base, "h-4 w-3/4")} />

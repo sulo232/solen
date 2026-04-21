@@ -105,7 +105,7 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
 
                 <button 
                   type="submit" disabled={loading}
-                  className="w-full flex justify-center items-center gap-2 py-2.5 rounded-pill active:scale-[0.98] bg-s-coral text-white font-medium text-sm disabled:opacity-50 transition-[transform,filter] duration-150"
+                  className="w-full flex justify-center items-center gap-2 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white font-medium text-sm disabled:opacity-50 transition-[transform,filter] duration-150"
                 >
                   {loading ? <Loader2 size={16} className="animate-spin" /> : "Meldung absenden"}
                 </button>

@@ -120,7 +120,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
           </div>
           <button
             onClick={applyCustom}
-            className="w-full py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
+            className="w-full py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
           >
             {t("applyRange")}
           </button>

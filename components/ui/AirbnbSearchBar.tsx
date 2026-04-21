@@ -367,7 +367,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                 onClick={handleSearch}
                 aria-label={tNav("search") ?? "Suchen"}
                 className={cn(
-                  "flex items-center justify-center gap-2 text-white active:scale-[0.96] transition-[transform,background-color] duration-150 bg-s-coral",
+                  "flex items-center justify-center gap-2 text-white active:scale-[0.97] transition-[transform,background-color] duration-150 bg-s-coral",
                   "rounded-full",
                   activeSegment !== null
                     ? "py-3 px-5"    // Expanded pill

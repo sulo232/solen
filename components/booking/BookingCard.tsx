@@ -197,7 +197,7 @@ export default function BookingCard({
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-2 hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.08] active:scale-[0.92] rounded-pill transition-[transform,background-color] duration-150"
+            className="p-2 hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.08] active:scale-[0.97] rounded-pill transition-[transform,background-color] duration-150"
             aria-label="More options"
           >
             <MoreVertical size={18} className="text-s-ink dark:text-s-dm-text" />

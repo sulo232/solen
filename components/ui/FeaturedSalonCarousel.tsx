@@ -91,10 +91,10 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
           )}
           {/* Nav arrows */}
           <div className="hidden md:flex items-center gap-1.5">
-            <button onClick={() => scroll("left")} aria-label={t("carousel.previousSalons")} className="w-8 h-8 rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 active:scale-[0.95] transition-[box-shadow,transform] duration-150">
+            <button onClick={() => scroll("left")} aria-label={t("carousel.previousSalons")} className="w-8 h-8 rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 active:scale-[0.97] transition-[box-shadow,transform] duration-150">
               <ChevronLeft size={15} aria-hidden="true" />
             </button>
-            <button onClick={() => scroll("right")} aria-label={t("carousel.nextSalons")} className="w-8 h-8 rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 active:scale-[0.95] transition-[box-shadow,transform] duration-150">
+            <button onClick={() => scroll("right")} aria-label={t("carousel.nextSalons")} className="w-8 h-8 rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 active:scale-[0.97] transition-[box-shadow,transform] duration-150">
               <ChevronRight size={15} aria-hidden="true" />
             </button>
           </div>

@@ -30,7 +30,7 @@ export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
         </p>
         <button
           onClick={reset}
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-pill bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 shadow-warm-sm"
+          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-pill bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-warm-sm"
         >
           <RotateCcw size={14} />
           {t("retry")}

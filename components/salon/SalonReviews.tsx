@@ -319,7 +319,7 @@ export default function SalonReviews({
                           <button
                             key={photo.id}
                             onClick={() => onLightbox?.(photo.photo_url)}
-                            className="relative w-16 h-16 rounded-[12px] overflow-hidden bg-s-bg-surface hover:bg-s-ink/[0.06] active:scale-[0.92] transition-[transform,background-color] duration-150 shrink-0"
+                            className="relative w-16 h-16 rounded-[12px] overflow-hidden bg-s-bg-surface hover:bg-s-ink/[0.06] active:scale-[0.97] transition-[transform,background-color] duration-150 shrink-0"
                             aria-label={t("enlargePhoto")}
                           >
                             <Image src={photo.photo_url} alt="" fill className="object-cover" sizes="64px" />

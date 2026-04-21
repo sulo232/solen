@@ -107,7 +107,7 @@ function CancelModal({
         <button
           onClick={handleCancel}
           disabled={loading}
-          className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2"
+          className="flex-1 py-2.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {loading && <Spinner size="sm" invert />}
           {t("cancelConfirm")}

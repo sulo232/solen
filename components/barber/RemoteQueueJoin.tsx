@@ -161,7 +161,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
       <button
         type="submit"
         disabled={!name.trim() || submitting}
-        className="w-full flex items-center justify-center gap-2 rounded-pill active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 shadow-coral-glow"
+        className="w-full flex items-center justify-center gap-2 rounded-pill active:scale-[0.97] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 shadow-coral-glow"
         aria-label={t("joinNow")}
       >
         <Users size={16} />

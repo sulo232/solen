@@ -95,7 +95,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
               <button
                 onClick={() => setOpen(false)}
                 aria-label={t("apply")}
-                className="flex-1 py-3 rounded-pill text-white text-xs font-heading font-bold active:scale-[0.98] transition-[transform,filter] duration-150 bg-s-coral shadow-coral-glow"
+                className="flex-1 py-3 rounded-pill text-white text-xs font-heading font-bold active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-coral shadow-coral-glow"
               >
                 {t("apply")}
               </button>

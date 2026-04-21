@@ -152,7 +152,7 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
       <button
         onClick={handleSave}
         disabled={!undertone || !fitzpatrick}
-        className="flex items-center gap-1 px-4 py-2 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-40"
+        className="flex items-center gap-1 px-4 py-2 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-40"
         aria-label={saved ? t("saved") : t("save")}
       >
         <Save size={12} />

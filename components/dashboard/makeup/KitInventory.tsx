@@ -190,7 +190,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150"
+          className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] shadow-coral-glow transition-[transform,filter] duration-150"
           aria-label={t("kit_add")}
         >
           <Plus size={12} />
@@ -307,7 +307,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
             <button
               onClick={handleAdd}
               disabled={saving || !formData.brand || !formData.product_name}
-              className="px-4 py-2 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-40"
+              className="px-4 py-2 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-40"
               aria-label={saving ? t("saving") : t("add")}
             >
               {saving ? t("saving") : t("add")}
@@ -488,7 +488,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
               <button
                 onClick={handleCheckout}
                 disabled={checkoutSaving}
-                className="flex-1 py-2.5 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-40"
+                className="flex-1 py-2.5 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-40"
                 aria-label={checkoutSaving ? t("saving") : t("kit_checkout_confirm")}
               >
                 {checkoutSaving ? t("saving") : t("kit_checkout_confirm")}

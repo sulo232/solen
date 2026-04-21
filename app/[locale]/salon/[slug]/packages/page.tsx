@@ -58,7 +58,7 @@ function PackagePaymentForm({
       <button
         type="submit"
         disabled={submitting || !stripe}
-        className="w-full py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2"
+        className="w-full py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2"
       >
         {submitting && <Spinner size="sm" invert />}
         Jetzt bezahlen
@@ -289,7 +289,7 @@ export default function SalonPackagesPage() {
 
                   <button
                     onClick={() => setPurchasing(pkg)}
-                    className="w-full py-2.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter]"
+                    className="w-full py-2.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter]"
                   >
                     {l.buy}
                   </button>

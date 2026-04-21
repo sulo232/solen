@@ -178,7 +178,7 @@ export default function BookingDisputePanel() {
                     <button
                       onClick={() => handleAction(d.id, "refund")}
                       disabled={resolving === d.id || !refundAmount[d.id]}
-                      className="px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150"
+                      className="px-3 py-1.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150"
                     >
                       {t("refund")}
                     </button>

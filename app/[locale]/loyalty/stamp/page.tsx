@@ -91,7 +91,7 @@ export default function LoyaltyStampPage() {
             </p>
             <button
               onClick={handleStamp}
-              className="w-full rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] py-3.5 hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] shadow-coral-glow"
+              className="w-full rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] py-3.5 hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] shadow-coral-glow"
             >
               Stempel vergeben
             </button>

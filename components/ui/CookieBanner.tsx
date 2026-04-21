@@ -91,7 +91,7 @@ export default function CookieBanner() {
             <div className="flex items-center gap-2 mt-4">
               <button
                 onClick={acceptAll}
-                className="flex-1 py-2.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150"
+                className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150"
                 aria-label={t("accept")}
               >
                 {t("accept")}
@@ -164,7 +164,7 @@ export default function CookieBanner() {
             <div className="flex gap-2 mt-6">
               <button
                 onClick={saveSettings}
-                className="flex-1 py-2.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150"
+                className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150"
               >
                 {t("saveSettings")}
               </button>

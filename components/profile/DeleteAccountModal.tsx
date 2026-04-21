@@ -111,14 +111,14 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
           <button
             onClick={handleClose}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-ink/30 hover:text-s-ink dark:hover:border-white/30 dark:hover:text-s-dm-text active:scale-[0.98] transition-[transform,border-color,color] duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-ink/30 hover:text-s-ink dark:hover:border-white/30 dark:hover:text-s-dm-text active:scale-[0.97] transition-[transform,border-color,color] duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t("cancel")}
           </button>
           <button
             onClick={handleDelete}
             disabled={!isConfirmed || loading}
-            className="flex-1 py-2.5 rounded-pill active:scale-[0.98] bg-red-600 text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-red-600 text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading && <Spinner size="sm" invert />}
             {t("deleteAccountConfirm")}

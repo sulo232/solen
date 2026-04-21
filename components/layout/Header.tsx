@@ -190,7 +190,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               <div className="md:hidden w-full max-w-[300px]">
                 <button
                   onClick={() => window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))}
-                  className="flex items-center gap-2.5 bg-white border border-s-ink/[0.08] shadow-elevation-1 rounded-full px-3 py-2 w-full active:scale-[0.98] transition-transform duration-150"
+                  className="flex items-center gap-2.5 bg-white border border-s-ink/[0.08] shadow-elevation-1 rounded-full px-3 py-2 w-full active:scale-[0.97] transition-transform duration-150"
                   aria-label="Suchen"
                 >
                   <Search className="w-4 h-4 text-s-ink shrink-0" />
@@ -365,7 +365,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                   aria-label={t("account")}
                   aria-expanded={profileOpen}
                   className={cn(
-                    "flex items-center justify-center w-[42px] h-[42px] rounded-full text-s-ink/60 border border-s-ink/[0.08] hover:shadow-elevation-2 hover:bg-s-ink/[0.06] active:scale-[0.92] bg-white",
+                    "flex items-center justify-center w-[42px] h-[42px] rounded-full text-s-ink/60 border border-s-ink/[0.08] hover:shadow-elevation-2 hover:bg-s-ink/[0.06] active:scale-[0.97] bg-white",
                     "transition-[box-shadow,transform,background-color] duration-150"
                   )}
                 >
@@ -419,7 +419,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               <Link
                 href={`/${locale}/auth/login`}
                 aria-label={t("login")}
-                className="flex items-center gap-2 px-3 py-2 rounded-full border border-s-ink/[0.08] hover:shadow-elevation-2 hover:bg-s-ink/[0.06] active:scale-[0.92] bg-white text-s-ink transition-[box-shadow,transform,background-color] duration-150"
+                className="flex items-center gap-2 px-3 py-2 rounded-full border border-s-ink/[0.08] hover:shadow-elevation-2 hover:bg-s-ink/[0.06] active:scale-[0.97] bg-white text-s-ink transition-[box-shadow,transform,background-color] duration-150"
               >
                 <Menu strokeWidth={2} className="w-4 h-4 ml-1" />
                 <div className="bg-s-ink/60 text-white rounded-full w-[26px] h-[26px] flex items-center justify-center">

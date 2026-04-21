@@ -458,7 +458,7 @@ export default function PartnerPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-s-dm-surface border-t border-s-ink/[0.06] dark:border-white/[0.06] shadow-elevation-1 p-3 flex justify-center z-50">
         <a
           href="#contact"
-          className="bg-s-coral text-white font-heading font-semibold text-sm px-7 py-3 rounded-btn hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
+          className="bg-s-coral text-white font-heading font-semibold text-sm px-7 py-3 rounded-btn hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
         >
           {t("sticky_cta")}
         </a>

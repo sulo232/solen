@@ -174,14 +174,14 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
             <div className="flex gap-2">
               <button
                 onClick={() => setConfirmClient(null)}
-                className="flex-1 py-2 rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-sm text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150"
+                className="flex-1 py-2 rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-sm text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
               >
                 {t("cancel")}
               </button>
               <button
                 onClick={() => handleSendReminder(confirmClient)}
                 disabled={sending === confirmClient.id}
-                className="flex-1 py-2 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 shadow-coral-glow transition-[transform,filter] duration-150"
+                className="flex-1 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 shadow-coral-glow transition-[transform,filter] duration-150"
               >
                 {sending === confirmClient.id ? t("sending") : t("confirmSend")}
               </button>

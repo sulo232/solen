@@ -150,7 +150,7 @@ export default function PriceAdjustmentModal({
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full py-2.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
+              className="w-full py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
             >
               {submitting && <Spinner size="sm" invert />}
               {t("submit")}

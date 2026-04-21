@@ -172,7 +172,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
             <button
               onClick={() => handleAdd()}
               disabled={!newTag.trim() || adding}
-              className="px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium disabled:opacity-50"
+              className="px-3 py-1.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-xs font-medium disabled:opacity-50"
             >
               +
             </button>

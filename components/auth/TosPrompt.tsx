@@ -106,7 +106,7 @@ export default function TosPrompt() {
           <button
             onClick={handleAccept}
             disabled={saving}
-            className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-medium text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-coral text-white font-medium text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
           >
             {saving ? <Spinner size="sm" invert /> : <Check size={18} />}
             {t("acceptButton")}

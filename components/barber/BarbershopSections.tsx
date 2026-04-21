@@ -88,7 +88,7 @@ export function BarbershopAboveGrid() {
         </div>
         <Link
           href={`/${locale}/barbershop?walkin=true`}
-          className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-amber text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 shadow-warm-sm"
+          className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-amber text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-warm-sm"
         >
           <Zap size={12} />
           {t("walkin_cta")}

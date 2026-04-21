@@ -412,7 +412,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
             <button
               onClick={() => category ? navigate() : open(1)}
               aria-label={t("showResults" as Parameters<typeof t>[0])}
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-s-coral hover:brightness-[1.06] active:scale-[0.96] transition-[transform,filter] duration-150 mx-2 shrink-0"
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-s-coral hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 mx-2 shrink-0"
               style={{ boxShadow: "0 2px 8px rgba(232,98,74,.30)" }}
             >
               <Search size={16} className="text-white" aria-hidden="true" />
@@ -1005,7 +1005,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                     }
                   }}
                   aria-label={t("showResults")}
-                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-btn bg-s-coral text-white font-heading font-bold text-[13px] uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
+                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-btn bg-s-coral text-white font-heading font-bold text-[13px] uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
                   style={{ boxShadow: "0 2px 6px rgba(232,98,74,.30), 0 4px 14px rgba(232,98,74,.18)" }}
                 >
                   <Search size={14} aria-hidden="true" />

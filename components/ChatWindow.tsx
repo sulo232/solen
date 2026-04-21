@@ -478,7 +478,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
               className="flex-1 px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
               autoFocus />
             <button onClick={() => sendMessage("image")} disabled={!imageUrl.trim() || sending}
-              className="px-3 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm disabled:opacity-50 transition-[transform,filter] duration-150">{t("send")}</button>
+              className="px-3 py-2 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm disabled:opacity-50 transition-[transform,filter] duration-150">{t("send")}</button>
             <button onClick={() => { setShowImageInput(false); setImageUrl(""); }}
               className="px-2 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text">
               <X size={14} />

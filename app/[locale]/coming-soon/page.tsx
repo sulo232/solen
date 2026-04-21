@@ -84,7 +84,7 @@ export default function ComingSoonPage() {
             <button
               onClick={handleNotify}
               aria-label={t("notify")}
-              className="px-5 py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-bold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 flex items-center gap-2"
+              className="px-5 py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-bold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 flex items-center gap-2"
             >
               <Bell size={14} />
               {t("notify")}

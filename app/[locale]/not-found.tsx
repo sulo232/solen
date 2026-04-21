@@ -28,7 +28,7 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href={`/${locale}`}
-            className="px-6 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-sm hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
+            className="px-6 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-sm hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
           >
             {t("404_home") || "Zur Startseite"}
           </Link>

@@ -170,7 +170,7 @@ export default function TipPage() {
 
           <button onClick={handlePay}
             disabled={paying || tipAmount < 100}
-            className="w-full py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2 shadow-coral-glow">
+            className="w-full py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2 shadow-coral-glow">
             {paying ? <Spinner size="sm" invert /> : <Heart size={13} />}
             {formatCurrency(tipAmount / 100, locale)} — {l.send}
           </button>

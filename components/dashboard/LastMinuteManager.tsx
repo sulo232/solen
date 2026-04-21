@@ -352,7 +352,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 px-6 py-2 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] disabled:opacity-60"
+          className="flex items-center gap-2 px-6 py-2 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-60"
         >
           <Save size={14} />
           {saving ? "Speichert..." : "Speichern"}

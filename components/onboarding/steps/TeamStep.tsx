@@ -92,7 +92,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
         <button
           onClick={sendInvite}
           disabled={!email || sending}
-          className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter]"
+          className="w-full py-2.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter]"
         >
           {sending && <Spinner size="sm" invert />}
           {t("team.sendInvite")}
@@ -126,7 +126,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
 
       <button
         onClick={() => onSaved()}
-        className="w-full py-3 mt-6 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter]"
+        className="w-full py-3 mt-6 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter]"
       >
         {t("setup.saveAndContinue")}
       </button>

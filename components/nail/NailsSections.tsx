@@ -123,7 +123,7 @@ export function NailsBelowGrid() {
         </div>
         <Link
           href={`/${locale}/discover?category=nails`}
-          className="shrink-0 px-4 py-2 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 shadow-coral-glow"
+          className="shrink-0 px-4 py-2 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-coral-glow"
         >
           {t("ai_teaser_cta")}
         </Link>
