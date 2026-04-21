@@ -159,7 +159,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
               className="flex-1 text-sm px-3 py-1.5 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-transparent text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
               onKeyDown={(e) => e.key === "Enter" && handleCreateBoard()}
             />
-            <button onClick={handleCreateBoard} className="text-[11px] font-heading font-bold uppercase tracking-[.04em] px-3 py-1.5 rounded-pill active:scale-[0.98] bg-s-coral text-white hover:brightness-[1.06] transition-[transform,filter] duration-150">
+            <button onClick={handleCreateBoard} className="text-[11px] font-heading font-bold uppercase tracking-[.04em] px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white hover:brightness-[1.06] transition-[transform,filter] duration-150">
               {t("board_create")}
             </button>
             <button onClick={() => setShowNewForm(false)} aria-label={t("close")} className="text-xs text-s-ink/40">
@@ -204,7 +204,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
           <div className="px-4 py-3 border-t border-s-ink/5 dark:border-s-dm-text/10">
             <button
               onClick={handleConfirm}
-              className="w-full py-2.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
+              className="w-full py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
             >
               {t("board_select_images", { count: selected.size })}
             </button>

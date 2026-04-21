@@ -178,7 +178,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={loading || !passwordValid || !passwordsMatch}
-                className="w-full py-4 rounded-pill bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+                className="w-full py-4 rounded-pill bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
                 {loading ? <Spinner size="sm" invert /> : null}
                 Passwort ändern
               </button>

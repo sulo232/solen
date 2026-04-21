@@ -201,7 +201,7 @@ export default function CustomerPreferencesForm({
             <button
               type="button"
               onClick={onSkip}
-              className="flex-1 px-5 py-3.5 rounded-pill border border-s-ink/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150"
+              className="flex-1 px-5 py-3.5 rounded-pill border border-s-ink/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
             >
               {t("skip")}
             </button>

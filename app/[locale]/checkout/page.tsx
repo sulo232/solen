@@ -361,7 +361,7 @@ export default function CheckoutPage() {
               <p className="text-xs font-body text-s-ink/50 mt-1 leading-relaxed">Du zahlst direkt im Salon. Bis bald!</p>
             </div>
             <Link href={`/${locale}/profile`}
-              className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] transition-[transform,filter] hover:brightness-[1.06] shadow-coral-glow">
+              className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] hover:brightness-[1.06] shadow-coral-glow">
               Meine Buchungen
             </Link>
           </div>

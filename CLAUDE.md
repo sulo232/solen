@@ -1223,9 +1223,9 @@ echo "=== Done ==="
 1. **Aesthetics:** Page background is Warm Beige (`#F5F0EB`). NO shadows on cards (use simple 1px borders). ALL interactive elements must be pill shapes (`rounded-pill` / `rounded-btn`). Blobs are RETIRED, use `.ambient-v5` gradients only.
 2. **Hero:** Has a solid `#F5F0EB` background (no images/fade-ups). Features a horizontal scroll-snap featured salon carousel. Header is strictly Bebas Neue 42px.
 3. **Header/Navigation:** Max height `56px`. Background is `#F5F0EB` glass frost. The header morphs its content: when the hero search bar is out of view, the header shows a compact Search Pill. `CategoryStickyRow` inside the header is deleted. `Zurück` button must never render on `/`.
-4. **Icons:** Category SVG icons must render perfectly solid in Coral (`#E8735A`) without any opacity layers.
+4. **Icons:** Category SVG icons must render perfectly solid in Coral (`#E8624A`) without any opacity layers.
 5. **Footer:** Background is strictly `#2C2825`. Leftover trust pills are removed. Instagram natively inside legal links.
-6. **Mobile Tab Bar:** Background `#FFFFFF` glass frost, 1px top border (no shadow), active states Coral (`#E8735A`), `z-index: 50`.
+6. **Mobile Tab Bar:** Background `#FFFFFF` glass frost, 1px top border (no shadow), active states Coral (`#E8624A`), `z-index: 50`.
 
 ---
 

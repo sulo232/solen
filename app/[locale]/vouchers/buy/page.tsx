@@ -73,7 +73,7 @@ function CheckoutForm({ clientSecret, voucherCode }: CheckoutFormProps) {
       <button
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.98] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-coral-glow transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.97] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-coral-glow transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
         style={{
           background: "linear-gradient(135deg, #E8624A 0%, #D4870A 100%)",
         }}
@@ -279,7 +279,7 @@ export default function VoucherBuyPage() {
             <button
               onClick={handleCreateVoucher}
               disabled={loading || (isGift && !recipientEmail)}
-              className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.98] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-coral-glow transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.97] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-coral-glow transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background: "linear-gradient(135deg, #E8624A 0%, #D4870A 100%)",
               }}

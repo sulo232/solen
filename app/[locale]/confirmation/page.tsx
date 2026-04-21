@@ -146,7 +146,7 @@ export default async function ConfirmationPage({
         <div className="space-y-3 mb-8">
           {/* Add to Calendar */}
           <button
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
             aria-label={t('addToCalendar')}
           >
             <Calendar size={16} />
@@ -155,7 +155,7 @@ export default async function ConfirmationPage({
 
           {/* Share Booking */}
           <button
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] active:scale-[0.98] transition-[transform,filter] duration-150"
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] active:scale-[0.97] transition-[transform,filter] duration-150"
             aria-label={t('shareBooking')}
           >
             <Share2 size={16} />
@@ -165,7 +165,7 @@ export default async function ConfirmationPage({
           {/* Rebook */}
           <Link
             href={`/${locale}/salon/${(Array.isArray(booking.salons) ? (booking.salons[0] as any)?.slug : (booking.salons as any)?.slug) || ''}`}
-            className="block text-center py-4 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] active:scale-[0.98] transition-[transform,filter] duration-150"
+            className="block text-center py-4 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] active:scale-[0.97] transition-[transform,filter] duration-150"
             aria-label={t('rebook')}
           >
             {t('rebook')}

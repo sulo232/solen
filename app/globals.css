@@ -67,6 +67,9 @@
     --raised: rgba(255,255,255,.95);
 
     /* ── Motion tokens ───────────────────────────────────────── */
+    /* --ease-out is the new canonical (easeOutExpo, Apple/Linear). Use this by default. */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    /* --ease-out-strong kept as alias for legacy V5 call sites; identical snap feel. */
     --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
     --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
     --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
@@ -485,23 +488,30 @@ html {
    V4 DESIGN SYSTEM — Clean · Confident · Smooth
    ══════════════════════════════════════════════════════════════════════ */
 
-/* ── V4 Clean Card (V5 updated shadows + easing) ──────────────────── */
+/* ── Canonical card (flat at rest + 1px border, lift on hover, 200ms easeOutExpo) */
+/* .card is the new canonical. .card-v4 is a legacy alias — don't use in new code. */
+.card,
 .card-v4 {
   background: #ffffff;
-  border: 1px solid rgba(26, 18, 9, 0.05);
+  border: 1px solid rgba(26, 18, 9, 0.08);
   border-radius: 16px;
-  box-shadow: 0 1px 2px rgba(26, 18, 9, 0.04), 0 4px 12px rgba(26, 18, 9, 0.03);
-  transition: box-shadow 400ms cubic-bezier(0.23, 1, 0.32, 1),
-              transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: none;
+  transition: box-shadow 200ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+              transform 200ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
 }
-.card-v4:hover {
-  box-shadow: 0 4px 12px rgba(26, 18, 9, 0.06), 0 16px 40px rgba(26, 18, 9, 0.08);
-  transform: translateY(-4px);
+@media (hover: hover) and (pointer: fine) {
+  .card:hover,
+  .card-v4:hover {
+    box-shadow: 0 4px 12px rgba(26, 18, 9, 0.06), 0 16px 40px rgba(26, 18, 9, 0.08);
+    transform: translateY(-4px);
+  }
 }
+.dark .card,
 .dark .card-v4 {
   background: rgba(30, 23, 16, 0.95);
   border-color: rgba(255, 255, 255, 0.06);
 }
+.dark .card:hover,
 .dark .card-v4:hover {
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
 }
@@ -704,6 +714,22 @@ html {
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
     scroll-behavior: auto !important;
+  }
+  /* Explicit zero-out for known motion patterns (framer variants, stagger containers, card lift, reveals) */
+  .card,
+  .card-v4,
+  .card-listing,
+  .reveal-on-scroll,
+  [data-stagger-container],
+  [data-reveal] {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .card:hover,
+  .card-v4:hover,
+  .card-listing:hover {
+    transform: none !important;
+    box-shadow: none !important;
   }
 }
 

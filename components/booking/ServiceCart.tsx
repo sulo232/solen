@@ -184,7 +184,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
       <button
         onClick={() => onCheckout({ totalPrice, totalDuration, addonIds: [...selectedAddons], promoCode, giftCardCode, referralCode })}
         disabled={checking}
-        className="w-full py-4 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
+        className="w-full py-4 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
       >
         {checking && <Spinner size="sm" invert />}
         {t("payAndBook")}

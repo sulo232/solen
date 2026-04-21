@@ -167,7 +167,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
       <button
         onClick={handleSave}
         disabled={!hasAnyOpen || saving}
-        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter]"
+        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter]"
       >
         {saving && <Spinner size="sm" invert />}
         {tc("save")}

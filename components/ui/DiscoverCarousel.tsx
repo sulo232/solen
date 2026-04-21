@@ -86,14 +86,14 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
       {/* Scroll controls (Desktop only) */}
       <button
         onClick={scrollLeft}
-        className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center shadow-elevation-1 border border-s-ink/[0.08] opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 hover:shadow-elevation-2 active:scale-[0.98] text-s-ink"
+        className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center shadow-elevation-1 border border-s-ink/[0.08] opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 hover:shadow-elevation-2 active:scale-[0.97] text-s-ink"
         aria-label={t("scrollLeft")}
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
       <button
         onClick={scrollRight}
-        className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center shadow-elevation-1 border border-s-ink/[0.08] opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 hover:shadow-elevation-2 active:scale-[0.98] text-s-ink"
+        className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center shadow-elevation-1 border border-s-ink/[0.08] opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 hover:shadow-elevation-2 active:scale-[0.97] text-s-ink"
         aria-label={t("scrollRight")}
       >
         <ChevronRight className="w-5 h-5" />

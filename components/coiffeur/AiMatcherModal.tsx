@@ -195,7 +195,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
                 onClick={handleNext}
                 disabled={!selected}
                 aria-label={step < STEPS.length - 1 ? t("next") : t("show_result")}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-pill active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-pill active:scale-[0.97] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
               >
                 {step < STEPS.length - 1 ? t("next") : t("show_result")}
                 <ChevronRight size={16} />
@@ -219,7 +219,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               <Link
                 href={`/${locale}/coiffeur?q=${encodeURIComponent(searchQuery.trim())}`}
                 onClick={onClose}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-pill active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-pill active:scale-[0.97] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
               >
                 {t("result_cta")} <ChevronRight size={16} />
               </Link>

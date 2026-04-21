@@ -157,7 +157,7 @@ export default function ReviewPrompt({
       <button
         onClick={handleSubmit}
         disabled={isSubmitting}
-        className="w-full px-4 py-2 rounded-btn bg-s-coral text-white font-semibold text-sm hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed transition-[transform,filter] duration-150"
+        className="w-full px-4 py-2 rounded-btn bg-s-coral text-white font-semibold text-sm hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed transition-[transform,filter] duration-150"
       >
         {isSubmitting ? `${t('submit')}...` : t('submit')}
       </button>

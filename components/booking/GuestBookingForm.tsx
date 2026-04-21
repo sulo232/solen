@@ -104,7 +104,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
       <button
         onClick={handleSubmit}
         disabled={submitting}
-        className="w-full py-4 rounded-pill bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50"
+        className="w-full py-4 rounded-pill bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50"
       >
         {t("submit")}
       </button>

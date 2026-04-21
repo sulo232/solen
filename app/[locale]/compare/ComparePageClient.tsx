@@ -247,7 +247,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
             action={
               <Link
                 href={`/${locale}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
               >
                 {t("discover")}
               </Link>
@@ -264,7 +264,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
             action={
               <Link
                 href={`/${locale}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
               >
                 {t("discover")}
               </Link>
@@ -281,7 +281,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
             action={
               <Link
                 href={`/${locale}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
               >
                 {t("discover")}
               </Link>
@@ -395,7 +395,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
                       <Link
                         href={`/${locale}/salon/${salon.slug}`}
                         aria-label={`${t("bookNow")} ${salon.name}`}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-coral text-white text-xs font-semibold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 whitespace-nowrap"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-coral text-white text-xs font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 whitespace-nowrap"
                       >
                         {t("bookNow")}
                         <ExternalLink size={11} />

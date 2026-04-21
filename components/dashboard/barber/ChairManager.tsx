@@ -131,7 +131,7 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="mt-4 w-full flex items-center justify-center gap-2 rounded-pill active:scale-[0.98] bg-s-coral text-white font-medium py-2 text-sm hover:brightness-[1.06] disabled:opacity-50 shadow-coral-glow transition-[transform,filter] duration-150"
+        className="mt-4 w-full flex items-center justify-center gap-2 rounded-pill active:scale-[0.97] bg-s-coral text-white font-medium py-2 text-sm hover:brightness-[1.06] disabled:opacity-50 shadow-coral-glow transition-[transform,filter] duration-150"
       >
         <Save size={14} />
         {saving ? tc("saving") : saved ? tc("saved") : tc("save")}

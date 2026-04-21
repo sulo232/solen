@@ -53,7 +53,7 @@ export default function NailDesignCard({
   return (
     <div
       onClick={onClick}
-      className="group relative rounded-[16px] overflow-hidden cursor-pointer active:scale-[0.98] transition-transform duration-150 w-full h-full"
+      className="group relative rounded-[16px] overflow-hidden cursor-pointer active:scale-[0.97] transition-transform duration-150 w-full h-full"
     >
       {/* Full-bleed image */}
       <div className="absolute inset-0 overflow-hidden">

@@ -130,7 +130,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
         <button
           onClick={() => { setShowForm(!showForm); setError(null); }}
           aria-label={t("add_package")}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-coral-glow transition-[transform,filter] duration-150"
         >
           {showForm ? <X size={12} /> : <Plus size={12} />}
           {showForm ? t("cancel") : t("add_package")}
@@ -194,7 +194,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
               onClick={addPackage}
               disabled={saving || !form.name || form.zones.length === 0}
               aria-label={t("save")}
-              className="px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center gap-1.5"
+              className="px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center gap-1.5"
             >
               {saving && <Spinner size="sm" invert />}
               {t("save")}

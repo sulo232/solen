@@ -229,7 +229,7 @@ export default function WalkInPayPage() {
             <button
               onClick={handlePay}
               disabled={paying}
-              className="w-full px-4 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 transition-[transform,filter] shadow-coral-glow"
+              className="w-full px-4 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2 transition-[transform,filter] shadow-coral-glow"
             >
               {paying ? <Spinner size="sm" invert /> : <CreditCard size={15} />}
               {l.pay}

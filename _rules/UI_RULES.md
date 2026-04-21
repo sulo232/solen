@@ -1009,10 +1009,10 @@ grep -rn '"ease-in"\\|ease-in[^-]' components/ app/ --include="*.tsx"
 - **Hero Background:** Delete the static background image and fade-up animations. The hero uses a solid `#F5F0EB` background.
 - **Hero Title:** Must use Bebas Neue 42px header (`DEIN NÄCHSTER. TERMIN.`) + DM Sans 17px subhead.
 - **Featured Salon Carousel:** Must feature an Airbnb-style horizontal scroll carousel (`width: 260px`, `scroll-snap-type: x mandatory`).
-- **Category Icons:** Icons (`SpaIcon.tsx`, `MakeupIcon.tsx`, etc) must render perfectly solid in Coral (`#E8735A`) with no opacity layers.
+- **Category Icons:** Icons (`SpaIcon.tsx`, `MakeupIcon.tsx`, etc) must render perfectly solid in Coral (`#E8624A`) with no opacity layers.
 - **Category Grid:** Strip out the old rounded box backgrounds wrapping the icons; icons should float over their labels natively.
 
 ### 22d. Footer & Tab Bars
 - **Footer Cleanup:** Set background solid `#2C2825`, remove leftover trust badge grids, reposition Instagram into legal links, and strip redundant boilerplate links.
-- **Mobile Bottom Tab Bar:** `backdrop-filter` on `#FFFFFF`, top border `1px solid rgba(0,0,0,0.06)` (no shadow). Ensure `z-index: 50` and exclusively use Coral (`#E8735A`) for active states.
+- **Mobile Bottom Tab Bar:** `backdrop-filter` on `#FFFFFF`, top border `1px solid rgba(0,0,0,0.06)` (no shadow). Ensure `z-index: 50` and exclusively use Coral (`#E8624A`) for active states.
 

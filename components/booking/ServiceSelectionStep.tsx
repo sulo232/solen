@@ -172,7 +172,7 @@ export default function ServiceSelectionStep({
           <button
             onClick={handleContinue}
             disabled={formData.services.length === 0 || isChecking}
-            className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center gap-2"
+            className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center gap-2"
           >
             {isChecking && <Spinner size="sm" invert />}
             {t('continue')}

@@ -85,7 +85,7 @@ export default function MessagesPage() {
           Wenn du einen Salon kontaktierst, erscheinen deine Unterhaltungen hier.
         </p>
         <Link href={`/${locale}/coiffeur`}
-          className="mt-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 shadow-coral-glow">
+          className="mt-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-coral-glow">
           Salons entdecken
         </Link>
       </div>

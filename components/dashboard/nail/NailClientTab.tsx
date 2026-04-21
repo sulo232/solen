@@ -154,7 +154,7 @@ function ClientNotes({ customerId, salonId }: { customerId: string; salonId?: st
           className="flex-1 bg-s-bg-sunken dark:bg-s-dm-bg px-3 py-2 border border-s-ink/10 dark:border-s-dm-text/10 rounded-btn text-sm text-s-ink dark:text-s-dm-text"
           onKeyDown={(e) => { if (e.key === "Enter") addNote(); }}
         />
-        <button onClick={addNote} className="bg-s-coral text-white px-4 py-2 rounded-pill font-medium hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150 text-sm">
+        <button onClick={addNote} className="bg-s-coral text-white px-4 py-2 rounded-pill font-medium hover:brightness-[1.06] active:scale-[0.97] shadow-coral-glow transition-[transform,filter] duration-150 text-sm">
           {t("add")}
         </button>
       </div>
@@ -246,7 +246,7 @@ function ClientTags({ customerId, salonId }: { customerId: string; salonId?: str
             className="flex-1 bg-white dark:bg-s-dm-surface px-3 py-2 border border-s-ink/10 dark:border-s-dm-text/10 rounded-btn text-sm text-s-ink dark:text-s-dm-text"
             onKeyDown={(e) => { if (e.key === "Enter") addTag(); }}
           />
-          <button onClick={addTag} className="bg-s-coral text-white px-4 py-2 rounded-pill font-medium hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150 text-sm">
+          <button onClick={addTag} className="bg-s-coral text-white px-4 py-2 rounded-pill font-medium hover:brightness-[1.06] active:scale-[0.97] shadow-coral-glow transition-[transform,filter] duration-150 text-sm">
             {t("add")}
           </button>
         </div>

@@ -128,7 +128,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
         type="button"
         onClick={handleSubmit}
         disabled={processing || !stripe}
-        className="w-full py-4 rounded-btn bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
+        className="w-full py-4 rounded-btn bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
       >
         {processing ? <Spinner size="sm" invert /> : <CreditCard size={14} />}
         {processing ? t("processing") : t("payNow")}
@@ -971,7 +971,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
             <button
               onClick={handleProceedToPayment}
               disabled={confirming}
-              className="w-full py-4 rounded-btn bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-btn bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {confirming && <Spinner size="sm" invert />}
               {confirming ? t("preparing") : isMoreThan7Days ? t("saveCardAndBook") : t("toPayment")}
@@ -993,7 +993,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
             {waitlistDone ? (
               <div className="text-center py-4">
                 <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Du wirst benachrichtigt, sobald ein Platz frei wird.</p>
-                <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150">
+                <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150">
                   Schliessen
                 </button>
               </div>
@@ -1005,7 +1005,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
                 <button
                   onClick={handleWaitlistSubmit}
                   disabled={waitlistSubmitting}
-                  className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50"
+                  className="w-full py-2.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50"
                 >
                   {waitlistSubmitting ? t("waitlistSubmitting") : t("notifyMe")}
                 </button>

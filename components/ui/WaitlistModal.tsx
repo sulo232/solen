@@ -64,7 +64,7 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
             </p>
             <button
               onClick={onClose}
-              className="mt-3 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150"
+              className="mt-3 px-4 py-2 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150"
             >
               Schliessen
             </button>
@@ -78,7 +78,7 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50"
             >
               {submitting && <Spinner size="sm" invert />}
               {submitting ? "Wird eingetragen…" : "Benachrichtige mich"}

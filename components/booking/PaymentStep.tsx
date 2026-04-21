@@ -197,14 +197,14 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
           <button
             onClick={handleBack}
             disabled={isSubmitting}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter,border-color,background-color] duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>
           <button
             onClick={handleConfirmBooking}
             disabled={!formData.paymentMethod || isSubmitting}
-            className="flex-1 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
           >
             {isSubmitting && <Spinner size="sm" invert />}
             {t('confirmBooking')}

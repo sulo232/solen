@@ -358,7 +358,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full flex items-center justify-center gap-2 py-2 rounded-[8px] bg-s-coral text-white text-sm font-heading font-semibold hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 py-2 rounded-[8px] bg-s-coral text-white text-sm font-heading font-semibold hover:brightness-[1.06] active:scale-[0.97] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-50"
             aria-label={t("save_blueprint")}
           >
             <Save size={14} />

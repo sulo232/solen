@@ -200,7 +200,7 @@ export function CoiffeurBelowGrid() {
           <button
             onClick={() => setAiModalOpen(true)}
             aria-label={tAi("ai_badge")}
-            className="shrink-0 px-4 py-2 rounded-pill active:scale-[0.98] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter] duration-150"
+            className="shrink-0 px-4 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter] duration-150"
           >
             {t("ai_cta")}
           </button>

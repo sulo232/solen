@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.98]",
+          "bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97]",
         secondary:
           "bg-s-ink/[0.05] text-s-ink hover:bg-s-ink/[0.09] dark:bg-s-dm-text/[0.08] dark:text-s-dm-text dark:hover:bg-s-dm-text/[0.14]",
         outline:
@@ -18,7 +18,7 @@ const buttonVariants = cva(
         ghost:
           "text-s-ink/60 hover:text-s-coral hover:bg-s-coral/[0.06] dark:text-s-dm-text/60 dark:hover:text-s-coral dark:hover:bg-s-coral/[0.08]",
         destructive:
-          "bg-s-error text-white hover:brightness-[1.06] active:scale-[0.98]",
+          "bg-s-error text-white hover:brightness-[1.06] active:scale-[0.97]",
         link: "text-s-coral underline-offset-4 hover:underline",
       },
       size: {

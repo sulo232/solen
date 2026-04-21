@@ -156,7 +156,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
             )}
             <button
               onClick={goNext}
-              className="flex items-center gap-1.5 px-6 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
+              className="flex items-center gap-1.5 px-6 py-2.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
             >
               {isLast ? t("setup.goLive") : t("setup.next")}
               {!isLast && <ChevronRight size={16} />}

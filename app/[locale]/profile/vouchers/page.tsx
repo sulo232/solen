@@ -144,7 +144,7 @@ export default function VouchersPage() {
             </p>
             <Link
               href={`/${locale}/vouchers`}
-              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
+              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
             >
               Gutschein kaufen
             </Link>
