@@ -4,6 +4,16 @@
 
 ---
 
+## 🎯 DESIGN SYSTEM — `DESIGN_SYSTEM.md` IS THE SOURCE OF TRUTH
+
+**Before writing any UI code, read `DESIGN_SYSTEM.md` at the repo root.**
+
+It is the single, canonical spec for motion, color, type, glass, shadow, radii, zones, and anti-slop interaction patterns. It supersedes scattered rules elsewhere and resolves prior conflicts (4 zones → 2, glass 4 → 2, typography 3 → 2, color 7 → 3 active + 4 reserved, `active:scale-[0.97]` everywhere, `--ease-out` canonical, etc.).
+
+This file (CLAUDE.md) still governs workflow, git protocol, security, i18n, and feature completeness. UI/visual rules live in `DESIGN_SYSTEM.md`. When they disagree (e.g., §3.3 vs. `DESIGN_SYSTEM.md`), `DESIGN_SYSTEM.md` wins.
+
+---
+
 ## 🎨 VISUAL ASSETS — READ BEFORE TOUCHING ANY ICON, ANIMATION, OR ILLUSTRATION
 
 **Full guide: `_rules/GENERATION_TOOLS.md`** — read this before generating or sourcing any asset.
