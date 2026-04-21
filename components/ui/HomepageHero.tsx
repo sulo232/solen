@@ -17,9 +17,10 @@ import AirbnbSearchBar from "@/components/ui/AirbnbSearchBar";
 interface HomepageHeroProps {
   categoryCounts?: Record<string, number>;
   reviewCount?: number;
+  locale: string;
 }
 
-export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: HomepageHeroProps) {
+export default function HomepageHero({ categoryCounts, reviewCount = 2400, locale }: HomepageHeroProps) {
   const t = useTranslations("home.hero") as any;
 
   return (
@@ -38,7 +39,7 @@ export default function HomepageHero({ categoryCounts, reviewCount = 2400 }: Hom
 
       {/* ── Search Bar — THIS IS THE HERO ── */}
       <div className="w-full max-w-[560px]">
-        <AirbnbSearchBar />
+        <AirbnbSearchBar scrolledPast80={false} locale={locale} categoryCounts={categoryCounts} />
       </div>
 
       {/* ── Trust line — DESIGN_SPEC section 4 ── */}

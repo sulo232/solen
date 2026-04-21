@@ -119,6 +119,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         <HomepageHero
           categoryCounts={categoryCounts}
           reviewCount={2400}
+          locale={locale}
         />
 
         {/* ── 2. Last Minute Strip (conditional) ── */}

@@ -38,6 +38,8 @@
     "node_modules",
     "src/",
     "supabase/functions",
-    "remotion"
+    "remotion",
+    "**/*.figma.tsx",
+    "**/*.figma.ts"
   ]
 }
