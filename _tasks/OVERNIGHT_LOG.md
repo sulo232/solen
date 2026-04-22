@@ -41,6 +41,35 @@ Reviewed 535 unmerged commits on `origin/moat/session3`. Key findings in `_tasks
 
 ---
 
+## 🔍 Corrected audit (2026-04-22 follow-up)
+
+**Original cherry-pick wishlist was partially wrong.** More of moat/session3 is already on main than the first audit claimed. Evidence:
+
+| Item | Claim | Reality |
+|------|-------|---------|
+| CompareBar + CompareDrawer | "Worth cherry-picking" | ✅ **Already on main** at `components/compare/` (49 + 193 LOC, newer than moat) |
+| Chat M1 (QuickReplyChips + AISuggestion) | "May be on main, verify" | ✅ **Fully wired.** `components/chat/QuickReplyChips.tsx` + `AISuggestion.tsx` both imported + used in `components/ChatWindow.tsx` (lines 500, 512) |
+| StaffPortfolio (discovery) | "Needs migration" | ✅ **Already on main.** `components/discovery/StaffPortfolio.tsx` wired into `PickStylistFlow.tsx` line 106 |
+| StaffPortfolio (salon detail variant) | "Needs migration" | ⚠️ **Component exists on main but ORPHAN.** `components/StaffPortfolio.tsx` (5229 bytes) NOT imported anywhere. Salon detail page uses `StaffSection` instead. Migration 032 already merged. |
+| Migration 032_staff_portfolio_images.sql | "Run on Supabase first" | ✅ **Already in `supabase/migrations/`.** Identical to moat (modulo line endings) |
+| TerminePage | "440 LOC + unverified cancel API" | ✅ **Covered by `/profile/bookings`** — uses `BookingsList` component, has auth + SEO, cleaner than moat's 440-line monolith |
+| Reply badges (`ea31ab6a`) | "3-way merge needed" | ❌ Genuinely missing. Re-implement fresh in 15 min (small feature) |
+| CRM tags + allergy warnings (`690776c3`) | "Cherry-pick chain" | ❌ Genuinely missing. Schedule as dedicated feature |
+| Dispute flow | "Migration 038 needed" | ❌ Genuinely missing. Multi-hour feature |
+
+**Net:** Only 3 items actually missing from main: **Reply badges**, **CRM tags**, **Dispute flow**. Plus one orphan (`StaffPortfolio.tsx` salon variant — decide: wire it in, or delete).
+
+### Salon-variant StaffPortfolio decision
+
+`components/StaffPortfolio.tsx` currently sits unused on main. Options:
+
+1. **Wire it in** — replace or supplement `StaffSection` on salon detail page. Gets you Instagram-style photo grid per staff. Requires admin UI to add portfolio images to `staff_portfolio_images` table (no upload UI exists yet).
+2. **Delete it** — clean up orphan. Keep only the discovery-flow `components/discovery/StaffPortfolio.tsx` which IS wired.
+
+My rec: **Wire it in, but gate on "has portfolio images".** Salons without images don't see the component; salons with images get a new Instagram tab in their detail page. No UI clutter, pure progressive enhancement.
+
+---
+
 ## ⏸️ Skipped (need user input)
 
 ### Moat/session3 cherry-picks blocked by conflicts
