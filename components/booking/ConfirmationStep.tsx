@@ -69,7 +69,7 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
       {/* Salon Card */}
       <div className="border border-s-ink/[0.06] dark:border-white/[0.08] rounded-[16px] overflow-hidden bg-[--raised] dark:bg-s-dm-surface">
         {salon.cover_photo_url && (
-          <div className="aspect-[4/3] relative overflow-hidden">
+          <div className="aspect-square relative overflow-hidden">
             <Image
               src={salon.cover_photo_url}
               alt={salon.name}

@@ -10,7 +10,7 @@ This is the **single** design doc for Solen. Ignore any other design file in thi
 
 Solen is the **Swiss beauty marketplace for Basel** — warm, neighborhood-local, editorial. An app you use daily that feels like a Swiss independent magazine printed your haircut. Never corporate, never salesy, never cold grey.
 
-**Voice examples:** "Von Basel. Für Basel." · "Beauty. Basel." · "Dein Salon. Basel bucht." · "Coiffeur, Barber, Nails & Spa — buche jetzt in deinem Quartier."
+**Voice examples (Swiss-wide, Q5 2026-04-22):** "Von der Schweiz. Für dich." · "Beauty, direkt gebucht." · "Dein Salon. Direkt buchen." · "Coiffeur, Barber, Nails & Spa — buche jetzt in deinem Quartier." · Dynamic: "Für Basel" / "Für Zürich" / "Für Bern" based on detected city; fallback "Für deine Stadt."
 
 ---
 
@@ -449,7 +449,7 @@ Every section header:
 - **Numbers:** tabular nums (`.data-text`). Currency: `CHF 85`. Ratings: `4.8`. Counts: `(127)` parenthesized.
 
 **Example copy:**
-- Hero: "BEAUTY. BASEL." / "Von Basel. Für Basel."
+- Hero: "BEAUTY. DIREKT GEBUCHT." · dynamic eyebrow "Von der Schweiz. Für dich." (Q5 2026-04-22)
 - Subtitle: "Der erste Salon-Booking-Service, der wirklich zu Basel passt."
 - CTA: "Salon finden", "Jetzt buchen", "Termin buchen"
 - Sections: "Top bewertet in Basel", "Spare bis zu 50%", "Was Basel sagt", "Entdecke Basel"

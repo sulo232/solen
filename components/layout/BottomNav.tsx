@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useEffect, useState, useRef } from "react";
-import { House, Search, Compass, Calendar, User, LayoutDashboard } from "lucide-react";
+import { House, Search, Compass, User, LayoutDashboard } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ExpandableNavTabs from "@/components/ui/expandable-tabs";
 import type { ExpandableTabsItem } from "@/components/ui/expandable-tabs";
@@ -59,13 +59,12 @@ export default function BottomNav() {
   // Profile route: login redirect if not logged in
   const profileRoute = isLoggedIn ? `/${locale}/profile` : `/${locale}/auth/login`;
 
-  // Build tabs and routes dynamically based on role
+  // Q14 lock 2026-04-22: 4 tabs only (Home · Suche · Discover · Profil).
+  // Termine removed (Q9: /termine redirects to /profile/bookings, reachable via Profil tab).
   const tabs: ExpandableTabsItem[] = [
     { title: "Home", icon: House },
     { title: "Suche", icon: Search },
     { title: "Discover", icon: Compass },
-    { type: "separator" as const },
-    { title: "Termine", icon: Calendar },
     { title: "Profil", icon: User },
   ];
 
@@ -73,8 +72,6 @@ export default function BottomNav() {
     `/${locale}`,
     `/${locale}/discover`,
     `/${locale}/discover`,
-    null, // separator
-    `/${locale}/termine`,
     profileRoute,
   ];
 

@@ -158,8 +158,8 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       )}
 
       <Link href={href} className="block w-full h-full">
-        {/* Cover photo — DESIGN_SPEC §3.1: 4:3 compact, info-dense */}
-        <div className="relative w-full aspect-[4/3] bg-s-bg-sunken overflow-hidden rounded-t-[16px] group/carousel img-hover-zoom gpu">
+        {/* Cover photo — Q1 locked 2026-04-22: 1:1 SQUARE (was 4:3 landscape) */}
+        <div className="relative w-full aspect-square bg-s-bg-sunken overflow-hidden rounded-[16px] group/carousel img-hover-zoom gpu">
           {allPhotos.length > 0 ? (
             <div
               ref={scrollContainerRef}
