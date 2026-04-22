@@ -9,7 +9,7 @@
 **Read:** `_tasks/SOLEN_DESIGN.md`
 **Preview:** `public/solen-coral.html` → `http://localhost:3000/solen-coral.html`
 
-**Palette:** coral `#E8624A` · cream `#FAF6EF` · warm ink `#1A1209` (+ amber / plum / sage / blue / yellow extended family)
+**Palette:** coral `#E8624A` · white `#FFFFFF` page bg · warm ink `#1A1209` (+ amber / plum / sage / blue / yellow extended family). Page bg reverted from cream to white 2026-04-22 per Q15 lock.
 **Fonts:** Bebas Neue (display) + Syne (headings) + DM Sans (body) — Google Fonts
 **Icons:** lucide-react outlined
 **Cards:** 1:1 square cover photos (locked 2026-04-20)

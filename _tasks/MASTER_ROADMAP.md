@@ -15,14 +15,17 @@ Solen = **Switzerland's default beauty & wellness booking marketplace.** Basel i
 ## Table of Contents
 
 - [Phase 0 — Design System Lock](#phase-0) *(in progress, ~95%)*
-- [Phase 1 — Ship-Blockers & Polish](#phase-1) *(1-2 weeks)*
-- [Phase 2 — Scraped Directory Flywheel](#phase-2) *(1 week)*
-- [Phase 3 — Basel Public Launch](#phase-3) *(2-3 weeks)*
-- [Phase 4 — Moat Features](#phase-4) *(rolling, 4-8 weeks, parallel with 3)*
-- [Phase 5 — Swiss Expansion](#phase-5) *(2-4 weeks after Basel stable)*
-- [Phase 6 — Growth & Network Effects](#phase-6) *(ongoing)*
-- [Phase 7 — Scale / DACH / EU](#phase-7) *(6+ months out)*
+- [**Phase 1 — UI Polish (Claude Design main focus)**](#phase-1) *(2-3 weeks)* **← Q6a locked: UI first, site isn't live**
+- [Phase 2 — Safety, Payments & i18n](#phase-2) *(1-2 weeks, AFTER UI is locked)*
+- [Phase 3 — Scraped Directory Flywheel](#phase-2) *(1 week, Swiss-wide not Basel-only)*
+- [Phase 4 — Public Launch (Swiss-wide)](#phase-3) *(2-3 weeks)*
+- [Phase 5 — Moat Features](#phase-4) *(rolling, 4-8 weeks, parallel with Phase 4)*
+- [Phase 6 — City Acquisition Focus](#phase-5) *(ongoing post-launch)*
+- [Phase 7 — Growth & Network Effects](#phase-6) *(ongoing)*
+- [Phase 8 — DACH / EU](#phase-7) *(6+ months out)*
 - [Appendix: Non-negotiables, risks, ops](#appendix)
+
+> **⚠️ Numbering shift 2026-04-22:** UI polish was inserted as Phase 1 per Q6a lock. All subsequent phases shifted +1. Old "Phase 1 Ship-Blockers" content is now Phase 2. Body of this doc may still reference old numbers — ship-blocking cleanup pass needed during Phase 2.
 
 ---
 
@@ -48,14 +51,65 @@ Clean repo, single design source of truth, ready-for-Claude-Design bundle.
 
 ---
 
-## <a id="phase-1"></a> PHASE 1 — Ship-Blockers & Polish (1-2 weeks)
+## <a id="phase-1"></a> PHASE 1 — UI Polish (THIS is Claude Design's job) (2-3 weeks)
+
+> **Locked 2026-04-22 Q6a:** Site isn't live. Claude Design's entire point is to perfect the UI BEFORE anyone sees it. UI polish comes BEFORE payment safety (Phase 2). Once UI is shipped-quality, we lock it and layer safety/i18n on top.
 
 ### Goal
-Fix everything that blocks shipping Basel to real customers.
+World-class visual polish across every user-facing page. Passes "would a Swiss salon owner trust this platform at first glance?" test.
 
 ### Ship-blocker categories
 
-#### 1.1 Payment flow (Stripe)
+#### 1.0 Homepage V6 visual lock (Claude Design main focus)
+- [ ] All 13 homepage sections match SOLEN_DESIGN.md locked specs
+- [ ] Salon card image carousel (Q3 — swipeable, pagination dots, Airbnb pattern)
+- [ ] Solen Favorit 4th badge (Q10, yellow `#F2C144`, algorithmic curation)
+- [ ] Search bar 3-segment pill "Was · Wo · Wann" (Q4)
+- [ ] Swiss-wide voice throughout (Q5 — "Für [detected city]" dynamic, fallback "Für deine Stadt")
+- [ ] Bottom tab bar locked 4 tabs
+- [ ] `--sh-xl` removed from all CSS tokens (Q11)
+
+#### 1.1 Component-by-component polish
+- [ ] Salon detail page — photo gallery, services, reviews, sticky booking sidebar
+- [ ] Booking wizard — 4 steps matching locked design
+- [ ] Checkout page — Stripe card form + tip + order summary in new design
+- [ ] Dashboard — salon-owner side with SOLEN_DESIGN tokens
+- [ ] All filter pills, modals, bottom sheets
+- [ ] Empty states, skeletons, toasts, loading
+- [ ] Footer — 4 columns desktop, accordion mobile
+- [ ] Cookie banner
+- [ ] 404 and error pages
+
+#### 1.2 Mobile UX polish
+- [ ] Mobile Lighthouse ≥90 across core pages
+- [ ] Touch targets ≥44px everywhere (WCAG)
+- [ ] Active-scale, tap bounce on every interactive
+- [ ] Backdrop blur verified on iOS Safari
+- [ ] Bottom-sheet gestures (swipe to close, drag handle)
+
+#### 1.3 Claude Design iteration cycles
+- [ ] Homepage iteration (1-2 weeks of Claude Design runs)
+- [ ] Salon detail iteration (3-5 days)
+- [ ] Booking flow iteration (3-5 days)
+- [ ] Dashboard iteration (1 week)
+- Each iteration locks decisions into SOLEN_DESIGN.md §20
+
+### Exit criteria
+- Every user-facing page matches SOLEN_DESIGN.md
+- Claude Design has no further polish requests
+- Visual QA sign-off by user
+- Build green, no TypeScript errors, no runtime warnings
+
+---
+
+## <a id="phase-2"></a> PHASE 2 — Safety, Payments & i18n (1-2 weeks)
+
+### Goal
+Make the UI-polished app **actually safe to ship money through**. Fix every payment edge case, lock down i18n, eliminate silent failures.
+
+### Ship-blocker categories
+
+#### 2.0 Payment flow (Stripe)
 - [ ] End-to-end test: Stripe Payment Intent → booking confirm → webhook → salon notification
 - [ ] TWINT support (Swiss mobile payment — huge adoption, ~70% of Swiss consumers)
 - [ ] Cancellation refund logic (automatic if cancelled within salon's policy window)
