@@ -236,6 +236,13 @@ export default function SalonReviews({
                             {t("verifiedBooking")}
                           </span>
                         )}
+                        {/* Reply badge — signals "salon has replied" at-a-glance before scrolling to read the reply */}
+                        {rev.review_replies && rev.review_replies.length > 0 && rev.review_replies[0].is_public && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-s-coral/10 text-s-coral text-xs font-medium" aria-label={t("salonReplied")}>
+                            <MessageSquare size={12} />
+                            {t("salonReplied")}
+                          </span>
+                        )}
                       </div>
                       <Stars rating={rev.rating} size="sm" />
                     </div>
