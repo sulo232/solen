@@ -34,7 +34,7 @@ export async function GET(
   // Fetch related data in parallel
   const [servicesRes, staffRes, reviewsRes] = await Promise.all([
     supabase.from("services").select("*").eq("salon_id", salon.id).eq("is_active", true),
-    supabase.from("staff_members").select("*").eq("salon_id", salon.id).eq("is_active", true),
+    supabase.from("staff_members").select("*, staff_portfolio_images(id, image_url, sort_order)").eq("salon_id", salon.id).eq("is_active", true),
     supabase
       .from("reviews")
       .select("*, profiles(display_name, avatar_url), review_replies(id, reply_text, is_public), review_photos(id, photo_url, sort_order)")

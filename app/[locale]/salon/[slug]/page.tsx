@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import StaffSection from "@/components/salon/StaffSection";
+import StaffPortfolio from "@/components/StaffPortfolio";
 import SimilarSalons from "@/components/salon/SimilarSalons";
 import WaitTimeDisplay from "@/components/barber/WaitTimeDisplay";
 import RemoteQueueJoin from "@/components/barber/RemoteQueueJoin";
@@ -590,6 +591,20 @@ export default function SalonProfilePage() {
                         onBook={(staffId) => { setSelectedStaff(staffId); setCalendarOpen(true); }}
                       />
                     </div>
+                    {/* Instagram-style portfolios — render per staff member who has images */}
+                    {salon.staff.some((m: any) => (m.staff_portfolio_images ?? []).length > 0) && (
+                      <div className="mt-6 flex flex-col gap-4">
+                        {salon.staff.filter((m: any) => (m.staff_portfolio_images ?? []).length > 0).map((m: any) => (
+                          <StaffPortfolio
+                            key={m.id}
+                            member={m}
+                            images={m.staff_portfolio_images}
+                            salonSlug={slug}
+                            onBook={(staffId) => { setSelectedStaff(staffId); setCalendarOpen(true); }}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
