@@ -126,15 +126,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
 
 /* ═══ HERO VISUAL — right side (SQUARE cover photo) ═══ */
 .hero-visual{position:relative;height:560px}
+/* Hero visual card: Q16 2026-04-22 — solid sand bg, no gradient. Real photo overrides when loaded. */
 .hv-main{
   position:absolute;top:40px;left:20px;right:0;bottom:0;
-  background:linear-gradient(145deg,var(--amber),var(--coral));
+  background:var(--sand);
   border-radius:var(--r20);
   box-shadow:var(--sh-lg);
   display:flex;flex-direction:column;justify-content:flex-end;
   overflow:hidden
 }
-.hv-photo-text{font-family:'Bebas Neue',sans-serif;font-size:72px;color:rgba(255,255,255,.18);letter-spacing:.04em;padding:24px}
+.hv-photo-text{font-family:'Bebas Neue',sans-serif;font-size:72px;color:rgba(26,18,9,.18);letter-spacing:.04em;padding:24px}
 .hv-overlay{
   background:var(--g2-bg);backdrop-filter:var(--g2-blur);-webkit-backdrop-filter:var(--g2-blur);
   border-top:1px solid var(--gb);border-radius:0 0 var(--r20) var(--r20);
@@ -246,7 +247,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
 .slots-sec{background:var(--bg);padding:80px 48px}
 .slot-panel{background:var(--raised);border:1px solid var(--b);border-radius:var(--r20);padding:28px;box-shadow:var(--sh-md)}
 .slot-salon{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--b)}
-.slot-salon-img{width:48px;height:48px;border-radius:var(--r12);background:linear-gradient(135deg,var(--amber),var(--coral));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:rgba(255,255,255,.9);box-shadow:var(--sh-sm)}
+/* Slot salon avatar: Q16 — solid coral bg (was amber→coral gradient) */
+.slot-salon-img{width:48px;height:48px;border-radius:var(--r12);background:var(--coral);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:rgba(255,255,255,.9);box-shadow:var(--sh-sm)}
 .slot-salon-name{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:15px;color:var(--ink)}
 .slot-salon-meta{font-size:12px;color:var(--ink3)}
 .slots-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);font-family:'Fraunces',Georgia,serif;margin-bottom:12px;display:block}
@@ -314,7 +316,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
 
 /* ═══ PARTNER / B2B ═══ */
 .partner-sec{background:var(--bg);padding:80px 48px;position:relative;overflow:hidden}
-.partner-inner{background:linear-gradient(135deg,var(--amber) 0%,var(--coral) 55%,var(--plum) 100%);border-radius:var(--r20);padding:56px 48px;position:relative;overflow:hidden;box-shadow:var(--sh-lg)}
+/* Partner block: Q16 2026-04-22 — solid plum bg, no gradient */
+.partner-inner{background:var(--plum);border-radius:var(--r20);padding:56px 48px;position:relative;overflow:hidden;box-shadow:0 12px 40px rgba(74,30,60,.22)}
 .p-deco1{position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.08);right:-60px;top:-60px}
 .p-deco2{position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.05);left:48%;bottom:-40px}
 .partner-content{position:relative;z-index:1}
@@ -502,12 +505,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
       <button class="btn btn-outline btn-sm reveal r3">Alle ansehen →</button>
     </div>
     <div class="cats-grid">
-      <div class="cat reveal"><div class="cat-bg" style="background:linear-gradient(145deg,#D4870A,#E8624A)"></div><div class="cat-label"><div class="cat-name">COIFFEUR</div><div class="cat-count">42 Salons</div></div></div>
-      <div class="cat reveal r2"><div class="cat-bg" style="background:linear-gradient(145deg,#4A1E3C,#6BA3C8)"></div><div class="cat-label"><div class="cat-name">BARBER</div><div class="cat-count">18 Shops</div></div></div>
-      <div class="cat reveal r3"><div class="cat-bg" style="background:linear-gradient(145deg,#E8624A,#F2C144)"></div><div class="cat-label"><div class="cat-name">NAILS</div><div class="cat-count">24 Studios</div></div></div>
-      <div class="cat reveal r4"><div class="cat-bg" style="background:linear-gradient(145deg,#7BA688,#6BA3C8)"></div><div class="cat-label"><div class="cat-name">SPA</div><div class="cat-count">11 Anbieter</div></div></div>
-      <div class="cat reveal r5"><div class="cat-bg" style="background:linear-gradient(145deg,#C9A96E,#E8624A)"></div><div class="cat-label"><div class="cat-name">MAKEUP</div><div class="cat-count">8 Studios</div></div></div>
-      <div class="cat reveal r6"><div class="cat-bg" style="background:linear-gradient(145deg,#4A1E3C,#7BA688)"></div><div class="cat-label"><div class="cat-name">WAXING</div><div class="cat-count">15 Salons</div></div></div>
+      <!-- Q16 2026-04-22: category tiles = solid per-category color + Bebas name (no gradient fill). Real photo replaces when available. -->
+      <div class="cat reveal"><div class="cat-bg" style="background:#D4870A"></div><div class="cat-label"><div class="cat-name">COIFFEUR</div><div class="cat-count">42 Salons</div></div></div>
+      <div class="cat reveal r2"><div class="cat-bg" style="background:#4A1E3C"></div><div class="cat-label"><div class="cat-name">BARBER</div><div class="cat-count">18 Shops</div></div></div>
+      <div class="cat reveal r3"><div class="cat-bg" style="background:#E8624A"></div><div class="cat-label"><div class="cat-name">NAILS</div><div class="cat-count">24 Studios</div></div></div>
+      <div class="cat reveal r4"><div class="cat-bg" style="background:#7BA688"></div><div class="cat-label"><div class="cat-name">SPA</div><div class="cat-count">11 Anbieter</div></div></div>
+      <div class="cat reveal r5"><div class="cat-bg" style="background:#C9A96E"></div><div class="cat-label"><div class="cat-name">MAKEUP</div><div class="cat-count">8 Studios</div></div></div>
+      <div class="cat reveal r6"><div class="cat-bg" style="background:#6BA3C8"></div><div class="cat-label"><div class="cat-name">WAXING</div><div class="cat-count">15 Salons</div></div></div>
     </div>
   </div>
 </section>
@@ -537,7 +541,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
     </div>
     <div class="cards-grid">
       <div class="card reveal">
-        <div class="card-img" style="background:linear-gradient(135deg,#D4870A,#E8624A)">
+        <div class="card-img" style="background:var(--sand)">
           AMARA
           <button class="card-heart"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1209" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
           <div class="card-badge">Solen Top Pick</div>
@@ -554,7 +558,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
         </div>
       </div>
       <div class="card reveal r2">
-        <div class="card-img" style="background:linear-gradient(135deg,#4A1E3C,#6BA3C8)">
+        <div class="card-img" style="background:var(--plum)">
           NORI
           <button class="card-heart"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1209" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
         </div>
@@ -570,7 +574,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
         </div>
       </div>
       <div class="card reveal r3">
-        <div class="card-img" style="background:linear-gradient(135deg,#7BA688,#6BA3C8)">
+        <div class="card-img" style="background:var(--sage)">
           KORU
           <button class="card-heart"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1209" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
           <div class="card-badge">Solen Top Pick</div>

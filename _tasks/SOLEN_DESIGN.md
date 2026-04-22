@@ -195,7 +195,7 @@ Every margin / padding / gap is a multiple of **8px**.
 | Salon cards, review cards | `--sh-sm` | `--sh-lg` (NOT xl) |
 | Category tiles, insta tiles | `--sh-sm` | `--sh-lg` (tiles are decorative, but no `--sh-xl` per Q11) |
 | Stat glass, booking glass | `--sh-md` | same |
-| Partner gradient block | inline custom shadow | — (hero-level feature, declared inline: `0 12px 40px rgba(232,98,74,.18)`) |
+| Partner block (solid plum — Q16 2026-04-22) | inline custom shadow | — (hero-level feature, declared inline: `0 12px 40px rgba(74,30,60,.22)`) |
 | Modal / bottom sheet | `--sh-lg` | — |
 
 **Rule (Q11 lock 2026-04-22):** `--sh-xl` token DELETED from the system. Max shadow available is `--sh-lg`. Hero-level moments (max 1 per page) use inline custom shadow declarations — never a reused token.
@@ -236,7 +236,7 @@ We had "blobs in every section" rot. New rule: blobs are decorative and reserved
 
 1. **Hero section** — max 3 soft background blobs (coral, blue, amber at 8-15% opacity)
 2. **Dark sections** (Last Minute plum, Quartier ink, Footer ink) — max 2 blobs for depth
-3. **Partner gradient block** — 2 decorative circles on the gradient
+3. **Partner block** (now solid plum per Q16) — up to 2 decorative circles in `rgba(255,255,255,.08)` for depth, no gradient fill
 4. **Instagram tiles** — THE blob shapes themselves (organic border-radius on each tile is the visual identifier)
 
 ### BANNED blob usage
@@ -244,6 +244,25 @@ We had "blobs in every section" rot. New rule: blobs are decorative and reserved
 - ❌ Every section does NOT get blobs
 - ❌ Cards section, categories section, reviews section, stats — **no blobs**
 - ❌ Light sections with white cards already pop — no additional "background color blobs"
+
+### Q16 (2026-04-22) — No decorative gradients anywhere
+
+Solen's look is **Swiss-editorial magazine**, not SaaS-gradient. Every decorative gradient is replaced with a solid color block + strong typography. Functional gradients (image text-legibility overlays) are preserved.
+
+| Element | Was | Now |
+|---------|-----|-----|
+| Partner B2B block | `linear-gradient(135deg, amber → coral → plum)` | **Solid `plum` bg** · amber eyebrow · Bebas headline (white) · coral CTA · up to 2 decorative `rgba(255,255,255,.08)` circles for depth |
+| Deals banner | `linear-gradient(135deg, peach → peach-light)` | **Solid `amber` bg** · Bebas big "12" numeral on left · white title + ink sub · coral CTA on right |
+| Category tiles | Per-category gradient bg | **Real photo** when available · fallback = solid per-category color (Coiffeur amber / Barber plum / Nails coral / Spa sage / Makeup sand / Waxing blue) with Bebas category name centered |
+| Hero visual card (salon photo placeholder) | `linear-gradient(145deg, amber, coral)` | **Solid `sand`** with Bebas salon name at 15% opacity (or letter initial large). Real photo replaces when loaded. |
+| Map teaser | `radial-gradient(coral-subtle + sage-subtle)` | **Solid `coral-subtle`** bg · large lucide map icon centered (coral, 60% opacity) · Bebas "KARTE" label · green CTA pill |
+
+### PRESERVED — functional text-legibility overlays
+- Salon card photo bottom gradient (for badge contrast on photos): transparent → `rgba(26,18,9,.45)` over bottom 20% of image, ONLY used if badges sit on photo
+- Discovery card overlay: transparent → `rgba(26,18,9,.78)` over bottom 40%, for white-text-on-photo legibility
+- Review card top-left accent: not a gradient (was never one)
+
+**Rule:** A gradient is allowed ONLY if the alternative is unreadable text on a photo. Pure decoration = denied.
 
 ### Instagram tile blob shapes (keep these — they're the signature playfulness)
 
@@ -479,6 +498,10 @@ Every section header:
 | "Von Basel. Für Basel." hyperlocal voice (Q5 RETIRED 2026-04-22) | "Für [detected city]" dynamic, fallback "Für deine Stadt" (Swiss-wide) |
 | 4-segment search bar (Q4 RETIRED 2026-04-22) | 3-segment: Was · Wo · Wann |
 | `--sh-xl` token (Q11 RETIRED 2026-04-22) | Max is `--sh-lg`, hero moments use inline custom |
+| `--sh-coral` colored-glow token (Q16 RETIRED 2026-04-22) | Use `--sh-sm` warm-ink shadow |
+| `--sh-amber` colored-glow token (Q16 RETIRED 2026-04-22) | Use `--sh-sm` warm-ink shadow |
+| Decorative gradients on partner block, deals banner, category tiles, hero card, map teaser (Q16 RETIRED) | Solid color blocks + Bebas Neue + warm ink (Swiss-editorial) |
+| `linear-gradient` / `radial-gradient` for decorative fills (Q16 RETIRED) | Solid colors. Functional dark-bottom overlays for text-on-photo legibility ARE preserved. |
 | Dark mode | Single light theme |
 | emoji as UI icons | lucide-react SVG |
 | Availability pill removed V2 attempt | **Keep** availability pill (sage) |
@@ -523,5 +546,6 @@ Every design decision in this doc is renderable in that file. When iterating in 
 | 2026-04-22 | **Q13: Scraped profiles get "Claim this listing" ribbon + faint watermark** | Honest signal to customers ("not actively managed"), conversion hook for salon owners. Avoids sad-grey aesthetic. |
 | 2026-04-22 | **Q14: Mobile bottom nav = 4 tabs** (Home · Entdecken · Suchen · Profil) | Locked. 3 too sparse, 5 too cramped on small iPhones. |
 | 2026-04-22 | **Q15: Page bg reverted to WHITE `#FFFFFF` (not cream)** | User override. Cream retired in favor of clean white. Warmth preserved via coral + Bebas + Fraunces editorial moves, not via bg tint. |
+| 2026-04-22 | **Q16: Decorative gradients killed across the system** | User feedback: "hate all the glow or gradient". Solen pivots from SaaS-gradient vibe to Swiss-editorial magazine aesthetic (solid color blocks + strong typography). FUNCTIONAL image-text-legibility overlays (e.g. dark gradient at bottom of photos so white text reads) are preserved — they're accessibility, not decoration. Applies to: partner B2B block (now solid plum), deals banner (solid amber), category tiles (real photos + solid-color fallback), hero visual card (solid sand), map teaser (solid coral-subtle). `--sh-coral` and `--sh-amber` colored-glow tokens also deleted. |
 | 2026-04-20 | **Salon card shadow diet** | Rest `--sh-xs` (was `--sh-sm`), hover `--sh-sm` (was `--sh-xl`). Added: border goes coral/40 on hover, image scales 1.03 over 500ms, translateY(-3px). Color + motion replace shadow explosion. |
 | 2026-04-20 | **Category tile shadow diet** | Removed `box-shadow` entirely (was `--sh-sm` rest → `--sh-xl` hover). Added 1px ink/06 border rest. Hover: border coral/40, scale 1.04, rotate(-1deg), filter saturate(1.1). Vibrant gradients create their own depth. |
