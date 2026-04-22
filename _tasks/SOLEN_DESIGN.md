@@ -21,10 +21,10 @@ Warm, confident, never cool. Built around **cream** base + **terracotta coral** 
 ### Core
 
 ```css
---bg:       #FAF6EF;   /* cream — page base */
---sur:      #F3EDE2;   /* surface — secondary bg */
+--bg:       #FFFFFF;   /* WHITE page base (Q15 2026-04-22) */
+--sur:      #F5F0E8;   /* warm surface — recessed states, NOT page bg */
 --raised:   #FFFFFF;   /* card surface */
---sun:      #EDE5D8;   /* recessed (inputs) */
+--sun:      #EDE5D8;   /* warm recessed (inputs, keep for card depth) */
 
 --ink:      #1A1209;   /* primary text — warm ink, never #000 */
 --ink2:     #4A3D2E;   /* secondary text */
@@ -179,7 +179,7 @@ Every margin / padding / gap is a multiple of **8px**.
 --sh-sm:    0 1px 3px rgba(26,18,9,.07),  0 2px 8px  rgba(26,18,9,.05);
 --sh-md:    0 2px 4px rgba(26,18,9,.08),  0 4px 16px rgba(26,18,9,.06);
 --sh-lg:    0 4px 8px rgba(26,18,9,.09),  0 8px 32px rgba(26,18,9,.07);
---sh-xl:    0 8px 16px rgba(26,18,9,.10), 0 20px 60px rgba(26,18,9,.08);
+/* --sh-xl RETIRED 2026-04-22 per Q11 — max shadow is now --sh-lg. Hero-level moments use custom inline declaration. */
 --sh-coral:   0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15);
 --sh-coral-h: 0 4px 8px rgba(232,98,74,.32), 0 8px 28px rgba(232,98,74,.22);
 --sh-amber:   0 2px 4px rgba(212,135,10,.22),0 4px 16px rgba(212,135,10,.14);
@@ -193,12 +193,12 @@ Every margin / padding / gap is a multiple of **8px**.
 | Badges, pills, tags | `--sh-xs` | same |
 | Nav pill, buttons | `--sh-sm` | `--sh-md` |
 | Salon cards, review cards | `--sh-sm` | `--sh-lg` (NOT xl) |
-| Category tiles, insta tiles | `--sh-sm` | `--sh-xl` (tiles are decorative, peak shadow is justified) |
+| Category tiles, insta tiles | `--sh-sm` | `--sh-lg` (tiles are decorative, but no `--sh-xl` per Q11) |
 | Stat glass, booking glass | `--sh-md` | same |
-| Partner gradient block | `--sh-xl` | — (hero-level feature, only one per page) |
+| Partner gradient block | inline custom shadow | — (hero-level feature, declared inline: `0 12px 40px rgba(232,98,74,.18)`) |
 | Modal / bottom sheet | `--sh-lg` | — |
 
-**Rule:** `--sh-xl` appears at most **2 places per page** (partner block + one hero element). Everywhere else max is `--sh-lg` on hover.
+**Rule (Q11 lock 2026-04-22):** `--sh-xl` token DELETED from the system. Max shadow available is `--sh-lg`. Hero-level moments (max 1 per page) use inline custom shadow declarations — never a reused token.
 
 ---
 
@@ -305,7 +305,7 @@ Ab CHF 45
 
 **Tags:** 10px Fraunces 700 UPPERCASE, `--r99`, tinted per category (yellow for Coiffeur, blue for Farbe, plum for Barber, amber for Rasur, sage for Massage, coral for Spa).
 
-**Hover:** `translateY(-5px)`, shadow `--sh-sm → --sh-xl`, border `--b → --b2` (400ms).
+**Hover:** `translateY(-3px)`, shadow `--sh-xs → --sh-sm`, border `--b → rgba(232,98,74,.4)` (coral/40), image scales 1.03 (500ms) — Q11 lock: no `--sh-xl` anywhere.
 
 ### Review card
 - White bg, `--r20`, `1px --b` border, `--sh-sm` → `--sh-lg` on hover
@@ -475,6 +475,10 @@ Every section header:
 | Glass on section bgs | Solid `--bg` / `--sur` |
 | Blobs in every section | Hero + dark sections + Instagram tiles ONLY (§7) |
 | `--sh-xl` on regular card hover | `--sh-lg` max on hover |
+| Cream `#FAF6EF` page bg (Q15 RETIRED 2026-04-22) | White `#FFFFFF` page bg |
+| "Von Basel. Für Basel." hyperlocal voice (Q5 RETIRED 2026-04-22) | "Für [detected city]" dynamic, fallback "Für deine Stadt" (Swiss-wide) |
+| 4-segment search bar (Q4 RETIRED 2026-04-22) | 3-segment: Was · Wo · Wann |
+| `--sh-xl` token (Q11 RETIRED 2026-04-22) | Max is `--sh-lg`, hero moments use inline custom |
 | Dark mode | Single light theme |
 | emoji as UI icons | lucide-react SVG |
 | Availability pill removed V2 attempt | **Keep** availability pill (sage) |

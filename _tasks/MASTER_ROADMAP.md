@@ -164,7 +164,7 @@ Currently has 1 entry. Consolidate from:
 
 ---
 
-## <a id="phase-2"></a> PHASE 2 — Scraped Directory Flywheel (1 week)
+## <a id="phase-3"></a> PHASE 3 — Scraped Directory Flywheel (1 week)
 
 ### Goal
 Populate the platform with 100-300 Basel salons as **passive profiles** (`salons.source='scraped'`). SEO-indexed. Converts anonymous Google traffic to "hey this isn't my business, can I claim it?" inquiries.
@@ -193,7 +193,7 @@ Populate the platform with 100-300 Basel salons as **passive profiles** (`salons
 
 ---
 
-## <a id="phase-3"></a> PHASE 3 — Basel Public Launch (2-3 weeks)
+## <a id="phase-4"></a> PHASE 4 — Public Launch (Swiss-wide) (2-3 weeks)
 
 ### Goal
 Convert 5-10 scraped salons to paying partners. Go-live with public marketing. Enable ads + referral program.
@@ -238,7 +238,7 @@ Convert 5-10 scraped salons to paying partners. Go-live with public marketing. E
 
 ---
 
-## <a id="phase-4"></a> PHASE 4 — Moat Features (rolling, parallel with Phase 3)
+## <a id="phase-5"></a> PHASE 5 — Moat Features (rolling, parallel with Phase 4)
 
 ### Goal
 Ship the features that differentiate Solen from Fresha/Treatwell and are hard to copy.
@@ -297,7 +297,7 @@ Ship the features that differentiate Solen from Fresha/Treatwell and are hard to
 
 ---
 
-## <a id="phase-5"></a> PHASE 5 — Swiss Expansion (2-4 weeks after Basel stable)
+## <a id="phase-6"></a> PHASE 6 — City Acquisition Focus (ongoing post-launch)
 
 ### Goal
 Open Zürich + Bern. Multi-city search. i18n complete.
@@ -318,7 +318,7 @@ Open Zürich + Bern. Multi-city search. i18n complete.
 
 ---
 
-## <a id="phase-6"></a> PHASE 6 — Growth & Network Effects (ongoing)
+## <a id="phase-7"></a> PHASE 7 — Growth & Network Effects (ongoing)
 
 ### Goal
 Turn the marketplace from bookings-only into a daily-use habit.
@@ -354,7 +354,7 @@ Turn the marketplace from bookings-only into a daily-use habit.
 
 ---
 
-## <a id="phase-7"></a> PHASE 7 — Scale / DACH / EU (6+ months out)
+## <a id="phase-8"></a> PHASE 8 — Scale / DACH / EU (6+ months out)
 
 ### Goal
 Beyond Switzerland if/when ready.
@@ -433,4 +433,4 @@ Beyond Switzerland if/when ready.
 ---
 
 **Status line:**
-We are in Phase 0 wrap. Next meaningful work = Phase 1.1 (payment flow end-to-end test + TWINT integration) OR Phase 1.5 (consolidate INCOMPLETE_FEATURES). Both are unblocking future phases.
+Phase 0 wrapped. **Phase 1 (UI polish via Claude Design) = current, gated on Claude Design rate limit reset.** While waiting, autonomous doc-consistency cleanup continues. When Claude Design returns, iterate homepage first, then salon detail, then booking flow, then dashboard. Each iteration locks decisions into SOLEN_DESIGN.md §20.

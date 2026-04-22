@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>solen.ch — Beauty. Basel.</title>
+<title>solen.ch — Beauty, direkt gebucht.</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
@@ -24,7 +24,7 @@
   --sh-sm:0 1px 3px rgba(26,18,9,.07),0 2px 8px rgba(26,18,9,.05);
   --sh-md:0 2px 4px rgba(26,18,9,.08),0 4px 16px rgba(26,18,9,.06);
   --sh-lg:0 4px 8px rgba(26,18,9,.09),0 8px 32px rgba(26,18,9,.07);
-  --sh-xl:0 8px 16px rgba(26,18,9,.10),0 20px 60px rgba(26,18,9,.08);
+  /* --sh-xl REMOVED 2026-04-22 per Q11. Use --sh-lg or inline custom shadow for hero moments. */
   --sh-coral:0 2px 4px rgba(232,98,74,.25),0 4px 16px rgba(232,98,74,.15);
   --sh-coral-h:0 4px 8px rgba(232,98,74,.32),0 8px 28px rgba(232,98,74,.22);
   --sh-amber:0 2px 4px rgba(212,135,10,.22),0 4px 16px rgba(212,135,10,.14);
@@ -114,7 +114,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
   max-width:780px;
   transition:border-color 200ms var(--e),box-shadow 200ms var(--e)
 }
-.search-bar:focus-within{border-color:var(--b3);box-shadow:var(--sh-xl),inset 0 1px 0 rgba(255,255,255,.90)}
+.search-bar:focus-within{border-color:var(--b3);box-shadow:var(--sh-lg),inset 0 1px 0 rgba(255,255,255,.90)}
 .seg{padding:0 20px;border-right:1px solid var(--b);flex:1;display:flex;flex-direction:column;justify-content:center;min-height:68px;cursor:pointer;transition:background 150ms var(--e)}
 .seg:hover{background:rgba(26,18,9,.025)}
 .seg-l{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);font-family:'Fraunces',Georgia,serif;margin-bottom:3px}
@@ -130,7 +130,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
   position:absolute;top:40px;left:20px;right:0;bottom:0;
   background:linear-gradient(145deg,var(--amber),var(--coral));
   border-radius:var(--r20);
-  box-shadow:var(--sh-xl);
+  box-shadow:var(--sh-lg);
   display:flex;flex-direction:column;justify-content:flex-end;
   overflow:hidden
 }
@@ -314,7 +314,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
 
 /* ═══ PARTNER / B2B ═══ */
 .partner-sec{background:var(--bg);padding:80px 48px;position:relative;overflow:hidden}
-.partner-inner{background:linear-gradient(135deg,var(--amber) 0%,var(--coral) 55%,var(--plum) 100%);border-radius:var(--r20);padding:56px 48px;position:relative;overflow:hidden;box-shadow:var(--sh-xl)}
+.partner-inner{background:linear-gradient(135deg,var(--amber) 0%,var(--coral) 55%,var(--plum) 100%);border-radius:var(--r20);padding:56px 48px;position:relative;overflow:hidden;box-shadow:var(--sh-lg)}
 .p-deco1{position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.08);right:-60px;top:-60px}
 .p-deco2{position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.05);left:48%;bottom:-40px}
 .partner-content{position:relative;z-index:1}
@@ -419,8 +419,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
   </div>
   <div class="hero-inner w" style="padding-top:0;padding-bottom:0">
     <div>
-      <span class="hero-eyebrow reveal">Von Basel. Für Basel.</span>
-      <h1 class="hero-h1 reveal r2">BEAUTY.<br><span class="coral">BASEL.</span></h1>
+      <span class="hero-eyebrow reveal">Von der Schweiz. Für dich.</span>
+      <h1 class="hero-h1 reveal r2">BEAUTY.<br><span class="coral">DIREKT GEBUCHT.</span></h1>
       <p class="hero-sub reveal r3">Coiffeur, Barber, Nails &amp; Spa — buche jetzt in deinem Quartier. Der erste Salon-Booking-Service, der wirklich zu Basel passt.</p>
       <div class="hero-ctas reveal r4">
         <button class="btn btn-coral btn-lg">
@@ -459,20 +459,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);over
   <div style="max-width:1200px;margin:0 auto">
     <div class="search-bar">
       <div class="seg" style="border-radius:var(--r18) 0 0 var(--r18)">
-        <div class="seg-l">Kategorie</div>
+        <div class="seg-l">Was</div>
         <div class="seg-v">Coiffeur</div>
       </div>
       <div class="seg">
-        <div class="seg-l">Quartier</div>
-        <div class="seg-v ph">Wo in Basel?</div>
-      </div>
-      <div class="seg">
-        <div class="seg-l">Wann</div>
-        <div class="seg-v">Heute</div>
+        <div class="seg-l">Wo</div>
+        <div class="seg-v ph">Deine Stadt</div>
       </div>
       <div class="seg" style="border-right:none">
-        <div class="seg-l">Uhrzeit</div>
-        <div class="seg-v ph">Beliebig</div>
+        <div class="seg-l">Wann</div>
+        <div class="seg-v">Heute</div>
       </div>
       <button class="search-btn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
