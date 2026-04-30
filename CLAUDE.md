@@ -38,6 +38,60 @@ Previous AI sessions destroyed working code by rewriting files. Rules to prevent
 
 ---
 
+## 🗣 DISCUSS-BEFORE-EXECUTE (design + structural work)
+
+For anything that touches design tokens, component patterns, page layout, or the design system, follow this order. **Do NOT skip to execute.**
+
+1. **PROPOSE** — describe what you'd change, in plain English. Show 2–3 options (+ 1 wildcard "out of the box" option per user request) when there's real ambiguity. Cite the files/lines you'd touch.
+2. **WAIT** — for explicit user "ok / yes / go / lock it" before any Edit/Write.
+3. **EXECUTE** — make the smallest possible change. One topic per commit.
+4. **VERIFY** — show what changed (screenshot, `git diff`, or read-back of the relevant section).
+
+### Triggers — protocol IS required when the prompt:
+- mentions design / colors / fonts / spacing / pills / cards / hero / nav / typography
+- proposes a new component, pattern, or system rule
+- touches `public/solen-coral.html` or `_tasks/SOLEN_DESIGN.md`
+- pivots a locked decision (Q1–Qxx)
+- adds a new questionnaire question
+
+### Skip the protocol (act fast) when:
+- bug fix in production code with a clear repro
+- terminal-only commands (npm, git status, tsc check) per §⚡
+- user says **"just do it" / "go ahead" / "execute" / "ship it"**
+
+---
+
+## 🔍 VERIFY BEFORE ASKING
+
+Before asking the user **any** question, first try to answer it yourself. Only ask if you genuinely can't.
+
+### Verify yourself (do NOT ask) when the answer lives in:
+- **The codebase** — `grep`, `Read`, `find`, search the file tree
+- **Git history** — `git log`, `git diff`, `git show` (is it pushed? was it changed?)
+- **The file system** — does the file/folder/route exist? does it import X?
+- **The dev server / browser** — is the feature live? does it render? what's the actual computed style? (use `mcp__Claude_Preview__preview_eval` or `preview_screenshot`)
+- **Existing design docs** — `_tasks/SOLEN_DESIGN.md` (Q1–Q16 locks), `_rules/*.md`, `_tasks/GAP_AUDIT_V2.md`, `_tasks/BACKEND_NEEDS_UI.md`
+- **`package.json`, `tailwind.config.js`, `next.config.mjs`** — dependencies, build config, framework setup
+
+### You CAN ask the user when the answer is:
+- Their **preference, taste, or opinion** ("which palette do you like?")
+- Their **intent** ("is this a quick fix or a real feature?")
+- A **decision they alone can make** ("kill coral or keep it as a third accent?")
+- Information **only they have** (private credentials, business logic decisions, future plans)
+
+### Example — DON'T ask, verify:
+- ❌ "Does the salon card component support a swipe carousel?" → `grep "carousel\|swipe" components/SalonCard.tsx`
+- ❌ "Is the latest commit pushed?" → `git log origin/main..HEAD`
+- ❌ "What's the current hero font size?" → `Read public/solen-coral.html` or `preview_eval` for computed style
+- ❌ "Does Q12 exist in the design doc?" → `grep "Q12" _tasks/SOLEN_DESIGN.md`
+
+### Example — DO ask:
+- ✅ "Lock palette as green+amber, or keep coral as a third accent?"
+- ✅ "Is the navbar logo size locked, or open to change?"
+- ✅ "Pill-md at 36px or 40px — which feels right to you?"
+
+---
+
 ## ⚡ TERMINAL COMMAND AUTONOMY
 
 Execute standard dev commands **immediately without asking**.
