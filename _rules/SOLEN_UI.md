@@ -28,6 +28,11 @@ Every screen has ONE thing the user should do next. Can a stranger scan this in 
 
 > Ask: *What's the single most important action? Is it visually dominant? Is everything else clearly secondary?*
 
+### 2b. Signifiers — make the UI teach itself
+Good UI doesn't need instructions. The element's appearance signals what it does: a container around a selected tab tells you it's active; grayed-out text tells you it's disabled; a pressed-state on a button tells you the tap registered; a hover highlight tells you something is clickable. Every interactive element should *signify* its state and affordance visually — never rely on copy or tooltips alone.
+
+> Ask: *Without reading any text, can a user tell what's selected, what's clickable, what's disabled, and what's currently active?*
+
 ### 3. Spacing rhythm
 Beginner UIs are cramped. Use a consistent scale (Solen uses a 4/8/12/16/24/32/48/64 rhythm). Mobile needs **more** space than you think. Stacked content needs vertical breathing room to group naturally.
 
@@ -67,6 +72,11 @@ Contrast ≥4.5:1 for body text, ≥3:1 for large text and UI components. Tap ta
 
 > Ask: *Could someone with low vision / using only a keyboard / on a small phone still use this? Have I actually checked the contrast or am I guessing?*
 
+### 9b. Hierarchy via contrast
+Hierarchy comes from **contrast** — differences in size, weight, color, position. A card that lists info in equal-weight rows reads like a spreadsheet, not a design. Most important thing → larger, bolder, top-positioned, or color-differentiated. Price, status, key actions stand out because they *differ* from the surrounding text. Image at the top of a card adds color and makes scanning effortless.
+
+> Ask: *What is the most important thing on this surface? Is it visually different enough that the eye lands there first? Or does everything weigh the same?*
+
 ### 10. Brand fit
 Does this look like **Solen** — Swiss beauty marketplace, coral + warm ink + editorial typography, calm and confident — or like a generic SaaS template? Generic AI output gravitates toward purple gradients, glass cards everywhere, perfectly symmetric grids, dark mode toggles. Resist all of it.
 
@@ -90,6 +100,60 @@ Before you write code or generate a mockup, write a one-sentence answer to each 
 > 10. Brand fit — coral primary, Bebas display, square cover photos. Reads as Solen.
 
 If any answer is "I don't know" or "I didn't think about it," **stop and figure it out before outputting**.
+
+---
+
+## Concrete heuristics (the tactical layer)
+
+The principles above are the *thinking*. These are the **tactical rules of thumb** that turn a beginner-looking design into a polished one. Apply them when actually building:
+
+### Typography
+- **One font is enough.** Don't pair two display fonts. Solen uses Bebas (display) + Syne (headings) + DM Sans (body) — but each has a clear role and they never compete in the same block.
+- **Tighten large text.** On display/headline sizes (32px+), pull letter-spacing to ~`-2%` to `-3%` and drop line-height to `110%–120%`. Default browser values look loose at scale.
+- **Cap font sizes.** Landing/marketing pages: max ~6 sizes in the type scale. Dashboards/dense product UI: keep most text ≤24px, more sizes feels chaotic.
+- **Group with line-height + space.** Tight line-height inside a paragraph, larger gap between paragraphs. Whitespace groups things — that's another form of hierarchy.
+
+### Spacing
+- **Whitespace > grids.** A 12-column grid is a guideline, not a rule. Whitespace and visual rhythm matter more.
+- **4-point system.** Everything in multiples of 4 (4/8/12/16/20/24/32/48/64). Not because the number is magic — because every value can split in half cleanly, which keeps things consistent.
+- **~32px between unrelated items.** Closer for items that belong together (label + input, icon + text).
+
+### Color
+- **Start with one primary brand color**, then build a ramp from it (lighten for backgrounds, darken for text). For Solen that's coral `#E8624A` → coral tints/shades.
+- **Semantic colors mean things.** Blue = trust/info, red = danger/error, yellow = warning, green = success. Don't repurpose them for decoration — users learn the meaning across the web and you'll confuse them.
+- **Color for purpose, not decoration.** If a color isn't doing a job (signaling state, drawing attention to a CTA, branding), it's noise.
+
+### Shadows
+- **Reduce opacity, increase blur.** Default `0 4px 6px rgba(0,0,0,0.1)` shadows look harsh. Drop to ~5–10% opacity, push blur to 16–32px+.
+- **Cards = subtle. Popovers/floating = stronger.** Hierarchy: closer to the surface = lighter shadow.
+- **The shadow rule:** *if the shadow is the first thing you notice on a design, you're using it wrong.*
+
+### Buttons
+- **Padding ratio:** rough rule — horizontal padding ≈ vertical padding × 2 (so a 40px-tall button has ~80px-equivalent in horizontal padding, depending on label length).
+- **Ghost buttons = sidebar links.** A nav item is just a button without a default background; it gets a fill on hover/active. They're the same primitive.
+- **Min 4 states:** default, hover, pressed/active, disabled. Add loading (spinner) when the action triggers a network call.
+
+### Icons
+- **Size to line-height.** If body text is 16/24, icons inline with body should be 24px. Mismatched sizes look amateur.
+- **One library, one weight.** Solen = lucide outlined. Don't mix stroke widths within the same surface.
+
+### Inputs
+- Need: default, focus (visible ring/border), filled, error (red border + message), warning, disabled. Optionally: success/validated.
+- Error messages live below the input, not in a tooltip. Color alone (red border) is not enough — pair with text.
+
+### Image overlays
+- **Don't slap a 50% black overlay over an image** — kills the photo. Use a **linear gradient** (transparent at top → semi-opaque at bottom) so the image breathes where there's no text and stays readable where text sits.
+- For extra polish: a **progressive blur** on top of the gradient (clear at top, blurred at bottom) reads as more modern than a flat darken.
+
+### Micro-interactions
+- A button has states. A *micro-interaction* is the small confirming animation that tells the user the action completed: a "Copied!" chip sliding up after copy-to-clipboard, a heart pulsing on favorite, a checkmark drawing on save. Every meaningful action benefits from one.
+- Keep them fast (<300ms) and subtle. They confirm, they don't perform.
+
+### Cards
+- Image at the top → instant scannability and color.
+- Most important info → largest, top, possibly colored differently.
+- Secondary info (location, time, etc.) → smaller, below, dimmer.
+- Use icons + visual elements (a line, an arrow) instead of words where possible (e.g. "from Jamesville to Syracuse" → two pinned dots connected by a line).
 
 ---
 
@@ -122,6 +186,14 @@ These are signals that the agent skipped the checklist:
 - Decorative blobs outside sanctioned slots (see SOLEN_DESIGN §7)
 - Dark mode references (Solen is light-mode only)
 - "V2" or "Zone 1/2/3/4" language (retired)
+- Loose default letter-spacing on large display text (looks unrefined)
+- Default line-height on headlines (should be 110–120%)
+- Pairing two display fonts in the same block
+- Flat 50% black overlay on images (use a gradient instead)
+- Equal-weight rows on cards (looks like a spreadsheet — apply hierarchy)
+- Decorative use of semantic colors (red/green/yellow for non-meaningful styling)
+- Action with no confirming micro-interaction (copy/save/favorite without feedback)
+- Mismatched icon size vs. surrounding text line-height
 
 If you catch yourself producing any of these, **back up and re-run the checklist**.
 
@@ -131,6 +203,6 @@ If you catch yourself producing any of these, **back up and re-run the checklist
 
 When briefing another tool (Claude Design, Cursor, a fresh Claude Code session), include this line:
 
-> "Before outputting any UI work, read `.claude/skills/solen-ui/SKILL.md` and `_tasks/SOLEN_DESIGN.md`. Walk through the 10 principles in solen-ui and answer each before producing pixels. SOLEN_DESIGN.md is the source of truth for tokens; solen-ui is the thinking layer."
+> "Before outputting any UI work, read `_rules/SOLEN_UI.md` and `_tasks/SOLEN_DESIGN.md`. Walk through every principle in SOLEN_UI and answer how the design satisfies it before producing pixels. Apply the tactical heuristics (typography, spacing, shadows, buttons, image overlays, micro-interactions) when you build. SOLEN_DESIGN.md is the source of truth for tokens; SOLEN_UI is the thinking layer."
 
 That's the contract. If the output doesn't reflect the checklist, send it back.
