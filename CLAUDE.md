@@ -7,6 +7,7 @@
 ## 🎨 DESIGN SYSTEM — SINGLE SOURCE OF TRUTH
 
 **Read:** `_tasks/SOLEN_DESIGN.md`
+**Think first:** `_rules/SOLEN_UI.md` — walk through the 10 UI/UX principles BEFORE producing any UI output. Hard stop until each principle is answered.
 **Preview:** `public/solen-coral.html` → `http://localhost:3000/solen-coral.html`
 
 **Palette:** coral `#E8624A` · white `#FFFFFF` page bg · warm ink `#1A1209` (+ amber / plum / sage / blue / yellow extended family). Page bg reverted from cream to white 2026-04-22 per Q15 lock.
