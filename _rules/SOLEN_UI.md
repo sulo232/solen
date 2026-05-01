@@ -117,6 +117,19 @@ Apps that feel exceptional — Phantom Wallet, Airbnb, Duolingo — invest in **
 
 > Ask: *What happens between this screen and the next? Is there continuity, or a hard cut? Does the user understand what changed and why?*
 
+### 9d. Emotional design — how does it *feel*?
+Functionality is now table stakes. Anyone can ship features — APIs, no-code, AI. The remaining edge is **how the product makes people feel** when they open it: smooth, premium, playful, calming, trustworthy. Solen sells beauty and wellness — a category where users *expect* to feel cared for. Cold, transactional, generic-SaaS UX will lose to a competitor that gets the emotional layer right.
+
+Three emotional registers to think about for any surface:
+
+- **Delight** — micro-interactions that reward small actions (a subtle bounce on favorite, a sparkle on a confirmed booking, a smiling progress animation). Borrowed from Duolingo: emotional feedback loops keep people coming back.
+- **Trust** — polish *is* trust in high-stakes categories (payments, personal data, first-time bookings). Every clean transition, every responsive tap, every well-formed empty state is a trust signal. Borrowed from Phantom: friendly visuals make intimidating domains feel approachable.
+- **Premium** — tactile, responsive interactions (a chart that glows under your finger, a card that has a real moment of motion when it flips). Borrowed from Revolute: motion is how a digital product communicates quality. Static screens feel cheap; choreographed details feel expensive.
+
+Solen's blend: **calm + premium + warm**. Not playful-cartoony like Duolingo; not crypto-edgy like Phantom; closer to Revolute's elevated polish, with editorial warmth.
+
+> Ask: *When the user opens this screen, what should they feel? Do the visuals, motion, and copy actually deliver that feeling — or do they just deliver the function?*
+
 ### 10. Brand fit
 Does this look like **Solen** — Swiss beauty marketplace, coral + warm ink + editorial typography, calm and confident — or like a generic SaaS template? Generic AI output gravitates toward purple gradients, glass cards everywhere, perfectly symmetric grids, dark mode toggles. Resist all of it.
 
@@ -206,6 +219,17 @@ The principles above are the *thinking*. These are the **tactical rules of thumb
 - **Buttons should almost always have a small animation** (hover lift, color shift, scale on press). Scroll-jacking, parallax, and full-screen transitions should be used sparingly — they delight once and annoy forever.
 - **Keep durations honest.** ≤200ms for state changes (hover, press), 200–400ms for transitions (modal open, route change), >400ms only for narrative moments. Faster feels snappier; slower feels broken.
 
+### Emotional touchpoints (where to invest)
+Not every surface needs to be emotionally rich — that path leads to over-animated, distracting UI. Pick the **moments that matter** and invest there. For Solen, these are the highest-leverage emotional touchpoints:
+
+- **First impression** — landing page hero, first paint of the home feed, first-time-user onboarding. These set quality expectations for everything after. Polish here punches above its weight.
+- **Confirmation moments** — booking confirmed, favorite added, review submitted, payment succeeded. Users wait for these; reward them with a moment that says "yes, it worked, and we care that it did." Subtle bounce, soft glow, animated checkmark — fast (<400ms), warm, never gaudy.
+- **Progress / momentum** — bookings completed, streak of self-care visits, profile completion. Anything that gives a sense of *building something over time* deepens engagement. Animate the progress, don't just show a number.
+- **High-stakes interactions** — payment screens, booking the appointment, entering personal info. Polish here = trust. Slow, smooth transitions, no jank, no flashing layouts. The user is putting money or data on the line; the UI must feel handled.
+- **Tactile data** — anything the user explores by gesture (a calendar drag, a map pan, a price slider, a salon photo carousel). Make it respond *physically* — feel the inertia, see the highlight follow the finger. This is what cheap UIs miss and premium ones nail.
+
+Skip the emotional layer on: utility screens (settings, terms of service, error messages), high-frequency repetitive actions (a search that runs 50 times a session shouldn't have a celebration animation — it'd be exhausting), and anywhere it would slow down a pro user.
+
 ### Visual pattern reuse (connect related parts)
 When two parts of the UI represent the same concept, give them the **same visual marker** so users connect them instantly. Example: a pulsing red dot on the "current voting period" in a graph + the same pulsing red dot on the "commit" indicator in the action panel — the user immediately understands these two things are linked, without reading any label. Reuse a shape, color, animation, or icon across separated UI regions to *teach* the relationship.
 
@@ -268,6 +292,11 @@ These are signals that the agent skipped the checklist:
 - Brand color used so heavily it loses meaning ("if everything is coral, nothing is coral")
 - Designing only static screens and ignoring how the user moves between them
 - Skeumorphism stack-up (45 layers of shadows trying to feel "tactile")
+- Treating UI as purely functional — shipping features without thinking about how they *feel*
+- A first impression (landing, onboarding, first paint) that looks like every other SaaS template
+- Confirmation actions (booking, favorite, payment) with no emotional reward — just a state flip
+- Charts, calendars, sliders that don't respond to finger drag/hover (static where it should be tactile)
+- Heavy animation on high-frequency utility actions (turns delight into noise)
 
 If you catch yourself producing any of these, **back up and re-run the checklist**.
 
