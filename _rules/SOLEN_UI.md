@@ -35,6 +35,15 @@ Every screen has ONE thing the user should do next. Can a stranger scan this in 
 
 > Ask: *What's the single most important action? Is it visually dominant? Is everything else clearly secondary?*
 
+### 2a. Copy is part of design
+Words *are* the UI. A button labeled "Earn tokens" when the action actually claims voting rewards is broken design — the same way a misaligned padding is broken design. Three principles for UI copy:
+
+1. **Match copy to action.** A button label states what tapping it does. "Claim rewards" not "Earn tokens." "Save changes" not "Submit." "Book appointment" not "Continue."
+2. **Don't repeat the parent context.** If the section heading says *"Voting"*, the row below doesn't need *"Last 10 votes"* — just *"Last 10"*. If the card already shows a price, the label "Price:" is dead weight. Headings + adjacent context carry meaning; let them.
+3. **Fewer words wins** when clarity is preserved. Four words rarely beat one good one. Compression isn't terseness — it's removing noise to make the signal louder.
+
+> Ask: *Does this copy match the action it triggers? Am I repeating context that's already established? Could I cut a word and lose nothing?*
+
 ### 2b. Signifiers — make the UI teach itself
 Good UI doesn't need instructions. The element's appearance signals what it does: a container around a selected tab tells you it's active; grayed-out text tells you it's disabled; a pressed-state on a button tells you the tap registered; a hover highlight tells you something is clickable. Every interactive element should *signify* its state and affordance visually — never rely on copy or tooltips alone.
 
@@ -101,6 +110,13 @@ Hierarchy comes from **contrast** — differences in size, weight, color, positi
 
 > Ask: *What is the most important thing on this surface? Is it visually different enough that the eye lands there first? Or does everything weigh the same?*
 
+### 9c. Design the experience, not just the screen
+Static screens are the floor, not the ceiling. Senior-tier work treats UI design **like a movie**: how does the user move from screen A to screen B? Does the transition explain *what changed*? Does motion create continuity (the same element morphing into its new role) or rupture (a hard cut that loses the user)?
+
+Apps that feel exceptional — Phantom Wallet, Airbnb, Duolingo — invest in **inter-screen experience**: shared element transitions, choreographed reveals, micro-animations that punctuate state changes. Most designers stop at the static frame. Don't.
+
+> Ask: *What happens between this screen and the next? Is there continuity, or a hard cut? Does the user understand what changed and why?*
+
 ### 10. Brand fit
 Does this look like **Solen** — Swiss beauty marketplace, coral + warm ink + editorial typography, calm and confident — or like a generic SaaS template? Generic AI output gravitates toward purple gradients, glass cards everywhere, perfectly symmetric grids, dark mode toggles. Resist all of it.
 
@@ -134,7 +150,9 @@ The principles above are the *thinking*. These are the **tactical rules of thumb
 ### Typography
 - **One font is enough.** Don't pair two display fonts. Solen uses Bebas (display) + Syne (headings) + DM Sans (body) — but each has a clear role and they never compete in the same block.
 - **Tighten large text.** On display/headline sizes (32px+), pull letter-spacing to ~`-2%` to `-3%` and drop line-height to `110%–120%`. Default browser values look loose at scale.
-- **Cap font sizes.** Landing/marketing pages: max ~6 sizes in the type scale. Dashboards/dense product UI: keep most text ≤24px, more sizes feels chaotic.
+- **Cap font sizes and weights.** Aim for **~4 sizes and ~2 weights** on a typical surface. Beginners ship 6+ sizes and 4+ weights and the UI feels chaotic. Counting the sizes/weights on your screen is the fastest way to spot the mistake.
+- **Reuse sizes across roles.** Instead of inventing a new size for "decimal fractions" or "secondary numbers," reuse an existing size from the scale (e.g. heading-3 doubles as decimal-fraction). Fewer scale entries = more coherent design.
+- **Use monospace for variable-length numerics.** Counters, prices, timers, balances — anything that grows or changes — should use a monospace (or tabular-numerals) variant so digits don't jitter as values change. DM Mono pairs with DM Sans for this.
 - **Group with line-height + space.** Tight line-height inside a paragraph, larger gap between paragraphs. Whitespace groups things — that's another form of hierarchy.
 
 ### Spacing
@@ -146,6 +164,8 @@ The principles above are the *thinking*. These are the **tactical rules of thumb
 - **Start with one primary brand color**, then build a ramp from it (lighten for backgrounds, darken for text). For Solen that's coral `#E8624A` → coral tints/shades.
 - **Semantic colors mean things.** Blue = trust/info, red = danger/error, yellow = warning, green = success. Don't repurpose them for decoration — users learn the meaning across the web and you'll confuse them.
 - **Color for purpose, not decoration.** If a color isn't doing a job (signaling state, drawing attention to a CTA, branding), it's noise.
+- **60 / 30 / 10 split.** A balanced UI roughly follows: ~60% neutral (white/light gray bg), ~30% complementary (warm ink text, dividers, secondary surfaces), ~10% brand accent (coral on CTAs, key indicators, focus). When everything fights for attention with the brand color, nothing wins. When the brand color is starved, the design feels dull.
+- **Reserve strong color for meaning.** If coral is on every button, header, icon, and chip, it stops drawing the eye. Save it for the CTA and one or two semantic indicators per screen — that's where it earns its weight.
 
 ### Shadows
 - **Reduce opacity, increase blur.** Default `0 4px 6px rgba(0,0,0,0.1)` shadows look harsh. Drop to ~5–10% opacity, push blur to 16–32px+.
@@ -185,6 +205,11 @@ The principles above are the *thinking*. These are the **tactical rules of thumb
 - **"Load more" > infinite scroll.** Users keep control of pagination, can reach the footer, can bookmark a position. Infinite scroll is appropriate for feeds (Twitter, TikTok); for marketplaces, listings, and product surfaces, prefer load-more or numbered pagination.
 - **Buttons should almost always have a small animation** (hover lift, color shift, scale on press). Scroll-jacking, parallax, and full-screen transitions should be used sparingly — they delight once and annoy forever.
 - **Keep durations honest.** ≤200ms for state changes (hover, press), 200–400ms for transitions (modal open, route change), >400ms only for narrative moments. Faster feels snappier; slower feels broken.
+
+### Visual pattern reuse (connect related parts)
+When two parts of the UI represent the same concept, give them the **same visual marker** so users connect them instantly. Example: a pulsing red dot on the "current voting period" in a graph + the same pulsing red dot on the "commit" indicator in the action panel — the user immediately understands these two things are linked, without reading any label. Reuse a shape, color, animation, or icon across separated UI regions to *teach* the relationship.
+
+Caveat: only reuse the marker when the things genuinely *are* related. Reusing a pattern for unrelated UI is worse than no reuse — it implies a connection that doesn't exist.
 
 ### Design systems mindset
 - A design system is a **shared language**, not a uniformity enforcer. Two designers/agents working from the same tokens should produce work that *feels* coherent without being identical.
@@ -236,6 +261,13 @@ These are signals that the agent skipped the checklist:
 - Infinite scroll on listings/marketplace pages (footer becomes unreachable)
 - Animations that don't serve a purpose (decorative scroll-jacking, gratuitous parallax)
 - Breaking the design system by accident (a one-off color, radius, or font that nobody decided on)
+- Button labels that don't match the action ("Submit" / "Continue" / "Earn tokens" when the action is clearly something specific)
+- Repeating the parent heading in the row/cell below it ("Voting" heading + "Last 10 votes" row → just "Last 10")
+- 6+ font sizes or 4+ font weights on a single surface (count them — it's the fastest mistake to spot)
+- Proportional-width digits on counters, prices, or timers that change (causes visual jitter)
+- Brand color used so heavily it loses meaning ("if everything is coral, nothing is coral")
+- Designing only static screens and ignoring how the user moves between them
+- Skeumorphism stack-up (45 layers of shadows trying to feel "tactile")
 
 If you catch yourself producing any of these, **back up and re-run the checklist**.
 
