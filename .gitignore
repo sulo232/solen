@@ -39,7 +39,16 @@ tsconfig.tsbuildinfo
 .vercel/
 
 # Claude / Agent State
-.claude/
+# Ignore everything in .claude/ EXCEPT settings.json (so hook config ships with the repo).
+# Note: cannot un-ignore a file inside an ignored directory, so we list children explicitly.
+.claude/skills/
+.claude/worktrees/
+.claude/projects/
+.claude/agents/
+.claude/launch.json
+.claude/settings.local.json
+.claude/*.log
+.agent-*
 .agent-*
 .npm-cache/
 .npm-local-cache/
