@@ -23,6 +23,13 @@ Did you sketch the flow before designing the screen? What's the **happy path**, 
 
 > Ask: *If I'm a first-time user and I have nothing to show / something fails / I want to skip — does this screen still work?*
 
+### 1b. User intent before aesthetics
+Before picking colors, icons, or layouts, answer: **what is the user trying to do on this surface?** A booking marketplace exists to help users *find a salon and book*, not to impress designers. Start from intent — what action does the user want to complete? — and let the UI emerge from that. Hero images, gradient backgrounds, and 3D flair don't add functionality if the core action (search → results → book) wasn't designed first.
+
+A surface can serve multiple intents (e.g. "I know what I want" → search; "I'm browsing" → curated listings + filters). Add functionality only as intents expand — don't gold-plate one path while ignoring others.
+
+> Ask: *What's the primary intent of this surface? What's the secondary intent? Does the design serve them, or am I just decorating?*
+
 ### 2. One primary action
 Every screen has ONE thing the user should do next. Can a stranger scan this in 2 seconds and know what it is? If you have three equally-weighted CTAs, you have zero.
 
@@ -71,6 +78,23 @@ Can I delete this and the design still works? Decorative arrows on swipeable car
 Contrast ≥4.5:1 for body text, ≥3:1 for large text and UI components. Tap targets ≥44×44px. Visible focus state on keyboard navigation. Text readable at smallest screen size without zoom. No information conveyed by color alone.
 
 > Ask: *Could someone with low vision / using only a keyboard / on a small phone still use this? Have I actually checked the contrast or am I guessing?*
+
+### 8b. Respect layout conventions (and break them intentionally)
+30+ years of web has trained users where to find things: **navigation at the top, content flowing top-to-bottom and left-to-right, primary CTAs eye-catching and easy to find**. Designs that follow these conventions are easier to scan, easier to make responsive, easier to extend with new sections. Breaking conventions is fine — sometimes great — but only when you have a reason. *"You don't break the system by accident. You break it with intention."*
+
+> Ask: *Am I breaking a convention because it serves the user better here, or because I think it'll look unique? If it's the latter, put it back.*
+
+### 8c. Design for real content, not perfect content
+Beginner designs assume titles will always be short, prices will always be 2 digits, images will always have a dark background, lists will always have 5 items. Real content breaks all of that. Long titles, multi-line addresses, untranslated strings ~30% longer in DE/FR, photos with bright skies behind a save icon, empty arrays, lists with 200 items — design for those cases up-front, not as bug fixes later.
+
+Common content edge cases to handle:
+- **Long text** → truncate with ellipsis, ensure tooltip/full view available
+- **Icons on imagery** → add a contrasting backdrop (circle, scrim) so the icon is always readable regardless of photo content
+- **Numeric extremes** → "1" vs "1,000+" both need to fit; align consistently
+- **Empty states** → first-time user with no data, filtered list with no matches, network error
+- **Long lists** → pagination, "load more," or virtualized scroll; avoid infinite scroll where users need to reach the footer
+
+> Ask: *If the title is 80 characters / the image is white / there are 0 items / there are 200 items / the user speaks German — does this still hold up?*
 
 ### 9b. Hierarchy via contrast
 Hierarchy comes from **contrast** — differences in size, weight, color, position. A card that lists info in equal-weight rows reads like a spreadsheet, not a design. Most important thing → larger, bolder, top-positioned, or color-differentiated. Price, status, key actions stand out because they *differ* from the surrounding text. Image at the top of a card adds color and makes scanning effortless.
@@ -155,6 +179,18 @@ The principles above are the *thinking*. These are the **tactical rules of thumb
 - Secondary info (location, time, etc.) → smaller, below, dimmer.
 - Use icons + visual elements (a line, an arrow) instead of words where possible (e.g. "from Jamesville to Syracuse" → two pinned dots connected by a line).
 
+### Animation & motion
+- **Animation must add clarity or functionality, not decoration.** A button press animation confirms the tap. A hamburger menu animating in consolidates navigation that no longer fits. A search bar collapsing into an icon reclaims space until the user wants to search. Each one earns its existence by *doing something*.
+- **Progressive disclosure** > showing everything at once. Reveal complexity as the user reaches for it. A "More filters" toggle is better than 12 visible filters; an expandable detail row beats a wall of metadata.
+- **"Load more" > infinite scroll.** Users keep control of pagination, can reach the footer, can bookmark a position. Infinite scroll is appropriate for feeds (Twitter, TikTok); for marketplaces, listings, and product surfaces, prefer load-more or numbered pagination.
+- **Buttons should almost always have a small animation** (hover lift, color shift, scale on press). Scroll-jacking, parallax, and full-screen transitions should be used sparingly — they delight once and annoy forever.
+- **Keep durations honest.** ≤200ms for state changes (hover, press), 200–400ms for transitions (modal open, route change), >400ms only for narrative moments. Faster feels snappier; slower feels broken.
+
+### Design systems mindset
+- A design system is a **shared language**, not a uniformity enforcer. Two designers/agents working from the same tokens should produce work that *feels* coherent without being identical.
+- The *process* of defining the system (rules, scales, patterns) is often more valuable than the system itself — it forces decisions that would otherwise drift.
+- **Break the system with intention, not by accident.** Every deviation from `SOLEN_DESIGN.md` should be a deliberate, justifiable choice — and ideally fed back into the system as a new pattern, not left as a one-off.
+
 ---
 
 ## What to read alongside this
@@ -194,6 +230,12 @@ These are signals that the agent skipped the checklist:
 - Decorative use of semantic colors (red/green/yellow for non-meaningful styling)
 - Action with no confirming micro-interaction (copy/save/favorite without feedback)
 - Mismatched icon size vs. surrounding text line-height
+- Decorating before deciding what the user is trying to do (aesthetics before intent)
+- Designing only for "perfect content" — short titles, ideal images, exactly 5 items
+- Save/favorite icons placed directly on photos with no contrast backdrop
+- Infinite scroll on listings/marketplace pages (footer becomes unreachable)
+- Animations that don't serve a purpose (decorative scroll-jacking, gratuitous parallax)
+- Breaking the design system by accident (a one-off color, radius, or font that nobody decided on)
 
 If you catch yourself producing any of these, **back up and re-run the checklist**.
 
