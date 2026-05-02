@@ -101,11 +101,11 @@ Before writing ANY phase:
 4. **Read `_tasks/completed/`** for past decisions that affect the new feature
 5. **Verify all imports/components/APIs** referenced in the roadmap actually exist
 
-### R11: STRICT ZONE COMPLIANCE FOR NEW STEPS
+### R11: DESIGN-LOCK COMPLIANCE FOR NEW STEPS (zone language retired)
 If a roadmap adds a new step to an existing flow (e.g., adding a preferences step to the booking flow):
-1. **Identify the Zone** of the existing flow (e.g., Booking Flow = Zone 3).
-2. **Explicitly state the Zone constraints** in the roadmap phase (e.g., "This is Zone 3. DO NOT use glassmorphism. DO NOT use entry animations.").
-3. Failing to document the Zone constraints in the roadmap will lead to degraded, inconsistent UI.
+1. **Identify the owning Q-lock(s)** in `_tasks/SOLEN_DESIGN.md` §20 (e.g., booking flow → Q53 entry pattern, Q55 wizard, Q56 step indicator, Q57 confirmation).
+2. **Explicitly cite the Q-locks** in the roadmap phase (e.g., "This step lives in the Q55 3-step wizard. Glass restricted to §6 sanctioned contexts. Hover scope per Q40. Motion timing per Q35.").
+3. Failing to ground the roadmap in the relevant Q-locks will lead to degraded, inconsistent UI.
 
 
 ## 9. Spec → Roadmap Fidelity Rules (MANDATORY)
@@ -137,5 +137,5 @@ After writing a roadmap from a spec, do a keyword grep check for:
 - Trigger conditions (e.g. "same-day")
 - SACRED/never constraints
 
-- **UI & Design Rules:** Before writing ANY frontend code, you must read and strictly adhere to `UI_RULES.md`. Do NOT deviate from the light-mode, glassmorphic, Airbnb-style layout constraints defined there.
+- **UI & Design Rules:** Before writing ANY frontend code, read and strictly adhere to `_tasks/SOLEN_DESIGN.md` §20 (Q-locks Q1–Q63) + `_rules/SOLEN_UI.md`. Single light theme (Q62). Glass restricted to §6 sanctioned contexts (nav / hero card overlay / trust strip), NOT a default surface treatment. Layout grammar follows Q49–Q63 per surface.
 

@@ -72,7 +72,7 @@ Feature: [Name]
 ```
 
 **Mandatory rules for every new page:**
-- Page component MUST determine its **zone** (1-4) and pass it to child components as `zone` prop
+- Page component MUST follow the layout grammar in `_tasks/SOLEN_DESIGN.md` §20 (Q-locks); zone language retired (CLAUDE.md retired list)
 - All user-facing text MUST use `useTranslations()` — zero hardcoded strings
 - All interactive elements MUST have `aria-label` props
 - Navigation entry point (link/button) MUST exist to reach the page — no hidden pages
@@ -84,14 +84,14 @@ Feature: [Name]
 
 > **INCIDENT**: Cards used 5 different hover patterns. Buttons used `hover:bg-s-coral/90` everywhere (banned) instead of `hover:brightness-[1.06]`.
 
-> For complete interaction patterns with code examples, see `_rules/SOLEN_DESIGN_SYSTEM.md` Section 8.
+> For complete interaction patterns with code examples, see `_tasks/SOLEN_DESIGN.md` §20 (Q40 hover scope, Q35 motion timing) + `_rules/SOLEN_UI.md`.
 
 **Quick reference:**
 - **Cards**: `hover:-translate-y-[5px]` + shadow lift. NEVER: `hover:scale-*`, `hover:opacity-*`
 - **CTA Buttons**: `hover:brightness-[1.06] active:scale-[0.98]`. NEVER: `hover:bg-s-coral/90`
 - **Ghost Buttons**: `hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98]`
 - **Text Links**: `hover:text-s-coral transition-colors duration-150`
-- **Filter Pills**: Active = `bg-s-coral text-white`. Inactive = `bg-s-ink/[0.05] hover:bg-s-ink/[0.09]`
+- **Filter Pills**: Active = weight 700 + `text-s-ink` (selection by weight + ink, NOT brand-color flood — per Q23 + SOLEN_UI #2c). Inactive = `font-medium text-s-ink-2 bg-s-ink/[0.05] hover:bg-s-ink/[0.09]`
 - **Images in cards**: No separate hover effect — card elevation handles it
 
 ---
@@ -137,7 +137,7 @@ Feature: [Name]
 
 ## Rule 46: NEW COMPONENT / SUB-SITE CREATION STANDARD (MANDATORY)
 
-> **INCIDENT**: On 2026-03-26, a scan found ~145 components without `useTranslations()`, 45+ hardcoded white `rgba(255,255,255,...)` glass backgrounds that broke dark mode, and inconsistent hover/interaction patterns.
+> **INCIDENT**: On 2026-03-26, a scan found ~145 components without `useTranslations()`, 45+ hardcoded white `rgba(255,255,255,...)` glass backgrounds (glass-everywhere violation per §6), and inconsistent hover/interaction patterns.
 
 **EVERY new `.tsx` component file MUST satisfy ALL of these requirements before committing. No exceptions.**
 
@@ -145,22 +145,23 @@ Feature: [Name]
 - Import and use `useTranslations()` (client) or `getTranslations()` (server) — NEVER hardcode text
 - Add keys to ALL 4 locale files with ACTUAL translations (not empty strings or German copies)
 
-### B. Dark Mode Support — USE CSS VARS FOR GLASS
-- Use `var(--glass-bg)` for glass backgrounds, NOT `rgba(255,255,255,...)`
-- Use `text-s-ink dark:text-s-dm-text` and `bg-[--raised] dark:bg-s-dm-surface`
-- BANNED: `text-black`, raw `bg-white`
+### B. Single Light Theme (dark mode retired)
+- Page bg = white `#FFFFFF` per Q15 (NOT banned — `bg-white` is correct on the page surface)
+- BANNED: `text-black` (use `text-s-ink` `#1A1209` warm-ink), `dark:*` utility classes (dark mode killed per Q62)
+- Glass restricted to §6 sanctioned contexts only (nav pill / hero card overlay / trust strip) — NOT a default surface treatment
 
-### C. Zone Compliance — DECLARE AND ENFORCE
-- Every component that renders visible UI must know its zone (1-4)
-- Zone 1-2: Glass on floating UI, animations allowed
-- Zone 3-4: NO glass, NO animations
+### C. Layout Grammar (zone language retired)
+- Every component follows the section grammar in `_tasks/SOLEN_DESIGN.md` §20 (Q15/Q23/Q49/Q50/Q51/Q52)
+- Glass: §6 3-place cap (nav, hero card overlay, trust strip)
+- Hover: Q40 4-class scope only (CTAs, links, cards, nav-icons)
+- Motion: Q35 timing scale (200ms slide / 400ms morph for shared-element)
 
 ### D. UI Rules Compliance
-- Read `_rules/SOLEN_DESIGN_SYSTEM.md` before writing ANY styling
+- Read `_tasks/SOLEN_DESIGN.md` (Q-locks §20) before writing ANY styling; supplemental: `_rules/SOLEN_UI.md`
 - Only use design tokens for colors, fonts, radii, shadows, icons
 
 ### E. Interaction Standard
-- Follow the interaction patterns in Rule 43 and `_rules/SOLEN_DESIGN_SYSTEM.md` Section 8
+- Follow the interaction patterns in Rule 43 and `_tasks/SOLEN_DESIGN.md` §20 (Q40 hover, Q47 focus, Q46 hit area)
 
 ### F. Accessibility
 - Every interactive element needs `aria-label={t('...')}`
@@ -172,9 +173,9 @@ Design:
 □ DESIGN INTENT stated: "This component should feel ___ because ___"
 □ Uses useTranslations() — ZERO hardcoded strings
 □ Keys added to all 4 locale files with actual translations
-□ Has zone prop or inherits zone from parent
-□ No rgba(255,255,255,...) — uses var(--glass-*) tokens
-□ Hover states follow Rule 43
+□ Layout follows the relevant Q-lock(s) in `_tasks/SOLEN_DESIGN.md` §20
+□ Glass only in §6 sanctioned contexts (nav / hero card overlay / trust strip); everywhere else use solid `--raised`/`--bg`
+□ Hover states follow Rule 43 + Q40 4-class scope
 □ Only lucide-react icons
 □ Interactive elements have aria-label
 □ npm run build passes
@@ -192,16 +193,19 @@ If you cannot satisfy all items, move to `components/_staging/` and log in `_tas
 
 ---
 
-## Rule 47: HOMEPAGE UI/UX OVERHAUL SPEC (V5) STRICT ENFORCEMENT
+## Rule 47: HOMEPAGE LAYOUT — see SOLEN_DESIGN.md
 
-> **CONTEXT**: The Solen.ch homepage underwent a major redesign to adhere strictly to V5.
+> **RETIRED 2026-05-02:** The V5-era homepage spec (Warm Beige `#F5F0EB`, Bebas Neue 42px, glass-frost header, Coral `#E8735A`, footer `#2C2825`) is fully superseded by the Q-locks in `_tasks/SOLEN_DESIGN.md` §20:
+>
+> - **Q15** — page bg is white `#FFFFFF` (cream/beige retired)
+> - **Q23 + Q48** — fonts are Anton (display) + Figtree (body); Bebas Neue + Fraunces + DM Sans retired
+> - **Q23 + §1 palette** — coral is `#E8624A` (NOT `#E8735A`); ink is `#1A1209` (NOT `#2C2825`)
+> - **Q49** — home above-fold = stacked 3-field Fresha-flow search card + 3 quick-action chips, NO hero photo, NO gradient hero
+> - **Q50** — per-section 2.5/3.5/4.5-up scroll-snap carousels (Airbnb pattern)
+> - **Q51** — 8 home sections + Recently Viewed, admin-toggleable, affinity-reordered
+> - **Q62** — dark mode retired; single light theme
 
-1. **Aesthetics:** Page background is Warm Beige (`#F5F0EB`). NO shadows on cards (use simple 1px borders). ALL interactive elements must be pill shapes. Blobs are RETIRED.
-2. **Hero:** Solid `#F5F0EB` background (no images/fade-ups). Horizontal scroll-snap featured salon carousel. Header is Bebas Neue 42px.
-3. **Header/Navigation:** Max height `56px`. Background is `#F5F0EB` glass frost. Header morphs: when hero search bar scrolls out of view, header shows compact Search Pill. `Zuruck` button must never render on `/`.
-4. **Icons:** Category SVG icons render perfectly solid in Coral (`#E8735A`) without opacity layers.
-5. **Footer:** Background is strictly `#2C2825`. Leftover trust pills removed. Instagram natively inside legal links.
-6. **Mobile Tab Bar:** Background `#FFFFFF` glass frost, 1px top border (no shadow), active states Coral (`#E8735A`), `z-index: 50`.
+For homepage layout decisions, **read `_tasks/SOLEN_DESIGN.md` §20** (Q15, Q23, Q48–Q51).
 
 ---
 

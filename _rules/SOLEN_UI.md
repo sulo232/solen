@@ -87,8 +87,8 @@ If brand primary leaks into emotional/semantic uses, you have **brand-color floo
 - Tab bar selected state = bolder weight + ink color, NEVER brand-color flood.
 - Status colors (success / warning / error / info) are semantic tokens with their own hex, NOT derived from brand primary.
 
-### 5c. No colored shadows. Period.
-Drop shadows and box shadows are **neutral grayscale only** (`rgba(0,0,0,0.x)`). Never tint shadow with the surface color underneath (no `rgba(coral, 0.4)` blur, no "warm coral glow," no "amber halo"). The pattern feels "designed" in Figma but reads as cheap and dated in production. Q16 lock retired the `--sh-coral` and `--sh-amber` tokens; never reintroduce.
+### 5c. No colored-glow shadows. Warm-ink-tinted only.
+Drop shadows and box shadows use **warm-ink tint** (`rgba(26,18,9,0.x)` per SOLEN_DESIGN.md §5) — never pure-black `rgba(0,0,0,0.x)`, never brand-color glow (`rgba(coral, …)`, `rgba(amber, …)`). Q16 retired the `--sh-coral` / `--sh-amber` colored-glow tokens; never reintroduce. Black-grey shadows on a warm-ink palette read clinical / off-brand; warm-ink tint keeps shadows in the same tonal family as the rest of the system.
 
 > Ask: *Is this shadow elevating a surface (functional) or making the button feel "warmer/glowier" (decorative)? If decorative, kill it.*
 
@@ -227,7 +227,7 @@ The principles above are the *thinking*. These are the **tactical rules of thumb
 - **Reserve strong color for meaning.** If coral is on every button, header, icon, and chip, it stops drawing the eye. Save it for the CTA and one or two semantic indicators per screen — that's where it earns its weight.
 
 ### Shadows
-- **Reduce opacity, increase blur.** Default `0 4px 6px rgba(0,0,0,0.1)` shadows look harsh. Drop to ~5–10% opacity, push blur to 16–32px+.
+- **Reduce opacity, increase blur.** Default `0 4px 6px rgba(26,18,9,0.1)` shadows look harsh. Drop to ~5–10% opacity, push blur to 16–32px+. (Use warm-ink `rgba(26,18,9,…)` tint per §5c, never pure black.)
 - **Cards = subtle. Popovers/floating = stronger.** Hierarchy: closer to the surface = lighter shadow.
 - **The shadow rule:** *if the shadow is the first thing you notice on a design, you're using it wrong.*
 

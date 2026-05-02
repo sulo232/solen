@@ -1,6 +1,6 @@
 # Key Features Reference
 
-> **V5 HOMEPAGE HERO**: The homepage hero uses a **cinematic warm gradient background** (cream → coral blush → plum shadow) — NOT a flat white background. The search bar is ALWAYS visible as a floating glass pill (not hidden until hover). A photo/video background may be swapped in later once licensed assets are available.
+> **HOMEPAGE LAYOUT**: Per `_tasks/SOLEN_DESIGN.md` §20 Q15 + Q23 + Q48 + Q49: page bg is white `#FFFFFF`; above-fold is the Q48 signature lockup (coral eyebrow + Anton uppercase headline) + Q49 stacked Fresha-flow 3-field search card + 3 quick-action chips. NO hero photo, NO gradient hero, NO floating glass-pill search bar. Carousels in §50 belong to per-section rhythm, not hero.
 
 1. **Discovery & Booking**: Salon cards + multi-step booking wizard with multi-service, add-ons, guest checkout.
 2. **Direct Messaging**: In-app chat with media upload, price offers, and dispute resolution.
@@ -12,7 +12,7 @@
 8. **Review Replies**: Salon owners can reply to reviews (public or private).
 9. **Off-Peak Discounts**: Salons set discounted hours for specific days of the week.
 10. **Help Center**: Public help articles with admin CMS, search, and category sections.
-11. **Dark Mode**: System/manual toggle via `ThemeToggle` in Header. `darkMode: 'class'` in Tailwind.
+11. **Reduced motion**: `prefers-reduced-motion` honored across the app — Q35 morphs and Q36 celebrations degrade to instant swap; toast fades in/out only. (Dark mode RETIRED 2026-04-20 / Q62 — single light theme.)
 12. **Dashboard Calendar**: Weekly grid with staff colors, slot detail modal, reschedule, and day blocking.
 13. **Review Photos**: Customers can upload photos with reviews; stored in Supabase Storage `review-photos` bucket.
 14. **Recently Viewed**: Horizontal scroll of last 5 viewed salons from localStorage. Shows on HomePage and ProfilePage.

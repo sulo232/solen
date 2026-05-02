@@ -318,7 +318,7 @@
 - **File(s)**: `components/ui/ErrorFallback.tsx`
 - **What happened**: AlertTriangle in ErrorFallback used `text-s-coral` / `bg-s-coral/10`. Coral is the brand primary, not an error color.
 - **Why it happened**: Quick implementation without semantic color system consideration.
-- **Fix**: Error states → `text-s-amber` / `bg-s-amber/10`. Coral is ONLY for: Book Now CTAs, active filter pills, progress bars, star ratings, active hearts, price highlights, "open now" status.
+- **Fix**: Error states → `text-s-amber` / `bg-s-amber/10` (or semantic red `#D32F2F` for hard errors). **Coral is ONLY for:** Book Now CTAs, primary action buttons, eyebrow tracked-uppercase (Q48 signature), em underlines, time-pulse signal, focus ring (Q47). **NOT coral:** active hearts (use `#FF4A6B` literal love-red per Q26 + SOLEN_UI #5b), star ratings (use amber `#F3A864` per Q43), "open now" (use semantic green `#16A34A` per Q52), active filter pills (use weight 700 + ink, NOT brand-color flood per SOLEN_UI #2c). See SOLEN_DESIGN.md §1 (palette) + Q23 + SOLEN_UI #5b for the full semantic-color discipline.
 
 ### Booking date/time formatting must use dynamic locale
 - **Date**: 2026-04-04

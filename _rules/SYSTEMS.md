@@ -8,12 +8,12 @@
 
 | User wants... | System | Key file |
 |---|---|---|
-| Design new UI / redesign a component | **Figma First** | `_rules/FIGMA_CODE_SYNC.md` |
-| Compare code to Figma / audit accuracy | **Figma Sync** | `_rules/FIGMA_CODE_SYNC.md` |
+| Design new UI / redesign a component | **Design Lock** | `_tasks/SOLEN_DESIGN.md` §20 + `public/solen-coral.html` preview |
+| Compare code to design lock / audit drift | **Drift Audit** | `_audits/_chunks/audit-{1,2,3,4}-*.md` |
 | Check for visual regressions after changes | **Playwright** | `playwright.config.ts` |
 | Fix a visual bug / something looks wrong | **QA Registry** | `_tasks/VISUAL_QA_REGISTRY.md` |
-| Wrong color / font / spacing / token | **Design Tokens** | `_rules/UI_RULES.md` |
-| Animation / hover / interaction polish | **Animation** | `emil-design-eng` skill |
+| Wrong color / font / spacing / token | **Design Tokens** | `_tasks/SOLEN_DESIGN.md` §1–§5 + `_rules/SOLEN_UI.md` |
+| Animation / hover / interaction polish | **Animation** | `_tasks/SOLEN_DESIGN.md` §20 Q35 + Q40 |
 | Build a feature / new page / API route | **Feature Dev** | `_rules/CODE_SAFETY.md` |
 
 ---
@@ -30,15 +30,15 @@ Design in Figma, get approval, then code. For any new or redesigned customer-fac
 
 **Loop:** Design → Screenshot → User approves → Implement → Verify on localhost.
 
-**Reference:** `_rules/FIGMA_CODE_SYNC.md` (section map with node IDs), `_rules/FIGMA.md` (file structure).
+**Reference:** `_tasks/SOLEN_DESIGN.md` §20 (Q-locks) + `public/solen-coral.html` (living preview). Figma artifacts are working drafts; **the lock lives in §20**, not in Figma.
 
 ---
 
-## 2. Figma Sync
+## 2. Drift Audit
 
-Compare Figma designs to live code. Find and fix mismatches. Figma is source of truth.
+Compare live code to the locked design. Find and fix mismatches. **§20 Q-locks are source of truth** (Figma is iteration scratchpad).
 
-**Section map:** `_rules/FIGMA_CODE_SYNC.md` maps 15 homepage sections with exact Figma node IDs to code files.
+**Drift findings:** `_audits/_chunks/audit-{1,2,3,4}-*.md` — six narrow scopes (tokens, component class drift, Q-lock implementation, rules contradictions, backend gaps, route coverage).
 
 **Loop:** Screenshot Figma section → Read code file → Spot differences → Fix one at a time → Verify.
 
@@ -83,13 +83,13 @@ Persistent log of visual bugs. Any agent can read it, fix issues, mark them done
 
 All code must use design tokens. No arbitrary hex, no wrong fonts, no banned patterns.
 
-**Component specs:** `_rules/DESIGN_SPEC.md` — the complete design system with exact values for every component, color, shadow, spacing, animation, and interaction. **Read the relevant section BEFORE implementing any component.**
+**Component specs:** `_tasks/SOLEN_DESIGN.md` — single source of truth. Q-locks live in §20. **Read the relevant Q-lock(s) BEFORE implementing any component.**
 **Tailwind mapping:** `tailwind.config.js` (tokens), `app/globals.css` (CSS vars).
-**Rules:** `_rules/UI_RULES.md`, `_rules/SOLEN_DESIGN_SYSTEM.md`.
+**Supplemental rules:** `_rules/SOLEN_UI.md` (interaction grammar, semantic-color discipline).
 
-**Key tokens:** `s-coral` (#E8735A accent, #C05038 button, #B84A35 text), `s-ink` (#222222), `s-amber`, `s-blue`. `rounded-card` (16px), `rounded-btn` (99px). `shadow-elevation-1/2/3`. See `_rules/DESIGN_SPEC.md` for all values.
+**Key tokens (§1 + Q23 lock):** `s-coral` (`#E8624A` brand signal), `s-amber` (`#F3A864` accent), `s-ink` (`#1A1209`), `s-ink-2` (`#56463E`), `s-ink-3` (`#9F8A7E`), `s-border` (`#EFE7DD`), `s-bg` (`#FFFFFF` page), `s-bg-sunken` (`#FAF7F3`), `s-bg-cream` (`#FFF4E8`). `rounded-card` (16px), `rounded-btn` (99px). `shadow-elevation-1/2/3` (warm-ink-tinted per §5).
 
-**Banned:** `shadow-sm/md/lg`, `hover:bg-s-coral/90`, `transition-all`, `bg-white`, `text-black`, `rounded-lg`, `ease-in` on enters, `duration-500+` on UI.
+**Banned:** `shadow-sm/md/lg`, `hover:bg-s-coral/90`, `transition-all`, `text-black` (use `text-s-ink`), `rounded-lg/xl/2xl` (use `rounded-[Npx]` explicit), `dark:*` utilities (Q62 retired), `ease-in` on enters, `duration-500+` on UI. **`bg-white` is allowed** — Q15 locks page bg = white `#FFFFFF`.
 
 ---
 
@@ -97,7 +97,7 @@ All code must use design tokens. No arbitrary hex, no wrong fonts, no banned pat
 
 Easing, timing, micro-interactions. Skills: `emil-design-eng`, `frontend-design`.
 
-**Rules:** Easing `cubic-bezier(0.23, 1, 0.32, 1)`. Duration 100-300ms. Enter from `opacity:0, y:12`. Press: `active:scale-[0.97]`. Stagger: 40-60ms.
+**Rules (per Q35 + SOLEN_UI):** Easing `cubic-bezier(0.2, 0.8, 0.4, 1)` (out-curve default); shared-element morph 400ms; standard slide 200ms. Enter from `opacity:0, y:12`. Press: `active:scale-[0.97]`. Stagger: 40-60ms. NEVER `transition-all`.
 
 ---
 
@@ -105,7 +105,7 @@ Easing, timing, micro-interactions. Skills: `emil-design-eng`, `frontend-design`
 
 Building features, pages, API routes. Every feature needs all 8 layers: types, DB migration, API route, component, page, i18n (4 locales), imported + rendered, navigation entry.
 
-**Reference:** `_rules/CODE_SAFETY.md`, `_rules/STRUCTURAL_RULES.md`, `_rules/I18N_ROUTING.md`, `_rules/SECURITY_RULES.md`, `_rules/DB_SCHEMA.md`, `_rules/ROADMAP_RULES.md`, `_rules/LESSONS_LEARNED.md`, `_rules/KEY_FEATURES.md`, `_rules/search-bar-rules.md`.
+**Reference:** `_rules/CODE_SAFETY.md`, `_rules/STRUCTURAL_RULES.md`, `_rules/I18N_ROUTING.md`, `_rules/SECURITY_RULES.md`, `_rules/DB_SCHEMA.md`, `_rules/ROADMAP_RULES.md`, `_rules/LESSONS_LEARNED.md`, `_rules/KEY_FEATURES.md`. Search-bar grammar locked in `_tasks/SOLEN_DESIGN.md` §20 Q4 + Q48 (Fresha-flow stacked card).
 
 **Check first:** `_tasks/INCOMPLETE_FEATURES.md` — might already be half-built.
 
@@ -115,9 +115,7 @@ Building features, pages, API routes. Every feature needs all 8 layers: types, D
 
 | What | File | When |
 |---|---|---|
-| Intentional Figma deviations | `_rules/FIGMA_DEVIATIONS.md` | Code correctly differs from Figma — log it so audits don't re-flag |
 | Multi-agent coordination | `_rules/AGENT_COORDINATION.md` | Multiple agents active, shared file edits |
-| Asset generation | `_rules/GENERATION_TOOLS.md` | Need icons (Recraft.ai), animations (LottieFiles), UI icons (lucide-react) |
 | Solen context for skills | `.agents/skills/{design,review,refine}/SOLEN_CONTEXT.md` | Loaded automatically by those skills |
 
 ---
