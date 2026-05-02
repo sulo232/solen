@@ -18,6 +18,7 @@ import BrowseByCitySection from "@/components/BrowseByCitySection";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 // HomepageHero (V5) replaced 2026-05-02 per Q49 — see new HeroAboveFold below.
 import HeroAboveFold from "@/components/home/HeroAboveFold";
+import TrustStatsBanner from "@/components/home/TrustStatsBanner";
 import LastMinuteStrip from "@/components/ui/LastMinuteStrip";
 // FloatingNavPill removed 2026-05-02 per Q58 (web drops bottom nav; hamburger header + avatar dropdown only).
 
@@ -174,6 +175,11 @@ export default function HomePage({ initialData }: HomePageProps) {
 
         {/* ── 7. Testimonials (only if real reviews exist) ── */}
         <TestimonialCarousel />
+
+        {/* ── 8. Q51 Trust Stats — 4-tile stat strip per Q51 lock ── */}
+        <div style={{ marginTop: 48 }}>
+          <TrustStatsBanner />
+        </div>
 
       </main>
 
