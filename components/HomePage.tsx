@@ -16,7 +16,8 @@ import { useRecentVisits } from "@/hooks/useRecentVisits";
 // KILLED per DESIGN_SPEC §4: DiscoverCarousel, TrustStatsBanner, HowItWorks removed
 import BrowseByCitySection from "@/components/BrowseByCitySection";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
-import HomepageHero from "@/components/ui/HomepageHero";
+// HomepageHero (V5) replaced 2026-05-02 per Q49 — see new HeroAboveFold below.
+import HeroAboveFold from "@/components/home/HeroAboveFold";
 import LastMinuteStrip from "@/components/ui/LastMinuteStrip";
 // FloatingNavPill removed 2026-05-02 per Q58 (web drops bottom nav; hamburger header + avatar dropdown only).
 
@@ -109,18 +110,14 @@ export default function HomePage({ initialData }: HomePageProps) {
   const hasMoreCategories = orderedSectionKeys.length > MAX_CATEGORY_SECTIONS;
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden" style={{ background: "#FAFAF8" }}>
-      {/* GuidedSearch sheet — sheet-only, trigger rendered inline in header */}
+    <div className="min-h-screen relative overflow-x-hidden bg-white">
+      {/* GuidedSearch sheet — sheet-only, trigger rendered inline (Q49 search card opens via [data-gs-trigger]) */}
       <GuidedSearch categoryCounts={categoryCounts} hideTrigger />
 
       <main className="max-w-[1280px] mx-auto" style={{ paddingBottom: 88 }}>
 
-        {/* ── 1. Hero (search IS the hero — DESIGN_SPEC §4) ── */}
-        <HomepageHero
-          categoryCounts={categoryCounts}
-          reviewCount={2400}
-          locale={locale}
-        />
+        {/* ── 1. Q49 Above-fold — SignatureLockup + Fresha-flow stacked search + quick-action chips ── */}
+        <HeroAboveFold />
 
         {/* ── 2. Last Minute Strip (conditional) ── */}
         {sections.last_minute && lastMinuteSlots.length > 0 && (
