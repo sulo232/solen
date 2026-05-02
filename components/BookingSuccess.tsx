@@ -1,18 +1,43 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { CheckCircle, Calendar, Share2, RotateCcw, CreditCard, ShieldCheck, Gift } from "lucide-react";
-import { motion } from "framer-motion";
-import { formatCurrency } from "@/lib/format-currency";
+import { Calendar, Share2, MapPin } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { formatPrice } from "@/lib/format";
 import { markFirstBooking } from "@/components/ui/PWAInstallPrompt";
+import SignatureLockup from "@/components/ui/SignatureLockup";
+import CelebrationRing from "@/components/ui/CelebrationRing";
 
+/**
+ * BookingSuccess — Q57 (locked 2026-05-02) confirmation screen.
+ *
+ * Layered moment per Q57 lock:
+ *   - Q36 celebration ring (booking kind, ~700ms coral expand + checkmark
+ *     scale-in, replaces the retired window-wide CSS confetti)
+ *   - Q48 signature: eyebrow `Bestätigt · #<bookingId>` + Anton headline
+ *     `Buchung bestätigt`
+ *   - Warm sub-line: `Wir freuen uns auf dich`
+ *   - Summary card (Was / Wann / Wo / Wer) — 4 rows minimum, right-aligned
+ *     values, left-aligned labels, FAF7F3 sunken bg
+ *   - 3 utility chips: In Kalender · Wegbeschreibung · Teilen (vertical
+ *     stack on mobile, horizontal on desktop, all 48px hit area per Q46)
+ *   - Secondary CTA `Zur Buchung →` (neutral, NOT coral) — user picks,
+ *     NO auto-redirect
+ *
+ * NOT on this screen per Q57:
+ *   - Confetti / emoji-heavy copy
+ *   - Auto-redirect after N seconds
+ *   - Upsell CTAs ('Add another service', 'Buy gift card', referral promo)
+ *   - ReviewPrompt — that stays in the 24h cron, NOT here
+ */
 interface BookingSuccessProps {
   bookingId: string;
   salonName: string;
   salonSlug: string;
   serviceName: string;
+  staffName?: string;
   dateTime: string; // ISO string
   duration: number; // minutes
   price: number;
@@ -23,10 +48,7 @@ interface BookingSuccessProps {
 function generateICS(props: BookingSuccessProps): string {
   const start = new Date(props.dateTime);
   const end = new Date(start.getTime() + props.duration * 60 * 1000);
-
-  const fmt = (d: Date) =>
-    d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-
+  const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -46,79 +68,24 @@ export default function BookingSuccess(props: BookingSuccessProps) {
   const locale = useLocale();
   const t = useTranslations("ui.bookingSuccess") as any;
   const router = useRouter();
-  const confettiRef = useRef(false);
+  const prefersReducedMotion = useReducedMotion();
+  const [celebrate, setCelebrate] = useState(false);
 
   // Mark first booking for PWA install prompt
   useEffect(() => {
     markFirstBooking();
   }, []);
 
-  const [rewardAmount, setRewardAmount] = useState<number>(10);
-
+  // Fire Q36 celebration ring once on mount
   useEffect(() => {
-    fetch("/api/referral")
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data?.reward_amount) {
-          setRewardAmount(data.reward_amount / 100);
-        }
-      })
-      .catch((err) => console.error("[BookingSuccess] Failed to fetch referral reward amount:", err));
-  }, []);
-
-  // Simple CSS confetti on mount
-  useEffect(() => {
-    if (confettiRef.current) return;
-    confettiRef.current = true;
-
-    // Create confetti particles
-    const container = document.createElement("div");
-    container.style.cssText = "position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden";
-    document.body.appendChild(container);
-
-    const colors = ["#E8735A", "#D4870A", "#FFD93D", "#6BCB77", "#6BA3C8"];
-    for (let i = 0; i < 50; i++) {
-      const el = document.createElement("div");
-      const size = Math.random() * 8 + 4;
-      el.style.cssText = `
-        position:absolute;
-        width:${size}px;height:${size}px;
-        background:${colors[i % colors.length]};
-        border-radius:${Math.random() > 0.5 ? "50%" : "2px"};
-        left:${Math.random() * 100}%;
-        top:-10px;
-        animation:confetti-fall ${1.5 + Math.random() * 2}s ease-out forwards;
-        animation-delay:${Math.random() * 0.5}s;
-      `;
-      container.appendChild(el);
-    }
-
-    // Add confetti keyframes
-    const style = document.createElement("style");
-    style.textContent = `
-      @keyframes confetti-fall {
-        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-        100% { transform: translateY(100vh) rotate(${360 + Math.random() * 360}deg); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
-
-    setTimeout(() => {
-      container.remove();
-      style.remove();
-    }, 4000);
+    setCelebrate(true);
+    // CelebrationRing auto-resets internally; no need to clear here
   }, []);
 
   const localeCode = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
-  const dateStr = new Date(props.dateTime).toLocaleDateString(localeCode, {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-  const timeStr = new Date(props.dateTime).toLocaleTimeString(localeCode, {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const slot = new Date(props.dateTime);
+  const dateStr = slot.toLocaleDateString(localeCode, { weekday: "short", day: "numeric", month: "long" });
+  const timeStr = slot.toLocaleTimeString(localeCode, { hour: "2-digit", minute: "2-digit" });
 
   const handleCalendarDownload = () => {
     const ics = generateICS(props);
@@ -131,10 +98,16 @@ export default function BookingSuccess(props: BookingSuccessProps) {
     URL.revokeObjectURL(url);
   };
 
+  const handleDirections = () => {
+    // Use the salon name as a query — opens native maps
+    const q = encodeURIComponent(`${props.salonName} solen.ch`);
+    window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, "_blank");
+  };
+
   const handleShare = async () => {
     const shareData = {
       title: t("shareTitle", { salonName: props.salonName }),
-      text: t("shareText", { serviceName: props.serviceName, salonName: props.salonName, date: dateStr, time: timeStr }),
+      text: `${props.salonName} · ${dateStr} ${timeStr}`,
       url: `https://www.solen.ch/${locale}/salon/${props.salonSlug}`,
     };
     if (navigator.share) {
@@ -144,82 +117,101 @@ export default function BookingSuccess(props: BookingSuccessProps) {
     }
   };
 
+  const summaryRows: Array<{ label: string; value: string }> = [
+    { label: "Was", value: props.serviceName },
+    { label: "Wann", value: `${dateStr} · ${timeStr}` },
+    { label: "Wo", value: props.salonName },
+  ];
+  if (props.staffName) summaryRows.push({ label: "Wer", value: props.staffName });
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.97 }}
-      transition={{ type: "spring", stiffness: 280, damping: 26, mass: 0.8 }}
-      className="max-w-lg mx-auto text-center py-8 px-4"
-    >
-      <div className="w-16 h-16 rounded-full bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
-        <CheckCircle size={32} className="text-s-coral" />
+    <div className="max-w-md mx-auto py-10 px-5">
+      {/* Q36 celebration anchor — fires once on mount */}
+      <div className="relative mx-auto mb-6 w-16 h-16 flex items-center justify-center">
+        <CelebrationRing kind="booking" active={celebrate} maxRadius={80} />
       </div>
 
-      <h2 className="font-heading font-bold text-2xl text-s-ink mb-2">{t("title")}</h2>
-      <p className="text-sm text-s-ink/50 mb-6">{t("subtitle")}</p>
+      {/* Q48 signature lockup */}
+      <SignatureLockup
+        eyebrow={`Bestätigt · #${props.bookingId.slice(0, 8)}`}
+        headline="Buchung bestätigt"
+        subLine="Wir freuen uns auf dich."
+        size="md"
+        align="center"
+      />
 
-      <div className="bg-s-bg-surface rounded-card p-4 mb-6 text-left">
-        <p className="font-heading font-semibold text-base text-s-ink">{props.serviceName}</p>
-        <p className="text-sm text-s-ink/60 mt-1">{props.salonName}</p>
-        <div className="flex items-center gap-4 mt-3 text-sm text-s-ink/50">
-          <span>{dateStr}</span>
-          <span>{t("time", { time: timeStr })}</span>
-          <span>{t("duration", { minutes: props.duration })}</span>
-        </div>
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-ink/5">
-          <div className="flex items-center gap-2">
-            <CreditCard size={14} className="text-s-ink/50" />
-            <span className="text-sm text-s-ink/50">
-              {props.cardLast4 ? `•••• ${props.cardLast4}` : t("payment")}
+      {/* Summary card (Was / Wann / Wo / Wer) */}
+      <div
+        className="mt-6 rounded-[10px] px-4 py-3"
+        style={{ background: "#FAF7F3" }}
+      >
+        {summaryRows.map((row, i) => (
+          <div
+            key={row.label}
+            className={[
+              "flex items-baseline justify-between gap-3 py-2",
+              i < summaryRows.length - 1 ? "border-b border-s-ink/[0.05]" : "",
+            ].join(" ")}
+          >
+            <span className="font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-ink/45 shrink-0">
+              {row.label}
+            </span>
+            <span className="font-body text-[14px] text-s-ink text-right">{row.value}</span>
+          </div>
+        ))}
+        {props.price > 0 && (
+          <div className="mt-2 pt-2 border-t border-s-ink/[0.05] flex items-baseline justify-between gap-3">
+            <span className="font-body text-[10px] font-bold uppercase tracking-[.18em] text-s-ink/45 shrink-0">
+              Total
+            </span>
+            <span className="font-heading text-[18px] text-s-ink tabular-nums">
+              {formatPrice(props.price, localeCode)}
             </span>
           </div>
-          <p className="data-text font-semibold text-s-ink">{formatCurrency(props.price, locale)}</p>
-        </div>
+        )}
       </div>
 
-      {/* Cancellation policy */}
-      <div className="flex items-start gap-2 bg-s-amber-subtle/50 rounded-btn p-3 mb-4 text-left">
-        <ShieldCheck size={16} className="text-s-amber shrink-0 mt-0.5" />
-        <p className="text-xs text-s-ink/60">
-          {t("cancellationPolicy", { hours: props.cancellationHours ?? 24 })}
-        </p>
-      </div>
+      {/* Cancellation policy mini-banner */}
+      <p className="mt-3 font-body text-[11px] text-s-ink/55 text-center">
+        Kostenlos bis {props.cancellationHours ?? 24}h vorher stornieren.
+      </p>
 
-      {/* Referral CTA */}
-      <div className="bg-s-coral/5 rounded-input p-4 mb-4 text-left border border-s-coral/10">
-        <div className="flex items-center gap-2 mb-1">
-          <Gift size={14} className="text-s-coral" />
-          <p className="text-sm font-medium text-s-ink">{t("referralTitle")}</p>
-        </div>
-        <p className="text-xs text-s-ink/50">{t("referralDesc", { amount: formatCurrency(rewardAmount, locale) })}</p>
-      </div>
-
-      <div className="flex flex-col gap-2">
+      {/* 3 utility chips per Q57 (48px hit area per Q46) */}
+      <div className="mt-6 flex flex-col sm:flex-row gap-2">
         <button
+          type="button"
           onClick={handleCalendarDownload}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150"
+          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-s-coral text-white font-body text-[13px] font-bold tracking-[.02em] transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
         >
-          <Calendar size={16} />
-          {t("addToCalendar")}
+          <Calendar size={16} aria-hidden />
+          In Kalender
         </button>
-
         <button
+          type="button"
+          onClick={handleDirections}
+          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-white border border-s-ink/15 text-s-ink font-body text-[13px] font-semibold transition-[transform,border-color] duration-150 hover:border-s-coral/40 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+        >
+          <MapPin size={16} aria-hidden />
+          Wegbeschreibung
+        </button>
+        <button
+          type="button"
           onClick={handleShare}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn border border-s-ink/10 text-sm font-medium text-s-ink/70 hover:border-s-coral transition-colors"
+          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-white border border-s-ink/15 text-s-ink font-body text-[13px] font-semibold transition-[transform,border-color] duration-150 hover:border-s-coral/40 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
         >
-          <Share2 size={16} />
-          {t("shareWithFriend")}
-        </button>
-
-        <button
-          onClick={() => router.push(`/${locale}/salon/${props.salonSlug}`)}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn border border-s-ink/10 text-sm font-medium text-s-ink/70 hover:border-s-coral transition-colors"
-        >
-          <RotateCcw size={16} />
-          {t("bookAgain")}
+          <Share2 size={16} aria-hidden />
+          Teilen
         </button>
       </div>
-    </motion.div>
+
+      {/* Secondary CTA — neutral, NOT coral. User picks, no auto-redirect. */}
+      <button
+        type="button"
+        onClick={() => router.push(`/${locale}/profile/bookings`)}
+        className="mt-4 w-full text-center py-3 font-body text-[13px] text-s-ink/60 hover:text-s-ink transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 rounded-md"
+      >
+        Zur Buchung →
+      </button>
+    </div>
   );
 }
