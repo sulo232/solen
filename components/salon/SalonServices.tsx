@@ -44,7 +44,6 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
           icon={Scissors}
           title={t("noServicesYet")}
           message={t("noServicesMessage")}
-          zone={3}
         />
       </div>
     );

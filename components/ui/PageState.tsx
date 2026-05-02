@@ -28,6 +28,7 @@ interface PageStateProps {
 
   // Shared
   className?: string;
+  /** @deprecated zones retired per Q62 — kept for prop-shape backward compat, ignored. */
   zone?: 1 | 2 | 3 | 4;
 
   // Loading
@@ -50,7 +51,8 @@ interface PageStateProps {
 export default function PageState({
   state,
   className,
-  zone = 3,
+  // zone prop accepted but ignored (zones retired per Q62)
+  zone: _zone = 3,
   skeletonCount = 6,
   skeletonVariant = "card",
   emptyIcon = Search,
@@ -80,7 +82,6 @@ export default function PageState({
           title={emptyTitle}
           message={emptyMessage}
           action={emptyAction}
-          zone={zone}
         />
       </div>
     );

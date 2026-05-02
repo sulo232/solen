@@ -50,17 +50,17 @@ export async function GET(_request: NextRequest) {
   try {
     const { data: upcomingBookings } = await supabase
       .from("bookings")
-      .select("id, slot_at, services(name), salons(slug, name, neighborhood)")
+      .select("id, starts_at, services(name), salons(slug, name, neighborhood)")
       .eq("user_id", userId)
-      .gte("slot_at", now.toISOString())
-      .lte("slot_at", in24h.toISOString())
+      .gte("starts_at", now.toISOString())
+      .lte("starts_at", in24h.toISOString())
       .in("status", ["confirmed", "pending"])
-      .order("slot_at", { ascending: true })
+      .order("starts_at", { ascending: true })
       .limit(1);
 
     if (upcomingBookings && upcomingBookings.length > 0) {
       const b: any = upcomingBookings[0];
-      const slot = new Date(b.slot_at);
+      const slot = new Date(b.starts_at);
       const minsUntil = Math.round((slot.getTime() - now.getTime()) / 60000);
       const timeLabel = minsUntil < 60 ? `In ${minsUntil} min` : `In ${Math.round(minsUntil / 60)}h`;
       return NextResponse.json({
@@ -76,28 +76,38 @@ export async function GET(_request: NextRequest) {
   }
 
   /* ─── 2. LOYALTY — ≤2 stamps from reward ──────────────────────── */
+  // Schema: loyalty_cards (program defs) JOINed with loyalty_stamps (per-stamp events).
+  // stamps_collected is COMPUTED (count of loyalty_stamps for this card+customer),
+  // not a column. Pattern matches /api/loyalty/route.ts.
   try {
-    const { data: stampCards } = await supabase
-      .from("loyalty_stamp_cards")
-      .select("id, salon_id, stamps_collected, stamps_total, reward_text, salons(slug, name)")
-      .eq("user_id", userId)
-      .eq("is_redeemed", false)
-      .order("stamps_collected", { ascending: false });
+    const { data: cards } = await supabase
+      .from("loyalty_cards")
+      .select(`id, salon_id, stamps_needed, reward_text, salons(slug, name), loyalty_stamps!inner(id, customer_id)`)
+      .eq("is_active", true)
+      .eq("loyalty_stamps.customer_id", userId);
 
-    const closeToReward = (stampCards ?? []).find(
-      (c: any) => c.stamps_total - c.stamps_collected <= 2 && c.stamps_total - c.stamps_collected > 0
-    ) as any;
+    const ranked = (cards ?? [])
+      .map((c: any) => {
+        const collected = (c.loyalty_stamps ?? []).length;
+        return {
+          ...c,
+          stamps_collected: collected,
+          remaining: Math.max(0, c.stamps_needed - collected),
+        };
+      })
+      .filter((c: any) => c.remaining > 0 && c.remaining <= 2)
+      .sort((a: any, b: any) => a.remaining - b.remaining);
 
+    const closeToReward = ranked[0];
     if (closeToReward) {
-      const remaining = closeToReward.stamps_total - closeToReward.stamps_collected;
       return NextResponse.json({
         kind: "loyalty",
-        eyebrow: `Loyalty · ${remaining} mehr`,
+        eyebrow: `Loyalty · ${closeToReward.remaining} mehr`,
         headline: closeToReward.salons?.name ?? "Belohnung",
         meta: closeToReward.reward_text ?? "Stempel sammeln",
         href: `/profile/stamps`,
         filled: closeToReward.stamps_collected,
-        total: closeToReward.stamps_total,
+        total: closeToReward.stamps_needed,
       });
     }
   } catch (err) {
@@ -167,17 +177,16 @@ export async function GET(_request: NextRequest) {
     const cutoff = new Date(now.getTime() - REBOOK_CYCLE_DAYS * 24 * 60 * 60 * 1000);
     const { data: pastBookings } = await supabase
       .from("bookings")
-      .select("id, slot_at, salon_id, salons(slug, name)")
+      .select("id, starts_at, salon_id, salons(slug, name)")
       .eq("user_id", userId)
       .eq("status", "completed")
-      .lte("slot_at", cutoff.toISOString())
-      .order("slot_at", { ascending: false })
+      .lte("starts_at", cutoff.toISOString())
+      .order("starts_at", { ascending: false })
       .limit(5);
 
     if (pastBookings && pastBookings.length > 0) {
-      // Pick the most recent past booking older than the cycle
       const b: any = pastBookings[0];
-      const daysSince = Math.round((now.getTime() - new Date(b.slot_at).getTime()) / (24 * 60 * 60 * 1000));
+      const daysSince = Math.round((now.getTime() - new Date(b.starts_at).getTime()) / (24 * 60 * 60 * 1000));
       return NextResponse.json({
         kind: "rebook",
         eyebrow: "Bereit?",

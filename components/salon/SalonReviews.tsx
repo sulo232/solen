@@ -162,7 +162,6 @@ export default function SalonReviews({
             icon={MessageSquare}
             title={t("noReviews")}
             message={t("noReviewsMessage")}
-            zone={3}
           />
         ) : (
           <>

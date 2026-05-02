@@ -20,19 +20,25 @@ import HeroStampCard from "@/components/loyalty/HeroStampCard";
 import EmptyStateFTU from "@/components/ui/EmptyStateFTU";
 import SignatureLockup from "@/components/ui/SignatureLockup";
 
-interface StampCardRow {
+/**
+ * Schema note (verified 2026-05-02): loyalty programs live in `loyalty_cards`;
+ * each stamp is a row in `loyalty_stamps` joined by `loyalty_card_id` +
+ * `customer_id`. `stamps_collected` is a derived count, NOT a column.
+ * Salon photo column is `cover_photo_url`. Redemption is tracked via
+ * separate flow (no `is_redeemed` boolean on this table — pending v2 schema).
+ */
+interface LoyaltyCardRow {
   id: string;
   salon_id: string;
-  stamps_total: number;
-  stamps_collected: number;
+  stamps_needed: number;
   reward_text: string;
-  is_redeemed: boolean;
-  redeemed_at: string | null;
+  is_active: boolean;
   salons: {
     slug: string;
     name: string;
-    cover_url: string | null;
+    cover_photo_url: string | null;
   } | null;
+  loyalty_stamps: { id: string }[];
 }
 
 const StampIllustration = () => (
@@ -68,24 +74,36 @@ export default async function ProfileStampsPage({
     redirect(`/${locale}/auth/sign-in?redirect=/${locale}/profile/stamps`);
   }
 
-  const { data: cards } = await supabase
-    .from("loyalty_stamp_cards")
-    .select("id, salon_id, stamps_total, stamps_collected, reward_text, is_redeemed, redeemed_at, salons(slug, name, cover_url)")
-    .eq("user_id", session.user.id)
-    .order("stamps_collected", { ascending: false });
+  const { data: cardsRaw } = await supabase
+    .from("loyalty_cards")
+    .select(`id, salon_id, stamps_needed, reward_text, is_active, salons(slug, name, cover_photo_url), loyalty_stamps(id, customer_id)`)
+    .eq("is_active", true);
 
-  const allCards = (cards ?? []) as unknown as StampCardRow[];
-  const active = allCards.filter((c) => !c.is_redeemed);
-  const redeemed = allCards.filter((c) => c.is_redeemed);
+  // Filter to this user's stamps + compute stamps_collected
+  const enriched = ((cardsRaw ?? []) as unknown as LoyaltyCardRow[])
+    .map((c) => {
+      const userStamps = (c.loyalty_stamps ?? []).filter(
+        (s: any) => s.customer_id === session.user.id
+      );
+      return {
+        id: c.id,
+        salons: c.salons,
+        stamps_needed: c.stamps_needed,
+        stamps_collected: userStamps.length,
+        reward_text: c.reward_text,
+      };
+    })
+    .filter((c) => c.stamps_collected > 0); // only show cards user has stamps on
 
-  // Closest-to-reward = highest (collected/total) ratio among active, not yet at total
-  const heroCard = [...active]
-    .filter((c) => c.stamps_total > c.stamps_collected)
-    .sort((a, b) => {
-      const ra = a.stamps_collected / a.stamps_total;
-      const rb = b.stamps_collected / b.stamps_total;
-      return rb - ra;
-    })[0];
+  const active = enriched.filter((c) => c.stamps_collected < c.stamps_needed);
+  const redeemed = enriched.filter((c) => c.stamps_collected >= c.stamps_needed);
+  const allCards = enriched;
+
+  // Closest-to-reward = smallest (needed - collected) gap among active
+  const heroCard = [...active].sort(
+    (a, b) =>
+      (a.stamps_needed - a.stamps_collected) - (b.stamps_needed - b.stamps_collected)
+  )[0];
 
   const heroId = heroCard?.id;
   const otherActive = active.filter((c) => c.id !== heroId);
@@ -125,8 +143,8 @@ export default async function ProfileStampsPage({
           <HeroStampCard
             salonName={heroCard.salons.name}
             salonSlug={heroCard.salons.slug}
-            salonImageUrl={heroCard.salons.cover_url ?? undefined}
-            stampsTotal={heroCard.stamps_total}
+            salonImageUrl={heroCard.salons.cover_photo_url ?? undefined}
+            stampsTotal={heroCard.stamps_needed}
             stampsCollected={heroCard.stamps_collected}
             rewardText={heroCard.reward_text}
           />
@@ -145,8 +163,8 @@ export default async function ProfileStampsPage({
                   key={c.id}
                   salonName={c.salons.name}
                   salonSlug={c.salons.slug}
-                  salonImageUrl={c.salons.cover_url ?? undefined}
-                  stampsTotal={c.stamps_total}
+                  salonImageUrl={c.salons.cover_photo_url ?? undefined}
+                  stampsTotal={c.stamps_needed}
                   stampsCollected={c.stamps_collected}
                   rewardText={c.reward_text}
                 />
@@ -168,19 +186,17 @@ export default async function ProfileStampsPage({
                   <StampCard
                     salonName={c.salons.name}
                     salonSlug={c.salons.slug}
-                    salonImageUrl={c.salons.cover_url ?? undefined}
-                    stampsTotal={c.stamps_total}
-                    stampsCollected={c.stamps_total}
+                    salonImageUrl={c.salons.cover_photo_url ?? undefined}
+                    stampsTotal={c.stamps_needed}
+                    stampsCollected={c.stamps_needed}
                     rewardText={c.reward_text}
                   />
-                  {c.redeemed_at && (
-                    <span
-                      className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-[2px] rounded-full text-[9px] font-body font-bold tabular-nums uppercase tracking-[.08em]"
-                      style={{ background: "rgba(22,163,74,0.10)", color: "#16A34A" }}
-                    >
-                      ✓ Eingelöst · {new Date(c.redeemed_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "2-digit" })}
-                    </span>
-                  )}
+                  <span
+                    className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-[2px] rounded-full text-[9px] font-body font-bold tabular-nums uppercase tracking-[.08em]"
+                    style={{ background: "rgba(22,163,74,0.10)", color: "#16A34A" }}
+                  >
+                    ✓ Belohnung verfügbar
+                  </span>
                 </div>
               ) : null
             )}
