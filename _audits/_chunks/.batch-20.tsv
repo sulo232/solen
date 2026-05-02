@@ -1,0 +1,10 @@
+6ee70f0919028ac53b634bbac207ad879ed97aef 2026-03-26 20:04:56 +0100 feat: Mobile Carousel dynamic scaling & Registration schema SQL
+e3a4d6a011fdd250f6fee04535b740bb64a598af 2026-03-26 20:14:17 +0100 feat(routing): integrate explicit category pages directly into multi-city schema
+310f711d0552d5ea4ccf2585ca9d16763042d8bc 2026-03-26 20:34:55 +0100 fix: insert dummy quartier to bypass NOT NULL constraint
+02d176658bfb63d97e658bf7e5ec069001cab194 2026-03-26 20:39:21 +0100 fix: insert valid enum string 'grossbasel' to bypass CHECK constraint
+b618b5a7cf987b0830e418a5627544e6bf9e48d6 2026-03-26 21:08:47 +0100 fix: resolve SWC parser crash and implement discovery carousel features
+226443b4237254640cc14b9e16b55bfc6a5ede11 2026-03-26 21:12:13 +0100 fix: replace cluttered text navigation with official category svgs in header
+db289a5c47f636fa78a258b65cc819a4e331e0a8 2026-03-26 21:41:54 +0100 fix: explicit width dimensions for custom category icons
+3139b8b366c4929c356148427f9c3205cf658d47 2026-03-26 21:48:17 +0100 fix: merge duplicate auth i18n keys across all 4 locale files (de/en/fr/it)
+9488c1a8a2da73d0850e16d13dd1afb7c1c31a3c 2026-03-26 22:01:32 +0100 fix: make tab bars fully opaque with solid backgrounds and proper z-index
+4c54ae415e096eba03f5ed27a8dafae56bc43c87 2026-03-26 22:10:55 +0100 feat: real LikeButton with optimistic UI + Gespeichert in hamburger menu

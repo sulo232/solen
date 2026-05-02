@@ -1,0 +1,10 @@
+4882c9677a37651428d9887245475e6040c94c9d 2026-03-25 22:16:26 +0100 phase 1: UI polish — standardize spacing (py-16 md:py-24), fix empty state with EmptyState component + illustration, standardize 'Alle ansehen' links, add category tile hover lift (-translate-y-[5px])
+8bce6a053dba0e4e2d34f9625c8d837146dbb726 2026-03-25 22:16:30 +0100 feat(discover): integrate universal FilterBar component (zone 1) on feeds
+057899e8d6dff26605c20446f4cbbc0359090a81 2026-03-25 22:17:33 +0100 phase 2: fix search bar mobile clipping — change overflow-hidden to overflow-x-hidden on mobile (sm:overflow-hidden) to allow date picker dropdown to display
+f31d89437b6dae278e4bba4420b5d383020fd040 2026-03-25 22:21:25 +0100 phase 3: Top Pick badge integration — add is_top_pick column to salons table, update Salon interface, add dynamic badge to SalonCard, add dashboard toggle in settings ProfileTab, allow is_top_pick in PATCH API
+f55ef27a8210a66c1aef29c2d0e01959dea0ad9b 2026-03-25 22:23:49 +0100 phase 4: mark HeroVisualCard booking stat as approximation (~250 instead of hardcoded 247)
+59bfa797b78755a0d032618b2df5340210004d77 2026-03-25 22:29:40 +0100 phase 2: add loading skeletons to homepage, discover, and last-minute pages
+749c7b8d92076881f92b8a0154850b898fcbc8ac 2026-03-25 22:32:31 +0100 VOUCHER-P2a: add voucher creation and validation API endpoints
+1826c256e1af7aec963c251e9ac226de760d2d83 2026-03-25 22:32:38 +0100 phase 3: add dynamic pricing indicators to salon cards
+1c45685c4250ba0850d147e873e498d980fcbace 2026-03-25 22:33:55 +0100 VOUCHER-P2b: add voucher purchase webhook handler (manual integration required)
+02ad924ca0b98ea3710837a38d94ecc84802ead8 2026-03-25 22:35:30 +0100 VOUCHER-P3: add voucher purchase UI page with Zone 3 styling

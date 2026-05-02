@@ -1,0 +1,10 @@
+f2859054ad197f0730c722562b57bfc1ad69e438 2026-04-04 11:51:35 +0200 fix: add AnimatePresence + modalVariants to ProfileSetupModal
+85315f1d16d2f4c48077dd8a5afbc1f657227608 2026-04-04 11:53:11 +0200 fix: SalonCard heart bounce — framer-motion spring + aria-pressed (R6 Phase 6.3)
+2c2b092592b690deeb284d119f2a091442e90987 2026-04-04 11:53:27 +0200 fix: FeaturedSalonCarousel heart bounce — framer-motion spring + aria-pressed
+42cffce4fa84566664c22f5f2c22c8e95d5dd4ec 2026-04-04 11:53:50 +0200 fix: StampCard stamp pop — framer-motion spring instead of CSS class
+35d0f35f59f7b598f438abb1fe821128ba684cd8 2026-04-04 11:57:03 +0200 a11y: prefers-reduced-motion global disable
+798b043e4d39699bab47e6df2c6a0deaaadee6f0 2026-04-04 12:00:10 +0200 fix: hover/press/active states on all interactive elements (Phase 2.4)
+a72755017746f0b1be2eab9a4386bfb392112bc9 2026-04-04 12:07:32 +0200 fix: keyboard focus WCAG AAA + safe area insets for notch/Dynamic Island
+3145270637579e264d591c572bced3f78e0eb3de 2026-04-04 15:08:42 +0200 refactor(R6-6.3): coral color rebalance — reserve for CTAs and key accents
+736951aa10be1c409c7bcd6f723eced29f3ff3af 2026-04-04 15:09:09 +0200 fix(R6-6.4): booking success — locale-aware date/time formatting
+82ba9eaa29ae5d84013a7a436ed43912c1855fd6 2026-04-04 15:09:42 +0200 docs: append R6 lessons (coral semantics, locale date formatting)

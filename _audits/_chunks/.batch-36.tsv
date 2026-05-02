@@ -1,0 +1,10 @@
+de7ee223cfd8cbaef4c1b56f980d6fae67ccb0df 2026-03-30 10:45:18 +0200 fix(search): mobile layout overlap and keyboard handling in bottom sheet
+1fffdab513cee1495c0c84f61cd2ae0909cb661d 2026-03-30 10:48:27 +0200 feat(search): replace 2-col category grid with vertical list layout
+e4f90495162c513ecc09b38f7353100bdd28e810 2026-03-30 10:50:40 +0200 feat(search): add smooth collapse/expand animations for completed steps
+6e68b816b6522e35f7bec3d8d42c64fca2b2f81e 2026-03-30 10:56:51 +0200 docs: update CLAUDE.md and INCOMPLETE_FEATURES for search flow polish
+ac709bbf16c6524b130c5d17676fe2dcc9f1e7e9 2026-03-30 10:59:15 +0200 feat(search): add inline calendar date picker to Step 3 (Wann)
+a20d49f8ae2a86959e38f5ed9956f6cfa4792c33 2026-03-30 11:14:50 +0200 fix(search): format specific date in pill + wrap SearchCriteriaChips in Suspense
+6c4d6ba1d56d74dc54afd159cb79eed86c282035 2026-03-30 11:19:30 +0200 feat(nav): add Airbnb-style sticky category row in header with IntersectionObserver
+9b5056512daa9ad7bc064150b6b0651722ef3b6a 2026-03-30 17:28:39 +0200 phase: pass referral_code from localStorage into booking POST body
+73b9ec45c312fa0f0710654917fcab89f60336c4 2026-03-30 17:46:07 +0200 fix: fix Impressum placeholder and DSGVO→nDSG in partner trust badges
+110243745af60286e4a7abd1c53f52c75b0a086e 2026-03-30 17:48:49 +0200 feat: add auth-gated login sheet for saved/account tabs in BottomTabBar

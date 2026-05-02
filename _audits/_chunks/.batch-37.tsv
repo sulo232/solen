@@ -1,0 +1,10 @@
+d476a706c50a5124d3cafd8a93a5ef5eee950a6d 2026-03-30 17:50:23 +0200 fix: slim footer to 2 rows — remove dead city/category/partner columns
+a716acb74d0ce691568614b7e385130c13cc53c5 2026-03-30 17:58:49 +0200 phase 4: rename last-minute→angebote, fix discover language, fix partner i18n
+a011fa661ae89a8338e552ee3f4e443313268c2a 2026-03-30 18:15:50 +0200 fix: address remaining site-wide audit items (05–09, 18)
+8a531a12483e672a538135a14f886c4e671c7bd8 2026-03-30 18:44:38 +0200 phase 9: homepage UI overhaul — slim header, category icons, partner teaser
+ed1394a195902ceda7fa8ae5367b3a7e33454632 2026-03-30 19:03:12 +0200 fix: remaining audit items — nav scoping, date default, scroll-to-top
+3facbde15d924e40de2f54225cf830152649e85a 2026-03-30 19:18:56 +0200 fix: strengthen breadcrumb homepage exclusion — belt-and-suspenders pathname check
+ec512fbeabd74bc667725a9a8403164bf1a810dc 2026-03-30 19:24:34 +0200 feat(hero): remove Unsplash background image — plain warm beige bg per spec 2.1
+81883257f4ec538af9487b4462999372298220f8 2026-03-30 19:27:12 +0200 feat: add FeaturedSalonCarousel — horizontal scroll hero salon cards per spec 2.1
+25dfa7d7a96181187e2dd6be04c0e079c6594b5e 2026-03-30 19:29:25 +0200 feat(hero): integrate FeaturedSalonCarousel + fix typography per spec 2.1/2.3
+f08362a246018132554147601d81cb93feeba079 2026-03-30 19:30:58 +0200 feat(header): show compact search pill on mobile when scrolled — replaces logo per spec N.1

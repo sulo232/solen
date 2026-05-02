@@ -1,0 +1,10 @@
+425783ac275a401117175aef6cd9712296fb8e0b 2026-03-29 23:22:36 +0200 fix(termine): cancel error handling + i18n for status labels, headings, cancel modal
+aa293b6225b296e38801138c4a78e33985540cdb 2026-03-29 23:23:45 +0200 phase 3.4: fill Katalog öffnen button dark for visibility on beige background
+50f09165aeff39cf0019a95b40be99c18fcab70b 2026-03-29 23:24:54 +0200 phase 3.3: salon card aspect ratio 4/5 → 3/2 landscape
+105be2231c962ea63b9a9eaa48c97ba3d6b53646 2026-03-29 23:25:15 +0200 phase 3.5: trending uses solen_score DESC, deduped from popular
+18928dd6302bb789641bdf559e56c280d87c0982 2026-03-29 23:26:19 +0200 phase 2+3: wire BookingSuccess component after payment confirmation
+4c3a115f09c2f29dbccf20263d27850a322c0718 2026-03-29 23:26:45 +0200 phase 4: integrate voucher webhook handler into Stripe webhook route
+054ec9099884a5f17c140c2c1de07ff1450449f9 2026-03-29 23:27:32 +0200 phase 5: add generateMetadata with og:image to salon detail pages
+d74ab07dfcada21192a5b9cedf2cc9c4aa5f28f3 2026-03-29 23:28:11 +0200 feat: guided search — Airbnb-style 4-step discovery funnel replacing HomeSearchBar
+debf4b425963c77525f2162a02e6532711e9ddd3 2026-03-29 23:29:30 +0200 phase 6: add PostHog funnel tracking events
+7d151fb61e66afd7d1c7a1ef3b1c5038f103788c 2026-03-29 23:32:35 +0200 fix: add avg_price to SSR queries; reset iframeError on card re-expand

@@ -1,0 +1,10 @@
+1be249fa28c6b4133ce2d351ac73b84d31505c48 2026-03-29 23:33:10 +0200 phase 8: enable compare toggle on category/city pages + footer link
+ce445e5366ff6c6196f3c70ab3ca10810c8a13bc 2026-03-29 23:38:22 +0200 fix: address code review findings before push
+7abd5c9bedfd555df3a0b00eca18823a14042561 2026-03-30 00:35:39 +0200 phase: add RESEND_API_KEY null checks in dispute and report routes
+1c0f6facf310c8ab2fd561f3ef5aae3b0b51f44c 2026-03-30 00:37:08 +0200 phase: add referral and gift-card navigation links to profile page
+7befeef4c6ed792c3cf41f413c665b18ff27148a 2026-03-30 00:37:37 +0200 phase: add Zod validation to waitlist route
+8cc5ae9808eacfbc402915da168564eaa566f9db 2026-03-30 00:38:43 +0200 phase: call referral completion on first booking in bookings route
+e1255173d151351c2fa82b4825756b9ee75a8736 2026-03-30 00:40:24 +0200 fix(i18n): translate remaining hardcoded strings in BookingCalendar and TerminePage
+c9e036509a6939ff621a7944b5766d072d2b5933 2026-03-30 00:43:52 +0200 fix(nav): replace raw <a> tags with Next.js <Link> for internal routes
+70ba408b7661a16ea42fbb5023aedbcf3b47793f 2026-03-30 09:08:32 +0200 fix(db): remove non-existent min_price/avg_price columns from SSR queries; fix trending route city→city_id and status→is_active
+a9deaa082f518142c9620f4272a55806ff67955d 2026-03-30 09:26:00 +0200 feat(search): rewrite GuidedSearch as bottom sheet with 3-segment trigger pill

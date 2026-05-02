@@ -1,0 +1,10 @@
+f8af51a848b16cec01ad24ec660476009c3597d3 2026-04-21 07:56:44 +0000 feat: add <PageState> canonical loading/empty/error wrapper (Q19)
+014e38156f09dcef607c446a62987e8b1f9c2fbf 2026-04-21 07:58:40 +0000 docs: illustration prompt as guideline — lock constants, vary subject (Q22)
+25d04c1d5abae28ea3838cf19e1069d525a0dd34 2026-04-21 19:27:47 +0200 design: consolidate to single coral source of truth
+feff9e17f4841c0cd3c1b298661303de7c3f4fb8 2026-04-21 22:24:25 +0200 design: Option C — port coral+Fraunces+cream+no-box to production
+32ec080901e17cbad27fa76ad912d9d52b08c437 2026-04-21 22:41:19 +0200 fix: build — exclude .figma.tsx from tsc, plumb locale to HomepageHero, narrow Skeleton variant
+04398605bbb0f61ec162468a4599331ba4519305 2026-04-21 22:43:40 +0200 design: shadow/glow cleanup pass 2 (Items 4-8)
+c943797d6399f0cd1cbec0a704504f30dee9df33 2026-04-21 22:48:59 +0200 docs: overnight autonomous work log
+947aaf358b3b1573a3a841be7c43d64d54c746e7 2026-04-22 07:56:34 +0200 docs: correct moat audit — more is on main than claimed
+9ce9a1b48b75113eb643ea09c63fad24430e0766 2026-04-22 08:32:08 +0200 chore: delete orphan components/StaffPortfolio.tsx (unused, discovery variant is the wired one)
+633fb66ead4616f98dc95ab3f9f9ec03b03b8829 2026-04-22 08:42:10 +0200 feat(reviews): add "Salon hat geantwortet" reply badge

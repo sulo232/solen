@@ -1,0 +1,10 @@
+0e5b34b79dcbeae2e2712f15773ace0071f34126 2026-03-25 22:35:45 +0100 KI-P1.2: AI recommendation engine with Gemini 2.0 Flash + locale-aware prompts
+e54f26402bf110cc80034f338cffe3c06a5551ab 2026-03-25 22:35:56 +0100 phase 4: add similar salons section to salon detail page
+36ede11c73c45160ca26007eb664083a608533bd 2026-03-25 22:36:58 +0100 docs: create INCOMPLETE_FEATURES.md with voucher system phases 4-5 deferred work
+d3a91745506b6d024714579dac5a2ea948386da9 2026-03-25 22:37:14 +0100 PREFS-P2-P3: customer preferences in profile settings + i18n
+a6f2a0c1b8980eebe8752d47a1bdf714fe10d454 2026-03-25 22:38:51 +0100 KI-P2.1: create KI recommendations UI section with Zone 1 styling
+fcafb916f4712d1956928134d43b2bf7b742ddfa 2026-03-25 22:41:13 +0100 KI-P2.2: add AI reason tooltip to SalonCard with Sparkles icon
+c23ea9280dc61353a23efb323e0e56617cc07c61 2026-03-25 22:43:21 +0100 KI-P2.3: add PostHog tracking for AI recommendation clicks + refresh
+9743f963ef4c6a9b6a9b44ffc0523fa37e55f902 2026-03-25 22:50:34 +0100 docs: document 7 incomplete features in INCOMPLETE_FEATURES.md
+547d6491265b9230e0904bb35bc1a98dc3a38511 2026-03-25 22:52:16 +0100 cleanup: archive orphaned components per Rule 41
+cfaa6e355d329df5ab84b5752ce23023197cf837 2026-03-25 23:00:37 +0100 V3 Master Lint: fix N4, TY2, M3, T6 violations (partial certification)

@@ -1,0 +1,10 @@
+75ebb70b4051c89039521c1016012f3a0eceb016 2026-03-27 22:17:13 +0100 fix: add missing staff PATCH/DELETE API route — commission_rate now persists
+4f11368a2a68d127e2374d67b7a3488a01dc1928 2026-03-27 22:30:16 +0100 fix: onboarding wizard — KI Vorschläge validation, ScheduleStep auto-apply, Step 7 sync, schedule API
+a9c11aed4be905c1f428a4e3e8768544b32d0f7d 2026-03-27 23:06:26 +0100 R-CD0: category-to-dashboard auto-assignment — filter Spezial nav by salon categories
+3b8c54e4a2ec2cb9f654db5e78f9704bf7f9454d 2026-03-27 23:17:54 +0100 R-CD1: category-aware dashboard shell
+932950b2a93209f5ec58abaacdc5cd752ea05f5e 2026-03-27 23:28:58 +0100 R-CD2: coiffeur dashboard suite — FormulaBook, ConsultationNotes, ColourCycleConfig
+fd06128d17add2d6cf8bad2f9330d34d30654883 2026-03-27 23:31:49 +0100 R-CD6: makeup dashboard suite
+b9380983a2ec9343097711adf18c57ef1e5cce6d 2026-03-27 23:33:17 +0100 R-CD4: spa dashboard suite — room manager, intake, wellness journal
+5c150ffae60120f99872fec3ef68b61d55812aea 2026-03-27 23:35:08 +0100 R-CD5: waxing dashboard suite
+f7e2b66d88daa5ad454f40f24f4330846518324b 2026-03-28 09:11:55 +0100 R-CD7: shared visual diagram framework
+fef50bd8a5891a159ab08e24a89bfc784a68310c 2026-03-28 10:11:48 +0100 Migrate ClientSelectorDropdown to live pg backend and fix SetupWizard i18n label bugs

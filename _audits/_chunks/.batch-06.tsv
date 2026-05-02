@@ -1,0 +1,10 @@
+a0d776a281be08b4d042451a90ae9ad2ef142c40 2026-03-24 22:39:13 +0100 feat(dark-mode): R18 dark mode polish — full platform CSS sweep
+60a8824b58e10d7f5677cad746cc24c9fe8d1b59 2026-03-24 22:44:29 +0100 feat(staff): R16 staff profiles — profile page, visual staff picker, V3 portfolio polish, salon team section
+c36fb8b5c879d41add8826ec1f4e235a3d9cc2c9 2026-03-24 22:46:57 +0100 refactor(tokens): R19 global token sweep — rounded-button → rounded-btn
+365ae10aad4bb496dc4f0e32cdd57f7da35fdcf1 2026-03-24 22:49:53 +0100 feat(ui): R20 shadow, hover physics & transition polish
+2cb545e524bef2f2771d4ae188ac9d1f4efe7809 2026-03-24 22:58:26 +0100 feat(booking): R24 booking flow smoothness — slot, payment & staff animations
+92546a31b800058ba6695b62b350e04d8fe074dd 2026-03-24 23:04:01 +0100 feat(ui): R21 animation polish — entry animations, micro-interactions, sliding tab indicators
+2fe636eca089bcceed7621482a3d4a3ee60c8cfe 2026-03-24 23:32:59 +0100 feat(chat): R25 chat polish — glass compose shadow + tab cross-fade animation
+78c90b70663d860254ce8e55b7d6d1828aeb5008 2026-03-24 23:33:01 +0100 feat(booking): R24 booking flow smoothness — slot, payment & staff animations
+5de0a354aabe4baa6362fda40474505d90423516 2026-03-24 23:33:04 +0100 R22 phase 1: upgrade 4 modals to glass effect with backdrop-blur
+66262a51821db25b5e0ae3eed2a4e6230b32e10a 2026-03-24 23:39:03 +0100 R22 phase 2: glass effect on DashboardLayout mobile bars, SetupWizard step indicator

@@ -1,0 +1,10 @@
+f2f7abe375e6a499ccaeb3a9a913faf393f56563 2026-04-02 00:01:53 +0200 phase 1.1 (update): fix PaymentStep redirect to confirmation page
+7b9cbadfb8e7ab372eb1dec5b6c7233c4a686cc7 2026-04-02 00:02:10 +0200 docs: add lesson learned about nested i18n namespace paths
+609aef4a4ddcb93bc816aafa837d4b501fb3181a 2026-04-02 00:08:00 +0200 phase 3.1: create my bookings page with listing and card UI
+3b28592aaccf235e2993a5d03255aa8039d8cdc5 2026-04-02 00:08:53 +0200 docs: add lesson learned about component barrel imports
+01b5c22ddc6b83874806b8784f72a47551f5c031 2026-04-02 00:11:04 +0200 phase 3.2: add review prompt component for completed bookings
+391d8bfff25aac53af3d1af922958c6a75029e27 2026-04-02 10:32:57 +0200 feat: implement micro-animations & accessibility improvements (Phase 3.2)
+a5b8e537139b53388871c3bd4a284ad5266e0549 2026-04-02 10:34:46 +0200 i18n: replace hardcoded German strings in ReviewBreakdown, HomePage, Breadcrumb + add keys to all 4 locales
+1d5fbd72622372cb75f84d82b3288ee97729bb44 2026-04-02 10:37:24 +0200 seo: wire hreflang alternates on pages (search, confirmation, profile/bookings, city pages)
+a2f05593a141efd9a38b4217481e3c4cc51b3c76 2026-04-02 10:37:54 +0200 seo: add city×category pages to sitemap for local SEO
+fdb19fee2e29b60d8841b1f72187ab746b9e0d5d 2026-04-02 10:39:30 +0200 fix: remove ignoreBuildErrors and fix critical TypeScript errors (Phase 1)

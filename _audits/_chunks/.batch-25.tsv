@@ -1,0 +1,10 @@
+2e7d00e2ac5c8326bd060d045b4334531d0f4544 2026-03-28 16:30:52 +0100 fix: coiffeur formula-photo API and ColourCycleConfig HTTP method
+6792ab12945e60baf8fcef7b1434982ae9950379 2026-03-28 16:32:15 +0100 fix(coiffeur): audit fixes — API gaps, error handling, design tokens, i18n
+2472f1aef476e89cd546376017e021789d478192 2026-03-28 16:36:11 +0100 Fix marketing page useState→useEffect bug and add notifications API route
+219c3f5707857708c69a1e52ca59cf31cc7c6403 2026-03-28 16:38:40 +0100 fix: add backend persistence to ZonePackages — replace hardcoded client state with API + Supabase
+ef994238bdb37b9a09a416bfceeea3bda5386212 2026-03-28 16:40:39 +0100 Fix critical dashboard bugs: marketing useState→useEffect, null crashes, missing APIs
+bf0c1d7f17299268607c3cfdf59056d90b24cfbf 2026-03-28 16:50:08 +0100 fix(nail): audit fixes — API gaps, i18n, dark mode, a11y
+fcddc6faed41836711ba43054a75381515e7d9cb 2026-03-28 17:37:45 +0100 makeup subsite: i18n, dark mode, a11y, error handling fixes
+be0ef83e6193426358500eb7578ef1f24db9464e 2026-03-28 17:42:57 +0100 spa subsite: useEffect cleanup guards, bg-white tokens, a11y fixes
+c2816fd1487d355352ff97d2c78df8c57124492b 2026-03-28 17:47:37 +0100 waxing subsite: useEffect cleanup guards, bg-white tokens, locale fix, duration fix
+dc9a2422c72965dbe7c5d1f88353517c1ba7ebf5 2026-03-28 18:38:06 +0100 discovery: fix cancellation guards and bg-white tokens in remaining components

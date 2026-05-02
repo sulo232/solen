@@ -1,0 +1,557 @@
+8dd783d5293ae066503aa4913b36c099511df29e 2026-03-23 15:54:24 +0100 🚀 Massive Partner Page Overhaul (All 12 Topics)
+a591cd09cec2c6b7e1d8c2bee28b46bb0d19d051 2026-03-23 16:10:17 +0100 feat: implement comprehensive review system, moderation and notifications
+19903bdccb0859e6b8c53849f7f81ccb88df0dcf 2026-03-23 16:12:44 +0100 phase 2: booking patch endpoint and cancellation permissions
+03ca68057e30a52135875e34680251a2c4a1eefc 2026-03-23 16:13:44 +0100 phase 3: booking engine cron jobs (no-show, pending-timeout)
+ad85cff4b637618871da47c5cb52af71311aa2e3 2026-03-23 16:15:11 +0100 phase 4: availability disclaimer and admin suspension cancellations
+8a6b187103db99adf66ea6acce54061244b5bbc0 2026-03-23 16:21:52 +0100 phase 6.4: Mount ReportContentButton
+3a7473d036a2a8e69113818a14548179d0697f92 2026-03-23 16:25:26 +0100 phase 2: age gate and email enforcement
+4cadac22fd0fb61d5acd30f7832b166028fd13a9 2026-03-23 16:27:57 +0100 phase 3: salon phone verification via seven.io and upstash redis
+18701a4df05fcb5300ee992bf02d5461c4ec95f4 2026-03-23 16:28:57 +0100 phase 4: delayed account deletion and cron processor
+823f70df1f642498e01faa974b44d64dc98030ae 2026-03-23 16:30:40 +0100 feat(payments): Implement Stripe Connect payment system roadmap (Phases 1-4)
+4b6485bd1c820df4c06d5969def42b4db0e01354 2026-03-23 16:35:47 +0100 feat: complete posthog data analytics tracking
+e90c079ff96c78a73ac7ece460f1435bed0a61d9 2026-03-23 16:43:01 +0100 phase 2/3: add privacy page and redirect datenschutz
+36f08da0293a36e8676724affcf00690b134e9ac 2026-03-23 16:43:05 +0100 feat(notifications): finalize webhook integrations and docs
+f8ef5d80b063def311416674915ee5c10e1d357c 2026-03-23 16:43:50 +0100 phase 4/5: tos version and api accept route
+87cfaf3c7e9b749453c8e4fe0b5779ff5f173350 2026-03-23 16:44:59 +0100 phase 6/7: add tos update banner and fix cookie banner
+0e7bd73dddea9721d74827dfe35a660a0b7f83c4 2026-03-23 16:46:05 +0100 phase 8: create admin tos notify api
+8ae947ce1a8ad1cb88c479724e8c0aa860bb0f82 2026-03-23 16:57:49 +0100 fix(api): correct supabase admin client imports in notify routes
+be27646f50abca8c5e3079df429bc9bf24d50f76 2026-03-23 18:08:59 +0100 fix(api): avoid top-level Supabase admin client initialization causing build error
+d071cc5ff1b2739cf69e2c30ed6ea0821a451c4d 2026-03-23 19:16:06 +0100 phase 6-8: solen score, geospatial search, and trending salons
+e4044c8b2b26c12f8bca3123821c19fa4da59a89 2026-03-23 19:29:46 +0100 feat(onboarding): redesign salon onboarding, add stripe connect CTA and cancellation policies
+91b72a91228e410d497d7d910024ade7f9a10e2b 2026-03-23 22:11:42 +0100 Sync local changes: updated CLAUDE.md, added _rules/, cleaned up old _tasks/
+adcd252e25627c175bb3d5b973ba4326a788ee1e 2026-03-23 22:20:10 +0100 feat(onboarding): progressive 3-step wizard, GoLiveGate, services importer
+98f2556e1047c5d9e7d7599c816d4dc3a7fecb85 2026-03-23 22:20:27 +0100 feat(compliance): T&S compliance — booking confirmation, frozen banner, verification docs, content reports
+764f53dd29fb26b6399d09e6f7f4127ee2eee2eb 2026-03-23 22:33:50 +0100 feat(pages): UI audit — design tokens, category sections, behandlungen SEO split
+6f4cc68e41a2a75a5a286dbe10531e39ddc8dcb7 2026-03-23 22:52:14 +0100 Restore CLAUDE.md, _rules/, and _docs/ after reset
+bd67f9e43331b227cc503d7e77c3d188a3d6ad1d 2026-03-23 23:31:36 +0100 Full restore: all source files synced from local backup
+f332baf80f601b3837bfb6cc6f14974be243fb16 2026-03-24 16:59:10 +0100 feat(dashboard): Phase 1-3 — Zone 3 purity, token sweep, sticky save bar
+566d76f7ebc4a659ce4af661cc15f85e45cb921f 2026-03-24 17:16:33 +0100 feat(coiffeur): URL-synced filters, V3 tokens, AI matcher modal
+3e92e3c95e928b1b3a41a72cdb7e98b23c145cd5 2026-03-24 17:24:35 +0100 feat(profile): Zone 3 enforcement + EmptyState unification
+0bad7bd4a517caa29956a99abdb78deb0d13d802 2026-03-24 17:26:38 +0100 feat(barber): fill roadmap gaps — queue status, repeat-last-cut, booking calendar
+f3156a1a76e8d447d8a7d1bb62135f89b6dca979 2026-03-24 17:29:30 +0100 feat(booking): V3 tokens, strip glassmorphism, InteractiveHoverButton CTAs
+6e4a8c7e9a72b2f07a56e22b1960372909bb0f74 2026-03-24 17:59:01 +0100 feat(homepage): Phase 1-8 — hero rework, section toggle, UI fixes, category tiles, footer, locale
+1449635f09ccea16ee791fa695165dfc37da1687 2026-03-24 19:49:43 +0100 feat(coiffeur): wire up hair-type pills, trending strip, AI matcher modal
+c971d6db6c1331abb80c0945eb6f1d49c055812e 2026-03-24 19:51:30 +0100 fix(checkout): replace banned rounded-button tokens with V3 design tokens
+49b64cf54d5061582021fb95d510a2746d4c218f 2026-03-24 19:59:13 +0100 feat(barbershop): URL-synced filters, V3 design tokens, WalkinQueue UX
+85fb7741f4202b08fa09be97d92bd3a9e01d6198 2026-03-24 19:59:56 +0100 feat(cleanup): R08 dead code removal + coming-soon wrappers
+c9bc4f8f6e1b8a96ea8ef762f9393cc2fc8ecf32 2026-03-24 20:13:40 +0100 feat(onboarding): salon registration overhaul — auth guard, draft persistence, Zone 3 design
+0bfc6972830556636ee5c2d096d9a0c1f158cfbe 2026-03-24 21:00:25 +0100 feat(dashboard): Zone 3 purity — strip glassmorphism, fix token confusion, 82+ violations
+99dbde5f83b2ef9f93d32aff1ae86e8ae72f3c08 2026-03-24 21:01:12 +0100 fix(api): remove edge runtime from admin review routes
+224b2a000b2e15779295604c7baff0f4e6d49d45 2026-03-24 21:09:29 +0100 phase 1: rebuild wizard as 3-step flow (basics → OTP → AI quick win)
+f2c0fd72b9b12503ec00adf206e76eeec06a8c2b 2026-03-24 21:23:47 +0100 phase 2: dashboard go-live gate and stripe enforcement
+c1ec0eb8f58abb6fd6c4d0f8c7ae65b198d519e2 2026-03-24 21:28:19 +0100 phase 3: dashboard services importer config
+fc88af02feb61b5033791339d4132ed548768703 2026-03-24 21:30:10 +0100 chore: add FR/IT translations, upgrade sms cron + lib/sms
+2b939e06ddd7e42ca5171c6e254a39fe7011b216 2026-03-24 22:05:09 +0100 feat(off-peak): R11 off-peak discounts — CRUD API, dashboard manager, booking display
+c57bc079d762dcf3ec6221132d94e9cf9c67ed04 2026-03-24 22:05:31 +0100 feat(search): R09 split-view search page with map + filters
+72f1eb74f475af5f48545646f7e1870706fa3411 2026-03-24 22:05:43 +0100 feat(cron): R10 SMS & email automation — wire sendSMS into barber cron, tighten review window, add sms-reminders schedule
+13ab078d916eed32a94d88e917df3db7375d7d3e 2026-03-24 22:21:12 +0100 feat(barber-dashboard): R13 barbershop dashboard suite enhancements
+59590bf9fcdfb4731c6b549549638aebf47f86a6 2026-03-24 22:23:42 +0100 feat(nail-admin): R14 nail admin suite — pricing API, AI art generator, station bars, retail manager
+920094b452e72372e719638bec26a8865bc07f3a 2026-03-24 22:36:18 +0100 feat(homepage): R15 homepage improvements — admin section toggle UI
+16699baffda8e303feba0b57fcf290599cc65583 2026-03-24 22:37:53 +0100 feat(reviews): R17 advanced multi-dimensional reviews — sub-ratings, breakdown bars, weighted average
+a0d776a281be08b4d042451a90ae9ad2ef142c40 2026-03-24 22:39:13 +0100 feat(dark-mode): R18 dark mode polish — full platform CSS sweep
+60a8824b58e10d7f5677cad746cc24c9fe8d1b59 2026-03-24 22:44:29 +0100 feat(staff): R16 staff profiles — profile page, visual staff picker, V3 portfolio polish, salon team section
+c36fb8b5c879d41add8826ec1f4e235a3d9cc2c9 2026-03-24 22:46:57 +0100 refactor(tokens): R19 global token sweep — rounded-button → rounded-btn
+365ae10aad4bb496dc4f0e32cdd57f7da35fdcf1 2026-03-24 22:49:53 +0100 feat(ui): R20 shadow, hover physics & transition polish
+2cb545e524bef2f2771d4ae188ac9d1f4efe7809 2026-03-24 22:58:26 +0100 feat(booking): R24 booking flow smoothness — slot, payment & staff animations
+92546a31b800058ba6695b62b350e04d8fe074dd 2026-03-24 23:04:01 +0100 feat(ui): R21 animation polish — entry animations, micro-interactions, sliding tab indicators
+2fe636eca089bcceed7621482a3d4a3ee60c8cfe 2026-03-24 23:32:59 +0100 feat(chat): R25 chat polish — glass compose shadow + tab cross-fade animation
+78c90b70663d860254ce8e55b7d6d1828aeb5008 2026-03-24 23:33:01 +0100 feat(booking): R24 booking flow smoothness — slot, payment & staff animations
+5de0a354aabe4baa6362fda40474505d90423516 2026-03-24 23:33:04 +0100 R22 phase 1: upgrade 4 modals to glass effect with backdrop-blur
+66262a51821db25b5e0ae3eed2a4e6230b32e10a 2026-03-24 23:39:03 +0100 R22 phase 2: glass effect on DashboardLayout mobile bars, SetupWizard step indicator
+007cdb1e8c0b7f21b2be4ca36d97b91bbf3dafc3 2026-03-24 23:41:31 +0100 R22 phase 3: dashboard dark mode sweep — DashboardLayout root + skeleton
+c3a237f72bf2cdca2468abc0775193554c233978 2026-03-24 23:42:10 +0100 feat(ui): R21 animation polish — entry animations, micro-interactions, sliding tab indicators
+32f8d03370500ebfaaabefc3b2f4658618807063 2026-03-24 23:45:45 +0100 feat(ui): R23 loading & empty state standardization + AnimatePresence transitions
+522d6b4d7ebd8269d6e3057a417eda60210aaf9a 2026-03-24 23:54:18 +0100 R29 phase 1: Footer i18n — all strings moved to translation files
+ffbf64c479974ec836f298b180224e162781b6d6 2026-03-24 23:56:57 +0100 R30 phase 1: delete 7 duplicate 'page 2' files, merge enriched content into primaries
+1558af8f7a5bc0efbfd9d238235bbf382300846c 2026-03-24 23:58:46 +0100 R26 phase 1: create ErrorFallback component with V3 styling
+725c0a4bcfdec4d79c6b3b811cbf3420131bd923 2026-03-24 23:59:14 +0100 R26 phase 2: add error.tsx to 11 route groups
+9655c38ef735c2d439c79c1e28d8ebbdf8ff5567 2026-03-24 23:59:19 +0100 R26 phase 3: add loading.tsx with V3 skeletons to 5 critical routes
+bf5914e931a1c7e8bbf5adc34735a1e411b27b51 2026-03-24 23:59:27 +0100 R26 phase 4: custom V3-styled 404 not-found page
+d3b7f6e575ee7e773236ae8cfcc97b8b8d9c2466 2026-03-25 00:00:24 +0100 R30 phase 2: add priority to hero images, sizes to all responsive Images
+3052859e3be323b834b5814f507491116d60354a 2026-03-25 00:02:12 +0100 R30 phase 3: blur placeholders for hero and cover images
+8002d9f4ccce13170833e16fca725599cc9b797d 2026-03-25 00:03:54 +0100 feat(seo): R27 — JSON-LD structured data, canonical URLs, sitemap + robots enhancements
+d68f1cad56fa3611404ed9ffbeb096a21c2a8ec0 2026-03-25 00:06:57 +0100 R29 phase 2: Dashboard nav i18n — 38 labels moved to translation files
+a6e211ca1e7b160bf4949ea71bd731260a2733b7 2026-03-25 09:38:08 +0100 feat(a11y): R28 accessibility hardening — skip-to-content, focus traps, aria-live, form error linking
+d26de07ac7ab718b88044b5f95c6d8e6ec4148e2 2026-03-25 09:39:49 +0100 R29 phase 3: remaining hardcoded strings moved to i18n translation files
+91699c88acc138c82cda1869e1fb610c4855bf5f 2026-03-25 10:00:51 +0100 R31-P1: hero editorial 2-column split + floating salon card
+d607920b0095ce9ae90b02ae1ab58796cab2a9c4 2026-03-25 10:03:56 +0100 R31-P2: category tiles → gradient fills + Bebas Neue labels
+4421f3f838c56556afce790850bad11a9312437d 2026-03-25 10:03:57 +0100 R33-P2: replace cold shadow-card/glass tokens with warm-sm/lg/xl globally
+7773547b2b0de12fcf6534e406341762c44a6fcd 2026-03-25 10:07:14 +0100 R31-P3: Last Minute → plum dark section with deco blobs
+6a29d7cd54ed74a45f7e7e40c1db94075bc074bd 2026-03-25 10:07:52 +0100 R33-P4: input coral focus ring, universal prefers-reduced-motion
+6393213245641f0c38b13f6eb430e91aba48d41f 2026-03-25 10:09:20 +0100 R32: SalonCard V3 hardening — remove blob morph, fix hover/shadows/tags/availability
+a55a3203e68c6aaed5a63391545aab4db377d3ae 2026-03-25 10:10:35 +0100 R31-P4: quartier dark section, partner 20px fix, trust strip added
+0f6c5c92e7dacb96de79d8a9b12ea2de0a3b03bc 2026-03-25 10:26:39 +0100 CP-P7: DirectoryCard — remove rounded-blob-d/blob-interactive NEVER violations, dashed border style
+7b211ef1b8ee2af496dfcb31e91f05fd6172f578 2026-03-25 10:26:58 +0100 SP-P1–P11,P13,P15: salon profile V3 deep dive — Zone 2 warm cream bg, gallery glass nav, breadcrumb eyebrow, category tag colours, off-peak Bebas timer, glass tab bar, hours today highlight, info tiles glass, services rounded rows, staff glass cards, review eyebrow+sort pills, branded skeleton loader, 404 V3, nearby eyebrow
+ddbc52f5c8fad38b38572af025f914a86fccddbe 2026-03-25 10:28:27 +0100 SP-P12: sidebar booking panel → glass Tier 2 premium sticky card
+a0527644295e8b08e3c8603cbe046a8ac1cc502a 2026-03-25 10:29:45 +0100 SP-P14: mobile bottom sheet glass + drag handle, fixed coral booking button
+8d2f683a7fc0872208a50c5ed19f4db00d75e1c0 2026-03-25 10:30:39 +0100 CP-P1/P3-P6/P10-P15: Category page V3 deep dive — hero, filters, dropdowns, toggles, skeletons
+f01199c63ef6d76d8de46dbbff724dcaaf6c0030 2026-03-25 10:33:47 +0100 R-HP P1–P15: Homepage V3 deep dive — full visual overhaul
+d66777803779e35e28be8a9270ac38861091d683 2026-03-25 10:35:23 +0100 CP-P8+P9: SalonCard → glass Tier 2, spring hover physics, inline category colour spec
+3442a2e8a1feb57fc77f7453ce2d8320c7edd257 2026-03-25 10:37:31 +0100 BF-P5: StaffPicker — remove scale-105, ring active state, Zone 3 14px radius
+5409bc9978b07fe9266f7b4777ec640a84530897 2026-03-25 10:37:38 +0100 BF-P10: GuestBookingForm — eyebrow header, larger input padding, CTA coral shadow
+dc49367089d84726ff2faf007fa7fbbc3c6131fa 2026-03-25 10:37:50 +0100 BF-P14: PackageRedeemBanner — amber tint, icon box, compact layout
+d91d99b0e5c92cb08eae02785dcd6b421b1515be 2026-03-25 10:37:56 +0100 BF-P6-P9: ServiceCart — Zone 3 12px radius, eyebrow labels, custom checkboxes, icon-inset inputs, coral CTA shadow
+387666f63aac514626c06997a864e10fc46f3cb0 2026-03-25 10:38:04 +0100 BF-P1-P4,P11-P13,P15: BookingCalendar full Zone 3 restyle
+28167e9573093c702d1e1bcef6dd5d98a65701be 2026-03-25 10:46:18 +0100 AUTH-P1–P15: auth pages V3 deep dive — Zone 3 compliance
+e67d78a4f6db5b3fc5a367689c63ddcd2b772347 2026-03-25 10:52:05 +0100 GLOBAL-P1–P15: global components V3 deep dive — NEVER violations fixed
+f9d8ef41d78ac5b2a31c3580bf076ac229ad4d89 2026-03-25 10:52:35 +0100 DB-P1–P15: dashboard V3 deep dive — Zone 4 compliance, grouped nav, skeleton loading
+bf22e7f3ffbbb4636b6ba1e82aa2a962b2b4eaa2 2026-03-25 14:16:32 +0100 TOKEN-P1–P11: V3 design token sweep — remove banned tokens, fix NEVER violations
+a6c01c92e71f8f8aefa8962d4609325bb1004941 2026-03-25 14:21:31 +0100 PROF-P1–P15: User Profile V3 deep-dive — Zone 3 restyle
+30c947d7ad85c211090851f20717e5d797d7ebf7 2026-03-25 14:50:43 +0100 DISC-P1–P15: Discover page V3 deep dive — Zone 2 editorial restyle
+54f410f5737f55956844370cf242e49fb80e1649 2026-03-25 14:53:50 +0100 CHECKOUT-P1–P15: checkout V3 deep dive — Zone 3 trust-critical restyle
+03012c25a70a10dda22aaff17713f8d2a6bf83dc 2026-03-25 14:56:38 +0100 ONBOARD-P1–P12: salon onboarding V3 deep dive — Zone 3 compliance
+e93ebc4a3f7f7316723422eeae99115558dae664 2026-03-25 15:02:21 +0100 WARUM-P1–P8: Warum Solen V3 deep dive — Zone 1 marketing restyle
+05f56b9d5e535b188c67320b4190c300f8991149 2026-03-25 15:05:18 +0100 LM-P1–P9: Last-Minute page V3 deep dive — Zone 2 urgency discovery restyle
+852f32cf152aacf80d9b567650b50bc4df427748 2026-03-25 15:28:42 +0100 LOYALTY-P2: add fade-in-up keyframe for stamp success icon (NO scale, opacity+translateY only)
+b20ee0cb32679217a6bb31c87131eede8912965c 2026-03-25 15:30:55 +0100 LOYALTY-P1: all 3 stamp states → rounded-[16px], icon boxes, NEVER #8 removed (fade-in-up only)
+1d10ae862008d98df46d3c66c7fb9bed21695181 2026-03-25 15:31:47 +0100 LOYALTY-P4: StampCard → progress counter font-heading, complete banner font-heading uppercase
+28e4d9a6b77d3499c3a6a37db138380d11744f05 2026-03-25 15:33:34 +0100 TIP-P1–P6: Zone 3 trust-critical restyle complete — coral pulse loading, rounded-[18px] icon box, font-heading typography, warm shadows, coral glow active states
+920eab6f9eed59f9a878fcb8a6276f8d628fcc5c 2026-03-25 15:37:58 +0100 WIP-P1–P5: Walk-in Pay page V3 deep dive — Zone 3 trust-critical restyle complete
+12412b488a296d63da3132fc4b1e8c2c994d116d 2026-03-25 15:46:05 +0100 PARTNER-P1–P7: Partner page V3 deep dive complete — Zone 1 B2B premium restyle
+6ed45959bfe5edcb893f89acfbe81e1f620819b3 2026-03-25 15:48:02 +0100 SHARED-P1+P2: EmptyState → remove scale-[1.8] NEVER violation, add eyebrow prop, remove italic
+f3841f5890d2632e8b3b63bdbad68ba717a662d7 2026-03-25 15:48:32 +0100 SHARED-P3: Spinner → add coral variant for light surface loading states
+a61f1a1db844f9ca6aa0303ef82141b4d0e901a4 2026-03-25 15:56:22 +0100 fix: ui bug audit v1 — 14 fixes across 6 sub-sites
+c77dfaf5030e044c6634240c9637713e0c0dfc01 2026-03-25 16:35:04 +0100 fix: ui bug audit v1 - 14 fixes across 6 sub-sites
+3b5236e09561ee310dacffd082656cb30f48f024 2026-03-25 16:47:17 +0100 chore(design): Apply V3 Design Sweep to ProfilePage (R04)
+cb7e395c946e0602f71fccc559310abf87789456 2026-03-25 16:53:07 +0100 chore(design): Apply V3 Design Sweep to Dashboard (R05)
+3348492bfb94726af0b24fb99b28efcb56586489 2026-03-25 16:55:17 +0100 fix: resolve TS errors breaking production build
+40cd3b222445bd5e42832225aabaaac18a3204d6 2026-03-25 16:56:38 +0100 chore(design): Apply V3 Design Sweep to Booking/Checkout (R06)
+9bbee0db3b1981cb945325f2aee675a4be3ce564 2026-03-25 16:59:07 +0100 chore(design): Apply V3 Design Sweep to Discovery/Salon (R07)
+b8f872e39dff377d991509bb00a81ac7b42477a5 2026-03-25 17:03:01 +0100 fix: resolve SWC JSX parse error in RemoteQueueJoin
+b8efabc11aa1491071590b81a9282f7763802255 2026-03-25 17:07:48 +0100 chore(cleanup): Execute Dead Code & Scope Cleanup (R08)
+7a244cd269c05949cefbc5844e7f1af791148d87 2026-03-25 20:51:48 +0100 PREP: rename old FilterBar → SearchFilterBar to avoid naming collision
+cd51f25fbe6c670bbe97d05caed920a9b1580af0 2026-03-25 20:59:10 +0100 feat(filter-pills): phase 5-6 — add i18n translations + export FilterBar components
+0693d7beb56c008c93c4371111f5115e9291d309 2026-03-25 21:08:32 +0100 NAV-MOBILE-P1: remove BottomNav from root layout — single nav architecture
+14de934d1ed02a208b4aa2a91b48e266b32068ce 2026-03-25 21:15:49 +0100 NAV-P1: replace text wordmark with SVG logo asset
+ab9cb1b5e973e21bfba7eba01c48028ad4e03d50 2026-03-25 21:16:43 +0100 NAV-P2: increase nav bar min-height to 64px unscrolled, 56px scrolled
+b8b2fccdd423fcb79e0e90a5f50ebc3bca28ba19 2026-03-25 21:21:02 +0100 NAV-P4: PFP → logged-in dropdown menu, logged-out → login redirect
+a1130528522c771c89130a486f56f5b34e27560f 2026-03-25 21:23:21 +0100 NAV-P5: mobile hamburger — add migrated BottomNav items + Salon CTA
+0dc0e9cd6bd9fd94790743d2aa3fdbd1f3fdf0d3 2026-03-25 21:29:25 +0100 phase 1: Sweep arbitrary leading classes and standardize placeholder line-height
+66aaaa5376875cff9970a5b18f61ed77af4978fb 2026-03-25 21:30:54 +0100 phase 2: Remove banned scale animation from SalonCard image hover
+609019ba899aea4b1fe9b5b0b9b092280061e5ab 2026-03-25 21:31:45 +0100 phase 1.3: unify warning/rating yellows #F59E0B → s-yellow tokens
+ecc636c9968a1ad38c2f62f2fd4ac4ed894ee467 2026-03-25 21:32:45 +0100 phase 3: Enforce strict aspect ratios and object-cover for images
+c1240494c8c422a863d9409ac8dc10ba32ce8d23 2026-03-25 21:33:34 +0100 phase 1.5: replace hover:bg-s-coral/90 → hover:brightness-[1.06] across 47 files (65 instances)
+d1fe386b554dd645d06f1931995178abec5d5919 2026-03-25 21:37:25 +0100 phase 1.6: SearchFilterBar i18n — replace hardcoded German with useTranslations()
+d1f1a4d1806c0d21166542c6ded9124fb6221c4d 2026-03-25 21:40:25 +0100 phase 1: enforce §1 html transition rule in globals.css
+ba80be338384fec622001814f4f9c3290c0a3d78 2026-03-25 21:41:27 +0100 phase 2: add dark mode pairs to SearchAutocomplete
+7cd1017c28d98fb7bcfb34d030866a7e0d2e25e9 2026-03-25 21:54:15 +0100 phase 2: replace hardcoded German strings + locale-aware routing
+9fce4c141dd1290277631ae599004fa5d1f9ce12 2026-03-25 21:54:18 +0100 DEPR-P1: hide Massage & Spa category + fix category tile hover
+2d0e8f08276f1446f39ab572d4c81c363242adec 2026-03-25 21:57:59 +0100 phase 3: translate CookieBanner + create styled 404 page
+71be811739b31396ddcc6fba9836a7e7b1d7a879 2026-03-25 22:10:59 +0100 DISC-I18N-P1–P3: CategoryTabBar i18n support — next-intl translation keys for all 4 locales
+4882c9677a37651428d9887245475e6040c94c9d 2026-03-25 22:16:26 +0100 phase 1: UI polish — standardize spacing (py-16 md:py-24), fix empty state with EmptyState component + illustration, standardize 'Alle ansehen' links, add category tile hover lift (-translate-y-[5px])
+8bce6a053dba0e4e2d34f9625c8d837146dbb726 2026-03-25 22:16:30 +0100 feat(discover): integrate universal FilterBar component (zone 1) on feeds
+057899e8d6dff26605c20446f4cbbc0359090a81 2026-03-25 22:17:33 +0100 phase 2: fix search bar mobile clipping — change overflow-hidden to overflow-x-hidden on mobile (sm:overflow-hidden) to allow date picker dropdown to display
+f31d89437b6dae278e4bba4420b5d383020fd040 2026-03-25 22:21:25 +0100 phase 3: Top Pick badge integration — add is_top_pick column to salons table, update Salon interface, add dynamic badge to SalonCard, add dashboard toggle in settings ProfileTab, allow is_top_pick in PATCH API
+f55ef27a8210a66c1aef29c2d0e01959dea0ad9b 2026-03-25 22:23:49 +0100 phase 4: mark HeroVisualCard booking stat as approximation (~250 instead of hardcoded 247)
+59bfa797b78755a0d032618b2df5340210004d77 2026-03-25 22:29:40 +0100 phase 2: add loading skeletons to homepage, discover, and last-minute pages
+749c7b8d92076881f92b8a0154850b898fcbc8ac 2026-03-25 22:32:31 +0100 VOUCHER-P2a: add voucher creation and validation API endpoints
+1826c256e1af7aec963c251e9ac226de760d2d83 2026-03-25 22:32:38 +0100 phase 3: add dynamic pricing indicators to salon cards
+1c45685c4250ba0850d147e873e498d980fcbace 2026-03-25 22:33:55 +0100 VOUCHER-P2b: add voucher purchase webhook handler (manual integration required)
+02ad924ca0b98ea3710837a38d94ecc84802ead8 2026-03-25 22:35:30 +0100 VOUCHER-P3: add voucher purchase UI page with Zone 3 styling
+0e5b34b79dcbeae2e2712f15773ace0071f34126 2026-03-25 22:35:45 +0100 KI-P1.2: AI recommendation engine with Gemini 2.0 Flash + locale-aware prompts
+e54f26402bf110cc80034f338cffe3c06a5551ab 2026-03-25 22:35:56 +0100 phase 4: add similar salons section to salon detail page
+36ede11c73c45160ca26007eb664083a608533bd 2026-03-25 22:36:58 +0100 docs: create INCOMPLETE_FEATURES.md with voucher system phases 4-5 deferred work
+d3a91745506b6d024714579dac5a2ea948386da9 2026-03-25 22:37:14 +0100 PREFS-P2-P3: customer preferences in profile settings + i18n
+a6f2a0c1b8980eebe8752d47a1bdf714fe10d454 2026-03-25 22:38:51 +0100 KI-P2.1: create KI recommendations UI section with Zone 1 styling
+fcafb916f4712d1956928134d43b2bf7b742ddfa 2026-03-25 22:41:13 +0100 KI-P2.2: add AI reason tooltip to SalonCard with Sparkles icon
+c23ea9280dc61353a23efb323e0e56617cc07c61 2026-03-25 22:43:21 +0100 KI-P2.3: add PostHog tracking for AI recommendation clicks + refresh
+9743f963ef4c6a9b6a9b44ffc0523fa37e55f902 2026-03-25 22:50:34 +0100 docs: document 7 incomplete features in INCOMPLETE_FEATURES.md
+547d6491265b9230e0904bb35bc1a98dc3a38511 2026-03-25 22:52:16 +0100 cleanup: archive orphaned components per Rule 41
+cfaa6e355d329df5ab84b5752ce23023197cf837 2026-03-25 23:00:37 +0100 V3 Master Lint: fix N4, TY2, M3, T6 violations (partial certification)
+1f7036d43163ca3d9fd06fdf511c153744bcf7c7 2026-03-26 10:29:03 +0100 phase1: add glass CSS custom properties for dark mode
+2ea865a94f3aba1839ef7bfeecfa5cc41e25b265 2026-03-26 10:30:38 +0100 phase1: create grouped search filter pill config + i18n keys
+afeaba75643ec27e17cc33aaa46dd2e10819646e 2026-03-26 10:42:23 +0100 phase2: migrate last-minute page to grouped FilterBar
+7ce0b3a5b51c4b3b9fd4332e00b53eee37793ab5 2026-03-26 10:46:17 +0100 phase3: migrate behandlungen pages to grouped FilterBar
+68b3bd6be180bb08fffdec42ac82f1871ad9933f 2026-03-26 10:51:23 +0100 phase4: migrate remaining pages + delete SearchFilterBar
+2918ac4a9868e296c57cad161043ba55f17a7ad0 2026-03-26 10:55:07 +0100 phase1: add beauty SVG icon library + types + i18n keys (all 4 locales)
+2638e71233d6bc89394e808e4178445bbce9a3b8 2026-03-26 11:05:53 +0100 phase1: add beauty SVG icon library + types + i18n keys (all 4 locales)
+c280c2aa7ffe613fb8ccabc4cec9dc14d2ed64c8 2026-03-26 11:11:31 +0100 phase2: build profile subcomponents (hero, beauty card, highlights, tabs, grid)
+c70017448a94e6f3679ef4cbebf08747f73d2607 2026-03-26 15:09:14 +0100 phase3: beauty profile edit modal with persistence
+59de27f8d9bcc843271d3e120a28f5719906ba74 2026-03-26 15:15:56 +0100 i18n(tier2): Phase 2 partial — dashboard components 1-5 (ScheduleGrid, PromoManager, PackageManager, PriceAdjustmentModal, GoLiveGate)
+95244a33ffafbaaa20a625d25f78e811d3a5958d 2026-03-26 15:16:56 +0100 docs: add incomplete i18n Phase 2 tracking
+76de0ac56c95a1ccd4fa336d7fd4fe152e9849f6 2026-03-26 15:22:39 +0100 phase5: dark mode polish + loading skeletons
+2ee9aaff63f5ecfe106248a652075aca8fa25f76 2026-03-26 15:23:26 +0100 i18n(tier2): Phase 2 component 6 — DisputeNotification
+bc509f4e952343d83e64168cccec8f7edc870162 2026-03-26 16:02:39 +0100 i18n(tier2): Phase 2 complete — components 6-10 migrated
+0a06e0c2b016a84dd9125fd62d03b36db4b64389 2026-03-26 16:18:11 +0100 i18n(tier3): batch 3A — components/ui/ (10 components)
+e588b5e01975607e694b03c7893ce0aba2fa0ca7 2026-03-26 16:37:26 +0100 i18n(tier3): batch 3C partial — admin, auth, barber components (5 components)
+45a6dfa420842c2814739da5605bfed112cac895 2026-03-26 17:32:00 +0100 i18n(batch1): migrate 5 barber components to useTranslations
+73e7782f9b323e891d292c1e9bf66e7a092a7a31 2026-03-26 17:33:21 +0100 docs: add i18n migration status tracker
+5117e87dcf690d7bc2e376a92477dcad2da72bf9 2026-03-26 17:39:05 +0100 feat: remove phone verification from salon registration, email-only flow
+bea96a1c1342c24ce999792a33891ce765ab12e1 2026-03-26 17:42:54 +0100 i18n(tier3): migrate 5 critical user-facing components + add all translation keys
+b2ee4dd250d09a7af7a3c72986a1bfe128564a97 2026-03-26 17:52:17 +0100 i18n(tier3): complete Phase 3 - wire remaining 9 components
+5632920d3018ff9be27316d3dfa20021e02ef08c 2026-03-26 18:21:16 +0100 fix(api): fix salon creation 500 errors by removing non-existent columns and adding lat/lng fallbacks
+11de84da473df8d257f01522fc42baa88fe6269c 2026-03-26 18:25:22 +0100 fix(api): remove phone_verified from salon insert to bypass schema cache error
+1336d1b906b5b127d16e9a8aab9f5f82833fa819 2026-03-26 18:58:05 +0100 feat: Phase 3 landing page hero and search bar
+4865a0cf03036b7b5c202784ac5aaacbcb2a2d86 2026-03-26 19:11:23 +0100 feat: Phase 3 Landing Page Redesign complete
+6f5324eb67253fb1b18209a95599e4d4c34f4cf0 2026-03-26 19:15:35 +0100 feat: Phase 4 & 5 - API City filtering and auto-detection
+3f0afccd3f24a53876f2d79576fa18c102202bf2 2026-03-26 19:29:07 +0100 fix: Registration city schema error and added City dropdown + UI: Added Discover Carousel
+9202fdd5b76e30d12f35c3bf0140048680fc513e 2026-03-26 19:37:24 +0100 fix: Purge 'quartier' field from salon registry & UI completely
+13da524e0add077581b572ee752e5ecf3aab1525 2026-03-26 19:42:26 +0100 feat: DiscoverCarousel now uses real algorithmic Data and ItemCard dimensions
+869abebf312fcfdaf1cf481224d15a32b408bbf8 2026-03-26 19:55:26 +0100 fix: Limit DiscoverCarousel to 5 items, remove tilt, fix tiktok loading & schema error
+6ee70f0919028ac53b634bbac207ad879ed97aef 2026-03-26 20:04:56 +0100 feat: Mobile Carousel dynamic scaling & Registration schema SQL
+e3a4d6a011fdd250f6fee04535b740bb64a598af 2026-03-26 20:14:17 +0100 feat(routing): integrate explicit category pages directly into multi-city schema
+310f711d0552d5ea4ccf2585ca9d16763042d8bc 2026-03-26 20:34:55 +0100 fix: insert dummy quartier to bypass NOT NULL constraint
+02d176658bfb63d97e658bf7e5ec069001cab194 2026-03-26 20:39:21 +0100 fix: insert valid enum string 'grossbasel' to bypass CHECK constraint
+b618b5a7cf987b0830e418a5627544e6bf9e48d6 2026-03-26 21:08:47 +0100 fix: resolve SWC parser crash and implement discovery carousel features
+226443b4237254640cc14b9e16b55bfc6a5ede11 2026-03-26 21:12:13 +0100 fix: replace cluttered text navigation with official category svgs in header
+db289a5c47f636fa78a258b65cc819a4e331e0a8 2026-03-26 21:41:54 +0100 fix: explicit width dimensions for custom category icons
+3139b8b366c4929c356148427f9c3205cf658d47 2026-03-26 21:48:17 +0100 fix: merge duplicate auth i18n keys across all 4 locale files (de/en/fr/it)
+9488c1a8a2da73d0850e16d13dd1afb7c1c31a3c 2026-03-26 22:01:32 +0100 fix: make tab bars fully opaque with solid backgrounds and proper z-index
+4c54ae415e096eba03f5ed27a8dafae56bc43c87 2026-03-26 22:10:55 +0100 feat: real LikeButton with optimistic UI + Gespeichert in hamburger menu
+12ad675d3a778df2546f7d3b03f2898bd365c706 2026-03-27 14:56:52 +0100 feat: full platform overhaul - auth redirect, settings tab, inline prefs, quartier cleanup, search UX
+6d059b3050b23485e7ac6cd8d4445cec1946ed25 2026-03-27 15:13:52 +0100 chore: platform-wide border radius design token sweep
+63b13606b812ba55c94bf7be0d7a0d83e0514cc0 2026-03-27 15:17:22 +0100 fix: mobile subsite responsiveness + angebote rename in mobile menu
+dac76f4189c18fdb874799577984fdffd8e04d46 2026-03-27 15:20:56 +0100 fix: tab bar transparency - add missing --raised CSS var + solid category pills
+632ebb02a7a647c2694f867830c557ef61a72872 2026-03-27 15:32:06 +0100 fix: dashboard access - check salon ownership fallback + auto-fix stale role
+a6a12075fd688f9842bc48356737335f7843ef28 2026-03-27 15:35:07 +0100 feat: mobile map optimization - inline mini-map preview, responsive heights, touch-friendly
+a5ee8940177e469901c909dcaef7c50c1a5435c3 2026-03-27 15:41:03 +0100 fix: rename last-minute route to angebote - create new route + update all nav links
+ae7c266262ab6793ae0a4cdac59d9de0fb7de276 2026-03-27 15:48:50 +0100 feat: payment methods section in profile settings + angebote route creation
+17370b6a1347375082f52eade424ced4a4dedc6d 2026-03-27 18:10:36 +0100 feat: AI suggestion pills on discover page - category-specific trending terms
+6051425a89485693418323b5e01e96b78861577c 2026-03-27 18:16:37 +0100 feat: Stripe Connect onboarding - create status API + always-visible bank linking in dashboard
+3f5e66130828d401f999689d3afb4da5d605c317 2026-03-27 18:20:12 +0100 feat: wire up profile payment methods with Stripe SetupIntents
+0a6d3b836812e39139b7b5d2461a455ba87d9fea 2026-03-27 18:25:08 +0100 fix: squared search UI & raggedy tutorial popovers
+b1f170e52f89e45fae70bdbe6544d8bb854fa2f9 2026-03-27 18:45:23 +0100  phase 3: complete backend connectivity remediation phase 1-5
+68587b75990587aec2ef3db7e1df9966a09316d6 2026-03-27 19:15:36 +0100 feat(onboarding): finalize onboarding wizard fixes and AI integrations
+fbe6f968658265059226b2263c44f7eb181227b0 2026-03-27 21:11:31 +0100 fix: add Italian locale to all email templates, fix validation schemas for API route alignment
+d41527805583a1d6e2d2e68ac53478244c88d809 2026-03-27 21:17:21 +0100 feat: STORE-P3 rating badge on staff avatars + StaffAvailability wired into profile page
+204d74b610398c1a885bc2e4de22dc4c81261054 2026-03-27 21:23:52 +0100 feat: STORE-P5-S2 green/grey dots on every day in opening hours grid
+e4dc27de227e40fc06e820ab21994b4403720b8c 2026-03-27 21:28:51 +0100 feat: service management — sort_order DnD reordering + CSV import modal/API
+851dc436bdd0b17d81b88d5eab5a2c7453313014 2026-03-27 21:39:47 +0100 feat: CRM/RFM segmentation — materialized view, API join, segment filter tabs + badges
+e825e9be23e951b6cdbb7dd095376548301a14fd 2026-03-27 22:08:03 +0100 feat: staff commissions — commission_rate field, earnings API, payout table + CRM segment tabs
+75ebb70b4051c89039521c1016012f3a0eceb016 2026-03-27 22:17:13 +0100 fix: add missing staff PATCH/DELETE API route — commission_rate now persists
+4f11368a2a68d127e2374d67b7a3488a01dc1928 2026-03-27 22:30:16 +0100 fix: onboarding wizard — KI Vorschläge validation, ScheduleStep auto-apply, Step 7 sync, schedule API
+a9c11aed4be905c1f428a4e3e8768544b32d0f7d 2026-03-27 23:06:26 +0100 R-CD0: category-to-dashboard auto-assignment — filter Spezial nav by salon categories
+3b8c54e4a2ec2cb9f654db5e78f9704bf7f9454d 2026-03-27 23:17:54 +0100 R-CD1: category-aware dashboard shell
+932950b2a93209f5ec58abaacdc5cd752ea05f5e 2026-03-27 23:28:58 +0100 R-CD2: coiffeur dashboard suite — FormulaBook, ConsultationNotes, ColourCycleConfig
+fd06128d17add2d6cf8bad2f9330d34d30654883 2026-03-27 23:31:49 +0100 R-CD6: makeup dashboard suite
+b9380983a2ec9343097711adf18c57ef1e5cce6d 2026-03-27 23:33:17 +0100 R-CD4: spa dashboard suite — room manager, intake, wellness journal
+5c150ffae60120f99872fec3ef68b61d55812aea 2026-03-27 23:35:08 +0100 R-CD5: waxing dashboard suite
+f7e2b66d88daa5ad454f40f24f4330846518324b 2026-03-28 09:11:55 +0100 R-CD7: shared visual diagram framework
+fef50bd8a5891a159ab08e24a89bfc784a68310c 2026-03-28 10:11:48 +0100 Migrate ClientSelectorDropdown to live pg backend and fix SetupWizard i18n label bugs
+32e7ff68259199303c5b1aed3c9e9d31934cf278 2026-03-28 10:15:39 +0100 UI Audit: Fix typography and shadows in MapView and Checkout for V3 compliance
+85c65d14257deb1cd651b03e6d1af4e9a7bcfdb2 2026-03-28 15:05:33 +0100 chore: resolve remaining 130 typescript definitions across dashboard and api
+1434e67c1d6a600c51e563c56b979e3fcb9b5a67 2026-03-28 15:11:10 +0100 Homepage quality pass: Rule 43 hover fixes, i18n, design token cleanup
+98bda58d5a301cc8f2e53f7fd28cdd2457de4f33 2026-03-28 15:13:22 +0100 Batch sync: TypeScript fixes, new dashboard components, style updates
+766412e3d500f95659bf35f0a81a648c55f00caf 2026-03-28 15:35:23 +0100 chore: resolve all remaining TypeScript errors across the codebase
+59825c0ca884e87bc458506ef8da22f7b1275478 2026-03-28 15:39:36 +0100 UI consistency pass: codify §21 interaction patterns and apply site-wide
+c0328c3421d262a6b9191d1d118c8c0db1ecd7a0 2026-03-28 15:45:11 +0100 Dashboard overhaul: Phase 3d-3f + Phase 3e makeup + Phase 4 backend
+d5998459c811beacfdce03055fae594127936cc7 2026-03-28 15:56:07 +0100 feat: Admin Sandbox — create/seed/delete test salons from dashboard
+15cb7a9e7944dad7312994430b7b10596ed8e009 2026-03-28 16:01:25 +0100 fix: discover card TikTok cookie wall + carousel black corners
+a2e16ec8564d0dd753624b7676b3a93832405817 2026-03-28 16:23:00 +0100 UI consistency pass: all subsites — transition-all, rounded-btn, duration-500
+2e7d00e2ac5c8326bd060d045b4334531d0f4544 2026-03-28 16:30:52 +0100 fix: coiffeur formula-photo API and ColourCycleConfig HTTP method
+6792ab12945e60baf8fcef7b1434982ae9950379 2026-03-28 16:32:15 +0100 fix(coiffeur): audit fixes — API gaps, error handling, design tokens, i18n
+2472f1aef476e89cd546376017e021789d478192 2026-03-28 16:36:11 +0100 Fix marketing page useState→useEffect bug and add notifications API route
+219c3f5707857708c69a1e52ca59cf31cc7c6403 2026-03-28 16:38:40 +0100 fix: add backend persistence to ZonePackages — replace hardcoded client state with API + Supabase
+ef994238bdb37b9a09a416bfceeea3bda5386212 2026-03-28 16:40:39 +0100 Fix critical dashboard bugs: marketing useState→useEffect, null crashes, missing APIs
+bf0c1d7f17299268607c3cfdf59056d90b24cfbf 2026-03-28 16:50:08 +0100 fix(nail): audit fixes — API gaps, i18n, dark mode, a11y
+fcddc6faed41836711ba43054a75381515e7d9cb 2026-03-28 17:37:45 +0100 makeup subsite: i18n, dark mode, a11y, error handling fixes
+be0ef83e6193426358500eb7578ef1f24db9464e 2026-03-28 17:42:57 +0100 spa subsite: useEffect cleanup guards, bg-white tokens, a11y fixes
+c2816fd1487d355352ff97d2c78df8c57124492b 2026-03-28 17:47:37 +0100 waxing subsite: useEffect cleanup guards, bg-white tokens, locale fix, duration fix
+dc9a2422c72965dbe7c5d1f88353517c1ba7ebf5 2026-03-28 18:38:06 +0100 discovery: fix cancellation guards and bg-white tokens in remaining components
+58fa492bf7902b486b9f4a5bf1d55d99984ca535 2026-03-28 18:44:42 +0100 booking: fix API mismatches, cancellation guards, bg-white tokens, i18n, accessibility
+195e5293e4a63cb3e36b3bbf653ceb4746ba2ef4 2026-03-28 18:52:19 +0100 dashboard: fix missing API routes, .ok checks, bg-white tokens, i18n, accessibility
+be9c9b3438d4bdb1b399ba463dcb7ae17263237f 2026-03-28 19:03:49 +0100 fix(profile-auth): interaction consistency pass — i18n, transition-all, accessibility
+b963f6a36bf4dafbe82810988e959b4441226e5c 2026-03-28 19:17:00 +0100 UI pass: coiffeur/nails subsite — bg-white→bg-[--raised], backdrop-blur fixes, cancellation guards, aria-labels, i18n
+2c73438385b06a869277a3e9df84a95f52bf53a6 2026-03-28 19:27:05 +0100 UI pass: discovery subsite — backdrop-blur, bg-white, .ok checks, cancellation guards, aria-pressed, i18n
+bcb60a55432c155f14dc3d2558dd56fe78a599c7 2026-03-28 19:34:57 +0100 Homepage audit: i18n, .ok guards, transition fixes
+0a1d68da4443b6b5248ee3d68e8a94bbb6930104 2026-03-28 19:39:20 +0100 homepage: audit fixes — dark mode, i18n, grid layout, a11y, API consolidation, typography
+b44e6ae22c83311638cf58cc1f0ef1730355ad1b 2026-03-28 19:40:06 +0100 Booking flow audit: .ok guards, i18n, a11y, transition fixes
+2e076399beb328e4dc4e3360a94406dcec91d2ac 2026-03-28 19:45:50 +0100 Dashboard audit: transitions, .ok guards, a11y fixes
+961dd229bc6b2b463348d8d120741323c2379705 2026-03-28 19:49:29 +0100 homepage: sub-agent audit fixes — dark mode, i18n, typography
+0c3ff4c974fc7d8b9f45686cb4b428d47b0b7c6e 2026-03-28 19:53:30 +0100 profile & auth: interaction consistency + state safety fixes
+db5b1b9c7df2a64daf591631775836f1be95cbb6 2026-03-28 19:58:40 +0100 discovery: interaction consistency + state safety fixes
+f3bb6c09c84dc2e9755a3c45a33dfe9cac7dc39e 2026-03-28 20:03:13 +0100 coiffeur/salon: fix fetch .ok checks, transitions, a11y
+e855b45d850dd889379746a246e40f035ec1f5a4 2026-03-28 20:07:29 +0100 barber: cancellation guards, a11y fixes, transition consistency
+9db4c02b8cfbb4fb45b906766fe935bec3728ac0 2026-03-28 20:10:53 +0100 nail: transition duration-150, aria-pressed, tab roles
+a63348b7df103940a5114126fd6701d94e7cf5bc 2026-03-28 20:20:58 +0100 fix(homepage): replace solen_score with average_rating, remove crash-on-DB-error
+ba0b70a4d0aded01b820ec9cd337efdb9d068e4c 2026-03-28 20:23:41 +0100 last-minute/search/shared-ui: .ok checks, cancelled guards, transition-colors duration-150, backdrop-blur-[6px]
+93d116a99fbb34e2b8d97d02cb42442486e08766 2026-03-28 20:29:26 +0100 fix: add missing components/compare/ to git (was untracked, broke Vercel build)
+f8daf46e523df6a80fac1db7b0c9cbce3295d3ae 2026-03-28 21:47:15 +0100 fix: CompareProvider Suspense crash — useCompare returns safe noops outside provider
+2f1d70e55b9cffd1c1b3f0e537ad1a6fcb346c74 2026-03-28 22:33:10 +0100 feat: V5 design overhaul — Phases 1-6A
+0c05445768b31bb8686a9876086b03b3b1a7fd78 2026-03-28 22:54:55 +0100 feat: V5 Phase 6B/6C — SearchAutocomplete glass-frost dropdown + HomeSearchBar glass-search
+a29ac2b589cecc77022f1ea2a6622e6b58c526c7 2026-03-28 23:15:05 +0100 v5 audit: purge transition-all, standardize glass/hover tokens, fix radii
+3522069d876fa93ac1a4a1a0866b4e9b3d0b3845 2026-03-28 23:28:31 +0100 v5 audit pass 2: fix critical glass/hover/shadow regressions
+6a09e4f0289f3dd8c15fa55221c7494aac9efb49 2026-03-29 14:45:41 +0200 session-1: add glass-pill + hero-cinematic CSS, SalonCard prep props, fix spring violations
+4d263d1d28aa79c868794fd8faa81b3d322c2e4e 2026-03-29 15:07:09 +0200 session-5: V5 glass - filter chips glass-pill, drawers + sheets glass-frost
+f32f8e30780a5c26b83e1233e8737e120546eb5c 2026-03-29 15:17:08 +0200 session-2: homepage V5 - cinematic hero, animated category row, stagger grids, section rhythm, lib/motion.ts
+230286ebfa90357722e135e260685ab3e903cc17 2026-03-29 15:26:52 +0200 session-3: SalonCard V5 - compact info, 1 badge, photo carousel, animated prop
+4711e97d620d0dd9cb43be01e833f39ae23305df 2026-03-29 15:26:56 +0200 session-4: V5 navigation - BottomTabBar, remove mobile hamburger drawer, header glass-frost
+c29a51f05b33d471694de0730c3e8f6995ebbdca 2026-03-29 16:07:20 +0200 phase-a: card-listing CSS, Airbnb search ring, soften hero orbs
+ca5335cf208c99a16cbebd4896363bf244e93d0d 2026-03-29 16:07:59 +0200 phase-b: SalonCard -> card-listing, 4/5 ratio, flush info text, Airbnb layout
+e7fae63325f0d19152185b469f82638c77fe4f01 2026-03-29 16:08:37 +0200 phase-c: unified squircle category row, all viewports
+d2b73e03f9f615e748d3bf4958de5b4e6638aad7 2026-03-29 16:09:36 +0200 phase-d: all grids 2-col mobile, remove snap-scroll carousels
+c4300e0bc3c616bbc4429b9b2c412da6907f5a40 2026-03-29 16:10:38 +0200 phase-e: hero left-align, AI tagline, no glow, city selector fix, hide partner link
+7fef9ce346efae20b8e9717e923698687c984d9a 2026-03-29 16:12:50 +0200 phase-f: remove bg-s-plum last-minute, flatten partner/trust/rebook, cut SocialProofStrip
+da933eca44314023de7caa82b1daf03f594e3065 2026-03-29 16:16:23 +0200 fix: remove card-v4 from compact SalonCard variant
+c7aa2f8641dde3030de5b9d75686471e4a4b2b00 2026-03-29 16:19:48 +0200 session2: LastMinuteCard — flat card, faint border, coral left accent via style
+57debb49d695b4d87fb454f4d7be924a69de021f 2026-03-29 16:20:35 +0200 session2: CategoryPage — 2-col grid, halve hero gradients, remove ambient-v5
+73299fd2f8d39ffb98227eb31c366108bca0c4dc 2026-03-29 16:21:09 +0200 session2: ReviewCarousel — remove glass from cards, remove snap-scroll carousel
+420d823998deb1b7f8e1fef7efae70f7e9fa868e 2026-03-29 18:23:48 +0200 V5 Session 3: page bg #F7F5F2, update --base token + hero-cinematic base color
+b7ca7e06007990a4cc5dbb5f18ac42c632e625b8 2026-03-29 18:23:54 +0200 V5 Session 3: hide empty sections, fix typography (Title Case categories, font-heading headings)
+15020d7b94190821da4359b0bcf26025cff1c52c 2026-03-29 18:23:58 +0200 V5 Session 3: unified pill search capsule (rounded 50px), locale-aware date picker
+750e16cfb37556ce9026549588d2a2fae6e570c5 2026-03-29 18:48:23 +0200 fix(partner): audit fixes — commission qualifier, avatar colors, step arrows, sticky CTA
+20c0b468624247368b3e2832fb538eec7e93517d 2026-03-29 18:50:32 +0200 fix(discover): translate heading, remove emoji from suggestion pills, localise filter labels
+8ac74b576aaad207bde9685b73074b3976b9af56 2026-03-29 18:53:47 +0200 Audit fixes: bg #F7F7F7, hero subtitle 18px, map card, partner coral tint, page metadata, footer tagline
+f06cc8e20e0f840364cb1eeded301e59e4c4b5a4 2026-03-29 18:56:03 +0200 Wire up Breadcrumb globally, exclude dashboard/auth/checkout; footer tagline Bebas Neue
+a86d63053ca12dd5f8561a8cc31446595ff0a6bb 2026-03-29 19:00:00 +0200 Audit fixes: SalonCard new-badge image overlay, CoiffeurIcon animated scissors, design doc updates
+cb8683d1c4f7f9f3f75e0fe8cc5065c7be4cd085 2026-03-29 20:32:07 +0200 feat(favorites): add DELETE endpoint for un-favoriting salons
+85e640f970affee15426db806f5387fb4a4b1cac 2026-03-29 20:32:53 +0200 phase 1.1: filter is_test salons from all public homepage queries
+55bf8aae2e3c88c6ca810a054e0351748b344848 2026-03-29 20:37:21 +0200 phase 1.1b: is_test filter in API routes and admin test-salon creation
+4c5b6837ad68431e25c7f7cf2c7084ed88ba8f3f 2026-03-29 20:37:41 +0200 feat(saved): create saved salons page with empty state + i18n keys
+039b1e178ef1f374be80bfdcfba81da9dd3aa8cb 2026-03-29 20:39:58 +0200 phase 1.2: category-tinted gradient fallback when no cover photo
+4515fc78e864458a5f51c8ad9f96b4459d8dba57 2026-03-29 20:43:14 +0200 phase 1.2b: extract fallback gradient IIFE to named helper
+4b5d8d871577872bfc2a669b2c1dbac15527a2d1 2026-03-29 20:46:03 +0200 fix(saved): add error state, auth guard, remove unicode heart, is_test filter
+0e8ff6706a6a18aa063f204b4a2d7ac5818b6854 2026-03-29 20:47:04 +0200 phase 1.3: rating always visible, price Ab CHF, neighborhood display
+c1bd15f1033f73f5e7ae186edf51c6c4225a296f 2026-03-29 20:49:07 +0200 fix(discovery): replace empty-div stub with proper EmptyState component
+96f13185070403afbf2a75d7a3964d5bad4852a3 2026-03-29 20:49:23 +0200 fix(footer): replace large language switcher pills with compact text links
+23580868d5f574a42623230288f6837e6487ad8d 2026-03-29 20:49:35 +0200 fix(nav): simplify BottomTabBar active state — remove top bar and icon scale
+8ae417df863f8013da56278947a53edc3cade2c0 2026-03-29 20:56:46 +0200 fix(mobile): add touch active states and horizontal scroll fade to filter rows
+8a2828592d3cc33850c8045d33af01bd1f5355c7 2026-03-29 20:58:59 +0200 fix(legal): scaffold Impressum with dl structure and standard Haftungsausschluss
+b7a614802bab44b82bf01ba2cbfe8227dd838463 2026-03-29 20:59:01 +0200 phase 1.3b: i18n priceFrom, remove IIFE, fix new-badge threshold
+a2ed51457630d2ff9b969fd9dfb715e5ba78d59d 2026-03-29 20:59:02 +0200 fix(header): hide ThemeToggle/Bell/Messages for logged-out users
+08a400910970f146548aed1828654af17c1ed76e 2026-03-29 21:03:06 +0200 phase 1.4: TikTok thumbnail fallback when embed fails or times out
+4841174f42ea43f6940624f4c53def8042ea02be 2026-03-29 21:07:08 +0200 phase 2.2: remove duplicate city selector and orphaned ANGEBOTE link from hero
+767b31b563b94c8a417d9f1e40e3c6812b45d88f 2026-03-29 21:12:12 +0200 phase 2.3: add trust chips inline below search bar in hero
+1aecddae72c3331477221c6e51dfb015e038ca54 2026-03-29 23:13:42 +0200 fix: audit fixes — cancel error handling, Stripe guard, packages buy flow
+cba28e080b07617b05c7ea71bb21f8b766f7626b 2026-03-29 23:16:15 +0200 phase 2.5: hide map CTA when fewer than 3 salons have coordinates
+e554c035be3eb9eaffc2e0ba8ef7fe4810eef338 2026-03-29 23:17:32 +0200 fix: code review - wire CitySelector, remove dead itemVariants, fix hero-cinematic var(--bg), retire section-alt
+a2101108acc97ba59d55c5247d966b0f8c80fac7 2026-03-29 23:18:07 +0200 fix(loyalty): query stamps_needed/reward_text from loyalty_cards not loyalty_stamps
+3b69ec8bee64d43f8b28ffda4c39d8023e22d018 2026-03-29 23:21:04 +0200 phase 3.1+3.2: discover after featured salons; unified category icon containers
+81a202534a6de40cea1ebb6b9f46c91ce050b667 2026-03-29 23:22:29 +0200 phase 1: commit production-ready untracked ui components, pages, and roadmaps
+425783ac275a401117175aef6cd9712296fb8e0b 2026-03-29 23:22:36 +0200 fix(termine): cancel error handling + i18n for status labels, headings, cancel modal
+aa293b6225b296e38801138c4a78e33985540cdb 2026-03-29 23:23:45 +0200 phase 3.4: fill Katalog öffnen button dark for visibility on beige background
+50f09165aeff39cf0019a95b40be99c18fcab70b 2026-03-29 23:24:54 +0200 phase 3.3: salon card aspect ratio 4/5 → 3/2 landscape
+105be2231c962ea63b9a9eaa48c97ba3d6b53646 2026-03-29 23:25:15 +0200 phase 3.5: trending uses solen_score DESC, deduped from popular
+18928dd6302bb789641bdf559e56c280d87c0982 2026-03-29 23:26:19 +0200 phase 2+3: wire BookingSuccess component after payment confirmation
+4c3a115f09c2f29dbccf20263d27850a322c0718 2026-03-29 23:26:45 +0200 phase 4: integrate voucher webhook handler into Stripe webhook route
+054ec9099884a5f17c140c2c1de07ff1450449f9 2026-03-29 23:27:32 +0200 phase 5: add generateMetadata with og:image to salon detail pages
+d74ab07dfcada21192a5b9cedf2cc9c4aa5f28f3 2026-03-29 23:28:11 +0200 feat: guided search — Airbnb-style 4-step discovery funnel replacing HomeSearchBar
+debf4b425963c77525f2162a02e6532711e9ddd3 2026-03-29 23:29:30 +0200 phase 6: add PostHog funnel tracking events
+7d151fb61e66afd7d1c7a1ef3b1c5038f103788c 2026-03-29 23:32:35 +0200 fix: add avg_price to SSR queries; reset iframeError on card re-expand
+1be249fa28c6b4133ce2d351ac73b84d31505c48 2026-03-29 23:33:10 +0200 phase 8: enable compare toggle on category/city pages + footer link
+ce445e5366ff6c6196f3c70ab3ca10810c8a13bc 2026-03-29 23:38:22 +0200 fix: address code review findings before push
+7abd5c9bedfd555df3a0b00eca18823a14042561 2026-03-30 00:35:39 +0200 phase: add RESEND_API_KEY null checks in dispute and report routes
+1c0f6facf310c8ab2fd561f3ef5aae3b0b51f44c 2026-03-30 00:37:08 +0200 phase: add referral and gift-card navigation links to profile page
+7befeef4c6ed792c3cf41f413c665b18ff27148a 2026-03-30 00:37:37 +0200 phase: add Zod validation to waitlist route
+8cc5ae9808eacfbc402915da168564eaa566f9db 2026-03-30 00:38:43 +0200 phase: call referral completion on first booking in bookings route
+e1255173d151351c2fa82b4825756b9ee75a8736 2026-03-30 00:40:24 +0200 fix(i18n): translate remaining hardcoded strings in BookingCalendar and TerminePage
+c9e036509a6939ff621a7944b5766d072d2b5933 2026-03-30 00:43:52 +0200 fix(nav): replace raw <a> tags with Next.js <Link> for internal routes
+70ba408b7661a16ea42fbb5023aedbcf3b47793f 2026-03-30 09:08:32 +0200 fix(db): remove non-existent min_price/avg_price columns from SSR queries; fix trending route city→city_id and status→is_active
+a9deaa082f518142c9620f4272a55806ff67955d 2026-03-30 09:26:00 +0200 feat(search): rewrite GuidedSearch as bottom sheet with 3-segment trigger pill
+dd632273535fbc572494ea711efbd4071a5a9351 2026-03-30 09:34:25 +0200 fix(search): fix double-encode bug, emoji icons, fragile DOM traversal, untracked timer, ESC key handler
+e0631dd50bf7a6f36a9ae3a13e1e178ffc91f073 2026-03-30 09:37:47 +0200 feat(search): add compact search pill to sticky nav header (fires openSearchSheet event)
+0d3bb42227fb4559ac65378a40d28549e4752b4b 2026-03-30 09:56:16 +0200 fix(search): named imports for category icons + useRef type fix
+b664c33249086a049af3ce8116fa5da5c91ccaf5 2026-03-30 09:58:37 +0200 fix(api): create missing staff, last-minute slots, by-slug, and closures/[id] routes
+2feb9b313f04535a1ab0935902d3bb41c2df6db1 2026-03-30 10:00:13 +0200 fix(nav): dead header links + replace raw <a> with Link in auth/checkout/dashboard
+0d24070040b4f531272600207d6ea28e4f0241f4 2026-03-30 10:01:30 +0200 fix(deps): install missing @radix-ui packages, remove orphaned barrel exports
+875127f25b5ed4d8382a2d629cd9cffb3ab1eaf0 2026-03-30 10:13:12 +0200 fix(search): hide pill on sheet open + tappable step tabs replace progress dots
+57ecb2b3b56f8adf50e7346ffd05ba182d1143d5 2026-03-30 10:16:49 +0200 fix(search): categories first in step 1, 2-col card grid, search input below divider
+cd4194a51525e25e1e59ee37768b90b8fd5fbfd4 2026-03-30 10:19:43 +0200 feat(search): scroll-driven compact pill collapse, Airbnb-style
+a8065029c66a6a5f1a93a8a5397fe29e322f70d2 2026-03-30 10:45:07 +0200 feat(search): add removable search criteria chips on results page
+de7ee223cfd8cbaef4c1b56f980d6fae67ccb0df 2026-03-30 10:45:18 +0200 fix(search): mobile layout overlap and keyboard handling in bottom sheet
+1fffdab513cee1495c0c84f61cd2ae0909cb661d 2026-03-30 10:48:27 +0200 feat(search): replace 2-col category grid with vertical list layout
+e4f90495162c513ecc09b38f7353100bdd28e810 2026-03-30 10:50:40 +0200 feat(search): add smooth collapse/expand animations for completed steps
+6e68b816b6522e35f7bec3d8d42c64fca2b2f81e 2026-03-30 10:56:51 +0200 docs: update CLAUDE.md and INCOMPLETE_FEATURES for search flow polish
+ac709bbf16c6524b130c5d17676fe2dcc9f1e7e9 2026-03-30 10:59:15 +0200 feat(search): add inline calendar date picker to Step 3 (Wann)
+a20d49f8ae2a86959e38f5ed9956f6cfa4792c33 2026-03-30 11:14:50 +0200 fix(search): format specific date in pill + wrap SearchCriteriaChips in Suspense
+6c4d6ba1d56d74dc54afd159cb79eed86c282035 2026-03-30 11:19:30 +0200 feat(nav): add Airbnb-style sticky category row in header with IntersectionObserver
+9b5056512daa9ad7bc064150b6b0651722ef3b6a 2026-03-30 17:28:39 +0200 phase: pass referral_code from localStorage into booking POST body
+73b9ec45c312fa0f0710654917fcab89f60336c4 2026-03-30 17:46:07 +0200 fix: fix Impressum placeholder and DSGVO→nDSG in partner trust badges
+110243745af60286e4a7abd1c53f52c75b0a086e 2026-03-30 17:48:49 +0200 feat: add auth-gated login sheet for saved/account tabs in BottomTabBar
+d476a706c50a5124d3cafd8a93a5ef5eee950a6d 2026-03-30 17:50:23 +0200 fix: slim footer to 2 rows — remove dead city/category/partner columns
+a716acb74d0ce691568614b7e385130c13cc53c5 2026-03-30 17:58:49 +0200 phase 4: rename last-minute→angebote, fix discover language, fix partner i18n
+a011fa661ae89a8338e552ee3f4e443313268c2a 2026-03-30 18:15:50 +0200 fix: address remaining site-wide audit items (05–09, 18)
+8a531a12483e672a538135a14f886c4e671c7bd8 2026-03-30 18:44:38 +0200 phase 9: homepage UI overhaul — slim header, category icons, partner teaser
+ed1394a195902ceda7fa8ae5367b3a7e33454632 2026-03-30 19:03:12 +0200 fix: remaining audit items — nav scoping, date default, scroll-to-top
+3facbde15d924e40de2f54225cf830152649e85a 2026-03-30 19:18:56 +0200 fix: strengthen breadcrumb homepage exclusion — belt-and-suspenders pathname check
+ec512fbeabd74bc667725a9a8403164bf1a810dc 2026-03-30 19:24:34 +0200 feat(hero): remove Unsplash background image — plain warm beige bg per spec 2.1
+81883257f4ec538af9487b4462999372298220f8 2026-03-30 19:27:12 +0200 feat: add FeaturedSalonCarousel — horizontal scroll hero salon cards per spec 2.1
+25dfa7d7a96181187e2dd6be04c0e079c6594b5e 2026-03-30 19:29:25 +0200 feat(hero): integrate FeaturedSalonCarousel + fix typography per spec 2.1/2.3
+f08362a246018132554147601d81cb93feeba079 2026-03-30 19:30:58 +0200 feat(header): show compact search pill on mobile when scrolled — replaces logo per spec N.1
+77a7f40bb0f682510f27d9d5d3a6427ca57ee74a 2026-03-30 19:32:37 +0200 fix: add isolate to main — prevents Framer Motion stacking context overlapping sticky header (N.2)
+c68f4c41bb4a807001148d3abc0d599083672f30 2026-03-30 19:34:15 +0200 fix(footer): Instagram icon inline with legal links, bg updated to #2C2825 per spec 3.3/N.3
+78aaf9aff3f91542c8be728aa307464fa81fea34 2026-03-30 19:35:41 +0200 fix(tab-bar): icons 24px, border-top rgba(0,0,0,.06) per spec 3.4
+5efb9a1459ce6e2f2efe17b163da2396ca861911 2026-03-30 20:01:23 +0200 feat(homepage): spec addendum A.1-A.5 — skeleton cards, search sheet, z-index fixes
+38acc381563b96d647d11f4b6c889fbf70a3f667 2026-03-30 20:08:00 +0200 fix(homepage): complete spec A.4/A.6 gaps — scroll order + search row redesign
+ca0d65a6473217d23e3b83058396cd8d49102f5f 2026-03-30 20:16:46 +0200 fix(homepage): A.6 scroll order cleanup + A.3/A.4 spec fixes
+4431e0839006c8ae6faf0de36b220e273de9d2a7 2026-03-30 20:49:39 +0200 fix+polish(homepage): bugs B.1-B.9 + polish P.1,P.3,P.4,P.9,P.10,P.11
+1609d82f2da087b659f5924db1bed472e1427f73 2026-03-30 20:59:23 +0200 feat(nav): home tab replaces saved in tab bar, saved bookmark in header, fix mobile search scroll glitch
+67523b1da0459af67a1f0556931fd5c519db0d42 2026-03-30 21:07:28 +0200 fix(header): show S monogram on mobile instead of full logo
+ff70b2d941c9fc0af77fc009cdc28e121eff874d 2026-03-30 21:47:03 +0200 feat(homepage): Airbnb-style redesign — search bar, icon category row, per-city carousels, sticky text tabs
+2efc24cce8e48dbda4f1747485ea7f3eb8df1fda 2026-03-30 22:09:54 +0200 fix(homepage): restore salon cards (remove invalid minimum_price column), re-add GuidedSearch for mobile, search icon always visible in header
+4265314610ba364c78d79a2234ca19dcc3dfc860 2026-03-30 22:14:24 +0200 docs: add LESSONS_LEARNED.md + mandatory update rule in CLAUDE.md
+9f6e55d6b9957daf7f4a3ed9fe534f6e96b04e50 2026-03-30 22:17:33 +0200 feat(mobile): replace S+search icon with search bar pill on homepage, card-style category icons, logo hidden on mobile
+e8bdb702431c19c96f772dadb0dab154d47e87a4 2026-03-30 22:38:47 +0200 feat(homepage): Airbnb-style category photo cards + city selector on category pages
+7c004ca455b2b6d12155a75e2e9ec9d4e8fb6d99 2026-03-30 22:46:20 +0200 feat(homepage): per-category salon carousels replace abstract photo cards
+8e03deeafbe008af38565753097b035eb3464012 2026-03-30 22:53:56 +0200 feat(header): permanent mobile search pill in header + roadmap
+430aa6b91749bf667d780a77a8e571d40fdeaea9 2026-03-30 23:43:22 +0200 feat(homepage): execute V6 rebuild roadmap — Airbnb cards, Entdecken carousel, category validation
+1b29df8097c301afef1dde02b930d5e3ce7951ca 2026-03-31 00:03:06 +0200 feat(homepage): V6 V2 spec — postal_code, carousel heading typography, skeleton parity
+b814543ecf75dc8678280c3c6af3f7e5bb606e15 2026-03-31 00:07:29 +0200 docs: add lesson — verify component renders correct child before marking roadmap phase done
+8195fc95fc7d7715cf483630b6d5b886481f520b 2026-03-31 00:11:49 +0200 fix(homepage): P3 R1 + P1 R3 — CityCarouselSection uses real SalonCard, heading font fixed
+1bafb86b04037c6a0cf59eab4379d25b017d6e52 2026-03-31 00:33:05 +0200 fix(homepage): execute Airbnb audit — BUG-1/2/3 + UNWIRED-2/5 + GAP-3/4 + POLISH-1/3/6/8
+2f9d1c5ff693a23dd6d452a3635aa6d3be362654 2026-03-31 09:36:52 +0200 fix: prevent crash on /termine when unauthenticated — redirect to login
+6b2be70b703265eca996ee3bbbaf2922761cc740 2026-03-31 09:37:53 +0200 feat: search empty state with category suggestions and filter reset
+04b14d15ce07bb9b37a0f6b2e36337562971062f 2026-03-31 09:39:41 +0200 feat: last-minute empty state with category suggestions and notify button
+23ef3a7c1e5bfc52c705458beb4af14411b64474 2026-03-31 09:40:10 +0200 fix: replace 60+ silent .catch(() => {}) with descriptive console.error logging
+88e097f9660397c40a864dc75241e43bda91cbab 2026-03-31 09:41:45 +0200 fix: replace auth TODO stub with proper profile fetch in voucher buy flow
+9e8817b3dea5f22595a6b8767f269863c0fa8ab9 2026-03-31 09:41:52 +0200 feat: add Recently Viewed carousel to homepage
+086a08c7c0563e5d49d58347b12c164cf1798d83 2026-03-31 09:44:34 +0200 feat: full i18n migration of salon detail page — 40+ strings extracted
+96f6b3b1eb93a62126fb6e49bad701c776b8d44f 2026-03-31 09:44:35 +0200 feat: add Instant Book badge to salon cards
+66672fa247253298a640c4ac70ec5f9562312002 2026-03-31 09:47:22 +0200 feat: full i18n migration of compare page — 12 TODO markers resolved
+4f6004e3a68d844b6015576ef52cece80982cb4c 2026-03-31 09:47:54 +0200 fix: resolve TS error in coming-soon page — use description map instead of dynamic t() key
+b5943e1312ec2cbfd712eab8ff2b97ec1060cfec 2026-03-31 09:48:18 +0200 docs: log lesson — /api/waitlist is booking-only, not generic email capture
+8d601f14cf835903a8e795e86e3c0417541242e9 2026-03-31 09:51:54 +0200 docs: log lessons — pre-existing feature detection + Windows build quirk
+4e4b6c69e27d8def8cc00ee138eef2d7cb24cd36 2026-03-31 09:52:36 +0200 feat: i18n migration of warum-solen marketing page
+3c9af1033a4abfd9f57c4b963782d245556a81d1 2026-03-31 10:05:15 +0200 fix: add missing guestFavorite/topRated/newOnSolen i18n keys + remove unsupported fallback option
+cb0045a9471946fb798e08ba8d10263ae4e0a6d8 2026-03-31 10:05:44 +0200 docs: log lesson — next-intl does not support t() fallback option
+bb18d2e1213b860f6bbef945c02f243ddbd75ed8 2026-03-31 10:11:02 +0200 fix: remove breadcrumb from homepage — improve locale-root detection
+3f21c8535fcb7b3830698b504d4151fb5a37bda0 2026-03-31 10:14:34 +0200 design: shrink section headers from 42px extrabold to 18px semibold — Airbnb style
+65b46363f8ebedebc7515ee10532b2f09b628144 2026-03-31 10:17:48 +0200 design: tighten homepage vertical spacing — reduce dead space between search and carousels
+4dae6fe1552816dadd7ddc97a951d5e6aa6100c7 2026-03-31 10:45:20 +0200 design: card & carousel micro-interactions (roadmap-card-interactions phases 1-5)
+b3619209a085dff53961b94b1950dafd3b82026c 2026-03-31 17:10:49 +0200 feat: show demo discover items when feed is empty
+8c7ac35028fb4c38adeb7149e6d1d86df3834d7d 2026-03-31 17:23:28 +0200 fix: DiscoverCarousel demo fallback — relative positioning, next/image, aria-hidden, CTA index
+62d80c875b185876ca797fc08841ada079a92ecf 2026-03-31 17:25:08 +0200 feat: 180px compact carousel cards with demo fallback
+ea980b047c1060ab07f4848a22b022d122143bfc 2026-03-31 17:27:02 +0200 design: white header bg, larger emoji icons, strip separator border
+389e9e533ae910e045f46162abbda00f28784108 2026-03-31 17:29:29 +0200 design: homepage Phase 1 — demo carousels, 180px cards, CTA polish (P0+P1)
+48c549c76344ea9d680ef15ec0f35a73e7106246 2026-03-31 17:32:31 +0200 design: footer multi-column layout with platform/salons/legal columns
+8efdb9bc28595fba0c994b0ccafea35afd6bb936 2026-03-31 17:35:18 +0200 design: Phase 2 polish — language switcher text-only, filled moon dark toggle
+0644bef2437c14444b1cb9407528e9b288dab937 2026-04-01 16:37:28 +0200 design: roadmap 07 — design system & global polish
+c851be173a555388fce6a96aa9b767a900c20661 2026-04-01 16:38:39 +0200 seo: roadmap 09 — meta tags, JSON-LD, hreflang across all pages
+ecdee1b7cfd65f4f03574d5ee2e4c32d90ce10a3 2026-04-01 17:04:47 +0200 feat: roadmap 02 — salon cards (carousel, badges, metadata, grid)
+4eb81310c901f1e20c46cd9d59ad7a4c33d367f3 2026-04-01 17:23:12 +0200 feat: roadmap 08 — image upload system
+5da4d352b98036b692500345544744c7fd0aa60c 2026-04-01 22:28:29 +0200 phase 1.1: trust stats banner with animated counters
+9260aa17ce11ceff6e1cf86448f7ad9b0b48f3b2 2026-04-01 22:35:42 +0200 phase 2.1-2.2: browse by city section with gradient cards
+12148fa3257ec28863f612725d4854a3df2fb842 2026-04-01 22:39:38 +0200 phase 3.1: seo landing pages for city×category
+c4d4b5293b6f09ff3ba3f00e5183609f1e3b1307 2026-04-01 22:40:23 +0200 feat: roadmap 10 phase 2 — gift vouchers and promo code enhancements
+972f8932482647ac6f0d373178173c555df861e2 2026-04-01 22:42:29 +0200 phases 4-7: 404 page, testimonial carousel, toast verified, pwa confirmed
+d71c8e8c51268a961e30b1ccb1727569f78607d4 2026-04-01 22:48:02 +0200 feat(homepage): wire testimonial carousel + i18n keys
+357269de8f22853bb57cf91885708b7f027f939e 2026-04-01 22:53:14 +0200 Phase 3.2: add sorting toggle to last-minute deals page
+7d95ca75e5fe0e9536d8596c11e7892c59068c77 2026-04-01 22:57:07 +0200 Phase 3.3: salon last-minute deals dashboard settings
+63ce4a2d8c0876da059423d1161f327ab2d852bf 2026-04-01 23:10:31 +0200 phase 1.1: add service selection step component
+1df72352c15f00266ef47c0cab89a6d655600ca2 2026-04-01 23:18:36 +0200 phase 1.1: add staff selection step component
+7c9da1688ce1930ed67d3435ba9b9e5c1ea4ad4c 2026-04-01 23:22:41 +0200 phase 1.1: add date selection step with calendar and availability API
+cdc75810830266ca83d3c72a6f3b022026bef382 2026-04-01 23:28:10 +0200 phase 1.1: add time selection step with slot fetching API
+e6e9443f3767e58d4896ecc24b60a27e797ba6d7 2026-04-01 23:40:12 +0200 phase 1.1: add confirmation step with summary display
+10b7899fc91cd33da0a41b4f50dd8a94ac19da23 2026-04-01 23:42:17 +0200 doc: add booking step naming convention to lessons learned
+197e121a4fd7b51f412d319aa34f66dbad858d9d 2026-04-01 23:45:52 +0200 phase 1.1: add payment step component with booking creation
+902ff1ca7859afbadbdbc95d89ecdecb330b6099 2026-04-01 23:48:07 +0200 phase 1.1: create main booking wizard page and router
+d0a0477528af816d45cfebbd5b05f299a8e3ed14 2026-04-01 23:50:20 +0200 fix: correct booking page types and imports
+e3c43888fa3f57149997aaecf1419b8ddef039db 2026-04-01 23:51:11 +0200 docs: add booking wizard implementation lessons learned
+7d64e4aaa47f4138f26bb8836e4cfb6051289f25 2026-04-01 23:59:51 +0200 phase 1.1: create post-booking confirmation page
+f2f7abe375e6a499ccaeb3a9a913faf393f56563 2026-04-02 00:01:53 +0200 phase 1.1 (update): fix PaymentStep redirect to confirmation page
+7b9cbadfb8e7ab372eb1dec5b6c7233c4a686cc7 2026-04-02 00:02:10 +0200 docs: add lesson learned about nested i18n namespace paths
+609aef4a4ddcb93bc816aafa837d4b501fb3181a 2026-04-02 00:08:00 +0200 phase 3.1: create my bookings page with listing and card UI
+3b28592aaccf235e2993a5d03255aa8039d8cdc5 2026-04-02 00:08:53 +0200 docs: add lesson learned about component barrel imports
+01b5c22ddc6b83874806b8784f72a47551f5c031 2026-04-02 00:11:04 +0200 phase 3.2: add review prompt component for completed bookings
+391d8bfff25aac53af3d1af922958c6a75029e27 2026-04-02 10:32:57 +0200 feat: implement micro-animations & accessibility improvements (Phase 3.2)
+a5b8e537139b53388871c3bd4a284ad5266e0549 2026-04-02 10:34:46 +0200 i18n: replace hardcoded German strings in ReviewBreakdown, HomePage, Breadcrumb + add keys to all 4 locales
+1d5fbd72622372cb75f84d82b3288ee97729bb44 2026-04-02 10:37:24 +0200 seo: wire hreflang alternates on pages (search, confirmation, profile/bookings, city pages)
+a2f05593a141efd9a38b4217481e3c4cc51b3c76 2026-04-02 10:37:54 +0200 seo: add city×category pages to sitemap for local SEO
+fdb19fee2e29b60d8841b1f72187ab746b9e0d5d 2026-04-02 10:39:30 +0200 fix: remove ignoreBuildErrors and fix critical TypeScript errors (Phase 1)
+559a6a97e986280d24884ba31a46d6a3edd86cdc 2026-04-02 10:40:08 +0200 feat: scroll-direction-aware header hide/show (saves 64px mobile)
+4799d68c7c40cc73a484e457fab513f7f513ad5d 2026-04-02 10:40:34 +0200 feat: bottom sheet multi-detent snapping (peek/half/full)
+72bb1c5a32d660c55eef78ff834cb9105074b713 2026-04-02 10:41:16 +0200 a11y: enforce 44px minimum touch target on SalonCard heart button
+9551e1e254491b3abd4ca8c1c6fe123c897abf2f 2026-04-02 10:41:39 +0200 feat: add branded PWA offline fallback page
+573b11e0855e3df87706a4e9b9c30672c4cdef37 2026-04-02 10:59:23 +0200 fix: add missing German translations to salonDetail namespace and fix translation namespace issues
+5823bedc3e8f13a18f29b81f84a93c2383ba3600 2026-04-02 11:01:10 +0200 phase 7: add page transition crossfade with AnimatePresence
+5481e54c34f2bc1381bbe2f8c3255de6a57ce602 2026-04-02 11:05:05 +0200 phase 8: implement account deletion API and GDPR-compliant UI
+06b3d51140915b1565d9d0dd320ba403f17e0f3e 2026-04-02 14:46:36 +0200 feat: add next-available quick-book API and UI button
+edd94f037c93dfc2973ef7c357bb9a89ace7abe8 2026-04-02 14:51:47 +0200 feat: enable Apple Pay and Google Pay in booking checkout
+5bdaa76575450850f2bf0cda4adf9687c7fd38f5 2026-04-02 14:58:28 +0200 feat: booking reschedule API endpoint (atomic transaction)
+43e61f619eededde70da0bfede951e8c006fe611 2026-04-02 15:20:13 +0200 phase 7.2: add font preloading for critical Google Fonts
+ae5ef5844d3b44c31e8bae18c277903052fb33e1 2026-04-02 15:20:25 +0200 phase 7.1: convert img tags to Image component for optimization
+825c1a64bf528d92ed0fe1946af0befe65443fd8 2026-04-02 15:20:30 +0200 phase 6.3: add ARIA labels to icon-only dashboard buttons
+85494af42b86d681bf24ed3c3bfa6da06e39a1e6 2026-04-02 22:01:42 +0200 phase 2a: design token sync (card radius, stagger timing, coral eyebrows)
+2a61d1847d11d4c941e9f49a92f35bb62c2532b9 2026-04-02 22:09:12 +0200 phase 2b: i18n sweep for CategoryPage (add categoryPage translations, replace hardcoded strings)
+b60fa324e4fa5429fef78c753ffa652733ced9c3 2026-04-02 22:13:53 +0200 phase 2b: i18n sweep (BottomTabBar + auth translations)
+c4bafe5ef2c77d824b1b0605f19b28dc56f6cd1b 2026-04-02 22:18:09 +0200 phase 2c: convert category icons to 3D Image-based components with spring hover animations
+498d3616673dcf65ba8f2e0855320f245bfb47d4 2026-04-02 22:21:38 +0200 phase 3a: FeaturedSalonCarousel i18n and aspect ratio polish (4:5 portrait, translate carousel nav)
+d93cc18bdbeedb2b811ec629c9440f54e96e925d 2026-04-02 22:24:05 +0200 phase 3b: CategoryPage polish - remove category gradients, use pure white hero
+9460f4dfa85dafb7de6bac09b52fae4ca9e77396 2026-04-02 22:25:45 +0200 phase 4a: standardize card stagger timing to 40ms (0.04s) in CityPage
+55f2a97543bac47e8e4042802233867690e07e20 2026-04-02 22:27:11 +0200 phase 4b: remove console.log debug statements and convert to console.error in BookingSuccess
+aa171bcc8cd98bd887f562c471bf1fe664c87ef5 2026-04-02 22:50:05 +0200 audit fix: revert category icons to working SVG implementation (missing PNGs)
+f7c3560158978f23ec8fefceb522cb54d588bd6b 2026-04-02 22:51:09 +0200 audit fix: change SalonCard image aspect ratio to 4:5 (portrait)
+beb15955d1489ea7da7eda951857f508b853deac 2026-04-02 22:54:09 +0200 audit fix: translate CategoryPage hero hardcoded strings (everywhere, salon count, onSolen)
+6ca0be086c210cd2f92efc857cf53099b78324e2 2026-04-02 23:09:21 +0200 audit fix: standardize hover lift to -translate-y-[5px] across 20 components + add hover media query documentation in globals.css
+28de02fa9869f9c886b2b58cccc45171130fd3c9 2026-04-03 17:39:49 +0200 fix: improve input focus ring accessibility (Rule 49) — 100% opacity, 3px thickness
+956a7ddc350473f76c598fd17bca9eae2d6c2012 2026-04-03 17:40:40 +0200 fix: increase touch targets to 44px+ minimum (Rule 50) — photo dots, carousel arrows, close buttons
+90cd98463dff434667dd152daee4ed85f328fecb 2026-04-03 17:41:33 +0200 fix: standardize font sizes to Tailwind scale + migrate colors to design tokens (Rules 48, 55)
+4f93404f9db363af4fca86e66ff212ed13f698f2 2026-04-03 17:43:38 +0200 fix: match skeleton loader aspect ratio to SalonCard + migrate to design token colors (Rule 48)
+1671a0b4dbce88afe7d7fdf22811591569e9e6b9 2026-04-03 17:44:09 +0200 fix: migrate booking status badge colors to design tokens s-sage, s-warning, s-error (Rule 48)
+b95f982b78924e0da17a963df94e852cc1df5577 2026-04-03 17:53:08 +0200 fix: migrate hex colors to design tokens in SalonReviews, Header (Rule 48)
+31a635c582ee63002b0070b2ea754b8a443185d7 2026-04-03 17:55:23 +0200 fix: migrate hex colors in SalonHero, AirbnbSearchBar (Rule 48)
+0990895d201c15ac9f0285dca6248b5d4b33ed00 2026-04-03 17:56:51 +0200 fix: migrate hex colors in FeaturedSalonCarousel (Rule 48)
+6d32afc28af599dd7441bdbb67fd462df49a1b7d 2026-04-03 17:58:14 +0200 fix: migrate 34 hex colors in GuidedSearch to design tokens (Rule 48)
+67dfb345a7e6bb84bc176567e9ab75eaff46d75d 2026-04-03 18:01:24 +0200 fix: complete hex color migration to design tokens across all components + fix bracket notation (Rule 48)
+78a5420dcadae552ce7793e7ca86245fb9cd8642 2026-04-03 18:02:37 +0200 fix: standardize spacing rhythm to 0.5/1/2/4 scale (FIX 9)
+9d1772f1dc35856578497e9e80613032957b4226 2026-04-03 18:04:11 +0200 fix: standardize line-height values to Tailwind scale (FIX 17)
+958cbe28f5b6e6a088debec989d36dd2c4b10e6b 2026-04-03 21:46:04 +0200 fix: complete final UI audit fixes - shadows (FIX 10), transitions (FIX 13-14), line-height (FIX 17), progress indicator (FIX 16), empty states (FIX 20) (Rule 48-56)
+f0c993e272e4833759612d90d704454f237a82c3 2026-04-04 10:47:23 +0200 i18n + a11y: R4 sweep — add 250+ translation keys, replace hardcoded strings, fix contrast, add ARIA labels
+bf7755871b8b8963baad60f2eb2a96328869ffdf 2026-04-04 10:47:33 +0200 feat: warm blur image fallback system for missing salon photos (R7 Phase 7.1)
+8dc2753dc99e8729afba9a290f51173fcb7ac8fc 2026-04-04 10:55:05 +0200 feat: branded empty states for SalonServices, SalonReviews, CategoryPage (R7 Phase 7.3)
+a3d4104b438b6d81042b959eaa2eda245a8851be 2026-04-04 10:59:31 +0200 feat: inline error states with retry for CategoryPage and SalonReviews flag (R7 Phase 7.4)
+eb867e0a120162e3409474d80ebbe714e6d8d07b 2026-04-04 11:02:15 +0200 fix: component polish — Toast sizing/radius, Footer tracking/hover (R7 Phase 7.6)
+6d84f4b7ce8f5080bea6a90290f3789e992fe3dc 2026-04-04 11:05:10 +0200 refactor: remove 'as any' from useTranslations("common") in 4 components (R7 Phase 7.7)
+90c52beebdb1bab88da3293b0f1ec4966e5335c3 2026-04-04 11:05:59 +0200 docs: add lessons learned from R7 — linter reverts, as any patterns
+e0280ed86e1fe1ce9c78d1eba5eca951f8eda0e4 2026-04-04 11:20:53 +0200 fix: enforce 44px minimum touch targets sitewide + fix pre-existing TypeScript errors
+8980f5e72377fc1625559def6660c108a86b9b0f 2026-04-04 11:24:31 +0200 fix: mobile layout — no overflow, safe areas, responsive grids
+dab1e2a0fa660549c8e132fea7cec5e03547480a 2026-04-04 11:31:59 +0200 fix: scroll containers — snap points, momentum, fade indicators
+f8188f6c94488eb861b2f69a652c5e9c930f769b 2026-04-04 11:32:22 +0200 refactor: centralize animation system in lib/animations.ts
+cd593562b5d1c2724fc1074639c548dd47cca265 2026-04-04 11:32:45 +0200 refactor(R5): navigation overhaul & salon detail improvements
+ed0b08a9774282c529132d830bd49eded7aa72ae 2026-04-04 11:34:16 +0200 fix(R5): salon section nav — improved observer margins + token fix
+aee893eeede2bf096039930ca5c5c7ce4a249374 2026-04-04 11:34:36 +0200 fix: smooth 200ms page crossfade transitions with EASE_SOLEN
+024b00478905a793b23f834a7ffab3160b4c621e 2026-04-04 11:35:10 +0200 docs: append R5 lessons learned (IDE auto-revert, nav dedup patterns)
+4808d5d010f7049c83d6bbbe3f2f173d5c2a233b 2026-04-04 11:37:19 +0200 refactor: condense booking wizard from 6 steps to 4 (R6 Phase 6.1)
+02b88c6413c34cc1596eeb875437e731217e78c0 2026-04-04 11:37:55 +0200 feat: grid stagger reveal animations (Zone 1-2)
+db0783641965c445f33853db2a70c8e00d98c788 2026-04-04 11:40:43 +0200 fix: booking wizard visual polish — progress bar, step dots, back button (R6 Phase 6.2)
+ab7a5af38e5ce92273e441eb34ead796dc8ffc16 2026-04-04 11:45:54 +0200 refactor: coral color rebalance — reserve for CTAs and key accents only (R6 Phase 6.3)
+ae8be8377b8466e868b9fb9b6feea32ba6d905eb 2026-04-04 11:49:12 +0200 fix: booking success page polish + remaining coral rebalance (R6 Phase 6.4)
+5f5b2a92318b354f4a1dcef4eea40777c0b990e9 2026-04-04 11:49:41 +0200 fix: standardize modal/sheet timing to 200ms/300ms
+7a625d1bcbab84fb002efdcdfeeb4547bf1ed565 2026-04-04 11:50:13 +0200 refactor: standardize hover/active interaction patterns (R6 Phase 6.3 follow-up)
+f2859054ad197f0730c722562b57bfc1ad69e438 2026-04-04 11:51:35 +0200 fix: add AnimatePresence + modalVariants to ProfileSetupModal
+85315f1d16d2f4c48077dd8a5afbc1f657227608 2026-04-04 11:53:11 +0200 fix: SalonCard heart bounce — framer-motion spring + aria-pressed (R6 Phase 6.3)
+2c2b092592b690deeb284d119f2a091442e90987 2026-04-04 11:53:27 +0200 fix: FeaturedSalonCarousel heart bounce — framer-motion spring + aria-pressed
+42cffce4fa84566664c22f5f2c22c8e95d5dd4ec 2026-04-04 11:53:50 +0200 fix: StampCard stamp pop — framer-motion spring instead of CSS class
+35d0f35f59f7b598f438abb1fe821128ba684cd8 2026-04-04 11:57:03 +0200 a11y: prefers-reduced-motion global disable
+798b043e4d39699bab47e6df2c6a0deaaadee6f0 2026-04-04 12:00:10 +0200 fix: hover/press/active states on all interactive elements (Phase 2.4)
+a72755017746f0b1be2eab9a4386bfb392112bc9 2026-04-04 12:07:32 +0200 fix: keyboard focus WCAG AAA + safe area insets for notch/Dynamic Island
+3145270637579e264d591c572bced3f78e0eb3de 2026-04-04 15:08:42 +0200 refactor(R6-6.3): coral color rebalance — reserve for CTAs and key accents
+736951aa10be1c409c7bcd6f723eced29f3ff3af 2026-04-04 15:09:09 +0200 fix(R6-6.4): booking success — locale-aware date/time formatting
+82ba9eaa29ae5d84013a7a436ed43912c1855fd6 2026-04-04 15:09:42 +0200 docs: append R6 lessons (coral semantics, locale date formatting)
+35da0f2450ad08281c5237e345a09307a0327107 2026-04-04 16:27:51 +0200 feat(R7-1): add HomepageHero — headline + AirbnbSearchBar + category chips + micro-trust
+a4b7e6f7ec1eb6e972c5d4781b73e77c1ba1af7c 2026-04-04 16:28:59 +0200 feat(R7-2): add LastMinuteStrip — real slot data, discount badges, category labels
+6fe332e46be665745ee00abab1cc15f9aa873ca4 2026-04-04 16:29:51 +0200 feat(R7-3): wire HomepageHero + LastMinuteStrip into homepage, add hero-cinematic bg
+68a823f75f614f65735e6dd9b6135d1a79e98c5b 2026-04-04 16:31:04 +0200 feat(R7-4): redesign TrustStatsBanner — S2 card pills with icon badges, skeleton loading
+8d83f1bc8e896960cf702423d997609803004b1b 2026-04-04 16:32:51 +0200 feat(R7-5): redesign BrowseByCitySection — full-bleed dark #100602, Bebas 76px city list, hover interactions
+83e1412b4e0e687ecf8db6d48751515cad4765c6 2026-04-04 16:35:27 +0200 feat(R7-6): redesign TestimonialCarousel to 3-col static grid with SVG stars
+45fa17b8bb67b2a9f56cb5230b3683085797b33f 2026-04-04 16:36:17 +0200 feat(R7-7): partner CTA dark card — #1A0806 bg, coral glow, frosted stat cards
+32049aedde87b5f70fd478e9a6f124b9c0fa1bf5 2026-04-04 22:50:24 +0200 feat(R7-8): homepage redesign — glass header, inline trust stats, testimonial cleanup, design specs
+5e80927dbbf050fa37fc2b71f040676f299151bf 2026-04-06 08:22:54 +0000 Homepage component map V5 rebuild
+f39d512804fe6fb45be21b0e952bd4eda1447258 2026-04-06 08:32:02 +0000 fix: complete Component Map V2 audit fixes
+a662d9520e40854efc5454c9a61932adf19eab61 2026-04-06 09:04:47 +0000 fix: design spec token alignment — colors, fonts, spacing, animations
+85d4b37b22343983823135199f2f43dfa716a42f 2026-04-06 13:03:28 +0000 fix: full design spec compliance — colors, card structure, animations
+2732dc8cfc82edf665eb3c0f5107991191f303a3 2026-04-08 15:09:11 +0200 fix: restore mobile category strip in header
+f07a3c28734114c25b913b8dd0493563d7519ab7 2026-04-08 15:19:44 +0200 fix: design token compliance — white backgrounds, correct coral, Syne titles
+688347bf15ff84c560b08c7981a3cfd04799071d 2026-04-08 22:38:45 +0200 fix: polish pass — spacing, typography, hero sizing, testimonial cleanup
+f7ed0a9908424a9f26665d0219c98d5f9079c51a 2026-04-13 15:56:56 +0200 session: coral sweep + card 4:3 + CSS vars + SSR timeout + color alignments (pre-fresha-overhaul)
+40387d62e02e8215b1e0c07bb8cf5ec4ba7f7a97 2026-04-21 07:22:36 +0000 design: consolidate system + lock salon cards to 1:1
+0de8582ca974b5b8fafea7447d182ccf6a5b1bc4 2026-04-21 07:28:00 +0000 design: enforce system-wide — active:scale, motion tokens, coral lock
+8fbc24cde44fd4e03ab6b33f30c6f2d650638c6c 2026-04-21 07:37:01 +0000 design: add /design-system visual reference route (Q18)
+1f81b5cadd57f7882f6075e94046f4c443fcf404 2026-04-21 07:55:48 +0000 design: add canonical interaction utility classes (Q15)
+f8af51a848b16cec01ad24ec660476009c3597d3 2026-04-21 07:56:44 +0000 feat: add <PageState> canonical loading/empty/error wrapper (Q19)
+014e38156f09dcef607c446a62987e8b1f9c2fbf 2026-04-21 07:58:40 +0000 docs: illustration prompt as guideline — lock constants, vary subject (Q22)
+25d04c1d5abae28ea3838cf19e1069d525a0dd34 2026-04-21 19:27:47 +0200 design: consolidate to single coral source of truth
+feff9e17f4841c0cd3c1b298661303de7c3f4fb8 2026-04-21 22:24:25 +0200 design: Option C — port coral+Fraunces+cream+no-box to production
+32ec080901e17cbad27fa76ad912d9d52b08c437 2026-04-21 22:41:19 +0200 fix: build — exclude .figma.tsx from tsc, plumb locale to HomepageHero, narrow Skeleton variant
+04398605bbb0f61ec162468a4599331ba4519305 2026-04-21 22:43:40 +0200 design: shadow/glow cleanup pass 2 (Items 4-8)
+c943797d6399f0cd1cbec0a704504f30dee9df33 2026-04-21 22:48:59 +0200 docs: overnight autonomous work log
+947aaf358b3b1573a3a841be7c43d64d54c746e7 2026-04-22 07:56:34 +0200 docs: correct moat audit — more is on main than claimed
+9ce9a1b48b75113eb643ea09c63fad24430e0766 2026-04-22 08:32:08 +0200 chore: delete orphan components/StaffPortfolio.tsx (unused, discovery variant is the wired one)
+633fb66ead4616f98dc95ab3f9f9ec03b03b8829 2026-04-22 08:42:10 +0200 feat(reviews): add "Salon hat geantwortet" reply badge
+0bd3daf6a84b2ad9ad153f92d0f02b2dd9460cf8 2026-04-22 08:48:53 +0200 feat(salon): wire StaffPortfolio into salon detail page
+570ae0151de1e9b73e8b7fbb82ffd344b5cbd76b 2026-04-22 08:57:26 +0200 docs: add MASTER_ROADMAP.md — 7-phase roadmap from Phase 0 stabilization to Phase 7 EU expansion
+f3d9d762364c2e4194bdcd0932fc1b7fd5e939b4 2026-04-22 09:20:08 +0200 design: lock 15 questionnaire decisions (Q1-Q15)
+4b5979eb48df9a049f948a7aa518ee604a35216c 2026-04-22 09:34:56 +0200 design: doc consistency pass — sync spec + preview with Q1-Q15 locks
+e130c59c6ff09c0c5d0b26957bb449124b2f166a 2026-04-22 22:07:36 +0200 docs: Claude Design research + plan + gap audit v2
+b6c322bddb76e0cbb28dd8c61e9772ccb12deda2 2026-04-22 22:14:16 +0200 fix: close 5 critical gaps from GAP_AUDIT_V2 before Claude Design onboarding
+e7624743ad3ca347b5b8ae0d1892fe5076d8cc9b 2026-04-22 22:40:04 +0200 design: Q16 lock — kill decorative gradients across system

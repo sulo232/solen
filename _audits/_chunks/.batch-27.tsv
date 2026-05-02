@@ -1,0 +1,10 @@
+0c3ff4c974fc7d8b9f45686cb4b428d47b0b7c6e 2026-03-28 19:53:30 +0100 profile & auth: interaction consistency + state safety fixes
+db5b1b9c7df2a64daf591631775836f1be95cbb6 2026-03-28 19:58:40 +0100 discovery: interaction consistency + state safety fixes
+f3bb6c09c84dc2e9755a3c45a33dfe9cac7dc39e 2026-03-28 20:03:13 +0100 coiffeur/salon: fix fetch .ok checks, transitions, a11y
+e855b45d850dd889379746a246e40f035ec1f5a4 2026-03-28 20:07:29 +0100 barber: cancellation guards, a11y fixes, transition consistency
+9db4c02b8cfbb4fb45b906766fe935bec3728ac0 2026-03-28 20:10:53 +0100 nail: transition duration-150, aria-pressed, tab roles
+a63348b7df103940a5114126fd6701d94e7cf5bc 2026-03-28 20:20:58 +0100 fix(homepage): replace solen_score with average_rating, remove crash-on-DB-error
+ba0b70a4d0aded01b820ec9cd337efdb9d068e4c 2026-03-28 20:23:41 +0100 last-minute/search/shared-ui: .ok checks, cancelled guards, transition-colors duration-150, backdrop-blur-[6px]
+93d116a99fbb34e2b8d97d02cb42442486e08766 2026-03-28 20:29:26 +0100 fix: add missing components/compare/ to git (was untracked, broke Vercel build)
+f8daf46e523df6a80fac1db7b0c9cbce3295d3ae 2026-03-28 21:47:15 +0100 fix: CompareProvider Suspense crash — useCompare returns safe noops outside provider
+2f1d70e55b9cffd1c1b3f0e537ad1a6fcb346c74 2026-03-28 22:33:10 +0100 feat: V5 design overhaul — Phases 1-6A

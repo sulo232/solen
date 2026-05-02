@@ -1,0 +1,10 @@
+91b72a91228e410d497d7d910024ade7f9a10e2b 2026-03-23 22:11:42 +0100 Sync local changes: updated CLAUDE.md, added _rules/, cleaned up old _tasks/
+adcd252e25627c175bb3d5b973ba4326a788ee1e 2026-03-23 22:20:10 +0100 feat(onboarding): progressive 3-step wizard, GoLiveGate, services importer
+98f2556e1047c5d9e7d7599c816d4dc3a7fecb85 2026-03-23 22:20:27 +0100 feat(compliance): T&S compliance — booking confirmation, frozen banner, verification docs, content reports
+764f53dd29fb26b6399d09e6f7f4127ee2eee2eb 2026-03-23 22:33:50 +0100 feat(pages): UI audit — design tokens, category sections, behandlungen SEO split
+6f4cc68e41a2a75a5a286dbe10531e39ddc8dcb7 2026-03-23 22:52:14 +0100 Restore CLAUDE.md, _rules/, and _docs/ after reset
+bd67f9e43331b227cc503d7e77c3d188a3d6ad1d 2026-03-23 23:31:36 +0100 Full restore: all source files synced from local backup
+f332baf80f601b3837bfb6cc6f14974be243fb16 2026-03-24 16:59:10 +0100 feat(dashboard): Phase 1-3 — Zone 3 purity, token sweep, sticky save bar
+566d76f7ebc4a659ce4af661cc15f85e45cb921f 2026-03-24 17:16:33 +0100 feat(coiffeur): URL-synced filters, V3 tokens, AI matcher modal
+3e92e3c95e928b1b3a41a72cdb7e98b23c145cd5 2026-03-24 17:24:35 +0100 feat(profile): Zone 3 enforcement + EmptyState unification
+0bad7bd4a517caa29956a99abdb78deb0d13d802 2026-03-24 17:26:38 +0100 feat(barber): fill roadmap gaps — queue status, repeat-last-cut, booking calendar

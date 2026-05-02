@@ -1,0 +1,10 @@
+b95f982b78924e0da17a963df94e852cc1df5577 2026-04-03 17:53:08 +0200 fix: migrate hex colors to design tokens in SalonReviews, Header (Rule 48)
+31a635c582ee63002b0070b2ea754b8a443185d7 2026-04-03 17:55:23 +0200 fix: migrate hex colors in SalonHero, AirbnbSearchBar (Rule 48)
+0990895d201c15ac9f0285dca6248b5d4b33ed00 2026-04-03 17:56:51 +0200 fix: migrate hex colors in FeaturedSalonCarousel (Rule 48)
+6d32afc28af599dd7441bdbb67fd462df49a1b7d 2026-04-03 17:58:14 +0200 fix: migrate 34 hex colors in GuidedSearch to design tokens (Rule 48)
+67dfb345a7e6bb84bc176567e9ab75eaff46d75d 2026-04-03 18:01:24 +0200 fix: complete hex color migration to design tokens across all components + fix bracket notation (Rule 48)
+78a5420dcadae552ce7793e7ca86245fb9cd8642 2026-04-03 18:02:37 +0200 fix: standardize spacing rhythm to 0.5/1/2/4 scale (FIX 9)
+9d1772f1dc35856578497e9e80613032957b4226 2026-04-03 18:04:11 +0200 fix: standardize line-height values to Tailwind scale (FIX 17)
+958cbe28f5b6e6a088debec989d36dd2c4b10e6b 2026-04-03 21:46:04 +0200 fix: complete final UI audit fixes - shadows (FIX 10), transitions (FIX 13-14), line-height (FIX 17), progress indicator (FIX 16), empty states (FIX 20) (Rule 48-56)
+f0c993e272e4833759612d90d704454f237a82c3 2026-04-04 10:47:23 +0200 i18n + a11y: R4 sweep — add 250+ translation keys, replace hardcoded strings, fix contrast, add ARIA labels
+bf7755871b8b8963baad60f2eb2a96328869ffdf 2026-04-04 10:47:33 +0200 feat: warm blur image fallback system for missing salon photos (R7 Phase 7.1)

@@ -1,0 +1,10 @@
+039b1e178ef1f374be80bfdcfba81da9dd3aa8cb 2026-03-29 20:39:58 +0200 phase 1.2: category-tinted gradient fallback when no cover photo
+4515fc78e864458a5f51c8ad9f96b4459d8dba57 2026-03-29 20:43:14 +0200 phase 1.2b: extract fallback gradient IIFE to named helper
+4b5d8d871577872bfc2a669b2c1dbac15527a2d1 2026-03-29 20:46:03 +0200 fix(saved): add error state, auth guard, remove unicode heart, is_test filter
+0e8ff6706a6a18aa063f204b4a2d7ac5818b6854 2026-03-29 20:47:04 +0200 phase 1.3: rating always visible, price Ab CHF, neighborhood display
+c1bd15f1033f73f5e7ae186edf51c6c4225a296f 2026-03-29 20:49:07 +0200 fix(discovery): replace empty-div stub with proper EmptyState component
+96f13185070403afbf2a75d7a3964d5bad4852a3 2026-03-29 20:49:23 +0200 fix(footer): replace large language switcher pills with compact text links
+23580868d5f574a42623230288f6837e6487ad8d 2026-03-29 20:49:35 +0200 fix(nav): simplify BottomTabBar active state — remove top bar and icon scale
+8ae417df863f8013da56278947a53edc3cade2c0 2026-03-29 20:56:46 +0200 fix(mobile): add touch active states and horizontal scroll fade to filter rows
+8a2828592d3cc33850c8045d33af01bd1f5355c7 2026-03-29 20:58:59 +0200 fix(legal): scaffold Impressum with dl structure and standard Haftungsausschluss
+b7a614802bab44b82bf01ba2cbfe8227dd838463 2026-03-29 20:59:01 +0200 phase 1.3b: i18n priceFrom, remove IIFE, fix new-badge threshold

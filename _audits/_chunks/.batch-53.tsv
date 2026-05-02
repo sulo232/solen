@@ -1,0 +1,10 @@
+35da0f2450ad08281c5237e345a09307a0327107 2026-04-04 16:27:51 +0200 feat(R7-1): add HomepageHero — headline + AirbnbSearchBar + category chips + micro-trust
+a4b7e6f7ec1eb6e972c5d4781b73e77c1ba1af7c 2026-04-04 16:28:59 +0200 feat(R7-2): add LastMinuteStrip — real slot data, discount badges, category labels
+6fe332e46be665745ee00abab1cc15f9aa873ca4 2026-04-04 16:29:51 +0200 feat(R7-3): wire HomepageHero + LastMinuteStrip into homepage, add hero-cinematic bg
+68a823f75f614f65735e6dd9b6135d1a79e98c5b 2026-04-04 16:31:04 +0200 feat(R7-4): redesign TrustStatsBanner — S2 card pills with icon badges, skeleton loading
+8d83f1bc8e896960cf702423d997609803004b1b 2026-04-04 16:32:51 +0200 feat(R7-5): redesign BrowseByCitySection — full-bleed dark #100602, Bebas 76px city list, hover interactions
+83e1412b4e0e687ecf8db6d48751515cad4765c6 2026-04-04 16:35:27 +0200 feat(R7-6): redesign TestimonialCarousel to 3-col static grid with SVG stars
+45fa17b8bb67b2a9f56cb5230b3683085797b33f 2026-04-04 16:36:17 +0200 feat(R7-7): partner CTA dark card — #1A0806 bg, coral glow, frosted stat cards
+32049aedde87b5f70fd478e9a6f124b9c0fa1bf5 2026-04-04 22:50:24 +0200 feat(R7-8): homepage redesign — glass header, inline trust stats, testimonial cleanup, design specs
+5e80927dbbf050fa37fc2b71f040676f299151bf 2026-04-06 08:22:54 +0000 Homepage component map V5 rebuild
+f39d512804fe6fb45be21b0e952bd4eda1447258 2026-04-06 08:32:02 +0000 fix: complete Component Map V2 audit fixes

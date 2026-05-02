@@ -1,0 +1,10 @@
+6ed45959bfe5edcb893f89acfbe81e1f620819b3 2026-03-25 15:48:02 +0100 SHARED-P1+P2: EmptyState → remove scale-[1.8] NEVER violation, add eyebrow prop, remove italic
+f3841f5890d2632e8b3b63bdbad68ba717a662d7 2026-03-25 15:48:32 +0100 SHARED-P3: Spinner → add coral variant for light surface loading states
+a61f1a1db844f9ca6aa0303ef82141b4d0e901a4 2026-03-25 15:56:22 +0100 fix: ui bug audit v1 — 14 fixes across 6 sub-sites
+c77dfaf5030e044c6634240c9637713e0c0dfc01 2026-03-25 16:35:04 +0100 fix: ui bug audit v1 - 14 fixes across 6 sub-sites
+3b5236e09561ee310dacffd082656cb30f48f024 2026-03-25 16:47:17 +0100 chore(design): Apply V3 Design Sweep to ProfilePage (R04)
+cb7e395c946e0602f71fccc559310abf87789456 2026-03-25 16:53:07 +0100 chore(design): Apply V3 Design Sweep to Dashboard (R05)
+3348492bfb94726af0b24fb99b28efcb56586489 2026-03-25 16:55:17 +0100 fix: resolve TS errors breaking production build
+40cd3b222445bd5e42832225aabaaac18a3204d6 2026-03-25 16:56:38 +0100 chore(design): Apply V3 Design Sweep to Booking/Checkout (R06)
+9bbee0db3b1981cb945325f2aee675a4be3ce564 2026-03-25 16:59:07 +0100 chore(design): Apply V3 Design Sweep to Discovery/Salon (R07)
+b8f872e39dff377d991509bb00a81ac7b42477a5 2026-03-25 17:03:01 +0100 fix: resolve SWC JSX parse error in RemoteQueueJoin

@@ -1,0 +1,10 @@
+b2ee4dd250d09a7af7a3c72986a1bfe128564a97 2026-03-26 17:52:17 +0100 i18n(tier3): complete Phase 3 - wire remaining 9 components
+5632920d3018ff9be27316d3dfa20021e02ef08c 2026-03-26 18:21:16 +0100 fix(api): fix salon creation 500 errors by removing non-existent columns and adding lat/lng fallbacks
+11de84da473df8d257f01522fc42baa88fe6269c 2026-03-26 18:25:22 +0100 fix(api): remove phone_verified from salon insert to bypass schema cache error
+1336d1b906b5b127d16e9a8aab9f5f82833fa819 2026-03-26 18:58:05 +0100 feat: Phase 3 landing page hero and search bar
+4865a0cf03036b7b5c202784ac5aaacbcb2a2d86 2026-03-26 19:11:23 +0100 feat: Phase 3 Landing Page Redesign complete
+6f5324eb67253fb1b18209a95599e4d4c34f4cf0 2026-03-26 19:15:35 +0100 feat: Phase 4 & 5 - API City filtering and auto-detection
+3f0afccd3f24a53876f2d79576fa18c102202bf2 2026-03-26 19:29:07 +0100 fix: Registration city schema error and added City dropdown + UI: Added Discover Carousel
+9202fdd5b76e30d12f35c3bf0140048680fc513e 2026-03-26 19:37:24 +0100 fix: Purge 'quartier' field from salon registry & UI completely
+13da524e0add077581b572ee752e5ecf3aab1525 2026-03-26 19:42:26 +0100 feat: DiscoverCarousel now uses real algorithmic Data and ItemCard dimensions
+869abebf312fcfdaf1cf481224d15a32b408bbf8 2026-03-26 19:55:26 +0100 fix: Limit DiscoverCarousel to 5 items, remove tilt, fix tiktok loading & schema error

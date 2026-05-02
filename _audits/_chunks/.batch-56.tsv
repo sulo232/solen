@@ -1,0 +1,7 @@
+0bd3daf6a84b2ad9ad153f92d0f02b2dd9460cf8 2026-04-22 08:48:53 +0200 feat(salon): wire StaffPortfolio into salon detail page
+570ae0151de1e9b73e8b7fbb82ffd344b5cbd76b 2026-04-22 08:57:26 +0200 docs: add MASTER_ROADMAP.md — 7-phase roadmap from Phase 0 stabilization to Phase 7 EU expansion
+f3d9d762364c2e4194bdcd0932fc1b7fd5e939b4 2026-04-22 09:20:08 +0200 design: lock 15 questionnaire decisions (Q1-Q15)
+4b5979eb48df9a049f948a7aa518ee604a35216c 2026-04-22 09:34:56 +0200 design: doc consistency pass — sync spec + preview with Q1-Q15 locks
+e130c59c6ff09c0c5d0b26957bb449124b2f166a 2026-04-22 22:07:36 +0200 docs: Claude Design research + plan + gap audit v2
+b6c322bddb76e0cbb28dd8c61e9772ccb12deda2 2026-04-22 22:14:16 +0200 fix: close 5 critical gaps from GAP_AUDIT_V2 before Claude Design onboarding
+e7624743ad3ca347b5b8ae0d1892fe5076d8cc9b 2026-04-22 22:40:04 +0200 design: Q16 lock — kill decorative gradients across system

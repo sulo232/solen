@@ -1,0 +1,10 @@
+a662d9520e40854efc5454c9a61932adf19eab61 2026-04-06 09:04:47 +0000 fix: design spec token alignment — colors, fonts, spacing, animations
+85d4b37b22343983823135199f2f43dfa716a42f 2026-04-06 13:03:28 +0000 fix: full design spec compliance — colors, card structure, animations
+2732dc8cfc82edf665eb3c0f5107991191f303a3 2026-04-08 15:09:11 +0200 fix: restore mobile category strip in header
+f07a3c28734114c25b913b8dd0493563d7519ab7 2026-04-08 15:19:44 +0200 fix: design token compliance — white backgrounds, correct coral, Syne titles
+688347bf15ff84c560b08c7981a3cfd04799071d 2026-04-08 22:38:45 +0200 fix: polish pass — spacing, typography, hero sizing, testimonial cleanup
+f7ed0a9908424a9f26665d0219c98d5f9079c51a 2026-04-13 15:56:56 +0200 session: coral sweep + card 4:3 + CSS vars + SSR timeout + color alignments (pre-fresha-overhaul)
+40387d62e02e8215b1e0c07bb8cf5ec4ba7f7a97 2026-04-21 07:22:36 +0000 design: consolidate system + lock salon cards to 1:1
+0de8582ca974b5b8fafea7447d182ccf6a5b1bc4 2026-04-21 07:28:00 +0000 design: enforce system-wide — active:scale, motion tokens, coral lock
+8fbc24cde44fd4e03ab6b33f30c6f2d650638c6c 2026-04-21 07:37:01 +0000 design: add /design-system visual reference route (Q18)
+1f81b5cadd57f7882f6075e94046f4c443fcf404 2026-04-21 07:55:48 +0000 design: add canonical interaction utility classes (Q15)

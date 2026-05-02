@@ -1,0 +1,10 @@
+e7fae63325f0d19152185b469f82638c77fe4f01 2026-03-29 16:08:37 +0200 phase-c: unified squircle category row, all viewports
+d2b73e03f9f615e748d3bf4958de5b4e6638aad7 2026-03-29 16:09:36 +0200 phase-d: all grids 2-col mobile, remove snap-scroll carousels
+c4300e0bc3c616bbc4429b9b2c412da6907f5a40 2026-03-29 16:10:38 +0200 phase-e: hero left-align, AI tagline, no glow, city selector fix, hide partner link
+7fef9ce346efae20b8e9717e923698687c984d9a 2026-03-29 16:12:50 +0200 phase-f: remove bg-s-plum last-minute, flatten partner/trust/rebook, cut SocialProofStrip
+da933eca44314023de7caa82b1daf03f594e3065 2026-03-29 16:16:23 +0200 fix: remove card-v4 from compact SalonCard variant
+c7aa2f8641dde3030de5b9d75686471e4a4b2b00 2026-03-29 16:19:48 +0200 session2: LastMinuteCard — flat card, faint border, coral left accent via style
+57debb49d695b4d87fb454f4d7be924a69de021f 2026-03-29 16:20:35 +0200 session2: CategoryPage — 2-col grid, halve hero gradients, remove ambient-v5
+73299fd2f8d39ffb98227eb31c366108bca0c4dc 2026-03-29 16:21:09 +0200 session2: ReviewCarousel — remove glass from cards, remove snap-scroll carousel
+420d823998deb1b7f8e1fef7efae70f7e9fa868e 2026-03-29 18:23:48 +0200 V5 Session 3: page bg #F7F5F2, update --base token + hero-cinematic base color
+b7ca7e06007990a4cc5dbb5f18ac42c632e625b8 2026-03-29 18:23:54 +0200 V5 Session 3: hide empty sections, fix typography (Title Case categories, font-heading headings)

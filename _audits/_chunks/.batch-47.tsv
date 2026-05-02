@@ -1,0 +1,10 @@
+43e61f619eededde70da0bfede951e8c006fe611 2026-04-02 15:20:13 +0200 phase 7.2: add font preloading for critical Google Fonts
+ae5ef5844d3b44c31e8bae18c277903052fb33e1 2026-04-02 15:20:25 +0200 phase 7.1: convert img tags to Image component for optimization
+825c1a64bf528d92ed0fe1946af0befe65443fd8 2026-04-02 15:20:30 +0200 phase 6.3: add ARIA labels to icon-only dashboard buttons
+85494af42b86d681bf24ed3c3bfa6da06e39a1e6 2026-04-02 22:01:42 +0200 phase 2a: design token sync (card radius, stagger timing, coral eyebrows)
+2a61d1847d11d4c941e9f49a92f35bb62c2532b9 2026-04-02 22:09:12 +0200 phase 2b: i18n sweep for CategoryPage (add categoryPage translations, replace hardcoded strings)
+b60fa324e4fa5429fef78c753ffa652733ced9c3 2026-04-02 22:13:53 +0200 phase 2b: i18n sweep (BottomTabBar + auth translations)
+c4bafe5ef2c77d824b1b0605f19b28dc56f6cd1b 2026-04-02 22:18:09 +0200 phase 2c: convert category icons to 3D Image-based components with spring hover animations
+498d3616673dcf65ba8f2e0855320f245bfb47d4 2026-04-02 22:21:38 +0200 phase 3a: FeaturedSalonCarousel i18n and aspect ratio polish (4:5 portrait, translate carousel nav)
+d93cc18bdbeedb2b811ec629c9440f54e96e925d 2026-04-02 22:24:05 +0200 phase 3b: CategoryPage polish - remove category gradients, use pure white hero
+9460f4dfa85dafb7de6bac09b52fae4ca9e77396 2026-04-02 22:25:45 +0200 phase 4a: standardize card stagger timing to 40ms (0.04s) in CityPage

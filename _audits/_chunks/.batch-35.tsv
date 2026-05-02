@@ -1,0 +1,10 @@
+dd632273535fbc572494ea711efbd4071a5a9351 2026-03-30 09:34:25 +0200 fix(search): fix double-encode bug, emoji icons, fragile DOM traversal, untracked timer, ESC key handler
+e0631dd50bf7a6f36a9ae3a13e1e178ffc91f073 2026-03-30 09:37:47 +0200 feat(search): add compact search pill to sticky nav header (fires openSearchSheet event)
+0d3bb42227fb4559ac65378a40d28549e4752b4b 2026-03-30 09:56:16 +0200 fix(search): named imports for category icons + useRef type fix
+b664c33249086a049af3ce8116fa5da5c91ccaf5 2026-03-30 09:58:37 +0200 fix(api): create missing staff, last-minute slots, by-slug, and closures/[id] routes
+2feb9b313f04535a1ab0935902d3bb41c2df6db1 2026-03-30 10:00:13 +0200 fix(nav): dead header links + replace raw <a> with Link in auth/checkout/dashboard
+0d24070040b4f531272600207d6ea28e4f0241f4 2026-03-30 10:01:30 +0200 fix(deps): install missing @radix-ui packages, remove orphaned barrel exports
+875127f25b5ed4d8382a2d629cd9cffb3ab1eaf0 2026-03-30 10:13:12 +0200 fix(search): hide pill on sheet open + tappable step tabs replace progress dots
+57ecb2b3b56f8adf50e7346ffd05ba182d1143d5 2026-03-30 10:16:49 +0200 fix(search): categories first in step 1, 2-col card grid, search input below divider
+cd4194a51525e25e1e59ee37768b90b8fd5fbfd4 2026-03-30 10:19:43 +0200 feat(search): scroll-driven compact pill collapse, Airbnb-style
+a8065029c66a6a5f1a93a8a5397fe29e322f70d2 2026-03-30 10:45:07 +0200 feat(search): add removable search criteria chips on results page

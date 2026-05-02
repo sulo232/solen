@@ -1,0 +1,10 @@
+8dd783d5293ae066503aa4913b36c099511df29e 2026-03-23 15:54:24 +0100 🚀 Massive Partner Page Overhaul (All 12 Topics)
+a591cd09cec2c6b7e1d8c2bee28b46bb0d19d051 2026-03-23 16:10:17 +0100 feat: implement comprehensive review system, moderation and notifications
+19903bdccb0859e6b8c53849f7f81ccb88df0dcf 2026-03-23 16:12:44 +0100 phase 2: booking patch endpoint and cancellation permissions
+03ca68057e30a52135875e34680251a2c4a1eefc 2026-03-23 16:13:44 +0100 phase 3: booking engine cron jobs (no-show, pending-timeout)
+ad85cff4b637618871da47c5cb52af71311aa2e3 2026-03-23 16:15:11 +0100 phase 4: availability disclaimer and admin suspension cancellations
+8a6b187103db99adf66ea6acce54061244b5bbc0 2026-03-23 16:21:52 +0100 phase 6.4: Mount ReportContentButton
+3a7473d036a2a8e69113818a14548179d0697f92 2026-03-23 16:25:26 +0100 phase 2: age gate and email enforcement
+4cadac22fd0fb61d5acd30f7832b166028fd13a9 2026-03-23 16:27:57 +0100 phase 3: salon phone verification via seven.io and upstash redis
+18701a4df05fcb5300ee992bf02d5461c4ec95f4 2026-03-23 16:28:57 +0100 phase 4: delayed account deletion and cron processor
+823f70df1f642498e01faa974b44d64dc98030ae 2026-03-23 16:30:40 +0100 feat(payments): Implement Stripe Connect payment system roadmap (Phases 1-4)

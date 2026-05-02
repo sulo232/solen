@@ -1,0 +1,10 @@
+b8efabc11aa1491071590b81a9282f7763802255 2026-03-25 17:07:48 +0100 chore(cleanup): Execute Dead Code & Scope Cleanup (R08)
+7a244cd269c05949cefbc5844e7f1af791148d87 2026-03-25 20:51:48 +0100 PREP: rename old FilterBar → SearchFilterBar to avoid naming collision
+cd51f25fbe6c670bbe97d05caed920a9b1580af0 2026-03-25 20:59:10 +0100 feat(filter-pills): phase 5-6 — add i18n translations + export FilterBar components
+0693d7beb56c008c93c4371111f5115e9291d309 2026-03-25 21:08:32 +0100 NAV-MOBILE-P1: remove BottomNav from root layout — single nav architecture
+14de934d1ed02a208b4aa2a91b48e266b32068ce 2026-03-25 21:15:49 +0100 NAV-P1: replace text wordmark with SVG logo asset
+ab9cb1b5e973e21bfba7eba01c48028ad4e03d50 2026-03-25 21:16:43 +0100 NAV-P2: increase nav bar min-height to 64px unscrolled, 56px scrolled
+b8b2fccdd423fcb79e0e90a5f50ebc3bca28ba19 2026-03-25 21:21:02 +0100 NAV-P4: PFP → logged-in dropdown menu, logged-out → login redirect
+a1130528522c771c89130a486f56f5b34e27560f 2026-03-25 21:23:21 +0100 NAV-P5: mobile hamburger — add migrated BottomNav items + Salon CTA
+0dc0e9cd6bd9fd94790743d2aa3fdbd1f3fdf0d3 2026-03-25 21:29:25 +0100 phase 1: Sweep arbitrary leading classes and standardize placeholder line-height
+66aaaa5376875cff9970a5b18f61ed77af4978fb 2026-03-25 21:30:54 +0100 phase 2: Remove banned scale animation from SalonCard image hover
