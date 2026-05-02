@@ -140,6 +140,60 @@ runs at milestone scale (1200ms ring + amber checkmark).
 
 ---
 
+## Phase 3 verification pass (2026-05-02 follow-up)
+
+### L3.9 — Time estimates were padded; testing wasn't done
+Phase 3 took ~55 min, not 6-7 hr. Reason: Q-locks make every render-layer
+decision so component code is mostly transcription, not architecture. BUT
+the original ship had **zero runtime verification**. A verification pass found:
+
+### L3.10 — Schema column names: 4 wrong guesses, all fixable
+- `bookings.slot_at` does NOT exist; the column is `starts_at`. Fixed in
+  `/api/profile/live-state/route.ts` (3 query sites).
+- `loyalty_stamp_cards` table exists but the active loyalty-program flow
+  uses `loyalty_cards` + `loyalty_stamps` JOIN. Pattern from
+  `/api/loyalty/route.ts`:
+  ```ts
+  .from("loyalty_cards")
+  .select(`id, salon_id, stamps_needed, reward_text, salons(slug, name, cover_photo_url),
+           loyalty_stamps!inner(id, customer_id)`)
+  .eq("is_active", true)
+  .eq("loyalty_stamps.customer_id", userId)
+  ```
+- `stamps_collected` is computed (count of loyalty_stamps for this card+
+  customer), NOT a column. Same for `is_complete` (compares count to
+  `stamps_needed`).
+- `salons.cover_url` does NOT exist; the column is `cover_photo_url`.
+  Same on Salon `cover_photo_url` everywhere.
+- `salons.average_rating` (NOT `rating`); `review_count` (NOT
+  `rating_count`); no `price_band` column — derive from joined services.
+
+### L3.11 — Drop existing prop without grep = TS regression
+Phase 1 dropped `zone` prop from `EmptyState`. I greped for `<EmptyState`
+imports but not for `zone={` JSX call sites. Result: 3 TS errors in
+SalonReviews / SalonServices / PageState. Fixed in 0104958.
+**Pattern: when removing a prop, grep for all JSX call sites with
+`grep -rn "PropName=" components/ app/` BEFORE shipping.**
+
+### L3.12 — Pre-existing node_modules corruption blocks Next.js dev
+Project has multiple node_modules issues unrelated to Phase 3:
+- `postcss-selector-parser` was missing — `npm i` fixed it
+- `@vercel/otel` was missing — `npm i` fixed it
+- `picomatch/lib/picomatch` resolution still fails despite the package
+  existing — needs full `rm -rf node_modules && npm install` cycle to
+  resolve. Deferred to user.
+**Workaround:** static design preview at `localhost:3000/solen-coral`
+(via `npx serve public`) is unaffected. Use that for design verification.
+
+### L3.13 — Mirror existing API patterns instead of guessing schema
+For `/profile/favorites/page.tsx`, instead of enumerating salon columns
+in the select, mirror the `/api/profile/favorites/route.ts` approach:
+two-step fetch (favorites → salon ids → full salons + services price
+average). Less guessing, less drift, returns the canonical SalonCard
+shape that <SalonCard> already accepts.
+
+---
+
 ## Cross-cutting reminders for Phase 4+
 
 ### R1 — Vercel gate is active
