@@ -19,6 +19,8 @@ import TestimonialCarousel from "@/components/TestimonialCarousel";
 // HomepageHero (V5) replaced 2026-05-02 per Q49 — see new HeroAboveFold below.
 import HeroAboveFold from "@/components/home/HeroAboveFold";
 import TrustStatsBanner from "@/components/home/TrustStatsBanner";
+import NearbySection from "@/components/home/NearbySection";
+import DiscoverSection from "@/components/home/DiscoverSection";
 import LastMinuteStrip from "@/components/ui/LastMinuteStrip";
 // FloatingNavPill removed 2026-05-02 per Q58 (web drops bottom nav; hamburger header + avatar dropdown only).
 
@@ -117,21 +119,35 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       <main className="max-w-[1280px] mx-auto" style={{ paddingBottom: 88 }}>
 
-        {/* ── 1. Q49 Above-fold — SignatureLockup + Fresha-flow stacked search + quick-action chips ── */}
+        {/* Q51 home rhythm — 9 slots in priority order. Each section is conditional;
+            sections with no data return null and the next slot moves up. Q49 above-fold
+            is slot 0a (always renders). Q51 #6 Spotlight deferred (needs admin curation
+            UI + spotlight_salons table — Phase 4.b backlog). */}
+
+        {/* ── 0a. Q49 Above-fold ── */}
         <HeroAboveFold />
 
-        {/* ── 2. Last Minute Strip (conditional) ── */}
+        {/* ── 0b. Recently Viewed (conditional — renders empty if no localStorage history) ── */}
+        <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 32 }}>
+          <RecentlyViewed />
+        </section>
+
+        {/* ── 1. Last Minute Strip (conditional) ── */}
         {sections.last_minute && lastMinuteSlots.length > 0 && (
           <div style={{ marginTop: 32 }}>
             <LastMinuteStrip slots={lastMinuteSlots} />
           </div>
         )}
 
-        {/* ── 3. Category Sections — DESIGN_SPEC §4 ── */}
+        {/* ── 2. Q51 Nearby — geolocation-aware salon strip ── */}
+        <div style={{ marginTop: 40 }}>
+          <NearbySection />
+        </div>
+
+        {/* ── 3. Per-category sections (affinity-reordered up to MAX_CATEGORY_SECTIONS) ── */}
         <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 40 }}>
           {visibleSections.map(({ key, label }, index) => {
             const salonsForCategory = categorySalons[key] || [];
-
             return (
               <div key={key} style={{ marginTop: index === 0 ? 0 : 40 }}>
                 <FeaturedSalonCarousel salons={salonsForCategory} locale={locale} title={label} viewAllHref={`/${locale}/${key}`} />
@@ -140,7 +156,12 @@ export default function HomePage({ initialData }: HomePageProps) {
           })}
         </section>
 
-        {/* ── 4. Wieder buchen? (logged-in users with past booking) ── */}
+        {/* ── 4. Q51 Discover (Pinterest+booking-bridge) ── */}
+        <div style={{ marginTop: 48 }}>
+          <DiscoverSection />
+        </div>
+
+        {/* ── Wieder buchen? (logged-in users with past booking — out-of-spec but kept) ── */}
         {sections.rebook && lastBookedSalon && (
           <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 48 }}>
             <div className="flex items-center gap-4 p-4 border border-s-ink/[0.08] rounded-card bg-white shadow-elevation-1">
@@ -152,7 +173,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                 <p className="text-sm text-s-ink-secondary font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
               </div>
               <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}
-                className="shrink-0 px-5 py-2.5 rounded-btn bg-s-coral-button text-white text-sm font-body font-semibold hover:bg-s-coral-button-hover active:scale-[0.97] transition-[transform,background] duration-150"
+                className="shrink-0 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-body font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
                 aria-label={t("rebook.cta")}>
                 {t("rebook.cta")}
               </Link>
@@ -160,15 +181,12 @@ export default function HomePage({ initialData }: HomePageProps) {
           </section>
         )}
 
-        {/* ── 5. Recently Viewed ── */}
-        <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 48 }}>
-          <RecentlyViewed />
-        </section>
-
-        {/* ── 6. City Selector (dark) — DESIGN_SPEC §4 ── */}
+        {/* ── 5. Browse by City (dark section) ── */}
         <div style={{ marginTop: 48 }}>
           <BrowseByCitySection />
         </div>
+
+        {/* ── 6. Spotlight — DEFERRED Phase 4.b (needs spotlight_salons table + admin curation) ── */}
 
         {/* Breathing gap */}
         <div style={{ height: 48 }} aria-hidden="true" />
@@ -176,7 +194,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         {/* ── 7. Testimonials (only if real reviews exist) ── */}
         <TestimonialCarousel />
 
-        {/* ── 8. Q51 Trust Stats — 4-tile stat strip per Q51 lock ── */}
+        {/* ── 8. Q51 Trust Stats — 4-tile stat strip ── */}
         <div style={{ marginTop: 48 }}>
           <TrustStatsBanner />
         </div>
