@@ -192,3 +192,16 @@ Anything visual **must** come from `_tasks/SOLEN_DESIGN.md`.
 - New color → use existing tokens, never arbitrary hex
 - New page → follow section patterns in doc §12
 - Want to change the design itself → edit `SOLEN_DESIGN.md` + update `public/solen-coral.html` + log decision in §20
+
+---
+
+## 16. Memory Protocol (Karpathy-wiki spine)
+
+When starting a session or answering any Solen question:
+
+1. **Read `_rules/HOT.md` first.** If `Last updated` is within ~2h and it answers the question, stop there.
+2. **If HOT misses, read `_rules/INDEX.md`** to find the right rule file. Same for `_tasks/INDEX.md` for task/audit files.
+3. **Only `Grep _rules/` as a last resort.** The index points at the right file 90% of the time.
+4. **After substantive work**, invoke `/wiki-log` (or manually append to `_tasks/LOG.md` and refresh `_rules/HOT.md`).
+
+This exists to cut per-session token cost. `HOT.md` is a 500-word rolling cache; `INDEX.md` is a 1-line-per-file map. Treat stale HOT as untrusted — better to crawl than to act on bad context.
