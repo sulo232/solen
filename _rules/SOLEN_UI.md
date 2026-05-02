@@ -211,6 +211,15 @@ The principles above are the *thinking*. These are the **tactical rules of thumb
 - Most important info → largest, top, possibly colored differently.
 - Secondary info (location, time, etc.) → smaller, below, dimmer.
 - Use icons + visual elements (a line, an arrow) instead of words where possible (e.g. "from Jamesville to Syracuse" → two pinned dots connected by a line).
+- **Don't double-nest cards.** Padding-on-padding cramps space. Group with whitespace instead of another container.
+
+### Mobile-specific
+- **Mobile fonts are *bigger*, not smaller.** iOS base is 17px (vs macOS 13px). Beginners cram smaller on small screens; pros go bigger. Don't shrink type to fit content — pick less content.
+- **One direction per section.** Desktop grids extend in 2D; on mobile each section picks one — vertical stack OR horizontal scroll, never both in the same section.
+- **Bottom nav: 3–4 ideal, 5 hard max.** Above 5 and tap targets shrink below 44px or labels get cropped.
+- **Long-press = mobile right-click.** Blur the rest of the screen, slight zoom on the pressed element, show contextual actions in a sheet.
+- **Contextual chrome.** Hide the global nav when entering a focused surface (booking flow, photo viewer, editor). Replace it with surface-specific actions. Don't keep persistent chrome where it competes with the task.
+- **Two empty-state types:** *first-time-user* points at the main action with a popover/instruction; *no-results* shows imagery, acknowledges what was searched, suggests fixes, and offers an exit (e.g. "clear filters"). Don't ship one generic empty state for both.
 
 ### Animation & motion
 - **Animation must add clarity or functionality, not decoration.** A button press animation confirms the tap. A hamburger menu animating in consolidates navigation that no longer fits. A search bar collapsing into an icon reclaims space until the user wants to search. Each one earns its existence by *doing something*.
