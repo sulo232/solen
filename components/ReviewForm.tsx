@@ -131,7 +131,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-s-ink/40 hover:text-s-ink transition-colors:text-s-dm-text"
+          className="absolute top-4 right-4 text-s-ink/40 hover:text-s-ink transition-colors"
         >
           <X size={20} />
         </button>

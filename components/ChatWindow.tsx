@@ -442,7 +442,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                       onClick={() => handleTranslate(msg.id, msg.content)}
                       disabled={translating === msg.id}
                       className={["ml-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:opacity-100 focus:opacity-100 transition-opacity",
-                        isOwn(msg) ? "text-white/40 hover:text-white/70" : "text-s-ink/20 hover:text-s-ink/50:text-s-dm-text/50"
+                        isOwn(msg) ? "text-white/40 hover:text-white/70" : "text-s-ink/20 hover:text-s-ink/50"
                       ].join(" ")}
                       title={t("translate")}
                       style={{ opacity: translating === msg.id ? 1 : undefined }}
@@ -480,7 +480,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
             <button onClick={() => sendMessage("image")} disabled={!imageUrl.trim() || sending}
               className="px-3 py-2 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm disabled:opacity-50 transition-[transform,filter] duration-150">{t("send")}</button>
             <button onClick={() => { setShowImageInput(false); setImageUrl(""); }}
-              className="px-2 py-2 rounded-btn border border-s-ink/10 text-s-ink/40 hover:text-s-ink:text-s-dm-text">
+              className="px-2 py-2 rounded-btn border border-s-ink/10 text-s-ink/40 hover:text-s-ink">
               <X size={14} />
             </button>
           </div>

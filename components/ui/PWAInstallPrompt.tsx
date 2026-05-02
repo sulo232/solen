@@ -78,7 +78,7 @@ export default function PWAInstallPrompt() {
               </p>
             </div>
           </div>
-          <button onClick={dismiss} aria-label={t("dismiss")} className="text-s-ink/30 hover:text-s-ink/60:text-s-dm-text/60 p-1">
+          <button onClick={dismiss} aria-label={t("dismiss")} className="text-s-ink/30 hover:text-s-ink/60 p-1">
             <X className="w-4 h-4" />
           </button>
         </div>

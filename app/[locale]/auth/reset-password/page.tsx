@@ -143,7 +143,7 @@ export default function ResetPasswordPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 hover:text-s-ink/60:text-s-dm-text/60 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 hover:text-s-ink/60 transition-colors"
                   aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}

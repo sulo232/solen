@@ -70,7 +70,7 @@ export function CategoryPageShell({
               className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-[12px] text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
                 activeTab === idx
                   ? "bg-s-coral text-white"
-                  : "bg-[--raised] border border-s-ink/[0.06] text-s-ink/55 hover:text-s-ink:text-s-dm-text"
+                  : "bg-[--raised] border border-s-ink/[0.06] text-s-ink/55 hover:text-s-ink"
               }`}
             >
               {Icon && <Icon size={12} />}

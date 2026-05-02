@@ -227,7 +227,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
           className={`shrink-0 px-3 py-1.5 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
             activeCategory === null
               ? "bg-s-coral text-white"
-              : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
+              : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
           }`}
           aria-label={t("kit_all")}
         >
@@ -240,7 +240,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
             className={`shrink-0 px-3 py-1.5 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
               activeCategory === cat
                 ? "bg-s-coral text-white"
-                : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
+                : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
             }`}
             aria-label={t(`kit_cat.${cat}` as any)}
           >
@@ -361,7 +361,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
                   <button
                     onClick={() => adjustQuantity(item.id, -1)}
                     disabled={item.quantity <= 0}
-                    className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/50 hover:bg-s-ink/[0.08]:bg-s-dm-text/[0.08] transition-colors duration-150 disabled:opacity-30"
+                    className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/50 hover:bg-s-ink/[0.08] transition-colors duration-150 disabled:opacity-30"
                     aria-label={t("kit_minus")}
                   >
                     <Minus size={10} />
@@ -371,7 +371,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
                   </span>
                   <button
                     onClick={() => adjustQuantity(item.id, 1)}
-                    className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/50 hover:bg-s-ink/[0.08]:bg-s-dm-text/[0.08] transition-colors duration-150"
+                    className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/50 hover:bg-s-ink/[0.08] transition-colors duration-150"
                     aria-label={t("kit_plus")}
                   >
                     <Plus size={10} />
@@ -390,7 +390,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
                 {/* Usage log toggle */}
                 <button
                   onClick={() => toggleLogs(item.id)}
-                  className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/40 hover:bg-s-ink/[0.08]:bg-s-dm-text/[0.08] transition-colors duration-150"
+                  className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/40 hover:bg-s-ink/[0.08] transition-colors duration-150"
                   aria-label={t("kit_history")}
                 >
                   <ChevronDown size={11} className={`transition-transform duration-200 ${logsOpen ? "rotate-180" : ""}`} />

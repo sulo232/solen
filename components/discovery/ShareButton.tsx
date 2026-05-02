@@ -67,7 +67,7 @@ export default function ShareButton({ item }: ShareButtonProps) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="p-2 rounded-full hover:bg-s-ink/5:bg-white/5 text-s-ink/40 hover:text-s-ink:text-s-dm-text transition-colors"
+        className="p-2 rounded-full hover:bg-s-ink/5:bg-white/5 text-s-ink/40 hover:text-s-ink transition-colors"
         aria-label="Share"
       >
         <Share2 size={18} />

@@ -113,7 +113,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("cmdPlaceholder")}
             aria-label={t("cmdPlaceholder")}
-            className="flex-1 text-sm text-s-ink bg-transparent outline-none placeholder:text-s-ink/30:text-s-dm-text/30"
+            className="flex-1 text-sm text-s-ink bg-transparent outline-none placeholder:text-s-ink/30"
           />
           <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150">
             <X size={16} className="text-s-ink/40" />

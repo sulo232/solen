@@ -175,7 +175,7 @@ export default function HandChart({ customerId }: HandChartProps) {
               <button
                 onClick={() => setSelectedFinger(null)}
                 aria-label={t("close")}
-                className="p-1 rounded-pill text-s-ink/40 hover:text-s-ink:text-s-dm-text transition-colors duration-150"
+                className="p-1 rounded-pill text-s-ink/40 hover:text-s-ink transition-colors duration-150"
               >
                 <X size={16} />
               </button>

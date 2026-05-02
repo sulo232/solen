@@ -145,7 +145,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
             <p className="text-xs font-heading font-semibold text-s-ink">
               {editingId ? t("edit_room") : t("new_room")}
             </p>
-            <button onClick={resetForm} aria-label={t("cancel")} className="text-s-ink/30 hover:text-s-ink:text-s-dm-text transition-colors">
+            <button onClick={resetForm} aria-label={t("cancel")} className="text-s-ink/30 hover:text-s-ink transition-colors">
               <X size={14} />
             </button>
           </div>
@@ -243,7 +243,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
                   className={`px-2.5 py-1 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
                     form.equipment.includes(eq)
                       ? "bg-s-coral text-white"
-                      : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
+                      : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
                   }`}
                 >
                   {t(`equipment_item.${eq}` as any)}

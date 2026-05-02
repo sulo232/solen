@@ -140,7 +140,7 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
           <div className="relative bg-white rounded-[24px] p-6 max-w-xs w-full text-center" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setShowQR(false)}
-              className="absolute top-3 right-3 text-s-ink/40 hover:text-s-ink:text-s-dm-text"
+              className="absolute top-3 right-3 text-s-ink/40 hover:text-s-ink"
               aria-label={t("close")}
             >
               <X size={20} />

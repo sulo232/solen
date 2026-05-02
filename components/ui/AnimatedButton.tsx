@@ -33,7 +33,7 @@ const variantClasses: Record<Variant, string> = {
   secondary:
     "bg-white border border-s-ink/10 text-s-ink shadow-warm-md hover:border-s-coral/40 hover:shadow-warm-sm",
   ghost:
-    "bg-transparent text-s-ink/60 hover:bg-s-ink/5:bg-white/5 hover:text-s-ink:text-s-dm-text",
+    "bg-transparent text-s-ink/60 hover:bg-s-ink/5:bg-white/5 hover:text-s-ink",
   danger:
     "bg-s-coral text-white shadow-warm-md hover:brightness-[1.06] active:brightness-[0.97]",
 };

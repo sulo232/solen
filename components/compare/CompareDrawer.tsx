@@ -124,7 +124,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                   <Share2 size={14} />
                   <span>Teilen</span>
                 </button>
-                <button onClick={onClose} className="p-1.5 text-s-ink/40 hover:text-s-ink:text-s-dm-text">
+                <button onClick={onClose} className="p-1.5 text-s-ink/40 hover:text-s-ink">
                   <X size={20} />
                 </button>
               </div>

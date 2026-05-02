@@ -69,7 +69,7 @@ export default function SearchResultGrid({
               <Link
                 key={cat}
                 href={`/${locale}/${cat}`}
-                className="px-4 py-2 rounded-pill bg-s-ink/[0.05] text-s-ink/60 text-sm font-heading font-semibold hover:bg-s-ink/[0.09] hover:text-s-ink:bg-s-dm-text/[0.14]:text-s-dm-text transition-[transform,filter,border-color,background-color] duration-150"
+                className="px-4 py-2 rounded-pill bg-s-ink/[0.05] text-s-ink/60 text-sm font-heading font-semibold hover:bg-s-ink/[0.09] hover:text-s-ink transition-[transform,filter,border-color,background-color] duration-150"
               >
                 {cat.charAt(0).toUpperCase() + cat.slice(1)}
               </Link>

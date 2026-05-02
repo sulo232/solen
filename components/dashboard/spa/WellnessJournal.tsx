@@ -128,7 +128,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
         <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-[--raised] space-y-3">
           <div className="flex items-center justify-between mb-1">
             <p className="text-xs font-heading font-semibold text-s-ink">{t("new_entry")}</p>
-            <button onClick={resetForm} aria-label={t("cancel")} className="text-s-ink/30 hover:text-s-ink:text-s-dm-text transition-colors">
+            <button onClick={resetForm} aria-label={t("cancel")} className="text-s-ink/30 hover:text-s-ink transition-colors">
               <X size={14} />
             </button>
           </div>
@@ -196,7 +196,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                   className={`px-2.5 py-1 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
                     form.tension_areas.includes(area)
                       ? "bg-s-coral text-white"
-                      : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
+                      : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
                   }`}
                 >
                   {t(`tension_area.${area}` as any)}
@@ -252,7 +252,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               <button
                 onClick={addProduct}
                 aria-label={t("add_product")}
-                className="px-2 py-1 rounded-[8px] bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09] transition-colors duration-150"
+                className="px-2 py-1 rounded-[8px] bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09] transition-colors duration-150"
               >
                 <Plus size={14} />
               </button>

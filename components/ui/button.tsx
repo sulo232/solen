@@ -12,7 +12,7 @@ const buttonVariants = cva(
         default:
           "bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97]",
         secondary:
-          "bg-s-ink/[0.05] text-s-ink hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.14]",
+          "bg-s-ink/[0.05] text-s-ink hover:bg-s-ink/[0.09]",
         outline:
           "border border-s-ink/10 text-s-ink/70 hover:border-s-coral/40 hover:text-s-coral:border-s-coral/40:text-s-coral",
         ghost:

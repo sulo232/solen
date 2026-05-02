@@ -167,7 +167,7 @@ export default function EditorPage() {
         {/* Back */}
         <button
           onClick={() => router.push(`/${locale}/dashboard`)}
-          className="p-1.5 rounded-btn hover:bg-s-bg-sunken:bg-s-dm-bg transition-colors"
+          className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
           title="Back to Dashboard"
         >
           <ArrowLeft size={16} className="text-s-ink" />
@@ -199,7 +199,7 @@ export default function EditorPage() {
               className={`p-1.5 rounded-btn transition-colors ${
                 device === key
                   ? "bg-white shadow-warm-sm text-s-coral"
-                  : "text-s-ink/40 hover:text-s-ink:text-s-dm-text"
+                  : "text-s-ink/40 hover:text-s-ink"
               }`}
               title={label}
             >
@@ -211,7 +211,7 @@ export default function EditorPage() {
         {/* Revert */}
         <button
           onClick={handleRevert}
-          className="p-1.5 rounded-btn hover:bg-s-bg-sunken:bg-s-dm-bg text-s-ink/50 hover:text-s-ink:text-s-dm-text transition-colors"
+          className="p-1.5 rounded-btn hover:bg-s-bg-sunken text-s-ink/50 hover:text-s-ink transition-colors"
           title="Revert to live"
         >
           <RotateCcw size={14} />
@@ -236,7 +236,7 @@ export default function EditorPage() {
             setSelectedElements([]);
             setShowPanel(true);
           }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn text-xs font-medium bg-s-bg-sunken text-s-ink/60 hover:text-s-ink:text-s-dm-text transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn text-xs font-medium bg-s-bg-sunken text-s-ink/60 hover:text-s-ink transition-colors"
           title="Describe a change without selecting an element"
         >
           <Pencil size={12} />

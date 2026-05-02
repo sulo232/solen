@@ -180,7 +180,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
 
           <button
             onClick={() => setShowAdd(false)}
-            className="text-[10px] text-s-ink/40 hover:text-s-ink:text-s-dm-text"
+            className="text-[10px] text-s-ink/40 hover:text-s-ink"
           >
             {t("cancel")}
           </button>

@@ -531,7 +531,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           </div>
                           <button
                             onClick={() => { setStep(1); setShowServices(false); }}
-                            className="text-[11px] font-heading font-semibold text-s-ink/50 underline underline-offset-2 hover:text-s-ink:text-s-dm-text transition-colors ml-4"
+                            className="text-[11px] font-heading font-semibold text-s-ink/50 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
                           >
                             {t("change" as Parameters<typeof t>[0])}
                           </button>
@@ -562,7 +562,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           </div>
                           <button
                             onClick={() => setStep(2)}
-                            className="text-[11px] font-heading font-semibold text-s-ink/50 underline underline-offset-2 hover:text-s-ink:text-s-dm-text transition-colors ml-4"
+                            className="text-[11px] font-heading font-semibold text-s-ink/50 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
                           >
                             {t("change" as Parameters<typeof t>[0])}
                           </button>
@@ -593,7 +593,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                   </span>
                                   <button
                                     onClick={clearRecents}
-                                    className="text-[11px] font-body text-s-ink/40 hover:text-s-ink:text-s-dm-text transition-colors"
+                                    className="text-[11px] font-body text-s-ink/40 hover:text-s-ink transition-colors"
                                   >
                                     {locale === "de" ? "Alle löschen" : locale === "fr" ? "Tout effacer" : locale === "it" ? "Cancella tutto" : "Clear all"}
                                   </button>
@@ -612,7 +612,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                           navigate();
                                         }}
                                         aria-label={label}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 hover:text-s-ink:text-s-dm-text hover:bg-s-ink/[0.06]:bg-white/[0.06] transition-colors"
+                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 hover:text-s-ink hover:bg-s-ink/[0.06]:bg-white/[0.06] transition-colors"
                                         style={{ border: "1px solid rgba(26,18,9,0.10)", background: "var(--raised)" }}
                                       >
                                         <Clock size={11} className="text-s-ink/40 shrink-0" aria-hidden="true" />
@@ -638,7 +638,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                       setQuery(term);
                                       navigate();
                                     }}
-                                    className="shrink-0 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 hover:text-s-ink:text-s-dm-text hover:bg-s-ink/[0.06]:bg-white/[0.06] transition-colors whitespace-nowrap"
+                                    className="shrink-0 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 hover:text-s-ink hover:bg-s-ink/[0.06]:bg-white/[0.06] transition-colors whitespace-nowrap"
                                     style={{ border: "1px solid rgba(26,18,9,0.10)", background: "var(--raised)" }}
                                   >
                                     {term}
@@ -748,7 +748,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                 onBlur={() => setInputFocused(false)}
                                 placeholder={t("steps.was.searchPlaceholder" as Parameters<typeof t>[0])}
                                 aria-label={t("steps.was.searchPlaceholder" as Parameters<typeof t>[0])}
-                                className="w-full pl-10 pr-4 py-3 text-[13px] font-body text-s-ink placeholder:text-s-ink/35:text-s-dm-text/40 bg-transparent focus:outline-none"
+                                className="w-full pl-10 pr-4 py-3 text-[13px] font-body text-s-ink placeholder:text-s-ink/35 bg-transparent focus:outline-none"
                               />
                               {query && (
                                 <button
@@ -990,7 +990,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
               >
                 <button
                   onClick={reset}
-                  className="text-[13px] font-body text-s-ink/40 hover:text-s-ink:text-s-dm-text underline-offset-2 hover:underline transition-colors whitespace-nowrap"
+                  className="text-[13px] font-body text-s-ink/40 hover:text-s-ink underline-offset-2 hover:underline transition-colors whitespace-nowrap"
                 >
                   {t("reset")}
                 </button>

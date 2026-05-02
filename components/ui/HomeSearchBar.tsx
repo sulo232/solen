@@ -105,7 +105,7 @@ export default function HomeSearchBar() {
             onChange={(e) => { setQuery(e.target.value); setSelectedCategory(null); }}
             placeholder={t("servicePlaceholder")}
             aria-label={t("servicePlaceholder")}
-            className={`w-full py-4 pl-11 pr-3 text-[14px] font-body text-s-ink placeholder:text-s-ink/35:text-s-dm-text/40 bg-transparent focus:outline-none ${categoryHint ? "placeholder:text-s-coral/60" : ""}`}
+            className={`w-full py-4 pl-11 pr-3 text-[14px] font-body text-s-ink placeholder:text-s-ink/35 bg-transparent focus:outline-none ${categoryHint ? "placeholder:text-s-coral/60" : ""}`}
           />
         </div>
 

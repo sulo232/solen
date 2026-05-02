@@ -56,7 +56,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
       {/* Back button */}
       <button
         onClick={() => window.history.back()}
-        className="flex items-center gap-1.5 text-sm text-s-ink/50 hover:text-s-ink:text-s-dm-text mb-4 transition-colors"
+        className="flex items-center gap-1.5 text-sm text-s-ink/50 hover:text-s-ink mb-4 transition-colors"
       >
         <ArrowLeft size={16} />
         <span>{dt.back}</span>
@@ -203,7 +203,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
         <div className="mt-6 px-1">
           <button
             onClick={() => setShowCutGuide(!showCutGuide)}
-            className="flex items-center gap-1.5 text-xs text-s-ink/40 hover:text-s-ink:text-s-dm-text transition-colors"
+            className="flex items-center gap-1.5 text-xs text-s-ink/40 hover:text-s-ink transition-colors"
           >
             <ChevronDown size={14} className={`transition-transform ${showCutGuide ? "rotate-180" : ""}`} />
             {dt.cutGuide}

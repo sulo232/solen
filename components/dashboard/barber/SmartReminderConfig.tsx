@@ -162,7 +162,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
               <button
                 onClick={() => setConfirmClient(null)}
                 aria-label={t("cancel")}
-                className="p-1 rounded-btn text-s-ink/40 hover:bg-s-bg-surface:bg-s-dm-bg transition-colors duration-150"
+                className="p-1 rounded-btn text-s-ink/40 hover:bg-s-bg-surface transition-colors duration-150"
               >
                 <X size={16} />
               </button>

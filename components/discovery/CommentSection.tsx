@@ -88,7 +88,7 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
     <div className="mt-3">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-1.5 text-xs text-s-ink/50 hover:text-s-ink:text-s-dm-text transition-colors"
+        className="flex items-center gap-1.5 text-xs text-s-ink/50 hover:text-s-ink transition-colors"
       >
         <MessageCircle size={14} />
         <span>{total > 0 ? t("count", { count: total }) : t("label")}</span>

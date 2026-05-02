@@ -104,7 +104,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                 onClick={() => toggle(key)}
                 className={[
                   "w-20 text-center text-xs font-medium py-2 rounded-btn transition-colors",
-                  h ? "bg-s-coral text-white shadow-warm-sm" : "bg-s-bg-sunken text-s-ink/30 hover:text-s-ink/50:text-s-dm-text/50",
+                  h ? "bg-s-coral text-white shadow-warm-sm" : "bg-s-bg-sunken text-s-ink/30 hover:text-s-ink/50",
                 ].join(" ")}
               >
                 {DAYS_SHORT[i]}

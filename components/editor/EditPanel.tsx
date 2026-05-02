@@ -223,7 +223,7 @@ export default function EditPanel({
           <h3 className="text-s-ink font-heading font-bold text-sm">
             Edit Panel
           </h3>
-          <button onClick={onClose} className="p-1 rounded-btn hover:bg-s-bg-sunken:bg-s-dm-bg transition-colors">
+          <button onClick={onClose} className="p-1 rounded-btn hover:bg-s-bg-sunken transition-colors">
             <X size={16} className="text-s-ink/50" />
           </button>
         </div>
@@ -254,7 +254,7 @@ export default function EditPanel({
                 </div>
                 <button
                   onClick={() => onRemoveElement(el.selector)}
-                  className="p-0.5 rounded hover:bg-s-ink/10:bg-s-dm-text/10 transition-colors flex-shrink-0"
+                  className="p-0.5 rounded hover:bg-s-ink/10 transition-colors flex-shrink-0"
                   title="Remove selection"
                 >
                   <X size={12} className="text-s-ink/40" />
@@ -290,7 +290,7 @@ export default function EditPanel({
             onChange={(e) => setDescription(e.target.value)}
             placeholder={selectedElements.length > 0 ? "Describe the change you want for these elements..." : "Describe what you want changed on this page..."}
             rows={4}
-            className="w-full bg-s-bg-sunken rounded-btn border border-s-ink/10 p-3 text-sm text-s-ink placeholder:text-s-ink/30:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none"
+            className="w-full bg-s-bg-sunken rounded-btn border border-s-ink/10 p-3 text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none"
           />
         </div>
 
@@ -307,7 +307,7 @@ export default function EditPanel({
                 className={`flex-1 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                   priority === p
                     ? "bg-s-coral text-white"
-                    : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-bg-surface:bg-s-dm-bg/80"
+                    : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-bg-surface"
                 }`}
               >
                 {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -370,7 +370,7 @@ export default function EditPanel({
                   className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                     copiedAll
                       ? "bg-s-success text-white"
-                      : "bg-s-ink text-white hover:bg-s-ink/80:bg-s-dm-text/80"
+                      : "bg-s-ink text-white hover:bg-s-ink/80"
                   }`}
                 >
                   {copiedAll ? <Check size={12} /> : <Copy size={12} />}
@@ -385,7 +385,7 @@ export default function EditPanel({
         <div>
           <button
             onClick={() => setShowHistory(!showHistory)}
-            className="flex items-center gap-1 text-xs text-s-ink/50 hover:text-s-ink:text-s-dm-text transition-colors"
+            className="flex items-center gap-1 text-xs text-s-ink/50 hover:text-s-ink transition-colors"
           >
             {showHistory ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
             Request History ({pageRequests.length})

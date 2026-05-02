@@ -114,7 +114,7 @@ export default function RequestList({
             className={`px-3 py-1.5 text-xs font-medium rounded-pill whitespace-nowrap transition-colors ${
               activeTab === tab
                 ? "bg-s-coral text-white"
-                : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-bg-surface:bg-s-dm-bg/80"
+                : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-bg-surface"
             }`}
           >
             {STATUS_LABELS[tab]}
@@ -154,7 +154,7 @@ export default function RequestList({
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                   copiedAll
                     ? "bg-s-success text-white"
-                    : "bg-s-ink text-white hover:bg-s-ink/80:bg-s-dm-text/80"
+                    : "bg-s-ink text-white hover:bg-s-ink/80"
                 }`}
               >
                 {copiedAll ? <Check size={12} /> : <Copy size={12} />}
@@ -229,7 +229,7 @@ export default function RequestList({
                   {r.status !== "pending" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "pending")}
-                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink/60 hover:text-s-ink:text-s-dm-text transition-colors"
+                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink/60 hover:text-s-ink transition-colors"
                     >
                       Reset
                     </button>
@@ -237,7 +237,7 @@ export default function RequestList({
                   {r.status !== "in_progress" && r.status !== "done" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "in_progress")}
-                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink/60 hover:text-s-ink:text-s-dm-text transition-colors"
+                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink/60 hover:text-s-ink transition-colors"
                     >
                       In Progress
                     </button>
@@ -267,7 +267,7 @@ export default function RequestList({
                   {/* Expand details */}
                   <button
                     onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
-                    className="text-[10px] px-2 py-0.5 rounded-btn bg-s-ink/5 text-s-ink/50 hover:text-s-ink:text-s-dm-text transition-colors flex items-center gap-1"
+                    className="text-[10px] px-2 py-0.5 rounded-btn bg-s-ink/5 text-s-ink/50 hover:text-s-ink transition-colors flex items-center gap-1"
                   >
                     {expandedId === r.id ? <ChevronUp size={9} /> : <ChevronDown size={9} />}
                     Details
@@ -318,7 +318,7 @@ export default function RequestList({
         <button
           onClick={onLoadMore}
           disabled={loading}
-          className="w-full py-2 text-xs text-s-ink/50 hover:text-s-ink:text-s-dm-text transition-colors flex items-center justify-center gap-2"
+          className="w-full py-2 text-xs text-s-ink/50 hover:text-s-ink transition-colors flex items-center justify-center gap-2"
         >
           {loading ? <Spinner size="sm" /> : null}
           {loading ? "Loading..." : "Load more"}

@@ -85,7 +85,7 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
             placeholder={t("deleteAccountConfirmPlaceholder")}
-            className="w-full px-3 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink placeholder:text-s-ink/30:text-s-dm-text/30 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/15 transition-colors"
+            className="w-full px-3 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/15 transition-colors"
           />
           <p className="text-xs text-s-ink/40 mt-1">
             {t("deleteAccountHint")}
@@ -111,7 +111,7 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
           <button
             onClick={handleClose}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 hover:border-s-ink/30 hover:text-s-ink:border-white/30:text-s-dm-text active:scale-[0.97] transition-[transform,border-color,color] duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 hover:border-s-ink/30 hover:text-s-ink:border-white/30 active:scale-[0.97] transition-[transform,border-color,color] duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t("cancel")}
           </button>

@@ -59,7 +59,7 @@ export default function NailClientTab({ client, salonId }: NailClientTabProps) {
               className={`relative flex items-center gap-1.5 px-3 py-2 text-sm whitespace-nowrap transition-colors duration-150 min-h-12 ${
                 activeTab === key
                   ? "text-s-coral font-medium"
-                  : "text-s-ink/50 hover:text-s-ink:text-s-dm-text"
+                  : "text-s-ink/50 hover:text-s-ink"
               }`}
             >
               <Icon size={14} />

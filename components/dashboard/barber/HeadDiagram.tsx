@@ -118,7 +118,7 @@ export default function HeadDiagram({ zoneGuards, onZoneGuardChange }: HeadDiagr
                 className={`px-2 py-1 text-[10px] rounded-[8px] transition-colors duration-150 ${
                   zoneGuards[activeZone] === opt.value
                     ? "bg-s-coral text-white"
-                    : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
+                    : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
                 }`}
                 aria-label={opt.label}
               >

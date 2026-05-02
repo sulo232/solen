@@ -399,7 +399,7 @@ export default function AdminSandboxPage() {
                   {/* Expand toggle */}
                   <button
                     onClick={() => setExpandedId(isExpanded ? null : salon.id)}
-                    className="w-8 h-8 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/40 hover:bg-s-ink/[0.08]:bg-s-dm-text/[0.08] transition-colors duration-150"
+                    className="w-8 h-8 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/40 hover:bg-s-ink/[0.08] transition-colors duration-150"
                     aria-label={isExpanded ? t("collapse") : t("expand")}
                   >
                     {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}

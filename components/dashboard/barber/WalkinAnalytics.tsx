@@ -103,7 +103,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
               className={`px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                 period === p
                   ? "bg-s-coral text-white"
-                  : "text-s-ink/50 hover:bg-s-bg-surface:bg-s-dm-bg"
+                  : "text-s-ink/50 hover:bg-s-bg-surface"
               }`}
             >
               {p === "week" ? t("week") : t("month")}

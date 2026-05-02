@@ -137,7 +137,7 @@ export default function SignIn() {
         </form>
         <button
           onClick={() => setResetMode(false)}
-          className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 hover:text-s-ink:text-s-dm-text text-center transition-colors">
+          className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 hover:text-s-ink text-center transition-colors">
           Zurück zur Anmeldung
         </button>
       </div>
@@ -193,7 +193,7 @@ export default function SignIn() {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 hover:text-s-ink/60:text-s-dm-text/60 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 hover:text-s-ink/60 transition-colors"
             aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
           >
             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}

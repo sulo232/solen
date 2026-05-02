@@ -168,11 +168,11 @@ function MiniCalendar({ bookingDates }: { bookingDates: Set<string> }) {
   return (
     <div className="bg-white rounded-[12px] border border-s-ink/5 p-4">
       <div className="flex items-center justify-between mb-3">
-        <button onClick={prev} className="p-1 text-s-ink/40 hover:text-s-ink:text-s-dm-text transition-colors">
+        <button onClick={prev} className="p-1 text-s-ink/40 hover:text-s-ink transition-colors">
           <ChevronLeft size={16} />
         </button>
         <p className="text-sm font-medium text-s-ink capitalize">{monthName}</p>
-        <button onClick={next} className="p-1 text-s-ink/40 hover:text-s-ink:text-s-dm-text transition-colors">
+        <button onClick={next} className="p-1 text-s-ink/40 hover:text-s-ink transition-colors">
           <ChevronRight size={16} />
         </button>
       </div>

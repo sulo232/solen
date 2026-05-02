@@ -42,7 +42,7 @@ export default function BookingBubble({ salonName, salonSlug, conversationId, me
       </Link>
       <button
         onClick={handleDismiss}
-        className="shrink-0 p-1 text-s-ink/30 hover:text-s-ink/60:text-s-dm-text/60"
+        className="shrink-0 p-1 text-s-ink/30 hover:text-s-ink/60"
         aria-label={t("close")}
       >
         <X size={14} />

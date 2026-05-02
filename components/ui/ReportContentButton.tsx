@@ -59,7 +59,7 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
           <div className="bg-white rounded-[12px] shadow-surface w-full max-w-md p-6 relative animate-in fade-in zoom-in-95 duration-200">
             <button 
               onClick={() => !loading && setIsOpen(false)}
-              className="absolute top-4 right-4 text-s-ink/40 hover:text-s-ink:text-s-dm-text hover:bg-s-ink/5:bg-white/5 p-1 rounded transition-colors"
+              className="absolute top-4 right-4 text-s-ink/40 hover:text-s-ink hover:bg-s-ink/5:bg-white/5 p-1 rounded transition-colors"
             >
               <X size={20} />
             </button>

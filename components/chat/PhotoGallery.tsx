@@ -116,7 +116,7 @@ export default function PhotoGallery({ conversationId, isSalonOwner, isNailSalon
                   } catch {}
                   setSaving(false);
                 }}
-                className="mt-3 w-full py-2.5 rounded-btn border border-s-ink/10 bg-white text-s-ink text-sm font-medium hover:bg-s-bg-surface:bg-s-dm-bg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                className="mt-3 w-full py-2.5 rounded-btn border border-s-ink/10 bg-white text-s-ink text-sm font-medium hover:bg-s-bg-surface transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <Bookmark size={14} />
                 {saved.has(lightboxUrl) ? tc("savedLabel") : saving ? tc("savingToBoard") : tc("savedToBoard")}

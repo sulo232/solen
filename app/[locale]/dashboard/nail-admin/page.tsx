@@ -63,7 +63,7 @@ export default function NailAdminPage() {
             className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading font-semibold whitespace-nowrap transition-colors duration-150 shrink-0 ${
               activeTab === id
                 ? "bg-s-coral text-white shadow-coral-glow"
-                : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
+                : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
             }`}
           >
             <Icon size={12} />

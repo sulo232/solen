@@ -597,7 +597,7 @@ export default function CheckoutPage() {
                 onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
                 placeholder="Code eingeben"
                 disabled={!!voucherResult}
-                className="flex-1 px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink uppercase tracking-[.08em] placeholder:text-s-ink/25:text-s-dm-text/25 placeholder:normal-case placeholder:tracking-normal focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none disabled:opacity-50 transition-colors"
+                className="flex-1 px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink uppercase tracking-[.08em] placeholder:text-s-ink/25 placeholder:normal-case placeholder:tracking-normal focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none disabled:opacity-50 transition-colors"
               />
               {voucherResult ? (
                 <button

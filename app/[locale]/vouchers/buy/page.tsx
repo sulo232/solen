@@ -263,7 +263,7 @@ export default function VoucherBuyPage() {
                   value={recipientEmail}
                   onChange={(e) => setRecipientEmail(e.target.value)}
                   placeholder="beispiel@email.com"
-                  className="w-full rounded-[10px] bg-s-cream border border-s-ink/[0.08] px-4 py-3 font-heading text-sm text-s-ink placeholder:text-s-ink/30:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/15"
+                  className="w-full rounded-[10px] bg-s-cream border border-s-ink/[0.08] px-4 py-3 font-heading text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-coral/15"
                 />
               </div>
             )}

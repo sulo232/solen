@@ -116,7 +116,7 @@ function PurchaseModal({
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-s-ink/30 hover:text-s-ink:text-s-dm-text transition-colors"
+          className="absolute top-4 right-4 text-s-ink/30 hover:text-s-ink transition-colors"
           aria-label="Schliessen"
         >
           <X size={18} />

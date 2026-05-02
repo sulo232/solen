@@ -108,7 +108,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
             className={`px-3 py-1.5 text-xs font-heading font-semibold uppercase tracking-wider rounded-md transition-colors duration-150 whitespace-nowrap ${
               activeLang === l.id
                 ? "bg-s-ink/5 text-s-ink"
-                : "text-s-ink/40 hover:text-s-ink hover:bg-s-ink/5:text-s-dm-text"
+                : "text-s-ink/40 hover:text-s-ink hover:bg-s-ink/5"
             }`}
           >
             {l.label}
@@ -123,7 +123,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           onChange={(e) => setTexts({ ...texts, [activeLang]: e.target.value })}
           maxLength={maxLength}
           placeholder={t("placeholder")}
-          className="w-full h-32 p-4 rounded-input border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral resize-none transition-[border-color,box-shadow] duration-150 placeholder:text-s-ink/30:text-s-dm-text/30"
+          className="w-full h-32 p-4 rounded-input border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral resize-none transition-[border-color,box-shadow] duration-150 placeholder:text-s-ink/30"
         />
         <div className="absolute bottom-3 right-3 text-[10px] font-medium text-s-ink/30">
           {texts[activeLang]?.length || 0} / {maxLength}

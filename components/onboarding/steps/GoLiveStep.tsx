@@ -59,7 +59,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
             key={step.key} 
             onClick={() => goTo(i)}
             disabled={step.key === "go_live"}
-            className="w-full flex items-center justify-between group hover:bg-s-bg-sunken:bg-s-dm-raised p-2 -mx-2 rounded-lg transition-colors cursor-pointer disabled:cursor-default disabled:hover:bg-transparent"
+            className="w-full flex items-center justify-between group hover:bg-s-bg-sunken p-2 -mx-2 rounded-lg transition-colors cursor-pointer disabled:cursor-default disabled:hover:bg-transparent"
           >
             <div className="flex items-center gap-3">
               <div className={[

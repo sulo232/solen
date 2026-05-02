@@ -52,7 +52,7 @@ export default function MarketingPage() {
               "flex items-center gap-1.5 px-3 py-2 rounded-btn text-sm font-medium transition-colors whitespace-nowrap",
               tab === tab_item.key
                 ? "bg-s-coral text-white"
-                : "bg-white text-s-ink/50 hover:text-s-ink:text-s-dm-text border border-s-ink/5",
+                : "bg-white text-s-ink/50 hover:text-s-ink border border-s-ink/5",
             ].join(" ")}
           >
             <tab_item.icon size={14} />

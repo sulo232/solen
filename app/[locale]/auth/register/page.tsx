@@ -656,7 +656,7 @@ export default function RegisterPage() {
             {(step === 2 || step === 3) && (
               <button
                 onClick={() => goTo((step - 1) as WizardStep)}
-                className="flex items-center gap-1.5 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 hover:text-s-ink:text-s-dm-text transition-colors mb-4">
+                className="flex items-center gap-1.5 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 hover:text-s-ink transition-colors mb-4">
                 <ArrowLeft size={12} /> Zurück
               </button>
             )}

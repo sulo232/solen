@@ -106,7 +106,7 @@ const CancelModal = memo(function CancelModal({
             onChange={(e) => setReason(e.target.value)}
             rows={2}
             placeholder={t("reasonPlaceholder")}
-            className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base text-sm font-body text-s-ink placeholder:text-s-ink/30:text-s-dm-text/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors resize-none"
+            className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors resize-none"
           />
         </div>
 

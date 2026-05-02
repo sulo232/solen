@@ -189,7 +189,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           onKeyDown={handleKeyDown}
           onFocus={() => { if (services.length || salons.length) setOpen(true); }}
           placeholder={t("placeholder")}
-          className="w-full pl-9 pr-8 py-2.5 bg-transparent text-sm text-s-ink placeholder:italic placeholder:text-s-ink/35:text-s-dm-text/30 focus:outline-none focus-visible:shadow-none focus-visible:border-transparent transition-colors duration-150"
+          className="w-full pl-9 pr-8 py-2.5 bg-transparent text-sm text-s-ink placeholder:italic placeholder:text-s-ink/35 focus:outline-none focus-visible:shadow-none focus-visible:border-transparent transition-colors duration-150"
         />
         {query && (
           <button

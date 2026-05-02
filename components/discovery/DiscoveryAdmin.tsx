@@ -44,7 +44,7 @@ export default function DiscoveryAdmin() {
           <Sparkles size={16} className="text-s-coral" />
           <span className="text-sm font-medium text-s-ink">{t("title")}</span>
         </div>
-        <button onClick={() => setOpen(false)} className="text-s-ink/40 hover:text-s-ink:text-s-dm-text">
+        <button onClick={() => setOpen(false)} className="text-s-ink/40 hover:text-s-ink">
           <X size={16} />
         </button>
       </div>
@@ -62,7 +62,7 @@ export default function DiscoveryAdmin() {
             className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium transition-colors ${
               tab === tb.id
                 ? "text-s-coral border-b-2 border-s-coral"
-                : "text-s-ink/40 hover:text-s-ink:text-s-dm-text"
+                : "text-s-ink/40 hover:text-s-ink"
             }`}
           >
             <tb.icon size={14} />
@@ -171,7 +171,7 @@ function SmartSearchTab() {
             onChange={(e) => setDescription(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder={t("descriptionPlaceholder")}
-            className="flex-1 px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 bg-s-bg-base text-s-ink placeholder:text-s-ink/30:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="flex-1 px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 bg-s-bg-base text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           />
           <select
             value={category}
@@ -313,7 +313,7 @@ function TikTokImportTab() {
           onChange={(e) => setUrls(e.target.value)}
           placeholder={"https://www.tiktok.com/@user/video/123456\nhttps://www.tiktok.com/@user/video/789012"}
           rows={4}
-          className="w-full px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 bg-s-bg-base text-s-ink placeholder:text-s-ink/30:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none font-mono"
+          className="w-full px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 bg-s-bg-base text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none font-mono"
         />
       </div>
 

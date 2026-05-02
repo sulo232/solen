@@ -125,7 +125,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
             <div className="bg-white rounded-[12px] border border-s-coral/20 p-5 space-y-3 shadow-warm-sm">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-s-ink">{t("services.new")}</p>
-                <button onClick={() => setShowAdd(false)} className="text-s-ink/30 hover:text-s-ink:text-s-dm-text">
+                <button onClick={() => setShowAdd(false)} className="text-s-ink/30 hover:text-s-ink">
                   <X size={16} />
                 </button>
               </div>

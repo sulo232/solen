@@ -330,7 +330,7 @@ export default function FaceChartBuilder({
                     <button
                       key={s.id}
                       onClick={() => addProduct(`${s.brand} — ${s.product_name}`, s.shade || undefined)}
-                      className="w-full text-left px-3 py-2 text-xs text-s-ink hover:bg-s-ink/[0.03]:bg-s-dm-text/[0.03] transition-colors duration-150"
+                      className="w-full text-left px-3 py-2 text-xs text-s-ink hover:bg-s-ink/[0.03] transition-colors duration-150"
                       aria-label={`${s.brand} ${s.product_name}`}
                     >
                       <span className="font-heading font-semibold">{s.brand}</span>

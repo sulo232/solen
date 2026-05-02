@@ -138,7 +138,7 @@ export default function ReviewPrompt({
           onChange={(e) => setComment(e.target.value.slice(0, 500))}
           placeholder={t('commentPlaceholder')}
           maxLength={500}
-          className="w-full px-3 py-2 rounded-input border border-s-ink/[0.06] bg-[--base] text-s-ink placeholder:text-s-ink/40:text-s-dm-text/40 focus:outline-none focus:ring-2 focus:ring-s-coral/50:ring-s-coral/30 font-body text-sm resize-none"
+          className="w-full px-3 py-2 rounded-input border border-s-ink/[0.06] bg-[--base] text-s-ink placeholder:text-s-ink/40 focus:outline-none focus:ring-2 focus:ring-s-coral/50:ring-s-coral/30 font-body text-sm resize-none"
           rows={3}
         />
         <p className="text-xs text-s-ink/50 mt-1">
