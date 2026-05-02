@@ -290,7 +290,7 @@
   textarea:focus-visible,
   select:focus-visible {
     outline: none;
-    border-color: #E8735A;
+    border-color: #E8624A;
     box-shadow: 0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), 0 0 0 3px #FAECE7;
   }
 
@@ -595,7 +595,7 @@ html {
 
 /* ── Driver.js theme override ─────────────────────────────────────── */
 .driver-popover {
-  --driver-theme-color: #E8735A;
+  --driver-theme-color: #E8624A;
 }
 
 .solen-tour-popover {
@@ -633,7 +633,7 @@ html {
 }
 
 .solen-tour-popover .driver-popover-next-btn {
-  background-color: #E8735A !important;
+  background-color: #E8624A !important;
   color: white !important;
   border: none !important;
   text-shadow: none !important;
