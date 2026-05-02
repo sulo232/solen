@@ -48,6 +48,10 @@ Try to answer yourself first. Use `grep` / `Read` / `git log` / `preview_eval` /
 Run npm/npx, git status/add/commit/push/diff/log, tsc, file ops without asking.
 **Ask before:** `git push --force`, `reset --hard`, DB data deletion, `.env.local` edits.
 
+## 🚫 No Vercel deploys (locked 2026-05-02)
+
+Preview only via `localhost:3000` (static server `npx serve public` for design preview, or `npm run dev` for app). **GitHub push is OK but every commit message MUST include `[skip vercel]`** so Vercel does not build a preview. Production-deploy happens only when user explicitly says "deploy to vercel" / "merge to main" / "ship it." Until then, even feature branches must not trigger Vercel builds.
+
 ---
 
 ## ⚠️ INCOMPLETE_FEATURES is sacred
