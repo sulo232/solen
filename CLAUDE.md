@@ -48,9 +48,15 @@ Try to answer yourself first. Use `grep` / `Read` / `git log` / `preview_eval` /
 Run npm/npx, git status/add/commit/push/diff/log, tsc, file ops without asking.
 **Ask before:** `git push --force`, `reset --hard`, DB data deletion, `.env.local` edits.
 
-## 🚫 No Vercel deploys (locked 2026-05-02)
+## 🚫 Vercel builds gated (locked 2026-05-02)
 
-Preview only via `localhost:3000` (static server `npx serve public` for design preview, or `npm run dev` for app). **GitHub push is OK but every commit message MUST include `[skip vercel]`** so Vercel does not build a preview. Production-deploy happens only when user explicitly says "deploy to vercel" / "merge to main" / "ship it." Until then, even feature branches must not trigger Vercel builds.
+Preview only via `localhost:3000` (static server `npx serve public` for design preview, or `npm run dev` for app). GitHub push is OK and **does NOT trigger a Vercel build by default** — `vercel.json` has `ignoreCommand` that skips every build unless the commit message contains the literal token `[deploy]`.
+
+**To trigger a Vercel build (only when user says so):**
+- Make a commit (regular or empty) with `[deploy]` in the message: `git commit --allow-empty -m "deploy <reason> [deploy]"` then `git push`
+- Or use Vercel dashboard "Redeploy" on a specific commit (overrides `ignoreCommand`)
+
+**Default workflow:** commit + push freely; nothing reaches Vercel. Only deploy when user explicitly says "deploy to vercel" / "merge to main" / "ship it."
 
 ---
 

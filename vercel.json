@@ -1,5 +1,7 @@
 {
   "framework": "nextjs",
+  "_comment_skip": "ignoreCommand: build skipped by default; only commits whose message includes the literal token [deploy] will build. Locked 2026-05-02 per user instruction (no Vercel builds on every commit). To trigger a build: commit with `git commit -m '... [deploy]'` OR use Vercel dashboard 'Redeploy'.",
+  "ignoreCommand": "git log -1 --pretty=%B | grep -q '\\[deploy\\]'",
   "git": {
     "deploymentEnabled": {
       "main": false
