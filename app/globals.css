@@ -1,5 +1,7 @@
 /* Solen Design System — globals.css */
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+/* Q23 + Q48 (2026-05-02): Anton (display) + Figtree (body). Earlier values
+   (Bebas Neue / Fraunces / DM Sans) retired per SOLEN_DESIGN.md §20. */
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -47,15 +49,15 @@
     --text-2xl: 1.75rem;      /* 28px — page titles */
     --text-3xl: 2rem;         /* 32px — hero text */
 
-    /* ── Text color tokens ────────────────────────────────────── */
-    --color-heading: #222222;
-    --color-body: #222222;    /* DESIGN_SPEC primary text */
-    --color-muted: #767676;   /* DESIGN_SPEC secondary text — 4.54:1 on #FAFAF8 (WCAG AA) */
-    --color-border: #EBEBEB;
-    --color-hover-bg: #F7F7F7;
+    /* ── Text color tokens (Q23 + Q45 — locked 2026-05-02) ──── */
+    --color-heading: #1A1209;     /* s-ink */
+    --color-body: #1A1209;        /* s-ink (primary text) */
+    --color-muted: #56463E;       /* s-ink-2 (secondary text) — WCAG AA on white */
+    --color-border: #EFE7DD;      /* s-border */
+    --color-hover-bg: #FAF7F3;    /* s-bg-sunken */
     --color-error: #D32F2F;
-    --color-success: #2E7D32;
-    --color-warning: #ED6C02;
+    --color-success: #16A34A;
+    --color-warning: #F3A864;     /* s-amber */
 
     /* Base / raised surface tokens — white page (Q15 lock 2026-04-22) */
     --bg: #FFFFFF;
@@ -128,15 +130,16 @@
   }
 
   body {
-    font-family: "DM Sans", sans-serif;
+    font-family: "Figtree", system-ui, sans-serif;
     background-color: var(--base);
     color: var(--color-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: "Fraunces", Georgia, serif;
+    font-family: "Anton", Impact, sans-serif;
     color: var(--color-heading);
-    letter-spacing: -0.02em;
+    letter-spacing: 0.01em;       /* Q48 signature lockup */
+    text-transform: uppercase;     /* Q48 — Anton is always uppercase */
   }
 
   /* ── Global button press feedback ─────────────────────────── */
@@ -163,20 +166,20 @@
 
 @layer utilities {
   .font-heading {
-    font-family: "Fraunces", Georgia, serif;
+    font-family: "Anton", Impact, sans-serif;
   }
   .font-body {
-    font-family: "DM Sans", sans-serif;
+    font-family: "Figtree", system-ui, sans-serif;
   }
   .font-display {
-    font-family: "Bebas Neue", sans-serif;
+    font-family: "Anton", Impact, sans-serif;
   }
   .font-mono-code {
     font-family: "JetBrains Mono", "Courier New", monospace;
     font-variant-numeric: tabular-nums;
   }
   .data-text {
-    font-family: "DM Sans", sans-serif;
+    font-family: "Figtree", system-ui, sans-serif;
     font-variant-numeric: tabular-nums;
     font-weight: 500;
   }
@@ -321,7 +324,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     font-size: 1rem;       /* 16px — prevents iOS zoom-on-focus */
-    font-family: "DM Sans", sans-serif;
+    font-family: "Figtree", system-ui, sans-serif;
     color: var(--color-body);
     background: #ffffff;
     transition: border-color 200ms ease, box-shadow 200ms ease;
@@ -725,7 +728,7 @@ html {
   border: 1px solid rgba(26, 18, 9, 0.08) !important;
   border-radius: 20px !important;
   box-shadow: 0 8px 32px rgba(26,18,9,0.08), 0 24px 72px rgba(26,18,9,0.12) !important;
-  font-family: "DM Sans", sans-serif !important;
+  font-family: "Figtree", system-ui, sans-serif !important;
   padding: 24px !important;
   color: #1A1209 !important;
 }
@@ -737,7 +740,7 @@ html {
 }
 
 .solen-tour-popover .driver-popover-title {
-  font-family: "Fraunces", Georgia, serif !important;
+  font-family: "Anton", Impact, sans-serif !important;
   font-size: 1.25rem !important;
   font-weight: 700 !important;
   margin-bottom: 8px !important;

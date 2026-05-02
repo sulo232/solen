@@ -16,25 +16,31 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         // ── Solen Brand Tokens (DESIGN_SPEC.md is source of truth) ──
-        "s-coral": { DEFAULT: "#E8735A", hover: "#D4654E", subtle: "#FAECE7", text: "#B84A35", button: "#C05038", "button-hover": "#A8442F" },
-        "s-amber": { DEFAULT: "#D4870A", hover: "#B3700A", subtle: "#FEF4E0", text: "#6B4005" },
+        "s-coral": { DEFAULT: "#E8624A", hover: "#D4564E", subtle: "#FAECE7", text: "#C95A3A", button: "#C05038", "button-hover": "#A8442F" },
+        "s-amber": { DEFAULT: "#F3A864", hover: "#E89953", subtle: "#FFF4E8", text: "#7A4A2D" },
         "s-blue": { DEFAULT: "#6BA3C8", hover: "#4E8AB5", subtle: "#EAF3FB", text: "#1A4D72" },
         "s-plum": { DEFAULT: "#4A1E3C", hover: "#3A1630", subtle: "#F0E8F0", text: "#4A1E3C" },
         "s-yellow": { DEFAULT: "#F2C144", subtle: "#FEF8E0", text: "#7A5C00" },
         "s-sage": { DEFAULT: "#7BA688", subtle: "#EBF5EE", text: "#2E5E3A" },
         "s-sand": { DEFAULT: "#C9A96E", dark: "#D4C9B4", subtle: "#F7F0E3", text: "#6B5430" },
-        "s-ink": { DEFAULT: "#222222", secondary: "#767676", tertiary: "#8A7A66", disabled: "#C4B8A6" },
-        "s-bg": { base: "#FAFAF8", surface: "#F3EDE2", raised: "#FFFFFF", sunken: "#EDE5D8" },
+        "s-ink": { DEFAULT: "#1A1209", secondary: "#56463E", tertiary: "#9F8A7E", disabled: "#C4B8A6" },
+        "s-ink-2": "#56463E",
+        "s-ink-3": "#9F8A7E",
+        "s-border": "#EFE7DD",
+        "s-bg": { base: "#FFFFFF", surface: "#FAF7F3", raised: "#FFFFFF", sunken: "#FAF7F3", cream: "#FFF4E8" },
         "s-dm": { bg: "#151009", surface: "#1E1710", raised: "#26201A", sunken: "#120D07", text: "#F5EEE4", "text-secondary": "#C8BAA8" },
         // ── Semantic Status Tokens ──
-        "s-success": { DEFAULT: "#2E7D32", bg: "#E8F5E9" },
+        "s-success": { DEFAULT: "#16A34A", bg: "#E8F5E9" },
         "s-warning": { DEFAULT: "#E65100", bg: "#FFF3E0" },
         "s-error": { DEFAULT: "#C62828", bg: "#FFEBEE" },
       },
       fontFamily: {
-        heading: ["Fraunces", "Georgia", "serif"],
-        body: ["DM Sans", "sans-serif"],
-        display: ["Bebas Neue", "sans-serif"],
+        // Q23 + Q48 (2026-05-02): Anton (display) + Figtree (body). Earlier values
+        // (Bebas Neue / Fraunces / DM Sans) retired per SOLEN_DESIGN.md §20.
+        // `heading` aliased to display so existing `font-heading` className keeps working.
+        display: ["Anton", "Impact", "sans-serif"],
+        heading: ["Anton", "Impact", "sans-serif"],
+        body: ["Figtree", "system-ui", "sans-serif"],
       },
       borderRadius: {
         // Legacy Tailwind vars (keep for shadcn compat)
