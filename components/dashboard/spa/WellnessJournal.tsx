@@ -100,7 +100,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
     }
   };
 
-  if (loading) return <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">{t("loading")}</p>;
+  if (loading) return <p className="text-sm text-s-ink/40 py-4">{t("loading")}</p>;
 
   return (
     <div className="space-y-4">
@@ -125,17 +125,17 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
       {/* Add Entry Form */}
       {showForm && (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-[--raised] dark:bg-s-dm-surface space-y-3">
+        <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-[--raised] space-y-3">
           <div className="flex items-center justify-between mb-1">
-            <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("new_entry")}</p>
-            <button onClick={resetForm} aria-label={t("cancel")} className="text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink dark:hover:text-s-dm-text transition-colors">
+            <p className="text-xs font-heading font-semibold text-s-ink">{t("new_entry")}</p>
+            <button onClick={resetForm} aria-label={t("cancel")} className="text-s-ink/30 hover:text-s-ink:text-s-dm-text transition-colors">
               <X size={14} />
             </button>
           </div>
 
           {/* Pain Level */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 block mb-1">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("pain")} ({form.pain_level}/10)
             </label>
             <input
@@ -152,7 +152,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
           {/* Tension Areas */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 block">
+              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block">
                 {t("tension_areas")}
               </label>
               <button
@@ -160,7 +160,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                 className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
                   visualMode
                     ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                    : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] text-s-ink/40 dark:text-s-dm-text/40"
+                    : "border-s-ink/[0.06] text-s-ink/40"
                 }`}
                 aria-label={t(visualMode ? "text_mode" : "visual_mode")}
               >
@@ -196,7 +196,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                   className={`px-2.5 py-1 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
                     form.tension_areas.includes(area)
                       ? "bg-s-coral text-white"
-                      : "bg-s-ink/[0.05] dark:bg-s-dm-text/[0.05] text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09]"
+                      : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
                   }`}
                 >
                   {t(`tension_area.${area}` as any)}
@@ -207,14 +207,14 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Pressure Preference */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 block mb-1">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("pressure_preference")}
             </label>
             <select
               value={form.pressure_preference}
               onChange={(e) => setForm((p) => ({ ...p, pressure_preference: e.target.value }))}
               aria-label={t("pressure_preference")}
-              className="w-full rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
             >
               {PRESSURE_OPTIONS.map((p) => (
                 <option key={p} value={p}>{t(`pressure.${p}` as any)}</option>
@@ -224,20 +224,20 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Skin Condition */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 block mb-1">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("skin_condition")}
             </label>
             <input
               value={form.skin_condition}
               onChange={(e) => setForm((p) => ({ ...p, skin_condition: e.target.value }))}
               aria-label={t("skin_condition")}
-              className="w-full rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
             />
           </div>
 
           {/* Products Used */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 block mb-1">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("products_used")}
             </label>
             <div className="flex gap-2">
@@ -247,12 +247,12 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addProduct())}
                 placeholder={t("product_placeholder")}
                 aria-label={t("products_used")}
-                className="flex-1 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="flex-1 rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               />
               <button
                 onClick={addProduct}
                 aria-label={t("add_product")}
-                className="px-2 py-1 rounded-[8px] bg-s-ink/[0.05] dark:bg-s-dm-text/[0.05] text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09] transition-colors duration-150"
+                className="px-2 py-1 rounded-[8px] bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09] transition-colors duration-150"
               >
                 <Plus size={14} />
               </button>
@@ -260,7 +260,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
             {form.products_used.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {form.products_used.map((p) => (
-                  <span key={p} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[8px] bg-s-sage-subtle dark:bg-s-sage/10 text-[10px] text-s-sage-text dark:text-s-sage">
+                  <span key={p} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[8px] bg-s-sage-subtle text-[10px] text-s-sage-text">
                     {p}
                     <button onClick={() => setForm((prev) => ({ ...prev, products_used: prev.products_used.filter((x) => x !== p) }))} aria-label={t("remove_product")} className="text-s-sage-text/50 hover:text-s-sage-text">
                       <X size={10} />
@@ -273,7 +273,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Aftercare Notes */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 block mb-1">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("aftercare_notes")}
             </label>
             <textarea
@@ -281,13 +281,13 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               onChange={(e) => setForm((p) => ({ ...p, aftercare_notes: e.target.value }))}
               rows={2}
               aria-label={t("aftercare_notes")}
-              className="w-full rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink dark:text-s-dm-text resize-none focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink resize-none focus:outline-none focus:ring-2 focus:ring-s-coral/30"
             />
           </div>
 
           {/* Notes */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 block mb-1">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("notes")}
             </label>
             <textarea
@@ -295,7 +295,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))}
               rows={2}
               aria-label={t("notes")}
-              className="w-full rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink dark:text-s-dm-text resize-none focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full rounded-[8px] border border-s-ink/[0.10] px-3 py-2 text-xs bg-transparent text-s-ink resize-none focus:outline-none focus:ring-2 focus:ring-s-coral/30"
             />
           </div>
 
@@ -304,7 +304,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
             <button
               onClick={resetForm}
               aria-label={t("cancel")}
-              className="px-3 py-1.5 rounded-[8px] border border-s-ink/10 dark:border-s-dm-text/10 text-xs text-s-ink/60 dark:text-s-dm-text/60 transition-colors duration-150"
+              className="px-3 py-1.5 rounded-[8px] border border-s-ink/10 text-xs text-s-ink/60 transition-colors duration-150"
             >
               {t("cancel")}
             </button>
@@ -323,23 +323,23 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
       {/* Timeline */}
       {entries.length === 0 && !showForm ? (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] border-dashed p-6 text-center bg-[--raised] dark:bg-s-dm-surface">
-          <BookHeart size={20} className="mx-auto mb-2 text-s-ink/20 dark:text-s-dm-text/20" />
-          <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">{t("no_entries")}</p>
+        <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-6 text-center bg-[--raised]">
+          <BookHeart size={20} className="mx-auto mb-2 text-s-ink/20" />
+          <p className="text-xs text-s-ink/30">{t("no_entries")}</p>
         </div>
       ) : (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-[--raised] dark:bg-s-dm-surface overflow-hidden">
+        <div className="rounded-[12px] border border-s-ink/[0.06] bg-[--raised] overflow-hidden">
           {entries.map((e, i) => (
             <div
               key={e.id}
-              className={`px-4 py-3 ${i < entries.length - 1 ? "border-b border-s-ink/[0.04] dark:border-s-dm-text/[0.04]" : ""}`}
+              className={`px-4 py-3 ${i < entries.length - 1 ? "border-b border-s-ink/[0.04]" : ""}`}
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">
+                <span className="text-xs font-heading font-semibold text-s-ink">
                   {new Date(e.created_at).toLocaleDateString("de-CH")}
                 </span>
                 {e.pressure_preference && (
-                  <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+                  <span className="text-[10px] text-s-ink/40">
                     {t(`pressure.${e.pressure_preference}` as any)}
                   </span>
                 )}
@@ -347,23 +347,23 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
               {/* Pain bar */}
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 w-16 shrink-0">
+                <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 w-16 shrink-0">
                   {t("pain")}
                 </span>
-                <div className="flex-1 h-2 rounded-full bg-s-ink/[0.06] dark:bg-s-dm-text/[0.06] overflow-hidden">
+                <div className="flex-1 h-2 rounded-full bg-s-ink/[0.06] overflow-hidden">
                   <div
                     className="h-full bg-s-coral rounded-full"
                     style={{ width: `${((e.pain_level ?? 0) / 10) * 100}%` }}
                   />
                 </div>
-                <span className="text-[10px] data-text font-bold text-s-ink/50 dark:text-s-dm-text/50 w-6 text-right">
+                <span className="text-[10px] data-text font-bold text-s-ink/50 w-6 text-right">
                   {e.pain_level ?? 0}
                 </span>
               </div>
 
               {/* Tension areas */}
               {e.tension_areas?.length > 0 && (
-                <p className="text-[10px] text-s-ink/50 dark:text-s-dm-text/50 mt-1">
+                <p className="text-[10px] text-s-ink/50 mt-1">
                   {t("tension")}: {e.tension_areas.map((a) => t(`tension_area.${a}`)).join(", ")}
                 </p>
               )}
@@ -372,7 +372,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               {e.products_used?.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-1.5">
                   {e.products_used.map((p) => (
-                    <span key={p} className="px-1.5 py-0.5 rounded-[6px] bg-s-sage-subtle dark:bg-s-sage/10 text-[9px] text-s-sage-text dark:text-s-sage">
+                    <span key={p} className="px-1.5 py-0.5 rounded-[6px] bg-s-sage-subtle text-[9px] text-s-sage-text">
                       {p}
                     </span>
                   ))}
@@ -381,14 +381,14 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
               {/* Aftercare */}
               {e.aftercare_notes && (
-                <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mt-1.5 italic">
+                <p className="text-[10px] text-s-ink/40 mt-1.5 italic">
                   {t("aftercare")}: {e.aftercare_notes}
                 </p>
               )}
 
               {/* Notes */}
               {e.notes && (
-                <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mt-1">
+                <p className="text-[10px] text-s-ink/40 mt-1">
                   {e.notes}
                 </p>
               )}

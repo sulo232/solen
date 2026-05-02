@@ -55,19 +55,19 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
         <button
           onClick={handleBack}
           aria-label={t('back')}
-          className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.06] transition-colors"
+          className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-s-ink/[0.06]:bg-white/[0.06] transition-colors"
         >
-          <ChevronLeft size={20} className="text-s-ink dark:text-s-dm-text" />
+          <ChevronLeft size={20} className="text-s-ink" />
         </button>
         <div>
-          <h2 className="text-2xl font-display font-bold text-s-ink dark:text-s-dm-text">
+          <h2 className="text-2xl font-display font-bold text-s-ink">
             {t('title')}
           </h2>
         </div>
       </div>
 
       {/* Salon Card */}
-      <div className="border border-s-ink/[0.06] dark:border-white/[0.08] rounded-[16px] overflow-hidden bg-[--raised] dark:bg-s-dm-surface">
+      <div className="border border-s-ink/[0.06] rounded-[16px] overflow-hidden bg-[--raised]">
         {salon.cover_photo_url && (
           <div className="aspect-square relative overflow-hidden">
             <Image
@@ -80,10 +80,10 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
         )}
         <div className="p-4 space-y-3">
           <div>
-            <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">
+            <h3 className="font-heading font-bold text-base text-s-ink">
               {salon.name}
             </h3>
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+            <p className="text-xs text-s-ink/50">
               {salon.address}
             </p>
           </div>
@@ -93,16 +93,16 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
       {/* Booking Summary */}
       <div className="space-y-4">
         <div>
-          <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 dark:text-s-dm-text/40 mb-2">
+          <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-2">
             {t('services')}
           </p>
           <div className="space-y-2">
             {formData.services.map((service) => (
               <div key={service.id} className="flex justify-between text-sm">
-                <span className="font-heading font-semibold text-s-ink dark:text-s-dm-text">
+                <span className="font-heading font-semibold text-s-ink">
                   {locale === 'en' ? service.name_en : service.name_de}
                 </span>
-                <span className="data-text font-bold text-s-ink dark:text-s-dm-text">
+                <span className="data-text font-bold text-s-ink">
                   {formatCurrency(service.price, locale)}
                 </span>
               </div>
@@ -112,7 +112,7 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
 
         {staff && (
           <div>
-            <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 dark:text-s-dm-text/40 mb-2">
+            <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-2">
               {t('staff')}
             </p>
             <div className="flex items-center gap-2">
@@ -125,7 +125,7 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
                   className="w-8 h-8 rounded-full object-cover"
                 />
               )}
-              <span className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">
+              <span className="font-heading font-semibold text-sm text-s-ink">
                 {staff.name}
               </span>
             </div>
@@ -133,10 +133,10 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
         )}
 
         <div>
-          <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 dark:text-s-dm-text/40 mb-2">
+          <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-2">
             {t('dateTime')}
           </p>
-          <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">
+          <p className="font-heading font-semibold text-sm text-s-ink">
             {formData.selectedDate && (
               <>
                 {formatDate(formData.selectedDate)} · {formData.selectedTime}
@@ -145,12 +145,12 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
           </p>
         </div>
 
-        <div className="pt-2 border-t border-s-ink/[0.06] dark:border-white/[0.08]">
+        <div className="pt-2 border-t border-s-ink/[0.06]">
           <div className="flex justify-between items-center">
-            <span className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">
+            <span className="font-heading font-bold text-base text-s-ink">
               {t('total')}
             </span>
-            <span className="data-text font-bold text-2xl text-s-ink dark:text-s-dm-text">
+            <span className="data-text font-bold text-2xl text-s-ink">
               {formatCurrency(formData.totalPrice, locale)}
             </span>
           </div>
@@ -158,24 +158,24 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
       </div>
 
       {/* Cancellation Policy */}
-      <div className="flex gap-3 p-4 rounded-[12px] bg-s-amber/[0.08] dark:bg-s-amber/[0.12] border border-s-amber/[0.15]">
+      <div className="flex gap-3 p-4 rounded-[12px] bg-s-amber/[0.08] border border-s-amber/[0.15]">
         <AlertCircle size={16} className="shrink-0 text-s-amber mt-0.5" />
         <div>
-          <p className="text-xs font-heading font-bold text-s-amber dark:text-s-amber/90">
+          <p className="text-xs font-heading font-bold text-s-amber">
             {t('cancellationPolicy')}
           </p>
-          <p className="text-xs text-s-ink/70 dark:text-s-dm-text/70 mt-1">
+          <p className="text-xs text-s-ink/70 mt-1">
             {getCancellationPolicy()}
           </p>
         </div>
       </div>
 
       {/* Bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] dark:border-white/[0.08] bg-[--raised] dark:bg-s-dm-surface p-4">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] bg-[--raised] p-4">
         <div className="max-w-2xl mx-auto px-4 flex gap-3">
           <button
             onClick={handleBack}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>

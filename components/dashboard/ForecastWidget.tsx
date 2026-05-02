@@ -62,22 +62,22 @@ export default function ForecastWidget({ data }: ForecastWidgetProps) {
   ];
 
   return (
-    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+    <div className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-[8px] bg-s-amber/10 flex items-center justify-center">
             <TrendingUp size={13} className="text-s-amber" />
           </div>
           <div>
-            <p className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text">
+            <p className="text-sm font-heading font-bold text-s-ink">
               {t("forecastTitle")}
             </p>
-            <p className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35">
+            <p className="text-[10px] text-s-ink/35">
               {t("forecastSubtitle")}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1 text-[9px] text-s-ink/30 dark:text-s-dm-text/30" title={t("forecastDisclaimer")}>
+        <div className="flex items-center gap-1 text-[9px] text-s-ink/30" title={t("forecastDisclaimer")}>
           <Info size={11} />
           {t("forecastEstimated")}
         </div>

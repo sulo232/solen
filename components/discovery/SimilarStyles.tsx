@@ -44,17 +44,17 @@ export default function SimilarStyles({ itemId, category, tags }: SimilarStylesP
 
   return (
     <div className="mt-6 px-1">
-      <h3 className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-3">
+      <h3 className="text-sm font-medium text-s-ink mb-3">
         {HEADING[locale] ?? HEADING.en}
       </h3>
 
       <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scrollbar-hide">
         {loading ? (
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="w-32 shrink-0 snap-start rounded-[16px] overflow-hidden bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
-              <div className="aspect-[3/4] bg-s-ink/5 dark:bg-white/5 shimmer" />
+            <div key={i} className="w-32 shrink-0 snap-start rounded-[16px] overflow-hidden bg-[--raised] border border-s-ink/5">
+              <div className="aspect-[3/4] bg-s-ink/5 shimmer" />
               <div className="p-2 space-y-1">
-                <div className="h-2.5 bg-s-ink/5 dark:bg-white/5 rounded-pill w-3/4 shimmer" />
+                <div className="h-2.5 bg-s-ink/5 rounded-pill w-3/4 shimmer" />
               </div>
             </div>
           ))
@@ -63,9 +63,9 @@ export default function SimilarStyles({ itemId, category, tags }: SimilarStylesP
             <div
               key={item.id}
               onClick={() => router.push(`/${locale}/discover/${item.id}`)}
-              className="w-32 shrink-0 snap-start rounded-[16px] overflow-hidden bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 cursor-pointer hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+              className="w-32 shrink-0 snap-start rounded-[16px] overflow-hidden bg-[--raised] border border-s-ink/5 cursor-pointer hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
             >
-              <div className="aspect-[3/4] relative bg-s-ink/5 dark:bg-white/5">
+              <div className="aspect-[3/4] relative bg-s-ink/5">
                 {(item.image_url || item.tiktok_thumbnail_url) && (
                   <Image
                     src={item.image_url || item.tiktok_thumbnail_url!}
@@ -77,7 +77,7 @@ export default function SimilarStyles({ itemId, category, tags }: SimilarStylesP
                 )}
               </div>
               <div className="p-2">
-                <p className="text-[11px] font-medium text-s-ink dark:text-s-dm-text truncate">
+                <p className="text-[11px] font-medium text-s-ink truncate">
                   {item.style_name || item.category}
                 </p>
               </div>

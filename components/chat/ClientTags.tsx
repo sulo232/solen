@@ -17,13 +17,13 @@ interface ClientTagsProps {
 }
 
 const COLOR_MAP: Record<string, string> = {
-  gray: "bg-s-bg-sunken text-s-ink/70 dark:bg-s-dm-raised dark:text-s-ink/30",
-  red: "bg-s-error-bg text-s-error dark:bg-s-error/10",
-  orange: "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300",
-  teal: "bg-s-coral/10 text-s-coral dark:bg-s-coral/20",  // legacy DB values
-  coral: "bg-s-coral/10 text-s-coral dark:bg-s-coral/20",
-  blue: "bg-s-blue-subtle text-s-blue-text dark:bg-s-blue/10 dark:text-s-blue",
-  purple: "bg-s-plum/10 text-s-plum dark:bg-s-plum/20",
+  gray: "bg-s-bg-sunken text-s-ink/70",
+  red: "bg-s-error-bg text-s-error",
+  orange: "bg-orange-100 text-orange-700",
+  teal: "bg-s-coral/10 text-s-coral",  // legacy DB values
+  coral: "bg-s-coral/10 text-s-coral",
+  blue: "bg-s-blue-subtle text-s-blue-text",
+  purple: "bg-s-plum/10 text-s-plum",
 };
 
 export default function ClientTags({ salonId, customerId, compact }: ClientTagsProps) {
@@ -104,7 +104,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
     <div className="space-y-2">
       {/* Allergy warning banner */}
       {hasAllergyTag && (
-        <div className="flex items-center gap-2 bg-s-error-bg dark:bg-s-error/10 border border-s-error/20 rounded-btn px-3 py-2">
+        <div className="flex items-center gap-2 bg-s-error-bg border border-s-error/20 rounded-btn px-3 py-2">
           <AlertTriangle size={14} className="text-s-error shrink-0" />
           <p className="text-xs text-s-error font-medium">
             {t("allergyWarning")}
@@ -125,7 +125,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
         ))}
         <button
           onClick={() => setShowAdd(true)}
-          className="inline-flex items-center gap-1 px-2 py-1 rounded-pill text-xs font-medium bg-s-bg-sunken dark:bg-s-dm-raised text-s-ink/50 dark:text-s-ink/40 hover:bg-s-sand dark:hover:bg-s-ink/60 transition-colors"
+          className="inline-flex items-center gap-1 px-2 py-1 rounded-pill text-xs font-medium bg-s-bg-sunken text-s-ink/50 hover:bg-s-sand:bg-s-ink/60 transition-colors"
         >
           <Plus size={10} /> {t("addTag")}
         </button>
@@ -133,7 +133,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
 
       {/* Add tag form */}
       {showAdd && (
-        <div className="border border-s-ink/10 dark:border-white/10 rounded-[12px] p-3 space-y-2">
+        <div className="border border-s-ink/10 rounded-[12px] p-3 space-y-2">
           {/* Allergy presets */}
           <div className="flex flex-wrap gap-1">
             {allergyPresets.map((preset) => (
@@ -141,7 +141,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
                 key={preset}
                 onClick={() => handleAdd(preset)}
                 disabled={tags.some((tag) => tag.tag === preset)}
-                className="px-2 py-1 rounded-pill text-[10px] font-medium bg-s-error-bg dark:bg-s-error/10 text-s-error hover:bg-s-error/15 transition-colors disabled:opacity-30"
+                className="px-2 py-1 rounded-pill text-[10px] font-medium bg-s-error-bg text-s-error hover:bg-s-error/15 transition-colors disabled:opacity-30"
               >
                 {preset}
               </button>
@@ -155,12 +155,12 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
               onChange={(e) => setNewTag(e.target.value)}
               placeholder={t("customTagPlaceholder")}
               maxLength={50}
-              className="flex-1 px-2.5 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
+              className="flex-1 px-2.5 py-1.5 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 bg-white"
             />
             <select
               value={newColor}
               onChange={(e) => setNewColor(e.target.value)}
-              className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
+              className="px-2 py-1.5 rounded-btn border border-s-ink/10 text-xs bg-white"
             >
               <option value="gray">{t("colors.gray")}</option>
               <option value="red">{t("colors.red")}</option>
@@ -180,7 +180,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
 
           <button
             onClick={() => setShowAdd(false)}
-            className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text"
+            className="text-[10px] text-s-ink/40 hover:text-s-ink:text-s-dm-text"
           >
             {t("cancel")}
           </button>

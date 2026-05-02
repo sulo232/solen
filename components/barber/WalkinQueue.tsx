@@ -65,7 +65,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
 
   if (loading) {
     return (
-      <div className="p-4 text-center text-s-ink/50 dark:text-s-dm-text/50">
+      <div className="p-4 text-center text-s-ink/50">
         <Clock size={20} className="mx-auto animate-spin mb-2" />
         {t("loadingQueue")}
       </div>
@@ -75,17 +75,17 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between px-1">
-        <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">
+        <h3 className="font-heading text-sm font-bold text-s-ink">
           {t("queueTitle")}
         </h3>
-        <span className="text-xs text-s-ink/50 dark:text-s-dm-text/50 flex items-center gap-1">
+        <span className="text-xs text-s-ink/50 flex items-center gap-1">
           <Users size={14} />
           {t("waiting", { count: activeQueue.length })}
         </span>
       </div>
 
       {activeQueue.length === 0 ? (
-        <div className="text-center py-6 text-s-ink/40 dark:text-s-dm-text/40 text-sm">
+        <div className="text-center py-6 text-s-ink/40 text-sm">
           {t("noCustomers")}
         </div>
       ) : (
@@ -95,20 +95,20 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
               key={entry.id}
               className={`rounded-[16px] p-3 border ${
                 entry.status === "in_chair"
-                  ? "border-s-coral/30 bg-s-coral/5 dark:bg-s-coral/10"
-                  : "border-s-ink/10 bg-white dark:bg-s-dm-surface dark:border-s-dm-text/10"
+                  ? "border-s-coral/30 bg-s-coral/5"
+                  : "border-s-ink/10 bg-white"
               }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-pill bg-s-ink/10 dark:bg-s-dm-text/10 flex items-center justify-center text-xs font-bold text-s-ink dark:text-s-dm-text">
+                  <span className="w-6 h-6 rounded-pill bg-s-ink/10 flex items-center justify-center text-xs font-bold text-s-ink">
                     {i + 1}
                   </span>
                   <div>
-                    <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">
+                    <p className="text-sm font-medium text-s-ink">
                       {entry.customer_name}
                     </p>
-                    <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+                    <p className="text-xs text-s-ink/50">
                       {entry.status === "in_chair" ? t("inChair") : <span className="data-text">~{entry.estimated_wait_minutes ?? "?"} {t("minutes")}</span>}
                       {entry.join_method === "remote" && ` · ${t("remote")}`}
                     </p>
@@ -138,7 +138,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                   )}
                   <button
                     onClick={() => updateStatus(entry.id, "no_show")}
-                    className="p-1.5 rounded-pill bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors duration-150"
+                    className="p-1.5 rounded-pill bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 transition-colors duration-150"
                     title={t("noShow")}
                     aria-label={t("noShow")}
                   >
@@ -146,7 +146,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                   </button>
                   <button
                     onClick={() => updateStatus(entry.id, "cancelled")}
-                    className="p-1.5 rounded-pill bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors duration-150"
+                    className="p-1.5 rounded-pill bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 transition-colors duration-150"
                     title={t("cancel")}
                     aria-label={t("cancel")}
                   >

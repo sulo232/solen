@@ -67,7 +67,7 @@ export default function ShareButton({ item }: ShareButtonProps) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="p-2 rounded-full hover:bg-s-ink/5 dark:hover:bg-white/5 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+        className="p-2 rounded-full hover:bg-s-ink/5:bg-white/5 text-s-ink/40 hover:text-s-ink:text-s-dm-text transition-colors"
         aria-label="Share"
       >
         <Share2 size={18} />
@@ -76,23 +76,23 @@ export default function ShareButton({ item }: ShareButtonProps) {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-1 z-50 bg-[--raised] dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 rounded-[16px] shadow-warm-md py-1 min-w-[180px]">
-            <button onClick={copyLink} className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-s-ink dark:text-s-dm-text hover:bg-s-ink/5 dark:hover:bg-white/5">
+          <div className="absolute right-0 top-full mt-1 z-50 bg-[--raised] border border-s-ink/10 rounded-[16px] shadow-warm-md py-1 min-w-[180px]">
+            <button onClick={copyLink} className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-s-ink hover:bg-s-ink/5:bg-white/5">
               {copied ? <Check size={14} className="text-s-success" /> : <Link2 size={14} />}
               {copied ? t.copied : t.copyLink}
             </button>
-            <button onClick={shareWhatsApp} className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-s-ink dark:text-s-dm-text hover:bg-s-ink/5 dark:hover:bg-white/5">
+            <button onClick={shareWhatsApp} className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-s-ink hover:bg-s-ink/5:bg-white/5">
               <MessageCircle size={14} className="text-s-success" />
               WhatsApp
             </button>
-            <button onClick={shareTikTok} className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-s-ink dark:text-s-dm-text hover:bg-s-ink/5 dark:hover:bg-white/5">
+            <button onClick={shareTikTok} className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-s-ink hover:bg-s-ink/5:bg-white/5">
               <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="currentColor">
                 <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.71a8.19 8.19 0 004.76 1.52V6.78a4.83 4.83 0 01-1-.09z" />
               </svg>
               TikTok
             </button>
             {isMobile && (
-              <button onClick={shareInstagram} className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-s-ink dark:text-s-dm-text hover:bg-s-ink/5 dark:hover:bg-white/5">
+              <button onClick={shareInstagram} className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-s-ink hover:bg-s-ink/5:bg-white/5">
                 <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2}>
                   <rect x="2" y="2" width="20" height="20" rx="5" />
                   <circle cx="12" cy="12" r="5" />
@@ -102,7 +102,7 @@ export default function ShareButton({ item }: ShareButtonProps) {
               </button>
             )}
             {(item.image_url || item.tiktok_thumbnail_url) && (
-              <button onClick={downloadImage} className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-s-ink dark:text-s-dm-text hover:bg-s-ink/5 dark:hover:bg-white/5">
+              <button onClick={downloadImage} className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-s-ink hover:bg-s-ink/5:bg-white/5">
                 <Download size={14} />
                 {t.download}
               </button>

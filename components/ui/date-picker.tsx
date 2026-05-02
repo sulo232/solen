@@ -115,7 +115,7 @@ export default function SolenDatePicker({
       className={cn("flex flex-col gap-1", className)}
     >
       <Label className="text-xs font-medium text-s-ink/60 font-body">{label}</Label>
-      <Group className="flex items-center rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised px-3 py-2 text-sm focus-within:border-s-coral focus-within:ring-2 focus-within:ring-s-coral/20 transition-[border-color,box-shadow]">
+      <Group className="flex items-center rounded-btn border border-s-ink/10 bg-white px-3 py-2 text-sm focus-within:border-s-coral focus-within:ring-2 focus-within:ring-s-coral/20 transition-[border-color,box-shadow]">
         <DateInput className="flex flex-1 items-center">
           {(segment) => (
             <DateSegment
@@ -129,7 +129,7 @@ export default function SolenDatePicker({
         </Button>
       </Group>
       <Popover
-        className="rounded-[12px] border border-s-ink/5 dark:border-white/10 bg-white dark:bg-s-dm-raised shadow-surface p-3 z-50"
+        className="rounded-[12px] border border-s-ink/5 bg-white shadow-surface p-3 z-50"
       >
         <Dialog className="outline-none">
           <Calendar>

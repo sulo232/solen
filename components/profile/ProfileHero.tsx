@@ -32,7 +32,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale, onEdi
             background: 'linear-gradient(145deg, #C8614A 0%, #E8C49A 55%, #E8927A 100%)'
           }}
         >
-          <div className="w-full h-full rounded-full bg-[--raised] dark:bg-s-dm-surface flex items-center justify-center overflow-hidden relative">
+          <div className="w-full h-full rounded-full bg-[--raised] flex items-center justify-center overflow-hidden relative">
             {profile.avatar_url ? (
               <Image
                 src={profile.avatar_url}
@@ -42,7 +42,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale, onEdi
                 unoptimized
               />
             ) : (
-              <span className="font-display text-[34px] text-s-ink dark:text-s-dm-text tracking-[.07em]">
+              <span className="font-display text-[34px] text-s-ink tracking-[.07em]">
                 {getInitial()}
               </span>
             )}
@@ -60,7 +60,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale, onEdi
 
       {/* Name */}
       <div className="flex flex-col items-center gap-1">
-        <h1 className="font-display text-[30px] tracking-[.07em] text-s-ink dark:text-s-dm-text leading-none">
+        <h1 className="font-display text-[30px] tracking-[.07em] text-s-ink leading-none">
           {profile.display_name || 'Guest'}
         </h1>
 
@@ -73,7 +73,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale, onEdi
       {/* Action buttons */}
       <div className="flex items-center gap-2">
         <button
-          className="px-4 py-2 rounded-pill bg-s-ink/[0.05] dark:bg-white/[0.08] text-s-ink dark:text-s-dm-text text-[13px] font-body font-medium hover:bg-s-ink/[0.09] dark:hover:bg-white/[0.12] active:scale-[0.97] transition-[background-color,transform] duration-150"
+          className="px-4 py-2 rounded-pill bg-s-ink/[0.05] text-s-ink text-[13px] font-body font-medium hover:bg-s-ink/[0.09]:bg-white/[0.12] active:scale-[0.97] transition-[background-color,transform] duration-150"
           aria-label={t("editProfile")}
           onClick={onEditProfile}
         >
@@ -81,14 +81,14 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale, onEdi
         </button>
 
         <button
-          className="w-9 h-9 rounded-full bg-s-ink/[0.05] dark:bg-white/[0.08] text-s-ink dark:text-s-dm-text flex items-center justify-center hover:bg-s-ink/[0.09] dark:hover:bg-white/[0.12] active:scale-[0.97] transition-[background-color,transform] duration-150"
+          className="w-9 h-9 rounded-full bg-s-ink/[0.05] text-s-ink flex items-center justify-center hover:bg-s-ink/[0.09]:bg-white/[0.12] active:scale-[0.97] transition-[background-color,transform] duration-150"
           aria-label={t("editProfile")}
         >
           <Share2 size={16} strokeWidth={2} />
         </button>
 
         <button
-          className="w-9 h-9 rounded-full bg-s-ink/[0.05] dark:bg-white/[0.08] text-s-coral flex items-center justify-center hover:bg-s-ink/[0.09] dark:hover:bg-white/[0.12] active:scale-[0.97] transition-[background-color,transform] duration-150"
+          className="w-9 h-9 rounded-full bg-s-ink/[0.05] text-s-coral flex items-center justify-center hover:bg-s-ink/[0.09]:bg-white/[0.12] active:scale-[0.97] transition-[background-color,transform] duration-150"
           aria-label={t("addMore")}
         >
           <Heart size={16} strokeWidth={2} />

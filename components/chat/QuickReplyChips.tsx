@@ -43,7 +43,7 @@ export default function QuickReplyChips({ salonId, onSelectTemplate }: QuickRepl
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: i * 0.05 }}
           onClick={() => onSelectTemplate(text)}
-          className="px-3 py-1.5 rounded-pill bg-s-coral-50 dark:bg-s-coral-900/30 text-s-coral-700 dark:text-s-coral-300 text-sm whitespace-nowrap cursor-pointer hover:bg-s-coral-100 dark:hover:bg-s-coral-800/50 transition-colors shrink-0"
+          className="px-3 py-1.5 rounded-pill bg-s-coral-50 text-s-coral-700 text-sm whitespace-nowrap cursor-pointer hover:bg-s-coral-100:bg-s-coral-800/50 transition-colors shrink-0"
         >
           {text}
         </motion.button>

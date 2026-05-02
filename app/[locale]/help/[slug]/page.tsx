@@ -43,7 +43,7 @@ export default function HelpArticlePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-s-dm-bg flex justify-center items-center">
+      <div className="min-h-screen bg-white flex justify-center items-center">
         <Spinner size="lg" />
       </div>
     );
@@ -51,7 +51,7 @@ export default function HelpArticlePage() {
 
   if (notFound || !article) {
     return (
-      <div className="min-h-screen bg-white dark:bg-s-dm-bg pt-8 px-4">
+      <div className="min-h-screen bg-white pt-8 px-4">
         <div className="max-w-3xl mx-auto">
           <EmptyState
             icon={BookOpen}
@@ -72,7 +72,7 @@ export default function HelpArticlePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-s-dm-bg">
+    <div className="min-h-screen bg-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 pb-12">
         {/* Back link */}
         <Link

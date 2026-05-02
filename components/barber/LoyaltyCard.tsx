@@ -69,19 +69,19 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
       <div
         className={`rounded-[16px] p-4 border ${
           isComplete && !isRedeemed
-            ? "border-s-coral/30 bg-s-coral/5 dark:bg-s-coral/10 shadow-[0_0_12px_rgba(232,98,74,0.15)]"
+            ? "border-s-coral/30 bg-s-coral/5 shadow-[0_0_12px_rgba(232,98,74,0.15)]"
             : isRedeemed
-            ? "border-s-ink/5 dark:border-s-dm-text/5 bg-s-bg-surface dark:bg-s-dm-bg opacity-60"
-            : "border-s-ink/5 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface"
+            ? "border-s-ink/5 bg-s-bg-surface opacity-60"
+            : "border-s-ink/5 bg-white"
         }`}
       >
         <div className="flex items-center justify-between mb-3">
           <div>
-            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">
+            <p className="text-sm font-medium text-s-ink">
               {program?.name ?? t("loyaltyCard")}
             </p>
             {salonName && (
-              <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{salonName}</p>
+              <p className="text-xs text-s-ink/50">{salonName}</p>
             )}
           </div>
           {isComplete && !isRedeemed && (
@@ -91,7 +91,7 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
             </span>
           )}
           {isRedeemed && (
-            <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("redeemed")}</span>
+            <span className="text-xs text-s-ink/40">{t("redeemed")}</span>
           )}
         </div>
 
@@ -104,14 +104,14 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
               </div>
             ) : (
               <div key={i} className="w-7 h-7 rounded-full flex items-center justify-center">
-                <Circle size={14} className="text-s-ink/15 dark:text-s-dm-text/15" />
+                <Circle size={14} className="text-s-ink/15" />
               </div>
             )
           ))}
         </div>
 
         <div className="flex items-center justify-between">
-          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+          <p className="text-xs text-s-ink/50">
             {t("stamps", { collected: card.stamps_collected, required: stampsRequired })}
           </p>
           {!isRedeemed && (
@@ -134,18 +134,18 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
           role="dialog"
           aria-modal="true"
           aria-label={t("qrCodeTitle")}
-          className="fixed inset-0 z-50 bg-s-ink/80 dark:bg-s-dm-bg/90 flex items-center justify-center p-8"
+          className="fixed inset-0 z-50 bg-s-ink/80 flex items-center justify-center p-8"
           onClick={() => setShowQR(false)}
         >
-          <div className="relative bg-white dark:bg-s-dm-surface rounded-[24px] p-6 max-w-xs w-full text-center" onClick={(e) => e.stopPropagation()}>
+          <div className="relative bg-white rounded-[24px] p-6 max-w-xs w-full text-center" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setShowQR(false)}
-              className="absolute top-3 right-3 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text"
+              className="absolute top-3 right-3 text-s-ink/40 hover:text-s-ink:text-s-dm-text"
               aria-label={t("close")}
             >
               <X size={20} />
             </button>
-            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-4">
+            <p className="text-sm font-medium text-s-ink mb-4">
               {t("showQrToBarber")}
             </p>
             {/* QR SVG from our own qrcode server library — safe to render */}
@@ -153,7 +153,7 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
               className="mx-auto w-48 h-48 [&>svg]:w-full [&>svg]:h-full"
               dangerouslySetInnerHTML={{ __html: qrSvg }}
             />
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-4">
+            <p className="text-xs text-s-ink/50 mt-4">
               {t("stamps", { collected: card.stamps_collected, required: stampsRequired })} · {program?.name}
             </p>
           </div>

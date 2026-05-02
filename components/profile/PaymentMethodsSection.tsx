@@ -57,7 +57,7 @@ function AddCardForm({ clientSecret, onSuccess, onCancel }: { clientSecret: stri
           type="button"
           onClick={onCancel}
           disabled={processing}
-          className="px-4 py-2 text-sm text-s-ink/60 dark:text-s-dm-text/60 disabled:opacity-50"
+          className="px-4 py-2 text-sm text-s-ink/60 disabled:opacity-50"
         >
           {t("cancel")}
         </button>
@@ -124,9 +124,9 @@ export function PaymentMethodsSection() {
   ];
 
   return (
-    <div className="pt-4 border-t border-s-ink/5 dark:border-white/10 space-y-4">
+    <div className="pt-4 border-t border-s-ink/5 space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 dark:text-s-dm-text/30">
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30">
           {t("title")}
         </p>
         <button
@@ -147,25 +147,25 @@ export function PaymentMethodsSection() {
           methods.map((m) => (
             <div
               key={m.id}
-              className="flex items-center gap-3 px-4 py-3 rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface"
+              className="flex items-center gap-3 px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised]"
             >
-              <CreditCard size={20} className="text-s-ink/30 dark:text-s-dm-text/30 flex-shrink-0" />
+              <CreditCard size={20} className="text-s-ink/30 flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">
+                <p className="text-sm font-heading font-medium text-s-ink">
                   {t("cardEndingIn", { last4: m.last4 })}
                 </p>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5 capitalize">
+                <p className="text-xs text-s-ink/40 mt-0.5 capitalize">
                   {m.brand} • {t("expires")} {m.exp_month}/{m.exp_year}
                 </p>
               </div>
             </div>
           ))
         ) : (
-          <div className="flex items-center gap-3 px-4 py-3 rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface">
-            <CreditCard size={20} className="text-s-ink/30 dark:text-s-dm-text/30 flex-shrink-0" />
+          <div className="flex items-center gap-3 px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised]">
+            <CreditCard size={20} className="text-s-ink/30 flex-shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">{t("creditCard")}</p>
-              <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("noCard")}</p>
+              <p className="text-sm font-heading font-medium text-s-ink">{t("creditCard")}</p>
+              <p className="text-xs text-s-ink/40 mt-0.5">{t("noCard")}</p>
             </div>
           </div>
         )}
@@ -173,12 +173,12 @@ export function PaymentMethodsSection() {
         {disabledOptions.map(({ label, sub, icon }) => (
           <div
             key={label}
-            className="flex items-center gap-3 px-4 py-3 rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface opacity-60 grayscale"
+            className="flex items-center gap-3 px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised] opacity-60 grayscale"
           >
             <span className="text-lg">{icon}</span>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">{label}</p>
-              <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{sub}</p>
+              <p className="text-sm font-heading font-medium text-s-ink">{label}</p>
+              <p className="text-xs text-s-ink/40 mt-0.5">{sub}</p>
             </div>
             <span className="px-2 py-0.5 rounded-[6px] text-[9px] font-heading font-bold uppercase tracking-[.06em] bg-s-amber-subtle/30 text-s-amber">
               {t("comingSoon")}
@@ -189,7 +189,7 @@ export function PaymentMethodsSection() {
 
       <GlassModal open={showAddForm} onClose={() => setShowAddForm(false)}>
         <div className="p-6">
-          <h3 className="text-lg font-heading font-bold text-s-ink dark:text-s-dm-text mb-4">{t("addCard")}</h3>
+          <h3 className="text-lg font-heading font-bold text-s-ink mb-4">{t("addCard")}</h3>
           
           {!clientSecret ? (
             <div className="flex justify-center py-8">

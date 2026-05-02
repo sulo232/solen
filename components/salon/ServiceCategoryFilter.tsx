@@ -23,8 +23,8 @@ export default function ServiceCategoryFilter({
   return (
     <div className="relative w-full overflow-hidden mb-6">
       {/* Optional gradient fade masks for horizontal scroll indication */}
-      <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-s-bg-base dark:from-s-dm-bg to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-s-bg-base dark:from-s-dm-bg to-transparent z-10 pointer-events-none" />
+      <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-s-bg-base to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-s-bg-base to-transparent z-10 pointer-events-none" />
 
       <div 
         ref={scrollRef}
@@ -36,7 +36,7 @@ export default function ServiceCategoryFilter({
           className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,box-shadow,transform] duration-150 ${
             activeCategory === null
               ? "bg-s-coral text-white scale-105"
-              : "bg-s-bg-raised text-s-ink/60 border border-s-ink/[0.08] hover:border-s-ink/20 dark:bg-s-dm-surface dark:text-s-dm-text/60 dark:border-white/10 dark:hover:border-white/20"
+              : "bg-s-bg-raised text-s-ink/60 border border-s-ink/[0.08] hover:border-s-ink/20:border-white/20"
           }`}
         >
           {lang === "de" ? "Alle" : "All"}
@@ -48,7 +48,7 @@ export default function ServiceCategoryFilter({
             className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,box-shadow,transform] duration-150 ${
               activeCategory === cat.key
                 ? "bg-s-coral text-white scale-105"
-                : "bg-s-bg-raised text-s-ink/60 border border-s-ink/[0.08] hover:border-s-ink/20 dark:bg-s-dm-surface dark:text-s-dm-text/60 dark:border-white/10 dark:hover:border-white/20"
+                : "bg-s-bg-raised text-s-ink/60 border border-s-ink/[0.08] hover:border-s-ink/20:border-white/20"
             }`}
           >
             {cat.key} ({cat.count})

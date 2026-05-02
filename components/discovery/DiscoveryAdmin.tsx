@@ -37,20 +37,20 @@ export default function DiscoveryAdmin() {
   }
 
   return (
-    <div className="mb-6 rounded-[16px] border border-s-coral/20 dark:border-s-coral/10 bg-white dark:bg-s-dm-surface overflow-hidden">
+    <div className="mb-6 rounded-[16px] border border-s-coral/20 bg-white overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-s-coral/5 dark:bg-s-coral/10 border-b border-s-coral/10">
+      <div className="flex items-center justify-between px-4 py-3 bg-s-coral/5 border-b border-s-coral/10">
         <div className="flex items-center gap-2">
           <Sparkles size={16} className="text-s-coral" />
-          <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("title")}</span>
+          <span className="text-sm font-medium text-s-ink">{t("title")}</span>
         </div>
-        <button onClick={() => setOpen(false)} className="text-s-ink/40 hover:text-s-ink dark:text-s-dm-text/40 dark:hover:text-s-dm-text">
+        <button onClick={() => setOpen(false)} className="text-s-ink/40 hover:text-s-ink:text-s-dm-text">
           <X size={16} />
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-s-ink/5 dark:border-white/5">
+      <div className="flex border-b border-s-ink/5">
         {([
           { id: "smart" as Tab, label: t("smartSearch"), icon: Search },
           { id: "tiktok" as Tab, label: t("tiktokUrls"), icon: Play },
@@ -62,7 +62,7 @@ export default function DiscoveryAdmin() {
             className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium transition-colors ${
               tab === tb.id
                 ? "text-s-coral border-b-2 border-s-coral"
-                : "text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text"
+                : "text-s-ink/40 hover:text-s-ink:text-s-dm-text"
             }`}
           >
             <tb.icon size={14} />
@@ -161,7 +161,7 @@ function SmartSearchTab() {
     <div className="space-y-4">
       {/* Description input */}
       <div className="space-y-2">
-        <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">
+        <label className="text-xs font-medium text-s-ink/60">
           {t("describeLabel")}
         </label>
         <div className="flex gap-2">
@@ -171,12 +171,12 @@ function SmartSearchTab() {
             onChange={(e) => setDescription(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder={t("descriptionPlaceholder")}
-            className="flex-1 px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 dark:border-white/10 bg-s-bg-base dark:bg-s-dm-bg text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="flex-1 px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 bg-s-bg-base text-s-ink placeholder:text-s-ink/30:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           />
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="px-2 py-2 text-xs rounded-[16px] border border-s-ink/10 dark:border-white/10 bg-s-bg-base dark:bg-s-dm-bg text-s-ink dark:text-s-dm-text"
+            className="px-2 py-2 text-xs rounded-[16px] border border-s-ink/10 bg-s-bg-base text-s-ink"
           >
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
@@ -196,9 +196,9 @@ function SmartSearchTab() {
       {/* Generated queries */}
       {queries.length > 0 && (
         <div className="flex flex-wrap gap-1">
-          <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mr-1">{t("queries")}</span>
+          <span className="text-[10px] text-s-ink/40 mr-1">{t("queries")}</span>
           {queries.map((q, i) => (
-            <span key={i} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60">
+            <span key={i} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink/60">
               {q}
             </span>
           ))}
@@ -209,7 +209,7 @@ function SmartSearchTab() {
       {results.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-s-ink/60 dark:text-s-dm-text/60">
+            <span className="text-xs text-s-ink/60">
               {t("resultsSelected", { count: results.length, selected: selected.size })}
             </span>
             <div className="flex items-center gap-2">
@@ -237,7 +237,7 @@ function SmartSearchTab() {
                 className={`relative aspect-[3/4] rounded-[16px] overflow-hidden border-2 transition-[transform,box-shadow] duration-200 ${
                   selected.has(photo.id)
                     ? "border-s-coral ring-2 ring-s-coral/30"
-                    : "border-transparent hover:border-s-ink/10 dark:hover:border-white/10"
+                    : "border-transparent hover:border-s-ink/10:border-white/10"
                 }`}
               >
                 <NextImage
@@ -305,7 +305,7 @@ function TikTokImportTab() {
   return (
     <div className="space-y-3">
       <div className="space-y-1">
-        <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">
+        <label className="text-xs font-medium text-s-ink/60">
           {t("tiktokLabel")}
         </label>
         <textarea
@@ -313,7 +313,7 @@ function TikTokImportTab() {
           onChange={(e) => setUrls(e.target.value)}
           placeholder={"https://www.tiktok.com/@user/video/123456\nhttps://www.tiktok.com/@user/video/789012"}
           rows={4}
-          className="w-full px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 dark:border-white/10 bg-s-bg-base dark:bg-s-dm-bg text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none font-mono"
+          className="w-full px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 bg-s-bg-base text-s-ink placeholder:text-s-ink/30:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none font-mono"
         />
       </div>
 
@@ -382,7 +382,7 @@ function CategoryImportTab() {
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60">
+      <p className="text-xs text-s-ink/60">
         {t("quickImportDesc")}
       </p>
 
@@ -395,7 +395,7 @@ function CategoryImportTab() {
             className={`flex items-center justify-center gap-2 px-3 py-3 rounded-pill border text-sm font-medium transition-[transform,filter] duration-150 ${
               importing === cat
                 ? "border-s-coral bg-s-coral/10 text-s-coral"
-                : "border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral hover:bg-s-coral/5"
+                : "border-s-ink/10 text-s-ink hover:border-s-coral hover:bg-s-coral/5"
             } disabled:opacity-50`}
           >
             {importing === cat ? (

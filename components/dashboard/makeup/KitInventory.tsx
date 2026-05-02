@@ -184,7 +184,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Package size={16} className="text-s-coral" />
-          <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">
+          <h3 className="font-heading font-semibold text-sm text-s-ink">
             {t("kit_title")}
           </h3>
         </div>
@@ -227,7 +227,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
           className={`shrink-0 px-3 py-1.5 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
             activeCategory === null
               ? "bg-s-coral text-white"
-              : "bg-s-ink/[0.05] dark:bg-s-dm-text/[0.05] text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09]"
+              : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
           }`}
           aria-label={t("kit_all")}
         >
@@ -240,7 +240,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
             className={`shrink-0 px-3 py-1.5 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
               activeCategory === cat
                 ? "bg-s-coral text-white"
-                : "bg-s-ink/[0.05] dark:bg-s-dm-text/[0.05] text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09]"
+                : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
             }`}
             aria-label={t(`kit_cat.${cat}` as any)}
           >
@@ -251,20 +251,20 @@ export default function KitInventory({ salonId }: { salonId: string }) {
 
       {/* Add form */}
       {showForm && (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-[--raised] dark:bg-s-dm-surface space-y-3">
+        <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-[--raised] space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <input
               value={formData.brand}
               onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
               placeholder={t("kit_brand")}
-              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text"
+              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-xs text-s-ink"
               aria-label={t("kit_brand")}
             />
             <input
               value={formData.product_name}
               onChange={(e) => setFormData({ ...formData, product_name: e.target.value })}
               placeholder={t("kit_product_name")}
-              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text"
+              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-xs text-s-ink"
               aria-label={t("kit_product_name")}
             />
           </div>
@@ -273,13 +273,13 @@ export default function KitInventory({ salonId }: { salonId: string }) {
               value={formData.shade}
               onChange={(e) => setFormData({ ...formData, shade: e.target.value })}
               placeholder={t("kit_shade")}
-              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text"
+              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-xs text-s-ink"
               aria-label={t("kit_shade")}
             />
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text"
+              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-xs text-s-ink"
               aria-label={t("kit_category")}
             >
               {KIT_CATEGORIES.map((cat) => (
@@ -292,14 +292,14 @@ export default function KitInventory({ salonId }: { salonId: string }) {
               value={formData.quantity}
               onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
               placeholder={t("kit_quantity")}
-              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text"
+              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-xs text-s-ink"
               aria-label={t("kit_quantity")}
             />
             <input
               type="date"
               value={formData.expiry_date}
               onChange={(e) => setFormData({ ...formData, expiry_date: e.target.value })}
-              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text"
+              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-xs text-s-ink"
               aria-label={t("kit_expiry")}
             />
           </div>
@@ -314,7 +314,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
             </button>
             <button
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 rounded-[8px] text-xs text-s-ink/50 dark:text-s-dm-text/50"
+              className="px-4 py-2 rounded-[8px] text-xs text-s-ink/50"
               aria-label={t("cancel")}
             >
               {t("cancel")}
@@ -335,21 +335,21 @@ export default function KitInventory({ salonId }: { salonId: string }) {
           return (
             <div
               key={item.id}
-              className={`rounded-[12px] border bg-[--raised] dark:bg-s-dm-surface ${
-                isExpired ? "border-s-error/30" : isExpiringSoon ? "border-s-warning/30" : "border-s-ink/[0.04] dark:border-s-dm-text/[0.04]"
+              className={`rounded-[12px] border bg-[--raised] ${
+                isExpired ? "border-s-error/30" : isExpiringSoon ? "border-s-warning/30" : "border-s-ink/[0.04]"
               }`}
             >
               <div className="flex items-center gap-3 p-3">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">
+                  <p className="text-sm font-heading font-semibold text-s-ink truncate">
                     {item.brand} — {item.product_name}
                   </p>
                   <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
                     {item.shade && (
-                      <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{item.shade}</span>
+                      <span className="text-[10px] text-s-ink/40">{item.shade}</span>
                     )}
                     {item.category && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/50 dark:text-s-dm-text/50">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.04] text-s-ink/50">
                         {t(`kit_cat.${item.category}` as any)}
                       </span>
                     )}
@@ -361,17 +361,17 @@ export default function KitInventory({ salonId }: { salonId: string }) {
                   <button
                     onClick={() => adjustQuantity(item.id, -1)}
                     disabled={item.quantity <= 0}
-                    className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/[0.08] dark:hover:bg-s-dm-text/[0.08] transition-colors duration-150 disabled:opacity-30"
+                    className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/50 hover:bg-s-ink/[0.08]:bg-s-dm-text/[0.08] transition-colors duration-150 disabled:opacity-30"
                     aria-label={t("kit_minus")}
                   >
                     <Minus size={10} />
                   </button>
-                  <span className={`text-xs data-text w-6 text-center font-bold ${isLowStock ? "text-s-amber" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
+                  <span className={`text-xs data-text w-6 text-center font-bold ${isLowStock ? "text-s-amber" : "text-s-ink/50"}`}>
                     {item.quantity}
                   </span>
                   <button
                     onClick={() => adjustQuantity(item.id, 1)}
-                    className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/[0.08] dark:hover:bg-s-dm-text/[0.08] transition-colors duration-150"
+                    className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/50 hover:bg-s-ink/[0.08]:bg-s-dm-text/[0.08] transition-colors duration-150"
                     aria-label={t("kit_plus")}
                   >
                     <Plus size={10} />
@@ -390,7 +390,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
                 {/* Usage log toggle */}
                 <button
                   onClick={() => toggleLogs(item.id)}
-                  className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-ink/[0.08] dark:hover:bg-s-dm-text/[0.08] transition-colors duration-150"
+                  className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] text-s-ink/40 hover:bg-s-ink/[0.08]:bg-s-dm-text/[0.08] transition-colors duration-150"
                   aria-label={t("kit_history")}
                 >
                   <ChevronDown size={11} className={`transition-transform duration-200 ${logsOpen ? "rotate-180" : ""}`} />
@@ -411,19 +411,19 @@ export default function KitInventory({ salonId }: { salonId: string }) {
 
               {/* Usage log accordion */}
               {logsOpen && (
-                <div className="border-t border-s-ink/[0.04] dark:border-s-dm-text/[0.04] px-3 pb-3 pt-2">
-                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+                <div className="border-t border-s-ink/[0.04] px-3 pb-3 pt-2">
+                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 mb-2">
                     {t("kit_history")}
                   </p>
                   {logs.length === 0 ? (
-                    <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{t("kit_history_empty")}</p>
+                    <p className="text-xs text-s-ink/50">{t("kit_history_empty")}</p>
                   ) : (
                     <div className="space-y-1.5">
                       {logs.slice(0, 8).map((log) => (
                         <div key={log.id} className="flex items-center gap-2 text-[11px]">
-                          <span className="text-s-ink/50 dark:text-s-dm-text/50 tabular-nums shrink-0">{log.used_at}</span>
+                          <span className="text-s-ink/50 tabular-nums shrink-0">{log.used_at}</span>
                           <span className="text-s-coral font-semibold shrink-0">−{log.quantity_used}</span>
-                          {log.notes && <span className="text-s-ink/50 dark:text-s-dm-text/50 truncate">{log.notes}</span>}
+                          {log.notes && <span className="text-s-ink/50 truncate">{log.notes}</span>}
                         </div>
                       ))}
                     </div>
@@ -434,7 +434,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
           );
         })}
         {filtered.length === 0 && (
-          <p className="text-center text-xs text-s-ink/50 dark:text-s-dm-text/50 py-6">
+          <p className="text-center text-xs text-s-ink/50 py-6">
             {t("kit_empty")}
           </p>
         )}
@@ -447,24 +447,24 @@ export default function KitInventory({ salonId }: { salonId: string }) {
           aria-modal="true"
           className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-s-ink/40 backdrop-blur-[6px]"
         >
-          <div className="w-full max-w-sm rounded-card bg-[--raised] dark:bg-s-dm-surface p-5 space-y-4 shadow-v5-float">
+          <div className="w-full max-w-sm rounded-card bg-[--raised] p-5 space-y-4 shadow-v5-float">
             <div className="flex items-center justify-between">
-              <p className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
+              <p className="font-heading font-bold text-sm text-s-ink">
                 {t("kit_checkout_title")}
               </p>
               <button
                 onClick={() => setCheckoutItem(null)}
-                className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.05] dark:bg-s-dm-text/[0.05] text-s-ink/50 dark:text-s-dm-text/50"
+                className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.05] text-s-ink/50"
                 aria-label={t("cancel")}
               >
                 <X size={12} />
               </button>
             </div>
-            <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60">
+            <p className="text-xs text-s-ink/60">
               {checkoutItem.brand} — {checkoutItem.product_name}
             </p>
             <div className="space-y-2">
-              <label className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/45 dark:text-s-dm-text/45">
+              <label className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/45">
                 {t("kit_qty_used")}
               </label>
               <input
@@ -472,7 +472,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
                 min="1"
                 value={checkoutQty}
                 onChange={(e) => setCheckoutQty(e.target.value)}
-                className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-sm text-s-ink dark:text-s-dm-text"
+                className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-sm text-s-ink"
                 aria-label={t("kit_qty_used")}
               />
               <textarea
@@ -480,7 +480,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
                 onChange={(e) => setCheckoutNotes(e.target.value)}
                 rows={2}
                 placeholder={t("kit_checkout_notes_placeholder")}
-                className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text resize-none"
+                className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-xs text-s-ink resize-none"
                 aria-label={t("kit_checkout_notes_placeholder")}
               />
             </div>
@@ -495,7 +495,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
               </button>
               <button
                 onClick={() => setCheckoutItem(null)}
-                className="px-4 py-2 rounded-[8px] text-xs text-s-ink/50 dark:text-s-dm-text/50"
+                className="px-4 py-2 rounded-[8px] text-xs text-s-ink/50"
                 aria-label={t("cancel")}
               >
                 {t("cancel")}

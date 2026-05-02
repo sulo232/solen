@@ -71,7 +71,7 @@ export function StatCard({
   return (
     <motion.div
       variants={itemVariants}
-      className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4"
+      className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4"
     >
       <div className="flex items-start justify-between mb-4">
         <div className={`w-8 h-8 rounded-[10px] ${bg} flex items-center justify-center`}>
@@ -82,7 +82,7 @@ export function StatCard({
         )}
       </div>
 
-      <p className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">
+      <p className="font-heading font-bold text-[28px] text-s-ink leading-none">
         {display}
       </p>
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 mt-2">
@@ -96,7 +96,7 @@ export function StatCard({
             {delta.direction !== "flat" && `${delta.direction === "up" ? "+" : ""}${delta.value}%`}
             {delta.direction === "flat" && "—"}
           </span>
-          <span className="text-[9px] text-s-ink/30 dark:text-s-dm-text/30">
+          <span className="text-[9px] text-s-ink/30">
             {delta.label ?? "vs. Vorwoche"}
           </span>
         </div>

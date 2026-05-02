@@ -19,10 +19,10 @@ interface SolenScoreData {
 }
 
 const TIER_CONFIG = {
-  gold: { label: "Top Salon", color: "#D4870A", bg: "bg-s-amber-subtle dark:bg-s-amber-subtle", border: "border-s-amber/20 dark:border-s-amber/30", Icon: Star },
-  coral: { label: "Verifiziert", color: "#E8735A", bg: "bg-s-coral/5 dark:bg-s-coral/10", border: "border-s-coral/20 dark:border-s-coral/30", Icon: Shield },
-  grey: { label: "Aktiv", color: "#8A7A66", bg: "bg-s-bg-surface dark:bg-s-dm-surface", border: "border-s-ink/10 dark:border-white/10", Icon: Circle },
-  dark: { label: "Starter", color: "#C4B8A6", bg: "bg-s-bg-surface dark:bg-s-dm-surface", border: "border-s-ink/10 dark:border-white/10", Icon: Circle },
+  gold: { label: "Top Salon", color: "#D4870A", bg: "bg-s-amber-subtle", border: "border-s-amber/20", Icon: Star },
+  coral: { label: "Verifiziert", color: "#E8735A", bg: "bg-s-coral/5", border: "border-s-coral/20", Icon: Shield },
+  grey: { label: "Aktiv", color: "#8A7A66", bg: "bg-s-bg-surface", border: "border-s-ink/10", Icon: Circle },
+  dark: { label: "Starter", color: "#C4B8A6", bg: "bg-s-bg-surface", border: "border-s-ink/10", Icon: Circle },
 };
 
 const FACTOR_CONFIG = [
@@ -58,11 +58,11 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-6 animate-pulse">
-        <div className="h-12 w-24 rounded-[12px] bg-s-bg-sunken dark:bg-s-dm-surface" />
+      <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-6 animate-pulse">
+        <div className="h-12 w-24 rounded-[12px] bg-s-bg-sunken" />
         <div className="mt-4 space-y-2">
-          <div className="h-4 bg-s-bg-sunken dark:bg-s-dm-surface rounded w-2/3" />
-          <div className="h-3 bg-s-bg-sunken dark:bg-s-dm-surface rounded w-1/2" />
+          <div className="h-4 bg-s-bg-sunken rounded w-2/3" />
+          <div className="h-3 bg-s-bg-sunken rounded w-1/2" />
         </div>
       </div>
     );
@@ -81,13 +81,13 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
   }, FACTOR_CONFIG[0]);
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] p-6 bg-white dark:bg-s-dm-surface">
+    <div className="rounded-[12px] border border-s-ink/[0.06] p-6 bg-white">
       {/* Eyebrow */}
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-3">Solen Score</p>
 
       {/* Score display */}
       <div className="flex items-baseline gap-1 mb-1">
-        <span className="font-heading font-bold text-[48px] leading-none text-s-ink dark:text-s-dm-text">{data.solen_score}</span>
+        <span className="font-heading font-bold text-[48px] leading-none text-s-ink">{data.solen_score}</span>
         <span className="text-sm text-s-ink/35">/100</span>
       </div>
       <p className="text-[10px] font-heading uppercase tracking-[.12em]" style={{ color: tier.color }}>{tier.label}</p>
@@ -108,10 +108,10 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
               <f.Icon size={13} className={`${f.color} shrink-0`} />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-0.5">
-                  <span className="text-xs text-s-ink/60 dark:text-s-dm-text/60 truncate">{f.label}</span>
-                  <span className="text-xs data-text font-medium text-s-ink dark:text-s-dm-text">{value}/{f.max}</span>
+                  <span className="text-xs text-s-ink/60 truncate">{f.label}</span>
+                  <span className="text-xs data-text font-medium text-s-ink">{value}/{f.max}</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-s-sand dark:bg-s-dm-raised overflow-hidden">
+                <div className="h-1.5 rounded-full bg-s-sand overflow-hidden">
                   <div
                     className="h-full rounded-full transition-[width] duration-200 ease-out"
                     style={{ width: `${pct}%`, backgroundColor: tier.color }}
@@ -125,12 +125,12 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
 
       {/* Improvement tip */}
       {data.solen_score < 80 && (
-        <div className="mt-4 p-3 rounded-[12px] bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.06]">
+        <div className="mt-4 p-3 rounded-[12px] bg-white border border-s-ink/[0.06]">
           <div className="flex items-start gap-2">
             <TrendingUp size={14} className="text-s-coral shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs font-medium text-s-ink dark:text-s-dm-text">Tipp zur Verbesserung</p>
-              <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
+              <p className="text-xs font-medium text-s-ink">Tipp zur Verbesserung</p>
+              <p className="text-xs text-s-ink/50 mt-0.5">
                 {TIPS[lowestFactor.key]}
               </p>
             </div>

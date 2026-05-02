@@ -51,13 +51,13 @@ export default function SalonScript({ item, locale }: SalonScriptProps) {
           {TITLES[locale] ?? TITLES.de}
         </span>
       </div>
-      <p className="text-sm text-s-ink/80 dark:text-s-dm-text/80 leading-relaxed italic whitespace-pre-line">
+      <p className="text-sm text-s-ink/80 leading-relaxed italic whitespace-pre-line">
         &ldquo;{script}&rdquo;
       </p>
       <div className="flex gap-2 mt-3">
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-s-ink/5 dark:bg-white/5 text-xs text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink/10 dark:hover:bg-white/10 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-s-ink/5 text-xs text-s-ink/60 hover:bg-s-ink/10:bg-white/10 transition-colors"
         >
           {copied ? <Check size={12} className="text-s-success" /> : <Copy size={12} />}
           {copied ? "Copied!" : "Copy"}

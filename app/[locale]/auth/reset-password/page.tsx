@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex items-center justify-center px-4">
+      <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
           <div className="mx-auto w-16 h-16 rounded-[20px] flex items-center justify-center mb-4"
             style={{ background: "rgba(76,175,111,.12)" }}>
@@ -76,8 +76,8 @@ export default function ResetPasswordPage() {
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-sage mb-2">
             Erfolgreich
           </p>
-          <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Passwort geändert</p>
-          <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 mt-2">
+          <p className="font-heading font-bold text-xl text-s-ink">Passwort geändert</p>
+          <p className="text-xs font-body text-s-ink/50 mt-2">
             Du wirst zur Anmeldung weitergeleitet…
           </p>
         </div>
@@ -86,7 +86,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-s-bg-base flex flex-col items-center justify-center px-4 py-12">
       {/* Single ambient glow — Zone 3 exception */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full"
@@ -100,13 +100,13 @@ export default function ResetPasswordPage() {
             solen.ch
           </p>
           <Link href={`/${locale}`}
-            className="inline-block font-heading font-bold text-[32px] text-s-ink dark:text-s-dm-text leading-none hover:opacity-80 transition-opacity">
+            className="inline-block font-heading font-bold text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity">
             solen<span className="text-s-coral">.</span>ch
           </Link>
         </div>
 
         {/* Auth card — Zone 3, warm shadow */}
-        <div className="rounded-card border border-white/70 dark:border-white/10 p-8"
+        <div className="rounded-card border border-white/70 p-8"
           style={{ background: "rgba(255,255,255,.90)", backdropFilter: "blur(20px) saturate(1.2)",
                    WebkitBackdropFilter: "blur(20px) saturate(1.2)",
                    boxShadow: "0 4px 12px rgba(26,18,9,.08), 0 16px 40px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.90)" }}>
@@ -118,8 +118,8 @@ export default function ResetPasswordPage() {
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/45 mb-2">
               Konto-Wiederherstellung
             </p>
-            <p className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">Neues Passwort</p>
-            <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 mt-1">
+            <p className="font-heading font-bold text-lg text-s-ink">Neues Passwort</p>
+            <p className="text-xs font-body text-s-ink/50 mt-1">
               Wähle ein neues Passwort für dein Konto.
             </p>
           </div>
@@ -127,7 +127,7 @@ export default function ResetPasswordPage() {
           {!sessionReady ? (
             <div className="flex flex-col items-center gap-3 py-4">
               <Spinner size="md" />
-              <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50">Link wird überprüft…</p>
+              <p className="text-xs font-body text-s-ink/50">Link wird überprüft…</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -138,12 +138,12 @@ export default function ResetPasswordPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Neues Passwort"
                   required
-                  className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+                  className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink/60 dark:hover:text-s-dm-text/60 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 hover:text-s-ink/60:text-s-dm-text/60 transition-colors"
                   aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -165,7 +165,7 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setConfirm(e.target.value)}
                 placeholder="Passwort bestätigen"
                 required
-                className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+                className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
               />
 
               {confirm.length > 0 && !passwordsMatch && (
@@ -199,8 +199,8 @@ export default function ResetPasswordPage() {
 
 function Requirement({ met, text }: { met: boolean; text: string }) {
   return (
-    <span className={`flex items-center gap-1.5 ${met ? "text-s-sage" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
-      <Check size={12} className={met ? "text-s-sage" : "text-s-ink/20 dark:text-s-dm-text/20"} />
+    <span className={`flex items-center gap-1.5 ${met ? "text-s-sage" : "text-s-ink/40"}`}>
+      <Check size={12} className={met ? "text-s-sage" : "text-s-ink/20"} />
       {text}
     </span>
   );

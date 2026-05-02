@@ -63,28 +63,28 @@ export default function PWAInstallPrompt() {
 
   return (
     <div className="fixed bottom-20 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 z-70 animate-in slide-in-from-bottom-4">
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg border border-s-ink/5 dark:border-white/10 p-4">
+      <div className="bg-white rounded-[12px] shadow-warm-lg border border-s-ink/5 p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-[12px] bg-s-coral/10 flex items-center justify-center shrink-0">
               <Download className="w-5 h-5 text-s-coral" />
             </div>
             <div>
-              <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">
+              <p className="font-heading font-semibold text-sm text-s-ink">
                 {t("title")}
               </p>
-              <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
+              <p className="text-xs text-s-ink/50 mt-0.5">
                 {t("subtitle")}
               </p>
             </div>
           </div>
-          <button onClick={dismiss} aria-label={t("dismiss")} className="text-s-ink/30 hover:text-s-ink/60 dark:text-s-dm-text/30 dark:hover:text-s-dm-text/60 p-1">
+          <button onClick={dismiss} aria-label={t("dismiss")} className="text-s-ink/30 hover:text-s-ink/60:text-s-dm-text/60 p-1">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {isIOS ? (
-          <div className="mt-3 flex items-center gap-2 text-xs text-s-ink/60 dark:text-s-dm-text/60 bg-s-bg-surface dark:bg-white/5 rounded-input p-2.5">
+          <div className="mt-3 flex items-center gap-2 text-xs text-s-ink/60 bg-s-bg-surface rounded-input p-2.5">
             <Share className="w-4 h-4 shrink-0 text-s-coral" />
             <span>{t("iosInstructions")}</span>
           </div>

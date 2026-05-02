@@ -79,7 +79,7 @@ function buildRows(locale: string, labels: RowLabels): Row[] {
       render: (s) => (
         <div className="flex items-center justify-center gap-1.5">
           <Star size={13} className="fill-s-coral text-s-coral shrink-0" />
-          <span className="font-semibold tabular-nums text-s-ink dark:text-s-dm-text">
+          <span className="font-semibold tabular-nums text-s-ink">
             {s.average_rating?.toFixed(1) ?? "–"}
           </span>
         </div>
@@ -89,7 +89,7 @@ function buildRows(locale: string, labels: RowLabels): Row[] {
       label: labels.reviewCount,
       Icon: MessageCircle,
       render: (s) => (
-        <span className="tabular-nums text-s-ink dark:text-s-dm-text">
+        <span className="tabular-nums text-s-ink">
           {s.review_count ?? 0}
         </span>
       ),
@@ -98,7 +98,7 @@ function buildRows(locale: string, labels: RowLabels): Row[] {
       label: labels.cheapestService,
       Icon: Trophy,
       render: (s) => (
-        <span className="font-semibold tabular-nums text-s-ink dark:text-s-dm-text">
+        <span className="font-semibold tabular-nums text-s-ink">
           {s.min_price ? formatCurrency(s.min_price, locale) : "–"}
         </span>
       ),
@@ -107,7 +107,7 @@ function buildRows(locale: string, labels: RowLabels): Row[] {
       label: labels.todayHours,
       Icon: Clock,
       render: (s) => (
-        <span className="text-s-ink/70 dark:text-s-dm-text/70 text-xs">
+        <span className="text-s-ink/70 text-xs">
           {getTodayHours(s, labels.closed)}
         </span>
       ),
@@ -116,7 +116,7 @@ function buildRows(locale: string, labels: RowLabels): Row[] {
       label: labels.distance,
       Icon: MapPin,
       render: (s) => (
-        <span className="tabular-nums text-s-ink dark:text-s-dm-text">
+        <span className="tabular-nums text-s-ink">
           {s.distance_km ? `${s.distance_km.toFixed(1)} km` : "–"}
         </span>
       ),
@@ -200,25 +200,25 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
   return (
     <main
       id="main-content"
-      className="min-h-screen bg-[--base] dark:bg-s-dm-bg font-body"
+      className="min-h-screen bg-[--base] font-body"
     >
       {/* ── Header ── */}
-      <div className="sticky top-0 z-20 bg-[--base]/90 dark:bg-s-dm-bg/90 backdrop-blur-md border-b border-s-ink/5 dark:border-white/5">
+      <div className="sticky top-0 z-20 bg-[--base]/90 backdrop-blur-md border-b border-s-ink/5">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-4">
           <Link
             href={`/${locale}`}
             aria-label={t("back")}
-            className="flex items-center gap-1.5 text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-coral dark:hover:text-s-coral transition-colors duration-150 text-sm"
+            className="flex items-center gap-1.5 text-s-ink/60 hover:text-s-coral:text-s-coral transition-colors duration-150 text-sm"
           >
             <ArrowLeft size={16} />
             <span>{t("back")}</span>
           </Link>
-          <span className="text-s-ink/20 dark:text-white/20">/</span>
-          <h1 className="font-heading font-bold text-s-ink dark:text-s-dm-text text-base">
+          <span className="text-s-ink/20">/</span>
+          <h1 className="font-heading font-bold text-s-ink text-base">
             {t("title")}
           </h1>
           {salons.length > 0 && (
-            <span className="ml-auto text-xs text-s-ink/40 dark:text-s-dm-text/40">
+            <span className="ml-auto text-xs text-s-ink/40">
               {t("salonCount", { count: salons.length })}
             </span>
           )}
@@ -234,7 +234,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
               role="status"
               aria-label={t("loading")}
             />
-            <p className="text-s-ink/50 dark:text-s-dm-text/50 text-sm">{t("loading")}</p>
+            <p className="text-s-ink/50 text-sm">{t("loading")}</p>
           </div>
         )}
 
@@ -311,7 +311,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
                   <div
                     key={salon.id}
                     className={cn(
-                      "relative rounded-card bg-[--raised] dark:bg-s-dm-surface shadow-elevation-1 overflow-hidden",
+                      "relative rounded-card bg-[--raised] shadow-elevation-1 overflow-hidden",
                       i === bestIdx && "ring-2 ring-s-coral/30"
                     )}
                   >
@@ -329,10 +329,10 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
 
                     {/* Name + category */}
                     <div className="px-3 py-3">
-                      <p className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text truncate leading-tight">
+                      <p className="font-heading font-bold text-sm text-s-ink truncate leading-tight">
                         {salon.name}
                       </p>
-                      <p className="text-[11px] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5 truncate capitalize">
+                      <p className="text-[11px] text-s-ink/40 mt-0.5 truncate capitalize">
                         {(salon as any).quartier ?? (salon as any).city ?? ""}
                       </p>
                     </div>
@@ -341,7 +341,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
               </div>
 
               {/* Data rows */}
-              <div className="rounded-card bg-[--raised] dark:bg-s-dm-surface shadow-elevation-1 overflow-hidden">
+              <div className="rounded-card bg-[--raised] shadow-elevation-1 overflow-hidden">
                 {rows.map((row, rowIdx) => (
                   <div
                     key={row.label}
@@ -351,13 +351,13 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
                       salons.length === 2 && "grid-cols-[200px_repeat(2,1fr)]",
                       salons.length === 3 && "grid-cols-[200px_repeat(3,1fr)]",
                       salons.length === 4 && "grid-cols-[200px_repeat(4,1fr)]",
-                      rowIdx > 0 && "border-t border-s-ink/5 dark:border-white/5"
+                      rowIdx > 0 && "border-t border-s-ink/5"
                     )}
                   >
                     {/* Row label */}
                     <div className="flex items-center gap-2 px-4 py-3.5">
                       <row.Icon size={13} className="text-s-coral shrink-0" />
-                      <span className="text-xs text-s-ink/50 dark:text-s-dm-text/50 whitespace-nowrap">
+                      <span className="text-xs text-s-ink/50 whitespace-nowrap">
                         {row.label}
                       </span>
                     </div>
@@ -380,14 +380,14 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
                 {/* CTA row */}
                 <div
                   className={cn(
-                    "grid items-center gap-3 border-t border-s-ink/5 dark:border-white/5 bg-s-ink/[0.015] dark:bg-white/[0.015]",
+                    "grid items-center gap-3 border-t border-s-ink/5 bg-s-ink/[0.015]",
                     salons.length === 1 && "grid-cols-[200px_1fr]",
                     salons.length === 2 && "grid-cols-[200px_repeat(2,1fr)]",
                     salons.length === 3 && "grid-cols-[200px_repeat(3,1fr)]",
                     salons.length === 4 && "grid-cols-[200px_repeat(4,1fr)]",
                   )}
                 >
-                  <div className="px-4 py-4 text-xs text-s-ink/30 dark:text-s-dm-text/30 font-medium">
+                  <div className="px-4 py-4 text-xs text-s-ink/30 font-medium">
                     {t("bookLabel")}
                   </div>
                   {salons.map((salon) => (
@@ -406,7 +406,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
               </div>
 
               {/* Hint below table */}
-              <p className="text-center text-xs text-s-ink/30 dark:text-s-dm-text/30 mt-4">
+              <p className="text-center text-xs text-s-ink/30 mt-4">
                 {t("hint")}
               </p>
             </div>

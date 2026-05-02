@@ -117,10 +117,10 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
 
   return (
     <div className="space-y-5">
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">{t("stepPayment")}</p>
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40">{t("stepPayment")}</p>
 
       {/* Stripe sandbox — wrapper only */}
-      <div className="rounded-input border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white shadow-elevation-1">
+      <div className="rounded-input border border-s-ink/[0.06] p-4 bg-white shadow-elevation-1">
         <PaymentElement options={{ layout: "tabs" }} />
       </div>
 
@@ -134,7 +134,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
         {processing ? t("processing") : t("payNow")}
       </button>
 
-      <p className="text-[10px] text-s-ink/45 dark:text-s-dm-text/45 text-center">
+      <p className="text-[10px] text-s-ink/45 text-center">
         {t("stripeEncrypted")}
       </p>
     </div>
@@ -597,13 +597,13 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-sage mb-2">
             {t("bookingConfirmed")}
           </p>
-          <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">{t("allGood")}</p>
-          <p className="font-body italic text-s-ink/50 dark:text-s-dm-text/50 text-sm mt-1 leading-relaxed">
+          <p className="font-heading font-bold text-xl text-s-ink">{t("allGood")}</p>
+          <p className="font-body italic text-s-ink/50 text-sm mt-1 leading-relaxed">
             {t("bookingSuccessMessage")}
           </p>
         </div>
         <Link href={`/${locale}/profile`}
-          className="flex items-center justify-center gap-2 w-full py-3 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral hover:text-s-coral transition-colors">
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-btn border border-s-ink/10 text-xs font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 hover:border-s-coral hover:text-s-coral transition-colors">
           {t("myBookings")}
         </Link>
       </div>
@@ -620,10 +620,10 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
             return (
               <div key={label} className="flex-1">
                 <div className={`h-1 rounded-full transition-[width,background-color] duration-300 ${
-                  i <= stepIndex ? "bg-s-coral" : "bg-s-ink/10 dark:bg-white/10"
+                  i <= stepIndex ? "bg-s-coral" : "bg-s-ink/10"
                 }`} />
                 <p className={`text-[9px] font-heading uppercase tracking-[.12em] mt-1 ${
-                  i === stepIndex ? "text-s-coral font-bold" : "text-s-ink/50 dark:text-s-dm-text/50"
+                  i === stepIndex ? "text-s-coral font-bold" : "text-s-ink/50"
                 }`}>{label}</p>
               </div>
             );
@@ -643,8 +643,8 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
         <div className="mx-4 mt-4 rounded-[12px] bg-s-amber/5 border border-s-amber/20 px-4 py-3 flex items-start gap-3">
           <span className="text-lg">✂️</span>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-s-ink dark:text-s-dm-text">Letzter Schnitt wiederholen</p>
-            <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 mt-0.5 truncate">
+            <p className="text-xs font-medium text-s-ink">Letzter Schnitt wiederholen</p>
+            <p className="text-xs text-s-ink/60 mt-0.5 truncate">
               {[
                 lastBarberCut.fade_type && lastBarberCut.fade_type !== "none" && `${lastBarberCut.fade_type} fade`,
                 lastBarberCut.top_style && lastBarberCut.top_style !== "other" && lastBarberCut.top_style,
@@ -659,7 +659,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
 
       {/* Barbershop: chair availability indicator */}
       {serviceCategory === "barbershop" && barberChairs && (
-        <div className="mx-4 mt-2 flex items-center gap-1.5 text-xs text-s-ink/50 dark:text-s-dm-text/50">
+        <div className="mx-4 mt-2 flex items-center gap-1.5 text-xs text-s-ink/50">
           <span className="w-2 h-2 rounded-full bg-s-sage inline-block" />
           {barberChairs.chair_count} Stühle · {barberChairs.buffer_minutes} Min Puffer
         </div>
@@ -708,7 +708,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
             <div className="grid grid-cols-3 gap-2 mt-2">
               {Array.from({ length: 9 }).map((_, i) => (
-                <div key={i} className="h-[40px] rounded-[10px] bg-s-bg-sunken dark:bg-s-dm-bg animate-pulse" />
+                <div key={i} className="h-[40px] rounded-[10px] bg-s-bg-sunken animate-pulse" />
               ))}
             </div>
           </motion.div>
@@ -768,8 +768,8 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
                             isSelected
                               ? "bg-s-coral text-white border-s-coral shadow-coral-glow"
                               : offPeakPct
-                                ? "bg-s-sage-subtle border-s-sage/20 text-s-ink hover:border-s-sage/40 hover:text-s-sage-text dark:bg-s-sage/10 dark:text-s-dm-text dark:border-s-sage/20"
-                                : "bg-white dark:bg-s-dm-bg border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral/50 hover:text-s-coral",
+                                ? "bg-s-sage-subtle border-s-sage/20 text-s-ink hover:border-s-sage/40 hover:text-s-sage-text"
+                                : "bg-white border-s-ink/10 text-s-ink hover:border-s-coral/50 hover:text-s-coral",
                           ].join(" ")}
                           aria-label={`Termin um ${timeStr}${duration ? ` · ${duration} Min` : ""}${offPeakPct ? `, ${offPeakPct}% Off-Peak Rabatt` : discount > 0 ? `, ${discount}% Rabatt` : ""}`}
                           aria-pressed={isSelected}
@@ -777,7 +777,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
                           {timeStr}
                           {duration && <span className="ml-1 text-[10px] opacity-60">· {duration} Min</span>}
                           {offPeakPct ? (
-                            <span className="ml-1.5 text-[10px] text-s-sage-text dark:text-s-sage">-{offPeakPct}%</span>
+                            <span className="ml-1.5 text-[10px] text-s-sage-text">-{offPeakPct}%</span>
                           ) : discount > 0 ? (
                             <span className="ml-1.5 text-[10px] text-s-coral">-{discount}%</span>
                           ) : null}
@@ -804,7 +804,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className="border-t border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface overflow-hidden"
+          className="border-t border-s-ink/[0.06] bg-white overflow-hidden"
         >
           <div className="px-4 py-4 flex flex-col gap-3">
           {/* Package redeem banner */}
@@ -828,7 +828,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
               onChange={(e) => setIsFirstVisit(e.target.checked)}
               className="w-4 h-4 rounded accent-s-coral"
             />
-            <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Erster Besuch in diesem Salon</span>
+            <span className="text-sm text-s-ink/70">Erster Besuch in diesem Salon</span>
           </label>
 
           {/* Recurring */}
@@ -839,7 +839,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
               onChange={(e) => setRecurring(e.target.checked)}
               className="w-4 h-4 rounded accent-s-coral"
             />
-            <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">
+            <span className="text-sm text-s-ink/70">
               {serviceCategory === "barbershop" ? "Regelmässig buchen?" : "Serienbuchung"}
             </span>
             <RotateCcw className="w-3.5 h-3.5 text-s-coral" />
@@ -848,7 +848,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
             <select
               value={recurringFreq}
               onChange={(e) => setRecurringFreq(e.target.value as RecurringFrequency)}
-              className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors appearance-none"
+              className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base text-sm font-body text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors appearance-none"
               style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%231A1209' stroke-opacity='0.4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center" }}
             >
               {FREQ_OPTIONS.map(({ value, label }) => (
@@ -861,7 +861,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           <select
             value={acquisitionSource}
             onChange={e => setAcquisitionSource(e.target.value)}
-            className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-sm font-body text-s-ink/70 dark:text-s-dm-text/70 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors appearance-none"
+            className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base text-sm font-body text-s-ink/70 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors appearance-none"
             style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%231A1209' stroke-opacity='0.4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center" }}
           >
             {ACQUISITION_SOURCES.map(src => (
@@ -872,10 +872,10 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           {/* Booking summary */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-sm text-s-ink dark:text-s-dm-text">
+              <p className="font-medium text-sm text-s-ink">
                 {locale === "de" ? selectedSlot.services?.name_de : selectedSlot.services?.name_en}
               </p>
-              <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
+              <p className="text-xs text-s-ink/50 mt-0.5">
                 {new Date(selectedSlot.starts_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB", {
                   weekday: "short", day: "numeric", month: "short",
                 })}{" · "}
@@ -888,16 +888,16 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
             <div className="text-right">
               {(selectedSlot as any).off_peak_discount && selectedSlot.services?.price != null ? (
                 <>
-                  <span className="data-text text-xs text-s-ink/40 dark:text-s-dm-text/40 line-through mr-1">
+                  <span className="data-text text-xs text-s-ink/40 line-through mr-1">
                     {formatCurrency(selectedSlot.services.price, locale)}
                   </span>
-                  <span className="data-text font-bold text-lg text-s-sage-text dark:text-s-sage">
+                  <span className="data-text font-bold text-lg text-s-sage-text">
                     {formatCurrency((selectedSlot as any).discounted_price, locale)}
                   </span>
-                  <span className="block text-[10px] text-s-sage-text dark:text-s-sage">Off-Peak -{(selectedSlot as any).off_peak_discount}%</span>
+                  <span className="block text-[10px] text-s-sage-text">Off-Peak -{(selectedSlot as any).off_peak_discount}%</span>
                 </>
               ) : (
-                <span className="data-text font-bold text-lg text-s-ink dark:text-s-dm-text">
+                <span className="data-text font-bold text-lg text-s-ink">
                   {selectedSlot.price_override != null ? formatCurrency(selectedSlot.price_override, locale) : selectedSlot.services?.price != null ? formatCurrency(selectedSlot.services.price, locale) : "–"}
                 </span>
               )}
@@ -911,23 +911,23 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           </div>
 
           {isMoreThan7Days && (
-            <div className="flex items-center gap-1.5 text-xs text-s-ink/40 dark:text-s-dm-text/40">
+            <div className="flex items-center gap-1.5 text-xs text-s-ink/40">
               <CreditCard className="w-3.5 h-3.5 shrink-0" />
               Termin &gt;7 Tage entfernt — deine Karte wird gespeichert und 5 Tage vorher belastet.
             </div>
           )}
 
-          <div className="flex items-center gap-1.5 text-xs text-s-ink/40 dark:text-s-dm-text/40">
+          <div className="flex items-center gap-1.5 text-xs text-s-ink/40">
             <Info className="w-3.5 h-3.5 shrink-0" />
             Nach dem Termin kann der Salon den Preis anpassen. Du hast 48h zum Bestätigen.
           </div>
 
           {error && (
-            <div role="alert" className={`p-3 rounded-input text-xs ${paymentSucceeded ? 'bg-s-amber/10 border border-s-amber/30' : 'bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800'}`}>
-              <p className={`font-heading font-semibold mb-1 ${paymentSucceeded ? 'text-s-amber' : 'text-red-600 dark:text-red-400'}`}>
+            <div role="alert" className={`p-3 rounded-input text-xs ${paymentSucceeded ? 'bg-s-amber/10 border border-s-amber/30' : 'bg-red-50 border border-red-200'}`}>
+              <p className={`font-heading font-semibold mb-1 ${paymentSucceeded ? 'text-s-amber' : 'text-red-600'}`}>
                 {paymentSucceeded ? t("paymentSucceededTitle") : t("errorTitle")}
               </p>
-              <p className="text-s-ink/60 dark:text-s-dm-text/60 leading-relaxed">{error}</p>
+              <p className="text-s-ink/60 leading-relaxed">{error}</p>
               {paymentSucceeded && (
                 <a href="mailto:info@solen.ch" className="mt-2 inline-block text-s-coral underline text-xs">
                   info@solen.ch
@@ -951,7 +951,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
             {checkoutStep === "payment" && clientSecret && (
               <motion.div key="payment" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
                 {stripePromise === null ? (
-                  <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 text-center p-4">
+                  <p className="text-sm text-s-ink/50 text-center p-4">
                     {t("stripeUnavailable")}
                   </p>
                 ) : (
@@ -985,21 +985,21 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
       {/* Waitlist Modal */}
       {showWaitlist && (
         <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40" onClick={() => setShowWaitlist(false)}>
-          <div className="bg-white dark:bg-s-dm-raised rounded-[12px] p-6 mx-4 max-w-sm w-full shadow-surface" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-[12px] p-6 mx-4 max-w-sm w-full shadow-surface" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-2 mb-3">
               <ClipboardList className="w-5 h-5 text-s-coral" />
-              <h3 className="font-heading font-bold text-s-ink dark:text-s-dm-text">Warteliste</h3>
+              <h3 className="font-heading font-bold text-s-ink">Warteliste</h3>
             </div>
             {waitlistDone ? (
               <div className="text-center py-4">
-                <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Du wirst benachrichtigt, sobald ein Platz frei wird.</p>
+                <p className="text-sm text-s-ink/70">Du wirst benachrichtigt, sobald ein Platz frei wird.</p>
                 <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150">
                   Schliessen
                 </button>
               </div>
             ) : (
               <>
-                <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-4">
+                <p className="text-sm text-s-ink/60 mb-4">
                   Am {waitlistDate} sind leider keine Termine frei. Möchtest du benachrichtigt werden, wenn ein Platz frei wird?
                 </p>
                 <button

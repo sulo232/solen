@@ -64,16 +64,16 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
 
   if (result?.success) {
     return (
-      <div className="rounded-[16px] bg-s-sage/10 dark:bg-s-sage/20 border border-s-sage/20 p-5 text-center">
+      <div className="rounded-[16px] bg-s-sage/10 border border-s-sage/20 p-5 text-center">
         <CheckCircle size={32} className="text-s-sage mx-auto mb-3" />
-        <h4 className="font-heading text-base font-bold text-s-ink dark:text-s-dm-text mb-1">
+        <h4 className="font-heading text-base font-bold text-s-ink mb-1">
           {t("joinedSuccess")}
         </h4>
-        <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 mb-3">
+        <p className="text-sm text-s-ink/70 mb-3">
           {t("position")} <strong>{result.position}</strong> · {t("estimatedWait")}{" "}
           <strong>~{result.estimated_wait_minutes} {t("minutes")}</strong>
         </p>
-        <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+        <p className="text-xs text-s-ink/50">
           {t("trackingCode")}: <code className="font-mono">{result.tracking_token}</code>
         </p>
       </div>
@@ -83,14 +83,14 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       {result?.error && (
-        <div className="flex items-center gap-2 text-sm text-s-error bg-s-error-bg dark:bg-s-error/10 rounded-input px-3 py-2">
+        <div className="flex items-center gap-2 text-sm text-s-error bg-s-error-bg rounded-input px-3 py-2">
           <AlertCircle size={16} />
           {result.error}
         </div>
       )}
 
       <div>
-        <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
+        <label className="block text-xs font-medium text-s-ink/70 mb-1">
           {t("nameLabel")} *
         </label>
         <input
@@ -99,14 +99,14 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           onChange={(e) => setName(e.target.value)}
           required
           maxLength={100}
-          className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
+          className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
           placeholder={t("namePlaceholder")}
           aria-label={t("nameLabel")}
         />
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
+        <label className="block text-xs font-medium text-s-ink/70 mb-1">
           {t("phoneLabel")}
         </label>
         <input
@@ -114,7 +114,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           maxLength={20}
-          className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
+          className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
           placeholder={t("phonePlaceholder")}
           aria-label={t("phoneLabel")}
         />
@@ -122,13 +122,13 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
 
       {staff && staff.length > 0 && (
         <div>
-          <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
+          <label className="block text-xs font-medium text-s-ink/70 mb-1">
             {t("preferredBarberLabel")}
           </label>
           <select
             value={preferredBarberId}
             onChange={(e) => setPreferredBarberId(e.target.value)}
-            className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
+            className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
             aria-label={t("preferredBarberLabel")}
           >
             <option value="">{t("noFavorite")}</option>
@@ -141,13 +141,13 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
 
       {services && services.length > 0 && (
         <div>
-          <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
+          <label className="block text-xs font-medium text-s-ink/70 mb-1">
             {t("serviceLabel")}
           </label>
           <select
             value={serviceId}
             onChange={(e) => setServiceId(e.target.value)}
-            className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
+            className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
             aria-label={t("serviceLabel")}
           >
             <option value="">{t("pleaseSelect")}</option>

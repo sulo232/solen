@@ -156,32 +156,32 @@ export default function BookingSuccess(props: BookingSuccessProps) {
         <CheckCircle size={32} className="text-s-coral" />
       </div>
 
-      <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-2">{t("title")}</h2>
-      <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">{t("subtitle")}</p>
+      <h2 className="font-heading font-bold text-2xl text-s-ink mb-2">{t("title")}</h2>
+      <p className="text-sm text-s-ink/50 mb-6">{t("subtitle")}</p>
 
-      <div className="bg-s-bg-surface dark:bg-s-dm-surface rounded-card p-4 mb-6 text-left">
-        <p className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">{props.serviceName}</p>
-        <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-1">{props.salonName}</p>
-        <div className="flex items-center gap-4 mt-3 text-sm text-s-ink/50 dark:text-s-dm-text/50">
+      <div className="bg-s-bg-surface rounded-card p-4 mb-6 text-left">
+        <p className="font-heading font-semibold text-base text-s-ink">{props.serviceName}</p>
+        <p className="text-sm text-s-ink/60 mt-1">{props.salonName}</p>
+        <div className="flex items-center gap-4 mt-3 text-sm text-s-ink/50">
           <span>{dateStr}</span>
           <span>{t("time", { time: timeStr })}</span>
           <span>{t("duration", { minutes: props.duration })}</span>
         </div>
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-ink/5 dark:border-white/5">
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-ink/5">
           <div className="flex items-center gap-2">
-            <CreditCard size={14} className="text-s-ink/50 dark:text-s-dm-text/50" />
-            <span className="text-sm text-s-ink/50 dark:text-s-dm-text/50">
+            <CreditCard size={14} className="text-s-ink/50" />
+            <span className="text-sm text-s-ink/50">
               {props.cardLast4 ? `•••• ${props.cardLast4}` : t("payment")}
             </span>
           </div>
-          <p className="data-text font-semibold text-s-ink dark:text-s-dm-text">{formatCurrency(props.price, locale)}</p>
+          <p className="data-text font-semibold text-s-ink">{formatCurrency(props.price, locale)}</p>
         </div>
       </div>
 
       {/* Cancellation policy */}
       <div className="flex items-start gap-2 bg-s-amber-subtle/50 rounded-btn p-3 mb-4 text-left">
         <ShieldCheck size={16} className="text-s-amber shrink-0 mt-0.5" />
-        <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60">
+        <p className="text-xs text-s-ink/60">
           {t("cancellationPolicy", { hours: props.cancellationHours ?? 24 })}
         </p>
       </div>
@@ -190,9 +190,9 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       <div className="bg-s-coral/5 rounded-input p-4 mb-4 text-left border border-s-coral/10">
         <div className="flex items-center gap-2 mb-1">
           <Gift size={14} className="text-s-coral" />
-          <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("referralTitle")}</p>
+          <p className="text-sm font-medium text-s-ink">{t("referralTitle")}</p>
         </div>
-        <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{t("referralDesc", { amount: formatCurrency(rewardAmount, locale) })}</p>
+        <p className="text-xs text-s-ink/50">{t("referralDesc", { amount: formatCurrency(rewardAmount, locale) })}</p>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -206,7 +206,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
 
         <button
           onClick={handleShare}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn border border-s-ink/10 text-sm font-medium text-s-ink/70 hover:border-s-coral transition-colors"
         >
           <Share2 size={16} />
           {t("shareWithFriend")}
@@ -214,7 +214,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
 
         <button
           onClick={() => router.push(`/${locale}/salon/${props.salonSlug}`)}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn border border-s-ink/10 text-sm font-medium text-s-ink/70 hover:border-s-coral transition-colors"
         >
           <RotateCcw size={16} />
           {t("bookAgain")}

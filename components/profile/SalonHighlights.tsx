@@ -58,7 +58,7 @@ export const SalonHighlights: React.FC<SalonHighlightsProps> = ({ favorites, loc
               </div>
 
               {/* Label */}
-              <span className="text-[10px] font-body text-s-ink/60 dark:text-s-dm-text/60 max-w-[58px] text-center truncate">
+              <span className="text-[10px] font-body text-s-ink/60 max-w-[58px] text-center truncate">
                 {salon.name}
               </span>
             </Link>
@@ -71,11 +71,11 @@ export const SalonHighlights: React.FC<SalonHighlightsProps> = ({ favorites, loc
           className="flex-shrink-0 flex flex-col items-center gap-1.5"
         >
           <div
-            className="w-[58px] h-[58px] rounded-full flex items-center justify-center border-2 border-dashed border-s-ink/20 dark:border-white/20 hover:border-s-coral dark:hover:border-s-coral transition-[border-color] duration-150"
+            className="w-[58px] h-[58px] rounded-full flex items-center justify-center border-2 border-dashed border-s-ink/20 hover:border-s-coral:border-s-coral transition-[border-color] duration-150"
           >
-            <Plus size={24} strokeWidth={2} className="text-s-ink/40 dark:text-s-dm-text/40" />
+            <Plus size={24} strokeWidth={2} className="text-s-ink/40" />
           </div>
-          <span className="text-[10px] font-body text-s-ink/60 dark:text-s-dm-text/60">
+          <span className="text-[10px] font-body text-s-ink/60">
             {t("more")}
           </span>
         </Link>

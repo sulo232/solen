@@ -41,9 +41,9 @@ export default function SetupBanner() {
   const incompleteSteps = data.steps.filter((s) => !s.complete);
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-6 bg-white dark:bg-s-dm-surface">
+    <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-6 bg-white">
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-1">Einrichtung</p>
-      <p className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text mb-3">
+      <p className="font-heading font-bold text-sm text-s-ink mb-3">
         {isDE ? "Salon-Setup" : "Salon Setup"} — {data.completed}/{data.total} {isDE ? "erledigt" : "done"}
       </p>
       {/* Progress bar */}
@@ -56,7 +56,7 @@ export default function SetupBanner() {
         <div key={step.key} className="flex items-center gap-3 py-2.5 border-b border-s-ink/[0.04] last:border-0">
           <div className="w-5 h-5 rounded-[6px] flex items-center justify-center shrink-0 border border-s-ink/15">
           </div>
-          <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text flex-1">
+          <p className="text-xs font-heading font-semibold text-s-ink flex-1">
             {isDE ? step.label : step.label_en}
           </p>
           <Link href={`/${locale}/dashboard/setup`}

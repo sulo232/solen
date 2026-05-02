@@ -43,12 +43,12 @@ export default function RelatedTikToks({ itemId, isCurrentTikTok }: RelatedTikTo
 
   return (
     <div className="mt-6 px-1">
-      <h3 className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-3">{title}</h3>
+      <h3 className="text-sm font-medium text-s-ink mb-3">{title}</h3>
 
       {loading ? (
         <div className="grid grid-cols-2 gap-3">
           {[0, 1].map((i) => (
-            <div key={i} className="aspect-[9/16] rounded-[16px] bg-s-ink/5 dark:bg-white/5 shimmer" />
+            <div key={i} className="aspect-[9/16] rounded-[16px] bg-s-ink/5 shimmer" />
           ))}
         </div>
       ) : (
@@ -57,7 +57,7 @@ export default function RelatedTikToks({ itemId, isCurrentTikTok }: RelatedTikTo
             const vid = extractVideoId(item.tiktok_url);
             if (!vid) return null;
             return (
-              <div key={item.id} className="rounded-[16px] overflow-hidden border border-s-ink/5 dark:border-white/5">
+              <div key={item.id} className="rounded-[16px] overflow-hidden border border-s-ink/5">
                 <div className="aspect-[9/16] relative">
                   <iframe
                     src={`https://www.tiktok.com/embed/v2/${vid}?autoplay=0`}
@@ -69,7 +69,7 @@ export default function RelatedTikToks({ itemId, isCurrentTikTok }: RelatedTikTo
                   />
                 </div>
                 {item.style_name && (
-                  <p className="p-2 text-[11px] font-medium text-s-ink dark:text-s-dm-text truncate">{item.style_name}</p>
+                  <p className="p-2 text-[11px] font-medium text-s-ink truncate">{item.style_name}</p>
                 )}
               </div>
             );

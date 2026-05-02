@@ -33,30 +33,30 @@ export default function DescriptionCard({ item, locale }: DescriptionCardProps) 
 
   return (
     <div className="mt-4 px-1">
-      <div className="p-4 rounded-[16px] bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
+      <div className="p-4 rounded-[16px] bg-s-bg-surface border border-s-ink/5">
         {/* AI-generated tag */}
         <div className="flex items-center gap-1.5 mb-3">
           <Sparkles size={12} className="text-violet-400" />
-          <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 font-medium">AI-generated</span>
+          <span className="text-[10px] text-s-ink/30 font-medium">AI-generated</span>
         </div>
 
         {/* Description */}
         {desc ? (
-          <p className="text-sm text-s-ink/80 dark:text-s-dm-text/80 leading-relaxed whitespace-pre-line">
+          <p className="text-sm text-s-ink/80 leading-relaxed whitespace-pre-line">
             {desc}
           </p>
         ) : item.alt_text ? (
           /* Use TikTok caption as temporary description */
           <div>
-            <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed">
+            <p className="text-sm text-s-ink/70 leading-relaxed">
               {item.alt_text}
             </p>
-            <p className="text-[10px] text-s-ink/25 dark:text-s-dm-text/25 mt-2 italic">
+            <p className="text-[10px] text-s-ink/25 mt-2 italic">
               {locale === "de" ? "Originalbeschreibung — KI-Analyse folgt" : "Original caption — AI analysis coming soon"}
             </p>
           </div>
         ) : (
-          <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">{FALLBACKS[locale] ?? FALLBACKS.en}</p>
+          <p className="text-xs text-s-ink/30">{FALLBACKS[locale] ?? FALLBACKS.en}</p>
         )}
 
         {/* Maintenance level */}
@@ -71,10 +71,10 @@ export default function DescriptionCard({ item, locale }: DescriptionCardProps) 
         {/* Face shapes */}
         {item.face_shapes?.length > 0 && (
           <div className="mt-3">
-            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 font-medium mb-1.5">Works for face shapes</p>
+            <p className="text-[10px] text-s-ink/40 font-medium mb-1.5">Works for face shapes</p>
             <div className="flex flex-wrap gap-1">
               {item.face_shapes.map((shape) => (
-                <span key={shape} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60 capitalize">
+                <span key={shape} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink/60 capitalize">
                   {shape}
                 </span>
               ))}
@@ -85,7 +85,7 @@ export default function DescriptionCard({ item, locale }: DescriptionCardProps) 
         {/* Hair type match */}
         {item.hair_type_match?.length > 0 && (
           <div className="mt-3">
-            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 font-medium mb-1.5">Best for hair types</p>
+            <p className="text-[10px] text-s-ink/40 font-medium mb-1.5">Best for hair types</p>
             <div className="flex flex-wrap gap-1">
               {item.hair_type_match.map((type) => (
                 <span key={type} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-coral/5 text-s-coral/70 capitalize">

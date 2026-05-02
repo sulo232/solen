@@ -48,7 +48,7 @@ export function NailsAboveGrid() {
   ];
 
   return (
-    <div className="bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 rounded-[20px] px-4 py-3 flex flex-col gap-2.5">
+    <div className="bg-[--raised] border border-s-ink/5 rounded-[20px] px-4 py-3 flex flex-col gap-2.5">
       <ScrollableFilterRow label={t("filter_shape")} options={SHAPES} activeValue={shape} onSelect={setShape} />
       <ScrollableFilterRow label={t("filter_material")} options={MATERIALS} activeValue={material} onSelect={setMaterial} />
       <ScrollableFilterRow label={t("filter_style")} options={STYLES} activeValue={style} onSelect={setStyle} />
@@ -78,10 +78,10 @@ export function NailsBelowGrid() {
       <section>
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h2 className="font-heading font-bold text-[clamp(26px,3.5vw,44px)] tracking-[-0.02em] text-s-ink dark:text-s-dm-text">
+            <h2 className="font-heading font-bold text-[clamp(26px,3.5vw,44px)] tracking-[-0.02em] text-s-ink">
               {t("inspo_heading")}
             </h2>
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
+            <p className="text-sm text-s-ink/50 font-body mt-1">
               {t("inspo_subheading")}
             </p>
           </div>
@@ -100,7 +100,7 @@ export function NailsBelowGrid() {
               className={`rounded-[16px] bg-gradient-to-br ${item.color} aspect-square flex items-end p-2 overflow-hidden hover:-translate-y-[5px] hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]`}
               aria-label={item.label}
             >
-              <span className="text-xs font-body text-s-ink/60 dark:text-s-dm-text/60 leading-tight">
+              <span className="text-xs font-body text-s-ink/60 leading-tight">
                 {item.label}
               </span>
             </Link>
@@ -109,15 +109,15 @@ export function NailsBelowGrid() {
       </section>
 
       {/* AI Nail Art Inspo teaser */}
-      <section className="rounded-[20px] bg-gradient-to-r from-s-coral/5 to-s-plum/5 dark:from-s-coral/10 dark:to-s-plum/10 border border-s-coral/15 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+      <section className="rounded-[20px] bg-gradient-to-r from-s-coral/5 to-s-plum/5 border border-s-coral/15 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
         <div className="w-12 h-12 rounded-pill bg-s-coral/10 flex items-center justify-center shrink-0">
           <Sparkles size={22} className="text-s-coral" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text">
+          <p className="font-heading font-semibold text-s-ink">
             {t("ai_teaser_title")}
           </p>
-          <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
+          <p className="text-sm text-s-ink/50 font-body mt-1">
             {t("ai_teaser_body")}
           </p>
         </div>

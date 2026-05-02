@@ -77,7 +77,7 @@ export default function LikeButton({
           "transition-[transform,color] duration-150",
           liked
             ? "fill-red-500 text-red-500"
-            : "text-s-ink/30 dark:text-s-dm-text/30 group-hover:text-red-400",
+            : "text-s-ink/30 group-hover:text-red-400",
           animating && "scale-125"
         )}
       />
@@ -87,7 +87,7 @@ export default function LikeButton({
             "text-xs font-body tabular-nums transition-colors",
             liked
               ? "text-red-500"
-              : "text-s-ink/40 dark:text-s-dm-text/40"
+              : "text-s-ink/40"
           )}
         >
           {count}

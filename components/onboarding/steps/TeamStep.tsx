@@ -45,23 +45,23 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
           <Users size={22} className="text-s-coral" />
         </div>
         <div>
-          <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">
+          <h2 className="font-heading font-bold text-xl text-s-ink">
             {t("team.title")}
           </h2>
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/50">
+          <p className="text-sm text-s-ink/40">
             {t("team.subtitle")}
           </p>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 space-y-4">
+      <div className="bg-white rounded-[12px] border border-s-ink/5 p-6 space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">
               <Mail size={12} className="inline mr-1" />
               {t("team.emailLabel")}
             </label>
@@ -70,11 +70,11 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="mitarbeiter@email.ch"
-              className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+              className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">
               <UserPlus size={12} className="inline mr-1" />
               {t("team.nameLabel")}
             </label>
@@ -82,7 +82,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={t("team.firstName")}
-              className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+              className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
             />
           </div>
         </div>
@@ -100,15 +100,15 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
       </div>
 
       {invites.length > 0 && (
-        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 overflow-hidden">
+        <div className="bg-white rounded-[12px] border border-s-ink/5 overflow-hidden">
           {invites.map((inv, i) => (
-            <div key={i} className={["flex items-center gap-3 px-5 py-3", i > 0 ? "border-t border-s-ink/5 dark:border-white/5" : ""].join(" ")}>
-              <div className="w-8 h-8 rounded-full bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+            <div key={i} className={["flex items-center gap-3 px-5 py-3", i > 0 ? "border-t border-s-ink/5" : ""].join(" ")}>
+              <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center">
                 <UserPlus size={14} className="text-s-coral" />
               </div>
               <div>
-                <p className="text-sm text-s-ink dark:text-s-dm-text">{inv.name || inv.email}</p>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 flex items-center gap-1">
+                <p className="text-sm text-s-ink">{inv.name || inv.email}</p>
+                <p className="text-xs text-s-ink/40 flex items-center gap-1">
                   {t("team.inviteSent")} <Check size={10} className="text-s-coral" />
                 </p>
               </div>
@@ -117,9 +117,9 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
         </div>
       )}
 
-      <div className="bg-s-bg-surface dark:bg-s-dm-raised rounded-[12px] px-4 py-3 flex items-start gap-2">
-        <Lightbulb size={14} className="text-s-ink/30 dark:text-s-dm-text/30 mt-0.5 shrink-0" />
-        <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
+      <div className="bg-s-bg-surface rounded-[12px] px-4 py-3 flex items-start gap-2">
+        <Lightbulb size={14} className="text-s-ink/30 mt-0.5 shrink-0" />
+        <p className="text-xs text-s-ink/40">
           {t("team.soloHint")}
         </p>
       </div>

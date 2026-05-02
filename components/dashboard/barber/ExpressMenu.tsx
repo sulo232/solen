@@ -66,8 +66,8 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
 
   if (loading) {
     return (
-      <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface p-4">
-        <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 text-center py-4">
+      <div className="rounded-[12px] border border-s-ink/[0.06] bg-white p-4">
+        <p className="text-sm text-s-ink/40 text-center py-4">
           {t("loading")}
         </p>
       </div>
@@ -77,13 +77,13 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
   if (services.length === 0) return null;
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface p-4">
+    <div className="rounded-[12px] border border-s-ink/[0.06] bg-white p-4">
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-3">
         {t("express_menu")}
       </p>
 
       {createError && (
-        <p className="text-xs text-red-500 dark:text-red-400 mb-2">{createError}</p>
+        <p className="text-xs text-red-500 mb-2">{createError}</p>
       )}
 
       <div className="grid grid-cols-2 gap-2">
@@ -94,22 +94,22 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
             disabled={creating === svc.id}
             className={`rounded-[12px] border p-4 text-left transition-colors duration-150 ${
               creating === svc.id
-                ? "border-s-coral bg-s-coral/[0.06] dark:bg-s-coral/[0.06]"
-                : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface hover:border-s-coral/40"
+                ? "border-s-coral bg-s-coral/[0.06]"
+                : "border-s-ink/[0.06] bg-white hover:border-s-coral/40"
             } disabled:opacity-60`}
             aria-label={`${svc.name} — ${svc.duration_minutes} min, ${svc.price} CHF`}
           >
             <div className="flex items-start gap-2">
               <Scissors
                 size={14}
-                className="text-s-ink/30 dark:text-s-dm-text/30 mt-0.5 shrink-0"
+                className="text-s-ink/30 mt-0.5 shrink-0"
               />
               <div className="min-w-0">
-                <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">
+                <p className="text-sm font-heading font-semibold text-s-ink truncate">
                   {svc.name}
                 </p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[10px] data-text text-s-ink/40 dark:text-s-dm-text/40 flex items-center gap-0.5">
+                  <span className="text-[10px] data-text text-s-ink/40 flex items-center gap-0.5">
                     <Clock size={10} />
                     {svc.duration_minutes} min
                   </span>

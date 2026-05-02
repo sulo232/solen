@@ -129,7 +129,7 @@ export default function BodyZoneSelector({
 
   if (!loaded)
     return (
-      <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">
+      <p className="text-sm text-s-ink/40 py-4">
         {t("loading")}
       </p>
     );
@@ -145,7 +145,7 @@ export default function BodyZoneSelector({
           className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
             visualMode
               ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-              : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] text-s-ink/40 dark:text-s-dm-text/40"
+              : "border-s-ink/[0.06] text-s-ink/40"
           }`}
           aria-label={t(visualMode ? "text_mode" : "visual_mode")}
         >
@@ -175,7 +175,7 @@ export default function BodyZoneSelector({
             key={preset.labelKey}
             onClick={() => applyPreset(preset.zones)}
             aria-label={t(preset.labelKey as any)}
-            className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] px-3 py-1.5 text-[10px] font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 transition-colors duration-150 hover:border-s-coral/40 hover:text-s-coral"
+            className="rounded-[12px] border border-s-ink/[0.06] px-3 py-1.5 text-[10px] font-heading font-semibold text-s-ink/50 transition-colors duration-150 hover:border-s-coral/40 hover:text-s-coral"
           >
             {t(preset.labelKey as any)}
           </button>
@@ -194,7 +194,7 @@ export default function BodyZoneSelector({
               className={`rounded-[12px] border p-3 flex items-center gap-3 transition-colors duration-150 ${
                 isSelected
                   ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                  : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] text-s-ink/60 dark:text-s-dm-text/60"
+                  : "border-s-ink/[0.06] text-s-ink/60"
               }`}
             >
               <zone.icon size={16} />
@@ -210,15 +210,15 @@ export default function BodyZoneSelector({
       {/* Wax type per selected zone */}
       {selected.length > 0 && (
         <div className="space-y-2 mb-4">
-          <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mb-2">
+          <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-2">
             {t("wax_type_label")}
           </p>
           {selected.map((zoneKey) => (
             <div
               key={zoneKey}
-              className="flex items-center justify-between rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-2 bg-[--raised] dark:bg-s-dm-surface"
+              className="flex items-center justify-between rounded-[12px] border border-s-ink/[0.06] p-2 bg-[--raised]"
             >
-              <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">
+              <span className="text-xs font-heading font-semibold text-s-ink">
                 {t(`zones.${zoneKey}` as any)}
               </span>
               <select
@@ -229,7 +229,7 @@ export default function BodyZoneSelector({
                 aria-label={t("wax_type_select", {
                   zone: t(`zones.${zoneKey}` as any),
                 })}
-                className="text-xs px-2 py-1 rounded-[8px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-transparent text-s-ink dark:text-s-dm-text"
+                className="text-xs px-2 py-1 rounded-[8px] border border-s-ink/[0.06] bg-transparent text-s-ink"
               >
                 <option value="">{t("wax_type_none")}</option>
                 {WAX_TYPES.map((wt) => (
@@ -245,7 +245,7 @@ export default function BodyZoneSelector({
 
       {/* Selected count + save */}
       <div className="flex items-center justify-between">
-        <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
+        <span className="text-xs text-s-ink/40">
           {t("zones_selected_count", { count: selected.length })}
         </span>
         <button

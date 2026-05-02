@@ -138,7 +138,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
   };
 
   return (
-    <div className="rounded-input border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface p-4">
+    <div className="rounded-input border border-s-ink/[0.06] bg-white p-4">
       <div className="flex items-center justify-between mb-4">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
           {t("fade_blueprint")}
@@ -150,7 +150,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
             className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
               visualMode
                 ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] text-s-ink/40 dark:text-s-dm-text/40"
+                : "border-s-ink/[0.06] text-s-ink/40"
             }`}
             aria-label={t(visualMode ? "text_mode" : "visual_mode")}
           >
@@ -159,7 +159,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           {clientId && (
             <button
               onClick={() => setBlueprint(EMPTY_STATE)}
-              className="p-1.5 rounded-[8px] bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors duration-150"
+              className="p-1.5 rounded-[8px] bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 transition-colors duration-150"
               aria-label={t("reset")}
             >
               <RotateCcw size={14} />
@@ -188,7 +188,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           }}
         />
       ) : (
-        <div className="max-w-[260px] sm:max-w-[300px] aspect-square mx-auto rounded-input border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] overflow-hidden bg-[--base] dark:bg-s-dm-bg relative">
+        <div className="max-w-[260px] sm:max-w-[300px] aspect-square mx-auto rounded-input border border-s-ink/[0.06] overflow-hidden bg-[--base] relative">
           <svg viewBox="0 0 200 170" className="w-full h-full">
             {HEAD_ZONES.map((zone) => {
               const guard = getZoneGuard(zone.id);
@@ -213,7 +213,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                     x={zone.labelX}
                     y={zone.labelY}
                     textAnchor="middle"
-                    className="text-[8px] fill-s-ink/50 dark:fill-s-dm-text/50 pointer-events-none select-none"
+                    className="text-[8px] fill-s-ink/50 pointer-events-none select-none"
                     style={{ fontFamily: "DM Sans, sans-serif" }}
                   >
                     {guard
@@ -227,8 +227,8 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
 
           {/* Guard dropdown */}
           {activeZone && activeZone !== "neckline" && (
-            <div className="absolute top-2 right-2 z-10 rounded-input border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface p-2 shadow-elevation-2">
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40 mb-1">
+            <div className="absolute top-2 right-2 z-10 rounded-input border border-s-ink/[0.06] bg-white p-2 shadow-elevation-2">
+              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 mb-1">
                 {t("guard_size")}
               </p>
               <div className="grid grid-cols-3 gap-1">
@@ -239,7 +239,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                     className={`px-2 py-1 text-[10px] rounded-[8px] transition-colors duration-150 ${
                       getZoneGuard(activeZone) === opt.value
                         ? "bg-s-coral text-white"
-                        : "bg-s-ink/[0.05] text-s-ink/55 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09]"
+                        : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
                     }`}
                     aria-label={opt.label}
                   >
@@ -256,7 +256,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
       <div className="mt-4 space-y-3">
         {/* Neckline Style */}
         <div>
-          <p className="text-[10px] font-heading font-bold text-s-ink/50 dark:text-s-dm-text/50 uppercase tracking-[.12em] mb-1">
+          <p className="text-[10px] font-heading font-bold text-s-ink/50 uppercase tracking-[.12em] mb-1">
             {t("neckline")}
           </p>
           <div className="flex flex-wrap gap-1">
@@ -269,7 +269,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                 className={`px-3 py-1 text-[10px] rounded-[8px] transition-colors duration-150 ${
                   blueprint.neckline_style === style
                     ? "bg-s-coral text-white"
-                    : "bg-s-ink/[0.05] text-s-ink/55 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09]"
+                    : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
                 }`}
                 aria-label={style}
               >
@@ -281,7 +281,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
 
         {/* Fade Type */}
         <div>
-          <p className="text-[10px] font-heading font-bold text-s-ink/50 dark:text-s-dm-text/50 uppercase tracking-[.12em] mb-1">
+          <p className="text-[10px] font-heading font-bold text-s-ink/50 uppercase tracking-[.12em] mb-1">
             {t("fade_type")}
           </p>
           <div className="flex flex-wrap gap-1">
@@ -294,7 +294,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                 className={`px-3 py-1 text-[10px] rounded-[8px] transition-colors duration-150 ${
                   blueprint.fade_type === ft
                     ? "bg-s-coral text-white"
-                    : "bg-s-ink/[0.05] text-s-ink/55 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09]"
+                    : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
                 }`}
                 aria-label={ft}
               >
@@ -315,7 +315,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
               }
               className="rounded-[4px] border-s-ink/20 text-s-coral focus:ring-s-coral"
             />
-            <span className="text-xs text-s-ink dark:text-s-dm-text">
+            <span className="text-xs text-s-ink">
               {t("lineup")}
             </span>
           </label>
@@ -329,7 +329,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                   beard_style: e.target.value,
                 }))
               }
-              className="w-full text-xs rounded-[8px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text p-2"
+              className="w-full text-xs rounded-[8px] border border-s-ink/[0.06] bg-white text-s-ink p-2"
               aria-label={t("beard_style")}
             >
               {BEARD_STYLES.map((bs) => (
@@ -349,7 +349,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           }
           placeholder={t("blueprint_notes_placeholder")}
           rows={2}
-          className="w-full text-xs rounded-[8px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text p-2 resize-none"
+          className="w-full text-xs rounded-[8px] border border-s-ink/[0.06] bg-white text-s-ink p-2 resize-none"
           aria-label={t("notes")}
         />
 

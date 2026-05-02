@@ -63,8 +63,8 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
           { label: t("retail_avg_sale"), value: kpis ? fmt(kpis.avg_sale) : "–", color: "text-s-blue" },
           { label: t("retail_top_product"), value: kpis?.top_product ?? "–", color: "text-s-sage" },
         ].map(({ label, value, color }) => (
-          <div key={label} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-3">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-ink/35 dark:text-s-dm-text/35 mb-1">
+          <div key={label} className="bg-white rounded-[12px] border border-s-ink/[0.06] p-3">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-ink/35 mb-1">
               {label}
             </p>
             <p className={`text-lg font-heading font-bold data-text truncate ${color}`}>
@@ -75,15 +75,15 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
       </div>
 
       {/* Weekly revenue chart */}
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+      <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4">
         <div className="flex items-center gap-2 mb-3">
           <TrendingUp size={13} className="text-s-coral" />
-          <p className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text">
+          <p className="text-sm font-heading font-bold text-s-ink">
             {t("retail_weekly_revenue")}
           </p>
         </div>
         {loading ? (
-          <div className="h-[140px] animate-pulse bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[8px]" />
+          <div className="h-[140px] animate-pulse bg-s-ink/[0.04] rounded-[8px]" />
         ) : (
           <ResponsiveContainer width="100%" height={140}>
             <BarChart data={weekly} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -102,24 +102,24 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
 
       {/* Top 5 products */}
       {topProducts.length > 0 && (
-        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+        <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4">
           <div className="flex items-center gap-2 mb-3">
             <ShoppingBag size={13} className="text-s-amber" />
-            <p className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text">
+            <p className="text-sm font-heading font-bold text-s-ink">
               {t("retail_top_products")}
             </p>
           </div>
           <div className="space-y-2">
             {topProducts.map((p, i) => (
               <div key={p.name} className="flex items-center gap-3">
-                <span className="text-[10px] font-heading font-bold text-s-ink/30 dark:text-s-dm-text/30 w-4">
+                <span className="text-[10px] font-heading font-bold text-s-ink/30 w-4">
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">
+                  <p className="text-xs font-heading font-semibold text-s-ink truncate">
                     {p.name}
                   </p>
-                  <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+                  <p className="text-[10px] text-s-ink/40">
                     {p.units} {t("units")} · {fmt(p.revenue)}
                   </p>
                 </div>

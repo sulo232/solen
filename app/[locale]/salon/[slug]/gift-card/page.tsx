@@ -64,22 +64,22 @@ export default function GiftCardPage() {
     }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-s-bg-base dark:bg-s-dm-bg"><Spinner size="md" /></div>;
-  if (!salon) return <div className="min-h-screen flex items-center justify-center bg-s-bg-base dark:bg-s-dm-bg"><p className="text-s-ink/30">Salon nicht gefunden</p></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-s-bg-base"><Spinner size="md" /></div>;
+  if (!salon) return <div className="min-h-screen flex items-center justify-center bg-s-bg-base"><p className="text-s-ink/30">Salon nicht gefunden</p></div>;
 
   if (done) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-s-bg-base dark:bg-s-dm-bg px-4">
+      <div className="min-h-screen flex items-center justify-center bg-s-bg-base px-4">
         <div className="text-center max-w-sm">
           <div className="w-16 h-16 rounded-full bg-s-success-bg flex items-center justify-center mx-auto mb-4 animate-bounce">
             <Check size={32} className="text-s-success" />
           </div>
-          <h1 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">Geschenkkarte gesendet!</h1>
-          <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-4">
+          <h1 className="font-heading font-bold text-xl text-s-ink mb-2">Geschenkkarte gesendet!</h1>
+          <p className="text-sm text-s-ink/50 mb-4">
             {formatCurrency(amount / 100)} für {recipientName}
           </p>
-          <div className="bg-white dark:bg-s-dm-surface rounded-[16px] p-4 border border-s-ink/5 dark:border-white/5">
-            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1">Code</p>
+          <div className="bg-white rounded-[16px] p-4 border border-s-ink/5">
+            <p className="text-xs text-s-ink/40 mb-1">Code</p>
             <p className="font-mono text-lg font-bold text-s-coral">{giftCode}</p>
           </div>
         </div>
@@ -88,64 +88,64 @@ export default function GiftCardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg py-8 px-4">
+    <div className="min-h-screen bg-s-bg-base py-8 px-4">
       <div className="max-w-md mx-auto">
         <div className="text-center mb-6">
           <Gift size={32} className="text-s-coral mx-auto mb-2" />
-          <h1 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Geschenkkarte</h1>
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{salon.name}</p>
+          <h1 className="font-heading font-bold text-xl text-s-ink">Geschenkkarte</h1>
+          <p className="text-sm text-s-ink/40">{salon.name}</p>
         </div>
 
-        <div className="bg-white dark:bg-s-dm-surface rounded-[16px] shadow-warm-md p-5 space-y-4">
+        <div className="bg-white rounded-[16px] shadow-warm-md p-5 space-y-4">
           {/* Amount */}
           <div>
-            <label className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2 block">Betrag</label>
+            <label className="text-xs font-medium text-s-ink/50 mb-2 block">Betrag</label>
             <div className="grid grid-cols-4 gap-2 mb-2">
               {AMOUNT_PRESETS.map((a) => (
                 <button key={a} onClick={() => { setSelectedAmount(a); setUseCustom(false); }}
-                  className={`py-2.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${!useCustom && selectedAmount === a ? "bg-s-coral text-white" : "border border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral"}`}>
+                  className={`py-2.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${!useCustom && selectedAmount === a ? "bg-s-coral text-white" : "border border-s-ink/10 text-s-ink hover:border-s-coral"}`}>
                   {(a / 100).toFixed(0)}
                 </button>
               ))}
             </div>
             <button onClick={() => setUseCustom(true)}
-              className={`w-full py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${useCustom ? "bg-s-coral/10 text-s-coral border border-s-coral/20" : "border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50"}`}>
+              className={`w-full py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${useCustom ? "bg-s-coral/10 text-s-coral border border-s-coral/20" : "border border-s-ink/10 text-s-ink/50"}`}>
               Eigener Betrag
             </button>
             {useCustom && (
               <div className="relative mt-2">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-s-ink/30 dark:text-s-dm-text/30">CHF</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-s-ink/30">CHF</span>
                 <input type="number" min="5" step="5" value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)} placeholder="0"
-                  className="w-full pl-12 pr-3 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral data-text" />
+                  className="w-full pl-12 pr-3 py-2.5 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral data-text" />
               </div>
             )}
           </div>
 
           {/* Recipient */}
           <div>
-            <label className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Empfänger *</label>
+            <label className="text-xs font-medium text-s-ink/50 mb-1 block">Empfänger *</label>
             <input value={recipientName} onChange={(e) => setRecipientName(e.target.value)} placeholder="Name"
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral mb-2" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral mb-2" />
             <input type="email" value={recipientEmail} onChange={(e) => setRecipientEmail(e.target.value)} placeholder="E-Mail"
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
           </div>
 
           {/* Message */}
           <div>
-            <label className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Persönliche Nachricht</label>
+            <label className="text-xs font-medium text-s-ink/50 mb-1 block">Persönliche Nachricht</label>
             <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={2} placeholder="Optional…"
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral resize-none" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral resize-none" />
           </div>
 
           {/* Preview */}
           <div className="rounded-[16px] border border-s-coral/20 bg-s-coral/5 p-4 text-center">
-            <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 uppercase tracking-wider mb-2">Vorschau</p>
+            <p className="text-[10px] text-s-ink/30 uppercase tracking-wider mb-2">Vorschau</p>
             <Gift size={20} className="text-s-coral mx-auto mb-1" />
             <p className="font-heading font-bold text-lg text-s-coral data-text">{formatCurrency(amount / 100)}</p>
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{salon.name}</p>
-            {recipientName && <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-1">Für {recipientName}</p>}
-            {message && <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 mt-1 italic">&quot;{message}&quot;</p>}
+            <p className="text-xs text-s-ink/50">{salon.name}</p>
+            {recipientName && <p className="text-xs text-s-ink/40 mt-1">Für {recipientName}</p>}
+            {message && <p className="text-xs text-s-ink/30 mt-1 italic">&quot;{message}&quot;</p>}
           </div>
 
           {error && <p className="text-xs text-s-coral">{error}</p>}

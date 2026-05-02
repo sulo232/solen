@@ -37,13 +37,13 @@ export default function ReportButton({ type, targetId }: ReportButtonProps) {
   };
 
   if (reported) {
-    return <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30">{t("reported")}</span>;
+    return <span className="text-[10px] text-s-ink/30">{t("reported")}</span>;
   }
 
   return (
     <button
       onClick={handleReport}
-      className="text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral transition-colors ml-auto"
+      className="text-s-ink/20 hover:text-s-coral transition-colors ml-auto"
       aria-label={t("report")}
       title={t("report")}
     >

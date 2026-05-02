@@ -40,7 +40,7 @@ export default function PartnerSignupForm() {
         <h3 className="font-heading font-semibold text-s-sage-text mb-1">
           {t("form_success_title")}
         </h3>
-        <p className="text-sm font-body text-s-ink/70 dark:text-s-dm-text/70">
+        <p className="text-sm font-body text-s-ink/70">
           {t("form_success_desc")}
         </p>
       </div>
@@ -56,7 +56,7 @@ export default function PartnerSignupForm() {
           value={salonName}
           onChange={(e) => setSalonName(e.target.value)}
           placeholder={t("form_salon_name_placeholder")}
-          className="w-full px-5 py-3.5 bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 rounded-xl text-sm font-body text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-1 focus:ring-s-coral transition-colors"
+          className="w-full px-5 py-3.5 bg-white border border-s-ink/10 rounded-xl text-sm font-body text-s-ink focus:outline-none focus:border-s-coral focus:ring-1 focus:ring-s-coral transition-colors"
         />
         <input
           type="email"
@@ -64,7 +64,7 @@ export default function PartnerSignupForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("form_email_placeholder")}
-          className="w-full px-5 py-3.5 bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 rounded-xl text-sm font-body text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-1 focus:ring-s-coral transition-colors"
+          className="w-full px-5 py-3.5 bg-white border border-s-ink/10 rounded-xl text-sm font-body text-s-ink focus:outline-none focus:border-s-coral focus:ring-1 focus:ring-s-coral transition-colors"
         />
         <button
           type="submit"

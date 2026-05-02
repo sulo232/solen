@@ -112,36 +112,36 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
 
   return (
     <div role="dialog" aria-modal="true" className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-[6px]" onClick={onClose}>
-      <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[16px] p-6 mx-4 max-w-lg w-full shadow-surface max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+      <div className="bg-[--raised] rounded-[16px] p-6 mx-4 max-w-lg w-full shadow-surface max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Users size={18} className="text-s-coral" />
-            <h3 className="font-heading font-bold text-s-ink dark:text-s-dm-text">{tg("title")}</h3>
+            <h3 className="font-heading font-bold text-s-ink">{tg("title")}</h3>
           </div>
-          <button onClick={onClose} aria-label={tc("close")} className="p-2 rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors duration-150">
-            <X size={18} className="text-s-ink/40 dark:text-s-dm-text/40" />
+          <button onClick={onClose} aria-label={tc("close")} className="p-2 rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150">
+            <X size={18} className="text-s-ink/40" />
           </button>
         </div>
 
         {/* Organizer name */}
         <div className="mb-4">
-          <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">{tg("organizer_name_label")}</label>
+          <label className="text-xs text-s-ink/50 mb-1 block">{tg("organizer_name_label")}</label>
           <input
             type="text"
             value={organizerName}
             onChange={e => setOrganizerName(e.target.value)}
             placeholder={tg("organizer_name_label")}
-            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
           />
         </div>
 
         {/* Event type */}
         <div className="mb-4">
-          <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">{tg("event_type_label")}</label>
+          <label className="text-xs text-s-ink/50 mb-1 block">{tg("event_type_label")}</label>
           <select
             value={eventType}
             onChange={e => setEventType(e.target.value)}
-            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-[--raised] dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-[--raised] text-sm text-s-ink outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
           >
             {EVENT_TYPES.map(t => (
               <option key={t.value} value={t.value}>{locale === "en" ? t.label_en : t.label_de}</option>
@@ -153,18 +153,18 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
         <div className="space-y-3 mb-4">
           {members.map((m, i) => (
             <div key={i} className="flex items-center gap-2">
-              <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30 w-5 shrink-0">{i + 1}.</span>
+              <span className="text-xs text-s-ink/30 w-5 shrink-0">{i + 1}.</span>
               <input
                 type="text"
                 value={m.name}
                 onChange={e => updateMember(i, "name", e.target.value)}
                 placeholder={tg("name_placeholder")}
-                className="flex-1 px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+                className="flex-1 px-2 py-1.5 rounded-btn border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
               />
               <select
                 value={m.service_id}
                 onChange={e => updateMember(i, "service_id", e.target.value)}
-                className="w-32 px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+                className="w-32 px-2 py-1.5 rounded-btn border border-s-ink/10 bg-s-bg-surface text-xs text-s-ink outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
               >
                 {services.map(s => (
                   <option key={s.id} value={s.id}>{locale === "en" ? s.name_en : s.name_de}</option>
@@ -184,8 +184,8 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
         )}
 
         {/* Total */}
-        <div className="flex justify-between items-center border-t border-s-ink/5 dark:border-white/5 pt-3 mb-4">
-          <span className="text-sm text-s-ink/60 dark:text-s-dm-text/60">{tg("people_count", { count: members.length })}</span>
+        <div className="flex justify-between items-center border-t border-s-ink/5 pt-3 mb-4">
+          <span className="text-sm text-s-ink/60">{tg("people_count", { count: members.length })}</span>
           <span className="data-text font-bold text-lg text-s-coral">{formatCurrency(totalPrice, locale)}</span>
         </div>
 

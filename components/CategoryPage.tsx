@@ -348,7 +348,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   }, [currentPathname, routerNav, searchParams]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-s-dm-bg relative overflow-x-hidden">
+    <div className="min-h-screen bg-white relative overflow-x-hidden">
       {/* Hero — pure white + Bebas Neue H1 */}
       <div className="pt-16 pb-6 md:pt-20 md:pb-8 relative z-10 overflow-hidden bg-white">
         <div className="max-w-5xl mx-auto px-4 pt-8 pb-6 relative z-10">
@@ -373,7 +373,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           </span>
 
           {/* Hero H1 — compact, responsive */}
-          <h1 className="font-display text-4xl md:text-6xl text-s-ink dark:text-s-dm-text"
+          <h1 className="font-display text-4xl md:text-6xl text-s-ink"
             style={{ lineHeight: "0.92", letterSpacing: "0.01em" }}>
             {city ? (
               <>{categoryLabel.toUpperCase()} IN{" "}<span className="text-s-coral">{cityName.toUpperCase()}</span></>
@@ -526,7 +526,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               params.set("view", "map");
               routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
             }}
-            className="relative w-full h-[200px] rounded-[12px] overflow-hidden border border-s-ink/10 dark:border-white/10"
+            className="relative w-full h-[200px] rounded-[12px] overflow-hidden border border-s-ink/10"
           >
             <MapView
               salons={salons.slice(0, 20)}

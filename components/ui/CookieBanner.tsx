@@ -73,14 +73,14 @@ export default function CookieBanner() {
       {/* Banner */}
       {!settingsOpen && (
         <div className="fixed bottom-0 inset-x-0 z-70 p-4 sm:p-6">
-          <div className="max-w-2xl mx-auto bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg border border-s-ink/5 dark:border-white/10 p-5">
+          <div className="max-w-2xl mx-auto bg-white rounded-[12px] shadow-warm-lg border border-s-ink/5 p-5">
             <div className="flex items-start gap-3">
               <Cookie className="w-5 h-5 text-s-coral shrink-0 mt-0.5" />
               <div className="flex-1">
-                <p className="text-sm text-s-ink dark:text-s-dm-text font-medium mb-1">
+                <p className="text-sm text-s-ink font-medium mb-1">
                   {t("title")}
                 </p>
-                <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 leading-relaxed">
+                <p className="text-xs text-s-ink/60 leading-relaxed">
                   {t("description")}{" "}
                   <Link href={`/${locale}/privacy`} className="text-s-coral hover:underline">
                     {t("privacyLink")}
@@ -98,14 +98,14 @@ export default function CookieBanner() {
               </button>
               <button
                 onClick={rejectAll}
-                className="flex-1 py-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors duration-150"
+                className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-sm font-medium text-s-ink/70 hover:bg-s-bg-surface:bg-white/5 transition-colors duration-150"
                 aria-label={t("reject")}
               >
                 {t("reject")}
               </button>
               <button
                 onClick={() => setSettingsOpen(true)}
-                className="p-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors duration-150"
+                className="p-2.5 rounded-pill border border-s-ink/10 text-s-ink/50 hover:bg-s-bg-surface:bg-white/5 transition-colors duration-150"
                 aria-label={t("settings")}
               >
                 <Settings className="w-4 h-4" />
@@ -119,15 +119,15 @@ export default function CookieBanner() {
       {settingsOpen && (
         <div className="fixed inset-0 z-70 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
-          <div className="relative w-full max-w-md bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg p-6">
+          <div className="relative w-full max-w-md bg-white rounded-[12px] shadow-warm-lg p-6">
             <button
               onClick={() => setSettingsOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-full text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-sunken dark:hover:bg-white/10 transition-colors"
+              className="absolute top-4 right-4 p-1.5 rounded-full text-s-ink/40 hover:bg-s-bg-sunken:bg-white/10 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
 
-            <h3 className="font-heading font-semibold text-lg text-s-ink dark:text-s-dm-text mb-4">
+            <h3 className="font-heading font-semibold text-lg text-s-ink mb-4">
               {t("settingsTitle")}
             </h3>
 
@@ -135,8 +135,8 @@ export default function CookieBanner() {
               {/* Necessary — always on */}
               <div className="flex items-center justify-between py-2">
                 <div>
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("necessary")}</p>
-                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("necessaryDesc")}</p>
+                  <p className="text-sm font-medium text-s-ink">{t("necessary")}</p>
+                  <p className="text-xs text-s-ink/40">{t("necessaryDesc")}</p>
                 </div>
                 <div className="w-10 h-5 rounded-full bg-s-coral flex items-center justify-end px-0.5 opacity-60 cursor-not-allowed">
                   <div className="w-4 h-4 rounded-full bg-white" />
@@ -146,13 +146,13 @@ export default function CookieBanner() {
               {/* Analytics */}
               <div className="flex items-center justify-between py-2">
                 <div>
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("analytics")}</p>
-                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("analyticsDesc")}</p>
+                  <p className="text-sm font-medium text-s-ink">{t("analytics")}</p>
+                  <p className="text-xs text-s-ink/40">{t("analyticsDesc")}</p>
                 </div>
                 <button
                   onClick={() => setAnalytics(!analytics)}
                   className={`w-10 h-5 rounded-full flex items-center px-0.5 transition-colors ${
-                    analytics ? "bg-s-coral justify-end" : "bg-s-sand dark:bg-white/20 justify-start"
+                    analytics ? "bg-s-coral justify-end" : "bg-s-sand justify-start"
                   }`}
                 >
                   <div className="w-4 h-4 rounded-full bg-white shadow-warm-sm" />
@@ -170,7 +170,7 @@ export default function CookieBanner() {
               </button>
               <button
                 onClick={acceptAll}
-                className="flex-1 py-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors duration-150"
+                className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-sm font-medium text-s-ink/70 hover:bg-s-bg-surface:bg-white/5 transition-colors duration-150"
               >
                 {t("acceptAll")}
               </button>

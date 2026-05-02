@@ -78,7 +78,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-0.5 px-2 py-1.5 min-h-10 rounded-pill text-[13px] font-medium text-s-ink/60 hover:text-s-ink dark:text-s-dm-text/60 dark:hover:text-s-dm-text transition-colors"
+        className="flex items-center gap-0.5 px-2 py-1.5 min-h-10 rounded-pill text-[13px] font-medium text-s-ink/60 hover:text-s-ink:text-s-dm-text transition-colors"
         aria-label="Sprache wählen"
         aria-expanded={open}
       >
@@ -87,7 +87,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md border border-s-ink/5 dark:border-white/10 py-1 min-w-[120px] z-[100]">
+        <div className="absolute right-0 top-full mt-1 bg-white rounded-[12px] shadow-warm-md border border-s-ink/5 py-1 min-w-[120px] z-[100]">
           {Object.entries(LOCALE_LABELS).map(([key, label]) => (
             <button
               key={key}
@@ -99,7 +99,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
               className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${
                 key === locale
                   ? "text-s-coral font-medium bg-s-coral/5"
-                  : "text-s-ink/70 hover:bg-s-bg-surface dark:text-s-dm-text/70 dark:hover:bg-white/5"
+                  : "text-s-ink/70 hover:bg-s-bg-surface:bg-white/5"
               }`}
             >
               <span>{label}</span>

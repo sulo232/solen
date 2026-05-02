@@ -121,11 +121,11 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
 
       {/* Panel */}
       <div
-        className="relative z-10 w-full sm:max-w-md bg-[--raised] dark:bg-s-dm-surface rounded-t-[24px] sm:rounded-[24px] shadow-warm-xl overflow-hidden"
+        className="relative z-10 w-full sm:max-w-md bg-[--raised] rounded-t-[24px] sm:rounded-[24px] shadow-warm-xl overflow-hidden"
         style={{ animation: "slideUp 0.35s var(--ease, cubic-bezier(0.34,1.56,0.64,1)) both" }}
       >
         {/* Progress bar */}
-        <div className="h-1 bg-s-ink/5 dark:bg-white/5">
+        <div className="h-1 bg-s-ink/5">
           <div
             className="h-full bg-s-coral transition-[width] duration-[350ms] ease-out"
             style={{ width: `${progress}%` }}
@@ -136,16 +136,16 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
         <div className="flex items-center justify-between px-6 pt-5 pb-4">
           <div className="flex items-center gap-2">
             <Sparkles size={18} className="text-s-coral" />
-            <span className="font-heading font-bold text-s-ink dark:text-s-dm-text text-sm tracking-[0.1em] uppercase">
+            <span className="font-heading font-bold text-s-ink text-sm tracking-[0.1em] uppercase">
               {t("ai_badge")}
             </span>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors duration-150"
+            className="w-8 h-8 flex items-center justify-center rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150"
             aria-label={t("close")}
           >
-            <X size={18} className="text-s-ink/50 dark:text-s-dm-text/50" />
+            <X size={18} className="text-s-ink/50" />
           </button>
         </div>
 
@@ -154,14 +154,14 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
           {!done ? (
             <>
               {/* Step indicator */}
-              <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 font-body mb-3">
+              <p className="text-xs text-s-ink/40 font-body mb-3">
                 {t("step_label", { step: step + 1, total: STEPS.length })}
               </p>
 
               {/* Question */}
               <h2
                 key={step}
-                className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-5"
+                className="font-heading font-bold text-xl text-s-ink mb-5"
                 style={{ animation: "fadeSlideIn 0.3s var(--ease, ease) both" }}
               >
                 {currentStep.question}
@@ -182,7 +182,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
                     className={`px-4 py-2 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[background-color,border-color,color,box-shadow] duration-150 ${
                       selected === opt.value
                         ? "bg-s-coral text-white border-s-coral shadow-warm-sm"
-                        : "bg-s-bg-surface dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 border-s-ink/10 dark:border-white/10 hover:border-s-coral"
+                        : "bg-s-bg-surface text-s-ink/70 border-s-ink/10 hover:border-s-coral"
                     }`}
                   >
                     {opt.value}
@@ -210,10 +210,10 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               <div className="w-14 h-14 rounded-pill bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
                 <Sparkles size={26} className="text-s-coral" />
               </div>
-              <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">
+              <h2 className="font-heading font-bold text-xl text-s-ink mb-2">
                 {t("result_heading")}
               </h2>
-              <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mb-6">
+              <p className="text-sm text-s-ink/50 font-body mb-6">
                 {t("result_desc")}
               </p>
               <Link

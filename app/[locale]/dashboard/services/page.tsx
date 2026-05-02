@@ -270,7 +270,7 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
     <div className="mb-6">
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors mb-2"
+        className="text-xs font-medium text-s-ink/50 hover:text-s-coral transition-colors mb-2"
       >
         {collapsed ? "Vorlagen anzeigen +" : "Vorlagen ausblenden −"}
       </button>
@@ -288,16 +288,16 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
                   "flex items-center justify-between px-3 py-2.5 rounded-[12px] border text-left transition-[background-color,border-color]",
                   added
                     ? "bg-s-coral/5 border-s-coral/20 opacity-60 cursor-default"
-                    : "border-s-ink/10 dark:border-white/10 hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
+                    : "border-s-ink/10 hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
                 ].join(" ")}
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">{tmpl.name_de}</p>
+                  <p className="text-sm font-medium text-s-ink truncate">{tmpl.name_de}</p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="inline-flex items-center gap-0.5 text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+                    <span className="inline-flex items-center gap-0.5 text-[10px] text-s-ink/40">
                       <Clock size={10} /> {tmpl.duration} min
                     </span>
-                    <span className="text-xs data-text font-semibold text-s-ink/60 dark:text-s-dm-text/60">{formatCurrency(tmpl.price, locale)}</span>
+                    <span className="text-xs data-text font-semibold text-s-ink/60">{formatCurrency(tmpl.price, locale)}</span>
                   </div>
                 </div>
                 {adding === tmpl.name_de ? (

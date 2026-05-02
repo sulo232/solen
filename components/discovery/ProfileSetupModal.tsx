@@ -110,7 +110,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
   };
 
   const pillClass = (active: boolean) =>
-    `px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[color,background-color,border-color] duration-150 ${active ? "border-s-coral bg-s-coral/[0.08] text-s-coral" : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/40"}`;
+    `px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[color,background-color,border-color] duration-150 ${active ? "border-s-coral bg-s-coral/[0.08] text-s-coral" : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/40"}`;
 
   return (
     <AnimatePresence>

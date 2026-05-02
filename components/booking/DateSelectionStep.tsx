@@ -84,15 +84,15 @@ export default function DateSelectionStep({ salonId }: DateSelectionStepProps) {
         <button
           onClick={handleBack}
           aria-label={t('back')}
-          className="p-2 rounded-pill hover:bg-s-ink/[0.04] dark:hover:bg-white/[0.04] transition-colors"
+          className="p-2 rounded-pill hover:bg-s-ink/[0.04]:bg-white/[0.04] transition-colors"
         >
-          <ChevronLeft size={20} className="text-s-ink dark:text-s-dm-text" />
+          <ChevronLeft size={20} className="text-s-ink" />
         </button>
         <div>
-          <h2 className="text-2xl font-display font-bold text-s-ink dark:text-s-dm-text">
+          <h2 className="text-2xl font-display font-bold text-s-ink">
             {t('title')}
           </h2>
-          <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-1">
+          <p className="text-sm text-s-ink/60 mt-1">
             {t('subtitle')}
           </p>
         </div>
@@ -103,7 +103,7 @@ export default function DateSelectionStep({ salonId }: DateSelectionStepProps) {
           <Spinner />
         </div>
       ) : (
-        <div className="border border-s-ink/[0.08] dark:border-white/[0.08] rounded-[16px] p-4 bg-[--raised] dark:bg-s-dm-surface">
+        <div className="border border-s-ink/[0.08] rounded-[16px] p-4 bg-[--raised]">
           <Calendar
             value={
               formData.selectedDate
@@ -116,17 +116,17 @@ export default function DateSelectionStep({ salonId }: DateSelectionStepProps) {
             className="flex flex-col gap-4"
           >
             <div className="flex items-center justify-between">
-              <Heading className="text-lg font-heading font-bold text-s-ink dark:text-s-dm-text" />
+              <Heading className="text-lg font-heading font-bold text-s-ink" />
               <div className="flex gap-1">
                 <AriaButton
                   slot="previous"
-                  className="p-2 rounded-[8px] hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.08] transition-colors"
+                  className="p-2 rounded-[8px] hover:bg-s-ink/[0.06]:bg-white/[0.08] transition-colors"
                 >
                   ←
                 </AriaButton>
                 <AriaButton
                   slot="next"
-                  className="p-2 rounded-[8px] hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.08] transition-colors"
+                  className="p-2 rounded-[8px] hover:bg-s-ink/[0.06]:bg-white/[0.08] transition-colors"
                 >
                   →
                 </AriaButton>
@@ -135,7 +135,7 @@ export default function DateSelectionStep({ salonId }: DateSelectionStepProps) {
             <CalendarGrid className="border-collapse space-y-2">
               <CalendarGridHeader>
                 {(day) => (
-                  <CalendarHeaderCell className="text-center text-xs font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 p-2">
+                  <CalendarHeaderCell className="text-center text-xs font-heading font-semibold text-s-ink/50 p-2">
                     {day}
                   </CalendarHeaderCell>
                 )}
@@ -149,10 +149,10 @@ export default function DateSelectionStep({ salonId }: DateSelectionStepProps) {
                         isSelected
                           ? 'bg-s-coral text-white ring-2 ring-s-coral/30'
                           : isUnavailable
-                          ? 'text-s-ink/20 dark:text-s-dm-text/20 cursor-not-allowed'
+                          ? 'text-s-ink/20 cursor-not-allowed'
                           : isOutsideMonth
-                          ? 'text-s-ink/20 dark:text-s-dm-text/20'
-                          : 'text-s-ink dark:text-s-dm-text hover:-translate-y-[5px] hover:shadow-v5-card-hover'
+                          ? 'text-s-ink/20'
+                          : 'text-s-ink hover:-translate-y-[5px] hover:shadow-v5-card-hover'
                       }`
                     }
                   />
@@ -164,11 +164,11 @@ export default function DateSelectionStep({ salonId }: DateSelectionStepProps) {
       )}
 
       {/* Bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] dark:border-white/[0.08] bg-[--raised] dark:bg-s-dm-surface p-4">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] bg-[--raised] p-4">
         <div className="max-w-2xl mx-auto px-4 flex gap-3">
           <button
             onClick={handleBack}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>

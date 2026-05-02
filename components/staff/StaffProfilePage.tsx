@@ -92,7 +92,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
   if (!staff) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <p className="text-s-ink/50 dark:text-s-dm-text/50">Mitarbeiter nicht gefunden</p>
+        <p className="text-s-ink/50">Mitarbeiter nicht gefunden</p>
         <Link
           href={`/${locale}/salon/${salonSlug}`}
           className="text-s-coral hover:underline text-sm"
@@ -110,17 +110,17 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
       {/* Back link */}
       <Link
         href={`/${locale}/salon/${salonSlug}`}
-        className="inline-flex items-center gap-1.5 text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-coral transition-colors mb-6"
+        className="inline-flex items-center gap-1.5 text-sm text-s-ink/60 hover:text-s-coral transition-colors mb-6"
       >
         <ArrowLeft size={16} />
         Zurück zum Salon
       </Link>
 
       {/* Hero card */}
-      <div className="rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 bg-white dark:bg-s-dm-surface shadow-warm-md mb-8">
+      <div className="rounded-[12px] border border-s-ink/5 p-6 bg-white shadow-warm-md mb-8">
         <div className="flex items-start gap-4">
           {/* Avatar */}
-          <div className="w-24 h-24 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden shrink-0 flex items-center justify-center">
+          <div className="w-24 h-24 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center">
             {staff.avatar_url ? (
               <Image
                 src={staff.avatar_url}
@@ -132,14 +132,14 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                 className="object-cover w-full h-full"
               />
             ) : (
-              <span className="data-text text-3xl font-bold text-s-ink/20 dark:text-s-dm-text/20">
+              <span className="data-text text-3xl font-bold text-s-ink/20">
                 {staff.name[0]}
               </span>
             )}
           </div>
 
           <div className="flex-1 min-w-0">
-            <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
+            <h1 className="font-heading font-bold text-2xl text-s-ink">
               {staff.name}
             </h1>
 
@@ -160,18 +160,18 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
             {/* Rating + experience */}
             <div className="flex items-center gap-4 mt-2">
               {staff.average_rating > 0 && (
-                <span className="flex items-center gap-1 text-sm text-s-ink/70 dark:text-s-dm-text/70">
+                <span className="flex items-center gap-1 text-sm text-s-ink/70">
                   <Star size={14} className="fill-s-coral text-s-coral" />
                   <span className="data-text">{staff.average_rating.toFixed(1)}</span>
                   {staff.review_count > 0 && (
-                    <span className="text-s-ink/40 dark:text-s-dm-text/40">
+                    <span className="text-s-ink/40">
                       ({staff.review_count})
                     </span>
                   )}
                 </span>
               )}
               {staff.years_experience != null && (
-                <span className="text-sm text-s-ink/60 dark:text-s-dm-text/60">
+                <span className="text-sm text-s-ink/60">
                   {staff.years_experience} {staff.years_experience === 1 ? "Jahr" : "Jahre"} Erfahrung
                 </span>
               )}
@@ -183,7 +183,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                 href={staff.instagram_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors mt-1"
+                className="inline-flex items-center gap-1 text-sm text-s-ink/50 hover:text-s-coral transition-colors mt-1"
               >
                 <Instagram size={14} />
                 Instagram
@@ -194,7 +194,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
 
         {/* Bio */}
         {staff.bio && (
-          <p className="mt-4 text-[15px] text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed">
+          <p className="mt-4 text-[15px] text-s-ink/70 leading-relaxed">
             {staff.bio}
           </p>
         )}
@@ -203,7 +203,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
       {/* Portfolio gallery */}
       {portfolio.length > 0 && (
         <section className="mb-8">
-          <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-4">
+          <h2 className="font-heading font-bold text-xl text-s-ink mb-4">
             Portfolio
           </h2>
           <div className="grid grid-cols-3 gap-1.5 rounded-[12px] overflow-hidden">
@@ -211,7 +211,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
               <button
                 key={img.id}
                 onClick={() => setLightboxIndex(i)}
-                className="aspect-square bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden hover:brightness-[0.95] transition-[filter] duration-150"
+                className="aspect-square bg-s-bg-sunken overflow-hidden hover:brightness-[0.95] transition-[filter] duration-150"
               >
                 <Image
                   src={img.image_url}
@@ -233,20 +233,20 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
       {/* Services */}
       {services.length > 0 && (
         <section className="mb-8">
-          <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-4">
+          <h2 className="font-heading font-bold text-xl text-s-ink mb-4">
             Services
           </h2>
           <div className="space-y-2">
             {services.map((s) => (
               <div
                 key={s.id}
-                className="rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 bg-white dark:bg-s-dm-surface flex items-center justify-between"
+                className="rounded-[12px] border border-s-ink/5 p-4 bg-white flex items-center justify-between"
               >
                 <div>
-                  <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text">
+                  <p className="font-heading font-semibold text-s-ink">
                     {serviceName(s)}
                   </p>
-                  <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 flex items-center gap-1 mt-0.5">
+                  <p className="text-sm text-s-ink/50 flex items-center gap-1 mt-0.5">
                     <Clock size={12} />
                     {s.duration_minutes} Min. · {formatCurrency(s.price, locale)}
                   </p>
@@ -266,17 +266,17 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
       {/* Reviews */}
       {reviews.length > 0 && (
         <section className="mb-8">
-          <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-4">
+          <h2 className="font-heading font-bold text-xl text-s-ink mb-4">
             Bewertungen
           </h2>
           <div className="space-y-4">
             {reviews.map((r) => (
               <div
                 key={r.id}
-                className="rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 bg-white dark:bg-s-dm-surface"
+                className="rounded-[12px] border border-s-ink/5 p-4 bg-white"
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden shrink-0 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center">
                     {r.profiles?.avatar_url ? (
                       <Image
                         src={r.profiles.avatar_url}
@@ -286,13 +286,13 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                         className="object-cover w-full h-full"
                       />
                     ) : (
-                      <span className="text-xs font-bold text-s-ink/20 dark:text-s-dm-text/20">
+                      <span className="text-xs font-bold text-s-ink/20">
                         {r.profiles?.display_name?.[0] ?? "?"}
                       </span>
                     )}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">
+                    <p className="text-sm font-medium text-s-ink">
                       {r.profiles?.display_name ?? "Anonym"}
                     </p>
                     <div className="flex items-center gap-1">
@@ -300,17 +300,17 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                         <Star
                           key={i}
                           size={10}
-                          className={i < r.rating ? "fill-s-coral text-s-coral" : "text-s-ink/15 dark:text-s-dm-text/15"}
+                          className={i < r.rating ? "fill-s-coral text-s-coral" : "text-s-ink/15"}
                         />
                       ))}
-                      <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40 ml-1">
+                      <span className="text-xs text-s-ink/40 ml-1">
                         {new Date(r.created_at).toLocaleDateString(locale)}
                       </span>
                     </div>
                   </div>
                 </div>
                 {r.comment && (
-                  <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed">
+                  <p className="text-sm text-s-ink/70 leading-relaxed">
                     {r.comment}
                   </p>
                 )}
@@ -337,7 +337,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
       {/* Lightbox */}
       {lightboxIndex !== null && (
         <div
-          className="fixed inset-0 z-modal bg-s-ink/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center"
+          className="fixed inset-0 z-modal bg-s-ink/80 backdrop-blur-sm flex items-center justify-center"
           onClick={() => setLightboxIndex(null)}
         >
           <button

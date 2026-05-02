@@ -103,9 +103,9 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
       className="fixed inset-0 z-[200] flex items-start justify-center pt-[10vh] px-4 bg-s-ink/50 backdrop-blur-[4px]"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="w-full max-w-[560px] bg-[--raised] dark:bg-s-dm-surface rounded-card border border-s-ink/[0.08] dark:border-white/[0.08] shadow-v5-float overflow-hidden">
+      <div className="w-full max-w-[560px] bg-[--raised] rounded-card border border-s-ink/[0.08] shadow-v5-float overflow-hidden">
         {/* Search input */}
-        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-ink/[0.06] dark:border-white/[0.06]">
+        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-ink/[0.06]">
           <Search size={15} className="text-s-ink/50 shrink-0" />
           <input
             ref={inputRef}
@@ -113,10 +113,10 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("cmdPlaceholder")}
             aria-label={t("cmdPlaceholder")}
-            className="flex-1 text-sm text-s-ink dark:text-s-dm-text bg-transparent outline-none placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30"
+            className="flex-1 text-sm text-s-ink bg-transparent outline-none placeholder:text-s-ink/30:text-s-dm-text/30"
           />
-          <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors duration-150">
-            <X size={16} className="text-s-ink/40 dark:text-s-dm-text/40" />
+          <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150">
+            <X size={16} className="text-s-ink/40" />
           </button>
         </div>
 
@@ -135,7 +135,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
               });
               return Object.entries(groups).map(([category, cmds]) => (
                 <div key={category}>
-                  <p className="px-4 py-1 text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 dark:text-s-dm-text/25">
+                  <p className="px-4 py-1 text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25">
                     {category}
                   </p>
                   {cmds.map((cmd, globalIdx) => {
@@ -152,15 +152,15 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
                         className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors duration-150 ${
                           active
                             ? "bg-s-coral/[0.06] text-s-coral"
-                            : "hover:bg-s-ink/[0.03] text-s-ink dark:text-s-dm-text"
+                            : "hover:bg-s-ink/[0.03] text-s-ink"
                         }`}
                       >
-                        <div className={`w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 ${active ? "bg-s-coral/15" : "bg-s-ink/[0.05] dark:bg-white/[0.06]"}`}>
-                          <Icon size={13} className={active ? "text-s-coral" : "text-s-ink/45 dark:text-s-dm-text/45"} />
+                        <div className={`w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 ${active ? "bg-s-coral/15" : "bg-s-ink/[0.05]"}`}>
+                          <Icon size={13} className={active ? "text-s-coral" : "text-s-ink/45"} />
                         </div>
                         <span className="flex-1 text-sm font-heading font-medium">{cmd.label}</span>
                         {cmd.shortcut && (
-                          <kbd className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.06] dark:bg-white/[0.06] text-s-ink/45 dark:text-s-dm-text/45 font-mono">
+                          <kbd className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.06] text-s-ink/45 font-mono">
                             {cmd.shortcut}
                           </kbd>
                         )}
@@ -175,7 +175,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
 
         {/* Footer hint */}
         <div className="px-4 py-2.5 border-t border-s-ink/[0.05] flex items-center gap-3 bg-s-ink/[0.02]">
-          <span className="text-[9px] text-s-ink/25 dark:text-s-dm-text/25">
+          <span className="text-[9px] text-s-ink/25">
             ↑↓ {t("navigate")} · Enter {t("select")} · Esc {t("close")}
           </span>
         </div>

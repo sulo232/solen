@@ -90,27 +90,27 @@ export default function BookingCard({
   const statusConfig = {
     confirmed: {
       label: t('status.confirmed'),
-      bgColor: 'bg-s-sage/10 dark:bg-s-sage/10',
-      textColor: 'text-s-sage dark:text-s-sage',
-      borderColor: 'border-s-sage/30 dark:border-s-sage/30',
+      bgColor: 'bg-s-sage/10',
+      textColor: 'text-s-sage',
+      borderColor: 'border-s-sage/30',
     },
     pending: {
       label: t('status.pending'),
-      bgColor: 'bg-s-warning/10 dark:bg-s-warning/10',
-      textColor: 'text-s-warning dark:text-s-warning',
-      borderColor: 'border-s-warning/30 dark:border-s-warning/30',
+      bgColor: 'bg-s-warning/10',
+      textColor: 'text-s-warning',
+      borderColor: 'border-s-warning/30',
     },
     cancelled: {
       label: t('status.cancelled'),
-      bgColor: 'bg-s-error/10 dark:bg-s-error/10',
-      textColor: 'text-s-error dark:text-s-error',
-      borderColor: 'border-s-error/30 dark:border-s-error/30',
+      bgColor: 'bg-s-error/10',
+      textColor: 'text-s-error',
+      borderColor: 'border-s-error/30',
     },
     completed: {
       label: t('status.completed'),
-      bgColor: 'bg-s-ink/5 dark:bg-s-dm-text/5',
-      textColor: 'text-s-ink/60 dark:text-s-dm-text/60',
-      borderColor: 'border-s-ink/10 dark:border-s-dm-text/10',
+      bgColor: 'bg-s-ink/5',
+      textColor: 'text-s-ink/60',
+      borderColor: 'border-s-ink/10',
     },
   };
 
@@ -124,15 +124,15 @@ export default function BookingCard({
   };
 
   return (
-    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.08] overflow-hidden hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-200">
+    <div className="bg-[--raised] rounded-card border border-s-ink/[0.06] overflow-hidden hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-200">
       {/* Header */}
-      <div className="p-4 border-b border-s-ink/[0.06] dark:border-white/[0.08] flex items-start justify-between">
+      <div className="p-4 border-b border-s-ink/[0.06] flex items-start justify-between">
         <div className="flex-1">
-          <h3 className="font-heading text-lg font-semibold text-s-ink dark:text-s-dm-text">
+          <h3 className="font-heading text-lg font-semibold text-s-ink">
             {booking.salon?.name || '-'}
           </h3>
           {booking.salon?.average_rating && booking.salon?.review_count ? (
-            <div className="flex items-center gap-1 mt-1 text-sm text-s-ink/60 dark:text-s-dm-text/60">
+            <div className="flex items-center gap-1 mt-1 text-sm text-s-ink/60">
               <Star size={14} className="fill-s-amber text-s-amber" />
               <span>
                 {booking.salon.average_rating.toFixed(1)} ({booking.salon.review_count} {t('reviews')})
@@ -148,45 +148,45 @@ export default function BookingCard({
       </div>
 
       {/* Service & Duration */}
-      <div className="px-4 py-3 border-b border-s-ink/[0.06] dark:border-white/[0.08]">
-        <p className="font-body text-s-ink dark:text-s-dm-text">
+      <div className="px-4 py-3 border-b border-s-ink/[0.06]">
+        <p className="font-body text-s-ink">
           {getServiceName()}
         </p>
-        <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-1">
+        <p className="text-sm text-s-ink/60 mt-1">
           {duration} {t('minutes')}
         </p>
       </div>
 
       {/* Date, Time, Address */}
       <div className="px-4 py-3 space-y-2">
-        <div className="flex items-center gap-3 text-sm text-s-ink dark:text-s-dm-text">
-          <Calendar size={16} className="text-s-ink/60 dark:text-s-dm-text/60 flex-shrink-0" />
+        <div className="flex items-center gap-3 text-sm text-s-ink">
+          <Calendar size={16} className="text-s-ink/60 flex-shrink-0" />
           <span>{formattedDate}</span>
         </div>
-        <div className="flex items-center gap-3 text-sm text-s-ink dark:text-s-dm-text">
-          <Clock size={16} className="text-s-ink/60 dark:text-s-dm-text/60 flex-shrink-0" />
+        <div className="flex items-center gap-3 text-sm text-s-ink">
+          <Clock size={16} className="text-s-ink/60 flex-shrink-0" />
           <span>{formattedTime}</span>
         </div>
         {booking.salon?.address && (
-          <div className="flex items-start gap-3 text-sm text-s-ink dark:text-s-dm-text">
-            <MapPin size={16} className="text-s-ink/60 dark:text-s-dm-text/60 flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3 text-sm text-s-ink">
+            <MapPin size={16} className="text-s-ink/60 flex-shrink-0 mt-0.5" />
             <span>{booking.salon.address}</span>
           </div>
         )}
       </div>
 
       {/* Price */}
-      <div className="px-4 py-3 border-t border-s-ink/[0.06] dark:border-white/[0.08]">
+      <div className="px-4 py-3 border-t border-s-ink/[0.06]">
         <div className="flex items-center justify-between">
-          <span className="text-s-ink/60 dark:text-s-dm-text/60 text-sm">{t('total')}</span>
-          <span className="font-semibold text-s-ink dark:text-s-dm-text">
+          <span className="text-s-ink/60 text-sm">{t('total')}</span>
+          <span className="font-semibold text-s-ink">
             {formatCurrency(booking.price_paid)}
           </span>
         </div>
       </div>
 
       {/* Actions */}
-      <div className="px-4 py-3 border-t border-s-ink/[0.06] dark:border-white/[0.08] flex items-center justify-between">
+      <div className="px-4 py-3 border-t border-s-ink/[0.06] flex items-center justify-between">
         <button
           onClick={() => onRebook?.(booking)}
           className="px-4 py-2 rounded-pill bg-s-coral text-white text-sm font-semibold hover:brightness-[1.08] active:scale-[0.97] transition-[transform,filter] duration-150"
@@ -197,14 +197,14 @@ export default function BookingCard({
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-2 hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.08] active:scale-[0.97] rounded-pill transition-[transform,background-color] duration-150"
+            className="p-2 hover:bg-s-ink/[0.06]:bg-white/[0.08] active:scale-[0.97] rounded-pill transition-[transform,background-color] duration-150"
             aria-label="More options"
           >
-            <MoreVertical size={18} className="text-s-ink dark:text-s-dm-text" />
+            <MoreVertical size={18} className="text-s-ink" />
           </button>
 
           {showMenu && (
-            <div className="absolute right-0 top-full mt-2 bg-[--raised] dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.08] rounded-card shadow-elevation-3 z-50 min-w-[160px]">
+            <div className="absolute right-0 top-full mt-2 bg-[--raised] border border-s-ink/[0.06] rounded-card shadow-elevation-3 z-50 min-w-[160px]">
               {booking.status === 'confirmed' && (
                 <>
                   <button
@@ -212,7 +212,7 @@ export default function BookingCard({
                       onReschedule?.(booking);
                       setShowMenu(false);
                     }}
-                    className="w-full text-left px-4 py-2 text-sm text-s-ink dark:text-s-dm-text hover:bg-s-ink/[0.05] dark:hover:bg-white/[0.08] font-body"
+                    className="w-full text-left px-4 py-2 text-sm text-s-ink hover:bg-s-ink/[0.05]:bg-white/[0.08] font-body"
                   >
                     {t('reschedule')}
                   </button>
@@ -221,7 +221,7 @@ export default function BookingCard({
                       onCancel?.(booking);
                       setShowMenu(false);
                     }}
-                    className="w-full text-left px-4 py-2 text-sm text-s-error dark:text-s-error hover:bg-s-error/10 dark:hover:bg-s-error/10 font-body"
+                    className="w-full text-left px-4 py-2 text-sm text-s-error hover:bg-s-error/10:bg-s-error/10 font-body"
                   >
                     {t('cancel')}
                   </button>

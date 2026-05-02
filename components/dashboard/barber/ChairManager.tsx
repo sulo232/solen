@@ -72,23 +72,23 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
   const utilization = chairCount > 0 ? Math.round((occupiedChairs / chairCount) * 100) : 0;
 
   if (loading) {
-    return <div className="py-4 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{tc("loading")}</div>;
+    return <div className="py-4 text-center text-sm text-s-ink/40">{tc("loading")}</div>;
   }
 
   return (
-    <div className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
+    <div className="rounded-[16px] bg-white border border-s-ink/5 p-4">
       <div className="flex items-center gap-2 mb-4">
         <Armchair size={18} className="text-s-coral" />
-        <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">{t("title")}</h3>
+        <h3 className="font-heading text-sm font-bold text-s-ink">{t("title")}</h3>
       </div>
 
       {/* Utilization bar */}
       <div className="mb-4">
-        <div className="flex justify-between text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1">
+        <div className="flex justify-between text-xs text-s-ink/50 mb-1">
           <span>{t("utilization_status", { occupied: occupiedChairs, total: chairCount })}</span>
           <span>{utilization}%</span>
         </div>
-        <div className="h-2 rounded-pill bg-s-sand-subtle dark:bg-s-dm-bg overflow-hidden">
+        <div className="h-2 rounded-pill bg-s-sand-subtle overflow-hidden">
           <div
             className={`h-full rounded-pill transition-[width] duration-[250ms] ${
               utilization >= 90 ? "bg-s-error" : utilization >= 70 ? "bg-s-amber" : "bg-s-sage"
@@ -101,7 +101,7 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
       {/* Settings */}
       <div className="space-y-3">
         <div>
-          <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
+          <label className="block text-xs font-medium text-s-ink/70 mb-1">
             {t("chair_count")}
           </label>
           <input
@@ -110,11 +110,11 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
             onChange={(e) => setChairCount(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
             min={1}
             max={20}
-            className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
+          <label className="block text-xs font-medium text-s-ink/70 mb-1">
             {t("buffer_minutes")}
           </label>
           <input
@@ -123,7 +123,7 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
             onChange={(e) => setBufferMinutes(Math.max(0, Math.min(30, parseInt(e.target.value) || 0)))}
             min={0}
             max={30}
-            className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-input border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           />
         </div>
       </div>

@@ -112,21 +112,21 @@ function PurchaseModal({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 24 }}
         transition={{ duration: 0.2 }}
-        className="relative w-full max-w-md bg-white dark:bg-s-dm-surface rounded-card-lg p-6 shadow-v5-float"
+        className="relative w-full max-w-md bg-white rounded-card-lg p-6 shadow-v5-float"
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-s-ink/30 hover:text-s-ink dark:text-s-dm-text/30 dark:hover:text-s-dm-text transition-colors"
+          className="absolute top-4 right-4 text-s-ink/30 hover:text-s-ink:text-s-dm-text transition-colors"
           aria-label="Schliessen"
         >
           <X size={18} />
         </button>
 
-        <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text mb-1">{pkg.name}</h2>
-        {name && <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-4">{name}</p>}
+        <h2 className="font-heading font-bold text-lg text-s-ink mb-1">{pkg.name}</h2>
+        {name && <p className="text-xs text-s-ink/40 mb-4">{name}</p>}
 
-        <div className="flex items-center justify-between mb-6 p-3 bg-s-ink/[0.03] dark:bg-white/[0.04] rounded-input">
-          <span className="text-sm text-s-ink/60 dark:text-s-dm-text/60">
+        <div className="flex items-center justify-between mb-6 p-3 bg-s-ink/[0.03] rounded-input">
+          <span className="text-sm text-s-ink/60">
             {totalSessions} {locale === "en" ? "sessions" : "Sitzungen"}
             {pkg.bonus_sessions > 0 && (
               <span className="text-s-coral ml-1">
@@ -142,10 +142,10 @@ function PurchaseModal({
             <div className="w-12 h-12 rounded-full mx-auto flex items-center justify-center bg-green-50">
               <Package size={22} className="text-green-500" />
             </div>
-            <p className="font-heading font-bold text-s-ink dark:text-s-dm-text">
+            <p className="font-heading font-bold text-s-ink">
               {locale === "en" ? "Purchase successful!" : "Kauf erfolgreich!"}
             </p>
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+            <p className="text-xs text-s-ink/50">
               {locale === "en"
                 ? "Your package is now available in your profile."
                 : "Dein Paket ist jetzt in deinem Profil verfügbar."}
@@ -160,14 +160,14 @@ function PurchaseModal({
         ) : loadingIntent ? (
           <div className="flex justify-center py-8"><Spinner size="lg" /></div>
         ) : intentError ? (
-          <div className="flex items-start gap-2 p-3 bg-red-50 dark:bg-red-950/30 rounded-input text-red-600 dark:text-red-400 text-sm">
+          <div className="flex items-start gap-2 p-3 bg-red-50 rounded-input text-red-600 text-sm">
             <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
             <span>{intentError}</span>
           </div>
         ) : clientSecret && stripePromise ? (
           <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#C05038" } } }}>
             {payError && (
-              <div className="flex items-start gap-2 p-3 mb-4 bg-red-50 dark:bg-red-950/30 rounded-input text-red-600 dark:text-red-400 text-sm">
+              <div className="flex items-start gap-2 p-3 mb-4 bg-red-50 rounded-input text-red-600 text-sm">
                 <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
                 <span>{payError}</span>
               </div>
@@ -178,7 +178,7 @@ function PurchaseModal({
             />
           </Elements>
         ) : (
-          <div className="flex items-start gap-2 p-3 bg-red-50 dark:bg-red-950/30 rounded-input text-red-600 dark:text-red-400 text-sm">
+          <div className="flex items-start gap-2 p-3 bg-red-50 rounded-input text-red-600 text-sm">
             <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
             <span>
               {locale === "en"
@@ -233,21 +233,21 @@ export default function SalonPackagesPage() {
   const l = labels[locale as "de" | "en"] ?? labels.de;
 
   return (
-    <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg">
+    <div className="min-h-screen bg-s-bg-base">
       <div className="max-w-2xl mx-auto px-4 py-8">
         <Link href={`/${locale}/salon/${slug}`} className="text-sm text-s-coral flex items-center gap-1 mb-6">
           <ArrowLeft size={14} /> {l.back}
         </Link>
 
-        <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-1">{l.title}</h1>
-        {salonName && <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">{salonName}</p>}
+        <h1 className="font-heading font-bold text-2xl text-s-ink mb-1">{l.title}</h1>
+        {salonName && <p className="text-sm text-s-ink/50 mb-6">{salonName}</p>}
 
         {loading ? (
           <div className="flex justify-center py-12"><Spinner size="lg" /></div>
         ) : packages.length === 0 ? (
           <div className="text-center py-12">
-            <Package size={32} className="mx-auto mb-3 text-s-ink/20 dark:text-s-dm-text/20" />
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">{l.empty}</p>
+            <Package size={32} className="mx-auto mb-3 text-s-ink/20" />
+            <p className="text-sm text-s-ink/50">{l.empty}</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -261,12 +261,12 @@ export default function SalonPackagesPage() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="bg-white dark:bg-s-dm-surface rounded-[16px] shadow-warm-md p-5"
+                  className="bg-white rounded-[16px] shadow-warm-md p-5"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <h3 className="font-heading font-bold text-s-ink dark:text-s-dm-text">{pkg.name}</h3>
-                      <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{serviceName(pkg)}</p>
+                      <h3 className="font-heading font-bold text-s-ink">{pkg.name}</h3>
+                      <p className="text-xs text-s-ink/40">{serviceName(pkg)}</p>
                     </div>
                     <span className="data-text text-xl font-bold text-s-coral">
                       {formatCurrency(pkg.price, locale)}
@@ -274,7 +274,7 @@ export default function SalonPackagesPage() {
                   </div>
 
                   <div className="flex items-center gap-4 text-sm mb-4">
-                    <span className="text-s-ink/60 dark:text-s-dm-text/60">
+                    <span className="text-s-ink/60">
                       {pkg.total_sessions} {l.sessions}
                     </span>
                     {pkg.bonus_sessions > 0 && (
@@ -282,7 +282,7 @@ export default function SalonPackagesPage() {
                         <Gift size={12} /> +{pkg.bonus_sessions} {l.bonus}
                       </span>
                     )}
-                    <span className="text-s-ink/40 dark:text-s-dm-text/40 ml-auto">
+                    <span className="text-s-ink/40 ml-auto">
                       {l.perSession}: {formatCurrency(perSession, locale)}
                     </span>
                   </div>

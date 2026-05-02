@@ -27,15 +27,15 @@ export default function NailClientsPage() {
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-8">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">Nails</p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">
+        <h1 className="font-heading font-bold text-[28px] text-s-ink leading-none">
           Nagel Kunden
         </h1>
       </div>
 
       {loading ? (
         <div className="space-y-6 animate-pulse">
-          <div className="h-96 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
-          <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
+          <div className="h-96 bg-s-bg-sunken rounded-[12px]" />
+          <div className="h-64 bg-s-bg-sunken rounded-[12px]" />
         </div>
       ) : (
         <div className="space-y-6">

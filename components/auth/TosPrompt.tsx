@@ -71,38 +71,38 @@ export default function TosPrompt() {
   if (loading || !show) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-s-ink/40 dark:bg-black/60 backdrop-blur-[6px] p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-s-ink/40 backdrop-blur-[6px] p-4">
       <motion.div
         role="dialog"
         aria-modal="true"
         initial={{ opacity: 0, scale: 0.95, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="w-full max-w-md bg-[--raised] dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg overflow-hidden flex flex-col"
+        className="w-full max-w-md bg-[--raised] rounded-[12px] shadow-warm-lg overflow-hidden flex flex-col"
       >
-        <div className="p-6 text-center border-b border-s-ink/5 dark:border-white/5">
+        <div className="p-6 text-center border-b border-s-ink/5">
           <div className="w-12 h-12 rounded-full bg-s-coral/10 mx-auto flex items-center justify-center mb-4">
             <FileText size={24} className="text-s-coral" />
           </div>
-          <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">{t("title")}</h2>
-          <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 font-body">
+          <h2 className="font-heading font-bold text-xl text-s-ink mb-2">{t("title")}</h2>
+          <p className="text-sm text-s-ink/60 font-body">
             {t("description")}
           </p>
         </div>
 
-        <div className="p-6 bg-s-bg-sunken dark:bg-s-dm-bg">
+        <div className="p-6 bg-s-bg-sunken">
           <div className="flex flex-col gap-3">
-            <Link href={`/${locale}/legal/terms`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
-              <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("termsLink")}</span>
+            <Link href={`/${locale}/legal/terms`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] border border-s-ink/10 hover:border-s-coral transition-colors group">
+              <span className="text-sm font-medium text-s-ink">{t("termsLink")}</span>
               <span className="text-xs text-s-coral group-hover:underline">{t("readCta")}</span>
             </Link>
-            <Link href={`/${locale}/legal/privacy`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
-              <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("privacyLink")}</span>
+            <Link href={`/${locale}/legal/privacy`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] border border-s-ink/10 hover:border-s-coral transition-colors group">
+              <span className="text-sm font-medium text-s-ink">{t("privacyLink")}</span>
               <span className="text-xs text-s-coral group-hover:underline">{t("readCta")}</span>
             </Link>
           </div>
         </div>
 
-        <div className="p-6 border-t border-s-ink/5 dark:border-white/5 flex flex-col gap-3">
+        <div className="p-6 border-t border-s-ink/5 flex flex-col gap-3">
           <button
             onClick={handleAccept}
             disabled={saving}

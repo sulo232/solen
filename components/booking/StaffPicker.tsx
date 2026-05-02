@@ -18,7 +18,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
 
   return (
     <div className="px-4 pt-4">
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40 mb-3">
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 mb-3">
         {t("title")}
       </p>
       <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
@@ -29,14 +29,14 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
           className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-[14px] border transition-[border-color,background-color,box-shadow,transform] duration-150 ${
             selectedStaff === "any"
               ? "border-s-coral ring-2 ring-s-coral/30 bg-s-coral/[0.06]"
-              : "border-s-ink/[0.08] dark:border-white/[0.08] bg-[--raised] dark:bg-s-dm-surface hover:-translate-y-[5px] hover:shadow-v5-card-hover hover:border-s-coral/40 transition-[transform,box-shadow,border-color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+              : "border-s-ink/[0.08] bg-[--raised] hover:-translate-y-[5px] hover:shadow-v5-card-hover hover:border-s-coral/40 transition-[transform,box-shadow,border-color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
           }`}
           style={{ minWidth: "90px" }}
         >
-          <div className="w-12 h-12 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg flex items-center justify-center">
-            <Users size={20} className="text-s-ink/30 dark:text-s-dm-text/30" />
+          <div className="w-12 h-12 rounded-full bg-s-bg-sunken flex items-center justify-center">
+            <Users size={20} className="text-s-ink/30" />
           </div>
-          <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("any")}</span>
+          <span className="text-xs font-heading font-semibold text-s-ink">{t("any")}</span>
         </button>
 
         {/* Staff cards */}
@@ -47,11 +47,11 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
             className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-[14px] border transition-[border-color,background-color,box-shadow,transform] duration-150 ${
               selectedStaff === s.id
                 ? "border-s-coral ring-2 ring-s-coral/30 bg-s-coral/[0.06]"
-                : "border-s-ink/[0.08] dark:border-white/[0.08] bg-[--raised] dark:bg-s-dm-surface hover:-translate-y-[5px] hover:shadow-v5-card-hover hover:border-s-coral/40 transition-[transform,box-shadow,border-color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+                : "border-s-ink/[0.08] bg-[--raised] hover:-translate-y-[5px] hover:shadow-v5-card-hover hover:border-s-coral/40 transition-[transform,box-shadow,border-color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
             }`}
             style={{ minWidth: "90px" }}
           >
-            <div className="w-12 h-12 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-s-bg-sunken overflow-hidden flex items-center justify-center">
               {s.avatar_url ? (
                 <Image
                   src={s.avatar_url}
@@ -61,21 +61,21 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-sm font-bold text-s-ink/20 dark:text-s-dm-text/20">
+                <span className="text-sm font-bold text-s-ink/20">
                   {s.name[0]}
                 </span>
               )}
             </div>
-            <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text text-center leading-tight max-w-[80px] truncate">
+            <span className="text-xs font-heading font-semibold text-s-ink text-center leading-tight max-w-[80px] truncate">
               {s.name}
             </span>
             {s.specialties?.length > 0 && (
-              <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 text-center leading-tight max-w-[80px] truncate">
+              <span className="text-[10px] text-s-ink/40 text-center leading-tight max-w-[80px] truncate">
                 {s.specialties[0]}
               </span>
             )}
             {s.average_rating != null && s.average_rating > 0 && (
-              <span className="flex items-center gap-0.5 text-[10px] text-s-ink/50 dark:text-s-dm-text/50">
+              <span className="flex items-center gap-0.5 text-[10px] text-s-ink/50">
                 <Star size={8} className="fill-s-coral text-s-coral" />
                 <span className="data-text">{s.average_rating.toFixed(1)}</span>
               </span>

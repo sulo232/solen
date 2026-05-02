@@ -26,7 +26,7 @@ export default function ToSCheckbox({ checked, onChange }: ToSCheckboxProps) {
   const locale = useLocale();
 
   return (
-    <label className="flex items-start gap-2 text-xs text-s-ink/60 dark:text-s-dm-text/60 cursor-pointer">
+    <label className="flex items-start gap-2 text-xs text-s-ink/60 cursor-pointer">
       <input
         type="checkbox"
         checked={checked}

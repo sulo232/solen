@@ -86,7 +86,7 @@ export default memo(function VideoCard({
       .catch((err) => console.error("[VideoCard] failed to load TikTok oEmbed thumbnail:", err));
   }, [thumbnailUrl, imgError, item.tiktok_url]);
 
-  const categoryBg = CATEGORY_COLORS[item.category] ?? "bg-white/50 dark:bg-white/20";
+  const categoryBg = CATEGORY_COLORS[item.category] ?? "bg-white/50";
 
   return (
     <div
@@ -161,7 +161,7 @@ export default memo(function VideoCard({
         className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-1 bg-white/30 dark:bg-black/30 backdrop-blur-[6px] rounded-pill px-1.5 py-1">
+        <div className="flex items-center gap-1 bg-white/30 backdrop-blur-[6px] rounded-pill px-1.5 py-1">
           <LikeButton
             itemId={item.id}
             initialLiked={false}
@@ -181,7 +181,7 @@ export default memo(function VideoCard({
       {/* ── Bottom: Glassmorphism info pill ── */}
       {item.style_name && (
         <div className="absolute bottom-2 left-2 right-2 z-10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <div className="bg-white/30 dark:bg-black/30 backdrop-blur-[6px] rounded-pill px-2.5 py-1.5 max-w-[70%]">
+          <div className="bg-white/30 backdrop-blur-[6px] rounded-pill px-2.5 py-1.5 max-w-[70%]">
             <p className="text-[11px] font-medium text-white truncate">
               {item.style_name}
             </p>

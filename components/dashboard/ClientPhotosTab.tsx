@@ -78,12 +78,12 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text flex items-center gap-2">
+        <h3 className="font-heading font-bold text-sm text-s-ink flex items-center gap-2">
           <Camera size={14} className="text-s-coral" /> Fotos
         </h3>
         <div className="flex items-center gap-2">
           <select value={photoType} onChange={(e) => setPhotoType(e.target.value as "before" | "after" | "progress")}
-            className="px-2 py-1 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
+            className="px-2 py-1 rounded-input border border-s-ink/10 bg-white text-xs text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
             <option value="before">Vorher</option>
             <option value="after">Nachher</option>
             <option value="progress">Verlauf</option>
@@ -100,12 +100,12 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
       {/* Before/After pairs */}
       {(beforePhotos.length > 0 || afterPhotos.length > 0) && (
         <div className="mb-4">
-          <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">Vorher / Nachher</p>
+          <p className="text-xs font-medium text-s-ink/50 mb-2">Vorher / Nachher</p>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 uppercase tracking-wider">Vorher</p>
+              <p className="text-[10px] text-s-ink/30 uppercase tracking-wider">Vorher</p>
               {beforePhotos.map((p) => (
-                <div key={p.id} className="relative aspect-[3/4] rounded-[16px] overflow-hidden border border-s-ink/5 dark:border-white/5">
+                <div key={p.id} className="relative aspect-[3/4] rounded-[16px] overflow-hidden border border-s-ink/5">
                   <Image src={p.photo_url} alt="Vorher" fill sizes="(max-width: 768px) 50vw, 200px" className="object-cover" />
                   <span className="absolute bottom-1 left-1 text-[9px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
                     {new Date(p.created_at).toLocaleDateString("de-CH")}
@@ -114,9 +114,9 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
               ))}
             </div>
             <div className="space-y-2">
-              <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 uppercase tracking-wider">Nachher</p>
+              <p className="text-[10px] text-s-ink/30 uppercase tracking-wider">Nachher</p>
               {afterPhotos.map((p) => (
-                <div key={p.id} className="relative aspect-[3/4] rounded-[16px] overflow-hidden border border-s-ink/5 dark:border-white/5">
+                <div key={p.id} className="relative aspect-[3/4] rounded-[16px] overflow-hidden border border-s-ink/5">
                   <Image src={p.photo_url} alt="Nachher" fill sizes="(max-width: 768px) 50vw, 200px" className="object-cover" />
                   <span className="absolute bottom-1 left-1 text-[9px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
                     {new Date(p.created_at).toLocaleDateString("de-CH")}
@@ -131,10 +131,10 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
       {/* Progress photos */}
       {progressPhotos.length > 0 && (
         <div>
-          <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">Verlauf</p>
+          <p className="text-xs font-medium text-s-ink/50 mb-2">Verlauf</p>
           <div className="grid grid-cols-3 gap-2">
             {progressPhotos.map((p) => (
-              <div key={p.id} className="relative aspect-square rounded-[16px] overflow-hidden border border-s-ink/5 dark:border-white/5">
+              <div key={p.id} className="relative aspect-square rounded-[16px] overflow-hidden border border-s-ink/5">
                 <Image src={p.photo_url} alt="Verlauf" fill sizes="(max-width: 768px) 33vw, 150px" className="object-cover" />
                 <span className="absolute bottom-1 left-1 text-[9px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
                   {new Date(p.created_at).toLocaleDateString("de-CH")}

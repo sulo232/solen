@@ -56,21 +56,21 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
       <Link
         href={`/${locale}/salon/${slot.salon.slug}?slot=${slot.id}`}
         className={cn(
-          "flex flex-col justify-between rounded-card overflow-hidden h-52 border border-s-ink/[0.05] dark:border-white/[0.05] border-l-2 hover:-translate-y-1 transition-[transform] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
+          "flex flex-col justify-between rounded-card overflow-hidden h-52 border border-s-ink/[0.05] border-l-2 hover:-translate-y-1 transition-[transform] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
           isUrgent && "animate-coral-pulse"
         )}
         style={{ borderLeftColor: isUrgent ? "#E8735A" : "rgba(232, 98, 74, 0.4)" }}
       >
         <div className="p-4 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm leading-tight line-clamp-2 flex-1">
+            <p className="font-heading font-semibold text-s-ink text-sm leading-tight line-clamp-2 flex-1">
               {slot.salon.name}
             </p>
             {isUrgent && (
               <Zap size={14} className="text-s-coral shrink-0 mt-0.5 fill-s-coral" />
             )}
           </div>
-          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5 font-body">{serviceName}</p>
+          <p className="text-xs text-s-ink/50 mt-0.5 font-body">{serviceName}</p>
 
           {/* Time */}
           <div className="mt-3 flex items-center gap-1.5">
@@ -79,7 +79,7 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
           </div>
 
           {/* Countdown */}
-          <div className="flex items-center gap-1 mt-1 text-s-ink/40 dark:text-s-dm-text/40">
+          <div className="flex items-center gap-1 mt-1 text-s-ink/40">
             <Clock className="w-3 h-3" />
             <span className={cn("text-xs font-body", isUrgent && "text-s-coral font-semibold")}>
               {t("in")} {timeLeft.label}
@@ -89,11 +89,11 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
 
         {/* Footer */}
         <div className="px-4 pb-4 flex items-center justify-between">
-          <span className="data-text font-bold text-s-ink dark:text-s-dm-text text-sm">
+          <span className="data-text font-bold text-s-ink text-sm">
             {formatCurrency(slot.discounted_price, locale)}
           </span>
           {slot.price_override && slot.price_override > slot.discounted_price && (
-            <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30 line-through data-text">
+            <span className="text-xs text-s-ink/30 line-through data-text">
               {formatCurrency(slot.price_override, locale)}
             </span>
           )}

@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   return (
-    <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-s-bg-base flex flex-col items-center justify-center px-4 py-12">
       {/* Single ambient glow — Zone 3 exception */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full"
@@ -22,24 +22,24 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           </p>
           <Link
             href={`/${locale}`}
-            className="inline-block font-heading font-bold text-[32px] text-s-ink dark:text-s-dm-text leading-none hover:opacity-80 transition-opacity"
+            className="inline-block font-heading font-bold text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity"
           >
             solen<span className="text-s-coral">.</span>ch
           </Link>
-          <p className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40 mt-3">
+          <p className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 mt-3">
             Willkommen zurück
           </p>
         </div>
 
         {/* Auth card — Zone 3, warm shadow */}
-        <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.08] p-8 bg-white dark:bg-s-dm-surface shadow-elevation-3">
+        <div className="rounded-card border border-s-ink/[0.06] p-8 bg-white shadow-elevation-3">
           <Suspense>
             <SignIn />
           </Suspense>
         </div>
 
         <p className="text-center mt-6">
-          <span className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/30 dark:text-s-dm-text/30">
+          <span className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/30">
             Noch kein Konto?{" "}
           </span>
           <Link href={`/${locale}/auth/register`}

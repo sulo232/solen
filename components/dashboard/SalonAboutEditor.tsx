@@ -64,11 +64,11 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
   ] as const;
 
   return (
-    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[24px] border border-s-ink/5 dark:border-white/5 p-6 mb-8">
+    <div className="bg-[--raised] rounded-[24px] border border-s-ink/5 p-6 mb-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{t("title")}</h2>
-          <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">
+          <h2 className="font-heading font-bold text-lg text-s-ink">{t("title")}</h2>
+          <p className="text-sm text-s-ink/50">
             {t("description")}
           </p>
         </div>
@@ -99,7 +99,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
       )}
 
       {/* Language Tabs */}
-      <div className="flex gap-2 mb-4 border-b border-s-ink/5 dark:border-white/5 pb-2 overflow-x-auto no-scrollbar">
+      <div className="flex gap-2 mb-4 border-b border-s-ink/5 pb-2 overflow-x-auto no-scrollbar">
         {LANGS.map((l) => (
           <button
             key={l.id}
@@ -107,8 +107,8 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
             aria-pressed={activeLang === l.id}
             className={`px-3 py-1.5 text-xs font-heading font-semibold uppercase tracking-wider rounded-md transition-colors duration-150 whitespace-nowrap ${
               activeLang === l.id
-                ? "bg-s-ink/5 dark:bg-white/10 text-s-ink dark:text-white"
-                : "text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink hover:bg-s-ink/5 dark:hover:text-s-dm-text"
+                ? "bg-s-ink/5 text-s-ink"
+                : "text-s-ink/40 hover:text-s-ink hover:bg-s-ink/5:text-s-dm-text"
             }`}
           >
             {l.label}
@@ -123,9 +123,9 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           onChange={(e) => setTexts({ ...texts, [activeLang]: e.target.value })}
           maxLength={maxLength}
           placeholder={t("placeholder")}
-          className="w-full h-32 p-4 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral resize-none transition-[border-color,box-shadow] duration-150 placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30"
+          className="w-full h-32 p-4 rounded-input border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral resize-none transition-[border-color,box-shadow] duration-150 placeholder:text-s-ink/30:text-s-dm-text/30"
         />
-        <div className="absolute bottom-3 right-3 text-[10px] font-medium text-s-ink/30 dark:text-s-dm-text/30">
+        <div className="absolute bottom-3 right-3 text-[10px] font-medium text-s-ink/30">
           {texts[activeLang]?.length || 0} / {maxLength}
         </div>
       </div>

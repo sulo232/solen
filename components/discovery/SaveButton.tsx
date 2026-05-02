@@ -82,7 +82,7 @@ export default function SaveButton(props: SaveButtonProps) {
         size={18}
         className={[
           "transition-[fill,color] duration-150",
-          saved ? "fill-s-ink dark:fill-s-dm-text text-s-ink dark:text-s-dm-text" : "text-s-ink/30 dark:text-s-dm-text/30 group-hover:text-s-ink/60",
+          saved ? "fill-s-ink text-s-ink" : "text-s-ink/30 group-hover:text-s-ink/60",
         ].join(" ")}
       />
     </button>

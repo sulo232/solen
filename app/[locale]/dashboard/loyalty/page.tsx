@@ -69,7 +69,7 @@ export default function LoyaltyDashboardPage() {
   return (
     <DashboardLayout>
       <div className="max-w-3xl mx-auto">
-        <h1 className="font-heading text-xl font-bold text-s-ink dark:text-s-dm-text mb-6">
+        <h1 className="font-heading text-xl font-bold text-s-ink mb-6">
           Treueprogramm
         </h1>
 
@@ -78,16 +78,16 @@ export default function LoyaltyDashboardPage() {
           <LoyaltyConfig salonId={salonId} />
 
           {/* Scanner */}
-          <div className="rounded-[12px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
+          <div className="rounded-[12px] bg-white border border-s-ink/5 p-4">
             <div className="flex items-center gap-2 mb-4">
               <QrCode size={18} className="text-s-coral" />
-              <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">
+              <h3 className="font-heading text-sm font-bold text-s-ink">
                 Stempel scannen
               </h3>
             </div>
 
             <div className="space-y-3">
-              <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+              <p className="text-xs text-s-ink/50">
                 Token vom QR-Code des Kunden eingeben oder einscannen:
               </p>
               <input
@@ -95,7 +95,7 @@ export default function LoyaltyDashboardPage() {
                 value={scanToken}
                 onChange={(e) => setScanToken(e.target.value)}
                 placeholder="Token eingeben..."
-                className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text font-mono focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="w-full rounded-btn border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink font-mono focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               />
               <button
                 onClick={handleScanSubmit}

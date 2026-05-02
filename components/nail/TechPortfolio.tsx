@@ -150,7 +150,7 @@ export default function TechPortfolio({ staffId, staffName, salonSlug, initialIm
 
       {/* Grid */}
       {images.length === 0 && !loading ? (
-        <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 text-center py-8">
+        <p className="text-sm text-s-ink/40 text-center py-8">
           {t("portfolio_empty")}
         </p>
       ) : (
@@ -198,7 +198,7 @@ function FilterRow<T extends string>({
 }) {
   return (
     <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-      <span className="text-[10px] uppercase tracking-wider text-s-ink/40 dark:text-s-dm-text/40 shrink-0">
+      <span className="text-[10px] uppercase tracking-wider text-s-ink/40 shrink-0">
         {label}
       </span>
       {options.map((opt) => (
@@ -209,7 +209,7 @@ function FilterRow<T extends string>({
           className={`shrink-0 text-xs px-3 py-1 rounded-pill border transition-colors duration-150 ${
             value === opt.value
               ? "bg-s-coral text-white border-s-coral"
-              : "bg-[--raised] dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 border-s-ink/10 dark:border-s-dm-text/10 hover:border-s-coral/30"
+              : "bg-[--raised] text-s-ink/70 border-s-ink/10 hover:border-s-coral/30"
           }`}
         >
           {opt.label}

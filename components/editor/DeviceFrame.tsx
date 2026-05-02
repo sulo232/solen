@@ -103,11 +103,11 @@ export default function DeviceFrame({
   const isFramed = device !== "desktop";
 
   return (
-    <div className="flex-1 flex items-start justify-center overflow-auto bg-s-bg-sunken dark:bg-s-dm-bg p-4">
+    <div className="flex-1 flex items-start justify-center overflow-auto bg-s-bg-sunken p-4">
       <div
-        className={`relative bg-white dark:bg-s-dm-surface transition-[width,height] duration-300 ${
+        className={`relative bg-white transition-[width,height] duration-300 ${
           isFramed
-            ? "rounded-[12px] shadow-warm-md border border-s-ink/5 dark:border-s-dm-text/10"
+            ? "rounded-[12px] shadow-warm-md border border-s-ink/5"
             : "w-full h-full"
         }`}
         style={{

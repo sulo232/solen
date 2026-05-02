@@ -119,17 +119,17 @@ export default function BookingWizard({
         {canGoBack && (
           <button
             onClick={handleBack}
-            className="w-11 h-11 rounded-full flex items-center justify-center hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.06] transition-colors"
+            className="w-11 h-11 rounded-full flex items-center justify-center hover:bg-s-ink/[0.06]:bg-white/[0.06] transition-colors"
             aria-label={t('back')}
           >
-            <ChevronLeft className="w-5 h-5 text-s-ink dark:text-s-dm-text" />
+            <ChevronLeft className="w-5 h-5 text-s-ink" />
           </button>
         )}
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-heading font-bold uppercase tracking-[.08em] text-s-ink/50 dark:text-s-dm-text/50">
+          <p className="text-xs font-heading font-bold uppercase tracking-[.08em] text-s-ink/50">
             {t('stepOf', { current: currentIndex + 1, total: STEPS.length })}
           </p>
-          <h3 className="text-lg font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">
+          <h3 className="text-lg font-heading font-semibold text-s-ink truncate">
             {t(STEP_KEYS[activeStep])}
           </h3>
         </div>

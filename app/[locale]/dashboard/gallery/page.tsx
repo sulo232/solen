@@ -54,10 +54,10 @@ export default function GalleryPage() {
   return (
     <div className="max-w-5xl">
       <div className="mb-8">
-        <h1 className="font-heading font-extrabold text-[28px] text-s-ink dark:text-s-dm-text tracking-[-0.02em]">
+        <h1 className="font-heading font-extrabold text-[28px] text-s-ink tracking-[-0.02em]">
           Fotos & Galerie
         </h1>
-        <p className="text-s-ink/60 dark:text-s-dm-text/60 mt-1">
+        <p className="text-s-ink/60 mt-1">
           Verwalte die Fotos deines Salons. Diese werden auf deiner Profilseite und in den Suchergebnissen angezeigt.
         </p>
       </div>

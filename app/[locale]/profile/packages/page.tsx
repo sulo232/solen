@@ -49,12 +49,12 @@ export default function MyPackagesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex items-center justify-center">
+      <div className="min-h-screen bg-s-bg-base flex items-center justify-center">
         <div className="grid gap-4 w-full max-w-3xl px-4">
           {[...Array(2)].map((_, i) => (
-            <div key={i} className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-5 bg-white dark:bg-s-dm-surface animate-pulse">
-              <div className="h-4 w-40 bg-s-bg-sunken dark:bg-s-dm-bg rounded mb-3" />
-              <div className="h-2 w-full bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
+            <div key={i} className="rounded-[12px] border border-s-ink/[0.06] p-5 bg-white animate-pulse">
+              <div className="h-4 w-40 bg-s-bg-sunken rounded mb-3" />
+              <div className="h-2 w-full bg-s-bg-sunken rounded" />
             </div>
           ))}
         </div>
@@ -63,14 +63,14 @@ export default function MyPackagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-s-bg-surface dark:bg-s-dm-bg">
+    <div className="min-h-screen bg-s-bg-surface">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-24">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
-          <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors">
-            <ChevronLeft size={20} className="text-s-ink/60 dark:text-s-dm-text/60" />
+          <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-ink/5:bg-white/5 transition-colors">
+            <ChevronLeft size={20} className="text-s-ink/60" />
           </Link>
-          <h1 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text flex items-center gap-2">
+          <h1 className="font-heading font-bold text-xl text-s-ink flex items-center gap-2">
             <Package size={20} className="text-s-coral" />
             Meine Abo-Pakete
           </h1>
@@ -78,9 +78,9 @@ export default function MyPackagesPage() {
 
         {/* List */}
         {purchases.length === 0 ? (
-          <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-8 text-center bg-white dark:bg-s-dm-surface">
-            <Package className="w-10 h-10 mx-auto mb-3 text-s-ink/15 dark:text-s-dm-text/15" />
-            <p className="text-xs font-heading uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30">Keine Pakete gefunden</p>
+          <div className="rounded-[12px] border border-s-ink/[0.06] p-8 text-center bg-white">
+            <Package className="w-10 h-10 mx-auto mb-3 text-s-ink/15" />
+            <p className="text-xs font-heading uppercase tracking-[.10em] text-s-ink/30">Keine Pakete gefunden</p>
           </div>
         ) : (
           <div className="grid gap-4">
@@ -95,15 +95,15 @@ export default function MyPackagesPage() {
               const isExpired = expireDate && expireDate.getTime() < Date.now();
 
               return (
-                <div key={p.id} className={`rounded-[12px] border p-5 bg-white dark:bg-s-dm-surface ${
-                  isUsedUp || isExpired ? "border-s-ink/[0.06] dark:border-white/[0.06] opacity-60" : "border-s-coral/20"
+                <div key={p.id} className={`rounded-[12px] border p-5 bg-white ${
+                  isUsedUp || isExpired ? "border-s-ink/[0.06] opacity-60" : "border-s-coral/20"
                 }`}>
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">
+                      <h3 className="font-heading font-bold text-base text-s-ink">
                         {pkg.name}
                       </h3>
-                      <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-1">
+                      <p className="text-xs text-s-ink/50 mt-1">
                         Gekauft am {new Date(p.purchased_at).toLocaleDateString(localeFmt)}
                       </p>
                     </div>
@@ -122,10 +122,10 @@ export default function MyPackagesPage() {
 
                   <div>
                     <div className="flex justify-between mb-2">
-                      <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/35 dark:text-s-dm-text/35">
+                      <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/35">
                         {remaining} von {total} übrig
                       </p>
-                      <p className="text-[9px] font-heading text-s-ink/25 dark:text-s-dm-text/25">{used} genutzt</p>
+                      <p className="text-[9px] font-heading text-s-ink/25">{used} genutzt</p>
                     </div>
                     <div className="h-2 w-full rounded-full overflow-hidden"
                       style={{ background: "rgba(26,18,9,.06)" }}>
@@ -139,8 +139,8 @@ export default function MyPackagesPage() {
                   </div>
 
                   {expireDate && !isUsedUp && (
-                    <div className="mt-4 pt-3 border-t border-s-ink/5 dark:border-white/5 flex flex-wrap gap-4 text-xs">
-                      <span className="flex items-center gap-1 text-s-ink/50 dark:text-s-dm-text/50">
+                    <div className="mt-4 pt-3 border-t border-s-ink/5 flex flex-wrap gap-4 text-xs">
+                      <span className="flex items-center gap-1 text-s-ink/50">
                         <Clock size={12} />
                         Gültig bis {expireDate.toLocaleDateString(localeFmt)}
                       </span>

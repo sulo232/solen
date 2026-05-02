@@ -88,7 +88,7 @@ export default function FilterDrawer({
     >
       {mode === 'drawer' && (
         <div className="flex items-center justify-between mb-4">
-          <span className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
+          <span className="font-heading font-bold text-sm text-s-ink">
             {t('filter')}
           </span>
           <button
@@ -104,7 +104,7 @@ export default function FilterDrawer({
       {allPills.map((p) => (
         <div key={p.id} className={mode === 'drawer' ? 'mb-4' : ''}>
           {mode === 'drawer' && (
-            <p className="text-xs font-heading uppercase tracking-[0.12em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+            <p className="text-xs font-heading uppercase tracking-[0.12em] text-s-ink/50 mb-2">
               {p.label}
             </p>
           )}
@@ -119,7 +119,7 @@ export default function FilterDrawer({
                     'px-3 py-1.5 rounded-pill text-xs font-body border transition-colors duration-150',
                     active
                       ? 'bg-s-coral text-white border-s-coral'
-                      : 'bg-[--surface] text-s-ink dark:text-s-dm-text border-s-ink/8 hover:border-s-coral/40',
+                      : 'bg-[--surface] text-s-ink border-s-ink/8 hover:border-s-coral/40',
                   ].join(' ')}
                   aria-pressed={active}
                 >

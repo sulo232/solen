@@ -68,10 +68,10 @@ export default function BookCTA({ item, locale }: BookCTAProps) {
 
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-s-ink dark:text-s-dm-text">
+            <p className="text-sm font-semibold text-s-ink">
               {formatCurrency(priceMin, locale)}–{formatCurrency(priceMax, locale)}
             </p>
-            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">
+            <p className="text-[10px] text-s-ink/40 mt-0.5">
               {locale === "de" ? "Geschätzte Preisspanne" : "Estimated price range"}
             </p>
             {estimatedTime && (

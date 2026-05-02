@@ -60,13 +60,13 @@ export default function BookingsList({ userId }: BookingsListProps) {
   return (
     <div className="w-full">
       {/* Tab Navigation */}
-      <div className="flex gap-2 border-b border-s-ink/[0.06] dark:border-white/[0.08] mb-6">
+      <div className="flex gap-2 border-b border-s-ink/[0.06] mb-6">
         <button
           onClick={() => setTab('upcoming')}
           className={`px-4 py-3 font-semibold text-sm border-b-2 transition-colors ${
             tab === 'upcoming'
               ? 'border-s-coral text-s-coral'
-              : 'border-transparent text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text'
+              : 'border-transparent text-s-ink/60 hover:text-s-ink:text-s-dm-text'
           }`}
         >
           {t('upcoming')}
@@ -76,7 +76,7 @@ export default function BookingsList({ userId }: BookingsListProps) {
           className={`px-4 py-3 font-semibold text-sm border-b-2 transition-colors ${
             tab === 'past'
               ? 'border-s-coral text-s-coral'
-              : 'border-transparent text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text'
+              : 'border-transparent text-s-ink/60 hover:text-s-ink:text-s-dm-text'
           }`}
         >
           {t('past')}
@@ -86,7 +86,7 @@ export default function BookingsList({ userId }: BookingsListProps) {
           className={`px-4 py-3 font-semibold text-sm border-b-2 transition-colors ${
             tab === 'cancelled'
               ? 'border-s-coral text-s-coral'
-              : 'border-transparent text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text'
+              : 'border-transparent text-s-ink/60 hover:text-s-ink:text-s-dm-text'
           }`}
         >
           {t('cancelled')}
@@ -102,7 +102,7 @@ export default function BookingsList({ userId }: BookingsListProps) {
 
       {!loading && error && (
         <div className="text-center py-12">
-          <p className="text-red-600 dark:text-red-400">{error}</p>
+          <p className="text-red-600">{error}</p>
         </div>
       )}
 

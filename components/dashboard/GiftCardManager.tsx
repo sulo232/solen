@@ -54,7 +54,7 @@ export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
 
   return (
     <div>
-      <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text flex items-center gap-2 mb-4">
+      <h3 className="font-heading font-bold text-sm text-s-ink flex items-center gap-2 mb-4">
         <Gift size={14} className="text-s-coral" /> {t("title")}
       </h3>
 
@@ -66,32 +66,32 @@ export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
           { label: t("active"), value: stats.active_cards },
           { label: t("open"), value: formatCurrency(stats.unredeemed_balance / 100, locale) },
         ].map((s) => (
-          <div key={s.label} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3 text-center">
-            <p className="data-text font-bold text-lg text-s-ink dark:text-s-dm-text">{s.value}</p>
-            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{s.label}</p>
+          <div key={s.label} className="bg-white rounded-[16px] border border-s-ink/5 p-3 text-center">
+            <p className="data-text font-bold text-lg text-s-ink">{s.value}</p>
+            <p className="text-[10px] text-s-ink/40">{s.label}</p>
           </div>
         ))}
       </div>
 
       {/* Card list */}
       {cards.length === 0 ? (
-        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-6">{t("empty")}</p>
+        <p className="text-xs text-s-ink/30 text-center py-6">{t("empty")}</p>
       ) : (
         <div className="space-y-2">
           {cards.map((c) => (
-            <div key={c.id} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3 flex items-center justify-between">
+            <div key={c.id} className="bg-white rounded-[16px] border border-s-ink/5 p-3 flex items-center justify-between">
               <div>
-                <p className="text-sm font-mono font-medium text-s-ink dark:text-s-dm-text">{c.code}</p>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
+                <p className="text-sm font-mono font-medium text-s-ink">{c.code}</p>
+                <p className="text-xs text-s-ink/40">
                   {c.recipient_name ?? c.recipient_email ?? "—"} · {new Date(c.created_at).toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH")}
                 </p>
               </div>
               <div className="text-right">
-                <p className="data-text font-bold text-sm text-s-ink dark:text-s-dm-text">
+                <p className="data-text font-bold text-sm text-s-ink">
                   {formatCurrency(c.remaining_amount / 100, locale)}
-                  <span className="text-s-ink/30 dark:text-s-dm-text/30 font-normal"> / {(c.original_amount / 100).toFixed(0)}</span>
+                  <span className="text-s-ink/30 font-normal"> / {(c.original_amount / 100).toFixed(0)}</span>
                 </p>
-                <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${c.is_active ? (c.remaining_amount > 0 ? "bg-s-sage/10 text-s-sage dark:bg-s-sage/20 dark:text-s-sage" : "bg-s-ink/5 text-s-ink/40 dark:bg-white/5 dark:text-s-dm-text/40") : "bg-s-ink/5 text-s-ink/30 dark:bg-white/5 dark:text-s-dm-text/30"}`}>
+                <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${c.is_active ? (c.remaining_amount > 0 ? "bg-s-sage/10 text-s-sage" : "bg-s-ink/5 text-s-ink/40") : "bg-s-ink/5 text-s-ink/30"}`}>
                   {c.is_active ? (c.remaining_amount > 0 ? t("activeStatus") : t("redeemed")) : t("pending")}
                 </span>
               </div>

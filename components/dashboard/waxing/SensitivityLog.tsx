@@ -105,7 +105,7 @@ export default function SensitivityLog({
 
   if (loading)
     return (
-      <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">
+      <p className="text-sm text-s-ink/40 py-4">
         {t("loading")}
       </p>
     );
@@ -138,10 +138,10 @@ export default function SensitivityLog({
 
       {/* Add form */}
       {showForm && (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 mb-4 bg-[--raised] dark:bg-s-dm-surface space-y-3">
+        <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-4 bg-[--raised] space-y-3">
           {/* Reaction level */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mb-1 block">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               {t("reaction_level")}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -153,7 +153,7 @@ export default function SensitivityLog({
                   className={`rounded-[12px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
                     form.reaction_level === level
                       ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                      : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] text-s-ink/50 dark:text-s-dm-text/50"
+                      : "border-s-ink/[0.06] text-s-ink/50"
                   }`}
                 >
                   {t(`severity.${level}`)}
@@ -164,7 +164,7 @@ export default function SensitivityLog({
 
           {/* Affected zones */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mb-1 block">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               {t("affected_zones")}
             </label>
             <input
@@ -174,13 +174,13 @@ export default function SensitivityLog({
               }
               placeholder={t("affected_zones_placeholder")}
               aria-label={t("affected_zones")}
-              className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-transparent text-sm text-s-ink dark:text-s-dm-text"
+              className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.06] bg-transparent text-sm text-s-ink"
             />
           </div>
 
           {/* Medications */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mb-1 block">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               <Pill size={10} className="inline mr-1" />
               {t("medications")}
             </label>
@@ -191,7 +191,7 @@ export default function SensitivityLog({
               }
               placeholder={t("medications_placeholder")}
               aria-label={t("medications")}
-              className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-transparent text-sm text-s-ink dark:text-s-dm-text"
+              className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.06] bg-transparent text-sm text-s-ink"
             />
           </div>
 
@@ -206,14 +206,14 @@ export default function SensitivityLog({
               className="accent-s-coral"
             />
             <Sun size={12} className="text-s-amber" />
-            <span className="text-xs text-s-ink dark:text-s-dm-text">
+            <span className="text-xs text-s-ink">
               {t("sun_exposure")}
             </span>
           </label>
 
           {/* Aftercare */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mb-1 block">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               {t("aftercare")}
             </label>
             <input
@@ -223,13 +223,13 @@ export default function SensitivityLog({
               }
               placeholder={t("aftercare_placeholder")}
               aria-label={t("aftercare")}
-              className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-transparent text-sm text-s-ink dark:text-s-dm-text"
+              className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.06] bg-transparent text-sm text-s-ink"
             />
           </div>
 
           {/* Notes */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mb-1 block">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               {t("notes")}
             </label>
             <textarea
@@ -237,7 +237,7 @@ export default function SensitivityLog({
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
               rows={2}
               aria-label={t("notes")}
-              className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-transparent text-sm text-s-ink dark:text-s-dm-text resize-none"
+              className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.06] bg-transparent text-sm text-s-ink resize-none"
             />
           </div>
 
@@ -256,7 +256,7 @@ export default function SensitivityLog({
 
       {/* Timeline */}
       {entries.length === 0 ? (
-        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-6">
+        <p className="text-xs text-s-ink/30 text-center py-6">
           {t("no_entries")}
         </p>
       ) : (
@@ -264,7 +264,7 @@ export default function SensitivityLog({
           {entries.map((entry) => (
             <div
               key={entry.id}
-              className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-3 bg-[--raised] dark:bg-s-dm-surface"
+              className="rounded-[12px] border border-s-ink/[0.06] p-3 bg-[--raised]"
             >
               <div className="flex items-center justify-between mb-2">
                 <span
@@ -272,19 +272,19 @@ export default function SensitivityLog({
                 >
                   {t(`severity.${entry.reaction_level}`)}
                 </span>
-                <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30">
+                <span className="text-[10px] text-s-ink/30">
                   {new Date(entry.created_at).toLocaleDateString()}
                 </span>
               </div>
 
               {entry.affected_zones && entry.affected_zones.length > 0 && (
-                <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 mb-1">
+                <p className="text-xs text-s-ink/60 mb-1">
                   {entry.affected_zones.join(", ")}
                 </p>
               )}
 
               {entry.medications && (
-                <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 flex items-center gap-1 mb-1">
+                <p className="text-xs text-s-ink/50 flex items-center gap-1 mb-1">
                   <Pill size={10} /> {entry.medications}
                 </p>
               )}
@@ -296,7 +296,7 @@ export default function SensitivityLog({
               )}
 
               {entry.notes && (
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-1">
+                <p className="text-xs text-s-ink/40 mt-1">
                   {entry.notes}
                 </p>
               )}

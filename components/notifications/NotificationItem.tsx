@@ -53,8 +53,8 @@ export function NotificationItem({
   return (
     <Link
       href={href}
-      className={`block p-4 border-b border-s-ink/5 dark:border-white/5 last:border-0 hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors ${
-        !notification.read ? "bg-s-ink/[0.03] dark:bg-white/[0.03]" : ""
+      className={`block p-4 border-b border-s-ink/5 last:border-0 hover:bg-s-ink/5:bg-white/5 transition-colors ${
+        !notification.read ? "bg-s-ink/[0.03]" : ""
       }`}
     >
       <div className="flex gap-3">
@@ -62,11 +62,11 @@ export function NotificationItem({
           <div className="w-2 h-2 rounded-full bg-s-blue shrink-0 mt-1.5" />
         )}
         <div className="flex-1">
-          <p className={`text-sm ${!notification.read ? "font-semibold text-s-ink dark:text-s-dm-text" : "font-medium text-s-ink/80 dark:text-s-dm-text/80"}`}>
+          <p className={`text-sm ${!notification.read ? "font-semibold text-s-ink" : "font-medium text-s-ink/80"}`}>
             {notification.title}
           </p>
-          <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1">{notification.body}</p>
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-2">{timeAgo}</p>
+          <p className="text-sm text-s-ink/50 mt-1">{notification.body}</p>
+          <p className="text-xs text-s-ink/40 mt-2">{timeAgo}</p>
         </div>
       </div>
     </Link>

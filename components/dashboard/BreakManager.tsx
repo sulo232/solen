@@ -92,7 +92,7 @@ export default function BreakManager({ staffMemberId }: BreakManagerProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text flex items-center gap-2">
+        <h3 className="font-heading font-bold text-sm text-s-ink flex items-center gap-2">
           <Coffee size={14} className="text-s-coral" /> {t("title")}
         </h3>
         <button
@@ -110,11 +110,11 @@ export default function BreakManager({ staffMemberId }: BreakManagerProps) {
       {showAdd && (
         <div className="rounded-[16px] border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-3">
           <div>
-            <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">{t("weekday")}</label>
+            <label className="text-xs text-s-ink/50 mb-1 block">{t("weekday")}</label>
             <select
               value={dayOfWeek}
               onChange={(e) => setDayOfWeek(Number(e.target.value))}
-              className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+              className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
             >
               {[0, 1, 2, 3, 4, 5, 6].map((v) => (
                 <option key={v} value={v}>{t(`day_${v}` as any)}</option>
@@ -123,21 +123,21 @@ export default function BreakManager({ staffMemberId }: BreakManagerProps) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">{t("from")}</label>
+              <label className="text-xs text-s-ink/50 mb-1 block">{t("from")}</label>
               <input
                 type="time"
                 value={startTime}
                 onChange={(e) => { setStartTime(e.target.value); setFormError(null); }}
-                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
               />
             </div>
             <div>
-              <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">{t("to")}</label>
+              <label className="text-xs text-s-ink/50 mb-1 block">{t("to")}</label>
               <input
                 type="time"
                 value={endTime}
                 onChange={(e) => { setEndTime(e.target.value); setFormError(null); }}
-                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
               />
             </div>
           </div>
@@ -145,7 +145,7 @@ export default function BreakManager({ staffMemberId }: BreakManagerProps) {
           <div className="flex gap-2">
             <button
               onClick={() => { setShowAdd(false); setFormError(null); }}
-              className="px-3 py-1.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/60 dark:text-s-dm-text/60"
+              className="px-3 py-1.5 rounded-pill border border-s-ink/10 text-xs text-s-ink/60"
             >
               {t("cancel")}
             </button>
@@ -161,22 +161,22 @@ export default function BreakManager({ staffMemberId }: BreakManagerProps) {
       )}
 
       {breaks.length === 0 ? (
-        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-4">{t("empty")}</p>
+        <p className="text-xs text-s-ink/30 text-center py-4">{t("empty")}</p>
       ) : (
         <div className="space-y-2">
           {breaks.map((b) => (
             <div
               key={b.id}
-              className="flex items-center justify-between bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3"
+              className="flex items-center justify-between bg-white rounded-[16px] border border-s-ink/5 p-3"
             >
               <div>
-                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t(`day_${b.day_of_week}` as any)}</p>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{b.start_time} — {b.end_time}</p>
+                <p className="text-sm font-medium text-s-ink">{t(`day_${b.day_of_week}` as any)}</p>
+                <p className="text-xs text-s-ink/40">{b.start_time} — {b.end_time}</p>
               </div>
               <button
                 onClick={() => handleDelete(b.id)}
                 aria-label={t("confirmDelete")}
-                className="p-1.5 text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral transition-colors"
+                className="p-1.5 text-s-ink/20 hover:text-s-coral transition-colors"
               >
                 <Trash2 size={14} />
               </button>

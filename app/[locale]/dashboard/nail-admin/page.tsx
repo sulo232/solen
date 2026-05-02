@@ -48,7 +48,7 @@ export default function NailAdminPage() {
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-6">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 mb-1">Nails</p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">
+        <h1 className="font-heading font-bold text-[28px] text-s-ink leading-none">
           {t("pageTitle")}
         </h1>
       </div>
@@ -63,7 +63,7 @@ export default function NailAdminPage() {
             className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading font-semibold whitespace-nowrap transition-colors duration-150 shrink-0 ${
               activeTab === id
                 ? "bg-s-coral text-white shadow-coral-glow"
-                : "bg-s-ink/[0.05] text-s-ink/55 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09]"
+                : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.09]"
             }`}
           >
             <Icon size={12} />
@@ -73,7 +73,7 @@ export default function NailAdminPage() {
       </div>
 
       {loading ? (
-        <div className="h-64 bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[12px] animate-pulse" />
+        <div className="h-64 bg-s-ink/[0.04] rounded-[12px] animate-pulse" />
       ) : !salonId ? null : (
         <div>
           {activeTab === "ai" && <AiArtGenerator />}

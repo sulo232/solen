@@ -129,7 +129,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
 
   if (!settings) {
     return (
-      <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 text-center py-8">
+      <p className="text-sm text-s-ink/50 text-center py-8">
         Fehler beim Laden der Einstellungen
       </p>
     );
@@ -143,12 +143,12 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
     <div className="space-y-6">
       {/* Errors and success */}
       {error && (
-        <div className="p-4 rounded-[10px] bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/20 text-sm text-s-coral">
+        <div className="p-4 rounded-[10px] bg-s-coral/5 border border-s-coral/20 text-sm text-s-coral">
           {error}
         </div>
       )}
       {success && (
-        <div className="p-4 rounded-[10px] bg-s-success/5 dark:bg-s-success/10 border border-s-success/20 text-sm text-s-success">
+        <div className="p-4 rounded-[10px] bg-s-success/5 border border-s-success/20 text-sm text-s-success">
           {success}
         </div>
       )}
@@ -165,18 +165,18 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
               }
               className="w-5 h-5 rounded border-s-ink/20 cursor-pointer"
             />
-            <span className="font-heading font-semibold text-s-ink dark:text-s-dm-text">
+            <span className="font-heading font-semibold text-s-ink">
               Last-Minute Deals aktivieren
             </span>
           </label>
-          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-1 ml-8">
+          <p className="text-xs text-s-ink/50 mt-1 ml-8">
             Zeige deine verfügbaren Slots mit Rabatten auf der Last-Minute Seite
           </p>
         </div>
 
         {settings.enabled && (
           <div>
-            <label className="block text-sm font-heading font-bold text-s-ink dark:text-s-dm-text mb-2">
+            <label className="block text-sm font-heading font-bold text-s-ink mb-2">
               Globaler Rabatt (%)
             </label>
             <div className="flex items-center gap-3">
@@ -191,9 +191,9 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                     global_discount_percent: Math.max(1, parseInt(e.target.value) || 10),
                   })
                 }
-                className="w-24 px-4 py-2.5 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-bg text-s-ink dark:text-s-dm-text focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
+                className="w-24 px-4 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-s-ink focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
               />
-              <span className="text-sm text-s-ink/60 dark:text-s-dm-text/60">
+              <span className="text-sm text-s-ink/60">
                 wird auf alle Slots angewendet
               </span>
             </div>
@@ -203,11 +203,11 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
 
       {/* Service overrides */}
       {settings.enabled && (
-        <div className="border-t border-s-ink/5 dark:border-white/5 pt-6">
-          <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-4">
+        <div className="border-t border-s-ink/5 pt-6">
+          <h3 className="font-heading font-bold text-base text-s-ink mb-4">
             Dienst-spezifische Rabatte
           </h3>
-          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-4">
+          <p className="text-xs text-s-ink/50 mb-4">
             Setze unterschiedliche Rabattsätze für einzelne Dienste
           </p>
 
@@ -221,13 +221,13 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                 return (
                   <div
                     key={serviceId}
-                    className="flex items-center justify-between gap-3 p-4 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[10px] border border-s-ink/5 dark:border-white/5"
+                    className="flex items-center justify-between gap-3 p-4 bg-s-bg-sunken rounded-[10px] border border-s-ink/5"
                   >
                     <div className="flex-1">
-                      <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">
+                      <p className="font-heading font-semibold text-sm text-s-ink">
                         {service.name_de}
                       </p>
-                      <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+                      <p className="text-xs text-s-ink/50">
                         {service.duration_minutes} min · CHF {service.base_price.toFixed(2)}
                       </p>
                     </div>
@@ -249,15 +249,15 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                               },
                             });
                           }}
-                          className="w-16 px-2 py-1.5 rounded-[6px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-bg text-s-ink dark:text-s-dm-text text-sm text-center focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
+                          className="w-16 px-2 py-1.5 rounded-[6px] border border-s-ink/[0.08] bg-white text-s-ink text-sm text-center focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
                         />
-                        <span className="ml-1 text-sm text-s-ink/60 dark:text-s-dm-text/60">
+                        <span className="ml-1 text-sm text-s-ink/60">
                           %
                         </span>
                       </div>
                       <button
                         onClick={() => removeServiceOverride(serviceId)}
-                        className="p-1.5 rounded-[6px] text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-ink/5 dark:hover:bg-white/5 hover:text-s-coral transition-colors"
+                        className="p-1.5 rounded-[6px] text-s-ink/40 hover:bg-s-ink/5:bg-white/5 hover:text-s-coral transition-colors"
                       >
                         <X size={16} />
                       </button>
@@ -274,7 +274,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
               <select
                 value={newServiceId}
                 onChange={(e) => setNewServiceId(e.target.value)}
-                className="flex-1 px-4 py-2.5 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-bg text-s-ink dark:text-s-dm-text focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
+                className="flex-1 px-4 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-s-ink focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
               >
                 <option value="">Wähle einen Dienst...</option>
                 {availableServices.map((service) => (
@@ -286,7 +286,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
               <button
                 onClick={addServiceOverride}
                 disabled={!newServiceId}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral hover:text-s-coral disabled:opacity-50 transition-colors"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/[0.08] bg-white text-s-ink/70 hover:border-s-coral hover:text-s-coral disabled:opacity-50 transition-colors"
               >
                 <Plus size={14} />
                 Hinzufügen
@@ -295,7 +295,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
           )}
 
           {availableServices.length === 0 && Object.keys(settings.service_overrides).length > 0 && (
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+            <p className="text-xs text-s-ink/50">
               Alle Dienste haben benutzerdefinierte Rabatte
             </p>
           )}
@@ -304,8 +304,8 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
 
       {/* Preview calculator */}
       {settings.enabled && services.length > 0 && (
-        <div className="border-t border-s-ink/5 dark:border-white/5 pt-6">
-          <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-4 flex items-center gap-2">
+        <div className="border-t border-s-ink/5 pt-6">
+          <h3 className="font-heading font-bold text-base text-s-ink mb-4 flex items-center gap-2">
             <Eye size={18} />
             Rabatt-Vorschau
           </h3>
@@ -318,16 +318,16 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
               const finalPrice = service.base_price - discountAmount;
 
               return (
-                <div key={service.id} className="p-3 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[8px]">
+                <div key={service.id} className="p-3 bg-s-bg-sunken rounded-[8px]">
                   <div className="flex items-center justify-between mb-1">
-                    <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">
+                    <p className="text-sm font-heading font-semibold text-s-ink">
                       {service.name_de}
                     </p>
                     <span className="text-xs font-heading font-bold text-s-coral bg-s-coral/10 px-2 py-0.5 rounded-[4px]">
                       -{discountPercent}%
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-s-ink/60 dark:text-s-dm-text/60">
+                  <div className="flex items-center justify-between text-xs text-s-ink/60">
                     <span>
                       CHF {service.base_price.toFixed(2)} → CHF {finalPrice.toFixed(2)}
                     </span>
@@ -339,7 +339,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
               );
             })}
             {services.length > 3 && (
-              <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 text-center py-2">
+              <p className="text-xs text-s-ink/50 text-center py-2">
                 ... und {services.length - 3} weitere Dienste
               </p>
             )}
@@ -348,7 +348,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
       )}
 
       {/* Save button */}
-      <div className="border-t border-s-ink/5 dark:border-white/5 pt-6 flex gap-3 justify-end">
+      <div className="border-t border-s-ink/5 pt-6 flex gap-3 justify-end">
         <button
           onClick={handleSave}
           disabled={saving}

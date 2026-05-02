@@ -55,11 +55,11 @@ export const LooksGrid: React.FC<LooksGridProps> = ({ looks = [], onAddLook }) =
       {/* Add new look cell */}
       <button
         onClick={onAddLook}
-        className="aspect-square rounded-[10px] flex flex-col items-center justify-center border-2 border-dashed border-s-ink/20 dark:border-white/20 hover:border-s-coral dark:hover:border-s-coral transition-[border-color] duration-150"
+        className="aspect-square rounded-[10px] flex flex-col items-center justify-center border-2 border-dashed border-s-ink/20 hover:border-s-coral:border-s-coral transition-[border-color] duration-150"
         aria-label={t('addMore')}
       >
-        <Plus size={28} strokeWidth={2} className="text-s-ink/40 dark:text-s-dm-text/40 mb-1" />
-        <span className="text-[11px] font-body text-s-ink/50 dark:text-s-dm-text/50">
+        <Plus size={28} strokeWidth={2} className="text-s-ink/40 mb-1" />
+        <span className="text-[11px] font-body text-s-ink/50">
           {t("addLook")}
         </span>
       </button>

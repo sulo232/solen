@@ -69,7 +69,7 @@ export default function ApproveIncreasePage() {
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md max-w-md w-full p-6"
+        className="bg-white rounded-[12px] shadow-warm-md max-w-md w-full p-6"
       >
         {loading ? (
           <div className="flex justify-center py-12"><Spinner size="lg" /></div>

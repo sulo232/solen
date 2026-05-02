@@ -99,8 +99,8 @@ export default function ClientsPage() {
   return (
     <DashboardLayout>
       <div className="mb-5">
-        <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">Kunden</h2>
-        <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Kundenkartei & CRM</p>
+        <h2 className="font-heading font-bold text-lg text-s-ink">Kunden</h2>
+        <p className="text-sm text-s-ink/40">Kundenkartei & CRM</p>
       </div>
 
       {/* Segment filter tabs */}
@@ -121,19 +121,19 @@ export default function ClientsPage() {
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30" />
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Name suchen…"
-          className="w-full pl-9 pr-3 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+          className="w-full pl-9 pr-3 py-2.5 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral"
         />
       </div>
 
       {loading ? (
         <div className="flex justify-center py-10"><Spinner size="md" /></div>
       ) : filtered.length === 0 ? (
-        <p className="text-sm text-s-ink/30 dark:text-s-dm-text/30 text-center py-10">
+        <p className="text-sm text-s-ink/30 text-center py-10">
           {search ? "Keine Kunden gefunden" : "Noch keine Kunden"}
         </p>
       ) : (
@@ -142,7 +142,7 @@ export default function ClientsPage() {
             <button
               key={c.user_id}
               onClick={() => setSelectedClient(c)}
-              className="w-full flex items-center gap-3 p-3 rounded-[12px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface hover:border-s-coral/20 transition-colors text-left"
+              className="w-full flex items-center gap-3 p-3 rounded-[12px] border border-s-ink/5 bg-white hover:border-s-coral/20 transition-colors text-left"
             >
               <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 overflow-hidden relative">
                 {c.avatar_url ? (
@@ -152,8 +152,8 @@ export default function ClientsPage() {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">{c.display_name || "Unbekannt"}</p>
-                <div className="flex items-center gap-2 text-xs text-s-ink/40 dark:text-s-dm-text/40">
+                <p className="text-sm font-medium text-s-ink truncate">{c.display_name || "Unbekannt"}</p>
+                <div className="flex items-center gap-2 text-xs text-s-ink/40">
                   <span>{c.total_bookings} Termine</span>
                   {c.last_visit && <span>· Letzter: {new Date(c.last_visit).toLocaleDateString("de-CH")}</span>}
                 </div>
@@ -189,12 +189,12 @@ export default function ClientsPage() {
 
 function tagColor(color: string): string {
   const map: Record<string, string> = {
-    red: "bg-s-error-bg text-s-error dark:bg-s-error/10",
-    orange: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
+    red: "bg-s-error-bg text-s-error",
+    orange: "bg-orange-100 text-orange-700",
     teal: "bg-s-coral/10 text-s-coral",
-    blue: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-    purple: "bg-s-plum/10 text-s-plum dark:bg-s-plum/20",
-    gray: "bg-s-ink/5 text-s-ink/60 dark:bg-s-dm-text/10 dark:text-s-dm-text/60",
+    blue: "bg-blue-100 text-blue-700",
+    purple: "bg-s-plum/10 text-s-plum",
+    gray: "bg-s-ink/5 text-s-ink/60",
   };
   return map[color] ?? map.gray;
 }
@@ -293,8 +293,8 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
           )}
         </div>
         <div>
-          <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{client.display_name || "Unbekannt"}</h2>
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{client.total_bookings} Termine</p>
+          <h2 className="font-heading font-bold text-lg text-s-ink">{client.display_name || "Unbekannt"}</h2>
+          <p className="text-xs text-s-ink/40">{client.total_bookings} Termine</p>
         </div>
       </div>
 
@@ -313,7 +313,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
       <div className="flex gap-1 mb-5 overflow-x-auto pb-1">
         {TABS.map((t) => (
           <button key={t.key} onClick={() => setTab(t.key)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-btn text-xs font-medium whitespace-nowrap transition-colors ${tab === t.key ? "bg-s-coral text-white" : "text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-coral/5"}`}>
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-btn text-xs font-medium whitespace-nowrap transition-colors ${tab === t.key ? "bg-s-coral text-white" : "text-s-ink/50 hover:bg-s-coral/5"}`}>
             <t.icon size={12} /> {t.label}
           </button>
         ))}
@@ -323,14 +323,14 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
       {tab === "termine" && (
         loadingBookings ? <div className="flex justify-center py-6"><Spinner size="md" /></div> : (
           bookings.length === 0 ? (
-            <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-6">Keine Termine</p>
+            <p className="text-xs text-s-ink/30 text-center py-6">Keine Termine</p>
           ) : (
             <div className="space-y-2">
               {bookings.map((b) => (
-                <div key={b.id} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-3 flex items-center justify-between">
+                <div key={b.id} className="bg-white rounded-[12px] border border-s-ink/5 p-3 flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{b.service_name || "Service"}</p>
-                    <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
+                    <p className="text-sm font-medium text-s-ink">{b.service_name || "Service"}</p>
+                    <p className="text-xs text-s-ink/40">
                       {new Date(b.starts_at).toLocaleDateString("de-CH")} · {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                     </p>
                   </div>
@@ -338,7 +338,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
                     <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-btn ${b.status === "confirmed" ? "bg-s-success-bg text-s-success" : b.status === "cancelled" ? "bg-s-error-bg text-s-error" : "bg-s-ink/5 text-s-ink/50"}`}>
                       {b.status}
                     </span>
-                    {b.price_paid != null && <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5 data-text">CHF {b.price_paid}</p>}
+                    {b.price_paid != null && <p className="text-xs text-s-ink/40 mt-0.5 data-text">CHF {b.price_paid}</p>}
                   </div>
                 </div>
               ))}
@@ -355,7 +355,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
         <div>
           <div className="flex gap-2 mb-4">
             <input value={newNote} onChange={(e) => setNewNote(e.target.value)} placeholder="Notiz hinzufügen…"
-              className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+              className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral"
               onKeyDown={(e) => { if (e.key === "Enter") handleAddNote(); }} />
             <button onClick={handleAddNote} disabled={!newNote.trim() || savingNote}
               className="px-3 py-2 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50">
@@ -364,13 +364,13 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
           </div>
           {loadingNotes ? <div className="flex justify-center py-6"><Spinner size="md" /></div> : (
             notes.length === 0 ? (
-              <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-6">Keine Notizen</p>
+              <p className="text-xs text-s-ink/30 text-center py-6">Keine Notizen</p>
             ) : (
               <div className="space-y-2">
                 {notes.map((n) => (
-                  <div key={n.id} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-3">
-                    <p className="text-sm text-s-ink dark:text-s-dm-text">{n.note}</p>
-                    <p className="text-[10px] text-s-ink/20 dark:text-s-dm-text/20 mt-1">{new Date(n.created_at).toLocaleDateString("de-CH")}</p>
+                  <div key={n.id} className="bg-white rounded-[12px] border border-s-ink/5 p-3">
+                    <p className="text-sm text-s-ink">{n.note}</p>
+                    <p className="text-[10px] text-s-ink/20 mt-1">{new Date(n.created_at).toLocaleDateString("de-CH")}</p>
                   </div>
                 ))}
               </div>
@@ -383,9 +383,9 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
         <div>
           <div className="flex gap-2 mb-4">
             <input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder="Neues Tag…"
-              className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
             <select value={tagColor_} onChange={(e) => setTagColor_(e.target.value)}
-              className="px-2 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral">
+              className="px-2 py-2 rounded-btn border border-s-ink/10 bg-white text-xs text-s-ink focus:outline-none focus:border-s-coral">
               {["gray", "red", "orange", "blue", "purple", "teal"].map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
@@ -401,7 +401,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
                 {t.tag}
               </span>
             ))}
-            {tags.length === 0 && <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">Keine Tags</p>}
+            {tags.length === 0 && <p className="text-xs text-s-ink/30">Keine Tags</p>}
           </div>
         </div>
       )}

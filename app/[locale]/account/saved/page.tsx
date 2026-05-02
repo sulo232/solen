@@ -65,7 +65,7 @@ export default function SavedPage() {
   return (
     <main className="min-h-screen bg-[--base] pb-24">
       <div className="max-w-5xl mx-auto px-4 pt-6 pb-4">
-        <h1 className="font-heading text-2xl font-bold text-s-ink dark:text-s-dm-text mb-6">
+        <h1 className="font-heading text-2xl font-bold text-s-ink mb-6">
           {t("title")}
         </h1>
 

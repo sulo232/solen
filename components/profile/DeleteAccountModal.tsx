@@ -62,22 +62,22 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
     <GlassModal open={open} title={t("deleteAccount")} onClose={handleClose} maxWidth="max-w-md">
       <div className="space-y-4">
         {/* Warning */}
-        <div className="flex gap-3 p-3 rounded-input bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40">
-          <AlertCircle size={20} className="text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
-          <div className="text-sm text-red-800 dark:text-red-200">
+        <div className="flex gap-3 p-3 rounded-input bg-red-50 border border-red-200">
+          <AlertCircle size={20} className="text-red-600 shrink-0 mt-0.5" />
+          <div className="text-sm text-red-800">
             <p className="font-medium">{t("deleteAccountWarning")}</p>
             <p className="text-xs mt-1">{t("deleteAccountWarningDesc")}</p>
           </div>
         </div>
 
         {/* Active bookings message */}
-        <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60">
+        <p className="text-xs text-s-ink/60">
           {t("deleteAccountActiveBookings")}
         </p>
 
         {/* Confirmation input */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+          <label className="block text-xs font-medium text-s-ink/50 mb-2">
             {t("deleteAccountConfirmLabel")}
           </label>
           <input
@@ -85,23 +85,23 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
             placeholder={t("deleteAccountConfirmPlaceholder")}
-            className="w-full px-3 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/15 transition-colors"
+            className="w-full px-3 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink placeholder:text-s-ink/30:text-s-dm-text/30 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/15 transition-colors"
           />
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-1">
+          <p className="text-xs text-s-ink/40 mt-1">
             {t("deleteAccountHint")}
           </p>
         </div>
 
         {/* Error message */}
         {error && (
-          <div className="p-3 rounded-input bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40">
-            <p className="text-xs text-red-700 dark:text-red-300">{error}</p>
+          <div className="p-3 rounded-input bg-red-50 border border-red-200">
+            <p className="text-xs text-red-700">{error}</p>
           </div>
         )}
 
         {/* 30-day grace period info */}
-        <div className="p-3 rounded-input bg-s-ink/5 dark:bg-white/5 border border-s-ink/10 dark:border-white/10">
-          <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60">
+        <div className="p-3 rounded-input bg-s-ink/5 border border-s-ink/10">
+          <p className="text-xs text-s-ink/60">
             {t("deleteAccount30Days")}
           </p>
         </div>
@@ -111,7 +111,7 @@ export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
           <button
             onClick={handleClose}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-ink/30 hover:text-s-ink dark:hover:border-white/30 dark:hover:text-s-dm-text active:scale-[0.97] transition-[transform,border-color,color] duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 hover:border-s-ink/30 hover:text-s-ink:border-white/30:text-s-dm-text active:scale-[0.97] transition-[transform,border-color,color] duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t("cancel")}
           </button>

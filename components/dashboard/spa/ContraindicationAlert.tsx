@@ -28,15 +28,15 @@ export default function ContraindicationAlert({ intakeData }: ContraindicationAl
   if (active.length === 0) return null;
 
   return (
-    <div className="flex gap-3 p-3 rounded-[10px] bg-orange-50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-800/40 mb-4">
+    <div className="flex gap-3 p-3 rounded-[10px] bg-orange-50 border border-orange-200 mb-4">
       <ShieldAlert size={15} className="text-orange-500 shrink-0 mt-0.5" />
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-heading font-bold text-orange-600 dark:text-orange-400 mb-1">
+        <p className="text-xs font-heading font-bold text-orange-600 mb-1">
           {t("contraindicationTitle")}
         </p>
         <div className="flex flex-wrap gap-1">
           {active.map((f) => (
-            <span key={String(f.key)} className="px-2 py-0.5 rounded-[4px] bg-orange-100 dark:bg-orange-900/30 text-[9px] font-heading font-bold text-orange-600 dark:text-orange-400">
+            <span key={String(f.key)} className="px-2 py-0.5 rounded-[4px] bg-orange-100 text-[9px] font-heading font-bold text-orange-600">
               {t(f.labelKey)}
             </span>
           ))}

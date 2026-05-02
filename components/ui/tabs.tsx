@@ -13,7 +13,7 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex items-center justify-center rounded-pill bg-s-ink/[0.05] p-1 text-s-ink/55 dark:bg-s-dm-text/[0.06] dark:text-s-dm-text/55",
+      "inline-flex items-center justify-center rounded-pill bg-s-ink/[0.05] p-1 text-s-ink/55",
       className,
     )}
     {...props}
@@ -28,7 +28,7 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-pill px-3.5 py-1.5 text-sm font-medium font-body transition-[background-color,color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral/50 focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-s-coral data-[state=active]:shadow-elevation-1 dark:data-[state=active]:bg-s-dm-raised dark:data-[state=active]:text-s-coral",
+      "inline-flex items-center justify-center whitespace-nowrap rounded-pill px-3.5 py-1.5 text-sm font-medium font-body transition-[background-color,color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral/50 focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-s-coral data-[state=active]:shadow-elevation-1=active]:bg-s-dm-raised=active]:text-s-coral",
       className,
     )}
     {...props}

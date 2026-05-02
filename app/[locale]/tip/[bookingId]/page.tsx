@@ -66,7 +66,7 @@ export default function TipPage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-s-bg-base dark:bg-s-dm-bg">
+    <div className="min-h-screen flex items-center justify-center bg-s-bg-base">
       <div className="flex gap-1.5">
         {[0, 1, 2].map((i) => (
           <div key={i} className="w-1.5 h-1.5 rounded-full bg-s-coral/50 animate-pulse"
@@ -78,7 +78,7 @@ export default function TipPage() {
 
   if (done) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-s-bg-base dark:bg-s-dm-bg px-4">
+      <div className="min-h-screen flex items-center justify-center bg-s-bg-base px-4">
         <div className="text-center">
           <div className="w-16 h-16 rounded-[18px] flex items-center justify-center mx-auto mb-5 animate-bounce"
             style={{ background: "rgba(232,98,74,.10)" }}>
@@ -87,10 +87,10 @@ export default function TipPage() {
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-coral mb-2">
             Trinkgeld gesendet
           </p>
-          <h1 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">
+          <h1 className="font-heading font-bold text-xl text-s-ink mb-2">
             {l.thanks}
           </h1>
-          <p className="text-xs font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50">
+          <p className="text-xs font-heading font-semibold text-s-ink/50">
             {formatCurrency(tipAmount / 100, locale)} {l.sent}
           </p>
         </div>
@@ -103,7 +103,7 @@ export default function TipPage() {
   const serviceName = booking?.service_name ?? "Service";
 
   return (
-    <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex items-center justify-center px-4">
+    <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-6">
           <div className="w-20 h-20 rounded-full bg-s-coral/10 flex items-center justify-center mx-auto mb-3 overflow-hidden relative">
@@ -113,12 +113,12 @@ export default function TipPage() {
               <Heart size={28} className="text-s-coral" />
             )}
           </div>
-          <h1 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">{staffName}</h1>
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{serviceName}</p>
+          <h1 className="font-heading font-bold text-xl text-s-ink">{staffName}</h1>
+          <p className="text-sm text-s-ink/40">{serviceName}</p>
         </div>
 
-        <div className="bg-white dark:bg-s-dm-surface rounded-card p-5 shadow-v5-card">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/45 dark:text-s-dm-text/45 mb-3">
+        <div className="bg-white rounded-card p-5 shadow-v5-card">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/45 mb-3">
             {l.give}
           </p>
 
@@ -130,7 +130,7 @@ export default function TipPage() {
                 className={`py-3 rounded-btn text-xs font-heading font-bold transition-colors ${
                   !useCustom && selectedAmount === amount
                     ? "bg-s-coral text-white shadow-coral-glow"
-                    : "border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/65 dark:text-s-dm-text/65 hover:border-s-coral/50"
+                    : "border border-s-ink/[0.08] text-s-ink/65 hover:border-s-coral/50"
                 }`}>
                 {formatCurrency(amount / 100, locale)}
               </button>
@@ -142,21 +142,21 @@ export default function TipPage() {
             className={`w-full py-2.5 rounded-btn text-[10px] font-heading font-bold uppercase tracking-[.06em] mb-3 transition-colors ${
               useCustom
                 ? "border border-s-coral/25 text-s-coral"
-                : "border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/45 dark:text-s-dm-text/45"
+                : "border border-s-ink/[0.08] text-s-ink/45"
             }`}
             style={useCustom ? { background: "rgba(232,98,74,.06)" } : undefined}>
             {l.custom}
           </button>
           {useCustom && (
             <div className="relative mb-3">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-heading font-bold text-s-ink/45 dark:text-s-dm-text/45">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-heading font-bold text-s-ink/45">
                 CHF
               </span>
               <input type="number" min="1" step="0.5"
                 value={customAmount}
                 onChange={(e) => setCustomAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full pl-12 pr-3 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+                className="w-full pl-12 pr-3 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
                 autoFocus />
             </div>
           )}

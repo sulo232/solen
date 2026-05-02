@@ -36,7 +36,7 @@ export default function Breadcrumb() {
       {/* Mobile back button */}
       <button
         onClick={() => router.back()}
-        className="md:hidden flex items-center gap-1.5 text-sm text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors min-h-12"
+        className="md:hidden flex items-center gap-1.5 text-sm text-s-ink/50 hover:text-s-coral transition-colors min-h-12"
       >
         <ArrowLeft size={16} />
         {t("back")}
@@ -46,7 +46,7 @@ export default function Breadcrumb() {
       <nav className="hidden md:flex items-center gap-1.5 text-sm" aria-label="Breadcrumb">
         <Link
           href={`/${locale}`}
-          className="text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-coral transition-colors"
+          className="text-s-ink/40 hover:text-s-coral transition-colors"
         >
           Home
         </Link>
@@ -57,13 +57,13 @@ export default function Breadcrumb() {
 
           return (
             <span key={href} className="flex items-center gap-1.5">
-              <ChevronRight size={14} className="text-s-ink/20 dark:text-s-dm-text/20" />
+              <ChevronRight size={14} className="text-s-ink/20" />
               {isLast ? (
-                <span className="text-s-ink/70 dark:text-s-dm-text/70 font-medium">{label}</span>
+                <span className="text-s-ink/70 font-medium">{label}</span>
               ) : (
                 <Link
                   href={href}
-                  className="text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-coral transition-colors"
+                  className="text-s-ink/40 hover:text-s-coral transition-colors"
                 >
                   {label}
                 </Link>

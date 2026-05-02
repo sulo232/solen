@@ -106,7 +106,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text flex items-center gap-2">
+        <h3 className="font-heading font-bold text-sm text-s-ink flex items-center gap-2">
           <ClipboardList size={14} className="text-s-coral" /> Fragebogen
         </h3>
         <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors">
@@ -118,9 +118,9 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
         <div className="rounded-[16px] border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-4">
           {/* Template selector */}
           <div>
-            <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Vorlage</label>
+            <label className="text-xs text-s-ink/50 mb-1 block">Vorlage</label>
             <select value={templateKey} onChange={(e) => setTemplateKey(e.target.value)}
-              className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
+              className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
               {TEMPLATE_OPTIONS.map((t) => (
                 <option key={t.key} value={t.key}>{t.label}</option>
               ))}
@@ -130,14 +130,14 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
           {/* Dynamic questions */}
           {questions.map((q) => (
             <div key={q.question_key}>
-              <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">{q.question_de}</label>
+              <label className="text-xs text-s-ink/50 mb-1 block">{q.question_de}</label>
               {q.type === "boolean" ? (
                 <div className="flex gap-3">
                   {["Ja", "Nein"].map((label) => {
                     const val = label === "Ja";
                     return (
                       <button key={label} onClick={() => setResponses((p) => ({ ...p, [q.question_key]: val }))}
-                        className={`px-3 py-1.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${responses[q.question_key] === val ? "bg-s-coral text-white" : "border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60"}`}>
+                        className={`px-3 py-1.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${responses[q.question_key] === val ? "bg-s-coral text-white" : "border border-s-ink/10 text-s-ink/60"}`}>
                         {label}
                       </button>
                     );
@@ -146,14 +146,14 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
               ) : q.type === "select" ? (
                 <select value={(responses[q.question_key] as string) ?? ""}
                   onChange={(e) => setResponses((p) => ({ ...p, [q.question_key]: e.target.value }))}
-                  className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
+                  className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
                   <option value="">Wählen…</option>
                   {q.options?.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               ) : (
                 <input value={(responses[q.question_key] as string) ?? ""}
                   onChange={(e) => setResponses((p) => ({ ...p, [q.question_key]: e.target.value }))}
-                  className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+                  className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
               )}
             </div>
           ))}
@@ -164,14 +164,14 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
             {aiLoading ? <Spinner size="sm" /> : <Sparkles size={12} />} Empfehlung generieren
           </button>
           {aiRec && (
-            <div className="rounded-btn border border-s-amber/20 bg-s-amber-subtle p-3 text-xs text-s-ink dark:text-s-dm-text whitespace-pre-wrap">
+            <div className="rounded-btn border border-s-amber/20 bg-s-amber-subtle p-3 text-xs text-s-ink whitespace-pre-wrap">
               {aiRec}
             </div>
           )}
 
           <div className="flex gap-2">
             <button onClick={() => { setShowForm(false); setAiRec(null); }}
-              className="px-3 py-1.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
+              className="px-3 py-1.5 rounded-pill border border-s-ink/10 text-xs text-s-ink/60">Abbrechen</button>
             <button onClick={handleSave} disabled={saving}
               className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-coral-glow transition-[transform,filter] duration-150">
               {saving && <Spinner size="sm" invert />} Speichern
@@ -182,18 +182,18 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
 
       {/* History */}
       {history.length === 0 ? (
-        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-6">Keine Fragebögen ausgefüllt</p>
+        <p className="text-xs text-s-ink/30 text-center py-6">Keine Fragebögen ausgefüllt</p>
       ) : (
         <div className="space-y-2">
           {history.map((h) => {
             const tpl = TEMPLATE_OPTIONS.find((t) => t.key === h.template_key);
             return (
-              <div key={h.id} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3">
+              <div key={h.id} className="bg-white rounded-[16px] border border-s-ink/5 p-3">
                 <div className="flex items-center justify-between mb-1">
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{tpl?.label ?? h.template_key}</p>
-                  <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30">{new Date(h.filled_at).toLocaleDateString("de-CH")}</span>
+                  <p className="text-sm font-medium text-s-ink">{tpl?.label ?? h.template_key}</p>
+                  <span className="text-[10px] text-s-ink/30">{new Date(h.filled_at).toLocaleDateString("de-CH")}</span>
                 </div>
-                <div className="grid grid-cols-2 gap-1 text-xs text-s-ink/40 dark:text-s-dm-text/40">
+                <div className="grid grid-cols-2 gap-1 text-xs text-s-ink/40">
                   {Object.entries(h.responses).slice(0, 4).map(([k, v]) => (
                     <span key={k}>{k}: {v === true ? "Ja" : v === false ? "Nein" : String(v)}</span>
                   ))}

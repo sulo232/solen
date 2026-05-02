@@ -114,13 +114,13 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
         <div className="grid gap-px min-w-[500px]" style={{ gridTemplateColumns: "48px repeat(7, 1fr)" }}>
           <div />
           {DAYS.map((d, i) => (
-            <div key={i} className="text-center text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 py-1.5">
+            <div key={i} className="text-center text-xs font-medium text-s-ink/50 py-1.5">
               {d}
             </div>
           ))}
           {HOURS.map((hour) => (
             <div key={`row-${hour}`} className="contents">
-              <div className="text-right pr-2 text-[10px] text-s-ink/30 dark:text-s-dm-text/30 data-text">
+              <div className="text-right pr-2 text-[10px] text-s-ink/30 data-text">
                 {String(hour).padStart(2, "0")}:00
               </div>
               {Array.from({ length: 7 }, (_, day) => {
@@ -131,8 +131,8 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
                     className={[
                       "h-6 rounded-sm text-[9px] flex items-center justify-center transition-colors",
                       rule
-                        ? "bg-s-sage-subtle text-s-sage-text font-medium dark:bg-s-sage/20 dark:text-s-sage"
-                        : "bg-s-bg-surface/50 dark:bg-s-dm-raised/50",
+                        ? "bg-s-sage-subtle text-s-sage-text font-medium"
+                        : "bg-s-bg-surface/50",
                     ].join(" ")}
                   >
                     {rule ? `-${rule.discount_percent}%` : ""}
@@ -146,25 +146,25 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
 
       {rules.length > 0 && (
         <div className="space-y-1.5">
-          <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50">{t("activeRules")}</p>
+          <p className="text-xs font-medium text-s-ink/50">{t("activeRules")}</p>
           {rules.map((r) => (
             <div
               key={r.id}
-              className="flex items-center justify-between py-2 px-3 bg-s-bg-surface/50 dark:bg-s-dm-raised rounded-btn border border-s-ink/5 dark:border-white/5"
+              className="flex items-center justify-between py-2 px-3 bg-s-bg-surface/50 rounded-btn border border-s-ink/5"
             >
               <div className="flex items-center gap-2">
                 <Clock size={13} className="text-s-sage" />
-                <span className="text-sm text-s-ink dark:text-s-dm-text">
+                <span className="text-sm text-s-ink">
                   {DAYS[r.day_of_week]} {r.start_time.slice(0, 5)}–{r.end_time.slice(0, 5)}
                 </span>
-                <span className="px-1.5 py-0.5 rounded-pill bg-s-sage-subtle text-s-sage-text text-[10px] font-medium dark:bg-s-sage/20 dark:text-s-sage">
+                <span className="px-1.5 py-0.5 rounded-pill bg-s-sage-subtle text-s-sage-text text-[10px] font-medium">
                   -{r.discount_percent}%
                 </span>
               </div>
               <button
                 onClick={() => handleDelete(r.id)}
                 aria-label={t("confirmDelete")}
-                className="text-s-ink/30 hover:text-s-coral transition-colors dark:text-s-dm-text/30"
+                className="text-s-ink/30 hover:text-s-coral transition-colors"
               >
                 <Trash2 size={14} />
               </button>
@@ -173,41 +173,41 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
         </div>
       )}
 
-      <div className="border-t border-s-ink/5 dark:border-white/5 pt-4 space-y-3">
-        <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 flex items-center gap-1.5">
+      <div className="border-t border-s-ink/5 pt-4 space-y-3">
+        <p className="text-xs font-medium text-s-ink/50 flex items-center gap-1.5">
           <Plus size={12} /> {t("newRule")}
         </p>
         <div className="flex flex-wrap gap-2 items-end">
           <div>
-            <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("day")}</label>
+            <label className="block text-[10px] text-s-ink/40 mb-1">{t("day")}</label>
             <select
               value={addDay}
               onChange={(e) => setAddDay(+e.target.value)}
-              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+              className="px-2 py-1.5 rounded-input border border-s-ink/10 text-sm bg-white text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
             >
               {DAYS.map((d, i) => (<option key={i} value={i}>{d}</option>))}
             </select>
           </div>
           <div>
-            <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("from")}</label>
+            <label className="block text-[10px] text-s-ink/40 mb-1">{t("from")}</label>
             <input
               type="time"
               value={addStart}
               onChange={(e) => { setAddStart(e.target.value); setError(""); }}
-              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+              className="px-2 py-1.5 rounded-input border border-s-ink/10 text-sm bg-white text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
             />
           </div>
           <div>
-            <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("to")}</label>
+            <label className="block text-[10px] text-s-ink/40 mb-1">{t("to")}</label>
             <input
               type="time"
               value={addEnd}
               onChange={(e) => { setAddEnd(e.target.value); setError(""); }}
-              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+              className="px-2 py-1.5 rounded-input border border-s-ink/10 text-sm bg-white text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
             />
           </div>
           <div>
-            <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("discount")}</label>
+            <label className="block text-[10px] text-s-ink/40 mb-1">{t("discount")}</label>
             <div className="flex items-center gap-1">
               <input
                 type="number"
@@ -216,9 +216,9 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
                 step={5}
                 value={addDiscount}
                 onChange={(e) => setAddDiscount(Math.min(50, Math.max(5, +e.target.value)))}
-                className="w-16 px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 text-sm data-text bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+                className="w-16 px-2 py-1.5 rounded-input border border-s-ink/10 text-sm data-text bg-white text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
               />
-              <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">%</span>
+              <span className="text-xs text-s-ink/40">%</span>
             </div>
           </div>
           <button
@@ -234,7 +234,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
       </div>
 
       {rules.length === 0 && (
-        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-2">
+        <p className="text-xs text-s-ink/30 text-center py-2">
           {t("empty")}
         </p>
       )}

@@ -63,22 +63,22 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
           <CreditCard size={22} className="text-s-coral" />
         </div>
         <div>
-          <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">
+          <h2 className="font-heading font-bold text-xl text-s-ink">
             {t("payments.title")}
           </h2>
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/50">
+          <p className="text-sm text-s-ink/40">
             {t("payments.subtitle")}
           </p>
         </div>
       </div>
 
       {/* Payment mode selection */}
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 space-y-3">
-        <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+      <div className="bg-white rounded-[12px] border border-s-ink/5 p-6 space-y-3">
+        <p className="text-xs font-medium text-s-ink/50 mb-2">
           {t("payments.mode")}
         </p>
         {modeOptions.map((opt) => (
@@ -88,42 +88,42 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
             className={[
               "w-full rounded-[12px] border p-4 text-left transition-[background-color,border-color,box-shadow] flex items-center gap-3",
               paymentMode === opt.id
-                ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 shadow-warm-sm"
-                : "border-s-ink/10 dark:border-white/10 hover:border-s-ink/20 dark:hover:border-white/20",
+                ? "border-s-coral bg-s-coral/5 shadow-warm-sm"
+                : "border-s-ink/10 hover:border-s-ink/20:border-white/20",
             ].join(" ")}
           >
             <div className={[
               "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0",
-              paymentMode === opt.id ? "border-s-coral" : "border-s-ink/20 dark:border-white/20",
+              paymentMode === opt.id ? "border-s-coral" : "border-s-ink/20",
             ].join(" ")}>
               {paymentMode === opt.id && <div className="w-2.5 h-2.5 rounded-full bg-s-coral" />}
             </div>
             <div>
-              <p className={["text-sm font-medium", paymentMode === opt.id ? "text-s-coral" : "text-s-ink dark:text-s-dm-text"].join(" ")}>
+              <p className={["text-sm font-medium", paymentMode === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>
                 {t(opt.labelKey)}
               </p>
-              <p className="text-[11px] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t(opt.descKey)}</p>
+              <p className="text-[11px] text-s-ink/40 mt-0.5">{t(opt.descKey)}</p>
             </div>
           </button>
         ))}
       </div>
 
       {/* Stripe Connect */}
-        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 space-y-4">
+        <div className="bg-white rounded-[12px] border border-s-ink/5 p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <CreditCard size={16} className="text-s-ink/40 dark:text-s-dm-text/40" />
-              <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">
+              <CreditCard size={16} className="text-s-ink/40" />
+              <p className="text-sm font-medium text-s-ink">
                 {t("payments.connectBank")}
               </p>
             </div>
             {connectStatus === "connected" && (
-              <span className="px-2 py-0.5 rounded-pill text-xs bg-s-coral/10 dark:bg-s-coral/20 text-s-coral font-medium flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded-pill text-xs bg-s-coral/10 text-s-coral font-medium flex items-center gap-1">
                 <Check size={10} /> {t("payments.connected")}
               </span>
             )}
           </div>
-          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+          <p className="text-xs text-s-ink/50">
             {t("payments.stripeDesc")}
           </p>
           {connectStatus !== "connected" && (
@@ -131,7 +131,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
               <button
                 onClick={handleConnect}
                 disabled={connectLoading || connectStatus === "loading"}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink dark:text-s-dm-text hover:border-s-coral hover:text-s-coral transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/10 text-sm font-medium text-s-ink hover:border-s-coral hover:text-s-coral transition-colors disabled:opacity-50"
               >
                 {connectLoading ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
                 {t("payments.connectBank")}

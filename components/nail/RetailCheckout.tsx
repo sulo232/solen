@@ -74,7 +74,7 @@ export default function RetailCheckout({ salonId, products, onClose }: RetailChe
     return (
       <div className="text-center py-8">
         <ShoppingBag size={32} className="text-s-sage mx-auto mb-3" />
-        <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("checkout_success")}</p>
+        <p className="text-sm font-medium text-s-ink">{t("checkout_success")}</p>
         <button onClick={() => { setSuccess(false); onClose?.(); }}
           className="mt-3 text-xs text-s-coral underline">{t("close")}</button>
       </div>
@@ -85,7 +85,7 @@ export default function RetailCheckout({ salonId, products, onClose }: RetailChe
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
         <ShoppingBag size={16} className="text-s-coral" />
-        <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">{t("checkout_title")}</h3>
+        <h3 className="font-heading font-semibold text-sm text-s-ink">{t("checkout_title")}</h3>
       </div>
 
       {/* Product grid */}
@@ -94,36 +94,36 @@ export default function RetailCheckout({ salonId, products, onClose }: RetailChe
           <button
             key={product.id}
             onClick={() => addToCart(product)}
-            className="p-3 rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 bg-[--raised] dark:bg-s-dm-surface text-left hover:border-s-coral/20 transition-colors duration-150"
+            className="p-3 rounded-[16px] border border-s-ink/10 bg-[--raised] text-left hover:border-s-coral/20 transition-colors duration-150"
           >
-            <p className="text-xs font-medium text-s-ink dark:text-s-dm-text truncate">{product.name}</p>
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">{formatCurrency(product.price / 100, locale)}</p>
+            <p className="text-xs font-medium text-s-ink truncate">{product.name}</p>
+            <p className="text-xs text-s-ink/50 mt-0.5">{formatCurrency(product.price / 100, locale)}</p>
           </button>
         ))}
       </div>
 
       {/* Cart */}
       {cart.length > 0 && (
-        <div className="rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 bg-[--raised] dark:bg-s-dm-surface divide-y divide-s-ink/5 dark:divide-s-dm-text/10">
+        <div className="rounded-[16px] border border-s-ink/10 bg-[--raised] divide-y divide-s-ink/5">
           {cart.map((item) => (
             <div key={item.id} className="flex items-center justify-between p-3">
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-s-ink dark:text-s-dm-text truncate">{item.name}</p>
-                <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+                <p className="text-xs font-medium text-s-ink truncate">{item.name}</p>
+                <p className="text-[10px] text-s-ink/40">
                   {formatCurrency(item.price / 100, locale)} × {item.quantity}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => updateQuantity(item.id, -1)}
                   aria-label={`${t("decrease")} ${item.name}`}
-                  className="w-6 h-6 rounded-full bg-s-ink/5 dark:bg-s-dm-text/10 flex items-center justify-center">
-                  <Minus size={10} className="text-s-ink/50 dark:text-s-dm-text/50" />
+                  className="w-6 h-6 rounded-full bg-s-ink/5 flex items-center justify-center">
+                  <Minus size={10} className="text-s-ink/50" />
                 </button>
-                <span className="text-xs font-medium text-s-ink dark:text-s-dm-text w-4 text-center">{item.quantity}</span>
+                <span className="text-xs font-medium text-s-ink w-4 text-center">{item.quantity}</span>
                 <button onClick={() => updateQuantity(item.id, 1)}
                   aria-label={`${t("increase")} ${item.name}`}
-                  className="w-6 h-6 rounded-full bg-s-ink/5 dark:bg-s-dm-text/10 flex items-center justify-center">
-                  <Plus size={10} className="text-s-ink/50 dark:text-s-dm-text/50" />
+                  className="w-6 h-6 rounded-full bg-s-ink/5 flex items-center justify-center">
+                  <Plus size={10} className="text-s-ink/50" />
                 </button>
               </div>
             </div>
@@ -132,8 +132,8 @@ export default function RetailCheckout({ salonId, products, onClose }: RetailChe
           {/* Total + pay */}
           <div className="p-3">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("checkout_total")}</span>
-              <span className="text-sm font-bold text-s-ink dark:text-s-dm-text">{formatCurrency(total / 100, locale)}</span>
+              <span className="text-sm font-medium text-s-ink">{t("checkout_total")}</span>
+              <span className="text-sm font-bold text-s-ink">{formatCurrency(total / 100, locale)}</span>
             </div>
             <button
               onClick={handleCheckout}

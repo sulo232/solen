@@ -247,7 +247,7 @@ export default function ImageUpload({
           {pending.map((item) => (
             <div
               key={item.id}
-              className="relative w-20 h-20 rounded-[10px] overflow-hidden border border-s-ink/10 dark:border-white/10 bg-s-bg-sunken dark:bg-s-dm-raised flex-shrink-0 animate-[fadeIn_0.2s_ease]"
+              className="relative w-20 h-20 rounded-[10px] overflow-hidden border border-s-ink/10 bg-s-bg-sunken flex-shrink-0 animate-[fadeIn_0.2s_ease]"
             >
               {item.previewUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -257,7 +257,7 @@ export default function ImageUpload({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-red-50 dark:bg-red-900/20">
+                <div className="w-full h-full flex items-center justify-center bg-red-50">
                   <AlertCircle size={16} className="text-red-400" />
                 </div>
               )}
@@ -330,7 +330,7 @@ export default function ImageUpload({
             "w-full h-36 rounded-[16px] border-2 border-dashed flex flex-col items-center justify-center gap-2.5 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
             isDragOver
               ? "border-s-coral bg-s-coral/5"
-              : "border-s-ink/10 dark:border-white/10 hover:border-s-coral/40 hover:bg-s-coral/[0.02]",
+              : "border-s-ink/10 hover:border-s-coral/40 hover:bg-s-coral/[0.02]",
           ].join(" ")}
         >
           <div
@@ -341,10 +341,10 @@ export default function ImageUpload({
             <Camera size={20} className="text-s-coral" />
           </div>
           <div className="text-center px-4">
-            <p className="text-sm font-medium text-s-ink/60 dark:text-s-dm-text/60">
+            <p className="text-sm font-medium text-s-ink/60">
               {t("dropZoneTitle")}
             </p>
-            <p className="text-xs text-s-ink/35 dark:text-s-dm-text/35 mt-0.5">
+            <p className="text-xs text-s-ink/35 mt-0.5">
               {t("dropZoneHint", { max: MAX_SIZE_MB })}
             </p>
           </div>
@@ -352,7 +352,7 @@ export default function ImageUpload({
       )}
 
       {maxFiles > 1 && (
-        <p className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35 text-right">
+        <p className="text-[10px] text-s-ink/35 text-right">
           {t("countHint", {
             count: totalCount,
             max: maxFiles,

@@ -54,7 +54,7 @@ function ToastItem({ item, onRemove }: { item: ToastItem; onRemove: (id: string)
       exit="exit"
       className={cn(
         "flex items-center gap-3 min-w-[200px] max-w-[calc(100vw-32px)]",
-        "bg-white dark:bg-s-dm-surface border",
+        "bg-white border",
         "rounded-card px-4 py-3.5",
         item.type === "error" && "border-s-coral/25",
         item.type === "success" && "border-s-sage/25",
@@ -63,10 +63,10 @@ function ToastItem({ item, onRemove }: { item: ToastItem; onRemove: (id: string)
       style={{ boxShadow: "0 4px 12px rgba(26,18,9,.10), 0 12px 28px rgba(26,18,9,.08)" }}
     >
       {icons[item.type]}
-      <p className="flex-1 text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text leading-snug">{item.message}</p>
+      <p className="flex-1 text-sm font-heading font-semibold text-s-ink leading-snug">{item.message}</p>
       <button
         onClick={() => onRemove(item.id)}
-        className="p-0.5 text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink/60 dark:hover:text-s-dm-text/60 transition-colors duration-150"
+        className="p-0.5 text-s-ink/30 hover:text-s-ink/60:text-s-dm-text/60 transition-colors duration-150"
         aria-label="Schliessen"
       >
         <X size={14} />

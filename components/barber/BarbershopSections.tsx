@@ -68,20 +68,20 @@ export function BarbershopAboveGrid() {
   return (
     <div className="flex flex-col gap-4">
       {/* Walk-in teaser — tier-2 glassmorphism (Zone 2) with pulsing sage dot */}
-      <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white/[.62] dark:bg-[rgba(38,32,26,.70)] backdrop-blur-[16px] saturate-[1.2] dark:backdrop-saturate-100 border border-white/55 dark:border-white/10 rounded-[20px] shadow-warm-md" style={{ boxShadow: "var(--sh-md), var(--glass-shadow-inset)" }}>
+      <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white/[.62] backdrop-blur-[16px] saturate-[1.2] border border-white/55 rounded-[20px] shadow-warm-md" style={{ boxShadow: "var(--sh-md), var(--glass-shadow-inset)" }}>
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-8 h-8 rounded-pill bg-s-amber/15 flex items-center justify-center shrink-0">
             <Users size={16} className="text-s-amber" />
           </div>
           <div className="min-w-0">
-            <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm flex items-center gap-2">
+            <p className="font-heading font-semibold text-s-ink text-sm flex items-center gap-2">
               {t("walkin_teaser")}
               <span className="relative flex h-2.5 w-2.5 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-pill bg-s-sage opacity-75" />
                 <span className="relative inline-flex rounded-pill h-2.5 w-2.5 bg-s-sage" />
               </span>
             </p>
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 font-body">
+            <p className="text-xs text-s-ink/50 font-body">
               {t("walkin_desc")}
             </p>
           </div>
@@ -96,7 +96,7 @@ export function BarbershopAboveGrid() {
       </div>
 
       {/* Discovery signal filter pills */}
-      <div className="bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-[6px] border border-s-ink/5 dark:border-white/5 rounded-[20px] px-4 py-3 flex flex-col gap-2.5">
+      <div className="bg-white/70 backdrop-blur-[6px] border border-s-ink/5 rounded-[20px] px-4 py-3 flex flex-col gap-2.5">
         <ScrollableFilterRow
           label={t("filter_fade_type")}
           options={FADE_TYPES}
@@ -143,10 +143,10 @@ export function BarbershopBelowGrid() {
     <section className="pt-12 pb-4">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="font-heading font-bold text-[clamp(26px,3.5vw,44px)] tracking-[-0.02em] text-s-ink dark:text-s-dm-text">
+          <h2 className="font-heading font-bold text-[clamp(26px,3.5vw,44px)] tracking-[-0.02em] text-s-ink">
             {t("roster_title")}
           </h2>
-          <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
+          <p className="text-sm text-s-ink/50 font-body mt-1">
             {ts("roster_subtitle")}
           </p>
         </div>
@@ -161,13 +161,13 @@ export function BarbershopBelowGrid() {
         {FEATURED_BARBERS.map((barber) => (
           <div
             key={barber.id}
-            className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 p-4 flex flex-col items-center text-center shadow-warm-sm hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+            className="rounded-[16px] bg-white border border-s-ink/5 p-4 flex flex-col items-center text-center shadow-warm-sm hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
           >
             <div className="w-14 h-14 rounded-pill bg-s-amber/10 flex items-center justify-center mb-3">
               <span className="font-heading font-bold text-s-amber text-lg">{barber.initials}</span>
             </div>
-            <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm">{barber.name}</p>
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 font-body mt-0.5">{barber.speciality}</p>
+            <p className="font-heading font-semibold text-s-ink text-sm">{barber.name}</p>
+            <p className="text-xs text-s-ink/50 font-body mt-0.5">{barber.speciality}</p>
             <div className="flex gap-1 flex-wrap justify-center mt-2">
               {barber.styles.map((s) => (
                 <span key={s} className="text-[9px] px-2 py-0.5 rounded-pill bg-s-amber-subtle text-s-amber-text font-heading font-bold uppercase tracking-[.10em]">

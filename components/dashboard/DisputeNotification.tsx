@@ -48,7 +48,7 @@ export default function DisputeNotification({
         <div className="flex-1 min-w-0">
           <p className="font-medium text-sm text-s-ink">{t("customerReported")}</p>
           <div className="flex items-center gap-2 mt-1">
-            <span className="px-2 py-0.5 rounded-pill bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text text-[11px] font-medium border border-s-ink/5 dark:border-white/5">
+            <span className="px-2 py-0.5 rounded-pill bg-white text-s-ink text-[11px] font-medium border border-s-ink/5">
               {dispute.issue_type}
             </span>
           </div>

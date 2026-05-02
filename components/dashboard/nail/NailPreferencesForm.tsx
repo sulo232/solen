@@ -69,17 +69,17 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
     }
   };
 
-  if (loading) return <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">{t("loading")}</p>;
+  if (loading) return <p className="text-sm text-s-ink/40 py-4">{t("loading")}</p>;
 
   return (
     <div className="space-y-4 max-w-md">
       {/* Shape */}
       <label className="block">
-        <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("prefs_shape")}</span>
+        <span className="text-sm font-medium text-s-ink">{t("prefs_shape")}</span>
         <select
           value={shape}
           onChange={(e) => setShape(e.target.value as NailShape)}
-          className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+          className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
         >
           <option value="">{t("prefs_no_preference")}</option>
           <option value="round">{t("prefs_shape_round")}</option>
@@ -95,11 +95,11 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
 
       {/* Length */}
       <label className="block">
-        <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("prefs_length")}</span>
+        <span className="text-sm font-medium text-s-ink">{t("prefs_length")}</span>
         <select
           value={length}
           onChange={(e) => setLength(e.target.value as NailLength)}
-          className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+          className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
         >
           <option value="">{t("prefs_no_preference")}</option>
           <option value="natural">{t("prefs_length_natural")}</option>
@@ -112,11 +112,11 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
 
       {/* Material */}
       <label className="block">
-        <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("prefs_material")}</span>
+        <span className="text-sm font-medium text-s-ink">{t("prefs_material")}</span>
         <select
           value={material}
           onChange={(e) => setMaterial(e.target.value as NailMaterial)}
-          className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+          className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
         >
           <option value="">{t("prefs_no_preference")}</option>
           <option value="gel">{t("prefs_mat_gel")}</option>
@@ -129,24 +129,24 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
 
       {/* Brand */}
       <label className="block">
-        <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("prefs_brand")}</span>
+        <span className="text-sm font-medium text-s-ink">{t("prefs_brand")}</span>
         <input
           value={preferredBrand}
           onChange={(e) => setPreferredBrand(e.target.value)}
           placeholder={t("prefs_brand_placeholder")}
-          className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+          className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
         />
       </label>
 
       {/* Allergies */}
       <div>
-        <span className="text-sm font-medium text-s-ink dark:text-s-dm-text flex items-center gap-1">
+        <span className="text-sm font-medium text-s-ink flex items-center gap-1">
           <AlertTriangle size={14} className="text-s-error" />
           {t("prefs_allergies")}
         </span>
         <div className="flex flex-wrap gap-1.5 mt-2">
           {allergies.map((a) => (
-            <span key={a} className="flex items-center gap-1 text-xs px-2 py-1 rounded-pill bg-s-error-bg dark:bg-s-error/10 text-s-error border border-s-error/20">
+            <span key={a} className="flex items-center gap-1 text-xs px-2 py-1 rounded-pill bg-s-error-bg text-s-error border border-s-error/20">
               {a}
               <button onClick={() => setAllergies(allergies.filter((x) => x !== a))} className="text-s-error/60 hover:text-s-error">&times;</button>
             </span>
@@ -157,10 +157,10 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
             value={newAllergy}
             onChange={(e) => setNewAllergy(e.target.value)}
             placeholder={t("prefs_allergy_placeholder")}
-            className="flex-1 px-3 py-1.5 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
+            className="flex-1 px-3 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm"
             onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addAllergy())}
           />
-          <button onClick={addAllergy} className="text-xs px-3 py-1.5 rounded-btn bg-s-error-bg dark:bg-s-error/10 text-s-error border border-s-error/20">
+          <button onClick={addAllergy} className="text-xs px-3 py-1.5 rounded-btn bg-s-error-bg text-s-error border border-s-error/20">
             {t("add")}
           </button>
         </div>
@@ -170,7 +170,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
             <select
               value={allergySeverity}
               onChange={(e) => setAllergySeverity(e.target.value as NailAllergySeverity)}
-              className="w-full px-3 py-1.5 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
+              className="w-full px-3 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm"
             >
               <option value="mild">{t("prefs_severity_mild")}</option>
               <option value="moderate">{t("prefs_severity_moderate")}</option>
@@ -181,7 +181,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
               onChange={(e) => setAllergyNotes(e.target.value)}
               placeholder={t("prefs_allergy_notes_placeholder")}
               rows={2}
-              className="w-full px-3 py-1.5 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm resize-none"
+              className="w-full px-3 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm resize-none"
             />
           </div>
         )}

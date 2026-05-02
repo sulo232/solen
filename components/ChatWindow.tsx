@@ -302,14 +302,14 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="flex flex-col h-full min-h-[400px] bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5"
+      className="flex flex-col h-full min-h-[400px] bg-white rounded-[12px] border border-s-ink/5"
     >
       {/* Tab header */}
-      <div className="flex border-b border-s-ink/10 dark:border-white/10">
+      <div className="flex border-b border-s-ink/10">
         <button
           onClick={() => setActiveTab("chat")}
           className={["relative flex-1 py-2 text-sm font-medium transition-colors",
-            activeTab === "chat" ? "text-s-coral" : "text-s-ink/50 dark:text-s-ink/40"
+            activeTab === "chat" ? "text-s-coral" : "text-s-ink/50"
           ].join(" ")}
         >
           {t("tabs.chat")}
@@ -320,7 +320,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         <button
           onClick={() => setActiveTab("photos")}
           className={["relative flex-1 py-2 text-sm font-medium transition-colors",
-            activeTab === "photos" ? "text-s-coral" : "text-s-ink/50 dark:text-s-ink/40"
+            activeTab === "photos" ? "text-s-coral" : "text-s-ink/50"
           ].join(" ")}
         >
           <Camera size={14} className="inline mr-1 -mt-0.5" />
@@ -389,7 +389,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
             >
               <div className={[
                 "max-w-[85%] lg:max-w-[60%] px-3 py-2 rounded-[12px] text-sm leading-relaxed",
-                isOwn(msg) ? "bg-s-coral text-white rounded-tr-sm" : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text rounded-tl-sm",
+                isOwn(msg) ? "bg-s-coral text-white rounded-tr-sm" : "bg-s-bg-sunken text-s-ink rounded-tl-sm",
               ].join(" ")}>
                 {msg.message_type === "image" && msg.image_url ? (
                   <div>
@@ -424,7 +424,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                   </div>
                 )}
                 <div className={["flex items-center gap-1 mt-0.5", isOwn(msg) ? "justify-end" : ""].join(" ")}>
-                  <span className={["text-[10px]", isOwn(msg) ? "text-white/60" : "text-s-ink/30 dark:text-s-dm-text/30"].join(" ")}>
+                  <span className={["text-[10px]", isOwn(msg) ? "text-white/60" : "text-s-ink/30"].join(" ")}>
                     {new Date(msg.created_at).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })}
                     {msg.id.startsWith("optimistic") && ` · ${t("sending")}`}
                   </span>
@@ -442,7 +442,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                       onClick={() => handleTranslate(msg.id, msg.content)}
                       disabled={translating === msg.id}
                       className={["ml-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:opacity-100 focus:opacity-100 transition-opacity",
-                        isOwn(msg) ? "text-white/40 hover:text-white/70" : "text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-ink/50 dark:hover:text-s-dm-text/50"
+                        isOwn(msg) ? "text-white/40 hover:text-white/70" : "text-s-ink/20 hover:text-s-ink/50:text-s-dm-text/50"
                       ].join(" ")}
                       title={t("translate")}
                       style={{ opacity: translating === msg.id ? 1 : undefined }}
@@ -475,12 +475,12 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           <div className="px-4 pb-2 flex gap-2">
             <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
               placeholder={t("imageUrlPlaceholder")}
-              className="flex-1 px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
+              className="flex-1 px-3 py-2 text-sm border border-s-ink/10 rounded-btn focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 bg-white"
               autoFocus />
             <button onClick={() => sendMessage("image")} disabled={!imageUrl.trim() || sending}
               className="px-3 py-2 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm disabled:opacity-50 transition-[transform,filter] duration-150">{t("send")}</button>
             <button onClick={() => { setShowImageInput(false); setImageUrl(""); }}
-              className="px-2 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text">
+              className="px-2 py-2 rounded-btn border border-s-ink/10 text-s-ink/40 hover:text-s-ink:text-s-dm-text">
               <X size={14} />
             </button>
           </div>
@@ -516,23 +516,23 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         )}
 
         {/* Compose bar */}
-        <div className="sticky bottom-0 px-4 py-3 border-t border-s-ink/5 dark:border-white/10 backdrop-blur-sm bg-white/90 dark:bg-s-dm-surface/90 shadow-warm-sm flex items-end gap-2">
+        <div className="sticky bottom-0 px-4 py-3 border-t border-s-ink/5 backdrop-blur-sm bg-white/90 shadow-warm-sm flex items-end gap-2">
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="p-2 rounded-btn text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0 disabled:opacity-40"
+            className="p-2 rounded-btn text-s-ink/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0 disabled:opacity-40"
             title={t("attachFile")}
           >
             {uploading ? <Spinner size="sm" /> : <Paperclip size={18} />}
           </button>
           <button onClick={() => setShowImageInput((s) => !s)}
-            className="p-2 rounded-btn text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0"
+            className="p-2 rounded-btn text-s-ink/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0"
             title={t("sendImageUrl")}>
             <ImageIcon size={18} />
           </button>
           <textarea ref={inputRef} value={text} onChange={handleTextChange}
             onKeyDown={handleKeyDown} placeholder={t("messagePlaceholder")} rows={1}
-            className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 max-h-32 overflow-y-auto bg-white dark:bg-s-dm-surface dark:text-s-dm-text min-h-[38px]" />
+            className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 rounded-btn focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 max-h-32 overflow-y-auto bg-white min-h-[38px]" />
           <button onClick={() => sendMessage("text")} disabled={!text.trim() || sending}
             className="p-2 rounded-full bg-s-coral text-white disabled:opacity-40 hover:brightness-[1.06] transition-colors shrink-0">
             {sending ? <Spinner size="sm" invert /> : <Send size={16} />}

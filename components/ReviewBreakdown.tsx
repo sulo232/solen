@@ -51,20 +51,20 @@ export default function ReviewBreakdown({
     <div ref={containerRef}>
       <div className="flex gap-6 items-center">
         <div className="text-center shrink-0">
-          <p className="data-text font-bold text-4xl text-s-ink dark:text-s-dm-text">
+          <p className="data-text font-bold text-4xl text-s-ink">
             {reviewCount >= 5 ? averageRating.toFixed(1) : t("new")}
           </p>
           <span className="flex gap-0.5 justify-center">
             {[1, 2, 3, 4, 5].map((i) => (
               <Star
                 key={i}
-                className={`w-4 h-4 ${reviewCount >= 5 && i <= Math.round(averageRating) ? "fill-s-coral text-s-coral" : "text-s-ink/20 dark:text-s-dm-text/20"}`}
+                className={`w-4 h-4 ${reviewCount >= 5 && i <= Math.round(averageRating) ? "fill-s-coral text-s-coral" : "text-s-ink/20"}`}
               />
             ))}
           </span>
           <button
             onClick={onReviewCountClick}
-            className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-1 hover:text-s-coral transition-colors"
+            className="text-xs text-s-ink/40 mt-1 hover:text-s-coral transition-colors"
           >
             {reviewCount > 0 ? t("reviewCount", { count: reviewCount }) : t("noReviews")}
           </button>
@@ -74,8 +74,8 @@ export default function ReviewBreakdown({
             const pct = reviewCount > 0 ? (count / reviewCount) * 100 : 0;
             return (
               <div key={r} className="flex items-center gap-2 text-xs">
-                <span className="text-s-ink/40 dark:text-s-dm-text/40 w-2">{r}</span>
-                <div className="flex-1 h-1.5 bg-s-bg-sunken dark:bg-white/10 rounded-full overflow-hidden">
+                <span className="text-s-ink/40 w-2">{r}</span>
+                <div className="flex-1 h-1.5 bg-s-bg-sunken rounded-full overflow-hidden">
                   <motion.div
                     className="h-full bg-s-coral rounded-full"
                     initial={{ width: 0 }}
@@ -87,7 +87,7 @@ export default function ReviewBreakdown({
                     }}
                   />
                 </div>
-                <span className="text-s-ink/30 dark:text-s-dm-text/30 w-6 text-right">
+                <span className="text-s-ink/30 w-6 text-right">
                   {Math.round(pct)}%
                 </span>
               </div>
@@ -98,11 +98,11 @@ export default function ReviewBreakdown({
 
       {/* Sub-category averages */}
       {subCategories.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-s-ink/5 dark:border-white/5 space-y-2">
+        <div className="mt-4 pt-4 border-t border-s-ink/5 space-y-2">
           {subCategories.map(({ label, avg }, index) => (
             <div key={label} className="flex items-center gap-3 text-xs">
-              <span className="text-s-ink/50 dark:text-s-dm-text/50 w-24 shrink-0">{label}</span>
-              <div className="flex-1 h-1.5 bg-s-bg-sunken dark:bg-white/10 rounded-full overflow-hidden">
+              <span className="text-s-ink/50 w-24 shrink-0">{label}</span>
+              <div className="flex-1 h-1.5 bg-s-bg-sunken rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-s-coral rounded-full"
                   initial={{ width: 0 }}
@@ -114,7 +114,7 @@ export default function ReviewBreakdown({
                   }}
                 />
               </div>
-              <span className="text-s-ink/60 dark:text-s-dm-text/60 w-6 text-right font-medium">{avg.toFixed(1)}</span>
+              <span className="text-s-ink/60 w-6 text-right font-medium">{avg.toFixed(1)}</span>
             </div>
           ))}
         </div>

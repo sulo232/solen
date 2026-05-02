@@ -84,7 +84,7 @@ export default function NailDesignCard({
         className="absolute top-2 right-2 z-10 flex items-center gap-1"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-1 bg-white/30 dark:bg-black/30 backdrop-blur-[6px] rounded-pill px-1.5 py-1">
+        <div className="flex items-center gap-1 bg-white/30 backdrop-blur-[6px] rounded-pill px-1.5 py-1">
           <LikeButton
             itemId={id}
             initialLiked={false}
@@ -104,7 +104,7 @@ export default function NailDesignCard({
       {/* ── Bottom: Salon/staff info pill ── */}
       {(staffName || salonName) && (
         <div className="absolute bottom-2 left-2 right-2 z-10">
-          <div className="bg-white/30 dark:bg-black/30 backdrop-blur-[6px] rounded-pill px-2.5 py-1.5 max-w-[70%]">
+          <div className="bg-white/30 backdrop-blur-[6px] rounded-pill px-2.5 py-1.5 max-w-[70%]">
             <p className="text-[11px] font-medium text-white truncate">
               {staffName}{staffName && salonName ? " · " : ""}{salonName}
             </p>

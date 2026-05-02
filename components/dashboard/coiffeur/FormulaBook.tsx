@@ -122,17 +122,17 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
 
   if (!clientId) {
     return (
-      <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-6 bg-white dark:bg-s-dm-surface text-center">
-        <Beaker size={20} className="mx-auto mb-2 text-s-ink/20 dark:text-s-dm-text/20" />
-        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">{t("select_client_first")}</p>
+      <div className="rounded-[12px] border border-s-ink/[0.06] p-6 bg-white text-center">
+        <Beaker size={20} className="mx-auto mb-2 text-s-ink/20" />
+        <p className="text-xs text-s-ink/30">{t("select_client_first")}</p>
       </div>
     );
   }
 
-  const inputClass = "w-full px-2 py-1.5 rounded-[8px] border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20";
+  const inputClass = "w-full px-2 py-1.5 rounded-[8px] border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20";
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-white dark:bg-s-dm-surface">
+    <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white">
       <div className="flex items-center justify-between mb-3">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
           {t("formula_history")}
@@ -149,12 +149,12 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
       {/* Search + technique filter */}
       <div className="space-y-2 mb-3">
         <div className="relative">
-          <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30" />
+          <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-s-ink/30" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t("formulaSearch")}
-            className="w-full pl-7 pr-3 py-1.5 rounded-[8px] border border-s-ink/10 dark:border-s-dm-text/10 bg-s-ink/[0.02] dark:bg-s-dm-text/[0.02] text-xs text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+            className="w-full pl-7 pr-3 py-1.5 rounded-[8px] border border-s-ink/10 bg-s-ink/[0.02] text-xs text-s-ink focus:outline-none focus:border-s-coral"
             aria-label={t("formulaSearch")}
           />
         </div>
@@ -166,7 +166,7 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
               className={`px-2 py-0.5 text-[9px] font-heading font-semibold rounded-pill transition-[background-color,color,box-shadow] duration-150 ${
                 techniqueFilter === tech
                   ? "bg-s-amber text-white"
-                  : "bg-s-ink/[0.05] text-s-ink/50 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/50 hover:bg-s-ink/[0.09]"
+                  : "bg-s-ink/[0.05] text-s-ink/50 hover:bg-s-ink/[0.09]"
               }`}
               aria-label={tech}
             >
@@ -177,28 +177,28 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
       </div>
 
       {showAdd && (
-        <div className="rounded-[12px] border border-s-coral/20 bg-s-coral/5 dark:bg-s-coral/[0.03] p-4 mb-4 space-y-3">
+        <div className="rounded-[12px] border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-3">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-1 block">{t("brand")}</label>
+              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("brand")}</label>
               <input value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="z.B. Wella" className={inputClass} aria-label={t("brand")} />
             </div>
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-1 block">{t("shade_code")}</label>
+              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("shade_code")}</label>
               <input value={shadeCode} onChange={(e) => setShadeCode(e.target.value)} placeholder="z.B. 7/0" className={inputClass} aria-label={t("shade_code")} />
             </div>
           </div>
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-1 block">{t("mixing_ratio")} *</label>
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("mixing_ratio")} *</label>
             <input value={mixFormula} onChange={(e) => setMixFormula(e.target.value)} placeholder="z.B. 7/0 + 8/1 (1:1)" className={inputClass} aria-label={t("mixing_ratio")} />
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-1 block">{t("developer_volume")}</label>
+              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("developer_volume")}</label>
               <input value={developerVolume} onChange={(e) => setDeveloperVolume(e.target.value)} placeholder="z.B. 6%" className={inputClass} aria-label={t("developer_volume")} />
             </div>
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-1 block">{t("processing_minutes")}</label>
+              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("processing_minutes")}</label>
               <input type="number" value={processingMinutes} onChange={(e) => setProcessingMinutes(e.target.value)} placeholder="35" className={inputClass} aria-label={t("processing_minutes")} />
             </div>
           </div>
@@ -206,21 +206,21 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
           {/* Zone sections: Root / Mid-lengths / Ends */}
           <div className="space-y-2">
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-1 block">{t("root")}</label>
+              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("root")}</label>
               <input value={rootFormula} onChange={(e) => setRootFormula(e.target.value)} placeholder={t("root_placeholder")} className={inputClass} aria-label={t("root")} />
             </div>
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-1 block">{t("mid_lengths")}</label>
+              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("mid_lengths")}</label>
               <input value={midFormula} onChange={(e) => setMidFormula(e.target.value)} placeholder={t("mid_lengths_placeholder")} className={inputClass} aria-label={t("mid_lengths")} />
             </div>
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-1 block">{t("ends")}</label>
+              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("ends")}</label>
               <input value={endsFormula} onChange={(e) => setEndsFormula(e.target.value)} placeholder={t("ends_placeholder")} className={inputClass} aria-label={t("ends")} />
             </div>
           </div>
 
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-1 block">{t("notes")}</label>
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("notes")}</label>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className={`${inputClass} resize-none`} aria-label={t("notes")} />
           </div>
 
@@ -228,7 +228,7 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
             <p className="text-[11px] text-s-error" role="alert">{t("save_error")}</p>
           )}
           <div className="flex gap-2">
-            <button onClick={() => { setShowAdd(false); resetForm(); setSaveError(false); }} className="px-3 py-1.5 rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-xs text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150" aria-label={t("cancel")}>
+            <button onClick={() => { setShowAdd(false); resetForm(); setSaveError(false); }} className="px-3 py-1.5 rounded-pill border border-s-ink/10 text-xs text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150" aria-label={t("cancel")}>
               {t("cancel")}
             </button>
             <button onClick={handleAdd} disabled={!mixFormula.trim() || saving}
@@ -244,7 +244,7 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
       {loading ? (
         <div className="flex justify-center py-6"><Spinner size="md" /></div>
       ) : formulas.length === 0 ? (
-        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-6">{t("no_formulas")}</p>
+        <p className="text-xs text-s-ink/30 text-center py-6">{t("no_formulas")}</p>
       ) : (
         <div className="space-y-2">
           {formulas
@@ -258,13 +258,13 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
             .map((f) => {
             const isExpanded = expandedId === f.id;
             return (
-              <div key={f.id} className="border-b border-s-ink/[0.04] dark:border-s-dm-text/[0.04] py-3 last:border-0">
+              <div key={f.id} className="border-b border-s-ink/[0.04] py-3 last:border-0">
                 <div className="flex items-center justify-between cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : f.id)}>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">
+                    <p className="text-sm font-heading font-semibold text-s-ink truncate">
                       {f.brand ? `${f.brand}` : ""}{f.shade_code ? ` — ${f.shade_code}` : ""}{!f.brand && !f.shade_code ? f.mix_formula : ""}
                     </p>
-                    <span className="text-[10px] data-text text-s-ink/40 dark:text-s-dm-text/40">
+                    <span className="text-[10px] data-text text-s-ink/40">
                       {new Date(f.created_at).toLocaleDateString("de-CH")}
                     </span>
                   </div>
@@ -272,54 +272,54 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
                     <button
                       onClick={(e) => { e.stopPropagation(); copyFormula(f); }}
                       aria-label={t("copy_formula")}
-                      className="p-1 text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-coral transition-colors duration-150"
+                      className="p-1 text-s-ink/30 hover:text-s-coral transition-colors duration-150"
                     >
                       {copied === f.id ? <Check size={12} className="text-s-sage" /> : <Copy size={12} />}
                     </button>
-                    {isExpanded ? <ChevronUp size={14} className="text-s-ink/30 dark:text-s-dm-text/30" /> : <ChevronDown size={14} className="text-s-ink/30 dark:text-s-dm-text/30" />}
+                    {isExpanded ? <ChevronUp size={14} className="text-s-ink/30" /> : <ChevronDown size={14} className="text-s-ink/30" />}
                   </div>
                 </div>
 
                 {isExpanded && (
                   <div className="mt-2 grid grid-cols-1 lg:grid-cols-2 gap-2 text-xs">
                     <div>
-                      <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30">{t("mixing_ratio")}</span>
-                      <p className="text-s-ink/70 dark:text-s-dm-text/70 mt-0.5 font-mono text-[11px]">{f.mix_formula}</p>
+                      <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30">{t("mixing_ratio")}</span>
+                      <p className="text-s-ink/70 mt-0.5 font-mono text-[11px]">{f.mix_formula}</p>
                     </div>
                     {f.developer_volume && (
                       <div>
-                        <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30">{t("developer_volume")}</span>
-                        <p className="text-s-ink/70 dark:text-s-dm-text/70 mt-0.5">{f.developer_volume}</p>
+                        <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30">{t("developer_volume")}</span>
+                        <p className="text-s-ink/70 mt-0.5">{f.developer_volume}</p>
                       </div>
                     )}
                     {f.processing_minutes && (
                       <div>
-                        <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30">{t("processing_minutes")}</span>
-                        <p className="text-s-ink/70 dark:text-s-dm-text/70 mt-0.5">{f.processing_minutes} min</p>
+                        <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30">{t("processing_minutes")}</span>
+                        <p className="text-s-ink/70 mt-0.5">{f.processing_minutes} min</p>
                       </div>
                     )}
                     {(f.root_formula as { text?: string })?.text && (
                       <div>
-                        <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30">{t("root")}</span>
-                        <p className="text-s-ink/70 dark:text-s-dm-text/70 mt-0.5">{(f.root_formula as { text?: string }).text}</p>
+                        <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30">{t("root")}</span>
+                        <p className="text-s-ink/70 mt-0.5">{(f.root_formula as { text?: string }).text}</p>
                       </div>
                     )}
                     {(f.mid_lengths_formula as { text?: string })?.text && (
                       <div>
-                        <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30">{t("mid_lengths")}</span>
-                        <p className="text-s-ink/70 dark:text-s-dm-text/70 mt-0.5">{(f.mid_lengths_formula as { text?: string }).text}</p>
+                        <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30">{t("mid_lengths")}</span>
+                        <p className="text-s-ink/70 mt-0.5">{(f.mid_lengths_formula as { text?: string }).text}</p>
                       </div>
                     )}
                     {(f.ends_formula as { text?: string })?.text && (
                       <div>
-                        <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30">{t("ends")}</span>
-                        <p className="text-s-ink/70 dark:text-s-dm-text/70 mt-0.5">{(f.ends_formula as { text?: string }).text}</p>
+                        <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30">{t("ends")}</span>
+                        <p className="text-s-ink/70 mt-0.5">{(f.ends_formula as { text?: string }).text}</p>
                       </div>
                     )}
                     {f.notes && (
                       <div className="lg:col-span-2">
-                        <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30">{t("notes")}</span>
-                        <p className="text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">{f.notes}</p>
+                        <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30">{t("notes")}</span>
+                        <p className="text-s-ink/50 mt-0.5">{f.notes}</p>
                       </div>
                     )}
                   </div>

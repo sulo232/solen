@@ -88,7 +88,7 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
     <div className="mt-3">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-1.5 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+        className="flex items-center gap-1.5 text-xs text-s-ink/50 hover:text-s-ink:text-s-dm-text transition-colors"
       >
         <MessageCircle size={14} />
         <span>{total > 0 ? t("count", { count: total }) : t("label")}</span>
@@ -103,7 +103,7 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
               value={text}
               onChange={(e) => setText(e.target.value.slice(0, 500))}
               placeholder={isAuthenticated ? t("placeholder") : t("loginPrompt")}
-              className="flex-1 text-xs px-3 py-2 rounded-pill bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30"
+              className="flex-1 text-xs px-3 py-2 rounded-pill bg-s-bg-sunken border border-s-ink/10 text-s-ink placeholder:text-s-ink/30"
               onKeyDown={(e) => e.key === "Enter" && handlePost()}
               disabled={!isAuthenticated}
             />
@@ -121,7 +121,7 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {comments.map((c) => (
               <div key={c.id} className="flex gap-2 text-xs">
-                <div className="w-6 h-6 rounded-full bg-s-ink/10 dark:bg-white/10 flex items-center justify-center text-[10px] font-medium text-s-ink/50 dark:text-s-dm-text/50 shrink-0">
+                <div className="w-6 h-6 rounded-full bg-s-ink/10 flex items-center justify-center text-[10px] font-medium text-s-ink/50 shrink-0">
                   {c.user.avatar_url ? (
                     <Image src={c.user.avatar_url} alt={c.user.display_name} width={24} height={24} className="rounded-full object-cover" />
                   ) : (
@@ -130,23 +130,23 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-medium text-s-ink dark:text-s-dm-text truncate">{c.user.display_name}</span>
-                    <span className="text-s-ink/30 dark:text-s-dm-text/30">
+                    <span className="font-medium text-s-ink truncate">{c.user.display_name}</span>
+                    <span className="text-s-ink/30">
                       {new Date(c.created_at).toLocaleDateString()}
                     </span>
                     <ReportButton type="comment" targetId={c.id} />
                   </div>
-                  <p className="text-s-ink/70 dark:text-s-dm-text/70 break-words">{c.text}</p>
+                  <p className="text-s-ink/70 break-words">{c.text}</p>
                 </div>
               </div>
             ))}
-            {loading && <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">{t("loading") ?? "..."}</p>}
+            {loading && <p className="text-xs text-s-ink/30">{t("loading") ?? "..."}</p>}
           </div>
 
           {hasMore && !loading && (
             <button
               onClick={loadMore}
-              className="flex items-center gap-1 text-xs text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink/70 mx-auto"
+              className="flex items-center gap-1 text-xs text-s-ink/40 hover:text-s-ink/70 mx-auto"
             >
               <ChevronDown size={12} /> {t("loadMore")}
             </button>

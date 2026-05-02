@@ -77,29 +77,29 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
   }, {});
 
   return (
-    <div className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
+    <div className="rounded-[16px] bg-white border border-s-ink/5 p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Bell size={18} className="text-s-amber" />
-          <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">{t("smartReminders")}</h3>
+          <h3 className="font-heading text-sm font-bold text-s-ink">{t("smartReminders")}</h3>
         </div>
-        <span className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50">
+        <span className="flex items-center gap-1 text-xs text-s-ink/50">
           <Users size={14} />
           {dueClients.length} {t("dueThisWeek")}
         </span>
       </div>
 
       {loading ? (
-        <div className="py-4 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("loading")}</div>
+        <div className="py-4 text-center text-sm text-s-ink/40">{t("loading")}</div>
       ) : dueClients.length === 0 ? (
-        <div className="py-6 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">
+        <div className="py-6 text-center text-sm text-s-ink/40">
           {t("noReminders")}
         </div>
       ) : (
         <div className="space-y-4">
           {Object.entries(byBarber).map(([barber, clients]) => (
             <div key={barber}>
-              <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">{barber}</p>
+              <p className="text-xs font-medium text-s-ink/50 mb-2">{barber}</p>
               <div className="space-y-2">
                 {clients.map((client) => {
                   const cooldown = client.cooldown || false;
@@ -108,13 +108,13 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
                   return (
                     <div
                       key={client.id}
-                      className="flex items-center justify-between rounded-btn bg-s-bg-surface dark:bg-s-dm-bg p-3"
+                      className="flex items-center justify-between rounded-btn bg-s-bg-surface p-3"
                     >
                       <div>
-                        <p className="text-sm text-s-ink dark:text-s-dm-text font-medium">
+                        <p className="text-sm text-s-ink font-medium">
                           {client.display_name}
                         </p>
-                        <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+                        <p className="text-xs text-s-ink/50">
                           {client.days_overdue > 0
                             ? t("daysOverdue", { days: client.days_overdue })
                             : t("dueToday")}
@@ -129,7 +129,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
                           {t("sent")}
                         </span>
                       ) : cooldown ? (
-                        <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">
+                        <span className="text-xs text-s-ink/30">
                           {t("recentlySent")}
                         </span>
                       ) : (
@@ -154,27 +154,27 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
       {/* Confirmation dialog */}
       {confirmClient && (
         <div className="fixed inset-0 z-[55] bg-s-ink/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="confirmDialogTitle">
-          <div className="bg-white dark:bg-s-dm-surface rounded-[16px] shadow-warm-lg p-6 max-w-sm w-full">
+          <div className="bg-white rounded-[16px] shadow-warm-lg p-6 max-w-sm w-full">
             <div className="flex items-center justify-between mb-4">
-              <h4 id="confirmDialogTitle" className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
+              <h4 id="confirmDialogTitle" className="font-heading font-bold text-sm text-s-ink">
                 {t("confirmTitle")}
               </h4>
               <button
                 onClick={() => setConfirmClient(null)}
                 aria-label={t("cancel")}
-                className="p-1 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors duration-150"
+                className="p-1 rounded-btn text-s-ink/40 hover:bg-s-bg-surface:bg-s-dm-bg transition-colors duration-150"
               >
                 <X size={16} />
               </button>
             </div>
-            <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 mb-4">
+            <p className="text-sm text-s-ink/70 mb-4">
               {t("confirmDesc", { name: confirmClient.display_name })}
               {confirmClient.phone ? ` (${confirmClient.phone})` : ""}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setConfirmClient(null)}
-                className="flex-1 py-2 rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-sm text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+                className="flex-1 py-2 rounded-pill border border-s-ink/10 text-sm text-s-ink/70 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
               >
                 {t("cancel")}
               </button>

@@ -87,10 +87,10 @@ export default function HandChart({ customerId }: HandChartProps) {
   return (
     <div className="space-y-6 py-2 pb-12 relative">
       <div className="text-center mb-6">
-        <h3 className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text uppercase tracking-[.06em]">
+        <h3 className="text-sm font-heading font-bold text-s-ink uppercase tracking-[.06em]">
           {t("hand_chart_title")}
         </h3>
-        <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 mt-1">
+        <p className="text-xs text-s-ink/60 mt-1">
           {t("hand_chart_hint")}
         </p>
       </div>
@@ -112,7 +112,7 @@ export default function HandChart({ customerId }: HandChartProps) {
                     ? "border-s-coral bg-s-coral shadow-coral-glow scale-105"
                     : hasNote
                       ? "border-s-coral/40 bg-s-coral/10 hover:border-s-coral/60"
-                      : "border-s-ink/10 bg-[--raised] dark:border-white/10 dark:bg-s-dm-surface hover:bg-s-ink/5 dark:hover:bg-white/5"
+                      : "border-s-ink/10 bg-[--raised] hover:bg-s-ink/5:bg-white/5"
                 }`}
                 style={{
                   height: i === 4 ? "80px" : i === 3 ? "110px" : i === 2 ? "130px" : i === 1 ? "120px" : "90px",
@@ -121,7 +121,7 @@ export default function HandChart({ customerId }: HandChartProps) {
                 }}
               >
                 {hasNote && selectedFinger !== finger.id && (
-                  <div className="absolute -top-2 -right-2 w-3.5 h-3.5 rounded-full bg-s-coral border-2 border-[--raised] dark:border-s-dm-bg" />
+                  <div className="absolute -top-2 -right-2 w-3.5 h-3.5 rounded-full bg-s-coral border-2 border-[--raised]" />
                 )}
               </button>
             );
@@ -143,7 +143,7 @@ export default function HandChart({ customerId }: HandChartProps) {
                     ? "border-s-coral bg-s-coral shadow-coral-glow scale-105"
                     : hasNote
                       ? "border-s-coral/40 bg-s-coral/10 hover:border-s-coral/60"
-                      : "border-s-ink/10 bg-[--raised] dark:border-white/10 dark:bg-s-dm-surface hover:bg-s-ink/5 dark:hover:bg-white/5"
+                      : "border-s-ink/10 bg-[--raised] hover:bg-s-ink/5:bg-white/5"
                 }`}
                 style={{
                   height: i === 0 ? "80px" : i === 1 ? "110px" : i === 2 ? "130px" : i === 3 ? "120px" : "90px",
@@ -152,7 +152,7 @@ export default function HandChart({ customerId }: HandChartProps) {
                 }}
               >
                 {hasNote && selectedFinger !== finger.id && (
-                  <div className="absolute -top-2 -right-2 w-3.5 h-3.5 rounded-full bg-s-coral border-2 border-[--raised] dark:border-s-dm-bg" />
+                  <div className="absolute -top-2 -right-2 w-3.5 h-3.5 rounded-full bg-s-coral border-2 border-[--raised]" />
                 )}
               </button>
             );
@@ -166,23 +166,23 @@ export default function HandChart({ customerId }: HandChartProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="absolute bottom-[-10px] left-0 right-0 p-4 bg-[--raised] dark:bg-s-dm-surface rounded-[16px] shadow-warm-lg border border-s-ink/10 dark:border-white/10"
+            className="absolute bottom-[-10px] left-0 right-0 p-4 bg-[--raised] rounded-[16px] shadow-warm-lg border border-s-ink/10"
           >
             <div className="flex justify-between items-center mb-2">
-              <span className="text-xs font-heading font-bold text-s-ink dark:text-s-dm-text">
+              <span className="text-xs font-heading font-bold text-s-ink">
                 {[...FINGERS_LEFT, ...FINGERS_RIGHT].find(f => f.id === selectedFinger)?.label}
               </span>
               <button
                 onClick={() => setSelectedFinger(null)}
                 aria-label={t("close")}
-                className="p-1 rounded-pill text-s-ink/40 hover:text-s-ink dark:text-s-dm-text/40 dark:hover:text-s-dm-text transition-colors duration-150"
+                className="p-1 rounded-pill text-s-ink/40 hover:text-s-ink:text-s-dm-text transition-colors duration-150"
               >
                 <X size={16} />
               </button>
             </div>
             <textarea
               autoFocus
-              className="w-full text-sm rounded-input border border-s-ink/10 dark:border-white/10 p-3 bg-s-bg-sunken dark:bg-s-dm-bg focus:outline-none focus:border-s-coral focus:ring-1 focus:ring-s-coral resize-none"
+              className="w-full text-sm rounded-input border border-s-ink/10 p-3 bg-s-bg-sunken focus:outline-none focus:border-s-coral focus:ring-1 focus:ring-s-coral resize-none"
               rows={2}
               placeholder={t("hand_chart_placeholder")}
               value={notes[selectedFinger] || ""}
@@ -190,7 +190,7 @@ export default function HandChart({ customerId }: HandChartProps) {
               aria-label={t("hand_chart_note_label")}
             />
             <div className="flex justify-between items-center mt-2">
-              <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+              <span className="text-[10px] text-s-ink/40">
                 {t("hand_chart_autosave")}
               </span>
               {saving && <Loader2 size={12} className="animate-spin text-s-coral" />}

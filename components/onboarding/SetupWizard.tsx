@@ -56,15 +56,15 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
   };
 
   return (
-    <div className="min-h-screen bg-s-bg-surface dark:bg-s-dm-bg">
+    <div className="min-h-screen bg-s-bg-surface">
       {/* Step indicator */}
-      <div className="bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm border-b border-s-ink/5 dark:border-white/5 sticky top-0 z-30">
+      <div className="bg-white/95 backdrop-blur-sm border-b border-s-ink/5 sticky top-0 z-30">
         <div className="max-w-3xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-3">
-            <h1 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">
+            <h1 className="font-heading font-bold text-lg text-s-ink">
               {t("setup.title")}
             </h1>
-            <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40 data-text">
+            <span className="text-xs text-s-ink/40 data-text">
               {currentStep + 1} / {totalSteps}
             </span>
           </div>
@@ -84,8 +84,8 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
                       i === currentStep
                         ? "bg-s-coral text-white scale-110 shadow-warm-sm"
                         : step.complete
-                          ? "bg-s-coral/10 dark:bg-s-coral/20 text-s-coral"
-                          : "bg-s-bg-sunken dark:bg-s-dm-raised text-s-ink/30 dark:text-s-dm-text/30",
+                          ? "bg-s-coral/10 text-s-coral"
+                          : "bg-s-bg-sunken text-s-ink/30",
                     ].join(" ")}
                   >
                     {step.complete && i !== currentStep ? (
@@ -97,7 +97,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
                   <span
                     className={[
                       "text-[10px] mt-1 whitespace-nowrap hidden sm:block transition-colors",
-                      i === currentStep ? "text-s-coral font-medium" : "text-s-ink/30 dark:text-s-dm-text/30",
+                      i === currentStep ? "text-s-coral font-medium" : "text-s-ink/30",
                     ].join(" ")}
                   >
                     {t(`setup.steps.${step.key}` as any)}
@@ -106,7 +106,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
               ))}
             </div>
             {/* Connecting line */}
-            <div className="absolute top-4 left-4 right-4 h-0.5 bg-s-bg-sunken dark:bg-s-dm-raised -z-0" />
+            <div className="absolute top-4 left-4 right-4 h-0.5 bg-s-bg-sunken -z-0" />
             <motion.div
               className="absolute top-4 left-4 h-0.5 bg-s-coral -z-0"
               initial={false}
@@ -135,11 +135,11 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
         </AnimatePresence>
 
         {/* Navigation buttons */}
-        <div className="flex items-center justify-between mt-8 pt-6 border-t border-s-ink/5 dark:border-white/5">
+        <div className="flex items-center justify-between mt-8 pt-6 border-t border-s-ink/5">
           <button
             onClick={goPrev}
             disabled={currentStep === 0}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-btn text-sm text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors disabled:opacity-0 disabled:pointer-events-none"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-btn text-sm text-s-ink/50 hover:text-s-ink:text-s-dm-text transition-colors disabled:opacity-0 disabled:pointer-events-none"
           >
             <ChevronLeft size={16} />
             {t("setup.back")}
@@ -149,7 +149,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
             {!isLast && (
               <button
                 onClick={goNext}
-                className="px-4 py-2.5 rounded-btn text-sm text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+                className="px-4 py-2.5 rounded-btn text-sm text-s-ink/40 hover:text-s-ink:text-s-dm-text transition-colors"
               >
                 {t("setup.skip")}
               </button>

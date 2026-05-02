@@ -254,9 +254,9 @@ export default function DashboardLayout({
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex">
+      <div className="min-h-screen bg-s-bg-base flex">
         {/* Sidebar skeleton */}
-        <div className="hidden md:flex flex-col w-[240px] border-r border-s-ink/[0.06] dark:border-white/[0.06] p-3 gap-4">
+        <div className="hidden md:flex flex-col w-[240px] border-r border-s-ink/[0.06] p-3 gap-4">
           <Skeleton className="h-8 w-8 rounded-input" />
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="h-8 w-8 rounded-input" />
@@ -282,7 +282,7 @@ export default function DashboardLayout({
       : pathname.startsWith(`/${locale}${href}`);
 
   return (
-    <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex">
+    <div className="min-h-screen bg-s-bg-base flex">
       {/* ── Desktop Sidebar (animated) ── */}
       <Sidebar>
         <SidebarBody>
@@ -425,12 +425,12 @@ export default function DashboardLayout({
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ duration: 0.15 }}
-              className="absolute left-0 top-0 h-full w-64 bg-white dark:bg-s-dm-surface border-r border-s-ink/[0.06]"
+              className="absolute left-0 top-0 h-full w-64 bg-white border-r border-s-ink/[0.06]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="px-4 py-4 border-b border-s-ink/[0.06] dark:border-white/[0.06] flex items-center justify-between">
+              <div className="px-4 py-4 border-b border-s-ink/[0.06] flex items-center justify-between">
                 <span className="font-heading font-bold text-base text-s-ink">solen<span className="text-s-coral">.</span>ch</span>
-                <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-s-ink/40 dark:text-s-dm-text/40" /></button>
+                <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-s-ink/40" /></button>
               </div>
               <nav className="py-3 px-1 overflow-y-auto">
                 {(isStaff ? STAFF_NAV : filteredOwnerNav).map((item) => {
@@ -516,8 +516,8 @@ export default function DashboardLayout({
       {/* ── Main content ── */}
       <div className="flex-1 md:ml-60 flex flex-col min-h-screen">
         {/* Mobile top bar */}
-        <div className="md:hidden sticky top-0 z-20 bg-white dark:bg-s-dm-surface border-b border-s-ink/[0.06] dark:border-white/[0.06] px-4 py-3 flex items-center gap-3">
-          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60 dark:text-s-dm-text/60" aria-label="Menu öffnen">
+        <div className="md:hidden sticky top-0 z-20 bg-white border-b border-s-ink/[0.06] px-4 py-3 flex items-center gap-3">
+          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60" aria-label="Menu öffnen">
             <Menu size={20} />
           </button>
           <span className="font-heading font-bold text-base flex-1">solen<span className="text-s-coral">.</span>ch</span>
@@ -554,7 +554,7 @@ export default function DashboardLayout({
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
 
       {/* ── Mobile bottom nav ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-s-ink/[0.06] bg-white dark:bg-s-dm-surface"
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-s-ink/[0.06] bg-white"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
         <div className="flex">
           {MOBILE_NAV.map(({ key, href, icon: Icon }) => {

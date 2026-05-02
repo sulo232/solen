@@ -48,7 +48,7 @@ export default function NailTechProfilePage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-s-bg-base dark:bg-s-dm-bg">
+      <main className="min-h-screen flex items-center justify-center bg-s-bg-base">
         <Spinner />
       </main>
     );
@@ -56,8 +56,8 @@ export default function NailTechProfilePage() {
 
   if (!tech) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center bg-s-bg-base dark:bg-s-dm-bg px-4">
-        <p className="text-s-ink/50 dark:text-s-dm-text/50 mb-4">Nail Tech nicht gefunden</p>
+      <main className="min-h-screen flex flex-col items-center justify-center bg-s-bg-base px-4">
+        <p className="text-s-ink/50 mb-4">Nail Tech nicht gefunden</p>
         <Link href={`/${locale}`} className="text-s-coral text-sm hover:underline">
           Zurück zur Startseite
         </Link>
@@ -73,13 +73,13 @@ export default function NailTechProfilePage() {
   };
 
   return (
-    <main className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg">
+    <main className="min-h-screen bg-s-bg-base">
       {/* Header */}
-      <div className="bg-white dark:bg-s-dm-surface border-b border-s-ink/5 dark:border-s-dm-text/10">
+      <div className="bg-white border-b border-s-ink/5">
         <div className="max-w-5xl mx-auto px-4 py-6">
           <Link
             href={tech.salon_slug ? `/${locale}/salon/${tech.salon_slug}` : `/${locale}`}
-            className="inline-flex items-center gap-1 text-sm text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral mb-4"
+            className="inline-flex items-center gap-1 text-sm text-s-ink/50 hover:text-s-coral mb-4"
           >
             <ArrowLeft size={14} />
             {tech.salon_name ?? "Zurück"}
@@ -87,7 +87,7 @@ export default function NailTechProfilePage() {
 
           <div className="flex items-center gap-4">
             {/* Avatar */}
-            <div className="w-20 h-20 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden shrink-0 flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center">
               {tech.avatar_url ? (
                 <Image
                   src={tech.avatar_url}
@@ -97,7 +97,7 @@ export default function NailTechProfilePage() {
                   className="object-cover w-full h-full"
                 />
               ) : (
-                <span className="text-2xl font-bold text-s-ink/30 dark:text-s-dm-text/30">
+                <span className="text-2xl font-bold text-s-ink/30">
                   {tech.name[0]}
                 </span>
               )}
@@ -106,7 +106,7 @@ export default function NailTechProfilePage() {
             {/* Info */}
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-heading text-xl font-bold text-s-ink dark:text-s-dm-text">
+                <h1 className="font-heading text-xl font-bold text-s-ink">
                   {tech.name}
                 </h1>
                 {tech.tier_label && (
@@ -117,23 +117,23 @@ export default function NailTechProfilePage() {
               </div>
 
               {tech.specialties?.length > 0 && (
-                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
+                <p className="text-sm text-s-ink/50 mt-0.5">
                   {tech.specialties.join(" · ")}
                 </p>
               )}
 
               <div className="flex items-center gap-3 mt-1.5">
                 {tech.avg_rating != null && (
-                  <span className="flex items-center gap-1 text-sm text-s-ink/70 dark:text-s-dm-text/70">
+                  <span className="flex items-center gap-1 text-sm text-s-ink/70">
                     <Star size={14} className="fill-s-coral text-s-coral" />
                     {tech.avg_rating.toFixed(1)}
                     {tech.review_count != null && (
-                      <span className="text-s-ink/30 dark:text-s-dm-text/30">({tech.review_count})</span>
+                      <span className="text-s-ink/30">({tech.review_count})</span>
                     )}
                   </span>
                 )}
                 {tech.design_count != null && tech.design_count > 0 && (
-                  <span className="flex items-center gap-1 text-sm text-s-ink/50 dark:text-s-dm-text/50">
+                  <span className="flex items-center gap-1 text-sm text-s-ink/50">
                     <Award size={14} />
                     {tech.design_count} Designs
                   </span>
@@ -157,7 +157,7 @@ export default function NailTechProfilePage() {
 
       {/* Portfolio grid */}
       <div className="max-w-5xl mx-auto px-4 py-6">
-        <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-4">
+        <h2 className="font-heading font-semibold text-base text-s-ink mb-4">
           Portfolio
         </h2>
         <TechPortfolio

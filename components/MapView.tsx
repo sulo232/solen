@@ -297,10 +297,10 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
 
       {/* Fallback Error UI */}
       {mapError && (
-        <div className="w-full h-full min-h-[280px] md:min-h-[400px] flex flex-col items-center justify-center p-6 text-center bg-s-bg-sunken dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5">
+        <div className="w-full h-full min-h-[280px] md:min-h-[400px] flex flex-col items-center justify-center p-6 text-center bg-s-bg-sunken rounded-[12px] border border-s-ink/5">
           <MapPin className="w-10 h-10 text-s-ink/40 mb-3" />
-          <h3 className="font-heading text-lg font-semibold text-s-ink dark:text-s-dm-text mb-1">Karte nicht verfügbar</h3>
-          <p className="text-sm font-body text-s-ink/60 dark:text-s-dm-text/60 mb-4 max-w-sm">
+          <h3 className="font-heading text-lg font-semibold text-s-ink mb-1">Karte nicht verfügbar</h3>
+          <p className="text-sm font-body text-s-ink/60 mb-4 max-w-sm">
             Die interaktive Karte kann momentan nicht geladen werden.
           </p>
           <a

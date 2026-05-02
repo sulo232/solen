@@ -70,12 +70,12 @@ function StatCounter({
   return (
     <div className="flex-1 min-w-[160px] rounded-[20px] p-6 text-center" style={glassCard}>
       <div className="flex items-center justify-center mb-2">
-        <item.Icon size={14} className="text-s-ink/40 dark:text-s-dm-text/40" aria-hidden="true" />
+        <item.Icon size={14} className="text-s-ink/40" aria-hidden="true" />
       </div>
       <div className="font-display text-[44px] leading-none text-s-coral mt-1">
         {displayValue()}
       </div>
-      <div className="text-xs font-body text-s-ink/55 dark:text-s-dm-text/55 mt-1">{label}</div>
+      <div className="text-xs font-body text-s-ink/55 mt-1">{label}</div>
     </div>
   );
 }

@@ -215,66 +215,66 @@ export default function EditPanel({
       animate={{ x: 0 }}
       exit={{ x: 360 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="w-[360px] flex-shrink-0 border-l border-s-ink/5 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface overflow-y-auto h-full"
+      className="w-[360px] flex-shrink-0 border-l border-s-ink/5 bg-white overflow-y-auto h-full"
     >
       <div className="p-4 space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h3 className="text-s-ink dark:text-s-dm-text font-heading font-bold text-sm">
+          <h3 className="text-s-ink font-heading font-bold text-sm">
             Edit Panel
           </h3>
-          <button onClick={onClose} className="p-1 rounded-btn hover:bg-s-bg-sunken dark:hover:bg-s-dm-bg transition-colors">
-            <X size={16} className="text-s-ink/50 dark:text-s-dm-text/50" />
+          <button onClick={onClose} className="p-1 rounded-btn hover:bg-s-bg-sunken:bg-s-dm-bg transition-colors">
+            <X size={16} className="text-s-ink/50" />
           </button>
         </div>
 
         {/* Selected Elements with area info */}
         {selectedElements.length > 0 ? (
           <div className="space-y-1.5">
-            <p className="text-[10px] text-s-ink/50 dark:text-s-dm-text/50">
+            <p className="text-[10px] text-s-ink/50">
               {selectedElements.length} element{selectedElements.length > 1 ? "s" : ""} selected — click more in preview to add
             </p>
             {selectedElements.map((el) => (
-              <div key={el.selector} className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-[12px] p-2 flex items-start gap-2">
+              <div key={el.selector} className="bg-s-bg-sunken rounded-[12px] p-2 flex items-start gap-2">
                 <div className="flex-1 min-w-0 space-y-0.5">
                   <div className="flex items-center gap-1.5">
                     <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">
                       {guessPageArea(el)}
                     </span>
-                    <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 font-mono">
+                    <span className="text-[10px] text-s-ink/40 font-mono">
                       &lt;{el.tag}&gt;
                     </span>
                   </div>
-                  <p className="text-[10px] text-s-ink/70 dark:text-s-dm-text/70 truncate">
+                  <p className="text-[10px] text-s-ink/70 truncate">
                     {el.text || "(no visible text)"}
                   </p>
-                  <p className="text-[9px] text-s-ink/30 dark:text-s-dm-text/30 font-mono truncate">
+                  <p className="text-[9px] text-s-ink/30 font-mono truncate">
                     {el.selector.length > 60 ? "..." + el.selector.slice(-57) : el.selector}
                   </p>
                 </div>
                 <button
                   onClick={() => onRemoveElement(el.selector)}
-                  className="p-0.5 rounded hover:bg-s-ink/10 dark:hover:bg-s-dm-text/10 transition-colors flex-shrink-0"
+                  className="p-0.5 rounded hover:bg-s-ink/10:bg-s-dm-text/10 transition-colors flex-shrink-0"
                   title="Remove selection"
                 >
-                  <X size={12} className="text-s-ink/40 dark:text-s-dm-text/40" />
+                  <X size={12} className="text-s-ink/40" />
                 </button>
               </div>
             ))}
             {/* Page context */}
-            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 font-mono">
+            <p className="text-[10px] text-s-ink/40 font-mono">
               Page: {pageUrl}
             </p>
           </div>
         ) : (
-          <div className="bg-s-blue/5 dark:bg-s-blue/10 rounded-[12px] p-3 space-y-1">
+          <div className="bg-s-blue/5 rounded-[12px] p-3 space-y-1">
             <p className="text-xs font-medium text-s-blue">
               General page feedback
             </p>
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+            <p className="text-xs text-s-ink/50">
               Page: <span className="font-mono">{pageUrl}</span>
             </p>
-            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+            <p className="text-[10px] text-s-ink/40">
               No element selected — describe the change for this page below.
             </p>
           </div>
@@ -282,7 +282,7 @@ export default function EditPanel({
 
         {/* Description */}
         <div>
-          <label className="text-xs font-medium text-s-ink dark:text-s-dm-text mb-1 block">
+          <label className="text-xs font-medium text-s-ink mb-1 block">
             What do you want changed?
           </label>
           <textarea
@@ -290,13 +290,13 @@ export default function EditPanel({
             onChange={(e) => setDescription(e.target.value)}
             placeholder={selectedElements.length > 0 ? "Describe the change you want for these elements..." : "Describe what you want changed on this page..."}
             rows={4}
-            className="w-full bg-s-bg-sunken dark:bg-s-dm-bg rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 p-3 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none"
+            className="w-full bg-s-bg-sunken rounded-btn border border-s-ink/10 p-3 text-sm text-s-ink placeholder:text-s-ink/30:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none"
           />
         </div>
 
         {/* Priority */}
         <div>
-          <label className="text-xs font-medium text-s-ink dark:text-s-dm-text mb-1 block">
+          <label className="text-xs font-medium text-s-ink mb-1 block">
             Priority
           </label>
           <div className="flex gap-2">
@@ -307,7 +307,7 @@ export default function EditPanel({
                 className={`flex-1 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                   priority === p
                     ? "bg-s-coral text-white"
-                    : "bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg/80"
+                    : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-bg-surface:bg-s-dm-bg/80"
                 }`}
               >
                 {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -318,7 +318,7 @@ export default function EditPanel({
 
         {/* Error */}
         {error && (
-          <div className="bg-s-error-bg dark:bg-s-error/10 border border-s-error/20 rounded-btn p-3">
+          <div className="bg-s-error-bg border border-s-error/20 rounded-btn p-3">
             <p className="text-xs text-s-error">{error}</p>
           </div>
         )}
@@ -339,14 +339,14 @@ export default function EditPanel({
 
         {/* Copy Actions for Claude */}
         {requests.length > 0 && (
-          <div className="border border-s-ink/10 dark:border-s-dm-text/10 rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50 dark:bg-s-dm-bg/50">
+          <div className="border border-s-ink/10 rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50">
             <div className="flex items-center gap-1.5">
               <ClipboardList size={14} className="text-s-coral" />
-              <p className="text-xs font-medium text-s-ink dark:text-s-dm-text">
+              <p className="text-xs font-medium text-s-ink">
                 Copy for Claude Code
               </p>
             </div>
-            <p className="text-[10px] text-s-ink/50 dark:text-s-dm-text/50">
+            <p className="text-[10px] text-s-ink/50">
               Copy requests and paste into Claude Code to generate a roadmap.
             </p>
 
@@ -370,7 +370,7 @@ export default function EditPanel({
                   className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                     copiedAll
                       ? "bg-s-success text-white"
-                      : "bg-s-ink dark:bg-s-dm-text text-white dark:text-s-dm-bg hover:bg-s-ink/80 dark:hover:bg-s-dm-text/80"
+                      : "bg-s-ink text-white hover:bg-s-ink/80:bg-s-dm-text/80"
                   }`}
                 >
                   {copiedAll ? <Check size={12} /> : <Copy size={12} />}
@@ -385,7 +385,7 @@ export default function EditPanel({
         <div>
           <button
             onClick={() => setShowHistory(!showHistory)}
-            className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+            className="flex items-center gap-1 text-xs text-s-ink/50 hover:text-s-ink:text-s-dm-text transition-colors"
           >
             {showHistory ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
             Request History ({pageRequests.length})
@@ -393,41 +393,41 @@ export default function EditPanel({
           {showHistory && pageRequests.length > 0 && (
             <div className="mt-2 space-y-2">
               {pageRequests.map((r) => (
-                <div key={r.id} className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-btn p-2 space-y-1.5">
+                <div key={r.id} className="bg-s-bg-sunken rounded-btn p-2 space-y-1.5">
                   {/* Checkbox + status + date row */}
                   <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
                       checked={selectedRequestIds.has(r.id)}
                       onChange={() => toggleRequestSelection(r.id)}
-                      className="rounded border-s-ink/20 dark:border-s-dm-text/20 text-s-coral focus:ring-s-coral/30 w-3.5 h-3.5"
+                      className="rounded border-s-ink/20 text-s-coral focus:ring-s-coral/30 w-3.5 h-3.5"
                     />
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.status === "done" ? "bg-s-success-bg text-s-success" :
                       r.status === "roadmap_generated" ? "bg-s-blue/10 text-s-blue" :
                       r.status === "in_progress" ? "bg-s-amber-subtle text-s-amber-text" :
-                      "bg-s-ink/5 dark:bg-s-dm-text/5 text-s-ink/50 dark:text-s-dm-text/50"
+                      "bg-s-ink/5 text-s-ink/50"
                     }`}>
                       {r.status.replace(/_/g, " ")}
                     </span>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.priority === "high" ? "bg-s-error-bg text-s-error" :
                       r.priority === "medium" ? "bg-s-amber-subtle text-s-amber-text" :
-                      "bg-s-ink/5 dark:bg-s-dm-text/5 text-s-ink/40 dark:text-s-dm-text/40"
+                      "bg-s-ink/5 text-s-ink/40"
                     }`}>
                       {r.priority}
                     </span>
-                    <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 ml-auto">
+                    <span className="text-[10px] text-s-ink/30 ml-auto">
                       {new Date(r.created_at).toLocaleDateString()}
                     </span>
                   </div>
 
                   {/* Description */}
-                  <p className="text-xs text-s-ink/70 dark:text-s-dm-text/70 line-clamp-2 pl-5.5">{r.description}</p>
+                  <p className="text-xs text-s-ink/70 line-clamp-2 pl-5.5">{r.description}</p>
 
                   {/* Element info */}
                   {r.element_tag && (
-                    <p className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40 font-mono pl-5.5 truncate">
+                    <p className="text-[9px] text-s-ink/40 font-mono pl-5.5 truncate">
                       &lt;{r.element_tag}&gt; {r.element_text ? `"${r.element_text.slice(0, 40)}"` : ""}
                     </p>
                   )}
@@ -452,7 +452,7 @@ export default function EditPanel({
                     <button
                       onClick={() => handleDeleteRequest(r.id)}
                       disabled={deletingId === r.id}
-                      className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-btn bg-s-error-bg dark:bg-s-error/10 text-s-error hover:bg-s-error/15 transition-colors disabled:opacity-50 ml-auto"
+                      className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-btn bg-s-error-bg text-s-error hover:bg-s-error/15 transition-colors disabled:opacity-50 ml-auto"
                       title="Delete request"
                     >
                       {deletingId === r.id ? (
@@ -467,7 +467,7 @@ export default function EditPanel({
             </div>
           )}
           {showHistory && pageRequests.length === 0 && (
-            <p className="mt-2 text-[10px] text-s-ink/30 dark:text-s-dm-text/30 italic">
+            <p className="mt-2 text-[10px] text-s-ink/30 italic">
               No requests for this page yet.
             </p>
           )}

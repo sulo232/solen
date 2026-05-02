@@ -90,7 +90,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
       {DAYS.map(day => {
         const entry = schedule.find(s => s.day_of_week === day.value)!;
         return (
-          <div key={day.value} className={`flex items-center gap-3 p-3 rounded-[16px] border transition-colors ${entry.active ? "border-s-coral/20 bg-white dark:bg-s-dm-surface" : "border-s-ink/5 dark:border-white/5 bg-s-bg-surface dark:bg-s-dm-bg opacity-60"}`}>
+          <div key={day.value} className={`flex items-center gap-3 p-3 rounded-[16px] border transition-colors ${entry.active ? "border-s-coral/20 bg-white" : "border-s-ink/5 bg-s-bg-surface opacity-60"}`}>
             <label className="flex items-center gap-2 w-28 shrink-0 cursor-pointer">
               <input
                 type="checkbox"
@@ -98,24 +98,24 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
                 onChange={e => updateDay(day.value, "active", e.target.checked)}
                 className="w-4 h-4 rounded accent-s-coral"
               />
-              <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{day.label}</span>
+              <span className="text-sm font-medium text-s-ink">{day.label}</span>
             </label>
             <input
               type="time"
               value={entry.start_time}
               onChange={e => updateDay(day.value, "start_time", e.target.value)}
               disabled={!entry.active}
-              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 disabled:opacity-40"
+              className="px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 disabled:opacity-40"
             />
-            <span className="text-s-ink/30 dark:text-s-dm-text/30">—</span>
+            <span className="text-s-ink/30">—</span>
             <input
               type="time"
               value={entry.end_time}
               onChange={e => updateDay(day.value, "end_time", e.target.value)}
               disabled={!entry.active}
-              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 disabled:opacity-40"
+              className="px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 disabled:opacity-40"
             />
-            <label className="flex items-center gap-1 text-xs text-s-ink/40 dark:text-s-dm-text/40 ml-auto cursor-pointer">
+            <label className="flex items-center gap-1 text-xs text-s-ink/40 ml-auto cursor-pointer">
               <input
                 type="checkbox"
                 checked={entry.is_alternate_week ?? false}
@@ -129,7 +129,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
         );
       })}
 
-      <div className="sticky bottom-0 bg-white dark:bg-s-dm-surface border-t border-s-ink/5 dark:border-white/5 p-3 z-10 -mx-3">
+      <div className="sticky bottom-0 bg-white border-t border-s-ink/5 p-3 z-10 -mx-3">
         <button
           onClick={handleSave}
           disabled={saving}

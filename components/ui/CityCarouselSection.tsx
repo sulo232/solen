@@ -35,12 +35,12 @@ export default function CityCarouselSection({
           <Link
             href={viewAllHref}
             onClick={onViewAll}
-            className="font-heading font-semibold text-[18px] text-s-ink dark:text-s-dm-text hover:text-s-coral dark:hover:text-s-coral transition-colors duration-150 leading-snug tracking-tight"
+            className="font-heading font-semibold text-[18px] text-s-ink hover:text-s-coral:text-s-coral transition-colors duration-150 leading-snug tracking-tight"
           >
             {title}
           </Link>
         ) : (
-          <h2 className="font-heading font-semibold text-[18px] text-s-ink dark:text-s-dm-text leading-snug tracking-tight">
+          <h2 className="font-heading font-semibold text-[18px] text-s-ink leading-snug tracking-tight">
             {title}
           </h2>
         )}
@@ -49,13 +49,13 @@ export default function CityCarouselSection({
             <Link
               href={viewAllHref}
               onClick={onViewAll}
-              className="group font-heading font-semibold text-[13px] text-s-ink/50 hover:text-s-coral dark:text-s-dm-text/50 dark:hover:text-s-coral transition-colors shrink-0 pb-1"
+              className="group font-heading font-semibold text-[13px] text-s-ink/50 hover:text-s-coral:text-s-coral transition-colors shrink-0 pb-1"
             >
               {viewAllLabel} <span className="inline-block transition-transform duration-200 ease-out group-hover:translate-x-1.5">→</span>
             </Link>
           ) : (
             <span
-              className="group font-heading font-semibold text-[13px] text-s-ink/50 hover:text-s-coral dark:text-s-dm-text/50 dark:hover:text-s-coral transition-colors cursor-pointer shrink-0 pb-1"
+              className="group font-heading font-semibold text-[13px] text-s-ink/50 hover:text-s-coral:text-s-coral transition-colors cursor-pointer shrink-0 pb-1"
               onClick={onViewAll}
             >
               {viewAllLabel} <span className="inline-block transition-transform duration-200 ease-out group-hover:translate-x-1.5">→</span>

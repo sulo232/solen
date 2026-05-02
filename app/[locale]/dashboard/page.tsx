@@ -141,7 +141,7 @@ export default function DashboardPage() {
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">
           {today}
         </p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">
+        <h1 className="font-heading font-bold text-[28px] text-s-ink leading-none">
           Übersicht
         </h1>
       </div>
@@ -150,21 +150,21 @@ export default function DashboardPage() {
         <div className="space-y-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white dark:bg-s-dm-surface animate-pulse">
-                <div className="w-8 h-8 rounded-[10px] bg-s-bg-sunken dark:bg-s-dm-raised mb-4" />
-                <div className="h-7 w-16 bg-s-bg-sunken dark:bg-s-dm-raised rounded mb-2" />
-                <div className="h-2.5 w-24 bg-s-bg-sunken dark:bg-s-dm-raised rounded" />
+              <div key={i} className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white animate-pulse">
+                <div className="w-8 h-8 rounded-[10px] bg-s-bg-sunken mb-4" />
+                <div className="h-7 w-16 bg-s-bg-sunken rounded mb-2" />
+                <div className="h-2.5 w-24 bg-s-bg-sunken rounded" />
               </div>
             ))}
           </div>
           <div className="space-y-2">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="rounded-[12px] border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white dark:bg-s-dm-surface animate-pulse">
-                <div className="w-10 h-10 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[8px] shrink-0" />
+              <div key={i} className="rounded-[12px] border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white animate-pulse">
+                <div className="w-10 h-10 bg-s-bg-sunken rounded-[8px] shrink-0" />
                 <div className="w-px h-8 bg-s-ink/[0.05] shrink-0" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-3 w-32 bg-s-bg-sunken dark:bg-s-dm-raised rounded" />
-                  <div className="h-2.5 w-20 bg-s-bg-sunken dark:bg-s-dm-raised rounded" />
+                  <div className="h-3 w-32 bg-s-bg-sunken rounded" />
+                  <div className="h-2.5 w-20 bg-s-bg-sunken rounded" />
                 </div>
               </div>
             ))}
@@ -237,7 +237,7 @@ export default function DashboardPage() {
                   style={{ background: "rgba(232,98,74,.06)", border: "1px solid rgba(232,98,74,.18)" }}>
                   <ShieldAlert size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">Verifizierung überfällig</p>
+                    <p className="text-xs font-heading font-semibold text-s-ink">Verifizierung überfällig</p>
                     <p className="text-[10px] text-s-ink/45 mt-0.5">Seit über 90 Tagen nicht verifiziert.</p>
                   </div>
                   <Link href={`/${locale}/dashboard/settings?tab=verification`}
@@ -251,7 +251,7 @@ export default function DashboardPage() {
                   style={{ background: "rgba(232,98,74,.06)", border: "1px solid rgba(232,98,74,.18)" }}>
                   <AlertTriangle size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">Wenig freie Slots</p>
+                    <p className="text-xs font-heading font-semibold text-s-ink">Wenig freie Slots</p>
                     <p className="text-[10px] text-s-ink/45 mt-0.5">Weniger als 5 Slots in den nächsten 7 Tagen.</p>
                   </div>
                   <Link href={`/${locale}/dashboard/calendar`}
@@ -265,7 +265,7 @@ export default function DashboardPage() {
                   style={{ background: "rgba(212,135,10,.06)", border: "1px solid rgba(212,135,10,.20)" }}>
                   <AlertTriangle size={16} className="text-s-amber shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{stats.pending_cancellations} Stornierungsanfragen</p>
+                    <p className="text-xs font-heading font-semibold text-s-ink">{stats.pending_cancellations} Stornierungsanfragen</p>
                   </div>
                   <Link href={`/${locale}/dashboard/bookings?status=cancelled`}
                     className="text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-amber shrink-0">
@@ -279,14 +279,14 @@ export default function DashboardPage() {
           {/* Unread messages */}
           {unread > 0 && (
             <Link href={`/${locale}/dashboard/messages`}
-              className="block rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface hover:border-s-coral/40 transition-colors">
+              className="block rounded-[12px] border border-s-ink/[0.06] p-4 bg-white hover:border-s-coral/40 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-[10px] bg-s-coral/10 flex items-center justify-center">
                   <MessageCircle size={18} className="text-s-coral" />
                 </div>
                 <div>
-                  <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">{unread} ungelesene Nachricht{unread > 1 ? "en" : ""}</p>
-                  <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">Jetzt antworten →</p>
+                  <p className="text-sm font-heading font-semibold text-s-ink">{unread} ungelesene Nachricht{unread > 1 ? "en" : ""}</p>
+                  <p className="text-[10px] text-s-ink/40 mt-0.5">Jetzt antworten →</p>
                 </div>
               </div>
             </Link>
@@ -301,7 +301,7 @@ export default function DashboardPage() {
                 <Link href={`/${locale}/dashboard/bookings`} className="text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-coral">Alle →</Link>
               </div>
               {bookings.length === 0 ? (
-                <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-8 text-center bg-white dark:bg-s-dm-surface">
+                <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-8 text-center bg-white">
                   <Calendar size={24} className="mx-auto mb-2 text-s-ink/20" />
                   <p className="text-xs font-heading text-s-ink/30 uppercase tracking-[.10em]">Keine Termine heute</p>
                 </div>
@@ -309,7 +309,7 @@ export default function DashboardPage() {
                 <div className="space-y-2">
                   {bookings.map((b) => (
                     <div key={b.id}
-                      className="rounded-[12px] border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white dark:bg-s-dm-surface">
+                      className="rounded-[12px] border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white">
                       <div className="shrink-0 text-center w-10">
                         <p className="data-text font-bold text-base text-s-coral leading-none">
                           {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
@@ -317,7 +317,7 @@ export default function DashboardPage() {
                       </div>
                       <div className="w-px h-8 bg-s-ink/[0.07] shrink-0" />
                       <div className="flex-1 min-w-0 overflow-hidden">
-                        <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">{b.customer_name}</p>
+                        <p className="text-sm font-heading font-semibold text-s-ink truncate">{b.customer_name}</p>
                         <p className="text-xs font-heading uppercase tracking-[.08em] text-s-ink/40 truncate mt-0.5 max-w-[160px] sm:max-w-none">{b.service_name}</p>
                       </div>
                       <div className="shrink-0 flex items-center gap-2">
@@ -345,7 +345,7 @@ export default function DashboardPage() {
                   <SectionLabel>Aktivitäten</SectionLabel>
                   <Zap size={12} className="text-s-ink/25" />
                 </div>
-                <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+                <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4">
                   <ActivityFeed salonId={salonId} />
                 </div>
               </div>
@@ -369,13 +369,13 @@ export default function DashboardPage() {
                           <a
                             key={item.key}
                             href={`/${locale}${item.href}`}
-                            className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-3.5 flex items-center gap-3 bg-white dark:bg-s-dm-surface hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors group"
+                            className="rounded-[12px] border border-s-ink/[0.06] p-3.5 flex items-center gap-3 bg-white hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors group"
                           >
                             <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0"
                               style={{ background: "rgba(232,98,74,.08)" }}>
                               <Icon size={15} className="text-s-coral" />
                             </div>
-                            <span className="text-[11px] font-heading font-bold text-s-ink/65 dark:text-s-dm-text/65 group-hover:text-s-coral transition-colors leading-tight">
+                            <span className="text-[11px] font-heading font-bold text-s-ink/65 group-hover:text-s-coral transition-colors leading-tight">
                               {item.href.split("/").pop()?.replace(/-/g, " ")}
                             </span>
                           </a>
@@ -398,7 +398,7 @@ export default function DashboardPage() {
                 { label: "Nachrichten", href: `/${locale}/dashboard/messages`, Icon: MessageCircle },
               ].map(({ label, href, Icon }) => (
                 <a key={href} href={href}
-                  className="shrink-0 w-24 md:w-auto rounded-[12px] border border-s-ink/[0.06] p-4 flex flex-col items-center gap-2.5 text-center bg-white dark:bg-s-dm-surface hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors">
+                  className="shrink-0 w-24 md:w-auto rounded-[12px] border border-s-ink/[0.06] p-4 flex flex-col items-center gap-2.5 text-center bg-white hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors">
                   <div className="w-9 h-9 rounded-[10px] flex items-center justify-center"
                     style={{ background: "rgba(232,98,74,.08)" }}>
                     <Icon size={17} className="text-s-coral" />

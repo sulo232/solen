@@ -31,17 +31,17 @@ export default function UserPostsSection({ userId }: UserPostsSectionProps) {
   }, [userId]);
 
   if (loading) {
-    return <div className="text-xs text-s-ink/30 dark:text-s-dm-text/30 py-4">Loading posts...</div>;
+    return <div className="text-xs text-s-ink/30 py-4">Loading posts...</div>;
   }
 
   if (posts.length === 0) {
-    return <div className="text-xs text-s-ink/30 dark:text-s-dm-text/30 py-4">No posts yet</div>;
+    return <div className="text-xs text-s-ink/30 py-4">No posts yet</div>;
   }
 
   return (
     <div className="grid grid-cols-3 gap-2">
       {posts.map((post) => (
-        <div key={post.id} className="relative rounded-[16px] overflow-hidden bg-s-ink/5 dark:bg-white/5 aspect-square group">
+        <div key={post.id} className="relative rounded-[16px] overflow-hidden bg-s-ink/5 aspect-square group">
           {post.image_url ? (
             <Image src={post.image_url} alt={post.style_name ?? ""} fill className="object-cover" sizes="33vw" />
           ) : (

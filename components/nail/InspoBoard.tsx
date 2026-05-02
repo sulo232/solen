@@ -103,26 +103,26 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-s-ink/40 dark:bg-s-dm-bg/60" onClick={onClose} />
+      <div className="absolute inset-0 bg-s-ink/40" onClick={onClose} />
 
       {/* Modal */}
-      <div role="dialog" aria-modal="true" className="relative w-full sm:max-w-lg max-h-[80vh] bg-[--raised] dark:bg-s-dm-surface rounded-t-[24px] sm:rounded-[24px] shadow-warm-xl flex flex-col overflow-hidden">
+      <div role="dialog" aria-modal="true" className="relative w-full sm:max-w-lg max-h-[80vh] bg-[--raised] rounded-t-[24px] sm:rounded-[24px] shadow-warm-xl flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-s-ink/5 dark:border-s-dm-text/10">
-          <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("board_title")}</h3>
-          <button onClick={onClose} aria-label={t("close")} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-ink/5 dark:hover:bg-white/5 rounded-pill transition-colors duration-150">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-s-ink/5">
+          <h3 className="font-heading font-semibold text-s-ink">{t("board_title")}</h3>
+          <button onClick={onClose} aria-label={t("close")} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-s-ink/40 hover:bg-s-ink/5:bg-white/5 rounded-pill transition-colors duration-150">
             <X size={18} />
           </button>
         </div>
 
         {/* Board tabs */}
-        <div className="flex items-center gap-2 px-4 py-2 overflow-x-auto border-b border-s-ink/5 dark:border-s-dm-text/10 scrollbar-hide">
+        <div className="flex items-center gap-2 px-4 py-2 overflow-x-auto border-b border-s-ink/5 scrollbar-hide">
           <button
             onClick={() => setActiveBoard(null)}
             className={`shrink-0 text-[11px] font-heading font-bold uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
               activeBoard === null
                 ? "bg-s-coral text-white border-s-coral"
-                : "border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/60 dark:text-s-dm-text/60 hover:brightness-[1.06]"
+                : "border-s-ink/10 text-s-ink/60 hover:brightness-[1.06]"
             }`}
           >
             {t("board_all")}
@@ -134,7 +134,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
               className={`shrink-0 text-[11px] font-heading font-bold uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
                 activeBoard === b.id
                   ? "bg-s-coral text-white border-s-coral"
-                  : "border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/60 dark:text-s-dm-text/60 hover:brightness-[1.06]"
+                  : "border-s-ink/10 text-s-ink/60 hover:brightness-[1.06]"
               }`}
             >
               {b.name} ({b.image_count})
@@ -143,7 +143,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
           <button
             onClick={() => setShowNewForm(true)}
             aria-label={t("board_new")}
-            className="shrink-0 text-xs px-2 py-1 rounded-pill border border-dashed border-s-ink/20 dark:border-s-dm-text/20 text-s-ink/40 dark:text-s-dm-text/40 hover:border-s-coral/30"
+            className="shrink-0 text-xs px-2 py-1 rounded-pill border border-dashed border-s-ink/20 text-s-ink/40 hover:border-s-coral/30"
           >
             <Plus size={12} />
           </button>
@@ -151,12 +151,12 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
 
         {/* New board form */}
         {showNewForm && (
-          <div className="flex items-center gap-2 px-4 py-2 border-b border-s-ink/5 dark:border-s-dm-text/10">
+          <div className="flex items-center gap-2 px-4 py-2 border-b border-s-ink/5">
             <input
               value={newBoardName}
               onChange={(e) => setNewBoardName(e.target.value)}
               placeholder={t("board_name_placeholder")}
-              className="flex-1 text-sm px-3 py-1.5 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-transparent text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
+              className="flex-1 text-sm px-3 py-1.5 rounded-input border border-s-ink/10 bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
               onKeyDown={(e) => e.key === "Enter" && handleCreateBoard()}
             />
             <button onClick={handleCreateBoard} className="text-[11px] font-heading font-bold uppercase tracking-[.04em] px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white hover:brightness-[1.06] transition-[transform,filter] duration-150">
@@ -171,11 +171,11 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
         {/* Image grid */}
         <div className="flex-1 overflow-y-auto p-4">
           {loading ? (
-            <p className="text-center text-sm text-s-ink/40 dark:text-s-dm-text/40 py-8">{t("board_loading")}</p>
+            <p className="text-center text-sm text-s-ink/40 py-8">{t("board_loading")}</p>
           ) : images.length === 0 ? (
             <div className="text-center py-8">
-              <FolderOpen size={32} className="mx-auto text-s-ink/20 dark:text-s-dm-text/20 mb-2" />
-              <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("board_empty")}</p>
+              <FolderOpen size={32} className="mx-auto text-s-ink/20 mb-2" />
+              <p className="text-sm text-s-ink/40">{t("board_empty")}</p>
             </div>
           ) : (
             <div className="grid grid-cols-3 gap-2">
@@ -201,7 +201,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
 
         {/* Footer */}
         {selected.size > 0 && (
-          <div className="px-4 py-3 border-t border-s-ink/5 dark:border-s-dm-text/10">
+          <div className="px-4 py-3 border-t border-s-ink/5">
             <button
               onClick={handleConfirm}
               className="w-full py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"

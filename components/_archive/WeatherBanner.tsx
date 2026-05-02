@@ -95,9 +95,9 @@ export default function WeatherBanner() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-4">
-      <div className="flex items-center gap-3 px-4 py-3 rounded-[12px] bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/15 dark:border-s-coral/20">
+      <div className="flex items-center gap-3 px-4 py-3 rounded-[12px] bg-s-coral/5 border border-s-coral/15">
         <Icon size={18} className="text-s-coral shrink-0" />
-        <p className="flex-1 text-sm text-s-ink/70 dark:text-s-dm-text/70 font-body">
+        <p className="flex-1 text-sm text-s-ink/70 font-body">
           {config.text}
         </p>
         <Link

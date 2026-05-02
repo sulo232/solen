@@ -99,7 +99,7 @@ export default function FilterBar({
                 hoverLift,
                 active
                   ? 'bg-s-coral text-white border border-s-coral'
-                  : 'bg-white/70 dark:bg-s-dm-surface/70 border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/65 dark:text-s-dm-text/65 hover:border-s-coral/40 hover:text-s-coral dark:hover:text-s-coral',
+                  : 'bg-white/70 border border-s-ink/[0.08] text-s-ink/65 hover:border-s-coral/40 hover:text-s-coral:text-s-coral',
               ].join(' ')}
               aria-pressed={active}
               aria-label={`${t('filter')}: ${pill.label}`}
@@ -122,12 +122,12 @@ export default function FilterBar({
             onClick={() => setDrawerOpen(true)}
             className={[
               'hidden md:flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading font-bold whitespace-nowrap shrink-0',
-              'border border-s-ink/[0.08] bg-white/70 dark:bg-s-dm-surface/70',
+              'border border-s-ink/[0.08] bg-white/70',
               motionClass,
               hoverLift,
               drawerOpen
                 ? 'bg-s-plum-subtle border-s-plum/30 text-s-plum-text'
-                : 'text-s-ink/65 dark:text-s-dm-text/65 hover:border-s-coral/40 hover:text-s-coral',
+                : 'text-s-ink/65 hover:border-s-coral/40 hover:text-s-coral',
             ].join(' ')}
             aria-expanded={drawerOpen}
             aria-label={t('moreFilters', { count: overflowNonSortCount })}
@@ -144,7 +144,7 @@ export default function FilterBar({
               value={activeSortFilter?.subId ?? ''}
               onChange={(e) => handleSortChange(e.target.value)}
               aria-label={sortPill.label}
-              className="text-[13px] font-body font-medium text-s-ink/60 dark:text-s-dm-text/60 bg-transparent border border-s-ink/[0.08] dark:border-white/[0.08] rounded-pill px-3 py-1.5 focus:outline-none focus:border-s-coral/40 cursor-pointer appearance-none"
+              className="text-[13px] font-body font-medium text-s-ink/60 bg-transparent border border-s-ink/[0.08] rounded-pill px-3 py-1.5 focus:outline-none focus:border-s-coral/40 cursor-pointer appearance-none"
             >
               <option value="">{sortPill.label} ▾</option>
               {sortPill.subFilters?.map((sf) => (

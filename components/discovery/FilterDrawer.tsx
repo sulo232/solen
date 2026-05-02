@@ -50,29 +50,29 @@ export default function FilterDrawer(props: FilterDrawerProps) {
           className="fixed inset-0 z-50 flex items-end md:hidden"
         >
           <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-[6px]" onClick={() => setOpen(false)} />
-          <div className="relative w-full bg-[--raised] dark:bg-s-dm-surface shadow-warm-float flex flex-col rounded-t-[16px] max-h-[80vh] animate-in slide-in-from-bottom">
+          <div className="relative w-full bg-[--raised] shadow-warm-float flex flex-col rounded-t-[16px] max-h-[80vh] animate-in slide-in-from-bottom">
             {/* Header */}
-            <div className="px-5 py-4 border-b border-s-ink/[0.06] dark:border-white/[0.06] flex items-center justify-between">
+            <div className="px-5 py-4 border-b border-s-ink/[0.06] flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50 dark:text-s-dm-text/50">{t("filter_label")}</p>
-                <p className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">{t("refine_search")}</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50">{t("filter_label")}</p>
+                <p className="font-heading font-bold text-base text-s-ink">{t("refine_search")}</p>
               </div>
               <button
                 onClick={() => setOpen(false)}
                 aria-label={t("close")}
-                className="p-2 rounded-pill hover:bg-s-ink/[0.04] dark:hover:bg-white/[0.04] transition-colors duration-150"
+                className="p-2 rounded-pill hover:bg-s-ink/[0.04]:bg-white/[0.04] transition-colors duration-150"
               >
-                <X size={16} className="text-s-ink/50 dark:text-s-dm-text/50" />
+                <X size={16} className="text-s-ink/50" />
               </button>
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t("category")}</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 mb-2">{t("category")}</p>
                 <CategoryPills selected={props.category} onSelect={props.onCategoryChange} />
               </div>
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t("gender")}</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 mb-2">{t("gender")}</p>
                 <GenderToggle selected={props.gender} onSelect={props.onGenderChange} />
               </div>
               <div>
@@ -84,11 +84,11 @@ export default function FilterDrawer(props: FilterDrawerProps) {
             </div>
 
             {/* Footer */}
-            <div className="px-5 py-4 border-t border-s-ink/[0.06] dark:border-white/[0.06] flex gap-2">
+            <div className="px-5 py-4 border-t border-s-ink/[0.06] flex gap-2">
               <button
                 onClick={() => { props.onReset(); setOpen(false); }}
                 aria-label={t("reset")}
-                className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-xs font-heading font-bold text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-ink/20 transition-colors duration-150"
+                className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-xs font-heading font-bold text-s-ink/50 hover:border-s-ink/20 transition-colors duration-150"
               >
                 {t("reset")}
               </button>

@@ -60,15 +60,15 @@ export default function StaffSelectionStep({
         <button
           onClick={handleBack}
           aria-label={t('back')}
-          className="p-2 rounded-pill hover:bg-s-ink/[0.04] dark:hover:bg-white/[0.04] transition-colors"
+          className="p-2 rounded-pill hover:bg-s-ink/[0.04]:bg-white/[0.04] transition-colors"
         >
-          <ChevronLeft size={20} className="text-s-ink dark:text-s-dm-text" />
+          <ChevronLeft size={20} className="text-s-ink" />
         </button>
         <div>
-          <h2 className="text-2xl font-display font-bold text-s-ink dark:text-s-dm-text">
+          <h2 className="text-2xl font-display font-bold text-s-ink">
             {t('title')}
           </h2>
-          <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-1">
+          <p className="text-sm text-s-ink/60 mt-1">
             {t('subtitle')}
           </p>
         </div>
@@ -82,11 +82,11 @@ export default function StaffSelectionStep({
       />
 
       {/* Bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] dark:border-white/[0.08] bg-[--raised] dark:bg-s-dm-surface p-4">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] bg-[--raised] p-4">
         <div className="max-w-2xl mx-auto px-4 flex gap-3">
           <button
             onClick={handleBack}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>

@@ -40,21 +40,21 @@ export default function ReviewCarousel() {
     return (
       <section className="py-10">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="h-6 w-48 bg-s-bg-sunken dark:bg-white/10 rounded-btn animate-pulse mb-6" />
+          <div className="h-6 w-48 bg-s-bg-sunken rounded-btn animate-pulse mb-6" />
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-4">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="border border-s-ink/[0.06] dark:border-white/[0.06] rounded-[12px] p-5 space-y-3">
+              <div key={i} className="border border-s-ink/[0.06] rounded-[12px] p-5 space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-s-bg-sunken dark:bg-white/10 animate-pulse" />
+                  <div className="w-9 h-9 rounded-full bg-s-bg-sunken animate-pulse" />
                   <div className="space-y-1.5 flex-1">
-                    <div className="h-3.5 w-24 bg-s-bg-sunken dark:bg-white/10 rounded animate-pulse" />
-                    <div className="h-3 w-16 bg-s-bg-sunken dark:bg-white/10 rounded animate-pulse" />
+                    <div className="h-3.5 w-24 bg-s-bg-sunken rounded animate-pulse" />
+                    <div className="h-3 w-16 bg-s-bg-sunken rounded animate-pulse" />
                   </div>
                 </div>
-                <div className="h-3 w-20 bg-s-bg-sunken dark:bg-white/10 rounded animate-pulse" />
+                <div className="h-3 w-20 bg-s-bg-sunken rounded animate-pulse" />
                 <div className="space-y-1.5">
-                  <div className="h-3 w-full bg-s-bg-sunken dark:bg-white/10 rounded animate-pulse" />
-                  <div className="h-3 w-3/4 bg-s-bg-sunken dark:bg-white/10 rounded animate-pulse" />
+                  <div className="h-3 w-full bg-s-bg-sunken rounded animate-pulse" />
+                  <div className="h-3 w-3/4 bg-s-bg-sunken rounded animate-pulse" />
                 </div>
               </div>
             ))}
@@ -73,11 +73,11 @@ export default function ReviewCarousel() {
           <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
             Bewertungen
           </span>
-          <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+          <h2 className="font-heading font-extrabold text-s-ink"
             style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
             Was Basler:innen sagen
           </h2>
-          <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1 font-body">
+          <p className="text-sm text-s-ink/50 mt-1 font-body">
             Echte Bewertungen von echten Kund:innen
           </p>
         </div>
@@ -90,15 +90,15 @@ export default function ReviewCarousel() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.35, delay: i * 0.1 }}
-              className="rounded-[20px] p-5 border border-s-ink/[0.06] dark:border-white/[0.06] hover:-translate-y-[5px] transition-[transform] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+              className="rounded-[20px] p-5 border border-s-ink/[0.06] hover:-translate-y-[5px] transition-[transform] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className={`w-9 h-9 rounded-full ${COLORS[i % COLORS.length]} flex items-center justify-center text-white text-xs font-bold`}>
                   {getInitials(review.reviewer_name)}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">{review.reviewer_name}</p>
-                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 truncate">{review.salon_name}</p>
+                  <p className="text-sm font-medium text-s-ink truncate">{review.reviewer_name}</p>
+                  <p className="text-xs text-s-ink/40 truncate">{review.salon_name}</p>
                 </div>
               </div>
               <div className="flex items-center gap-0.5 mb-2">
@@ -106,7 +106,7 @@ export default function ReviewCarousel() {
                   <Star key={j} size={12} className="fill-s-coral text-s-coral" />
                 ))}
               </div>
-              <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 font-body leading-relaxed line-clamp-3">
+              <p className="text-sm text-s-ink/70 font-body leading-relaxed line-clamp-3">
                 &ldquo;{review.comment}&rdquo;
               </p>
             </motion.div>

@@ -50,11 +50,11 @@ export default function ColourCycleConfig({ salonId }: ColourCycleConfigProps) {
   };
 
   if (loading) {
-    return <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">{t("loading")}</p>;
+    return <p className="text-sm text-s-ink/40 py-4">{t("loading")}</p>;
   }
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-white dark:bg-s-dm-surface w-full max-w-lg">
+    <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white w-full max-w-lg">
       <div className="flex items-center gap-2 mb-3">
         <Bell size={16} className="text-s-coral" />
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
@@ -63,17 +63,17 @@ export default function ColourCycleConfig({ salonId }: ColourCycleConfigProps) {
       </div>
 
       {services.length === 0 ? (
-        <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("no_coiffeur_services")}</p>
+        <p className="text-sm text-s-ink/40">{t("no_coiffeur_services")}</p>
       ) : (
         <div className="space-y-3">
           {services.map((svc) => (
             <div
               key={svc.id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-[12px] border border-s-ink/5 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-[12px] border border-s-ink/5 bg-white"
             >
               <div className="min-w-0">
-                <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text truncate">{svc.name_de}</p>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 flex items-center gap-1">
+                <p className="text-sm font-heading font-medium text-s-ink truncate">{svc.name_de}</p>
+                <p className="text-xs text-s-ink/40 flex items-center gap-1">
                   <Clock size={10} />
                   {t("reminder_after")}
                 </p>
@@ -87,7 +87,7 @@ export default function ColourCycleConfig({ salonId }: ColourCycleConfigProps) {
                     className={`rounded-[12px] border px-3 py-1.5 text-xs font-heading font-semibold transition-colors duration-150 ${
                       svc.reminder_cycle_days === opt.value
                         ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                        : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-coral/40 hover:text-s-coral"
+                        : "border-s-ink/[0.06] text-s-ink/50 hover:border-s-coral/40 hover:text-s-coral"
                     }`}
                   >
                     {t(opt.labelKey)}

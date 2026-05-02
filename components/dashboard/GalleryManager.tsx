@@ -148,12 +148,12 @@ export default function GalleryManager({
   };
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface rounded-[24px] border border-s-ink/5 dark:border-white/5 p-6 mb-8">
+    <div className="bg-white rounded-[24px] border border-s-ink/5 p-6 mb-8">
       <div className="mb-6">
-        <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">
+        <h2 className="font-heading font-bold text-lg text-s-ink">
           {t("gallery_title")}
         </h2>
-        <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">
+        <p className="text-sm text-s-ink/50">
           {t("gallery_subtitle", { count: urls.length, max: maxPhotos })}
         </p>
       </div>
@@ -161,7 +161,7 @@ export default function GalleryManager({
       {error && (
         <div
           role="alert"
-          className="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 p-3 rounded-[12px] text-sm mb-6"
+          className="flex items-center gap-2 bg-red-50 text-red-600 p-3 rounded-[12px] text-sm mb-6"
         >
           <AlertCircle size={16} className="shrink-0" />
           {error}
@@ -178,7 +178,7 @@ export default function GalleryManager({
               onDragStart={() => handleDragStart(index)}
               onDragOver={(e) => handleDragOver(e, index)}
               onDragEnd={handleDragEnd}
-              className={`group relative aspect-square rounded-[12px] overflow-hidden border border-s-ink/10 dark:border-white/10 bg-s-bg-sunken dark:bg-s-dm-surface cursor-grab active:cursor-grabbing ${
+              className={`group relative aspect-square rounded-[12px] overflow-hidden border border-s-ink/10 bg-s-bg-sunken cursor-grab active:cursor-grabbing ${
                 draggedIndex === index
                   ? "opacity-50 scale-95"
                   : "opacity-100 transition-[opacity,transform] duration-150"
@@ -195,13 +195,13 @@ export default function GalleryManager({
               {/* Hover overlay */}
               <div className="absolute inset-0 bg-s-ink/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
                 <div className="flex justify-between items-start">
-                  <div className="bg-white/90 dark:bg-black/90 text-s-ink dark:text-s-dm-text p-1.5 rounded-md backdrop-blur-[6px] cursor-grab">
+                  <div className="bg-white/90 text-s-ink p-1.5 rounded-md backdrop-blur-[6px] cursor-grab">
                     <GripVertical size={14} />
                   </div>
                   <button
                     onClick={() => handleDelete(url, index)}
                     aria-label={t("gallery_confirm_delete")}
-                    className="bg-white/90 dark:bg-black/90 text-red-500 hover:bg-red-500 hover:text-white p-1.5 rounded-md backdrop-blur-[6px] transition-colors"
+                    className="bg-white/90 text-red-500 hover:bg-red-500 hover:text-white p-1.5 rounded-md backdrop-blur-[6px] transition-colors"
                   >
                     <Trash2 size={14} />
                   </button>

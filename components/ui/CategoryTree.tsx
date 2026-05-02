@@ -64,7 +64,7 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
     return (
       <div className="space-y-2">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-8 bg-s-bg-sunken dark:bg-white/5 rounded animate-pulse" />
+          <div key={i} className="h-8 bg-s-bg-sunken rounded animate-pulse" />
         ))}
       </div>
     );
@@ -81,7 +81,7 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
             "px-3 py-1.5 rounded-pill text-xs font-body font-medium whitespace-nowrap transition-colors duration-150 border flex items-center shrink-0",
             activeSlug === cat.slug
               ? "bg-s-coral text-white border-s-coral"
-              : "bg-white/70 dark:bg-s-dm-surface backdrop-blur-sm text-s-ink/70 dark:text-s-dm-text/70 border-white/60 dark:border-white/10 hover:border-s-coral/50",
+              : "bg-white/70 backdrop-blur-sm text-s-ink/70 border-white/60 hover:border-s-coral/50",
           ].join(" ")}
         >
           {getName(cat)}
@@ -103,7 +103,7 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
             "flex items-center gap-1.5 py-1.5 px-2 rounded-btn text-sm font-body transition-colors cursor-pointer",
             isActive
               ? "bg-s-coral/10 text-s-coral font-medium"
-              : "text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5",
+              : "text-s-ink/70 hover:bg-s-bg-surface:bg-white/5",
           ].join(" ")}
           style={{ paddingLeft: `${depth * 16 + 8}px` }}
         >
@@ -137,7 +137,7 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
 
   const desktopTree = (
     <div className="hidden md:block sticky top-24 w-56 shrink-0">
-      <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mb-3 px-2">
+      <h3 className="font-heading font-semibold text-sm text-s-ink mb-3 px-2">
         Kategorien
       </h3>
       <nav className="space-y-0.5 max-h-[calc(100vh-8rem)] overflow-y-auto">

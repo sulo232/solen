@@ -81,20 +81,20 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
   }, []);
 
   return (
-    <main className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg">
+    <main className="min-h-screen bg-s-bg-base">
       {/* City header */}
       <section className="max-w-5xl mx-auto px-4 pt-12 pb-8">
         <div className="flex items-center gap-2 mb-2">
-          <MapPin size={16} className="text-s-ink/60 dark:text-s-dm-text/60" />
+          <MapPin size={16} className="text-s-ink/60" />
           <span className="font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber">
             {cityName}
           </span>
         </div>
-        <h1 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+        <h1 className="font-heading font-extrabold text-s-ink"
           style={{ fontSize: "clamp(26px, 4vw, 48px)", letterSpacing: "-0.02em" }}>
           {tCityPage("title", { cityName })}
         </h1>
-        <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
+        <p className="text-sm text-s-ink/50 font-body mt-1">
           {tCityPage("subtitle")}
         </p>
       </section>
@@ -107,7 +107,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
             className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading font-bold uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
               activeCategory === null
                 ? "bg-s-coral text-white shadow-coral-glow"
-                : "bg-[--raised] dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-ink/20"
+                : "bg-[--raised] border border-s-ink/10 text-s-ink/70 hover:border-s-ink/20"
             }`}
           >
             {tCityPage("all_categories")}
@@ -119,7 +119,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
               className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading font-bold uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
                 activeCategory === key
                   ? "bg-s-coral text-white shadow-coral-glow"
-                  : "bg-[--raised] dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-ink/20"
+                  : "bg-[--raised] border border-s-ink/10 text-s-ink/70 hover:border-s-ink/20"
               }`}
             >
               {tNav(key)}

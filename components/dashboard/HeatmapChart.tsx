@@ -23,7 +23,7 @@ export default function HeatmapChart({ data }: HeatmapChartProps) {
         <div className="flex flex-col gap-0.5 pr-1">
           <div className="h-5" /> {/* spacer for day headers */}
           {HOURS.map((h) => (
-            <div key={h} className="h-6 flex items-center justify-end text-[9px] text-s-ink/30 dark:text-s-dm-text/30 pr-1">
+            <div key={h} className="h-6 flex items-center justify-end text-[9px] text-s-ink/30 pr-1">
               {h}:00
             </div>
           ))}
@@ -33,7 +33,7 @@ export default function HeatmapChart({ data }: HeatmapChartProps) {
           const dayData = data[String(dayNum)] ?? {};
           return (
             <div key={dayNum} className="flex-1 flex flex-col gap-0.5">
-              <div className="h-5 text-center text-[9px] font-medium text-s-ink/50 dark:text-s-dm-text/50">{DAYS[dayIdx]}</div>
+              <div className="h-5 text-center text-[9px] font-medium text-s-ink/50">{DAYS[dayIdx]}</div>
               {HOURS.map((h) => {
                 const count = dayData[String(h)] ?? 0;
                 const intensity = maxVal > 0 ? count / maxVal : 0;
@@ -52,7 +52,7 @@ export default function HeatmapChart({ data }: HeatmapChartProps) {
         })}
       </div>
       {/* Legend */}
-      <div className="flex items-center justify-end gap-1 mt-2 text-[9px] text-s-ink/30 dark:text-s-dm-text/30">
+      <div className="flex items-center justify-end gap-1 mt-2 text-[9px] text-s-ink/30">
         <span>Weniger</span>
         {[0.1, 0.3, 0.5, 0.7, 1].map((o) => (
           <div key={o} className="w-3 h-3 rounded-sm" style={{ backgroundColor: `rgba(232, 98, 74, ${o})` }} />

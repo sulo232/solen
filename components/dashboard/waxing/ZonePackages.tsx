@@ -143,17 +143,17 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
 
       {/* Add form */}
       {showForm && (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 mb-4 bg-[--raised] dark:bg-s-dm-surface space-y-3">
+        <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-4 bg-[--raised] space-y-3">
           <input
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder={t("package_name_placeholder")}
             aria-label={t("package_name_placeholder")}
-            className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-transparent text-sm text-s-ink dark:text-s-dm-text"
+            className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.06] bg-transparent text-sm text-s-ink"
           />
 
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mb-1 block">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               {t("select_zones")}
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -165,7 +165,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
                   className={`rounded-[8px] border px-2 py-1 text-[10px] font-heading font-semibold transition-colors duration-150 ${
                     form.zones.includes(zone)
                       ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                      : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] text-s-ink/40 dark:text-s-dm-text/40"
+                      : "border-s-ink/[0.06] text-s-ink/40"
                   }`}
                 >
                   {t(`zones.${zone}` as any)}
@@ -175,7 +175,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
           </div>
 
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mb-1 block">
+            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               {t("discount_percent")}
             </label>
             <input
@@ -185,7 +185,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
               value={form.discount_percent}
               onChange={(e) => setForm({ ...form, discount_percent: Math.max(1, Math.min(50, Number(e.target.value))) })}
               aria-label={t("discount_percent")}
-              className="w-20 px-3 py-2 rounded-[8px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-transparent text-sm text-s-ink dark:text-s-dm-text text-center"
+              className="w-20 px-3 py-2 rounded-[8px] border border-s-ink/[0.06] bg-transparent text-sm text-s-ink text-center"
             />
           </div>
 
@@ -204,28 +204,28 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
       )}
 
       {/* Package list */}
-      <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-[--raised] dark:bg-s-dm-surface">
+      <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-[--raised]">
         <div className="flex items-center gap-2 mb-3">
           <Package size={14} className="text-s-coral" />
-          <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">
+          <span className="text-xs font-heading font-semibold text-s-ink">
             {t("zone_packages")}
           </span>
         </div>
         {packages.length === 0 ? (
-          <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-4">
+          <p className="text-xs text-s-ink/30 text-center py-4">
             {t("no_packages")}
           </p>
         ) : (
           packages.map((pkg) => (
             <div
               key={pkg.id}
-              className="flex items-center justify-between py-3 border-b border-s-ink/[0.04] dark:border-s-dm-text/[0.04] last:border-0"
+              className="flex items-center justify-between py-3 border-b border-s-ink/[0.04] last:border-0"
             >
               <div>
-                <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">
+                <p className="text-sm font-heading font-semibold text-s-ink">
                   {pkg.name}
                 </p>
-                <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+                <p className="text-[10px] text-s-ink/40">
                   {pkg.zones.map((z) => t(`zones.${z}` as any)).join(", ")}
                 </p>
               </div>
@@ -237,7 +237,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
                   onClick={() => removePackage(pkg.id)}
                   disabled={deleting === pkg.id}
                   aria-label={t("remove")}
-                  className="text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral transition-colors duration-150 disabled:opacity-40"
+                  className="text-s-ink/20 hover:text-s-coral transition-colors duration-150 disabled:opacity-40"
                 >
                   {deleting === pkg.id ? <Spinner size="sm" /> : <Trash2 size={14} />}
                 </button>

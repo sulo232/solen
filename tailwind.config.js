@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
+  // darkMode removed 2026-05-02 per Q62 — single light theme.
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx}",
@@ -28,7 +28,7 @@ module.exports = {
         "s-ink-3": "#9F8A7E",
         "s-border": "#EFE7DD",
         "s-bg": { base: "#FFFFFF", surface: "#FAF7F3", raised: "#FFFFFF", sunken: "#FAF7F3", cream: "#FFF4E8" },
-        "s-dm": { bg: "#151009", surface: "#1E1710", raised: "#26201A", sunken: "#120D07", text: "#F5EEE4", "text-secondary": "#C8BAA8" },
+        // s-dm.* dark-mode tokens removed 2026-05-02 per Q62 — single light theme.
         // ── Semantic Status Tokens ──
         "s-success": { DEFAULT: "#16A34A", bg: "#E8F5E9" },
         "s-warning": { DEFAULT: "#E65100", bg: "#FFF3E0" },

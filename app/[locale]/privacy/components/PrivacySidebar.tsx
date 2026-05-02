@@ -58,20 +58,20 @@ export default function PrivacySidebar() {
       <div className="md:hidden mb-6 print:hidden">
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="flex items-center justify-between w-full p-4 bg-white dark:bg-s-dm-bg border border-s-ink/10 dark:border-s-dm-text/10 rounded-xl"
+          className="flex items-center justify-between w-full p-4 bg-white border border-s-ink/10 rounded-xl"
         >
-          <span className="font-semibold text-s-ink dark:text-s-dm-text flex items-center gap-2">
+          <span className="font-semibold text-s-ink flex items-center gap-2">
             <Menu className="w-5 h-5" /> Inhaltsverzeichnis / Table of Contents
           </span>
           <ChevronDown
-            className={`w-5 h-5 text-s-ink/50 dark:text-s-dm-text/50 transition-transform ${
+            className={`w-5 h-5 text-s-ink/50 transition-transform ${
               isMobileMenuOpen ? "rotate-180" : ""
             }`}
           />
         </button>
 
         {isMobileMenuOpen && (
-          <div className="mt-2 p-2 bg-white dark:bg-s-dm-bg border border-s-ink/10 dark:border-s-dm-text/10 rounded-xl shadow-elevation-3 absolute z-10 w-[calc(100%-2rem)] max-h-[60vh] overflow-y-auto max-w-[720px]">
+          <div className="mt-2 p-2 bg-white border border-s-ink/10 rounded-xl shadow-elevation-3 absolute z-10 w-[calc(100%-2rem)] max-h-[60vh] overflow-y-auto max-w-[720px]">
             <nav className="flex flex-col gap-1">
               {sections.map((section) => (
                 <button
@@ -80,7 +80,7 @@ export default function PrivacySidebar() {
                   className={`text-left px-4 py-3 rounded-lg text-sm transition-colors ${
                     activeSection === section.id
                       ? "bg-s-coral/10 text-s-coral font-medium"
-                      : "text-s-ink/70 dark:text-s-dm-text/70 hover:bg-black/5 dark:hover:bg-white/5"
+                      : "text-s-ink/70 hover:bg-black/5:bg-white/5"
                   }`}
                 >
                   {section.title}
@@ -93,7 +93,7 @@ export default function PrivacySidebar() {
 
       <div className="hidden md:block print:hidden w-64 shrink-0">
         <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar pr-4">
-          <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text mb-4 text-sm tracking-wider uppercase opacity-70">
+          <h3 className="font-heading font-semibold text-s-ink mb-4 text-sm tracking-wider uppercase opacity-70">
             Inhalt / Contents
           </h3>
           <nav className="flex flex-col gap-1">
@@ -104,7 +104,7 @@ export default function PrivacySidebar() {
                 className={`text-left px-3 py-2 rounded-lg text-sm transition-colors duration-200 border-l-2 ${
                   activeSection === section.id
                     ? "border-s-coral bg-s-coral/5 text-s-coral font-medium pl-4"
-                    : "border-transparent text-s-ink/70 dark:text-s-dm-text/70 hover:bg-black/5 dark:hover:bg-white/5 hover:border-black/20 dark:hover:border-white/20"
+                    : "border-transparent text-s-ink/70 hover:bg-black/5:bg-white/5 hover:border-black/20:border-white/20"
                 }`}
               >
                 {section.title}

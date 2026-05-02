@@ -106,12 +106,12 @@ export default async function Page({
   );
 
   return (
-    <div className="min-h-screen bg-white dark:bg-s-dm-bg">
-      <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-b border-s-ink/[0.08] dark:border-white/[0.08]">
-        <h1 className="font-heading font-bold text-3xl md:text-4xl text-s-ink dark:text-s-dm-text mb-3">
+    <div className="min-h-screen bg-white">
+      <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-b border-s-ink/[0.08]">
+        <h1 className="font-heading font-bold text-3xl md:text-4xl text-s-ink mb-3">
           {categoryName} in {cityName}
         </h1>
-        <p className="font-body text-base text-s-ink/60 dark:text-s-dm-text/60 max-w-[600px] leading-relaxed">
+        <p className="font-body text-base text-s-ink/60 max-w-[600px] leading-relaxed">
           Entdecke die besten {categoryName} in {cityName}. Vergleiche Bewertungen, Preise und Verfügbarkeit von {filteredSalons.length} {categoryName}-Salons.
         </p>
       </section>
@@ -120,11 +120,11 @@ export default async function Page({
         {filteredSalons.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredSalons.map((salon) => (
-              <div key={salon.id} className="border border-s-ink/[0.08] dark:border-white/[0.08] rounded-card p-4">
-                <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">
+              <div key={salon.id} className="border border-s-ink/[0.08] rounded-card p-4">
+                <h3 className="font-heading font-bold text-base text-s-ink">
                   {salon.name}
                 </h3>
-                <p className="font-body text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-1">
+                <p className="font-body text-sm text-s-ink/60 mt-1">
                   ★ {salon.average_rating || 0} ({salon.review_count || 0} reviews)
                 </p>
               </div>
@@ -132,41 +132,41 @@ export default async function Page({
           </div>
         ) : (
           <div className="text-center py-20">
-            <p className="font-body text-base text-s-ink/60 dark:text-s-dm-text/60">
+            <p className="font-body text-base text-s-ink/60">
               Noch keine Salons in dieser Kategorie
             </p>
           </div>
         )}
       </section>
 
-      <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-ink/[0.08] dark:border-white/[0.08] max-w-[800px] mx-auto">
-        <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-6">
+      <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-ink/[0.08] max-w-[800px] mx-auto">
+        <h2 className="font-heading font-bold text-xl text-s-ink mb-6">
           Häufig gestellte Fragen
         </h2>
         <div className="space-y-6">
-          <details className="border border-s-ink/[0.08] dark:border-white/[0.08] rounded-input p-4 cursor-pointer">
-            <summary className="font-body font-semibold text-base text-s-ink dark:text-s-dm-text">
+          <details className="border border-s-ink/[0.08] rounded-input p-4 cursor-pointer">
+            <summary className="font-body font-semibold text-base text-s-ink">
               Wie viel kostet ein Besuch bei einem {categoryName} in {cityName}?
             </summary>
-            <p className="font-body text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-3">
+            <p className="font-body text-sm text-s-ink/60 mt-3">
               Die Preise variieren je nach Salon und Service. Nutze unsere Filterfunktion um Salons nach Preisbereich zu vergleichen.
             </p>
           </details>
 
-          <details className="border border-s-ink/[0.08] dark:border-white/[0.08] rounded-input p-4 cursor-pointer">
-            <summary className="font-body font-semibold text-base text-s-ink dark:text-s-dm-text">
+          <details className="border border-s-ink/[0.08] rounded-input p-4 cursor-pointer">
+            <summary className="font-body font-semibold text-base text-s-ink">
               Wie finde ich den besten {categoryName} in {cityName}?
             </summary>
-            <p className="font-body text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-3">
+            <p className="font-body text-sm text-s-ink/60 mt-3">
               Schau dir die Bewertungen an, vergleiche die Preise und lese die Erfahrungen anderer Kunden.
             </p>
           </details>
 
-          <details className="border border-s-ink/[0.08] dark:border-white/[0.08] rounded-input p-4 cursor-pointer">
-            <summary className="font-body font-semibold text-base text-s-ink dark:text-s-dm-text">
+          <details className="border border-s-ink/[0.08] rounded-input p-4 cursor-pointer">
+            <summary className="font-body font-semibold text-base text-s-ink">
               Kann ich online einen Termin buchen?
             </summary>
-            <p className="font-body text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-3">
+            <p className="font-body text-sm text-s-ink/60 mt-3">
               Ja! Alle Salons auf Solen ermöglichen Online-Buchungen.
             </p>
           </details>

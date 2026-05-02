@@ -44,12 +44,12 @@ export default function LoyaltyCardList() {
   const redeemedCards = cards.filter((c) => c.status === "redeemed");
 
   if (loading) {
-    return <div className="py-4 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("loading")}</div>;
+    return <div className="py-4 text-center text-sm text-s-ink/40">{t("loading")}</div>;
   }
 
   if (cards.length === 0) {
     return (
-      <div className="text-center py-8 text-sm text-s-ink/40 dark:text-s-dm-text/40">
+      <div className="text-center py-8 text-sm text-s-ink/40">
         <Award size={24} className="mx-auto mb-2 opacity-40" />
         {t("noCards")}
       </div>
@@ -67,7 +67,7 @@ export default function LoyaltyCardList() {
           <button
             onClick={() => setShowCompleted(!showCompleted)}
             aria-pressed={showCompleted}
-            className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors duration-150 mt-4"
+            className="flex items-center gap-1 text-xs text-s-ink/50 hover:text-s-ink:text-s-dm-text transition-colors duration-150 mt-4"
             aria-label={t("completedCards")}
           >
             <ChevronDown size={14} className={`transition-transform ${showCompleted ? "rotate-180" : ""}`} />

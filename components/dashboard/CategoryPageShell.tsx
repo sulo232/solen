@@ -51,7 +51,7 @@ export function CategoryPageShell({
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">
           {category}
         </p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">
+        <h1 className="font-heading font-bold text-[28px] text-s-ink leading-none">
           {title}
         </h1>
       </div>
@@ -70,7 +70,7 @@ export function CategoryPageShell({
               className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-[12px] text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
                 activeTab === idx
                   ? "bg-s-coral text-white"
-                  : "bg-[--raised] dark:bg-s-dm-surface border border-s-ink/[0.06] text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-ink dark:hover:text-s-dm-text"
+                  : "bg-[--raised] border border-s-ink/[0.06] text-s-ink/55 hover:text-s-ink:text-s-dm-text"
               }`}
             >
               {Icon && <Icon size={12} />}
@@ -86,7 +86,7 @@ export function CategoryPageShell({
           <div className="h-64 bg-s-ink/[0.04] rounded-[12px]" />
         </div>
       ) : !salonId ? (
-        <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-12 text-center bg-[--raised] dark:bg-s-dm-surface">
+        <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-12 text-center bg-[--raised]">
           <p className="text-xs font-heading text-s-ink/30 uppercase tracking-[.10em]">
             {t("salon_not_loaded")}
           </p>
@@ -94,7 +94,7 @@ export function CategoryPageShell({
       ) : (
         <div className="space-y-4">
           {showClientSelector && clientSelector && (
-            <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] p-4">
+            <div className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] p-4">
               <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-2">
                 {t("select_client")}
               </p>
@@ -103,7 +103,7 @@ export function CategoryPageShell({
           )}
 
           {activeTabDef?.needsClient && !clientId ? (
-            <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-12 text-center bg-[--raised] dark:bg-s-dm-surface">
+            <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-12 text-center bg-[--raised]">
               <p className="text-xs font-heading text-s-ink/30 uppercase tracking-[.10em]">
                 {t("select_client_to_continue")}
               </p>

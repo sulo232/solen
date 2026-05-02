@@ -137,12 +137,12 @@ export default function WalkInPayPage() {
   const l = labels[locale as keyof typeof labels] ?? labels.de;
 
   return (
-    <div className="min-h-screen bg-s-bg-surface dark:bg-s-dm-bg flex items-center justify-center p-4">
+    <div className="min-h-screen bg-s-bg-surface flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
-        className="bg-white dark:bg-s-dm-surface rounded-card max-w-md w-full p-6 shadow-v5-float"
+        className="bg-white rounded-card max-w-md w-full p-6 shadow-v5-float"
       >
         {loading ? (
           <div className="flex items-center justify-center gap-1.5 py-14">
@@ -165,8 +165,8 @@ export default function WalkInPayPage() {
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-coral mb-2">
               Zahlung
             </p>
-            <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text mb-2">{l.paid}</h2>
-            <p className="text-sm font-body text-s-ink/50 dark:text-s-dm-text/50 leading-relaxed">{l.paidDesc}</p>
+            <h2 className="font-heading font-bold text-lg text-s-ink mb-2">{l.paid}</h2>
+            <p className="text-sm font-body text-s-ink/50 leading-relaxed">{l.paidDesc}</p>
           </div>
         ) : error ? (
           <div className="text-center py-8">
@@ -179,7 +179,7 @@ export default function WalkInPayPage() {
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-amber mb-2">
               Fehler
             </p>
-            <p className="text-sm font-body text-s-ink/60 dark:text-s-dm-text/60">
+            <p className="text-sm font-body text-s-ink/60">
               {error === "No token provided" ? l.noToken : l.invalid}
             </p>
           </div>
@@ -193,35 +193,35 @@ export default function WalkInPayPage() {
                 <CreditCard size={17} className="text-s-coral" />
               </div>
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50 dark:text-s-dm-text/50 mb-0.5">
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50 mb-0.5">
                   Walk-in
                 </p>
-                <h1 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{l.title}</h1>
+                <h1 className="font-heading font-bold text-lg text-s-ink">{l.title}</h1>
               </div>
             </div>
 
             <div className="rounded-[12px] p-4 mb-6 space-y-3" style={{ background: "rgba(26,18,9,.03)" }}>
               {/* Salon row */}
               <div className="flex justify-between items-center">
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50">{l.salon}</span>
-                <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{booking.salon_name}</span>
+                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50">{l.salon}</span>
+                <span className="text-xs font-heading font-semibold text-s-ink">{booking.salon_name}</span>
               </div>
               {/* Service row */}
               <div className="flex justify-between items-center">
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50">{l.service}</span>
-                <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{booking.service_name}</span>
+                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50">{l.service}</span>
+                <span className="text-xs font-heading font-semibold text-s-ink">{booking.service_name}</span>
               </div>
               {/* Time row */}
               <div className="flex justify-between items-center">
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50">{l.time}</span>
-                <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text flex items-center gap-1">
+                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50">{l.time}</span>
+                <span className="text-xs font-heading font-semibold text-s-ink flex items-center gap-1">
                   <Clock size={11} className="text-s-ink/40" />
                   {new Date(booking.starts_at).toLocaleTimeString(locale === "de" ? "de-CH" : "en-GB", { hour: "2-digit", minute: "2-digit" })}
                 </span>
               </div>
               {/* Amount row */}
-              <div className="border-t border-s-ink/[0.07] dark:border-white/[0.06] pt-3 flex justify-between items-center">
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50">{l.amount}</span>
+              <div className="border-t border-s-ink/[0.07] pt-3 flex justify-between items-center">
+                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50">{l.amount}</span>
                 <span className="font-heading font-bold text-lg text-s-coral">{formatCurrency(booking.amount, locale)}</span>
               </div>
             </div>

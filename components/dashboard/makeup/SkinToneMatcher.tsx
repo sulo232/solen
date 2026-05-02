@@ -58,7 +58,7 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
 
   if (!clientId) {
     return (
-      <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 py-4 text-center">
+      <p className="text-xs text-s-ink/30 py-4 text-center">
         {t("select_client_first")}
       </p>
     );
@@ -69,19 +69,19 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
       {/* Header */}
       <div className="flex items-center gap-2">
         <Droplets size={16} className="text-s-coral" />
-        <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">
+        <h3 className="font-heading font-semibold text-sm text-s-ink">
           {t("skin_tone_title")}
         </h3>
       </div>
 
       {/* Disclaimer */}
-      <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 italic">
+      <p className="text-[10px] text-s-ink/40 italic">
         {t("skin_tone_disclaimer")}
       </p>
 
       {/* Undertone selector */}
       <div className="space-y-2">
-        <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40">
+        <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40">
           {t("undertone_label")}
         </p>
         <div className="flex flex-wrap gap-2">
@@ -92,15 +92,15 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
               className={`rounded-[12px] border p-3 flex items-center gap-2 transition-colors duration-150 ${
                 undertone === u.key
                   ? "border-s-coral bg-s-coral/[0.06]"
-                  : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06]"
+                  : "border-s-ink/[0.06]"
               }`}
               aria-label={t(u.labelKey)}
             >
               <div
-                className="w-4 h-4 rounded-full border border-s-ink/10 dark:border-s-dm-text/10"
+                className="w-4 h-4 rounded-full border border-s-ink/10"
                 style={{ backgroundColor: u.swatch }}
               />
-              <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">
+              <span className="text-xs font-heading font-semibold text-s-ink">
                 {t(u.labelKey)}
               </span>
             </button>
@@ -110,7 +110,7 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
 
       {/* Fitzpatrick scale */}
       <div className="space-y-2">
-        <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40">
+        <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40">
           {t("fitzpatrick_label")}
         </p>
         <div className="flex flex-wrap gap-2">
@@ -121,13 +121,13 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
               className={`rounded-[12px] border px-4 py-2 transition-colors duration-150 ${
                 fitzpatrick === f.value
                   ? "border-s-coral bg-s-coral/[0.06]"
-                  : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06]"
+                  : "border-s-ink/[0.06]"
               }`}
               aria-label={`Fitzpatrick ${f.label}`}
             >
               {/* Fitzpatrick labels are universal — not translated */}
-              <span className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text">{f.label}</span>
-              <p className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t(f.descKey)}</p>
+              <span className="text-sm font-heading font-bold text-s-ink">{f.label}</span>
+              <p className="text-[9px] text-s-ink/40 mt-0.5">{t(f.descKey)}</p>
             </button>
           ))}
         </div>
@@ -135,7 +135,7 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
 
       {/* Foundation notes (free text) */}
       <div className="space-y-2">
-        <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40">
+        <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40">
           {t("foundation_notes")}
         </p>
         <textarea
@@ -143,7 +143,7 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
           onChange={(e) => setFoundationNotes(e.target.value)}
           rows={2}
           placeholder={t("foundation_notes_placeholder")}
-          className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text resize-none"
+          className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-xs text-s-ink resize-none"
           aria-label={t("foundation_notes")}
         />
       </div>
@@ -161,17 +161,17 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
 
       {/* Salon-wide distribution panel */}
       {analytics && analytics.total > 0 && (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-white dark:bg-s-dm-surface space-y-3">
+        <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white space-y-3">
           <div className="flex items-center gap-2">
             <BarChart3 size={13} className="text-s-coral" />
-            <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50">
+            <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50">
               {t("skin_tone_analytics_title")} — {analytics.total} {t("skin_tone_analytics_clients")}
             </p>
           </div>
 
           {/* Undertone distribution */}
           <div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-2">
               {t("undertone_label")}
             </p>
             <div className="space-y-1.5">
@@ -181,10 +181,10 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
                 return (
                   <div key={key} className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full border border-s-ink/10 shrink-0" style={{ backgroundColor: swatch }} />
-                    <div className="flex-1 h-1.5 rounded-full bg-s-ink/[0.06] dark:bg-s-dm-text/[0.06] overflow-hidden">
+                    <div className="flex-1 h-1.5 rounded-full bg-s-ink/[0.06] overflow-hidden">
                       <div className="h-full rounded-full bg-s-coral" style={{ width: `${pct}%` }} />
                     </div>
-                    <span className="text-[10px] tabular-nums text-s-ink/40 dark:text-s-dm-text/40 w-8 text-right">{pct}%</span>
+                    <span className="text-[10px] tabular-nums text-s-ink/40 w-8 text-right">{pct}%</span>
                   </div>
                 );
               })}
@@ -193,7 +193,7 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
 
           {/* Fitzpatrick distribution */}
           <div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-2">
               {t("fitzpatrick_label")}
             </p>
             <div className="flex items-end gap-1.5 h-12">
@@ -202,12 +202,12 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
                 const heightPct = Math.round((count / max) * 100);
                 return (
                   <div key={scale} className="flex-1 flex flex-col items-center gap-0.5">
-                    <span className="text-[8px] tabular-nums text-s-ink/30 dark:text-s-dm-text/30">{count}</span>
+                    <span className="text-[8px] tabular-nums text-s-ink/30">{count}</span>
                     <div
                       className="w-full rounded-t-[3px] bg-s-amber/70 transition-[width] duration-[250ms]"
                       style={{ height: `${Math.max(heightPct, 4)}%` }}
                     />
-                    <span className="text-[9px] font-heading font-bold text-s-ink/40 dark:text-s-dm-text/40">{scale}</span>
+                    <span className="text-[9px] font-heading font-bold text-s-ink/40">{scale}</span>
                   </div>
                 );
               })}

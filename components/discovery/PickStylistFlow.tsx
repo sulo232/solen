@@ -53,7 +53,7 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
     return (
       <div className="space-y-2">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="h-16 rounded-[16px] bg-s-ink/5 dark:bg-white/5 animate-pulse" />
+          <div key={i} className="h-16 rounded-[16px] bg-s-ink/5 animate-pulse" />
         ))}
       </div>
     );
@@ -61,19 +61,19 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
 
   return (
     <div>
-      <h3 className="text-base font-heading font-semibold text-s-ink dark:text-s-dm-text mb-3">{labels.title}</h3>
+      <h3 className="text-base font-heading font-semibold text-s-ink mb-3">{labels.title}</h3>
 
       <div className="space-y-2">
         {/* "Anyone" option */}
         <button
           onClick={() => onSelect(null)}
-          className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:border-s-coral/30 transition-colors duration-150 text-left"
+          className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-[--raised] border border-s-ink/5 hover:border-s-coral/30 transition-colors duration-150 text-left"
         >
-          <div className="w-10 h-10 rounded-full bg-s-ink/5 dark:bg-white/5 flex items-center justify-center text-s-ink/30 dark:text-s-dm-text/30">
+          <div className="w-10 h-10 rounded-full bg-s-ink/5 flex items-center justify-center text-s-ink/30">
             <Star size={16} />
           </div>
-          <span className="flex-1 text-sm font-medium text-s-ink dark:text-s-dm-text">{labels.any}</span>
-          <ChevronRight size={16} className="text-s-ink/20 dark:text-s-dm-text/20" />
+          <span className="flex-1 text-sm font-medium text-s-ink">{labels.any}</span>
+          <ChevronRight size={16} className="text-s-ink/20" />
         </button>
 
         {/* Staff members */}
@@ -81,24 +81,24 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
           <div key={member.id}>
             <button
               onClick={() => setExpanded(expanded === member.id ? null : member.id)}
-              className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:border-s-coral/30 transition-colors duration-150 text-left"
+              className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-[--raised] border border-s-ink/5 hover:border-s-coral/30 transition-colors duration-150 text-left"
             >
-              <div className="w-10 h-10 rounded-full bg-s-ink/5 dark:bg-white/5 overflow-hidden shrink-0">
+              <div className="w-10 h-10 rounded-full bg-s-ink/5 overflow-hidden shrink-0">
                 {member.avatar_url ? (
                   <Image src={member.avatar_url} alt={member.name} width={40} height={40} className="object-cover w-full h-full" />
                 ) : (
-                  <div className="flex items-center justify-center h-full text-sm font-medium text-s-ink/30 dark:text-s-dm-text/30">
+                  <div className="flex items-center justify-center h-full text-sm font-medium text-s-ink/30">
                     {member.name.charAt(0)}
                   </div>
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">{member.name}</p>
+                <p className="text-sm font-medium text-s-ink truncate">{member.name}</p>
                 {member.specialties.length > 0 && (
-                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 truncate">{member.specialties.join(", ")}</p>
+                  <p className="text-xs text-s-ink/40 truncate">{member.specialties.join(", ")}</p>
                 )}
               </div>
-              <ChevronRight size={16} className={`text-s-ink/20 dark:text-s-dm-text/20 transition-transform ${expanded === member.id ? "rotate-90" : ""}`} />
+              <ChevronRight size={16} className={`text-s-ink/20 transition-transform ${expanded === member.id ? "rotate-90" : ""}`} />
             </button>
 
             {expanded === member.id && (

@@ -102,7 +102,7 @@ export default function ScrollableFilterRow(props: ScrollableFilterRowProps) {
                   className={`w-10 h-10 rounded-pill flex items-center justify-center border transition-colors duration-150 cursor-pointer ${
                     activeValue === opt.value
                       ? "bg-s-coral border-s-coral text-white"
-                      : "bg-white/70 dark:bg-s-dm-surface/70 border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-coral/40 hover:text-s-coral dark:hover:text-s-coral"
+                      : "bg-white/70 border-s-ink/[0.08] text-s-ink/50 hover:border-s-coral/40 hover:text-s-coral:text-s-coral"
                   }`}
                 >
                   {opt.icon}
@@ -111,7 +111,7 @@ export default function ScrollableFilterRow(props: ScrollableFilterRowProps) {
                   className={`text-[10px] font-heading font-semibold leading-none transition-colors ${
                     activeValue === opt.value
                       ? "text-s-coral"
-                      : "text-s-ink/50 dark:text-s-dm-text/50"
+                      : "text-s-ink/50"
                   }`}
                 >
                   {opt.label}
@@ -125,7 +125,7 @@ export default function ScrollableFilterRow(props: ScrollableFilterRowProps) {
                 className={`shrink-0 px-3.5 py-1.5 rounded-pill text-[12px] font-heading font-bold border transition-colors duration-150 whitespace-nowrap cursor-pointer ${
                   activeValue === opt.value
                     ? "bg-s-coral border-s-coral text-white"
-                    : "bg-white/70 dark:bg-s-dm-surface/70 border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/65 dark:text-s-dm-text/65 hover:border-s-coral/40 hover:text-s-coral dark:hover:text-s-coral"
+                    : "bg-white/70 border-s-ink/[0.08] text-s-ink/65 hover:border-s-coral/40 hover:text-s-coral:text-s-coral"
                 }`}
               >
                 {opt.label}
@@ -135,7 +135,7 @@ export default function ScrollableFilterRow(props: ScrollableFilterRowProps) {
 
       {/* Right fade indicator */}
       {canScrollRight && (
-        <div className="absolute right-0 top-0 bottom-0 w-8 pointer-events-none bg-gradient-to-l from-white dark:from-s-dm-surface to-transparent rounded-r-[16px]" />
+        <div className="absolute right-0 top-0 bottom-0 w-8 pointer-events-none bg-gradient-to-l from-white to-transparent rounded-r-[16px]" />
       )}
     </div>
   );

@@ -63,7 +63,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
               onClick={onClose}
             />
             <motion.div
-              className="absolute bottom-0 inset-x-0 bg-white dark:bg-s-dm-surface rounded-t-3xl shadow-warm-xl max-h-[80vh] overflow-y-auto"
+              className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl shadow-warm-xl max-h-[80vh] overflow-y-auto"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
@@ -74,8 +74,8 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
               onDragEnd={(_, info) => { if (info.offset.y > 100) onClose(); }}
             >
               {/* Drag handle */}
-              <div className="flex justify-center pt-3 pb-2 sticky top-0 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm z-10">
-                <div className="w-10 h-1 rounded-full bg-s-sand dark:bg-white/20" />
+              <div className="flex justify-center pt-3 pb-2 sticky top-0 bg-white/95 backdrop-blur-sm z-10">
+                <div className="w-10 h-1 rounded-full bg-s-sand" />
               </div>
               <SheetContent salon={salon} locale={locale} topServices={topServices} todayHours={todayHours} onClose={onClose} t={t} />
             </motion.div>
@@ -91,7 +91,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
               onClick={onClose}
             />
             <motion.div
-              className="relative w-[420px] max-w-full h-full bg-white dark:bg-s-dm-surface shadow-warm-lg overflow-y-auto"
+              className="relative w-[420px] max-w-full h-full bg-white shadow-warm-lg overflow-y-auto"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -99,7 +99,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
             >
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-s-bg-sunken dark:bg-white/10 text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-sand transition-colors"
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-s-bg-sunken text-s-ink/60 hover:bg-s-sand transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -137,18 +137,18 @@ function SheetContent({
       )}
 
       {/* Name + rating */}
-      <h3 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">{salon.name}</h3>
+      <h3 className="font-heading font-bold text-xl text-s-ink">{salon.name}</h3>
       <div className="flex items-center gap-2 mt-1.5">
         <div className="flex items-center gap-1">
           <Star className="w-4 h-4 fill-s-coral text-s-coral" />
-          <span className="data-text font-semibold text-sm text-s-ink dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
-          <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">({salon.review_count})</span>
+          <span className="data-text font-semibold text-sm text-s-ink">{salon.average_rating.toFixed(1)}</span>
+          <span className="text-xs text-s-ink/40">({salon.review_count})</span>
         </div>
       </div>
 
       {/* Today's hours */}
       {todayHours && (
-        <div className="flex items-center gap-1.5 mt-2 text-xs text-s-ink/50 dark:text-s-dm-text/50">
+        <div className="flex items-center gap-1.5 mt-2 text-xs text-s-ink/50">
           <Clock className="w-3 h-3" />
           <span>{t("today")}: {todayHours.open}–{todayHours.close}</span>
         </div>
@@ -157,17 +157,17 @@ function SheetContent({
       {/* Top services */}
       {topServices.length > 0 && (
         <div className="mt-4">
-          <p className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-2">{t("topServices")}</p>
-          <div className="divide-y divide-s-ink/5 dark:divide-white/5">
+          <p className="text-xs font-medium text-s-ink/40 uppercase tracking-wide mb-2">{t("topServices")}</p>
+          <div className="divide-y divide-s-ink/5">
             {topServices.map((svc, i) => (
               <div key={i} className="flex items-center justify-between py-2.5">
                 <div>
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">
+                  <p className="text-sm font-medium text-s-ink">
                     {locale === "de" ? svc.name_de : svc.name_en}
                   </p>
-                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{svc.duration_minutes} {t("minutes")}</p>
+                  <p className="text-xs text-s-ink/40">{svc.duration_minutes} {t("minutes")}</p>
                 </div>
-                <span className="data-text font-semibold text-sm text-s-ink dark:text-s-dm-text">{formatCurrency(svc.price, locale)}</span>
+                <span className="data-text font-semibold text-sm text-s-ink">{formatCurrency(svc.price, locale)}</span>
               </div>
             ))}
           </div>
@@ -179,7 +179,7 @@ function SheetContent({
         <Link
           href={`/${locale}/salon/${salon.slug}`}
           onClick={onClose}
-          className="flex-1 py-3 rounded-pill border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink dark:text-s-dm-text text-center hover:border-s-coral/50 transition-colors"
+          className="flex-1 py-3 rounded-pill border border-s-ink/10 text-sm font-medium text-s-ink text-center hover:border-s-coral/50 transition-colors"
         >
           {t("showMore")}
         </Link>

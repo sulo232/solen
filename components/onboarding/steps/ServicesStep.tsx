@@ -86,14 +86,14 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
           <Scissors size={22} className="text-s-coral" />
         </div>
         <div>
-          <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">
+          <h2 className="font-heading font-bold text-xl text-s-ink">
             {t("services.title")}
           </h2>
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/50">
+          <p className="text-sm text-s-ink/40">
             {t("services.subtitle")}
           </p>
         </div>
@@ -104,15 +104,15 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
       ) : (
         <>
           {services.length > 0 && (
-            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 overflow-hidden">
+            <div className="bg-white rounded-[12px] border border-s-ink/5 overflow-hidden">
               {services.map((s, i) => (
-                <div key={s.id ?? i} className={["flex items-center justify-between px-5 py-4", i > 0 ? "border-t border-s-ink/5 dark:border-white/5" : ""].join(" ")}>
+                <div key={s.id ?? i} className={["flex items-center justify-between px-5 py-4", i > 0 ? "border-t border-s-ink/5" : ""].join(" ")}>
                   <div>
-                    <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{s.name_de}</p>
-                    <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 data-text">{s.duration_minutes} min · {formatCurrency(Number(s.price), locale)}</p>
+                    <p className="text-sm font-medium text-s-ink">{s.name_de}</p>
+                    <p className="text-xs text-s-ink/40 data-text">{s.duration_minutes} min · {formatCurrency(Number(s.price), locale)}</p>
                   </div>
                   {s.id && (
-                    <button onClick={() => removeService(s.id!)} className="p-1.5 text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral transition-colors">
+                    <button onClick={() => removeService(s.id!)} className="p-1.5 text-s-ink/20 hover:text-s-coral transition-colors">
                       <Trash2 size={14} />
                     </button>
                   )}
@@ -122,39 +122,39 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
           )}
 
           {showAdd ? (
-            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-coral/20 p-5 space-y-3 shadow-warm-sm">
+            <div className="bg-white rounded-[12px] border border-s-coral/20 p-5 space-y-3 shadow-warm-sm">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("services.new")}</p>
-                <button onClick={() => setShowAdd(false)} className="text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink dark:hover:text-s-dm-text">
+                <p className="text-sm font-medium text-s-ink">{t("services.new")}</p>
+                <button onClick={() => setShowAdd(false)} className="text-s-ink/30 hover:text-s-ink:text-s-dm-text">
                   <X size={16} />
                 </button>
               </div>
               <div>
-                <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("services.name")} *</label>
+                <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("services.name")} *</label>
                 <input
                   value={newService.name_de}
                   onChange={(e) => setNewService({ ...newService, name_de: e.target.value })}
                   placeholder={t("services.namePlaceholder")}
-                  className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+                  className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("services.duration")}</label>
+                  <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("services.duration")}</label>
                   <input
                     type="number" min={15} step={15}
                     value={newService.duration_minutes}
                     onChange={(e) => setNewService({ ...newService, duration_minutes: +e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+                    className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("services.price")}</label>
+                  <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("services.price")}</label>
                   <input
                     type="number" min={0}
                     value={newService.price}
                     onChange={(e) => setNewService({ ...newService, price: +e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+                    className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
                   />
                 </div>
               </div>
@@ -170,7 +170,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
           ) : (
             <button
               onClick={() => setShowAdd(true)}
-              className="w-full py-3 rounded-btn border-2 border-dashed border-s-ink/10 dark:border-white/10 text-sm text-s-ink/40 dark:text-s-dm-text/40 hover:border-s-coral/40 hover:text-s-coral transition-colors flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-btn border-2 border-dashed border-s-ink/10 text-sm text-s-ink/40 hover:border-s-coral/40 hover:text-s-coral transition-colors flex items-center justify-center gap-2"
             >
               <Plus size={16} />
               {t("services.add")}
@@ -179,18 +179,18 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
 
           {suggestions.length > 0 && (
             <div className="pt-2">
-              <p className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-3 px-1">{t("services.aiSuggestions")}</p>
+              <p className="text-xs font-medium text-s-ink/60 mb-3 px-1">{t("services.aiSuggestions")}</p>
               <div className="grid gap-2">
                 {suggestions.map((s, i) => (
-                  <div key={i} className="flex justify-between items-center bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/10 rounded-[12px] px-4 py-3">
+                  <div key={i} className="flex justify-between items-center bg-s-coral/5 border border-s-coral/10 rounded-[12px] px-4 py-3">
                     <div>
-                      <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{s.name_de}</p>
-                      <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{s.duration_minutes} min · {formatCurrency(Number(s.price), locale)}</p>
+                      <p className="text-sm font-medium text-s-ink">{s.name_de}</p>
+                      <p className="text-xs text-s-ink/40">{s.duration_minutes} min · {formatCurrency(Number(s.price), locale)}</p>
                     </div>
                     <button 
                       onClick={() => addService(s)}
                       disabled={saving}
-                      className="px-3 py-1.5 text-xs font-medium rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 text-s-ink/80 hover:text-s-coral transition-colors disabled:opacity-50"
+                      className="px-3 py-1.5 text-xs font-medium rounded-btn bg-white border border-s-ink/10 text-s-ink/80 hover:text-s-coral transition-colors disabled:opacity-50"
                     >
                       {t("services.addButton")}
                     </button>
@@ -201,13 +201,13 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
           )}
 
           {services.length > 0 && (
-            <div className="bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/20 rounded-[12px] px-4 py-3 flex items-center gap-2">
+            <div className="bg-s-coral/5 border border-s-coral/20 rounded-[12px] px-4 py-3 flex items-center gap-2">
               <Check size={14} className="text-s-coral shrink-0" />
               <div>
                 <p className="text-xs text-s-coral font-medium">
                   {services.length} {services.length === 1 ? "Service" : "Services"} {t("services.added")}
                 </p>
-                <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">
+                <p className="text-[10px] text-s-ink/40 mt-0.5">
                   {t("services.addMoreLater")}
                 </p>
               </div>

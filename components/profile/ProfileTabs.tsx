@@ -26,7 +26,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({ activeTab, onTabChange
   return (
     <div className="pt-2">
       {/* Tab bar */}
-      <div className="flex items-center border-b border-s-ink/10 dark:border-white/10 mb-4">
+      <div className="flex items-center border-b border-s-ink/10 mb-4">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.key;
@@ -37,7 +37,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({ activeTab, onTabChange
               onClick={() => onTabChange(tab.key)}
               className={`
                 flex-1 flex items-center justify-center gap-1.5 py-3 text-[12px] font-body font-medium transition-colors duration-150 relative
-                ${isActive ? 'text-s-coral' : 'text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text'}
+                ${isActive ? 'text-s-coral' : 'text-s-ink/60 hover:text-s-ink:text-s-dm-text'}
               `}
               aria-label={tab.label}
               aria-pressed={isActive}

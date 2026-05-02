@@ -132,7 +132,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
                   "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
                   active
                     ? "bg-s-coral text-white border-s-coral"
-                    : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/50",
+                    : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/50",
                 ].join(" ")}
                 style={active ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
               >
@@ -391,7 +391,7 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
   return (
     <div className="p-5 space-y-5">
-      <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+      <p className="text-xs text-s-ink/50">
         SMS-Erinnerungen werden automatisch an Kunden gesendet, um No-Shows zu reduzieren.
       </p>
 
@@ -399,8 +399,8 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
         <input type="checkbox" checked={reminder24h} onChange={(e) => setReminder24h(e.target.checked)}
           className="w-4 h-4 rounded border-s-ink/20 text-s-coral focus:ring-s-coral" />
         <div>
-          <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">24 Stunden vorher</span>
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Kunden erhalten eine SMS 24h vor dem Termin</p>
+          <span className="text-sm font-medium text-s-ink">24 Stunden vorher</span>
+          <p className="text-xs text-s-ink/40">Kunden erhalten eine SMS 24h vor dem Termin</p>
         </div>
       </label>
 
@@ -408,8 +408,8 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
         <input type="checkbox" checked={reminder1h} onChange={(e) => setReminder1h(e.target.checked)}
           className="w-4 h-4 rounded border-s-ink/20 text-s-coral focus:ring-s-coral" />
         <div>
-          <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">1 Stunde vorher</span>
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Kunden erhalten eine SMS 1h vor dem Termin</p>
+          <span className="text-sm font-medium text-s-ink">1 Stunde vorher</span>
+          <p className="text-xs text-s-ink/40">Kunden erhalten eine SMS 1h vor dem Termin</p>
         </div>
       </label>
 
@@ -741,11 +741,11 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CreditCard className="w-4 h-4 text-s-ink/40" />
-            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Bankkonto verknüpfen</p>
+            <p className="text-sm font-medium text-s-ink">Bankkonto verknüpfen</p>
           </div>
           {statusPill}
         </div>
-        <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+        <p className="text-xs text-s-ink/50">
           Stripe Connect überweist Zahlungen direkt auf dein Konto. Benötigt einmalige Verifizierung.
         </p>
         {connectStatus !== "connected" && (

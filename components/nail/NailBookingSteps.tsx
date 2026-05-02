@@ -110,15 +110,15 @@ export default function NailBookingSteps({
   if (serviceCategory !== "nails") return null;
 
   return (
-    <div className="space-y-4 py-4 border-t border-b border-s-ink/5 dark:border-s-dm-text/10">
-      <p className="text-xs uppercase tracking-wider text-s-ink/40 dark:text-s-dm-text/40 font-medium">
+    <div className="space-y-4 py-4 border-t border-b border-s-ink/5">
+      <p className="text-xs uppercase tracking-wider text-s-ink/40 font-medium">
         {t("nail_options")}
       </p>
 
       {/* Material selector */}
       {serviceMaterialType ? (
-        <div className="flex items-center gap-2 text-sm text-s-ink/60 dark:text-s-dm-text/60">
-          <span>{t("nail_material_label")}: <strong className="text-s-ink dark:text-s-dm-text">{serviceMaterialType}</strong></span>
+        <div className="flex items-center gap-2 text-sm text-s-ink/60">
+          <span>{t("nail_material_label")}: <strong className="text-s-ink">{serviceMaterialType}</strong></span>
         </div>
       ) : (
         <MaterialSelector value={material} onChange={setMaterial} />
@@ -137,12 +137,12 @@ export default function NailBookingSteps({
         <button
           type="button"
           onClick={handleRepeatLast}
-          className="flex items-center gap-2 w-full p-3 rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 bg-[--raised] dark:bg-s-dm-surface text-left hover:border-s-coral/20 transition-colors duration-150"
+          className="flex items-center gap-2 w-full p-3 rounded-[16px] border border-s-ink/10 bg-[--raised] text-left hover:border-s-coral/20 transition-colors duration-150"
         >
           <RefreshCw size={16} className="text-s-coral shrink-0" />
           <div>
-            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("nail_repeat_last")}</p>
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+            <p className="text-sm font-medium text-s-ink">{t("nail_repeat_last")}</p>
+            <p className="text-xs text-s-ink/50">
               {[repeatLast.style, repeatLast.shape, repeatLast.material].filter(Boolean).join(" · ")}
             </p>
           </div>
@@ -166,11 +166,11 @@ export default function NailBookingSteps({
 
       {/* Tier pricing display */}
       {tierLabel && tierPrice != null && (
-        <div className="flex items-center justify-between p-3 rounded-[16px] bg-s-bg-surface dark:bg-s-dm-bg">
-          <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">
+        <div className="flex items-center justify-between p-3 rounded-[16px] bg-s-bg-surface">
+          <span className="text-sm text-s-ink/70">
             {tierLabel.charAt(0).toUpperCase() + tierLabel.slice(1)} {t("nail_artist")}
           </span>
-          <span className="data-text font-medium text-s-ink dark:text-s-dm-text">
+          <span className="data-text font-medium text-s-ink">
             {formatCurrency(tierPrice / 100, locale)}
           </span>
         </div>
@@ -178,7 +178,7 @@ export default function NailBookingSteps({
 
       {/* Station availability */}
       {stationInfo && stationInfo.total > 0 && (
-        <div className="flex items-center gap-2 text-xs text-s-ink/50 dark:text-s-dm-text/50">
+        <div className="flex items-center gap-2 text-xs text-s-ink/50">
           <Users size={12} />
           {t("nail_stations_available", { available: stationInfo.available, total: stationInfo.total })}
         </div>

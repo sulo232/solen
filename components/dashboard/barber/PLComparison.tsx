@@ -58,16 +58,16 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
   const formatCHF = (v: number) => `CHF ${(v / 100).toFixed(0)}`;
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+    <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-7 h-7 rounded-[8px] bg-s-sage/10 flex items-center justify-center">
           <DollarSign size={13} className="text-s-sage" />
         </div>
         <div>
-          <p className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text">
+          <p className="text-sm font-heading font-bold text-s-ink">
             {t("plTitle")}
           </p>
-          <p className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35">
+          <p className="text-[10px] text-s-ink/35">
             {t("plSubtitle")}
           </p>
         </div>
@@ -75,11 +75,11 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
 
       {loading ? (
         <div className="space-y-3 animate-pulse">
-          <div className="h-16 bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[8px]" />
-          <div className="h-[160px] bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[8px]" />
+          <div className="h-16 bg-s-ink/[0.04] rounded-[8px]" />
+          <div className="h-[160px] bg-s-ink/[0.04] rounded-[8px]" />
         </div>
       ) : !stats ? (
-        <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 text-center py-6">
+        <p className="text-sm text-s-ink/40 text-center py-6">
           {t("noData")}
         </p>
       ) : (
@@ -90,10 +90,10 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
               <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-coral mb-0.5">
                 {t("appointments")}
               </p>
-              <p className="text-xl font-heading font-bold text-s-ink dark:text-s-dm-text data-text">
+              <p className="text-xl font-heading font-bold text-s-ink data-text">
                 {formatCHF(stats.appointment_revenue)}
               </p>
-              <p className="text-[10px] text-s-ink/45 dark:text-s-dm-text/45">
+              <p className="text-[10px] text-s-ink/45">
                 {stats.appointment_count} × {formatCHF(stats.appointment_avg)} ⌀ · {apptShare}%
               </p>
             </div>
@@ -101,10 +101,10 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
               <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-amber mb-0.5">
                 {t("walkIns")}
               </p>
-              <p className="text-xl font-heading font-bold text-s-ink dark:text-s-dm-text data-text">
+              <p className="text-xl font-heading font-bold text-s-ink data-text">
                 {formatCHF(stats.walkin_revenue)}
               </p>
-              <p className="text-[10px] text-s-ink/45 dark:text-s-dm-text/45">
+              <p className="text-[10px] text-s-ink/45">
                 {stats.walkin_count} × {formatCHF(stats.walkin_avg)} ⌀ · {walkinShare}%
               </p>
             </div>

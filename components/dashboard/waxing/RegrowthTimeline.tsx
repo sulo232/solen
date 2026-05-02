@@ -19,7 +19,7 @@ export default function RegrowthTimeline({ zones }: RegrowthTimelineProps) {
   if (!zones || zones.length === 0) return null;
 
   return (
-    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+    <div className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] p-4">
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-plum mb-4">
         {t("timelineTitle")}
       </p>
@@ -37,7 +37,7 @@ export default function RegrowthTimeline({ zones }: RegrowthTimelineProps) {
           return (
             <div key={zone.zone}>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text capitalize">
+                <span className="text-xs font-heading font-semibold text-s-ink capitalize">
                   {zone.zone}
                 </span>
                 <span className={`text-[10px] font-heading font-semibold ${
@@ -46,7 +46,7 @@ export default function RegrowthTimeline({ zones }: RegrowthTimelineProps) {
                   {isOverdue ? t("timelineOverdue") : isInWindow ? t("timelineRebook") : `${daysSince}/${cycle} ${t("days")}`}
                 </span>
               </div>
-              <div className="relative h-2 rounded-full bg-s-ink/[0.06] dark:bg-s-dm-text/[0.06] overflow-hidden">
+              <div className="relative h-2 rounded-full bg-s-ink/[0.06] overflow-hidden">
                 {/* Rebook window zone */}
                 <div
                   className="absolute top-0 h-full bg-s-amber/20 rounded-full"
@@ -60,12 +60,12 @@ export default function RegrowthTimeline({ zones }: RegrowthTimelineProps) {
                   style={{ width: `${pct}%` }}
                 />
                 {/* Today hairline */}
-                <div className="absolute top-0 h-full w-px bg-s-ink/30 dark:bg-s-dm-text/30" style={{ left: `${pct}%` }} />
+                <div className="absolute top-0 h-full w-px bg-s-ink/30" style={{ left: `${pct}%` }} />
               </div>
               <div className="flex justify-between mt-0.5">
-                <span className="text-[8px] text-s-ink/25 dark:text-s-dm-text/25">{t("timelineLastWax")}</span>
+                <span className="text-[8px] text-s-ink/25">{t("timelineLastWax")}</span>
                 <span className="text-[8px] text-s-amber/70">{t("timelineRebookWindow")}</span>
-                <span className="text-[8px] text-s-ink/25 dark:text-s-dm-text/25">{t("timelineOverdueLabel")}</span>
+                <span className="text-[8px] text-s-ink/25">{t("timelineOverdueLabel")}</span>
               </div>
             </div>
           );

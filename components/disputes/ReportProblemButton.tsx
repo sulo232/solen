@@ -20,7 +20,7 @@ export function ReportProblemButton({ bookingId }: { bookingId: string }) {
     return (
       <button
         disabled
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs text-s-sage cursor-not-allowed"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/10 text-xs text-s-sage cursor-not-allowed"
       >
         <Check size={12} />
         {t("problemReported", { fallback: "Gemeldet ✓" })}

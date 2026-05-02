@@ -128,13 +128,13 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
     .join(" + ") || lastCut.service_name;
 
   return (
-    <div className="rounded-[16px] bg-white dark:bg-s-dm-surface shadow-warm-xl p-4 border border-s-ink/5 dark:border-s-dm-text/10">
+    <div className="rounded-[16px] bg-white shadow-warm-xl p-4 border border-s-ink/5">
       <div className="flex items-start gap-3">
         <div className="p-2 rounded-full bg-s-coral/10 shrink-0">
           <Scissors size={18} className="text-s-coral" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">
+          <p className="text-sm font-medium text-s-ink">
             {t("express.lastCut")}: {cutDescription} {t("express.staffAt")} {lastCut.staff_name}, {t("express.daysAgo", { days: daysAgo })}
           </p>
 
@@ -149,19 +149,19 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
           )}
 
           {step === "searching" && (
-            <p className="mt-2 text-sm text-s-ink/50 dark:text-s-dm-text/50 animate-pulse">
+            <p className="mt-2 text-sm text-s-ink/50 animate-pulse">
               {t("express.searching")}
             </p>
           )}
 
           {step === "confirm" && suggested && (
             <div className="mt-3 space-y-2">
-              <div className="rounded-input bg-s-bg-surface dark:bg-s-dm-bg p-3 text-sm text-s-ink dark:text-s-dm-text">
+              <div className="rounded-input bg-s-bg-surface p-3 text-sm text-s-ink">
                 <div className="flex items-center gap-2 mb-1">
                   <CalendarCheck size={14} className="text-s-sage" />
                   <span className="font-medium">{formatDate(suggested.starts_at)}</span>
                 </div>
-                <p className="text-s-ink/60 dark:text-s-dm-text/60">
+                <p className="text-s-ink/60">
                   {t("express.staffAt")} {suggested.staff_name} · {formatCurrency(suggested.price)}
                 </p>
               </div>
@@ -175,7 +175,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
           )}
 
           {step === "booking" && (
-            <p className="mt-2 text-sm text-s-ink/50 dark:text-s-dm-text/50 animate-pulse">
+            <p className="mt-2 text-sm text-s-ink/50 animate-pulse">
               {t("express.booking")}
             </p>
           )}

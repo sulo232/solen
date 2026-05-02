@@ -50,7 +50,7 @@ export default function VouchersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-s-bg-surface dark:bg-s-ink flex items-center justify-center">
+      <div className="min-h-screen bg-s-bg-surface flex items-center justify-center">
         <Spinner size="lg" />
       </div>
     );
@@ -58,39 +58,39 @@ export default function VouchersPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-s-bg-surface dark:bg-s-ink flex items-center justify-center px-4">
+      <div className="min-h-screen bg-s-bg-surface flex items-center justify-center px-4">
         <div className="text-center">
           <div className="w-12 h-12 rounded-full bg-s-coral/10 flex items-center justify-center mx-auto mb-3">
             <AlertCircle className="w-6 h-6 text-s-coral" />
           </div>
           <p className="text-s-coral text-sm font-heading font-bold mb-1">FEHLER</p>
-          <p className="text-s-ink/60 dark:text-s-dm-text/60 text-sm">{error}</p>
+          <p className="text-s-ink/60 text-sm">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-s-bg-surface dark:bg-s-ink py-8 px-4">
+    <div className="min-h-screen bg-s-bg-surface py-8 px-4">
       {/* Breadcrumb */}
-      <div className="max-w-lg mx-auto mb-4 text-xs text-s-ink/40 dark:text-s-dm-text/40 flex items-center gap-1">
+      <div className="max-w-lg mx-auto mb-4 text-xs text-s-ink/40 flex items-center gap-1">
         <Link href={`/${locale}/profile`} className="hover:text-s-coral transition-colors">
           Profil
         </Link>
         <ChevronRight className="w-3 h-3" />
-        <span className="text-s-ink/60 dark:text-s-dm-text/60">Meine Gutscheine</span>
+        <span className="text-s-ink/60">Meine Gutscheine</span>
       </div>
 
       <div className="max-w-lg mx-auto space-y-6">
         {/* Hero card */}
-        <div className="bg-gradient-to-br from-s-coral/10 to-s-coral/5 dark:from-s-coral/20 dark:to-s-coral/5 rounded-[12px] border border-s-coral/20 p-6 text-center">
+        <div className="bg-gradient-to-br from-s-coral/10 to-s-coral/5 rounded-[12px] border border-s-coral/20 p-6 text-center">
           <div className="w-14 h-14 rounded-full bg-s-coral/15 flex items-center justify-center mx-auto mb-3">
             <Gift className="w-7 h-7 text-s-coral" />
           </div>
-          <h1 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-1">
+          <h1 className="font-heading font-bold text-xl text-s-ink mb-1">
             Meine Gutscheine
           </h1>
-          <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 max-w-xs mx-auto">
+          <p className="text-sm text-s-ink/60 max-w-xs mx-auto">
             {data?.total ?? 0} {(data?.total ?? 0) === 1 ? "Gutschein" : "Gutscheine"} insgesamt
           </p>
         </div>
@@ -98,7 +98,7 @@ export default function VouchersPage() {
         {/* Active vouchers section */}
         {data?.active && data.active.length > 0 && (
           <div className="space-y-3">
-            <h2 className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40 px-2">
+            <h2 className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 px-2">
               Aktive Gutscheine ({data.active.length})
             </h2>
             {data.active.map((voucher) => (
@@ -110,7 +110,7 @@ export default function VouchersPage() {
         {/* Used vouchers section */}
         {data?.used && data.used.length > 0 && (
           <div className="space-y-3">
-            <h2 className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40 px-2">
+            <h2 className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 px-2">
               Verwendet ({data.used.length})
             </h2>
             {data.used.map((voucher) => (
@@ -122,7 +122,7 @@ export default function VouchersPage() {
         {/* Expired vouchers section */}
         {data?.expired && data.expired.length > 0 && (
           <div className="space-y-3">
-            <h2 className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40 px-2">
+            <h2 className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 px-2">
               Abgelaufen ({data.expired.length})
             </h2>
             {data.expired.map((voucher) => (
@@ -136,10 +136,10 @@ export default function VouchersPage() {
           (!data?.used || data.used.length === 0) &&
           (!data?.expired || data.expired.length === 0) && (
           <div className="text-center py-12">
-            <div className="w-12 h-12 rounded-full bg-s-ink/5 dark:bg-white/5 flex items-center justify-center mx-auto mb-3">
-              <Gift className="w-6 h-6 text-s-ink/30 dark:text-s-dm-text/30" />
+            <div className="w-12 h-12 rounded-full bg-s-ink/5 flex items-center justify-center mx-auto mb-3">
+              <Gift className="w-6 h-6 text-s-ink/30" />
             </div>
-            <p className="text-s-ink/60 dark:text-s-dm-text/60 text-sm">
+            <p className="text-s-ink/60 text-sm">
               Du hast noch keine Gutscheine. Bestelle einen als Geschenk!
             </p>
             <Link
@@ -153,10 +153,10 @@ export default function VouchersPage() {
 
         {/* Action section */}
         {(data?.active || data?.used || data?.expired) && (
-          <div className="mt-8 pt-6 border-t border-s-ink/5 dark:border-white/5">
+          <div className="mt-8 pt-6 border-t border-s-ink/5">
             <Link
               href={`/${locale}/vouchers`}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-btn border border-s-coral/20 dark:border-s-coral/40 bg-s-coral/5 dark:bg-s-coral/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-coral hover:border-s-coral/40 dark:hover:border-s-coral/60 hover:bg-s-coral/10 dark:hover:bg-s-coral/20 transition-[transform,filter] duration-150"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-btn border border-s-coral/20 bg-s-coral/5 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-coral hover:border-s-coral/40:border-s-coral/60 hover:bg-s-coral/10:bg-s-coral/20 transition-[transform,filter] duration-150"
             >
               Neuen Gutschein schenken
             </Link>
@@ -188,15 +188,15 @@ function VoucherCard({
 
   if (status === "active") {
     statusIcon = <Clock className="w-4 h-4" />;
-    statusColor = "border-s-amber/20 bg-s-amber/5 dark:bg-s-amber/10";
+    statusColor = "border-s-amber/20 bg-s-amber/5";
     statusLabel = daysUntilExpiry ? `${daysUntilExpiry} Tage` : "Gültig";
   } else if (status === "used") {
     statusIcon = <CheckCircle className="w-4 h-4" />;
-    statusColor = "border-s-success/20 bg-s-success/5 dark:bg-s-success/10";
+    statusColor = "border-s-success/20 bg-s-success/5";
     statusLabel = "Verwendet";
   } else {
     statusIcon = <X className="w-4 h-4" />;
-    statusColor = "border-s-ink/10 dark:border-white/10 bg-s-ink/5 dark:bg-white/5";
+    statusColor = "border-s-ink/10 bg-s-ink/5";
     statusLabel = "Abgelaufen";
   }
 
@@ -207,23 +207,23 @@ function VoucherCard({
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           {/* Recipient info */}
-          <p className="text-xs font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 dark:text-s-dm-text/40 mb-1">
+          <p className="text-xs font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mb-1">
             Für: {voucher.recipient_name}
           </p>
 
           {/* Salon name */}
           {salonName && (
-            <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text mb-2">
+            <p className="text-sm font-heading font-semibold text-s-ink mb-2">
               {salonName}
             </p>
           )}
 
           {/* Code and amount */}
           <div className="flex items-center justify-between mb-2">
-            <code className="text-xs font-mono font-bold text-s-ink/60 dark:text-s-dm-text/60 tracking-[.06em]">
+            <code className="text-xs font-mono font-bold text-s-ink/60 tracking-[.06em]">
               {voucher.code}
             </code>
-            <span className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text">
+            <span className="text-sm font-heading font-bold text-s-ink">
               {formatCurrency(voucher.amount, locale)}
             </span>
           </div>
@@ -237,7 +237,7 @@ function VoucherCard({
               <>
                 {status === "active" && <Clock className="w-3 h-3 text-s-amber" />}
                 {status === "used" && <CheckCircle className="w-3 h-3 text-s-success" />}
-                {status === "expired" && <X className="w-3 h-3 text-s-ink/40 dark:text-s-dm-text/40" />}
+                {status === "expired" && <X className="w-3 h-3 text-s-ink/40" />}
               </>
             )}
             <span
@@ -252,7 +252,7 @@ function VoucherCard({
 
           {/* Message */}
           {voucher.message && (
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 italic mt-2 line-clamp-2">
+            <p className="text-xs text-s-ink/50 italic mt-2 line-clamp-2">
               "{voucher.message}"
             </p>
           )}
@@ -261,10 +261,10 @@ function VoucherCard({
         {/* Remaining amount indicator */}
         {status === "used" && voucher.remaining_amount > 0 && (
           <div className="text-right shrink-0">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 dark:text-s-dm-text/40 mb-1">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mb-1">
               Verbleibend
             </p>
-            <p className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text">
+            <p className="text-sm font-heading font-bold text-s-ink">
               {formatCurrency(voucher.remaining_amount, locale)}
             </p>
           </div>

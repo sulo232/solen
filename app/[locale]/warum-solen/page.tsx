@@ -62,13 +62,13 @@ function Section({
 function MockChat() {
   const t = useTranslations("whySolen");
   return (
-    <div className="w-full max-w-xs mx-auto bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.08] overflow-hidden shadow-v5-float">
+    <div className="w-full max-w-xs mx-auto bg-white rounded-card border border-s-ink/[0.06] overflow-hidden shadow-v5-float">
       {/* Chat header */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-s-ink/5 dark:border-white/10">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-s-ink/5">
         <div className="w-8 h-8 rounded-full bg-s-coral/20 flex items-center justify-center text-s-coral text-xs font-heading font-bold">S</div>
         <div>
-          <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">Studio Bella</p>
-          <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">Online</p>
+          <p className="text-sm font-heading font-semibold text-s-ink">Studio Bella</p>
+          <p className="text-[10px] text-s-ink/40">Online</p>
         </div>
       </div>
       {/* Messages */}
@@ -79,7 +79,7 @@ function MockChat() {
           </div>
         </div>
         <div className="flex">
-          <div className="bg-s-bg-sunken dark:bg-white/10 text-s-ink dark:text-s-dm-text text-xs px-3 py-2 rounded-2xl rounded-bl-md max-w-[75%]">
+          <div className="bg-s-bg-sunken text-s-ink text-xs px-3 py-2 rounded-2xl rounded-bl-md max-w-[75%]">
             {t("chatReply")}
           </div>
         </div>
@@ -90,8 +90,8 @@ function MockChat() {
         </div>
       </div>
       {/* Input bar */}
-      <div className="flex items-center gap-2 px-3 py-2.5 border-t border-s-ink/5 dark:border-white/10">
-        <div className="flex-1 bg-s-bg-surface dark:bg-white/5 rounded-full px-3 py-1.5 text-xs text-s-ink/50 dark:text-s-dm-text/50">{t("chatInputPlaceholder")}</div>
+      <div className="flex items-center gap-2 px-3 py-2.5 border-t border-s-ink/5">
+        <div className="flex-1 bg-s-bg-surface rounded-full px-3 py-1.5 text-xs text-s-ink/50">{t("chatInputPlaceholder")}</div>
         <div className="w-7 h-7 rounded-full bg-s-coral flex items-center justify-center">
           <Send className="w-3.5 h-3.5 text-white" />
         </div>
@@ -111,25 +111,25 @@ function MockCompare() {
     { name: "Coiffeur Basel", rating: 4.2, price: 75, highlight: false },
   ];
   return (
-    <div className="w-full max-w-md mx-auto overflow-hidden rounded-[14px] border border-s-ink/[0.06] dark:border-white/[0.08]">
+    <div className="w-full max-w-md mx-auto overflow-hidden rounded-[14px] border border-s-ink/[0.06]">
       <div className="grid grid-cols-3 text-center">
         {salons.map((s, i) => (
           <div
             key={i}
-            className={`p-3 ${s.highlight ? "bg-s-coral/5 border-t-2 border-s-coral" : "bg-white dark:bg-s-dm-surface"} relative`}
+            className={`p-3 ${s.highlight ? "bg-s-coral/5 border-t-2 border-s-coral" : "bg-white"} relative`}
           >
             {s.highlight && (
               <span className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-full bg-s-coral text-white text-[8px] px-2 py-0.5 rounded-t-[6px] font-heading font-bold uppercase tracking-[.08em]">
                 {t("compareRecommendation")}
               </span>
             )}
-            <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">{s.name}</p>
+            <p className="text-xs font-heading font-semibold text-s-ink truncate">{s.name}</p>
             <div className="flex items-center justify-center gap-0.5 mt-1.5">
               <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-              <span className="text-xs data-text text-s-ink dark:text-s-dm-text">{s.rating}</span>
+              <span className="text-xs data-text text-s-ink">{s.rating}</span>
             </div>
-            <p className="text-sm data-text font-semibold text-s-ink dark:text-s-dm-text mt-1">{formatCurrency(s.price)}</p>
-            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">Balayage</p>
+            <p className="text-sm data-text font-semibold text-s-ink mt-1">{formatCurrency(s.price)}</p>
+            <p className="text-[10px] text-s-ink/40">Balayage</p>
           </div>
         ))}
       </div>
@@ -148,7 +148,7 @@ function MockMap() {
     { left: "40%", top: "65%", price: "ab CHF 52", color: "bg-s-amber" },
   ];
   return (
-    <div className="relative w-full max-w-md mx-auto h-64 rounded-[14px] overflow-hidden border border-s-coral/[0.15] dark:border-s-coral/[0.12]"
+    <div className="relative w-full max-w-md mx-auto h-64 rounded-[14px] overflow-hidden border border-s-coral/[0.15]"
       style={{ background: "linear-gradient(135deg, rgba(232,98,74,.07) 0%, rgba(250,236,231,.95) 100%)" }}>
       {/* Grid lines */}
       <div className="absolute inset-0 opacity-10">
@@ -181,19 +181,19 @@ export default function WarumSolenPage() {
   const t = useTranslations("whySolen");
 
   return (
-    <div className="min-h-screen bg-white dark:bg-s-dm-bg">
+    <div className="min-h-screen bg-white">
       {/* ── Section 0: Hero ── */}
       <section className="relative overflow-hidden py-20 sm:py-32">
         {/* Radial gradient background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(232,98,74,0.12)_0%,_transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,_rgba(232,98,74,0.08)_0%,_transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(232,98,74,0.12)_0%,_transparent_70%)]" />
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-coral mb-4">
             {t("heroEyebrow")}
           </p>
-          <h1 className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-s-ink dark:text-s-dm-text leading-tight">
+          <h1 className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-s-ink leading-tight">
             {t("heroTitle1")} <span className="text-s-coral">Solen</span> {t("heroTitle2")}
           </h1>
-          <p className="mt-4 text-xl sm:text-2xl text-s-ink/55 dark:text-s-dm-text/55 font-body max-w-xl mx-auto leading-relaxed">
+          <p className="mt-4 text-xl sm:text-2xl text-s-ink/55 font-body max-w-xl mx-auto leading-relaxed">
             {t("heroSubtitle")}
           </p>
           <button
@@ -207,7 +207,7 @@ export default function WarumSolenPage() {
       </section>
 
       {/* ── Section 1: Chat ── */}
-      <Section id="section-chat" className="bg-s-bg-surface dark:bg-s-dm-surface/40">
+      <Section id="section-chat" className="bg-s-bg-surface">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
@@ -217,12 +217,12 @@ export default function WarumSolenPage() {
                   <MessageCircle size={14} className="text-s-coral" />
                   <SolenExclusiveBadge featureDescription="Chatte direkt mit deinem Salon — nur bei Solen!" />
                 </div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t("chatEyebrow")}</p>
-                <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text">
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 mb-2">{t("chatEyebrow")}</p>
+                <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink">
                   {t("chatTitle")}
                 </h2>
               </div>
-              <div className="space-y-3 text-s-ink/60 dark:text-s-dm-text/60 font-body">
+              <div className="space-y-3 text-s-ink/60 font-body">
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                   {t("chatBullet1")}
@@ -243,23 +243,23 @@ export default function WarumSolenPage() {
       </Section>
 
       {/* ── Section 2: Photo Quoting ── */}
-      <Section className="bg-white dark:bg-s-dm-bg">
+      <Section className="bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* Animated demo */}
             <div className="flex flex-col items-center gap-4 order-2 md:order-1">
               <div className="relative">
                 {/* Photo frame */}
-                <div className="animate-photo-upload w-48 h-48 rounded-[12px] border-2 border-dashed border-s-amber/30 dark:border-s-amber/20 flex flex-col items-center justify-center gap-2"
+                <div className="animate-photo-upload w-48 h-48 rounded-[12px] border-2 border-dashed border-s-amber/30 flex flex-col items-center justify-center gap-2"
                   style={{ background: "linear-gradient(135deg, rgba(212,135,10,.08) 0%, rgba(212,135,10,.04) 100%)" }}>
                   <Camera className="w-8 h-8 text-s-amber" />
                   <p className="text-xs font-heading font-semibold text-s-amber">Foto hochgeladen</p>
                 </div>
                 {/* Price offer card */}
-                <div className="animate-price-appear absolute -bottom-4 -right-4 bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.08] px-4 py-3 w-44"
+                <div className="animate-price-appear absolute -bottom-4 -right-4 bg-white rounded-[12px] border border-s-ink/[0.06] px-4 py-3 w-44"
                   style={{ boxShadow: "0 2px 4px rgba(26,18,9,.08), 0 4px 16px rgba(26,18,9,.06)" }}>
-                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/45 dark:text-s-dm-text/45">Preisangebot</p>
-                  <p className="data-text font-bold text-xl text-s-ink dark:text-s-dm-text">CHF 120</p>
+                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/45">Preisangebot</p>
+                  <p className="data-text font-bold text-xl text-s-ink">CHF 120</p>
                   <p className="text-xs font-heading font-semibold text-s-coral">Balayage + Pflege</p>
                 </div>
               </div>
@@ -271,12 +271,12 @@ export default function WarumSolenPage() {
                   <Camera size={14} className="text-s-coral" />
                   <SolenExclusiveBadge featureDescription="Schick ein Foto und erhalte einen individuellen Preis!" />
                 </div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t("photoEyebrow")}</p>
-                <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text">
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 mb-2">{t("photoEyebrow")}</p>
+                <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink">
                   {t("photoTitle")}
                 </h2>
               </div>
-              <div className="space-y-3 text-s-ink/60 dark:text-s-dm-text/60 font-body">
+              <div className="space-y-3 text-s-ink/60 font-body">
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                   {t("photoBullet1")}
@@ -296,7 +296,7 @@ export default function WarumSolenPage() {
       </Section>
 
       {/* ── Section 3: Compare ── */}
-      <Section className="bg-s-bg-surface dark:bg-s-dm-surface/40">
+      <Section className="bg-s-bg-surface">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-3"
@@ -304,11 +304,11 @@ export default function WarumSolenPage() {
               <BarChart3 size={14} className="text-s-coral" />
               <SolenExclusiveBadge featureDescription="Vergleiche bis zu 3 Salons — nur bei Solen!" />
             </div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t("compareEyebrow")}</p>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 mb-2">{t("compareEyebrow")}</p>
+            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink mb-3">
               {t("compareTitle")}
             </h2>
-            <p className="text-s-ink/55 dark:text-s-dm-text/55 font-body max-w-md mx-auto">
+            <p className="text-s-ink/55 font-body max-w-md mx-auto">
               {t("compareDesc")}
             </p>
           </div>
@@ -317,7 +317,7 @@ export default function WarumSolenPage() {
       </Section>
 
       {/* ── Section 4: Stamps ── */}
-      <Section className="bg-white dark:bg-s-dm-bg">
+      <Section className="bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
@@ -327,12 +327,12 @@ export default function WarumSolenPage() {
                   <Star size={14} className="text-s-coral" />
                   <SolenExclusiveBadge featureDescription="Sammle Stempel bei jedem Besuch!" />
                 </div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t("loyaltyEyebrow")}</p>
-                <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text">
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 mb-2">{t("loyaltyEyebrow")}</p>
+                <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink">
                   {t("loyaltyTitle")}
                 </h2>
               </div>
-              <div className="space-y-3 text-s-ink/60 dark:text-s-dm-text/60 font-body">
+              <div className="space-y-3 text-s-ink/60 font-body">
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                   {t("loyaltyBullet1")}
@@ -361,7 +361,7 @@ export default function WarumSolenPage() {
       </Section>
 
       {/* ── Section 5: Map ── */}
-      <Section className="bg-s-bg-surface dark:bg-s-dm-surface/40">
+      <Section className="bg-s-bg-surface">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <MockMap />
@@ -372,12 +372,12 @@ export default function WarumSolenPage() {
                   <MapPin size={14} className="text-s-coral" />
                   <SolenExclusiveBadge featureDescription="Sieh Preise direkt auf der Karte!" />
                 </div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t("mapEyebrow")}</p>
-                <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text">
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 mb-2">{t("mapEyebrow")}</p>
+                <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink">
                   {t("mapTitle")}
                 </h2>
               </div>
-              <div className="space-y-3 text-s-ink/60 dark:text-s-dm-text/60 font-body">
+              <div className="space-y-3 text-s-ink/60 font-body">
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                   {t("mapBullet1")}

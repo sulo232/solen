@@ -18,9 +18,9 @@ export default function SpaIntake({ customerId }: SpaIntakeProps) {
       </p>
 
       {/* Confidentiality notice */}
-      <div className="flex items-start gap-2 rounded-[12px] border border-s-sage/20 bg-s-sage-subtle dark:bg-s-sage/10 p-3">
+      <div className="flex items-start gap-2 rounded-[12px] border border-s-sage/20 bg-s-sage-subtle p-3">
         <ShieldCheck size={14} className="text-s-sage shrink-0 mt-0.5" />
-        <p className="text-[10px] text-s-ink/50 dark:text-s-dm-text/50 italic leading-relaxed">
+        <p className="text-[10px] text-s-ink/50 italic leading-relaxed">
           {t("confidentiality_notice")}
         </p>
       </div>

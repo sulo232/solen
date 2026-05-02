@@ -111,11 +111,11 @@ export default function RespondAdjustmentPage() {
   const l = labels[locale as "de" | "en"] ?? labels.de;
 
   return (
-    <div className="min-h-screen bg-s-bg-surface dark:bg-s-dm-bg flex items-center justify-center p-4">
+    <div className="min-h-screen bg-s-bg-surface flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md max-w-md w-full p-6"
+        className="bg-white rounded-[12px] shadow-warm-md max-w-md w-full p-6"
       >
         {loading ? (
           <div className="flex justify-center py-12"><Spinner size="lg" /></div>
@@ -126,10 +126,10 @@ export default function RespondAdjustmentPage() {
                 ? <Check size={24} className="text-s-coral" />
                 : <X size={24} className="text-s-coral" />}
             </div>
-            <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text mb-2">
+            <h2 className="font-heading font-bold text-lg text-s-ink mb-2">
               {result === "approved" ? l.approved : l.disputed}
             </h2>
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">
+            <p className="text-sm text-s-ink/50 mb-6">
               {result === "approved" ? l.approvedDesc : l.disputedDesc}
             </p>
             <button onClick={() => router.push(`/${locale}/dashboard`)}
@@ -139,8 +139,8 @@ export default function RespondAdjustmentPage() {
           </div>
         ) : !dispute || (dispute.status !== "pending" && !isExpired) ? (
           <div className="text-center py-8">
-            <Receipt size={28} className="mx-auto mb-3 text-s-ink/20 dark:text-s-dm-text/20" />
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">{l.noDispute}</p>
+            <Receipt size={28} className="mx-auto mb-3 text-s-ink/20" />
+            <p className="text-sm text-s-ink/50">{l.noDispute}</p>
             <button onClick={() => router.back()}
               className="mt-4 text-sm text-s-coral flex items-center gap-1 mx-auto">
               <ArrowLeft size={14} /> {l.back}
@@ -148,8 +148,8 @@ export default function RespondAdjustmentPage() {
           </div>
         ) : isExpired ? (
           <div className="text-center py-8">
-            <Clock size={28} className="mx-auto mb-3 text-s-ink/20 dark:text-s-dm-text/20" />
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">{l.expired}</p>
+            <Clock size={28} className="mx-auto mb-3 text-s-ink/20" />
+            <p className="text-sm text-s-ink/50">{l.expired}</p>
             <button onClick={() => router.push(`/${locale}/dashboard`)}
               className="mt-4 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium">
               {l.backDashboard}
@@ -162,43 +162,43 @@ export default function RespondAdjustmentPage() {
                 <AlertTriangle size={18} className="text-s-amber" />
               </div>
               <div>
-                <h1 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{l.title}</h1>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
+                <h1 className="font-heading font-bold text-lg text-s-ink">{l.title}</h1>
+                <p className="text-xs text-s-ink/40">
                   {dispute.salon_name && `${dispute.salon_name} · `}
                   {dispute.service_name ?? "Service"}
                 </p>
               </div>
             </div>
 
-            <div className="bg-s-bg-surface dark:bg-s-dm-bg rounded-[12px] p-4 mb-4 space-y-3">
+            <div className="bg-s-bg-surface rounded-[12px] p-4 mb-4 space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-s-ink/50 dark:text-s-dm-text/50">{l.original}</span>
-                <span className="data-text font-bold text-s-ink dark:text-s-dm-text">{formatCurrency(dispute.original_amount, locale)}</span>
+                <span className="text-s-ink/50">{l.original}</span>
+                <span className="data-text font-bold text-s-ink">{formatCurrency(dispute.original_amount, locale)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-s-ink/50 dark:text-s-dm-text/50">{l.adjusted}</span>
+                <span className="text-s-ink/50">{l.adjusted}</span>
                 <span className="data-text font-bold text-s-coral">{formatCurrency(dispute.requested_amount, locale)}</span>
               </div>
-              <div className="border-t border-s-ink/10 dark:border-s-dm-text/10 pt-2 flex justify-between text-sm">
-                <span className="text-s-ink/50 dark:text-s-dm-text/50">{l.difference}</span>
+              <div className="border-t border-s-ink/10 pt-2 flex justify-between text-sm">
+                <span className="text-s-ink/50">{l.difference}</span>
                 <span className="data-text font-bold text-s-coral">+{formatCurrency(diff, locale)} (+{diffPercent}%)</span>
               </div>
             </div>
 
             <div className="mb-4">
-              <p className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-1">{l.reason}</p>
-              <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 bg-s-bg-surface dark:bg-s-dm-bg rounded-btn px-3 py-2">{dispute.salon_reason}</p>
+              <p className="text-xs font-medium text-s-ink/40 uppercase tracking-wide mb-1">{l.reason}</p>
+              <p className="text-sm text-s-ink/70 bg-s-bg-surface rounded-btn px-3 py-2">{dispute.salon_reason}</p>
             </div>
 
             <div className="mb-4">
-              <p className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-1">{l.yourResponse}</p>
+              <p className="text-xs font-medium text-s-ink/40 uppercase tracking-wide mb-1">{l.yourResponse}</p>
               <textarea
                 value={responseText}
                 onChange={(e) => setResponseText(e.target.value)}
                 placeholder={l.responsePlaceholder}
                 maxLength={500}
                 rows={2}
-                className="w-full text-sm rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-s-bg-sunken dark:bg-s-dm-bg px-3 py-2 text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="w-full text-sm rounded-btn border border-s-ink/10 bg-s-bg-sunken px-3 py-2 text-s-ink placeholder:text-s-ink/30:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               />
             </div>
 

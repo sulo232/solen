@@ -115,15 +115,15 @@ export default function TimeSelectionStep({ salonId }: TimeSelectionStepProps) {
         <button
           onClick={handleBack}
           aria-label={t('back')}
-          className="p-2 rounded-pill hover:bg-s-ink/[0.04] dark:hover:bg-white/[0.04] transition-colors"
+          className="p-2 rounded-pill hover:bg-s-ink/[0.04]:bg-white/[0.04] transition-colors"
         >
-          <ChevronLeft size={20} className="text-s-ink dark:text-s-dm-text" />
+          <ChevronLeft size={20} className="text-s-ink" />
         </button>
         <div>
-          <h2 className="text-2xl font-display font-bold text-s-ink dark:text-s-dm-text">
+          <h2 className="text-2xl font-display font-bold text-s-ink">
             {t('title')}
           </h2>
-          <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-1">
+          <p className="text-sm text-s-ink/60 mt-1">
             {formData.selectedDate?.toLocaleDateString()}
           </p>
         </div>
@@ -135,18 +135,18 @@ export default function TimeSelectionStep({ salonId }: TimeSelectionStepProps) {
         </div>
       ) : error ? (
         <div className="text-center py-8">
-          <p className="text-s-ink/60 dark:text-s-dm-text/60">{error}</p>
+          <p className="text-s-ink/60">{error}</p>
         </div>
       ) : timeGroups.length === 0 ? (
         <div className="text-center py-8">
-          <Clock size={40} className="mx-auto text-s-ink/20 dark:text-s-dm-text/20 mb-3" />
-          <p className="text-s-ink/60 dark:text-s-dm-text/60">{t('noSlotsAvailable')}</p>
+          <Clock size={40} className="mx-auto text-s-ink/20 mb-3" />
+          <p className="text-s-ink/60">{t('noSlotsAvailable')}</p>
         </div>
       ) : (
         <div className="space-y-6">
           {timeGroups.map((group) => (
             <div key={group.label}>
-              <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 dark:text-s-dm-text/40 mb-3">
+              <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-3">
                 {group.label}
               </p>
               <div className="grid grid-cols-3 gap-2">
@@ -157,7 +157,7 @@ export default function TimeSelectionStep({ salonId }: TimeSelectionStepProps) {
                     className={`py-3 rounded-[12px] border text-sm font-heading font-semibold transition-[border-color,background-color] duration-150 ${
                       formData.selectedTime === slot.time
                         ? 'bg-s-coral border-s-coral text-white'
-                        : 'border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text hover:border-s-coral/40 bg-[--raised] dark:bg-s-dm-surface'
+                        : 'border-s-ink/[0.08] text-s-ink hover:border-s-coral/40 bg-[--raised]'
                     }`}
                   >
                     {slot.time}
@@ -170,11 +170,11 @@ export default function TimeSelectionStep({ salonId }: TimeSelectionStepProps) {
       )}
 
       {/* Bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] dark:border-white/[0.08] bg-[--raised] dark:bg-s-dm-surface p-4">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] bg-[--raised] p-4">
         <div className="max-w-2xl mx-auto px-4 flex gap-3">
           <button
             onClick={handleBack}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>

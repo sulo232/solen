@@ -103,7 +103,7 @@ export default function ServicesStaffStep({
           const categoryServices = services.filter((s) => s.category === category);
           return (
             <div key={category}>
-              <h3 className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 dark:text-s-dm-text/40 mb-3">
+              <h3 className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-3">
                 {category}
               </h3>
               <div className="space-y-2">
@@ -115,8 +115,8 @@ export default function ServicesStaffStep({
                       onClick={() => handleSelectService(service)}
                       className={`w-full flex items-start gap-3 p-4 rounded-input border-2 transition-[border-color,background-color] duration-200 ${
                         isSelected
-                          ? 'border-s-coral bg-s-coral/[0.12] dark:bg-s-coral/[0.08]'
-                          : 'border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-coral/30 bg-[--raised] dark:bg-s-dm-surface'
+                          ? 'border-s-coral bg-s-coral/[0.12]'
+                          : 'border-s-ink/[0.08] hover:border-s-coral/30 bg-[--raised]'
                       }`}
                     >
                       {/* Checkbox */}
@@ -124,7 +124,7 @@ export default function ServicesStaffStep({
                         className={`shrink-0 w-5 h-5 rounded-[6px] border-2 flex items-center justify-center transition-[border-color,background-color] mt-0.5 ${
                           isSelected
                             ? 'bg-s-coral border-s-coral'
-                            : 'border-s-ink/20 dark:border-white/20'
+                            : 'border-s-ink/20'
                         }`}
                       >
                         {isSelected && (
@@ -142,17 +142,17 @@ export default function ServicesStaffStep({
 
                       {/* Service details */}
                       <div className="flex-1 min-w-0 text-left">
-                        <h4 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">
+                        <h4 className="font-heading font-semibold text-sm text-s-ink">
                           {locale === 'en' ? service.name_en : service.name_de}
                         </h4>
-                        <span className="inline-block mt-1 bg-s-ink/[0.05] dark:bg-white/[0.06] text-xs text-s-ink/50 dark:text-s-dm-text/50 px-2 py-0.5 rounded-full">
+                        <span className="inline-block mt-1 bg-s-ink/[0.05] text-xs text-s-ink/50 px-2 py-0.5 rounded-full">
                           {service.duration_minutes} {t('minutes')}
                         </span>
                       </div>
 
                       {/* Price */}
                       <div className="text-right shrink-0">
-                        <p className="font-body font-bold text-base text-s-ink dark:text-s-dm-text tabular-nums">
+                        <p className="font-body font-bold text-base text-s-ink tabular-nums">
                           {formatCurrency(service.price, locale)}
                         </p>
                       </div>
@@ -174,8 +174,8 @@ export default function ServicesStaffStep({
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
           >
-            <div className="border-t border-s-ink/[0.06] dark:border-white/[0.08] pt-5">
-              <p className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40 mb-3 px-1">
+            <div className="border-t border-s-ink/[0.06] pt-5">
+              <p className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 mb-3 px-1">
                 {tStaff('title')}
               </p>
               <StaffPicker
@@ -194,13 +194,13 @@ export default function ServicesStaffStep({
       )}
 
       {/* Bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] dark:border-white/[0.08] bg-[--raised] dark:bg-s-dm-surface p-4 space-y-3 z-40">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] bg-[--raised] p-4 space-y-3 z-40">
         <div className="max-w-2xl mx-auto px-4 flex justify-between items-center">
           <div>
-            <p className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50">
+            <p className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/50">
               {formData.services.length} {t('selected')}
             </p>
-            <p className="font-body font-bold text-xl text-s-ink dark:text-s-dm-text tabular-nums">
+            <p className="font-body font-bold text-xl text-s-ink tabular-nums">
               {formatCurrency(formData.totalPrice, locale)}
             </p>
           </div>

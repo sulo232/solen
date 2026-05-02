@@ -34,7 +34,7 @@ export default function StaffAvailability({ staffId, locale }: StaffAvailability
     return (
       <div className="flex gap-3 overflow-x-auto no-scrollbar py-2 animate-pulse mt-4">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="min-w-[110px] h-[90px] rounded-[12px] bg-s-ink/5 dark:bg-white/5" />
+          <div key={i} className="min-w-[110px] h-[90px] rounded-[12px] bg-s-ink/5" />
         ))}
       </div>
     );
@@ -47,7 +47,7 @@ export default function StaffAvailability({ staffId, locale }: StaffAvailability
 
   return (
     <div className="mt-6 mb-2">
-      <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mb-3">
+      <h3 className="font-heading font-semibold text-sm text-s-ink mb-3">
         {locale === "de" ? "Verfügbarkeit" : "Availability"}
       </h3>
       <div className="flex gap-3 items-stretch overflow-x-auto no-scrollbar pb-2">
@@ -62,21 +62,21 @@ export default function StaffAvailability({ staffId, locale }: StaffAvailability
               className={`shrink-0 min-w-[110px] p-3 rounded-[12px] border transition-[background-color,border-color,box-shadow] ${
                 daySchedule
                   ? "border-s-coral/30 bg-s-coral/5"
-                  : "border-s-ink/5 dark:border-white/5 bg-s-bg-sunken dark:bg-s-dm-bg opacity-60"
+                  : "border-s-ink/5 bg-s-bg-sunken opacity-60"
               }`}
             >
-              <p className="text-xs font-heading font-bold text-s-ink dark:text-s-dm-text capitalize mb-1">
+              <p className="text-xs font-heading font-bold text-s-ink capitalize mb-1">
                 {format(date, "EEEE", { locale: dateLocale })}
               </p>
-              <p className="text-[10px] text-s-ink/50 dark:text-s-dm-text/50 uppercase tracking-widest font-heading mb-2">
+              <p className="text-[10px] text-s-ink/50 uppercase tracking-widest font-heading mb-2">
                 {format(date, "dd MMM", { locale: dateLocale })}
               </p>
               {daySchedule ? (
-                <p className="text-xs font-medium text-s-green dark:text-s-green/80 truncate">
+                <p className="text-xs font-medium text-s-green truncate">
                   {daySchedule.start_time.slice(0, 5)} - {daySchedule.end_time.slice(0, 5)}
                 </p>
               ) : (
-                <p className="text-[11px] text-s-ink/30 dark:text-s-dm-text/30">
+                <p className="text-[11px] text-s-ink/30">
                   {locale === "de" ? "Nicht verfügbar" : "Unavailable"}
                 </p>
               )}

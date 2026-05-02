@@ -112,8 +112,8 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
 
   if (loading) {
     return (
-      <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface p-4">
-        <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 text-center py-4">
+      <div className="rounded-[12px] border border-s-ink/[0.06] bg-white p-4">
+        <p className="text-sm text-s-ink/40 text-center py-4">
           {t("loading")}
         </p>
       </div>
@@ -121,7 +121,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
   }
 
   return (
-    <div className="w-full lg:max-w-xl rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface p-4">
+    <div className="w-full lg:max-w-xl rounded-[12px] border border-s-ink/[0.06] bg-white p-4">
       <div className="flex items-center justify-between mb-4">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
           {t("live_queue")}
@@ -132,7 +132,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
       </div>
 
       {queue.length === 0 ? (
-        <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 text-center py-6">
+        <p className="text-sm text-s-ink/40 text-center py-6">
           {t("queue_empty")}
         </p>
       ) : (
@@ -140,9 +140,9 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
           {queue.map((entry, i) => (
             <div
               key={entry.id}
-              className="flex items-center gap-3 py-3 border-b border-s-ink/[0.04] dark:border-s-dm-text/[0.04] last:border-0"
+              className="flex items-center gap-3 py-3 border-b border-s-ink/[0.04] last:border-0"
             >
-              <span className="text-sm data-text font-bold text-s-ink/40 dark:text-s-dm-text/40 w-6 text-center">
+              <span className="text-sm data-text font-bold text-s-ink/40 w-6 text-center">
                 #{i + 1}
               </span>
               <div
@@ -151,16 +151,16 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                 }`}
               />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">
+                <p className="text-sm font-heading font-semibold text-s-ink truncate">
                   {entry.customer_name}
                 </p>
-                <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+                <p className="text-[10px] text-s-ink/40">
                   {entry.preferred_barber_id
                     ? t("preferred_barber")
                     : t("any_barber")}
                 </p>
               </div>
-              <span className="text-xs data-text text-s-ink/50 dark:text-s-dm-text/50 shrink-0">
+              <span className="text-xs data-text text-s-ink/50 shrink-0">
                 {entry.estimated_wait_minutes ?? "?"} min
               </span>
 
@@ -187,7 +187,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                 )}
                 <button
                   onClick={() => updateStatus(entry.id, "no_show")}
-                  className="p-1.5 rounded-[8px] bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors duration-150"
+                  className="p-1.5 rounded-[8px] bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 transition-colors duration-150"
                   aria-label={t("no_show")}
                   title={t("no_show")}
                 >
@@ -195,7 +195,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                 </button>
                 <button
                   onClick={() => updateStatus(entry.id, "cancelled")}
-                  className="p-1.5 rounded-[8px] bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors duration-150"
+                  className="p-1.5 rounded-[8px] bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 transition-colors duration-150"
                   aria-label={t("cancel")}
                   title={t("cancel")}
                 >

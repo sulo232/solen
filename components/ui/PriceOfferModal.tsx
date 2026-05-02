@@ -48,7 +48,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
       <div className="space-y-4">
         {/* Description */}
         <div>
-          <label htmlFor="offer-description" className="block text-sm font-medium text-s-ink dark:text-s-dm-text mb-1">
+          <label htmlFor="offer-description" className="block text-sm font-medium text-s-ink mb-1">
             {t("description")}
           </label>
           <input
@@ -57,18 +57,18 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder={t("descPlaceholder")}
-            className="w-full px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-input bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+            className="w-full px-3 py-2 text-sm border border-s-ink/10 rounded-input bg-white focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
             autoFocus
           />
         </div>
 
         {/* Price */}
         <div>
-          <label htmlFor="offer-amount" className="block text-sm font-medium text-s-ink dark:text-s-dm-text mb-1">
+          <label htmlFor="offer-amount" className="block text-sm font-medium text-s-ink mb-1">
             {t("price")}
           </label>
           <div className="relative">
-            <DollarSign size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30" />
+            <DollarSign size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
             <input
               id="offer-amount"
               type="number"
@@ -77,7 +77,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full pl-8 pr-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-input bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+              className="w-full pl-8 pr-3 py-2 text-sm border border-s-ink/10 rounded-input bg-white focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
             />
           </div>
         </div>
@@ -89,7 +89,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
         <div className="flex gap-3 justify-end pt-2">
           <button
             onClick={handleClose}
-            className="px-4 py-2 text-sm rounded-pill border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors duration-150"
+            className="px-4 py-2 text-sm rounded-pill border border-s-ink/10 text-s-ink/60 hover:text-s-ink:text-s-dm-text transition-colors duration-150"
           >
             {t("cancel")}
           </button>

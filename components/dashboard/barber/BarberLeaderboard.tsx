@@ -67,7 +67,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
 
   const getRankIcon = (rank: number) => {
     if (rank === 0) return <Trophy size={14} className="text-s-amber" />;
-    if (rank === 1) return <Medal size={14} className="text-s-ink/40 dark:text-s-dm-text/40" />;
+    if (rank === 1) return <Medal size={14} className="text-s-ink/40" />;
     if (rank === 2) return <Medal size={14} className="text-s-sand" />;
     return null;
   };
@@ -81,18 +81,18 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   }));
 
   return (
-    <div className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
+    <div className="rounded-[16px] bg-white border border-s-ink/5 p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Trophy size={18} className="text-s-amber" />
-          <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">{t("title")}</h3>
+          <h3 className="font-heading text-sm font-bold text-s-ink">{t("title")}</h3>
         </div>
         <div className="flex items-center gap-2">
           {/* View mode toggle */}
           <button
             onClick={() => setViewMode(viewMode === "table" ? "chart" : "table")}
             aria-pressed={viewMode === "chart"}
-            className="p-1.5 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors duration-150"
+            className="p-1.5 rounded-btn text-s-ink/40 hover:bg-s-bg-surface:bg-s-dm-bg transition-colors duration-150"
             title={viewMode === "table" ? t("view_chart") : t("view_table")}
             aria-label={viewMode === "table" ? t("view_chart") : t("view_table")}
           >
@@ -102,14 +102,14 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           <button
             onClick={() => setAnonymized(!anonymized)}
             aria-pressed={anonymized}
-            className="p-1.5 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors duration-150"
+            className="p-1.5 rounded-btn text-s-ink/40 hover:bg-s-bg-surface:bg-s-dm-bg transition-colors duration-150"
             title={anonymized ? t("show_names") : t("anonymize")}
             aria-label={anonymized ? t("show_names") : t("anonymize")}
           >
             {anonymized ? <EyeOff size={14} /> : <Eye size={14} />}
           </button>
           {/* Period toggle */}
-          <div className="flex rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden">
+          <div className="flex rounded-btn border border-s-ink/10 overflow-hidden">
             {(["week", "month"] as Period[]).map((p) => (
               <button
                 key={p}
@@ -118,7 +118,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
                 className={`px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                   period === p
                     ? "bg-s-coral text-white"
-                    : "text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg"
+                    : "text-s-ink/50 hover:bg-s-bg-surface:bg-s-dm-bg"
                 }`}
               >
                 {p === "week" ? t("week") : t("month")}
@@ -129,9 +129,9 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
       </div>
 
       {loading ? (
-        <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("loading")}</div>
+        <div className="py-8 text-center text-sm text-s-ink/40">{t("loading")}</div>
       ) : stats.length === 0 ? (
-        <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("no_data")}</div>
+        <div className="py-8 text-center text-sm text-s-ink/40">{t("no_data")}</div>
       ) : viewMode === "chart" ? (
         /* ═══ CHART VIEW ═══ */
         <div>
@@ -144,7 +144,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
                 className={`px-2 py-1 rounded-btn text-xs whitespace-nowrap transition-colors duration-150 ${
                   sortBy === col.key
                     ? "bg-s-coral/10 text-s-coral font-medium"
-                    : "text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text"
+                    : "text-s-ink/40 hover:text-s-ink:text-s-dm-text"
                 }`}
               >
                 {col.label}
@@ -170,14 +170,14 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-s-ink/5 dark:border-s-dm-text/5">
-                <th className="text-left py-2 text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 pr-4">#</th>
-                <th className="text-left py-2 text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 pr-4">{t("barber")}</th>
+              <tr className="border-b border-s-ink/5">
+                <th className="text-left py-2 text-xs font-medium text-s-ink/50 pr-4">#</th>
+                <th className="text-left py-2 text-xs font-medium text-s-ink/50 pr-4">{t("barber")}</th>
                 {columns.map((col) => (
                   <th
                     key={col.key}
                     onClick={() => setSortBy(col.key)}
-                    className="text-right py-2 text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 cursor-pointer hover:text-s-ink dark:hover:text-s-dm-text pr-3 whitespace-nowrap"
+                    className="text-right py-2 text-xs font-medium text-s-ink/50 cursor-pointer hover:text-s-ink:text-s-dm-text pr-3 whitespace-nowrap"
                   >
                     <span className="inline-flex items-center gap-1">
                       {col.label}
@@ -189,17 +189,17 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
             </thead>
             <tbody>
               {sorted.map((barber, i) => (
-                <tr key={barber.staff_id} className="border-b border-s-ink/5 dark:border-s-dm-text/5 last:border-0">
+                <tr key={barber.staff_id} className="border-b border-s-ink/5 last:border-0">
                   <td className="py-2.5 pr-4">
                     <span className="inline-flex items-center gap-1">
-                      {getRankIcon(i) ?? <span className="text-s-ink/40 dark:text-s-dm-text/40 font-medium">{i + 1}</span>}
+                      {getRankIcon(i) ?? <span className="text-s-ink/40 font-medium">{i + 1}</span>}
                     </span>
                   </td>
-                  <td className="py-2.5 text-s-ink dark:text-s-dm-text pr-4 font-medium whitespace-nowrap">
+                  <td className="py-2.5 text-s-ink pr-4 font-medium whitespace-nowrap">
                     {getDisplayName(barber, i)}
                   </td>
                   {columns.map((col) => (
-                    <td key={col.key} className="py-2.5 text-right text-s-ink/70 dark:text-s-dm-text/70 pr-3 tabular-nums whitespace-nowrap">
+                    <td key={col.key} className="py-2.5 text-right text-s-ink/70 pr-3 tabular-nums whitespace-nowrap">
                       {col.format(barber[col.key] as number)}
                     </td>
                   ))}

@@ -89,7 +89,7 @@ export default function HomeSearchBar() {
     <form onSubmit={handleSubmit} className="w-full" role="search" aria-label={t("formLabel")}>
       {/* Unified pill capsule — Airbnb-style single bar */}
       <div
-        className="flex items-center bg-white dark:bg-s-dm-raised overflow-hidden"
+        className="flex items-center bg-white overflow-hidden"
         style={{
           borderRadius: "50px",
           border: "1px solid rgba(26,18,9,0.10)",
@@ -98,27 +98,27 @@ export default function HomeSearchBar() {
       >
         {/* Field 1: Service input */}
         <div className="relative flex-1 min-w-0 flex items-center">
-          <Search size={16} className="absolute left-5 text-s-ink/35 dark:text-s-dm-text/35 pointer-events-none shrink-0" aria-hidden="true" />
+          <Search size={16} className="absolute left-5 text-s-ink/35 pointer-events-none shrink-0" aria-hidden="true" />
           <input
             type="text"
             value={query}
             onChange={(e) => { setQuery(e.target.value); setSelectedCategory(null); }}
             placeholder={t("servicePlaceholder")}
             aria-label={t("servicePlaceholder")}
-            className={`w-full py-4 pl-11 pr-3 text-[14px] font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/35 dark:placeholder:text-s-dm-text/40 bg-transparent focus:outline-none ${categoryHint ? "placeholder:text-s-coral/60" : ""}`}
+            className={`w-full py-4 pl-11 pr-3 text-[14px] font-body text-s-ink placeholder:text-s-ink/35:text-s-dm-text/40 bg-transparent focus:outline-none ${categoryHint ? "placeholder:text-s-coral/60" : ""}`}
           />
         </div>
 
         {/* Divider */}
-        <div className="w-px h-6 bg-s-ink/[0.10] dark:bg-white/[0.10] shrink-0" aria-hidden="true" />
+        <div className="w-px h-6 bg-s-ink/[0.10] shrink-0" aria-hidden="true" />
 
         {/* Field 2: City dropdown */}
         <div className="relative w-36 shrink-0 flex items-center">
-          <MapPin size={14} className="absolute left-4 text-s-ink/35 dark:text-s-dm-text/35 pointer-events-none" aria-hidden="true" />
+          <MapPin size={14} className="absolute left-4 text-s-ink/35 pointer-events-none" aria-hidden="true" />
           <select
             value={selectedCity || ""}
             onChange={(e) => setSelectedCity(e.target.value || null)}
-            className="w-full py-4 pl-9 pr-6 text-[14px] font-body font-medium text-s-ink dark:text-s-dm-text bg-transparent appearance-none focus:outline-none cursor-pointer"
+            className="w-full py-4 pl-9 pr-6 text-[14px] font-body font-medium text-s-ink bg-transparent appearance-none focus:outline-none cursor-pointer"
             aria-label={t("cityLabel")}
           >
             <option value="" className="text-s-ink">{t("allSwitzerland")}</option>
@@ -136,7 +136,7 @@ export default function HomeSearchBar() {
         </div>
 
         {/* Divider */}
-        <div className="w-px h-6 bg-s-ink/[0.10] dark:bg-white/[0.10] shrink-0 hidden md:block" aria-hidden="true" />
+        <div className="w-px h-6 bg-s-ink/[0.10] shrink-0 hidden md:block" aria-hidden="true" />
 
         {/* Field 3: Date picker (desktop only) */}
         <div className="hidden md:flex items-center w-44 shrink-0 pl-1 pr-2">

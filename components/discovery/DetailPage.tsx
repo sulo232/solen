@@ -56,7 +56,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
       {/* Back button */}
       <button
         onClick={() => window.history.back()}
-        className="flex items-center gap-1.5 text-sm text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text mb-4 transition-colors"
+        className="flex items-center gap-1.5 text-sm text-s-ink/50 hover:text-s-ink:text-s-dm-text mb-4 transition-colors"
       >
         <ArrowLeft size={16} />
         <span>{dt.back}</span>
@@ -110,7 +110,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
             />
           </div>
         ) : (
-          <div className="aspect-[3/4] flex items-center justify-center text-s-ink/20 dark:text-s-dm-text/20">
+          <div className="aspect-[3/4] flex items-center justify-center text-s-ink/20">
             {dt.noMedia}
           </div>
         )}
@@ -129,13 +129,13 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
             : item.content_type
         } />
         {item.author_name && (
-          <span className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+          <span className="text-xs text-s-ink/50">
             {item.author_url ? (
               <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="hover:text-s-coral transition-colors">@{item.author_name}</a>
             ) : `@${item.author_name}`}
           </span>
         )}
-        <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">{formatDate(item.created_at, locale)}</span>
+        <span className="text-xs text-s-ink/30">{formatDate(item.created_at, locale)}</span>
       </motion.div>
 
       {/* ═══ Section 2: Actions Bar ═══ */}
@@ -150,12 +150,12 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
       {/* ═══ Section 3: Title + Tags ═══ */}
       <div className="mt-4 px-1">
         {item.style_name && (
-          <h1 className="text-xl font-heading font-bold text-s-ink dark:text-s-dm-text">{item.style_name}</h1>
+          <h1 className="text-xl font-heading font-bold text-s-ink">{item.style_name}</h1>
         )}
         {item.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-2">
             {item.tags.map((tag) => (
-              <span key={tag} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60">
+              <span key={tag} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink/60">
                 #{tag}
               </span>
             ))}
@@ -203,14 +203,14 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
         <div className="mt-6 px-1">
           <button
             onClick={() => setShowCutGuide(!showCutGuide)}
-            className="flex items-center gap-1.5 text-xs text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+            className="flex items-center gap-1.5 text-xs text-s-ink/40 hover:text-s-ink:text-s-dm-text transition-colors"
           >
             <ChevronDown size={14} className={`transition-transform ${showCutGuide ? "rotate-180" : ""}`} />
             {dt.cutGuide}
           </button>
           {showCutGuide && (
-            <div className="mt-2 p-4 rounded-[16px] bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
-              <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 font-mono leading-relaxed whitespace-pre-line">
+            <div className="mt-2 p-4 rounded-[16px] bg-s-bg-surface border border-s-ink/5">
+              <p className="text-xs text-s-ink/60 font-mono leading-relaxed whitespace-pre-line">
                 {item.cut_guide}
               </p>
             </div>

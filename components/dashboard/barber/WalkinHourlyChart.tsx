@@ -54,17 +54,17 @@ export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
   const maxCount = Math.max(...data.map((d) => d.count), 1);
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+    <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-[8px] bg-s-blue/10 flex items-center justify-center">
             <Clock size={13} className="text-s-blue" />
           </div>
           <div>
-            <p className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text">
+            <p className="text-sm font-heading font-bold text-s-ink">
               {t("hourlyTitle")}
             </p>
-            <p className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35">
+            <p className="text-[10px] text-s-ink/35">
               {t("hourlySubtitle")}
             </p>
           </div>
@@ -77,7 +77,7 @@ export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
       </div>
 
       {loading ? (
-        <div className="h-[160px] animate-pulse bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[8px]" />
+        <div className="h-[160px] animate-pulse bg-s-ink/[0.04] rounded-[8px]" />
       ) : (
         <ResponsiveContainer width="100%" height={160}>
           <BarChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>

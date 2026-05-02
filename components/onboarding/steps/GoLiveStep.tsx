@@ -36,22 +36,22 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
           <Rocket size={22} className="text-s-coral" />
         </div>
         <div>
-          <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">
+          <h2 className="font-heading font-bold text-xl text-s-ink">
             {t("goLive.title")}
           </h2>
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/50">
+          <p className="text-sm text-s-ink/40">
             {t("goLive.subtitle")}
           </p>
         </div>
       </div>
 
       {/* Checklist */}
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 space-y-3">
-        <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+      <div className="bg-white rounded-[12px] border border-s-ink/5 p-6 space-y-3">
+        <p className="text-xs font-medium text-s-ink/50 mb-2">
           {t("goLive.checklist")} — {completedCount}/{steps.length}
         </p>
         {steps.map((step, i) => (
@@ -59,18 +59,18 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
             key={step.key} 
             onClick={() => goTo(i)}
             disabled={step.key === "go_live"}
-            className="w-full flex items-center justify-between group hover:bg-s-bg-sunken dark:hover:bg-s-dm-raised p-2 -mx-2 rounded-lg transition-colors cursor-pointer disabled:cursor-default disabled:hover:bg-transparent"
+            className="w-full flex items-center justify-between group hover:bg-s-bg-sunken:bg-s-dm-raised p-2 -mx-2 rounded-lg transition-colors cursor-pointer disabled:cursor-default disabled:hover:bg-transparent"
           >
             <div className="flex items-center gap-3">
               <div className={[
                 "w-6 h-6 rounded-full flex items-center justify-center transition-colors",
-                step.complete ? "bg-s-coral/10 dark:bg-s-coral/20" : "bg-s-bg-sunken dark:bg-s-dm-raised group-hover:bg-s-ink/5",
+                step.complete ? "bg-s-coral/10" : "bg-s-bg-sunken group-hover:bg-s-ink/5",
               ].join(" ")}>
                 {step.complete
                   ? <Check size={12} className="text-s-coral" strokeWidth={3} />
-                  : <X size={12} className="text-s-ink/20 dark:text-s-dm-text/20" />}
+                  : <X size={12} className="text-s-ink/20" />}
               </div>
-              <p className={["text-sm", step.complete ? "text-s-ink dark:text-s-dm-text" : "text-s-ink/40 dark:text-s-dm-text/40"].join(" ")}>
+              <p className={["text-sm", step.complete ? "text-s-ink" : "text-s-ink/40"].join(" ")}>
                 {t(`setup.steps.${step.key}` as any)}
               </p>
             </div>
@@ -79,7 +79,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
       </div>
 
       {!isCoreReady && (
-        <div className="bg-s-warning-bg dark:bg-s-warning-bg/20 border border-s-warning/30 rounded-[12px] px-4 py-3 flex items-center gap-2">
+        <div className="bg-s-warning-bg border border-s-warning/30 rounded-[12px] px-4 py-3 flex items-center gap-2">
           <AlertTriangle size={16} className="text-s-warning shrink-0" />
           <p className="text-sm text-s-warning">
             {t("goLive.warning")}
@@ -92,7 +92,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-s-dm-bg/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm"
         >
           <motion.div
             initial={{ y: 20 }}
@@ -106,10 +106,10 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
             >
               <PartyPopper size={48} className="text-s-coral" />
             </motion.div>
-            <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-2">
+            <h2 className="font-heading font-bold text-2xl text-s-ink mb-2">
               {t("goLive.live")}
             </h2>
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">
+            <p className="text-sm text-s-ink/50">
               {t("goLive.liveSubtitle")}
             </p>
           </motion.div>

@@ -113,19 +113,19 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
           return (
             <div
               key={`${event.type}-${event.id}`}
-              className="flex gap-3 py-2.5 border-b border-s-ink/[0.04] dark:border-white/[0.04] last:border-0"
+              className="flex gap-3 py-2.5 border-b border-s-ink/[0.04] last:border-0"
             >
               <div className={`w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 ${cfg.iconBg}`}>
                 <Icon size={13} className={cfg.iconColor} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text leading-snug">
+                <p className="text-xs font-heading font-semibold text-s-ink leading-snug">
                   {t(labelKey)}
                   {event.type === "review_new" && !!event.meta?.rating && (
                     <span className="ml-1 text-s-amber">{"★".repeat(Number(event.meta.rating))}</span>
                   )}
                 </p>
-                <p className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35 mt-0.5">
+                <p className="text-[10px] text-s-ink/35 mt-0.5">
                   {relativeTime(event.created_at)}
                 </p>
               </div>

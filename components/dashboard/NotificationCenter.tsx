@@ -96,9 +96,9 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
       <button
         onClick={() => { setOpen((o) => !o); if (!open) fetchNotifications(); }}
         aria-label={t("notifications")}
-        className="relative w-8 h-8 rounded-pill flex items-center justify-center hover:bg-s-ink/[0.05] dark:hover:bg-white/[0.06] transition-colors"
+        className="relative w-8 h-8 rounded-pill flex items-center justify-center hover:bg-s-ink/[0.05]:bg-white/[0.06] transition-colors"
       >
-        <Bell size={16} className="text-s-ink/50 dark:text-s-dm-text/50" />
+        <Bell size={16} className="text-s-ink/50" />
         {unread > 0 && (
           <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-pill bg-s-coral text-white text-[8px] font-bold flex items-center justify-center px-0.5 leading-none">
             {unread > 9 ? "9+" : unread}
@@ -114,12 +114,12 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 12, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-s-dm-surface rounded-[14px] border border-s-ink/[0.08] dark:border-white/[0.08] shadow-warm-md z-50 overflow-hidden"
+            className="absolute right-0 top-full mt-2 w-80 bg-white rounded-[14px] border border-s-ink/[0.08] shadow-warm-md z-50 overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-s-ink/[0.06] dark:border-white/[0.06]">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-s-ink/[0.06]">
               <div className="flex items-center gap-2">
-                <p className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text">{t("notifications")}</p>
+                <p className="text-sm font-heading font-bold text-s-ink">{t("notifications")}</p>
                 {unread > 0 && (
                   <span className="px-1.5 py-0.5 rounded-pill text-[9px] font-bold bg-s-coral/10 text-s-coral">
                     {unread}
@@ -167,21 +167,21 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
                     return (
                       <div
                         key={n.id}
-                        className={`flex gap-3 px-4 py-3 border-b border-s-ink/[0.04] dark:border-white/[0.04] last:border-0 transition-colors ${!n.read ? "bg-s-coral/[0.03]" : ""}`}
+                        className={`flex gap-3 px-4 py-3 border-b border-s-ink/[0.04] last:border-0 transition-colors ${!n.read ? "bg-s-coral/[0.03]" : ""}`}
                       >
                         <div className={`w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 ${cfg.iconBg}`}>
                           <Icon size={13} className={cfg.iconColor} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={`text-xs font-heading font-semibold leading-snug ${!n.read ? "text-s-ink dark:text-s-dm-text" : "text-s-ink/60 dark:text-s-dm-text/60"}`}>
+                          <p className={`text-xs font-heading font-semibold leading-snug ${!n.read ? "text-s-ink" : "text-s-ink/60"}`}>
                             {n.title}
                           </p>
                           {n.body && (
-                            <p className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35 mt-0.5 truncate">
+                            <p className="text-[10px] text-s-ink/35 mt-0.5 truncate">
                               {n.body}
                             </p>
                           )}
-                          <p className="text-[9px] text-s-ink/25 dark:text-s-dm-text/25 mt-1">
+                          <p className="text-[9px] text-s-ink/25 mt-1">
                             {relativeTime(n.created_at)}
                           </p>
                         </div>

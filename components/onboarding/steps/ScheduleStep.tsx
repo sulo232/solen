@@ -55,32 +55,32 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
           <Calendar size={22} className="text-s-ink/60" />
         </div>
         <div>
-          <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">
+          <h2 className="font-heading font-bold text-xl text-s-ink">
             {t("schedule.title")}
           </h2>
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/50">
+          <p className="text-sm text-s-ink/40">
             {t("schedule.subtitle")}
           </p>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 space-y-4">
-        <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60">
+      <div className="bg-white rounded-[12px] border border-s-ink/5 p-6 space-y-4">
+        <p className="text-sm text-s-ink/60">
           {t("schedule.description")}
         </p>
 
         {applied ? (
-          <div className="bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/20 rounded-[12px] px-4 py-3 flex items-center gap-2">
+          <div className="bg-s-coral/5 border border-s-coral/20 rounded-[12px] px-4 py-3 flex items-center gap-2">
             <Check size={14} className="text-s-coral shrink-0" />
             <div>
               <p className="text-xs text-s-coral font-medium">
                 {t("schedule.autoConfigured")}
               </p>
-              <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">
+              <p className="text-[10px] text-s-ink/40 mt-0.5">
                 {t("schedule.autoConfiguredDesc")}
               </p>
             </div>
@@ -105,9 +105,9 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
           </button>
         )}
 
-        <div className="bg-s-bg-surface dark:bg-s-dm-raised rounded-[12px] px-4 py-3 flex items-start gap-2">
-          <Lightbulb size={14} className="text-s-ink/30 dark:text-s-dm-text/30 mt-0.5 shrink-0" />
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
+        <div className="bg-s-bg-surface rounded-[12px] px-4 py-3 flex items-start gap-2">
+          <Lightbulb size={14} className="text-s-ink/30 mt-0.5 shrink-0" />
+          <p className="text-xs text-s-ink/40">
             {t("schedule.individualHint")}
           </p>
         </div>

@@ -36,7 +36,7 @@ export default async function SearchPage({ params, searchParams }: Props) {
   const sp = await searchParams;
 
   return (
-    <main className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg">
+    <main className="min-h-screen bg-s-bg-base">
       <Suspense>
         <SplitView locale={locale} initialFilters={sp} />
       </Suspense>

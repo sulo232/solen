@@ -47,13 +47,13 @@ export default function WaitTimeDisplay({ salonId }: WaitTimeDisplayProps) {
   if (!waitData) return null;
 
   return (
-    <div className="flex items-center gap-3 rounded-input bg-s-bg-surface dark:bg-s-dm-surface px-4 py-3 border border-s-ink/10 dark:border-s-dm-text/10">
-      <Clock size={18} className="text-s-ink/60 dark:text-s-dm-text/60 shrink-0" />
-      <div className="text-sm text-s-ink dark:text-s-dm-text">
+    <div className="flex items-center gap-3 rounded-input bg-s-bg-surface px-4 py-3 border border-s-ink/10">
+      <Clock size={18} className="text-s-ink/60 shrink-0" />
+      <div className="text-sm text-s-ink">
         <span className="font-medium">
           {t("currentWaitTime", { minutes: waitData.estimated_wait_minutes })}
         </span>
-        <span className="text-s-ink/50 dark:text-s-dm-text/50 ml-2 inline-flex items-center gap-1">
+        <span className="text-s-ink/50 ml-2 inline-flex items-center gap-1">
           <Users size={14} />
           {t("peopleWaiting", { count: waitData.queue_length })}
         </span>

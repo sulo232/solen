@@ -230,31 +230,31 @@ export default function RevenuePage() {
 
           {/* Staff commissions */}
           {data.staff_commissions && data.staff_commissions.length > 0 && (
-            <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 shadow-warm-md overflow-hidden">
-              <div className="px-5 py-4 border-b border-s-ink/5 dark:border-white/5">
-                <h2 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm">Provision pro Stylist</h2>
+            <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
+              <div className="px-5 py-4 border-b border-s-ink/5">
+                <h2 className="font-heading font-semibold text-s-ink text-sm">Provision pro Stylist</h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-s-bg-surface/80 dark:bg-s-dm-bg/50">
-                      <th className="text-left px-5 py-2.5 text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40">Stylist</th>
-                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40">Termine</th>
-                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40">Umsatz</th>
-                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40">%</th>
-                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40">Provision</th>
-                      <th className="text-right px-5 py-2.5 text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40">Trinkgeld</th>
+                    <tr className="bg-s-bg-surface/80">
+                      <th className="text-left px-5 py-2.5 text-xs font-semibold text-s-ink/40">Stylist</th>
+                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40">Termine</th>
+                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40">Umsatz</th>
+                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40">%</th>
+                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40">Provision</th>
+                      <th className="text-right px-5 py-2.5 text-xs font-semibold text-s-ink/40">Trinkgeld</th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.staff_commissions.map((s) => (
-                      <tr key={s.name} className="border-t border-s-ink/5 dark:border-white/5">
-                        <td className="px-5 py-3 font-medium text-s-ink dark:text-s-dm-text">{s.name}</td>
-                        <td className="px-3 py-3 text-right data-text text-s-ink/60 dark:text-s-dm-text/60">{s.bookings}</td>
-                        <td className="px-3 py-3 text-right data-text text-s-ink dark:text-s-dm-text">{formatCurrency(s.revenue, locale)}</td>
-                        <td className="px-3 py-3 text-right data-text text-s-ink/40 dark:text-s-dm-text/40">{s.commission_pct}%</td>
+                      <tr key={s.name} className="border-t border-s-ink/5">
+                        <td className="px-5 py-3 font-medium text-s-ink">{s.name}</td>
+                        <td className="px-3 py-3 text-right data-text text-s-ink/60">{s.bookings}</td>
+                        <td className="px-3 py-3 text-right data-text text-s-ink">{formatCurrency(s.revenue, locale)}</td>
+                        <td className="px-3 py-3 text-right data-text text-s-ink/40">{s.commission_pct}%</td>
                         <td className="px-3 py-3 text-right data-text font-semibold text-s-coral">{formatCurrency(s.commission_amount, locale)}</td>
-                        <td className="px-5 py-3 text-right data-text text-s-ink/40 dark:text-s-dm-text/40">{formatCurrency(s.tips, locale)}</td>
+                        <td className="px-5 py-3 text-right data-text text-s-ink/40">{formatCurrency(s.tips, locale)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -267,24 +267,24 @@ export default function RevenuePage() {
           {(data.gift_card_revenue != null || data.tips_total != null) && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {data.gift_card_revenue != null && (
-                <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 shadow-warm-md flex items-center gap-3">
+                <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md flex items-center gap-3">
                   <div className="w-10 h-10 rounded-btn bg-s-coral/5 flex items-center justify-center shrink-0">
                     <Gift size={18} className="text-s-coral" />
                   </div>
                   <div>
-                    <p className="data-text font-bold text-xl text-s-ink dark:text-s-dm-text">{formatCurrency(data.gift_card_revenue, locale)}</p>
-                    <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Geschenkkarten-Umsatz</p>
+                    <p className="data-text font-bold text-xl text-s-ink">{formatCurrency(data.gift_card_revenue, locale)}</p>
+                    <p className="text-xs text-s-ink/40">Geschenkkarten-Umsatz</p>
                   </div>
                 </motion.div>
               )}
               {data.tips_total != null && (
-                <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 shadow-warm-md flex items-center gap-3">
+                <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md flex items-center gap-3">
                   <div className="w-10 h-10 rounded-btn bg-s-coral/5 flex items-center justify-center shrink-0">
                     <Heart size={18} className="text-s-coral" />
                   </div>
                   <div>
-                    <p className="data-text font-bold text-xl text-s-ink dark:text-s-dm-text">{formatCurrency(data.tips_total, locale)}</p>
-                    <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Trinkgeld erhalten</p>
+                    <p className="data-text font-bold text-xl text-s-ink">{formatCurrency(data.tips_total, locale)}</p>
+                    <p className="text-xs text-s-ink/40">Trinkgeld erhalten</p>
                   </div>
                 </motion.div>
               )}

@@ -82,20 +82,20 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
           <Clock size={22} className="text-s-ink/60" />
         </div>
         <div>
-          <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">
+          <h2 className="font-heading font-bold text-xl text-s-ink">
             {t("hours.title")}
           </h2>
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/50">
+          <p className="text-sm text-s-ink/40">
             {t("hours.subtitle")}
           </p>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 space-y-3">
+      <div className="bg-white rounded-[12px] border border-s-ink/5 p-6 space-y-3">
         {DAY_KEYS.map((key, i) => {
           const h = hours[key];
           return (
@@ -104,12 +104,12 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                 onClick={() => toggle(key)}
                 className={[
                   "w-20 text-center text-xs font-medium py-2 rounded-btn transition-colors",
-                  h ? "bg-s-coral text-white shadow-warm-sm" : "bg-s-bg-sunken dark:bg-s-dm-raised text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink/50 dark:hover:text-s-dm-text/50",
+                  h ? "bg-s-coral text-white shadow-warm-sm" : "bg-s-bg-sunken text-s-ink/30 hover:text-s-ink/50:text-s-dm-text/50",
                 ].join(" ")}
               >
                 {DAYS_SHORT[i]}
               </button>
-              <span className="text-sm text-s-ink/60 dark:text-s-dm-text/60 w-24 hidden sm:block">{dayLabels[i]}</span>
+              <span className="text-sm text-s-ink/60 w-24 hidden sm:block">{dayLabels[i]}</span>
               {h ? (
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center gap-2">
@@ -117,14 +117,14 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                       type="time"
                       value={h.open}
                       onChange={(e) => update(key, "open", e.target.value)}
-                      className="px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
+                      className="px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
                     />
-                    <span className="text-s-ink/20 dark:text-s-dm-text/20">–</span>
+                    <span className="text-s-ink/20">–</span>
                     <input
                       type="time"
                       value={h.close}
                       onChange={(e) => update(key, "close", e.target.value)}
-                      className="px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
+                      className="px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
                     />
                     {!h.break_start && (
                       <button onClick={() => toggleBreak(key)} className="ml-2 text-xs font-medium text-s-coral hover:text-s-coral/80">
@@ -134,19 +134,19 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                   </div>
                   {h.break_start && (
                     <div className="flex items-center gap-2 pl-[112px] sm:pl-0">
-                      <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40 w-12 hidden sm:inline-block">Pause</span>
+                      <span className="text-xs text-s-ink/40 w-12 hidden sm:inline-block">Pause</span>
                       <input
                         type="time"
                         value={h.break_start}
                         onChange={(e) => update(key, "break_start", e.target.value)}
-                        className="px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
+                        className="px-3 py-2 rounded-input border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
                       />
-                      <span className="text-s-ink/20 dark:text-s-dm-text/20">–</span>
+                      <span className="text-s-ink/20">–</span>
                       <input
                         type="time"
                         value={h.break_end}
                         onChange={(e) => update(key, "break_end", e.target.value)}
-                        className="px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
+                        className="px-3 py-2 rounded-input border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
                       />
                       <button onClick={() => toggleBreak(key)} className="ml-2 text-xs text-s-ink/30 hover:text-s-coral">
                         {t("hours.removeBreak")}
@@ -155,7 +155,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                   )}
                 </div>
               ) : (
-                <span className="text-sm text-s-ink/20 dark:text-s-dm-text/20 italic">
+                <span className="text-sm text-s-ink/20 italic">
                   {t("hours.closed")}
                 </span>
               )}

@@ -41,7 +41,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
       }}
     >
       <h2 className="font-heading font-semibold text-base text-s-ink mb-3 flex items-center gap-2">
-        <Clock className="w-4 h-4 text-s-ink/60 dark:text-s-dm-text/60" />
+        <Clock className="w-4 h-4 text-s-ink/60" />
         {t("openingHours")}
       </h2>
 

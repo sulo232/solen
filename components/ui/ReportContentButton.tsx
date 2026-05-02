@@ -56,10 +56,10 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
 
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-s-ink/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-surface w-full max-w-md p-6 relative animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-[12px] shadow-surface w-full max-w-md p-6 relative animate-in fade-in zoom-in-95 duration-200">
             <button 
               onClick={() => !loading && setIsOpen(false)}
-              className="absolute top-4 right-4 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text hover:bg-s-ink/5 dark:hover:bg-white/5 p-1 rounded transition-colors"
+              className="absolute top-4 right-4 text-s-ink/40 hover:text-s-ink:text-s-dm-text hover:bg-s-ink/5:bg-white/5 p-1 rounded transition-colors"
             >
               <X size={20} />
             </button>
@@ -83,7 +83,7 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
                   <label className="block text-xs font-medium text-s-ink/60 mb-1">Grund</label>
                   <select 
                     value={reason} onChange={e => setReason(e.target.value)}
-                    className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-s-ink dark:text-s-dm-text text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+                    className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-s-ink text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
                   >
                     <option value="inappropriate">Unangemessener Inhalt</option>
                     <option value="spam">Spam oder Werbung</option>

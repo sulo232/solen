@@ -39,7 +39,7 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
     <div className="space-y-4">
       {/* Shape selector */}
       <div>
-        <p className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-2">{t("nail_shape")}</p>
+        <p className="text-sm font-medium text-s-ink mb-2">{t("nail_shape")}</p>
         <div className="grid grid-cols-5 gap-1.5">
           {SHAPES.map(({ value: v, key, svg }) => (
             <button
@@ -49,14 +49,14 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
               onClick={() => onShapeChange(v)}
               className={`flex flex-col items-center gap-1 p-2 rounded-[12px] border transition-[border-color,background-color,box-shadow] duration-150 ${
                 shape === v
-                  ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 shadow-coral-glow"
-                  : "border-s-ink/10 dark:border-s-dm-text/10 bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/20"
+                  ? "border-s-coral bg-s-coral/5 shadow-coral-glow"
+                  : "border-s-ink/10 bg-[--raised] hover:border-s-coral/20"
               }`}
             >
-              <svg viewBox="0 0 20 14" className={`w-8 h-6 ${shape === v ? "fill-s-coral/20 stroke-s-coral" : "fill-s-ink/5 stroke-s-ink/30 dark:fill-s-dm-text/5 dark:stroke-s-dm-text/30"}`} strokeWidth="1">
+              <svg viewBox="0 0 20 14" className={`w-8 h-6 ${shape === v ? "fill-s-coral/20 stroke-s-coral" : "fill-s-ink/5 stroke-s-ink/30"}`} strokeWidth="1">
                 <path d={svg} />
               </svg>
-              <span className={`text-[9px] leading-tight ${shape === v ? "text-s-coral font-medium" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
+              <span className={`text-[9px] leading-tight ${shape === v ? "text-s-coral font-medium" : "text-s-ink/50"}`}>
                 {t(key)}
               </span>
             </button>
@@ -66,7 +66,7 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
 
       {/* Length selector */}
       <div>
-        <p className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-2">{t("nail_length")}</p>
+        <p className="text-sm font-medium text-s-ink mb-2">{t("nail_length")}</p>
         <div className="flex items-end justify-between gap-2">
           {LENGTHS.map(({ value: v, key, barHeight }) => (
             <button
@@ -80,10 +80,10 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
                 className={`w-full ${barHeight} rounded-t-sm transition-colors duration-150 ${
                   length === v
                     ? "bg-s-coral"
-                    : "bg-s-ink/10 dark:bg-s-dm-text/10 hover:bg-s-coral/20"
+                    : "bg-s-ink/10 hover:bg-s-coral/20"
                 }`}
               />
-              <span className={`text-[9px] ${length === v ? "text-s-coral font-medium" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
+              <span className={`text-[9px] ${length === v ? "text-s-coral font-medium" : "text-s-ink/40"}`}>
                 {t(key)}
               </span>
             </button>

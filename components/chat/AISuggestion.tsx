@@ -75,29 +75,29 @@ export default function AISuggestion({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.2 }}
-          className="mx-4 mb-2 bg-s-blue-subtle dark:bg-s-blue/10 border border-s-blue/20 dark:border-s-blue/30 rounded-[12px] p-3"
+          className="mx-4 mb-2 bg-s-blue-subtle border border-s-blue/20 rounded-[12px] p-3"
         >
           {loading ? (
-            <div className="flex items-center gap-2 text-s-blue dark:text-s-blue text-sm">
+            <div className="flex items-center gap-2 text-s-blue text-sm">
               <Loader2 size={14} className="animate-spin" />
               <span>{t("loading")}</span>
             </div>
           ) : suggestion ? (
             <div>
-              <p className="text-sm text-s-ink dark:text-s-dm-text mb-2">
+              <p className="text-sm text-s-ink mb-2">
                 <span className="font-medium">{t("suggestedReply")} </span>
                 {suggestion}
               </p>
               <div className="flex gap-2">
                 <button
                   onClick={() => { onAccept(suggestion); setDismissed(true); }}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-btn bg-s-blue/10 dark:bg-s-blue/20 text-s-blue dark:text-s-blue text-xs font-medium hover:bg-s-blue/20 dark:hover:bg-s-blue/30 transition-colors"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-btn bg-s-blue/10 text-s-blue text-xs font-medium hover:bg-s-blue/20:bg-s-blue/30 transition-colors"
                 >
                   <Check size={12} /> {t("accept")}
                 </button>
                 <button
                   onClick={() => setDismissed(true)}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-btn bg-s-bg-sunken dark:bg-s-dm-raised text-s-ink/60 dark:text-s-ink/30 text-xs font-medium hover:bg-s-sand dark:hover:bg-s-ink/60 transition-colors"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-btn bg-s-bg-sunken text-s-ink/60 text-xs font-medium hover:bg-s-sand:bg-s-ink/60 transition-colors"
                 >
                   <X size={12} /> {t("dismiss")}
                 </button>

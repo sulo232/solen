@@ -52,11 +52,11 @@ export default function FormulaPhotoUpload({
 
   const PhotoSlot = ({ type, url }: { type: "before" | "after"; url: string | null }) => (
     <div className="flex-1">
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/35 dark:text-s-dm-text/35 mb-1.5">
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/35 mb-1.5">
         {type === "before" ? t("photoBefore") : t("photoAfter")}
       </p>
       <label className={`relative block aspect-[3/4] rounded-[8px] overflow-hidden border-2 border-dashed cursor-pointer transition-colors ${
-        url ? "border-transparent" : "border-s-ink/[0.12] dark:border-s-dm-text/[0.12] hover:border-s-coral/40"
+        url ? "border-transparent" : "border-s-ink/[0.12] hover:border-s-coral/40"
       }`}>
         {url ? (
           <>
@@ -75,12 +75,12 @@ export default function FormulaPhotoUpload({
           </>
         ) : uploading === type ? (
           <div className="absolute inset-0 flex items-center justify-center bg-s-ink/[0.04]">
-            <Upload size={16} className="text-s-ink/30 dark:text-s-dm-text/30 animate-bounce" />
+            <Upload size={16} className="text-s-ink/30 animate-bounce" />
           </div>
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
-            <Camera size={16} className="text-s-ink/25 dark:text-s-dm-text/25" />
-            <span className="text-[9px] text-s-ink/30 dark:text-s-dm-text/30">{t("photoAdd")}</span>
+            <Camera size={16} className="text-s-ink/25" />
+            <span className="text-[9px] text-s-ink/30">{t("photoAdd")}</span>
           </div>
         )}
         <input

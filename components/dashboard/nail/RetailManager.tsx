@@ -87,7 +87,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Package size={16} className="text-s-coral" />
-          <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">{t("retail_title")}</h3>
+          <h3 className="font-heading font-semibold text-sm text-s-ink">{t("retail_title")}</h3>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
@@ -100,19 +100,19 @@ export default function RetailManager({ salonId }: { salonId: string }) {
       </div>
 
       {/* Revenue summary */}
-      <div className="flex items-center gap-2 p-3 rounded-[16px] bg-s-bg-surface dark:bg-s-dm-bg">
+      <div className="flex items-center gap-2 p-3 rounded-[16px] bg-s-bg-surface">
         <DollarSign size={14} className="text-s-sage" />
-        <span className="text-xs text-s-ink/60 dark:text-s-dm-text/60">{t("retail_products_count", { count: products.length })}</span>
+        <span className="text-xs text-s-ink/60">{t("retail_products_count", { count: products.length })}</span>
       </div>
 
       {/* Add form */}
       {showForm && (
-        <div className="p-3 rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface space-y-3">
+        <div className="p-3 rounded-[16px] border border-s-ink/10 bg-white space-y-3">
           <input
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder={t("retail_name_placeholder")}
-            className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
+            className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm"
           />
           <div className="flex gap-2">
             <input
@@ -121,12 +121,12 @@ export default function RetailManager({ salonId }: { salonId: string }) {
               value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
               placeholder={t("retail_price_placeholder")}
-              className="flex-1 px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
+              className="flex-1 px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm"
             />
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="flex-1 px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
+              className="flex-1 px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm"
               aria-label={t("retail_cat_nail_care")}
             >
               <option value="nail_care">{t("retail_cat_nail_care")}</option>
@@ -146,7 +146,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
             </button>
             <button
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+              className="px-4 py-2 rounded-pill border border-s-ink/10 text-xs text-s-ink/50 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
               aria-label={t("cancel")}
             >
               {t("cancel")}
@@ -157,7 +157,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
 
       {/* Low-stock alert */}
       {lowStockProducts.length > 0 && (
-        <div className="flex items-center gap-2 p-3 rounded-[16px] bg-s-warning-bg dark:bg-s-warning/10">
+        <div className="flex items-center gap-2 p-3 rounded-[16px] bg-s-warning-bg">
           <AlertTriangle size={14} className="text-s-warning shrink-0" />
           <span className="text-xs text-s-warning">
             {t("retail_low_stock_alert", { count: lowStockProducts.length })}
@@ -170,19 +170,19 @@ export default function RetailManager({ salonId }: { salonId: string }) {
         {products.map((product) => {
           const isLowStock = product.stock_count <= (product.low_stock_threshold ?? 5);
           return (
-            <div key={product.id} className={`flex items-center gap-3 p-3 rounded-[16px] border bg-white dark:bg-s-dm-surface ${
-              isLowStock ? "border-s-warning/30 bg-s-warning-bg/30" : "border-s-ink/5 dark:border-s-dm-text/10"
+            <div key={product.id} className={`flex items-center gap-3 p-3 rounded-[16px] border bg-white ${
+              isLowStock ? "border-s-warning/30 bg-s-warning-bg/30" : "border-s-ink/5"
             }`}>
-              <div className="w-10 h-10 rounded-[8px] bg-s-ink/5 dark:bg-s-dm-text/10 flex items-center justify-center shrink-0">
-                <Package size={16} className="text-s-ink/30 dark:text-s-dm-text/30" />
+              <div className="w-10 h-10 rounded-[8px] bg-s-ink/5 flex items-center justify-center shrink-0">
+                <Package size={16} className="text-s-ink/30" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">{product.name}</p>
+                <p className="text-sm font-medium text-s-ink truncate">{product.name}</p>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/50 dark:text-s-dm-text/50">
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink/50">
                     {product.category}
                   </span>
-                  <span className={`text-[10px] data-text ${isLowStock ? "text-s-warning font-medium" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
+                  <span className={`text-[10px] data-text ${isLowStock ? "text-s-warning font-medium" : "text-s-ink/40"}`}>
                     {t("retail_stock", { count: product.stock_count })}
                   </span>
                 </div>
@@ -191,29 +191,29 @@ export default function RetailManager({ salonId }: { salonId: string }) {
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => adjustStock(product.id, -1)}
-                  className="w-6 h-6 rounded-full flex items-center justify-center bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/10 transition-colors duration-150"
+                  className="w-6 h-6 rounded-full flex items-center justify-center bg-s-ink/5 text-s-ink/50 hover:bg-s-ink/10 transition-colors duration-150"
                   aria-label={t("retail_stock_minus")}
                   disabled={product.stock_count <= 0}
                 >
                   <Minus size={10} />
                 </button>
-                <span className="text-xs data-text w-6 text-center text-s-ink dark:text-s-dm-text">{product.stock_count}</span>
+                <span className="text-xs data-text w-6 text-center text-s-ink">{product.stock_count}</span>
                 <button
                   onClick={() => adjustStock(product.id, 1)}
-                  className="w-6 h-6 rounded-full flex items-center justify-center bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/10 transition-colors duration-150"
+                  className="w-6 h-6 rounded-full flex items-center justify-center bg-s-ink/5 text-s-ink/50 hover:bg-s-ink/10 transition-colors duration-150"
                   aria-label={t("retail_stock_plus")}
                 >
                   <Plus size={10} />
                 </button>
               </div>
-              <span className="text-sm font-medium data-text text-s-ink dark:text-s-dm-text">
+              <span className="text-sm font-medium data-text text-s-ink">
                 {formatCurrency(product.price / 100, locale)}
               </span>
             </div>
           );
         })}
         {products.length === 0 && (
-          <p className="text-center text-sm text-s-ink/30 dark:text-s-dm-text/30 py-6">{t("retail_empty")}</p>
+          <p className="text-center text-sm text-s-ink/30 py-6">{t("retail_empty")}</p>
         )}
       </div>
     </div>

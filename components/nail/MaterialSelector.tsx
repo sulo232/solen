@@ -24,7 +24,7 @@ export default function MaterialSelector({ value, onChange }: MaterialSelectorPr
 
   return (
     <div>
-      <p className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-2">{t("nail_material_choose")}</p>
+      <p className="text-sm font-medium text-s-ink mb-2">{t("nail_material_choose")}</p>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {MATERIALS.map(({ value: v, labelKey, descKey, icon: Icon }) => (
           <button
@@ -33,19 +33,19 @@ export default function MaterialSelector({ value, onChange }: MaterialSelectorPr
             onClick={() => onChange(v)}
             className={`flex items-start gap-2.5 p-3 rounded-[16px] border text-left transition-[border-color,background-color] duration-150 ${
               value === v
-                ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 ring-1 ring-s-coral/30"
-                : "border-s-ink/10 dark:border-s-dm-text/10 bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/20"
+                ? "border-s-coral bg-s-coral/5 ring-1 ring-s-coral/30"
+                : "border-s-ink/10 bg-[--raised] hover:border-s-coral/20"
             }`}
           >
             <Icon
               size={18}
-              className={value === v ? "text-s-coral shrink-0 mt-0.5" : "text-s-ink/30 dark:text-s-dm-text/30 shrink-0 mt-0.5"}
+              className={value === v ? "text-s-coral shrink-0 mt-0.5" : "text-s-ink/30 shrink-0 mt-0.5"}
             />
             <div>
-              <span className={`text-sm font-medium block ${value === v ? "text-s-coral" : "text-s-ink dark:text-s-dm-text"}`}>
+              <span className={`text-sm font-medium block ${value === v ? "text-s-coral" : "text-s-ink"}`}>
                 {t(labelKey)}
               </span>
-              <span className="text-[11px] text-s-ink/40 dark:text-s-dm-text/40">{t(descKey)}</span>
+              <span className="text-[11px] text-s-ink/40">{t(descKey)}</span>
             </div>
           </button>
         ))}

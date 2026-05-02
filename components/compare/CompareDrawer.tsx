@@ -106,11 +106,11 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
             animate={{ y: "15%" }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 35 }}
-            className="fixed inset-x-0 bottom-0 z-60 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-xl rounded-t-2xl shadow-surface h-[85vh]"
+            className="fixed inset-x-0 bottom-0 z-60 bg-white/95 backdrop-blur-xl rounded-t-2xl shadow-surface h-[85vh]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-s-ink/5 dark:border-white/5">
-              <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">Salons vergleichen</h2>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-s-ink/5">
+              <h2 className="font-heading font-bold text-lg text-s-ink">Salons vergleichen</h2>
               <div className="flex items-center gap-2">
                 <button 
                   onClick={() => {
@@ -119,12 +119,12 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                     navigator.clipboard.writeText(url);
                     toast("Link wurde in die Zwischenablage kopiert!", "success");
                   }} 
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-btn bg-s-ink/5 hover:bg-s-ink/10 dark:bg-white/5 dark:hover:bg-white/10 dark:text-s-dm-text transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-btn bg-s-ink/5 hover:bg-s-ink/10:bg-white/10 transition-colors"
                 >
                   <Share2 size={14} />
                   <span>Teilen</span>
                 </button>
-                <button onClick={onClose} className="p-1.5 text-s-ink/40 hover:text-s-ink dark:text-s-dm-text/40 dark:hover:text-s-dm-text">
+                <button onClick={onClose} className="p-1.5 text-s-ink/40 hover:text-s-ink:text-s-dm-text">
                   <X size={20} />
                 </button>
               </div>
@@ -136,7 +136,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                 {/* Salon name header row */}
                 <thead>
                   <tr>
-                    <th className="sticky left-0 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm p-3 w-36" />
+                    <th className="sticky left-0 bg-white/95 backdrop-blur-sm p-3 w-36" />
                     {salons.map((salon, i) => (
                       <th key={salon.id} className="p-3 text-center relative min-w-[140px]">
                         {i === bestIdx && salons.length > 1 && (
@@ -145,8 +145,8 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                           </div>
                         )}
                         <div className={`mt-3 ${i === bestIdx && salons.length > 1 ? "ring-2 ring-s-coral/20 rounded-[12px] p-2" : "p-2"}`}>
-                          <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text truncate">{salon.name}</h3>
-                          <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 capitalize mt-0.5 truncate">{(salon as any).quartier}</p>
+                          <h3 className="font-heading font-bold text-sm text-s-ink truncate">{salon.name}</h3>
+                          <p className="text-[10px] text-s-ink/40 capitalize mt-0.5 truncate">{(salon as any).quartier}</p>
                         </div>
                       </th>
                     ))}
@@ -154,11 +154,11 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                 </thead>
                 <tbody>
                   {rows.map((row) => (
-                    <tr key={row.label} className="border-t border-s-ink/5 dark:border-white/5">
-                      <td className="sticky left-0 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm px-4 py-3">
+                    <tr key={row.label} className="border-t border-s-ink/5">
+                      <td className="sticky left-0 bg-white/95 backdrop-blur-sm px-4 py-3">
                         <div className="flex items-center gap-2">
                           <row.Icon size={13} className="text-s-coral shrink-0" />
-                          <span className="text-xs text-s-ink/50 dark:text-s-dm-text/50 whitespace-nowrap">{row.label}</span>
+                          <span className="text-xs text-s-ink/50 whitespace-nowrap">{row.label}</span>
                         </div>
                       </td>
                       {salons.map((salon, i) => (
@@ -169,8 +169,8 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                     </tr>
                   ))}
                   {/* CTA row */}
-                  <tr className="border-t border-s-ink/5 dark:border-white/5">
-                    <td className="sticky left-0 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm px-4 py-4" />
+                  <tr className="border-t border-s-ink/5">
+                    <td className="sticky left-0 bg-white/95 backdrop-blur-sm px-4 py-4" />
                     {salons.map((salon) => (
                       <td key={salon.id} className="px-4 py-4 text-center">
                         <a

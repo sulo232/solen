@@ -40,21 +40,21 @@ export default function ZoneRevenueChart({ salonId }: ZoneRevenueChartProps) {
   }, [salonId]);
 
   return (
-    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+    <div className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] p-4">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-7 h-7 rounded-[8px] bg-s-plum/10 flex items-center justify-center">
           <BarChart3 size={13} className="text-s-plum" />
         </div>
         <div>
-          <p className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text">{t("zoneRevenueTitle")}</p>
-          <p className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35">{t("zoneRevenueSubtitle")}</p>
+          <p className="text-sm font-heading font-bold text-s-ink">{t("zoneRevenueTitle")}</p>
+          <p className="text-[10px] text-s-ink/35">{t("zoneRevenueSubtitle")}</p>
         </div>
       </div>
 
       {loading ? (
-        <div className="h-[160px] animate-pulse bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[8px]" />
+        <div className="h-[160px] animate-pulse bg-s-ink/[0.04] rounded-[8px]" />
       ) : data.length === 0 ? (
-        <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 text-center py-6">{t("noData")}</p>
+        <p className="text-xs text-s-ink/40 text-center py-6">{t("noData")}</p>
       ) : (
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={data} layout="vertical" margin={{ top: 4, right: 8, left: 8, bottom: 0 }}>

@@ -58,7 +58,7 @@ export default function ReportProblemModal({
   return (
     <GlassModal open onClose={onClose} title="Ein Problem melden">
       <div className="mb-4">
-        <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-3">
+        <p className="text-sm text-s-ink/60 mb-3">
           Wählen Sie die Art des Problems:
         </p>
         <div className="flex flex-wrap gap-2">
@@ -71,7 +71,7 @@ export default function ReportProblemModal({
                 className={`px-3 py-1.5 rounded-btn text-xs font-medium transition-colors border ${
                   isSelected
                     ? "bg-s-coral text-white border-s-coral"
-                    : "bg-s-bg-surface text-s-ink border-s-ink/10 dark:bg-s-dm-surface dark:text-s-dm-text dark:border-white/10 hover:border-s-coral/50"
+                    : "bg-s-bg-surface text-s-ink border-s-ink/10 hover:border-s-coral/50"
                 }`}
               >
                 {type.labelDe}
@@ -82,14 +82,14 @@ export default function ReportProblemModal({
       </div>
 
       <div className="mb-5">
-        <label className="block text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-2">
+        <label className="block text-sm text-s-ink/60 mb-2">
           Beschreibung (min. 20 Zeichen):
         </label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Bitte beschreiben Sie detailliert, was vorgefallen ist..."
-          className="w-full min-h-[100px] bg-s-bg-sunken dark:bg-s-dm-surface/50 rounded-btn p-4 text-sm text-s-ink dark:text-s-dm-text border border-s-ink/5 dark:border-white/5 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
+          className="w-full min-h-[100px] bg-s-bg-sunken rounded-btn p-4 text-sm text-s-ink border border-s-ink/5 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
         />
         {error && <p className="text-s-coral text-xs mt-2">{error}</p>}
       </div>
@@ -97,7 +97,7 @@ export default function ReportProblemModal({
       <div className="flex justify-end gap-3 mt-4">
         <button
           onClick={onClose}
-          className="px-4 py-2 text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink transition-colors"
+          className="px-4 py-2 text-sm text-s-ink/60 hover:text-s-ink transition-colors"
         >
           Abbrechen
         </button>

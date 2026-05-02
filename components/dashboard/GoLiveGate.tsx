@@ -80,7 +80,7 @@ export default function GoLiveGate() {
   const doneCount = requirements.filter((r) => r.done).length;
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] mb-6 bg-white dark:bg-s-dm-surface overflow-hidden">
+    <div className="rounded-[12px] border border-s-ink/[0.06] mb-6 bg-white overflow-hidden">
       {/* Header */}
       <div className="px-4 py-4 border-b border-s-ink/[0.04]">
         <div className="flex items-center justify-between">
@@ -90,7 +90,7 @@ export default function GoLiveGate() {
             </div>
             <div>
               <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-0.5">{t("setup")}</p>
-              <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("notLive")}</p>
+              <p className="text-sm font-heading font-semibold text-s-ink">{t("notLive")}</p>
             </div>
           </div>
           <p className="text-xs data-text font-medium text-s-ink/40">{doneCount}/{requirements.length}</p>
@@ -105,8 +105,8 @@ export default function GoLiveGate() {
               {done && <CheckCircle2 size={11} className="text-white" />}
             </div>
             <div className="flex-1 flex items-center gap-2">
-              <Icon size={13} className={done ? "text-s-coral" : "text-s-ink/50 dark:text-s-dm-text/50"} />
-              <span className={`text-xs font-heading font-semibold ${done ? "text-s-ink dark:text-s-dm-text" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
+              <Icon size={13} className={done ? "text-s-coral" : "text-s-ink/50"} />
+              <span className={`text-xs font-heading font-semibold ${done ? "text-s-ink" : "text-s-ink/50"}`}>
                 {label}
               </span>
             </div>
@@ -129,7 +129,7 @@ export default function GoLiveGate() {
             "w-full py-3 rounded-[8px] text-xs font-heading font-bold uppercase tracking-[.04em] flex items-center justify-center gap-2 transition-colors",
             status.can_go_live
               ? "bg-s-coral text-white hover:brightness-[1.06] cursor-pointer"
-              : "bg-s-ink/5 dark:bg-white/5 text-s-ink/50 dark:text-s-dm-text/50 cursor-not-allowed",
+              : "bg-s-ink/5 text-s-ink/50 cursor-not-allowed",
           ].join(" ")}
         >
           {activating ? <Spinner size="sm" invert={status.can_go_live} /> : <Rocket size={15} />}

@@ -66,7 +66,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
     `px-3.5 py-2 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[background-color,color,box-shadow] duration-150 cursor-pointer ${
       active
         ? "border-s-coral bg-s-coral/[0.08] text-s-coral"
-        : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/40"
+        : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/40"
     }`;
 
   const handleSave = () => {
@@ -108,8 +108,8 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
           <Sparkles size={14} className="text-s-coral" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">{t.banner}</p>
-          <p className="text-[10px] font-body text-s-ink/45 dark:text-s-dm-text/45 mt-0.5">{t.bannerSub}</p>
+          <p className="text-sm font-heading font-semibold text-s-ink">{t.banner}</p>
+          <p className="text-[10px] font-body text-s-ink/45 mt-0.5">{t.bannerSub}</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {!expanded && (
@@ -119,7 +119,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
           )}
           <ChevronDown
             size={14}
-            className={`text-s-ink/50 dark:text-s-dm-text/50 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
+            className={`text-s-ink/50 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
           />
         </div>
       </button>
@@ -134,10 +134,10 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 space-y-4 border-t border-s-ink/[0.05] dark:border-white/[0.05] pt-3">
+            <div className="px-4 pb-4 space-y-4 border-t border-s-ink/[0.05] pt-3">
               {/* Gender */}
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t.genderLabel}</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 mb-2">{t.genderLabel}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { v: "female", l: t.female },
@@ -153,7 +153,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
 
               {/* Texture */}
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t.textureLabel}</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 mb-2">{t.textureLabel}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { v: "straight", l: t.straight },
@@ -170,7 +170,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
 
               {/* Length */}
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t.lengthLabel}</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 mb-2">{t.lengthLabel}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { v: "short", l: t.short },
@@ -188,7 +188,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
               <div className="flex gap-2 pt-1">
                 <button
                   onClick={onDismiss}
-                  className="px-4 py-2.5 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/40 dark:text-s-dm-text/40 hover:border-s-ink/20 transition-colors"
+                  className="px-4 py-2.5 rounded-pill border border-s-ink/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/40 hover:border-s-ink/20 transition-colors"
                 >
                   {t.dismiss}
                 </button>

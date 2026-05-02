@@ -60,13 +60,13 @@ export default function EmptyState({ icon: Icon, title, message, action, illustr
           </div>
         </div>
         {eyebrow && (
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 mb-2">
             {eyebrow}
           </p>
         )}
-        <h3 className="font-heading font-bold text-s-ink dark:text-s-dm-text text-lg mb-1.5">{title}</h3>
+        <h3 className="font-heading font-bold text-s-ink text-lg mb-1.5">{title}</h3>
         {message && (
-          <p className="font-body text-s-ink/50 dark:text-s-dm-text/50 text-sm max-w-xs leading-relaxed">{message}</p>
+          <p className="font-body text-s-ink/50 text-sm max-w-xs leading-relaxed">{message}</p>
         )}
         {action && <div className="mt-5">{action}</div>}
       </motion.div>
@@ -93,13 +93,13 @@ export default function EmptyState({ icon: Icon, title, message, action, illustr
         </div>
       </div>
       {eyebrow && (
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 mb-2">
           {eyebrow}
         </p>
       )}
-      <h3 className="font-heading font-bold text-s-ink dark:text-s-dm-text text-lg mb-1.5">{title}</h3>
+      <h3 className="font-heading font-bold text-s-ink text-lg mb-1.5">{title}</h3>
       {message && (
-        <p className="font-body text-s-ink/50 dark:text-s-dm-text/50 text-sm max-w-xs leading-relaxed">{message}</p>
+        <p className="font-body text-s-ink/50 text-sm max-w-xs leading-relaxed">{message}</p>
       )}
       {action && <div className="mt-5">{action}</div>}
     </div>

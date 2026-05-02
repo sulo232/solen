@@ -52,7 +52,7 @@ export const BeautyProfileCard: React.FC<BeautyProfileCardProps> = ({ profile, o
     const styles = ROW_STYLES[categoryKey];
     return (
       <button
-        className="inline-flex items-center gap-1 px-[11px] py-[5px] rounded-pill text-[12px] font-body border-2 border-dashed transition-colors duration-150 hover:bg-s-ink/[0.03] dark:hover:bg-white/[0.05]"
+        className="inline-flex items-center gap-1 px-[11px] py-[5px] rounded-pill text-[12px] font-body border-2 border-dashed transition-colors duration-150 hover:bg-s-ink/[0.03]:bg-white/[0.05]"
         style={{ borderColor: styles.dot, color: styles.dot }}
         onClick={onEdit}
         aria-label={t('addMore')}
@@ -89,10 +89,10 @@ export const BeautyProfileCard: React.FC<BeautyProfileCardProps> = ({ profile, o
   }
 
   return (
-    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[18px] p-4 shadow-warm-md">
+    <div className="bg-[--raised] rounded-[18px] p-4 shadow-warm-md">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-heading text-[16px] font-bold text-s-ink dark:text-s-dm-text">
+        <h2 className="font-heading text-[16px] font-bold text-s-ink">
           {t('sectionTitle')}
         </h2>
         <button
@@ -107,8 +107,8 @@ export const BeautyProfileCard: React.FC<BeautyProfileCardProps> = ({ profile, o
       {/* 5 rows */}
       <div className="flex flex-col">
         {/* HAAR */}
-        <div className="py-3 border-b border-s-sand dark:border-white/[0.06]">
-          <div className="text-[9px] font-body font-semibold tracking-[.1em] text-s-ink/60 dark:text-s-dm-text/60 mb-2">
+        <div className="py-3 border-b border-s-sand">
+          <div className="text-[9px] font-body font-semibold tracking-[.1em] text-s-ink/60 mb-2">
             {t('hair')}
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -118,8 +118,8 @@ export const BeautyProfileCard: React.FC<BeautyProfileCardProps> = ({ profile, o
         </div>
 
         {/* NÄGEL */}
-        <div className="py-3 border-b border-s-sand dark:border-white/[0.06]">
-          <div className="text-[9px] font-body font-semibold tracking-[.1em] text-s-ink/60 dark:text-s-dm-text/60 mb-2">
+        <div className="py-3 border-b border-s-sand">
+          <div className="text-[9px] font-body font-semibold tracking-[.1em] text-s-ink/60 mb-2">
             {t('nails')}
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -129,8 +129,8 @@ export const BeautyProfileCard: React.FC<BeautyProfileCardProps> = ({ profile, o
         </div>
 
         {/* HAUT */}
-        <div className="py-3 border-b border-s-sand dark:border-white/[0.06]">
-          <div className="text-[9px] font-body font-semibold tracking-[.1em] text-s-ink/60 dark:text-s-dm-text/60 mb-2">
+        <div className="py-3 border-b border-s-sand">
+          <div className="text-[9px] font-body font-semibold tracking-[.1em] text-s-ink/60 mb-2">
             {t('skin')}
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -140,8 +140,8 @@ export const BeautyProfileCard: React.FC<BeautyProfileCardProps> = ({ profile, o
         </div>
 
         {/* STYLIST */}
-        <div className="py-3 border-b border-s-sand dark:border-white/[0.06]">
-          <div className="text-[9px] font-body font-semibold tracking-[.1em] text-s-ink/60 dark:text-s-dm-text/60 mb-2">
+        <div className="py-3 border-b border-s-sand">
+          <div className="text-[9px] font-body font-semibold tracking-[.1em] text-s-ink/60 mb-2">
             {t('stylist')}
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -152,7 +152,7 @@ export const BeautyProfileCard: React.FC<BeautyProfileCardProps> = ({ profile, o
 
         {/* STYLE */}
         <div className="py-3">
-          <div className="text-[9px] font-body font-semibold tracking-[.1em] text-s-ink/60 dark:text-s-dm-text/60 mb-2">
+          <div className="text-[9px] font-body font-semibold tracking-[.1em] text-s-ink/60 mb-2">
             {t('style')}
           </div>
           <div className="flex flex-wrap gap-1.5">

@@ -123,7 +123,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text flex items-center gap-2">
+        <h3 className="font-heading font-bold text-sm text-s-ink flex items-center gap-2">
           <Package size={14} className="text-s-coral" /> {t("title")}
         </h3>
         <button
@@ -136,17 +136,17 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
 
       {/* Create form */}
       {showForm && (
-        <div className="bg-s-bg-surface dark:bg-s-dm-bg rounded-[16px] border border-s-ink/5 dark:border-white/5 p-4 mb-4 space-y-3">
+        <div className="bg-s-bg-surface rounded-[16px] border border-s-ink/5 p-4 mb-4 space-y-3">
           <input
             value={form.name}
             onChange={(e) => { setForm({ ...form, name: e.target.value }); setFormError(null); }}
             placeholder={t("namePlaceholder")}
-            className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+            className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
           />
           <select
             value={form.service_id}
             onChange={(e) => setForm({ ...form, service_id: e.target.value })}
-            className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+            className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
           >
             <option value="">{t("selectService")}</option>
             {services.map((s) => (
@@ -155,34 +155,34 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
           </select>
           <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{t("sessions")}</label>
+              <label className="text-[10px] text-s-ink/40">{t("sessions")}</label>
               <input
                 type="number"
                 min={1}
                 value={form.sessions}
                 onChange={(e) => setForm({ ...form, sessions: Math.max(1, Number(e.target.value)) })}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
               />
             </div>
             <div>
-              <label className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{t("bonus")}</label>
+              <label className="text-[10px] text-s-ink/40">{t("bonus")}</label>
               <input
                 type="number"
                 min={0}
                 value={form.bonus_sessions}
                 onChange={(e) => setForm({ ...form, bonus_sessions: Math.max(0, Number(e.target.value)) })}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
               />
             </div>
             <div>
-              <label className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{t("price")}</label>
+              <label className="text-[10px] text-s-ink/40">{t("price")}</label>
               <input
                 type="number"
                 min={0}
                 step={5}
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: Math.max(0, Number(e.target.value)) })}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink"
               />
             </div>
           </div>
@@ -190,7 +190,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
           <div className="flex gap-2 justify-end">
             <button
               onClick={() => { setShowForm(false); setFormError(null); }}
-              className="px-3 py-1.5 text-xs text-s-ink/50 dark:text-s-dm-text/50"
+              className="px-3 py-1.5 text-xs text-s-ink/50"
             >
               {t("cancel")}
             </button>
@@ -207,28 +207,28 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
 
       {/* Package list */}
       {packages.length === 0 ? (
-        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-6">{t("empty")}</p>
+        <p className="text-xs text-s-ink/30 text-center py-6">{t("empty")}</p>
       ) : (
         <div className="space-y-2 mb-6">
           {packages.map((pkg) => (
             <div
               key={pkg.id}
-              className="flex items-center justify-between bg-s-bg-surface/50 dark:bg-s-dm-bg/50 rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3"
+              className="flex items-center justify-between bg-s-bg-surface/50 rounded-[16px] border border-s-ink/5 p-3"
             >
               <div>
-                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{pkg.name}</p>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
+                <p className="text-sm font-medium text-s-ink">{pkg.name}</p>
+                <p className="text-xs text-s-ink/40">
                   {pkg.sessions} + {pkg.bonus_sessions} {t("bonus")} · {pkg.service_name} · {pkg.purchases_count} {t("sold")}
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <span className="data-text text-sm font-semibold text-s-ink dark:text-s-dm-text">
+                <span className="data-text text-sm font-semibold text-s-ink">
                   {formatCurrency(pkg.price, locale)}
                 </span>
                 <button
                   onClick={() => toggleActive(pkg)}
                   aria-label={pkg.is_active ? t("deactivate") : t("activate")}
-                  className="text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-coral transition-colors"
+                  className="text-s-ink/30 hover:text-s-coral transition-colors"
                 >
                   {pkg.is_active
                     ? <ToggleRight size={20} className="text-s-coral" />
@@ -243,18 +243,18 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
       {/* Purchases */}
       {purchases.length > 0 && (
         <div>
-          <h4 className="text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-2">
+          <h4 className="text-xs font-semibold text-s-ink/40 uppercase tracking-wide mb-2">
             {t("recentPurchases")}
           </h4>
           <div className="space-y-1">
             {purchases.slice(0, 10).map((p) => (
               <div
                 key={p.id}
-                className="flex items-center justify-between text-xs py-1.5 border-b border-s-ink/5 dark:border-white/5 last:border-0"
+                className="flex items-center justify-between text-xs py-1.5 border-b border-s-ink/5 last:border-0"
               >
-                <span className="text-s-ink dark:text-s-dm-text font-medium">{p.customer_name}</span>
-                <span className="text-s-ink/40 dark:text-s-dm-text/40">{p.package_name}</span>
-                <span className="data-text text-s-ink dark:text-s-dm-text">
+                <span className="text-s-ink font-medium">{p.customer_name}</span>
+                <span className="text-s-ink/40">{p.package_name}</span>
+                <span className="data-text text-s-ink">
                   {p.sessions_used}/{p.sessions_total}
                 </span>
               </div>

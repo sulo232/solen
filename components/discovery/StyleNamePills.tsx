@@ -25,7 +25,7 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
 
   return (
     <div>
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/30 mb-2">
         Style
       </p>
       <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
@@ -36,7 +36,7 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
             "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap border transition-colors duration-150",
             !selected
               ? "border-s-amber bg-s-amber/[0.08] text-s-amber"
-              : "border-s-ink/[0.07] dark:border-white/[0.07] text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-amber/40"
+              : "border-s-ink/[0.07] text-s-ink/50 hover:border-s-amber/40"
           )}
         >
           {t("all_styles")}
@@ -50,7 +50,7 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
               "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap border transition-colors duration-150",
               selected === s.name
                 ? "border-s-amber bg-s-amber/[0.08] text-s-amber"
-                : "border-s-ink/[0.07] dark:border-white/[0.07] text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-amber/40"
+                : "border-s-ink/[0.07] text-s-ink/50 hover:border-s-amber/40"
             )}
           >
             {s.name} ({s.count})

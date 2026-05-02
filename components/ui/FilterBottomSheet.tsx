@@ -83,12 +83,12 @@ export default function FilterBottomSheet({
 
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-heading font-bold text-s-ink dark:text-s-dm-text text-lg">
+          <h2 className="font-heading font-bold text-s-ink text-lg">
             {pill.label}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-pill hover:bg-s-ink/5 text-s-ink/60 dark:text-s-dm-text/60"
+            className="p-2 rounded-pill hover:bg-s-ink/5 text-s-ink/60"
             aria-label={t('close')}
           >
             <X size={18} aria-hidden />
@@ -108,7 +108,7 @@ export default function FilterBottomSheet({
                   'transition-colors duration-150',
                   active
                     ? 'bg-s-coral text-white border-s-coral'
-                    : 'bg-[--surface] text-s-ink dark:text-s-dm-text border-s-ink/8 hover:border-s-coral/40',
+                    : 'bg-[--surface] text-s-ink border-s-ink/8 hover:border-s-coral/40',
                 ].join(' ')}
                 aria-pressed={active}
               >
@@ -127,7 +127,7 @@ export default function FilterBottomSheet({
             onClick={() =>
               onFilterChange(activeFilters.filter((f) => f.pillId !== pill.id))
             }
-            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-sm font-heading text-s-ink/60 hover:text-s-ink dark:text-s-dm-text"
+            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-sm font-heading text-s-ink/60 hover:text-s-ink"
           >
             {t('reset')}
           </button>

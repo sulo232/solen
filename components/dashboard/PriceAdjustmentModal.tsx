@@ -90,14 +90,14 @@ export default function PriceAdjustmentModal({
 
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-[6px]" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="price-modal-title">
-      <div className="bg-white dark:bg-s-dm-surface rounded-[16px] p-6 mx-4 max-w-sm w-full shadow-surface" onClick={e => e.stopPropagation()}>
+      <div className="bg-white rounded-[16px] p-6 mx-4 max-w-sm w-full shadow-surface" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <DollarSign size={18} className="text-s-coral" />
-            <h3 id="price-modal-title" className="font-heading font-bold text-s-ink dark:text-s-dm-text">{t("title")}</h3>
+            <h3 id="price-modal-title" className="font-heading font-bold text-s-ink">{t("title")}</h3>
           </div>
-          <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors duration-150">
-            <X size={18} className="text-s-ink/40 dark:text-s-dm-text/40" />
+          <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150">
+            <X size={18} className="text-s-ink/40" />
           </button>
         </div>
 
@@ -105,9 +105,9 @@ export default function PriceAdjustmentModal({
           <div className="rounded-[16px] border border-s-amber/20 bg-s-amber-subtle p-4">
             <div className="flex items-center gap-2 mb-2">
               <AlertTriangle size={14} className="text-s-amber" />
-              <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("pending")}</p>
+              <p className="text-sm font-medium text-s-ink">{t("pending")}</p>
             </div>
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{t("pendingDesc")}</p>
+            <p className="text-xs text-s-ink/50">{t("pendingDesc")}</p>
             <p className="text-sm font-medium text-s-coral mt-2">
               {formatCurrency(pendingDispute.requested_amount, locale)}
             </p>
@@ -115,33 +115,33 @@ export default function PriceAdjustmentModal({
         ) : (
           <>
             <div className="mb-4">
-              <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("currentPrice")}</p>
-              <p className="data-text font-bold text-lg text-s-ink dark:text-s-dm-text">
+              <p className="text-xs text-s-ink/50 mb-1">{t("currentPrice")}</p>
+              <p className="data-text font-bold text-lg text-s-ink">
                 {formatCurrency(currentAmount, locale)}
               </p>
             </div>
 
             <div className="mb-3">
-              <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">{t("newPrice")}</label>
+              <label className="text-xs text-s-ink/50 mb-1 block">{t("newPrice")}</label>
               <input
                 type="number"
                 step="0.01"
                 min="0"
                 value={newPrice}
                 onChange={e => setNewPrice(e.target.value)}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
               />
-              <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 mt-0.5">{t("max")}</p>
+              <p className="text-[10px] text-s-ink/30 mt-0.5">{t("max")}</p>
             </div>
 
             <div className="mb-4">
-              <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">{t("reason")}</label>
+              <label className="text-xs text-s-ink/50 mb-1 block">{t("reason")}</label>
               <textarea
                 value={reason}
                 onChange={e => setReason(e.target.value)}
                 rows={3}
                 placeholder={t("reasonPlaceholder")}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
               />
             </div>
 

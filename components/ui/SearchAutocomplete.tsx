@@ -189,7 +189,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           onKeyDown={handleKeyDown}
           onFocus={() => { if (services.length || salons.length) setOpen(true); }}
           placeholder={t("placeholder")}
-          className="w-full pl-9 pr-8 py-2.5 bg-transparent text-sm text-s-ink dark:text-s-dm-text placeholder:italic placeholder:text-s-ink/35 dark:placeholder:text-s-dm-text/30 focus:outline-none focus-visible:shadow-none focus-visible:border-transparent transition-colors duration-150"
+          className="w-full pl-9 pr-8 py-2.5 bg-transparent text-sm text-s-ink placeholder:italic placeholder:text-s-ink/35:text-s-dm-text/30 focus:outline-none focus-visible:shadow-none focus-visible:border-transparent transition-colors duration-150"
         />
         {query && (
           <button
@@ -316,7 +316,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           {suggestedCategory && suggestedCategory !== category && (
             <div className="px-3 py-2.5 flex items-center gap-2 bg-s-coral/5 border-t border-s-ink/5">
               <Search size={14} className="text-s-coral shrink-0" />
-              <span className="text-xs text-s-ink/60 dark:text-s-dm-text/60 font-body">
+              <span className="text-xs text-s-ink/60 font-body">
                 {t("didYouMean")} <strong>{categoryLabels[suggestedCategory]}</strong>?
               </span>
               <Link
@@ -341,7 +341,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
             transition={{ duration: 0.15, ease: [0.23, 1, 0.32, 1] }}
             className="absolute top-full left-0 right-0 mt-1.5 glass-frost rounded-[12px] shadow-v5-float z-50 px-4 py-5 text-center"
           >
-            <p className="text-sm font-body text-s-ink/40 dark:text-s-dm-text/40">{noResultsMsg}</p>
+            <p className="text-sm font-body text-s-ink/40">{noResultsMsg}</p>
           </motion.div>
         )}
       </AnimatePresence>

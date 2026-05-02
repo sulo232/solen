@@ -114,11 +114,11 @@ export default function RecentlyViewed() {
                   <ImageFallback salonName={salon.name} className="absolute inset-0" />
                 )}
               </div>
-              <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate group-hover:text-s-coral transition-colors">
+              <p className="text-sm font-medium text-s-ink truncate group-hover:text-s-coral transition-colors">
                 {salon.name}
               </p>
               {salon.average_rating > 0 && (
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 data-text flex items-center gap-0.5">
+                <p className="text-xs text-s-ink/40 data-text flex items-center gap-0.5">
                   <Star size={10} className="fill-s-coral text-s-coral" /> {salon.average_rating.toFixed(1)}
                 </p>
               )}

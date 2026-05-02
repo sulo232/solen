@@ -114,7 +114,7 @@ export default function RequestList({
             className={`px-3 py-1.5 text-xs font-medium rounded-pill whitespace-nowrap transition-colors ${
               activeTab === tab
                 ? "bg-s-coral text-white"
-                : "bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg/80"
+                : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-bg-surface:bg-s-dm-bg/80"
             }`}
           >
             {STATUS_LABELS[tab]}
@@ -124,14 +124,14 @@ export default function RequestList({
 
       {/* Copy for Claude section */}
       {requests.length > 0 && (
-        <div className="border border-s-ink/10 dark:border-s-dm-text/10 rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50 dark:bg-s-dm-bg/50">
+        <div className="border border-s-ink/10 rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50">
           <div className="flex items-center gap-1.5">
             <ClipboardList size={14} className="text-s-coral" />
-            <p className="text-xs font-medium text-s-ink dark:text-s-dm-text">
+            <p className="text-xs font-medium text-s-ink">
               Copy for Claude Code
             </p>
           </div>
-          <p className="text-[10px] text-s-ink/50 dark:text-s-dm-text/50">
+          <p className="text-[10px] text-s-ink/50">
             Select requests with checkboxes, then copy and paste into Claude Code.
           </p>
           <div className="flex gap-1.5 flex-wrap">
@@ -154,7 +154,7 @@ export default function RequestList({
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                   copiedAll
                     ? "bg-s-success text-white"
-                    : "bg-s-ink dark:bg-s-dm-text text-white dark:text-s-dm-bg hover:bg-s-ink/80 dark:hover:bg-s-dm-text/80"
+                    : "bg-s-ink text-white hover:bg-s-ink/80:bg-s-dm-text/80"
                 }`}
               >
                 {copiedAll ? <Check size={12} /> : <Copy size={12} />}
@@ -167,7 +167,7 @@ export default function RequestList({
 
       {/* Request cards */}
       {filtered.length === 0 ? (
-        <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 text-center py-8">
+        <p className="text-sm text-s-ink/40 text-center py-8">
           No requests found.
         </p>
       ) : (
@@ -175,7 +175,7 @@ export default function RequestList({
           {filtered.map((r) => (
             <div
               key={r.id}
-              className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-s-dm-text/10 shadow-warm-md overflow-hidden"
+              className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden"
             >
               <div className="p-3 space-y-2">
                 <div className="flex items-start gap-2">
@@ -184,17 +184,17 @@ export default function RequestList({
                     type="checkbox"
                     checked={selectedIds.has(r.id)}
                     onChange={() => toggleSelection(r.id)}
-                    className="mt-1 rounded border-s-ink/20 dark:border-s-dm-text/20 text-s-coral focus:ring-s-coral/30 w-3.5 h-3.5 flex-shrink-0"
+                    className="mt-1 rounded border-s-ink/20 text-s-coral focus:ring-s-coral/30 w-3.5 h-3.5 flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-mono text-s-ink/50 dark:text-s-dm-text/50 truncate">
+                    <p className="text-xs font-mono text-s-ink/50 truncate">
                       {r.page_url}
                     </p>
-                    <p className="text-sm text-s-ink dark:text-s-dm-text mt-0.5 line-clamp-2">
+                    <p className="text-sm text-s-ink mt-0.5 line-clamp-2">
                       {r.description}
                     </p>
                     {r.element_tag && (
-                      <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 font-mono mt-0.5 truncate">
+                      <p className="text-[10px] text-s-ink/40 font-mono mt-0.5 truncate">
                         &lt;{r.element_tag}&gt; {r.element_text ? `"${r.element_text.slice(0, 50)}"` : ""}
                       </p>
                     )}
@@ -203,14 +203,14 @@ export default function RequestList({
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.status === "done" ? "bg-s-success-bg text-s-success" :
                       r.status === "in_progress" ? "bg-s-amber-subtle text-s-amber-text" :
-                      "bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/50 dark:text-s-dm-text/50"
+                      "bg-s-bg-sunken text-s-ink/50"
                     }`}>
                       {r.status.replace(/_/g, " ")}
                     </span>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.priority === "high" ? "bg-s-error-bg text-s-error" :
                       r.priority === "medium" ? "bg-s-amber-subtle text-s-amber-text" :
-                      "bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/40 dark:text-s-dm-text/40"
+                      "bg-s-bg-sunken text-s-ink/40"
                     }`}>
                       {r.priority}
                     </span>
@@ -218,7 +218,7 @@ export default function RequestList({
                 </div>
 
                 <div className="flex items-center gap-2 pl-5.5">
-                  <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30">
+                  <span className="text-[10px] text-s-ink/30">
                     {new Date(r.created_at).toLocaleString()}
                   </span>
                 </div>
@@ -229,7 +229,7 @@ export default function RequestList({
                   {r.status !== "pending" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "pending")}
-                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink/60 hover:text-s-ink:text-s-dm-text transition-colors"
                     >
                       Reset
                     </button>
@@ -237,7 +237,7 @@ export default function RequestList({
                   {r.status !== "in_progress" && r.status !== "done" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "in_progress")}
-                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken text-s-ink/60 hover:text-s-ink:text-s-dm-text transition-colors"
                     >
                       In Progress
                     </button>
@@ -267,7 +267,7 @@ export default function RequestList({
                   {/* Expand details */}
                   <button
                     onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
-                    className="text-[10px] px-2 py-0.5 rounded-btn bg-s-ink/5 dark:bg-s-dm-text/5 text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors flex items-center gap-1"
+                    className="text-[10px] px-2 py-0.5 rounded-btn bg-s-ink/5 text-s-ink/50 hover:text-s-ink:text-s-dm-text transition-colors flex items-center gap-1"
                   >
                     {expandedId === r.id ? <ChevronUp size={9} /> : <ChevronDown size={9} />}
                     Details
@@ -277,7 +277,7 @@ export default function RequestList({
                   <button
                     onClick={() => onDelete(r.id)}
                     disabled={deletingId === r.id}
-                    className="text-[10px] px-2 py-0.5 rounded-btn bg-s-error-bg dark:bg-s-error/10 text-s-error hover:bg-s-error/15 transition-colors flex items-center gap-1 disabled:opacity-50 ml-auto"
+                    className="text-[10px] px-2 py-0.5 rounded-btn bg-s-error-bg text-s-error hover:bg-s-error/15 transition-colors flex items-center gap-1 disabled:opacity-50 ml-auto"
                   >
                     {deletingId === r.id ? <Loader2 size={9} className="animate-spin" /> : <Trash2 size={9} />}
                     Delete
@@ -286,22 +286,22 @@ export default function RequestList({
 
                 {/* Expanded details - shows selector, element info, and Claude prompt preview */}
                 {expandedId === r.id && (
-                  <div className="space-y-2 pl-5.5 pt-1 border-t border-s-ink/5 dark:border-s-dm-text/5 mt-1">
+                  <div className="space-y-2 pl-5.5 pt-1 border-t border-s-ink/5 mt-1">
                     {r.element_selector && (
                       <div>
-                        <p className="text-[10px] font-medium text-s-ink/50 dark:text-s-dm-text/50">Selector</p>
-                        <p className="text-[10px] font-mono text-s-ink/40 dark:text-s-dm-text/40 break-all">{r.element_selector}</p>
+                        <p className="text-[10px] font-medium text-s-ink/50">Selector</p>
+                        <p className="text-[10px] font-mono text-s-ink/40 break-all">{r.element_selector}</p>
                       </div>
                     )}
                     {r.component_hint && (
                       <div>
-                        <p className="text-[10px] font-medium text-s-ink/50 dark:text-s-dm-text/50">Component</p>
-                        <p className="text-[10px] font-mono text-s-ink/40 dark:text-s-dm-text/40">{r.component_hint}</p>
+                        <p className="text-[10px] font-medium text-s-ink/50">Component</p>
+                        <p className="text-[10px] font-mono text-s-ink/40">{r.component_hint}</p>
                       </div>
                     )}
                     <div>
-                      <p className="text-[10px] font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Claude Prompt Preview</p>
-                      <pre className="text-[10px] bg-s-bg-sunken dark:bg-s-dm-bg rounded-btn p-2 overflow-auto max-h-40 text-s-ink/60 dark:text-s-dm-text/60 whitespace-pre-wrap">
+                      <p className="text-[10px] font-medium text-s-ink/50 mb-1">Claude Prompt Preview</p>
+                      <pre className="text-[10px] bg-s-bg-sunken rounded-btn p-2 overflow-auto max-h-40 text-s-ink/60 whitespace-pre-wrap">
                         {formatRequestForClaude(r)}
                       </pre>
                     </div>
@@ -318,7 +318,7 @@ export default function RequestList({
         <button
           onClick={onLoadMore}
           disabled={loading}
-          className="w-full py-2 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors flex items-center justify-center gap-2"
+          className="w-full py-2 text-xs text-s-ink/50 hover:text-s-ink:text-s-dm-text transition-colors flex items-center justify-center gap-2"
         >
           {loading ? <Spinner size="sm" /> : null}
           {loading ? "Loading..." : "Load more"}

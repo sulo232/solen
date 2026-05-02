@@ -46,29 +46,29 @@ export default function StaffPortfolio({ staff, salonId, instagramUrl, onBookWit
   }, [salonId, staff.id]);
 
   return (
-    <div className="p-4 rounded-[16px] bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
+    <div className="p-4 rounded-[16px] bg-[--raised] border border-s-ink/5">
       {/* Header */}
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-12 h-12 rounded-full bg-s-ink/5 dark:bg-white/5 overflow-hidden shrink-0">
+        <div className="w-12 h-12 rounded-full bg-s-ink/5 overflow-hidden shrink-0">
           {staff.avatar_url ? (
             <Image src={staff.avatar_url} alt={staff.name} width={48} height={48} className="object-cover w-full h-full" />
           ) : (
-            <div className="flex items-center justify-center h-full text-lg font-medium text-s-ink/30 dark:text-s-dm-text/30">
+            <div className="flex items-center justify-center h-full text-lg font-medium text-s-ink/30">
               {staff.name.charAt(0)}
             </div>
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">{staff.name}</h4>
+          <h4 className="text-sm font-medium text-s-ink truncate">{staff.name}</h4>
           {staff.specialties.length > 0 && (
-            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 truncate">
+            <p className="text-xs text-s-ink/40 truncate">
               {staff.specialties.join(", ")}
             </p>
           )}
         </div>
         <div className="flex items-center gap-1.5">
           {instagramUrl && (
-            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-full hover:bg-s-ink/5 dark:hover:bg-white/5 text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-coral transition-colors">
+            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-full hover:bg-s-ink/5:bg-white/5 text-s-ink/30 hover:text-s-coral transition-colors">
               <Instagram size={14} />
             </a>
           )}
@@ -87,7 +87,7 @@ export default function StaffPortfolio({ staff, salonId, instagramUrl, onBookWit
       {loading ? (
         <div className="grid grid-cols-3 gap-1.5">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="aspect-square rounded-btn bg-s-ink/5 dark:bg-white/5 animate-pulse" />
+            <div key={i} className="aspect-square rounded-btn bg-s-ink/5 animate-pulse" />
           ))}
         </div>
       ) : images.length > 0 ? (
@@ -99,7 +99,7 @@ export default function StaffPortfolio({ staff, salonId, instagramUrl, onBookWit
           ))}
         </div>
       ) : (
-        <p className="text-xs text-s-ink/20 dark:text-s-dm-text/20 text-center py-4">No portfolio yet</p>
+        <p className="text-xs text-s-ink/20 text-center py-4">No portfolio yet</p>
       )}
     </div>
   );

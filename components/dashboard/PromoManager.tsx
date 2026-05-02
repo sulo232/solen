@@ -108,7 +108,7 @@ export default function PromoManager() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{t("title")}</h2>
+        <h2 className="font-heading font-bold text-lg text-s-ink">{t("title")}</h2>
         <button
           onClick={() => setShowForm(!showForm)}
           className="flex items-center gap-1.5 px-3 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150"
@@ -126,32 +126,32 @@ export default function PromoManager() {
 
       {/* Create form */}
       {showForm && (
-        <form onSubmit={handleCreate} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/10 shadow-warm-md p-5 space-y-4">
+        <form onSubmit={handleCreate} className="bg-white rounded-[16px] border border-s-ink/5 shadow-warm-md p-5 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{t("code")}</label>
+              <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("code")}</label>
               <input
                 type="text"
                 value={form.code}
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                 placeholder="SOMMER2026"
                 required
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{t("discountType")}</label>
+              <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("discountType")}</label>
               <select
                 value={form.discount_type}
                 onChange={(e) => setForm({ ...form, discount_type: e.target.value as "percent" | "fixed" })}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink outline-none"
               >
                 <option value="percent">{t("percent")}</option>
                 <option value="fixed">{t("fixed")}</option>
               </select>
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">
+              <label className="text-xs font-medium text-s-ink/60 mb-1 block">
                 {t("discountValue")} {form.discount_type === "percent" ? "(%)" : "(CHF)"}
               </label>
               <input
@@ -161,37 +161,37 @@ export default function PromoManager() {
                 min={1}
                 max={form.discount_type === "percent" ? 100 : 999}
                 required
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{t("maxUses")}</label>
+              <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("maxUses")}</label>
               <input
                 type="number"
                 value={form.max_uses}
                 onChange={(e) => setForm({ ...form, max_uses: e.target.value })}
                 placeholder={t("unlimited")}
                 min={1}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{t("minAmount")}</label>
+              <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("minAmount")}</label>
               <input
                 type="number"
                 value={form.min_booking_amount}
                 onChange={(e) => setForm({ ...form, min_booking_amount: parseFloat(e.target.value) || 0 })}
                 min={0}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{t("validUntil")}</label>
+              <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("validUntil")}</label>
               <input
                 type="date"
                 value={form.valid_until}
                 onChange={(e) => setForm({ ...form, valid_until: e.target.value })}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink outline-none"
               />
             </div>
           </div>
@@ -207,7 +207,7 @@ export default function PromoManager() {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 rounded-btn bg-s-bg-sunken dark:bg-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-sm hover:bg-s-sand dark:hover:bg-white/15 transition-colors"
+              className="px-4 py-2 rounded-btn bg-s-bg-sunken text-s-ink/60 text-sm hover:bg-s-sand:bg-white/15 transition-colors"
             >
               {t("cancel")}
             </button>
@@ -217,7 +217,7 @@ export default function PromoManager() {
 
       {/* Code list */}
       {codes.length === 0 ? (
-        <div className="text-center py-12 text-s-ink/40 dark:text-s-dm-text/40 text-sm">
+        <div className="text-center py-12 text-s-ink/40 text-sm">
           <Tag className="w-8 h-8 mx-auto mb-2 opacity-40" />
           {t("empty")}
         </div>
@@ -226,7 +226,7 @@ export default function PromoManager() {
           {codes.map((promo) => (
             <div
               key={promo.id}
-              className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/10 p-4 flex items-center justify-between"
+              className="bg-white rounded-[16px] border border-s-ink/5 p-4 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
                 <div className={`w-9 h-9 rounded-btn flex items-center justify-center ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-s-bg-sunken text-s-ink/30"}`}>
@@ -234,16 +234,16 @@ export default function PromoManager() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="data-text font-semibold text-sm text-s-ink dark:text-s-dm-text">{promo.code}</span>
+                    <span className="data-text font-semibold text-sm text-s-ink">{promo.code}</span>
                     <button
                       onClick={() => copyCode(promo.code, promo.id)}
                       aria-label={t("copyAriaLabel", { code: promo.code })}
-                      className="p-0.5 hover:bg-s-bg-sunken dark:hover:bg-white/10 rounded transition-colors"
+                      className="p-0.5 hover:bg-s-bg-sunken:bg-white/10 rounded transition-colors"
                     >
                       {copiedId === promo.id ? <Check className="w-3 h-3 text-s-coral" /> : <Copy className="w-3 h-3 text-s-ink/30" />}
                     </button>
                   </div>
-                  <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+                  <p className="text-xs text-s-ink/50">
                     {promo.discount_type === "percent" ? `${promo.discount_value}%` : `${formatCurrency(promo.discount_value, locale)}`} {t("discount")}
                     {promo.max_uses ? ` · ${promo.current_uses}/${promo.max_uses} ${t("used")}` : ` · ${promo.current_uses}x ${t("used")}`}
                     {promo.valid_until && ` · ${t("until")} ${new Date(promo.valid_until).toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH")}`}

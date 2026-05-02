@@ -64,7 +64,7 @@ export default function RegrowthConfig({ salonId }: RegrowthConfigProps) {
 
   if (loading)
     return (
-      <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">
+      <p className="text-sm text-s-ink/40 py-4">
         {t("loading")}
       </p>
     );
@@ -79,7 +79,7 @@ export default function RegrowthConfig({ salonId }: RegrowthConfigProps) {
       </div>
 
       {services.length === 0 ? (
-        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-6">
+        <p className="text-xs text-s-ink/30 text-center py-6">
           {t("no_waxing_services")}
         </p>
       ) : (
@@ -87,13 +87,13 @@ export default function RegrowthConfig({ salonId }: RegrowthConfigProps) {
           {services.map((svc) => (
             <div
               key={svc.id}
-              className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-3 bg-[--raised] dark:bg-s-dm-surface"
+              className="rounded-[12px] border border-s-ink/[0.06] p-3 bg-[--raised]"
             >
               <div className="flex items-center gap-2 mb-2">
-                <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">
+                <p className="text-sm font-heading font-semibold text-s-ink">
                   {svc.name_de}
                 </p>
-                <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 flex items-center gap-1">
+                <span className="text-[10px] text-s-ink/30 flex items-center gap-1">
                   <Clock size={10} />
                   {svc.reminder_cycle_days
                     ? t("cycle_active", { days: svc.reminder_cycle_days })
@@ -109,7 +109,7 @@ export default function RegrowthConfig({ salonId }: RegrowthConfigProps) {
                     className={`rounded-[12px] border px-4 py-2 text-xs font-heading font-semibold transition-colors duration-150 ${
                       svc.reminder_cycle_days === opt.value
                         ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                        : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] text-s-ink/50 dark:text-s-dm-text/50"
+                        : "border-s-ink/[0.06] text-s-ink/50"
                     }`}
                   >
                     {t(opt.labelKey)}
@@ -119,7 +119,7 @@ export default function RegrowthConfig({ salonId }: RegrowthConfigProps) {
                   <button
                     onClick={() => updateCycle(svc.id, null)}
                     aria-label={t("cycle_clear")}
-                    className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] px-3 py-2 text-xs font-heading text-s-ink/30 dark:text-s-dm-text/30 transition-colors duration-150 hover:text-s-coral hover:border-s-coral/40"
+                    className="rounded-[12px] border border-s-ink/[0.06] px-3 py-2 text-xs font-heading text-s-ink/30 transition-colors duration-150 hover:text-s-coral hover:border-s-coral/40"
                   >
                     {t("cycle_clear")}
                   </button>

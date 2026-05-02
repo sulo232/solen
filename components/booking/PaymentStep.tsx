@@ -91,12 +91,12 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
         <button
           onClick={handleBack}
           aria-label={t('back')}
-          className="p-2 rounded-pill hover:bg-s-ink/[0.04] dark:hover:bg-white/[0.04] transition-colors"
+          className="p-2 rounded-pill hover:bg-s-ink/[0.04]:bg-white/[0.04] transition-colors"
         >
-          <ChevronLeft size={20} className="text-s-ink dark:text-s-dm-text" />
+          <ChevronLeft size={20} className="text-s-ink" />
         </button>
         <div>
-          <h2 className="text-2xl font-display font-bold text-s-ink dark:text-s-dm-text">
+          <h2 className="text-2xl font-display font-bold text-s-ink">
             {t('title')}
           </h2>
         </div>
@@ -109,16 +109,16 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
           onClick={() => handleSelectPaymentMethod('online')}
           className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-[border-color,background-color] duration-150 ${
             formData.paymentMethod === 'online'
-              ? 'border-s-coral bg-s-coral/[0.04] dark:bg-s-coral/[0.08]'
-              : 'border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-coral/40 bg-[--raised] dark:bg-s-dm-surface'
+              ? 'border-s-coral bg-s-coral/[0.04]'
+              : 'border-s-ink/[0.08] hover:border-s-coral/40 bg-[--raised]'
           }`}
         >
-          <CreditCard size={24} className="text-s-ink/60 dark:text-s-dm-text/60" />
+          <CreditCard size={24} className="text-s-ink/60" />
           <div className="flex-1 text-left">
-            <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
+            <h3 className="font-heading font-bold text-sm text-s-ink">
               {t('online')}
             </h3>
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
+            <p className="text-xs text-s-ink/50 mt-0.5">
               {t('onlineDescription')}
             </p>
           </div>
@@ -126,7 +126,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
             className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-[border-color,background-color] duration-150 ${
               formData.paymentMethod === 'online'
                 ? 'bg-s-coral border-s-coral'
-                : 'border-s-ink/20 dark:border-white/20'
+                : 'border-s-ink/20'
             }`}
           >
             {formData.paymentMethod === 'online' && (
@@ -140,16 +140,16 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
           onClick={() => handleSelectPaymentMethod('in_person')}
           className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-[border-color,background-color] duration-150 ${
             formData.paymentMethod === 'in_person'
-              ? 'border-s-coral bg-s-coral/[0.04] dark:bg-s-coral/[0.08]'
-              : 'border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-coral/40 bg-[--raised] dark:bg-s-dm-surface'
+              ? 'border-s-coral bg-s-coral/[0.04]'
+              : 'border-s-ink/[0.08] hover:border-s-coral/40 bg-[--raised]'
           }`}
         >
           <Wallet size={24} className="text-s-amber" />
           <div className="flex-1 text-left">
-            <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
+            <h3 className="font-heading font-bold text-sm text-s-ink">
               {t('inPerson')}
             </h3>
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
+            <p className="text-xs text-s-ink/50 mt-0.5">
               {t('inPersonDescription')}
             </p>
           </div>
@@ -157,7 +157,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
             className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-[border-color,background-color] duration-150 ${
               formData.paymentMethod === 'in_person'
                 ? 'bg-s-coral border-s-coral'
-                : 'border-s-ink/20 dark:border-white/20'
+                : 'border-s-ink/20'
             }`}
           >
             {formData.paymentMethod === 'in_person' && (
@@ -168,17 +168,17 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
       </div>
 
       {/* Order summary */}
-      <div className="bg-[--raised] dark:bg-s-dm-surface rounded-card p-4 border border-s-ink/[0.06] dark:border-white/[0.08]">
-        <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text mb-3">
+      <div className="bg-[--raised] rounded-card p-4 border border-s-ink/[0.06]">
+        <h3 className="font-heading font-bold text-sm text-s-ink mb-3">
           {tGeneral('cart.total')}
         </h3>
         <div className="flex items-center justify-between">
-          <span className="text-s-ink/60 dark:text-s-dm-text/60 text-sm">
+          <span className="text-s-ink/60 text-sm">
             {formData.services.length > 0
               ? `${formData.services[0].name_de} (${formData.services[0].duration_minutes} min)`
               : 'Service'}
           </span>
-          <span className="font-heading font-bold text-s-ink dark:text-s-dm-text">
+          <span className="font-heading font-bold text-s-ink">
             {formatCurrency(formData.totalPrice)}
           </span>
         </div>
@@ -186,18 +186,18 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
 
       {/* Error message */}
       {error && (
-        <div className="p-4 rounded-[12px] bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-          <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
+        <div className="p-4 rounded-[12px] bg-red-50 border border-red-200">
+          <p className="text-sm text-red-800">{error}</p>
         </div>
       )}
 
       {/* Bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] dark:border-white/[0.08] bg-[--raised] dark:bg-s-dm-surface p-4">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] bg-[--raised] p-4">
         <div className="max-w-2xl mx-auto px-4 flex gap-3">
           <button
             onClick={handleBack}
             disabled={isSubmitting}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter,border-color,background-color] duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>

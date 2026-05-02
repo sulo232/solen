@@ -80,20 +80,20 @@ export default function StaffInvitePage() {
   const l = labels[locale as "de" | "en"] ?? labels.de;
 
   return (
-    <div className="min-h-screen bg-s-bg-surface dark:bg-s-dm-bg flex items-center justify-center p-4">
+    <div className="min-h-screen bg-s-bg-surface flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md max-w-md w-full p-8"
+        className="bg-white rounded-[12px] shadow-warm-md max-w-md w-full p-8"
       >
         {success ? (
           <div className="text-center">
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-coral/10">
               <Check size={24} className="text-s-coral" />
             </div>
-            <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text mb-2">{l.success}</h2>
-            {salonName && <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-1">{salonName}</p>}
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">{l.successDesc}</p>
+            <h2 className="font-heading font-bold text-lg text-s-ink mb-2">{l.success}</h2>
+            {salonName && <p className="text-sm text-s-ink/50 mb-1">{salonName}</p>}
+            <p className="text-sm text-s-ink/50 mb-6">{l.successDesc}</p>
             <Link href={`/${locale}/dashboard`} className="inline-block px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors">
               {l.goToDashboard}
             </Link>
@@ -103,7 +103,7 @@ export default function StaffInvitePage() {
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-amber-subtle">
               <AlertTriangle size={24} className="text-s-amber" />
             </div>
-            <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70">{error === "Kein Token angegeben" ? l.noToken : error}</p>
+            <p className="text-sm text-s-ink/70">{error === "Kein Token angegeben" ? l.noToken : error}</p>
           </div>
         ) : (
           <>
@@ -112,12 +112,12 @@ export default function StaffInvitePage() {
                 <Users size={22} className="text-s-coral" />
               </div>
               <div>
-                <h1 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{l.title}</h1>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{l.role}</p>
+                <h1 className="font-heading font-bold text-lg text-s-ink">{l.title}</h1>
+                <p className="text-xs text-s-ink/40">{l.role}</p>
               </div>
             </div>
 
-            <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-6">{l.desc}</p>
+            <p className="text-sm text-s-ink/60 mb-6">{l.desc}</p>
 
             <button
               onClick={handleAccept}

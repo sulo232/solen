@@ -46,7 +46,7 @@ export default function CategoryTabBar({ activeCategory, onChange }: CategoryTab
               "flex-shrink-0 px-4 py-3 rounded-pill text-xs font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
               isActive
                 ? "bg-s-coral text-white shadow-coral-glow"
-                : "bg-s-bg-surface dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 border border-s-ink/10 dark:border-white/10 hover:bg-s-ink/[0.08] dark:hover:bg-white/[0.12]",
+                : "bg-s-bg-surface text-s-ink/70 border border-s-ink/10 hover:bg-s-ink/[0.08]:bg-white/[0.12]",
             ].join(" ")}
             style={
               isActive

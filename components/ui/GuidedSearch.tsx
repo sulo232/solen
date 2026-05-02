@@ -351,7 +351,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="w-full flex items-center bg-white dark:bg-s-dm-raised"
+            className="w-full flex items-center bg-white"
             style={{
               borderRadius: "999px",
               border: "1px solid rgba(26,18,9,0.10)",
@@ -364,46 +364,46 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
             <button
               onClick={() => open(1)}
               aria-label={t("openWas" as Parameters<typeof t>[0])}
-              className="flex-1 flex flex-col justify-center px-4 py-2 rounded-l-full hover:bg-s-ink/[0.03] dark:hover:bg-white/[0.03] transition-colors min-w-0"
+              className="flex-1 flex flex-col justify-center px-4 py-2 rounded-l-full hover:bg-s-ink/[0.03]:bg-white/[0.03] transition-colors min-w-0"
             >
-              <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink dark:text-s-dm-text">
+              <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink">
                 {t("segWas" as Parameters<typeof t>[0])}
               </span>
-              <span className={`text-[12px] font-body truncate ${wasLabel ? "font-semibold text-s-ink dark:text-s-dm-text" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
+              <span className={`text-[12px] font-body truncate ${wasLabel ? "font-semibold text-s-ink" : "text-s-ink/40"}`}>
                 {wasLabel ?? t("segWasPlaceholder" as Parameters<typeof t>[0])}
               </span>
             </button>
 
             {/* Divider */}
-            <div className="w-px h-6 bg-s-ink/10 dark:bg-white/10 shrink-0" aria-hidden="true" />
+            <div className="w-px h-6 bg-s-ink/10 shrink-0" aria-hidden="true" />
 
             {/* Wo segment */}
             <button
               onClick={() => open(2)}
               aria-label={t("openWo" as Parameters<typeof t>[0])}
-              className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-ink/[0.03] dark:hover:bg-white/[0.03] transition-colors min-w-0"
+              className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-ink/[0.03]:bg-white/[0.03] transition-colors min-w-0"
             >
-              <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink dark:text-s-dm-text">
+              <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink">
                 {t("segWo" as Parameters<typeof t>[0])}
               </span>
-              <span className="text-[12px] font-body font-semibold text-s-ink dark:text-s-dm-text truncate">
+              <span className="text-[12px] font-body font-semibold text-s-ink truncate">
                 {woLabel}
               </span>
             </button>
 
             {/* Divider */}
-            <div className="w-px h-6 bg-s-ink/10 dark:bg-white/10 shrink-0" aria-hidden="true" />
+            <div className="w-px h-6 bg-s-ink/10 shrink-0" aria-hidden="true" />
 
             {/* Wann segment */}
             <button
               onClick={() => open(3)}
               aria-label={t("openWann" as Parameters<typeof t>[0])}
-              className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-ink/[0.03] dark:hover:bg-white/[0.03] transition-colors min-w-0"
+              className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-ink/[0.03]:bg-white/[0.03] transition-colors min-w-0"
             >
-              <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink dark:text-s-dm-text">
+              <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink">
                 {t("segWann" as Parameters<typeof t>[0])}
               </span>
-              <span className={`text-[12px] font-body truncate ${dateKey !== "any" ? "font-semibold text-s-ink dark:text-s-dm-text" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
+              <span className={`text-[12px] font-body truncate ${dateKey !== "any" ? "font-semibold text-s-ink" : "text-s-ink/40"}`}>
                 {wannLabel}
               </span>
             </button>
@@ -450,7 +450,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
               initial={{ y: "100%" }}
               animate={{ y: 0, transition: { duration: 0.32, ease: [0.32, 0.72, 0, 1] } }}
               exit={{ y: "100%", transition: { duration: 0.24, ease: "easeIn" } }}
-              className="fixed bottom-0 left-0 right-0 z-[70] bg-white dark:bg-s-dm-surface flex flex-col"
+              className="fixed bottom-0 left-0 right-0 z-[70] bg-white flex flex-col"
               style={{
                 borderRadius: "24px 24px 0 0",
                 maxHeight: "88svh",
@@ -459,11 +459,11 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
             >
               {/* Sticky sheet header — title + close */}
               <div
-                className="shrink-0 sticky top-0 z-[1] bg-white dark:bg-s-dm-surface"
+                className="shrink-0 sticky top-0 z-[1] bg-white"
                 style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}
               >
                 <div className="flex items-center justify-between px-6 pt-4 pb-3">
-                  <span className="font-heading font-bold text-[20px] text-s-ink dark:text-s-dm-text leading-tight">
+                  <span className="font-heading font-bold text-[20px] text-s-ink leading-tight">
                     {t("steps.was.title" as Parameters<typeof t>[0])}
                   </span>
                   <button
@@ -519,19 +519,19 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="flex items-center justify-between py-3 border-b border-s-ink/[0.08] dark:border-white/[0.07]">
+                        <div className="flex items-center justify-between py-3 border-b border-s-ink/[0.08]">
                           <div>
                             <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
                               {t("segWas" as Parameters<typeof t>[0])}
                             </div>
-                            <div className="font-heading font-bold text-[13px] text-s-ink dark:text-s-dm-text">
+                            <div className="font-heading font-bold text-[13px] text-s-ink">
                               {category ? tNav(category as Parameters<typeof tNav>[0]) : t("segWasPlaceholder" as Parameters<typeof t>[0])}
                               {service ? ` · ${service}` : ""}
                             </div>
                           </div>
                           <button
                             onClick={() => { setStep(1); setShowServices(false); }}
-                            className="text-[11px] font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 underline underline-offset-2 hover:text-s-ink dark:hover:text-s-dm-text transition-colors ml-4"
+                            className="text-[11px] font-heading font-semibold text-s-ink/50 underline underline-offset-2 hover:text-s-ink:text-s-dm-text transition-colors ml-4"
                           >
                             {t("change" as Parameters<typeof t>[0])}
                           </button>
@@ -551,18 +551,18 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="flex items-center justify-between py-3 border-b border-s-ink/[0.08] dark:border-white/[0.07]">
+                        <div className="flex items-center justify-between py-3 border-b border-s-ink/[0.08]">
                           <div>
                             <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
                               {t("segWo" as Parameters<typeof t>[0])}
                             </div>
-                            <div className="font-heading font-bold text-[13px] text-s-ink dark:text-s-dm-text">
+                            <div className="font-heading font-bold text-[13px] text-s-ink">
                               {city ? getCityLabel(city) : t("steps.where.allSwitzerland")}
                             </div>
                           </div>
                           <button
                             onClick={() => setStep(2)}
-                            className="text-[11px] font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 underline underline-offset-2 hover:text-s-ink dark:hover:text-s-dm-text transition-colors ml-4"
+                            className="text-[11px] font-heading font-semibold text-s-ink/50 underline underline-offset-2 hover:text-s-ink:text-s-dm-text transition-colors ml-4"
                           >
                             {t("change" as Parameters<typeof t>[0])}
                           </button>
@@ -588,12 +588,12 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                             {recents.length > 0 && (
                               <div className="pt-4 pb-2">
                                 <div className="flex items-center justify-between mb-2">
-                                  <span className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 dark:text-s-dm-text/40">
+                                  <span className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40">
                                     {locale === "de" ? "Zuletzt gesucht" : locale === "fr" ? "Recherches récentes" : locale === "it" ? "Ricerche recenti" : "Recent searches"}
                                   </span>
                                   <button
                                     onClick={clearRecents}
-                                    className="text-[11px] font-body text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+                                    className="text-[11px] font-body text-s-ink/40 hover:text-s-ink:text-s-dm-text transition-colors"
                                   >
                                     {locale === "de" ? "Alle löschen" : locale === "fr" ? "Tout effacer" : locale === "it" ? "Cancella tutto" : "Clear all"}
                                   </button>
@@ -612,10 +612,10 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                           navigate();
                                         }}
                                         aria-label={label}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:text-s-ink dark:hover:text-s-dm-text hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.06] transition-colors"
+                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 hover:text-s-ink:text-s-dm-text hover:bg-s-ink/[0.06]:bg-white/[0.06] transition-colors"
                                         style={{ border: "1px solid rgba(26,18,9,0.10)", background: "var(--raised)" }}
                                       >
-                                        <Clock size={11} className="text-s-ink/40 dark:text-s-dm-text/40 shrink-0" aria-hidden="true" />
+                                        <Clock size={11} className="text-s-ink/40 shrink-0" aria-hidden="true" />
                                         <span>{label}</span>
                                       </button>
                                     );
@@ -626,7 +626,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
 
                             {/* Trending searches */}
                             <div className={recents.length > 0 ? "pb-2" : "pt-4 pb-2"}>
-                              <p className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 dark:text-s-dm-text/40 mb-2">
+                              <p className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mb-2">
                                 {locale === "de" ? "Beliebt in Basel 🔥" : locale === "fr" ? "Populaire à Bâle 🔥" : locale === "it" ? "Popolare a Basilea 🔥" : "Popular in Basel 🔥"}
                               </p>
                               <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
@@ -638,7 +638,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                       setQuery(term);
                                       navigate();
                                     }}
-                                    className="shrink-0 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:text-s-ink dark:hover:text-s-dm-text hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.06] transition-colors whitespace-nowrap"
+                                    className="shrink-0 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 hover:text-s-ink:text-s-dm-text hover:bg-s-ink/[0.06]:bg-white/[0.06] transition-colors whitespace-nowrap"
                                     style={{ border: "1px solid rgba(26,18,9,0.10)", background: "var(--raised)" }}
                                   >
                                     {term}
@@ -648,7 +648,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                             </div>
 
                             {/* Vertical category list */}
-                            <div className="flex flex-col divide-y divide-s-bg-surface dark:divide-white/[0.06] mb-2">
+                            <div className="flex flex-col divide-y divide-s-bg-surface mb-2">
                               {/* All services row */}
                               <button
                                 onClick={() => selectService(null)}
@@ -657,17 +657,17 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                   "w-full flex items-center gap-4 py-4 text-left transition-colors",
                                   !category
                                     ? "text-s-coral"
-                                    : "text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02]"
+                                    : "text-s-ink/70 hover:bg-s-ink/[0.02]:bg-white/[0.02]"
                                 )}
                               >
-                                <div className="w-10 h-10 rounded-[12px] flex items-center justify-center bg-s-ink/[0.04] dark:bg-white/[0.06] shrink-0">
+                                <div className="w-10 h-10 rounded-[12px] flex items-center justify-center bg-s-ink/[0.04] shrink-0">
                                   <Star size={18} aria-hidden="true" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <p className="text-[14px] font-heading font-bold leading-tight">
                                     {t("steps.was.skip" as Parameters<typeof t>[0])}
                                   </p>
-                                  <p className="text-[12px] text-s-ink/45 dark:text-s-dm-text/45 leading-tight mt-0.5">
+                                  <p className="text-[12px] text-s-ink/45 leading-tight mt-0.5">
                                     {t("steps.was.skipSub" as Parameters<typeof t>[0])}
                                   </p>
                                 </div>
@@ -700,10 +700,10 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                     </div>
                                     {/* Text */}
                                     <div className="flex-1 min-w-0">
-                                      <p className="font-heading font-bold text-[15px] text-s-ink dark:text-s-dm-text leading-tight">
+                                      <p className="font-heading font-bold text-[15px] text-s-ink leading-tight">
                                         {tNav(cat.key as Parameters<typeof tNav>[0])}
                                       </p>
-                                      <p className="font-body text-[13px] text-s-ink/50 dark:text-s-dm-text/50 leading-tight mt-0.5 truncate">
+                                      <p className="font-body text-[13px] text-s-ink/50 leading-tight mt-0.5 truncate">
                                         {getCatSub(cat)}
                                       </p>
                                     </div>
@@ -722,11 +722,11 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
 
                             {/* Divider */}
                             <div className="flex items-center gap-3 mb-3">
-                              <div className="flex-1 h-px bg-s-ink/8 dark:bg-white/8" />
-                              <span className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35 font-body uppercase tracking-wider whitespace-nowrap">
+                              <div className="flex-1 h-px bg-s-ink/8" />
+                              <span className="text-[10px] text-s-ink/35 font-body uppercase tracking-wider whitespace-nowrap">
                                 {t("orSearch" as Parameters<typeof t>[0])}
                               </span>
-                              <div className="flex-1 h-px bg-s-ink/8 dark:bg-white/8" />
+                              <div className="flex-1 h-px bg-s-ink/8" />
                             </div>
 
                             {/* Text search input */}
@@ -734,7 +734,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                               className="relative flex items-center mb-4"
                               style={{ border: `${inputFocused ? "1.5px" : "1px"} solid ${inputFocused ? "s-ink" : "rgba(0,0,0,0.10)"}`, borderRadius: "12px", transition: "border-color 150ms ease" }}
                             >
-                              <Search size={15} className="absolute left-3.5 text-s-ink/35 dark:text-s-dm-text/35 shrink-0 pointer-events-none" aria-hidden="true" />
+                              <Search size={15} className="absolute left-3.5 text-s-ink/35 shrink-0 pointer-events-none" aria-hidden="true" />
                               <input
                                 ref={inputRef}
                                 type="text"
@@ -748,7 +748,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                 onBlur={() => setInputFocused(false)}
                                 placeholder={t("steps.was.searchPlaceholder" as Parameters<typeof t>[0])}
                                 aria-label={t("steps.was.searchPlaceholder" as Parameters<typeof t>[0])}
-                                className="w-full pl-10 pr-4 py-3 text-[13px] font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/35 dark:placeholder:text-s-dm-text/40 bg-transparent focus:outline-none"
+                                className="w-full pl-10 pr-4 py-3 text-[13px] font-body text-s-ink placeholder:text-s-ink/35:text-s-dm-text/40 bg-transparent focus:outline-none"
                               />
                               {query && (
                                 <button
@@ -756,7 +756,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                   aria-label={t("reset")}
                                   className="absolute right-3 flex items-center justify-center w-5 h-5 rounded-full bg-s-ink/10 hover:bg-s-ink/20 transition-colors"
                                 >
-                                  <X size={10} className="text-s-ink dark:text-s-dm-text" />
+                                  <X size={10} className="text-s-ink" />
                                 </button>
                               )}
                             </div>
@@ -766,16 +766,16 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           <div className="pb-2">
                             <button
                               onClick={() => { setQuery(""); setShowServices(false); }}
-                              className="flex items-center gap-1.5 text-[12px] font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral dark:hover:text-s-coral transition-colors mb-3"
+                              className="flex items-center gap-1.5 text-[12px] font-heading font-semibold text-s-ink/50 hover:text-s-coral:text-s-coral transition-colors mb-3"
                             >
                               <ChevronLeft size={14} aria-hidden="true" />
                               {t("steps.was.backToCategories" as Parameters<typeof t>[0])}
                             </button>
                             <button
                               onClick={() => selectService(null)}
-                              className="w-full flex items-center gap-3 py-3.5 border-t border-s-bg-surface dark:border-white/[0.06] text-left hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                              className="w-full flex items-center gap-3 py-3.5 border-t border-s-bg-surface text-left hover:bg-s-ink/[0.02]:bg-white/[0.02] transition-colors"
                             >
-                              <div className="flex-1 font-body text-[14px] text-s-ink/50 dark:text-s-dm-text/50 italic">
+                              <div className="flex-1 font-body text-[14px] text-s-ink/50 italic">
                                 {t("steps.service.skip")}
                               </div>
                               {service === null && <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />}
@@ -787,13 +787,13 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                   key={svc.key}
                                   onClick={() => selectService(svc.key)}
                                   aria-label={label}
-                                  className={`w-full flex items-center gap-3 py-3.5 border-t border-s-bg-surface dark:border-white/[0.06] text-left transition-colors ${
+                                  className={`w-full flex items-center gap-3 py-3.5 border-t border-s-bg-surface text-left transition-colors ${
                                     service === svc.key
-                                      ? "bg-s-coral/[0.04] dark:bg-s-coral/[0.08]"
-                                      : "hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02]"
+                                      ? "bg-s-coral/[0.04]"
+                                      : "hover:bg-s-ink/[0.02]:bg-white/[0.02]"
                                   }`}
                                 >
-                                  <div className="flex-1 font-body font-medium text-[14px] text-s-ink dark:text-s-dm-text">{label}</div>
+                                  <div className="flex-1 font-body font-medium text-[14px] text-s-ink">{label}</div>
                                   {service === svc.key && (
                                     <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />
                                   )}
@@ -825,10 +825,10 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         exit={{ opacity: 0, x: -16 }}
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                       >
-                        <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 dark:text-s-dm-text/40 mt-4 mb-2">
+                        <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mt-4 mb-2">
                           {t("steps.where.title")}
                         </p>
-                        <p className="font-heading font-bold text-[18px] text-s-ink dark:text-s-dm-text mb-4">
+                        <p className="font-heading font-bold text-[18px] text-s-ink mb-4">
                           {t("steps.where.subtitle" as Parameters<typeof t>[0])}
                         </p>
 
@@ -837,15 +837,15 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           onClick={() => selectCity(null)}
                           className={`w-full flex items-center gap-3 px-4 py-3 rounded-card border mb-3 transition-[transform,filter,border-color,background-color] duration-200 ${
                             city === null
-                              ? "border-s-coral bg-s-coral/[0.05] dark:bg-s-coral/[0.08]"
-                              : "border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-ink/20 dark:hover:border-white/20"
+                              ? "border-s-coral bg-s-coral/[0.05]"
+                              : "border-s-ink/[0.08] hover:border-s-ink/20:border-white/20"
                           }`}
                         >
-                          <MapPin size={20} className="text-s-ink/40 dark:text-s-dm-text/40" aria-hidden="true" />
-                          <span className="flex-1 text-left text-[14px] font-body font-medium text-s-ink dark:text-s-dm-text">
+                          <MapPin size={20} className="text-s-ink/40" aria-hidden="true" />
+                          <span className="flex-1 text-left text-[14px] font-body font-medium text-s-ink">
                             {t("steps.where.allSwitzerland")}
                           </span>
-                          <span className="text-[11px] font-body text-s-ink/40 dark:text-s-dm-text/40">
+                          <span className="text-[11px] font-body text-s-ink/40">
                             {t("steps.where.allSub" as Parameters<typeof t>[0])}
                           </span>
                           {city === null && <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />}
@@ -860,17 +860,17 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                               aria-label={getCityLabel(slug)}
                               className={`flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-card border transition-[transform,filter,border-color,background-color] duration-200 ${
                                 city === slug
-                                  ? "border-s-coral bg-s-coral/[0.05] dark:bg-s-coral/[0.08]"
-                                  : "border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-ink/20 dark:hover:border-white/20"
+                                  ? "border-s-coral bg-s-coral/[0.05]"
+                                  : "border-s-ink/[0.08] hover:border-s-ink/20:border-white/20"
                               }`}
                               style={{ minHeight: "80px" }}
                             >
                               <MapPin
                                 size={20}
-                                className={city === slug ? "text-s-coral" : "text-s-ink/40 dark:text-s-dm-text/40"}
+                                className={city === slug ? "text-s-coral" : "text-s-ink/40"}
                                 aria-hidden="true"
                               />
-                              <span className="text-[13px] font-body font-medium text-s-ink dark:text-s-dm-text">
+                              <span className="text-[13px] font-body font-medium text-s-ink">
                                 {getCityLabel(slug)}
                               </span>
                               {city === slug && (
@@ -891,10 +891,10 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         exit={{ opacity: 0, x: -16 }}
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                       >
-                        <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 dark:text-s-dm-text/40 mt-4 mb-2">
+                        <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mt-4 mb-2">
                           {t("steps.wann.title" as Parameters<typeof t>[0])}
                         </p>
-                        <p className="font-heading font-bold text-[18px] text-s-ink dark:text-s-dm-text mb-4">
+                        <p className="font-heading font-bold text-[18px] text-s-ink mb-4">
                           {t("steps.wann.subtitle" as Parameters<typeof t>[0])}
                         </p>
 
@@ -929,7 +929,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         {/* Specific date toggle */}
                         <button
                           onClick={() => setShowCalendar(!showCalendar)}
-                          className="flex items-center gap-2 text-[13px] font-heading font-semibold text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-coral transition-colors mb-3 mt-1"
+                          className="flex items-center gap-2 text-[13px] font-heading font-semibold text-s-ink/60 hover:text-s-coral transition-colors mb-3 mt-1"
                         >
                           <CalendarIcon size={14} aria-hidden="true" />
                           {t("steps.wann.specificDate" as Parameters<typeof t>[0])}
@@ -937,7 +937,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         </button>
 
                         {showCalendar && (
-                          <div className="mb-4 rounded-card border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-surface overflow-hidden">
+                          <div className="mb-4 rounded-card border border-s-ink/[0.08] bg-white overflow-hidden">
                             <SolenDatePicker
                               inline
                               value={specificDate}
@@ -953,7 +953,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         )}
 
                         {/* Time of day */}
-                        <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 dark:text-s-dm-text/40 mb-3">
+                        <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mb-3">
                           {t("steps.wann.timeLabel" as Parameters<typeof t>[0])}
                         </p>
                         <div className="flex flex-wrap gap-2 pb-6">
@@ -985,12 +985,12 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
 
               {/* ── Footer CTA ── */}
               <div
-                className="shrink-0 flex items-center gap-3 px-6 pt-3 pb-6 border-t border-s-ink/[0.06] dark:border-white/[0.06]"
+                className="shrink-0 flex items-center gap-3 px-6 pt-3 pb-6 border-t border-s-ink/[0.06]"
                 style={{ paddingBottom: "max(24px, env(safe-area-inset-bottom))" }}
               >
                 <button
                   onClick={reset}
-                  className="text-[13px] font-body text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text underline-offset-2 hover:underline transition-colors whitespace-nowrap"
+                  className="text-[13px] font-body text-s-ink/40 hover:text-s-ink:text-s-dm-text underline-offset-2 hover:underline transition-colors whitespace-nowrap"
                 >
                   {t("reset")}
                 </button>

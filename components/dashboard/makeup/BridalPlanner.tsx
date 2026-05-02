@@ -120,7 +120,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <CalendarHeart size={16} className="text-s-coral" />
-          <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">
+          <h3 className="font-heading font-semibold text-sm text-s-ink">
             {t("bridal_title")}
           </h3>
         </div>
@@ -136,8 +136,8 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
 
       {/* Create form */}
       {showForm && (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-[--raised] dark:bg-s-dm-surface space-y-3">
-          <div className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-[8px]">
+        <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-[--raised] space-y-3">
+          <div className="bg-s-bg-sunken rounded-[8px]">
             <ClientSelectorDropdown 
               salonId={salonId}
               value={clientId || null} 
@@ -150,13 +150,13 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
               type="date"
               value={eventDate}
               onChange={(e) => setEventDate(e.target.value)}
-              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text"
+              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-xs text-s-ink"
               aria-label={t("bridal_event_date")}
             />
             <select
               value={eventType}
               onChange={(e) => setEventType(e.target.value)}
-              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text"
+              className="px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-xs text-s-ink"
               aria-label={t("bridal_event_type")}
             >
               <option value="bridal">{t("event_type.bridal")}</option>
@@ -168,7 +168,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
 
           {/* Inspiration URLs */}
           <div className="space-y-2">
-            <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40">
+            <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40">
               {t("bridal_inspo")}
             </p>
             <div className="flex gap-2">
@@ -177,12 +177,12 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
                 onChange={(e) => setInspoUrl(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addInspoUrl(); } }}
                 placeholder="https://..."
-                className="flex-1 px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text"
+                className="flex-1 px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-xs text-s-ink"
                 aria-label={t("bridal_inspo")}
               />
               <button
                 onClick={addInspoUrl}
-                className="px-3 py-2 rounded-[8px] bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-xs text-s-ink dark:text-s-dm-text"
+                className="px-3 py-2 rounded-[8px] bg-s-ink/[0.04] text-xs text-s-ink"
                 aria-label={t("add")}
               >
                 <Plus size={12} />
@@ -191,7 +191,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
             {inspoUrls.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {inspoUrls.map((url, i) => (
-                  <span key={i} className="inline-flex items-center gap-1 px-2 py-1 rounded-[8px] bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-[10px] text-s-ink/60 dark:text-s-dm-text/60 max-w-[200px] truncate">
+                  <span key={i} className="inline-flex items-center gap-1 px-2 py-1 rounded-[8px] bg-s-ink/[0.04] text-[10px] text-s-ink/60 max-w-[200px] truncate">
                     <LinkIcon size={9} className="shrink-0" />
                     {url}
                     <button onClick={() => setInspoUrls((prev) => prev.filter((_, j) => j !== i))} aria-label={t("remove")}>
@@ -208,7 +208,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
             placeholder={t("notes")}
-            className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text resize-none"
+            className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.10] bg-transparent text-xs text-s-ink resize-none"
             aria-label={t("notes")}
           />
           <div className="flex gap-2">
@@ -222,7 +222,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
             </button>
             <button
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 rounded-[8px] text-xs text-s-ink/50 dark:text-s-dm-text/50"
+              className="px-4 py-2 rounded-[8px] text-xs text-s-ink/50"
               aria-label={t("cancel")}
             >
               {t("cancel")}
@@ -241,15 +241,15 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
             return (
               <div
                 key={wf.id}
-                className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-[--raised] dark:bg-s-dm-surface"
+                className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-[--raised]"
               >
                 {/* Event info */}
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40">
+                    <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40">
                       {t(`event_type.${wf.event_type}` as any)}
                     </span>
-                    <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">
+                    <p className="text-sm font-heading font-semibold text-s-ink">
                       {new Date(wf.event_date).toLocaleDateString()}
                     </p>
                   </div>
@@ -279,18 +279,18 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
                       <div key={stage.key} className="flex items-center gap-2 shrink-0">
                         <div
                           className={`w-3 h-3 rounded-full ${
-                            isDone ? "bg-s-sage" : isCurrent ? "bg-s-coral" : "bg-s-ink/10 dark:bg-s-dm-text/10"
+                            isDone ? "bg-s-sage" : isCurrent ? "bg-s-coral" : "bg-s-ink/10"
                           }`}
                         />
                         <span
                           className={`text-[10px] font-heading font-semibold whitespace-nowrap ${
-                            isCurrent ? "text-s-coral" : "text-s-ink/30 dark:text-s-dm-text/30"
+                            isCurrent ? "text-s-coral" : "text-s-ink/30"
                           }`}
                         >
                           {t(stage.labelKey)}
                         </span>
                         {i < STAGES.length - 1 && (
-                          <div className="w-4 h-px bg-s-ink/10 dark:bg-s-dm-text/10" />
+                          <div className="w-4 h-px bg-s-ink/10" />
                         )}
                       </div>
                     );
@@ -316,7 +316,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
                 )}
 
                 {wf.notes && (
-                  <p className="text-[10px] text-s-ink/50 dark:text-s-dm-text/50 mt-1">{wf.notes}</p>
+                  <p className="text-[10px] text-s-ink/50 mt-1">{wf.notes}</p>
                 )}
               </div>
             );
@@ -324,7 +324,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
         </div>
       ) : (
         !showForm && (
-          <p className="text-center text-xs text-s-ink/30 dark:text-s-dm-text/30 py-6">
+          <p className="text-center text-xs text-s-ink/30 py-6">
             {t("bridal_empty")}
           </p>
         )

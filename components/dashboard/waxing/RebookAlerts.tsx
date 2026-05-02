@@ -52,14 +52,14 @@ export default function RebookAlerts({ salonId }: RebookAlertsProps) {
   };
 
   return (
-    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+    <div className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] p-4">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-7 h-7 rounded-[8px] bg-s-amber/10 flex items-center justify-center">
           <Bell size={13} className="text-s-amber" />
         </div>
         <div>
-          <p className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text">{t("rebookTitle")}</p>
-          <p className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35">{t("rebookSubtitle")}</p>
+          <p className="text-sm font-heading font-bold text-s-ink">{t("rebookTitle")}</p>
+          <p className="text-[10px] text-s-ink/35">{t("rebookSubtitle")}</p>
         </div>
       </div>
 
@@ -68,14 +68,14 @@ export default function RebookAlerts({ salonId }: RebookAlertsProps) {
           {[1, 2, 3].map((i) => <div key={i} className="h-12 bg-s-ink/[0.04] rounded-[8px]" />)}
         </div>
       ) : clients.length === 0 ? (
-        <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 text-center py-4">{t("rebookEmpty")}</p>
+        <p className="text-xs text-s-ink/40 text-center py-4">{t("rebookEmpty")}</p>
       ) : (
         <div className="space-y-2">
           {clients.map((c) => (
-            <div key={c.client_id} className="flex items-center gap-3 p-3 rounded-[8px] border border-s-ink/[0.05] dark:border-s-dm-text/[0.05]">
+            <div key={c.client_id} className="flex items-center gap-3 p-3 rounded-[8px] border border-s-ink/[0.05]">
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">{c.display_name}</p>
-                <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+                <p className="text-sm font-heading font-semibold text-s-ink truncate">{c.display_name}</p>
+                <p className="text-[10px] text-s-ink/40">
                   {c.zone} · <span className={c.days_overdue > 0 ? "text-red-500" : "text-s-amber"}>
                     {c.days_overdue > 0 ? `${c.days_overdue}d ${t("overdue")}` : t("dueNow")}
                   </span>

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import ThemeScript from "@/components/ui/ThemeScript";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
@@ -21,9 +20,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
           as="style"
         />
-        <ThemeScript />
       </head>
-      <body style={{ margin: 0, padding: 0 }} className="bg-s-bg-base text-s-ink dark:bg-s-dm-bg dark:text-s-dm-text">
+      <body style={{ margin: 0, padding: 0 }} className="bg-s-bg-base text-s-ink">
         {children}
       </body>
     </html>

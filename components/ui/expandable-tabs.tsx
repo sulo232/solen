@@ -74,14 +74,14 @@ export default function ExpandableNavTabs({
       role="navigation"
       {...rest}
       className={cn(
-        "flex items-center gap-1 rounded-pill border border-s-ink/10 bg-white dark:bg-s-dm-surface p-1.5 shadow-surface",
+        "flex items-center gap-1 rounded-pill border border-s-ink/10 bg-white p-1.5 shadow-surface",
         className
       )}
     >
       {tabs.map((tab, idx) => {
         if ("type" in tab && tab.type === "separator") {
           return (
-            <div key={`sep-${idx}`} className="h-5 w-px bg-s-sand/60 dark:bg-white/10 mx-0.5" />
+            <div key={`sep-${idx}`} className="h-5 w-px bg-s-sand/60 mx-0.5" />
           );
         }
 
@@ -100,7 +100,7 @@ export default function ExpandableNavTabs({
             aria-current={isSelected ? "page" : undefined}
             className={cn(
               "relative flex items-center rounded-btn py-2.5 text-sm font-medium font-body transition-colors",
-              isSelected ? `${activeColor} bg-s-coral/10` : "text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink/60 dark:hover:text-s-dm-text/60"
+              isSelected ? `${activeColor} bg-s-coral/10` : "text-s-ink/40 hover:text-s-ink/60:text-s-dm-text/60"
             )}
           >
             <Icon size={18} />

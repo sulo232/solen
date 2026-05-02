@@ -13,7 +13,7 @@ export default function CutGuide({ guide }: CutGuideProps) {
         <BookOpen size={14} className="text-s-blue" />
         <span className="text-xs font-medium text-s-blue">Cut Guide</span>
       </div>
-      <p className="text-sm text-s-ink/80 dark:text-s-dm-text/80 leading-relaxed whitespace-pre-line">
+      <p className="text-sm text-s-ink/80 leading-relaxed whitespace-pre-line">
         {guide}
       </p>
     </div>

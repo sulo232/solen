@@ -16,7 +16,7 @@ import type { SalonCard as SalonCardType, SalonCategory, ActiveFilter } from "@/
 const MapView = dynamic(() => import("@/components/MapView"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full min-h-[400px] rounded-[12px] bg-s-bg-sunken dark:bg-s-dm-surface animate-pulse" />
+    <div className="w-full h-full min-h-[400px] rounded-[12px] bg-s-bg-sunken animate-pulse" />
   ),
 });
 
@@ -179,7 +179,7 @@ export default function SplitView({ locale, initialFilters }: SplitViewProps) {
     <div className="flex flex-col">
       {/* Search + Filters */}
       <div className="sticky top-[57px] z-40 isolate">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-white dark:bg-s-dm-bg border-b border-s-ink/[0.06] dark:border-white/[0.06]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-white border-b border-s-ink/[0.06]">
           <div className="mb-3">
             <SearchAutocomplete category={category} />
           </div>

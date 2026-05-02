@@ -20,7 +20,7 @@ const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
         "relative rounded-card",
         elevated
           ? "glass-frost shadow-elevation-3"
-          : "bg-[--raised] dark:bg-s-dm-surface shadow-elevation-1 border border-s-ink/[0.06] dark:border-white/[0.06]",
+          : "bg-[--raised] shadow-elevation-1 border border-s-ink/[0.06]",
         !noPadding && "p-6",
         className
       )}

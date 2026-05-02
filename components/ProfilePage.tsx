@@ -92,26 +92,26 @@ const CancelModal = memo(function CancelModal({
 
   return (
     <GlassModal open title={t("cancelBooking")} onClose={onClose} maxWidth="max-w-md">
-        <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-1">
+        <p className="text-sm text-s-ink/60 mb-1">
           {salonName} — {dateFmt} {timeFmt}
         </p>
-        <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-4">{t("cancelFreeHint")}</p>
+        <p className="text-xs text-s-ink/40 mb-4">{t("cancelFreeHint")}</p>
 
         <div className="mb-5">
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("reasonOptional")}</label>
+          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("reasonOptional")}</label>
           <textarea
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             rows={2}
             placeholder={t("reasonPlaceholder")}
-            className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors resize-none"
+            className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base text-sm font-body text-s-ink placeholder:text-s-ink/30:text-s-dm-text/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors resize-none"
           />
         </div>
 
         <div className="flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
           >
             {t("cancel")}
           </button>
@@ -170,12 +170,12 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
     window.open(`sms:?body=${encodeURIComponent(msg)}`, "_blank");
   };
 
-  if (loading) return <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5"><Spinner size="sm" /></div>;
+  if (loading) return <div className="rounded-[12px] border border-s-ink/[0.06] bg-white p-5"><Spinner size="sm" /></div>;
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5 space-y-4">
+    <div className="rounded-[12px] border border-s-ink/[0.06] bg-white p-5 space-y-4">
       {/* Eyebrow header */}
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 dark:text-s-dm-text/35">
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35">
         Freunde einladen
       </p>
 
@@ -184,15 +184,15 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
         style={{ background: "rgba(232,98,74,.06)", border: "1px solid rgba(232,98,74,.15)" }}>
         <Gift className="w-5 h-5 text-s-coral shrink-0" />
         <div>
-          <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("inviteFriends")}</p>
-          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{t("bothGetCredit")}</p>
+          <p className="text-sm font-heading font-semibold text-s-ink">{t("inviteFriends")}</p>
+          <p className="text-xs text-s-ink/50">{t("bothGetCredit")}</p>
         </div>
       </div>
 
       {/* Code display */}
       {code && (
         <div className="flex items-center gap-2">
-          <div className="flex-1 px-4 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg"
+          <div className="flex-1 px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base"
             style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "14px", letterSpacing: ".12em", color: "var(--s-ink)" }}>
             {code}
           </div>
@@ -202,12 +202,12 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
             className={`w-10 h-10 rounded-[10px] border flex items-center justify-center transition-[border-color,background-color] duration-150 ${
               copied
                 ? "border-[#4CAF6F] bg-[#4CAF6F]/10"
-                : "border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-coral/40"
+                : "border-s-ink/[0.08] hover:border-s-coral/40"
             }`}
           >
             {copied
               ? <Check size={15} className="text-[#4CAF6F]" />
-              : <Copy size={15} className="text-s-ink/40 dark:text-s-dm-text/40" />}
+              : <Copy size={15} className="text-s-ink/40" />}
           </button>
         </div>
       )}
@@ -230,25 +230,25 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
         </button>
         <button
           onClick={copyCode}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-ink/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
         >
           <Copy size={12} /> {t("copyCode")}
         </button>
       </div>
 
       {/* Reward tracking */}
-      <div className="flex items-center justify-between pt-3 border-t border-s-ink/[0.05] dark:border-white/[0.05]">
+      <div className="flex items-center justify-between pt-3 border-t border-s-ink/[0.05]">
         <div className="flex items-center gap-2">
           <Trophy size={13} className="text-s-amber" />
           <div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/35 dark:text-s-dm-text/35">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/35">
               Eingeladen
             </p>
-            <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{stats.friends_invited}</p>
+            <p className="text-xs font-heading font-semibold text-s-ink">{stats.friends_invited}</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/35 dark:text-s-dm-text/35">Verdient</p>
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/35">Verdient</p>
           <p className="font-heading font-bold text-sm text-s-coral">
             {formatCurrency(stats.total_earned / 100, locale)}
           </p>
@@ -299,12 +299,12 @@ const BookingCard = memo(function BookingCard({
   const localeFmt = locale === "de" ? "de-CH" : locale;
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface">
+    <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white">
       <div className="flex justify-between items-start gap-4">
         <div>
-          <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">{b.salon_name}</p>
-          <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{b.service_name}</p>
-          <p className="text-xs font-body text-s-ink/40 dark:text-s-dm-text/40 mt-1">
+          <p className="font-heading font-semibold text-sm text-s-ink">{b.salon_name}</p>
+          <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mt-0.5">{b.service_name}</p>
+          <p className="text-xs font-body text-s-ink/40 mt-1">
             {new Date(b.starts_at).toLocaleDateString(localeFmt, {
               weekday: "short", day: "numeric", month: "short",
             })}{" · "}
@@ -323,11 +323,11 @@ const BookingCard = memo(function BookingCard({
       </div>
 
       {(b.status === "confirmed" || b.salon_slug) && (
-        <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-s-ink/[0.05] dark:border-white/[0.05]">
+        <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-s-ink/[0.05]">
           {b.salon_slug && (
             <Link
               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-ink/[0.08] dark:border-white/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral hover:border-s-coral/40 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-ink/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 hover:text-s-coral hover:border-s-coral/40 transition-colors"
             >
               <RotateCcw size={12} />
               {t("rebookAction")}
@@ -352,7 +352,7 @@ const BookingCard = memo(function BookingCard({
             <div className="relative group inline-block">
               <button
                 disabled
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-ink/[0.06] dark:border-white/[0.06] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/20 dark:text-s-dm-text/20 cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-ink/[0.06] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/20 cursor-not-allowed"
               >
                 <X size={12} />
                 {t("cancelAction")}
@@ -373,7 +373,7 @@ const BookingCard = memo(function BookingCard({
 // Settings section
 // ─────────────────────────────────────────
 
-const INPUT_CLS = "w-full px-3 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20";
+const INPUT_CLS = "w-full px-3 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20";
 
 const SettingsSection = memo(function SettingsSection({
   profile,
@@ -451,65 +451,65 @@ const SettingsSection = memo(function SettingsSection({
           value={avatar}
           onChange={(e) => setAvatar(e.target.value)}
           placeholder={t("avatarUrl")}
-          className={`flex-1 px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20`}
+          className={`flex-1 px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20`}
         />
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("name")} *</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("name")} *</label>
         <input required value={name} onChange={(e) => setName(e.target.value)} className={INPUT_CLS} />
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("bio")}</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("bio")}</label>
         <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={2} className={`${INPUT_CLS} resize-none`} />
       </div>
 
       {/* Birthday */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("birthday")}</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("birthday")}</label>
         <input type="date" value={birthday} onChange={(e) => setBirthday(e.target.value)} className={INPUT_CLS} />
       </div>
 
       {/* Notifications */}
-      <div className="pt-2 border-t border-s-ink/5 dark:border-white/10 space-y-3">
-        <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50">{t("emailNotifications")}</p>
+      <div className="pt-2 border-t border-s-ink/5 space-y-3">
+        <p className="text-xs font-medium text-s-ink/50">{t("emailNotifications")}</p>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("notifBookings")}</p>
-            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("notifBookingsDesc")}</p>
+            <p className="text-sm font-medium text-s-ink">{t("notifBookings")}</p>
+            <p className="text-xs text-s-ink/40 mt-0.5">{t("notifBookingsDesc")}</p>
           </div>
           <button type="button" onClick={() => setEmailOn(!emailOn)}
             role="switch"
             aria-checked={emailOn}
             aria-label={t("notifBookings")}
-            className={["relative w-11 h-6 rounded-pill transition-colors shrink-0", emailOn ? "bg-s-coral" : "bg-s-sand dark:bg-white/10"].join(" ")}>
+            className={["relative w-11 h-6 rounded-pill transition-colors shrink-0", emailOn ? "bg-s-coral" : "bg-s-sand"].join(" ")}>
             <span className={["absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform", emailOn ? "translate-x-5" : "translate-x-0"].join(" ")} />
           </button>
         </div>
         <div className="flex items-center justify-between opacity-60">
           <div>
             <div className="flex items-center gap-2">
-              <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("notifDeals")}</p>
-              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 dark:bg-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-[9px] font-heading font-bold uppercase tracking-[.1em]">{t("comingSoon")}</span>
+              <p className="text-sm font-medium text-s-ink">{t("notifDeals")}</p>
+              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 text-s-ink/60 text-[9px] font-heading font-bold uppercase tracking-[.1em]">{t("comingSoon")}</span>
             </div>
-            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("notifDealsDesc")}</p>
+            <p className="text-xs text-s-ink/40 mt-0.5">{t("notifDealsDesc")}</p>
           </div>
           <button type="button" disabled role="switch" aria-checked={false} aria-label={t("notifDeals")}
-            className="relative w-11 h-6 rounded-pill bg-s-sand dark:bg-white/10 shrink-0 cursor-not-allowed">
+            className="relative w-11 h-6 rounded-pill bg-s-sand shrink-0 cursor-not-allowed">
             <span className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow" />
           </button>
         </div>
         <div className="flex items-center justify-between opacity-60">
           <div>
             <div className="flex items-center gap-2">
-              <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("notifNewSalons")}</p>
-              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 dark:bg-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-[9px] font-heading font-bold uppercase tracking-[.1em]">{t("comingSoon")}</span>
+              <p className="text-sm font-medium text-s-ink">{t("notifNewSalons")}</p>
+              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 text-s-ink/60 text-[9px] font-heading font-bold uppercase tracking-[.1em]">{t("comingSoon")}</span>
             </div>
-            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("notifNewSalonsDesc")}</p>
+            <p className="text-xs text-s-ink/40 mt-0.5">{t("notifNewSalonsDesc")}</p>
           </div>
           <button type="button" disabled role="switch" aria-checked={false} aria-label={t("notifNewSalons")}
-            className="relative w-11 h-6 rounded-pill bg-s-sand dark:bg-white/10 shrink-0 cursor-not-allowed">
+            className="relative w-11 h-6 rounded-pill bg-s-sand shrink-0 cursor-not-allowed">
             <span className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow" />
           </button>
         </div>
@@ -517,7 +517,7 @@ const SettingsSection = memo(function SettingsSection({
 
       {/* Language */}
       <div>
-        <p className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-2">{t("language")}</p>
+        <p className="text-sm font-medium text-s-ink mb-2">{t("language")}</p>
         <div className="flex gap-2 flex-wrap">
           {(["de", "en", "fr", "it"] as const).map((l) => (
             <button
@@ -528,7 +528,7 @@ const SettingsSection = memo(function SettingsSection({
                 "px-4 py-2 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[background-color,border-color,color] duration-150",
                 lang === l
                   ? "bg-s-coral text-white border-s-coral"
-                  : "border-s-ink/10 text-s-ink/60 hover:border-s-coral hover:text-s-coral dark:border-white/10 dark:text-s-dm-text/60",
+                  : "border-s-ink/10 text-s-ink/60 hover:border-s-coral hover:text-s-coral",
               ].join(" ")}
             >
               {l === "de" ? "Deutsch" : l === "en" ? "English" : l === "fr" ? "Français" : "Italiano"}
@@ -538,15 +538,15 @@ const SettingsSection = memo(function SettingsSection({
       </div>
 
       {/* Customer Preferences */}
-      <div className="pt-4 border-t border-s-ink/5 dark:border-white/10 space-y-4">
+      <div className="pt-4 border-t border-s-ink/5 space-y-4">
         <div>
-          <p className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-1">{tPrefs("title")}</p>
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-3">{tPrefs("subtitle")}</p>
+          <p className="text-sm font-medium text-s-ink mb-1">{tPrefs("title")}</p>
+          <p className="text-xs text-s-ink/40 mb-3">{tPrefs("subtitle")}</p>
         </div>
 
         {/* Allergies */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{tPrefs("allergies_label")}</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">{tPrefs("allergies_label")}</label>
           <input
             type="text"
             value={allergies}
@@ -558,7 +558,7 @@ const SettingsSection = memo(function SettingsSection({
 
         {/* Skin Type */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{tPrefs("skin_type_label")}</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">{tPrefs("skin_type_label")}</label>
           <input
             type="text"
             value={skinType}
@@ -570,7 +570,7 @@ const SettingsSection = memo(function SettingsSection({
 
         {/* Stylist Gender */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">{tPrefs("stylist_gender_label")}</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-2">{tPrefs("stylist_gender_label")}</label>
           <div className="flex gap-2">
             {(["male", "female", "no-preference"] as const).map((option) => (
               <button
@@ -580,7 +580,7 @@ const SettingsSection = memo(function SettingsSection({
                 className={`flex-1 px-4 py-2 rounded-pill border text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-[background-color,border-color,color] duration-150 ${
                   stylistGender === option
                     ? "border-s-coral bg-s-coral text-white"
-                    : "border-s-ink/10 text-s-ink/60 hover:border-s-coral hover:text-s-coral dark:border-white/10 dark:text-s-dm-text/60"
+                    : "border-s-ink/10 text-s-ink/60 hover:border-s-coral hover:text-s-coral"
                 }`}
               >
                 {tPrefs(`stylist_gender_${option}`)}
@@ -591,7 +591,7 @@ const SettingsSection = memo(function SettingsSection({
 
         {/* Accessibility Needs */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{tPrefs("accessibility_label")}</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">{tPrefs("accessibility_label")}</label>
           <input
             type="text"
             value={accessibilityNeeds}
@@ -603,7 +603,7 @@ const SettingsSection = memo(function SettingsSection({
 
         {/* Preferred Language */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{tPrefs("language_label")}</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">{tPrefs("language_label")}</label>
           <input
             type="text"
             value={prefLanguage}
@@ -615,7 +615,7 @@ const SettingsSection = memo(function SettingsSection({
 
         {/* Notes */}
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{tPrefs("notes_label")}</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">{tPrefs("notes_label")}</label>
           <textarea
             value={prefNotes}
             onChange={(e) => setPrefNotes(e.target.value)}
@@ -639,14 +639,14 @@ const SettingsSection = memo(function SettingsSection({
       </div>
 
       {/* Danger zone: Delete account */}
-      <div className="pt-6 border-t border-red-200 dark:border-red-900/40">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-red-600 dark:text-red-400 mb-3">
+      <div className="pt-6 border-t border-red-200">
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-red-600 mb-3">
           {t("dangerZone")}
         </p>
         <button
           type="button"
           onClick={onDeleteClick}
-          className="px-4 py-2.5 rounded-pill active:scale-[0.97] bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-red-100 dark:hover:bg-red-950/40 transition-[background-color,transform] duration-150"
+          className="px-4 py-2.5 rounded-pill active:scale-[0.97] bg-red-50 border border-red-200 text-red-600 text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-red-100:bg-red-950/40 transition-[background-color,transform] duration-150"
         >
           {t("deleteAccount")}
         </button>
@@ -661,8 +661,8 @@ const SettingsSection = memo(function SettingsSection({
 
 const ProfileSectionLabel = ({ children, icon: Icon }: { children: React.ReactNode; icon?: React.ElementType }) => (
   <div className="flex items-center gap-2 mb-4">
-    {Icon && <Icon size={13} className="text-s-ink/35 dark:text-s-dm-text/35" />}
-    <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 dark:text-s-dm-text/35">{children}</p>
+    {Icon && <Icon size={13} className="text-s-ink/35" />}
+    <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35">{children}</p>
   </div>
 );
 
@@ -813,41 +813,41 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[--base] dark:bg-s-dm-bg py-8 px-5">
+      <div className="min-h-screen bg-[--base] py-8 px-5">
         <div className="max-w-md mx-auto space-y-4">
           {/* Avatar ring skeleton */}
           <div className="flex flex-col items-center gap-4 py-6 animate-pulse">
-            <div className="w-[90px] h-[90px] rounded-full bg-s-ink/10 dark:bg-white/10" />
+            <div className="w-[90px] h-[90px] rounded-full bg-s-ink/10" />
             <div className="space-y-2 flex flex-col items-center">
-              <div className="h-6 w-32 bg-s-ink/10 dark:bg-white/10 rounded" />
-              <div className="h-4 w-24 bg-s-ink/10 dark:bg-white/10 rounded-pill" />
+              <div className="h-6 w-32 bg-s-ink/10 rounded" />
+              <div className="h-4 w-24 bg-s-ink/10 rounded-pill" />
             </div>
             <div className="flex gap-2">
-              <div className="h-9 w-32 bg-s-ink/10 dark:bg-white/10 rounded-pill" />
-              <div className="h-9 w-9 bg-s-ink/10 dark:bg-white/10 rounded-full" />
-              <div className="h-9 w-9 bg-s-ink/10 dark:bg-white/10 rounded-full" />
+              <div className="h-9 w-32 bg-s-ink/10 rounded-pill" />
+              <div className="h-9 w-9 bg-s-ink/10 rounded-full" />
+              <div className="h-9 w-9 bg-s-ink/10 rounded-full" />
             </div>
           </div>
 
           {/* Beauty card skeleton */}
-          <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[18px] p-4 animate-pulse">
-            <div className="h-4 w-28 bg-s-ink/10 dark:bg-white/10 rounded mb-3" />
+          <div className="bg-[--raised] rounded-[18px] p-4 animate-pulse">
+            <div className="h-4 w-28 bg-s-ink/10 rounded mb-3" />
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="py-3 border-b border-s-ink/[0.06] dark:border-white/[0.06] last:border-0">
-                <div className="h-2 w-12 bg-s-ink/10 dark:bg-white/10 rounded mb-2" />
+              <div key={i} className="py-3 border-b border-s-ink/[0.06] last:border-0">
+                <div className="h-2 w-12 bg-s-ink/10 rounded mb-2" />
                 <div className="flex gap-2">
-                  <div className="h-6 w-20 bg-s-ink/10 dark:bg-white/10 rounded-pill" />
-                  <div className="h-6 w-16 bg-s-ink/10 dark:bg-white/10 rounded-pill" />
+                  <div className="h-6 w-20 bg-s-ink/10 rounded-pill" />
+                  <div className="h-6 w-16 bg-s-ink/10 rounded-pill" />
                 </div>
               </div>
             ))}
           </div>
 
           {/* Tab bar skeleton */}
-          <div className="flex border-b border-s-ink/10 dark:border-white/10 pt-2 animate-pulse">
+          <div className="flex border-b border-s-ink/10 pt-2 animate-pulse">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="flex-1 h-10 flex items-center justify-center">
-                <div className="h-3 w-12 bg-s-ink/10 dark:bg-white/10 rounded" />
+                <div className="h-3 w-12 bg-s-ink/10 rounded" />
               </div>
             ))}
           </div>
@@ -855,7 +855,7 @@ export default function ProfilePage() {
           {/* Grid skeleton */}
           <div className="grid grid-cols-3 gap-2.5 animate-pulse">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="aspect-square rounded-[10px] bg-s-ink/10 dark:bg-white/10" />
+              <div key={i} className="aspect-square rounded-[10px] bg-s-ink/10" />
             ))}
           </div>
         </div>
@@ -876,7 +876,7 @@ export default function ProfilePage() {
   const beautyProfile: BeautyProfile = (profile.customer_preferences as any)?.beauty || {};
 
   return (
-    <div className="min-h-screen bg-[--base] dark:bg-s-dm-bg">
+    <div className="min-h-screen bg-[--base]">
       <div className="max-w-md mx-auto px-5 pt-6 pb-28">
         {/* Cancel modal */}
         {cancelTarget && (
@@ -951,7 +951,7 @@ export default function ProfilePage() {
                   <button
                     onClick={() => setPastOpen(!pastOpen)}
                     aria-expanded={pastOpen}
-                    className="w-full flex items-center justify-between text-[13px] font-body font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-3"
+                    className="w-full flex items-center justify-between text-[13px] font-body font-medium text-s-ink/60 mb-3"
                   >
                     <span>{t("pastBookings")} ({past.length})</span>
                     {pastOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -984,27 +984,27 @@ export default function ProfilePage() {
               ) : (
                 <div className="grid grid-cols-1 gap-3">
                   {favorites.map((salon) => (
-                    <div key={salon.id} className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] overflow-hidden flex gap-3 p-3 group relative">
+                    <div key={salon.id} className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] overflow-hidden flex gap-3 p-3 group relative">
                       {salon.cover_photo_url && (
-                        <div className="w-14 h-14 rounded-[10px] overflow-hidden shrink-0 bg-s-bg-sunken dark:bg-s-dm-bg">
+                        <div className="w-14 h-14 rounded-[10px] overflow-hidden shrink-0 bg-s-bg-sunken">
                           <Image src={salon.cover_photo_url} alt={salon.name} width={56} height={56} className="object-cover w-full h-full" loading="lazy" />
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <Link href={`/${locale}/salon/${salon.slug}`} className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text hover:text-s-coral transition-colors truncate block">
+                        <Link href={`/${locale}/salon/${salon.slug}`} className="font-heading font-semibold text-sm text-s-ink hover:text-s-coral transition-colors truncate block">
                           {salon.name}
                         </Link>
-                        <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 flex items-center gap-1 mt-0.5 truncate">
+                        <p className="text-xs text-s-ink/40 flex items-center gap-1 mt-0.5 truncate">
                           <MapPin size={10} />{salon.address}
                         </p>
-                        <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 flex items-center gap-1 mt-0.5">
+                        <p className="text-xs text-s-ink/50 flex items-center gap-1 mt-0.5">
                           <Star size={10} className="text-s-yellow fill-s-yellow" />
                           {salon.average_rating?.toFixed(1) ?? "–"}
                         </p>
                       </div>
                       <button
                         onClick={() => removeFav(salon.id)}
-                        className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-pill text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral hover:bg-s-coral/10 transition-colors opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+                        className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-pill text-s-ink/20 hover:text-s-coral hover:bg-s-coral/10 transition-colors opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
                         title={t("removeFromFavorites")}
                         aria-label={t("removeFromFavorites")}
                       >
@@ -1021,34 +1021,34 @@ export default function ProfilePage() {
             <div className="space-y-6">
               {/* Quick links — referral & gift cards */}
               <div className="space-y-2">
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 dark:text-s-dm-text/30">{t("creditAndReferral")}</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30">{t("creditAndReferral")}</p>
                 <Link
                   href={`/${locale}/profile/referral`}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/30 transition-colors group"
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised] hover:border-s-coral/30 transition-colors group"
                   aria-label={t("inviteFriends")}
                 >
                   <div className="flex items-center gap-3">
                     <Gift size={16} className="text-s-coral shrink-0" />
                     <div className="text-left">
-                      <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">{t("inviteFriends")}</p>
-                      <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("bothGetCredit")}</p>
+                      <p className="text-sm font-heading font-medium text-s-ink">{t("inviteFriends")}</p>
+                      <p className="text-xs text-s-ink/40 mt-0.5">{t("bothGetCredit")}</p>
                     </div>
                   </div>
-                  <ChevronRight size={16} className="text-s-ink/20 dark:text-s-dm-text/20 group-hover:text-s-coral transition-colors" />
+                  <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
                 </Link>
                 <Link
                   href={`/${locale}/profile/gift-cards`}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/30 transition-colors group"
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised] hover:border-s-coral/30 transition-colors group"
                   aria-label={t("myGiftCards")}
                 >
                   <div className="flex items-center gap-3">
                     <Wallet size={16} className="text-s-coral shrink-0" />
                     <div className="text-left">
-                      <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">{t("myGiftCards")}</p>
-                      <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("myGiftCardsDesc")}</p>
+                      <p className="text-sm font-heading font-medium text-s-ink">{t("myGiftCards")}</p>
+                      <p className="text-xs text-s-ink/40 mt-0.5">{t("myGiftCardsDesc")}</p>
                     </div>
                   </div>
-                  <ChevronRight size={16} className="text-s-ink/20 dark:text-s-dm-text/20 group-hover:text-s-coral transition-colors" />
+                  <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
                 </Link>
               </div>
 
@@ -1058,8 +1058,8 @@ export default function ProfilePage() {
               <PaymentMethodsSection />
 
               {/* Email & Password */}
-              <div className="pt-4 border-t border-s-ink/5 dark:border-white/10 space-y-4">
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 dark:text-s-dm-text/30">Sicherheit</p>
+              <div className="pt-4 border-t border-s-ink/5 space-y-4">
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30">Sicherheit</p>
 
                 <button
                   type="button"
@@ -1073,13 +1073,13 @@ export default function ProfilePage() {
                       else alert("Bestätigungsmail gesendet — bitte prüfe dein Postfach.");
                     }
                   }}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/30 transition-colors group"
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised] hover:border-s-coral/30 transition-colors group"
                 >
                   <div className="text-left">
-                    <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">E-Mail ändern</p>
-                    <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">Neue Adresse mit Bestätigungslink</p>
+                    <p className="text-sm font-heading font-medium text-s-ink">E-Mail ändern</p>
+                    <p className="text-xs text-s-ink/40 mt-0.5">Neue Adresse mit Bestätigungslink</p>
                   </div>
-                  <span className="text-s-ink/20 dark:text-s-dm-text/20 group-hover:text-s-coral transition-colors">→</span>
+                  <span className="text-s-ink/20 group-hover:text-s-coral transition-colors">→</span>
                 </button>
 
                 <button
@@ -1096,13 +1096,13 @@ export default function ProfilePage() {
                       alert("Passwort muss mindestens 8 Zeichen lang sein.");
                     }
                   }}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/30 transition-colors group"
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised] hover:border-s-coral/30 transition-colors group"
                 >
                   <div className="text-left">
-                    <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">Passwort ändern</p>
-                    <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">Neues Passwort festlegen</p>
+                    <p className="text-sm font-heading font-medium text-s-ink">Passwort ändern</p>
+                    <p className="text-xs text-s-ink/40 mt-0.5">Neues Passwort festlegen</p>
                   </div>
-                  <span className="text-s-ink/20 dark:text-s-dm-text/20 group-hover:text-s-coral transition-colors">→</span>
+                  <span className="text-s-ink/20 group-hover:text-s-coral transition-colors">→</span>
                 </button>
 
                 {/* Logout */}
@@ -1114,7 +1114,7 @@ export default function ProfilePage() {
                     await supabase.auth.signOut();
                     window.location.href = `/${locale}`;
                   }}
-                  className="w-full py-3 rounded-pill border border-s-error/30 dark:border-s-error/20 text-s-error text-sm font-heading font-medium hover:bg-s-error-bg dark:hover:bg-s-error/10 active:scale-[0.97] transition-[transform,background-color] duration-150"
+                  className="w-full py-3 rounded-pill border border-s-error/30 text-s-error text-sm font-heading font-medium hover:bg-s-error-bg:bg-s-error/10 active:scale-[0.97] transition-[transform,background-color] duration-150"
                 >
                   Abmelden
                 </button>

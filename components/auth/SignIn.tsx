@@ -91,8 +91,8 @@ export default function SignIn() {
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-coral mb-2">
             E-Mail gesendet
           </p>
-          <p className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">Link gesendet</p>
-          <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 mt-1 leading-relaxed">
+          <p className="font-heading font-bold text-lg text-s-ink">Link gesendet</p>
+          <p className="text-xs font-body text-s-ink/50 mt-1 leading-relaxed">
             Schau in deinem Postfach nach einem Link zum Zurücksetzen.
           </p>
         </div>
@@ -113,8 +113,8 @@ export default function SignIn() {
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/45 mb-2">
             Konto-Wiederherstellung
           </p>
-          <p className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">Passwort vergessen?</p>
-          <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 mt-1">
+          <p className="font-heading font-bold text-lg text-s-ink">Passwort vergessen?</p>
+          <p className="text-xs font-body text-s-ink/50 mt-1">
             Gib deine E-Mail ein und wir senden dir einen Reset-Link.
           </p>
         </div>
@@ -125,7 +125,7 @@ export default function SignIn() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("email_placeholder")}
             required
-            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
           <button
             type="submit"
@@ -137,7 +137,7 @@ export default function SignIn() {
         </form>
         <button
           onClick={() => setResetMode(false)}
-          className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 dark:text-s-dm-text/45 hover:text-s-ink dark:hover:text-s-dm-text text-center transition-colors">
+          className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 hover:text-s-ink:text-s-dm-text text-center transition-colors">
           Zurück zur Anmeldung
         </button>
       </div>
@@ -150,7 +150,7 @@ export default function SignIn() {
       <button
         onClick={handleGoogle}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 text-xs font-heading font-bold text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-ink/20 hover:bg-s-bg-base dark:hover:bg-white/5 transition-colors disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-input border border-s-ink/[0.08] text-xs font-heading font-bold text-s-ink/70 hover:border-s-ink/20 hover:bg-s-bg-base:bg-white/5 transition-colors disabled:opacity-50"
       >
         {loading ? (
           <Spinner size="sm" />
@@ -166,9 +166,9 @@ export default function SignIn() {
       </button>
 
       <div className="flex items-center gap-3 my-1">
-        <div className="flex-1 h-px bg-s-ink/[0.07] dark:bg-white/10" />
-        <span className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50 dark:text-s-dm-text/50">{t("or")}</span>
-        <div className="flex-1 h-px bg-s-ink/[0.07] dark:bg-white/10" />
+        <div className="flex-1 h-px bg-s-ink/[0.07]" />
+        <span className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50">{t("or")}</span>
+        <div className="flex-1 h-px bg-s-ink/[0.07]" />
       </div>
 
       {/* Email + Password login */}
@@ -179,7 +179,7 @@ export default function SignIn() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("email_placeholder")}
           required
-          className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+          className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
         />
         <div className="relative">
           <input
@@ -188,12 +188,12 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Passwort"
             required
-            className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink/60 dark:hover:text-s-dm-text/60 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 hover:text-s-ink/60:text-s-dm-text/60 transition-colors"
             aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
           >
             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -210,11 +210,11 @@ export default function SignIn() {
 
       <button
         onClick={() => setResetMode(true)}
-        className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 dark:text-s-dm-text/45 hover:text-s-coral transition-colors text-center">
+        className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 hover:text-s-coral transition-colors text-center">
         Passwort vergessen?
       </button>
 
-      <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 text-center font-body">{t("terms")}</p>
+      <p className="text-xs text-s-ink/50 text-center font-body">{t("terms")}</p>
     </div>
   );
 }

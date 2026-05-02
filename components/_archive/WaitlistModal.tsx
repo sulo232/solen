@@ -46,20 +46,20 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
 
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-lg" onClick={onClose}>
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] p-6 mx-4 max-w-sm w-full shadow-surface" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-[12px] p-6 mx-4 max-w-sm w-full shadow-surface" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <ClipboardList className="w-5 h-5 text-s-coral" />
-            <h3 className="font-heading font-bold text-s-ink dark:text-s-dm-text">Warteliste</h3>
+            <h3 className="font-heading font-bold text-s-ink">Warteliste</h3>
           </div>
-          <button onClick={onClose} aria-label="Schliessen" className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-btn hover:bg-s-bg-sunken dark:hover:bg-white/10 transition-colors">
-            <X className="w-4 h-4 text-s-ink/40 dark:text-s-dm-text/40" />
+          <button onClick={onClose} aria-label="Schliessen" className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-btn hover:bg-s-bg-sunken:bg-white/10 transition-colors">
+            <X className="w-4 h-4 text-s-ink/40" />
           </button>
         </div>
 
         {done ? (
           <div className="text-center py-4">
-            <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70">
+            <p className="text-sm text-s-ink/70">
               Du wirst per E-Mail benachrichtigt, sobald ein Platz am {date} frei wird.
             </p>
             <button
@@ -71,7 +71,7 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
           </div>
         ) : (
           <>
-            <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-4">
+            <p className="text-sm text-s-ink/60 mb-4">
               Am {date} sind leider keine Termine frei. Möchtest du benachrichtigt werden, wenn ein Platz frei wird?
             </p>
             {error && <p className="text-xs text-s-coral mb-3">{error}</p>}

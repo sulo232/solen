@@ -58,33 +58,33 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
     coffin: "Coffin", stiletto: "Stiletto",
   };
 
-  if (loading) return <div className="py-4 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("loading")}</div>;
-  if (designs.length === 0) return <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">{t("timeline_no_designs")}</p>;
+  if (loading) return <div className="py-4 text-center text-sm text-s-ink/40">{t("loading")}</div>;
+  if (designs.length === 0) return <p className="text-sm text-s-ink/40 py-4">{t("timeline_no_designs")}</p>;
 
   return (
     <div className="relative">
       {/* Timeline line */}
-      <div className="absolute left-5 top-0 bottom-0 w-px bg-s-ink/10 dark:bg-s-dm-text/10" />
+      <div className="absolute left-5 top-0 bottom-0 w-px bg-s-ink/10" />
 
       <div className="space-y-6">
         {designs.map((d) => (
           <div key={d.id} className="relative pl-12">
             {/* Dot */}
-            <div className="absolute left-3.5 top-2 w-3 h-3 rounded-full bg-s-coral border-2 border-[--raised] dark:border-s-dm-surface" />
+            <div className="absolute left-3.5 top-2 w-3 h-3 rounded-full bg-s-coral border-2 border-[--raised]" />
 
             {/* Card */}
-            <div className="rounded-[16px] border border-s-ink/5 dark:border-s-dm-text/10 bg-[--raised] dark:bg-s-dm-surface p-3">
+            <div className="rounded-[16px] border border-s-ink/5 bg-[--raised] p-3">
               <div className="flex items-start gap-3">
                 {/* Design image */}
                 {d.photo_url && (
-                  <div className="w-20 h-20 rounded-input overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg shrink-0">
+                  <div className="w-20 h-20 rounded-input overflow-hidden bg-s-bg-sunken shrink-0">
                     <Image src={d.photo_url} alt="" width={80} height={80} className="object-cover w-full h-full" />
                   </div>
                 )}
 
                 <div className="flex-1 min-w-0">
                   {/* Date */}
-                  <div className="flex items-center gap-1.5 text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1">
+                  <div className="flex items-center gap-1.5 text-xs text-s-ink/40 mb-1">
                     <Clock size={10} />
                     {new Date(d.created_at).toLocaleDateString(locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
                   </div>
@@ -114,13 +114,13 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
                   )}
 
                   {d.notes && (
-                    <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 line-clamp-2">{d.notes}</p>
+                    <p className="text-xs text-s-ink/50 line-clamp-2">{d.notes}</p>
                   )}
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex gap-2 mt-2 pt-2 border-t border-s-ink/5 dark:border-s-dm-text/10">
+              <div className="flex gap-2 mt-2 pt-2 border-t border-s-ink/5">
                 <button className="flex items-center gap-1 text-xs text-s-coral hover:underline" aria-label={t("timeline_repeat")}>
                   <RefreshCw size={10} />
                   {t("timeline_repeat")}
@@ -130,7 +130,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
                     onClick={() => handlePublish(d)}
                     disabled={publishingId === d.id}
                     aria-label={publishingId === d.id ? t("timeline_publishing") : t("timeline_publish")}
-                    className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:brightness-[1.06] disabled:opacity-50 transition-colors"
+                    className="flex items-center gap-1 text-xs text-s-ink/50 hover:brightness-[1.06] disabled:opacity-50 transition-colors"
                   >
                     <Share2 size={10} />
                     {publishingId === d.id ? t("timeline_publishing") : t("timeline_publish")}

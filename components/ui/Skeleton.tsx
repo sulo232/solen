@@ -11,7 +11,7 @@ interface SkeletonProps {
 }
 
 export default function Skeleton({ variant = "text", className, style }: SkeletonProps) {
-  const base = "animate-shimmer rounded-[8px] bg-gradient-to-r from-s-bg-surface via-s-bg-sunken to-s-bg-surface bg-[length:200%_100%] dark:from-s-dm-surface dark:via-s-dm-sunken dark:to-s-dm-surface";
+  const base = "animate-shimmer rounded-[8px] bg-gradient-to-r from-s-bg-surface via-s-bg-sunken to-s-bg-surface bg-[length:200%_100%]";
 
   if (variant === "avatar") {
     return <div className={cn(base, "w-10 h-10 rounded-full", className)} style={style} />;

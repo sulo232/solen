@@ -1,6 +1,6 @@
 export default function PrivacyContent() {
   return (
-    <div className="prose prose-s-ink dark:prose-invert max-w-none w-full space-y-12">
+    <div className="prose prose-s-ink max-w-none w-full space-y-12">
       <Section id="section-1" titleDe="1. Verantwortliche Stelle" titleEn="1. Data Controller">
         <Article titleDe="1.1 Identität der Verantwortlichen Stelle" titleEn="1.1 Identity of the Data Controller">
           <ParDe>Verantwortlich für die Datenverarbeitung auf dieser Plattform ist solen.ch (Einzelunternehmen) mit Sitz in Basel-Stadt, Schweiz.</ParDe>
@@ -13,7 +13,7 @@ export default function PrivacyContent() {
         <Article titleDe="2.1 Arten der verarbeiteten Daten" titleEn="2.1 Types of Processed Data">
           <ParDe>Wir erheben und verarbeiten folgende Kategorien personenbezogener Daten:</ParDe>
           <ParEn>We collect and process the following categories of personal data:</ParEn>
-          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Kontodaten / Account Data:</strong> Name, E-Mail-Adresse, Telefonnummer, Profilbild / Name, email address, phone number, profile picture.</li>
             <li><strong>Buchungsdaten / Booking Data:</strong> Dienstleistungen, Termine, Salonpartner, Kundennotizen, Präferenzen, Allergien / Services, appointments, Salon Partners, client notes, preferences, allergies.</li>
             <li><strong>Zahlungsdaten / Payment Data:</strong> Transaktionsdetails (verarbeitet von Stripe) / Transaction details (processed by Stripe).</li>
@@ -27,7 +27,7 @@ export default function PrivacyContent() {
         <Article titleDe="3.1 Zwecke der Datenverarbeitung" titleEn="3.1 Purposes of Data Processing">
           <ParDe>Ihre Daten werden zu folgenden Zwecken verarbeitet:</ParDe>
           <ParEn>Your data is processed for the following purposes:</ParEn>
-          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Buchungsabwicklung / Booking Management:</strong> Vermittlung und Verwaltung von Dienstleistungen zwischen Kunden und Salonpartnern. / Facilitating and managing services between Customers and Salon Partners.</li>
             <li><strong>Zahlungsabwicklung / Payment Processing:</strong> Abwicklung der Bezahlung über unseren Zahlungsdienstleister Stripe. / Processing payments via our payment provider Stripe.</li>
             <li><strong>Kundenservice / Customer Support:</strong> Beantwortung von Benutzeranfragen und Beilegung von Streitigkeiten. / Responding to user inquiries and resolving disputes.</li>
@@ -43,15 +43,15 @@ export default function PrivacyContent() {
           <ParDe>Wir geben Ihre Daten nur an Dienstleister weiter, soweit dies für den Betrieb der Plattform erforderlich ist. Es werden keine Daten verkauft.</ParDe>
           <ParEn>We only share your data with service providers to the extent necessary to operate the platform. No data is sold.</ParEn>
           <div className="overflow-x-auto mt-4">
-            <table className="min-w-full text-sm text-left border border-s-ink/10 dark:border-s-dm-text/10 rounded-xl overflow-hidden block md:table">
-              <thead className="bg-s-ink/5 dark:bg-white/5 border-b border-s-ink/10 dark:border-s-dm-text/10">
+            <table className="min-w-full text-sm text-left border border-s-ink/10 rounded-xl overflow-hidden block md:table">
+              <thead className="bg-s-ink/5 border-b border-s-ink/10">
                 <tr>
                   <th className="px-4 py-2 font-semibold">Dienstleister / Provider</th>
                   <th className="px-4 py-2 font-semibold">Zweck / Purpose</th>
                   <th className="px-4 py-2 font-semibold">Region / Region</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-s-ink/10 dark:divide-s-dm-text/10">
+              <tbody className="divide-y divide-s-ink/10">
                 <tr>
                   <td className="px-4 py-2"><strong>Stripe</strong></td>
                   <td className="px-4 py-2">Zahlungsabwicklung / Payment processing</td>
@@ -92,7 +92,7 @@ export default function PrivacyContent() {
         <Article titleDe="5.1 Dauer der Datenspeicherung" titleEn="5.1 Duration of Data Storage">
           <ParDe>Wir speichern Ihre Daten nur so lange, wie es für die beschriebenen Zwecke notwendig ist:</ParDe>
           <ParEn>We retain your data only as long as necessary for the described purposes:</ParEn>
-          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Personenbezogene Profildaten:</strong> Werden innerhalb von 30 Tagen nach einem Kontolöschungsantrag gelöscht. / <strong>Personal Profile Data:</strong> Deleted within 30 days after an account deletion request.</li>
             <li><strong>Finanz-, Rechnungs- und Buchungsdaten:</strong> Werden in anonymisierter Form für 10 Jahre aufbewahrt, um den schweizerischen handelsrechtlichen Vorgaben (OR Art. 958f) zu genügen. / <strong>Financial, Billing, and Booking Data:</strong> Retained in anonymized form for 10 years to comply with Swiss commercial law (CO Art. 958f).</li>
           </ul>
@@ -103,7 +103,7 @@ export default function PrivacyContent() {
         <Article titleDe="6.1 Verwendung von Cookies" titleEn="6.1 Use of Cookies">
           <ParDe>Die Plattform verwendet Cookies und vergleichbare Technologien für grundlegende Funktionen und Performance-Analysen:</ParDe>
           <ParEn>The platform uses cookies and similar technologies for essential functions and performance analytics:</ParEn>
-          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Notwendige Cookies (Essential Cookies):</strong> Werden verwendet, um das Einloggen, das Speichern Ihrer Regionalsprache und den Zahlungsverkehr in Stripe zu ermöglichen. Ohne diese Cookies kann die Plattform nicht korrekt funktionieren. Sie können nicht deaktiviert werden. / Essential for logging in, storing your locale, and payment processes via Stripe. Cannot be turned off.</li>
             <li><strong>Analyse Cookies (Analytics Cookies / PostHog):</strong> Werden verwendet, um anonymisiert das Verhalten auf der Plattform nachzuvollziehen und das Erlebnis zu verbessern. Diese Cookies sind <strong>einwilligungspflichtig</strong> (Opt-In über Cookie-Banner). / Used to anonymously trace platform behavior and improve user experience. These cookies require <strong>consent</strong> (opt-in via cookie banner).</li>
           </ul>
@@ -114,7 +114,7 @@ export default function PrivacyContent() {
         <Article titleDe="7.1 Betroffenenrechte" titleEn="7.1 Data Subject Rights">
           <ParDe>Nach dem revidierten Schweizer Datenschutzgesetz (nDSG) sowie ggf. der europäischen DSGVO haben Sie bezüglich Ihrer personenbezogenen Daten die folgenden Rechte:</ParDe>
           <ParEn>Under the revised Swiss Data Protection Act (nDSG) and where applicable the GDPR, you have the following rights regarding your personal data:</ParEn>
-          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Zugang (Access):</strong> Sie können eine Kopie Ihrer gespeicherten Daten anfordern. / You may request a copy of your stored data.</li>
             <li><strong>Berichtigung (Rectification):</strong> Sie können falsche Daten in Ihrem Profilberichtigen. / You may correct inaccurate data in your profile.</li>
             <li><strong>Löschung (Deletion):</strong> Sie können die Löschung anfordern (vorbehältlich Abschnitt 5). / You may request deletion (subject to Section 5).</li>
@@ -141,11 +141,11 @@ export default function PrivacyContent() {
 
 function Section({ id, titleDe, titleEn, children }: { id: string, titleDe: string, titleEn: string, children: React.ReactNode }) {
   return (
-    <section id={id} className="scroll-mt-32 pb-8 border-b border-s-ink/10 dark:border-s-dm-text/10 last:border-0 relative">
-      <h2 className="font-heading font-bold text-xl md:text-2xl text-s-ink dark:text-s-dm-text mb-1">
+    <section id={id} className="scroll-mt-32 pb-8 border-b border-s-ink/10 last:border-0 relative">
+      <h2 className="font-heading font-bold text-xl md:text-2xl text-s-ink mb-1">
         {titleDe}
       </h2>
-      <h3 className="font-heading font-medium text-lg text-s-ink/60 dark:text-s-dm-text/60 mb-6 italic">
+      <h3 className="font-heading font-medium text-lg text-s-ink/60 mb-6 italic">
         {titleEn}
       </h3>
       <div className="space-y-8">
@@ -160,9 +160,9 @@ function Article({ titleDe, titleEn, children }: { titleDe: string, titleEn: str
     <div className="space-y-3">
       {(titleDe || titleEn) && (
         <div className="mb-4">
-          <h3 className="font-heading font-semibold text-lg text-s-ink dark:text-s-dm-text">
+          <h3 className="font-heading font-semibold text-lg text-s-ink">
             {titleDe} 
-            {titleEn && <span className="text-s-ink/50 dark:text-s-dm-text/50 font-normal ml-2">/ {titleEn}</span>}
+            {titleEn && <span className="text-s-ink/50 font-normal ml-2">/ {titleEn}</span>}
           </h3>
         </div>
       )}
@@ -175,7 +175,7 @@ function Article({ titleDe, titleEn, children }: { titleDe: string, titleEn: str
 
 function ParDe({ children, className = "" }: { children: React.ReactNode, className?: string }) {
   return (
-    <p className={`text-sm md:text-base text-s-ink dark:text-s-dm-text leading-relaxed ${className}`}>
+    <p className={`text-sm md:text-base text-s-ink leading-relaxed ${className}`}>
       {children}
     </p>
   );
@@ -183,8 +183,8 @@ function ParDe({ children, className = "" }: { children: React.ReactNode, classN
 
 function ParEn({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-3 pl-4 border-l-2 border-s-ink/10 dark:border-s-dm-text/10 mt-2 mb-4">
-      <p className="text-xs md:text-sm text-s-ink/70 dark:text-s-dm-text/70 italic leading-relaxed">
+    <div className="flex items-start gap-3 pl-4 border-l-2 border-s-ink/10 mt-2 mb-4">
+      <p className="text-xs md:text-sm text-s-ink/70 italic leading-relaxed">
         {children}
       </p>
     </div>

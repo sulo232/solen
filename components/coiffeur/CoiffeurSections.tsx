@@ -110,7 +110,7 @@ export function CoiffeurAboveGrid() {
   };
 
   return (
-    <div className="bg-[--raised]/70 dark:bg-s-dm-surface/70 backdrop-blur-[6px] border border-s-ink/5 dark:border-white/5 rounded-[16px] px-4 py-3 flex flex-col gap-2.5">
+    <div className="bg-[--raised]/70 backdrop-blur-[6px] border border-s-ink/5 rounded-[16px] px-4 py-3 flex flex-col gap-2.5">
       <ScrollableFilterRow
         label={t("service_label")}
         options={SERVICES}
@@ -151,11 +151,11 @@ export function CoiffeurBelowGrid() {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <TrendingUp size={18} className="text-s-coral" />
-                <h2 className="font-heading font-bold text-[clamp(26px,3.5vw,44px)] tracking-[-0.02em] text-s-ink dark:text-s-dm-text">
+                <h2 className="font-heading font-bold text-[clamp(26px,3.5vw,44px)] tracking-[-0.02em] text-s-ink">
                   {t("trending_title")}
                 </h2>
               </div>
-              <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
+              <p className="text-sm text-s-ink/50 font-body">
                 {t("trending_subtitle")}
               </p>
             </div>
@@ -171,12 +171,12 @@ export function CoiffeurBelowGrid() {
               <Link
                 key={style.label}
                 href={`/${locale}/discover?q=${encodeURIComponent(style.q)}`}
-                className={`rounded-[14px] bg-gradient-to-br ${style.color} border border-s-ink/5 dark:border-white/5 p-4 h-28 flex flex-col justify-between hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]`}
+                className={`rounded-[14px] bg-gradient-to-br ${style.color} border border-s-ink/5 p-4 h-28 flex flex-col justify-between hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]`}
               >
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.10em] rounded-pill px-2 py-0.5 bg-[--raised]/60 dark:bg-s-dm-surface/60 text-s-ink/60 dark:text-s-dm-text/60 self-start">
+                <span className="text-[9px] font-heading font-bold uppercase tracking-[.10em] rounded-pill px-2 py-0.5 bg-[--raised]/60 text-s-ink/60 self-start">
                   {style.tag}
                 </span>
-                <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm">
+                <p className="font-heading font-semibold text-s-ink text-sm">
                   {style.label}
                 </p>
               </Link>
@@ -185,15 +185,15 @@ export function CoiffeurBelowGrid() {
         </section>
 
         {/* AI matching CTA */}
-        <section className="rounded-[16px] bg-gradient-to-r from-s-coral/5 to-s-coral/10 dark:from-s-coral/10 dark:to-s-coral/5 border border-s-coral/15 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+        <section className="rounded-[16px] bg-gradient-to-r from-s-coral/5 to-s-coral/10 border border-s-coral/15 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
           <div className="w-12 h-12 rounded-pill bg-s-coral/10 flex items-center justify-center shrink-0">
             <Brain size={22} className="text-s-coral" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text">
+            <p className="font-heading font-semibold text-s-ink">
               {t("ai_teaser")}
             </p>
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
+            <p className="text-sm text-s-ink/50 font-body mt-1">
               {t("ai_desc")}
             </p>
           </div>

@@ -99,7 +99,7 @@ export default function MessagesPage() {
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 mb-1">
             Account
           </p>
-          <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">Nachrichten</h1>
+          <h1 className="font-heading font-bold text-2xl text-s-ink">Nachrichten</h1>
         </div>
 
         <div className="flex gap-4 h-[calc(100vh-160px)]">
@@ -115,7 +115,7 @@ export default function MessagesPage() {
                     "flex items-start gap-3 p-3 rounded-[12px] text-left w-full transition-[transform,filter] duration-150",
                     selected === conv.id
                       ? "border border-s-coral/20"
-                      : "bg-white dark:bg-s-dm-surface border border-s-ink/[0.07] dark:border-white/[0.06] hover:border-s-coral/25",
+                      : "bg-white border border-s-ink/[0.07] hover:border-s-coral/25",
                   ].join(" ")}
                   style={selected === conv.id ? { background: "rgba(232,98,74,.04)" } : undefined}
                 >
@@ -126,7 +126,7 @@ export default function MessagesPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-1">
-                      <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">
+                      <p className="text-sm font-heading font-semibold text-s-ink truncate">
                         {conv.other_party_name}
                       </p>
                       {unread > 0 && (
@@ -136,12 +136,12 @@ export default function MessagesPage() {
                       )}
                     </div>
                     {conv.last_message_preview && (
-                      <p className="text-xs font-body text-s-ink/40 dark:text-s-dm-text/40 truncate mt-0.5">
+                      <p className="text-xs font-body text-s-ink/40 truncate mt-0.5">
                         {conv.last_message_preview}
                       </p>
                     )}
                     {conv.last_message_at && (
-                      <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/25 dark:text-s-dm-text/25 mt-0.5">
+                      <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/25 mt-0.5">
                         {new Date(conv.last_message_at).toLocaleDateString("de-CH", {
                           day: "numeric",
                           month: "short",
@@ -164,7 +164,7 @@ export default function MessagesPage() {
                     {selectedConv?.other_party_name?.[0] ?? "?"}
                   </div>
                   <div>
-                    <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">
+                    <p className="text-sm font-heading font-semibold text-s-ink">
                       {selectedConv?.other_party_name}
                     </p>
                     <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/50">Salon</p>
@@ -180,7 +180,7 @@ export default function MessagesPage() {
               </div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center gap-2 text-center">
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/25 dark:text-s-dm-text/25">
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/25">
                   Unterhaltung auswählen
                 </p>
                 <p className="text-xs font-body text-s-ink/25">Wähle links eine Unterhaltung</p>

@@ -75,11 +75,11 @@ export default async function BookingSalonPage({
 
   return (
     <BookingProvider salonId={salon.id}>
-      <div className="min-h-screen bg-[--base] dark:bg-s-dm-bg">
+      <div className="min-h-screen bg-[--base]">
         {/* Header with salon name */}
-        <header className="sticky top-0 z-40 border-b border-s-ink/[0.06] dark:border-white/[0.08] bg-[--raised] dark:bg-s-dm-surface">
+        <header className="sticky top-0 z-40 border-b border-s-ink/[0.06] bg-[--raised]">
           <div className="max-w-2xl mx-auto px-4 py-4">
-            <h1 className="font-display font-bold text-xl text-s-ink dark:text-s-dm-text">
+            <h1 className="font-display font-bold text-xl text-s-ink">
               {t('bookingAt', { salon: salon.name })}
             </h1>
           </div>

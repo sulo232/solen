@@ -27,8 +27,8 @@ export default function DiscoveryAdminPage() {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-heading font-bold text-s-ink dark:text-s-dm-text">Discovery Content Studio</h1>
-          <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1">Import, review, and manage discovery content</p>
+          <h1 className="text-2xl font-heading font-bold text-s-ink">Discovery Content Studio</h1>
+          <p className="text-sm text-s-ink/50 mt-1">Import, review, and manage discovery content</p>
         </div>
 
         {/* Tab bar */}
@@ -41,7 +41,7 @@ export default function DiscoveryAdminPage() {
                 "px-4 py-2 rounded-btn text-sm font-medium whitespace-nowrap transition-colors",
                 activeTab === tab
                   ? "bg-s-coral text-white"
-                  : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink/10 dark:hover:bg-white/10",
+                  : "bg-s-ink/5 text-s-ink/60 hover:bg-s-ink/10:bg-white/10",
               ].join(" ")}
             >
               {tab}
@@ -153,13 +153,13 @@ function StockImportTab() {
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           placeholder="Search photos (e.g. curly hair women)"
           aria-label="Search stock photos"
-          className="flex-1 min-w-[200px] px-4 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30"
+          className="flex-1 min-w-[200px] px-4 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30"
         />
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
           aria-label="Category filter"
-          className="px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
+          className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
         >
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
@@ -173,10 +173,10 @@ function StockImportTab() {
 
       {importing && <ImportProgressBar current={importProgress.current} total={importProgress.total} label="Importing to staging..." />}
       {bulkResult && (
-        <div className="flex items-center gap-2 p-3 rounded-[12px] bg-s-success-bg dark:bg-s-success/10 border border-s-success/20">
+        <div className="flex items-center gap-2 p-3 rounded-[12px] bg-s-success-bg border border-s-success/20">
           <CheckCircle size={16} className="text-s-success" />
           <span className="text-sm text-s-success">{bulkResult}</span>
-          <button onClick={() => setBulkResult(null)} className="ml-auto text-s-ink/30 hover:text-s-ink/60 dark:text-s-dm-text/30" aria-label="Dismiss">
+          <button onClick={() => setBulkResult(null)} className="ml-auto text-s-ink/30 hover:text-s-ink/60" aria-label="Dismiss">
             <XCircle size={14} />
           </button>
         </div>
@@ -216,7 +216,7 @@ function StockImportTab() {
       </div>
 
       {photos.length === 0 && !loading && (
-        <p className="text-center text-s-ink/30 dark:text-s-dm-text/30 py-12">Search for stock photos to import</p>
+        <p className="text-center text-s-ink/30 py-12">Search for stock photos to import</p>
       )}
     </div>
   );
@@ -250,12 +250,12 @@ function TikTokImportTab() {
 
   return (
     <div className="space-y-4 max-w-2xl">
-      <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60">Paste TikTok video URLs, one per line. AI will auto-publish relevant content and reject irrelevant videos.</p>
+      <p className="text-sm text-s-ink/60">Paste TikTok video URLs, one per line. AI will auto-publish relevant content and reject irrelevant videos.</p>
       <select
         value={category}
         onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
         aria-label="TikTok import category"
-        className="px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
+        className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
       >
         {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
@@ -265,7 +265,7 @@ function TikTokImportTab() {
         rows={8}
         aria-label="TikTok video URLs"
         placeholder={"https://www.tiktok.com/@user/video/123...\nhttps://www.tiktok.com/@user/video/456..."}
-        className="w-full px-4 py-3 rounded-[12px] bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 font-mono"
+        className="w-full px-4 py-3 rounded-[12px] bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30 font-mono"
       />
       {loading && <AIProcessingIndicator text="Fetching TikTok data & running AI analysis..." />}
       <button onClick={handleImport} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
@@ -275,7 +275,7 @@ function TikTokImportTab() {
         <div className="flex flex-wrap gap-4 text-sm">
           {result.published > 0 && <span className="text-s-success flex items-center gap-1"><CheckCircle size={14} /> {result.published} published</span>}
           {result.rejected > 0 && <span className="text-s-amber flex items-center gap-1"><AlertTriangle size={14} /> {result.rejected} auto-rejected</span>}
-          {result.pending > 0 && <span className="text-s-ink/50 dark:text-s-dm-text/50 flex items-center gap-1"><Eye size={14} /> {result.pending} sent to staging</span>}
+          {result.pending > 0 && <span className="text-s-ink/50 flex items-center gap-1"><Eye size={14} /> {result.pending} sent to staging</span>}
           {result.failed > 0 && <span className="text-s-error flex items-center gap-1"><XCircle size={14} /> {result.failed} failed</span>}
         </div>
       )}
@@ -323,22 +323,22 @@ function ManualUploadTab() {
         value={category}
         onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
         aria-label="Upload category"
-        className="px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
+        className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
       >
         {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
 
       <div
         onClick={() => fileRef.current?.click()}
-        className="border-2 border-dashed border-s-ink/10 dark:border-white/10 rounded-[12px] p-8 text-center cursor-pointer hover:border-s-coral/30 transition-colors"
+        className="border-2 border-dashed border-s-ink/10 rounded-[12px] p-8 text-center cursor-pointer hover:border-s-coral/30 transition-colors"
       >
         <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleUpload} className="hidden" />
         {uploading ? (
           <Spinner size="lg" />
         ) : (
           <>
-            <Upload size={32} className="mx-auto text-s-ink/20 dark:text-s-dm-text/20 mb-2" />
-            <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Click or drag to upload (max 5MB)</p>
+            <Upload size={32} className="mx-auto text-s-ink/20 mb-2" />
+            <p className="text-sm text-s-ink/40">Click or drag to upload (max 5MB)</p>
           </>
         )}
       </div>
@@ -346,7 +346,7 @@ function ManualUploadTab() {
       {analyzing && <AIProcessingIndicator />}
 
       {uploadedItem && !analyzing && (
-        <div className="flex items-center gap-3 p-3 rounded-[12px] bg-s-success-bg dark:bg-s-success/10 border border-s-success/20">
+        <div className="flex items-center gap-3 p-3 rounded-[12px] bg-s-success-bg border border-s-success/20">
           <CheckCircle size={18} className="text-s-success" />
           <span className="text-sm text-s-success">Uploaded and published successfully</span>
         </div>
@@ -411,17 +411,17 @@ function StagingTab() {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           aria-label="Staging category filter"
-          className="px-3 py-2 rounded-btn bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
+          className="px-3 py-2 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
         >
           <option value="">All Categories</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <button onClick={fetchItems} disabled={loading} aria-label="Load staging items" className="px-3 py-2 rounded-btn bg-s-ink/5 dark:bg-white/5 text-sm flex items-center gap-1.5">
+        <button onClick={fetchItems} disabled={loading} aria-label="Load staging items" className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm flex items-center gap-1.5">
           <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Load
         </button>
         {items.length > 0 && (
           <>
-            <button onClick={selectAll} aria-label={selected.size === items.length ? "Deselect all items" : "Select all items"} className="px-3 py-2 rounded-btn bg-s-ink/5 dark:bg-white/5 text-sm">
+            <button onClick={selectAll} aria-label={selected.size === items.length ? "Deselect all items" : "Select all items"} className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm">
               {selected.size === items.length ? "Deselect All" : "Select All"}
             </button>
             {selected.size > 0 && (
@@ -445,10 +445,10 @@ function StagingTab() {
             onClick={() => toggleSelect(item.id)}
             className={[
               "relative rounded-[12px] overflow-hidden cursor-pointer border-2 transition-[background-color,border-color,box-shadow]",
-              selected.has(item.id) ? "border-s-coral ring-2 ring-s-coral/30" : "border-transparent bg-white dark:bg-s-dm-surface",
+              selected.has(item.id) ? "border-s-coral ring-2 ring-s-coral/30" : "border-transparent bg-white",
             ].join(" ")}
           >
-            <div className="aspect-[3/4] relative bg-s-ink/5 dark:bg-white/5">
+            <div className="aspect-[3/4] relative bg-s-ink/5">
               {(item.thumbnail_url || item.image_url) ? (
                 <Image src={item.thumbnail_url || item.image_url!} alt={item.alt_text || ""} fill className="object-cover" sizes="200px" />
               ) : (
@@ -470,17 +470,17 @@ function StagingTab() {
             <div className="p-2 space-y-1">
               <div className="flex items-center gap-1">
                 <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">{item.category ?? item.auto_category ?? "?"}</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 dark:bg-white/5 text-s-ink/50 dark:text-s-dm-text/50">{item.source}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink/50">{item.source}</span>
               </div>
-              {item.auto_style && <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 truncate">{item.auto_style}</p>}
-              {item.auto_gender && <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{item.auto_gender}</p>}
+              {item.auto_style && <p className="text-xs text-s-ink/60 truncate">{item.auto_style}</p>}
+              {item.auto_gender && <p className="text-[10px] text-s-ink/40">{item.auto_gender}</p>}
             </div>
           </div>
         ))}
       </div>
 
       {items.length === 0 && !loading && (
-        <p className="text-center text-s-ink/30 dark:text-s-dm-text/30 py-12">Click &quot;Load&quot; to see pending staging items</p>
+        <p className="text-center text-s-ink/30 py-12">Click &quot;Load&quot; to see pending staging items</p>
       )}
     </div>
   );
@@ -497,8 +497,8 @@ function SortablePublishedCard({ item, onArchive }: { item: DiscoveryItem; onArc
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="relative rounded-[12px] overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
-      <div className="aspect-[3/4] relative bg-s-ink/5 dark:bg-white/5">
+    <div ref={setNodeRef} style={style} className="relative rounded-[12px] overflow-hidden bg-white border border-s-ink/5">
+      <div className="aspect-[3/4] relative bg-s-ink/5">
         {item.media_type === "photo" && item.image_url ? (
           <Image src={item.image_url} alt={item.alt_text || ""} fill className="object-cover" sizes="200px" />
         ) : item.tiktok_thumbnail_url ? (
@@ -520,10 +520,10 @@ function SortablePublishedCard({ item, onArchive }: { item: DiscoveryItem; onArc
       <div className="p-2 space-y-1">
         <div className="flex items-center gap-1">
           <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">{item.category}</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 dark:bg-white/5 text-s-ink/50">{item.media_type}</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 text-s-ink/50">{item.media_type}</span>
         </div>
-        {item.style_name && <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 truncate">{item.style_name}</p>}
-        <div className="flex items-center gap-2 text-[10px] text-s-ink/30 dark:text-s-dm-text/30">
+        {item.style_name && <p className="text-xs text-s-ink/60 truncate">{item.style_name}</p>}
+        <div className="flex items-center gap-2 text-[10px] text-s-ink/30">
           <span>{item.like_count} likes</span>
           <span>{item.view_count} views</span>
         </div>
@@ -587,17 +587,17 @@ function PublishedTab() {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           aria-label="Published category filter"
-          className="px-3 py-2 rounded-btn bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
+          className="px-3 py-2 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
         >
           <option value="">All Categories</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <button onClick={fetchItems} disabled={loading} className="px-3 py-2 rounded-btn bg-s-ink/5 dark:bg-white/5 text-sm flex items-center gap-1.5">
+        <button onClick={fetchItems} disabled={loading} className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm flex items-center gap-1.5">
           <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Load
         </button>
-        <span className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{items.length} items</span>
+        <span className="text-sm text-s-ink/40">{items.length} items</span>
         {items.length > 0 && (
-          <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30 flex items-center gap-1">
+          <span className="text-xs text-s-ink/30 flex items-center gap-1">
             <GripVertical size={12} /> Drag to reorder
           </span>
         )}
@@ -614,7 +614,7 @@ function PublishedTab() {
       </DndContext>
 
       {items.length === 0 && !loading && (
-        <p className="text-center text-s-ink/30 dark:text-s-dm-text/30 py-12">Click &quot;Load&quot; to see published items</p>
+        <p className="text-center text-s-ink/30 py-12">Click &quot;Load&quot; to see published items</p>
       )}
     </div>
   );
@@ -648,16 +648,16 @@ function FlaggedTab() {
   return (
     <div className="space-y-4">
       <div className="flex gap-3 items-center">
-        <button onClick={fetchItems} disabled={loading} className="px-3 py-2 rounded-btn bg-s-ink/5 dark:bg-white/5 text-sm flex items-center gap-1.5">
+        <button onClick={fetchItems} disabled={loading} className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm flex items-center gap-1.5">
           <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Load Flagged
         </button>
-        <span className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{items.length} flagged items</span>
+        <span className="text-sm text-s-ink/40">{items.length} flagged items</span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {items.map((item) => (
-          <div key={item.id} className="rounded-[12px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 overflow-hidden">
-            <div className="aspect-video relative bg-s-ink/5 dark:bg-white/5">
+          <div key={item.id} className="rounded-[12px] bg-white border border-s-ink/5 overflow-hidden">
+            <div className="aspect-video relative bg-s-ink/5">
               {item.image_url ? (
                 <Image src={item.image_url} alt="" fill className="object-cover" sizes="400px" />
               ) : (
@@ -686,7 +686,7 @@ function FlaggedTab() {
       </div>
 
       {items.length === 0 && !loading && (
-        <p className="text-center text-s-ink/30 dark:text-s-dm-text/30 py-12">No flagged content. Click &quot;Load Flagged&quot; to check.</p>
+        <p className="text-center text-s-ink/30 py-12">No flagged content. Click &quot;Load Flagged&quot; to check.</p>
       )}
     </div>
   );

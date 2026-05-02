@@ -61,7 +61,7 @@ export default function SearchResultGrid({
 
         {/* Fallback: category suggestion pills */}
         <div className="mt-8">
-          <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-3 font-body">
+          <p className="text-sm text-s-ink/50 mb-3 font-body">
             {t("searchTrySuggestions")}
           </p>
           <div className="flex flex-wrap gap-2 mb-6">
@@ -69,7 +69,7 @@ export default function SearchResultGrid({
               <Link
                 key={cat}
                 href={`/${locale}/${cat}`}
-                className="px-4 py-2 rounded-pill bg-s-ink/[0.05] text-s-ink/60 text-sm font-heading font-semibold hover:bg-s-ink/[0.09] hover:text-s-ink dark:bg-s-dm-text/[0.08] dark:text-s-dm-text/60 dark:hover:bg-s-dm-text/[0.14] dark:hover:text-s-dm-text transition-[transform,filter,border-color,background-color] duration-150"
+                className="px-4 py-2 rounded-pill bg-s-ink/[0.05] text-s-ink/60 text-sm font-heading font-semibold hover:bg-s-ink/[0.09] hover:text-s-ink:bg-s-dm-text/[0.14]:text-s-dm-text transition-[transform,filter,border-color,background-color] duration-150"
               >
                 {cat.charAt(0).toUpperCase() + cat.slice(1)}
               </Link>
@@ -91,7 +91,7 @@ export default function SearchResultGrid({
 
   return (
     <div className="p-4">
-      <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-3 font-body">
+      <p className="text-xs text-s-ink/50 mb-3 font-body">
         {salons.length} Ergebnis{salons.length !== 1 ? "se" : ""}
       </p>
 

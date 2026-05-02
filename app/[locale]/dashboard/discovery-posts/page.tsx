@@ -109,15 +109,15 @@ export default function DiscoveryPostsPage() {
   return (
     <DashboardLayout>
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-heading font-bold text-s-ink dark:text-s-dm-text mb-4">Meine Posts</h1>
+        <h1 className="text-2xl font-heading font-bold text-s-ink mb-4">Meine Posts</h1>
 
         {/* Tabs */}
-        <div className="flex gap-1 bg-s-ink/5 dark:bg-white/5 rounded-pill p-0.5 w-fit mb-6">
+        <div className="flex gap-1 bg-s-ink/5 rounded-pill p-0.5 w-fit mb-6">
           {(["new", "history"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-4 py-2 rounded-pill text-sm font-medium transition-colors ${tab === t ? "bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text shadow-elevation-1" : "text-s-ink/40 dark:text-s-dm-text/40"}`}
+              className={`px-4 py-2 rounded-pill text-sm font-medium transition-colors ${tab === t ? "bg-white text-s-ink shadow-elevation-1" : "text-s-ink/40"}`}
             >
               {t === "new" ? (
                 <span className="flex items-center gap-1.5"><Plus size={14} /> Neuer Post</span>
@@ -138,39 +138,39 @@ export default function DiscoveryPostsPage() {
 
             {/* Mode toggle */}
             <div className="flex gap-2">
-              <button onClick={() => setMode("photo")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60"}`}>
+              <button onClick={() => setMode("photo")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
                 <Upload size={14} /> Foto
               </button>
-              <button onClick={() => setMode("tiktok")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60"}`}>
+              <button onClick={() => setMode("tiktok")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
                 <LinkIcon size={14} /> TikTok
               </button>
             </div>
 
             {mode === "tiktok" && (
-              <input type="url" value={tiktokUrl} onChange={(e) => setTiktokUrl(e.target.value)} placeholder="https://www.tiktok.com/@user/video/..." className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30" />
+              <input type="url" value={tiktokUrl} onChange={(e) => setTiktokUrl(e.target.value)} placeholder="https://www.tiktok.com/@user/video/..." className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30" />
             )}
 
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1.5 block">Kategorie</label>
+              <label className="text-xs font-medium text-s-ink/60 mb-1.5 block">Kategorie</label>
               <div className="flex flex-wrap gap-1.5">
                 {CATEGORIES.map(({ key, label }) => (
-                  <button key={key} onClick={() => setCategory(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60"}`}>{label}</button>
+                  <button key={key} onClick={() => setCategory(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>{label}</button>
                 ))}
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1.5 block">Geschlecht</label>
+              <label className="text-xs font-medium text-s-ink/60 mb-1.5 block">Geschlecht</label>
               <div className="flex gap-1.5">
                 {GENDERS.map(({ key, label }) => (
-                  <button key={key} onClick={() => setGender(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60"}`}>{label}</button>
+                  <button key={key} onClick={() => setGender(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>{label}</button>
                 ))}
               </div>
             </div>
 
-            <input type="text" value={styleName} onChange={(e) => setStyleName(e.target.value)} placeholder="Stilname (optional)" className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30" />
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Beschreibung (optional)" rows={2} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 resize-none" />
-            <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Tags (Kommagetrennt)" className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30" />
+            <input type="text" value={styleName} onChange={(e) => setStyleName(e.target.value)} placeholder="Stilname (optional)" className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30" />
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Beschreibung (optional)" rows={2} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30 resize-none" />
+            <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Tags (Kommagetrennt)" className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30" />
 
             <ToSCheckbox checked={tosAccepted} onChange={setTosAccepted} />
             {error && <p className="text-xs text-s-error">{error}</p>}
@@ -185,19 +185,19 @@ export default function DiscoveryPostsPage() {
         {tab === "history" && (
           <div>
             {loading ? (
-              <p className="text-sm text-s-ink/30 dark:text-s-dm-text/30 py-8 text-center">Laden...</p>
+              <p className="text-sm text-s-ink/30 py-8 text-center">Laden...</p>
             ) : posts.length === 0 ? (
-              <p className="text-sm text-s-ink/30 dark:text-s-dm-text/30 py-8 text-center">Noch keine Posts</p>
+              <p className="text-sm text-s-ink/30 py-8 text-center">Noch keine Posts</p>
             ) : (
               <div className="space-y-3">
                 {posts.map((post) => (
-                  <div key={post.id} className="p-3 rounded-[12px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 flex items-center gap-3">
-                    <div className="w-14 h-14 rounded-btn bg-s-ink/5 dark:bg-white/5 shrink-0 overflow-hidden relative">
+                  <div key={post.id} className="p-3 rounded-[12px] bg-white border border-s-ink/5 flex items-center gap-3">
+                    <div className="w-14 h-14 rounded-btn bg-s-ink/5 shrink-0 overflow-hidden relative">
                       {post.image_url && <Image src={post.image_url} alt="" fill className="object-cover" unoptimized />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">{post.style_name || post.category}</p>
-                      <div className="flex items-center gap-2 text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">
+                      <p className="text-sm font-medium text-s-ink truncate">{post.style_name || post.category}</p>
+                      <div className="flex items-center gap-2 text-xs text-s-ink/40 mt-0.5">
                         <span className="flex items-center gap-0.5">
                           {post.status === "published" ? <Eye size={10} /> : <EyeOff size={10} />}
                           {post.status}

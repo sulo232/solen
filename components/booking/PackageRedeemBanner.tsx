@@ -63,7 +63,7 @@ export default function PackageRedeemBanner({
         </div>
         <div>
           <p className="text-xs font-heading font-bold text-s-sage">{t("redeemed")}</p>
-          <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("noAdditionalCharge")}</p>
+          <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/40 mt-0.5">{t("noAdditionalCharge")}</p>
         </div>
       </div>
     );
@@ -77,8 +77,8 @@ export default function PackageRedeemBanner({
         <Package size={15} className="text-s-amber" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-heading font-bold text-s-amber-text dark:text-s-amber truncate">{packageName}</p>
-        <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">
+        <p className="text-xs font-heading font-bold text-s-amber-text truncate">{packageName}</p>
+        <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/40 mt-0.5">
           {t("sessionsUsed", { used: sessionsUsed, total: totalSessions })}
         </p>
         {/* Progress dots */}
@@ -86,7 +86,7 @@ export default function PackageRedeemBanner({
           {Array.from({ length: totalSessions }).map((_, i) => (
             <div
               key={i}
-              className={`w-2 h-2 rounded-full ${i < sessionsUsed ? "bg-s-amber" : "bg-s-ink/10 dark:bg-white/10"}`}
+              className={`w-2 h-2 rounded-full ${i < sessionsUsed ? "bg-s-amber" : "bg-s-ink/10"}`}
             />
           ))}
         </div>

@@ -159,7 +159,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
           <Spinner />
         </div>
       ) : (
-        <div className="border border-s-ink/[0.08] dark:border-white/[0.08] rounded-card p-4 bg-[--raised] dark:bg-s-dm-surface">
+        <div className="border border-s-ink/[0.08] rounded-card p-4 bg-[--raised]">
           <Calendar
             value={
               formData.selectedDate
@@ -172,17 +172,17 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
             className="flex flex-col gap-4"
           >
             <div className="flex items-center justify-between">
-              <Heading className="text-lg font-heading font-bold text-s-ink dark:text-s-dm-text" />
+              <Heading className="text-lg font-heading font-bold text-s-ink" />
               <div className="flex gap-1">
                 <AriaButton
                   slot="previous"
-                  className="p-2 rounded-input hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.08] transition-colors"
+                  className="p-2 rounded-input hover:bg-s-ink/[0.06]:bg-white/[0.08] transition-colors"
                 >
                   ←
                 </AriaButton>
                 <AriaButton
                   slot="next"
-                  className="p-2 rounded-input hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.08] transition-colors"
+                  className="p-2 rounded-input hover:bg-s-ink/[0.06]:bg-white/[0.08] transition-colors"
                 >
                   →
                 </AriaButton>
@@ -191,7 +191,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
             <CalendarGrid className="border-collapse space-y-2">
               <CalendarGridHeader>
                 {(day) => (
-                  <CalendarHeaderCell className="text-center text-xs font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 p-2">
+                  <CalendarHeaderCell className="text-center text-xs font-heading font-semibold text-s-ink/50 p-2">
                     {day}
                   </CalendarHeaderCell>
                 )}
@@ -205,10 +205,10 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
                         isSelected
                           ? 'bg-s-coral text-white ring-2 ring-s-coral/30'
                           : isUnavailable
-                          ? 'text-s-ink/20 dark:text-s-dm-text/20 cursor-not-allowed line-through'
+                          ? 'text-s-ink/20 cursor-not-allowed line-through'
                           : isOutsideMonth
-                          ? 'text-s-ink/20 dark:text-s-dm-text/20'
-                          : 'text-s-ink dark:text-s-dm-text hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.06]'
+                          ? 'text-s-ink/20'
+                          : 'text-s-ink hover:bg-s-ink/[0.06]:bg-white/[0.06]'
                       }`
                     }
                   />
@@ -228,8 +228,8 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
           >
-            <div className="border-t border-s-ink/[0.06] dark:border-white/[0.08] pt-5">
-              <p className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40 mb-4">
+            <div className="border-t border-s-ink/[0.06] pt-5">
+              <p className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 mb-4">
                 {tTime('title')}
               </p>
 
@@ -238,13 +238,13 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
                   <Spinner />
                 </div>
               ) : slotsError ? (
-                <p className="text-center text-sm text-s-ink/60 dark:text-s-dm-text/60 py-4">
+                <p className="text-center text-sm text-s-ink/60 py-4">
                   {slotsError}
                 </p>
               ) : timeGroups.length === 0 ? (
                 <div className="text-center py-6">
-                  <Clock size={36} className="mx-auto text-s-ink/20 dark:text-s-dm-text/20 mb-2" />
-                  <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60">
+                  <Clock size={36} className="mx-auto text-s-ink/20 mb-2" />
+                  <p className="text-sm text-s-ink/60">
                     {tTime('noSlotsAvailable')}
                   </p>
                 </div>
@@ -252,7 +252,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
                 <div className="space-y-5">
                   {timeGroups.map((group) => (
                     <div key={group.label}>
-                      <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 dark:text-s-dm-text/40 mb-3">
+                      <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-3">
                         {group.label}
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -265,8 +265,8 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
                               formData.selectedTime === slot.time
                                 ? 'bg-s-coral border-s-coral text-white'
                                 : slot.isAvailable
-                                ? 'border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text hover:border-s-coral/40 bg-[--raised] dark:bg-s-dm-surface'
-                                : 'bg-s-ink/[0.03] dark:bg-white/[0.02] border-transparent text-s-ink/30 dark:text-s-dm-text/30 cursor-not-allowed'
+                                ? 'border-s-ink/[0.08] text-s-ink hover:border-s-coral/40 bg-[--raised]'
+                                : 'bg-s-ink/[0.03] border-transparent text-s-ink/30 cursor-not-allowed'
                             }`}
                           >
                             {slot.time}
@@ -288,7 +288,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
       )}
 
       {/* Bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] dark:border-white/[0.08] bg-[--raised] dark:bg-s-dm-surface p-4 z-40">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] bg-[--raised] p-4 z-40">
         <div className="max-w-2xl mx-auto px-4">
           <button
             onClick={handleContinue}

@@ -391,7 +391,7 @@ export default function CheckoutPage() {
 
       <div className="max-w-lg mx-auto space-y-4">
         {/* P2 — Booking summary card */}
-        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md">
+        <div className="bg-white rounded-[12px] border border-s-ink/[0.07] shadow-warm-md">
           <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05]">
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 mb-1">
               Deine Buchung
@@ -509,7 +509,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* P5 — Promo code + credits */}
-        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md p-5 space-y-3">
+        <div className="bg-white rounded-[12px] border border-s-ink/[0.07] shadow-warm-md p-5 space-y-3">
           <div className="flex items-center gap-2">
             <Tag className="w-3.5 h-3.5 text-s-coral" />
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40">
@@ -581,7 +581,7 @@ export default function CheckoutPage() {
 
         {/* P5b — Voucher code section */}
         {!promoResult && (
-          <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md p-5 space-y-3">
+          <div className="bg-white rounded-[12px] border border-s-ink/[0.07] shadow-warm-md p-5 space-y-3">
             <div className="flex items-center gap-2">
               <PartyPopper className="w-3.5 h-3.5 text-s-coral" />
               <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40">
@@ -597,12 +597,12 @@ export default function CheckoutPage() {
                 onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
                 placeholder="Code eingeben"
                 disabled={!!voucherResult}
-                className="flex-1 px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] bg-white dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text uppercase tracking-[.08em] placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 placeholder:normal-case placeholder:tracking-normal focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none disabled:opacity-50 transition-colors"
+                className="flex-1 px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink uppercase tracking-[.08em] placeholder:text-s-ink/25:text-s-dm-text/25 placeholder:normal-case placeholder:tracking-normal focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none disabled:opacity-50 transition-colors"
               />
               {voucherResult ? (
                 <button
                   onClick={() => { setVoucherResult(null); setVoucherCode(""); }}
-                  className="px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-ink/20 dark:hover:border-white/20 transition-colors"
+                  className="px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 hover:border-s-ink/20:border-white/20 transition-colors"
                 >
                   Entfernen
                 </button>
@@ -648,7 +648,7 @@ export default function CheckoutPage() {
         {/* Payment card — or at_salon confirm */}
         {paymentMode === "at_salon" ? (
           // P8 — At-salon confirm card
-          <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md p-5">
+          <div className="bg-white rounded-[12px] border border-s-ink/[0.07] shadow-warm-md p-5">
             <div className="flex items-start gap-3 mb-4">
               <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
                 style={{ background: "rgba(76,175,111,.10)" }}>
@@ -681,7 +681,7 @@ export default function CheckoutPage() {
           </div>
         ) : (
           // P10 — Payment card (Stripe Elements) — header only, DO NOT touch Elements/appearance
-          <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md overflow-hidden">
+          <div className="bg-white rounded-[12px] border border-s-ink/[0.07] shadow-warm-md overflow-hidden">
             <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05] flex items-center gap-2">
               <Lock size={13} className="text-s-ink/45 shrink-0" />
               <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/45">

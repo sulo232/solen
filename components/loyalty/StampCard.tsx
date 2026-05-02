@@ -43,7 +43,7 @@ export default function StampCard({
   }, [isComplete]);
 
   return (
-    <div className="relative rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface overflow-hidden"
+    <div className="relative rounded-[12px] border border-s-ink/[0.06] bg-white overflow-hidden"
       style={{ boxShadow: "none" }}>
       {/* Confetti overlay */}
       {showConfetti && (
@@ -64,23 +64,23 @@ export default function StampCard({
 
       {/* Top: salon info */}
       <div className="p-4 pb-3">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 dark:text-s-dm-text/35 mb-2">
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-2">
           Treuekarte
         </p>
         <Link
           href={`/${locale}/salon/${salonSlug}`}
           className="flex items-center gap-3 transition-[background-color,color] duration-150"
         >
-          <div className="relative w-10 h-10 rounded-[8px] overflow-hidden bg-s-bg-sunken dark:bg-white/10 shrink-0">
+          <div className="relative w-10 h-10 rounded-[8px] overflow-hidden bg-s-bg-sunken shrink-0">
             {salonImageUrl ? (
               <Image src={salonImageUrl} alt={salonName} fill className="object-cover" sizes="40px" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-sm font-heading text-s-ink/30 dark:text-s-dm-text/30">
+              <div className="w-full h-full flex items-center justify-center text-sm font-heading text-s-ink/30">
                 {salonName[0]}
               </div>
             )}
           </div>
-          <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text truncate">
+          <p className="font-heading font-semibold text-sm text-s-ink truncate">
             {salonName}
           </p>
         </Link>
@@ -99,7 +99,7 @@ export default function StampCard({
                   "w-9 h-9 rounded-full flex items-center justify-center",
                   isFilled
                     ? "bg-s-coral text-white"
-                    : "border-2 border-dashed border-s-ink/10 dark:border-white/20",
+                    : "border-2 border-dashed border-s-ink/10",
                 ].join(" ")}
                 animate={isNewest ? { scale: [0.7, 1.15, 1] } : {}}
                 transition={isNewest ? { type: "spring", stiffness: 400, damping: 20, duration: 0.5 } : {}}
@@ -116,7 +116,7 @@ export default function StampCard({
         <p className="text-xs font-heading font-semibold text-s-amber">
           {rewardText}
         </p>
-        <span className="text-[10px] font-heading font-bold text-s-ink/35 dark:text-s-dm-text/35 whitespace-nowrap uppercase tracking-[.08em]">
+        <span className="text-[10px] font-heading font-bold text-s-ink/35 whitespace-nowrap uppercase tracking-[.08em]">
           {stampsCollected}/{stampsTotal}
         </span>
       </div>

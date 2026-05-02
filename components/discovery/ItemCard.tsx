@@ -42,7 +42,7 @@ export default memo(function ItemCard({
   const displayImage = item.image_url || item.tiktok_thumbnail_url;
   const isTikTok =
     !!item.tiktok_url || !!item.tiktok_embed_html || item.media_type === "tiktok";
-  const categoryBg = CATEGORY_COLORS[item.category] ?? "bg-white/50 dark:bg-white/20";
+  const categoryBg = CATEGORY_COLORS[item.category] ?? "bg-white/50";
   const contentLabel = CONTENT_TYPE_LABELS[isTikTok ? "tiktok" : item.content_type] ?? "";
 
   return (
@@ -112,7 +112,7 @@ export default memo(function ItemCard({
         className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-1 bg-white/30 dark:bg-black/30 backdrop-blur-[6px] rounded-pill px-1.5 py-1">
+        <div className="flex items-center gap-1 bg-white/30 backdrop-blur-[6px] rounded-pill px-1.5 py-1">
           <LikeButton
             itemId={item.id}
             initialLiked={false}
@@ -132,7 +132,7 @@ export default memo(function ItemCard({
       {/* ── Bottom: Glassmorphism info pill ── */}
       {item.style_name && (
         <div className="absolute bottom-2 left-2 right-2 z-10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <div className="bg-white/30 dark:bg-black/30 backdrop-blur-[6px] rounded-pill px-2.5 py-1.5 max-w-[70%]">
+          <div className="bg-white/30 backdrop-blur-[6px] rounded-pill px-2.5 py-1.5 max-w-[70%]">
             <p className="text-[11px] font-medium text-white truncate">
               {item.style_name}
             </p>

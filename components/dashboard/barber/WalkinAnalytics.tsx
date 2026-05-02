@@ -91,10 +91,10 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
   ] : [];
 
   return (
-    <div className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
+    <div className="rounded-[16px] bg-white border border-s-ink/5 p-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">{t("title")}</h3>
-        <div className="flex rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden">
+        <h3 className="font-heading text-sm font-bold text-s-ink">{t("title")}</h3>
+        <div className="flex rounded-btn border border-s-ink/10 overflow-hidden">
           {(["week", "month"] as const).map((p) => (
             <button
               key={p}
@@ -103,7 +103,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
               className={`px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                 period === p
                   ? "bg-s-coral text-white"
-                  : "text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg"
+                  : "text-s-ink/50 hover:bg-s-bg-surface:bg-s-dm-bg"
               }`}
             >
               {p === "week" ? t("week") : t("month")}
@@ -113,17 +113,17 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
       </div>
 
       {loading ? (
-        <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{tc("loading")}</div>
+        <div className="py-8 text-center text-sm text-s-ink/40">{tc("loading")}</div>
       ) : !stats ? (
-        <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("no_data")}</div>
+        <div className="py-8 text-center text-sm text-s-ink/40">{t("no_data")}</div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {metrics.map((m) => (
-            <div key={m.label} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-s-dm-text/10 p-4">
+            <div key={m.label} className="bg-white rounded-[16px] border border-s-ink/5 p-4">
               <p className="text-[11px] tracking-[0.2em] uppercase text-s-amber font-heading font-bold">
                 {m.label}
               </p>
-              <p className="text-2xl font-heading font-bold text-s-ink dark:text-s-dm-text data-text mt-1">
+              <p className="text-2xl font-heading font-bold text-s-ink data-text mt-1">
                 {m.value}
               </p>
               {m.trend && <MiniSparkline data={m.trend} color={m.color} />}

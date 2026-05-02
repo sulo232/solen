@@ -52,12 +52,12 @@ export default function SearchCriteriaChips({ locale }: SearchCriteriaChipsProps
       {chips.map(({ key, label }) => (
         <span
           key={key}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-s-ink/[0.06] dark:bg-white/[0.08] text-[12px] font-heading font-semibold text-s-ink dark:text-s-dm-text"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-s-ink/[0.06] text-[12px] font-heading font-semibold text-s-ink"
         >
           {label}
           <button
             onClick={() => removeParam(key)}
-            className="flex items-center justify-center w-4 h-4 rounded-full hover:bg-s-ink/10 dark:hover:bg-white/10 transition-colors"
+            className="flex items-center justify-center w-4 h-4 rounded-full hover:bg-s-ink/10:bg-white/10 transition-colors"
             aria-label={`${t("removeFilter")} ${label}`}
           >
             <X size={10} aria-hidden="true" />
@@ -70,7 +70,7 @@ export default function SearchCriteriaChips({ locale }: SearchCriteriaChipsProps
             const params = new URLSearchParams();
             router.replace(`${pathname}?${params.toString()}`, { scroll: false });
           }}
-          className="text-[11px] font-body text-s-ink/45 dark:text-s-dm-text/45 hover:text-s-coral underline underline-offset-2 transition-colors"
+          className="text-[11px] font-body text-s-ink/45 hover:text-s-coral underline underline-offset-2 transition-colors"
         >
           {t("clearAll")}
         </button>

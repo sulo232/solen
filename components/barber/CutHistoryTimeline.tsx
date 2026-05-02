@@ -95,19 +95,19 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
         return (
           <div
             key={cut.id}
-            className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4"
+            className="rounded-[16px] bg-white border border-s-ink/5 p-4"
           >
             <div className="flex items-start justify-between mb-2">
               <div>
-                <div className="flex items-center gap-2 text-sm text-s-ink dark:text-s-dm-text">
-                  <Calendar size={14} className="text-s-ink/40 dark:text-s-dm-text/40" />
+                <div className="flex items-center gap-2 text-sm text-s-ink">
+                  <Calendar size={14} className="text-s-ink/40" />
                   {new Date(cut.created_at).toLocaleDateString("de-CH", {
                     day: "numeric",
                     month: "short",
                     year: "numeric",
                   })}
                 </div>
-                <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
+                <p className="text-xs text-s-ink/50 mt-0.5">
                   {cut.service_name} · {t("service_at")} {cut.staff_name}
                 </p>
               </div>
@@ -128,7 +128,7 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
                 {specs.map((spec, i) => (
                   <span
                     key={i}
-                    className="text-xs px-2 py-0.5 rounded-pill bg-s-bg-surface dark:bg-s-dm-bg text-s-ink/70 dark:text-s-dm-text/70"
+                    className="text-xs px-2 py-0.5 rounded-pill bg-s-bg-surface text-s-ink/70"
                   >
                     {spec}
                   </span>
@@ -149,7 +149,7 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
 
             {/* Notes */}
             {cut.notes && (
-              <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-2 italic">{cut.notes}</p>
+              <p className="text-xs text-s-ink/50 mt-2 italic">{cut.notes}</p>
             )}
           </div>
         );

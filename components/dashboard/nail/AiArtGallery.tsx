@@ -45,7 +45,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
     return (
       <div className="columns-2 md:columns-3 gap-3">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="mb-3 rounded-[12px] bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] animate-pulse"
+          <div key={i} className="mb-3 rounded-[12px] bg-s-ink/[0.04] animate-pulse"
             style={{ height: `${140 + (i % 3) * 40}px` }} />
         ))}
       </div>
@@ -55,10 +55,10 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
   if (entries.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 py-12 text-center">
-        <div className="w-12 h-12 rounded-full bg-s-ink/[0.05] dark:bg-s-dm-text/[0.05] flex items-center justify-center">
-          <ImageOff size={20} className="text-s-ink/30 dark:text-s-dm-text/30" />
+        <div className="w-12 h-12 rounded-full bg-s-ink/[0.05] flex items-center justify-center">
+          <ImageOff size={20} className="text-s-ink/30" />
         </div>
-        <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("gallery_empty")}</p>
+        <p className="text-sm text-s-ink/40">{t("gallery_empty")}</p>
       </div>
     );
   }
@@ -67,10 +67,10 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
     <div>
       <div className="flex items-center gap-2 mb-4">
         <Sparkles size={14} className="text-s-coral" />
-        <p className="text-sm font-heading font-bold text-s-ink dark:text-s-dm-text">
+        <p className="text-sm font-heading font-bold text-s-ink">
           {t("gallery_title")}
         </p>
-        <span className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35 ml-1">
+        <span className="text-[10px] text-s-ink/35 ml-1">
           {entries.length} {t("gallery_items")}
         </span>
       </div>
@@ -79,7 +79,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
         {entries.map((entry) => (
           <div
             key={entry.id}
-            className="mb-3 rounded-[12px] overflow-hidden border border-s-ink/[0.06] dark:border-white/[0.06] relative group"
+            className="mb-3 rounded-[12px] overflow-hidden border border-s-ink/[0.06] relative group"
           >
             <div className="relative aspect-square">
               <Image

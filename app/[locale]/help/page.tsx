@@ -51,9 +51,9 @@ export default function HelpPage() {
   }));
 
   return (
-    <div className="min-h-screen bg-white dark:bg-s-dm-bg">
+    <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="bg-gradient-to-b from-s-coral/5 via-white dark:via-s-dm-bg to-transparent pt-8 pb-8">
+      <div className="bg-gradient-to-b from-s-coral/5 via-white to-transparent pt-8 pb-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <div className="w-14 h-14 rounded-[12px] bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
             <BookOpen size={28} className="text-s-coral" />
@@ -73,7 +73,7 @@ export default function HelpPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Suche nach Themen..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30 focus:border-s-coral transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 rounded-pill border border-s-ink/10 bg-white text-sm font-body text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30 focus:border-s-coral transition-colors"
             />
           </div>
         </div>

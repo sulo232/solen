@@ -38,7 +38,7 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
 
   return (
     <div>
-      <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text flex items-center gap-2 mb-4">
+      <h3 className="font-heading font-bold text-sm text-s-ink flex items-center gap-2 mb-4">
         <Share2 size={14} className="text-s-coral" /> Empfehlungs-Programm
       </h3>
 
@@ -49,10 +49,10 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
           { label: "Abgeschlossen", value: data.completed_referrals, icon: Gift },
           { label: "Umsatz durch Empfehlungen", value: formatCurrency(data.total_revenue_from_referrals, locale), icon: TrendingUp },
         ].map((s) => (
-          <div key={s.label} className="bg-s-bg-surface/50 dark:bg-s-dm-bg/50 rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3 text-center">
+          <div key={s.label} className="bg-s-bg-surface/50 rounded-[16px] border border-s-ink/5 p-3 text-center">
             <s.icon size={16} className="text-s-coral mx-auto mb-1" />
-            <p className="data-text font-bold text-lg text-s-ink dark:text-s-dm-text">{s.value}</p>
-            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{s.label}</p>
+            <p className="data-text font-bold text-lg text-s-ink">{s.value}</p>
+            <p className="text-[10px] text-s-ink/40">{s.label}</p>
           </div>
         ))}
       </div>
@@ -60,26 +60,26 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
       {/* Top referrers */}
       {data.top_referrers.length > 0 ? (
         <div>
-          <h4 className="text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-2">Top Empfehler</h4>
+          <h4 className="text-xs font-semibold text-s-ink/40 uppercase tracking-wide mb-2">Top Empfehler</h4>
           <div className="space-y-1">
             {data.top_referrers.map((r, i) => (
-              <div key={r.name} className="flex items-center justify-between text-xs py-2 border-b border-s-ink/5 dark:border-white/5 last:border-0">
+              <div key={r.name} className="flex items-center justify-between text-xs py-2 border-b border-s-ink/5 last:border-0">
                 <div className="flex items-center gap-2">
                   <span className="w-5 h-5 rounded-full bg-s-coral/10 text-s-coral text-[10px] font-bold flex items-center justify-center shrink-0">
                     {i + 1}
                   </span>
-                  <span className="font-medium text-s-ink dark:text-s-dm-text">{r.name}</span>
+                  <span className="font-medium text-s-ink">{r.name}</span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-s-ink/40 dark:text-s-dm-text/40">{r.referrals} Empfehlungen</span>
-                  <span className="data-text font-semibold text-s-ink dark:text-s-dm-text">{formatCurrency(r.revenue, locale)}</span>
+                  <span className="text-s-ink/40">{r.referrals} Empfehlungen</span>
+                  <span className="data-text font-semibold text-s-ink">{formatCurrency(r.revenue, locale)}</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
       ) : (
-        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-6">Noch keine Empfehlungen erhalten</p>
+        <p className="text-xs text-s-ink/30 text-center py-6">Noch keine Empfehlungen erhalten</p>
       )}
     </div>
   );

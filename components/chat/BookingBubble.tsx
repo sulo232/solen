@@ -32,7 +32,7 @@ export default function BookingBubble({ salonName, salonSlug, conversationId, me
     <div className="mx-4 mb-2 p-3 rounded-[12px] bg-s-coral/5 border border-s-coral/15 flex items-center gap-3">
       <Calendar size={18} className="text-s-ink/50 shrink-0" />
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("title", { salonName })}</p>
+        <p className="text-sm font-medium text-s-ink">{t("title", { salonName })}</p>
       </div>
       <Link
         href={`/${locale}/salon/${salonSlug}`}
@@ -42,7 +42,7 @@ export default function BookingBubble({ salonName, salonSlug, conversationId, me
       </Link>
       <button
         onClick={handleDismiss}
-        className="shrink-0 p-1 text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink/60 dark:hover:text-s-dm-text/60"
+        className="shrink-0 p-1 text-s-ink/30 hover:text-s-ink/60:text-s-dm-text/60"
         aria-label={t("close")}
       >
         <X size={14} />
