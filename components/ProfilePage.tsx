@@ -30,6 +30,8 @@ import { ProfileTabs } from "@/components/profile/ProfileTabs";
 import { LooksGrid } from "@/components/profile/LooksGrid";
 import { PaymentMethodsSection } from "@/components/profile/PaymentMethodsSection";
 import { DeleteAccountModal } from "@/components/profile/DeleteAccountModal";
+import LiveActivityCard, { type LiveActivityState } from "@/components/profile/LiveActivityCard";
+import ProfileGroupedLists, { type ProfileGroup } from "@/components/profile/ProfileGroupedLists";
 
 interface LoyaltyCard {
   id: string;
@@ -681,9 +683,12 @@ export default function ProfilePage() {
   const [loyaltyCards, setLoyaltyCards] = useState<LoyaltyCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelTarget, setCancelTarget] = useState<BookingWithDetails | null>(null);
-  const [pastOpen, setPastOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'looks' | 'termine' | 'favoriten' | 'stempel' | 'einstellungen'>('termine');
+  // pastOpen state retired with the inline termine tab — past bookings now live at /profile/bookings.
+  // activeTab state retired 2026-05-02 per Q58 — tabs replaced by grouped lists routing to sub-pages.
   const [beautyEditOpen, setBeautyEditOpen] = useState(false);
+  // Q58 LiveActivityCard state — fetched from /api/profile/live-state, polled every 60s
+  const [liveState, setLiveState] = useState<LiveActivityState | null>(null);
+  const [liveLoading, setLiveLoading] = useState(true);
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
 
   useEffect(() => {
@@ -760,6 +765,34 @@ export default function ProfilePage() {
 
     loadProfile();
   }, [locale, router, pathname]);
+
+  // Q58 LiveActivityCard data loop — initial fetch + 60s poll + revalidate on focus
+  useEffect(() => {
+    let cancelled = false;
+    const fetchLive = async () => {
+      try {
+        const res = await fetch("/api/profile/live-state", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled) {
+          setLiveState(data);
+          setLiveLoading(false);
+        }
+      } catch (err) {
+        console.error("[ProfilePage] live-state fetch:", err);
+        if (!cancelled) setLiveLoading(false);
+      }
+    };
+    fetchLive();
+    const interval = setInterval(fetchLive, 60_000);
+    const onFocus = () => fetchLive();
+    window.addEventListener("focus", onFocus);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, []);
 
   const handleSaveProfile = useCallback(async (updates: Partial<Profile>) => {
     try {
@@ -866,11 +899,9 @@ export default function ProfilePage() {
   if (!profile) return null;
 
   const now = Date.now();
+  // Used for the Termine count chip in the Q58 grouped lists
   const upcoming = bookings.filter(
     (b) => b.status === "confirmed" && new Date(b.starts_at).getTime() > now
-  );
-  const past = bookings.filter(
-    (b) => b.status === "completed" || (b.status === "confirmed" && new Date(b.starts_at).getTime() <= now) || b.status === "cancelled"
   );
 
   const beautyProfile: BeautyProfile = (profile.customer_preferences as any)?.beauty || {};
@@ -904,254 +935,148 @@ export default function ProfilePage() {
           onClose={() => setDeleteAccountOpen(false)}
         />
 
-        {/* Profile Hero */}
-        <ProfileHero profile={profile} locale={locale} onEditProfile={() => setActiveTab('einstellungen')} />
+        {/* Q58 (locked 2026-05-02) Profile shell — Insta-style header + LiveActivityCard
+            + Sei-Hiro grouped lists. The 5-tab ProfileTabs system retired:
+            each tab content lives at its own route per Q60 (bookings/favorites/looks/
+            stamps). Beauty Profile + payment/settings remain modal-triggered/expanded
+            from grouped list rows. */}
 
-        {/* Beauty Profile Card */}
-        <div className="mb-4">
-          <BeautyProfileCard profile={profile} onEdit={() => setBeautyEditOpen(true)} />
+        {/* Profile Hero */}
+        <ProfileHero
+          profile={profile}
+          locale={locale}
+          onEditProfile={() => {
+            // Anchor-scroll to inline settings section (TODO Phase 7: route to /profile/settings)
+            document.getElementById("settings")?.scrollIntoView({ behavior: "smooth" });
+          }}
+        />
+
+        {/* Live-Activity hero card — polls /api/profile/live-state every 60s + on focus */}
+        <div className="mt-2 mb-5">
+          <LiveActivityCard state={liveState} loading={liveLoading} />
         </div>
 
-        {/* Salon Highlights */}
-        <SalonHighlights favorites={favorites as any} locale={locale} />
+        {/* Sei-Hiro grouped menu lists */}
+        <ProfileGroupedLists
+          groups={[
+            {
+              eyebrow: "Activity",
+              rows: [
+                { key: "termine", label: "Termine", href: "/profile/bookings", count: upcoming.length || undefined },
+                { key: "favoriten", label: "Favoriten", href: "/profile/favorites", count: favorites.length || undefined },
+                { key: "looks", label: "Looks", href: "/profile/looks" },
+                { key: "stempel", label: "Stempel", href: "/profile/stamps", count: loyaltyCards.length || undefined },
+              ],
+            },
+            {
+              eyebrow: "Account",
+              rows: [
+                { key: "beauty", label: "Beauty Profile", href: "#beauty-modal" },
+                { key: "vouchers", label: "Geschenkkarten", href: "/profile/gift-cards" },
+                { key: "settings", label: "Einstellungen", href: "#settings" },
+              ],
+            },
+            {
+              eyebrow: "Misc",
+              rows: [
+                { key: "referral", label: "Freunde einladen", href: "/profile/referral", rewardChip: "CHF 10" },
+                { key: "help", label: "Hilfe & Support", href: "/help" },
+              ],
+            },
+          ]}
+        />
 
-        {/* Profile Tabs */}
-        <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab}>
-          {activeTab === 'looks' && <LooksGrid looks={[]} onAddLook={() => {/* TODO */}} />}
+        {/* Inline Beauty Profile trigger — handles "#beauty-modal" virtual route via click intercept */}
+        <button
+          type="button"
+          onClick={() => setBeautyEditOpen(true)}
+          className="sr-only"
+          aria-hidden
+          tabIndex={-1}
+          id="beauty-modal-trigger"
+        />
 
-          {activeTab === 'termine' && (
-            <div className="space-y-4">
-              <AnimatePresence mode="wait">
-                {upcoming.length === 0 ? (
-                  <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-                    <EmptyState
-                      icon={Calendar}
-                      title={t("noBookingsYet")}
-                      illustration="no-results"
-                      action={
-                        <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
-                          {t("bookNow")} →
-                        </Link>
-                      }
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-                    <div className="space-y-3">
-                      {upcoming.map((b) => (
-                        <BookingCard key={b.id} booking={b} locale={locale} onCancel={setCancelTarget} />
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+        {/* Settings expanded section — kept inline pending Phase 7 extraction to /profile/settings */}
+        <section id="settings" className="mt-8 space-y-6">
+          <h3 className="font-body text-[10px] font-bold uppercase tracking-[.22em] text-s-ink/40 px-1">
+            Einstellungen
+          </h3>
 
-              {past.length > 0 && (
-                <div className="mt-6">
-                  <button
-                    onClick={() => setPastOpen(!pastOpen)}
-                    aria-expanded={pastOpen}
-                    className="w-full flex items-center justify-between text-[13px] font-body font-medium text-s-ink/60 mb-3"
-                  >
-                    <span>{t("pastBookings")} ({past.length})</span>
-                    {pastOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                  </button>
-                  {pastOpen && (
-                    <div className="space-y-3">
-                      {past.map((b) => (
-                        <BookingCard key={b.id} booking={b} locale={locale} onCancel={setCancelTarget} />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+          <SettingsSection profile={profile} onSave={handleSaveProfile} onDeleteClick={() => setDeleteAccountOpen(true)} />
 
-          {activeTab === 'favoriten' && (
-            <div>
-              {favorites.length === 0 ? (
-                <EmptyState
-                  icon={Heart}
-                  title={t("noFavorites")}
-                  illustration="no-results"
-                  action={
-                    <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
-                      {t("discoverSalons")} →
-                    </Link>
-                  }
-                />
-              ) : (
-                <div className="grid grid-cols-1 gap-3">
-                  {favorites.map((salon) => (
-                    <div key={salon.id} className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] overflow-hidden flex gap-3 p-3 group relative">
-                      {salon.cover_photo_url && (
-                        <div className="w-14 h-14 rounded-[10px] overflow-hidden shrink-0 bg-s-bg-sunken">
-                          <Image src={salon.cover_photo_url} alt={salon.name} width={56} height={56} className="object-cover w-full h-full" loading="lazy" />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <Link href={`/${locale}/salon/${salon.slug}`} className="font-heading font-semibold text-sm text-s-ink hover:text-s-coral transition-colors truncate block">
-                          {salon.name}
-                        </Link>
-                        <p className="text-xs text-s-ink/40 flex items-center gap-1 mt-0.5 truncate">
-                          <MapPin size={10} />{salon.address}
-                        </p>
-                        <p className="text-xs text-s-ink/50 flex items-center gap-1 mt-0.5">
-                          <Star size={10} className="text-s-yellow fill-s-yellow" />
-                          {salon.average_rating?.toFixed(1) ?? "–"}
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => removeFav(salon.id)}
-                        className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-pill text-s-ink/20 hover:text-s-coral hover:bg-s-coral/10 transition-colors opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
-                        title={t("removeFromFavorites")}
-                        aria-label={t("removeFromFavorites")}
-                      >
-                        <X size={12} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          {/* Payment Methods */}
+          <PaymentMethodsSection />
 
-          {activeTab === 'einstellungen' && (
-            <div className="space-y-6">
-              {/* Quick links — referral & gift cards */}
-              <div className="space-y-2">
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30">{t("creditAndReferral")}</p>
-                <Link
-                  href={`/${locale}/profile/referral`}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised] hover:border-s-coral/30 transition-colors group"
-                  aria-label={t("inviteFriends")}
-                >
-                  <div className="flex items-center gap-3">
-                    <Gift size={16} className="text-s-coral shrink-0" />
-                    <div className="text-left">
-                      <p className="text-sm font-heading font-medium text-s-ink">{t("inviteFriends")}</p>
-                      <p className="text-xs text-s-ink/40 mt-0.5">{t("bothGetCredit")}</p>
-                    </div>
-                  </div>
-                  <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
-                </Link>
-                <Link
-                  href={`/${locale}/profile/gift-cards`}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised] hover:border-s-coral/30 transition-colors group"
-                  aria-label={t("myGiftCards")}
-                >
-                  <div className="flex items-center gap-3">
-                    <Wallet size={16} className="text-s-coral shrink-0" />
-                    <div className="text-left">
-                      <p className="text-sm font-heading font-medium text-s-ink">{t("myGiftCards")}</p>
-                      <p className="text-xs text-s-ink/40 mt-0.5">{t("myGiftCardsDesc")}</p>
-                    </div>
-                  </div>
-                  <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
-                </Link>
-              </div>
+          {/* Email & Password + Logout */}
+          <div className="pt-4 border-t border-s-ink/5 space-y-3">
+            <p className="text-[9px] font-body font-bold uppercase tracking-[.18em] text-s-ink/40">Sicherheit</p>
 
-              <SettingsSection profile={profile} onSave={handleSaveProfile} onDeleteClick={() => setDeleteAccountOpen(true)} />
+            <button
+              type="button"
+              onClick={async () => {
+                const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+                const supabase = createBrowserSupabaseClient();
+                const email = prompt("Neue E-Mail-Adresse:");
+                if (email) {
+                  const { error } = await supabase.auth.updateUser({ email });
+                  if (error) alert(`Fehler: ${error.message}`);
+                  else alert("Bestätigungsmail gesendet — bitte prüfe dein Postfach.");
+                }
+              }}
+              className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-white hover:border-s-coral/30 transition-colors group min-h-[48px]"
+            >
+              <span className="text-sm font-body font-medium text-s-ink">E-Mail ändern</span>
+              <ChevronRight size={16} className="text-s-ink/35" />
+            </button>
 
-              {/* Payment Methods */}
-              <PaymentMethodsSection />
+            <button
+              type="button"
+              onClick={async () => {
+                const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+                const supabase = createBrowserSupabaseClient();
+                const password = prompt("Neues Passwort (mind. 8 Zeichen):");
+                if (password && password.length >= 8) {
+                  const { error } = await supabase.auth.updateUser({ password });
+                  if (error) alert(`Fehler: ${error.message}`);
+                  else alert("Passwort erfolgreich geändert.");
+                } else if (password) {
+                  alert("Passwort muss mindestens 8 Zeichen lang sein.");
+                }
+              }}
+              className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-white hover:border-s-coral/30 transition-colors group min-h-[48px]"
+            >
+              <span className="text-sm font-body font-medium text-s-ink">Passwort ändern</span>
+              <ChevronRight size={16} className="text-s-ink/35" />
+            </button>
 
-              {/* Email & Password */}
-              <div className="pt-4 border-t border-s-ink/5 space-y-4">
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30">Sicherheit</p>
+            {/* Sign-out — quiet text-button per Q58 */}
+            <button
+              type="button"
+              onClick={async () => {
+                const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+                const supabase = createBrowserSupabaseClient();
+                await supabase.auth.signOut();
+                window.location.href = `/${locale}`;
+              }}
+              className="w-full text-center py-3 mt-4 text-s-ink/50 text-sm font-body hover:text-s-error transition-colors duration-150"
+            >
+              Abmelden
+            </button>
+          </div>
+        </section>
+        {/* TODO Phase 7: extract <SettingsSection> + <PaymentMethodsSection> + security
+            buttons to /profile/settings/page.tsx; the grouped-list "Einstellungen" row
+            currently anchor-scrolls to #settings via href="#settings" — replace with
+            real route once the page exists. */}
 
-                <button
-                  type="button"
-                  onClick={async () => {
-                    const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
-                    const supabase = createBrowserSupabaseClient();
-                    const email = prompt("Neue E-Mail-Adresse:");
-                    if (email) {
-                      const { error } = await supabase.auth.updateUser({ email });
-                      if (error) alert(`Fehler: ${error.message}`);
-                      else alert("Bestätigungsmail gesendet — bitte prüfe dein Postfach.");
-                    }
-                  }}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised] hover:border-s-coral/30 transition-colors group"
-                >
-                  <div className="text-left">
-                    <p className="text-sm font-heading font-medium text-s-ink">E-Mail ändern</p>
-                    <p className="text-xs text-s-ink/40 mt-0.5">Neue Adresse mit Bestätigungslink</p>
-                  </div>
-                  <span className="text-s-ink/20 group-hover:text-s-coral transition-colors">→</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={async () => {
-                    const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
-                    const supabase = createBrowserSupabaseClient();
-                    const password = prompt("Neues Passwort (mind. 8 Zeichen):");
-                    if (password && password.length >= 8) {
-                      const { error } = await supabase.auth.updateUser({ password });
-                      if (error) alert(`Fehler: ${error.message}`);
-                      else alert("Passwort erfolgreich geändert.");
-                    } else if (password) {
-                      alert("Passwort muss mindestens 8 Zeichen lang sein.");
-                    }
-                  }}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-[--raised] hover:border-s-coral/30 transition-colors group"
-                >
-                  <div className="text-left">
-                    <p className="text-sm font-heading font-medium text-s-ink">Passwort ändern</p>
-                    <p className="text-xs text-s-ink/40 mt-0.5">Neues Passwort festlegen</p>
-                  </div>
-                  <span className="text-s-ink/20 group-hover:text-s-coral transition-colors">→</span>
-                </button>
-
-                {/* Logout */}
-                <button
-                  type="button"
-                  onClick={async () => {
-                    const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
-                    const supabase = createBrowserSupabaseClient();
-                    await supabase.auth.signOut();
-                    window.location.href = `/${locale}`;
-                  }}
-                  className="w-full py-3 rounded-pill border border-s-error/30 text-s-error text-sm font-heading font-medium hover:bg-s-error-bg:bg-s-error/10 active:scale-[0.97] transition-[transform,background-color] duration-150"
-                >
-                  Abmelden
-                </button>
-              </div>
-            </div>
-          )}
-          {activeTab === 'stempel' && (
-            <div>
-              {loyaltyCards.length === 0 ? (
-                <EmptyState
-                  icon={Trophy}
-                  title={t("noStamps")}
-                  illustration="no-results"
-                  action={
-                    <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
-                      {t("bookAtSalon")}
-                    </Link>
-                  }
-                />
-              ) : (
-                <div className="grid grid-cols-1 gap-3">
-                  {loyaltyCards.map((card) => (
-                    <StampCard
-                      key={card.id}
-                      salonName={card.salons.name}
-                      salonSlug={card.salons.slug}
-                      salonImageUrl={card.salons.cover_photo_url ?? undefined}
-                      stampsTotal={card.stamps_needed}
-                      stampsCollected={card.stamps_collected}
-                      rewardText={card.reward_text}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </ProfileTabs>
+        {/* ProfileTabs render block REMOVED 2026-05-02 per Q58. Each tab content
+            now lives at its own dedicated route per Q60:
+              - termine     → /profile/bookings  (existed)
+              - favoriten   → /profile/favorites (built 2026-05-02)
+              - looks       → /profile/looks     (built 2026-05-02 — stub until backend)
+              - stempel     → /profile/stamps    (built 2026-05-02)
+              - einstellungen → inline section above (TODO Phase 7: extract to /profile/settings)
+            Beauty Profile + DeleteAccount + Cancel still triggered via modals. */}
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ import BrowseByCitySection from "@/components/BrowseByCitySection";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import HomepageHero from "@/components/ui/HomepageHero";
 import LastMinuteStrip from "@/components/ui/LastMinuteStrip";
-import FloatingNavPill from "@/components/layout/FloatingNavPill";
+// FloatingNavPill removed 2026-05-02 per Q58 (web drops bottom nav; hamburger header + avatar dropdown only).
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -183,8 +183,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
       <Footer />
 
-      {/* ── Floating Nav Pill (mobile only) ─── */}
-      <FloatingNavPill />
+      {/* FloatingNavPill removed 2026-05-02 per Q58 (web drops bottom nav). Mobile native/PWA can re-introduce later. */}
 
       {/* ── Tutorial Tour (first-visit logged-in users) ─────────────────── */}
       <TutorialTour isLoggedIn={!!userName} />

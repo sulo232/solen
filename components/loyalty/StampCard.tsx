@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { Check } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import CelebrationRing from "@/components/ui/CelebrationRing";
 
 interface StampCardProps {
   salonName: string;
@@ -14,14 +14,19 @@ interface StampCardProps {
   stampsTotal: number;
   stampsCollected: number;
   rewardText: string;
+  /** Fire Q36 reward-unlock celebration when this stamp event just happened.
+   *  Caller toggles this true on the stamp-just-earned moment, false after. */
+  celebrate?: boolean;
 }
 
-const CONFETTI_COLORS = [
-  "#E8735A", "#D4870A", "#F6E05E", "#68D391", "#6BA3C8",
-  "#FC8181", "#B794F4", "#F687B3", "#7BA688", "#FBD38D",
-  "#9AE6B4", "#FEB2B2",
-];
-
+/**
+ * StampCard — Q59-anatomy active loyalty card (white bg + dashed-outline empty stamps).
+ *
+ * Confetti animation removed 2026-05-02 per Q57 + Q59 anti-confetti rule.
+ * Reward-unlock celebration now uses Q36 grammar via <CelebrationRing kind="loyalty">,
+ * fired only on the actual stamp-earned event (caller controls `celebrate` prop) —
+ * NEVER on page mount.
+ */
 export default function StampCard({
   salonName,
   salonSlug,
@@ -29,38 +34,16 @@ export default function StampCard({
   stampsTotal,
   stampsCollected,
   rewardText,
+  celebrate = false,
 }: StampCardProps) {
   const locale = useLocale();
   const isComplete = stampsCollected >= stampsTotal;
-  const [showConfetti, setShowConfetti] = useState(false);
-
-  useEffect(() => {
-    if (isComplete) {
-      setShowConfetti(true);
-      const timer = setTimeout(() => setShowConfetti(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [isComplete]);
 
   return (
     <div className="relative rounded-[12px] border border-s-ink/[0.06] bg-white overflow-hidden"
       style={{ boxShadow: "none" }}>
-      {/* Confetti overlay */}
-      {showConfetti && (
-        <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
-          {CONFETTI_COLORS.map((color, i) => (
-            <div
-              key={i}
-              className="confetti absolute w-2 h-2 rounded-full"
-              style={{
-                backgroundColor: color,
-                left: `${8 + (i * 7.5) % 84}%`,
-                animationDelay: `${i * 0.1}s`,
-              }}
-            />
-          ))}
-        </div>
-      )}
+      {/* Q36 celebration on reward unlock — replaces retired confetti animation */}
+      <CelebrationRing kind="loyalty" active={celebrate && isComplete} maxRadius={120} />
 
       {/* Top: salon info */}
       <div className="p-4 pb-3">
