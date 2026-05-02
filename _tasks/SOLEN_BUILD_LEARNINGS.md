@@ -194,6 +194,124 @@ shape that <SalonCard> already accepts.
 
 ---
 
+## Phase 2 finish (2026-05-02)
+
+### L2.4 — Phase 0d regex left 120 dark-mode artifacts in 70 files
+The `\s+dark:...` regex in scripts/strip-dark-mode.mjs required leading
+whitespace, which missed nested `hover:dark:bg-...` and chained
+`:dark:bg-...` modifiers. Result: invalid Tailwind strings like
+`hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.14]` that silently fail at render.
+Caught while reading button.tsx. Fixed via a corrective regex pass that
+strips orphan `:bg-s-dm-`/`:text-s-dm-`/`:border-s-dm-`/etc fragments +
+dangling `hover:`/`focus:`/`active:` modifiers. **Lesson:** when writing
+a regex sweep over a class-name space, also test against nested-modifier
+patterns like `hover:dark:` and `lg:dark:`. The naive `\s+dark:` pattern
+misses them.
+
+---
+
+## Phase 4 — Home + discovery (2026-05-02)
+
+### L4.1 — Q49 above-fold replaces V5 cinematic hero
+NEW: `components/home/HeroAboveFold.tsx`. Old `HomepageHero.tsx` (V5
+cinematic + AirbnbSearchBar pill) is now orphan — Phase 7 deletes it +
+the `.figma.tsx` mirror file. Bg color changed `#FAFAF8` → white per Q15.
+
+### L4.2 — Search field opens existing GuidedSearch sheet via [data-gs-trigger]
+The Q49 stacked search card is a presentational trigger; tapping any
+field clicks the hidden `[data-gs-trigger]` element which opens the
+existing GuidedSearch sheet (preserves all input/filter logic).
+**Pattern:** when refactoring a UI surface, find the existing sheet/modal
+trigger via DOM attribute and reuse it instead of duplicating the input
+flow.
+
+### L4.3 — Q51 partial — 4 sections deferred to Phase 4.b
+Shipped: Q49 hero + Q51 #8 TrustStatsBanner. Deferred (need design call
+or backend wiring):
+- **Nearby section (#2):** geolocation hook (`useCityDetection` exists)
+  + a Nearby SectionCarousel pulling from existing `/api/salons/nearby`.
+  Quick if existing API works — verify before building.
+- **Discover section (#4):** Pinterest+booking-bridge. Needs
+  `discovery_items` table data flow + a new card pattern (mixed card
+  sizes, image-led). Substantial work; needs a Q-lock for the Discover
+  card anatomy first (no spec exists).
+- **Spotlight section (#6):** salon-of-the-week curation. Needs admin
+  curation UI + a `spotlight_salons` table or feature flag. Lowest
+  priority since it's marked `[optional]` in Q51.
+- **Per-section canonical SectionCarousel:** existing
+  `FeaturedSalonCarousel` (280L) already does the Q50 scroll-snap
+  pattern. Refactoring to a generic SectionCarousel is cosmetic
+  harmonization, not functional. Defer to Phase 7.
+
+---
+
+## Phase 5a — Q57 confirmation (2026-05-02)
+
+### L5.1 — Q57 BookingSuccess used CelebrationRing primitive directly
+The Phase 1 `<CelebrationRing kind="booking">` primitive plugged in
+exactly as designed. Mount-time `useEffect` sets `celebrate=true`,
+component auto-resets internal state. Reduced-motion: instant
+overlay-only via the primitive's built-in handling.
+
+### L5.2 — Replacing window-wide CSS confetti
+Old BookingSuccess generated 50 colored particles via direct DOM
+manipulation (`document.createElement` + appended to body, with
+`@keyframes confetti-fall` injected as a `<style>` tag). Replaced with
+a single React component that respects `prefers-reduced-motion`. **Net
+LOC: -8** while shipping a more sophisticated celebration.
+
+### L5.3 — Q57 anti-pattern enforcement (referral CTA killed)
+Old BookingSuccess had a "refer a friend, both get CHF 10" CTA panel
+right below the summary card. Q57 explicitly bans this — feels
+predatory immediately after pay. Removed entirely. Referral discovery
+moved into the Q58 profile grouped-list (Misc group, 'Freunde einladen'
+row with `CHF 10` reward chip — already shipped in Phase 3).
+
+---
+
+## Phase 5b-f — Q52-Q56 deferred (2026-05-02)
+
+These remaining Phase 5 locks need substantial refactors and a focused
+session. Each is its own ~1-2 hr surgical operation:
+
+### L5.4 — Q52 SalonHero + sticky scrollspy tab nav
+- `SalonHero.tsx` (180L): evolve carousel → A pattern (single full-bleed
+  photo + bottom-fade Anton overlay + thumbnail strip + tap-to-fullscreen
+  gallery sub-page). Significant JSX rewrite.
+- `SalonSectionNav.tsx` (124L) + `SalonTabBar.tsx` (67L): Fresha-pattern
+  pin-on-scroll, header-collapse, sliding coral underline (200ms),
+  IntersectionObserver scrollspy. 7 behaviors per Q52 lock.
+- Need to build the gallery sub-page route (`/salon/[slug]/gallery`).
+
+### L5.5 — Q53 booking entry — 3 entry points → /book/[slug]
+- Sticky bottom CTA (`SalonMobileCTA.tsx` 92L), sticky sidebar
+  (`SalonSidebar.tsx` 136L), in-flow service+ rows: ALL three route to
+  `/book/[slug]` full-page wizard with Q35 shared-element morph.
+- The shared-element morph requires Framer Motion `<LayoutGroup>` or
+  `next/router` view-transitions API. Test on mobile especially.
+
+### L5.6 — Q54 reviews split (summary + sub-page)
+- `SalonReviews.tsx` (383L): summary on detail tab + new
+  `/salon/[slug]/reviews` sub-page route with filter chips + infinite
+  scroll + reply threads expanded.
+- The sub-page route doesn't exist yet — needs to be built.
+
+### L5.7 — Q55 wizard 4→3 step merge (HIGHEST RISK)
+- Delete `ConfirmationStep.tsx` (194L) + `PaymentStep.tsx` (216L).
+- NEW: `PayConfirmStep.tsx` (~250-300L) merges both into single screen.
+- `BookingWizard.tsx` (172L) progress bar 4 segments → 3.
+- `BookingContext` formData stays unchanged; currentStep enum changes.
+- **HIGH RISK:** this is the revenue path. Must preserve all Stripe
+  integration, deposit flows, gift card redeem, package redeem,
+  group booking modal. Test pay flow end-to-end before shipping.
+
+### L5.8 — Q56 step indicator
+- `BookingWizard.tsx` progress bar: 3-segment + eyebrow `Schritt N / 3`
+  + Anton step label. Smaller than Q55 but couples with it (Q56 spec
+  assumes 3 steps from Q55). Ship in same commit as Q55.
+
+---
+
 ## Cross-cutting reminders for Phase 4+
 
 ### R1 — Vercel gate is active
