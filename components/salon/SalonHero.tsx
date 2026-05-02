@@ -2,172 +2,134 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import PhotoLightbox from "@/components/ui/PhotoLightbox";
 import ImageFallback from "@/components/ui/ImageFallback";
 
+/**
+ * SalonHero — Q52 (locked 2026-05-02) salon detail hero.
+ *
+ * Replaces the V5-era 5-photo Airbnb grid + carousel-with-dots with the
+ * locked Q52 anatomy:
+ *   - Single full-bleed hero photo (~50% viewport height; users skip
+ *     carousels per UX research, auto-rotate is a11y-hostile)
+ *   - Bottom-fade overlay carrying eyebrow + Anton headline (caller
+ *     provides via overlayContent prop — typically the Q48 SignatureLockup)
+ *   - Below the photo: thumbnail strip of N visible (3 default) + `+N`
+ *     overflow tile
+ *   - Tap any thumbnail or `+N` → fullscreen gallery (Q52 D-on-tap pattern,
+ *     opens the existing PhotoLightbox sheet — Phase 7 may upgrade this to
+ *     a dedicated /salon/[slug]/gallery sub-page route with Q35 morph)
+ *
+ * NO carousel hero. NO auto-rotate. NO dot indicators.
+ *
+ * Caller is responsible for the SignatureLockup + meta strip rendering
+ * BELOW this component (Q52 says hero only carries photo + bottom-fade
+ * eyebrow/Anton; meta `★ rating · distance · open-state` is below).
+ */
 interface SalonHeroProps {
   photos: string[];
   salonName: string;
+  /** Optional ReactNode rendered inside the bottom-fade gradient overlay
+   *  (typically a SignatureLockup with eyebrow `<KATEGORIE> · <distance>` +
+   *  Anton headline = salon name in white). */
+  overlayContent?: React.ReactNode;
+  /** Number of thumbnails to show in the strip (default 3). Anything beyond
+   *  this becomes a `+N` overflow tile that also opens the lightbox. */
+  thumbnailCount?: number;
 }
 
-export default function SalonHero({ photos, salonName }: SalonHeroProps) {
+export default function SalonHero({
+  photos,
+  salonName,
+  overlayContent,
+  thumbnailCount = 3,
+}: SalonHeroProps) {
   const t = useTranslations("salonDetail");
-  const [photoIndex, setPhotoIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  const hasMultiple = photos.length > 1;
-  const showGrid = photos.length >= 5;
+  const visibleThumbs = photos.slice(1, 1 + thumbnailCount);
+  const overflowCount = Math.max(0, photos.length - 1 - thumbnailCount);
+
+  const openLightbox = (i: number) => {
+    setLightboxIndex(i);
+    setLightboxOpen(true);
+  };
 
   return (
     <>
-      {showGrid ? (
-        /* ── Airbnb-style 5-photo grid ── */
-        <div className="relative w-full rounded-[20px] overflow-hidden mb-8">
-          <div className="grid grid-cols-4 grid-rows-2 gap-2 h-[360px] md:h-[420px]">
-            {/* Main large photo */}
+      <section
+        id="section-fotos"
+        className="scroll-mt-[100px] mb-6"
+        aria-label={`${salonName} Fotos`}
+      >
+        {/* Single full-bleed hero photo — ~50% viewport height per Q52 */}
+        <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-[16px] overflow-hidden bg-s-bg-sunken">
+          {photos[0] ? (
             <button
-              onClick={() => { setLightboxIndex(0); setLightboxOpen(true); }}
-              className="col-span-2 row-span-2 relative overflow-hidden group"
+              type="button"
+              onClick={() => openLightbox(0)}
+              className="absolute inset-0 w-full h-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+              aria-label={`${salonName} — Foto öffnen`}
             >
               <Image
                 src={photos[0]}
                 alt={`${salonName} — Foto 1`}
                 fill
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                className="object-cover"
                 priority
+                sizes="(max-width: 768px) 100vw, 1200px"
               />
+              {/* Bottom-fade overlay — anchors the eyebrow + Anton headline.
+                  Q52: amber eyebrow contrasts on dark gradient; Anton in white. */}
+              {overlayContent && (
+                <div className="absolute inset-x-0 bottom-0 px-5 sm:px-7 pt-16 pb-6"
+                     style={{ background: "linear-gradient(to top, rgba(26,18,9,.85) 0%, rgba(26,18,9,.55) 45%, transparent 100%)" }}
+                >
+                  <div className="text-white">{overlayContent}</div>
+                </div>
+              )}
             </button>
-            {/* 4 smaller photos */}
-            {photos.slice(1, 5).map((photo, i) => (
+          ) : (
+            <ImageFallback salonName={salonName} className="absolute inset-0" />
+          )}
+        </div>
+
+        {/* Thumbnail strip — N visible + `+N` overflow */}
+        {photos.length > 1 && (
+          <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {visibleThumbs.map((photo, i) => (
               <button
                 key={i}
-                onClick={() => { setLightboxIndex(i + 1); setLightboxOpen(true); }}
-                className="relative overflow-hidden group"
+                type="button"
+                onClick={() => openLightbox(i + 1)}
+                className="relative shrink-0 w-[88px] h-[64px] sm:w-[110px] sm:h-[80px] rounded-[10px] overflow-hidden border border-s-ink/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 transition-transform duration-150 hover:scale-[1.03]"
+                aria-label={`Foto ${i + 2} öffnen`}
               >
                 <Image
                   src={photo}
                   alt={`${salonName} — Foto ${i + 2}`}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  className="object-cover"
+                  sizes="110px"
                 />
               </button>
             ))}
-          </div>
-          {/* "Show all photos" button */}
-          {photos.length > 5 && (
-            <button
-              onClick={() => { setLightboxIndex(0); setLightboxOpen(true); }}
-              className="absolute bottom-4 right-4 px-4 py-2 rounded-[10px] text-xs font-heading font-bold uppercase tracking-[.06em]"
-              style={{
-                background: "rgba(255,255,255,.90)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
-                border: "1px solid rgba(0,0,0,.08)",
-                boxShadow: "0 2px 8px rgba(0,0,0,.12)",
-              }}
-            >
-              {t("showAllPhotos", { count: photos.length })}
-            </button>
-          )}
-        </div>
-      ) : (
-        /* ── Single-photo carousel (original behavior) ── */
-        <div
-          id="section-fotos"
-          className="scroll-mt-[100px] relative w-full aspect-[16/7] rounded-[20px] overflow-hidden bg-s-bg-surface mb-8 select-none"
-        >
-          <AnimatePresence mode="wait" initial={false}>
-            {photos[photoIndex] && (
-              <motion.div
-                key={photoIndex}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.35 }}
-                className="absolute inset-0 cursor-pointer"
-                onClick={() => { setLightboxIndex(photoIndex); setLightboxOpen(true); }}
+            {overflowCount > 0 && (
+              <button
+                type="button"
+                onClick={() => openLightbox(1 + thumbnailCount)}
+                className="relative shrink-0 w-[88px] h-[64px] sm:w-[110px] sm:h-[80px] rounded-[10px] overflow-hidden border border-s-ink/[0.06] bg-s-bg-sunken flex items-center justify-center font-heading text-[14px] uppercase text-s-ink/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 transition-transform duration-150 hover:scale-[1.03]"
+                aria-label={t("showAllPhotos", { count: photos.length })}
               >
-                <Image
-                  src={photos[photoIndex]}
-                  alt={`${salonName} — Foto ${photoIndex + 1}`}
-                  fill
-                  className="object-cover"
-                  priority={photoIndex === 0}
-                />
-              </motion.div>
+                +{overflowCount}
+              </button>
             )}
-          </AnimatePresence>
+          </div>
+        )}
+      </section>
 
-          {photos.length === 0 && (
-            <ImageFallback salonName={salonName} className="absolute inset-0" />
-          )}
-
-          {hasMultiple && (
-            <>
-              {/* Left nav */}
-              <button
-                onClick={() => setPhotoIndex((i) => (i - 1 + photos.length) % photos.length)}
-                aria-label={t("previousPhoto")}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-[transform] hover:scale-110"
-                style={{
-                  background: "rgba(255,255,255,.75)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  border: "1px solid rgba(255,255,255,.50)",
-                  boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)",
-                }}
-              >
-                <ChevronLeft className="w-5 h-5 text-s-ink" />
-              </button>
-              {/* Right nav */}
-              <button
-                onClick={() => setPhotoIndex((i) => (i + 1) % photos.length)}
-                aria-label={t("nextPhoto")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-[transform] hover:scale-110"
-                style={{
-                  background: "rgba(255,255,255,.75)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  border: "1px solid rgba(255,255,255,.50)",
-                  boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)",
-                }}
-              >
-                <ChevronRight className="w-5 h-5 text-s-ink" />
-              </button>
-
-              {/* Photo counter badge */}
-              <span
-                className="absolute top-3 right-3 text-xs font-heading font-bold px-2.5 py-1 rounded-btn"
-                style={{ background: "rgba(26,18,9,.55)", color: "rgba(255,255,255,.90)" }}
-              >
-                {photoIndex + 1} / {photos.length}
-              </span>
-
-              {/* Dot indicators */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-                {photos.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setPhotoIndex(i)}
-                    aria-label={`Foto ${i + 1}`}
-                    className={`rounded-full transition-[background-color,width,height] ${
-                      i === photoIndex
-                        ? "bg-white w-3 h-3"
-                        : "bg-white/50 w-2 h-2"
-                    }`}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      )}
-
-      {/* Photo lightbox */}
       <PhotoLightbox
         photos={photos}
         initialIndex={lightboxIndex}

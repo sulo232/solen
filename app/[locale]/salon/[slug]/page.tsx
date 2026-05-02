@@ -398,18 +398,32 @@ export default function SalonProfilePage() {
           </nav>
 
           <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-24 lg:pb-16">
-            {/* ── Photo Gallery ── */}
-            <SalonHero photos={photos} salonName={salon.name} />
+            {/* ── Q52 Photo Hero — single full-bleed + thumbnail strip + bottom-fade overlay ── */}
+            <SalonHero
+              photos={photos}
+              salonName={salon.name}
+              overlayContent={
+                <div>
+                  <p className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.20em]" style={{ color: "#F3A864" }}>
+                    {salon.categories[0] ?? "SALON"}{(salon as any).quartier ? ` · ${String((salon as any).quartier).replace("_", " ")}` : ""}
+                  </p>
+                  <p className="mt-1.5 font-heading text-[24px] sm:text-[32px] md:text-[40px] uppercase leading-[0.95]" style={{ letterSpacing: "0.01em" }}>
+                    {salon.name}
+                  </p>
+                </div>
+              }
+            />
 
             {/* Two-column grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
               {/* ── Left: info ── */}
               <div className="lg:col-span-2 flex flex-col gap-8">
 
-                {/* Name + meta */}
+                {/* Name + meta — Q52: name now lives in the hero overlay; sr-only h1 retained
+                    for SEO + screen-reader landmark, visible meta below */}
                 <div>
+                  <h1 className="sr-only">{salon.name}</h1>
                   <div className="flex items-center gap-3">
-                    <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.1] tracking-[-0.02em] text-s-ink">{salon.name}</h1>
                     <span className={`flex items-center gap-1.5 text-xs font-medium ${isOpen ? "text-s-success" : "text-s-ink/40"}`}>
                       <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-s-success" : "bg-s-ink/20"}`} />
                       {isOpen ? t("open") : t("closed")}
