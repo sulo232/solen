@@ -275,26 +275,26 @@
 
 }
 
-/* ── Accessibility: Focus-visible rings ────────────────────────────── */
+/* ── Q47 (locked 2026-05-02): Focus-visible ring = 2px coral, 2px outside-offset ─ */
 @layer base {
   a:focus-visible,
   button:focus-visible,
-  [tabindex]:focus-visible {
-    outline: 2px solid rgba(232, 98, 74, 0.5);
+  [role="button"]:focus-visible,
+  [tabindex]:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid #E8624A;
     outline-offset: 2px;
     border-radius: 4px;
   }
 
-  /* Inputs use box-shadow ring (respects border-radius) */
+  /* Inputs/textareas use box-shadow ring instead of outline so it follows border-radius cleanly */
   input:focus-visible,
   textarea:focus-visible,
   select:focus-visible {
     outline: none;
     border-color: #E8624A;
-    box-shadow: 0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), 0 0 0 3px #FAECE7;
+    box-shadow: 0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), 0 0 0 2px #ffffff, 0 0 0 4px #E8624A;
   }
-
-  /* Dark mode: brighter ring */
 }
 
 /* ── B.7: Override global coral focus ring inside GuidedSearch sheet ── */
@@ -744,14 +744,6 @@ html {
   animation-play-state: paused;
 }
 
-/* ── Global focus-visible ring (WCAG AAA keyboard accessibility) ────── */
-*:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px #FAFAF8, 0 0 0 4px #C05038;
-}
-button:focus-visible,
-a:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px #FAFAF8, 0 0 0 4px #C05038;
-}
+/* Legacy global focus-visible block removed 2026-05-02 — superseded by Q47 spec
+   in the @layer base block above (2px coral solid outline, 2px offset). */
 

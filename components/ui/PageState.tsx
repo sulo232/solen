@@ -16,7 +16,9 @@ import Skeleton from "./Skeleton";
  *   <PageState state="error" onRetry={() => refetch()} />
  *
  * Escape hatch: if you need deep empty-state customization (illustrations,
- * zone-specific motion), use <EmptyState> directly — but keep loading/error here.
+ * custom motion), use <EmptyState> directly — but keep loading/error here.
+ * For Q60 list-page empties (FTU vs no-upcoming vs filtered), use the
+ * specific variants: <EmptyStateFTU> / <EmptyStateInline> / <EmptyStateFiltered>.
  */
 
 type PageStateValue = "loading" | "empty" | "error";
