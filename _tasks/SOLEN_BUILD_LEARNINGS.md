@@ -408,6 +408,91 @@ the density prop opt-in.
 
 ---
 
+## Phase 7.b — V5 residue deep sweep (2026-05-03 follow-up)
+
+The Phase 0 token migration only updates components that USE the tokens.
+~50 components had hardcoded V5 hex values inline (style={{...}}, SVG fill
+attributes, etc.) that bypassed Tailwind entirely. User caught it: 'the
+color grid we talked about isnt here and still residues of old designs'.
+
+Mass mechanical sweeps via one-shot Node scripts (each deleted after run):
+
+### L7.1 — V5 hex sweep (138 hexes / 56 files) — commit 0430809
+  #E8735A → #E8624A   (V5 coral → Q23 coral)
+  #D4870A → #F3A864   (V5 honey-amber → Q23 peach-amber — large hue shift)
+  #FAFAF8 → #FFFFFF   (V5 off-white page bg → Q15 white)
+  #F5F0EB → #FAF7F3   (V5 warm beige → Q23 s-bg-sunken)
+  #2E7D32 → #16A34A   (V5 success green → Q23 success)
+  #222222 → #1A1209   (V5 ink → Q23 s-ink) — guarded against false matches
+  + matching rgba() variants for each
+
+### L7.2 — V5 class sweep (197 classes / 114 files) — commit 6560770
+  shadow-coral-glow / shadow-coral-glow-hover → shadow-elevation-2/3
+  shadow-amber-glow → shadow-elevation-2
+  shadow-warm-xl / shadow-warm-float → shadow-elevation-3
+  shadow-v5-glow-coral → shadow-elevation-2
+  bg-s-bg-base → bg-white (Q15 lock — verbose alias)
+
+### L7.3 — V5 typography sweep (1181 modifiers / 278 files) — commit f39e944
+  tracking-[-0.02em] → tracking-[0.01em] (Q48: positive tracking, NOT
+    Fraunces-era negative tight tracking — wrong direction for Anton)
+  font-heading font-{bold,extrabold,semibold,medium} → font-heading
+    (Anton is single-weight 400 — bold variants silently no-op)
+  font-display font-{bold,extrabold} → font-display
+
+### L7.4 — V5 cool-grey sweep (14 hits / 5 files) — commit bfc7ed4
+  #767676 → #9F8A7E   (V5 cool muted → Q23 warm s-ink-3)
+  #EBEBEB → #EFE7DD   (V5 cool border → Q23 warm s-border)
+  Q23: all greys must be warm-tinted to stay in the tonal family with
+  coral + amber + cream. Cool greys read clinical against the warm palette.
+
+### L7.5 — V5 banned-class sweep (48 hits / 27 files) — commit 95e8c11
+  rounded-lg → rounded-[8px]    (Q26: explicit rounded-[Npx] only)
+  rounded-xl → rounded-[12px]   (Tailwind defaults inconsistent)
+  rounded-2xl → rounded-[16px]
+  rounded-3xl → rounded-[24px]
+  bg-black → bg-s-ink           (Q23: pure black banned, use warm s-ink)
+  text-black → text-s-ink
+
+### L7.6 — Per-component refits (high-impact surfaces)
+  - SalonCard.tsx: Anton uppercase salon name, amber stars, tabular
+    nums, formatPrice (CHF prefix), focus-visible ring per Q47, heart
+    semantic-color #FF4A6B love-red (NOT brand coral) per SOLEN_UI #5b
+  - BrowseByCitySection.tsx: dark register bg V5 #2C2825 → Q23 #1A1209;
+    eyebrow coral → amber for dark-bg contrast; Anton uppercase city
+    names with locked letter-spacing + leading
+  - SalonBadge.tsx: Top badge coral hex corrected; Neu badge bg literal
+    fixed (was the broken string 's-ink' renderering invalid CSS); all
+    shadows pure-black → warm-ink-tinted per §5
+  - TestimonialCarousel.tsx: stars amber not coral; warm-tinted divider
+  - FeaturedSalonCarousel.tsx: same Q26+Q43 treatment as SalonCard +
+    heart love-red semantic; formatPrice migration
+
+### L7.7 — Heart semantic-color discipline
+  ALL heart save-state icons MUST use literal #FF4A6B love-red, NOT
+  brand coral, per SOLEN_UI #5b. Caught in SalonCard + FeaturedSalonCarousel.
+  The semantic distinction matters: coral = brand signal, love-red = the
+  universal romantic-save semantic. Mixing them dilutes both signals.
+
+### L7.8 — V5 residue is invisible to the token system
+  Each component that hardcoded a hex VALUE (vs using a Tailwind token
+  CLASS) survived Phase 0's token migration unchanged. The site looked
+  V5 because half the components painted V5 colors directly.
+  **Pattern for future phases:** when locking a token contract, also
+  immediately grep for hardcoded hex values matching the OLD value and
+  replace them. Don't assume token-class users cover everything.
+
+### L7.9 — Total Phase 7 V5-residue cleanup metrics
+  - 138 hex values
+  - 197 class names
+  - 1181 typography modifiers
+  - 14 cool-grey hexes
+  - 48 banned classes
+  - 22 coral-star semantic drifts
+  - **= 1600+ V5-residue fixes across ~350 files**
+
+---
+
 ## Cross-cutting reminders for Phase 4+
 
 ### R1 — Vercel gate is active
