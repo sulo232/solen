@@ -48,7 +48,19 @@ Read the live component file. Extract:
 
 Run: `curl -s http://localhost:3000<route> 2>/dev/null | head -c 50000` to get the actual rendered output. If the server is not running OR returns a 500 error, skip this step and note in the report. Do NOT block verification on the dev server being available.
 
-If you have rendered HTML, grep for the section's distinctive text ("BEAUTY", "Sofort buchbar", "Was suchst du", etc.) and confirm it's present.
+If you have rendered HTML:
+1. Grep for the section's distinctive text ("BEAUTY", "Sofort buchbar", "Was suchst du", etc.) and confirm it's present.
+2. **Raw i18n key leak check (CRITICAL — always run on rendered HTML):** grep for the regex pattern `[A-Z]+\.[A-Z]+\.[A-Z]+` AND for lowercase patterns like `\b[a-z]+\.[a-z]+\.[a-z]+\b` (e.g. `home.partner.eyebrow`). If ANY raw i18n key appears in the rendered HTML, that's a CRITICAL gap. The bug is `t("foo.bar.baz") || "fallback"` — next-intl returns the literal key path as the string for missing keys, NOT undefined, so the `||` fallback NEVER fires. The fix is either (a) hardcode the German string OR (b) add the key to `messages/de.json` properly. Always cite this as `FAIL` even if all other checks pass — raw keys are the most user-visible drift possible.
+
+## Step 3.5 — Verify every t() call has a real translation key
+
+For every `t("path.to.key")` call in the live component being verified, check `messages/de.json` (the DE locale, since pre-launch is Swiss-German first):
+
+```bash
+grep -n '"path.to.key":' messages/de.json   # or jq for nested paths
+```
+
+If a key DOESN'T exist in messages/de.json, the t() call will render the literal key path. Flag as critical UNLESS the call is wrapped to ALWAYS render the fallback (e.g. variable assignment + check, NOT `t(...) || "fallback"` which is broken).
 
 ## Step 4 — Cross-check, item by item
 

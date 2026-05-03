@@ -59,12 +59,15 @@ export default function QuartiersGrid() {
       aria-labelledby="quartiers-heading"
     >
       <div className="max-w-[1200px] mx-auto">
-        {/* Eyebrow — yellow per ref CSS .qrt-sec .sec-eye override at line 321 */}
+        {/* Eyebrow — yellow per ref CSS .qrt-sec .sec-eye override at line 321.
+            Strings hardcoded German — next-intl's t() returns the literal key path
+            for missing keys (NOT undefined), so `|| "fallback"` never fires.
+            i18n key migration is a separate task per Phase 9 polish. */}
         <span
           className="block font-body font-bold uppercase mb-3"
           style={{ color: "#F2C144", fontSize: 11, letterSpacing: ".22em" }}
         >
-          {t("quartiers.label") || "Dein Quartier"}
+          Dein Quartier
         </span>
 
         {/* 2-line color-split headline per ref `:1069`.
@@ -80,10 +83,10 @@ export default function QuartiersGrid() {
             lineHeight: 1,
           }}
         >
-          {t("quartiers.discoverWord") || "Entdecke"}
+          Entdecke
           <br />
           <span style={{ color: "#1B4D1B" }}>
-            {t("quartiers.cityName") || "Basel"}
+            Basel
           </span>
         </h2>
 
@@ -92,8 +95,7 @@ export default function QuartiersGrid() {
           className="font-body italic max-w-[480px] mb-8"
           style={{ fontSize: 15, color: "rgba(250,246,239,0.45)", lineHeight: 1.8 }}
         >
-          {t("quartiers.subline") ||
-            "Salons direkt bei dir im Quartier — vom Kleinbasel bis ins Bruderholz."}
+          Salons direkt bei dir im Quartier — vom Kleinbasel bis ins Bruderholz.
         </p>
 
         {/* Grid — 2-col mobile, 4-col desktop (ref `:323` + `:396`) */}
@@ -150,10 +152,10 @@ export default function QuartiersGrid() {
             aria-hidden
           >
             <div className="font-body font-bold" style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", marginBottom: 4 }}>
-              {t("quartiers.morePlaceholder") || "Mehr folgen"}
+              Mehr folgen
             </div>
             <div className="font-body" style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>
-              {t("quartiers.soon") || "bald"}
+              bald
             </div>
           </div>
         </div>

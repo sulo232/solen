@@ -54,7 +54,7 @@ export default function CategoriesGrid({ categoryCounts = {} }: CategoriesGridPr
           className="block font-body font-bold uppercase mb-2"
           style={{ color: "#F3A864", fontSize: 11, letterSpacing: ".22em" }}
         >
-          {t("categories.label") || "Kategorien"}
+          Kategorien
         </span>
         <div className="flex items-end justify-between flex-wrap gap-3 mb-7">
           <h2
@@ -62,15 +62,15 @@ export default function CategoriesGrid({ categoryCounts = {} }: CategoriesGridPr
             className="font-heading text-s-ink uppercase"
             style={{ fontSize: 28, letterSpacing: "0.01em", lineHeight: 1.05, marginBottom: 0 }}
           >
-            {t("categories.title") || "Was suchst du?"}
+            Was suchst du?
           </h2>
           <Link
             href={`/${locale}/discover`}
             className="font-body font-medium text-s-ink hover:underline transition-colors"
             style={{ fontSize: 14 }}
-            aria-label={t("categories.viewAllAria") || "Alle Kategorien ansehen"}
+            aria-label="Alle Kategorien ansehen"
           >
-            {t("categories.viewAll") || "Alle ansehen"} →
+            Alle ansehen →
           </Link>
         </div>
 

@@ -56,11 +56,14 @@ export default function PartnerBlock() {
           <div className="relative z-[1] grid gap-12 md:grid-cols-[1fr_auto] items-center">
             {/* Left column — copy + features + CTAs */}
             <div>
+              {/* Strings hardcoded German — next-intl's t() returns literal key path
+                  for missing keys, so `|| "fallback"` never fires. i18n key migration
+                  is a separate task per Phase 9 polish. */}
               <span
                 className="block font-body font-bold uppercase mb-3"
                 style={{ fontSize: 11, letterSpacing: ".22em", color: "rgba(255,255,255,0.6)" }}
               >
-                {t("partner.eyebrow") || "Für Salon-Inhaber"}
+                Für Salon-Inhaber
               </span>
 
               <h2
@@ -73,26 +76,25 @@ export default function PartnerBlock() {
                   letterSpacing: "0.01em",
                 }}
               >
-                {t("partner.headlineLine1") || "DEIN SALON."}
+                DEIN SALON.
                 <br />
-                {t("partner.headlineLine2") || "BASEL BUCHT."}
+                BASEL BUCHT.
               </h2>
 
               <p
                 className="font-body italic mb-7 max-w-[480px]"
                 style={{ fontSize: 16, color: "rgba(255,255,255,0.7)", lineHeight: 1.8 }}
               >
-                {t("partner.sub") ||
-                  "Bringe dein Geschäft auf das nächste Level. Neue Kund:innen, volle Termine, weniger Leerstunden."}
+                Bringe dein Geschäft auf das nächste Level. Neue Kund:innen, volle Termine, weniger Leerstunden.
               </p>
 
               {/* Feature dots */}
               <div className="flex flex-wrap mb-8" style={{ gap: 24 }}>
                 {[
-                  t("partner.feat1") || "Kostenloser Einstieg",
-                  t("partner.feat2") || "Last-Minute Angebote",
-                  t("partner.feat3") || "Echtzeit-Kalender",
-                  t("partner.feat4") || "TWINT-Zahlung",
+                  "Kostenloser Einstieg",
+                  "Last-Minute Angebote",
+                  "Echtzeit-Kalender",
+                  "TWINT-Zahlung",
                 ].map((label) => (
                   <div
                     key={label}
@@ -124,7 +126,7 @@ export default function PartnerBlock() {
                     letterSpacing: ".04em",
                   }}
                 >
-                  {t("partner.ctaPrimary") || "Jetzt registrieren"}
+                  Jetzt registrieren
                 </Link>
                 <Link
                   href={`/${locale}/partner`}
@@ -139,7 +141,7 @@ export default function PartnerBlock() {
                     letterSpacing: ".04em",
                   }}
                 >
-                  {t("partner.ctaSecondary") || "Mehr erfahren"}
+                  Mehr erfahren
                 </Link>
               </div>
             </div>
@@ -154,9 +156,9 @@ export default function PartnerBlock() {
                   className="font-body font-semibold uppercase"
                   style={{ fontSize: 11, letterSpacing: ".14em", color: "rgba(255,255,255,0.45)" }}
                 >
-                  {t("partner.stat1Line1") || "Buchungen"}
+                  Buchungen
                   <br />
-                  {t("partner.stat1Line2") || "diese Woche"}
+                  diese Woche
                 </div>
               </div>
               <div>
@@ -167,9 +169,9 @@ export default function PartnerBlock() {
                   className="font-body font-semibold uppercase"
                   style={{ fontSize: 11, letterSpacing: ".14em", color: "rgba(255,255,255,0.45)" }}
                 >
-                  {t("partner.stat2Line1") || "Partner-"}
+                  Partner-
                   <br />
-                  {t("partner.stat2Line2") || "salons"}
+                  salons
                 </div>
               </div>
             </div>

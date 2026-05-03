@@ -110,7 +110,7 @@ export default function CardFilterRow({
   return (
     <div className="flex gap-2 flex-wrap items-center mb-6">
       {TIME_CHIPS.map((c) =>
-        renderChip(c.key, t(c.labelKey) || c.fallback, "brand", "time"),
+        renderChip(c.key, c.fallback, "brand", "time"),
       )}
       {/* Vertical divider per ref `:838` */}
       <div
@@ -119,7 +119,7 @@ export default function CardFilterRow({
         aria-hidden
       />
       {ATTRIBUTE_CHIPS.map((c) =>
-        renderChip(c.key, t(c.labelKey) || c.fallback, "amber", "attribute"),
+        renderChip(c.key, c.fallback, "amber", "attribute"),
       )}
     </div>
   );
