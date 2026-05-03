@@ -338,7 +338,7 @@ export default function DashboardPage() {
                           </span>
                         )}
                         <div className={`w-2 h-2 rounded-full ${
-                          b.status === "confirmed" ? "bg-[#4CAF6F]" :
+                          b.status === "confirmed" ? "bg-[#16A34A]" :
                           b.status === "pending" ? "bg-s-amber" : "bg-s-ink/20"
                         }`} />
                       </div>

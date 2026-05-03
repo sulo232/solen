@@ -179,7 +179,7 @@ export default function TrustStatsBanner() {
                 <>
                   <p
                     className="font-display leading-none"
-                    style={{ fontSize: 28, color: "#2C2420" }}
+                    style={{ fontSize: 28, color: "#1A1209" }}
                   >
                     {formatSwiss(item.value ?? 0)}+
                   </p>
@@ -194,10 +194,10 @@ export default function TrustStatsBanner() {
               {item.type === "rating" && (
                 <>
                   <div className="flex items-center gap-1">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#E8624A" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F3A864" aria-hidden="true">
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
-                    <span className="font-body font-bold" style={{ fontSize: 16, color: "#2C2420" }}>
+                    <span className="font-body font-bold" style={{ fontSize: 16, color: "#1A1209" }}>
                       4.8
                     </span>
                   </div>
@@ -208,7 +208,7 @@ export default function TrustStatsBanner() {
               )}
               {item.type === "free" && (
                 <>
-                  <p className="font-body font-bold" style={{ fontSize: 16, color: "#2C2420" }}>
+                  <p className="font-body font-bold" style={{ fontSize: 16, color: "#1A1209" }}>
                     Kostenlos
                   </p>
                   <p className="font-body mt-1" style={{ fontSize: 13, color: "rgba(26,18,9,0.55)" }}>

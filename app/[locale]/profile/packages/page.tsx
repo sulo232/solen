@@ -114,7 +114,7 @@ export default function MyPackagesPage() {
                       </span>
                     ) : (
                       <span className="text-[9px] font-heading uppercase tracking-[.08em] px-2 py-1 rounded-[6px]"
-                        style={{ background: "rgba(76,175,111,.12)", color: "#1f6535" }}>
+                        style={{ background: "rgba(22,163,74,.12)", color: "#15803D" }}>
                         Aktiv
                       </span>
                     )}

@@ -70,7 +70,7 @@ export default function ResetPasswordPage() {
       <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
           <div className="mx-auto w-16 h-16 rounded-[20px] flex items-center justify-center mb-4"
-            style={{ background: "rgba(76,175,111,.12)" }}>
+            style={{ background: "rgba(22,163,74,.12)" }}>
             <Check size={28} className="text-s-sage" />
           </div>
           <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-sage mb-2">

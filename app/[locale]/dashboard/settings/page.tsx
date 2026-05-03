@@ -759,7 +759,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
           </button>
         )}
         {connectStatus === "connected" && (
-          <p className="text-xs text-[#4CAF6F] font-medium flex items-center gap-1">
+          <p className="text-xs text-[#16A34A] font-medium flex items-center gap-1">
             ✓ Dein Bankkonto ist verknüpft — Auszahlungen erfolgen automatisch.
           </p>
         )}

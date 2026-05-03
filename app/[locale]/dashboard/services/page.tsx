@@ -438,7 +438,7 @@ export default function ServicesPage() {
             </thead>
             <Droppable droppableId="services-list">
               {(provided) => (
-              <tbody ref={provided.innerRef} {...provided.droppableProps} className="divide-y divide-gray-50">
+              <tbody ref={provided.innerRef} {...provided.droppableProps} className="divide-y divide-s-border">
                 {services.map((s, index) => (
                   <Draggable key={s.id} draggableId={s.id} index={index}>
                     {(provided, snapshot) => (

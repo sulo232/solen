@@ -91,6 +91,13 @@
     box-sizing: border-box;
   }
 
+  /* Tailwind v3 preflight defaults `border-color` to gray-200 (#e5e7eb — cool grey).
+     Override globally so any `.border` without an explicit color uses our warm
+     `--color-border` (#EFE7DD). Eliminates rgb(229,231,235) drift from computed styles. */
+  *, ::before, ::after {
+    border-color: var(--color-border);
+  }
+
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

@@ -10,9 +10,9 @@ import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
  * Design intent: "This footer should feel clean and professional because
  * it's the last thing users see — no clutter."
  *
- * - Background: #2C2825 (matches dark theme)
- * - Sprout icon + 'SOLEN' in Bebas Neue 24px (brand wordmark)
- * - Tagline: 'Die Schweizer Salon-Plattform.' DM Sans 14px/400
+ * - Background: #1A1209 (Q23 locked s-ink dark register)
+ * - Sprout icon + 'SOLEN' in Anton 24px (brand wordmark)
+ * - Tagline: 'Die Schweizer Salon-Plattform.' Figtree 14px/400
  * - 2 link columns: PLATTFORM + FÜR SALONS
  * - RECHTLICHES section
  * - Language toggle: DE · EN · FR · IT
@@ -25,7 +25,7 @@ export default function Footer() {
   const t = useTranslations("footer") as any;
 
   return (
-    <footer style={{ background: "#2C2825" }}>
+    <footer style={{ background: "#1A1209" }}>
       <div className="max-w-[1280px] mx-auto px-5 md:px-10 lg:px-20 pt-12 pb-8">
 
         {/* ── Brand wordmark ── */}
@@ -41,7 +41,7 @@ export default function Footer() {
               SOLEN
             </span>
           </Link>
-          <p className="font-body text-sm mt-2" style={{ color: "#9E958C" }}>
+          <p className="font-body text-sm mt-2" style={{ color: "#9F8A7E" }}>
             {t("tagline") || "Die Schweizer Salon-Plattform."}
           </p>
         </div>
@@ -52,7 +52,7 @@ export default function Footer() {
           <div>
             <h3
               className="font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-4"
-              style={{ color: "#9E958C" }}
+              style={{ color: "#9F8A7E" }}
             >
               {t("platform") || "Plattform"}
             </h3>
@@ -80,7 +80,7 @@ export default function Footer() {
           <div>
             <h3
               className="font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-4"
-              style={{ color: "#9E958C" }}
+              style={{ color: "#9F8A7E" }}
             >
               {t("forSalonsTitle") || "Für Salons"}
             </h3>
@@ -107,7 +107,7 @@ export default function Footer() {
         <div className="mb-6" style={{ marginTop: 24 }}>
           <h3
             className="font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-3"
-            style={{ color: "#9E958C" }}
+            style={{ color: "#9F8A7E" }}
           >
             {t("legalTitle") || "Rechtliches"}
           </h3>
@@ -135,7 +135,7 @@ export default function Footer() {
           className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-4"
           style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
         >
-          <p className="font-body text-xs" style={{ color: "#9E958C" }}>
+          <p className="font-body text-xs" style={{ color: "#9F8A7E" }}>
             © {new Date().getFullYear()} solen.ch — Alle Rechte vorbehalten.
           </p>
           <LanguageSwitcher locale={locale} variant="footer" />

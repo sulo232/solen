@@ -107,7 +107,7 @@ export default function LoyaltyStampPage() {
             <div
               className="w-16 h-16 rounded-[18px] flex items-center justify-center mx-auto mb-5"
               style={{
-                background: "rgba(76,175,111,.12)",
+                background: "rgba(22,163,74,.12)",
                 animation: "fade-in-up 0.35s cubic-bezier(0.25,1,0.5,1) both",
               }}
             >

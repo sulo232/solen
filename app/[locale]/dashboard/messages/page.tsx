@@ -72,7 +72,7 @@ export default function MessagesPage() {
               <p className="text-sm">Keine Nachrichten</p>
             </div>
           ) : (
-            <div className="flex-1 overflow-y-auto divide-y divide-gray-50">
+            <div className="flex-1 overflow-y-auto divide-y divide-s-border">
               {convos.map((c) => (
                 <button
                   key={c.id}

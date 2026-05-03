@@ -203,12 +203,12 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
             aria-label={t("copyCode")}
             className={`w-10 h-10 rounded-[10px] border flex items-center justify-center transition-[border-color,background-color] duration-150 ${
               copied
-                ? "border-[#4CAF6F] bg-[#4CAF6F]/10"
+                ? "border-[#16A34A] bg-[#16A34A]/10"
                 : "border-s-ink/[0.08] hover:border-s-coral/40"
             }`}
           >
             {copied
-              ? <Check size={15} className="text-[#4CAF6F]" />
+              ? <Check size={15} className="text-[#16A34A]" />
               : <Copy size={15} className="text-s-ink/40" />}
           </button>
         </div>
@@ -268,7 +268,7 @@ type BookingWithDetails = Booking & { salon_name: string; service_name: string; 
 
 // Status badges — semantic pill colours
 const STATUS_BADGE_MAP: Record<string, { bg: string; color: string }> = {
-  confirmed: { bg: "rgba(76,175,111,.12)",  color: "#1f6535" },
+  confirmed: { bg: "rgba(22,163,74,.12)",  color: "#15803D" },
   cancelled: { bg: "rgba(232,98,74,.10)",   color: "#7A2415" },
   completed: { bg: "rgba(26,18,9,.06)",     color: "rgba(26,18,9,.50)" },
   no_show:   { bg: "rgba(26,18,9,.04)",     color: "rgba(26,18,9,.30)" },

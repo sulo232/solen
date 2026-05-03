@@ -63,7 +63,7 @@ export function StatCard({
     delta?.direction === "down" ? TrendingDown : Minus;
 
   const deltaColors: Record<string, string> = {
-    up: "text-[#2A6B40] bg-[#4CAF6F]/10",
+    up: "text-[#15803D] bg-[#16A34A]/10",
     down: "text-s-coral bg-s-coral/10",
     flat: "text-s-ink/40 bg-s-ink/[0.05]",
   };

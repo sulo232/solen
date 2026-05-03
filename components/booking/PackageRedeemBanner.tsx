@@ -58,7 +58,7 @@ export default function PackageRedeemBanner({
       <div className="flex items-center gap-3 px-4 py-3 rounded-[12px]"
         style={{ background: "rgba(243,168,100,.08)", border: "1px solid rgba(243,168,100,.20)" }}>
         <div className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0"
-          style={{ background: "rgba(76,175,111,.14)" }}>
+          style={{ background: "rgba(22,163,74,.14)" }}>
           <Check size={15} className="text-s-sage" />
         </div>
         <div>

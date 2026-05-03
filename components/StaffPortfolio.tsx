@@ -24,27 +24,27 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
   const sortedImages = [...images].sort((a, b) => a.sort_order - b.sort_order);
 
   return (
-    <div className="rounded-card border border-gray-100 p-4 bg-white">
+    <div className="rounded-card border border-s-border p-4 bg-white">
       {/* Header */}
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-12 h-12 rounded-full bg-gray-100 overflow-hidden shrink-0 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center">
           {member.avatar_url ? (
             <Image src={member.avatar_url} alt={member.name} width={48} height={48} className="object-cover w-full h-full" />
           ) : (
-            <span className="text-lg font-bold text-dark/30">{member.name[0]}</span>
+            <span className="text-lg font-bold text-s-ink/30">{member.name[0]}</span>
           )}
         </div>
         <div>
-          <p className="font-heading text-dark">{member.name}</p>
+          <p className="font-heading text-s-ink">{member.name}</p>
           {member.specialties?.length > 0 && (
-            <p className="text-xs text-dark/50">{member.specialties.join(", ")}</p>
+            <p className="text-xs text-s-ink/50">{member.specialties.join(", ")}</p>
           )}
         </div>
       </div>
 
       {/* Bio */}
       {(member as StaffMember & { bio?: string }).bio && (
-        <p className="text-sm text-dark/60 mb-3 leading-relaxed">
+        <p className="text-sm text-s-ink/60 mb-3 leading-relaxed">
           {(member as StaffMember & { bio?: string }).bio}
         </p>
       )}
@@ -56,7 +56,7 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
             <button
               key={img.id}
               onClick={() => setLightboxIndex(i)}
-              className="aspect-square bg-gray-100 overflow-hidden hover:opacity-90 transition-opacity"
+              className="aspect-square bg-s-bg-sunken overflow-hidden hover:opacity-90 transition-opacity"
             >
               <Image
                 src={img.image_url}

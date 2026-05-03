@@ -651,7 +651,7 @@ export default function CheckoutPage() {
           <div className="bg-white rounded-[12px] border border-s-ink/[0.07] shadow-warm-md p-5">
             <div className="flex items-start gap-3 mb-4">
               <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
-                style={{ background: "rgba(76,175,111,.10)" }}>
+                style={{ background: "rgba(22,163,74,.10)" }}>
                 <Wallet size={17} className="text-s-sage" />
               </div>
               <div>

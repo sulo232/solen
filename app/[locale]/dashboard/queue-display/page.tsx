@@ -45,7 +45,7 @@ export default function QueueDisplayPage() {
           </div>
 
           <div className="flex items-center gap-2 px-4 py-2 rounded-[12px] border border-white/[0.08] bg-white/[0.04]">
-            <div className="w-2 h-2 rounded-full bg-[#4CAF6F]" />
+            <div className="w-2 h-2 rounded-full bg-[#16A34A]" />
             <span className="text-xs font-heading text-white/60 uppercase tracking-[.10em]">
               Live
             </span>

@@ -29,7 +29,7 @@ interface ToastContextValue {
 const ToastContext = createContext<ToastContextValue | null>(null);
 
 const icons: Record<ToastType, React.ReactNode> = {
-  success: <CheckCircle size={16} className="flex-shrink-0" style={{ color: "#4CAF6F" }} />,
+  success: <CheckCircle size={16} className="flex-shrink-0" style={{ color: "#16A34A" }} />,
   error: <XCircle size={16} className="text-s-coral flex-shrink-0" />,
   info: <Info size={16} className="text-s-amber flex-shrink-0" />,
 };

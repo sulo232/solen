@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
  * confirmation screens, every section header).
  *
  * Anatomy:
- *   - Eyebrow: Figtree 700, 9-11px, .18-.22em tracking, UPPERCASE, coral `#C95A3A`
+ *   - Eyebrow: Figtree 700, 9-11px, .18-.22em tracking, UPPERCASE, coral `#E8624A` (locked)
  *   - Headline: Anton, 18-72px responsive, UPPERCASE (Anton is always uppercase),
  *     line-height 0.95, letter-spacing 0.01em
  *   - Optional sub-line: Figtree, 13-15px, ink-2 (warm secondary)
@@ -91,7 +91,7 @@ export default function SignatureLockup({
             "block font-body font-bold uppercase",
             s.eyebrow,
           )}
-          style={{ color: "#C95A3A" }}
+          style={{ color: "#E8624A" }}
         >
           {eyebrow}
         </span>

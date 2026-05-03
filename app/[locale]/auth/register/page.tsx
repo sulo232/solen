@@ -541,7 +541,7 @@ function DoneScreen() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
         className="w-16 h-16 rounded-[20px] flex items-center justify-center"
-        style={{ background: "rgba(76,175,111,.12)" }}>
+        style={{ background: "rgba(22,163,74,.12)" }}>
         <PartyPopper size={28} className="text-s-sage" />
       </motion.div>
 
