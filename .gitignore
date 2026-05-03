@@ -26,6 +26,11 @@ dist-ssr
 # Sentry Config File
 .env.sentry-build-plugin
 
+# MCP server config — contains secret API keys (Obsidian Local REST API bearer
+# token, etc.). NEVER commit. Each developer creates their own .mcp.json from
+# .mcp.json.example if needed.
+.mcp.json
+
 # Worktrees
 .worktrees/
 

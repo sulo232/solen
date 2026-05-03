@@ -1,0 +1,24 @@
+{
+  "_comment": "Copy to .mcp.json and fill in your own OBSIDIAN_API_KEY. .mcp.json is gitignored — never commit secrets.",
+  "_setup": [
+    "1. Install Obsidian community plugin 'Local REST API' + enable",
+    "2. Plugin settings → copy the API key",
+    "3. cp .mcp.json.example .mcp.json",
+    "4. Replace YOUR_OBSIDIAN_API_KEY_HERE with your key",
+    "5. Open Obsidian (Local REST API only runs while Obsidian is open)",
+    "6. Restart Claude Code session — Obsidian tools load via MCP"
+  ],
+  "mcpServers": {
+    "obsidian": {
+      "command": "npx",
+      "args": ["-y", "obsidian-mcp-server@3.1.1"],
+      "env": {
+        "OBSIDIAN_API_KEY": "YOUR_OBSIDIAN_API_KEY_HERE",
+        "OBSIDIAN_BASE_URL": "https://127.0.0.1:27124",
+        "OBSIDIAN_VERIFY_SSL": "false",
+        "OBSIDIAN_REQUEST_TIMEOUT_MS": "20000",
+        "MCP_TRANSPORT_TYPE": "stdio"
+      }
+    }
+  }
+}
