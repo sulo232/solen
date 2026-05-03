@@ -68,11 +68,18 @@ export default function SalonReviewsSummary({
       />
 
       <div className="mt-5 grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-6">
-        {/* 5-bar distribution chart */}
+        {/* 5-bar distribution chart — Q54 per-star color buckets:
+              5★ = brand color (post-Q64 brand-green #1B4D1B)
+              4-3★ = amber #F3A864
+              2-1★ = neutral warm-grey */}
         <div className="space-y-1.5" aria-label="Bewertungsverteilung">
           {[5, 4, 3, 2, 1].map((star, i) => {
             const count = distribution[i];
             const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+            const barColor =
+              star === 5 ? "#1B4D1B"
+              : star >= 3 ? "#F3A864"
+              : "#9F8A7E";
             return (
               <div key={star} className="flex items-center gap-2 font-body text-[11px] text-s-ink/65">
                 <span className="w-3 tabular-nums">{star}</span>
@@ -80,7 +87,7 @@ export default function SalonReviewsSummary({
                 <div className="flex-1 h-2 rounded-full bg-s-bg-sunken overflow-hidden">
                   <div
                     className="h-full rounded-full transition-[width] duration-500"
-                    style={{ width: `${pct}%`, background: "#F3A864" }}
+                    style={{ width: `${pct}%`, background: barColor }}
                   />
                 </div>
                 <span className="w-8 text-right tabular-nums text-s-ink/45">{count}</span>
