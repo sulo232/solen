@@ -58,8 +58,33 @@ export default function HeroAboveFold() {
           }
           size="xxl"
           align="center"
-          className="mb-8"
+          className="mb-6"
         />
+
+        {/* Phase 8.2 (S2 — additive 2026-05-03): three promise pills under hero
+            per public/solen-coral.html:579-591, 722-726.
+            - Sofort buchbar = green tint (brand-green register; bg #E8EFE4 text #0F3010 dot #1B4D1B)
+            - Ohne Anrufen = amber tint (bg #FCEBD3 text #8C4A14 dot #D87E2D)
+            - Heute frei = blue tint (semantic info chip per SOLEN_UI #5b — blue
+              is allowed for status semantics, not brand-restricted; bg #EAF3FB text #1A4D72 dot #6BA3C8)
+            Each chip: 32px height, 14px horizontal padding, 99px radius,
+            Figtree 600 13px, 7×7px dot before label. */}
+        <div className="flex items-center justify-center gap-2 flex-wrap mb-8">
+          {[
+            { label: "Sofort buchbar", bg: "#E8EFE4", color: "#0F3010", dot: "#1B4D1B" },
+            { label: "Ohne Anrufen",   bg: "#FCEBD3", color: "#8C4A14", dot: "#D87E2D" },
+            { label: "Heute frei",     bg: "#EAF3FB", color: "#1A4D72", dot: "#6BA3C8" },
+          ].map(({ label, bg, color, dot }) => (
+            <span
+              key={label}
+              className="inline-flex items-center font-body font-semibold text-[13px] h-8 px-[14px] rounded-full"
+              style={{ background: bg, color, gap: "7px" }}
+            >
+              <span className="inline-block w-[7px] h-[7px] rounded-full" style={{ background: dot }} aria-hidden />
+              {label}
+            </span>
+          ))}
+        </div>
 
         {/* Q49 Fresha-flow stacked 3-field search card */}
         <button

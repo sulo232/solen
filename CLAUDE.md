@@ -24,6 +24,7 @@
 3. Read before editing.
 4. Never `npm run build` unless asked.
 5. `git diff` after each fix.
+6. **Mass token sweeps are runtime-blocked.** A `PreToolUse` hook (`.claude/hooks/pre-sweep-check.sh`, registered in `.claude/settings.json`) BLOCKS any `Edit` with `replace_all: true` whose `old_string` contains a hex literal that exists in `public/solen-coral.html` or `_tasks/SOLEN_DESIGN.md`. Skipped paths: `tailwind.config.js`, `app/globals.css`, every `_tasks/_rules/_audits/_docs/_specs/_plans/_visual-qa/`, `CLAUDE.md`, `.claude/`, `messages/*.json`. To explicitly authorize a brand-pivot-style sweep (e.g. Q64), the user runs `touch .claude/sweep-approved.flag` — flag auto-expires in 10 minutes. This exists because L8 (SOLEN_BUILD_LEARNINGS.md) self-diagnosed that documentation alone didn't prevent sweep-without-grep failures.
 
 ---
 
