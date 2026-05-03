@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Star, Heart, Award, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { formatCurrency } from "@/lib/format-currency";
+import { formatPrice } from "@/lib/format";
 import type { SalonCard } from "@/lib/types";
 import { DEMO_SALONS } from "@/lib/demo-data";
 import ImageFallback from "@/components/ui/ImageFallback";
@@ -207,10 +207,10 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
               animate={heartBouncing ? { scale: [1, 1.3, 1] } : { scale: 1 }}
               transition={heartBouncing ? { type: "spring", stiffness: 400, damping: 15, duration: 0.4 } : { duration: 0 }}
             >
+              {/* Q26 + SOLEN_UI #5b: heart save state uses literal #FF4A6B love-red, NOT brand coral */}
               <Heart
-                className={`w-[18px] h-[18px] transition-colors duration-200 ${
-                  isFavorited ? "fill-s-coral stroke-s-coral" : "fill-transparent stroke-s-ink/30"
-                }`}
+                className="w-[18px] h-[18px] transition-colors duration-200"
+                style={isFavorited ? { fill: "#FF4A6B", color: "#FF4A6B" } : { fill: "transparent" }}
                 strokeWidth={2}
               />
             </motion.div>
@@ -220,37 +220,37 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
 
       {/* ── Content — no box, floats on page bg (SOLEN_DESIGN locked 2026-04-21) ── */}
       <div className="flex flex-col gap-1" style={{ padding: "12px 2px 0" }}>
-        {/* Name — Fraunces 15px/700 (serif heading, warm editorial) */}
-        <h3 className="font-heading text-[15px] leading-[1.25] truncate text-s-ink">
+        {/* Q26: Anton uppercase salon name + locked letter-spacing */}
+        <h3 className="font-heading text-[15px] uppercase leading-[1.1] truncate text-s-ink" style={{ letterSpacing: "0.01em" }}>
           {salon.name}
         </h3>
 
-        {/* Rating — coral star + score + count */}
+        {/* Q43 + SOLEN_UI #5b: amber star (NOT coral); tabular-nums on rating + count */}
         {showRating && (
           <div className="flex items-center gap-1">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#E8624A" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#F3A864" aria-hidden="true">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
-            <span className="font-body font-semibold text-[14px] text-s-ink">
+            <span className="font-body font-semibold text-[14px] text-s-ink tabular-nums">
               {(Math.round(salon.average_rating * 10) / 10).toFixed(1)}
             </span>
-            <span className="font-body text-[14px] text-s-ink-secondary">
+            <span className="font-body text-[14px] text-s-ink/55 tabular-nums">
               ({salon.review_count ?? 0})
             </span>
           </div>
         )}
 
-        {/* Location — DM Sans 14px/400 */}
-        <p className="font-body text-[14px] truncate text-s-ink-secondary">
+        {/* Location — Figtree 14px/400 */}
+        <p className="font-body text-[14px] truncate text-s-ink/65">
           {locationText}
         </p>
 
-        {/* Price — DM Sans 14px/400 */}
-        <p className="font-body text-[14px] text-s-ink-secondary">
+        {/* Q43: tabular numerics + formatPrice (CHF prefix per spec) */}
+        <p className="font-body text-[14px] text-s-ink/65 tabular-nums">
           {salon.min_price != null ? (() => {
             const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
-            return tCommon("fromPrice", { price: formatCurrency(salon.min_price, currencyLocale) });
-          })() : "Ab CHF 45.–"}
+            return tCommon("fromPrice", { price: formatPrice(salon.min_price, currencyLocale) });
+          })() : "Ab CHF 45"}
         </p>
       </div>
     </div>
