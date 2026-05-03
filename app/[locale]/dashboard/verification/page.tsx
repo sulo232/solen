@@ -74,7 +74,7 @@ export default function VerificationPage() {
         <div className="mb-8">
           <div className="flex items-center gap-3 text-s-ink mb-2">
             <ShieldCheck size={28} className="text-s-coral" />
-            <h1 className="font-heading font-bold text-2xl">Dokumente & Verifizierung</h1>
+            <h1 className="font-heading text-2xl">Dokumente & Verifizierung</h1>
           </div>
           <p className="text-sm text-s-ink/60">
             Optional, aber empfohlen — solen.ch kann jederzeit Nachweise anfordern (AGB §2.4). 

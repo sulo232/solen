@@ -169,7 +169,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                 <RefreshCw size={18} className="text-s-ink" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-heading font-medium text-s-ink text-[15px]">{t("rebook.title")}</p>
+                <p className="font-heading text-s-ink text-[15px]">{t("rebook.title")}</p>
                 <p className="text-sm text-s-ink-secondary font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
               </div>
               <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}

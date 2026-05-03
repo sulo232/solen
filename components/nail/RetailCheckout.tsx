@@ -85,7 +85,7 @@ export default function RetailCheckout({ salonId, products, onClose }: RetailChe
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
         <ShoppingBag size={16} className="text-s-coral" />
-        <h3 className="font-heading font-semibold text-sm text-s-ink">{t("checkout_title")}</h3>
+        <h3 className="font-heading text-sm text-s-ink">{t("checkout_title")}</h3>
       </div>
 
       {/* Product grid */}
@@ -138,7 +138,7 @@ export default function RetailCheckout({ salonId, products, onClose }: RetailChe
             <button
               onClick={handleCheckout}
               disabled={processing}
-              className="w-full min-h-12 flex items-center justify-center gap-2 px-4 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 shadow-elevation-2"
+              className="w-full min-h-12 flex items-center justify-center gap-2 px-4 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 shadow-elevation-2"
             >
               <CreditCard size={14} />
               {processing ? t("checkout_processing") : t("checkout_pay")}

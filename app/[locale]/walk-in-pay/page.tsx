@@ -162,10 +162,10 @@ export default function WalkInPayPage() {
             >
               <Check size={26} className="text-s-coral" />
             </div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-coral mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-coral mb-2">
               Zahlung
             </p>
-            <h2 className="font-heading font-bold text-lg text-s-ink mb-2">{l.paid}</h2>
+            <h2 className="font-heading text-lg text-s-ink mb-2">{l.paid}</h2>
             <p className="text-sm font-body text-s-ink/50 leading-relaxed">{l.paidDesc}</p>
           </div>
         ) : error ? (
@@ -176,7 +176,7 @@ export default function WalkInPayPage() {
             >
               <AlertTriangle size={26} className="text-s-amber" />
             </div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-amber mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-amber mb-2">
               Fehler
             </p>
             <p className="text-sm font-body text-s-ink/60">
@@ -193,43 +193,43 @@ export default function WalkInPayPage() {
                 <CreditCard size={17} className="text-s-coral" />
               </div>
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50 mb-0.5">
+                <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/50 mb-0.5">
                   Walk-in
                 </p>
-                <h1 className="font-heading font-bold text-lg text-s-ink">{l.title}</h1>
+                <h1 className="font-heading text-lg text-s-ink">{l.title}</h1>
               </div>
             </div>
 
             <div className="rounded-[12px] p-4 mb-6 space-y-3" style={{ background: "rgba(26,18,9,.03)" }}>
               {/* Salon row */}
               <div className="flex justify-between items-center">
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50">{l.salon}</span>
-                <span className="text-xs font-heading font-semibold text-s-ink">{booking.salon_name}</span>
+                <span className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/50">{l.salon}</span>
+                <span className="text-xs font-heading text-s-ink">{booking.salon_name}</span>
               </div>
               {/* Service row */}
               <div className="flex justify-between items-center">
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50">{l.service}</span>
-                <span className="text-xs font-heading font-semibold text-s-ink">{booking.service_name}</span>
+                <span className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/50">{l.service}</span>
+                <span className="text-xs font-heading text-s-ink">{booking.service_name}</span>
               </div>
               {/* Time row */}
               <div className="flex justify-between items-center">
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50">{l.time}</span>
-                <span className="text-xs font-heading font-semibold text-s-ink flex items-center gap-1">
+                <span className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/50">{l.time}</span>
+                <span className="text-xs font-heading text-s-ink flex items-center gap-1">
                   <Clock size={11} className="text-s-ink/40" />
                   {new Date(booking.starts_at).toLocaleTimeString(locale === "de" ? "de-CH" : "en-GB", { hour: "2-digit", minute: "2-digit" })}
                 </span>
               </div>
               {/* Amount row */}
               <div className="border-t border-s-ink/[0.07] pt-3 flex justify-between items-center">
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50">{l.amount}</span>
-                <span className="font-heading font-bold text-lg text-s-coral">{formatCurrency(booking.amount, locale)}</span>
+                <span className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/50">{l.amount}</span>
+                <span className="font-heading text-lg text-s-coral">{formatCurrency(booking.amount, locale)}</span>
               </div>
             </div>
 
             <button
               onClick={handlePay}
               disabled={paying}
-              className="w-full px-4 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2 transition-[transform,filter] shadow-elevation-2"
+              className="w-full px-4 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2 transition-[transform,filter] shadow-elevation-2"
             >
               {paying ? <Spinner size="sm" invert /> : <CreditCard size={15} />}
               {l.pay}

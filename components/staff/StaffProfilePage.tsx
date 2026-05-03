@@ -139,7 +139,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
           </div>
 
           <div className="flex-1 min-w-0">
-            <h1 className="font-heading font-bold text-2xl text-s-ink">
+            <h1 className="font-heading text-2xl text-s-ink">
               {staff.name}
             </h1>
 
@@ -203,7 +203,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
       {/* Portfolio gallery */}
       {portfolio.length > 0 && (
         <section className="mb-8">
-          <h2 className="font-heading font-bold text-xl text-s-ink mb-4">
+          <h2 className="font-heading text-xl text-s-ink mb-4">
             Portfolio
           </h2>
           <div className="grid grid-cols-3 gap-1.5 rounded-[12px] overflow-hidden">
@@ -233,7 +233,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
       {/* Services */}
       {services.length > 0 && (
         <section className="mb-8">
-          <h2 className="font-heading font-bold text-xl text-s-ink mb-4">
+          <h2 className="font-heading text-xl text-s-ink mb-4">
             Services
           </h2>
           <div className="space-y-2">
@@ -243,7 +243,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                 className="rounded-[12px] border border-s-ink/5 p-4 bg-white flex items-center justify-between"
               >
                 <div>
-                  <p className="font-heading font-semibold text-s-ink">
+                  <p className="font-heading text-s-ink">
                     {serviceName(s)}
                   </p>
                   <p className="text-sm text-s-ink/50 flex items-center gap-1 mt-0.5">
@@ -266,7 +266,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
       {/* Reviews */}
       {reviews.length > 0 && (
         <section className="mb-8">
-          <h2 className="font-heading font-bold text-xl text-s-ink mb-4">
+          <h2 className="font-heading text-xl text-s-ink mb-4">
             Bewertungen
           </h2>
           <div className="space-y-4">

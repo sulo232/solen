@@ -17,10 +17,10 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
 
   return (
     <div>
-      <p className="text-[11px] font-heading font-bold uppercase tracking-[0.12em] text-s-coral-text mb-2">
+      <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-s-coral-text mb-2">
         Team
       </p>
-      <h2 className="font-heading font-bold text-[20px] text-s-ink mb-4">
+      <h2 className="font-heading text-[20px] text-s-ink mb-4">
         Unser Team
       </h2>
 
@@ -64,7 +64,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
               </div>
 
               {/* Name */}
-              <p className="font-heading font-semibold text-[14px] text-s-ink text-center truncate">
+              <p className="font-heading text-[14px] text-s-ink text-center truncate">
                 {m.name}
               </p>
 
@@ -72,7 +72,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
               {m.languages && m.languages.length > 0 && (
                 <div className="flex flex-wrap justify-center gap-1 mt-1">
                   {m.languages.map((lang: string) => (
-                    <span key={lang} className="text-xs font-heading font-bold uppercase tracking-[.06em] px-2 py-1 rounded-sm bg-s-bg-surface text-[#767676]">
+                    <span key={lang} className="text-xs font-heading uppercase tracking-[.06em] px-2 py-1 rounded-sm bg-s-bg-surface text-[#767676]">
                       {lang}
                     </span>
                   ))}
@@ -100,7 +100,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
 
               {/* Next slot mock - in prod this would fetch from an API */}
               <div className="text-right">
-                <p className="text-[9px] font-heading font-semibold uppercase tracking-wider text-[#767676]">Nächster Termin</p>
+                <p className="text-[9px] font-heading uppercase tracking-wider text-[#767676]">Nächster Termin</p>
                 <p className="text-[12px] font-medium text-[#16A34A]">Morgen, 10:00</p>
               </div>
             </div>

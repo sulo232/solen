@@ -163,12 +163,12 @@ export default function FaceChartBuilder({
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="font-heading font-semibold text-sm text-s-ink">
+        <h3 className="font-heading text-sm text-s-ink">
           {t("face_chart_title")}
         </h3>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
+          className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-pill text-[11px] font-heading uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
           aria-label={t("face_chart_new")}
         >
           <Plus size={12} />
@@ -181,7 +181,7 @@ export default function FaceChartBuilder({
         <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white space-y-4">
           {/* Foundation details */}
           <div className="space-y-2">
-            <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40">
+            <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40">
               {t("foundation")}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -216,12 +216,12 @@ export default function FaceChartBuilder({
           {/* Face zones */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40">
+              <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40">
                 {t("zones_title")}
               </p>
               <button
                 onClick={() => setVisualMode(!visualMode)}
-                className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
+                className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading transition-colors duration-150 ${
                   visualMode
                     ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                     : "border-s-ink/[0.06] text-s-ink/40"
@@ -258,7 +258,7 @@ export default function FaceChartBuilder({
                   key={zone.key}
                   className="rounded-[12px] border border-s-ink/[0.06] p-3 bg-white"
                 >
-                  <p className="text-xs font-heading font-semibold text-s-ink mb-2">
+                  <p className="text-xs font-heading text-s-ink mb-2">
                     {t(zone.labelKey as any)}
                   </p>
                   <select
@@ -280,7 +280,7 @@ export default function FaceChartBuilder({
           {/* Eye + Lip */}
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1">
+              <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mb-1">
                 {t("eye_look")}
               </p>
               <input
@@ -292,7 +292,7 @@ export default function FaceChartBuilder({
               />
             </div>
             <div>
-              <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1">
+              <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mb-1">
                 {t("lip_colour")}
               </p>
               <input
@@ -307,7 +307,7 @@ export default function FaceChartBuilder({
 
           {/* Products used (autocomplete from kit) */}
           <div className="space-y-2">
-            <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40">
+            <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40">
               {t("products_used")}
             </p>
             <div className="relative">
@@ -333,7 +333,7 @@ export default function FaceChartBuilder({
                       className="w-full text-left px-3 py-2 text-xs text-s-ink hover:bg-s-ink/[0.03] transition-colors duration-150"
                       aria-label={`${s.brand} ${s.product_name}`}
                     >
-                      <span className="font-heading font-semibold">{s.brand}</span>
+                      <span className="font-heading">{s.brand}</span>
                       {" — "}
                       {s.product_name}
                       {s.shade && <span className="text-s-ink/40 ml-1">({s.shade})</span>}
@@ -362,7 +362,7 @@ export default function FaceChartBuilder({
 
           {/* Notes */}
           <div>
-            <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1">
+            <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mb-1">
               {t("notes")}
             </p>
             <textarea
@@ -379,7 +379,7 @@ export default function FaceChartBuilder({
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center gap-1 px-4 py-2 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
+              className="flex items-center gap-1 px-4 py-2 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
               aria-label={saving ? t("saving") : t("save")}
             >
               <Save size={12} />
@@ -414,7 +414,7 @@ export default function FaceChartBuilder({
               </div>
               {(chart.foundation_brand || chart.foundation_shade) && (
                 <p className="text-xs text-s-ink mb-1">
-                  <span className="font-heading font-semibold">{t("foundation")}:</span>{" "}
+                  <span className="font-heading">{t("foundation")}:</span>{" "}
                   {[chart.foundation_brand, chart.foundation_shade, chart.undertone].filter(Boolean).join(" — ")}
                 </p>
               )}

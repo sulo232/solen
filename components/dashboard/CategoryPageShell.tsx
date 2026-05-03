@@ -48,10 +48,10 @@ export function CategoryPageShell({
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       {/* Page header */}
       <div className="mb-6">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/30 mb-1">
           {category}
         </p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink leading-none">
+        <h1 className="font-heading text-[28px] text-s-ink leading-none">
           {title}
         </h1>
       </div>
@@ -67,7 +67,7 @@ export function CategoryPageShell({
               aria-selected={activeTab === idx}
               onClick={() => setActiveTab(idx)}
               aria-label={tab.label}
-              className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-[12px] text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
+              className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-[12px] text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${
                 activeTab === idx
                   ? "bg-s-coral text-white"
                   : "bg-[--raised] border border-s-ink/[0.06] text-s-ink/55 hover:text-s-ink"
@@ -95,7 +95,7 @@ export function CategoryPageShell({
         <div className="space-y-4">
           {showClientSelector && clientSelector && (
             <div className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] p-4">
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-2">
+              <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/35 mb-2">
                 {t("select_client")}
               </p>
               {clientSelector(salonId, clientId, setClientId)}

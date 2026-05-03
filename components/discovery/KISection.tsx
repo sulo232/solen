@@ -116,7 +116,7 @@ export function KISection({ zone = 1, className = "" }: KISectionProps) {
               fetchRecommendations(true);
             }}
             disabled={isRefreshing}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-heading font-bold uppercase tracking-[0.06em] text-s-ink-secondary hover:text-s-coral transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-heading uppercase tracking-[0.06em] text-s-ink-secondary hover:text-s-coral transition-colors disabled:opacity-50"
             aria-label={t("refresh")}
           >
             <RefreshCw

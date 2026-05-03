@@ -167,7 +167,7 @@ export default function TreatmentResultsPage() {
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="font-heading font-bold text-2xl text-s-ink capitalize">
+                <h1 className="font-heading text-2xl text-s-ink capitalize">
                   {pageTitle || "Behandlungen"}
                 </h1>
                 {!loading && (

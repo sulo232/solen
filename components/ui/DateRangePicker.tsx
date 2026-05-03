@@ -66,7 +66,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
     <div ref={ref} className={`relative ${className}`}>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 px-3 py-2 rounded-pill border border-s-ink/[0.10] bg-white text-[11px] font-heading font-bold text-s-ink/70 hover:border-s-coral/40 transition-colors duration-150"
+        className="flex items-center gap-2 px-3 py-2 rounded-pill border border-s-ink/[0.10] bg-white text-[11px] font-heading text-s-ink/70 hover:border-s-coral/40 transition-colors duration-150"
         aria-label={displayLabel}
       >
         <Calendar size={12} className="text-s-ink/40" />
@@ -77,7 +77,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
       {open && (
         <div className="absolute top-full mt-1 right-0 z-50 bg-white rounded-[12px] border border-s-ink/[0.08] shadow-warm-md p-4 min-w-[240px]">
           {/* Presets */}
-          <p className="text-[8px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/30 mb-2">
+          <p className="text-[8px] font-heading uppercase tracking-[.18em] text-s-ink/30 mb-2">
             {t("quickRange")}
           </p>
           <div className="flex flex-wrap gap-1.5 mb-4">
@@ -85,7 +85,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
               <button
                 key={p.days}
                 onClick={() => applyPreset(p.days)}
-                className="px-2.5 py-1 rounded-pill text-[10px] font-heading font-bold bg-s-ink/[0.05] text-s-ink/60 hover:bg-s-coral/10 hover:text-s-coral transition-colors"
+                className="px-2.5 py-1 rounded-pill text-[10px] font-heading bg-s-ink/[0.05] text-s-ink/60 hover:bg-s-coral/10 hover:text-s-coral transition-colors"
               >
                 {p.label}
               </button>
@@ -93,7 +93,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
           </div>
 
           {/* Custom range */}
-          <p className="text-[8px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/30 mb-2">
+          <p className="text-[8px] font-heading uppercase tracking-[.18em] text-s-ink/30 mb-2">
             {t("customRange")}
           </p>
           <div className="space-y-2 mb-3">
@@ -120,7 +120,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
           </div>
           <button
             onClick={applyCustom}
-            className="w-full py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="w-full py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
           >
             {t("applyRange")}
           </button>

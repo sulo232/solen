@@ -136,7 +136,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
                         <button
                           onClick={() => setConfirmClient(client)}
                           disabled={sending === client.id}
-                          className="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-coral/10 text-s-coral text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-s-coral/20 disabled:opacity-50 transition-colors duration-150"
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-coral/10 text-s-coral text-[11px] font-heading uppercase tracking-[.06em] hover:bg-s-coral/20 disabled:opacity-50 transition-colors duration-150"
                         >
                           <Send size={12} />
                           {sending === client.id ? t("sending") : t("send")}
@@ -156,7 +156,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
         <div className="fixed inset-0 z-[55] bg-s-ink/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="confirmDialogTitle">
           <div className="bg-white rounded-[16px] shadow-warm-lg p-6 max-w-sm w-full">
             <div className="flex items-center justify-between mb-4">
-              <h4 id="confirmDialogTitle" className="font-heading font-bold text-sm text-s-ink">
+              <h4 id="confirmDialogTitle" className="font-heading text-sm text-s-ink">
                 {t("confirmTitle")}
               </h4>
               <button
@@ -181,7 +181,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
               <button
                 onClick={() => handleSendReminder(confirmClient)}
                 disabled={sending === confirmClient.id}
-                className="flex-1 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 shadow-elevation-2 transition-[transform,filter] duration-150"
+                className="flex-1 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 shadow-elevation-2 transition-[transform,filter] duration-150"
               >
                 {sending === confirmClient.id ? t("sending") : t("confirmSend")}
               </button>

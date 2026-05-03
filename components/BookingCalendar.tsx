@@ -117,7 +117,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
 
   return (
     <div className="space-y-5">
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40">{t("stepPayment")}</p>
+      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/40">{t("stepPayment")}</p>
 
       {/* Stripe sandbox — wrapper only */}
       <div className="rounded-input border border-s-ink/[0.06] p-4 bg-white shadow-elevation-1">
@@ -128,7 +128,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
         type="button"
         onClick={handleSubmit}
         disabled={processing || !stripe}
-        className="w-full py-4 rounded-btn bg-s-coral shadow-elevation-2 text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
+        className="w-full py-4 rounded-btn bg-s-coral shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
       >
         {processing ? <Spinner size="sm" invert /> : <CreditCard size={14} />}
         {processing ? t("processing") : t("payNow")}
@@ -594,16 +594,16 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           <PartyPopper size={28} className="text-s-sage" />
         </div>
         <div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-sage mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-sage mb-2">
             {t("bookingConfirmed")}
           </p>
-          <p className="font-heading font-bold text-xl text-s-ink">{t("allGood")}</p>
+          <p className="font-heading text-xl text-s-ink">{t("allGood")}</p>
           <p className="font-body italic text-s-ink/50 text-sm mt-1 leading-relaxed">
             {t("bookingSuccessMessage")}
           </p>
         </div>
         <Link href={`/${locale}/profile`}
-          className="flex items-center justify-center gap-2 w-full py-3 rounded-btn border border-s-ink/10 text-xs font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 hover:border-s-coral hover:text-s-coral transition-colors">
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-btn border border-s-ink/10 text-xs font-heading uppercase tracking-[.04em] text-s-ink/60 hover:border-s-coral hover:text-s-coral transition-colors">
           {t("myBookings")}
         </Link>
       </div>
@@ -741,7 +741,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
               if (!groupSlots.length) return null;
               return (
                 <div key={group}>
-                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-2 mt-4 first:mt-0">{GROUP_LABELS[group]}</p>
+                  <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber mb-2 mt-4 first:mt-0">{GROUP_LABELS[group]}</p>
                   <div className="flex flex-wrap gap-2">
                     {groupSlots.map((slot) => {
                       const timeStr = new Date(slot.starts_at).toLocaleTimeString(
@@ -764,7 +764,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
                             setSelectedSlot(isSelected ? null : slot); setCheckoutStep("select"); setClientSecret(null);
                           }}
                           className={[
-                            "px-4 py-2.5 rounded-[12px] text-xs font-heading font-bold transition-[transform,filter,border-color,background-color] duration-150 border",
+                            "px-4 py-2.5 rounded-[12px] text-xs font-heading transition-[transform,filter,border-color,background-color] duration-150 border",
                             isSelected
                               ? "bg-s-coral text-white border-s-coral shadow-elevation-2"
                               : offPeakPct
@@ -924,7 +924,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
 
           {error && (
             <div role="alert" className={`p-3 rounded-input text-xs ${paymentSucceeded ? 'bg-s-amber/10 border border-s-amber/30' : 'bg-red-50 border border-red-200'}`}>
-              <p className={`font-heading font-semibold mb-1 ${paymentSucceeded ? 'text-s-amber' : 'text-red-600'}`}>
+              <p className={`font-heading mb-1 ${paymentSucceeded ? 'text-s-amber' : 'text-red-600'}`}>
                 {paymentSucceeded ? t("paymentSucceededTitle") : t("errorTitle")}
               </p>
               <p className="text-s-ink/60 leading-relaxed">{error}</p>
@@ -971,7 +971,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
             <button
               onClick={handleProceedToPayment}
               disabled={confirming}
-              className="w-full py-4 rounded-btn bg-s-coral shadow-elevation-2 text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-btn bg-s-coral shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {confirming && <Spinner size="sm" invert />}
               {confirming ? t("preparing") : isMoreThan7Days ? t("saveCardAndBook") : t("toPayment")}
@@ -988,7 +988,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           <div className="bg-white rounded-[12px] p-6 mx-4 max-w-sm w-full shadow-surface" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-2 mb-3">
               <ClipboardList className="w-5 h-5 text-s-coral" />
-              <h3 className="font-heading font-bold text-s-ink">Warteliste</h3>
+              <h3 className="font-heading text-s-ink">Warteliste</h3>
             </div>
             {waitlistDone ? (
               <div className="text-center py-4">

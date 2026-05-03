@@ -13,7 +13,7 @@ export default function SpaIntake({ customerId }: SpaIntakeProps) {
 
   return (
     <div className="space-y-3">
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
+      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
         {t("health_questionnaire")}
       </p>
 

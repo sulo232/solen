@@ -69,7 +69,7 @@ export default function BookingActionPage() {
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-amber-subtle">
               <AlertTriangle size={24} className="text-s-amber" />
             </div>
-            <h2 className="font-heading font-bold text-lg text-s-ink mb-2">{l.error}</h2>
+            <h2 className="font-heading text-lg text-s-ink mb-2">{l.error}</h2>
             <p className="text-sm text-s-ink/50">{error}</p>
           </>
         ) : result === "confirmed" ? (
@@ -77,7 +77,7 @@ export default function BookingActionPage() {
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-coral/10">
               <Check size={24} className="text-s-coral" />
             </div>
-            <h2 className="font-heading font-bold text-lg text-s-ink mb-2">{l.confirmed}</h2>
+            <h2 className="font-heading text-lg text-s-ink mb-2">{l.confirmed}</h2>
             <p className="text-sm text-s-ink/50">{l.confirmedDesc}</p>
           </>
         ) : (
@@ -85,7 +85,7 @@ export default function BookingActionPage() {
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-ink/5">
               <X size={24} className="text-s-ink/40" />
             </div>
-            <h2 className="font-heading font-bold text-lg text-s-ink mb-2">{l.cancelled}</h2>
+            <h2 className="font-heading text-lg text-s-ink mb-2">{l.cancelled}</h2>
             <p className="text-sm text-s-ink/50">{l.cancelledDesc}</p>
           </>
         )}

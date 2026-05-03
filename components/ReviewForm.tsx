@@ -136,7 +136,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
           <X size={20} />
         </button>
 
-        <h3 className="font-heading font-bold text-xl text-s-ink mb-1">
+        <h3 className="font-heading text-xl text-s-ink mb-1">
           {t("title")}
         </h3>
         <p className="text-sm text-s-ink/50 mb-6">
@@ -180,7 +180,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
 
           {/* Sub-category ratings — optional */}
           <div className="space-y-3 pt-4 border-t border-s-ink/5">
-            <p className="text-xs font-heading font-semibold text-s-ink/60 uppercase tracking-[.15em]">
+            <p className="text-xs font-heading text-s-ink/60 uppercase tracking-[.15em]">
               {t("detail_rating")}
             </p>
             {([

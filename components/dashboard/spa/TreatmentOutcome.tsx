@@ -96,7 +96,7 @@ export default function TreatmentOutcome({ salonId, clientId, bookingId }: Treat
   return (
     <div className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] p-4">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-blue">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-blue">
           {t("outcomeTitle")}
         </p>
         <button
@@ -111,7 +111,7 @@ export default function TreatmentOutcome({ salonId, clientId, bookingId }: Treat
       {showForm && (
         <div className="space-y-3 mb-4 p-3 rounded-[8px] border border-s-blue/20 bg-s-blue/[0.03]">
           <div>
-            <p className="text-[10px] font-heading font-bold text-s-ink/40 mb-1">{t("outcomeSatisfaction")}</p>
+            <p className="text-[10px] font-heading text-s-ink/40 mb-1">{t("outcomeSatisfaction")}</p>
             <StarRating value={form.satisfaction_rating} onChange={(v) => setForm((p) => ({ ...p, satisfaction_rating: v }))} />
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -142,7 +142,7 @@ export default function TreatmentOutcome({ salonId, clientId, bookingId }: Treat
               className={inputCls} aria-label={t("outcomeNextVisit")} />
           </div>
           <button onClick={handleSave} disabled={saving || form.satisfaction_rating === 0}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-pill bg-s-coral text-white text-xs font-heading font-bold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-pill bg-s-coral text-white text-xs font-heading hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
             aria-label={t("outcomeSave")}>
             <Save size={12} /> {saving ? t("saving") : t("outcomeSave")}
           </button>

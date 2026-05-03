@@ -135,7 +135,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
               });
               return Object.entries(groups).map(([category, cmds]) => (
                 <div key={category}>
-                  <p className="px-4 py-1 text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25">
+                  <p className="px-4 py-1 text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25">
                     {category}
                   </p>
                   {cmds.map((cmd, globalIdx) => {
@@ -158,7 +158,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
                         <div className={`w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 ${active ? "bg-s-coral/15" : "bg-s-ink/[0.05]"}`}>
                           <Icon size={13} className={active ? "text-s-coral" : "text-s-ink/45"} />
                         </div>
-                        <span className="flex-1 text-sm font-heading font-medium">{cmd.label}</span>
+                        <span className="flex-1 text-sm font-heading">{cmd.label}</span>
                         {cmd.shortcut && (
                           <kbd className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.06] text-s-ink/45 font-mono">
                             {cmd.shortcut}

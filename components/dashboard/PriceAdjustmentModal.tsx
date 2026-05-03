@@ -94,7 +94,7 @@ export default function PriceAdjustmentModal({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <DollarSign size={18} className="text-s-coral" />
-            <h3 id="price-modal-title" className="font-heading font-bold text-s-ink">{t("title")}</h3>
+            <h3 id="price-modal-title" className="font-heading text-s-ink">{t("title")}</h3>
           </div>
           <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150">
             <X size={18} className="text-s-ink/40" />
@@ -150,7 +150,7 @@ export default function PriceAdjustmentModal({
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-elevation-2"
+              className="w-full py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-elevation-2"
             >
               {submitting && <Spinner size="sm" invert />}
               {t("submit")}

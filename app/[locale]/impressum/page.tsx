@@ -12,7 +12,7 @@ export default function ImpressumPage() {
       <div className="max-w-2xl mx-auto px-4 pt-8">
         <Link
           href="/"
-          className="inline-flex items-center gap-1 text-s-ink/50 hover:text-s-coral text-sm font-heading font-semibold transition-colors mb-8"
+          className="inline-flex items-center gap-1 text-s-ink/50 hover:text-s-coral text-sm font-heading transition-colors mb-8"
         >
           <ChevronLeft className="w-4 h-4" />
           Zurück
@@ -28,7 +28,7 @@ export default function ImpressumPage() {
         <div className="space-y-8">
 
           <section>
-            <h2 className="font-heading font-bold text-s-ink text-base mb-3 pb-2 border-b border-s-ink/10">
+            <h2 className="font-heading text-s-ink text-base mb-3 pb-2 border-b border-s-ink/10">
               Betreiberin der Website
             </h2>
             <dl className="space-y-2 text-sm">
@@ -52,7 +52,7 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="font-heading font-bold text-s-ink text-base mb-3 pb-2 border-b border-s-ink/10">
+            <h2 className="font-heading text-s-ink text-base mb-3 pb-2 border-b border-s-ink/10">
               Handelsregister & Steuer
             </h2>
             <dl className="space-y-2 text-sm">
@@ -72,7 +72,7 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="font-heading font-bold text-s-ink text-base mb-3 pb-2 border-b border-s-ink/10">
+            <h2 className="font-heading text-s-ink text-base mb-3 pb-2 border-b border-s-ink/10">
               Haftungsausschluss
             </h2>
             <div className="space-y-3 text-sm text-s-ink/70 leading-relaxed">

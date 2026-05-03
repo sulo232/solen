@@ -83,7 +83,7 @@ export default function FilterBottomSheet({
 
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-heading font-bold text-s-ink text-lg">
+          <h2 className="font-heading text-s-ink text-lg">
             {pill.label}
           </h2>
           <button

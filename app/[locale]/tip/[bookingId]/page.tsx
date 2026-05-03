@@ -84,13 +84,13 @@ export default function TipPage() {
             style={{ background: "rgba(232,98,74,.10)" }}>
             <Check size={28} className="text-s-coral" />
           </div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-coral mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-coral mb-2">
             Trinkgeld gesendet
           </p>
-          <h1 className="font-heading font-bold text-xl text-s-ink mb-2">
+          <h1 className="font-heading text-xl text-s-ink mb-2">
             {l.thanks}
           </h1>
-          <p className="text-xs font-heading font-semibold text-s-ink/50">
+          <p className="text-xs font-heading text-s-ink/50">
             {formatCurrency(tipAmount / 100, locale)} {l.sent}
           </p>
         </div>
@@ -113,12 +113,12 @@ export default function TipPage() {
               <Heart size={28} className="text-s-coral" />
             )}
           </div>
-          <h1 className="font-heading font-bold text-xl text-s-ink">{staffName}</h1>
+          <h1 className="font-heading text-xl text-s-ink">{staffName}</h1>
           <p className="text-sm text-s-ink/40">{serviceName}</p>
         </div>
 
         <div className="bg-white rounded-card p-5 shadow-v5-card">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/45 mb-3">
+          <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/45 mb-3">
             {l.give}
           </p>
 
@@ -127,7 +127,7 @@ export default function TipPage() {
             {TIP_PRESETS.map((amount) => (
               <button key={amount}
                 onClick={() => { setSelectedAmount(amount); setUseCustom(false); }}
-                className={`py-3 rounded-btn text-xs font-heading font-bold transition-colors ${
+                className={`py-3 rounded-btn text-xs font-heading transition-colors ${
                   !useCustom && selectedAmount === amount
                     ? "bg-s-coral text-white shadow-elevation-2"
                     : "border border-s-ink/[0.08] text-s-ink/65 hover:border-s-coral/50"
@@ -139,7 +139,7 @@ export default function TipPage() {
 
           {/* Custom amount */}
           <button onClick={() => setUseCustom(true)}
-            className={`w-full py-2.5 rounded-btn text-[10px] font-heading font-bold uppercase tracking-[.06em] mb-3 transition-colors ${
+            className={`w-full py-2.5 rounded-btn text-[10px] font-heading uppercase tracking-[.06em] mb-3 transition-colors ${
               useCustom
                 ? "border border-s-coral/25 text-s-coral"
                 : "border border-s-ink/[0.08] text-s-ink/45"
@@ -149,7 +149,7 @@ export default function TipPage() {
           </button>
           {useCustom && (
             <div className="relative mb-3">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-heading font-bold text-s-ink/45">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-heading text-s-ink/45">
                 CHF
               </span>
               <input type="number" min="1" step="0.5"
@@ -164,13 +164,13 @@ export default function TipPage() {
           {error && (
             <div className="flex items-center gap-1.5 mb-3">
               <AlertCircle size={12} className="text-s-coral shrink-0" />
-              <p className="text-[10px] font-heading font-bold text-s-coral">{error}</p>
+              <p className="text-[10px] font-heading text-s-coral">{error}</p>
             </div>
           )}
 
           <button onClick={handlePay}
             disabled={paying || tipAmount < 100}
-            className="w-full py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2 shadow-elevation-2">
+            className="w-full py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2 shadow-elevation-2">
             {paying ? <Spinner size="sm" invert /> : <Heart size={13} />}
             {formatCurrency(tipAmount / 100, locale)} — {l.send}
           </button>

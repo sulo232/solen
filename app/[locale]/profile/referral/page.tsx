@@ -72,7 +72,7 @@ export default function ReferralPage() {
           <div className="w-14 h-14 rounded-full bg-s-coral/15 flex items-center justify-center mx-auto mb-3">
             <Gift className="w-7 h-7 text-s-coral" />
           </div>
-          <h1 className="font-heading font-bold text-xl text-s-ink mb-1">Freunde einladen</h1>
+          <h1 className="font-heading text-xl text-s-ink mb-1">Freunde einladen</h1>
           <p className="text-sm text-s-ink/60 max-w-xs mx-auto">
             Teile deinen Code und erhalte CHF 10 Guthaben — dein Freund bekommt auch CHF 10!
           </p>
@@ -114,7 +114,7 @@ export default function ReferralPage() {
 
         {/* Stats */}
         <div className="bg-white/80 backdrop-blur-xl rounded-[12px] border border-s-ink/5 shadow-warm-md p-5">
-          <h2 className="font-heading font-semibold text-base text-s-ink mb-3">Deine Statistiken</h2>
+          <h2 className="font-heading text-base text-s-ink mb-3">Deine Statistiken</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-3 bg-s-bg-surface rounded-btn">
               <Users className="w-5 h-5 text-s-coral mx-auto mb-1" />
@@ -131,7 +131,7 @@ export default function ReferralPage() {
 
         {/* How it works */}
         <div className="bg-white/80 backdrop-blur-xl rounded-[12px] border border-s-ink/5 shadow-warm-md p-5">
-          <h2 className="font-heading font-semibold text-base text-s-ink mb-3">So funktioniert&apos;s</h2>
+          <h2 className="font-heading text-base text-s-ink mb-3">So funktioniert&apos;s</h2>
           <div className="space-y-3">
             {[
               { step: "1", text: "Teile deinen Empfehlungscode mit Freunden" },

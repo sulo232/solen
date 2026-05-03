@@ -61,7 +61,7 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
 
   return (
     <div>
-      <h3 className="text-base font-heading font-semibold text-s-ink mb-3">{labels.title}</h3>
+      <h3 className="text-base font-heading text-s-ink mb-3">{labels.title}</h3>
 
       <div className="space-y-2">
         {/* "Anyone" option */}

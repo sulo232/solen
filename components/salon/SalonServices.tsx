@@ -51,7 +51,7 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
 
   return (
     <div id="section-angebot" className="scroll-mt-[80px]">
-      <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("services")}</h2>
+      <h2 className="font-heading text-base text-s-ink mb-3">{t("services")}</h2>
       <ServiceCategoryFilter
         categories={filterCategories}
         activeCategory={activeCategory}
@@ -62,7 +62,7 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
       <div>
         {Object.entries(filteredServicesByCategory).map(([cat, svcs]) => (
           <div key={cat} className="mb-4 mt-3 md:mt-0">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-3 mt-1">
+            <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber mb-3 mt-1">
               {cat}
             </p>
             <div className="divide-y divide-s-ink/5">
@@ -100,7 +100,7 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
                       {formatCurrency(svc.price, locale)}
                     </span>
                     <span
-                      className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-coral px-2.5 py-1 rounded-[12px]"
+                      className="text-[10px] font-heading uppercase tracking-[.08em] text-s-coral px-2.5 py-1 rounded-[12px]"
                       style={{ background: "rgba(232,98,74,.10)" }}
                     >
                       {t("book")}

@@ -75,14 +75,14 @@ function DirectoryCard({ entry, t }: { entry: SalonDirectoryEntry; t: (key: stri
           </div>
         )}
         {/* Directory badge */}
-        <span className="absolute top-2 right-2 text-[10px] font-heading font-bold uppercase tracking-[.08em] px-2.5 py-1 rounded-btn"
+        <span className="absolute top-2 right-2 text-[10px] font-heading uppercase tracking-[.08em] px-2.5 py-1 rounded-btn"
           style={{ background: "rgba(26,18,9,.55)", color: "rgba(255,255,255,.85)" }}>
           {t("notBookable")}
         </span>
       </div>
 
       <div className="p-4">
-        <h3 className="font-heading font-semibold text-s-ink text-sm leading-tight mb-1">{entry.name}</h3>
+        <h3 className="font-heading text-s-ink text-sm leading-tight mb-1">{entry.name}</h3>
         {entry.google_rating != null && (
           <div className="flex items-center gap-1 mb-3">
             <Star className="w-3 h-3 fill-s-amber text-s-amber" />
@@ -96,13 +96,13 @@ function DirectoryCard({ entry, t }: { entry: SalonDirectoryEntry; t: (key: stri
         <div className="flex gap-2">
           {entry.phone && (
             <a href={`tel:${entry.phone}`}
-              className="flex-1 text-center text-[10px] font-heading font-bold uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-[border-color,color] duration-150">
+              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-[border-color,color] duration-150">
               <Phone className="w-3 h-3 inline mr-1" />{t("call")}
             </a>
           )}
           {entry.website && (
             <a href={entry.website} target="_blank" rel="noopener noreferrer"
-              className="flex-1 text-center text-[10px] font-heading font-bold uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-[border-color,color] duration-150">
+              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-[border-color,color] duration-150">
               <Globe className="w-3 h-3 inline mr-1" />{t("website")}
             </a>
           )}
@@ -354,7 +354,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
         <div className="max-w-5xl mx-auto px-4 pt-8 pb-6 relative z-10">
           {/* Breadcrumb — eyebrow style */}
           <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-[.12em] flex-wrap">
+            <ol className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-heading uppercase tracking-[.12em] flex-wrap">
               <li><Link href={`/${locale}`} className="text-s-ink/50 hover:text-s-ink/55 transition-colors duration-150">{tCategory("homepage")}</Link></li>
               <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
               {city && (
@@ -368,7 +368,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           </nav>
 
           {/* Coral eyebrow */}
-          <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-coral mb-3">
+          <span className="block font-heading text-[11px] uppercase tracking-[.22em] text-s-coral mb-3">
             {city ? cityName : allCitiesLabel} · {categoryLabel}
           </span>
 
@@ -404,7 +404,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
             {/* All cities */}
             <button
               onClick={() => routerNav.push(`/${locale}/${category}`)}
-              className="snap-start shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150"
+              className="snap-start shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150"
               style={{
                 border: !city ? "1.5px solid #1A1209" : "1.5px solid rgba(26,18,9,0.12)",
                 background: !city ? "#1A1209" : "var(--raised)",
@@ -423,7 +423,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                 <button
                   key={slug}
                   onClick={() => routerNav.push(`/${locale}/${slug}/${category}`)}
-                  className="snap-start shrink-0 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150"
+                  className="snap-start shrink-0 px-3 py-1.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150"
                   style={{
                     border: isActive ? "1.5px solid #C05038" : "1.5px solid rgba(26,18,9,0.12)",
                     background: isActive ? "#C05038" : "var(--raised)",
@@ -456,7 +456,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
         {/* Results count + Sort — left aligned */}
         <div className="flex items-center gap-4">
           {!loading && salons.length > 0 && (
-            <p className="text-[11px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/40">
+            <p className="text-[11px] font-heading uppercase tracking-[.12em] text-s-ink/40">
               {salons.length} von {total} Salons
             </p>
           )}
@@ -478,7 +478,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               }
               routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
             }}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150"
             style={{ border: "1px solid rgba(26,18,9,.10)",
                      background: isMapView ? "#C05038" : "var(--glass-bg-card)",
                      color: isMapView ? "#fff" : "rgba(26,18,9,.65)",
@@ -497,7 +497,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           <button
             onClick={() => setFiltersExpanded(!filtersExpanded)}
             aria-expanded={filtersExpanded}
-            className="text-xs font-heading font-semibold text-s-ink/60 hover:text-s-ink transition-colors mb-2"
+            className="text-xs font-heading text-s-ink/60 hover:text-s-ink transition-colors mb-2"
           >
             {filtersExpanded ? t("lessFilters") : t("moreFiltersToggle")}
           </button>
@@ -537,7 +537,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
             />
             {/* Overlay tap prompt */}
             <div className="absolute inset-0 bg-gradient-to-t from-s-ink/40 to-transparent pointer-events-none" />
-            <span className="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-pill bg-white/95 text-s-ink text-xs font-heading font-bold uppercase tracking-[.06em] shadow-warm-md pointer-events-none flex items-center gap-1.5">
+            <span className="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-pill bg-white/95 text-s-ink text-xs font-heading uppercase tracking-[.06em] shadow-warm-md pointer-events-none flex items-center gap-1.5">
               <MapIcon size={13} className="text-s-coral" />
               {tCategory("mapExpand")}
             </span>
@@ -628,7 +628,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               {hasMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-8">
                   <button onClick={handleLoadMore} disabled={loadingMore}
-                    className="flex items-center gap-2 px-8 py-3 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,opacity,transform] duration-150 disabled:opacity-50"
+                    className="flex items-center gap-2 px-8 py-3 rounded-btn text-xs font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,opacity,transform] duration-150 disabled:opacity-50"
                     style={{ border: "1px solid rgba(26,18,9,.10)",
                              background: "var(--glass-bg-card)", backdropFilter: "blur(8px)",
                              WebkitBackdropFilter: "blur(8px)",
@@ -646,7 +646,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               {!dirLoading && hasDirMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-4">
                   <button onClick={handleDirLoadMore} disabled={dirLoadingMore}
-                    className="flex items-center gap-2 px-8 py-3 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,opacity,transform] duration-150 disabled:opacity-50"
+                    className="flex items-center gap-2 px-8 py-3 rounded-btn text-xs font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,opacity,transform] duration-150 disabled:opacity-50"
                     style={{ border: "1px solid rgba(26,18,9,.10)",
                              background: "var(--glass-bg-card)", backdropFilter: "blur(8px)",
                              WebkitBackdropFilter: "blur(8px)",

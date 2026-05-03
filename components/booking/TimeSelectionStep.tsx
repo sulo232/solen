@@ -120,7 +120,7 @@ export default function TimeSelectionStep({ salonId }: TimeSelectionStepProps) {
           <ChevronLeft size={20} className="text-s-ink" />
         </button>
         <div>
-          <h2 className="text-2xl font-display font-bold text-s-ink">
+          <h2 className="text-2xl font-display text-s-ink">
             {t('title')}
           </h2>
           <p className="text-sm text-s-ink/60 mt-1">
@@ -146,7 +146,7 @@ export default function TimeSelectionStep({ salonId }: TimeSelectionStepProps) {
         <div className="space-y-6">
           {timeGroups.map((group) => (
             <div key={group.label}>
-              <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-3">
+              <p className="text-xs font-heading uppercase tracking-[.16em] text-s-ink/40 mb-3">
                 {group.label}
               </p>
               <div className="grid grid-cols-3 gap-2">
@@ -154,7 +154,7 @@ export default function TimeSelectionStep({ salonId }: TimeSelectionStepProps) {
                   <button
                     key={slot.time}
                     onClick={() => handleSelectTime(slot.time)}
-                    className={`py-3 rounded-[12px] border text-sm font-heading font-semibold transition-[border-color,background-color] duration-150 ${
+                    className={`py-3 rounded-[12px] border text-sm font-heading transition-[border-color,background-color] duration-150 ${
                       formData.selectedTime === slot.time
                         ? 'bg-s-coral border-s-coral text-white'
                         : 'border-s-ink/[0.08] text-s-ink hover:border-s-coral/40 bg-[--raised]'
@@ -174,14 +174,14 @@ export default function TimeSelectionStep({ salonId }: TimeSelectionStepProps) {
         <div className="max-w-2xl mx-auto px-4 flex gap-3">
           <button
             onClick={handleBack}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>
           <button
             onClick={handleContinue}
             disabled={!formData.selectedTime || isChecking}
-            className="flex-1 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-pill bg-s-coral text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
           >
             {isChecking && <Spinner size="sm" invert />}
             {t('continue')}

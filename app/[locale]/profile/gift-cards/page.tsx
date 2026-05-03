@@ -65,7 +65,7 @@ export default function MyGiftCardsPage() {
           <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-ink/5:bg-white/5 transition-colors">
             <ChevronLeft size={20} className="text-s-ink/60" />
           </Link>
-          <h1 className="font-heading font-bold text-xl text-s-ink flex items-center gap-2">
+          <h1 className="font-heading text-xl text-s-ink flex items-center gap-2">
             <Gift size={20} className="text-s-coral" />
             Meine Geschenkkarten
           </h1>
@@ -95,7 +95,7 @@ export default function MyGiftCardsPage() {
                   <div className="flex justify-between items-start mb-6 align-top">
                     <div>
                       <p className="text-xs font-semibold text-s-ink/40 uppercase tracking-widest mb-1">GIFT CARD</p>
-                      <h3 className="font-heading font-bold text-2xl text-s-ink data-text">
+                      <h3 className="font-heading text-2xl text-s-ink data-text">
                         {formatCurrency(card.remaining_amount, locale)}
                       </h3>
                     </div>

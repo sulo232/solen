@@ -83,11 +83,11 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] p-6 bg-white">
       {/* Eyebrow */}
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-3">Solen Score</p>
+      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/35 mb-3">Solen Score</p>
 
       {/* Score display */}
       <div className="flex items-baseline gap-1 mb-1">
-        <span className="font-heading font-bold text-[48px] leading-none text-s-ink">{data.solen_score}</span>
+        <span className="font-heading text-[48px] leading-none text-s-ink">{data.solen_score}</span>
         <span className="text-sm text-s-ink/35">/100</span>
       </div>
       <p className="text-[10px] font-heading uppercase tracking-[.12em]" style={{ color: tier.color }}>{tier.label}</p>

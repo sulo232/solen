@@ -123,7 +123,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <DoorOpen size={16} className="text-s-coral" />
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
             {t("treatment_rooms")}
           </p>
         </div>
@@ -142,7 +142,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
       {showForm && (
         <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-[--raised] space-y-3">
           <div className="flex items-center justify-between mb-1">
-            <p className="text-xs font-heading font-semibold text-s-ink">
+            <p className="text-xs font-heading text-s-ink">
               {editingId ? t("edit_room") : t("new_room")}
             </p>
             <button onClick={resetForm} aria-label={t("cancel")} className="text-s-ink/30 hover:text-s-ink transition-colors">
@@ -152,7 +152,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
 
           {/* Name */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("room_name")}
             </label>
             <input
@@ -166,7 +166,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
           {/* Type + Capacity */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
                 {t("room_type_label")}
               </label>
               <select
@@ -181,7 +181,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
               </select>
             </div>
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
                 {t("capacity")}
               </label>
               <input
@@ -199,7 +199,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
           {/* Buffers */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
                 {t("prep_buffer")}
               </label>
               <input
@@ -213,7 +213,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
               />
             </div>
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
                 {t("cooldown_buffer")}
               </label>
               <input
@@ -230,7 +230,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
 
           {/* Equipment */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-2">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-2">
               {t("equipment")}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -240,7 +240,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
                   onClick={() => toggleEquipment(eq)}
                   aria-label={t(`equipment_item.${eq}` as any)}
                   aria-pressed={form.equipment.includes(eq)}
-                  className={`px-2.5 py-1 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
+                  className={`px-2.5 py-1 rounded-[8px] text-[10px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${
                     form.equipment.includes(eq)
                       ? "bg-s-coral text-white"
                       : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
@@ -265,7 +265,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
               onClick={handleSave}
               disabled={saving || !form.name.trim()}
               aria-label={t("save")}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
             >
               <Save size={12} />
               {saving ? t("saving") : t("save")}
@@ -292,7 +292,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
                 }`}
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-heading font-semibold text-s-ink truncate">
+                  <p className="text-sm font-heading text-s-ink truncate">
                     {room.name}
                   </p>
                   <span className="text-[10px] text-s-ink/40">

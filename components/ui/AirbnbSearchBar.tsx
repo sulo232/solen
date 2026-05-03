@@ -118,7 +118,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                 )}
                 onClick={() => activateSegment('category')}
               >
-                <label className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 leading-none mb-1">
+                <label className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 leading-none mb-1">
                   {t("segWas") ?? "Was"}
                 </label>
                 <input
@@ -143,7 +143,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                     style={{ transformOrigin: "top left" }}
                     className="absolute top-[calc(100%+8px)] left-0 bg-[--raised] rounded-input border border-s-ink/[0.08] shadow-v5-float z-50 overflow-hidden min-w-[280px]"
                   >
-                    <p className="px-3 pt-3 pb-1 text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40">
+                    <p className="px-3 pt-3 pb-1 text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40">
                       {tc("chooseCategory")}
                     </p>
                     <div className="grid grid-cols-3 gap-2 p-3">
@@ -158,7 +158,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                           className="flex flex-col items-center gap-1.5 p-3 rounded-[10px] hover:bg-s-ink/[0.04] transition-colors duration-150 text-center cursor-pointer"
                         >
                           <span className="text-[24px] leading-none">{emoji}</span>
-                          <span className="text-[12px] font-heading font-semibold text-s-ink/70">{tNav(key as Parameters<typeof tNav>[0])}</span>
+                          <span className="text-[12px] font-heading text-s-ink/70">{tNav(key as Parameters<typeof tNav>[0])}</span>
                         </button>
                       ))}
                     </div>
@@ -214,7 +214,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                 )}
                 style={{ minWidth: 140 }}
               >
-                <span className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 leading-none mb-1 text-left">
+                <span className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 leading-none mb-1 text-left">
                   {t("segWo") ?? "Wo"}
                 </span>
                 <span className="flex items-center gap-1.5 text-[14px] font-body font-medium text-s-ink">
@@ -295,7 +295,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                 )}
                 style={{ minWidth: 140 }}
               >
-                <span className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 leading-none mb-1 text-left">
+                <span className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 leading-none mb-1 text-left">
                   {t("segWann") ?? "Wann"}
                 </span>
                 <span className="flex items-center gap-1.5 text-[14px] font-body font-medium text-s-ink">
@@ -334,7 +334,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                     ))}
                     {/* Calendar for custom date */}
                     <div className="border-t border-s-ink/[0.07] px-3 pb-3 pt-2">
-                      <p className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mb-2">
+                      <p className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 mb-2">
                         {tc("otherDate")}
                       </p>
                       <DayPicker
@@ -386,7 +386,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                       animate={{ opacity: 1, width: "auto" }}
                       exit={{ opacity: 0, width: 0 }}
                       transition={{ duration: 0.15, ease: "easeOut" }}
-                      className="text-[14px] font-heading font-semibold overflow-hidden whitespace-nowrap"
+                      className="text-[14px] font-heading overflow-hidden whitespace-nowrap"
                     >
                       {tNav("search") ?? "Suchen"}
                     </motion.span>

@@ -161,7 +161,7 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
         <div className="absolute inset-0 rounded-full animate-pulse shadow-elevation-2" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-heading font-bold text-sm text-s-ink">
+        <p className="font-heading text-sm text-s-ink">
           {t("offPeakDiscount", { percent: slot.discount_percent })}
         </p>
         <p className="text-xs text-s-ink/50 mt-0.5">
@@ -170,7 +170,7 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
       </div>
       <div className="shrink-0 text-right">
         <div className="font-display text-[32px] leading-none text-s-coral">{remaining}</div>
-        <div className="text-[10px] font-heading font-semibold uppercase tracking-[.14em] text-s-ink/45 mt-0.5">{t("remaining")}</div>
+        <div className="text-[10px] font-heading uppercase tracking-[.14em] text-s-ink/45 mt-0.5">{t("remaining")}</div>
       </div>
     </div>
   );
@@ -203,7 +203,7 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
           )}
         </div>
         <div className="min-w-0">
-          <p className="font-heading font-semibold text-sm text-s-ink truncate">{member.name}</p>
+          <p className="font-heading text-sm text-s-ink truncate">{member.name}</p>
           {member.specialties?.length > 0 && (
             <p className="text-xs text-s-ink/50 truncate">{member.specialties.join(", ")}</p>
           )}
@@ -324,10 +324,10 @@ export default function SalonProfilePage() {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-6 px-4">
         <div className="font-display text-[80px] leading-none text-s-ink/10">404</div>
-        <p className="font-heading font-bold text-s-ink text-2xl">{t("notFound")}</p>
+        <p className="font-heading text-s-ink text-2xl">{t("notFound")}</p>
         <p className="font-body text-s-ink/50 text-sm text-center max-w-xs">{t("notFoundMessage")}</p>
         <Link href={`/${locale}/coiffeur`}
-          className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-elevation-2">
+          className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading text-sm uppercase tracking-[.04em] shadow-elevation-2">
           {t("viewAllSalons")}
         </Link>
       </div>
@@ -384,7 +384,7 @@ export default function SalonProfilePage() {
         <div className="relative z-10">
           {/* Breadcrumb */}
           <nav aria-label="Breadcrumb" className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-3">
-            <ol className="flex items-center gap-1.5 text-[11px] font-heading font-semibold uppercase tracking-[.12em]">
+            <ol className="flex items-center gap-1.5 text-[11px] font-heading uppercase tracking-[.12em]">
               <li><Link href={`/${locale}`} className="text-s-ink/45 hover:text-s-coral transition-colors duration-150">Home</Link></li>
               <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
               {salon.categories[0] && (
@@ -435,7 +435,7 @@ export default function SalonProfilePage() {
                       const Icon = CATEGORY_ICONS[cat];
                       const colours = CAT_TAG_COLOURS[cat] ?? { bg: "rgba(232,98,74,.12)", text: "#7A2415" };
                       return (
-                        <span key={cat} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em]"
+                        <span key={cat} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-btn text-xs font-heading uppercase tracking-[.06em]"
                           style={{ background: colours.bg, color: colours.text }}>
                           <Icon className="w-3 h-3" />{cat}
                         </span>
@@ -516,7 +516,7 @@ export default function SalonProfilePage() {
                 <div id="section-info" className="scroll-mt-[80px]">
                   {(salon.about_text_de || salon.about_text_en || salon.about_text_fr || salon.about_text_it) && (
                     <div className="mb-8 p-6 rounded-card-lg bg-white border border-s-ink/5 shadow-elevation-1">
-                      <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("aboutUs")}</h2>
+                      <h2 className="font-heading text-base text-s-ink mb-3">{t("aboutUs")}</h2>
                       <p className="text-sm text-s-ink/70 leading-relaxed whitespace-pre-wrap">
                         {(salon as any)[`about_text_${locale}`] || salon.about_text_en || salon.about_text_de}
                       </p>
@@ -530,7 +530,7 @@ export default function SalonProfilePage() {
                 {/* Salon info — atmosphere, expertise, products, transport */}
                 {((salon as any).atmosphere || (salon as any).expertise || (salon as any).products || (salon as any).nearest_transport) && (
                   <div>
-                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3 flex items-center gap-2">
+                    <h2 className="font-heading text-base text-s-ink mb-3 flex items-center gap-2">
                       <Info className="w-4 h-4 text-s-coral" />{t("salonInfo")}
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -543,7 +543,7 @@ export default function SalonProfilePage() {
                             <Sparkles className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
-                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("atmosphere")}</p>
+                            <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("atmosphere")}</p>
                             <p className="text-sm text-s-ink leading-snug">{(salon as any).atmosphere}</p>
                           </div>
                         </div>
@@ -557,7 +557,7 @@ export default function SalonProfilePage() {
                             <Award className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
-                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("expertise")}</p>
+                            <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("expertise")}</p>
                             <p className="text-sm text-s-ink leading-snug">{(salon as any).expertise}</p>
                           </div>
                         </div>
@@ -571,7 +571,7 @@ export default function SalonProfilePage() {
                             <Droplets className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
-                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("products")}</p>
+                            <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("products")}</p>
                             <p className="text-sm text-s-ink leading-snug">{(salon as any).products}</p>
                           </div>
                         </div>
@@ -585,7 +585,7 @@ export default function SalonProfilePage() {
                             <Bus className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
-                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("publicTransport")}</p>
+                            <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("publicTransport")}</p>
                             <p className="text-sm text-s-ink leading-snug">{(salon as any).nearest_transport}</p>
                           </div>
                         </div>
@@ -597,7 +597,7 @@ export default function SalonProfilePage() {
                 {/* Staff/Team */}
                 {salon.staff.length > 0 && (
                   <div id="section-team" className="scroll-mt-[80px]">
-                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">Team</h2>
+                    <h2 className="font-heading text-base text-s-ink mb-3">Team</h2>
                     <div className="mt-3 md:mt-0">
                       <StaffSection
                         staff={salon.staff}
@@ -626,7 +626,7 @@ export default function SalonProfilePage() {
                 {/* Nail Artists — only for nail salons */}
                 {salon.categories?.includes("nails") && salon.staff.length > 0 && (
                   <div id="section-nail-artists" className="scroll-mt-[80px]">
-                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("team")}</h2>
+                    <h2 className="font-heading text-base text-s-ink mb-3">{t("team")}</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 md:mt-0">
                       {salon.staff.map((m) => (
                         <NailArtistPreviewCard key={m.id} member={m} locale={locale}
@@ -639,7 +639,7 @@ export default function SalonProfilePage() {
                 {/* Barber Roster — only for barbershops */}
                 {salon.categories?.includes("barbershop") && salon.staff.length > 0 && (
                   <div id="section-barbers" className="scroll-mt-[80px]">
-                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("team")}</h2>
+                    <h2 className="font-heading text-base text-s-ink mb-3">{t("team")}</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3 md:mt-0">
                       {salon.staff.map((m) => (
                         <Link key={m.id} href={`/${locale}/salon/${slug}/barber/${(m as any).slug ?? m.id}`}
@@ -666,7 +666,7 @@ export default function SalonProfilePage() {
                 {/* Walk-in Queue — only for barbershops */}
                 {salon.categories?.includes("barbershop") && (
                   <div id="section-walkin" className="scroll-mt-[80px]">
-                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">Walk-in</h2>
+                    <h2 className="font-heading text-base text-s-ink mb-3">Walk-in</h2>
                     <div className="space-y-4 mt-3 md:mt-0">
                       <WaitTimeDisplay salonId={salon.id} />
                       <RemoteQueueJoin
@@ -734,7 +734,7 @@ export default function SalonProfilePage() {
                 {/* Location / Map */}
                 {salon.latitude && salon.longitude && (
                   <div id="section-standort" className="scroll-mt-[80px]">
-                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("location")}</h2>
+                    <h2 className="font-heading text-base text-s-ink mb-3">{t("location")}</h2>
                     <a
                       href={`https://maps.google.com/?q=${salon.latitude},${salon.longitude}`}
                       target="_blank" rel="noopener noreferrer"

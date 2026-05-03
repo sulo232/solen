@@ -80,10 +80,10 @@ export default function LoyaltyStampPage() {
             >
               <Award size={30} className="text-s-coral" />
             </div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-ink/50 mb-2">
               Stempelkarte
             </p>
-            <h1 className="font-heading font-bold text-xl text-s-ink mb-2">
+            <h1 className="font-heading text-xl text-s-ink mb-2">
               Stempel hinzufügen?
             </h1>
             <p className="text-sm font-body text-s-ink/50 mb-6 leading-relaxed">
@@ -91,7 +91,7 @@ export default function LoyaltyStampPage() {
             </p>
             <button
               onClick={handleStamp}
-              className="w-full rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] py-3.5 hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] shadow-elevation-2"
+              className="w-full rounded-pill bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] py-3.5 hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] shadow-elevation-2"
             >
               Stempel vergeben
             </button>
@@ -113,13 +113,13 @@ export default function LoyaltyStampPage() {
             >
               <Check size={28} className="text-s-sage" />
             </div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-sage mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-sage mb-2">
               Gestempelt
             </p>
-            <h1 className="font-heading font-bold text-xl text-s-ink mb-3">
+            <h1 className="font-heading text-xl text-s-ink mb-3">
               Gestempelt!
             </h1>
-            <p className="text-sm font-heading font-semibold text-s-ink/60">
+            <p className="text-sm font-heading text-s-ink/60">
               {result.stamps_collected}/{result.stamps_required} Stempel
             </p>
             {result.is_complete && (
@@ -127,7 +127,7 @@ export default function LoyaltyStampPage() {
                 className="mt-4 px-4 py-2.5 rounded-[10px] inline-block"
                 style={{ background: "rgba(232,98,74,.08)" }}
               >
-                <p className="text-xs font-heading font-bold uppercase tracking-[.08em] text-s-coral">
+                <p className="text-xs font-heading uppercase tracking-[.08em] text-s-coral">
                   Belohnung freigeschaltet! 🎉
                 </p>
               </div>
@@ -146,10 +146,10 @@ export default function LoyaltyStampPage() {
             >
               <AlertCircle size={28} className="text-s-coral" />
             </div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-coral mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-coral mb-2">
               Fehler
             </p>
-            <h1 className="font-heading font-bold text-xl text-s-ink mb-2">
+            <h1 className="font-heading text-xl text-s-ink mb-2">
               Etwas ist schiefgelaufen
             </h1>
             <p className="text-sm font-body text-s-ink/50">

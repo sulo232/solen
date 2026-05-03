@@ -26,8 +26,8 @@ export default function BarberClientsPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-8">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">Barber</p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink leading-none">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/30 mb-1">Barber</p>
+        <h1 className="font-heading text-[28px] text-s-ink leading-none">
           Barber Kunden
         </h1>
         <p className="text-sm text-s-ink/40 mt-2">

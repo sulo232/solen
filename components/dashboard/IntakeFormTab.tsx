@@ -106,7 +106,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading font-bold text-sm text-s-ink flex items-center gap-2">
+        <h3 className="font-heading text-sm text-s-ink flex items-center gap-2">
           <ClipboardList size={14} className="text-s-coral" /> Fragebogen
         </h3>
         <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors">
@@ -137,7 +137,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
                     const val = label === "Ja";
                     return (
                       <button key={label} onClick={() => setResponses((p) => ({ ...p, [q.question_key]: val }))}
-                        className={`px-3 py-1.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${responses[q.question_key] === val ? "bg-s-coral text-white" : "border border-s-ink/10 text-s-ink/60"}`}>
+                        className={`px-3 py-1.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors ${responses[q.question_key] === val ? "bg-s-coral text-white" : "border border-s-ink/10 text-s-ink/60"}`}>
                         {label}
                       </button>
                     );
@@ -173,7 +173,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
             <button onClick={() => { setShowForm(false); setAiRec(null); }}
               className="px-3 py-1.5 rounded-pill border border-s-ink/10 text-xs text-s-ink/60">Abbrechen</button>
             <button onClick={handleSave} disabled={saving}
-              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150">
+              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150">
               {saving && <Spinner size="sm" invert />} Speichern
             </button>
           </div>

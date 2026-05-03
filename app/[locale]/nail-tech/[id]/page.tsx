@@ -157,7 +157,7 @@ export default function NailTechProfilePage() {
 
       {/* Portfolio grid */}
       <div className="max-w-5xl mx-auto px-4 py-6">
-        <h2 className="font-heading font-semibold text-base text-s-ink mb-4">
+        <h2 className="font-heading text-base text-s-ink mb-4">
           Portfolio
         </h2>
         <TechPortfolio

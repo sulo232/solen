@@ -67,7 +67,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
     <div className="bg-[--raised] rounded-[24px] border border-s-ink/5 p-6 mb-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="font-heading font-bold text-lg text-s-ink">{t("title")}</h2>
+          <h2 className="font-heading text-lg text-s-ink">{t("title")}</h2>
           <p className="text-sm text-s-ink/50">
             {t("description")}
           </p>
@@ -77,7 +77,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           onClick={handleSave}
           disabled={isSaving}
           aria-label={t("save_button")}
-          className="flex items-center justify-center gap-2 bg-s-coral text-white py-2 px-5 rounded-pill font-heading font-bold text-[11px] uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
+          className="flex items-center justify-center gap-2 bg-s-coral text-white py-2 px-5 rounded-pill font-heading text-[11px] uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
         >
           {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
           {t("save_button")}
@@ -105,7 +105,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
             key={l.id}
             onClick={() => setActiveLang(l.id)}
             aria-pressed={activeLang === l.id}
-            className={`px-3 py-1.5 text-xs font-heading font-semibold uppercase tracking-wider rounded-md transition-colors duration-150 whitespace-nowrap ${
+            className={`px-3 py-1.5 text-xs font-heading uppercase tracking-wider rounded-md transition-colors duration-150 whitespace-nowrap ${
               activeLang === l.id
                 ? "bg-s-ink/5 text-s-ink"
                 : "text-s-ink/40 hover:text-s-ink hover:bg-s-ink/5"

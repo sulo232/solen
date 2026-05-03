@@ -137,7 +137,7 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
 
   const desktopTree = (
     <div className="hidden md:block sticky top-24 w-56 shrink-0">
-      <h3 className="font-heading font-semibold text-sm text-s-ink mb-3 px-2">
+      <h3 className="font-heading text-sm text-s-ink mb-3 px-2">
         Kategorien
       </h3>
       <nav className="space-y-0.5 max-h-[calc(100vh-8rem)] overflow-y-auto">

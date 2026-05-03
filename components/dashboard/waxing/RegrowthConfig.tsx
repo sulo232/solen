@@ -73,7 +73,7 @@ export default function RegrowthConfig({ salonId }: RegrowthConfigProps) {
     <div>
       <div className="flex items-center gap-2 mb-3">
         <Bell size={16} className="text-s-coral" />
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
           {t("regrowth_title")}
         </p>
       </div>
@@ -90,7 +90,7 @@ export default function RegrowthConfig({ salonId }: RegrowthConfigProps) {
               className="rounded-[12px] border border-s-ink/[0.06] p-3 bg-[--raised]"
             >
               <div className="flex items-center gap-2 mb-2">
-                <p className="text-sm font-heading font-semibold text-s-ink">
+                <p className="text-sm font-heading text-s-ink">
                   {svc.name_de}
                 </p>
                 <span className="text-[10px] text-s-ink/30 flex items-center gap-1">
@@ -106,7 +106,7 @@ export default function RegrowthConfig({ salonId }: RegrowthConfigProps) {
                     key={opt.value}
                     onClick={() => updateCycle(svc.id, opt.value)}
                     aria-label={t(opt.labelKey)}
-                    className={`rounded-[12px] border px-4 py-2 text-xs font-heading font-semibold transition-colors duration-150 ${
+                    className={`rounded-[12px] border px-4 py-2 text-xs font-heading transition-colors duration-150 ${
                       svc.reminder_cycle_days === opt.value
                         ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                         : "border-s-ink/[0.06] text-s-ink/50"

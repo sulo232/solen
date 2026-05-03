@@ -32,7 +32,7 @@ export default async function TermsPage() {
         
         {/* Page Header */}
         <div className="mb-8 md:mb-16">
-          <h1 className="font-heading font-bold text-3xl md:text-5xl text-s-ink mb-4">
+          <h1 className="font-heading text-3xl md:text-5xl text-s-ink mb-4">
             Allgemeine Geschäftsbedingungen (AGB)
           </h1>
           <h2 className="font-heading text-xl md:text-3xl text-s-ink/60">

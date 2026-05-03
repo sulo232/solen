@@ -69,12 +69,12 @@ export default function BrandPage() {
               <Image src={group.logo_url} alt={group.name} fill className="object-contain" />
             </div>
           ) : (
-            <div className="w-20 h-20 rounded-xl bg-s-coral/10 flex items-center justify-center text-s-coral text-2xl font-heading font-bold shrink-0">
+            <div className="w-20 h-20 rounded-xl bg-s-coral/10 flex items-center justify-center text-s-coral text-2xl font-heading shrink-0">
               {group.name[0]}
             </div>
           )}
           <div>
-            <h1 className="font-heading font-bold text-2xl text-s-ink">{group.name}</h1>
+            <h1 className="font-heading text-2xl text-s-ink">{group.name}</h1>
             {group.description && (
               <p className="text-sm text-s-ink/60 mt-1 max-w-lg">{group.description}</p>
             )}
@@ -100,7 +100,7 @@ export default function BrandPage() {
 
       {/* Locations grid */}
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <h2 className="font-heading font-semibold text-lg text-s-ink mb-4">
+        <h2 className="font-heading text-lg text-s-ink mb-4">
           Alle Standorte
         </h2>
         {salons.length === 0 ? (

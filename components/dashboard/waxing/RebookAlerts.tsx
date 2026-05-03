@@ -58,7 +58,7 @@ export default function RebookAlerts({ salonId }: RebookAlertsProps) {
           <Bell size={13} className="text-s-amber" />
         </div>
         <div>
-          <p className="text-sm font-heading font-bold text-s-ink">{t("rebookTitle")}</p>
+          <p className="text-sm font-heading text-s-ink">{t("rebookTitle")}</p>
           <p className="text-[10px] text-s-ink/35">{t("rebookSubtitle")}</p>
         </div>
       </div>
@@ -74,7 +74,7 @@ export default function RebookAlerts({ salonId }: RebookAlertsProps) {
           {clients.map((c) => (
             <div key={c.client_id} className="flex items-center gap-3 p-3 rounded-[8px] border border-s-ink/[0.05]">
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-heading font-semibold text-s-ink truncate">{c.display_name}</p>
+                <p className="text-sm font-heading text-s-ink truncate">{c.display_name}</p>
                 <p className="text-[10px] text-s-ink/40">
                   {c.zone} · <span className={c.days_overdue > 0 ? "text-red-500" : "text-s-amber"}>
                     {c.days_overdue > 0 ? `${c.days_overdue}d ${t("overdue")}` : t("dueNow")}
@@ -85,7 +85,7 @@ export default function RebookAlerts({ salonId }: RebookAlertsProps) {
                 <button
                   onClick={() => sendReminder(c.client_id)}
                   disabled={sent.has(c.client_id)}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-[8px] text-[10px] font-heading font-bold transition-[transform,filter] duration-150 ${
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-[8px] text-[10px] font-heading transition-[transform,filter] duration-150 ${
                     sent.has(c.client_id)
                       ? "bg-s-sage/20 text-s-sage"
                       : "bg-s-amber/10 text-s-amber hover:bg-s-amber/20"
@@ -97,7 +97,7 @@ export default function RebookAlerts({ salonId }: RebookAlertsProps) {
                 </button>
                 <a
                   href={`/${locale}/dashboard/calendar?client=${c.client_id}`}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-[8px] text-[10px] font-heading font-bold bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-[8px] text-[10px] font-heading bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
                   aria-label={t("rebookBook")}
                 >
                   <Calendar size={10} />

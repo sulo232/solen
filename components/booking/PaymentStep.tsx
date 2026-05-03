@@ -96,7 +96,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
           <ChevronLeft size={20} className="text-s-ink" />
         </button>
         <div>
-          <h2 className="text-2xl font-display font-bold text-s-ink">
+          <h2 className="text-2xl font-display text-s-ink">
             {t('title')}
           </h2>
         </div>
@@ -115,7 +115,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
         >
           <CreditCard size={24} className="text-s-ink/60" />
           <div className="flex-1 text-left">
-            <h3 className="font-heading font-bold text-sm text-s-ink">
+            <h3 className="font-heading text-sm text-s-ink">
               {t('online')}
             </h3>
             <p className="text-xs text-s-ink/50 mt-0.5">
@@ -146,7 +146,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
         >
           <Wallet size={24} className="text-s-amber" />
           <div className="flex-1 text-left">
-            <h3 className="font-heading font-bold text-sm text-s-ink">
+            <h3 className="font-heading text-sm text-s-ink">
               {t('inPerson')}
             </h3>
             <p className="text-xs text-s-ink/50 mt-0.5">
@@ -169,7 +169,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
 
       {/* Order summary */}
       <div className="bg-[--raised] rounded-card p-4 border border-s-ink/[0.06]">
-        <h3 className="font-heading font-bold text-sm text-s-ink mb-3">
+        <h3 className="font-heading text-sm text-s-ink mb-3">
           {tGeneral('cart.total')}
         </h3>
         <div className="flex items-center justify-between">
@@ -178,7 +178,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
               ? `${formData.services[0].name_de} (${formData.services[0].duration_minutes} min)`
               : 'Service'}
           </span>
-          <span className="font-heading font-bold text-s-ink">
+          <span className="font-heading text-s-ink">
             {formatCurrency(formData.totalPrice)}
           </span>
         </div>
@@ -197,14 +197,14 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
           <button
             onClick={handleBack}
             disabled={isSubmitting}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter,border-color,background-color] duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>
           <button
             onClick={handleConfirmBooking}
             disabled={!formData.paymentMethod || isSubmitting}
-            className="flex-1 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-pill bg-s-coral text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
           >
             {isSubmitting && <Spinner size="sm" invert />}
             {t('confirmBooking')}

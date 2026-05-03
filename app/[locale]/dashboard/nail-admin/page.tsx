@@ -47,8 +47,8 @@ export default function NailAdminPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-6">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 mb-1">Nails</p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink leading-none">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/50 mb-1">Nails</p>
+        <h1 className="font-heading text-[28px] text-s-ink leading-none">
           {t("pageTitle")}
         </h1>
       </div>
@@ -60,7 +60,7 @@ export default function NailAdminPage() {
             key={id}
             onClick={() => setActiveTab(id)}
             aria-label={t(labelKey)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading font-semibold whitespace-nowrap transition-colors duration-150 shrink-0 ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading whitespace-nowrap transition-colors duration-150 shrink-0 ${
               activeTab === id
                 ? "bg-s-coral text-white shadow-elevation-2"
                 : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"

@@ -70,7 +70,7 @@ export default function MyPackagesPage() {
           <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-ink/5:bg-white/5 transition-colors">
             <ChevronLeft size={20} className="text-s-ink/60" />
           </Link>
-          <h1 className="font-heading font-bold text-xl text-s-ink flex items-center gap-2">
+          <h1 className="font-heading text-xl text-s-ink flex items-center gap-2">
             <Package size={20} className="text-s-coral" />
             Meine Abo-Pakete
           </h1>
@@ -100,7 +100,7 @@ export default function MyPackagesPage() {
                 }`}>
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h3 className="font-heading font-bold text-base text-s-ink">
+                      <h3 className="font-heading text-base text-s-ink">
                         {pkg.name}
                       </h3>
                       <p className="text-xs text-s-ink/50 mt-1">
@@ -108,12 +108,12 @@ export default function MyPackagesPage() {
                       </p>
                     </div>
                     {(isUsedUp || isExpired) ? (
-                      <span className="text-[9px] font-heading font-bold uppercase tracking-[.08em] px-2 py-1 rounded-[6px]"
+                      <span className="text-[9px] font-heading uppercase tracking-[.08em] px-2 py-1 rounded-[6px]"
                         style={{ background: "rgba(26,18,9,.06)", color: "rgba(26,18,9,.35)" }}>
                         {isExpired ? "Abgelaufen" : "Aufgebraucht"}
                       </span>
                     ) : (
-                      <span className="text-[9px] font-heading font-bold uppercase tracking-[.08em] px-2 py-1 rounded-[6px]"
+                      <span className="text-[9px] font-heading uppercase tracking-[.08em] px-2 py-1 rounded-[6px]"
                         style={{ background: "rgba(76,175,111,.12)", color: "#1f6535" }}>
                         Aktiv
                       </span>
@@ -122,7 +122,7 @@ export default function MyPackagesPage() {
 
                   <div>
                     <div className="flex justify-between mb-2">
-                      <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/35">
+                      <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/35">
                         {remaining} von {total} übrig
                       </p>
                       <p className="text-[9px] font-heading text-s-ink/25">{used} genutzt</p>

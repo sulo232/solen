@@ -79,7 +79,7 @@ export default async function BookingSalonPage({
         {/* Header with salon name */}
         <header className="sticky top-0 z-40 border-b border-s-ink/[0.06] bg-[--raised]">
           <div className="max-w-2xl mx-auto px-4 py-4">
-            <h1 className="font-display font-bold text-xl text-s-ink">
+            <h1 className="font-display text-xl text-s-ink">
               {t('bookingAt', { salon: salon.name })}
             </h1>
           </div>

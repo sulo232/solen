@@ -147,7 +147,7 @@ export default function EditorPage() {
       <div className="flex items-center justify-center min-h-screen bg-white p-8">
         <div className="text-center max-w-md">
           <Monitor size={48} className="mx-auto text-s-ink/30 mb-4" />
-          <h2 className="text-lg font-heading font-bold text-s-ink mb-2">
+          <h2 className="text-lg font-heading text-s-ink mb-2">
             Desktop Required
           </h2>
           <p className="text-sm text-s-ink/60">
@@ -291,7 +291,7 @@ export default function EditorPage() {
           </>
         ) : (
           <div className="flex-1 overflow-y-auto p-4 max-w-3xl mx-auto">
-            <h2 className="text-lg font-heading font-bold text-s-ink mb-4">
+            <h2 className="text-lg font-heading text-s-ink mb-4">
               All Feature Requests
             </h2>
             <RequestList

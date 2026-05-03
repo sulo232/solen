@@ -72,7 +72,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
           <Store size={22} className="text-s-coral" />
         </div>
         <div>
-          <h2 className="font-heading font-bold text-xl text-s-ink">
+          <h2 className="font-heading text-xl text-s-ink">
             {t("profile.title")}
           </h2>
           <p className="text-sm text-s-ink/40">
@@ -122,7 +122,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
                   type="button"
                   onClick={() => toggleCat(opt.value)}
                   className={[
-                    "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
+                    "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
                     active
                       ? "bg-s-coral text-white border-s-coral shadow-elevation-2"
                       : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/50",
@@ -168,7 +168,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
       <button
         onClick={handleSave}
         disabled={!form.name || !form.description_de || saving || categories.length === 0}
-        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
       >
         {saving && <Spinner size="sm" invert />}
         {tc("save")}

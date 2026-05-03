@@ -113,13 +113,13 @@ export default function SensitivityLog({
   return (
     <div className="w-full max-w-2xl">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
           {t("sensitivity_title")}
         </p>
         <button
           onClick={() => setShowForm(!showForm)}
           aria-label={t("add_entry")}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
         >
           {showForm ? <X size={12} /> : <Plus size={12} />}
           {showForm ? t("cancel") : t("add_entry")}
@@ -129,7 +129,7 @@ export default function SensitivityLog({
       {/* Severe warning banner */}
       {hasSevere && (
         <div className="rounded-[8px] bg-s-error/[0.06] border border-s-error/20 p-3 mb-4">
-          <p className="text-[10px] font-heading font-bold text-s-error flex items-center gap-1.5">
+          <p className="text-[10px] font-heading text-s-error flex items-center gap-1.5">
             <AlertTriangle size={12} />
             {t("severe_warning")}
           </p>
@@ -141,7 +141,7 @@ export default function SensitivityLog({
         <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-4 bg-[--raised] space-y-3">
           {/* Reaction level */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               {t("reaction_level")}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -150,7 +150,7 @@ export default function SensitivityLog({
                   key={level}
                   onClick={() => setForm({ ...form, reaction_level: level })}
                   aria-label={t(`severity.${level}`)}
-                  className={`rounded-[12px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
+                  className={`rounded-[12px] border px-3 py-1.5 text-[10px] font-heading transition-colors duration-150 ${
                     form.reaction_level === level
                       ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                       : "border-s-ink/[0.06] text-s-ink/50"
@@ -164,7 +164,7 @@ export default function SensitivityLog({
 
           {/* Affected zones */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               {t("affected_zones")}
             </label>
             <input
@@ -180,7 +180,7 @@ export default function SensitivityLog({
 
           {/* Medications */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               <Pill size={10} className="inline mr-1" />
               {t("medications")}
             </label>
@@ -213,7 +213,7 @@ export default function SensitivityLog({
 
           {/* Aftercare */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               {t("aftercare")}
             </label>
             <input
@@ -229,7 +229,7 @@ export default function SensitivityLog({
 
           {/* Notes */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               {t("notes")}
             </label>
             <textarea
@@ -246,7 +246,7 @@ export default function SensitivityLog({
               onClick={handleSubmit}
               disabled={saving}
               aria-label={t("save")}
-              className="px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-50"
+              className="px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-50"
             >
               {saving ? t("saving") : t("save")}
             </button>
@@ -268,7 +268,7 @@ export default function SensitivityLog({
             >
               <div className="flex items-center justify-between mb-2">
                 <span
-                  className={`text-[10px] font-heading font-bold uppercase tracking-[.10em] px-2 py-0.5 rounded-[6px] ${SEVERITY_STYLES[entry.reaction_level]}`}
+                  className={`text-[10px] font-heading uppercase tracking-[.10em] px-2 py-0.5 rounded-[6px] ${SEVERITY_STYLES[entry.reaction_level]}`}
                 >
                   {t(`severity.${entry.reaction_level}`)}
                 </span>
@@ -303,7 +303,7 @@ export default function SensitivityLog({
 
               {entry.reaction_level === "severe" && (
                 <div className="rounded-[8px] bg-s-error/[0.06] border border-s-error/20 p-2 mt-2">
-                  <p className="text-[10px] font-heading font-bold text-s-error">
+                  <p className="text-[10px] font-heading text-s-error">
                     {t("severe_warning")}
                   </p>
                 </div>

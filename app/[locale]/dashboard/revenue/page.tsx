@@ -56,7 +56,7 @@ export default function RevenuePage() {
     <DashboardLayout>
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-heading font-bold text-2xl text-s-ink">Umsatz</h1>
+          <h1 className="font-heading text-2xl text-s-ink">Umsatz</h1>
           <p className="text-sm text-s-ink/40 mt-0.5">Plattform-Einnahmen</p>
         </div>
         {/* Period picker */}
@@ -150,7 +150,7 @@ export default function RevenuePage() {
           {/* Revenue chart */}
           {data.daily.length > 0 && (
             <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
-              <h2 className="font-heading font-semibold text-s-ink text-sm mb-4">Tagesumsatz (CHF)</h2>
+              <h2 className="font-heading text-s-ink text-sm mb-4">Tagesumsatz (CHF)</h2>
               <ResponsiveContainer width="100%" height={200}>
                 <AreaChart data={data.daily} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                   <defs>
@@ -197,7 +197,7 @@ export default function RevenuePage() {
           {data.top_salons.length > 0 && (
             <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
               <div className="px-5 py-4 border-b border-s-ink/5">
-                <h2 className="font-heading font-semibold text-s-ink text-sm">Top Salons</h2>
+                <h2 className="font-heading text-s-ink text-sm">Top Salons</h2>
               </div>
               <table className="w-full text-sm">
                 <thead>
@@ -232,7 +232,7 @@ export default function RevenuePage() {
           {data.staff_commissions && data.staff_commissions.length > 0 && (
             <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
               <div className="px-5 py-4 border-b border-s-ink/5">
-                <h2 className="font-heading font-semibold text-s-ink text-sm">Provision pro Stylist</h2>
+                <h2 className="font-heading text-s-ink text-sm">Provision pro Stylist</h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">

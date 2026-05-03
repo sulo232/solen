@@ -48,7 +48,7 @@ interface EnrichedBooking extends Booking {
 }
 
 const SectionLabel = ({ children, amber }: { children: React.ReactNode; amber?: boolean }) => (
-  <p className={`text-[9px] font-heading font-bold uppercase tracking-[.18em] mb-3 ${amber ? "text-s-amber" : "text-s-ink/35"}`}>
+  <p className={`text-[9px] font-heading uppercase tracking-[.18em] mb-3 ${amber ? "text-s-amber" : "text-s-ink/35"}`}>
     {children}
   </p>
 );
@@ -130,7 +130,7 @@ export default function DashboardPage() {
           >
             <PartyPopper size={20} className="shrink-0 text-white/80" />
             <div>
-              <p className="font-heading font-bold text-sm text-white">Willkommen bei solen.ch!</p>
+              <p className="font-heading text-sm text-white">Willkommen bei solen.ch!</p>
               <p className="text-xs text-white/70 mt-0.5">Dein Salon ist jetzt live. Kunden können dich ab sofort buchen.</p>
             </div>
           </motion.div>
@@ -148,10 +148,10 @@ export default function DashboardPage() {
       <TodayLiveCard />
 
       <div className="mb-8">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/30 mb-1">
           {today}
         </p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink leading-none">
+        <h1 className="font-heading text-[28px] text-s-ink leading-none">
           Übersicht
         </h1>
       </div>
@@ -247,11 +247,11 @@ export default function DashboardPage() {
                   style={{ background: "rgba(232,98,74,.06)", border: "1px solid rgba(232,98,74,.18)" }}>
                   <ShieldAlert size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-heading font-semibold text-s-ink">Verifizierung überfällig</p>
+                    <p className="text-xs font-heading text-s-ink">Verifizierung überfällig</p>
                     <p className="text-[10px] text-s-ink/45 mt-0.5">Seit über 90 Tagen nicht verifiziert.</p>
                   </div>
                   <Link href={`/${locale}/dashboard/settings?tab=verification`}
-                    className="text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-coral shrink-0">
+                    className="text-[10px] font-heading uppercase tracking-[.04em] text-s-coral shrink-0">
                     Verifizieren →
                   </Link>
                 </div>
@@ -261,11 +261,11 @@ export default function DashboardPage() {
                   style={{ background: "rgba(232,98,74,.06)", border: "1px solid rgba(232,98,74,.18)" }}>
                   <AlertTriangle size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-heading font-semibold text-s-ink">Wenig freie Slots</p>
+                    <p className="text-xs font-heading text-s-ink">Wenig freie Slots</p>
                     <p className="text-[10px] text-s-ink/45 mt-0.5">Weniger als 5 Slots in den nächsten 7 Tagen.</p>
                   </div>
                   <Link href={`/${locale}/dashboard/calendar`}
-                    className="text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-coral shrink-0">
+                    className="text-[10px] font-heading uppercase tracking-[.04em] text-s-coral shrink-0">
                     Erstellen →
                   </Link>
                 </div>
@@ -275,10 +275,10 @@ export default function DashboardPage() {
                   style={{ background: "rgba(243,168,100,.06)", border: "1px solid rgba(243,168,100,.20)" }}>
                   <AlertTriangle size={16} className="text-s-amber shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-heading font-semibold text-s-ink">{stats.pending_cancellations} Stornierungsanfragen</p>
+                    <p className="text-xs font-heading text-s-ink">{stats.pending_cancellations} Stornierungsanfragen</p>
                   </div>
                   <Link href={`/${locale}/dashboard/bookings?status=cancelled`}
-                    className="text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-amber shrink-0">
+                    className="text-[10px] font-heading uppercase tracking-[.04em] text-s-amber shrink-0">
                     Anzeigen →
                   </Link>
                 </div>
@@ -295,7 +295,7 @@ export default function DashboardPage() {
                   <MessageCircle size={18} className="text-s-coral" />
                 </div>
                 <div>
-                  <p className="text-sm font-heading font-semibold text-s-ink">{unread} ungelesene Nachricht{unread > 1 ? "en" : ""}</p>
+                  <p className="text-sm font-heading text-s-ink">{unread} ungelesene Nachricht{unread > 1 ? "en" : ""}</p>
                   <p className="text-[10px] text-s-ink/40 mt-0.5">Jetzt antworten →</p>
                 </div>
               </div>
@@ -308,7 +308,7 @@ export default function DashboardPage() {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <SectionLabel>Heute</SectionLabel>
-                <Link href={`/${locale}/dashboard/bookings`} className="text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-coral">Alle →</Link>
+                <Link href={`/${locale}/dashboard/bookings`} className="text-[10px] font-heading uppercase tracking-[.04em] text-s-coral">Alle →</Link>
               </div>
               {bookings.length === 0 ? (
                 <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-8 text-center bg-white">
@@ -327,12 +327,12 @@ export default function DashboardPage() {
                       </div>
                       <div className="w-px h-8 bg-s-ink/[0.07] shrink-0" />
                       <div className="flex-1 min-w-0 overflow-hidden">
-                        <p className="text-sm font-heading font-semibold text-s-ink truncate">{b.customer_name}</p>
+                        <p className="text-sm font-heading text-s-ink truncate">{b.customer_name}</p>
                         <p className="text-xs font-heading uppercase tracking-[.08em] text-s-ink/40 truncate mt-0.5 max-w-[160px] sm:max-w-none">{b.service_name}</p>
                       </div>
                       <div className="shrink-0 flex items-center gap-2">
                         {b.is_first_visit && (
-                          <span className="px-2 py-0.5 rounded-[6px] text-[9px] font-heading font-bold uppercase tracking-[.06em]"
+                          <span className="px-2 py-0.5 rounded-[6px] text-[9px] font-heading uppercase tracking-[.06em]"
                             style={{ background: "rgba(232,98,74,.10)", color: "#7A2415" }}>
                             Neu
                           </span>
@@ -369,7 +369,7 @@ export default function DashboardPage() {
               <div className="space-y-3">
                 {categoryToolGroups.map(group => (
                   <div key={group.category}>
-                    <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-2">
+                    <p className="text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25 mb-2">
                       {group.category.charAt(0).toUpperCase() + group.category.slice(1)}
                     </p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -385,7 +385,7 @@ export default function DashboardPage() {
                               style={{ background: "rgba(232,98,74,.08)" }}>
                               <Icon size={15} className="text-s-coral" />
                             </div>
-                            <span className="text-[11px] font-heading font-bold text-s-ink/65 group-hover:text-s-coral transition-colors leading-tight">
+                            <span className="text-[11px] font-heading text-s-ink/65 group-hover:text-s-coral transition-colors leading-tight">
                               {item.href.split("/").pop()?.replace(/-/g, " ")}
                             </span>
                           </a>
@@ -413,7 +413,7 @@ export default function DashboardPage() {
                     style={{ background: "rgba(232,98,74,.08)" }}>
                     <Icon size={17} className="text-s-coral" />
                   </div>
-                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/55 leading-tight">{label}</p>
+                  <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/55 leading-tight">{label}</p>
                 </a>
               ))}
             </div>

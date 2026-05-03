@@ -134,14 +134,14 @@ export default function AnalyticsPage() {
       {/* Page header with date range picker */}
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="font-heading font-bold text-2xl text-s-ink">Statistiken</h1>
+          <h1 className="font-heading text-2xl text-s-ink">Statistiken</h1>
           <p className="text-sm text-s-ink/40 mt-0.5">Detaillierte Salon-Auswertung</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={onToggleComparison}
             aria-label="Vorperiode vergleichen"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/[0.08] text-[10px] font-heading font-bold text-s-ink/55 hover:border-s-coral/40 hover:text-s-coral transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/[0.08] text-[10px] font-heading text-s-ink/55 hover:border-s-coral/40 hover:text-s-coral transition-colors"
           >
             {showComparison ? <ToggleRight size={13} className="text-s-coral" /> : <ToggleLeft size={13} />}
             Vergleich
@@ -199,7 +199,7 @@ export default function AnalyticsPage() {
                   <TrendingUp size={20} className="text-s-coral" />
                 </div>
                 <div>
-                  <p className="font-heading font-semibold text-s-ink text-sm">
+                  <p className="font-heading text-s-ink text-sm">
                     Deine Bewertung: {data.average_rating.toFixed(1)} — Top {data.percentile_rank}% in Basel
                   </p>
                   <p className="text-xs text-s-ink/50 mt-0.5">Basierend auf allen aktiven Salons in deiner Stadt</p>
@@ -210,7 +210,7 @@ export default function AnalyticsPage() {
             {/* Revenue chart + comparison */}
             <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-heading font-semibold text-base text-s-ink">Umsatz CHF (wöchentlich)</h2>
+                <h2 className="font-heading text-base text-s-ink">Umsatz CHF (wöchentlich)</h2>
                 <ExportButton
                   onClick={() => triggerExport("umsatz", data.revenue_by_week.map(w => ({ Woche: w.week, "Umsatz CHF": Math.round(w.revenue / 100) })))}
                   loading={exporting}
@@ -247,7 +247,7 @@ export default function AnalyticsPage() {
           {tab === "bookings" && (<>
             <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-heading font-semibold text-base text-s-ink">Termine (täglich)</h2>
+                <h2 className="font-heading text-base text-s-ink">Termine (täglich)</h2>
                 <ExportButton
                   onClick={() => triggerExport("termine", data.bookings_by_day.map(d => ({ Datum: d.date, Termine: d.count })))}
                   loading={exporting}
@@ -269,14 +269,14 @@ export default function AnalyticsPage() {
 
             {data.peak_hours_heatmap && (
               <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
-                <h2 className="font-heading font-semibold text-base text-s-ink mb-4">Stosszeiten</h2>
+                <h2 className="font-heading text-base text-s-ink mb-4">Stosszeiten</h2>
                 <HeatmapChart data={data.peak_hours_heatmap} />
               </div>
             )}
 
             {data.last_minute_performance && (
               <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
-                <h2 className="font-heading font-semibold text-base text-s-ink mb-4">Last-Minute Performance</h2>
+                <h2 className="font-heading text-base text-s-ink mb-4">Last-Minute Performance</h2>
                 <ResponsiveContainer width="100%" height={180}>
                   <BarChart data={data.last_minute_performance}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
@@ -295,7 +295,7 @@ export default function AnalyticsPage() {
           {tab === "customers" && (<>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
-                <h2 className="font-heading font-semibold text-base text-s-ink mb-4">Neu vs. Stammkunden</h2>
+                <h2 className="font-heading text-base text-s-ink mb-4">Neu vs. Stammkunden</h2>
                 <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
                     <Pie
@@ -318,7 +318,7 @@ export default function AnalyticsPage() {
               {data.acquisition_sources && data.acquisition_sources.length > 0 && (
                 <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-heading font-semibold text-base text-s-ink">Wie haben sie uns gefunden?</h2>
+                    <h2 className="font-heading text-base text-s-ink">Wie haben sie uns gefunden?</h2>
                     <ExportButton
                       onClick={() => triggerExport("quellen", data.acquisition_sources!.map(s => ({ Quelle: s.source, Buchungen: s.count })))}
                       loading={exporting}
@@ -342,7 +342,7 @@ export default function AnalyticsPage() {
           {tab === "services" && (<>
             <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-heading font-semibold text-base text-s-ink">Top Services</h2>
+                <h2 className="font-heading text-base text-s-ink">Top Services</h2>
                 <ExportButton
                   onClick={() => triggerExport("services", data.top_services.map(s => ({ Service: s.name, Buchungen: s.bookings })))}
                   loading={exporting}
@@ -362,7 +362,7 @@ export default function AnalyticsPage() {
             {data.popular_services && data.popular_services.length > 0 && (
               <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="font-heading font-semibold text-base text-s-ink">Service-Details</h2>
+                  <h2 className="font-heading text-base text-s-ink">Service-Details</h2>
                   <ExportButton
                     onClick={() => triggerExport("service-details", data.popular_services!.map(s => ({ Service: s.name, Buchungen: s.count, "Umsatz CHF": Math.round(s.revenue / 100) })))}
                     loading={exporting}

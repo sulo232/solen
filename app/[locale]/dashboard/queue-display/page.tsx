@@ -36,17 +36,17 @@ export default function QueueDisplayPage() {
             >
               ← Dashboard
             </Link>
-            <h1 className="font-heading font-bold text-[28px] sm:text-[56px] leading-tight text-white">
+            <h1 className="font-heading text-[28px] sm:text-[56px] leading-tight text-white">
               Live Queue
             </h1>
-            <p className="text-white/35 font-heading font-semibold uppercase tracking-[.14em] text-sm mt-2">
+            <p className="text-white/35 font-heading uppercase tracking-[.14em] text-sm mt-2">
               {today}
             </p>
           </div>
 
           <div className="flex items-center gap-2 px-4 py-2 rounded-[12px] border border-white/[0.08] bg-white/[0.04]">
             <div className="w-2 h-2 rounded-full bg-[#4CAF6F]" />
-            <span className="text-xs font-heading font-bold text-white/60 uppercase tracking-[.10em]">
+            <span className="text-xs font-heading text-white/60 uppercase tracking-[.10em]">
               Live
             </span>
           </div>

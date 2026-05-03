@@ -89,7 +89,7 @@ export default function DateSelectionStep({ salonId }: DateSelectionStepProps) {
           <ChevronLeft size={20} className="text-s-ink" />
         </button>
         <div>
-          <h2 className="text-2xl font-display font-bold text-s-ink">
+          <h2 className="text-2xl font-display text-s-ink">
             {t('title')}
           </h2>
           <p className="text-sm text-s-ink/60 mt-1">
@@ -116,7 +116,7 @@ export default function DateSelectionStep({ salonId }: DateSelectionStepProps) {
             className="flex flex-col gap-4"
           >
             <div className="flex items-center justify-between">
-              <Heading className="text-lg font-heading font-bold text-s-ink" />
+              <Heading className="text-lg font-heading text-s-ink" />
               <div className="flex gap-1">
                 <AriaButton
                   slot="previous"
@@ -135,7 +135,7 @@ export default function DateSelectionStep({ salonId }: DateSelectionStepProps) {
             <CalendarGrid className="border-collapse space-y-2">
               <CalendarGridHeader>
                 {(day) => (
-                  <CalendarHeaderCell className="text-center text-xs font-heading font-semibold text-s-ink/50 p-2">
+                  <CalendarHeaderCell className="text-center text-xs font-heading text-s-ink/50 p-2">
                     {day}
                   </CalendarHeaderCell>
                 )}
@@ -168,14 +168,14 @@ export default function DateSelectionStep({ salonId }: DateSelectionStepProps) {
         <div className="max-w-2xl mx-auto px-4 flex gap-3">
           <button
             onClick={handleBack}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>
           <button
             onClick={handleContinue}
             disabled={!formData.selectedDate || isChecking}
-            className="flex-1 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-pill bg-s-coral text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
           >
             {isChecking && <Spinner size="sm" invert />}
             {t('continue')}

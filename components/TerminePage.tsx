@@ -317,7 +317,7 @@ export default function TerminePage() {
         <motion.h1
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-heading font-bold text-xl text-s-ink mb-6 flex items-center gap-2"
+          className="font-heading text-xl text-s-ink mb-6 flex items-center gap-2"
         >
           <Calendar size={20} className="text-s-ink/60" />
           {t("title")}

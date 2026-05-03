@@ -91,7 +91,7 @@ export default function TestimonialCarousel() {
       <div className="px-5 md:px-10 lg:px-20">
         <h2
           id="testimonials-heading"
-          className="font-heading font-bold text-s-ink"
+          className="font-heading text-s-ink"
           style={{ fontSize: 22, lineHeight: 1.25 }}
         >
           {t("testimonials.title") || "Was unsere Nutzer sagen"}
@@ -147,7 +147,7 @@ export default function TestimonialCarousel() {
             {/* Author — ALL avatars coral */}
             <div className="flex items-center gap-3">
               <div
-                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-heading font-semibold text-[14px] text-white"
+                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-heading text-[14px] text-white"
                 style={{ background: "#E8624A" }}
                 aria-hidden="true"
               >

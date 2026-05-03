@@ -162,7 +162,7 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
             <div className="w-10 h-10 rounded-full bg-s-ink text-white flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </div>
-            <h3 className="font-heading font-semibold text-[14px] text-s-ink leading-tight">
+            <h3 className="font-heading text-[14px] text-s-ink leading-tight">
               {t("browseAll")}
             </h3>
             <p className="text-[12px] font-body text-[s-ink/60] mt-2">

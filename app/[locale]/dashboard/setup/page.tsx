@@ -62,7 +62,7 @@ export default function SetupPage() {
           <div className="flex justify-center mb-4">
             <Store size={48} className="text-s-ink/20" />
           </div>
-          <h1 className="font-heading font-bold text-xl text-s-ink mb-2">
+          <h1 className="font-heading text-xl text-s-ink mb-2">
             {locale === "de" ? "Kein Salon gefunden" : "No salon found"}
           </h1>
           <p className="text-sm text-s-ink/50 mb-6">

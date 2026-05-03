@@ -108,7 +108,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BookHeart size={16} className="text-s-coral" />
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
             {t("wellness_journal")}
           </p>
         </div>
@@ -127,7 +127,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
       {showForm && (
         <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-[--raised] space-y-3">
           <div className="flex items-center justify-between mb-1">
-            <p className="text-xs font-heading font-semibold text-s-ink">{t("new_entry")}</p>
+            <p className="text-xs font-heading text-s-ink">{t("new_entry")}</p>
             <button onClick={resetForm} aria-label={t("cancel")} className="text-s-ink/30 hover:text-s-ink transition-colors">
               <X size={14} />
             </button>
@@ -135,7 +135,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Pain Level */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("pain")} ({form.pain_level}/10)
             </label>
             <input
@@ -152,12 +152,12 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
           {/* Tension Areas */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block">
+              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block">
                 {t("tension_areas")}
               </label>
               <button
                 onClick={() => setVisualMode(!visualMode)}
-                className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
+                className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading transition-colors duration-150 ${
                   visualMode
                     ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                     : "border-s-ink/[0.06] text-s-ink/40"
@@ -193,7 +193,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                   onClick={() => toggleTension(area)}
                   aria-label={t(`tension_area.${area}` as any)}
                   aria-pressed={form.tension_areas.includes(area)}
-                  className={`px-2.5 py-1 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
+                  className={`px-2.5 py-1 rounded-[8px] text-[10px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${
                     form.tension_areas.includes(area)
                       ? "bg-s-coral text-white"
                       : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
@@ -207,7 +207,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Pressure Preference */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("pressure_preference")}
             </label>
             <select
@@ -224,7 +224,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Skin Condition */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("skin_condition")}
             </label>
             <input
@@ -237,7 +237,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Products Used */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("products_used")}
             </label>
             <div className="flex gap-2">
@@ -273,7 +273,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Aftercare Notes */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("aftercare_notes")}
             </label>
             <textarea
@@ -287,7 +287,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Notes */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 block mb-1">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 block mb-1">
               {t("notes")}
             </label>
             <textarea
@@ -312,7 +312,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               onClick={handleSave}
               disabled={saving}
               aria-label={t("save")}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
             >
               <Save size={12} />
               {saving ? t("saving") : t("save")}
@@ -335,7 +335,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               className={`px-4 py-3 ${i < entries.length - 1 ? "border-b border-s-ink/[0.04]" : ""}`}
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-heading font-semibold text-s-ink">
+                <span className="text-xs font-heading text-s-ink">
                   {new Date(e.created_at).toLocaleDateString("de-CH")}
                 </span>
                 {e.pressure_preference && (
@@ -347,7 +347,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
               {/* Pain bar */}
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 w-16 shrink-0">
+                <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 w-16 shrink-0">
                   {t("pain")}
                 </span>
                 <div className="flex-1 h-2 rounded-full bg-s-ink/[0.06] overflow-hidden">

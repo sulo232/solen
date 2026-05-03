@@ -69,7 +69,7 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
       <div className="flex items-end justify-between px-6 mb-5">
         {/* Title + subtitle — Pattern A: DM Sans 28px/700 */}
         <div>
-          <h2 className="font-heading font-bold text-s-ink" style={{ fontSize: 22, lineHeight: 1.25 }}>
+          <h2 className="font-heading text-s-ink" style={{ fontSize: 22, lineHeight: 1.25 }}>
             {title || t("heroCarousel.label")}
           </h2>
           <p className="font-body mt-1 text-[14px] text-s-ink-secondary">
@@ -221,7 +221,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
       {/* ── Content — no box, floats on page bg (SOLEN_DESIGN locked 2026-04-21) ── */}
       <div className="flex flex-col gap-1" style={{ padding: "12px 2px 0" }}>
         {/* Name — Fraunces 15px/700 (serif heading, warm editorial) */}
-        <h3 className="font-heading font-bold text-[15px] leading-[1.25] truncate text-s-ink">
+        <h3 className="font-heading text-[15px] leading-[1.25] truncate text-s-ink">
           {salon.name}
         </h3>
 

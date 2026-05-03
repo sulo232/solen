@@ -78,7 +78,7 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
 
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] bg-white p-4">
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-3">
+      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber mb-3">
         {t("express_menu")}
       </p>
 
@@ -105,7 +105,7 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
                 className="text-s-ink/30 mt-0.5 shrink-0"
               />
               <div className="min-w-0">
-                <p className="text-sm font-heading font-semibold text-s-ink truncate">
+                <p className="text-sm font-heading text-s-ink truncate">
                   {svc.name}
                 </p>
                 <div className="flex items-center gap-2 mt-1">

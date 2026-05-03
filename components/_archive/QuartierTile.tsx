@@ -43,7 +43,7 @@ export default function QuartierTile({
 
       {/* Top row */}
       <div className="flex items-start justify-between">
-        <p className="font-heading font-semibold text-s-ink text-sm leading-tight">{name}</p>
+        <p className="font-heading text-s-ink text-sm leading-tight">{name}</p>
         {favorited && <Heart className="w-4 h-4 fill-s-coral text-s-coral shrink-0" />}
       </div>
 

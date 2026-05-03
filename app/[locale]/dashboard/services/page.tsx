@@ -82,7 +82,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading font-bold text-base">{initial ? "Service bearbeiten" : "Service hinzufügen"}</h3>
+          <h3 className="font-heading text-base">{initial ? "Service bearbeiten" : "Service hinzufügen"}</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-5">
@@ -383,7 +383,7 @@ export default function ServicesPage() {
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
           <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
-            <h3 className="font-heading font-bold text-base mb-3">Service löschen</h3>
+            <h3 className="font-heading text-base mb-3">Service löschen</h3>
             <p className="text-sm text-s-ink/60 mb-4">Möchtest du <strong>{deleteTarget.name_de}</strong> löschen?</p>
             <div className="flex gap-2">
               <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
@@ -397,7 +397,7 @@ export default function ServicesPage() {
       )}
 
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">Services</h1>
+        <h1 className="font-heading text-2xl text-s-ink">Services</h1>
         <div className="flex items-center gap-2">
           <button onClick={() => setImportOpen(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/50 text-sm font-medium hover:border-s-coral hover:text-s-coral transition-colors">
@@ -485,7 +485,7 @@ export default function ServicesPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
           <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6">
             <div className="flex items-start justify-between mb-4">
-              <h3 className="font-heading font-bold text-base">CSV Import</h3>
+              <h3 className="font-heading text-base">CSV Import</h3>
               <button onClick={() => setImportOpen(false)}><X size={18} className="text-s-ink/30" /></button>
             </div>
             <p className="text-sm text-s-ink/60 mb-4">

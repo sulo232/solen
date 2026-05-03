@@ -80,7 +80,7 @@ function BadgeModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-v5-float w-full max-w-md p-6">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading font-bold text-base text-s-ink">
+          <h3 className="font-heading text-base text-s-ink">
             {badge?.id ? "Badge bearbeiten" : "Neues Badge erstellen"}
           </h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
@@ -196,7 +196,7 @@ function DeleteModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-v5-float w-full max-w-sm p-6">
-        <h3 className="font-heading font-bold text-base text-s-ink mb-2">Badge löschen</h3>
+        <h3 className="font-heading text-base text-s-ink mb-2">Badge löschen</h3>
         <p className="text-sm text-s-ink/50 mb-5">
           Badge &quot;{name}&quot; löschen? Es wird von allen Salons entfernt.
         </p>
@@ -345,7 +345,7 @@ export default function BadgeManagerPage() {
       {/* Header */}
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-heading font-bold text-2xl text-s-ink">Badge-Verwaltung</h1>
+          <h1 className="font-heading text-2xl text-s-ink">Badge-Verwaltung</h1>
           <p className="text-sm text-s-ink/40 mt-0.5">Salon-Badges erstellen, bearbeiten und zuweisen</p>
         </div>
         <button
@@ -363,7 +363,7 @@ export default function BadgeManagerPage() {
         <div className="space-y-8">
           {/* Section 1: All Badges */}
           <div>
-            <h2 className="font-heading font-semibold text-s-ink text-sm mb-3">Alle Badges</h2>
+            <h2 className="font-heading text-s-ink text-sm mb-3">Alle Badges</h2>
             {badges.length === 0 ? (
               <EmptyState icon={Award} title="Keine Badges" message="Erstelle dein erstes Badge." />
             ) : (
@@ -427,7 +427,7 @@ export default function BadgeManagerPage() {
 
           {/* Section 2: Badge Assignments */}
           <div>
-            <h2 className="font-heading font-semibold text-s-ink text-sm mb-3">Badge-Zuweisungen</h2>
+            <h2 className="font-heading text-s-ink text-sm mb-3">Badge-Zuweisungen</h2>
             <div className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-5 space-y-4">
               {/* Salon search */}
               <div className="relative max-w-sm">

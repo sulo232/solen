@@ -56,7 +56,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
           <span key={loc} className="flex items-center">
             <button
               onClick={() => switchLocale(loc)}
-              className={`text-xs font-heading font-semibold tracking-wide transition-colors duration-150 ${
+              className={`text-xs font-heading tracking-wide transition-colors duration-150 ${
                 locale === loc
                   ? "text-white"
                   : "text-white/50 hover:text-white/90"

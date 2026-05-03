@@ -120,13 +120,13 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <CalendarHeart size={16} className="text-s-coral" />
-          <h3 className="font-heading font-semibold text-sm text-s-ink">
+          <h3 className="font-heading text-sm text-s-ink">
             {t("bridal_title")}
           </h3>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
+          className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-pill text-[11px] font-heading uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
           aria-label={t("bridal_new")}
         >
           <Plus size={12} />
@@ -168,7 +168,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
 
           {/* Inspiration URLs */}
           <div className="space-y-2">
-            <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40">
+            <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40">
               {t("bridal_inspo")}
             </p>
             <div className="flex gap-2">
@@ -215,7 +215,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
             <button
               onClick={handleCreate}
               disabled={saving || !clientId || !eventDate}
-              className="px-4 py-2 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-40"
+              className="px-4 py-2 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-40"
               aria-label={saving ? t("saving") : t("save")}
             >
               {saving ? t("saving") : t("save")}
@@ -246,10 +246,10 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
                 {/* Event info */}
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40">
+                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40">
                       {t(`event_type.${wf.event_type}` as any)}
                     </span>
-                    <p className="text-sm font-heading font-semibold text-s-ink">
+                    <p className="text-sm font-heading text-s-ink">
                       {new Date(wf.event_date).toLocaleDateString()}
                     </p>
                   </div>
@@ -257,7 +257,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
                     <button
                       onClick={() => advanceStage(wf)}
                       disabled={advancing === wf.id}
-                      className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] border border-s-coral/30 text-s-coral hover:bg-s-coral/[0.04] active:scale-[0.97] transition-[transform,border-color,color] duration-150 disabled:opacity-40"
+                      className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-pill text-[10px] font-heading uppercase tracking-[.06em] border border-s-coral/30 text-s-coral hover:bg-s-coral/[0.04] active:scale-[0.97] transition-[transform,border-color,color] duration-150 disabled:opacity-40"
                       aria-label={t("bridal_advance")}
                     >
                       {advancing === wf.id ? <Spinner /> : (
@@ -283,7 +283,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
                           }`}
                         />
                         <span
-                          className={`text-[10px] font-heading font-semibold whitespace-nowrap ${
+                          className={`text-[10px] font-heading whitespace-nowrap ${
                             isCurrent ? "text-s-coral" : "text-s-ink/30"
                           }`}
                         >

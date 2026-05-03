@@ -127,7 +127,7 @@ export default function CookieBanner() {
               <X className="w-4 h-4" />
             </button>
 
-            <h3 className="font-heading font-semibold text-lg text-s-ink mb-4">
+            <h3 className="font-heading text-lg text-s-ink mb-4">
               {t("settingsTitle")}
             </h3>
 

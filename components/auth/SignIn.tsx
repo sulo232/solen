@@ -88,17 +88,17 @@ export default function SignIn() {
           <Mail size={24} className="text-s-coral" />
         </div>
         <div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-coral mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-coral mb-2">
             E-Mail gesendet
           </p>
-          <p className="font-heading font-bold text-lg text-s-ink">Link gesendet</p>
+          <p className="font-heading text-lg text-s-ink">Link gesendet</p>
           <p className="text-xs font-body text-s-ink/50 mt-1 leading-relaxed">
             Schau in deinem Postfach nach einem Link zum Zurücksetzen.
           </p>
         </div>
         <button
           onClick={() => { setResetMode(false); setResetSent(false); }}
-          className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-coral/60 hover:text-s-coral transition-colors mt-2">
+          className="text-[11px] font-heading uppercase tracking-[.06em] text-s-coral/60 hover:text-s-coral transition-colors mt-2">
           Zurück zur Anmeldung
         </button>
       </div>
@@ -110,10 +110,10 @@ export default function SignIn() {
     return (
       <div className="flex flex-col gap-4 w-full">
         <div className="text-center mb-2">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/45 mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/45 mb-2">
             Konto-Wiederherstellung
           </p>
-          <p className="font-heading font-bold text-lg text-s-ink">Passwort vergessen?</p>
+          <p className="font-heading text-lg text-s-ink">Passwort vergessen?</p>
           <p className="text-xs font-body text-s-ink/50 mt-1">
             Gib deine E-Mail ein und wir senden dir einen Reset-Link.
           </p>
@@ -130,14 +130,14 @@ export default function SignIn() {
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full py-4 rounded-btn bg-s-coral shadow-elevation-2 text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+            className="w-full py-4 rounded-btn bg-s-coral shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
             {loading ? <Spinner size="sm" invert /> : <Mail size={15} />}
             Reset-Link senden
           </button>
         </form>
         <button
           onClick={() => setResetMode(false)}
-          className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 hover:text-s-ink text-center transition-colors">
+          className="text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/45 hover:text-s-ink text-center transition-colors">
           Zurück zur Anmeldung
         </button>
       </div>
@@ -150,7 +150,7 @@ export default function SignIn() {
       <button
         onClick={handleGoogle}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-input border border-s-ink/[0.08] text-xs font-heading font-bold text-s-ink/70 hover:border-s-ink/20 hover:bg-white:bg-white/5 transition-colors disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-input border border-s-ink/[0.08] text-xs font-heading text-s-ink/70 hover:border-s-ink/20 hover:bg-white:bg-white/5 transition-colors disabled:opacity-50"
       >
         {loading ? (
           <Spinner size="sm" />
@@ -167,7 +167,7 @@ export default function SignIn() {
 
       <div className="flex items-center gap-3 my-1">
         <div className="flex-1 h-px bg-s-ink/[0.07]" />
-        <span className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50">{t("or")}</span>
+        <span className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/50">{t("or")}</span>
         <div className="flex-1 h-px bg-s-ink/[0.07]" />
       </div>
 
@@ -202,7 +202,7 @@ export default function SignIn() {
         <button
           type="submit"
           disabled={loading || !email || !password}
-          className="w-full py-4 rounded-btn bg-s-coral shadow-elevation-2 text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+          className="w-full py-4 rounded-btn bg-s-coral shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
           {loading ? <Spinner size="sm" invert /> : null}
           Anmelden
         </button>
@@ -210,7 +210,7 @@ export default function SignIn() {
 
       <button
         onClick={() => setResetMode(true)}
-        className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 hover:text-s-coral transition-colors text-center">
+        className="text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/45 hover:text-s-coral transition-colors text-center">
         Passwort vergessen?
       </button>
 

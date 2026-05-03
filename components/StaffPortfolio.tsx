@@ -35,7 +35,7 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
           )}
         </div>
         <div>
-          <p className="font-heading font-semibold text-dark">{member.name}</p>
+          <p className="font-heading text-dark">{member.name}</p>
           {member.specialties?.length > 0 && (
             <p className="text-xs text-dark/50">{member.specialties.join(", ")}</p>
           )}

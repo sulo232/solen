@@ -65,7 +65,7 @@ export default function SolenDatePicker({
             >
               <ChevronLeft className="w-4 h-4 text-s-ink/60" />
             </Button>
-            <Heading className="text-sm font-heading font-semibold text-s-ink" />
+            <Heading className="text-sm font-heading text-s-ink" />
             <Button
               slot="next"
               className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
@@ -140,7 +140,7 @@ export default function SolenDatePicker({
               >
                 <ChevronLeft className="w-4 h-4 text-s-ink/60" />
               </Button>
-              <Heading className="text-sm font-heading font-semibold text-s-ink" />
+              <Heading className="text-sm font-heading text-s-ink" />
               <Button
                 slot="next"
                 className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"

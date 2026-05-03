@@ -70,10 +70,10 @@ export default function ReviewCarousel() {
     <section className="py-10">
       <div className="max-w-5xl mx-auto px-4">
         <div className="mb-6">
-          <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+          <span className="block font-heading text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
             Bewertungen
           </span>
-          <h2 className="font-heading font-extrabold text-s-ink"
+          <h2 className="font-heading text-s-ink"
             style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
             Was Basler:innen sagen
           </h2>

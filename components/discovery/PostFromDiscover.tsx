@@ -184,7 +184,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
             aria-label={t.newPost}
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-heading font-bold text-s-ink">{t.newPost}</h2>
+              <h2 className="text-lg font-heading text-s-ink">{t.newPost}</h2>
               <button onClick={() => setOpen(false)} className="text-s-ink/30" aria-label="Close">
                 <X size={20} />
               </button>
@@ -201,14 +201,14 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                   <button
                     aria-pressed={mode === "photo"}
                     onClick={() => setMode("photo")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}
                   >
                     <Upload size={14} /> {t.photo}
                   </button>
                   <button
                     aria-pressed={mode === "tiktok"}
                     onClick={() => setMode("tiktok")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}
                   >
                     <LinkIcon size={14} /> {t.tiktok}
                   </button>

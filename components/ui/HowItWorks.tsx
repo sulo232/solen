@@ -42,7 +42,7 @@ export default function HowItWorks({ hidden }: HowItWorksProps) {
         {t("eyebrow") || "Für Neukunden"}
       </span>
       <h2
-        className="font-heading font-bold text-s-ink mb-6"
+        className="font-heading text-s-ink mb-6"
         style={{ fontSize: 24, lineHeight: 1.2 }}
       >
         {t("title") || "So funktioniert's"}

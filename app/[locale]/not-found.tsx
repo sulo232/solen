@@ -17,7 +17,7 @@ export default function NotFound() {
           </div>
         </div>
 
-        <h1 className="font-heading font-bold text-3xl md:text-5xl text-s-ink mb-2">
+        <h1 className="font-heading text-3xl md:text-5xl text-s-ink mb-2">
           {t("404_title") || "Ups! Diese Seite gibt es nicht"}
         </h1>
 
@@ -28,13 +28,13 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href={`/${locale}`}
-            className="px-6 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-sm hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="px-6 py-3 rounded-pill bg-s-coral text-white font-heading text-sm hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
           >
             {t("404_home") || "Zur Startseite"}
           </Link>
           <Link
             href={`/${locale}/coiffeur`}
-            className="px-6 py-3 rounded-pill border border-s-ink/20 text-s-ink font-heading font-bold text-sm hover:border-s-coral hover:text-s-coral transition-[transform,filter] duration-150"
+            className="px-6 py-3 rounded-pill border border-s-ink/20 text-s-ink font-heading text-sm hover:border-s-coral hover:text-s-coral transition-[transform,filter] duration-150"
           >
             {t("404_browse") || "Salons entdecken"}
           </Link>

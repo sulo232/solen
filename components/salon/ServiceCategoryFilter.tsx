@@ -33,7 +33,7 @@ export default function ServiceCategoryFilter({
       >
         <button
           onClick={() => onCategoryChange(null)}
-          className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,box-shadow,transform] duration-150 ${
+          className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-heading uppercase tracking-[.06em] transition-[background-color,color,box-shadow,transform] duration-150 ${
             activeCategory === null
               ? "bg-s-coral text-white scale-105"
               : "bg-s-bg-raised text-s-ink/60 border border-s-ink/[0.08] hover:border-s-ink/20:border-white/20"
@@ -45,7 +45,7 @@ export default function ServiceCategoryFilter({
           <button
             key={cat.key}
             onClick={() => onCategoryChange(cat.key)}
-            className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,box-shadow,transform] duration-150 ${
+            className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-heading uppercase tracking-[.06em] transition-[background-color,color,box-shadow,transform] duration-150 ${
               activeCategory === cat.key
                 ? "bg-s-coral text-white scale-105"
                 : "bg-s-bg-raised text-s-ink/60 border border-s-ink/[0.08] hover:border-s-ink/20:border-white/20"

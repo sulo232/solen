@@ -62,7 +62,7 @@ export default function PackageRedeemBanner({
           <Check size={15} className="text-s-sage" />
         </div>
         <div>
-          <p className="text-xs font-heading font-bold text-s-sage">{t("redeemed")}</p>
+          <p className="text-xs font-heading text-s-sage">{t("redeemed")}</p>
           <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/40 mt-0.5">{t("noAdditionalCharge")}</p>
         </div>
       </div>
@@ -77,7 +77,7 @@ export default function PackageRedeemBanner({
         <Package size={15} className="text-s-amber" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-heading font-bold text-s-amber-text truncate">{packageName}</p>
+        <p className="text-xs font-heading text-s-amber-text truncate">{packageName}</p>
         <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/40 mt-0.5">
           {t("sessionsUsed", { used: sessionsUsed, total: totalSessions })}
         </p>
@@ -95,7 +95,7 @@ export default function PackageRedeemBanner({
       <button
         onClick={handleRedeem}
         disabled={redeeming}
-        className="px-3 py-2 rounded-pill active:scale-[0.97] bg-s-amber text-white text-[10px] font-heading font-bold uppercase tracking-[.04em] shadow-elevation-1 transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center gap-1.5 shrink-0"
+        className="px-3 py-2 rounded-pill active:scale-[0.97] bg-s-amber text-white text-[10px] font-heading uppercase tracking-[.04em] shadow-elevation-1 transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center gap-1.5 shrink-0"
       >
         {redeeming && <Spinner size="sm" invert />}
         {t("redeemNow")}

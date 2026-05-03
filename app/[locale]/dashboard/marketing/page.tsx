@@ -38,7 +38,7 @@ export default function MarketingPage() {
   return (
     <DashboardLayout>
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">{t("title")}</h1>
+        <h1 className="font-heading text-2xl text-s-ink">{t("title")}</h1>
         <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
       </div>
 

@@ -64,7 +64,7 @@ export default function ComingSoonPage() {
           {meta.icon}
         </div>
 
-        <h1 className="font-heading font-bold text-2xl text-s-ink mb-2">
+        <h1 className="font-heading text-2xl text-s-ink mb-2">
           {t("title")}
         </h1>
         <p className="text-sm text-s-ink/50 mb-8 leading-relaxed">
@@ -84,7 +84,7 @@ export default function ComingSoonPage() {
             <button
               onClick={handleNotify}
               aria-label={t("notify")}
-              className="px-5 py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-bold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 flex items-center gap-2"
+              className="px-5 py-3 rounded-btn bg-s-coral text-white text-sm font-heading hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 flex items-center gap-2"
             >
               <Bell size={14} />
               {t("notify")}

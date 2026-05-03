@@ -61,7 +61,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
       <div className="bg-white/95 backdrop-blur-sm border-b border-s-ink/5 sticky top-0 z-30">
         <div className="max-w-3xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-3">
-            <h1 className="font-heading font-bold text-lg text-s-ink">
+            <h1 className="font-heading text-lg text-s-ink">
               {t("setup.title")}
             </h1>
             <span className="text-xs text-s-ink/40 data-text">

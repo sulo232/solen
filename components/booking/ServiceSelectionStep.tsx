@@ -80,7 +80,7 @@ export default function ServiceSelectionStep({
     <div className="space-y-6 pb-24">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-display font-bold text-s-ink">
+        <h2 className="text-2xl font-display text-s-ink">
           {t('title')}
         </h2>
         <p className="text-sm text-s-ink/60 mt-1">
@@ -94,7 +94,7 @@ export default function ServiceSelectionStep({
           const categoryServices = services.filter((s) => s.category === category);
           return (
             <div key={category}>
-              <h3 className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-3">
+              <h3 className="text-xs font-heading uppercase tracking-[.16em] text-s-ink/40 mb-3">
                 {category}
               </h3>
               <div className="space-y-2">
@@ -136,7 +136,7 @@ export default function ServiceSelectionStep({
 
                     {/* Service details */}
                     <div className="flex-1 min-w-0 text-left">
-                      <h4 className="font-heading font-semibold text-sm text-s-ink">
+                      <h4 className="font-heading text-sm text-s-ink">
                         {locale === 'en' ? service.name_en : service.name_de}
                       </h4>
                       <p className="text-xs text-s-ink/50 mt-0.5">
@@ -162,7 +162,7 @@ export default function ServiceSelectionStep({
       <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] bg-[--raised] p-4 space-y-3 z-40">
         <div className="max-w-2xl mx-auto px-4 flex justify-between items-center">
           <div>
-            <p className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/50">
+            <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/50">
               {formData.services.length} {t('selected')}
             </p>
             <p className="font-body font-bold text-xl text-s-ink tabular-nums">
@@ -172,7 +172,7 @@ export default function ServiceSelectionStep({
           <button
             onClick={handleContinue}
             disabled={formData.services.length === 0 || isChecking}
-            className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center gap-2"
+            className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center gap-2"
           >
             {isChecking && <Spinner size="sm" invert />}
             {t('continue')}

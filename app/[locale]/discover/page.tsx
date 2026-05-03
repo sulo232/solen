@@ -224,7 +224,7 @@ function DiscoverPageContent() {
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.05] tracking-[-0.02em] text-s-ink">
+            <h1 className="font-heading text-[clamp(28px,4vw,44px)] leading-[1.05] tracking-[0.01em] text-s-ink">
               {t("title")}
             </h1>
             <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 mt-1.5">

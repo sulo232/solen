@@ -220,7 +220,7 @@ export default function EditPanel({
       <div className="p-4 space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h3 className="text-s-ink font-heading font-bold text-sm">
+          <h3 className="text-s-ink font-heading text-sm">
             Edit Panel
           </h3>
           <button onClick={onClose} className="p-1 rounded-btn hover:bg-s-bg-sunken transition-colors">

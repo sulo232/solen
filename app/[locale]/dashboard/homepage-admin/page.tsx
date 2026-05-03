@@ -74,7 +74,7 @@ export default function HomepageAdminPage() {
   return (
     <DashboardLayout>
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">
+        <h1 className="font-heading text-2xl text-s-ink">
           Homepage Sektionen
         </h1>
         <p className="text-sm text-s-ink/50 font-body mt-1">

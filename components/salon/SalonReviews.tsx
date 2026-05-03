@@ -146,11 +146,11 @@ export default function SalonReviews({
   return (
     <div id="section-bewertungen" className="scroll-mt-[80px]">
       <div className="mb-4">
-        <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+        <span className="block font-heading text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
           {t("reviews")}
         </span>
         <h2
-          className="font-heading font-extrabold text-s-ink"
+          className="font-heading text-s-ink"
           style={{ fontSize: "clamp(22px, 3vw, 32px)", letterSpacing: "-0.02em" }}
         >
           {t("whatCustomersSay")}
@@ -197,7 +197,7 @@ export default function SalonReviews({
                     setReviewSort(s);
                     setReviewPage(1);
                   }}
-                  className={`px-3 py-1.5 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150 ${
+                  className={`px-3 py-1.5 rounded-btn text-xs font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150 ${
                     reviewSort === s
                       ? "bg-s-coral text-white"
                       : "bg-s-bg-surface border border-s-ink/[0.08] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral"
@@ -271,12 +271,12 @@ export default function SalonReviews({
                           }}
                         >
                           {flagSuccess ? (
-                            <p className="text-xs text-s-sage font-heading font-semibold py-1">
+                            <p className="text-xs text-s-sage font-heading py-1">
                               ✓ {t("flagSuccess")}
                             </p>
                           ) : (
                             <>
-                              <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 mb-2">
+                              <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-ink/40 mb-2">
                                 {t("flagReasonLabel")}
                               </p>
                               <textarea
@@ -289,7 +289,7 @@ export default function SalonReviews({
                               <div className="flex gap-2 mt-2 justify-end">
                                 <button
                                   onClick={() => setFlaggingReviewId(null)}
-                                  className="text-xs text-s-ink/40 hover:text-s-ink/60 font-heading font-bold uppercase tracking-[.08em] px-3 py-1.5 transition-colors duration-150"
+                                  className="text-xs text-s-ink/40 hover:text-s-ink/60 font-heading uppercase tracking-[.08em] px-3 py-1.5 transition-colors duration-150"
                                 >
                                   {t("flagCancel")}
                                 </button>
@@ -311,7 +311,7 @@ export default function SalonReviews({
                       ) : (
                         <button
                           onClick={() => handleFlagReview(rev.id)}
-                          className="text-xs text-s-ink/30 hover:text-s-ink/60 transition-colors duration-150 font-heading font-semibold uppercase tracking-[.08em]"
+                          className="text-xs text-s-ink/30 hover:text-s-ink/60 transition-colors duration-150 font-heading uppercase tracking-[.08em]"
                         >
                           {t("flagReview")}
                         </button>

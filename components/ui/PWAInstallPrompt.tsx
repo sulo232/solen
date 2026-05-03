@@ -70,7 +70,7 @@ export default function PWAInstallPrompt() {
               <Download className="w-5 h-5 text-s-coral" />
             </div>
             <div>
-              <p className="font-heading font-semibold text-sm text-s-ink">
+              <p className="font-heading text-sm text-s-ink">
                 {t("title")}
               </p>
               <p className="text-xs text-s-ink/50 mt-0.5">

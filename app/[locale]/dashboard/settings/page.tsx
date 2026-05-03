@@ -129,7 +129,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
                 type="button"
                 onClick={() => toggleCategory(opt.value)}
                 className={[
-                  "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
+                  "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
                   active
                     ? "bg-s-coral text-white border-s-coral"
                     : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/50",
@@ -1135,7 +1135,7 @@ export default function SettingsPage() {
         <div className="fixed inset-0 z-40 bg-s-error-bg/90 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-white border border-s-error/20 rounded-[12px] p-8 text-center max-w-sm shadow-warm-lg">
             <AlertTriangle size={32} className="text-s-error mx-auto mb-3" />
-            <h2 className="font-heading font-bold text-lg text-s-ink mb-2">Salon eingefroren</h2>
+            <h2 className="font-heading text-lg text-s-ink mb-2">Salon eingefroren</h2>
             {(salon as any).frozen_reason && (
               <p className="text-sm text-s-ink/80 mb-2 bg-s-error-bg rounded-btn px-3 py-2">{(salon as any).frozen_reason}</p>
             )}
@@ -1154,7 +1154,7 @@ export default function SettingsPage() {
       )}
 
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">Einstellungen</h1>
+        <h1 className="font-heading text-2xl text-s-ink">Einstellungen</h1>
       </div>
 
       {loading ? (

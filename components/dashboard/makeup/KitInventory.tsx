@@ -184,13 +184,13 @@ export default function KitInventory({ salonId }: { salonId: string }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Package size={16} className="text-s-coral" />
-          <h3 className="font-heading font-semibold text-sm text-s-ink">
+          <h3 className="font-heading text-sm text-s-ink">
             {t("kit_title")}
           </h3>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
+          className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-pill text-[11px] font-heading uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
           aria-label={t("kit_add")}
         >
           <Plus size={12} />
@@ -224,7 +224,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
       <div className="flex gap-2 overflow-x-auto pb-1">
         <button
           onClick={() => setActiveCategory(null)}
-          className={`shrink-0 px-3 py-1.5 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
+          className={`shrink-0 px-3 py-1.5 rounded-[8px] text-[10px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${
             activeCategory === null
               ? "bg-s-coral text-white"
               : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
@@ -237,7 +237,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
-            className={`shrink-0 px-3 py-1.5 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
+            className={`shrink-0 px-3 py-1.5 rounded-[8px] text-[10px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${
               activeCategory === cat
                 ? "bg-s-coral text-white"
                 : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
@@ -307,7 +307,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
             <button
               onClick={handleAdd}
               disabled={saving || !formData.brand || !formData.product_name}
-              className="px-4 py-2 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-40"
+              className="px-4 py-2 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-40"
               aria-label={saving ? t("saving") : t("add")}
             >
               {saving ? t("saving") : t("add")}
@@ -341,7 +341,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
             >
               <div className="flex items-center gap-3 p-3">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-heading font-semibold text-s-ink truncate">
+                  <p className="text-sm font-heading text-s-ink truncate">
                     {item.brand} — {item.product_name}
                   </p>
                   <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
@@ -398,12 +398,12 @@ export default function KitInventory({ salonId }: { salonId: string }) {
 
                 {/* Expiry badge */}
                 {isExpired && (
-                  <span className="text-[9px] font-heading font-bold uppercase px-1.5 py-0.5 rounded-[4px] bg-s-error/10 text-s-error shrink-0">
+                  <span className="text-[9px] font-heading uppercase px-1.5 py-0.5 rounded-[4px] bg-s-error/10 text-s-error shrink-0">
                     {t("kit_expired")}
                   </span>
                 )}
                 {isExpiringSoon && !isExpired && (
-                  <span className="text-[9px] font-heading font-bold uppercase px-1.5 py-0.5 rounded-[4px] bg-s-warning/10 text-s-warning shrink-0">
+                  <span className="text-[9px] font-heading uppercase px-1.5 py-0.5 rounded-[4px] bg-s-warning/10 text-s-warning shrink-0">
                     {t("kit_expiring")}
                   </span>
                 )}
@@ -412,7 +412,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
               {/* Usage log accordion */}
               {logsOpen && (
                 <div className="border-t border-s-ink/[0.04] px-3 pb-3 pt-2">
-                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 mb-2">
+                  <p className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/50 mb-2">
                     {t("kit_history")}
                   </p>
                   {logs.length === 0 ? (
@@ -449,7 +449,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
         >
           <div className="w-full max-w-sm rounded-card bg-[--raised] p-5 space-y-4 shadow-v5-float">
             <div className="flex items-center justify-between">
-              <p className="font-heading font-bold text-sm text-s-ink">
+              <p className="font-heading text-sm text-s-ink">
                 {t("kit_checkout_title")}
               </p>
               <button
@@ -464,7 +464,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
               {checkoutItem.brand} — {checkoutItem.product_name}
             </p>
             <div className="space-y-2">
-              <label className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/45">
+              <label className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/45">
                 {t("kit_qty_used")}
               </label>
               <input
@@ -488,7 +488,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
               <button
                 onClick={handleCheckout}
                 disabled={checkoutSaving}
-                className="flex-1 py-2.5 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-40"
+                className="flex-1 py-2.5 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-40"
                 aria-label={checkoutSaving ? t("saving") : t("kit_checkout_confirm")}
               >
                 {checkoutSaving ? t("saving") : t("kit_checkout_confirm")}

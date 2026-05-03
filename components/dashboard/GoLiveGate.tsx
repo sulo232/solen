@@ -89,8 +89,8 @@ export default function GoLiveGate() {
               <Rocket size={18} className="text-s-coral" />
             </div>
             <div>
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-0.5">{t("setup")}</p>
-              <p className="text-sm font-heading font-semibold text-s-ink">{t("notLive")}</p>
+              <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber mb-0.5">{t("setup")}</p>
+              <p className="text-sm font-heading text-s-ink">{t("notLive")}</p>
             </div>
           </div>
           <p className="text-xs data-text font-medium text-s-ink/40">{doneCount}/{requirements.length}</p>
@@ -106,12 +106,12 @@ export default function GoLiveGate() {
             </div>
             <div className="flex-1 flex items-center gap-2">
               <Icon size={13} className={done ? "text-s-coral" : "text-s-ink/50"} />
-              <span className={`text-xs font-heading font-semibold ${done ? "text-s-ink" : "text-s-ink/50"}`}>
+              <span className={`text-xs font-heading ${done ? "text-s-ink" : "text-s-ink/50"}`}>
                 {label}
               </span>
             </div>
             {!done && (
-              <Link href={href} className="text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-coral shrink-0">
+              <Link href={href} className="text-[10px] font-heading uppercase tracking-[.06em] text-s-coral shrink-0">
                 {t("configure")}
               </Link>
             )}
@@ -126,7 +126,7 @@ export default function GoLiveGate() {
           onClick={status.can_go_live ? handleGoLive : undefined}
           disabled={!status.can_go_live || activating}
           className={[
-            "w-full py-3 rounded-[8px] text-xs font-heading font-bold uppercase tracking-[.04em] flex items-center justify-center gap-2 transition-colors",
+            "w-full py-3 rounded-[8px] text-xs font-heading uppercase tracking-[.04em] flex items-center justify-center gap-2 transition-colors",
             status.can_go_live
               ? "bg-s-coral text-white hover:brightness-[1.06] cursor-pointer"
               : "bg-s-ink/5 text-s-ink/50 cursor-not-allowed",

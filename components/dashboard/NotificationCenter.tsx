@@ -119,7 +119,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-s-ink/[0.06]">
               <div className="flex items-center gap-2">
-                <p className="text-sm font-heading font-bold text-s-ink">{t("notifications")}</p>
+                <p className="text-sm font-heading text-s-ink">{t("notifications")}</p>
                 {unread > 0 && (
                   <span className="px-1.5 py-0.5 rounded-pill text-[9px] font-bold bg-s-coral/10 text-s-coral">
                     {unread}
@@ -128,7 +128,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
               </div>
               <div className="flex items-center gap-2">
                 {unread > 0 && (
-                  <button onClick={markAllRead} className="text-[9px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/35 hover:text-s-coral transition-colors">
+                  <button onClick={markAllRead} className="text-[9px] font-heading uppercase tracking-[.06em] text-s-ink/35 hover:text-s-coral transition-colors">
                     {t("markAllRead")}
                   </button>
                 )}
@@ -173,7 +173,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
                           <Icon size={13} className={cfg.iconColor} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={`text-xs font-heading font-semibold leading-snug ${!n.read ? "text-s-ink" : "text-s-ink/60"}`}>
+                          <p className={`text-xs font-heading leading-snug ${!n.read ? "text-s-ink" : "text-s-ink/60"}`}>
                             {n.title}
                           </p>
                           {n.body && (

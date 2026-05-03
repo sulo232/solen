@@ -52,7 +52,7 @@ export default function FormulaPhotoUpload({
 
   const PhotoSlot = ({ type, url }: { type: "before" | "after"; url: string | null }) => (
     <div className="flex-1">
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/35 mb-1.5">
+      <p className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/35 mb-1.5">
         {type === "before" ? t("photoBefore") : t("photoAfter")}
       </p>
       <label className={`relative block aspect-[3/4] rounded-[8px] overflow-hidden border-2 border-dashed cursor-pointer transition-colors ${

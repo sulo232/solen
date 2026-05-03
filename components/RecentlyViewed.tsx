@@ -80,7 +80,7 @@ export default function RecentlyViewed() {
   return (
     <section className="max-w-5xl mx-auto px-4 py-6">
       <div className="mb-4">
-        <h2 className="font-heading font-bold text-s-ink" style={{ fontSize: 24 }}>
+        <h2 className="font-heading text-s-ink" style={{ fontSize: 24 }}>
           {t("title")}
         </h2>
       </div>

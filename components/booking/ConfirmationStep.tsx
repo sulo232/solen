@@ -60,7 +60,7 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
           <ChevronLeft size={20} className="text-s-ink" />
         </button>
         <div>
-          <h2 className="text-2xl font-display font-bold text-s-ink">
+          <h2 className="text-2xl font-display text-s-ink">
             {t('title')}
           </h2>
         </div>
@@ -80,7 +80,7 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
         )}
         <div className="p-4 space-y-3">
           <div>
-            <h3 className="font-heading font-bold text-base text-s-ink">
+            <h3 className="font-heading text-base text-s-ink">
               {salon.name}
             </h3>
             <p className="text-xs text-s-ink/50">
@@ -93,13 +93,13 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
       {/* Booking Summary */}
       <div className="space-y-4">
         <div>
-          <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-2">
+          <p className="text-xs font-heading uppercase tracking-[.16em] text-s-ink/40 mb-2">
             {t('services')}
           </p>
           <div className="space-y-2">
             {formData.services.map((service) => (
               <div key={service.id} className="flex justify-between text-sm">
-                <span className="font-heading font-semibold text-s-ink">
+                <span className="font-heading text-s-ink">
                   {locale === 'en' ? service.name_en : service.name_de}
                 </span>
                 <span className="data-text font-bold text-s-ink">
@@ -112,7 +112,7 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
 
         {staff && (
           <div>
-            <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-2">
+            <p className="text-xs font-heading uppercase tracking-[.16em] text-s-ink/40 mb-2">
               {t('staff')}
             </p>
             <div className="flex items-center gap-2">
@@ -125,7 +125,7 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
                   className="w-8 h-8 rounded-full object-cover"
                 />
               )}
-              <span className="font-heading font-semibold text-sm text-s-ink">
+              <span className="font-heading text-sm text-s-ink">
                 {staff.name}
               </span>
             </div>
@@ -133,10 +133,10 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
         )}
 
         <div>
-          <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-2">
+          <p className="text-xs font-heading uppercase tracking-[.16em] text-s-ink/40 mb-2">
             {t('dateTime')}
           </p>
-          <p className="font-heading font-semibold text-sm text-s-ink">
+          <p className="font-heading text-sm text-s-ink">
             {formData.selectedDate && (
               <>
                 {formatDate(formData.selectedDate)} · {formData.selectedTime}
@@ -147,7 +147,7 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
 
         <div className="pt-2 border-t border-s-ink/[0.06]">
           <div className="flex justify-between items-center">
-            <span className="font-heading font-bold text-base text-s-ink">
+            <span className="font-heading text-base text-s-ink">
               {t('total')}
             </span>
             <span className="data-text font-bold text-2xl text-s-ink">
@@ -161,7 +161,7 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
       <div className="flex gap-3 p-4 rounded-[12px] bg-s-amber/[0.08] border border-s-amber/[0.15]">
         <AlertCircle size={16} className="shrink-0 text-s-amber mt-0.5" />
         <div>
-          <p className="text-xs font-heading font-bold text-s-amber">
+          <p className="text-xs font-heading text-s-amber">
             {t('cancellationPolicy')}
           </p>
           <p className="text-xs text-s-ink/70 mt-1">
@@ -175,14 +175,14 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
         <div className="max-w-2xl mx-auto px-4 flex gap-3">
           <button
             onClick={handleBack}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>
           <button
             onClick={handleContinue}
             disabled={isChecking}
-            className="flex-1 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-pill bg-s-coral text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
           >
             {isChecking && <Spinner size="sm" invert />}
             {t('continuePayment')}

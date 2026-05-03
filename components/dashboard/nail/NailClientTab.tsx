@@ -43,7 +43,7 @@ export default function NailClientTab({ client, salonId }: NailClientTabProps) {
             <span className="text-lg font-bold text-s-ink/20">{client.display_name?.[0]}</span>
           )}
         </div>
-        <h2 className="font-heading font-semibold text-lg text-s-ink">{client.display_name}</h2>
+        <h2 className="font-heading text-lg text-s-ink">{client.display_name}</h2>
       </div>
 
       {/* Tab bar */}

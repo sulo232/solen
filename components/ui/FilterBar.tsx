@@ -92,7 +92,7 @@ export default function FilterBar({
               onClick={() => handlePillClick(pill)}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handlePillClick(pill); } }}
               className={[
-                'snap-start flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading font-bold whitespace-nowrap shrink-0 cursor-pointer',
+                'snap-start flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading whitespace-nowrap shrink-0 cursor-pointer',
                 'transition-colors duration-150 active:scale-[0.97]',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2',
                 motionClass,
@@ -121,7 +121,7 @@ export default function FilterBar({
           <button
             onClick={() => setDrawerOpen(true)}
             className={[
-              'hidden md:flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading font-bold whitespace-nowrap shrink-0',
+              'hidden md:flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading whitespace-nowrap shrink-0',
               'border border-s-ink/[0.08] bg-white/70',
               motionClass,
               hoverLift,

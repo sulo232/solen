@@ -119,7 +119,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
                 <Icon size={13} className={cfg.iconColor} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-heading font-semibold text-s-ink leading-snug">
+                <p className="text-xs font-heading text-s-ink leading-snug">
                   {t(labelKey)}
                   {event.type === "review_new" && !!event.meta?.rating && (
                     <span className="ml-1 text-s-amber">{"★".repeat(Number(event.meta.rating))}</span>
@@ -138,7 +138,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
       {events.length > MOBILE_PREVIEW && (
         <button
           onClick={() => setExpanded((e) => !e)}
-          className="mt-2 w-full flex items-center justify-center gap-1 text-[10px] font-heading font-bold text-s-ink/35 hover:text-s-coral transition-colors py-1.5 md:hidden"
+          className="mt-2 w-full flex items-center justify-center gap-1 text-[10px] font-heading text-s-ink/35 hover:text-s-coral transition-colors py-1.5 md:hidden"
           aria-label={expanded ? t("showLess") : t("showMore")}
         >
           <ChevronDown size={11} className={`transition-transform ${expanded ? "rotate-180" : ""}`} />

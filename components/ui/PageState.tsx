@@ -94,7 +94,7 @@ export default function PageState({
         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-s-coral/10 flex items-center justify-center">
           <AlertTriangle className="w-8 h-8 text-s-coral" aria-hidden="true" />
         </div>
-        <h2 className="text-lg font-heading font-semibold text-s-ink mb-2">{errorTitle}</h2>
+        <h2 className="text-lg font-heading text-s-ink mb-2">{errorTitle}</h2>
         <p className="text-sm text-s-ink/60 mb-5">{errorMessage}</p>
         {onRetry && (
           <button

@@ -151,7 +151,7 @@ export function CoiffeurBelowGrid() {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <TrendingUp size={18} className="text-s-coral" />
-                <h2 className="font-heading font-bold text-[clamp(26px,3.5vw,44px)] tracking-[-0.02em] text-s-ink">
+                <h2 className="font-heading text-[clamp(26px,3.5vw,44px)] tracking-[0.01em] text-s-ink">
                   {t("trending_title")}
                 </h2>
               </div>
@@ -173,10 +173,10 @@ export function CoiffeurBelowGrid() {
                 href={`/${locale}/discover?q=${encodeURIComponent(style.q)}`}
                 className={`rounded-[14px] bg-gradient-to-br ${style.color} border border-s-ink/5 p-4 h-28 flex flex-col justify-between hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]`}
               >
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.10em] rounded-pill px-2 py-0.5 bg-[--raised]/60 text-s-ink/60 self-start">
+                <span className="text-[9px] font-heading uppercase tracking-[.10em] rounded-pill px-2 py-0.5 bg-[--raised]/60 text-s-ink/60 self-start">
                   {style.tag}
                 </span>
-                <p className="font-heading font-semibold text-s-ink text-sm">
+                <p className="font-heading text-s-ink text-sm">
                   {style.label}
                 </p>
               </Link>
@@ -190,7 +190,7 @@ export function CoiffeurBelowGrid() {
             <Brain size={22} className="text-s-coral" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-heading font-semibold text-s-ink">
+            <p className="font-heading text-s-ink">
               {t("ai_teaser")}
             </p>
             <p className="text-sm text-s-ink/50 font-body mt-1">
@@ -200,7 +200,7 @@ export function CoiffeurBelowGrid() {
           <button
             onClick={() => setAiModalOpen(true)}
             aria-label={tAi("ai_badge")}
-            className="shrink-0 px-4 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] duration-150"
+            className="shrink-0 px-4 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] duration-150"
           >
             {t("ai_cta")}
           </button>

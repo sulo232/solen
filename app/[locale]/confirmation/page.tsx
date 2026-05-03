@@ -87,7 +87,7 @@ export default async function ConfirmationPage({
         </div>
 
         {/* Title */}
-        <h1 className="text-center font-display font-bold text-3xl text-s-ink mb-2">
+        <h1 className="text-center font-display text-3xl text-s-ink mb-2">
           {t('title')}
         </h1>
         <p className="text-center text-s-ink/60 mb-8">
@@ -98,10 +98,10 @@ export default async function ConfirmationPage({
         <div className="border border-s-ink/[0.06] rounded-[16px] bg-[--raised] p-6 space-y-6 mb-8">
           {/* Salon */}
           <div>
-            <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-2">
+            <p className="text-xs font-heading uppercase tracking-[.16em] text-s-ink/40 mb-2">
               {t('salon')}
             </p>
-            <h2 className="font-heading font-bold text-lg text-s-ink">
+            <h2 className="font-heading text-lg text-s-ink">
               {(Array.isArray(booking.salons) ? (booking.salons[0] as any)?.name : (booking.salons as any)?.name) || ''}
             </h2>
             <p className="text-sm text-s-ink/60">
@@ -111,20 +111,20 @@ export default async function ConfirmationPage({
 
           {/* Service */}
           <div>
-            <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-2">
+            <p className="text-xs font-heading uppercase tracking-[.16em] text-s-ink/40 mb-2">
               {t('service')}
             </p>
-            <p className="font-heading font-semibold text-sm text-s-ink">
+            <p className="font-heading text-sm text-s-ink">
               {getServiceName()}
             </p>
           </div>
 
           {/* Date and time */}
           <div>
-            <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-2">
+            <p className="text-xs font-heading uppercase tracking-[.16em] text-s-ink/40 mb-2">
               {t('dateTime')}
             </p>
-            <p className="font-heading font-semibold text-sm text-s-ink">
+            <p className="font-heading text-sm text-s-ink">
               {formatDate(startDate)}
             </p>
           </div>
@@ -132,7 +132,7 @@ export default async function ConfirmationPage({
           {/* Price divider */}
           <div className="pt-4 border-t border-s-ink/[0.06]">
             <div className="flex justify-between items-center">
-              <span className="font-heading font-bold text-s-ink">
+              <span className="font-heading text-s-ink">
                 {t('total')}
               </span>
               <span className="data-text font-bold text-2xl text-s-ink">
@@ -146,7 +146,7 @@ export default async function ConfirmationPage({
         <div className="space-y-3 mb-8">
           {/* Add to Calendar */}
           <button
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill bg-s-coral text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
             aria-label={t('addToCalendar')}
           >
             <Calendar size={16} />
@@ -155,7 +155,7 @@ export default async function ConfirmationPage({
 
           {/* Share Booking */}
           <button
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02]:bg-white/[0.02] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02]:bg-white/[0.02] active:scale-[0.97] transition-[transform,filter] duration-150"
             aria-label={t('shareBooking')}
           >
             <Share2 size={16} />
@@ -165,7 +165,7 @@ export default async function ConfirmationPage({
           {/* Rebook */}
           <Link
             href={`/${locale}/salon/${(Array.isArray(booking.salons) ? (booking.salons[0] as any)?.slug : (booking.salons as any)?.slug) || ''}`}
-            className="block text-center py-4 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02]:bg-white/[0.02] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="block text-center py-4 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02]:bg-white/[0.02] active:scale-[0.97] transition-[transform,filter] duration-150"
             aria-label={t('rebook')}
           >
             {t('rebook')}
@@ -176,7 +176,7 @@ export default async function ConfirmationPage({
         <div className="text-center">
           <Link
             href={`/${locale}`}
-            className="inline text-s-coral hover:text-s-coral/80 transition-colors text-sm font-heading font-bold"
+            className="inline text-s-coral hover:text-s-coral/80 transition-colors text-sm font-heading"
           >
             {t('continueExploring')}
           </Link>

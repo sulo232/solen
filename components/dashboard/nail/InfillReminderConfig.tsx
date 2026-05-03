@@ -72,7 +72,7 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
         <Bell size={16} className="text-s-coral" />
-        <h3 className="font-heading font-semibold text-sm text-s-ink">{t("infill_title")}</h3>
+        <h3 className="font-heading text-sm text-s-ink">{t("infill_title")}</h3>
       </div>
 
       {services.length === 0 ? (
@@ -121,23 +121,23 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
       {/* Reminder metrics (last 30 days) */}
       {metrics && (
         <div className="mt-2 pt-4 border-t border-s-ink/[0.05]">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-ink/35 mb-3">
+          <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/35 mb-3">
             {t("infill_metrics_title")}
           </p>
           <div className="grid grid-cols-3 gap-2">
             <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-ink/[0.03]">
               <Send size={12} className="text-s-blue" />
-              <p className="text-base font-heading font-bold data-text text-s-ink">{metrics.sent}</p>
+              <p className="text-base font-heading data-text text-s-ink">{metrics.sent}</p>
               <p className="text-[9px] text-s-ink/40 text-center">{t("infill_sent")}</p>
             </div>
             <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-ink/[0.03]">
               <CalendarCheck size={12} className="text-s-sage" />
-              <p className="text-base font-heading font-bold data-text text-s-ink">{metrics.booked}</p>
+              <p className="text-base font-heading data-text text-s-ink">{metrics.booked}</p>
               <p className="text-[9px] text-s-ink/40 text-center">{t("infill_booked")}</p>
             </div>
             <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-ink/[0.03]">
               <Percent size={12} className="text-s-coral" />
-              <p className="text-base font-heading font-bold data-text text-s-ink">{metrics.conversion_rate}%</p>
+              <p className="text-base font-heading data-text text-s-ink">{metrics.conversion_rate}%</p>
               <p className="text-[9px] text-s-ink/40 text-center">{t("infill_conversion")}</p>
             </div>
           </div>

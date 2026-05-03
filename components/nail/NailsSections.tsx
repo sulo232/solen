@@ -78,7 +78,7 @@ export function NailsBelowGrid() {
       <section>
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h2 className="font-heading font-bold text-[clamp(26px,3.5vw,44px)] tracking-[-0.02em] text-s-ink">
+            <h2 className="font-heading text-[clamp(26px,3.5vw,44px)] tracking-[0.01em] text-s-ink">
               {t("inspo_heading")}
             </h2>
             <p className="text-sm text-s-ink/50 font-body mt-1">
@@ -114,7 +114,7 @@ export function NailsBelowGrid() {
           <Sparkles size={22} className="text-s-coral" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-heading font-semibold text-s-ink">
+          <p className="font-heading text-s-ink">
             {t("ai_teaser_title")}
           </p>
           <p className="text-sm text-s-ink/50 font-body mt-1">
@@ -123,7 +123,7 @@ export function NailsBelowGrid() {
         </div>
         <Link
           href={`/${locale}/discover?category=nails`}
-          className="shrink-0 px-4 py-2 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
+          className="shrink-0 px-4 py-2 rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
         >
           {t("ai_teaser_cta")}
         </Link>

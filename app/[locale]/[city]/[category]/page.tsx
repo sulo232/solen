@@ -108,7 +108,7 @@ export default async function Page({
   return (
     <div className="min-h-screen bg-white">
       <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-b border-s-ink/[0.08]">
-        <h1 className="font-heading font-bold text-3xl md:text-4xl text-s-ink mb-3">
+        <h1 className="font-heading text-3xl md:text-4xl text-s-ink mb-3">
           {categoryName} in {cityName}
         </h1>
         <p className="font-body text-base text-s-ink/60 max-w-[600px] leading-relaxed">
@@ -121,7 +121,7 @@ export default async function Page({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredSalons.map((salon) => (
               <div key={salon.id} className="border border-s-ink/[0.08] rounded-card p-4">
-                <h3 className="font-heading font-bold text-base text-s-ink">
+                <h3 className="font-heading text-base text-s-ink">
                   {salon.name}
                 </h3>
                 <p className="font-body text-sm text-s-ink/60 mt-1">
@@ -140,7 +140,7 @@ export default async function Page({
       </section>
 
       <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-ink/[0.08] max-w-[800px] mx-auto">
-        <h2 className="font-heading font-bold text-xl text-s-ink mb-6">
+        <h2 className="font-heading text-xl text-s-ink mb-6">
           Häufig gestellte Fragen
         </h2>
         <div className="space-y-6">

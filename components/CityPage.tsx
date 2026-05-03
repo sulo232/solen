@@ -86,11 +86,11 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
       <section className="max-w-5xl mx-auto px-4 pt-12 pb-8">
         <div className="flex items-center gap-2 mb-2">
           <MapPin size={16} className="text-s-ink/60" />
-          <span className="font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber">
+          <span className="font-heading text-[11px] uppercase tracking-[.20em] text-s-amber">
             {cityName}
           </span>
         </div>
-        <h1 className="font-heading font-extrabold text-s-ink"
+        <h1 className="font-heading text-s-ink"
           style={{ fontSize: "clamp(26px, 4vw, 48px)", letterSpacing: "-0.02em" }}>
           {tCityPage("title", { cityName })}
         </h1>
@@ -104,7 +104,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
         <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
           <Link
             href={`/${locale}/${city}`}
-            className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading font-bold uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
+            className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
               activeCategory === null
                 ? "bg-s-coral text-white shadow-elevation-2"
                 : "bg-[--raised] border border-s-ink/10 text-s-ink/70 hover:border-s-ink/20"
@@ -116,7 +116,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
             <Link
               key={key}
               href={`/${locale}/${city}/${key}`}
-              className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading font-bold uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
+              className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
                 activeCategory === key
                   ? "bg-s-coral text-white shadow-elevation-2"
                   : "bg-[--raised] border border-s-ink/10 text-s-ink/70 hover:border-s-ink/20"

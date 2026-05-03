@@ -21,7 +21,7 @@ export default function CategoryPills({ selected, onSelect }: CategoryPillsProps
           onClick={() => onSelect(key)}
           aria-pressed={selected === key}
           className={[
-            "px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
+            "px-4 py-2.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
             selected === key
               ? "bg-s-coral text-white"
               : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-white/[0.12]",

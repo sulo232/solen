@@ -46,7 +46,7 @@ export default function ZoneRevenueChart({ salonId }: ZoneRevenueChartProps) {
           <BarChart3 size={13} className="text-s-plum" />
         </div>
         <div>
-          <p className="text-sm font-heading font-bold text-s-ink">{t("zoneRevenueTitle")}</p>
+          <p className="text-sm font-heading text-s-ink">{t("zoneRevenueTitle")}</p>
           <p className="text-[10px] text-s-ink/35">{t("zoneRevenueSubtitle")}</p>
         </div>
       </div>

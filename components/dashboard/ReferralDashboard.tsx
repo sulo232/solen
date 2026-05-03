@@ -38,7 +38,7 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
 
   return (
     <div>
-      <h3 className="font-heading font-bold text-sm text-s-ink flex items-center gap-2 mb-4">
+      <h3 className="font-heading text-sm text-s-ink flex items-center gap-2 mb-4">
         <Share2 size={14} className="text-s-coral" /> Empfehlungs-Programm
       </h3>
 

@@ -21,7 +21,7 @@ export default function GenderToggle({ selected, onSelect }: GenderToggleProps) 
           onClick={() => onSelect(key)}
           aria-pressed={selected === key}
           className={[
-            "px-3 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color] duration-150",
+            "px-3 py-2 rounded-pill text-[10px] font-heading uppercase tracking-[.06em] transition-[background-color,color] duration-150",
             selected === key
               ? "bg-[--raised] text-s-ink shadow-warm-sm"
               : "text-s-ink/40 hover:text-s-ink/60",

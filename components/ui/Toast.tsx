@@ -63,7 +63,7 @@ function ToastItem({ item, onRemove }: { item: ToastItem; onRemove: (id: string)
       style={{ boxShadow: "0 4px 12px rgba(26,18,9,.10), 0 12px 28px rgba(26,18,9,.08)" }}
     >
       {icons[item.type]}
-      <p className="flex-1 text-sm font-heading font-semibold text-s-ink leading-snug">{item.message}</p>
+      <p className="flex-1 text-sm font-heading text-s-ink leading-snug">{item.message}</p>
       <button
         onClick={() => onRemove(item.id)}
         className="p-0.5 text-s-ink/30 hover:text-s-ink/60 transition-colors duration-150"

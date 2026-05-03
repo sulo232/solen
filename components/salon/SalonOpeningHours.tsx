@@ -40,7 +40,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
         boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), inset 0 1px 0 rgba(255,255,255,.70)",
       }}
     >
-      <h2 className="font-heading font-semibold text-base text-s-ink mb-3 flex items-center gap-2">
+      <h2 className="font-heading text-base text-s-ink mb-3 flex items-center gap-2">
         <Clock className="w-4 h-4 text-s-ink/60" />
         {t("openingHours")}
       </h2>
@@ -83,7 +83,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
                         isToday && h ? "shadow-[0_0_4px_rgba(46,204,113,0.4)]" : ""
                       }`}
                     />
-                    <span className={isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50"}>
+                    <span className={isToday ? "font-heading text-s-ink" : "text-s-ink/50"}>
                       {label}
                     </span>
                   </div>
@@ -120,7 +120,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
                     isToday && h ? "shadow-[0_0_4px_rgba(46,204,113,0.4)]" : ""
                   }`}
                 />
-                <span className={isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50"}>
+                <span className={isToday ? "font-heading text-s-ink" : "text-s-ink/50"}>
                   {label}
                 </span>
               </div>

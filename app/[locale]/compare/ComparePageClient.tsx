@@ -214,7 +214,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
             <span>{t("back")}</span>
           </Link>
           <span className="text-s-ink/20">/</span>
-          <h1 className="font-heading font-bold text-s-ink text-base">
+          <h1 className="font-heading text-s-ink text-base">
             {t("title")}
           </h1>
           {salons.length > 0 && (
@@ -329,7 +329,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
 
                     {/* Name + category */}
                     <div className="px-3 py-3">
-                      <p className="font-heading font-bold text-sm text-s-ink truncate leading-tight">
+                      <p className="font-heading text-sm text-s-ink truncate leading-tight">
                         {salon.name}
                       </p>
                       <p className="text-[11px] text-s-ink/40 mt-0.5 truncate capitalize">

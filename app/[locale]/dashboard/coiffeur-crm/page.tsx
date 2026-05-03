@@ -63,15 +63,15 @@ export default function CoiffeurCRMPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-6">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 mb-1">Coiffeur</p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink leading-none">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/50 mb-1">Coiffeur</p>
+        <h1 className="font-heading text-[28px] text-s-ink leading-none">
           {t("pageTitle")}
         </h1>
       </div>
 
       {/* Client selector */}
       <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4 mb-5">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-ink/45 mb-2">
+        <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/45 mb-2">
           {t("selectClient")}
         </p>
         <ClientSelectorDropdown
@@ -89,7 +89,7 @@ export default function CoiffeurCRMPage() {
             key={id}
             onClick={() => setActiveTab(id)}
             aria-label={t(labelKey)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading font-semibold whitespace-nowrap transition-colors duration-150 shrink-0 ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading whitespace-nowrap transition-colors duration-150 shrink-0 ${
               activeTab === id
                 ? "bg-s-coral text-white shadow-elevation-2"
                 : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
@@ -128,19 +128,19 @@ export default function CoiffeurCRMPage() {
                 <>
                   <div className="grid grid-cols-3 gap-3">
                     <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-3 text-center">
-                      <p className="text-2xl font-heading font-bold data-text text-s-coral">
+                      <p className="text-2xl font-heading data-text text-s-coral">
                         {cycleMetrics.avg_days_between_visits}
                       </p>
                       <p className="text-[9px] text-s-ink/40 mt-1">{t("metricsAvgDays")}</p>
                     </div>
                     <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-3 text-center">
-                      <p className="text-2xl font-heading font-bold data-text text-s-amber">
+                      <p className="text-2xl font-heading data-text text-s-amber">
                         {cycleMetrics.adherence_rate}%
                       </p>
                       <p className="text-[9px] text-s-ink/40 mt-1">{t("metricsAdherence")}</p>
                     </div>
                     <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-3 text-center">
-                      <p className="text-2xl font-heading font-bold data-text text-s-blue">
+                      <p className="text-2xl font-heading data-text text-s-blue">
                         {cycleMetrics.total_tracked_clients}
                       </p>
                       <p className="text-[9px] text-s-ink/40 mt-1">{t("metricsClients")}</p>
@@ -148,7 +148,7 @@ export default function CoiffeurCRMPage() {
                   </div>
                   {/* Sparkline */}
                   <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4">
-                    <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-ink/45 mb-3">
+                    <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/45 mb-3">
                       {t("metricsSparkTitle")}
                     </p>
                     <div className="flex items-end gap-1 h-12">

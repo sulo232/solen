@@ -27,7 +27,7 @@ export default function DiscoveryAdminPage() {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-heading font-bold text-s-ink">Discovery Content Studio</h1>
+          <h1 className="text-2xl font-heading text-s-ink">Discovery Content Studio</h1>
           <p className="text-sm text-s-ink/50 mt-1">Import, review, and manage discovery content</p>
         </div>
 

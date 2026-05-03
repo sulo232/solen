@@ -22,7 +22,7 @@ export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
         <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-s-amber/10 flex items-center justify-center">
           <AlertTriangle size={28} className="text-s-amber" />
         </div>
-        <h2 className="font-heading font-bold text-lg text-s-ink mb-2">
+        <h2 className="font-heading text-lg text-s-ink mb-2">
           {t("title")}
         </h2>
         <p className="text-sm text-s-ink/50 font-body mb-6">

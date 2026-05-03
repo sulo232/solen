@@ -110,7 +110,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
   };
 
   const pillClass = (active: boolean) =>
-    `px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[color,background-color,border-color] duration-150 ${active ? "border-s-coral bg-s-coral/[0.08] text-s-coral" : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/40"}`;
+    `px-4 py-2.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[color,background-color,border-color] duration-150 ${active ? "border-s-coral bg-s-coral/[0.08] text-s-coral" : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/40"}`;
 
   return (
     <AnimatePresence>
@@ -136,10 +136,10 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
         {/* Header */}
         <div className="px-6 pt-6 pb-4 border-b border-s-ink/[0.06] flex items-start justify-between">
           <div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-coral mb-1">
+            <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-coral mb-1">
               Profil einrichten
             </p>
-            <h2 className="font-heading font-bold text-lg text-s-ink">{t.title}</h2>
+            <h2 className="font-heading text-lg text-s-ink">{t.title}</h2>
             <p className="text-xs font-body text-s-ink/45 mt-1">{t.subtitle}</p>
           </div>
           <button onClick={onClose} className="p-2 rounded-[8px] hover:bg-s-ink/[0.04]" aria-label="Close">
@@ -150,7 +150,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
         <div className="px-6 py-5 space-y-5">
         {/* Gender */}
         <div>
-          <label className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 mb-2 block">{t.genderLabel}</label>
+          <label className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/30 mb-2 block">{t.genderLabel}</label>
           <div className="flex flex-wrap gap-2">
             {GENDERS.map((g) => (
               <button key={g.value} aria-pressed={gender === g.value} onClick={() => setGender(gender === g.value ? null : g.value)} className={pillClass(gender === g.value)}>
@@ -162,7 +162,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
 
         {/* Texture */}
         <div>
-          <label className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 mb-2 block">{t.textureLabel}</label>
+          <label className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/30 mb-2 block">{t.textureLabel}</label>
           <div className="flex flex-wrap gap-2">
             {TEXTURES.map((tx) => (
               <button key={tx.value} aria-pressed={texture === tx.value} onClick={() => setTexture(texture === tx.value ? null : tx.value)} className={pillClass(texture === tx.value)}>
@@ -174,7 +174,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
 
         {/* Length */}
         <div>
-          <label className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 mb-2 block">{t.lengthLabel}</label>
+          <label className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/30 mb-2 block">{t.lengthLabel}</label>
           <div className="flex flex-wrap gap-2">
             {LENGTHS.map((l) => (
               <button key={l.value} aria-pressed={length === l.value} onClick={() => setLength(length === l.value ? null : l.value)} className={pillClass(length === l.value)}>
@@ -186,7 +186,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
 
         {/* Face shape */}
         <div>
-          <label className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 mb-2 block">{t.faceLabel}</label>
+          <label className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/30 mb-2 block">{t.faceLabel}</label>
           <div className="flex flex-wrap gap-2">
             {FACE_SHAPES.map((f) => (
               <button key={f.value} aria-pressed={faceShape === f.value} onClick={() => setFaceShape(faceShape === f.value ? null : f.value)} className={pillClass(faceShape === f.value)}>
@@ -197,11 +197,11 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
         </div>
 
         <div className="flex gap-3 pt-2">
-          <button onClick={onClose} className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-xs font-heading font-bold text-s-ink/50 hover:border-s-ink/20 transition-colors">
+          <button onClick={onClose} className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-xs font-heading text-s-ink/50 hover:border-s-ink/20 transition-colors">
             {t.skip}
           </button>
           <button onClick={handleSave}
-            className="flex-1 py-4 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2">
+            className="flex-1 py-4 rounded-pill bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2">
             {t.save}
           </button>
         </div>

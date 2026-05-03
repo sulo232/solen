@@ -49,7 +49,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
         <Zap size={16} className="text-s-coral" />
-        <h3 className="font-heading font-semibold text-sm text-s-ink">{t("stations_title")}</h3>
+        <h3 className="font-heading text-sm text-s-ink">{t("stations_title")}</h3>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -123,7 +123,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
         onClick={handleSave}
         disabled={saving}
         aria-label={t("save")}
-        className="flex items-center gap-2 px-4 py-2 min-h-12 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
+        className="flex items-center gap-2 px-4 py-2 min-h-12 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
       >
         <Save size={14} />
         {saving ? t("saving") : t("save")}

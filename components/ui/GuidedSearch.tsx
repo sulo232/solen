@@ -366,7 +366,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
               aria-label={t("openWas" as Parameters<typeof t>[0])}
               className="flex-1 flex flex-col justify-center px-4 py-2 rounded-l-full hover:bg-s-ink/[0.03]:bg-white/[0.03] transition-colors min-w-0"
             >
-              <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink">
+              <span className="text-[9px] font-heading uppercase tracking-[.07em] text-s-ink">
                 {t("segWas" as Parameters<typeof t>[0])}
               </span>
               <span className={`text-[12px] font-body truncate ${wasLabel ? "font-semibold text-s-ink" : "text-s-ink/40"}`}>
@@ -383,7 +383,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
               aria-label={t("openWo" as Parameters<typeof t>[0])}
               className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-ink/[0.03]:bg-white/[0.03] transition-colors min-w-0"
             >
-              <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink">
+              <span className="text-[9px] font-heading uppercase tracking-[.07em] text-s-ink">
                 {t("segWo" as Parameters<typeof t>[0])}
               </span>
               <span className="text-[12px] font-body font-semibold text-s-ink truncate">
@@ -400,7 +400,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
               aria-label={t("openWann" as Parameters<typeof t>[0])}
               className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-ink/[0.03]:bg-white/[0.03] transition-colors min-w-0"
             >
-              <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink">
+              <span className="text-[9px] font-heading uppercase tracking-[.07em] text-s-ink">
                 {t("segWann" as Parameters<typeof t>[0])}
               </span>
               <span className={`text-[12px] font-body truncate ${dateKey !== "any" ? "font-semibold text-s-ink" : "text-s-ink/40"}`}>
@@ -463,7 +463,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                 style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}
               >
                 <div className="flex items-center justify-between px-6 pt-4 pb-3">
-                  <span className="font-heading font-bold text-[20px] text-s-ink leading-tight">
+                  <span className="font-heading text-[20px] text-s-ink leading-tight">
                     {t("steps.was.title" as Parameters<typeof t>[0])}
                   </span>
                   <button
@@ -521,17 +521,17 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                       >
                         <div className="flex items-center justify-between py-3 border-b border-s-ink/[0.08]">
                           <div>
-                            <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
+                            <div className="text-[11px] font-heading uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
                               {t("segWas" as Parameters<typeof t>[0])}
                             </div>
-                            <div className="font-heading font-bold text-[13px] text-s-ink">
+                            <div className="font-heading text-[13px] text-s-ink">
                               {category ? tNav(category as Parameters<typeof tNav>[0]) : t("segWasPlaceholder" as Parameters<typeof t>[0])}
                               {service ? ` · ${service}` : ""}
                             </div>
                           </div>
                           <button
                             onClick={() => { setStep(1); setShowServices(false); }}
-                            className="text-[11px] font-heading font-semibold text-s-ink/50 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
+                            className="text-[11px] font-heading text-s-ink/50 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
                           >
                             {t("change" as Parameters<typeof t>[0])}
                           </button>
@@ -553,16 +553,16 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                       >
                         <div className="flex items-center justify-between py-3 border-b border-s-ink/[0.08]">
                           <div>
-                            <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
+                            <div className="text-[11px] font-heading uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
                               {t("segWo" as Parameters<typeof t>[0])}
                             </div>
-                            <div className="font-heading font-bold text-[13px] text-s-ink">
+                            <div className="font-heading text-[13px] text-s-ink">
                               {city ? getCityLabel(city) : t("steps.where.allSwitzerland")}
                             </div>
                           </div>
                           <button
                             onClick={() => setStep(2)}
-                            className="text-[11px] font-heading font-semibold text-s-ink/50 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
+                            className="text-[11px] font-heading text-s-ink/50 underline underline-offset-2 hover:text-s-ink transition-colors ml-4"
                           >
                             {t("change" as Parameters<typeof t>[0])}
                           </button>
@@ -588,7 +588,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                             {recents.length > 0 && (
                               <div className="pt-4 pb-2">
                                 <div className="flex items-center justify-between mb-2">
-                                  <span className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40">
+                                  <span className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40">
                                     {locale === "de" ? "Zuletzt gesucht" : locale === "fr" ? "Recherches récentes" : locale === "it" ? "Ricerche recenti" : "Recent searches"}
                                   </span>
                                   <button
@@ -626,7 +626,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
 
                             {/* Trending searches */}
                             <div className={recents.length > 0 ? "pb-2" : "pt-4 pb-2"}>
-                              <p className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mb-2">
+                              <p className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 mb-2">
                                 {locale === "de" ? "Beliebt in Basel 🔥" : locale === "fr" ? "Populaire à Bâle 🔥" : locale === "it" ? "Popolare a Basilea 🔥" : "Popular in Basel 🔥"}
                               </p>
                               <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
@@ -664,7 +664,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                   <Star size={18} aria-hidden="true" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-[14px] font-heading font-bold leading-tight">
+                                  <p className="text-[14px] font-heading leading-tight">
                                     {t("steps.was.skip" as Parameters<typeof t>[0])}
                                   </p>
                                   <p className="text-[12px] text-s-ink/45 leading-tight mt-0.5">
@@ -700,7 +700,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                     </div>
                                     {/* Text */}
                                     <div className="flex-1 min-w-0">
-                                      <p className="font-heading font-bold text-[15px] text-s-ink leading-tight">
+                                      <p className="font-heading text-[15px] text-s-ink leading-tight">
                                         {tNav(cat.key as Parameters<typeof tNav>[0])}
                                       </p>
                                       <p className="font-body text-[13px] text-s-ink/50 leading-tight mt-0.5 truncate">
@@ -766,7 +766,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           <div className="pb-2">
                             <button
                               onClick={() => { setQuery(""); setShowServices(false); }}
-                              className="flex items-center gap-1.5 text-[12px] font-heading font-semibold text-s-ink/50 hover:text-s-coral:text-s-coral transition-colors mb-3"
+                              className="flex items-center gap-1.5 text-[12px] font-heading text-s-ink/50 hover:text-s-coral:text-s-coral transition-colors mb-3"
                             >
                               <ChevronLeft size={14} aria-hidden="true" />
                               {t("steps.was.backToCategories" as Parameters<typeof t>[0])}
@@ -825,10 +825,10 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         exit={{ opacity: 0, x: -16 }}
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                       >
-                        <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mt-4 mb-2">
+                        <p className="text-[11px] font-heading uppercase tracking-[.08em] text-s-ink/40 mt-4 mb-2">
                           {t("steps.where.title")}
                         </p>
-                        <p className="font-heading font-bold text-[18px] text-s-ink mb-4">
+                        <p className="font-heading text-[18px] text-s-ink mb-4">
                           {t("steps.where.subtitle" as Parameters<typeof t>[0])}
                         </p>
 
@@ -891,10 +891,10 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         exit={{ opacity: 0, x: -16 }}
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                       >
-                        <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mt-4 mb-2">
+                        <p className="text-[11px] font-heading uppercase tracking-[.08em] text-s-ink/40 mt-4 mb-2">
                           {t("steps.wann.title" as Parameters<typeof t>[0])}
                         </p>
-                        <p className="font-heading font-bold text-[18px] text-s-ink mb-4">
+                        <p className="font-heading text-[18px] text-s-ink mb-4">
                           {t("steps.wann.subtitle" as Parameters<typeof t>[0])}
                         </p>
 
@@ -913,7 +913,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                 }}
                                 aria-label={label}
                                 aria-pressed={isSelected}
-                                className="px-[18px] py-2.5 rounded-pill text-[13px] font-heading font-semibold transition-[transform,filter,border-color,background-color] duration-150"
+                                className="px-[18px] py-2.5 rounded-pill text-[13px] font-heading transition-[transform,filter,border-color,background-color] duration-150"
                                 style={{
                                   border:     `1.5px solid ${isSelected ? "s-ink" : "s-bg-surface"}`,
                                   background: isSelected ? "s-ink" : "#FFFFFF",
@@ -929,7 +929,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         {/* Specific date toggle */}
                         <button
                           onClick={() => setShowCalendar(!showCalendar)}
-                          className="flex items-center gap-2 text-[13px] font-heading font-semibold text-s-ink/60 hover:text-s-coral transition-colors mb-3 mt-1"
+                          className="flex items-center gap-2 text-[13px] font-heading text-s-ink/60 hover:text-s-coral transition-colors mb-3 mt-1"
                         >
                           <CalendarIcon size={14} aria-hidden="true" />
                           {t("steps.wann.specificDate" as Parameters<typeof t>[0])}
@@ -953,7 +953,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         )}
 
                         {/* Time of day */}
-                        <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mb-3">
+                        <p className="text-[11px] font-heading uppercase tracking-[.08em] text-s-ink/40 mb-3">
                           {t("steps.wann.timeLabel" as Parameters<typeof t>[0])}
                         </p>
                         <div className="flex flex-wrap gap-2 pb-6">
@@ -965,7 +965,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                 onClick={() => setTimeKey(key)}
                                 aria-label={t(`steps.date.time.${key}` as Parameters<typeof t>[0])}
                                 aria-pressed={isSelected}
-                                className="px-[18px] py-2.5 rounded-pill text-[13px] font-heading font-semibold transition-[transform,filter,border-color,background-color] duration-150"
+                                className="px-[18px] py-2.5 rounded-pill text-[13px] font-heading transition-[transform,filter,border-color,background-color] duration-150"
                                 style={{
                                   border:     `1.5px solid ${isSelected ? "s-ink" : "s-bg-surface"}`,
                                   background: isSelected ? "s-ink" : "#FFFFFF",
@@ -1005,7 +1005,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                     }
                   }}
                   aria-label={t("showResults")}
-                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-btn bg-s-coral text-white font-heading font-bold text-[13px] uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-btn bg-s-coral text-white font-heading text-[13px] uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
                   style={{ boxShadow: "0 2px 6px rgba(232,98,74,.30), 0 4px 14px rgba(232,98,74,.18)" }}
                 >
                   <Search size={14} aria-hidden="true" />

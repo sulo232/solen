@@ -73,10 +73,10 @@ export default function ResetPasswordPage() {
             style={{ background: "rgba(76,175,111,.12)" }}>
             <Check size={28} className="text-s-sage" />
           </div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-sage mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-sage mb-2">
             Erfolgreich
           </p>
-          <p className="font-heading font-bold text-xl text-s-ink">Passwort geändert</p>
+          <p className="font-heading text-xl text-s-ink">Passwort geändert</p>
           <p className="text-xs font-body text-s-ink/50 mt-2">
             Du wirst zur Anmeldung weitergeleitet…
           </p>
@@ -96,11 +96,11 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-sm">
         {/* Logo lockup */}
         <div className="text-center mb-8">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-amber mb-3">
+          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-amber mb-3">
             solen.ch
           </p>
           <Link href={`/${locale}`}
-            className="inline-block font-heading font-bold text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity">
+            className="inline-block font-heading text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity">
             solen<span className="text-s-coral">.</span>ch
           </Link>
         </div>
@@ -115,10 +115,10 @@ export default function ResetPasswordPage() {
               style={{ background: "rgba(232,98,74,.10)" }}>
               <Lock size={24} className="text-s-coral" />
             </div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/45 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/45 mb-2">
               Konto-Wiederherstellung
             </p>
-            <p className="font-heading font-bold text-lg text-s-ink">Neues Passwort</p>
+            <p className="font-heading text-lg text-s-ink">Neues Passwort</p>
             <p className="text-xs font-body text-s-ink/50 mt-1">
               Wähle ein neues Passwort für dein Konto.
             </p>
@@ -178,7 +178,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={loading || !passwordValid || !passwordsMatch}
-                className="w-full py-4 rounded-pill bg-s-coral shadow-elevation-2 text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+                className="w-full py-4 rounded-pill bg-s-coral shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
                 {loading ? <Spinner size="sm" invert /> : null}
                 Passwort ändern
               </button>
@@ -188,7 +188,7 @@ export default function ResetPasswordPage() {
 
         <p className="text-center mt-6">
           <Link href={`/${locale}/auth/login`}
-            className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-coral hover:underline">
+            className="text-[11px] font-heading uppercase tracking-[.08em] text-s-coral hover:underline">
             Zurück zur Anmeldung
           </Link>
         </p>

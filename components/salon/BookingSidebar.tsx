@@ -37,7 +37,7 @@ export default function BookingSidebar({
       <div className="flex items-baseline justify-between mb-5">
         {minPrice != null && (
           <div>
-            <span className="text-[20px] font-heading font-bold text-s-ink">
+            <span className="text-[20px] font-heading text-s-ink">
               ab {formatCurrency(minPrice)}
             </span>
           </div>

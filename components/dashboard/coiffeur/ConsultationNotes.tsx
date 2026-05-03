@@ -101,7 +101,7 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
           {t("consultation_history")}
         </p>
         <button
@@ -117,28 +117,28 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
         <div className="rounded-[12px] border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-3">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("hair_condition")}</label>
+              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("hair_condition")}</label>
               <input value={hairCondition} onChange={(e) => setHairCondition(e.target.value)} className={inputClass} aria-label={t("hair_condition")} />
             </div>
             <div>
-              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("scalp_condition")}</label>
+              <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("scalp_condition")}</label>
               <input value={scalpCondition} onChange={(e) => setScalpCondition(e.target.value)} className={inputClass} aria-label={t("scalp_condition")} />
             </div>
           </div>
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("current_dislikes")}</label>
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("current_dislikes")}</label>
             <input value={currentDislikes} onChange={(e) => setCurrentDislikes(e.target.value)} className={inputClass} aria-label={t("current_dislikes")} />
           </div>
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("desired_outcome")}</label>
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("desired_outcome")}</label>
             <input value={desiredOutcome} onChange={(e) => setDesiredOutcome(e.target.value)} className={inputClass} aria-label={t("desired_outcome")} />
           </div>
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("allergies")}</label>
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("allergies")}</label>
             <input value={allergies} onChange={(e) => setAllergies(e.target.value)} className={inputClass} aria-label={t("allergies")} />
           </div>
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("notes")}</label>
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 mb-1 block">{t("notes")}</label>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className={`${inputClass} resize-none`} aria-label={t("notes")} />
           </div>
 
@@ -150,7 +150,7 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
               {t("cancel")}
             </button>
             <button onClick={handleAdd} disabled={saving}
-              className="px-3 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
+              className="px-3 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
               aria-label={t("save")}
             >
               {saving && <Spinner size="sm" invert />} {t("save")}
@@ -175,37 +175,37 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
               <div className="grid grid-cols-2 gap-2">
                 {n.hair_condition && (
                   <div>
-                    <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30">{t("hair_condition")}</span>
+                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("hair_condition")}</span>
                     <p className="text-xs text-s-ink/70 mt-0.5">{n.hair_condition}</p>
                   </div>
                 )}
                 {n.scalp_condition && (
                   <div>
-                    <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30">{t("scalp_condition")}</span>
+                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("scalp_condition")}</span>
                     <p className="text-xs text-s-ink/70 mt-0.5">{n.scalp_condition}</p>
                   </div>
                 )}
                 {n.desired_outcome && (
                   <div>
-                    <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30">{t("desired_outcome")}</span>
+                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("desired_outcome")}</span>
                     <p className="text-xs text-s-ink/70 mt-0.5">{n.desired_outcome}</p>
                   </div>
                 )}
                 {n.current_dislikes && (
                   <div>
-                    <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30">{t("current_dislikes")}</span>
+                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("current_dislikes")}</span>
                     <p className="text-xs text-s-ink/70 mt-0.5">{n.current_dislikes}</p>
                   </div>
                 )}
                 {n.allergies && (
                   <div className="col-span-2">
-                    <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-coral/60">{t("allergies")}</span>
+                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-coral/60">{t("allergies")}</span>
                     <p className="text-xs text-s-coral/80 mt-0.5">{n.allergies}</p>
                   </div>
                 )}
                 {n.notes && (
                   <div className="col-span-2">
-                    <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30">{t("notes")}</span>
+                    <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30">{t("notes")}</span>
                     <p className="text-xs text-s-ink/50 mt-0.5">{n.notes}</p>
                   </div>
                 )}

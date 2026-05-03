@@ -50,12 +50,12 @@ export default function LastMinuteStrip({ slots }: LastMinuteStripProps) {
         {/* Left: label + title */}
         <div className="flex-shrink-0 hidden sm:block">
           <p
-            className="font-heading font-bold uppercase tracking-[.1em] mb-0.5"
+            className="font-heading uppercase tracking-[.1em] mb-0.5"
             style={{ fontSize: "10px", color: "#FAD4CC" }}
           >
             {t("badge")}
           </p>
-          <p className="font-heading font-bold text-white leading-tight" style={{ fontSize: "18px" }}>
+          <p className="font-heading text-white leading-tight" style={{ fontSize: "18px" }}>
             {t("title") || "Heute noch frei"}
           </p>
         </div>
@@ -84,7 +84,7 @@ export default function LastMinuteStrip({ slots }: LastMinuteStripProps) {
                 aria-label={`${slot.salon.name} — ${formatSlotTime(slot.starts_at, locale)}`}
               >
                 <div>
-                  <p className="font-heading font-semibold text-white leading-tight" style={{ fontSize: "13px" }}>
+                  <p className="font-heading text-white leading-tight" style={{ fontSize: "13px" }}>
                     {slot.salon.name}
                   </p>
                   <p className="font-body leading-tight mt-0.5" style={{ fontSize: "11px", color: "#FAD4CC" }}>
@@ -93,7 +93,7 @@ export default function LastMinuteStrip({ slots }: LastMinuteStripProps) {
                 </div>
                 {discount && (
                   <span
-                    className="font-heading font-bold rounded-pill px-2 py-0.5 flex-shrink-0"
+                    className="font-heading rounded-pill px-2 py-0.5 flex-shrink-0"
                     style={{ fontSize: "12px", background: "rgba(255,255,255,.18)", color: "#FFFFFF" }}
                     aria-label={discount}
                   >
@@ -108,7 +108,7 @@ export default function LastMinuteStrip({ slots }: LastMinuteStripProps) {
         {/* View all */}
         <Link
           href={`/${locale}/last-minute`}
-          className="flex-shrink-0 font-heading font-semibold transition-opacity duration-150 whitespace-nowrap hover:opacity-100"
+          className="flex-shrink-0 font-heading transition-opacity duration-150 whitespace-nowrap hover:opacity-100"
           style={{ fontSize: "12px", color: "rgba(255,255,255,.7)" }}
           aria-label={t("viewAll")}
         >

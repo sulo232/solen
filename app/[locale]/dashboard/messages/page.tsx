@@ -62,7 +62,7 @@ export default function MessagesPage() {
         {/* Conversation list */}
         <div className="w-72 shrink-0 flex flex-col bg-white rounded-[12px] border border-s-ink/5 overflow-hidden">
           <div className="px-4 py-3 border-b border-s-ink/5">
-            <h2 className="font-heading font-bold text-base text-s-ink">Nachrichten</h2>
+            <h2 className="font-heading text-base text-s-ink">Nachrichten</h2>
           </div>
           {loading ? (
             <div className="flex justify-center py-10"><Spinner size="sm" /></div>

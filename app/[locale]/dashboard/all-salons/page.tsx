@@ -63,7 +63,7 @@ function ConfirmModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-input shadow-v5-float w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-3">
-          <h3 className="font-heading font-bold text-base text-s-ink">{title}</h3>
+          <h3 className="font-heading text-base text-s-ink">{title}</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <p className="text-sm text-s-ink/50 mb-5">{message}</p>
@@ -159,7 +159,7 @@ export default function AllSalonsPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">Alle Salons</h1>
+        <h1 className="font-heading text-2xl text-s-ink">Alle Salons</h1>
         <p className="text-sm text-s-ink/40 mt-0.5">Alle registrierten Salons verwalten</p>
       </div>
 

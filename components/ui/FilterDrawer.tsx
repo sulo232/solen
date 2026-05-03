@@ -88,7 +88,7 @@ export default function FilterDrawer({
     >
       {mode === 'drawer' && (
         <div className="flex items-center justify-between mb-4">
-          <span className="font-heading font-bold text-sm text-s-ink">
+          <span className="font-heading text-sm text-s-ink">
             {t('filter')}
           </span>
           <button

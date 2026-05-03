@@ -37,7 +37,7 @@ export default function PartnerSignupForm() {
   if (status === "success") {
     return (
       <div className="w-full max-w-sm rounded-[14px] bg-s-sage/10 border border-s-sage/20 p-5 text-center mt-6">
-        <h3 className="font-heading font-semibold text-s-sage-text mb-1">
+        <h3 className="font-heading text-s-sage-text mb-1">
           {t("form_success_title")}
         </h3>
         <p className="text-sm font-body text-s-ink/70">
@@ -69,7 +69,7 @@ export default function PartnerSignupForm() {
         <button
           type="submit"
           disabled={status === "loading"}
-          className="w-full bg-s-coral hover:brightness-[1.06] text-white font-heading font-semibold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center disabled:opacity-70 mt-1"
+          className="w-full bg-s-coral hover:brightness-[1.06] text-white font-heading py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center disabled:opacity-70 mt-1"
         >
           {status === "loading" ? (
             <Loader2 className="w-5 h-5 animate-spin" />

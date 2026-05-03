@@ -98,7 +98,7 @@ export default function ClosureManager({ salonId }: ClosureManagerProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading font-bold text-sm text-s-ink flex items-center gap-2">
+        <h3 className="font-heading text-sm text-s-ink flex items-center gap-2">
           <Calendar size={14} className="text-s-coral" /> {t("title")}
         </h3>
         <button
@@ -154,7 +154,7 @@ export default function ClosureManager({ salonId }: ClosureManagerProps) {
             <button
               onClick={handleAdd}
               disabled={!startDate || !endDate || saving}
-              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150"
+              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150"
             >
               {saving && <Spinner size="sm" invert />} {t("save")}
             </button>

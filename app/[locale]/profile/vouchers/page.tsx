@@ -63,7 +63,7 @@ export default function VouchersPage() {
           <div className="w-12 h-12 rounded-full bg-s-coral/10 flex items-center justify-center mx-auto mb-3">
             <AlertCircle className="w-6 h-6 text-s-coral" />
           </div>
-          <p className="text-s-coral text-sm font-heading font-bold mb-1">FEHLER</p>
+          <p className="text-s-coral text-sm font-heading mb-1">FEHLER</p>
           <p className="text-s-ink/60 text-sm">{error}</p>
         </div>
       </div>
@@ -87,7 +87,7 @@ export default function VouchersPage() {
           <div className="w-14 h-14 rounded-full bg-s-coral/15 flex items-center justify-center mx-auto mb-3">
             <Gift className="w-7 h-7 text-s-coral" />
           </div>
-          <h1 className="font-heading font-bold text-xl text-s-ink mb-1">
+          <h1 className="font-heading text-xl text-s-ink mb-1">
             Meine Gutscheine
           </h1>
           <p className="text-sm text-s-ink/60 max-w-xs mx-auto">
@@ -98,7 +98,7 @@ export default function VouchersPage() {
         {/* Active vouchers section */}
         {data?.active && data.active.length > 0 && (
           <div className="space-y-3">
-            <h2 className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 px-2">
+            <h2 className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 px-2">
               Aktive Gutscheine ({data.active.length})
             </h2>
             {data.active.map((voucher) => (
@@ -110,7 +110,7 @@ export default function VouchersPage() {
         {/* Used vouchers section */}
         {data?.used && data.used.length > 0 && (
           <div className="space-y-3">
-            <h2 className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 px-2">
+            <h2 className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 px-2">
               Verwendet ({data.used.length})
             </h2>
             {data.used.map((voucher) => (
@@ -122,7 +122,7 @@ export default function VouchersPage() {
         {/* Expired vouchers section */}
         {data?.expired && data.expired.length > 0 && (
           <div className="space-y-3">
-            <h2 className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 px-2">
+            <h2 className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 px-2">
               Abgelaufen ({data.expired.length})
             </h2>
             {data.expired.map((voucher) => (
@@ -144,7 +144,7 @@ export default function VouchersPage() {
             </p>
             <Link
               href={`/${locale}/vouchers`}
-              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-btn bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
             >
               Gutschein kaufen
             </Link>
@@ -156,7 +156,7 @@ export default function VouchersPage() {
           <div className="mt-8 pt-6 border-t border-s-ink/5">
             <Link
               href={`/${locale}/vouchers`}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-btn border border-s-coral/20 bg-s-coral/5 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-coral hover:border-s-coral/40:border-s-coral/60 hover:bg-s-coral/10:bg-s-coral/20 transition-[transform,filter] duration-150"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-btn border border-s-coral/20 bg-s-coral/5 text-[11px] font-heading uppercase tracking-[.06em] text-s-coral hover:border-s-coral/40:border-s-coral/60 hover:bg-s-coral/10:bg-s-coral/20 transition-[transform,filter] duration-150"
             >
               Neuen Gutschein schenken
             </Link>
@@ -207,13 +207,13 @@ function VoucherCard({
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           {/* Recipient info */}
-          <p className="text-xs font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mb-1">
+          <p className="text-xs font-heading uppercase tracking-[.08em] text-s-ink/40 mb-1">
             Für: {voucher.recipient_name}
           </p>
 
           {/* Salon name */}
           {salonName && (
-            <p className="text-sm font-heading font-semibold text-s-ink mb-2">
+            <p className="text-sm font-heading text-s-ink mb-2">
               {salonName}
             </p>
           )}
@@ -223,7 +223,7 @@ function VoucherCard({
             <code className="text-xs font-mono font-bold text-s-ink/60 tracking-[.06em]">
               {voucher.code}
             </code>
-            <span className="text-sm font-heading font-bold text-s-ink">
+            <span className="text-sm font-heading text-s-ink">
               {formatCurrency(voucher.amount, locale)}
             </span>
           </div>
@@ -241,7 +241,7 @@ function VoucherCard({
               </>
             )}
             <span
-              className="text-[9px] font-heading font-bold uppercase tracking-[.08em]"
+              className="text-[9px] font-heading uppercase tracking-[.08em]"
               style={{
                 color: status === "active" ? "#F3A864" : status === "used" ? "#16A34A" : "rgba(26,18,9,.4)",
               }}
@@ -261,10 +261,10 @@ function VoucherCard({
         {/* Remaining amount indicator */}
         {status === "used" && voucher.remaining_amount > 0 && (
           <div className="text-right shrink-0">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 mb-1">
+            <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/40 mb-1">
               Verbleibend
             </p>
-            <p className="text-sm font-heading font-bold text-s-ink">
+            <p className="text-sm font-heading text-s-ink">
               {formatCurrency(voucher.remaining_amount, locale)}
             </p>
           </div>

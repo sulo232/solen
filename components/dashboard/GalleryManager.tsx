@@ -150,7 +150,7 @@ export default function GalleryManager({
   return (
     <div className="bg-white rounded-[24px] border border-s-ink/5 p-6 mb-8">
       <div className="mb-6">
-        <h2 className="font-heading font-bold text-lg text-s-ink">
+        <h2 className="font-heading text-lg text-s-ink">
           {t("gallery_title")}
         </h2>
         <p className="text-sm text-s-ink/50">
@@ -207,7 +207,7 @@ export default function GalleryManager({
                   </button>
                 </div>
                 {index === 0 && (
-                  <div className="self-center flex items-center gap-1 bg-s-ink/80 text-white text-[10px] font-heading font-bold uppercase tracking-wider px-2 py-1 rounded-sm backdrop-blur-[6px]">
+                  <div className="self-center flex items-center gap-1 bg-s-ink/80 text-white text-[10px] font-heading uppercase tracking-wider px-2 py-1 rounded-sm backdrop-blur-[6px]">
                     <Star size={9} fill="currentColor" />
                     {t("gallery_cover_overlay")}
                   </div>
@@ -216,7 +216,7 @@ export default function GalleryManager({
 
               {/* Cover badge */}
               {index === 0 && (
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-s-ink/80 text-white text-[10px] font-heading font-bold uppercase tracking-wider px-2 py-1 rounded-sm backdrop-blur-[6px] group-hover:opacity-0 transition-opacity pointer-events-none">
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-s-ink/80 text-white text-[10px] font-heading uppercase tracking-wider px-2 py-1 rounded-sm backdrop-blur-[6px] group-hover:opacity-0 transition-opacity pointer-events-none">
                   <Star size={9} fill="currentColor" />
                   {t("gallery_cover")}
                 </div>

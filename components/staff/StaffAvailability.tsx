@@ -47,7 +47,7 @@ export default function StaffAvailability({ staffId, locale }: StaffAvailability
 
   return (
     <div className="mt-6 mb-2">
-      <h3 className="font-heading font-semibold text-sm text-s-ink mb-3">
+      <h3 className="font-heading text-sm text-s-ink mb-3">
         {locale === "de" ? "Verfügbarkeit" : "Availability"}
       </h3>
       <div className="flex gap-3 items-stretch overflow-x-auto no-scrollbar pb-2">
@@ -65,7 +65,7 @@ export default function StaffAvailability({ staffId, locale }: StaffAvailability
                   : "border-s-ink/5 bg-s-bg-sunken opacity-60"
               }`}
             >
-              <p className="text-xs font-heading font-bold text-s-ink capitalize mb-1">
+              <p className="text-xs font-heading text-s-ink capitalize mb-1">
                 {format(date, "EEEE", { locale: dateLocale })}
               </p>
               <p className="text-[10px] text-s-ink/50 uppercase tracking-widest font-heading mb-2">

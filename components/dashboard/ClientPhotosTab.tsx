@@ -78,7 +78,7 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading font-bold text-sm text-s-ink flex items-center gap-2">
+        <h3 className="font-heading text-sm text-s-ink flex items-center gap-2">
           <Camera size={14} className="text-s-coral" /> Fotos
         </h3>
         <div className="flex items-center gap-2">

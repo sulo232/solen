@@ -38,10 +38,10 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
   return (
     <div className="flex flex-col gap-5">
       <div className="text-center mb-2">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/45 mb-2">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/45 mb-2">
           Registrierung
         </p>
-        <h2 className="font-heading font-bold text-xl text-s-ink">
+        <h2 className="font-heading text-xl text-s-ink">
           Wie möchtest du starten?
         </h2>
       </div>
@@ -54,7 +54,7 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
           <User size={20} className="text-s-coral" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-heading font-semibold text-sm text-s-ink">Ich bin ein Kunde</p>
+          <p className="font-heading text-sm text-s-ink">Ich bin ein Kunde</p>
           <p className="text-[10px] font-body text-s-ink/45 mt-0.5">Salons entdecken und Termine buchen</p>
         </div>
         <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors shrink-0" />
@@ -68,7 +68,7 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
           <Building2 size={20} className="text-s-amber" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-heading font-semibold text-sm text-s-ink">Ich bin Salon-Inhaber</p>
+          <p className="font-heading text-sm text-s-ink">Ich bin Salon-Inhaber</p>
           <p className="text-[10px] font-body text-s-ink/45 mt-0.5">Meinen Salon registrieren und verwalten</p>
         </div>
         <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors shrink-0" />
@@ -144,16 +144,16 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
           <Mail size={24} className="text-s-coral" />
         </div>
         <div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-coral mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-coral mb-2">
             E-Mail gesendet
           </p>
-          <p className="font-heading font-bold text-lg text-s-ink">Fast fertig!</p>
+          <p className="font-heading text-lg text-s-ink">Fast fertig!</p>
           <p className="text-xs font-body text-s-ink/50 mt-1 leading-relaxed">
             Überprüfe deine E-Mails und klicke auf den Bestätigungslink.
           </p>
         </div>
         <button onClick={onNext}
-          className="text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-coral/60 hover:text-s-coral transition-colors mt-2">
+          className="text-[11px] font-heading uppercase tracking-[.06em] text-s-coral/60 hover:text-s-coral transition-colors mt-2">
           Weiter →
         </button>
       </div>
@@ -162,7 +162,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="font-heading font-bold text-xl text-s-ink">Konto erstellen</h2>
+      <h2 className="font-heading text-xl text-s-ink">Konto erstellen</h2>
 
       <input
         type="email"
@@ -183,7 +183,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       
       {isSalon ? (
         <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
             Name des Salons
           </label>
           <input
@@ -197,7 +197,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         </div>
       ) : (
         <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
             Geburtsdatum <span className="text-s-ink/25">(mind. 16 Jahre)</span>
           </label>
           <input
@@ -213,7 +213,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       <button
         type="submit"
         disabled={!email || !password || (isSalon ? !salonName : !birthday) || saving}
-        className="w-full py-4 rounded-pill bg-s-coral shadow-elevation-2 text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+        className="w-full py-4 rounded-pill bg-s-coral shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
         {saving && <Spinner size="sm" invert />}
         Registrieren
       </button>
@@ -264,7 +264,7 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="font-heading font-bold text-xl text-s-ink">{tc("yourName")}</h2>
+      <h2 className="font-heading text-xl text-s-ink">{tc("yourName")}</h2>
 
       <div className="flex items-center gap-4">
         <div className="w-16 h-16 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center text-s-ink/20">
@@ -351,7 +351,7 @@ function SelectPill<T extends string>({
           type="button"
           onClick={() => onChange(o.value)}
           className={[
-            "flex items-center gap-2 px-3.5 py-2.5 rounded-pill border text-xs font-heading font-semibold transition-[background-color,color,border-color] duration-150",
+            "flex items-center gap-2 px-3.5 py-2.5 rounded-pill border text-xs font-heading transition-[background-color,color,border-color] duration-150",
             value === o.value
               ? "border-s-coral bg-s-coral/[0.08] text-s-coral font-bold"
               : "border-s-ink/[0.08] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral",
@@ -397,7 +397,7 @@ function Step2({ onNext }: { onNext: () => void }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <h2 className="font-heading font-bold text-xl text-s-ink">{tc("details")}</h2>
+      <h2 className="font-heading text-xl text-s-ink">{tc("details")}</h2>
 
       <div>
         <p className="text-sm font-body font-medium text-s-ink/70 mb-2">{tc("gender")}</p>
@@ -479,7 +479,7 @@ function Step3({ onComplete }: { onComplete: () => void }) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div>
-        <h2 className="font-heading font-bold text-xl text-s-ink">Was interessiert dich?</h2>
+        <h2 className="font-heading text-xl text-s-ink">Was interessiert dich?</h2>
         <p className="text-sm font-body text-s-ink/50 mt-1">Wähle deine Lieblingskategorien</p>
       </div>
 
@@ -502,7 +502,7 @@ function Step3({ onComplete }: { onComplete: () => void }) {
                 </span>
               )}
               <span className={active ? "text-s-coral" : "text-s-ink/50"}>{o.icon}</span>
-              <span className="text-[11px] font-heading font-semibold text-s-ink">{o.label}</span>
+              <span className="text-[11px] font-heading text-s-ink">{o.label}</span>
             </button>
           );
         })}
@@ -547,10 +547,10 @@ function DoneScreen() {
 
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.15 }}>
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-sage mb-2">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-sage mb-2">
           Konto erstellt
         </p>
-        <p className="font-heading font-bold text-xl text-s-ink">Willkommen bei solen.ch!</p>
+        <p className="font-heading text-xl text-s-ink">Willkommen bei solen.ch!</p>
         <p className="font-body italic text-s-ink/45 text-sm mt-1">Du wirst weitergeleitet…</p>
       </motion.div>
 
@@ -624,11 +624,11 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         {/* Logo lockup */}
         <div className="text-center mb-6">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-amber mb-3">
+          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-amber mb-3">
             solen.ch
           </p>
           <Link href={`/${locale}`}
-            className="inline-block font-heading font-bold text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity">
+            className="inline-block font-heading text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity">
             solen<span className="text-s-coral">.</span>ch
           </Link>
         </div>
@@ -641,7 +641,7 @@ export default function RegisterPage() {
                 <div key={s} className={`flex-1 h-1 rounded-full transition-[width] duration-[350ms] ${(s as number) <= (step as number) ? "bg-s-coral" : "bg-s-ink/[0.08]"}`} />
               ))}
             </div>
-            <p className="text-right text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 mt-1.5">
+            <p className="text-right text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/50 mt-1.5">
               Schritt {currentStepNum} von {totalSteps}
             </p>
           </div>
@@ -656,7 +656,7 @@ export default function RegisterPage() {
             {(step === 2 || step === 3) && (
               <button
                 onClick={() => goTo((step - 1) as WizardStep)}
-                className="flex items-center gap-1.5 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 hover:text-s-ink transition-colors mb-4">
+                className="flex items-center gap-1.5 text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/45 hover:text-s-ink transition-colors mb-4">
                 <ArrowLeft size={12} /> Zurück
               </button>
             )}
@@ -688,11 +688,11 @@ export default function RegisterPage() {
 
         {step !== "done" && step === -1 && (
           <p className="text-center mt-6">
-            <span className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/50">
+            <span className="text-[11px] font-heading uppercase tracking-[.08em] text-s-ink/50">
               Bereits registriert?{" "}
             </span>
             <Link href={`/${locale}/auth/login`}
-              className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-coral hover:underline">
+              className="text-[11px] font-heading uppercase tracking-[.08em] text-s-coral hover:underline">
               Anmelden
             </Link>
           </p>

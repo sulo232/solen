@@ -97,7 +97,7 @@ export default function CategoryStickyRow({ locale }: CategoryStickyRowProps) {
                       : "text-[s-ink/60] hover:text-s-ink"
                   )}
                 >
-                  <span className="text-[13px] font-heading font-semibold">
+                  <span className="text-[13px] font-heading">
                     {t(key as Parameters<typeof t>[0])}
                   </span>
                   {isActive && (

@@ -91,7 +91,7 @@ export default function SalonEarningsPage() {
     <DashboardLayout>
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-heading font-bold text-2xl text-s-ink">Guthaben & Auszahlungen</h1>
+          <h1 className="font-heading text-2xl text-s-ink">Guthaben & Auszahlungen</h1>
           <p className="text-sm text-s-ink/40 mt-0.5">Übersicht deiner Online-Zahlungen via Stripe</p>
         </div>
       </div>
@@ -128,7 +128,7 @@ export default function SalonEarningsPage() {
 
           <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
             <div className="px-5 py-4 border-b border-s-ink/5">
-              <h2 className="font-heading font-semibold text-s-ink text-sm">Transaktionen & Gutschriften</h2>
+              <h2 className="font-heading text-s-ink text-sm">Transaktionen & Gutschriften</h2>
             </div>
             
             {data.payouts && data.payouts.length > 0 ? (
@@ -191,7 +191,7 @@ export default function SalonEarningsPage() {
           <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
             <div className="px-5 py-4 border-b border-s-ink/5 flex items-center gap-2">
               <Users size={16} className="text-s-coral" />
-              <h2 className="font-heading font-semibold text-s-ink text-sm">Mitarbeiter-Abrechnung</h2>
+              <h2 className="font-heading text-s-ink text-sm">Mitarbeiter-Abrechnung</h2>
             </div>
             {staffLoading ? (
               <div className="flex justify-center py-8"><Spinner size="md" /></div>

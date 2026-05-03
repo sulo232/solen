@@ -18,7 +18,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
 
   return (
     <div className="px-4 pt-4">
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 mb-3">
+      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/40 mb-3">
         {t("title")}
       </p>
       <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
@@ -36,7 +36,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
           <div className="w-12 h-12 rounded-full bg-s-bg-sunken flex items-center justify-center">
             <Users size={20} className="text-s-ink/30" />
           </div>
-          <span className="text-xs font-heading font-semibold text-s-ink">{t("any")}</span>
+          <span className="text-xs font-heading text-s-ink">{t("any")}</span>
         </button>
 
         {/* Staff cards */}
@@ -66,7 +66,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
                 </span>
               )}
             </div>
-            <span className="text-xs font-heading font-semibold text-s-ink text-center leading-tight max-w-[80px] truncate">
+            <span className="text-xs font-heading text-s-ink text-center leading-tight max-w-[80px] truncate">
               {s.name}
             </span>
             {s.specialties?.length > 0 && (

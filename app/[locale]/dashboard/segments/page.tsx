@@ -70,7 +70,7 @@ export default function SegmentsPage() {
   return (
     <DashboardLayout>
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">Kundensegmente</h1>
+        <h1 className="font-heading text-2xl text-s-ink">Kundensegmente</h1>
         <p className="text-sm text-s-ink/40 mt-0.5">Automatisch berechnete Kundengruppen</p>
       </div>
 
@@ -100,13 +100,13 @@ export default function SegmentsPage() {
                       <Icon size={20} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-heading font-bold text-sm text-s-ink truncate">{seg.name}</h3>
+                      <h3 className="font-heading text-sm text-s-ink truncate">{seg.name}</h3>
                       <p className="text-xs text-s-ink/40">{seg.description}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between mt-3">
-                    <span className="text-2xl font-heading font-bold data-text" style={{ color: seg.color }}>
+                    <span className="text-2xl font-heading data-text" style={{ color: seg.color }}>
                       {seg.member_count}
                     </span>
                     <span className="text-xs text-s-ink/30">Mitglieder</span>

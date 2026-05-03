@@ -110,7 +110,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-s-ink/5">
-              <h2 className="font-heading font-bold text-lg text-s-ink">Salons vergleichen</h2>
+              <h2 className="font-heading text-lg text-s-ink">Salons vergleichen</h2>
               <div className="flex items-center gap-2">
                 <button 
                   onClick={() => {
@@ -145,7 +145,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                           </div>
                         )}
                         <div className={`mt-3 ${i === bestIdx && salons.length > 1 ? "ring-2 ring-s-coral/20 rounded-[12px] p-2" : "p-2"}`}>
-                          <h3 className="font-heading font-bold text-sm text-s-ink truncate">{salon.name}</h3>
+                          <h3 className="font-heading text-sm text-s-ink truncate">{salon.name}</h3>
                           <p className="text-[10px] text-s-ink/40 capitalize mt-0.5 truncate">{(salon as any).quartier}</p>
                         </div>
                       </th>

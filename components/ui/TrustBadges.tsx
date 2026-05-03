@@ -20,7 +20,7 @@ export default function TrustBadges() {
           className="flex items-center gap-2 px-4 py-2.5 rounded-pill border border-white/10"
         >
           <Icon size={13} className="text-white/50 shrink-0" />
-          <span className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-white/50">
+          <span className="text-[9px] font-heading uppercase tracking-[.14em] text-white/50">
             {t(key)}
           </span>
         </div>

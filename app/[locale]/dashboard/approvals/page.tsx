@@ -59,7 +59,7 @@ export default function ApprovalsPage() {
       <div className="mb-6 flex items-center gap-3">
         <ShieldCheck size={22} className="text-s-coral" />
         <div>
-          <h1 className="font-heading font-bold text-2xl text-s-ink">Genehmigungen</h1>
+          <h1 className="font-heading text-2xl text-s-ink">Genehmigungen</h1>
           <p className="text-sm text-s-ink/40 mt-0.5">Neue Salons warten auf Freischaltung</p>
         </div>
       </div>
@@ -77,7 +77,7 @@ export default function ApprovalsPage() {
             <div key={salon.id} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-5">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex-1 min-w-0 space-y-1.5">
-                  <h2 className="font-heading font-bold text-lg text-s-ink">{salon.name}</h2>
+                  <h2 className="font-heading text-lg text-s-ink">{salon.name}</h2>
 
                   {salon.owner_email && (
                     <div className="flex items-center gap-1.5 text-sm text-s-ink/50">
@@ -135,7 +135,7 @@ export default function ApprovalsPage() {
       {rejectModal && (
         <div className="fixed inset-0 z-50 bg-s-ink/40 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-input shadow-v5-float w-full max-w-md p-6">
-            <h3 className="font-heading font-bold text-lg text-s-ink mb-1">Salon ablehnen</h3>
+            <h3 className="font-heading text-lg text-s-ink mb-1">Salon ablehnen</h3>
             <p className="text-sm text-s-ink/50 mb-4">
               Begründung für <strong>{rejectModal.name}</strong> (wird per E-Mail gesendet):
             </p>

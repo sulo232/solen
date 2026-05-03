@@ -58,10 +58,10 @@ export default function NearbySalons({ salonSlug }: NearbySalonsProps) {
 
   return (
     <div>
-      <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+      <span className="block font-heading text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
         {t("eyebrow")}
       </span>
-      <h2 className="font-heading font-extrabold text-s-ink mb-6"
+      <h2 className="font-heading text-s-ink mb-6"
         style={{ fontSize: "clamp(22px, 3vw, 32px)", letterSpacing: "-0.02em" }}>
         {t("title")}
       </h2>

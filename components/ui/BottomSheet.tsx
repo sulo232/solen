@@ -126,7 +126,7 @@ export default function BottomSheet({
             {/* Header */}
             {title && (
               <div className="flex items-center justify-between px-6 pb-3">
-                <h3 className="font-heading font-semibold text-s-ink">{title}</h3>
+                <h3 className="font-heading text-s-ink">{title}</h3>
                 <button
                   onClick={onClose}
                   className="p-3 rounded-full text-s-ink/60 hover:text-s-ink hover:bg-s-bg-sunken:bg-white/20 transition-colors"

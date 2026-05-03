@@ -172,7 +172,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
             className="flex flex-col gap-4"
           >
             <div className="flex items-center justify-between">
-              <Heading className="text-lg font-heading font-bold text-s-ink" />
+              <Heading className="text-lg font-heading text-s-ink" />
               <div className="flex gap-1">
                 <AriaButton
                   slot="previous"
@@ -191,7 +191,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
             <CalendarGrid className="border-collapse space-y-2">
               <CalendarGridHeader>
                 {(day) => (
-                  <CalendarHeaderCell className="text-center text-xs font-heading font-semibold text-s-ink/50 p-2">
+                  <CalendarHeaderCell className="text-center text-xs font-heading text-s-ink/50 p-2">
                     {day}
                   </CalendarHeaderCell>
                 )}
@@ -229,7 +229,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
             transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
           >
             <div className="border-t border-s-ink/[0.06] pt-5">
-              <p className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 mb-4">
+              <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 mb-4">
                 {tTime('title')}
               </p>
 
@@ -252,7 +252,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
                 <div className="space-y-5">
                   {timeGroups.map((group) => (
                     <div key={group.label}>
-                      <p className="text-xs font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 mb-3">
+                      <p className="text-xs font-heading uppercase tracking-[.16em] text-s-ink/40 mb-3">
                         {group.label}
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -261,7 +261,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
                             key={slot.time}
                             onClick={() => slot.isAvailable && handleSelectTime(slot.time)}
                             disabled={!slot.isAvailable}
-                            className={`px-4 py-2 rounded-pill border text-sm font-heading font-semibold transition-[border-color,background-color] duration-150 ${
+                            className={`px-4 py-2 rounded-pill border text-sm font-heading transition-[border-color,background-color] duration-150 ${
                               formData.selectedTime === slot.time
                                 ? 'bg-s-coral border-s-coral text-white'
                                 : slot.isAvailable
@@ -293,7 +293,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
           <button
             onClick={handleContinue}
             disabled={!formData.selectedDate || !formData.selectedTime || isChecking}
-            className="w-full py-3 rounded-btn bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-btn bg-s-coral text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
           >
             {isChecking && <Spinner size="sm" invert />}
             {tDate('continue')}

@@ -286,7 +286,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                           key={key}
                           href={`/${locale}${href}`}
                           className={cn(
-                            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-heading font-semibold whitespace-nowrap shrink-0 transition-[background-color,color] duration-150 active:scale-[0.97]",
+                            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-heading whitespace-nowrap shrink-0 transition-[background-color,color] duration-150 active:scale-[0.97]",
                             isActive
                               ? "bg-s-ink text-white"
                               : "bg-s-ink/[0.04] text-s-ink/55 hover:bg-s-ink/[0.08]"

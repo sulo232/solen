@@ -109,7 +109,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
       <div role="dialog" aria-modal="true" className="relative w-full sm:max-w-lg max-h-[80vh] bg-[--raised] rounded-t-[24px] sm:rounded-[24px] shadow-elevation-3 flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-s-ink/5">
-          <h3 className="font-heading font-semibold text-s-ink">{t("board_title")}</h3>
+          <h3 className="font-heading text-s-ink">{t("board_title")}</h3>
           <button onClick={onClose} aria-label={t("close")} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-s-ink/40 hover:bg-s-ink/5:bg-white/5 rounded-pill transition-colors duration-150">
             <X size={18} />
           </button>
@@ -119,7 +119,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
         <div className="flex items-center gap-2 px-4 py-2 overflow-x-auto border-b border-s-ink/5 scrollbar-hide">
           <button
             onClick={() => setActiveBoard(null)}
-            className={`shrink-0 text-[11px] font-heading font-bold uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
+            className={`shrink-0 text-[11px] font-heading uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
               activeBoard === null
                 ? "bg-s-coral text-white border-s-coral"
                 : "border-s-ink/10 text-s-ink/60 hover:brightness-[1.06]"
@@ -131,7 +131,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
             <button
               key={b.id}
               onClick={() => setActiveBoard(b.id)}
-              className={`shrink-0 text-[11px] font-heading font-bold uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
+              className={`shrink-0 text-[11px] font-heading uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
                 activeBoard === b.id
                   ? "bg-s-coral text-white border-s-coral"
                   : "border-s-ink/10 text-s-ink/60 hover:brightness-[1.06]"
@@ -159,7 +159,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
               className="flex-1 text-sm px-3 py-1.5 rounded-input border border-s-ink/10 bg-transparent text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
               onKeyDown={(e) => e.key === "Enter" && handleCreateBoard()}
             />
-            <button onClick={handleCreateBoard} className="text-[11px] font-heading font-bold uppercase tracking-[.04em] px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white hover:brightness-[1.06] transition-[transform,filter] duration-150">
+            <button onClick={handleCreateBoard} className="text-[11px] font-heading uppercase tracking-[.04em] px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white hover:brightness-[1.06] transition-[transform,filter] duration-150">
               {t("board_create")}
             </button>
             <button onClick={() => setShowNewForm(false)} aria-label={t("close")} className="text-xs text-s-ink/40">
@@ -204,7 +204,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
           <div className="px-4 py-3 border-t border-s-ink/5">
             <button
               onClick={handleConfirm}
-              className="w-full py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
+              className="w-full py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
             >
               {t("board_select_images", { count: selected.size })}
             </button>

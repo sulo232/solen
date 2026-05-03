@@ -40,7 +40,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
           <Rocket size={22} className="text-s-coral" />
         </div>
         <div>
-          <h2 className="font-heading font-bold text-xl text-s-ink">
+          <h2 className="font-heading text-xl text-s-ink">
             {t("goLive.title")}
           </h2>
           <p className="text-sm text-s-ink/40">
@@ -106,7 +106,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
             >
               <PartyPopper size={48} className="text-s-coral" />
             </motion.div>
-            <h2 className="font-heading font-bold text-2xl text-s-ink mb-2">
+            <h2 className="font-heading text-2xl text-s-ink mb-2">
               {t("goLive.live")}
             </h2>
             <p className="text-sm text-s-ink/50">

@@ -38,11 +38,11 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle?
         style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 16px rgba(26,18,9,.06)" }}
         role="form">
         {subtitle && (
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 mb-1.5">
+          <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/50 mb-1.5">
             {subtitle}
           </p>
         )}
-        <h2 className="font-heading font-bold text-2xl text-s-ink mb-6">{title}</h2>
+        <h2 className="font-heading text-2xl text-s-ink mb-6">{title}</h2>
         {children}
       </div>
     </div>
@@ -80,7 +80,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
     <StepContainer title={t("step1.title")} subtitle={t("step1.subtitle")}>
       <div className="space-y-4">
         <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.name")}</label>
+          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.name")}</label>
           <input
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
@@ -91,7 +91,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.email")}</label>
+          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.email")}</label>
           <input
             type="email"
             value={data.email}
@@ -103,7 +103,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 mb-2">{t("step1.categories")}</label>
+          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-2">{t("step1.categories")}</label>
           <div className="flex flex-wrap gap-2">
             {CATEGORY_OPTIONS.map((c) => (
               <button
@@ -111,7 +111,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 type="button"
                 onClick={() => toggleCat(c.value)}
                 className={[
-                  "px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-colors active:scale-[0.97]",
+                  "px-4 py-2.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-colors active:scale-[0.97]",
                   data.categories.includes(c.value)
                     ? "bg-s-coral text-white border-s-coral shadow-elevation-2"
                     : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/50",
@@ -126,7 +126,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
 
         <div className="grid grid-cols-1 gap-4">
           <div>
-            <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{/* will add translations later if needed */} Stadt</label>
+            <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{/* will add translations later if needed */} Stadt</label>
             <select
               value={data.city}
               onChange={(e) => onChange({ ...data, city: e.target.value })}
@@ -142,7 +142,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.address")}</label>
+          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.address")}</label>
           <AddressAutocomplete
             value={data.address}
             onChange={(val) => onChange({ ...data, address: val })}
@@ -226,7 +226,7 @@ function Step3({ data, onChange, category, t }: {
     <StepContainer title={t("step3Quick.title")} subtitle={t("step3Quick.subtitle")}>
       <div className="space-y-4">
         <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
             {t("step3Quick.serviceName")}
           </label>
           <div className="relative">
@@ -245,7 +245,7 @@ function Step3({ data, onChange, category, t }: {
           {suggested && data.service_name && (
             <div className="flex items-center gap-1.5 mt-1.5">
               <Sparkles size={10} className="text-s-coral" />
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/45">
+              <p className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/45">
                 KI-Vorschlag · anpassbar
               </p>
             </div>
@@ -254,7 +254,7 @@ function Step3({ data, onChange, category, t }: {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+            <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
               {t("step3Quick.duration")}
             </label>
             <select
@@ -268,7 +268,7 @@ function Step3({ data, onChange, category, t }: {
             </select>
           </div>
           <div>
-            <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+            <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
               {t("step3Quick.price")}
             </label>
             <input
@@ -286,7 +286,7 @@ function Step3({ data, onChange, category, t }: {
           style={{ background: "rgba(232,98,74,.04)" }}>
           <div className="flex items-center gap-1.5 mb-1.5">
             <Sparkles size={12} className="text-s-coral shrink-0" />
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-coral">
+            <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-coral">
               {t("step3Quick.hint")}
             </p>
           </div>
@@ -331,7 +331,7 @@ function StepPhotos({
           style={{ background: "rgba(232,98,74,.04)" }}>
           <div className="flex items-center gap-1.5 mb-1.5">
             <Camera size={12} className="text-s-coral shrink-0" />
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-coral">
+            <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-coral">
               {t("stepPhotos.hint")}
             </p>
           </div>
@@ -599,10 +599,10 @@ export default function SalonOnboardingPage() {
               </div>
 
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-coral mb-2">
+                <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-coral mb-2">
                   Willkommen
                 </p>
-                <h2 className="font-heading font-bold text-2xl text-s-ink">
+                <h2 className="font-heading text-2xl text-s-ink">
                   {t("done.title")}
                 </h2>
                 <p className="text-xs font-body text-s-ink/45 max-w-xs mt-2 leading-relaxed">
@@ -612,7 +612,7 @@ export default function SalonOnboardingPage() {
                   {t("done.dashboardHint")}
                 </p>
                 <Link href={`/${locale}/dashboard?onboarded=1`}
-                  className="mt-4 px-6 py-3 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2">
+                  className="mt-4 px-6 py-3 rounded-btn bg-s-coral text-white text-xs font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2">
                   Zum Dashboard →
                 </Link>
               </div>
@@ -637,10 +637,10 @@ export default function SalonOnboardingPage() {
       <div className="bg-white border-b border-s-ink/[0.06] px-4 py-4 sticky top-0 z-10">
         <div className="max-w-xl mx-auto">
           <div className="flex items-center justify-between mb-3">
-            <span className="font-heading font-bold text-base text-s-ink">
+            <span className="font-heading text-base text-s-ink">
               solen<span className="text-s-coral">.</span>ch
             </span>
-            <span className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/45">
+            <span className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/45">
               {t("header.stepOf", { step, total: TOTAL_STEPS })}
             </span>
           </div>
@@ -656,7 +656,7 @@ export default function SalonOnboardingPage() {
               />
             ))}
           </div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mt-2 text-center">
+          <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mt-2 text-center">
             {t(`progress.${STEP_META[step - 1]?.label}` as any)}
           </p>
         </div>
@@ -711,7 +711,7 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goPrev}
-              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/55 hover:bg-s-bg-sunken hover:border-s-ink/20 active:translate-y-[1px] active:shadow-pressed transition-[transform,filter]"
+              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] text-xs font-heading uppercase tracking-[.06em] text-s-ink/55 hover:bg-s-bg-sunken hover:border-s-ink/20 active:translate-y-[1px] active:shadow-pressed transition-[transform,filter]"
             >
               <ChevronLeft size={16} /> {t("nav.back")}
             </button>
@@ -720,7 +720,7 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goNext}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-[transform,filter] group shadow-elevation-2"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-[transform,filter] group shadow-elevation-2"
             >
               <span>{t("nav.next")}</span>
               <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />

@@ -25,7 +25,7 @@ export default function AllergyAlert({ allergies, chemicalSensitivities, patchTe
     <div className="flex gap-3 p-3 rounded-[10px] bg-s-error/8 border border-s-error/20 mb-4">
       <AlertTriangle size={15} className="text-s-error shrink-0 mt-0.5" />
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-heading font-bold text-s-error mb-0.5">
+        <p className="text-xs font-heading text-s-error mb-0.5">
           {t("allergyAlertTitle")}
         </p>
         {allergies && (
@@ -34,7 +34,7 @@ export default function AllergyAlert({ allergies, chemicalSensitivities, patchTe
         {chemicalSensitivities && chemicalSensitivities.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-1">
             {chemicalSensitivities.map((s) => (
-              <span key={s} className="px-1.5 py-0.5 rounded-[4px] bg-s-error/12 text-[9px] font-heading font-bold text-s-error">
+              <span key={s} className="px-1.5 py-0.5 rounded-[4px] bg-s-error/12 text-[9px] font-heading text-s-error">
                 {s}
               </span>
             ))}

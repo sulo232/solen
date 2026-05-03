@@ -47,7 +47,7 @@ export default function StampCard({
 
       {/* Top: salon info */}
       <div className="p-4 pb-3">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-2">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/35 mb-2">
           Treuekarte
         </p>
         <Link
@@ -63,7 +63,7 @@ export default function StampCard({
               </div>
             )}
           </div>
-          <p className="font-heading font-semibold text-sm text-s-ink truncate">
+          <p className="font-heading text-sm text-s-ink truncate">
             {salonName}
           </p>
         </Link>
@@ -96,10 +96,10 @@ export default function StampCard({
 
       {/* Bottom: reward + progress */}
       <div className="px-4 pb-4 flex items-center justify-between gap-2">
-        <p className="text-xs font-heading font-semibold text-s-amber">
+        <p className="text-xs font-heading text-s-amber">
           {rewardText}
         </p>
-        <span className="text-[10px] font-heading font-bold text-s-ink/35 whitespace-nowrap uppercase tracking-[.08em]">
+        <span className="text-[10px] font-heading text-s-ink/35 whitespace-nowrap uppercase tracking-[.08em]">
           {stampsCollected}/{stampsTotal}
         </span>
       </div>
@@ -110,7 +110,7 @@ export default function StampCard({
           className="absolute bottom-0 left-0 right-0 border-t border-s-coral/20 px-4 py-2.5 text-center"
           style={{ background: "rgba(232,98,74,.08)" }}
         >
-          <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-coral">
+          <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-coral">
             Belohnung freigeschaltet!
           </p>
         </div>

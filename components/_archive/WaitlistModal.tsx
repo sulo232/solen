@@ -50,7 +50,7 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <ClipboardList className="w-5 h-5 text-s-coral" />
-            <h3 className="font-heading font-bold text-s-ink">Warteliste</h3>
+            <h3 className="font-heading text-s-ink">Warteliste</h3>
           </div>
           <button onClick={onClose} aria-label="Schliessen" className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-btn hover:bg-s-bg-sunken:bg-white/10 transition-colors">
             <X className="w-4 h-4 text-s-ink/40" />

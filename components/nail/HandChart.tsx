@@ -87,7 +87,7 @@ export default function HandChart({ customerId }: HandChartProps) {
   return (
     <div className="space-y-6 py-2 pb-12 relative">
       <div className="text-center mb-6">
-        <h3 className="text-sm font-heading font-bold text-s-ink uppercase tracking-[.06em]">
+        <h3 className="text-sm font-heading text-s-ink uppercase tracking-[.06em]">
           {t("hand_chart_title")}
         </h3>
         <p className="text-xs text-s-ink/60 mt-1">
@@ -169,7 +169,7 @@ export default function HandChart({ customerId }: HandChartProps) {
             className="absolute bottom-[-10px] left-0 right-0 p-4 bg-[--raised] rounded-[16px] shadow-warm-lg border border-s-ink/10"
           >
             <div className="flex justify-between items-center mb-2">
-              <span className="text-xs font-heading font-bold text-s-ink">
+              <span className="text-xs font-heading text-s-ink">
                 {[...FINGERS_LEFT, ...FINGERS_RIGHT].find(f => f.id === selectedFinger)?.label}
               </span>
               <button

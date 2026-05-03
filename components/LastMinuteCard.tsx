@@ -63,7 +63,7 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
       >
         <div className="p-4 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <p className="font-heading font-semibold text-s-ink text-sm leading-tight line-clamp-2 flex-1">
+            <p className="font-heading text-s-ink text-sm leading-tight line-clamp-2 flex-1">
               {slot.salon.name}
             </p>
             {isUrgent && (

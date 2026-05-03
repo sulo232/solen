@@ -50,7 +50,7 @@ function DeleteModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-v5-float w-full max-w-sm p-6">
-        <h3 className="font-heading font-bold text-base text-s-ink mb-2">Bewertung löschen</h3>
+        <h3 className="font-heading text-base text-s-ink mb-2">Bewertung löschen</h3>
         <p className="text-sm text-s-ink/50 mb-5">Bewertung endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.</p>
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
@@ -136,7 +136,7 @@ export default function ReviewModerationPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">Bewertungs-Moderation</h1>
+        <h1 className="font-heading text-2xl text-s-ink">Bewertungs-Moderation</h1>
         <p className="text-sm text-s-ink/40 mt-0.5">Gemeldete und neue Bewertungen prüfen</p>
       </div>
 

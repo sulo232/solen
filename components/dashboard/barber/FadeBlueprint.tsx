@@ -140,14 +140,14 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
   return (
     <div className="rounded-input border border-s-ink/[0.06] bg-white p-4">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
           {t("fade_blueprint")}
         </p>
         <div className="flex items-center gap-2">
           <button
             aria-pressed={visualMode}
             onClick={() => setVisualMode(!visualMode)}
-            className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
+            className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading transition-colors duration-150 ${
               visualMode
                 ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                 : "border-s-ink/[0.06] text-s-ink/40"
@@ -228,7 +228,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           {/* Guard dropdown */}
           {activeZone && activeZone !== "neckline" && (
             <div className="absolute top-2 right-2 z-10 rounded-input border border-s-ink/[0.06] bg-white p-2 shadow-elevation-2">
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 mb-1">
+              <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/40 mb-1">
                 {t("guard_size")}
               </p>
               <div className="grid grid-cols-3 gap-1">
@@ -256,7 +256,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
       <div className="mt-4 space-y-3">
         {/* Neckline Style */}
         <div>
-          <p className="text-[10px] font-heading font-bold text-s-ink/50 uppercase tracking-[.12em] mb-1">
+          <p className="text-[10px] font-heading text-s-ink/50 uppercase tracking-[.12em] mb-1">
             {t("neckline")}
           </p>
           <div className="flex flex-wrap gap-1">
@@ -281,7 +281,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
 
         {/* Fade Type */}
         <div>
-          <p className="text-[10px] font-heading font-bold text-s-ink/50 uppercase tracking-[.12em] mb-1">
+          <p className="text-[10px] font-heading text-s-ink/50 uppercase tracking-[.12em] mb-1">
             {t("fade_type")}
           </p>
           <div className="flex flex-wrap gap-1">
@@ -358,7 +358,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full flex items-center justify-center gap-2 py-2 rounded-[8px] bg-s-coral text-white text-sm font-heading font-semibold hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 py-2 rounded-[8px] bg-s-coral text-white text-sm font-heading hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-50"
             aria-label={t("save_blueprint")}
           >
             <Save size={14} />

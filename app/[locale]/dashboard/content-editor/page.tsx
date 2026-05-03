@@ -145,7 +145,7 @@ export default function ContentEditorPage() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">Inhalte bearbeiten</h1>
+        <h1 className="font-heading text-2xl text-s-ink">Inhalte bearbeiten</h1>
         <p className="text-sm text-s-ink/40 mt-0.5">Website-Texte und Inhalte verwalten</p>
       </div>
 

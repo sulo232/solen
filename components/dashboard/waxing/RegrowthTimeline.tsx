@@ -20,7 +20,7 @@ export default function RegrowthTimeline({ zones }: RegrowthTimelineProps) {
 
   return (
     <div className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] p-4">
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-plum mb-4">
+      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-plum mb-4">
         {t("timelineTitle")}
       </p>
       <div className="space-y-3">
@@ -37,10 +37,10 @@ export default function RegrowthTimeline({ zones }: RegrowthTimelineProps) {
           return (
             <div key={zone.zone}>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-heading font-semibold text-s-ink capitalize">
+                <span className="text-xs font-heading text-s-ink capitalize">
                   {zone.zone}
                 </span>
-                <span className={`text-[10px] font-heading font-semibold ${
+                <span className={`text-[10px] font-heading ${
                   isOverdue ? "text-red-500" : isInWindow ? "text-s-amber" : "text-s-sage"
                 }`}>
                   {isOverdue ? t("timelineOverdue") : isInWindow ? t("timelineRebook") : `${daysSince}/${cycle} ${t("days")}`}

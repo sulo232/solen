@@ -90,7 +90,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
           <Scissors size={22} className="text-s-coral" />
         </div>
         <div>
-          <h2 className="font-heading font-bold text-xl text-s-ink">
+          <h2 className="font-heading text-xl text-s-ink">
             {t("services.title")}
           </h2>
           <p className="text-sm text-s-ink/40">
@@ -161,7 +161,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
               <button
                 onClick={() => addService()}
                 disabled={!newService.name_de || saving}
-                className="w-full py-2.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 shadow-elevation-2 hover:brightness-[1.06] transition-[transform,filter]"
+                className="w-full py-2.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 shadow-elevation-2 hover:brightness-[1.06] transition-[transform,filter]"
               >
                 {saving && <Spinner size="sm" invert />}
                 {t("services.add")}
@@ -217,7 +217,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
           <button
             onClick={() => onSaved()}
             disabled={services.length === 0}
-            className="w-full py-3 mt-6 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+            className="w-full py-3 mt-6 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
           >
             {t("setup.saveAndContinue")}
           </button>

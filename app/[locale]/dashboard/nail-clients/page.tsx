@@ -26,8 +26,8 @@ export default function NailClientsPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-8">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">Nails</p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink leading-none">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/30 mb-1">Nails</p>
+        <h1 className="font-heading text-[28px] text-s-ink leading-none">
           Nagel Kunden
         </h1>
       </div>

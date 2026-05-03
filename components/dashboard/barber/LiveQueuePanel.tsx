@@ -123,7 +123,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
   return (
     <div className="w-full lg:max-w-xl rounded-[12px] border border-s-ink/[0.06] bg-white p-4">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
           {t("live_queue")}
         </p>
         <span className="text-xs data-text font-bold text-s-coral">
@@ -151,7 +151,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                 }`}
               />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-heading font-semibold text-s-ink truncate">
+                <p className="text-sm font-heading text-s-ink truncate">
                   {entry.customer_name}
                 </p>
                 <p className="text-[10px] text-s-ink/40">

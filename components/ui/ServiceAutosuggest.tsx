@@ -158,7 +158,7 @@ export default function ServiceAutosuggest({
       {/* Services section */}
       {!loading && hasServices && (
         <div>
-          <p className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 px-3 py-2">
+          <p className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 px-3 py-2">
             {labelServices}
           </p>
           {data!.services.map((item) => {
@@ -183,7 +183,7 @@ export default function ServiceAutosuggest({
                 <span className="text-[13px] font-body font-medium text-s-ink truncate flex-1">
                   {displayName}
                 </span>
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.06em] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral shrink-0">
+                <span className="text-[9px] font-heading uppercase tracking-[.06em] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral shrink-0">
                   {item.category}
                 </span>
                 {item.price != null && (() => {
@@ -203,7 +203,7 @@ export default function ServiceAutosuggest({
       {/* Salons section */}
       {!loading && hasSalons && (
         <div className={hasServices ? "border-t border-s-ink/[0.06] mt-1 pt-1" : ""}>
-          <p className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 px-3 py-2">
+          <p className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 px-3 py-2">
             {labelSalons}
           </p>
           {data!.salons.map((item) => (

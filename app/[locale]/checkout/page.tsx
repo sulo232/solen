@@ -94,7 +94,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
         type="submit"
         disabled={!stripe || loading}
         text={loading ? "Verarbeite..." : `Jetzt buchen · ${formatCurrency(intent.deposit_amount, locale)}`}
-        className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
+        className="w-full py-3.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
       />
 
       <p className="text-[9px] text-center font-heading uppercase tracking-[.10em] text-s-ink/50 mt-3">
@@ -314,10 +314,10 @@ export default function CheckoutPage() {
             style={{ background: "rgba(232,98,74,.12)" }}>
             <AlertCircle size={22} className="text-s-coral" />
           </div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-coral mb-1">Fehler</p>
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-coral mb-1">Fehler</p>
           <p className="text-xs font-body text-s-ink/55 mb-5">{error ?? "Etwas ist schiefgelaufen."}</p>
           <Link href={`/${locale}`}
-            className="inline-flex items-center gap-1.5 px-5 py-3 rounded-btn border border-s-ink/[0.08] text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-colors">
+            className="inline-flex items-center gap-1.5 px-5 py-3 rounded-btn border border-s-ink/[0.08] text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-colors">
             Zurück zur Startseite
           </Link>
         </div>
@@ -354,14 +354,14 @@ export default function CheckoutPage() {
               <PartyPopper size={28} className="text-s-success" />
             </div>
             <div>
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-success mb-2">
+              <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-success mb-2">
                 Buchung bestätigt
               </p>
-              <p className="font-heading font-bold text-xl text-s-ink">Termin fixiert!</p>
+              <p className="font-heading text-xl text-s-ink">Termin fixiert!</p>
               <p className="text-xs font-body text-s-ink/50 mt-1 leading-relaxed">Du zahlst direkt im Salon. Bis bald!</p>
             </div>
             <Link href={`/${locale}/profile`}
-              className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] hover:brightness-[1.06] shadow-elevation-2">
+              className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] hover:brightness-[1.06] shadow-elevation-2">
               Meine Buchungen
             </Link>
           </div>
@@ -380,11 +380,11 @@ export default function CheckoutPage() {
       {/* P15 — Breadcrumb */}
       <div className="max-w-lg mx-auto mb-4 flex items-center gap-1.5">
         <Link href={`/${locale}`}
-          className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50 hover:text-s-coral transition-colors">
+          className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 hover:text-s-coral transition-colors">
           Startseite
         </Link>
         <ChevronRight className="w-2.5 h-2.5 text-s-ink/20" />
-        <span className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50">
+        <span className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50">
           Checkout
         </span>
       </div>
@@ -393,10 +393,10 @@ export default function CheckoutPage() {
         {/* P2 — Booking summary card */}
         <div className="bg-white rounded-[12px] border border-s-ink/[0.07] shadow-warm-md">
           <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05]">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 mb-1">
+            <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/50 mb-1">
               Deine Buchung
             </p>
-            <h1 className="font-heading font-bold text-base text-s-ink">Buchungsübersicht</h1>
+            <h1 className="font-heading text-base text-s-ink">Buchungsübersicht</h1>
           </div>
           <div className="px-5 py-4">
 
@@ -406,7 +406,7 @@ export default function CheckoutPage() {
             <div className="flex items-start gap-2.5">
               <MapPin className="w-4 h-4 text-s-coral mt-0.5 shrink-0" />
               <div>
-                <p className="text-xs font-heading font-semibold text-s-ink">{intent.salon_name}</p>
+                <p className="text-xs font-heading text-s-ink">{intent.salon_name}</p>
                 {intent.salon_address && (
                   <p className="text-[10px] font-body text-s-ink/45 mt-0.5">{intent.salon_address}</p>
                 )}
@@ -415,7 +415,7 @@ export default function CheckoutPage() {
             {/* Date + time */}
             <div className="flex items-center gap-2.5">
               <Calendar className="w-4 h-4 text-s-coral shrink-0" />
-              <p className="text-xs font-heading font-semibold text-s-ink">
+              <p className="text-xs font-heading text-s-ink">
                 {intent.date} · {intent.time} Uhr
               </p>
             </div>
@@ -423,7 +423,7 @@ export default function CheckoutPage() {
             {intent.staff_name && (
               <div className="flex items-center gap-2.5">
                 <User className="w-4 h-4 text-s-coral shrink-0" />
-                <p className="text-xs font-heading font-semibold text-s-ink">{intent.staff_name}</p>
+                <p className="text-xs font-heading text-s-ink">{intent.staff_name}</p>
               </div>
             )}
           </div>
@@ -493,7 +493,7 @@ export default function CheckoutPage() {
             <div className="mt-4 rounded-[10px] border-l-4 border-s-coral pl-3 pr-4 py-3 flex items-center justify-between"
               style={{ background: "rgba(232,98,74,.05)", borderTopColor: "rgba(232,98,74,.15)", borderRightColor: "rgba(232,98,74,.15)", borderBottomColor: "rgba(232,98,74,.15)" }}>
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-coral">
+                <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-coral">
                   {paymentMode === "prepay" ? "Jetzt zu zahlen" : "Anzahlung jetzt"}
                 </p>
                 <p className="text-[10px] font-body text-s-ink/40 mt-0.5">
@@ -502,7 +502,7 @@ export default function CheckoutPage() {
                     : "Wird bei Erscheinen angerechnet"}
                 </p>
               </div>
-              <span className="font-heading font-bold text-xl text-s-coral">{formatCurrency(chargeAmount, locale)}</span>
+              <span className="font-heading text-xl text-s-coral">{formatCurrency(chargeAmount, locale)}</span>
             </div>
           )}
           </div>
@@ -512,7 +512,7 @@ export default function CheckoutPage() {
         <div className="bg-white rounded-[12px] border border-s-ink/[0.07] shadow-warm-md p-5 space-y-3">
           <div className="flex items-center gap-2">
             <Tag className="w-3.5 h-3.5 text-s-coral" />
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40">
+            <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40">
               Promo-Code oder Guthaben
             </p>
           </div>
@@ -530,7 +530,7 @@ export default function CheckoutPage() {
             {promoResult ? (
               <button
                 onClick={() => { setPromoResult(null); setPromoCode(""); }}
-                className="px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 hover:border-s-ink/20 transition-colors"
+                className="px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/50 hover:border-s-ink/20 transition-colors"
               >
                 Entfernen
               </button>
@@ -539,7 +539,7 @@ export default function CheckoutPage() {
                 onClick={handlePromoValidate}
                 disabled={promoLoading || !promoCode.trim()}
                 text={promoLoading ? "..." : "Anwenden"}
-                className="px-5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-50"
+                className="px-5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-50"
               />
             )}
           </div>
@@ -558,9 +558,9 @@ export default function CheckoutPage() {
               style={{ background: "rgba(46,125,50,.06)" }}>
               <div className="flex items-center gap-2">
                 <CheckCircle size={13} className="text-s-success shrink-0" />
-                <span className="text-xs font-heading font-semibold text-s-success">{promoResult.code} angewendet</span>
+                <span className="text-xs font-heading text-s-success">{promoResult.code} angewendet</span>
               </div>
-              <span className="text-xs font-heading font-bold text-s-success">-{formatCurrency(promoResult.discount_amount, locale)}</span>
+              <span className="text-xs font-heading text-s-success">-{formatCurrency(promoResult.discount_amount, locale)}</span>
             </div>
           )}
 
@@ -570,11 +570,11 @@ export default function CheckoutPage() {
               style={{ background: "rgba(243,168,100,.06)", border: "1px solid rgba(243,168,100,.15)" }}>
               <div className="flex items-center gap-2">
                 <Wallet className="w-3.5 h-3.5 text-s-amber shrink-0" />
-                <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-amber/80">
+                <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-amber/80">
                   Guthaben verfügbar
                 </p>
               </div>
-              <span className="text-xs font-heading font-bold text-s-amber">{formatCurrency(userCredits, locale)}</span>
+              <span className="text-xs font-heading text-s-amber">{formatCurrency(userCredits, locale)}</span>
             </div>
           )}
         </div>
@@ -584,7 +584,7 @@ export default function CheckoutPage() {
           <div className="bg-white rounded-[12px] border border-s-ink/[0.07] shadow-warm-md p-5 space-y-3">
             <div className="flex items-center gap-2">
               <PartyPopper className="w-3.5 h-3.5 text-s-coral" />
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40">
+              <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40">
                 Gutscheincode
               </p>
             </div>
@@ -602,7 +602,7 @@ export default function CheckoutPage() {
               {voucherResult ? (
                 <button
                   onClick={() => { setVoucherResult(null); setVoucherCode(""); }}
-                  className="px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 hover:border-s-ink/20:border-white/20 transition-colors"
+                  className="px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/50 hover:border-s-ink/20:border-white/20 transition-colors"
                 >
                   Entfernen
                 </button>
@@ -611,7 +611,7 @@ export default function CheckoutPage() {
                   onClick={handleVoucherValidate}
                   disabled={voucherLoading || !voucherCode.trim()}
                   text={voucherLoading ? "..." : "Anwenden"}
-                  className="px-5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-50"
+                  className="px-5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-50"
                 />
               )}
             </div>
@@ -630,9 +630,9 @@ export default function CheckoutPage() {
                 style={{ background: "rgba(46,125,50,.06)" }}>
                 <div className="flex items-center gap-2">
                   <CheckCircle size={13} className="text-s-success shrink-0" />
-                  <span className="text-xs font-heading font-semibold text-s-success">{voucherResult.code} angewendet</span>
+                  <span className="text-xs font-heading text-s-success">{voucherResult.code} angewendet</span>
                 </div>
-                <span className="text-xs font-heading font-bold text-s-success">-{formatCurrency(voucherResult.remaining_amount, locale)}</span>
+                <span className="text-xs font-heading text-s-success">-{formatCurrency(voucherResult.remaining_amount, locale)}</span>
               </div>
             )}
 
@@ -655,10 +655,10 @@ export default function CheckoutPage() {
                 <Wallet size={17} className="text-s-sage" />
               </div>
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50 mb-0.5">
+                <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/50 mb-0.5">
                   Zahlungsart
                 </p>
-                <h2 className="font-heading font-bold text-base text-s-ink">Zahlung vor Ort</h2>
+                <h2 className="font-heading text-base text-s-ink">Zahlung vor Ort</h2>
                 <p className="text-xs font-body text-s-ink/50 mt-1">Keine Online-Zahlung nötig. Du bezahlst direkt im Salon.</p>
               </div>
             </div>
@@ -673,7 +673,7 @@ export default function CheckoutPage() {
               onClick={handleAtSalonConfirm}
               disabled={confirmingAtSalon}
               text={confirmingAtSalon ? tc("confirming") : tc("confirmAppointment")}
-              className="w-full py-4 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
+              className="w-full py-4 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
             />
             <p className="text-[10px] text-center font-heading uppercase tracking-[.10em] text-s-ink/25 mt-3">
               Kostenlose Stornierung bis {intent.free_cancel_hours ?? 24}h vorher
@@ -684,7 +684,7 @@ export default function CheckoutPage() {
           <div className="bg-white rounded-[12px] border border-s-ink/[0.07] shadow-warm-md overflow-hidden">
             <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05] flex items-center gap-2">
               <Lock size={13} className="text-s-ink/45 shrink-0" />
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/45">
+              <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/45">
                 Sichere Zahlung
               </p>
             </div>
@@ -725,12 +725,12 @@ export default function CheckoutPage() {
             { icon: CreditCard, label: "Visa · Mastercard · Apple Pay" },
             { icon: Shield,     label: "Powered by Stripe" },
           ].map(({ icon: Icon, label }) => (
-            <span key={label} className="flex items-center gap-1.5 text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/25">
+            <span key={label} className="flex items-center gap-1.5 text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/25">
               <Icon size={10} />
               {label}
             </span>
           ))}
-          <span className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/25">TWINT</span>
+          <span className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/25">TWINT</span>
         </div>
       </div>
     </motion.div>

@@ -142,10 +142,10 @@ export default function PrivacyContent() {
 function Section({ id, titleDe, titleEn, children }: { id: string, titleDe: string, titleEn: string, children: React.ReactNode }) {
   return (
     <section id={id} className="scroll-mt-32 pb-8 border-b border-s-ink/10 last:border-0 relative">
-      <h2 className="font-heading font-bold text-xl md:text-2xl text-s-ink mb-1">
+      <h2 className="font-heading text-xl md:text-2xl text-s-ink mb-1">
         {titleDe}
       </h2>
-      <h3 className="font-heading font-medium text-lg text-s-ink/60 mb-6 italic">
+      <h3 className="font-heading text-lg text-s-ink/60 mb-6 italic">
         {titleEn}
       </h3>
       <div className="space-y-8">
@@ -160,7 +160,7 @@ function Article({ titleDe, titleEn, children }: { titleDe: string, titleEn: str
     <div className="space-y-3">
       {(titleDe || titleEn) && (
         <div className="mb-4">
-          <h3 className="font-heading font-semibold text-lg text-s-ink">
+          <h3 className="font-heading text-lg text-s-ink">
             {titleDe} 
             {titleEn && <span className="text-s-ink/50 font-normal ml-2">/ {titleEn}</span>}
           </h3>

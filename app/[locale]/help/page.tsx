@@ -58,7 +58,7 @@ export default function HelpPage() {
           <div className="w-14 h-14 rounded-[12px] bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
             <BookOpen size={28} className="text-s-coral" />
           </div>
-          <h1 className="font-heading font-bold text-2xl sm:text-4xl text-s-ink">
+          <h1 className="font-heading text-2xl sm:text-4xl text-s-ink">
             Hilfe & Support
           </h1>
           <p className="text-s-ink/50 font-body mt-2 text-sm sm:text-base">
@@ -137,7 +137,7 @@ export default function HelpPage() {
                     <div className={`w-8 h-8 rounded-btn ${group.color} flex items-center justify-center`}>
                       <group.Icon size={16} />
                     </div>
-                    <h2 className="font-heading font-semibold text-lg text-s-ink">{group.label}</h2>
+                    <h2 className="font-heading text-lg text-s-ink">{group.label}</h2>
                   </div>
                   <div className="space-y-1">
                     {group.articles.map((article) => (

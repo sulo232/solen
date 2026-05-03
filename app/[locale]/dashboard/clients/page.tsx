@@ -99,7 +99,7 @@ export default function ClientsPage() {
   return (
     <DashboardLayout>
       <div className="mb-5">
-        <h2 className="font-heading font-bold text-lg text-s-ink">Kunden</h2>
+        <h2 className="font-heading text-lg text-s-ink">Kunden</h2>
         <p className="text-sm text-s-ink/40">Kundenkartei & CRM</p>
       </div>
 
@@ -293,7 +293,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
           )}
         </div>
         <div>
-          <h2 className="font-heading font-bold text-lg text-s-ink">{client.display_name || "Unbekannt"}</h2>
+          <h2 className="font-heading text-lg text-s-ink">{client.display_name || "Unbekannt"}</h2>
           <p className="text-xs text-s-ink/40">{client.total_bookings} Termine</p>
         </div>
       </div>

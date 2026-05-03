@@ -39,7 +39,7 @@ export default function StaffComparison({ salonId }: StaffComparisonProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-heading font-bold text-sm text-s-ink">Team-Vergleich</h3>
+        <h3 className="font-heading text-sm text-s-ink">Team-Vergleich</h3>
         <div className="flex rounded-btn border border-s-ink/10 overflow-hidden">
           <button onClick={() => setViewMode("table")} aria-pressed={viewMode === "table"}
             className={`px-2 py-1 text-xs transition-colors duration-150 ${viewMode === "table" ? "bg-s-coral text-white" : "text-s-ink/50"}`}>

@@ -73,7 +73,7 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading font-bold text-sm text-s-ink flex items-center gap-2">
+        <h3 className="font-heading text-sm text-s-ink flex items-center gap-2">
           <Beaker size={14} className="text-s-coral" /> Farbformeln
         </h3>
         <button onClick={() => setShowAdd(!showAdd)} className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors">
@@ -120,7 +120,7 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
           <div className="flex gap-2">
             <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 rounded-pill border border-s-ink/10 text-xs text-s-ink/60">Abbrechen</button>
             <button onClick={handleAdd} disabled={!mixFormula.trim() || saving}
-              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150">
+              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150">
               {saving && <Spinner size="sm" invert />} Speichern
             </button>
           </div>

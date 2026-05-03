@@ -133,7 +133,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 disabled:opacity-50 transition-[transform,filter] duration-150"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 disabled:opacity-50 transition-[transform,filter] duration-150"
         >
           {saving ? <Spinner size="sm" invert /> : saved ? <Check size={14} /> : <Save size={14} />}
           {saved ? tc("saved") : tc("save")}

@@ -84,7 +84,7 @@ export default function HelpArticlePage() {
         </Link>
 
         {/* Article */}
-        <h1 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink mb-2">
+        <h1 className="font-heading text-2xl sm:text-3xl text-s-ink mb-2">
           {article.title}
         </h1>
         <p className="text-xs font-body text-s-ink/30 mb-8">
@@ -95,10 +95,10 @@ export default function HelpArticlePage() {
         <div className="prose prose-sm max-w-none font-body text-s-ink/80 leading-relaxed">
           {article.content.split("\n").map((line, i) => {
             if (line.startsWith("## ")) {
-              return <h2 key={i} className="font-heading font-semibold text-lg text-s-ink mt-6 mb-2">{line.slice(3)}</h2>;
+              return <h2 key={i} className="font-heading text-lg text-s-ink mt-6 mb-2">{line.slice(3)}</h2>;
             }
             if (line.startsWith("### ")) {
-              return <h3 key={i} className="font-heading font-semibold text-base text-s-ink mt-4 mb-1">{line.slice(4)}</h3>;
+              return <h3 key={i} className="font-heading text-base text-s-ink mt-4 mb-1">{line.slice(4)}</h3>;
             }
             if (line.startsWith("- ")) {
               return <li key={i} className="ml-4 list-disc">{line.slice(2)}</li>;

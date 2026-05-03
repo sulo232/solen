@@ -120,10 +120,10 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {metrics.map((m) => (
             <div key={m.label} className="bg-white rounded-[16px] border border-s-ink/5 p-4">
-              <p className="text-[11px] tracking-[0.2em] uppercase text-s-amber font-heading font-bold">
+              <p className="text-[11px] tracking-[0.2em] uppercase text-s-amber font-heading">
                 {m.label}
               </p>
-              <p className="text-2xl font-heading font-bold text-s-ink data-text mt-1">
+              <p className="text-2xl font-heading text-s-ink data-text mt-1">
                 {m.value}
               </p>
               {m.trend && <MiniSparkline data={m.trend} color={m.color} />}

@@ -82,10 +82,10 @@ export function StatCard({
         )}
       </div>
 
-      <p className="font-heading font-bold text-[28px] text-s-ink leading-none">
+      <p className="font-heading text-[28px] text-s-ink leading-none">
         {display}
       </p>
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 mt-2">
+      <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/35 mt-2">
         {label}
       </p>
 

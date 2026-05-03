@@ -109,7 +109,7 @@ export default function DiscoveryPostsPage() {
   return (
     <DashboardLayout>
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-heading font-bold text-s-ink mb-4">Meine Posts</h1>
+        <h1 className="text-2xl font-heading text-s-ink mb-4">Meine Posts</h1>
 
         {/* Tabs */}
         <div className="flex gap-1 bg-s-ink/5 rounded-pill p-0.5 w-fit mb-6">

@@ -17,16 +17,16 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <div className="w-full max-w-sm">
         {/* Logo lockup */}
         <div className="text-center mb-8">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-amber mb-3">
+          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-amber mb-3">
             solen.ch
           </p>
           <Link
             href={`/${locale}`}
-            className="inline-block font-heading font-bold text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity"
+            className="inline-block font-heading text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity"
           >
             solen<span className="text-s-coral">.</span>ch
           </Link>
-          <p className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 mt-3">
+          <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 mt-3">
             Willkommen zurück
           </p>
         </div>
@@ -39,11 +39,11 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         </div>
 
         <p className="text-center mt-6">
-          <span className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/30">
+          <span className="text-[11px] font-heading uppercase tracking-[.08em] text-s-ink/30">
             Noch kein Konto?{" "}
           </span>
           <Link href={`/${locale}/auth/register`}
-            className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-coral hover:underline">
+            className="text-[11px] font-heading uppercase tracking-[.08em] text-s-coral hover:underline">
             Registrieren
           </Link>
         </p>

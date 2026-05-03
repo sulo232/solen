@@ -91,7 +91,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
                 <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
                   <Play size={22} className="text-white ml-1" fill="white" />
                 </div>
-                <span className="flex items-center gap-1.5 text-white text-xs font-heading font-semibold bg-s-ink/50 backdrop-blur-sm px-3 py-1.5 rounded-pill">
+                <span className="flex items-center gap-1.5 text-white text-xs font-heading bg-s-ink/50 backdrop-blur-sm px-3 py-1.5 rounded-pill">
                   <ExternalLink size={12} />
                   Auf TikTok ansehen
                 </span>
@@ -150,7 +150,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
       {/* ═══ Section 3: Title + Tags ═══ */}
       <div className="mt-4 px-1">
         {item.style_name && (
-          <h1 className="text-xl font-heading font-bold text-s-ink">{item.style_name}</h1>
+          <h1 className="text-xl font-heading text-s-ink">{item.style_name}</h1>
         )}
         {item.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-2">

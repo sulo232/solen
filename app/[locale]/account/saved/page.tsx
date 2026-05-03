@@ -89,7 +89,7 @@ export default function SavedPage() {
             action={
               <Link
                 href={`/${locale}/discover`}
-                className="inline-flex items-center gap-2 bg-s-coral text-white font-heading font-semibold text-sm px-5 py-2.5 rounded-btn hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter]"
+                className="inline-flex items-center gap-2 bg-s-coral text-white font-heading text-sm px-5 py-2.5 rounded-btn hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter]"
               >
                 {t("discoverCta")}
               </Link>

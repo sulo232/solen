@@ -94,7 +94,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading font-bold text-base">Slot erstellen</h3>
+          <h3 className="font-heading text-base">Slot erstellen</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <p className="text-sm text-s-ink/50 mb-4">{date} um {startTime}</p>
@@ -174,7 +174,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading font-bold text-base">Wochenplan erstellen</h3>
+          <h3 className="font-heading text-base">Wochenplan erstellen</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-4 mb-5">
@@ -281,7 +281,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading font-bold text-base">
+          <h3 className="font-heading text-base">
             {rescheduleMode ? "Termin verschieben" : "Termin-Details"}
           </h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>

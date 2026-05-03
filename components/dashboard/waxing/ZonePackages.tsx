@@ -124,13 +124,13 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
           {t("zone_packages")}
         </p>
         <button
           onClick={() => { setShowForm(!showForm); setError(null); }}
           aria-label={t("add_package")}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150"
         >
           {showForm ? <X size={12} /> : <Plus size={12} />}
           {showForm ? t("cancel") : t("add_package")}
@@ -153,7 +153,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
           />
 
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               {t("select_zones")}
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -162,7 +162,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
                   key={zone}
                   onClick={() => toggleFormZone(zone)}
                   aria-label={t(`zones.${zone}` as any)}
-                  className={`rounded-[8px] border px-2 py-1 text-[10px] font-heading font-semibold transition-colors duration-150 ${
+                  className={`rounded-[8px] border px-2 py-1 text-[10px] font-heading transition-colors duration-150 ${
                     form.zones.includes(zone)
                       ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                       : "border-s-ink/[0.06] text-s-ink/40"
@@ -175,7 +175,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
           </div>
 
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
+            <label className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mb-1 block">
               {t("discount_percent")}
             </label>
             <input
@@ -194,7 +194,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
               onClick={addPackage}
               disabled={saving || !form.name || form.zones.length === 0}
               aria-label={t("save")}
-              className="px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center gap-1.5"
+              className="px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center gap-1.5"
             >
               {saving && <Spinner size="sm" invert />}
               {t("save")}
@@ -207,7 +207,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
       <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-[--raised]">
         <div className="flex items-center gap-2 mb-3">
           <Package size={14} className="text-s-coral" />
-          <span className="text-xs font-heading font-semibold text-s-ink">
+          <span className="text-xs font-heading text-s-ink">
             {t("zone_packages")}
           </span>
         </div>
@@ -222,7 +222,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
               className="flex items-center justify-between py-3 border-b border-s-ink/[0.04] last:border-0"
             >
               <div>
-                <p className="text-sm font-heading font-semibold text-s-ink">
+                <p className="text-sm font-heading text-s-ink">
                   {pkg.name}
                 </p>
                 <p className="text-[10px] text-s-ink/40">
@@ -230,7 +230,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-heading font-bold bg-s-coral/10 text-s-coral px-2 py-0.5 rounded-[6px]">
+                <span className="text-[10px] font-heading bg-s-coral/10 text-s-coral px-2 py-0.5 rounded-[6px]">
                   -{pkg.discount_percent}%
                 </span>
                 <button

@@ -67,7 +67,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
     <div>
       <div className="flex items-center gap-2 mb-4">
         <Sparkles size={14} className="text-s-coral" />
-        <p className="text-sm font-heading font-bold text-s-ink">
+        <p className="text-sm font-heading text-s-ink">
           {t("gallery_title")}
         </p>
         <span className="text-[10px] text-s-ink/35 ml-1">
@@ -99,7 +99,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
               <div className="flex gap-1">
                 <button
                   onClick={() => toggleSave(entry.id, entry.is_saved)}
-                  className={`flex-1 py-1 rounded-[6px] text-[9px] font-heading font-bold transition-colors duration-150 ${
+                  className={`flex-1 py-1 rounded-[6px] text-[9px] font-heading transition-colors duration-150 ${
                     entry.is_saved
                       ? "bg-s-coral text-white"
                       : "bg-white/20 text-white hover:bg-white/30"

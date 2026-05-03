@@ -52,7 +52,7 @@ export default function SearchCriteriaChips({ locale }: SearchCriteriaChipsProps
       {chips.map(({ key, label }) => (
         <span
           key={key}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-s-ink/[0.06] text-[12px] font-heading font-semibold text-s-ink"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-s-ink/[0.06] text-[12px] font-heading text-s-ink"
         >
           {label}
           <button

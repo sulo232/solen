@@ -297,7 +297,7 @@ export default function DashboardLayout({
                 <span className="text-xs font-bold text-s-coral">{salonName[0]}</span>
               </div>
             )}
-            <p className="font-heading font-bold text-sm text-s-ink truncate">{salonName ?? "Dashboard"}</p>
+            <p className="font-heading text-sm text-s-ink truncate">{salonName ?? "Dashboard"}</p>
             <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/35 mt-0.5">Dashboard</p>
           </div>
 
@@ -310,7 +310,7 @@ export default function DashboardLayout({
                 return (
                   <Link key={href} href={`/${locale}${href}`}
                     aria-current={active ? "page" : undefined}
-                    className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                    className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
                       active
                         ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                         : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
@@ -324,7 +324,7 @@ export default function DashboardLayout({
               <>
                 {filteredOwnerNavGroups.map((group) => (
                   <div key={group.label} className="px-3 pt-4 pb-1">
-                    <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1">{group.label}</p>
+                    <p className="text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25 mb-1">{group.label}</p>
                     {group.items.map((item) => {
                       const { href, icon: Icon } = item;
                       const label = "key" in item ? t(item.key as Parameters<typeof t>[0]) : ("label" in item ? item.label : "");
@@ -333,7 +333,7 @@ export default function DashboardLayout({
                       return (
                         <Link key={href} href={`/${locale}${href}`}
                           aria-current={active ? "page" : undefined}
-                          className={`flex items-center gap-3 px-1 py-2 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                          className={`flex items-center gap-3 px-1 py-2 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
                             active
                               ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                               : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
@@ -341,7 +341,7 @@ export default function DashboardLayout({
                           <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
                           <span className="flex-1 overflow-hidden whitespace-nowrap">{label}</span>
                           {isMessages && unreadCount > 0 && (
-                            <span className="ml-auto text-[10px] font-heading font-bold px-1.5 py-0.5 rounded-pill bg-s-coral text-white">
+                            <span className="ml-auto text-[10px] font-heading px-1.5 py-0.5 rounded-pill bg-s-coral text-white">
                               {unreadCount > 9 ? "9+" : unreadCount}
                             </span>
                           )}
@@ -353,13 +353,13 @@ export default function DashboardLayout({
                 {/* Category-specific nav groups */}
                 {categoryNavGroups.map(group => (
                   <div key={group.category} className="px-3 pt-4 pb-1">
-                    <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1">
+                    <p className="text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25 mb-1">
                       {t(group.labelKey as any)}
                     </p>
                     {group.items.map(item => (
                       <Link key={item.key} href={`/${locale}${item.href}`}
                         aria-current={isActive(item.href) ? "page" : undefined}
-                        className={`flex items-center gap-3 px-1 py-2 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                        className={`flex items-center gap-3 px-1 py-2 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
                           isActive(item.href)
                             ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                             : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
@@ -377,13 +377,13 @@ export default function DashboardLayout({
           {/* Admin nav */}
           {role === "admin" && (
             <div className="px-1 pb-3 border-t border-s-ink/[0.06] pt-3">
-              <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4">Admin</p>
+              <p className="text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4">Admin</p>
               {ADMIN_NAV.map(({ key, href, icon: Icon }) => {
                 const active = isActive(href);
                 return (
                   <Link key={href} href={`/${locale}${href}`}
                     aria-current={active ? "page" : undefined}
-                    className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                    className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
                       active
                         ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                         : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
@@ -429,7 +429,7 @@ export default function DashboardLayout({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="px-4 py-4 border-b border-s-ink/[0.06] flex items-center justify-between">
-                <span className="font-heading font-bold text-base text-s-ink">solen<span className="text-s-coral">.</span>ch</span>
+                <span className="font-heading text-base text-s-ink">solen<span className="text-s-coral">.</span>ch</span>
                 <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-s-ink/40" /></button>
               </div>
               <nav className="py-3 px-1 overflow-y-auto">
@@ -443,7 +443,7 @@ export default function DashboardLayout({
                       href={`/${locale}${href}`}
                       onClick={() => setMobileSidebarOpen(false)}
                       aria-current={active ? "page" : undefined}
-                      className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                      className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
                         active
                           ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                           : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
@@ -452,7 +452,7 @@ export default function DashboardLayout({
                       <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
                       <span className="flex-1">{label}</span>
                       {href === "/dashboard/messages" && unreadCount > 0 && (
-                        <span className="ml-auto text-[10px] font-heading font-bold px-1.5 py-0.5 rounded-pill bg-s-coral text-white">
+                        <span className="ml-auto text-[10px] font-heading px-1.5 py-0.5 rounded-pill bg-s-coral text-white">
                           {unreadCount > 9 ? "9+" : unreadCount}
                         </span>
                       )}
@@ -462,7 +462,7 @@ export default function DashboardLayout({
                 {/* Category-specific nav items (mobile) */}
                 {!isStaff && categoryNavGroups.map(group => (
                   <div key={`mobile-${group.category}`}>
-                    <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4 mt-4">
+                    <p className="text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4 mt-4">
                       {t(group.labelKey as any)}
                     </p>
                     {group.items.map(item => (
@@ -471,7 +471,7 @@ export default function DashboardLayout({
                         href={`/${locale}${item.href}`}
                         onClick={() => setMobileSidebarOpen(false)}
                         aria-current={isActive(item.href) ? "page" : undefined}
-                        className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                        className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
                           isActive(item.href)
                             ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                             : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
@@ -485,7 +485,7 @@ export default function DashboardLayout({
                 ))}
                 {role === "admin" && (
                   <>
-                    <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4 mt-4">Admin</p>
+                    <p className="text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4 mt-4">Admin</p>
                     {ADMIN_NAV.map(({ key, href, icon: Icon }) => {
                       const active = isActive(href);
                       return (
@@ -494,7 +494,7 @@ export default function DashboardLayout({
                           href={`/${locale}${href}`}
                           onClick={() => setMobileSidebarOpen(false)}
                           aria-current={active ? "page" : undefined}
-                          className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                          className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
                             active
                               ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                               : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
@@ -520,7 +520,7 @@ export default function DashboardLayout({
           <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60" aria-label="Menu öffnen">
             <Menu size={20} />
           </button>
-          <span className="font-heading font-bold text-base flex-1">solen<span className="text-s-coral">.</span>ch</span>
+          <span className="font-heading text-base flex-1">solen<span className="text-s-coral">.</span>ch</span>
           <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="p-1.5 text-s-ink/40 hover:text-s-ink/70 transition-colors">
             <Search size={16} />
           </button>
@@ -529,7 +529,7 @@ export default function DashboardLayout({
 
         {/* Admin preview banner */}
         {isPreviewing && (
-          <div className="sticky top-0 z-30 flex items-center gap-3 px-4 py-2.5 bg-s-amber text-white text-xs font-heading font-semibold">
+          <div className="sticky top-0 z-30 flex items-center gap-3 px-4 py-2.5 bg-s-amber text-white text-xs font-heading">
             <FlaskConical size={13} className="shrink-0" />
             <span className="flex-1 truncate">
               {t("previewBanner")} <span className="font-bold">{previewSalonName}</span>
@@ -574,7 +574,7 @@ export default function DashboardLayout({
                     <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-pill bg-s-coral" />
                   )}
                 </div>
-                <span className="text-[8px] font-heading font-semibold uppercase tracking-[.08em]">
+                <span className="text-[8px] font-heading uppercase tracking-[.08em]">
                   {t(key)}
                 </span>
               </Link>

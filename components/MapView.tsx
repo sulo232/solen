@@ -280,7 +280,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
             <button
               key={chip.key}
               onClick={() => { setActiveCategory(chip.key); setShowAreaSearch(false); }}
-              className={`shrink-0 px-4 py-2 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-warm-sm transition-colors ${
+              className={`shrink-0 px-4 py-2 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] shadow-warm-sm transition-colors ${
                 activeCategory === chip.key
                   ? "bg-s-coral text-white shadow-warm-md"
                   : "bg-white/95 text-s-ink/70 hover:bg-white border border-s-ink/10"
@@ -307,7 +307,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
             href="https://www.google.com/maps/search/?api=1&query=Basel,+Switzerland"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3.5 bg-s-coral hover:brightness-[1.06] text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] rounded-btn shadow-elevation-2 transition-[transform,filter] active:scale-[0.97]"
+            className="inline-flex items-center gap-2 px-6 py-3.5 bg-s-coral hover:brightness-[1.06] text-white text-[11px] font-heading uppercase tracking-[.06em] rounded-btn shadow-elevation-2 transition-[transform,filter] active:scale-[0.97]"
           >
             In Google Maps öffnen
           </a>
@@ -318,7 +318,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       {enhanced && showAreaSearch && onAreaSearch && !mapError && (
         <button
           onClick={handleAreaSearch}
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-5 py-3.5 rounded-pill bg-white text-s-ink text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-warm-lg border border-s-ink/10 hover:bg-s-bg-surface transition-colors"
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-5 py-3.5 rounded-pill bg-white text-s-ink text-[11px] font-heading uppercase tracking-[.06em] shadow-warm-lg border border-s-ink/10 hover:bg-s-bg-surface transition-colors"
         >
           <MapPin size={14} className="text-s-ink/50" />
           In diesem Bereich suchen

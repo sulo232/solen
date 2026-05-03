@@ -61,7 +61,7 @@ export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
             <Clock size={13} className="text-s-blue" />
           </div>
           <div>
-            <p className="text-sm font-heading font-bold text-s-ink">
+            <p className="text-sm font-heading text-s-ink">
               {t("hourlyTitle")}
             </p>
             <p className="text-[10px] text-s-ink/35">
@@ -70,7 +70,7 @@ export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
           </div>
         </div>
         {peakHour !== null && (
-          <span className="text-[10px] font-heading font-semibold text-s-coral bg-s-coral/[0.08] px-2 py-1 rounded-pill">
+          <span className="text-[10px] font-heading text-s-coral bg-s-coral/[0.08] px-2 py-1 rounded-pill">
             {t("peakHour", { hour: peakHour })}
           </span>
         )}

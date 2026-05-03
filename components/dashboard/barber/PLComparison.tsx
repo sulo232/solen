@@ -64,7 +64,7 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
           <DollarSign size={13} className="text-s-sage" />
         </div>
         <div>
-          <p className="text-sm font-heading font-bold text-s-ink">
+          <p className="text-sm font-heading text-s-ink">
             {t("plTitle")}
           </p>
           <p className="text-[10px] text-s-ink/35">
@@ -87,10 +87,10 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
           {/* KPI row */}
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="bg-s-coral/[0.05] rounded-[8px] p-3">
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-coral mb-0.5">
+              <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-coral mb-0.5">
                 {t("appointments")}
               </p>
-              <p className="text-xl font-heading font-bold text-s-ink data-text">
+              <p className="text-xl font-heading text-s-ink data-text">
                 {formatCHF(stats.appointment_revenue)}
               </p>
               <p className="text-[10px] text-s-ink/45">
@@ -98,10 +98,10 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
               </p>
             </div>
             <div className="bg-s-amber/[0.05] rounded-[8px] p-3">
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-amber mb-0.5">
+              <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-amber mb-0.5">
                 {t("walkIns")}
               </p>
-              <p className="text-xl font-heading font-bold text-s-ink data-text">
+              <p className="text-xl font-heading text-s-ink data-text">
                 {formatCHF(stats.walkin_revenue)}
               </p>
               <p className="text-[10px] text-s-ink/45">

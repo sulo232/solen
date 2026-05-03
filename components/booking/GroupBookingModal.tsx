@@ -116,7 +116,7 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Users size={18} className="text-s-coral" />
-            <h3 className="font-heading font-bold text-s-ink">{tg("title")}</h3>
+            <h3 className="font-heading text-s-ink">{tg("title")}</h3>
           </div>
           <button onClick={onClose} aria-label={tc("close")} className="p-2 rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150">
             <X size={18} className="text-s-ink/40" />
@@ -194,7 +194,7 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          className="w-full py-3 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-elevation-2"
+          className="w-full py-3 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-elevation-2"
         >
           {submitting && <Spinner size="sm" invert />}
           {tg("book_group")}

@@ -69,7 +69,7 @@ export default function ForecastWidget({ data }: ForecastWidgetProps) {
             <TrendingUp size={13} className="text-s-amber" />
           </div>
           <div>
-            <p className="text-sm font-heading font-bold text-s-ink">
+            <p className="text-sm font-heading text-s-ink">
               {t("forecastTitle")}
             </p>
             <p className="text-[10px] text-s-ink/35">

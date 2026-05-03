@@ -45,10 +45,10 @@ export default function PartnerPage() {
 
           {/* Left — Text + CTA */}
           <div className="text-center lg:text-left">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-coral mb-3">
+            <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-coral mb-3">
               {t("for_owners")}
             </p>
-            <h1 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-s-ink mb-4 leading-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl text-s-ink mb-4 leading-tight">
               {t("hero_title_1")}{" "}
               <span className="text-s-coral">{t("hero_title_accent")}</span>
               <br />{t("hero_title_2")}
@@ -57,7 +57,7 @@ export default function PartnerPage() {
               {t("hero_subtitle")}
             </p>
             <PartnerSignupForm />
-            <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/45 mt-3">
+            <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-ink/45 mt-3">
               {t("hero_subtext")}
             </p>
           </div>
@@ -96,10 +96,10 @@ export default function PartnerPage() {
       {/* Features */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
         <div className="text-center mb-10">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
             {t("section_features")}
           </p>
-          <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink mb-3">
+          <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
             {t("features_title")}
           </h2>
           <p className="text-s-ink/60">
@@ -110,7 +110,7 @@ export default function PartnerPage() {
           {FEATURES.map((f, i) => (
             <div key={i} className="relative p-5 rounded-[14px] bg-s-bg-surface border border-s-ink/[0.05] hover:shadow-warm-sm transition-[border-color,box-shadow] duration-200">
               {!f.live && (
-                <span className="absolute top-3 right-3 text-[9px] font-heading font-bold uppercase tracking-[.06em] px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral">
+                <span className="absolute top-3 right-3 text-[9px] font-heading uppercase tracking-[.06em] px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral">
                   {t("coming_soon")}
                 </span>
               )}
@@ -118,7 +118,7 @@ export default function PartnerPage() {
                 style={{ background: "rgba(232,98,74,.09)" }}>
                 <f.icon className="w-5 h-5 text-s-coral" />
               </div>
-              <h3 className="font-heading font-semibold text-sm text-s-ink mb-1">{t(f.title as any)}</h3>
+              <h3 className="font-heading text-sm text-s-ink mb-1">{t(f.title as any)}</h3>
               <p className="text-xs font-body text-s-ink/55 leading-relaxed">{t(f.desc as any)}</p>
             </div>
           ))}
@@ -129,10 +129,10 @@ export default function PartnerPage() {
       <div className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
               {t("section_categories")}
             </p>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink mb-3">
+            <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
               {t("cat_title")}
             </h2>
             <p className="text-s-ink/60">
@@ -150,7 +150,7 @@ export default function PartnerPage() {
             ].map((cat) => (
               <div key={cat.key} className="p-5 rounded-[14px] bg-white border border-s-ink/[0.05] hover:border-s-coral/20 hover:shadow-warm-sm transition-[border-color,box-shadow] duration-200">
                 <cat.icon className="w-6 h-6 text-s-coral mb-3" />
-                <h3 className="font-heading font-semibold text-sm text-s-ink mb-1">{t(`${cat.key}_title` as any)}</h3>
+                <h3 className="font-heading text-sm text-s-ink mb-1">{t(`${cat.key}_title` as any)}</h3>
                 <p className="text-xs font-body text-s-ink/50 leading-relaxed">{t(`${cat.key}_desc` as any)}</p>
               </div>
             ))}
@@ -162,10 +162,10 @@ export default function PartnerPage() {
       <div className="py-16 bg-s-bg-surface">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
               {t("section_how_it_works")}
             </p>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink mb-3">
+            <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
               {t("hiw_title")}
             </h2>
             <p className="text-s-ink/60">
@@ -185,18 +185,18 @@ export default function PartnerPage() {
 
             {/* Step 1 */}
             <div className="relative text-center md:text-center pl-16 md:pl-0">
-              <div className="w-12 h-12 rounded-pill bg-s-coral text-white font-heading font-bold text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
+              <div className="w-12 h-12 rounded-pill bg-s-coral text-white font-heading text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
                 1
               </div>
               <div className="mt-2 md:mt-4">
                 <UserPlus className="w-6 h-6 text-s-coral mx-auto mb-2 hidden md:block" />
-                <h3 className="font-heading font-semibold text-base text-s-ink mb-1">
+                <h3 className="font-heading text-base text-s-ink mb-1">
                   {t("hiw_step1_title")}
                 </h3>
                 <p className="text-sm text-s-ink/60 mb-2">
                   {t("hiw_step1_desc")}
                 </p>
-                <span className="inline-block text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-coral px-3 py-1.5 rounded-pill"
+                <span className="inline-block text-[9px] font-heading uppercase tracking-[.12em] text-s-coral px-3 py-1.5 rounded-pill"
                   style={{ background: "rgba(232,98,74,.10)" }}>
                   {t("hiw_step1_time")}
                 </span>
@@ -205,18 +205,18 @@ export default function PartnerPage() {
 
             {/* Step 2 */}
             <div className="relative text-center md:text-center pl-16 md:pl-0">
-              <div className="w-12 h-12 rounded-pill bg-s-coral text-white font-heading font-bold text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
+              <div className="w-12 h-12 rounded-pill bg-s-coral text-white font-heading text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
                 2
               </div>
               <div className="mt-2 md:mt-4">
                 <Settings className="w-6 h-6 text-s-coral mx-auto mb-2 hidden md:block" />
-                <h3 className="font-heading font-semibold text-base text-s-ink mb-1">
+                <h3 className="font-heading text-base text-s-ink mb-1">
                   {t("hiw_step2_title")}
                 </h3>
                 <p className="text-sm text-s-ink/60 mb-2">
                   {t("hiw_step2_desc")}
                 </p>
-                <span className="inline-block text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-coral px-3 py-1.5 rounded-pill"
+                <span className="inline-block text-[9px] font-heading uppercase tracking-[.12em] text-s-coral px-3 py-1.5 rounded-pill"
                   style={{ background: "rgba(232,98,74,.10)" }}>
                   {t("hiw_step2_time")}
                 </span>
@@ -225,18 +225,18 @@ export default function PartnerPage() {
 
             {/* Step 3 */}
             <div className="relative text-center md:text-center pl-16 md:pl-0">
-              <div className="w-12 h-12 rounded-pill bg-s-coral text-white font-heading font-bold text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
+              <div className="w-12 h-12 rounded-pill bg-s-coral text-white font-heading text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
                 3
               </div>
               <div className="mt-2 md:mt-4">
                 <Zap className="w-6 h-6 text-s-coral mx-auto mb-2 hidden md:block" />
-                <h3 className="font-heading font-semibold text-base text-s-ink mb-1">
+                <h3 className="font-heading text-base text-s-ink mb-1">
                   {t("hiw_step3_title")}
                 </h3>
                 <p className="text-sm text-s-ink/60 mb-2">
                   {t("hiw_step3_desc")}
                 </p>
-                <span className="inline-block text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-sage px-3 py-1.5 rounded-pill"
+                <span className="inline-block text-[9px] font-heading uppercase tracking-[.12em] text-s-sage px-3 py-1.5 rounded-pill"
                   style={{ background: "rgba(123,166,136,.10)" }}>
                   {t("hiw_step3_time")}
                 </span>
@@ -250,10 +250,10 @@ export default function PartnerPage() {
       <div className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
               {t("section_testimonials")}
             </p>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink mb-3">
+            <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
               {t("social_title")}
             </h2>
             <p className="text-s-ink/60">
@@ -271,7 +271,7 @@ export default function PartnerPage() {
             ].map((badge) => (
               <div key={badge.key} className="flex flex-col items-center text-center p-4 bg-s-bg-surface rounded-[14px] border border-s-ink/[0.05]">
                 <badge.icon className="w-6 h-6 text-s-coral mb-2" />
-                <span className="text-xs font-heading font-bold text-s-ink">{t(badge.key as any)}</span>
+                <span className="text-xs font-heading text-s-ink">{t(badge.key as any)}</span>
               </div>
             ))}
           </div>
@@ -285,10 +285,10 @@ export default function PartnerPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* Section header */}
           <div className="text-center mb-12">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
               {t("section_pricing")}
             </p>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink mb-3">
+            <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
               {t("pricing_title")}
             </h2>
             <p className="text-s-ink/60 max-w-2xl mx-auto">
@@ -301,7 +301,7 @@ export default function PartnerPage() {
             <div className="bg-white border border-s-ink/[0.05] rounded-[18px] p-8 relative overflow-hidden"
               style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 32px rgba(26,18,9,.09)" }}>
               {/* Badge */}
-              <div className="absolute top-4 right-4 text-s-coral text-[9px] font-heading font-bold uppercase tracking-[.14em] px-3 py-1.5 rounded-pill"
+              <div className="absolute top-4 right-4 text-s-coral text-[9px] font-heading uppercase tracking-[.14em] px-3 py-1.5 rounded-pill"
                 style={{ background: "rgba(232,98,74,.10)" }}>
                 {t("pricing_badge")}
               </div>
@@ -309,7 +309,7 @@ export default function PartnerPage() {
               {/* Price */}
               <p className="text-sm font-body text-s-ink/50 mb-1">{t("pricing_label")}</p>
               <div className="flex items-baseline gap-2 mb-1">
-                <span className="font-heading font-bold text-4xl text-s-coral">15%</span>
+                <span className="font-heading text-4xl text-s-coral">15%</span>
                 <span className="text-s-ink/50 text-sm">{t("pricing_per_booking")}</span>
               </div>
               <p className="text-[11px] font-body text-s-ink/55 mb-0.5">{t("pricing_intro_model")}</p>
@@ -338,7 +338,7 @@ export default function PartnerPage() {
 
             {/* Right — Competitor Comparison Chart */}
             <div className="bg-s-bg-surface rounded-[16px] p-8">
-              <h3 className="font-heading font-semibold text-lg text-s-ink mb-6">
+              <h3 className="font-heading text-lg text-s-ink mb-6">
                 {t("compare_title")}
               </h3>
 
@@ -391,7 +391,7 @@ export default function PartnerPage() {
               <div className="mt-8 p-4 rounded-[12px] border border-s-sage/20"
                 style={{ background: "rgba(107,166,120,.08)" }}>
                 <p className="text-sm font-body text-s-sage-text">
-                  <span className="font-heading font-bold">{t("compare_savings_bold")}</span>{" "}
+                  <span className="font-heading">{t("compare_savings_bold")}</span>{" "}
                   {t("compare_savings_text")}
                 </p>
               </div>
@@ -404,10 +404,10 @@ export default function PartnerPage() {
       <div className="py-16 bg-s-bg-surface">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
               {t("section_faq")}
             </p>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink mb-3">
+            <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
               {t("faq_title")}
             </h2>
             <p className="text-s-ink/60">
@@ -429,7 +429,7 @@ export default function PartnerPage() {
               >
                 <div className="p-6">
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-heading font-semibold text-sm text-s-ink leading-snug">
+                    <h3 className="font-heading text-sm text-s-ink leading-snug">
                       {t(`${key}_q` as any)}
                     </h3>
                     <ChevronDown
@@ -458,7 +458,7 @@ export default function PartnerPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-s-ink/[0.06] shadow-elevation-1 p-3 flex justify-center z-50">
         <a
           href="#contact"
-          className="bg-s-coral text-white font-heading font-semibold text-sm px-7 py-3 rounded-btn hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+          className="bg-s-coral text-white font-heading text-sm px-7 py-3 rounded-btn hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
         >
           {t("sticky_cta")}
         </a>
@@ -487,10 +487,10 @@ export default function PartnerPage() {
       <div className="py-20"
         style={{ background: "linear-gradient(180deg, rgba(26,18,9,.025) 0%, rgba(232,98,74,.05) 100%)" }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
             {t("section_start")}
           </p>
-          <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink mb-3">
+          <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
             {t("cta_title")}
           </h2>
           <p className="text-s-ink/50 mb-8">
@@ -505,7 +505,7 @@ export default function PartnerPage() {
             </Link>
             <a
               href={`mailto:info@solen.ch?subject=${encodeURIComponent(t("cta_consult_subject"))}`}
-              className="text-xs font-heading font-semibold text-s-coral hover:text-s-coral/80 transition-colors underline underline-offset-4"
+              className="text-xs font-heading text-s-coral hover:text-s-coral/80 transition-colors underline underline-offset-4"
             >
               {t("cta_consult")}
             </a>

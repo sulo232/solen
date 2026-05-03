@@ -137,7 +137,7 @@ function SheetContent({
       )}
 
       {/* Name + rating */}
-      <h3 className="font-heading font-bold text-xl text-s-ink">{salon.name}</h3>
+      <h3 className="font-heading text-xl text-s-ink">{salon.name}</h3>
       <div className="flex items-center gap-2 mt-1.5">
         <div className="flex items-center gap-1">
           <Star className="w-4 h-4 fill-s-coral text-s-coral" />

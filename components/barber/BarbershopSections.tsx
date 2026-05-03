@@ -74,7 +74,7 @@ export function BarbershopAboveGrid() {
             <Users size={16} className="text-s-amber" />
           </div>
           <div className="min-w-0">
-            <p className="font-heading font-semibold text-s-ink text-sm flex items-center gap-2">
+            <p className="font-heading text-s-ink text-sm flex items-center gap-2">
               {t("walkin_teaser")}
               <span className="relative flex h-2.5 w-2.5 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-pill bg-s-sage opacity-75" />
@@ -88,7 +88,7 @@ export function BarbershopAboveGrid() {
         </div>
         <Link
           href={`/${locale}/barbershop?walkin=true`}
-          className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-amber text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-warm-sm"
+          className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-amber text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-warm-sm"
         >
           <Zap size={12} />
           {t("walkin_cta")}
@@ -143,7 +143,7 @@ export function BarbershopBelowGrid() {
     <section className="pt-12 pb-4">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="font-heading font-bold text-[clamp(26px,3.5vw,44px)] tracking-[-0.02em] text-s-ink">
+          <h2 className="font-heading text-[clamp(26px,3.5vw,44px)] tracking-[0.01em] text-s-ink">
             {t("roster_title")}
           </h2>
           <p className="text-sm text-s-ink/50 font-body mt-1">
@@ -164,13 +164,13 @@ export function BarbershopBelowGrid() {
             className="rounded-[16px] bg-white border border-s-ink/5 p-4 flex flex-col items-center text-center shadow-warm-sm hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
           >
             <div className="w-14 h-14 rounded-pill bg-s-amber/10 flex items-center justify-center mb-3">
-              <span className="font-heading font-bold text-s-amber text-lg">{barber.initials}</span>
+              <span className="font-heading text-s-amber text-lg">{barber.initials}</span>
             </div>
-            <p className="font-heading font-semibold text-s-ink text-sm">{barber.name}</p>
+            <p className="font-heading text-s-ink text-sm">{barber.name}</p>
             <p className="text-xs text-s-ink/50 font-body mt-0.5">{barber.speciality}</p>
             <div className="flex gap-1 flex-wrap justify-center mt-2">
               {barber.styles.map((s) => (
-                <span key={s} className="text-[9px] px-2 py-0.5 rounded-pill bg-s-amber-subtle text-s-amber-text font-heading font-bold uppercase tracking-[.10em]">
+                <span key={s} className="text-[9px] px-2 py-0.5 rounded-pill bg-s-amber-subtle text-s-amber-text font-heading uppercase tracking-[.10em]">
                   {s}
                 </span>
               ))}

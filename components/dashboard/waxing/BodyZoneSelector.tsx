@@ -137,12 +137,12 @@ export default function BodyZoneSelector({
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
           {t("zone_selector")}
         </p>
         <button
           onClick={() => setVisualMode(!visualMode)}
-          className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
+          className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading transition-colors duration-150 ${
             visualMode
               ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
               : "border-s-ink/[0.06] text-s-ink/40"
@@ -175,7 +175,7 @@ export default function BodyZoneSelector({
             key={preset.labelKey}
             onClick={() => applyPreset(preset.zones)}
             aria-label={t(preset.labelKey as any)}
-            className="rounded-[12px] border border-s-ink/[0.06] px-3 py-1.5 text-[10px] font-heading font-semibold text-s-ink/50 transition-colors duration-150 hover:border-s-coral/40 hover:text-s-coral"
+            className="rounded-[12px] border border-s-ink/[0.06] px-3 py-1.5 text-[10px] font-heading text-s-ink/50 transition-colors duration-150 hover:border-s-coral/40 hover:text-s-coral"
           >
             {t(preset.labelKey as any)}
           </button>
@@ -198,7 +198,7 @@ export default function BodyZoneSelector({
               }`}
             >
               <zone.icon size={16} />
-              <span className="text-xs font-heading font-semibold">
+              <span className="text-xs font-heading">
                 {t(zone.labelKey as any)}
               </span>
               {isSelected && <Check size={12} className="ml-auto" />}
@@ -210,7 +210,7 @@ export default function BodyZoneSelector({
       {/* Wax type per selected zone */}
       {selected.length > 0 && (
         <div className="space-y-2 mb-4">
-          <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 mb-2">
+          <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 mb-2">
             {t("wax_type_label")}
           </p>
           {selected.map((zoneKey) => (
@@ -218,7 +218,7 @@ export default function BodyZoneSelector({
               key={zoneKey}
               className="flex items-center justify-between rounded-[12px] border border-s-ink/[0.06] p-2 bg-[--raised]"
             >
-              <span className="text-xs font-heading font-semibold text-s-ink">
+              <span className="text-xs font-heading text-s-ink">
                 {t(`zones.${zoneKey}` as any)}
               </span>
               <select
@@ -252,7 +252,7 @@ export default function BodyZoneSelector({
           onClick={save}
           disabled={saving}
           aria-label={t("save")}
-          className="px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-50"
+          className="px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-50"
         >
           {saving ? t("saving") : t("save")}
         </button>

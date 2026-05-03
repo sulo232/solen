@@ -30,7 +30,7 @@ export default async function PrivacyPage() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
         
         <div className="mb-8 md:mb-16">
-          <h1 className="font-heading font-bold text-3xl md:text-5xl text-s-ink mb-4">
+          <h1 className="font-heading text-3xl md:text-5xl text-s-ink mb-4">
             Datenschutzerklärung
           </h1>
           <h2 className="font-heading text-xl md:text-3xl text-s-ink/60">

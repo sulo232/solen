@@ -47,7 +47,7 @@ export default function SubCategoryChips({ category }: SubCategoryChipsProps) {
             aria-pressed={isActive}
             aria-label={chip}
             className={cn(
-              "shrink-0 px-4 py-1.5 rounded-pill text-[12px] font-heading font-semibold transition-[background-color,color,border-color] duration-150 whitespace-nowrap",
+              "shrink-0 px-4 py-1.5 rounded-pill text-[12px] font-heading transition-[background-color,color,border-color] duration-150 whitespace-nowrap",
               isActive
                 ? "bg-s-ink text-white border-transparent"
                 : "bg-[--raised] text-s-ink/65 border border-s-ink/[0.08] hover:border-s-ink/20 hover:text-s-ink/80"

@@ -73,7 +73,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
       style={{ boxShadow: "0 1px 2px rgba(26,18,9,.06)" }}>
       {/* P6 — Header eyebrow */}
       <div className="flex items-center justify-between mb-1">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40">{t("title")}</p>
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/40">{t("title")}</p>
         <ShoppingBag size={13} className="text-s-ink/25" />
       </div>
 
@@ -82,7 +82,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
         <div key={svc.id} className="space-y-2">
           <div className="flex justify-between text-sm">
             <div>
-              <p className="font-heading font-semibold text-sm text-s-ink">
+              <p className="font-heading text-sm text-s-ink">
                 {locale === "en" ? svc.name_en : svc.name_de}
               </p>
               <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/35">{svc.duration_minutes} {t("minutes")}</p>
@@ -111,10 +111,10 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
               </div>
               <input type="checkbox" checked={selectedAddons.has(addon.id)} onChange={() => toggleAddon(addon.id)} className="sr-only" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-heading font-semibold text-s-ink">{addon.name}</p>
+                <p className="text-xs font-heading text-s-ink">{addon.name}</p>
                 <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/35">{addon.duration_minutes} {t("minutes")}</p>
               </div>
-              <span className="text-xs font-heading font-bold text-s-ink/70">+{formatCurrency(addon.price, locale)}</span>
+              <span className="text-xs font-heading text-s-ink/70">+{formatCurrency(addon.price, locale)}</span>
             </label>
           ))}
         </div>
@@ -129,7 +129,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
 
       {/* P8 — Discount codes inputs (promo, gift card, referral) */}
       <div className="space-y-2 pt-3 border-t border-s-ink/[0.06]">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35">{t("discountCodes")}</p>
+        <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/35">{t("discountCodes")}</p>
 
         {/* Promo code input */}
         <div className="relative">
@@ -171,11 +171,11 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
       {/* P9 — Total row */}
       <div className="flex justify-between items-center pt-3 border-t border-s-ink/[0.06]">
         <div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/35">{t("total")}</p>
+          <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/35">{t("total")}</p>
           <p className="text-xs text-s-ink/40 mt-0.5">{t("totalMinutes", { count: totalDuration })}</p>
         </div>
         <div className="text-right">
-          <span className="font-heading font-bold text-2xl text-s-ink">{formatCurrency(totalPrice, locale)}</span>
+          <span className="font-heading text-2xl text-s-ink">{formatCurrency(totalPrice, locale)}</span>
           <p className="text-[9px] text-s-ink/35 mt-0.5">{t("inclVat")}</p>
         </div>
       </div>
@@ -184,7 +184,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
       <button
         onClick={() => onCheckout({ totalPrice, totalDuration, addonIds: [...selectedAddons], promoCode, giftCardCode, referralCode })}
         disabled={checking}
-        className="w-full py-4 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-elevation-2"
+        className="w-full py-4 rounded-pill bg-s-coral text-white text-xs font-heading uppercase tracking-[.06em] active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-elevation-2"
       >
         {checking && <Spinner size="sm" invert />}
         {t("payAndBook")}

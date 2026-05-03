@@ -74,7 +74,7 @@ export default function MyIntakeFormsPage() {
           <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-ink/5:bg-white/5 transition-colors">
             <ChevronLeft size={20} className="text-s-ink/60" />
           </Link>
-          <h1 className="font-heading font-bold text-xl text-s-ink flex items-center gap-2">
+          <h1 className="font-heading text-xl text-s-ink flex items-center gap-2">
             <ClipboardList size={20} className="text-s-amber" />
             Meine Konsultationsformulare
           </h1>

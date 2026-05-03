@@ -64,7 +64,7 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
               <X size={20} />
             </button>
             
-            <h3 className="font-heading font-bold text-lg mb-1">Inhalt melden</h3>
+            <h3 className="font-heading text-lg mb-1">Inhalt melden</h3>
             <p className="text-sm text-s-ink/60 mb-5">
               Helfen Sie uns, solen.ch sicher zu halten. (AGB §6.5)
             </p>

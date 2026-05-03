@@ -54,7 +54,7 @@ export default function GalleryPage() {
   return (
     <div className="max-w-5xl">
       <div className="mb-8">
-        <h1 className="font-heading font-extrabold text-[28px] text-s-ink tracking-[-0.02em]">
+        <h1 className="font-heading text-[28px] text-s-ink tracking-[0.01em]">
           Fotos & Galerie
         </h1>
         <p className="text-s-ink/60 mt-1">

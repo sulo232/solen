@@ -35,7 +35,7 @@ export default function HeroVisualCard() {
         </button>
 
         {/* Top Pick badge */}
-        <span className="absolute top-4 left-4 text-[10px] font-heading font-bold uppercase tracking-[.08em] px-2.5 py-1 rounded-pill text-s-amber-text"
+        <span className="absolute top-4 left-4 text-[10px] font-heading uppercase tracking-[.08em] px-2.5 py-1 rounded-pill text-s-amber-text"
           style={{ background: "#F2C144", boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)" }}>
           Solen Top Pick
         </span>
@@ -46,7 +46,7 @@ export default function HeroVisualCard() {
                    WebkitBackdropFilter: "blur(16px) saturate(1.2)",
                    borderTop: "1px solid var(--glass-border-subtle)",
                    boxShadow: "var(--glass-shadow-inset)" }}>
-          <p className="font-heading font-bold text-s-ink text-[16px] mb-0.5">Salon Amara</p>
+          <p className="font-heading text-s-ink text-[16px] mb-0.5">Salon Amara</p>
           <p className="text-xs text-s-ink/60 mb-3 font-body">Kleinbasel · ★ 4.9 · 28 Bewertungen</p>
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-s-sage-text mb-3 px-3 py-1 rounded-pill"
             style={{ background: "#EBF5EE", boxShadow: "0 1px 2px rgba(26,18,9,.06)" }}>
@@ -57,7 +57,7 @@ export default function HeroVisualCard() {
           </span>
           <div className="flex items-center justify-between">
             <span className="text-sm text-s-ink/70 font-body">Ab <strong className="text-s-ink font-heading">CHF 45</strong></span>
-            <button className="px-4 py-2 rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] transition-[transform,filter] duration-150"
+            <button className="px-4 py-2 rounded-pill text-white text-xs font-heading uppercase tracking-[.04em] transition-[transform,filter] duration-150"
               style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}>
               Jetzt buchen
             </button>
@@ -75,7 +75,7 @@ export default function HeroVisualCard() {
         animate={reduced ? {} : { y: [0, -10, 0], rotate: [-0.5, 0.5, -0.5] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}>
         <div className="font-display text-[44px] leading-none text-s-coral">~250</div>
-        <div className="text-[10px] font-heading font-semibold uppercase tracking-[.14em] text-s-ink/50 mt-0.5 leading-tight">
+        <div className="text-[10px] font-heading uppercase tracking-[.14em] text-s-ink/50 mt-0.5 leading-tight">
           Buchungen<br />diese Woche
         </div>
       </motion.div>

@@ -126,7 +126,7 @@ export default function RespondAdjustmentPage() {
                 ? <Check size={24} className="text-s-coral" />
                 : <X size={24} className="text-s-coral" />}
             </div>
-            <h2 className="font-heading font-bold text-lg text-s-ink mb-2">
+            <h2 className="font-heading text-lg text-s-ink mb-2">
               {result === "approved" ? l.approved : l.disputed}
             </h2>
             <p className="text-sm text-s-ink/50 mb-6">
@@ -162,7 +162,7 @@ export default function RespondAdjustmentPage() {
                 <AlertTriangle size={18} className="text-s-amber" />
               </div>
               <div>
-                <h1 className="font-heading font-bold text-lg text-s-ink">{l.title}</h1>
+                <h1 className="font-heading text-lg text-s-ink">{l.title}</h1>
                 <p className="text-xs text-s-ink/40">
                   {dispute.salon_name && `${dispute.salon_name} · `}
                   {dispute.service_name ?? "Service"}

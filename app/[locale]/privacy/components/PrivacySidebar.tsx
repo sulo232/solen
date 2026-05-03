@@ -93,7 +93,7 @@ export default function PrivacySidebar() {
 
       <div className="hidden md:block print:hidden w-64 shrink-0">
         <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar pr-4">
-          <h3 className="font-heading font-semibold text-s-ink mb-4 text-sm tracking-wider uppercase opacity-70">
+          <h3 className="font-heading text-s-ink mb-4 text-sm tracking-wider uppercase opacity-70">
             Inhalt / Contents
           </h3>
           <nav className="flex flex-col gap-1">

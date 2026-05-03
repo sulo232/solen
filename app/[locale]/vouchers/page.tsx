@@ -77,7 +77,7 @@ function VoucherPaymentForm({
         type="submit"
         disabled={!stripe || loading}
         text={loading ? "Verarbeite..." : t("payNow")}
-        className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
+        className="w-full py-3.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
       />
     </form>
   );
@@ -198,7 +198,7 @@ export default function VouchersPage() {
                 <Gift size={24} className="text-s-coral" />
               </div>
               <div>
-                <h1 className="font-heading font-bold text-2xl text-s-ink">
+                <h1 className="font-heading text-2xl text-s-ink">
                   {t("title")}
                 </h1>
                 <p className="text-sm text-s-ink/50 mt-0.5">
@@ -246,7 +246,7 @@ export default function VouchersPage() {
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-heading font-semibold text-sm text-s-ink">
+                      <p className="font-heading text-sm text-s-ink">
                         {locale === "en" ? salon.name_en : salon.name_de}
                       </p>
                       <p className="text-xs text-s-ink/50 mt-1">
@@ -272,7 +272,7 @@ export default function VouchersPage() {
           {/* Back button */}
           <button
             onClick={() => setStep("browse")}
-            className="mb-6 text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/30 hover:text-s-coral transition-colors flex items-center gap-1.5"
+            className="mb-6 text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 hover:text-s-coral transition-colors flex items-center gap-1.5"
           >
             <ChevronRight size={12} className="rotate-180" />
             {t("backToSalons")}
@@ -284,7 +284,7 @@ export default function VouchersPage() {
             onSubmit={handleConfigureVoucher}
             className="bg-white rounded-[16px] border border-s-ink/[0.06] p-6 space-y-4"
           >
-            <h2 className="font-heading font-bold text-lg text-s-ink">
+            <h2 className="font-heading text-lg text-s-ink">
               {t("configure.title")}
             </h2>
             <p className="text-sm text-s-ink/50">
@@ -302,7 +302,7 @@ export default function VouchersPage() {
                     key={preset}
                     type="button"
                     onClick={() => setAmount(preset)}
-                    className={`px-3 py-2 rounded-pill text-xs font-heading font-bold uppercase tracking-[.06em] transition-colors ${
+                    className={`px-3 py-2 rounded-pill text-xs font-heading uppercase tracking-[.06em] transition-colors ${
                       amount === preset
                         ? "bg-s-coral text-white"
                         : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-ink/5:bg-white/15"
@@ -378,7 +378,7 @@ export default function VouchersPage() {
             <div className="pt-4 border-t border-s-ink/[0.06]">
               <div className="flex justify-between mb-4">
                 <span className="text-sm text-s-ink/60">{t("configure.total")}</span>
-                <span className="font-heading font-bold text-xl text-s-coral">
+                <span className="font-heading text-xl text-s-coral">
                   {formatCurrency(amount, locale)}
                 </span>
               </div>
@@ -387,7 +387,7 @@ export default function VouchersPage() {
                 type="submit"
                 disabled={creating || !recipientName || !recipientEmail}
                 text={creating ? "Lädt..." : t("configure.continue")}
-                className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
+                className="w-full py-3.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
               />
             </div>
           </motion.form>
@@ -402,7 +402,7 @@ export default function VouchersPage() {
       <Elements stripe={stripePromise} options={{ clientSecret }}>
         <div className="min-h-screen bg-white py-12 px-4">
           <div className="max-w-lg mx-auto">
-            <h2 className="font-heading font-bold text-2xl text-s-ink mb-2">
+            <h2 className="font-heading text-2xl text-s-ink mb-2">
               {t("payment.title")}
             </h2>
             <p className="text-sm text-s-ink/50 mb-6">

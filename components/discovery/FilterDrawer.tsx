@@ -31,7 +31,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
       <button
         onClick={() => setOpen(true)}
         aria-label={t("open_filters")}
-        className={`md:hidden flex items-center gap-1.5 px-3 py-2.5 rounded-pill border text-[10px] font-heading font-bold uppercase tracking-[.08em] transition-colors duration-150 ${
+        className={`md:hidden flex items-center gap-1.5 px-3 py-2.5 rounded-pill border text-[10px] font-heading uppercase tracking-[.08em] transition-colors duration-150 ${
           hasFilters
             ? "border-s-coral/40 text-s-coral bg-s-coral/[0.06]"
             : "border-s-ink/[0.08] text-s-ink/60"
@@ -54,8 +54,8 @@ export default function FilterDrawer(props: FilterDrawerProps) {
             {/* Header */}
             <div className="px-5 py-4 border-b border-s-ink/[0.06] flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/50">{t("filter_label")}</p>
-                <p className="font-heading font-bold text-base text-s-ink">{t("refine_search")}</p>
+                <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/50">{t("filter_label")}</p>
+                <p className="font-heading text-base text-s-ink">{t("refine_search")}</p>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -68,11 +68,11 @@ export default function FilterDrawer(props: FilterDrawerProps) {
 
             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 mb-2">{t("category")}</p>
+                <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/50 mb-2">{t("category")}</p>
                 <CategoryPills selected={props.category} onSelect={props.onCategoryChange} />
               </div>
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/50 mb-2">{t("gender")}</p>
+                <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/50 mb-2">{t("gender")}</p>
                 <GenderToggle selected={props.gender} onSelect={props.onGenderChange} />
               </div>
               <div>
@@ -88,14 +88,14 @@ export default function FilterDrawer(props: FilterDrawerProps) {
               <button
                 onClick={() => { props.onReset(); setOpen(false); }}
                 aria-label={t("reset")}
-                className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-xs font-heading font-bold text-s-ink/50 hover:border-s-ink/20 transition-colors duration-150"
+                className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-xs font-heading text-s-ink/50 hover:border-s-ink/20 transition-colors duration-150"
               >
                 {t("reset")}
               </button>
               <button
                 onClick={() => setOpen(false)}
                 aria-label={t("apply")}
-                className="flex-1 py-3 rounded-pill text-white text-xs font-heading font-bold active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-coral shadow-elevation-2"
+                className="flex-1 py-3 rounded-pill text-white text-xs font-heading active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-coral shadow-elevation-2"
               >
                 {t("apply")}
               </button>

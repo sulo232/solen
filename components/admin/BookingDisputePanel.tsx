@@ -88,13 +88,13 @@ export default function BookingDisputePanel() {
 
   return (
     <div className="mt-12">
-      <h2 className="font-heading font-bold text-xl text-s-ink mb-4">{t("title")}</h2>
+      <h2 className="font-heading text-xl text-s-ink mb-4">{t("title")}</h2>
       <div className="space-y-4">
         {disputes.map((d) => (
           <div key={d.id} className="rounded-[12px] border border-s-ink/5 bg-white p-5">
             <div className="flex items-start justify-between gap-4 mb-3">
               <div>
-                <p className="font-heading font-semibold text-s-ink">
+                <p className="font-heading text-s-ink">
                   {t("customer")}: {d.reporter?.display_name || t("unknown")} {t("vs")} {t("salon")}: {d.bookings?.salons?.name || d.reported?.display_name || t("unknown")}
                 </p>
                 <p className="text-xs text-s-ink/50 font-body mt-0.5">

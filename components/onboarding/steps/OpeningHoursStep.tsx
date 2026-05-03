@@ -86,7 +86,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
           <Clock size={22} className="text-s-ink/60" />
         </div>
         <div>
-          <h2 className="font-heading font-bold text-xl text-s-ink">
+          <h2 className="font-heading text-xl text-s-ink">
             {t("hours.title")}
           </h2>
           <p className="text-sm text-s-ink/40">
@@ -167,7 +167,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
       <button
         onClick={handleSave}
         disabled={!hasAnyOpen || saving}
-        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
       >
         {saving && <Spinner size="sm" invert />}
         {tc("save")}
