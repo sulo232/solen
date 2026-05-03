@@ -103,7 +103,7 @@ export default function ReviewCarousel() {
               </div>
               <div className="flex items-center gap-0.5 mb-2">
                 {Array.from({ length: review.rating }).map((_, j) => (
-                  <Star key={j} size={12} className="fill-s-coral text-s-coral" />
+                  <Star key={j} size={12} className="fill-s-amber text-s-amber" />
                 ))}
               </div>
               <p className="text-sm text-s-ink/70 font-body leading-relaxed line-clamp-3">

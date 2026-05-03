@@ -58,7 +58,7 @@ export default function ReviewBreakdown({
             {[1, 2, 3, 4, 5].map((i) => (
               <Star
                 key={i}
-                className={`w-4 h-4 ${reviewCount >= 5 && i <= Math.round(averageRating) ? "fill-s-coral text-s-coral" : "text-s-ink/20"}`}
+                className={`w-4 h-4 ${reviewCount >= 5 && i <= Math.round(averageRating) ? "fill-s-amber text-s-amber" : "text-s-ink/20"}`}
               />
             ))}
           </span>

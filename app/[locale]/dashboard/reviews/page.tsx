@@ -21,7 +21,7 @@ function Stars({ rating }: { rating: number }) {
   return (
     <div className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} size={12} className={i <= rating ? "fill-s-coral text-s-coral" : "text-s-ink/20"} />
+        <Star key={i} size={12} className={i <= rating ? "fill-s-amber text-s-amber" : "text-s-ink/20"} />
       ))}
     </div>
   );

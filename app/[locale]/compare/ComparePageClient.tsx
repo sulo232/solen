@@ -78,7 +78,7 @@ function buildRows(locale: string, labels: RowLabels): Row[] {
       Icon: Star,
       render: (s) => (
         <div className="flex items-center justify-center gap-1.5">
-          <Star size={13} className="fill-s-coral text-s-coral shrink-0" />
+          <Star size={13} className="fill-s-amber text-s-amber shrink-0" />
           <span className="font-semibold tabular-nums text-s-ink">
             {s.average_rating?.toFixed(1) ?? "–"}
           </span>

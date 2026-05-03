@@ -122,7 +122,7 @@ export default function ReviewPrompt({
                 size={28}
                 className={
                   star <= rating
-                    ? 'fill-s-coral text-s-coral'
+                    ? 'fill-s-amber text-s-amber'
                     : 'text-s-ink/20'
                 }
               />

@@ -119,7 +119,7 @@ export default function RecentlyViewed() {
               </p>
               {salon.average_rating > 0 && (
                 <p className="text-xs text-s-ink/40 data-text flex items-center gap-0.5">
-                  <Star size={10} className="fill-s-coral text-s-coral" /> {salon.average_rating.toFixed(1)}
+                  <Star size={10} className="fill-s-amber text-s-amber" /> {salon.average_rating.toFixed(1)}
                 </p>
               )}
             </Link>

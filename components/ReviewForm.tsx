@@ -30,7 +30,7 @@ function SubRatingRow({ label, value, onChange }: SubRatingRowProps) {
               size={20}
               strokeWidth={1.5}
               className={(hover || value) >= star
-                ? "fill-s-coral text-s-coral"
+                ? "fill-s-amber text-s-amber"
                 : "text-s-ink/20"}
             />
           </button>
@@ -167,7 +167,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
                     size={36}
                     strokeWidth={1.5}
                     className={(hoverRating || rating) >= star
-                      ? "fill-s-coral text-s-coral"
+                      ? "fill-s-amber text-s-amber"
                       : "text-s-ink/20"}
                   />
                 </button>

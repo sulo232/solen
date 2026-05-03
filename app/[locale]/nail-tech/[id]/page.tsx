@@ -125,7 +125,7 @@ export default function NailTechProfilePage() {
               <div className="flex items-center gap-3 mt-1.5">
                 {tech.avg_rating != null && (
                   <span className="flex items-center gap-1 text-sm text-s-ink/70">
-                    <Star size={14} className="fill-s-coral text-s-coral" />
+                    <Star size={14} className="fill-s-amber text-s-amber" />
                     {tech.avg_rating.toFixed(1)}
                     {tech.review_count != null && (
                       <span className="text-s-ink/30">({tech.review_count})</span>

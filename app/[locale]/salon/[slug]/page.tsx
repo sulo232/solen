@@ -92,7 +92,7 @@ function Stars({ rating, size = "md" }: { rating: number; size?: "sm" | "md" }) 
   return (
     <span className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} className={[sz, i <= rounded ? "fill-s-coral text-s-coral" : "text-s-ink/20"].join(" ")} />
+        <Star key={i} className={[sz, i <= rounded ? "fill-s-amber text-s-amber" : "text-s-ink/20"].join(" ")} />
       ))}
     </span>
   );

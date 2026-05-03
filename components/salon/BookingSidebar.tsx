@@ -44,7 +44,7 @@ export default function BookingSidebar({
         )}
         {avgRating != null && avgRating > 0 && (
           <span className="flex items-center gap-1 text-[14px] text-s-ink">
-            <Star className="w-[13px] h-[13px] fill-s-coral text-s-coral" />
+            <Star className="w-[13px] h-[13px] fill-s-amber text-s-amber" />
             <span className="font-semibold">{avgRating.toFixed(1)}</span>
             {reviewCount != null && (
               <span className="text-[#767676] font-normal">
@@ -76,7 +76,7 @@ export default function BookingSidebar({
       {/* Book button */}
       <button
         onClick={onBook}
-        className="w-full h-12 rounded-btn bg-s-coral-button text-white font-body font-semibold text-[15px] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 mb-4"
+        className="w-full h-12 rounded-btn bg-s-coral text-white font-body font-semibold text-[15px] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 mb-4"
         style={{ boxShadow: "0 2px 12px rgba(232,98,74,0.32)" }}
       >
         Jetzt buchen

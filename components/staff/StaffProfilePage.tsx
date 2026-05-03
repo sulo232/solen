@@ -161,7 +161,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
             <div className="flex items-center gap-4 mt-2">
               {staff.average_rating > 0 && (
                 <span className="flex items-center gap-1 text-sm text-s-ink/70">
-                  <Star size={14} className="fill-s-coral text-s-coral" />
+                  <Star size={14} className="fill-s-amber text-s-amber" />
                   <span className="data-text">{staff.average_rating.toFixed(1)}</span>
                   {staff.review_count > 0 && (
                     <span className="text-s-ink/40">
@@ -300,7 +300,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                         <Star
                           key={i}
                           size={10}
-                          className={i < r.rating ? "fill-s-coral text-s-coral" : "text-s-ink/15"}
+                          className={i < r.rating ? "fill-s-amber text-s-amber" : "text-s-ink/15"}
                         />
                       ))}
                       <span className="text-xs text-s-ink/40 ml-1">

@@ -58,7 +58,7 @@ function Stars({ rating, size = "sm" }: { rating: number; size?: "sm" | "md" }) 
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}
-          className={[sz, i <= rounded ? "fill-s-coral text-s-coral" : "text-s-ink/20"].join(" ")}
+          className={[sz, i <= rounded ? "fill-s-amber text-s-amber" : "text-s-ink/20"].join(" ")}
         />
       ))}
     </span>
@@ -296,7 +296,7 @@ export default function SalonReviews({
                                 <button
                                   onClick={submitFlag}
                                   disabled={flagLoading || flagReason.trim().length < 5}
-                                  className="text-xs text-white font-body font-semibold uppercase tracking-[.08em] px-4 py-1.5 rounded-btn bg-s-coral-button hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 transition-[transform,filter] duration-150"
+                                  className="text-xs text-white font-body font-semibold uppercase tracking-[.08em] px-4 py-1.5 rounded-btn bg-s-coral hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 transition-[transform,filter] duration-150"
                                   style={{ boxShadow: "0 2px 8px rgba(232,98,74,.25)" }}
                                 >
                                   {flagLoading ? "…" : t("flagSubmit")}

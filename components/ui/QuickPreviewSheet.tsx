@@ -140,7 +140,7 @@ function SheetContent({
       <h3 className="font-heading text-xl text-s-ink">{salon.name}</h3>
       <div className="flex items-center gap-2 mt-1.5">
         <div className="flex items-center gap-1">
-          <Star className="w-4 h-4 fill-s-coral text-s-coral" />
+          <Star className="w-4 h-4 fill-s-amber text-s-amber" />
           <span className="data-text font-semibold text-sm text-s-ink">{salon.average_rating.toFixed(1)}</span>
           <span className="text-xs text-s-ink/40">({salon.review_count})</span>
         </div>

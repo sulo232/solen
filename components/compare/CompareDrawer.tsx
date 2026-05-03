@@ -52,7 +52,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
       Icon: Star,
       render: (s) => (
         <div className="flex items-center gap-1">
-          <Star size={12} className="fill-s-coral text-s-coral" />
+          <Star size={12} className="fill-s-amber text-s-amber" />
           <span className="data-text font-semibold text-s-ink">{s.average_rating?.toFixed(1) ?? "–"}</span>
         </div>
       ),

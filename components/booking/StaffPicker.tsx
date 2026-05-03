@@ -76,7 +76,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
             )}
             {s.average_rating != null && s.average_rating > 0 && (
               <span className="flex items-center gap-0.5 text-[10px] text-s-ink/50">
-                <Star size={8} className="fill-s-coral text-s-coral" />
+                <Star size={8} className="fill-s-amber text-s-amber" />
                 <span className="data-text">{s.average_rating.toFixed(1)}</span>
               </span>
             )}
