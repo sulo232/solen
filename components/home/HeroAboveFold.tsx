@@ -40,10 +40,15 @@ export default function HeroAboveFold() {
       style={{ paddingTop: 96, paddingBottom: 48 }}
     >
       <div className="max-w-[640px] mx-auto">
-        {/* Q48 signature — coral eyebrow + Anton uppercase headline */}
+        {/* Phase 8.1 (S1 LOCKED 2026-05-03 — user picked option B): brand
+            2-tone Anton hero per public/solen-coral.html:719-721. Amber
+            eyebrow (.hero-eyebrow) + ink "BEAUTY." + amber "DIREKT GEBUCHT."
+            Strings hardcoded — i18n migration tracked separately as Phase 8 polish. */}
         <SignatureLockup
-          eyebrow="Schweizer Salons · Direkt buchen"
-          headline="Finde deinen Salon."
+          eyebrow="Von der Schweiz. Für dich."
+          eyebrowTone="amber"
+          headline="BEAUTY."
+          accentLine="DIREKT GEBUCHT."
           subLine={
             <>
               Coiffeur · Barber · Nails · Spa · Makeup · Waxing.
@@ -51,7 +56,7 @@ export default function HeroAboveFold() {
               Echte Bewertungen, echte Verfügbarkeit, in unter 30 Sekunden.
             </>
           }
-          size="lg"
+          size="xxl"
           align="center"
           className="mb-8"
         />
