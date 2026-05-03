@@ -33,6 +33,7 @@ import SalonHero from "@/components/salon/SalonHero";
 import SalonOpeningHours from "@/components/salon/SalonOpeningHours";
 import SalonServices from "@/components/salon/SalonServices";
 import SalonReviews from "@/components/salon/SalonReviews";
+import SalonReviewsSummary from "@/components/salon/SalonReviewsSummary";
 import SalonSidebar from "@/components/salon/SalonSidebar";
 import SalonMobileCTA from "@/components/salon/SalonMobileCTA";
 
@@ -706,19 +707,28 @@ export default function SalonProfilePage() {
                   </Link>
                 </div>
 
-                {/* ── Reviews ── */}
-                <SalonReviews
-                  reviews={salon.reviews}
-                  averageRating={salon.average_rating}
-                  reviewCount={salon.review_count}
-                  salonId={salon.id}
+                {/* ── Q54 Reviews — summary on detail tab; full list at /salon/[slug]/reviews ── */}
+                <SalonReviewsSummary
                   salonSlug={slug}
-                  unreviewedBookingId={unreviewedBookingId}
-                  locale={locale}
-                  onReviewSubmitted={() => {
-                    setUnreviewedBookingId(null);
-                    reloadSalon();
-                  }}
+                  averageRating={salon.average_rating ?? 0}
+                  reviewCount={salon.review_count ?? 0}
+                  distribution={(() => {
+                    const dist: [number, number, number, number, number] = [0, 0, 0, 0, 0];
+                    (salon.reviews ?? []).forEach((r: any) => {
+                      const star = Math.round(r.rating);
+                      if (star >= 1 && star <= 5) dist[5 - star]++;
+                    });
+                    return dist;
+                  })()}
+                  latestReviews={(salon.reviews ?? []).slice(0, 3).map((r: any) => ({
+                    id: r.id,
+                    rating: r.rating,
+                    comment: r.comment,
+                    created_at: r.created_at,
+                    user_name: r.profiles?.display_name ?? r.user_name,
+                    user_avatar: r.profiles?.avatar_url ?? r.user_avatar,
+                    reply_text: r.reply?.reply_text ?? r.review_replies?.[0]?.reply_text ?? null,
+                  }))}
                 />
 
                 {/* Location / Map */}
