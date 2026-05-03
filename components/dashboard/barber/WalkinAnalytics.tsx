@@ -57,7 +57,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
       label: t("walkin_rate"),
       value: `${stats.total_walkins}/${stats.total_appointments}`,
       icon: Users,
-      color: "#E8735A",
+      color: "#E8624A",
       trend: trends?.walkins,
     },
     {
@@ -78,7 +78,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
       label: t("abandonment_rate"),
       value: `${stats.abandonment_rate}%`,
       icon: BarChart3,
-      color: "#D4870A",
+      color: "#F3A864",
       trend: trends?.abandonments,
     },
     {

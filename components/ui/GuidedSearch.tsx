@@ -283,7 +283,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
   };
 
   const selectCategory = (cat: SalonCategory) => {
-    // Row flash: rgba(232,115,90,0.08) for 200ms, then advance to WO step
+    // Row flash: rgba(232,98,74,0.08) for 200ms, then advance to WO step
     setFlashedCat(cat);
     setTimeout(() => {
       setFlashedCat(null);
@@ -688,7 +688,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                       gap: "14px",
                                       borderBottom: "1px solid rgba(0,0,0,0.04)",
                                       minHeight: "56px",
-                                      background: isFlashing ? "rgba(232,115,90,0.08)" : "transparent",
+                                      background: isFlashing ? "rgba(232,98,74,0.08)" : "transparent",
                                     }}
                                   >
                                     {/* Icon container */}

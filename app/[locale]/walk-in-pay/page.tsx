@@ -172,7 +172,7 @@ export default function WalkInPayPage() {
           <div className="text-center py-8">
             <div
               className="w-16 h-16 rounded-[18px] mx-auto mb-5 flex items-center justify-center"
-              style={{ background: "rgba(212,135,10,.10)" }}
+              style={{ background: "rgba(243,168,100,.10)" }}
             >
               <AlertTriangle size={26} className="text-s-amber" />
             </div>

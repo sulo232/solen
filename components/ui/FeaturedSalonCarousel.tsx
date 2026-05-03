@@ -146,7 +146,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   // DESIGN_SPEC §3.1: max 1 badge per card, only on 4.9+ rating OR 50+ reviews
   const badge = (() => {
     if (salon.average_rating >= 4.9 && salon.review_count >= 10)
-      return { text: "Top bewertet", color: "#E8735A" };
+      return { text: "Top bewertet", color: "#E8624A" };
     if (salon.review_count > 50)
       return { text: "Beliebt", color: "#1A8754" };
     return null;
@@ -228,7 +228,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
         {/* Rating — coral star + score + count */}
         {showRating && (
           <div className="flex items-center gap-1">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#E8735A" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#E8624A" aria-hidden="true">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
             <span className="font-body font-semibold text-[14px] text-s-ink">

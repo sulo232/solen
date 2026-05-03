@@ -162,10 +162,10 @@ function MockMap() {
       {/* Pins */}
       {pins.map((pin, i) => (
         <div key={i} className="absolute flex flex-col items-center" style={{ left: pin.left, top: pin.top }}>
-          <span className="px-2 py-0.5 rounded-full text-[10px] data-text font-semibold text-white shadow-elevation-2 whitespace-nowrap mb-1" style={{ backgroundColor: pin.color === "bg-s-coral" ? "#E8735A" : "#F2C144" }}>
+          <span className="px-2 py-0.5 rounded-full text-[10px] data-text font-semibold text-white shadow-elevation-2 whitespace-nowrap mb-1" style={{ backgroundColor: pin.color === "bg-s-coral" ? "#E8624A" : "#F2C144" }}>
             {pin.price}
           </span>
-          <MapPin className="w-4 h-4" style={{ color: pin.color === "bg-s-coral" ? "#E8735A" : "#F2C144" }} />
+          <MapPin className="w-4 h-4" style={{ color: pin.color === "bg-s-coral" ? "#E8624A" : "#F2C144" }} />
         </div>
       ))}
     </div>
@@ -251,7 +251,7 @@ export default function WarumSolenPage() {
               <div className="relative">
                 {/* Photo frame */}
                 <div className="animate-photo-upload w-48 h-48 rounded-[12px] border-2 border-dashed border-s-amber/30 flex flex-col items-center justify-center gap-2"
-                  style={{ background: "linear-gradient(135deg, rgba(212,135,10,.08) 0%, rgba(212,135,10,.04) 100%)" }}>
+                  style={{ background: "linear-gradient(135deg, rgba(243,168,100,.08) 0%, rgba(243,168,100,.04) 100%)" }}>
                   <Camera className="w-8 h-8 text-s-amber" />
                   <p className="text-xs font-heading font-semibold text-s-amber">Foto hochgeladen</p>
                 </div>

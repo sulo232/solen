@@ -19,8 +19,8 @@ interface SolenScoreData {
 }
 
 const TIER_CONFIG = {
-  gold: { label: "Top Salon", color: "#D4870A", bg: "bg-s-amber-subtle", border: "border-s-amber/20", Icon: Star },
-  coral: { label: "Verifiziert", color: "#E8735A", bg: "bg-s-coral/5", border: "border-s-coral/20", Icon: Shield },
+  gold: { label: "Top Salon", color: "#F3A864", bg: "bg-s-amber-subtle", border: "border-s-amber/20", Icon: Star },
+  coral: { label: "Verifiziert", color: "#E8624A", bg: "bg-s-coral/5", border: "border-s-coral/20", Icon: Shield },
   grey: { label: "Aktiv", color: "#8A7A66", bg: "bg-s-bg-surface", border: "border-s-ink/10", Icon: Circle },
   dark: { label: "Starter", color: "#C4B8A6", bg: "bg-s-bg-surface", border: "border-s-ink/10", Icon: Circle },
 };
@@ -95,7 +95,7 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
       {/* Score bar */}
       <div className="h-2 rounded-full bg-s-ink/[0.06] mt-4 overflow-hidden">
         <div className="h-full rounded-full transition-[width] duration-200"
-          style={{ width: `${data.solen_score}%`, background: data.solen_score >= 75 ? "#4CAF6F" : data.solen_score >= 50 ? "#D4870A" : "#E8735A" }} />
+          style={{ width: `${data.solen_score}%`, background: data.solen_score >= 75 ? "#4CAF6F" : data.solen_score >= 50 ? "#F3A864" : "#E8624A" }} />
       </div>
 
       {/* Factor breakdown */}

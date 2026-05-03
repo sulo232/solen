@@ -25,8 +25,8 @@ const getIcon = (name: string): LucideIcon => ICON_MAP[name] ?? Star;
 /* ─── Color presets ─── */
 const COLOR_PRESETS = [
   { value: "#D4AF77", label: "Gold" },
-  { value: "#E8735A", label: "Coral" },
-  { value: "#D4870A", label: "Amber" },
+  { value: "#E8624A", label: "Coral" },
+  { value: "#F3A864", label: "Amber" },
   { value: "#22C55E", label: "Green" },
   { value: "#8B5CF6", label: "Purple" },
   { value: "#F2C144", label: "Yellow" },
@@ -71,7 +71,7 @@ function BadgeModal({
   const [nameDe, setNameDe] = useState(badge?.name_de ?? "");
   const [nameEn, setNameEn] = useState(badge?.name_en ?? "");
   const [icon, setIcon] = useState(badge?.icon ?? "Star");
-  const [color, setColor] = useState(badge?.color ?? "#E8735A");
+  const [color, setColor] = useState(badge?.color ?? "#E8624A");
   const [saving, setSaving] = useState(false);
 
   const IconPreview = getIcon(icon);

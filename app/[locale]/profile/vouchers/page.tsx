@@ -231,7 +231,7 @@ function VoucherCard({
           {/* Status badge */}
           <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-[6px]"
             style={{
-              background: status === "active" ? "rgba(212,135,10,.15)" : status === "used" ? "rgba(46,125,50,.15)" : "rgba(26,18,9,.08)",
+              background: status === "active" ? "rgba(243,168,100,.15)" : status === "used" ? "rgba(46,125,50,.15)" : "rgba(26,18,9,.08)",
             }}>
             {statusIcon && (
               <>
@@ -243,7 +243,7 @@ function VoucherCard({
             <span
               className="text-[9px] font-heading font-bold uppercase tracking-[.08em]"
               style={{
-                color: status === "active" ? "#D4870A" : status === "used" ? "#2E7D32" : "rgba(26,18,9,.4)",
+                color: status === "active" ? "#F3A864" : status === "used" ? "#16A34A" : "rgba(26,18,9,.4)",
               }}
             >
               {statusLabel}

@@ -157,8 +157,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
     )}
     style={{
       paddingTop: "env(safe-area-inset-top)",
-      /* DESIGN_SPEC §3.4: solid #FAFAF8 default, glass only on scroll */
-      background: scrolled ? "rgba(250,250,248,0.8)" : "#FAFAF8",
+      /* DESIGN_SPEC §3.4: solid #FFFFFF default, glass only on scroll */
+      background: scrolled ? "rgba(255,255,255,0.8)" : "#FFFFFF",
       backdropFilter: scrolled ? "blur(12px)" : "none",
       WebkitBackdropFilter: scrolled ? "blur(12px)" : "none",
       boxShadow: scrolled ? "var(--shadow-rest)" : "none",

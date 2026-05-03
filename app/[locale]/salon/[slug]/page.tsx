@@ -81,7 +81,7 @@ const CAT_TAG_COLOURS: Record<string, { bg: string; text: string }> = {
   barbershop: { bg: "rgba(74,30,60,.12)",    text: "#4A1E3C" },
   nails:      { bg: "rgba(232,98,74,.12)",   text: "#7A2415" },
   spa:        { bg: "rgba(123,166,136,.15)", text: "#2E5E3A" },
-  makeup:     { bg: "rgba(212,135,10,.10)",  text: "#6B4005" },
+  makeup:     { bg: "rgba(243,168,100,.10)",  text: "#6B4005" },
   waxing:     { bg: "rgba(107,163,200,.15)", text: "#1A4D72" },
 };
 

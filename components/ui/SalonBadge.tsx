@@ -52,7 +52,7 @@ export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProp
     return (
       <span
         className="font-heading font-bold text-[11px] uppercase tracking-wide text-white px-2.5 py-1 rounded-full"
-        style={{ background: "#2E7D32", boxShadow: "0 2px 4px rgba(0,0,0,0.15)" }}
+        style={{ background: "#16A34A", boxShadow: "0 2px 4px rgba(0,0,0,0.15)" }}
       >
         Sofort buchbar
       </span>
@@ -64,7 +64,7 @@ export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProp
     return (
       <span
         className="font-heading font-bold text-[11px] uppercase tracking-wide text-white px-2.5 py-1 rounded-full"
-        style={{ background: "#D4870A", boxShadow: "0 2px 4px rgba(0,0,0,0.15)" }}
+        style={{ background: "#F3A864", boxShadow: "0 2px 4px rgba(0,0,0,0.15)" }}
       >
         Angebot −{salon.last_minute_discount_percent}%
       </span>

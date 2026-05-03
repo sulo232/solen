@@ -10,7 +10,7 @@ import { useTranslations } from "next-intl";
  * it's showing real platform numbers to build confidence."
  *
  * - Single horizontal row, center aligned
- * - Sand glass background: rgba(245,240,235,0.5) + blur(10px)
+ * - Sand glass background: rgba(250,247,243,0.5) + blur(10px)
  * - Numbers: Bebas Neue 28px (counts), DM Sans 16px/700 (rating)
  * - Labels: DM Sans 13px/400
  * - Separators: 1px solid #E8E2DC, height 28px
@@ -120,7 +120,7 @@ export default function TrustStatsBanner() {
     return (
       <section
         style={{
-          background: "rgba(245,240,235,0.5)",
+          background: "rgba(250,247,243,0.5)",
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(10px)",
           padding: "24px 20px",
@@ -194,7 +194,7 @@ export default function TrustStatsBanner() {
               {item.type === "rating" && (
                 <>
                   <div className="flex items-center gap-1">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#E8735A" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#E8624A" aria-hidden="true">
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
                     <span className="font-body font-bold" style={{ fontSize: 16, color: "#2C2420" }}>

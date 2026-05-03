@@ -101,7 +101,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
               {/* Next slot mock - in prod this would fetch from an API */}
               <div className="text-right">
                 <p className="text-[9px] font-heading font-semibold uppercase tracking-wider text-[#767676]">Nächster Termin</p>
-                <p className="text-[12px] font-medium text-[#2E7D32]">Morgen, 10:00</p>
+                <p className="text-[12px] font-medium text-[#16A34A]">Morgen, 10:00</p>
               </div>
             </div>
 

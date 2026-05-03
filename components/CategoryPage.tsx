@@ -406,8 +406,8 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               onClick={() => routerNav.push(`/${locale}/${category}`)}
               className="snap-start shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150"
               style={{
-                border: !city ? "1.5px solid #222222" : "1.5px solid rgba(26,18,9,0.12)",
-                background: !city ? "#222222" : "var(--raised)",
+                border: !city ? "1.5px solid #1A1209" : "1.5px solid rgba(26,18,9,0.12)",
+                background: !city ? "#1A1209" : "var(--raised)",
                 color: !city ? "#FFFFFF" : "rgba(26,18,9,0.55)",
               }}
             >

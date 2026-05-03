@@ -567,7 +567,7 @@ export default function CheckoutPage() {
           {/* P7 — User credits */}
           {userCredits > 0 && !promoResult && (
             <div className="flex items-center justify-between rounded-[10px] px-3 py-2.5"
-              style={{ background: "rgba(212,135,10,.06)", border: "1px solid rgba(212,135,10,.15)" }}>
+              style={{ background: "rgba(243,168,100,.06)", border: "1px solid rgba(243,168,100,.15)" }}>
               <div className="flex items-center gap-2">
                 <Wallet className="w-3.5 h-3.5 text-s-amber shrink-0" />
                 <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-amber/80">

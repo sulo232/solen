@@ -75,7 +75,7 @@ function CheckoutForm({ clientSecret, voucherCode }: CheckoutFormProps) {
         disabled={!stripe || isProcessing}
         className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.97] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-coral-glow transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
         style={{
-          background: "linear-gradient(135deg, #C05038 0%, #D4870A 100%)",
+          background: "linear-gradient(135deg, #C05038 0%, #F3A864 100%)",
         }}
       >
         {isProcessing ? "Wird verarbeitet..." : "Gutschein kaufen"}
@@ -281,7 +281,7 @@ export default function VoucherBuyPage() {
               disabled={loading || (isGift && !recipientEmail)}
               className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.97] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-coral-glow transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
-                background: "linear-gradient(135deg, #C05038 0%, #D4870A 100%)",
+                background: "linear-gradient(135deg, #C05038 0%, #F3A864 100%)",
               }}
             >
               {loading ? "Wird erstellt..." : "Weiter zur Zahlung"}

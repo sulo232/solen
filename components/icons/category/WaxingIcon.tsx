@@ -17,12 +17,12 @@ export function WaxingIcon({ animate = false, ...props }: React.SVGProps<SVGSVGE
         </linearGradient>
         <linearGradient id="strip-wx" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="#C44A34" />
-          <stop offset="50%" stopColor="#E8735A" />
+          <stop offset="50%" stopColor="#E8624A" />
           <stop offset="100%" stopColor="#D45540" />
         </linearGradient>
         <linearGradient id="spatula-wx" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="#B87008" />
-          <stop offset="100%" stopColor="#D4870A" />
+          <stop offset="100%" stopColor="#F3A864" />
         </linearGradient>
       </defs>
 

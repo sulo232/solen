@@ -59,7 +59,7 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
           "flex flex-col justify-between rounded-card overflow-hidden h-52 border border-s-ink/[0.05] border-l-2 hover:-translate-y-1 transition-[transform] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
           isUrgent && "animate-coral-pulse"
         )}
-        style={{ borderLeftColor: isUrgent ? "#E8735A" : "rgba(232, 98, 74, 0.4)" }}
+        style={{ borderLeftColor: isUrgent ? "#E8624A" : "rgba(232, 98, 74, 0.4)" }}
       >
         <div className="p-4 flex-1">
           <div className="flex items-start justify-between gap-2">

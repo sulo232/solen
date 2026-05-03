@@ -126,7 +126,7 @@ export default function DashboardPage() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             className="mb-6 rounded-[12px] px-4 py-4 flex items-center gap-3"
-            style={{ background: "#E8735A" }}
+            style={{ background: "#E8624A" }}
           >
             <PartyPopper size={20} className="shrink-0 text-white/80" />
             <div>
@@ -198,7 +198,7 @@ export default function DashboardPage() {
                   color: "text-s-coral",
                   bg: "bg-s-coral/5",
                   sparklineData: stats.trends?.bookings,
-                  sparklineColor: "#E8735A",
+                  sparklineColor: "#E8624A",
                   delta: prior ? { value: Math.abs(prior.bookings), direction: deltaDir(prior.bookings) } : undefined,
                 },
                 {
@@ -218,7 +218,7 @@ export default function DashboardPage() {
                   color: "text-s-coral",
                   bg: "bg-s-coral/5",
                   sparklineData: stats.trends?.new_customers,
-                  sparklineColor: "#D4870A",
+                  sparklineColor: "#F3A864",
                   delta: prior ? { value: Math.abs(prior.new_customers), direction: deltaDir(prior.new_customers) } : undefined,
                 },
                 {
@@ -229,7 +229,7 @@ export default function DashboardPage() {
                   bg: "bg-s-amber-subtle/50",
                   isRating: true,
                   sparklineData: stats.trends?.rating,
-                  sparklineColor: "#D4870A",
+                  sparklineColor: "#F3A864",
                   delta: prior ? { value: Math.abs(prior.rating), direction: deltaDir(prior.rating) } : undefined,
                 },
               ].map((s) => (
@@ -272,7 +272,7 @@ export default function DashboardPage() {
               )}
               {stats.pending_cancellations > 0 && (
                 <div className="rounded-[12px] px-4 py-3.5 flex items-center gap-3"
-                  style={{ background: "rgba(212,135,10,.06)", border: "1px solid rgba(212,135,10,.20)" }}>
+                  style={{ background: "rgba(243,168,100,.06)", border: "1px solid rgba(243,168,100,.20)" }}>
                   <AlertTriangle size={16} className="text-s-amber shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-heading font-semibold text-s-ink">{stats.pending_cancellations} Stornierungsanfragen</p>

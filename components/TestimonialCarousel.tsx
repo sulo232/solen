@@ -12,7 +12,7 @@ import { useTranslations } from "next-intl";
  * - HORIZONTAL CAROUSEL (not vertical stack)
  * - Only renders when ≥3 real reviews exist in DB
  * - Warm white glass cards: rgba(255,255,255,0.65) + blur(14px)
- * - ALL avatars: coral #E8735A with white Syne letter
+ * - ALL avatars: coral #E8624A with white Syne letter
  * - Stars: 5× SVG 14px, fill coral
  * - Quote: DM Sans 15px/400 italic
  * - Section heading: DM Sans 28px/700 (Pattern A)
@@ -35,7 +35,7 @@ function StarRow({ count = 5 }: { count?: number }) {
   return (
     <div className="flex gap-0.5" role="img" aria-label={`${count} von 5 Sternen`}>
       {[1, 2, 3, 4, 5].map((i) => (
-        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={i <= count ? "#E8735A" : "#EBEBEB"} aria-hidden="true">
+        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={i <= count ? "#E8624A" : "#EBEBEB"} aria-hidden="true">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
       ))}
@@ -85,7 +85,7 @@ export default function TestimonialCarousel() {
   return (
     <section
       className="py-8"
-      style={{ background: "#FAFAF8" }}
+      style={{ background: "#FFFFFF" }}
       aria-labelledby="testimonials-heading"
     >
       <div className="px-5 md:px-10 lg:px-20">
@@ -130,7 +130,7 @@ export default function TestimonialCarousel() {
             <p
               className="font-body text-[15px] leading-relaxed flex-1"
               style={{
-                color: "#222222",
+                color: "#1A1209",
                 fontStyle: "italic",
                 display: "-webkit-box",
                 WebkitLineClamp: 4,
@@ -148,13 +148,13 @@ export default function TestimonialCarousel() {
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-heading font-semibold text-[14px] text-white"
-                style={{ background: "#E8735A" }}
+                style={{ background: "#E8624A" }}
                 aria-hidden="true"
               >
                 {review.reviewer_name.charAt(0).toUpperCase()}
               </div>
               <div>
-                <p className="font-body font-semibold text-[14px] leading-tight" style={{ color: "#222222" }}>
+                <p className="font-body font-semibold text-[14px] leading-tight" style={{ color: "#1A1209" }}>
                   {review.reviewer_name}
                 </p>
                 <p className="font-body text-[12px] leading-tight" style={{ color: "#767676" }}>

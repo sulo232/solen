@@ -93,7 +93,7 @@ export default function HeadDiagram({ zoneGuards, onZoneGuardChange }: HeadDiagr
         zones={HEAD_ZONES}
         selectedZones={selectedZones}
         onZoneSelect={(zoneId) => handleZoneSelect(zoneId)}
-        fillColor="var(--coral, #E8735A)"
+        fillColor="var(--coral, #E8624A)"
         fillOpacity={0.3}
         zoneOpacityMap={zoneOpacityMap}
         zoneLabelMap={zoneLabelMap}

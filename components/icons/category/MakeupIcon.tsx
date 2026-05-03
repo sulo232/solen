@@ -13,12 +13,12 @@ export function MakeupIcon({ animate = false, ...props }: React.SVGProps<SVGSVGE
         </filter>
         <linearGradient id="tube-ma" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="#B87008" />
-          <stop offset="50%" stopColor="#D4870A" />
+          <stop offset="50%" stopColor="#F3A864" />
           <stop offset="100%" stopColor="#C07A08" />
         </linearGradient>
         <linearGradient id="bullet-ma" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="#C44A34" />
-          <stop offset="50%" stopColor="#E8735A" />
+          <stop offset="50%" stopColor="#E8624A" />
           <stop offset="100%" stopColor="#D45540" />
         </linearGradient>
       </defs>

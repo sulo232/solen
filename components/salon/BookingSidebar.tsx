@@ -59,11 +59,11 @@ export default function BookingSidebar({
       <div className="flex items-center gap-2 mb-5 text-[14px]">
         <span
           className={`w-2 h-2 rounded-full ${
-            isOpen ? "bg-[#2E7D32]" : "bg-[#D32F2F]"
+            isOpen ? "bg-[#16A34A]" : "bg-[#D32F2F]"
           }`}
         />
         {isOpen ? (
-          <span className="text-[#2E7D32] font-medium">
+          <span className="text-[#16A34A] font-medium">
             Jetzt geöffnet{closesAt ? ` · Schliesst um ${closesAt}` : ""}
           </span>
         ) : (
@@ -87,7 +87,7 @@ export default function BookingSidebar({
         {nextSlotLabel && (
           <div className="flex items-center gap-2.5 text-[13px] text-[#767676]">
             <Clock className="w-4 h-4 text-[#767676] shrink-0" />
-            <span>Nächster Termin: <span className="font-semibold text-[#2E7D32]">{nextSlotLabel}</span></span>
+            <span>Nächster Termin: <span className="font-semibold text-[#16A34A]">{nextSlotLabel}</span></span>
           </div>
         )}
         <div className="flex items-center gap-2.5 text-[13px] text-[#767676]">

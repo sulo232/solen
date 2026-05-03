@@ -155,8 +155,8 @@ export default function RevenuePage() {
                 <AreaChart data={data.daily} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                   <defs>
                     <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#E8735A" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="#E8735A" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#E8624A" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#E8624A" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -182,11 +182,11 @@ export default function RevenuePage() {
                   <Area
                     type="monotone"
                     dataKey="revenue"
-                    stroke="#E8735A"
+                    stroke="#E8624A"
                     strokeWidth={2}
                     fill="url(#revenueGradient)"
                     dot={false}
-                    activeDot={{ r: 4, fill: "#E8735A" }}
+                    activeDot={{ r: 4, fill: "#E8624A" }}
                   />
                 </AreaChart>
               </ResponsiveContainer>

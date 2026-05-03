@@ -27,7 +27,7 @@ import LastMinuteStrip from "@/components/ui/LastMinuteStrip";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HomePage component — V5 Component Map rebuild
-// Background: #FAFAF8 · No dividers · 32-48px section gaps · 88px bottom pad
+// Background: #FFFFFF · No dividers · 32-48px section gaps · 88px bottom pad
 // ─────────────────────────────────────────────────────────────────────────────
 
 type HomePageProps = {

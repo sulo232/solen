@@ -64,7 +64,7 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
       <button onClick={onSalon}
         className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-[border-color,background-color,box-shadow] duration-150 text-left">
         <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0"
-          style={{ background: "rgba(212,135,10,.10)" }}>
+          style={{ background: "rgba(243,168,100,.10)" }}>
           <Building2 size={20} className="text-s-amber" />
         </div>
         <div className="flex-1 min-w-0">

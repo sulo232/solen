@@ -25,9 +25,9 @@ export function SpaIcon({ animate = false, ...props }: React.SVGProps<SVGSVGElem
       </g>
 
       {/* Front petals — 3 at 60°, 180°, 300° — main coral */}
-      <ellipse cx="20" cy="8.5" rx="4.5" ry="10" fill="#E8735A" transform="rotate(60 20 20)" />
-      <ellipse cx="20" cy="8.5" rx="4.5" ry="10" fill="#E8735A" transform="rotate(180 20 20)" />
-      <ellipse cx="20" cy="8.5" rx="4.5" ry="10" fill="#E8735A" transform="rotate(300 20 20)" />
+      <ellipse cx="20" cy="8.5" rx="4.5" ry="10" fill="#E8624A" transform="rotate(60 20 20)" />
+      <ellipse cx="20" cy="8.5" rx="4.5" ry="10" fill="#E8624A" transform="rotate(180 20 20)" />
+      <ellipse cx="20" cy="8.5" rx="4.5" ry="10" fill="#E8624A" transform="rotate(300 20 20)" />
 
       {/* Petal vein highlights */}
       <ellipse cx="20" cy="9.5" rx="1.5" ry="7" fill="white" opacity="0.18" transform="rotate(60 20 20)" />

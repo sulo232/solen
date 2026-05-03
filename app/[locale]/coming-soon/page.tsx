@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 
 const FEATURE_MAP: Record<string, { icon: string; color: string }> = {
   vouchers: { icon: "🎁", color: "rgba(232,98,74,.12)" },
-  loyalty: { icon: "⭐", color: "rgba(212,135,10,.12)" },
+  loyalty: { icon: "⭐", color: "rgba(243,168,100,.12)" },
   referral: { icon: "💌", color: "rgba(123,166,136,.15)" },
   behandlungen: { icon: "💆", color: "rgba(107,163,200,.15)" },
 };
