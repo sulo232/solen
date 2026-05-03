@@ -11,8 +11,8 @@ import { useTranslations } from "next-intl";
  *
  * - Single horizontal row, center aligned
  * - Sand glass background: rgba(250,247,243,0.5) + blur(10px)
- * - Numbers: Bebas Neue 28px (counts), DM Sans 16px/700 (rating)
- * - Labels: DM Sans 13px/400
+ * - Numbers: Anton 28px (counts), Figtree 16px/700 (rating) — post-Q23/Q48
+ * - Labels: Figtree 13px/400 — post-Q23/Q48
  * - Separators: 1px solid #E8E2DC, height 28px
  * - Any stat with value 0 → hidden
  * - ALL stats 0 → render null
@@ -101,12 +101,12 @@ export default function TrustStatsBanner() {
 
   // Build stat items, filtering out zeros
   const allItems = [
-    { value: animatedValues.salons, rawValue: stats?.salons ?? 0, label: t("trust_stats.salons") || "Salons", isBebas: true },
+    { value: animatedValues.salons, rawValue: stats?.salons ?? 0, label: t("trust_stats.salons") || "Salons", isAnton: true },
     {
       value: 0, rawValue: 1, label: t("trust_stats.reviews") ? "Bewertung" : "Bewertung",
       isRating: true,
     },
-    { value: animatedValues.reviews, rawValue: stats?.reviews ?? 0, label: t("trust_stats.reviews") || "Bewertungen", isBebas: true },
+    { value: animatedValues.reviews, rawValue: stats?.reviews ?? 0, label: t("trust_stats.reviews") || "Bewertungen", isAnton: true },
     { value: 0, rawValue: 1, label: "buchen", isFree: true },
   ];
 
