@@ -16,9 +16,12 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         // ── Solen Brand Tokens (DESIGN_SPEC.md is source of truth) ──
-        // s-coral.text/button/button-hover were V5 residue (#C95A3A/#C05038/#A8442F) — re-locked
-        // 2026-05-03 to derive from DEFAULT so the brand coral signal is monolithic everywhere.
-        "s-coral": { DEFAULT: "#E8624A", hover: "#D4574A", subtle: "#FAECE7", text: "#E8624A", button: "#E8624A", "button-hover": "#D4574A" },
+        // 2026-05-03 audit:
+        //   - text: #C95A3A — locked deep-coral text variant (used 286× in solen-coral.html
+        //     reference; better AA contrast than DEFAULT on light/white bgs)
+        //   - button + button-hover: were V5 dead values (#C05038/#A8442F appear 0× in
+        //     reference); re-locked to DEFAULT + hover so primary CTA matches the bright signal
+        "s-coral": { DEFAULT: "#E8624A", hover: "#D4574A", subtle: "#FAECE7", text: "#C95A3A", button: "#E8624A", "button-hover": "#D4574A" },
         "s-amber": { DEFAULT: "#F3A864", hover: "#E89953", subtle: "#FFF4E8", text: "#7A4A2D" },
         "s-blue": { DEFAULT: "#6BA3C8", hover: "#4E8AB5", subtle: "#EAF3FB", text: "#1A4D72" },
         "s-plum": { DEFAULT: "#4A1E3C", hover: "#3A1630", subtle: "#F0E8F0", text: "#4A1E3C" },

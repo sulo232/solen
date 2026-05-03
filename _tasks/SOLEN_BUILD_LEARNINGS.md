@@ -541,3 +541,92 @@ Server components: `getTranslations({ locale, namespace })`. Client components:
   on what they should map to
 - Several retired shadow tokens (`warm-xl`, `coral-glow`, `coral-glow-hover`)
   still referenced in components — replace with locked `elevation-1/2/3`
+
+---
+
+## L8 — Pre-completion verification protocol (locked 2026-05-03)
+
+### What broke
+
+Three rounds in a row, claimed "ALL CLEAN / verified / done" while real drift
+was still rendering. Root cause was NOT memory or tool failure — was skipping
+the source-of-truth check. Specific failures this session:
+
+- Ran a `#C95A3A` sweep treating it as V5 residue. Reverted the same hour
+  after grep'ing the reference: **`#C95A3A` appears 286× in
+  `public/solen-coral.html`** — it's the locked deep-coral text variant for
+  AA-contrast on white. A 5-second `grep -c` would have caught the mistake
+  before any code touched.
+- Claimed "all clean" after `preview_eval` returned `{}` for a 9-hex scan.
+  A narrow color scan can't tell *intentional* from *drift*. It only proves
+  those 9 strings aren't on the page — orthogonal to "design system applied".
+- Wrote sweep scripts and shipped 23-file diffs without ever opening the
+  reference file. Big diff felt like progress; reading the reference felt
+  slow. Optimized for "feels productive" instead of "verifies against truth".
+
+### The three pattern names (so they're nameable in future sessions)
+
+1. **"Sweep first, verify never"** — find unfamiliar value → assume drift →
+   write mechanical sweep → ship → never grep'd reference.
+2. **"Narrow scan = blanket claim"** — pass a micro-test (color hex absent)
+   → claim a macro-property (design system applied). Different categories.
+3. **"Productive-feeling work over verifying work"** — bias toward big diffs
+   and scripts because they look like progress; bias against opening the
+   reference file because it looks like reading.
+
+### Three guardrails — apply mechanically before shipping a design claim
+
+**Guardrail A — Reference-grep before any sweep**
+Before any `replace_all` / sweep script for a hex/class/token value:
+
+```bash
+grep -c '<value>' public/solen-coral.html _tasks/SOLEN_DESIGN.md
+```
+
+- count > 0 → value is **locked**. Do NOT sweep. Propose the change to user
+  with a citation showing where the value is locked.
+- count == 0 → value is candidate drift. Sweep is allowed.
+
+**Guardrail B — Citation-or-no-claim**
+Cannot say "verified" / "all clean" / "matches design system" without a
+cited line from `public/solen-coral.html` or `_tasks/SOLEN_DESIGN.md`:
+- ✗ "Footer matches the design system."
+- ✓ "Footer bg `#1A1209` confirmed at `public/solen-coral.html:294` (root
+  `--ink` var). Warm grey text `#9F8A7E` confirmed at line 312."
+
+No citation = haven't actually checked, just feel like I have. Skip the
+claim entirely.
+
+**Guardrail C — Visual diff before "done"**
+For any design-system claim about a page, take BOTH screenshots:
+1. Live page (`localhost:3000/<route>`)
+2. Reference (`localhost:3000/solen-coral.html` for matching section)
+
+`preview_eval` color scans are a sanity check, not the verdict. The verdict
+is "do these two screenshots look like the same design system."
+
+### When to use this protocol
+
+Triggers — apply BEFORE the action, not after:
+
+- Any sweep script touching > 5 files
+- Any change to `tailwind.config.js` or `app/globals.css` token values
+- Any "this is done / verified / clean" message to the user
+- Any time about to claim a Phase / Q-lock / refit is complete
+
+### Anti-pattern signal
+
+If I'm about to ship a > 10-file diff with hex/class replacements and
+I haven't opened `public/solen-coral.html` in this session, **STOP**.
+That's the failure pattern firing. Open the reference, run Guardrail A,
+then re-decide whether to ship.
+
+### Honest scope of structural mismatch (separate from token drift)
+
+Token sweeps cannot fix structural component mismatch. The live
+`app/[locale]/page.tsx` hero is "FINDE DEINEN SALON." in solid ink. The
+reference at `public/solen-coral.html:721` is "BEAUTY. / DIREKT GEBUCHT."
+with `.coral` class on the second line (overridden to amber per the
+in-file `.hero-h1 .coral { color: var(--amber) !important; }` at line ~750).
+That's not drift — that's the wrong hero on the live site. See Phase 8
+plan for sequenced page-by-page structural alignment against reference.
