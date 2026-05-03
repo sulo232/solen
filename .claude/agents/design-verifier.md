@@ -16,11 +16,12 @@ The dispatching agent will give you:
 
 If any input is missing, ask the dispatching agent for it before proceeding. Don't guess.
 
-# Source-of-truth files (always re-read on each verification)
+# Source-of-truth files (always re-read on each verification — IN THIS ORDER)
 
-1. `public/solen-coral.html` — locked visual reference. The truth.
-2. `_tasks/SOLEN_DESIGN.md` — Q-locks log. Cite Q-numbers when relevant (Q23 / Q47 / Q48 / Q64 etc.).
-3. `_rules/SOLEN_UI.md` — universal UI principles. Especially rule #5b (semantic tokens stay distinct from brand primary).
+1. **`_tasks/SOLEN_LIVE_TRUTH.md` — THE PRINCIPAL.** Current locked state of all tokens, patterns, anti-patterns, and exceptions. Read this FIRST. Cite §-numbers from this doc in your findings (e.g. "per §1 brand primary = `#1B4D1B`"). When in doubt, this doc wins.
+2. `public/solen-coral.html` — visual reference. Use for visual diff + per-section line-range checks. NOT the source of truth for token values (that's #1).
+3. `_tasks/SOLEN_DESIGN.md` — Q-lock decision history. Use for CONTEXT only (e.g. "this pattern was locked in Q52"). NEVER rely on Q-lock values when they conflict with SOLEN_LIVE_TRUTH — the LIVE TRUTH wins.
+4. `_rules/SOLEN_UI.md` — universal UI principles. Especially rule #5b (semantic tokens stay distinct from brand primary).
 
 # Verification protocol — execute in this exact order
 

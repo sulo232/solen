@@ -9,11 +9,12 @@
 
 ## 🎨 Design system — single source of truth
 
-- **Read:** `_tasks/SOLEN_DESIGN.md` (Q-locks live in §20)
+- **READ FIRST (the principal — current locked state, no history):** `_tasks/SOLEN_LIVE_TRUTH.md`
+- **History / context (slower-moving Q-lock decision log):** `_tasks/SOLEN_DESIGN.md` §20
 - **Preview:** `public/solen-coral.html` → `localhost:3000/solen-coral.html`
-- **If anything contradicts `SOLEN_DESIGN.md`, that doc wins. No exceptions.**
+- **Hierarchy when docs conflict:** `SOLEN_LIVE_TRUTH.md` wins over Q-locks wins over reference HTML wins over component JSDoc. **If `SOLEN_LIVE_TRUTH.md` is wrong, fix it first**, then propagate to other files. Never reverse.
 
-**Retired — do not reintroduce:** V2 green+peach palette (`#1B4D1C` / `#F5A962` / Plus Jakarta / Outfit / Phosphor) · V5 zone language · glass-everywhere · 3:2 cover photos · dark mode · blobs-in-every-section.
+**Retired — do not reintroduce:** V2 green+peach palette (`#1B4D1C` / `#F5A962` / Plus Jakarta / Outfit / Phosphor) · V5 zone language · glass-everywhere · 3:2 cover photos · dark mode · blobs-in-every-section. Full retired list in `SOLEN_LIVE_TRUTH.md` §8.
 
 ---
 
