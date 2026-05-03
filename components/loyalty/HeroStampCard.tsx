@@ -16,7 +16,7 @@ import { Check } from "lucide-react";
  * caller picks the one closest to reward unlock.
  *
  * Anatomy per Q59 lock:
- *   - bg: linear-gradient(135deg,#E8624A 0%,#F3A864 100%)
+ *   - bg: linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%)
  *   - salon image (round, ~28px) + name
  *   - count chip "N/total" (Figtree 700 tabular)
  *   - Anton headline "<X> mehr für <reward>"
@@ -47,7 +47,7 @@ export default function HeroStampCard({
     <Link
       href={`/${locale}/salon/${salonSlug}`}
       className="block rounded-[16px] p-5 sm:p-6 text-white transition-[transform] duration-150 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
-      style={{ background: "linear-gradient(135deg,#E8624A 0%,#F3A864 100%)" }}
+      style={{ background: "linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%)" }}
     >
       {/* Top row — salon identity + count chip */}
       <div className="flex items-center justify-between gap-3">

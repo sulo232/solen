@@ -38,9 +38,9 @@ export function BarberIcon({ animate = false, ...props }: React.SVGProps<SVGSVGE
       <rect x="36" y="8" width="1.5" height="10" rx="0.75" fill="#B8A098" />
 
       {/* Pivot — coral with glow */}
-      <circle cx="23.5" cy="21.5" r="4.5" fill="#E8624A" filter="url(#sh-ba-sm)" />
+      <circle cx="23.5" cy="21.5" r="4.5" fill="#1B4D1B" filter="url(#sh-ba-sm)" />
       <circle cx="23.5" cy="21.5" r="2.5" fill="#FAD4CC" />
-      <circle cx="23.5" cy="21.5" r="1" fill="#E8624A" />
+      <circle cx="23.5" cy="21.5" r="1" fill="#1B4D1B" />
     </svg>
   );
 }

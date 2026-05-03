@@ -36,7 +36,7 @@ export default function LastMinuteStrip({ slots }: LastMinuteStripProps) {
   return (
     <div
       className="relative overflow-hidden"
-      style={{ background: "#E8624A" }}
+      style={{ background: "#1B4D1B" }}
       aria-label={t("badge")}
     >
       {/* Ambient glow top-right */}

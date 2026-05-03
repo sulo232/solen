@@ -12,7 +12,7 @@ import { useTranslations } from "next-intl";
  * - HORIZONTAL CAROUSEL (not vertical stack)
  * - Only renders when ≥3 real reviews exist in DB
  * - Warm white glass cards: rgba(255,255,255,0.65) + blur(14px) per §6
- * - ALL avatars: coral #E8624A circle with white Anton uppercase letter
+ * - ALL avatars: coral #1B4D1B circle with white Anton uppercase letter
  * - Stars: 5× SVG 14px, fill amber #F3A864 per Q43 + SOLEN_UI #5b
  * - Quote: Figtree 15px/400 italic per Q24 voice
  * - Section heading: Anton uppercase per Q48
@@ -148,7 +148,7 @@ export default function TestimonialCarousel() {
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-heading text-[14px] text-white"
-                style={{ background: "#E8624A" }}
+                style={{ background: "#1B4D1B" }}
                 aria-hidden="true"
               >
                 {review.reviewer_name.charAt(0).toUpperCase()}

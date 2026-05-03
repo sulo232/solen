@@ -126,7 +126,7 @@ export default function DashboardPage() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             className="mb-6 rounded-[12px] px-4 py-4 flex items-center gap-3"
-            style={{ background: "#E8624A" }}
+            style={{ background: "#1B4D1B" }}
           >
             <PartyPopper size={20} className="shrink-0 text-white/80" />
             <div>
@@ -198,7 +198,7 @@ export default function DashboardPage() {
                   color: "text-s-coral",
                   bg: "bg-s-coral/5",
                   sparklineData: stats.trends?.bookings,
-                  sparklineColor: "#E8624A",
+                  sparklineColor: "#1B4D1B",
                   delta: prior ? { value: Math.abs(prior.bookings), direction: deltaDir(prior.bookings) } : undefined,
                 },
                 {
@@ -244,7 +244,7 @@ export default function DashboardPage() {
               <SectionLabel amber>Handlungsbedarf</SectionLabel>
               {stats.verification_overdue && (
                 <div className="rounded-[12px] px-4 py-3.5 flex items-center gap-3"
-                  style={{ background: "rgba(232,98,74,.06)", border: "1px solid rgba(232,98,74,.18)" }}>
+                  style={{ background: "rgba(27, 77, 27,.06)", border: "1px solid rgba(27, 77, 27,.18)" }}>
                   <ShieldAlert size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-heading text-s-ink">Verifizierung überfällig</p>
@@ -258,7 +258,7 @@ export default function DashboardPage() {
               )}
               {stats.low_slots_warning && (
                 <div className="rounded-[12px] px-4 py-3.5 flex items-center gap-3"
-                  style={{ background: "rgba(232,98,74,.06)", border: "1px solid rgba(232,98,74,.18)" }}>
+                  style={{ background: "rgba(27, 77, 27,.06)", border: "1px solid rgba(27, 77, 27,.18)" }}>
                   <AlertTriangle size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-heading text-s-ink">Wenig freie Slots</p>
@@ -333,7 +333,7 @@ export default function DashboardPage() {
                       <div className="shrink-0 flex items-center gap-2">
                         {b.is_first_visit && (
                           <span className="px-2 py-0.5 rounded-[6px] text-[9px] font-heading uppercase tracking-[.06em]"
-                            style={{ background: "rgba(232,98,74,.10)", color: "#7A2415" }}>
+                            style={{ background: "rgba(27, 77, 27,.10)", color: "#7A2415" }}>
                             Neu
                           </span>
                         )}
@@ -382,7 +382,7 @@ export default function DashboardPage() {
                             className="rounded-[12px] border border-s-ink/[0.06] p-3.5 flex items-center gap-3 bg-white hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors group"
                           >
                             <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0"
-                              style={{ background: "rgba(232,98,74,.08)" }}>
+                              style={{ background: "rgba(27, 77, 27,.08)" }}>
                               <Icon size={15} className="text-s-coral" />
                             </div>
                             <span className="text-[11px] font-heading text-s-ink/65 group-hover:text-s-coral transition-colors leading-tight">
@@ -410,7 +410,7 @@ export default function DashboardPage() {
                 <a key={href} href={href}
                   className="shrink-0 w-24 md:w-auto rounded-[12px] border border-s-ink/[0.06] p-4 flex flex-col items-center gap-2.5 text-center bg-white hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors">
                   <div className="w-9 h-9 rounded-[10px] flex items-center justify-center"
-                    style={{ background: "rgba(232,98,74,.08)" }}>
+                    style={{ background: "rgba(27, 77, 27,.08)" }}>
                     <Icon size={17} className="text-s-coral" />
                   </div>
                   <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/55 leading-tight">{label}</p>

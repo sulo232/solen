@@ -81,7 +81,7 @@ export default function TipPage() {
       <div className="min-h-screen flex items-center justify-center bg-white px-4">
         <div className="text-center">
           <div className="w-16 h-16 rounded-[18px] flex items-center justify-center mx-auto mb-5 animate-bounce"
-            style={{ background: "rgba(232,98,74,.10)" }}>
+            style={{ background: "rgba(27, 77, 27,.10)" }}>
             <Check size={28} className="text-s-coral" />
           </div>
           <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-coral mb-2">
@@ -144,7 +144,7 @@ export default function TipPage() {
                 ? "border border-s-coral/25 text-s-coral"
                 : "border border-s-ink/[0.08] text-s-ink/45"
             }`}
-            style={useCustom ? { background: "rgba(232,98,74,.06)" } : undefined}>
+            style={useCustom ? { background: "rgba(27, 77, 27,.06)" } : undefined}>
             {l.custom}
           </button>
           {useCustom && (

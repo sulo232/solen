@@ -65,7 +65,7 @@ export default function CustomerPreferencesForm({
       <div className="flex items-start gap-3 mb-5">
         <div
           className="w-10 h-10 rounded-input flex items-center justify-center shrink-0"
-          style={{ background: "rgba(232,98,74,.10)" }}
+          style={{ background: "rgba(27, 77, 27,.10)" }}
         >
           <User size={18} className="text-s-coral" />
         </div>
@@ -177,7 +177,7 @@ export default function CustomerPreferencesForm({
         {error && (
           <div
             className="flex items-center gap-2 px-3 py-2.5 rounded-input border border-s-coral/20"
-            style={{ background: "rgba(232,98,74,.06)" }}
+            style={{ background: "rgba(27, 77, 27,.06)" }}
           >
             <AlertCircle size={13} className="text-s-coral shrink-0" />
             <p className="text-xs font-body text-s-coral">{error}</p>

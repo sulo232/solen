@@ -134,7 +134,7 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
                   contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid rgba(26,18,9,0.08)" }}
                 />
                 <Legend iconSize={8} wrapperStyle={{ fontSize: 10 }} formatter={(name) => name === "appointments" ? t("appointments") : t("walkIns")} />
-                <Bar dataKey="appointments" stackId="a" fill="#E8624A" radius={[0, 0, 0, 0]} maxBarSize={24} />
+                <Bar dataKey="appointments" stackId="a" fill="#1B4D1B" radius={[0, 0, 0, 0]} maxBarSize={24} />
                 <Bar dataKey="walkins" stackId="a" fill="#F3A864" radius={[4, 4, 0, 0]} maxBarSize={24} />
               </BarChart>
             </ResponsiveContainer>

@@ -26,7 +26,7 @@ export default function CategoryPills({ selected, onSelect }: CategoryPillsProps
               ? "bg-s-coral text-white"
               : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]:bg-white/[0.12]",
           ].join(" ")}
-          style={selected === key ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
+          style={selected === key ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
         >
           {t(key)}
         </button>

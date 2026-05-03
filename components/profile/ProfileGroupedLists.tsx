@@ -78,7 +78,7 @@ export default function ProfileGroupedLists({ groups, className }: ProfileGroupe
                   {row.rewardChip && (
                     <span
                       className="font-body text-[10px] font-bold tabular-nums px-2 py-[2px] rounded-full"
-                      style={{ background: "rgba(232,98,74,0.10)", color: "#C95A3A" }}
+                      style={{ background: "rgba(27, 77, 27,0.10)", color: "#0F3010" }}
                     >
                       {row.rewardChip}
                     </span>

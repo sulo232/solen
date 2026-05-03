@@ -8,7 +8,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 const FEATURE_MAP: Record<string, { icon: string; color: string }> = {
-  vouchers: { icon: "🎁", color: "rgba(232,98,74,.12)" },
+  vouchers: { icon: "🎁", color: "rgba(27, 77, 27,.12)" },
   loyalty: { icon: "⭐", color: "rgba(243,168,100,.12)" },
   referral: { icon: "💌", color: "rgba(123,166,136,.15)" },
   behandlungen: { icon: "💆", color: "rgba(107,163,200,.15)" },
@@ -19,7 +19,7 @@ export default function ComingSoonPage() {
   const t = useTranslations("comingSoon");
   const params = useSearchParams();
   const feature = params.get("feature") ?? "default";
-  const meta = FEATURE_MAP[feature] ?? { icon: "✨", color: "rgba(232,98,74,.08)" };
+  const meta = FEATURE_MAP[feature] ?? { icon: "✨", color: "rgba(27, 77, 27,.08)" };
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 

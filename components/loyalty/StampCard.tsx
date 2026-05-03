@@ -108,7 +108,7 @@ export default function StampCard({
       {isComplete && (
         <div
           className="absolute bottom-0 left-0 right-0 border-t border-s-coral/20 px-4 py-2.5 text-center"
-          style={{ background: "rgba(232,98,74,.08)" }}
+          style={{ background: "rgba(27, 77, 27,.08)" }}
         >
           <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-coral">
             Belohnung freigeschaltet!

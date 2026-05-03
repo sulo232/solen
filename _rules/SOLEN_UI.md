@@ -160,7 +160,7 @@ Solen's blend: **calm + premium + warm**. Not playful-cartoony like Duolingo; no
 > Ask: *When the user opens this screen, what should they feel? Do the visuals, motion, and copy actually deliver that feeling — or do they just deliver the function?*
 
 ### 10. Brand fit
-Does this look like **Solen** — Swiss beauty marketplace, coral + warm ink + editorial typography, calm and confident — or like a generic SaaS template? Generic AI output gravitates toward purple gradients, glass cards everywhere, perfectly symmetric grids, dark mode toggles. Resist all of it.
+Does this look like **Solen** — Swiss beauty marketplace, brand green + amber + warm ink + editorial typography, calm and confident — or like a generic SaaS template? Generic AI output gravitates toward purple gradients, glass cards everywhere, perfectly symmetric grids, dark mode toggles. Resist all of it. (Brand primary flipped from coral to forest green `#1B4D1B` per Q64 lock 2026-05-03 — see `_tasks/SOLEN_DESIGN.md`.)
 
 > Ask: *If I removed the logo, would someone still recognize this as Solen? Or could it be any wellness app?*
 
@@ -171,15 +171,15 @@ Does this look like **Solen** — Swiss beauty marketplace, coral + warm ink + e
 Before you write code or generate a mockup, write a one-sentence answer to each numbered principle above. Example:
 
 > 1. Flow — empty state shows "No favorites yet" with a CTA to browse; error state shows toast + retry; loading uses skeleton cards.
-> 2. Primary action — "Book now" coral button, dominant. Secondary actions are ghost links.
+> 2. Primary action — "Book now" green button (brand primary), dominant. Secondary actions are ghost links.
 > 3. Spacing — uses 16/24/32 vertical rhythm. Mobile padding bumped from 16 → 20.
 > 4. Consistency — reuses `<SalonCard>`, `<Button variant="primary">`, existing radius token.
-> 5. Restraint — no gradients, no shadows. One coral accent, white bg.
+> 5. Restraint — no gradients, no shadows. One brand-green accent, white bg.
 > 6. Icons — all lucide outlined, 20px, 1.5 stroke.
 > 7. Feedback — button has hover/pressed/loading; save shows filled icon + toast.
 > 8. Redundancy — removed decorative arrow above title; dividers replaced with spacing.
-> 9. Accessibility — coral on white = 4.7:1; tap targets 48px; focus rings on all CTAs.
-> 10. Brand fit — coral + amber accents on white bg, Anton display once, square cover photos, line-art accents. Reads as Solen.
+> 9. Accessibility — brand green `#1B4D1B` on white = 9.89:1; tap targets 48px; focus rings on all CTAs.
+> 10. Brand fit — brand green + amber accents on white bg, Anton display once, square cover photos, line-art accents. Reads as Solen.
 
 If any answer is "I don't know" or "I didn't think about it," **stop and figure it out before outputting**.
 
@@ -220,11 +220,11 @@ The principles above are the *thinking*. These are the **tactical rules of thumb
 - **~32px between unrelated items.** Closer for items that belong together (label + input, icon + text).
 
 ### Color
-- **Start with one primary brand color**, then build a ramp from it (lighten for backgrounds, darken for text). For Solen that's coral `#E8624A` → coral tints/shades.
-- **Semantic colors mean things.** Blue = trust/info, red = danger/error, yellow = warning, green = success. Don't repurpose them for decoration — users learn the meaning across the web and you'll confuse them.
+- **Start with one primary brand color**, then build a ramp from it (lighten for backgrounds, darken for text). For Solen that's brand-green `#1B4D1B` → green tints/shades. (Pre-Q64 this was coral `#E8624A`; pivot ratified 2026-05-03.)
+- **Semantic colors mean things.** Blue = trust/info, red = danger/error, yellow = warning, **status-green `#16A34A` = success** (DISTINCT from brand-green `#1B4D1B` — different jobs, different hexes, never collapse them). Don't repurpose semantic colors for decoration — users learn the meaning across the web and you'll confuse them.
 - **Color for purpose, not decoration.** If a color isn't doing a job (signaling state, drawing attention to a CTA, branding), it's noise.
-- **60 / 30 / 10 split.** A balanced UI roughly follows: ~60% neutral (white/light gray bg), ~30% complementary (warm ink text, dividers, secondary surfaces), ~10% brand accent (coral on CTAs, key indicators, focus). When everything fights for attention with the brand color, nothing wins. When the brand color is starved, the design feels dull.
-- **Reserve strong color for meaning.** If coral is on every button, header, icon, and chip, it stops drawing the eye. Save it for the CTA and one or two semantic indicators per screen — that's where it earns its weight.
+- **60 / 30 / 10 split.** A balanced UI roughly follows: ~60% neutral (white/light gray bg), ~30% complementary (warm ink text, dividers, secondary surfaces), ~10% brand accent (brand-green on CTAs, key indicators, focus). When everything fights for attention with the brand color, nothing wins. When the brand color is starved, the design feels dull.
+- **Reserve strong color for meaning.** If brand-green is on every button, header, icon, and chip, it stops drawing the eye. Save it for the CTA and one or two key indicators per screen — that's where it earns its weight.
 
 ### Shadows
 - **Reduce opacity, increase blur.** Default `0 4px 6px rgba(26,18,9,0.1)` shadows look harsh. Drop to ~5–10% opacity, push blur to 16–32px+. (Use warm-ink `rgba(26,18,9,…)` tint per §5c, never pure black.)
@@ -363,7 +363,7 @@ These are signals that the agent skipped the checklist:
 - Repeating the parent heading in the row/cell below it ("Voting" heading + "Last 10 votes" row → just "Last 10")
 - 6+ font sizes or 4+ font weights on a single surface (count them — it's the fastest mistake to spot)
 - Proportional-width digits on counters, prices, or timers that change (causes visual jitter)
-- Brand color used so heavily it loses meaning ("if everything is coral, nothing is coral")
+- Brand color used so heavily it loses meaning ("if everything is brand-green, nothing is brand-green")
 - Designing only static screens and ignoring how the user moves between them
 - Skeumorphism stack-up (45 layers of shadows trying to feel "tactile")
 - Treating UI as purely functional — shipping features without thinking about how they *feel*

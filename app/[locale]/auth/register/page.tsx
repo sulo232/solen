@@ -50,7 +50,7 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
       <button onClick={onCustomer}
         className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-[border-color,background-color,box-shadow] duration-150 text-left">
         <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0"
-          style={{ background: "rgba(232,98,74,.10)" }}>
+          style={{ background: "rgba(27, 77, 27,.10)" }}>
           <User size={20} className="text-s-coral" />
         </div>
         <div className="flex-1 min-w-0">
@@ -140,7 +140,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
     return (
       <div className="text-center py-6 flex flex-col items-center gap-4">
         <div className="w-14 h-14 rounded-[14px] flex items-center justify-center"
-          style={{ background: "rgba(232,98,74,.10)" }}>
+          style={{ background: "rgba(27, 77, 27,.10)" }}>
           <Mail size={24} className="text-s-coral" />
         </div>
         <div>
@@ -618,7 +618,7 @@ export default function RegisterPage() {
       {/* Single ambient glow — Zone 3 exception */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full"
-          style={{ background: "rgba(232,98,74,.07)", filter: "blur(120px)" }} />
+          style={{ background: "rgba(27, 77, 27,.07)", filter: "blur(120px)" }} />
       </div>
 
       <div className="w-full max-w-sm">

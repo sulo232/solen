@@ -27,11 +27,11 @@ import { Check } from "lucide-react";
 type Kind = "booking" | "payment" | "favorite" | "loyalty" | "review";
 
 const TIMINGS: Record<Kind, { ring: number; checkmark: { delay: number; ringColor: string } }> = {
-  booking:  { ring: 700,  checkmark: { delay: 100, ringColor: "#E8624A" } },
-  payment:  { ring: 700,  checkmark: { delay: 100, ringColor: "#E8624A" } },
-  favorite: { ring: 500,  checkmark: { delay: 80,  ringColor: "#E8624A" } },
+  booking:  { ring: 700,  checkmark: { delay: 100, ringColor: "#1B4D1B" } },
+  payment:  { ring: 700,  checkmark: { delay: 100, ringColor: "#1B4D1B" } },
+  favorite: { ring: 500,  checkmark: { delay: 80,  ringColor: "#1B4D1B" } },
   loyalty:  { ring: 1200, checkmark: { delay: 200, ringColor: "#F3A864" } }, // amber for milestone register-shift
-  review:   { ring: 700,  checkmark: { delay: 100, ringColor: "#E8624A" } },
+  review:   { ring: 700,  checkmark: { delay: 100, ringColor: "#1B4D1B" } },
 };
 
 interface CelebrationRingProps {

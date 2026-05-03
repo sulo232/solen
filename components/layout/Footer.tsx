@@ -34,8 +34,8 @@ export default function Footer() {
             {/* Sprout icon */}
             <svg width="24" height="24" viewBox="0 0 40 40" fill="none" aria-hidden="true">
               <path d="M20 36V20" stroke="#8C8279" strokeWidth="2.5" strokeLinecap="round"/>
-              <path d="M20 24C20 24 10 22 8 14C8 14 18 12 20 20" fill="#E8624A" opacity=".85"/>
-              <path d="M20 20C20 20 30 18 32 10C32 10 22 8 20 16" fill="#E8624A"/>
+              <path d="M20 24C20 24 10 22 8 14C8 14 18 12 20 20" fill="#1B4D1B" opacity=".85"/>
+              <path d="M20 20C20 20 30 18 32 10C32 10 22 8 20 16" fill="#1B4D1B"/>
             </svg>
             <span className="font-display text-white" style={{ fontSize: 24, letterSpacing: 1.5 }}>
               SOLEN

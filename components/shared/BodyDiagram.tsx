@@ -51,7 +51,7 @@ export default function BodyDiagram({
       .catch((err) => console.error("[BodyDiagram] failed to load body zones SVG:", err));
   }, []);
 
-  const fillColor = mode === "spa" ? "#DC2626" : "var(--coral, #E8624A)";
+  const fillColor = mode === "spa" ? "#DC2626" : "var(--coral, #1B4D1B)";
   const fillOpacity = mode === "spa" ? 0.4 : 0.3;
 
   const zoneLabelMap: Record<string, string> = {};

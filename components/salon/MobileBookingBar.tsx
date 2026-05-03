@@ -55,7 +55,7 @@ export default function MobileBookingBar({
         <button
           onClick={onBook}
           className="h-[44px] px-6 rounded-btn bg-s-coral text-white font-body font-semibold text-[15px] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
-          style={{ boxShadow: "0 2px 8px rgba(232,98,74,0.28)" }}
+          style={{ boxShadow: "0 2px 8px rgba(27, 77, 27,0.28)" }}
         >
           Buchen
         </button>

@@ -134,7 +134,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
                     ? "bg-s-coral text-white border-s-coral"
                     : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/50",
                 ].join(" ")}
-                style={active ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
+                style={active ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
               >
                 <span className="text-[13px] leading-none">{opt.emoji}</span>
                 {opt.label}

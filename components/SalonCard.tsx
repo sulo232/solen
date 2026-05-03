@@ -55,7 +55,7 @@ interface SalonCardProps {
 const CAT_COLOURS: Record<string, { bg: string; text: string }> = {
   coiffeur:   { bg: "rgba(243,168,100,.12)",  text: "#7A4A00" },
   barbershop: { bg: "rgba(74,30,60,.12)",    text: "#4A1E3C" },
-  nails:      { bg: "rgba(232,98,74,.12)",   text: "#7A2415" },
+  nails:      { bg: "rgba(27, 77, 27,.12)",   text: "#7A2415" },
   spa:        { bg: "rgba(123,166,136,.15)", text: "#2A5438" },
   makeup:     { bg: "rgba(201,169,110,.14)", text: "#6B4005" },
   waxing:     { bg: "rgba(107,163,200,.15)", text: "#1A4D72" },
@@ -64,7 +64,7 @@ const CAT_COLOURS: Record<string, { bg: string; text: string }> = {
 const CATEGORY_FALLBACK_GRADIENTS: Record<string, [string, string]> = {
   coiffeur:   ["rgba(243,168,100,0.10)",  "rgba(255,255,255,0.98)"],
   barbershop: ["rgba(74,30,60,0.08)",    "rgba(255,255,255,0.98)"],
-  nails:      ["rgba(232,98,74,0.10)",   "rgba(255,255,255,0.98)"],
+  nails:      ["rgba(27, 77, 27,0.10)",   "rgba(255,255,255,0.98)"],
   spa:        ["rgba(123,166,136,0.14)", "rgba(255,255,255,0.98)"],
   makeup:     ["rgba(201,169,110,0.12)", "rgba(255,255,255,0.98)"],
   waxing:     ["rgba(107,163,200,0.12)", "rgba(255,255,255,0.98)"],

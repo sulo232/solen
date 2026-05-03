@@ -50,7 +50,7 @@ export default function CategoryTabBar({ activeCategory, onChange }: CategoryTab
             ].join(" ")}
             style={
               isActive
-                ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" }
+                ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" }
                 : undefined
             }
           >

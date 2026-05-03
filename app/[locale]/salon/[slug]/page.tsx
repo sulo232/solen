@@ -79,7 +79,7 @@ const CATEGORY_ICONS: Record<SalonCategory, React.FC<{ className?: string }>> = 
 const CAT_TAG_COLOURS: Record<string, { bg: string; text: string }> = {
   coiffeur:   { bg: "rgba(151,123,89,.12)",  text: "#5A4429" },
   barbershop: { bg: "rgba(74,30,60,.12)",    text: "#4A1E3C" },
-  nails:      { bg: "rgba(232,98,74,.12)",   text: "#7A2415" },
+  nails:      { bg: "rgba(27, 77, 27,.12)",   text: "#7A2415" },
   spa:        { bg: "rgba(123,166,136,.15)", text: "#2E5E3A" },
   makeup:     { bg: "rgba(243,168,100,.10)",  text: "#6B4005" },
   waxing:     { bg: "rgba(107,163,200,.15)", text: "#1A4D72" },
@@ -152,10 +152,10 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
 
   return (
     <div className="flex items-center gap-4 px-5 py-4 rounded-card-lg shadow-elevation-1"
-      style={{ background: "rgba(232,98,74,.08)", border: "1px solid rgba(232,98,74,.18)" }}>
+      style={{ background: "rgba(27, 77, 27,.08)", border: "1px solid rgba(27, 77, 27,.18)" }}>
       <div className="relative shrink-0">
         <div className="w-10 h-10 rounded-full flex items-center justify-center"
-          style={{ background: "rgba(232,98,74,.15)" }}>
+          style={{ background: "rgba(27, 77, 27,.15)" }}>
           <Clock size={18} className="text-s-coral" />
         </div>
         <div className="absolute inset-0 rounded-full animate-pulse shadow-elevation-2" />
@@ -433,7 +433,7 @@ export default function SalonProfilePage() {
                   <div className="flex flex-wrap gap-2 mt-2">
                     {salon.categories.map((cat) => {
                       const Icon = CATEGORY_ICONS[cat];
-                      const colours = CAT_TAG_COLOURS[cat] ?? { bg: "rgba(232,98,74,.12)", text: "#7A2415" };
+                      const colours = CAT_TAG_COLOURS[cat] ?? { bg: "rgba(27, 77, 27,.12)", text: "#7A2415" };
                       return (
                         <span key={cat} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-btn text-xs font-heading uppercase tracking-[.06em]"
                           style={{ background: colours.bg, color: colours.text }}>
@@ -539,7 +539,7 @@ export default function SalonProfilePage() {
                           style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
-                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
+                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(27, 77, 27,.10)" }}>
                             <Sparkles className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
@@ -553,7 +553,7 @@ export default function SalonProfilePage() {
                           style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
-                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
+                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(27, 77, 27,.10)" }}>
                             <Award className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
@@ -567,7 +567,7 @@ export default function SalonProfilePage() {
                           style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
-                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
+                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(27, 77, 27,.10)" }}>
                             <Droplets className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
@@ -581,7 +581,7 @@ export default function SalonProfilePage() {
                           style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
-                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
+                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(27, 77, 27,.10)" }}>
                             <Bus className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>

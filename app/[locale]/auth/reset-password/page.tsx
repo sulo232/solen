@@ -90,7 +90,7 @@ export default function ResetPasswordPage() {
       {/* Single ambient glow — Zone 3 exception */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full"
-          style={{ background: "rgba(232,98,74,.08)", filter: "blur(120px)" }} />
+          style={{ background: "rgba(27, 77, 27,.08)", filter: "blur(120px)" }} />
       </div>
 
       <div className="w-full max-w-sm">
@@ -112,7 +112,7 @@ export default function ResetPasswordPage() {
                    boxShadow: "0 4px 12px rgba(26,18,9,.08), 0 16px 40px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.90)" }}>
           <div className="text-center mb-6">
             <div className="mx-auto w-14 h-14 rounded-[14px] flex items-center justify-center mb-3"
-              style={{ background: "rgba(232,98,74,.10)" }}>
+              style={{ background: "rgba(27, 77, 27,.10)" }}>
               <Lock size={24} className="text-s-coral" />
             </div>
             <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/45 mb-2">
@@ -170,7 +170,7 @@ export default function ResetPasswordPage() {
 
               {confirm.length > 0 && !passwordsMatch && (
                 <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
-                  style={{ background: "rgba(232,98,74,.06)" }}>
+                  style={{ background: "rgba(27, 77, 27,.06)" }}>
                   <p className="text-xs font-body text-s-coral">Passwörter stimmen nicht überein</p>
                 </div>
               )}

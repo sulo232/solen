@@ -92,7 +92,7 @@ export default function ForecastWidget({ data }: ForecastWidgetProps) {
             formatter={(v: number, name: string) => [`CHF ${v}`, name === "revenue" ? t("forecastRevenue") : t("forecastProjection")]}
             contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid rgba(26,18,9,0.08)" }}
           />
-          <Bar dataKey="revenue" fill="#E8624A" radius={[4, 4, 0, 0]} maxBarSize={28} name="revenue" />
+          <Bar dataKey="revenue" fill="#1B4D1B" radius={[4, 4, 0, 0]} maxBarSize={28} name="revenue" />
           <Area dataKey="forecastHigh" fill="#F3A864" fillOpacity={0.08} stroke="none" />
           <Area dataKey="forecastLow" fill="var(--raised, #FFFFFF)" fillOpacity={1} stroke="none" />
           <Line dataKey="forecast" stroke="#F3A864" strokeWidth={2} strokeDasharray="5 3" dot={{ r: 3, fill: "#F3A864" }} name="forecast" />

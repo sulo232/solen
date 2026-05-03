@@ -26,7 +26,7 @@ type SortKey = keyof Omit<BarberStats, "staff_id" | "staff_name">;
 type Period = "week" | "month";
 type ViewMode = "table" | "chart";
 
-const CHART_CORAL = "#E8624A";
+const CHART_CORAL = "#1B4D1B";
 
 export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   const t = useTranslations("dashboard.barber_leaderboard") as any;

@@ -11,7 +11,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       {/* Single ambient glow — Zone 3 exception */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full"
-          style={{ background: "rgba(232,98,74,.08)", filter: "blur(120px)" }} />
+          style={{ background: "rgba(27, 77, 27,.08)", filter: "blur(120px)" }} />
       </div>
 
       <div className="w-full max-w-sm">

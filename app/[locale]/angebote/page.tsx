@@ -180,7 +180,7 @@ export default function LastMinutePage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="pt-8 pb-6" style={{ background: "linear-gradient(180deg, rgba(232,98,74,.07) 0%, rgba(255,255,255,0) 100%)" }}>
+      <div className="pt-8 pb-6" style={{ background: "linear-gradient(180deg, rgba(27, 77, 27,.07) 0%, rgba(255,255,255,0) 100%)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-coral mb-2">
             letzte freie Termine
@@ -236,7 +236,7 @@ export default function LastMinutePage() {
                   ? "bg-s-coral text-white"
                   : "bg-s-bg-sunken text-s-ink/55 hover:bg-s-ink/[0.07]:bg-white/[0.10]",
               ].join(" ")}
-              style={sortBy === key ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
+              style={sortBy === key ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
             >
               {label}
             </button>
@@ -255,7 +255,7 @@ export default function LastMinutePage() {
                   ? "bg-s-coral text-white"
                   : "bg-s-bg-sunken text-s-ink/55 hover:bg-s-ink/[0.07]:bg-white/[0.10]",
               ].join(" ")}
-              style={selectedCategories.includes(key) ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
+              style={selectedCategories.includes(key) ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
             >
               <Icon size={12} />
               {label}
@@ -272,7 +272,7 @@ export default function LastMinutePage() {
                   ? "bg-s-coral text-white"
                   : "bg-s-bg-sunken text-s-ink/55 hover:bg-s-ink/[0.07]:bg-white/[0.10]",
               ].join(" ")}
-              style={maxPrice === price ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
+              style={maxPrice === price ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
             >
               {"< CHF " + price}
             </button>

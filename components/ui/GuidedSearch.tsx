@@ -283,7 +283,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
   };
 
   const selectCategory = (cat: SalonCategory) => {
-    // Row flash: rgba(232,98,74,0.08) for 200ms, then advance to WO step
+    // Row flash: rgba(27, 77, 27,0.08) for 200ms, then advance to WO step
     setFlashedCat(cat);
     setTimeout(() => {
       setFlashedCat(null);
@@ -413,7 +413,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
               onClick={() => category ? navigate() : open(1)}
               aria-label={t("showResults" as Parameters<typeof t>[0])}
               className="flex items-center justify-center w-10 h-10 rounded-full bg-s-coral hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 mx-2 shrink-0"
-              style={{ boxShadow: "0 2px 8px rgba(232,98,74,.30)" }}
+              style={{ boxShadow: "0 2px 8px rgba(27, 77, 27,.30)" }}
             >
               <Search size={16} className="text-white" aria-hidden="true" />
             </button>
@@ -688,7 +688,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                       gap: "14px",
                                       borderBottom: "1px solid rgba(0,0,0,0.04)",
                                       minHeight: "56px",
-                                      background: isFlashing ? "rgba(232,98,74,0.08)" : "transparent",
+                                      background: isFlashing ? "rgba(27, 77, 27,0.08)" : "transparent",
                                     }}
                                   >
                                     {/* Icon container */}
@@ -1006,7 +1006,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                   }}
                   aria-label={t("showResults")}
                   className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-btn bg-s-coral text-white font-heading text-[13px] uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
-                  style={{ boxShadow: "0 2px 6px rgba(232,98,74,.30), 0 4px 14px rgba(232,98,74,.18)" }}
+                  style={{ boxShadow: "0 2px 6px rgba(27, 77, 27,.30), 0 4px 14px rgba(27, 77, 27,.18)" }}
                 >
                   <Search size={14} aria-hidden="true" />
                   {category ? t("showResults") : t("steps.was.title" as Parameters<typeof t>[0])}

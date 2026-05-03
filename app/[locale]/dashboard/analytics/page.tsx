@@ -40,7 +40,7 @@ interface AnalyticsData {
   posthog_conversion_rate?: number;
 }
 
-const CORAL = "#E8624A";
+const CORAL = "#1B4D1B";
 const AMBER = "#F3A864";
 
 const TABS: { key: AnalyticsTab; label: string; icon: typeof Calendar }[] = [

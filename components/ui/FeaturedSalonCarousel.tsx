@@ -147,7 +147,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   // DESIGN_SPEC §3.1: max 1 badge per card, only on 4.9+ rating OR 50+ reviews
   const badge = (() => {
     if (salon.average_rating >= 4.9 && salon.review_count >= 10)
-      return { text: "Top bewertet", color: "#E8624A" };
+      return { text: "Top bewertet", color: "#1B4D1B" };
     if (salon.review_count > 50)
       return { text: "Beliebt", color: "#1A8754" };
     return null;

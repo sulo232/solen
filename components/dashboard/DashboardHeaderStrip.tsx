@@ -81,7 +81,7 @@ export default function DashboardHeaderStrip() {
       {/* Gradient "Now" pill */}
       <div
         className="flex items-center gap-2 px-3 py-1.5 rounded-[8px] text-white shrink-0"
-        style={{ background: "linear-gradient(135deg,#E8624A 0%,#F3A864 100%)" }}
+        style={{ background: "linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%)" }}
       >
         <span className="font-body text-[8px] font-bold uppercase tracking-[.18em] opacity-95">
           Jetzt

@@ -180,7 +180,7 @@ export default function SalonReviews({
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setShowReviewForm(true)}
                   className="w-full sm:w-auto py-2.5 px-6 rounded-btn bg-s-coral text-white font-medium text-sm transition-colors duration-150"
-                  style={{ boxShadow: "0 1px 3px rgba(232,98,74,.25), 0 2px 8px rgba(232,98,74,.15)" }}
+                  style={{ boxShadow: "0 1px 3px rgba(27, 77, 27,.25), 0 2px 8px rgba(27, 77, 27,.15)" }}
                 >
                   {t("writeReview")}
                 </motion.button>
@@ -267,7 +267,7 @@ export default function SalonReviews({
                           style={{
                             background: "rgba(255,255,255,.70)",
                             backdropFilter: "blur(12px)",
-                            border: "1px solid rgba(232,98,74,.15)",
+                            border: "1px solid rgba(27, 77, 27,.15)",
                           }}
                         >
                           {flagSuccess ? (
@@ -297,7 +297,7 @@ export default function SalonReviews({
                                   onClick={submitFlag}
                                   disabled={flagLoading || flagReason.trim().length < 5}
                                   className="text-xs text-white font-body font-semibold uppercase tracking-[.08em] px-4 py-1.5 rounded-btn bg-s-coral hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 transition-[transform,filter] duration-150"
-                                  style={{ boxShadow: "0 2px 8px rgba(232,98,74,.25)" }}
+                                  style={{ boxShadow: "0 2px 8px rgba(27, 77, 27,.25)" }}
                                 >
                                   {flagLoading ? "…" : t("flagSubmit")}
                                 </button>

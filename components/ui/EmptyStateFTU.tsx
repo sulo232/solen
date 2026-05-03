@@ -11,7 +11,7 @@ import { motion, useReducedMotion } from "framer-motion";
  * (no bookings, no favorites, no looks, no stamps, etc.).
  *
  * Anatomy (locked per SOLEN_DESIGN.md §20 Q60):
- *   - line-coral SVG illustration (~80x80, `stroke="#E8624A"` per Q21)
+ *   - line-coral SVG illustration (~80x80, `stroke="#1B4D1B"` per Q21)
  *   - eyebrow (Figtree 700 .22em uppercase coral)
  *   - Anton headline (uppercase, 18-32px responsive)
  *   - warm sub-copy (Figtree, ink-2)

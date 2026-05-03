@@ -199,7 +199,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                     d={zone.d}
                     fill={
                       guard
-                        ? `rgba(232, 98, 74, ${opacity})`
+                        ? `rgba(27, 77, 27, ${opacity})`
                         : "rgba(26, 18, 9, 0.04)"
                     }
                     stroke="rgba(26, 18, 9, 0.15)"

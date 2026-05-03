@@ -69,7 +69,7 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
       <div
         className={`rounded-[16px] p-4 border ${
           isComplete && !isRedeemed
-            ? "border-s-coral/30 bg-s-coral/5 shadow-[0_0_12px_rgba(232,98,74,0.15)]"
+            ? "border-s-coral/30 bg-s-coral/5 shadow-[0_0_12px_rgba(27, 77, 27,0.15)]"
             : isRedeemed
             ? "border-s-ink/5 bg-s-bg-surface opacity-60"
             : "border-s-ink/5 bg-white"

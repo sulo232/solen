@@ -374,7 +374,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                     : "w-12 h-12"   // Collapsed circle
                 )}
                 style={{
-                  boxShadow: "0 2px 8px rgba(232,98,74,.35)",
+                  boxShadow: "0 2px 8px rgba(27, 77, 27,.35)",
                 }}
                 transition={{ layout: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
               >

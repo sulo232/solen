@@ -84,7 +84,7 @@ export default function SignIn() {
     return (
       <div className="text-center py-6 flex flex-col items-center gap-4">
         <div className="w-14 h-14 rounded-[14px] flex items-center justify-center"
-          style={{ background: "rgba(232,98,74,.10)" }}>
+          style={{ background: "rgba(27, 77, 27,.10)" }}>
           <Mail size={24} className="text-s-coral" />
         </div>
         <div>

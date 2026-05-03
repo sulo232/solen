@@ -67,7 +67,7 @@ function VoucherPaymentForm({
 
       {error && (
         <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
-          style={{ background: "rgba(232,98,74,.06)" }}>
+          style={{ background: "rgba(27, 77, 27,.06)" }}>
           <AlertCircle size={13} className="text-s-coral shrink-0" />
           <p className="text-xs font-body text-s-coral">{error}</p>
         </div>
@@ -368,7 +368,7 @@ export default function VouchersPage() {
 
             {createError && (
               <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
-                style={{ background: "rgba(232,98,74,.06)" }}>
+                style={{ background: "rgba(27, 77, 27,.06)" }}>
                 <AlertCircle size={13} className="text-s-coral shrink-0" />
                 <p className="text-xs font-body text-s-coral">{createError}</p>
               </div>

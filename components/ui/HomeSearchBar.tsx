@@ -157,7 +157,7 @@ export default function HomeSearchBar() {
             disabled={detecting}
             aria-label={detecting ? t("searching") : t("search")}
             className="flex items-center gap-2 px-5 py-3 rounded-[40px] bg-s-coral text-white font-heading text-[13px] uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-60 whitespace-nowrap"
-            style={{ boxShadow: "0 2px 6px rgba(232,98,74,.30), 0 4px 14px rgba(232,98,74,.18)" }}
+            style={{ boxShadow: "0 2px 6px rgba(27, 77, 27,.30), 0 4px 14px rgba(27, 77, 27,.18)" }}
           >
             {detecting ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} aria-hidden="true" />}
             <span className="hidden sm:inline">{detecting ? t("searching") : t("search")}</span>

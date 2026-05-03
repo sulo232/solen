@@ -42,12 +42,12 @@ interface LiveActivityCardProps {
 
 const REGISTERS = {
   upcoming: {
-    bg: "linear-gradient(135deg,#E8624A 0%,#F3A864 100%)",
+    bg: "linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%)",
     text: "#ffffff",
     border: "transparent",
   },
   loyalty: {
-    bg: "linear-gradient(135deg,#E8624A 0%,#F3A864 100%)",
+    bg: "linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%)",
     text: "#ffffff",
     border: "transparent",
   },
@@ -69,7 +69,7 @@ const REGISTERS = {
   empty: {
     bg: "#ffffff",
     text: "#1A1209",
-    border: "rgba(232,98,74,.4)",
+    border: "rgba(27, 77, 27,.4)",
   },
 } as const;
 
@@ -142,7 +142,7 @@ function StandardContent({
   register: "upcoming" | "deal" | "reply" | "rebook";
 }) {
   // Eyebrow color shifts by register: amber on dark gradient, coral on light bg
-  const eyebrowColor = register === "deal" ? "#F3A864" : register === "upcoming" ? "rgba(255,255,255,.85)" : "#C95A3A";
+  const eyebrowColor = register === "deal" ? "#F3A864" : register === "upcoming" ? "rgba(255,255,255,.85)" : "#0F3010";
 
   return (
     <div className="flex items-start justify-between gap-3">

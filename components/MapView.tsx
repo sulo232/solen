@@ -167,7 +167,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
             padding:3px 8px;border-radius:9999px;font-size:12px;font-weight:700;
             white-space:nowrap;box-shadow:0 2px 8px rgba(212,175,55,0.35);
             transform:scale(1.3);z-index:10;
-            background:${isSelected ? "#E8624A" : "#F3A864"};
+            background:${isSelected ? "#1B4D1B" : "#F3A864"};
             color:white;border:2px solid white;
           `;
           pin.textContent = minPrice && minPrice > 0 ? `ab ${formatCurrency(minPrice)}` : "★";
@@ -188,21 +188,21 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
           `;
         } else if (minPrice && minPrice > 0) {
           // Price badge pin with color coding
-          const priceColor = minPrice < 50 ? "#22C55E" : minPrice <= 100 ? "#EAB308" : "#E8624A";
+          const priceColor = minPrice < 50 ? "#22C55E" : minPrice <= 100 ? "#EAB308" : "#1B4D1B";
           const opacity = isGrey ? "0.75" : "1";
           el.style.cssText += `
             display:flex;align-items:center;justify-content:center;
             padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:700;
             white-space:nowrap;box-shadow:0 2px 6px rgba(26,18,9,.08);
             opacity:${opacity};
-            background:${isSelected ? "#E8624A" : "white"};
+            background:${isSelected ? "#1B4D1B" : "white"};
             color:${isSelected ? "white" : priceColor};
-            border:1.5px solid ${isSelected ? "#E8624A" : priceColor + "40"};
+            border:1.5px solid ${isSelected ? "#1B4D1B" : priceColor + "40"};
           `;
           el.textContent = `ab ${formatCurrency(minPrice)}`;
         } else {
           // Dot pin (no price)
-          const dotColor = isSelected ? "#E8624A" : "#E8624A";
+          const dotColor = isSelected ? "#1B4D1B" : "#1B4D1B";
           const opacity = isGrey ? "0.75" : "1";
           el.style.cssText += `
             width:14px;height:14px;border-radius:50%;

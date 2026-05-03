@@ -428,7 +428,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                     border: isActive ? "1.5px solid #C05038" : "1.5px solid rgba(26,18,9,0.12)",
                     background: isActive ? "#C05038" : "var(--raised)",
                     color: isActive ? "#FFFFFF" : "rgba(26,18,9,0.55)",
-                    boxShadow: isActive ? "0 2px 6px rgba(232,98,74,.25)" : undefined,
+                    boxShadow: isActive ? "0 2px 6px rgba(27, 77, 27,.25)" : undefined,
                   }}
                 >
                   {cityLabel}
@@ -483,7 +483,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                      background: isMapView ? "#C05038" : "var(--glass-bg-card)",
                      color: isMapView ? "#fff" : "rgba(26,18,9,.65)",
                      boxShadow: isMapView
-                       ? "0 2px 4px rgba(232,98,74,.25)"
+                       ? "0 2px 4px rgba(27, 77, 27,.25)"
                        : "0 1px 2px rgba(26,18,9,.06)" }}>
             {isMapView ? <List size={14} /> : <MapIcon size={14} />}
             {isMapView ? "Liste" : "Karte"}

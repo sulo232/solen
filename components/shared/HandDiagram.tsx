@@ -58,7 +58,7 @@ export default function HandDiagram({ selectedNails, onNailSelect }: HandDiagram
       zones={HAND_ZONES}
       selectedZones={selectedNails}
       onZoneSelect={onNailSelect}
-      fillColor="var(--coral, #E8624A)"
+      fillColor="var(--coral, #1B4D1B)"
       fillOpacity={0.4}
       zoneLabelMap={zoneLabelMap}
       ariaLabel={t("hand_diagram_label")}

@@ -76,7 +76,7 @@ export default function LoyaltyStampPage() {
             {/* Icon box */}
             <div
               className="w-16 h-16 rounded-[18px] flex items-center justify-center mx-auto mb-5"
-              style={{ background: "rgba(232,98,74,.10)" }}
+              style={{ background: "rgba(27, 77, 27,.10)" }}
             >
               <Award size={30} className="text-s-coral" />
             </div>
@@ -125,7 +125,7 @@ export default function LoyaltyStampPage() {
             {result.is_complete && (
               <div
                 className="mt-4 px-4 py-2.5 rounded-[10px] inline-block"
-                style={{ background: "rgba(232,98,74,.08)" }}
+                style={{ background: "rgba(27, 77, 27,.08)" }}
               >
                 <p className="text-xs font-heading uppercase tracking-[.08em] text-s-coral">
                   Belohnung freigeschaltet! 🎉
@@ -142,7 +142,7 @@ export default function LoyaltyStampPage() {
           >
             <div
               className="w-16 h-16 rounded-[18px] flex items-center justify-center mx-auto mb-5"
-              style={{ background: "rgba(232,98,74,.10)" }}
+              style={{ background: "rgba(27, 77, 27,.10)" }}
             >
               <AlertCircle size={28} className="text-s-coral" />
             </div>

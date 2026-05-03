@@ -11,8 +11,8 @@ import { cn } from "@/lib/utils";
  * confirmation screens, every section header).
  *
  * Anatomy:
- *   - Eyebrow: Figtree 700, 9-11px, .18-.22em tracking, UPPERCASE, deep-coral `#C95A3A`
- *     (locked text variant — better AA contrast on white than the bright `#E8624A` signal)
+ *   - Eyebrow: Figtree 700, 9-11px, .18-.22em tracking, UPPERCASE, deep-coral `#0F3010`
+ *     (locked text variant — better AA contrast on white than the bright `#1B4D1B` signal)
  *   - Headline: Anton, 18-72px responsive, UPPERCASE (Anton is always uppercase),
  *     line-height 0.95, letter-spacing 0.01em
  *   - Optional sub-line: Figtree, 13-15px, ink-2 (warm secondary)
@@ -73,7 +73,7 @@ const SIZE_CLASSES: Record<
 type EyebrowTone = "coral" | "amber";
 const EYEBROW_HEX: Record<EyebrowTone, string> = {
   // Default for section eyebrows — `.sec-eye` in reference uses coral text variant
-  coral: "#C95A3A",
+  coral: "#0F3010",
   // Hero eyebrow — `.hero-eyebrow` in reference uses amber (line 114)
   amber: "#F3A864",
 };

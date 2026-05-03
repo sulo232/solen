@@ -71,7 +71,7 @@ export const TracingBeam = ({
             }}
             animate={{
               backgroundColor:
-                scrollYProgress.get() > 0 ? "white" : "#E8624A",
+                scrollYProgress.get() > 0 ? "white" : "#1B4D1B",
               borderColor:
                 scrollYProgress.get() > 0 ? "white" : "#CC4E35",
             }}
@@ -113,8 +113,8 @@ export const TracingBeam = ({
               y1={y1}
               y2={y2}
             >
-              <stop stopColor="#E8624A" stopOpacity="0" />
-              <stop stopColor="#E8624A" />
+              <stop stopColor="#1B4D1B" stopOpacity="0" />
+              <stop stopColor="#1B4D1B" />
               <stop offset="0.325" stopColor="#F3A864" />
               <stop offset="1" stopColor="#F3A864" stopOpacity="0" />
             </motion.linearGradient>

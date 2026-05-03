@@ -56,7 +56,7 @@ export default function FaceDiagram({ zoneSelections, onZoneClick }: FaceDiagram
   // Build per-zone colour map based on technique
   const zoneColorMap: Record<string, string> = {};
   for (const [zoneId, technique] of Object.entries(zoneSelections)) {
-    zoneColorMap[zoneId] = TECHNIQUE_COLORS[technique] ?? "var(--coral, #E8624A)";
+    zoneColorMap[zoneId] = TECHNIQUE_COLORS[technique] ?? "var(--coral, #1B4D1B)";
   }
 
   const zoneLabelMap: Record<string, string> = {};
@@ -78,7 +78,7 @@ export default function FaceDiagram({ zoneSelections, onZoneClick }: FaceDiagram
       zones={FACE_ZONES}
       selectedZones={selectedZones}
       onZoneSelect={(zoneId) => onZoneClick(zoneId)}
-      fillColor="var(--coral, #E8624A)"
+      fillColor="var(--coral, #1B4D1B)"
       fillOpacity={0.3}
       zoneColorMap={zoneColorMap}
       zoneLabelMap={zoneLabelMap}

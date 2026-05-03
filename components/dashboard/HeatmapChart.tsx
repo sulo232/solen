@@ -42,7 +42,7 @@ export default function HeatmapChart({ data }: HeatmapChartProps) {
                   <div
                     key={h}
                     className="h-6 rounded-sm cursor-default transition-colors"
-                    style={{ backgroundColor: `rgba(232, 98, 74, ${opacity})` }}
+                    style={{ backgroundColor: `rgba(27, 77, 27, ${opacity})` }}
                     title={`${DAYS[dayIdx]} ${h}:00 — ${count} Buchungen`}
                   />
                 );
@@ -55,7 +55,7 @@ export default function HeatmapChart({ data }: HeatmapChartProps) {
       <div className="flex items-center justify-end gap-1 mt-2 text-[9px] text-s-ink/30">
         <span>Weniger</span>
         {[0.1, 0.3, 0.5, 0.7, 1].map((o) => (
-          <div key={o} className="w-3 h-3 rounded-sm" style={{ backgroundColor: `rgba(232, 98, 74, ${o})` }} />
+          <div key={o} className="w-3 h-3 rounded-sm" style={{ backgroundColor: `rgba(27, 77, 27, ${o})` }} />
         ))}
         <span>Mehr</span>
       </div>

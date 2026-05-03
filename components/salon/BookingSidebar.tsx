@@ -77,7 +77,7 @@ export default function BookingSidebar({
       <button
         onClick={onBook}
         className="w-full h-12 rounded-btn bg-s-coral text-white font-body font-semibold text-[15px] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 mb-4"
-        style={{ boxShadow: "0 2px 12px rgba(232,98,74,0.32)" }}
+        style={{ boxShadow: "0 2px 12px rgba(27, 77, 27,0.32)" }}
       >
         Jetzt buchen
       </button>

@@ -74,7 +74,7 @@ export default function MessagesPage() {
     return (
       <div className="min-h-screen bg-s-bg-surface flex flex-col items-center justify-center gap-3 text-center px-4">
         <div className="w-16 h-16 rounded-[18px] flex items-center justify-center mb-2"
-          style={{ background: "rgba(232,98,74,.08)" }}>
+          style={{ background: "rgba(27, 77, 27,.08)" }}>
           <MessageCircle size={28} className="text-s-coral/70" />
         </div>
         <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-ink/50">
@@ -117,11 +117,11 @@ export default function MessagesPage() {
                       ? "border border-s-coral/20"
                       : "bg-white border border-s-ink/[0.07] hover:border-s-coral/25",
                   ].join(" ")}
-                  style={selected === conv.id ? { background: "rgba(232,98,74,.04)" } : undefined}
+                  style={selected === conv.id ? { background: "rgba(27, 77, 27,.04)" } : undefined}
                 >
                   {/* Avatar */}
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-s-coral text-xs font-heading shrink-0"
-                    style={{ background: "rgba(232,98,74,.15)" }}>
+                    style={{ background: "rgba(27, 77, 27,.15)" }}>
                     {conv.other_party_name?.[0] ?? "?"}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -160,7 +160,7 @@ export default function MessagesPage() {
               <div className="h-full">
                 <div className="mb-3 pb-3 border-b border-s-ink/[0.06] flex items-center gap-2">
                   <div className="w-7 h-7 rounded-full flex items-center justify-center text-s-coral text-[10px] font-heading shrink-0"
-                    style={{ background: "rgba(232,98,74,.12)" }}>
+                    style={{ background: "rgba(27, 77, 27,.12)" }}>
                     {selectedConv?.other_party_name?.[0] ?? "?"}
                   </div>
                   <div>

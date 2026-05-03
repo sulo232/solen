@@ -158,7 +158,7 @@ export default function WalkInPayPage() {
           <div className="text-center py-8">
             <div
               className="w-16 h-16 rounded-[18px] mx-auto mb-5 flex items-center justify-center"
-              style={{ background: "rgba(232,98,74,.10)" }}
+              style={{ background: "rgba(27, 77, 27,.10)" }}
             >
               <Check size={26} className="text-s-coral" />
             </div>
@@ -188,7 +188,7 @@ export default function WalkInPayPage() {
             <div className="flex items-start gap-3 mb-6">
               <div
                 className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
-                style={{ background: "rgba(232,98,74,.10)" }}
+                style={{ background: "rgba(27, 77, 27,.10)" }}
               >
                 <CreditCard size={17} className="text-s-coral" />
               </div>

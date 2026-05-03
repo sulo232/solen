@@ -149,7 +149,7 @@ function MockMap() {
   ];
   return (
     <div className="relative w-full max-w-md mx-auto h-64 rounded-[14px] overflow-hidden border border-s-coral/[0.15]"
-      style={{ background: "linear-gradient(135deg, rgba(232,98,74,.07) 0%, rgba(250,236,231,.95) 100%)" }}>
+      style={{ background: "linear-gradient(135deg, rgba(27, 77, 27,.07) 0%, rgba(250,236,231,.95) 100%)" }}>
       {/* Grid lines */}
       <div className="absolute inset-0 opacity-10">
         {[...Array(6)].map((_, i) => (
@@ -162,10 +162,10 @@ function MockMap() {
       {/* Pins */}
       {pins.map((pin, i) => (
         <div key={i} className="absolute flex flex-col items-center" style={{ left: pin.left, top: pin.top }}>
-          <span className="px-2 py-0.5 rounded-full text-[10px] data-text font-semibold text-white shadow-elevation-2 whitespace-nowrap mb-1" style={{ backgroundColor: pin.color === "bg-s-coral" ? "#E8624A" : "#F2C144" }}>
+          <span className="px-2 py-0.5 rounded-full text-[10px] data-text font-semibold text-white shadow-elevation-2 whitespace-nowrap mb-1" style={{ backgroundColor: pin.color === "bg-s-coral" ? "#1B4D1B" : "#F2C144" }}>
             {pin.price}
           </span>
-          <MapPin className="w-4 h-4" style={{ color: pin.color === "bg-s-coral" ? "#E8624A" : "#F2C144" }} />
+          <MapPin className="w-4 h-4" style={{ color: pin.color === "bg-s-coral" ? "#1B4D1B" : "#F2C144" }} />
         </div>
       ))}
     </div>
@@ -185,7 +185,7 @@ export default function WarumSolenPage() {
       {/* ── Section 0: Hero ── */}
       <section className="relative overflow-hidden py-20 sm:py-32">
         {/* Radial gradient background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(232,98,74,0.12)_0%,_transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(27, 77, 27,0.12)_0%,_transparent_70%)]" />
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-coral mb-4">
             {t("heroEyebrow")}
@@ -213,7 +213,7 @@ export default function WarumSolenPage() {
             <div>
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-3"
-                  style={{ background: "rgba(232,98,74,.08)" }}>
+                  style={{ background: "rgba(27, 77, 27,.08)" }}>
                   <MessageCircle size={14} className="text-s-coral" />
                   <SolenExclusiveBadge featureDescription="Chatte direkt mit deinem Salon — nur bei Solen!" />
                 </div>
@@ -267,7 +267,7 @@ export default function WarumSolenPage() {
             <div className="order-1 md:order-2">
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-3"
-                  style={{ background: "rgba(232,98,74,.08)" }}>
+                  style={{ background: "rgba(27, 77, 27,.08)" }}>
                   <Camera size={14} className="text-s-coral" />
                   <SolenExclusiveBadge featureDescription="Schick ein Foto und erhalte einen individuellen Preis!" />
                 </div>
@@ -300,7 +300,7 @@ export default function WarumSolenPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-3"
-              style={{ background: "rgba(232,98,74,.08)" }}>
+              style={{ background: "rgba(27, 77, 27,.08)" }}>
               <BarChart3 size={14} className="text-s-coral" />
               <SolenExclusiveBadge featureDescription="Vergleiche bis zu 3 Salons — nur bei Solen!" />
             </div>
@@ -323,7 +323,7 @@ export default function WarumSolenPage() {
             <div>
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-3"
-                  style={{ background: "rgba(232,98,74,.08)" }}>
+                  style={{ background: "rgba(27, 77, 27,.08)" }}>
                   <Star size={14} className="text-s-coral" />
                   <SolenExclusiveBadge featureDescription="Sammle Stempel bei jedem Besuch!" />
                 </div>
@@ -368,7 +368,7 @@ export default function WarumSolenPage() {
             <div>
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-3"
-                  style={{ background: "rgba(232,98,74,.08)" }}>
+                  style={{ background: "rgba(27, 77, 27,.08)" }}>
                   <MapPin size={14} className="text-s-coral" />
                   <SolenExclusiveBadge featureDescription="Sieh Preise direkt auf der Karte!" />
                 </div>
@@ -405,7 +405,7 @@ export default function WarumSolenPage() {
         <div className="relative max-w-xl mx-auto px-4 sm:px-6">
           {/* Coral ambient glow behind card */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] pointer-events-none"
-            style={{ background: "radial-gradient(ellipse, rgba(232,98,74,.15) 0%, transparent 70%)" }} />
+            style={{ background: "radial-gradient(ellipse, rgba(27, 77, 27,.15) 0%, transparent 70%)" }} />
 
           <div className="relative rounded-[20px] bg-white p-8 sm:p-10 text-center"
             style={{ boxShadow: "0 24px 72px rgba(26,18,9,.48)" }}>

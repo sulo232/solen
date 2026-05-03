@@ -16,12 +16,18 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         // ── Solen Brand Tokens (DESIGN_SPEC.md is source of truth) ──
-        // 2026-05-03 audit:
-        //   - text: #C95A3A — locked deep-coral text variant (used 286× in solen-coral.html
-        //     reference; better AA contrast than DEFAULT on light/white bgs)
-        //   - button + button-hover: were V5 dead values (#C05038/#A8442F appear 0× in
-        //     reference); re-locked to DEFAULT + hover so primary CTA matches the bright signal
-        "s-coral": { DEFAULT: "#E8624A", hover: "#D4574A", subtle: "#FAECE7", text: "#C95A3A", button: "#E8624A", "button-hover": "#D4574A" },
+        // Q64 GREEN PIVOT (2026-05-03): brand primary flipped from coral #E8624A to
+        // forest green #1B4D1B. Token name `s-coral` retained for backward-compat across
+        // hundreds of import sites — value is GREEN. Future cleanup: rename token group
+        // to `s-brand` so the name matches the value. Per Q64:
+        //   - DEFAULT #1B4D1B forest green (was #E8624A coral)
+        //   - hover #0F3010 deep green (was #D4574A)
+        //   - subtle #E8EFE4 light green tint (was #FAECE7 light coral tint)
+        //   - text #0F3010 deep green (was #C95A3A deep coral)
+        //   - button + button-hover same as DEFAULT/hover
+        // Contrast: green #1B4D1B on white = 9.89:1 (vs coral 3.35:1) — fixes Q45
+        // banned-pair #3 (white-on-coral 3.35:1 body fail).
+        "s-coral": { DEFAULT: "#1B4D1B", hover: "#0F3010", subtle: "#E8EFE4", text: "#0F3010", button: "#1B4D1B", "button-hover": "#0F3010" },
         "s-amber": { DEFAULT: "#F3A864", hover: "#E89953", subtle: "#FFF4E8", text: "#7A4A2D" },
         "s-blue": { DEFAULT: "#6BA3C8", hover: "#4E8AB5", subtle: "#EAF3FB", text: "#1A4D72" },
         "s-plum": { DEFAULT: "#4A1E3C", hover: "#3A1630", subtle: "#F0E8F0", text: "#4A1E3C" },

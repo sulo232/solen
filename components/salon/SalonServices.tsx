@@ -101,7 +101,7 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
                     </span>
                     <span
                       className="text-[10px] font-heading uppercase tracking-[.08em] text-s-coral px-2.5 py-1 rounded-[12px]"
-                      style={{ background: "rgba(232,98,74,.10)" }}
+                      style={{ background: "rgba(27, 77, 27,.10)" }}
                     >
                       {t("book")}
                     </span>

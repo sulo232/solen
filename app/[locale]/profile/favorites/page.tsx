@@ -21,7 +21,7 @@ const HeartIllustration = () => (
     height="80"
     viewBox="0 0 100 100"
     fill="none"
-    stroke="#E8624A"
+    stroke="#1B4D1B"
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"

@@ -61,14 +61,14 @@ export default function BrowseByCitySection() {
               style={{
                 borderTop: "1px solid rgba(255,255,255,0.08)",
                 borderBottom: idx === CITIES.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",
-                borderLeft: city.active ? "4px solid #E8624A" : "4px solid transparent",
+                borderLeft: city.active ? "4px solid #1B4D1B" : "4px solid transparent",
                 paddingLeft: city.active ? 12 : 0,
                 transition: "padding-left 200ms ease, border-color 200ms ease",
               }}
               onMouseEnter={(e) => {
                 if (!city.active) {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.borderLeft = "4px solid #E8624A";
+                  el.style.borderLeft = "4px solid #1B4D1B";
                   el.style.paddingLeft = "12px";
                 }
               }}
@@ -145,9 +145,9 @@ export default function BrowseByCitySection() {
               }}
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement;
-                el.style.background = "rgba(232,98,74,0.18)";
-                el.style.color = "rgba(232,98,74,0.95)";
-                el.style.borderColor = "rgba(232,98,74,0.28)";
+                el.style.background = "rgba(27, 77, 27,0.18)";
+                el.style.color = "rgba(27, 77, 27,0.95)";
+                el.style.borderColor = "rgba(27, 77, 27,0.28)";
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLElement;

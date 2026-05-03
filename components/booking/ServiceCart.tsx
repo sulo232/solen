@@ -96,7 +96,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
           {addons[svc.id]?.map(addon => (
             <label key={addon.id}
               className="flex items-center gap-3 py-2.5 px-3 rounded-[10px] cursor-pointer hover:bg-white transition-colors duration-150"
-              style={{ border: selectedAddons.has(addon.id) ? "1px solid rgba(232,98,74,.25)" : "1px solid rgba(26,18,9,.06)" }}>
+              style={{ border: selectedAddons.has(addon.id) ? "1px solid rgba(27, 77, 27,.25)" : "1px solid rgba(26,18,9,.06)" }}>
               {/* Custom checkbox */}
               <div className={`w-4 h-4 rounded-[5px] border flex items-center justify-center shrink-0 transition-[background-color,border-color] duration-150 ${
                 selectedAddons.has(addon.id)

@@ -84,7 +84,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
 
       {error && (
         <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
-          style={{ background: "rgba(232,98,74,.06)" }}>
+          style={{ background: "rgba(27, 77, 27,.06)" }}>
           <AlertCircle size={13} className="text-s-coral shrink-0" />
           <p className="text-xs font-body text-s-coral">{error}</p>
         </div>
@@ -309,9 +309,9 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="w-full max-w-sm rounded-[12px] border border-s-coral/20 p-8 text-center shadow-warm-lg"
-          style={{ background: "rgba(232,98,74,.04)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
+          style={{ background: "rgba(27, 77, 27,.04)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
           <div className="w-12 h-12 rounded-[12px] flex items-center justify-center mx-auto mb-4"
-            style={{ background: "rgba(232,98,74,.12)" }}>
+            style={{ background: "rgba(27, 77, 27,.12)" }}>
             <AlertCircle size={22} className="text-s-coral" />
           </div>
           <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-coral mb-1">Fehler</p>
@@ -491,7 +491,7 @@ export default function CheckoutPage() {
           {/* P4 — What you pay now */}
           {paymentMode !== "at_salon" && (
             <div className="mt-4 rounded-[10px] border-l-4 border-s-coral pl-3 pr-4 py-3 flex items-center justify-between"
-              style={{ background: "rgba(232,98,74,.05)", borderTopColor: "rgba(232,98,74,.15)", borderRightColor: "rgba(232,98,74,.15)", borderBottomColor: "rgba(232,98,74,.15)" }}>
+              style={{ background: "rgba(27, 77, 27,.05)", borderTopColor: "rgba(27, 77, 27,.15)", borderRightColor: "rgba(27, 77, 27,.15)", borderBottomColor: "rgba(27, 77, 27,.15)" }}>
               <div>
                 <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-coral">
                   {paymentMode === "prepay" ? "Jetzt zu zahlen" : "Anzahlung jetzt"}
@@ -547,7 +547,7 @@ export default function CheckoutPage() {
           {/* P6 — Promo error/success states */}
           {promoError && (
             <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
-              style={{ background: "rgba(232,98,74,.06)" }}>
+              style={{ background: "rgba(27, 77, 27,.06)" }}>
               <AlertCircle size={13} className="text-s-coral shrink-0" />
               <p className="text-xs font-body text-s-coral">{promoError}</p>
             </div>
@@ -619,7 +619,7 @@ export default function CheckoutPage() {
             {/* Voucher error/success states */}
             {voucherError && (
               <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
-                style={{ background: "rgba(232,98,74,.06)" }}>
+                style={{ background: "rgba(27, 77, 27,.06)" }}>
                 <AlertCircle size={13} className="text-s-coral shrink-0" />
                 <p className="text-xs font-body text-s-coral">{voucherError}</p>
               </div>
@@ -664,7 +664,7 @@ export default function CheckoutPage() {
             </div>
             {error && (
               <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20 mb-3"
-                style={{ background: "rgba(232,98,74,.06)" }}>
+                style={{ background: "rgba(27, 77, 27,.06)" }}>
                 <AlertCircle size={13} className="text-s-coral shrink-0" />
                 <p className="text-xs font-body text-s-coral">{error}</p>
               </div>

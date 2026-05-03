@@ -40,7 +40,7 @@ export default function PartnerPage() {
     <div className="min-h-screen bg-white">
       {/* Hero — Split Layout */}
       <div className="pt-24 pb-16 overflow-hidden"
-        style={{ background: "linear-gradient(180deg, rgba(232,98,74,.04) 0%, rgba(255,255,255,0) 100%)" }}>
+        style={{ background: "linear-gradient(180deg, rgba(27, 77, 27,.04) 0%, rgba(255,255,255,0) 100%)" }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
           {/* Left — Text + CTA */}
@@ -115,7 +115,7 @@ export default function PartnerPage() {
                 </span>
               )}
               <div className="w-10 h-10 rounded-[10px] flex items-center justify-center mb-3"
-                style={{ background: "rgba(232,98,74,.09)" }}>
+                style={{ background: "rgba(27, 77, 27,.09)" }}>
                 <f.icon className="w-5 h-5 text-s-coral" />
               </div>
               <h3 className="font-heading text-sm text-s-ink mb-1">{t(f.title as any)}</h3>
@@ -197,7 +197,7 @@ export default function PartnerPage() {
                   {t("hiw_step1_desc")}
                 </p>
                 <span className="inline-block text-[9px] font-heading uppercase tracking-[.12em] text-s-coral px-3 py-1.5 rounded-pill"
-                  style={{ background: "rgba(232,98,74,.10)" }}>
+                  style={{ background: "rgba(27, 77, 27,.10)" }}>
                   {t("hiw_step1_time")}
                 </span>
               </div>
@@ -217,7 +217,7 @@ export default function PartnerPage() {
                   {t("hiw_step2_desc")}
                 </p>
                 <span className="inline-block text-[9px] font-heading uppercase tracking-[.12em] text-s-coral px-3 py-1.5 rounded-pill"
-                  style={{ background: "rgba(232,98,74,.10)" }}>
+                  style={{ background: "rgba(27, 77, 27,.10)" }}>
                   {t("hiw_step2_time")}
                 </span>
               </div>
@@ -302,7 +302,7 @@ export default function PartnerPage() {
               style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 32px rgba(26,18,9,.09)" }}>
               {/* Badge */}
               <div className="absolute top-4 right-4 text-s-coral text-[9px] font-heading uppercase tracking-[.14em] px-3 py-1.5 rounded-pill"
-                style={{ background: "rgba(232,98,74,.10)" }}>
+                style={{ background: "rgba(27, 77, 27,.10)" }}>
                 {t("pricing_badge")}
               </div>
 
@@ -485,7 +485,7 @@ export default function PartnerPage() {
 
       {/* CTA */}
       <div className="py-20"
-        style={{ background: "linear-gradient(180deg, rgba(26,18,9,.025) 0%, rgba(232,98,74,.05) 100%)" }}>
+        style={{ background: "linear-gradient(180deg, rgba(26,18,9,.025) 0%, rgba(27, 77, 27,.05) 100%)" }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
             {t("section_start")}

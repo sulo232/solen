@@ -110,7 +110,7 @@ export default function TodayLiveCard() {
         <Link
           href={`/${locale}/dashboard/calendar`}
           className="block rounded-[16px] p-4 text-white transition-[transform] duration-150 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
-          style={{ background: "linear-gradient(135deg,#E8624A 0%,#F3A864 100%)" }}
+          style={{ background: "linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%)" }}
         >
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
@@ -140,7 +140,7 @@ export default function TodayLiveCard() {
       ) : (
         <div
           className="rounded-[16px] p-4"
-          style={{ background: "linear-gradient(135deg,#E8624A 0%,#F3A864 100%)", color: "#fff" }}
+          style={{ background: "linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%)", color: "#fff" }}
         >
           <p className="font-body text-[10px] font-bold uppercase tracking-[.20em] opacity-90">
             Bereit für heute

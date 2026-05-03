@@ -16,7 +16,7 @@ export default function HeroVisualCard() {
     <div className="relative h-[540px] hidden lg:block" aria-hidden="true">
       {/* ── Main gradient card ── */}
       <div className="absolute top-10 left-8 right-0 bottom-0 rounded-[20px] overflow-hidden"
-        style={{ background: "linear-gradient(145deg, #F3A864 0%, #E8624A 100%)",
+        style={{ background: "linear-gradient(145deg, #F3A864 0%, #1B4D1B 100%)",
                  boxShadow: "0 24px 72px rgba(26,18,9,.18)" }}>
 
         {/* Deco circles on gradient */}
@@ -58,7 +58,7 @@ export default function HeroVisualCard() {
           <div className="flex items-center justify-between">
             <span className="text-sm text-s-ink/70 font-body">Ab <strong className="text-s-ink font-heading">CHF 45</strong></span>
             <button className="px-4 py-2 rounded-pill text-white text-xs font-heading uppercase tracking-[.04em] transition-[transform,filter] duration-150"
-              style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}>
+              style={{ background: "#1B4D1B", boxShadow: "0 2px 4px rgba(27, 77, 27,.25), 0 4px 16px rgba(27, 77, 27,.15)" }}>
               Jetzt buchen
             </button>
           </div>

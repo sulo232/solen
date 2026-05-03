@@ -217,7 +217,7 @@ export default function BottomTabBar() {
                 href={`/${locale}/auth/login`}
                 onClick={() => setLoginSheet(s => ({ ...s, open: false }))}
                 className="w-full flex items-center justify-center py-3.5 rounded-btn bg-s-coral text-white text-sm font-heading active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
-                style={{ boxShadow: "0 2px 12px rgba(232,98,74,.32)" }}
+                style={{ boxShadow: "0 2px 12px rgba(27, 77, 27,.32)" }}
               >
                 {tAuth("continue_with_email")}
               </Link>

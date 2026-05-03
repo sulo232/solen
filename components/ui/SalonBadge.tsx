@@ -45,7 +45,7 @@ export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProp
     return (
       <span
         className={`${BASE_CLASSES} text-white`}
-        style={{ background: "#E8624A", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
+        style={{ background: "#1B4D1B", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
       >
         ★ Top
       </span>

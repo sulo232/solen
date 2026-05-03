@@ -16,7 +16,7 @@ export default function InteractiveZoneDiagram({
   zones,
   selectedZones,
   onZoneSelect,
-  fillColor = "var(--coral, #E8624A)",
+  fillColor = "var(--coral, #1B4D1B)",
   fillOpacity = 0.3,
   className,
   ariaLabel = "Interactive zone diagram",

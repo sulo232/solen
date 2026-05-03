@@ -283,7 +283,7 @@ function Step3({ data, onChange, category, t }: {
         </div>
 
         <div className="rounded-[12px] border border-s-coral/[0.12] p-4"
-          style={{ background: "rgba(232,98,74,.04)" }}>
+          style={{ background: "rgba(27, 77, 27,.04)" }}>
           <div className="flex items-center gap-1.5 mb-1.5">
             <Sparkles size={12} className="text-s-coral shrink-0" />
             <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-coral">
@@ -328,7 +328,7 @@ function StepPhotos({
         />
 
         <div className="rounded-[12px] border border-s-coral/[0.12] p-4"
-          style={{ background: "rgba(232,98,74,.04)" }}>
+          style={{ background: "rgba(27, 77, 27,.04)" }}>
           <div className="flex items-center gap-1.5 mb-1.5">
             <Camera size={12} className="text-s-coral shrink-0" />
             <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-coral">
@@ -574,7 +574,7 @@ export default function SalonOnboardingPage() {
       {/* Subtle warm linear gradient for depth — Zone 3 compliant */}
       <div className="fixed inset-0 -z-10 pointer-events-none" aria-hidden>
         <div className="absolute top-0 left-0 right-0 h-[300px]"
-          style={{ background: "linear-gradient(180deg, rgba(232,98,74,.03) 0%, transparent 100%)" }} />
+          style={{ background: "linear-gradient(180deg, rgba(27, 77, 27,.03) 0%, transparent 100%)" }} />
       </div>
 
       {/* Celebration overlay */}
@@ -594,7 +594,7 @@ export default function SalonOnboardingPage() {
             >
               {/* Icon box — NO scale animation */}
               <div className="w-20 h-20 rounded-[22px] flex items-center justify-center"
-                style={{ background: "rgba(232,98,74,.10)" }}>
+                style={{ background: "rgba(27, 77, 27,.10)" }}>
                 <PartyPopper size={34} className="text-s-coral" />
               </div>
 
@@ -697,7 +697,7 @@ export default function SalonOnboardingPage() {
       {submitError && step >= TOTAL_STEPS - 1 && (
         <div className="max-w-xl mx-auto px-4 mb-4">
           <div className="flex items-start gap-3 rounded-[12px] border border-s-coral/20 p-4"
-            style={{ background: "rgba(232,98,74,.05)" }}>
+            style={{ background: "rgba(27, 77, 27,.05)" }}>
             <AlertCircle size={15} className="text-s-coral shrink-0 mt-0.5" />
             <p className="text-xs font-body text-s-coral">{submitError}</p>
           </div>
