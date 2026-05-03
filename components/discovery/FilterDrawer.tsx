@@ -50,7 +50,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
           className="fixed inset-0 z-50 flex items-end md:hidden"
         >
           <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-[6px]" onClick={() => setOpen(false)} />
-          <div className="relative w-full bg-[--raised] shadow-warm-float flex flex-col rounded-t-[16px] max-h-[80vh] animate-in slide-in-from-bottom">
+          <div className="relative w-full bg-[--raised] shadow-elevation-3 flex flex-col rounded-t-[16px] max-h-[80vh] animate-in slide-in-from-bottom">
             {/* Header */}
             <div className="px-5 py-4 border-b border-s-ink/[0.06] flex items-center justify-between">
               <div>
@@ -95,7 +95,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
               <button
                 onClick={() => setOpen(false)}
                 aria-label={t("apply")}
-                className="flex-1 py-3 rounded-pill text-white text-xs font-heading font-bold active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-coral shadow-coral-glow"
+                className="flex-1 py-3 rounded-pill text-white text-xs font-heading font-bold active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-coral shadow-elevation-2"
               >
                 {t("apply")}
               </button>

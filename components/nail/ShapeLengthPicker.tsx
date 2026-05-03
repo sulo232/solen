@@ -49,7 +49,7 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
               onClick={() => onShapeChange(v)}
               className={`flex flex-col items-center gap-1 p-2 rounded-[12px] border transition-[border-color,background-color,box-shadow] duration-150 ${
                 shape === v
-                  ? "border-s-coral bg-s-coral/5 shadow-coral-glow"
+                  ? "border-s-coral bg-s-coral/5 shadow-elevation-2"
                   : "border-s-ink/10 bg-[--raised] hover:border-s-coral/20"
               }`}
             >

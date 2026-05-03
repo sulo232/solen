@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           as="style"
         />
       </head>
-      <body style={{ margin: 0, padding: 0 }} className="bg-s-bg-base text-s-ink">
+      <body style={{ margin: 0, padding: 0 }} className="bg-white text-s-ink">
         {children}
       </body>
     </html>

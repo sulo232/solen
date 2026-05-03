@@ -197,7 +197,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
             <button
               onClick={handleCreate}
               disabled={saving || !form.name.trim() || !form.service_id}
-              className="px-4 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 shadow-coral-glow transition-[transform,filter] duration-150"
+              className="px-4 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 shadow-elevation-2 transition-[transform,filter] duration-150"
             >
               {saving ? t("saving") : t("create")}
             </button>

@@ -94,7 +94,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
         type="submit"
         disabled={!stripe || loading}
         text={loading ? "Verarbeite..." : `Jetzt buchen · ${formatCurrency(intent.deposit_amount, locale)}`}
-        className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-60"
+        className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
       />
 
       <p className="text-[9px] text-center font-heading uppercase tracking-[.10em] text-s-ink/50 mt-3">
@@ -280,7 +280,7 @@ export default function CheckoutPage() {
   // P13 — Loading skeleton
   if (loading) {
     return (
-      <div className="min-h-screen bg-s-bg-base py-12 px-4">
+      <div className="min-h-screen bg-white py-12 px-4">
         <div className="max-w-lg mx-auto space-y-4 animate-pulse">
           {/* Summary card skeleton */}
           <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-5">
@@ -307,7 +307,7 @@ export default function CheckoutPage() {
   // P14 — Error state
   if (error || !intent) {
     return (
-      <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="w-full max-w-sm rounded-[12px] border border-s-coral/20 p-8 text-center shadow-warm-lg"
           style={{ background: "rgba(232,98,74,.04)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
           <div className="w-12 h-12 rounded-[12px] flex items-center justify-center mx-auto mb-4"
@@ -345,7 +345,7 @@ export default function CheckoutPage() {
   // P9 — At-salon confirmed success
   if (atSalonConfirmed) {
     return (
-      <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
           <div className="rounded-[12px] border border-s-success/20 p-8 flex flex-col items-center gap-4 shadow-warm-lg"
             style={{ background: "rgba(46,125,50,.06)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
@@ -361,7 +361,7 @@ export default function CheckoutPage() {
               <p className="text-xs font-body text-s-ink/50 mt-1 leading-relaxed">Du zahlst direkt im Salon. Bis bald!</p>
             </div>
             <Link href={`/${locale}/profile`}
-              className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] hover:brightness-[1.06] shadow-coral-glow">
+              className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] hover:brightness-[1.06] shadow-elevation-2">
               Meine Buchungen
             </Link>
           </div>
@@ -375,7 +375,7 @@ export default function CheckoutPage() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
-      className="min-h-screen bg-s-bg-base py-12 px-4"
+      className="min-h-screen bg-white py-12 px-4"
     >
       {/* P15 — Breadcrumb */}
       <div className="max-w-lg mx-auto mb-4 flex items-center gap-1.5">
@@ -539,7 +539,7 @@ export default function CheckoutPage() {
                 onClick={handlePromoValidate}
                 disabled={promoLoading || !promoCode.trim()}
                 text={promoLoading ? "..." : "Anwenden"}
-                className="px-5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-50"
+                className="px-5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-50"
               />
             )}
           </div>
@@ -611,7 +611,7 @@ export default function CheckoutPage() {
                   onClick={handleVoucherValidate}
                   disabled={voucherLoading || !voucherCode.trim()}
                   text={voucherLoading ? "..." : "Anwenden"}
-                  className="px-5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-50"
+                  className="px-5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-50"
                 />
               )}
             </div>
@@ -673,7 +673,7 @@ export default function CheckoutPage() {
               onClick={handleAtSalonConfirm}
               disabled={confirmingAtSalon}
               text={confirmingAtSalon ? tc("confirming") : tc("confirmAppointment")}
-              className="w-full py-4 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-60"
+              className="w-full py-4 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
             />
             <p className="text-[10px] text-center font-heading uppercase tracking-[.10em] text-s-ink/25 mt-3">
               Kostenlose Stornierung bis {intent.free_cancel_hours ?? 24}h vorher

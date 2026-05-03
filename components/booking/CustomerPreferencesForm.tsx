@@ -212,7 +212,7 @@ export default function CustomerPreferencesForm({
             text={saving ? t("saving") : t("save")}
             className={`${
               showSkip ? "flex-1" : "w-full"
-            } py-3.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-60`}
+            } py-3.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-60`}
           />
         </div>
       </form>

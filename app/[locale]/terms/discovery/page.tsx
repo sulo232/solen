@@ -13,7 +13,7 @@ export default async function DiscoveryTermsPage() {
   const t = await getTranslations("discovery_tos");
 
   return (
-    <main className="min-h-screen bg-s-bg-base px-4 py-12">
+    <main className="min-h-screen bg-white px-4 py-12">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-2xl font-heading font-bold text-s-ink mb-8">{t("title")}</h1>
         <div className="space-y-6">

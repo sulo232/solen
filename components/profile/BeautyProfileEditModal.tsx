@@ -276,7 +276,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex-1 px-4 py-3 rounded-pill bg-s-coral text-white text-[14px] font-medium hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 shadow-coral-glow"
+              className="flex-1 px-4 py-3 rounded-pill bg-s-coral text-white text-[14px] font-medium hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 shadow-elevation-2"
               aria-label={t("save")}
             >
               {isSaving ? t("saving") : t("save")}

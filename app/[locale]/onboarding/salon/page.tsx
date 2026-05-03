@@ -113,7 +113,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 className={[
                   "px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-colors active:scale-[0.97]",
                   data.categories.includes(c.value)
-                    ? "bg-s-coral text-white border-s-coral shadow-coral-glow"
+                    ? "bg-s-coral text-white border-s-coral shadow-elevation-2"
                     : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/50",
                 ].join(" ")}
               >
@@ -536,7 +536,7 @@ export default function SalonOnboardingPage() {
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-s-bg-base">
+      <div className="min-h-screen bg-white">
         {/* Header skeleton */}
         <div className="bg-white border-b border-s-ink/[0.06] px-4 py-4">
           <div className="max-w-xl mx-auto space-y-3 animate-pulse">
@@ -570,7 +570,7 @@ export default function SalonOnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-s-bg-base pb-36">
+    <div className="min-h-screen bg-white pb-36">
       {/* Subtle warm linear gradient for depth — Zone 3 compliant */}
       <div className="fixed inset-0 -z-10 pointer-events-none" aria-hidden>
         <div className="absolute top-0 left-0 right-0 h-[300px]"
@@ -612,7 +612,7 @@ export default function SalonOnboardingPage() {
                   {t("done.dashboardHint")}
                 </p>
                 <Link href={`/${locale}/dashboard?onboarded=1`}
-                  className="mt-4 px-6 py-3 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow">
+                  className="mt-4 px-6 py-3 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2">
                   Zum Dashboard →
                 </Link>
               </div>
@@ -720,7 +720,7 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goNext}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-[transform,filter] group shadow-coral-glow"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-[transform,filter] group shadow-elevation-2"
             >
               <span>{t("nav.next")}</span>
               <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />
@@ -729,7 +729,7 @@ export default function SalonOnboardingPage() {
             <div className="flex-1" onClick={submitting ? undefined : handleSubmit}>
               <InteractiveHoverButton
                 text={submitting ? "..." : t("nav.finish")}
-                className="w-full bg-s-coral text-white shadow-coral-glow"
+                className="w-full bg-s-coral text-white shadow-elevation-2"
               />
             </div>
           )}

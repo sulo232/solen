@@ -66,7 +66,7 @@ export default function TipPage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-s-bg-base">
+    <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="flex gap-1.5">
         {[0, 1, 2].map((i) => (
           <div key={i} className="w-1.5 h-1.5 rounded-full bg-s-coral/50 animate-pulse"
@@ -78,7 +78,7 @@ export default function TipPage() {
 
   if (done) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-s-bg-base px-4">
+      <div className="min-h-screen flex items-center justify-center bg-white px-4">
         <div className="text-center">
           <div className="w-16 h-16 rounded-[18px] flex items-center justify-center mx-auto mb-5 animate-bounce"
             style={{ background: "rgba(232,98,74,.10)" }}>
@@ -103,7 +103,7 @@ export default function TipPage() {
   const serviceName = booking?.service_name ?? "Service";
 
   return (
-    <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-6">
           <div className="w-20 h-20 rounded-full bg-s-coral/10 flex items-center justify-center mx-auto mb-3 overflow-hidden relative">
@@ -129,7 +129,7 @@ export default function TipPage() {
                 onClick={() => { setSelectedAmount(amount); setUseCustom(false); }}
                 className={`py-3 rounded-btn text-xs font-heading font-bold transition-colors ${
                   !useCustom && selectedAmount === amount
-                    ? "bg-s-coral text-white shadow-coral-glow"
+                    ? "bg-s-coral text-white shadow-elevation-2"
                     : "border border-s-ink/[0.08] text-s-ink/65 hover:border-s-coral/50"
                 }`}>
                 {formatCurrency(amount / 100, locale)}
@@ -170,7 +170,7 @@ export default function TipPage() {
 
           <button onClick={handlePay}
             disabled={paying || tipAmount < 100}
-            className="w-full py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2 shadow-coral-glow">
+            className="w-full py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2 shadow-elevation-2">
             {paying ? <Spinner size="sm" invert /> : <Heart size={13} />}
             {formatCurrency(tipAmount / 100, locale)} — {l.send}
           </button>

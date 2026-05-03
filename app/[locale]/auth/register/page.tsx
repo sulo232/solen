@@ -213,7 +213,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       <button
         type="submit"
         disabled={!email || !password || (isSalon ? !salonName : !birthday) || saving}
-        className="w-full py-4 rounded-pill bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+        className="w-full py-4 rounded-pill bg-s-coral shadow-elevation-2 text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
         {saving && <Spinner size="sm" invert />}
         Registrieren
       </button>
@@ -614,7 +614,7 @@ export default function RegisterPage() {
   const currentStepNum = step === -1 ? 0 : step === "done" ? totalSteps : Number(step);
 
   return (
-    <div className="min-h-screen bg-s-bg-base flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
       {/* Single ambient glow — Zone 3 exception */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full"

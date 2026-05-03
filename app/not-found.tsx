@@ -3,7 +3,7 @@ import { Scissors } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-s-bg-base flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4">
       <Scissors className="w-16 h-16 text-s-coral mb-6 rotate-45" />
       <h1 className="font-heading text-6xl font-bold text-s-ink mb-2">404</h1>
       <p className="text-lg text-s-ink/60 font-body mb-8 text-center max-w-md">

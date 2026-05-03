@@ -212,7 +212,7 @@ export default function AdminSandboxPage() {
               )}
               className={`px-3 py-1.5 rounded-pill text-xs font-heading font-semibold transition-[transform,filter,border-color,background-color] duration-150 ${
                 seedCities.includes(citySlug)
-                  ? "bg-s-amber text-white shadow-amber-glow"
+                  ? "bg-s-amber text-white shadow-elevation-2"
                   : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
               }`}
             >
@@ -294,7 +294,7 @@ export default function AdminSandboxPage() {
                 onClick={() => setNewCategory(cat)}
                 className={`px-3 py-1.5 rounded-pill text-xs font-heading font-semibold transition-[transform,filter,border-color,background-color] duration-150 ${
                   newCategory === cat
-                    ? "bg-s-coral text-white shadow-coral-glow"
+                    ? "bg-s-coral text-white shadow-elevation-2"
                     : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
                 }`}
                 aria-label={cat}

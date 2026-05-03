@@ -71,7 +71,7 @@ export default function BarberProfilePage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-s-bg-base">
+      <main className="min-h-screen flex items-center justify-center bg-white">
         <Spinner />
       </main>
     );
@@ -79,7 +79,7 @@ export default function BarberProfilePage() {
 
   if (!barber) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center bg-s-bg-base gap-4">
+      <main className="min-h-screen flex flex-col items-center justify-center bg-white gap-4">
         <Scissors size={40} className="text-s-ink/20" />
         <p className="text-s-ink/50">Barber nicht gefunden</p>
         <Link href={`/${locale}/salon/${salonSlug}`} className="text-s-coral text-sm hover:underline">
@@ -101,7 +101,7 @@ export default function BarberProfilePage() {
   const styleFilters = ["fade", "buzz", "crop", "pompadour", "afro", "braids", "razor_art"];
 
   return (
-    <main className="min-h-screen bg-s-bg-base">
+    <main className="min-h-screen bg-white">
       {/* Cover */}
       <div className="relative h-48 sm:h-64 bg-s-ink/10">
         {barber.cover_photo_url && (

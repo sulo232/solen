@@ -128,7 +128,7 @@ export default function TreatmentsClient() {
     <div className="min-h-screen bg-white ambient-v5 relative overflow-x-hidden">
       {/* Search + Filters */}
       <div className="sticky top-[57px] z-40 isolate">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-s-bg-base border-b border-s-ink/[0.06]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-white border-b border-s-ink/[0.06]">
           <div className="mb-3">
             <SearchAutocomplete />
           </div>

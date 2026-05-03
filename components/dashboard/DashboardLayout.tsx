@@ -254,7 +254,7 @@ export default function DashboardLayout({
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-s-bg-base flex">
+      <div className="min-h-screen bg-white flex">
         {/* Sidebar skeleton */}
         <div className="hidden md:flex flex-col w-[240px] border-r border-s-ink/[0.06] p-3 gap-4">
           <Skeleton className="h-8 w-8 rounded-input" />
@@ -282,7 +282,7 @@ export default function DashboardLayout({
       : pathname.startsWith(`/${locale}${href}`);
 
   return (
-    <div className="min-h-screen bg-s-bg-base flex">
+    <div className="min-h-screen bg-white flex">
       {/* ── Desktop Sidebar (animated) ── */}
       <Sidebar>
         <SidebarBody>

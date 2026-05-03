@@ -194,7 +194,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
                 </button>
                 <button
                   onClick={handleSave}
-                  className="flex-1 py-2.5 rounded-pill text-white text-[10px] font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-coral shadow-coral-glow"
+                  className="flex-1 py-2.5 rounded-pill text-white text-[10px] font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-coral shadow-elevation-2"
                 >
                   {t.save}
                 </button>

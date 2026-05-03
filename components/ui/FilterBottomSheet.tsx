@@ -133,7 +133,7 @@ export default function FilterBottomSheet({
           </button>
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-pill bg-s-coral text-white text-sm font-heading shadow-coral-glow hover:brightness-[1.06]"
+            className="flex-1 py-2.5 rounded-pill bg-s-coral text-white text-sm font-heading shadow-elevation-2 hover:brightness-[1.06]"
           >
             {t('apply')}
           </button>

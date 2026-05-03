@@ -109,7 +109,7 @@ export default function HandChart({ customerId }: HandChartProps) {
                 aria-pressed={selectedFinger === finger.id}
                 className={`relative w-[28px] rounded-full transition-[border-color,background-color,box-shadow,transform] duration-150 border ${
                   selectedFinger === finger.id
-                    ? "border-s-coral bg-s-coral shadow-coral-glow scale-105"
+                    ? "border-s-coral bg-s-coral shadow-elevation-2 scale-105"
                     : hasNote
                       ? "border-s-coral/40 bg-s-coral/10 hover:border-s-coral/60"
                       : "border-s-ink/10 bg-[--raised] hover:bg-s-ink/5:bg-white/5"
@@ -140,7 +140,7 @@ export default function HandChart({ customerId }: HandChartProps) {
                 aria-pressed={selectedFinger === finger.id}
                 className={`relative w-[28px] rounded-full transition-[border-color,background-color,box-shadow,transform] duration-150 border ${
                   selectedFinger === finger.id
-                    ? "border-s-coral bg-s-coral shadow-coral-glow scale-105"
+                    ? "border-s-coral bg-s-coral shadow-elevation-2 scale-105"
                     : hasNote
                       ? "border-s-coral/40 bg-s-coral/10 hover:border-s-coral/60"
                       : "border-s-ink/10 bg-[--raised] hover:bg-s-ink/5:bg-white/5"

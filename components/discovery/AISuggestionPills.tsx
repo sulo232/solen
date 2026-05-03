@@ -99,7 +99,7 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
             className={[
               "shrink-0 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold whitespace-nowrap transition-[background-color,color,border-color,box-shadow] duration-150",
               selected === label
-                ? "bg-s-coral text-white border border-s-coral shadow-coral-glow"
+                ? "bg-s-coral text-white border border-s-coral shadow-elevation-2"
                 : "border border-s-ink/[0.08] text-s-ink/65 bg-white/70 hover:border-s-coral/40 hover:text-s-coral",
             ].join(" ")}
           >

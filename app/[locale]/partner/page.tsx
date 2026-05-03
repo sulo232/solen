@@ -126,7 +126,7 @@ export default function PartnerPage() {
       </div>
 
       {/* Categories */}
-      <div className="py-16 bg-s-bg-base">
+      <div className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 mb-2">

@@ -77,7 +77,7 @@ function VoucherPaymentForm({
         type="submit"
         disabled={!stripe || loading}
         text={loading ? "Verarbeite..." : t("payNow")}
-        className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-60"
+        className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
       />
     </form>
   );
@@ -186,7 +186,7 @@ export default function VouchersPage() {
   // Step 1: Browse salons
   if (step === "browse") {
     return (
-      <div className="min-h-screen bg-s-bg-base py-12 px-4">
+      <div className="min-h-screen bg-white py-12 px-4">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <motion.div
@@ -267,7 +267,7 @@ export default function VouchersPage() {
   // Step 2: Configure voucher
   if (step === "configure" && selectedSalon) {
     return (
-      <div className="min-h-screen bg-s-bg-base py-12 px-4">
+      <div className="min-h-screen bg-white py-12 px-4">
         <div className="max-w-lg mx-auto">
           {/* Back button */}
           <button
@@ -387,7 +387,7 @@ export default function VouchersPage() {
                 type="submit"
                 disabled={creating || !recipientName || !recipientEmail}
                 text={creating ? "Lädt..." : t("configure.continue")}
-                className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-60"
+                className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
               />
             </div>
           </motion.form>
@@ -400,7 +400,7 @@ export default function VouchersPage() {
   if (step === "payment" && clientSecret && selectedSalon) {
     return (
       <Elements stripe={stripePromise} options={{ clientSecret }}>
-        <div className="min-h-screen bg-s-bg-base py-12 px-4">
+        <div className="min-h-screen bg-white py-12 px-4">
           <div className="max-w-lg mx-auto">
             <h2 className="font-heading font-bold text-2xl text-s-ink mb-2">
               {t("payment.title")}

@@ -73,7 +73,7 @@ function CheckoutForm({ clientSecret, voucherCode }: CheckoutFormProps) {
       <button
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.97] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-coral-glow transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.97] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-elevation-2 transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
         style={{
           background: "linear-gradient(135deg, #C05038 0%, #F3A864 100%)",
         }}
@@ -174,7 +174,7 @@ export default function VoucherBuyPage() {
                   onClick={() => setDiscountType("fixed")}
                   className={`rounded-[12px] px-6 py-4 border-2 transition-[background-color,border-color,box-shadow] ${
                     discountType === "fixed"
-                      ? "border-s-coral bg-s-coral/5 shadow-coral-glow"
+                      ? "border-s-coral bg-s-coral/5 shadow-elevation-2"
                       : "border-s-ink/[0.08] hover:border-s-ink/20"
                   }`}
                 >
@@ -192,7 +192,7 @@ export default function VoucherBuyPage() {
                   onClick={() => setDiscountType("percent")}
                   className={`rounded-[12px] px-6 py-4 border-2 transition-[background-color,border-color,box-shadow] ${
                     discountType === "percent"
-                      ? "border-s-coral bg-s-coral/5 shadow-coral-glow"
+                      ? "border-s-coral bg-s-coral/5 shadow-elevation-2"
                       : "border-s-ink/[0.08] hover:border-s-ink/20"
                   }`}
                 >
@@ -279,7 +279,7 @@ export default function VoucherBuyPage() {
             <button
               onClick={handleCreateVoucher}
               disabled={loading || (isGift && !recipientEmail)}
-              className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.97] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-coral-glow transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.97] px-8 py-4 font-heading font-bold uppercase text-xs tracking-[.04em] text-white shadow-elevation-2 transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background: "linear-gradient(135deg, #C05038 0%, #F3A864 100%)",
               }}

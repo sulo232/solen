@@ -102,7 +102,7 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-sm text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150">{t("cancel")}</button>
           <button onClick={handleCreate} disabled={!customerName.trim() || !serviceId || loading}
-            className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-[transform,filter] duration-150 shadow-coral-glow">
+            className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-[transform,filter] duration-150 shadow-elevation-2">
             {loading && <Spinner size="sm" invert />}<Send size={14} /> {t("create")}
           </button>
         </div>

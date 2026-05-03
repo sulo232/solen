@@ -45,7 +45,7 @@ export default function CategoryTabBar({ activeCategory, onChange }: CategoryTab
             className={[
               "flex-shrink-0 px-4 py-3 rounded-pill text-xs font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
               isActive
-                ? "bg-s-coral text-white shadow-coral-glow"
+                ? "bg-s-coral text-white shadow-elevation-2"
                 : "bg-s-bg-surface text-s-ink/70 border border-s-ink/10 hover:bg-s-ink/[0.08]:bg-white/[0.12]",
             ].join(" ")}
             style={

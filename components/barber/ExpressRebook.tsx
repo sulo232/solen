@@ -128,7 +128,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
     .join(" + ") || lastCut.service_name;
 
   return (
-    <div className="rounded-[16px] bg-white shadow-warm-xl p-4 border border-s-ink/5">
+    <div className="rounded-[16px] bg-white shadow-elevation-3 p-4 border border-s-ink/5">
       <div className="flex items-start gap-3">
         <div className="p-2 rounded-full bg-s-coral/10 shrink-0">
           <Scissors size={18} className="text-s-coral" />
@@ -141,7 +141,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
           {step === "idle" && (
             <button
               onClick={handleRebook}
-              className="mt-3 w-full flex items-center justify-center gap-2 rounded-pill active:scale-[0.97] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
+              className="mt-3 w-full flex items-center justify-center gap-2 rounded-pill active:scale-[0.97] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
             >
               <RefreshCw size={16} />
               {t("express.rebook")}
@@ -167,7 +167,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
               </div>
               <button
                 onClick={handleConfirm}
-                className="w-full rounded-pill active:scale-[0.97] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
+                className="w-full rounded-pill active:scale-[0.97] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
               >
                 {t("express.confirm")}
               </button>

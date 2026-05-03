@@ -152,7 +152,7 @@ export default function BreakManager({ staffMemberId }: BreakManagerProps) {
             <button
               onClick={handleAdd}
               disabled={saving}
-              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-coral-glow transition-[transform,filter] duration-150"
+              className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150"
             >
               {saving && <Spinner size="sm" invert />} {t("save")}
             </button>

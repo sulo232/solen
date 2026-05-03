@@ -106,7 +106,7 @@ const CancelModal = memo(function CancelModal({
             onChange={(e) => setReason(e.target.value)}
             rows={2}
             placeholder={t("reasonPlaceholder")}
-            className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors resize-none"
+            className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors resize-none"
           />
         </div>
 
@@ -120,7 +120,7 @@ const CancelModal = memo(function CancelModal({
           <button
             onClick={handleCancel}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
+            className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-elevation-2"
           >
             {loading && <Spinner size="sm" invert />}
             {t("confirmCancel")}
@@ -194,7 +194,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
       {/* Code display */}
       {code && (
         <div className="flex items-center gap-2">
-          <div className="flex-1 px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base"
+          <div className="flex-1 px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white"
             style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "14px", letterSpacing: ".12em", color: "var(--s-ink)" }}>
             {code}
           </div>
@@ -632,7 +632,7 @@ const SettingsSection = memo(function SettingsSection({
         <button
           type="submit"
           disabled={!name || saving}
-          className="px-5 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-coral-glow"
+          className="px-5 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-elevation-2"
         >
           {saving && <Spinner size="sm" invert />}
           {t("save")}

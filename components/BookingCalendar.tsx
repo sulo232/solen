@@ -128,7 +128,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
         type="button"
         onClick={handleSubmit}
         disabled={processing || !stripe}
-        className="w-full py-4 rounded-btn bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
+        className="w-full py-4 rounded-btn bg-s-coral shadow-elevation-2 text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
       >
         {processing ? <Spinner size="sm" invert /> : <CreditCard size={14} />}
         {processing ? t("processing") : t("payNow")}
@@ -766,7 +766,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
                           className={[
                             "px-4 py-2.5 rounded-[12px] text-xs font-heading font-bold transition-[transform,filter,border-color,background-color] duration-150 border",
                             isSelected
-                              ? "bg-s-coral text-white border-s-coral shadow-coral-glow"
+                              ? "bg-s-coral text-white border-s-coral shadow-elevation-2"
                               : offPeakPct
                                 ? "bg-s-sage-subtle border-s-sage/20 text-s-ink hover:border-s-sage/40 hover:text-s-sage-text"
                                 : "bg-white border-s-ink/10 text-s-ink hover:border-s-coral/50 hover:text-s-coral",
@@ -848,7 +848,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
             <select
               value={recurringFreq}
               onChange={(e) => setRecurringFreq(e.target.value as RecurringFrequency)}
-              className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base text-sm font-body text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors appearance-none"
+              className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors appearance-none"
               style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%231A1209' stroke-opacity='0.4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center" }}
             >
               {FREQ_OPTIONS.map(({ value, label }) => (
@@ -861,7 +861,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           <select
             value={acquisitionSource}
             onChange={e => setAcquisitionSource(e.target.value)}
-            className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base text-sm font-body text-s-ink/70 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors appearance-none"
+            className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink/70 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors appearance-none"
             style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%231A1209' stroke-opacity='0.4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center" }}
           >
             {ACQUISITION_SOURCES.map(src => (
@@ -971,7 +971,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
             <button
               onClick={handleProceedToPayment}
               disabled={confirming}
-              className="w-full py-4 rounded-btn bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-btn bg-s-coral shadow-elevation-2 text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {confirming && <Spinner size="sm" invert />}
               {confirming ? t("preparing") : isMoreThan7Days ? t("saveCardAndBook") : t("toPayment")}

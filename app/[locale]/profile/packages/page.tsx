@@ -49,7 +49,7 @@ export default function MyPackagesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-s-bg-base flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="grid gap-4 w-full max-w-3xl px-4">
           {[...Array(2)].map((_, i) => (
             <div key={i} className="rounded-[12px] border border-s-ink/[0.06] p-5 bg-white animate-pulse">

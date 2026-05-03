@@ -142,7 +142,7 @@ export default function TreatmentOutcome({ salonId, clientId, bookingId }: Treat
               className={inputCls} aria-label={t("outcomeNextVisit")} />
           </div>
           <button onClick={handleSave} disabled={saving || form.satisfaction_rating === 0}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-pill bg-s-coral text-white text-xs font-heading font-bold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-coral-glow"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-pill bg-s-coral text-white text-xs font-heading font-bold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
             aria-label={t("outcomeSave")}>
             <Save size={12} /> {saving ? t("saving") : t("outcomeSave")}
           </button>

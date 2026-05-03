@@ -151,7 +151,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
       {/* Floating + button */}
       <button
         onClick={handleOpen}
-        className="fixed bottom-24 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center text-white active:scale-[0.97] transition-[transform,filter] duration-150 shadow-coral-glow"
+        className="fixed bottom-24 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center text-white active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
         style={{
           background: "#C05038",
           boxShadow: "0 4px 12px rgba(232,98,74,.40), 0 12px 32px rgba(232,98,74,.22)"
@@ -299,7 +299,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                 <button
                   onClick={handlePost}
                   disabled={posting || !tosAccepted}
-                  className="w-full py-3 rounded-pill bg-s-coral hover:brightness-[1.06] text-white font-medium text-sm disabled:opacity-40 transition-[transform,filter] duration-150 shadow-coral-glow flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-pill bg-s-coral hover:brightness-[1.06] text-white font-medium text-sm disabled:opacity-40 transition-[transform,filter] duration-150 shadow-elevation-2 flex items-center justify-center gap-2"
                 >
                   {posting && <Loader2 size={14} className="animate-spin" />}
                   {t.post}

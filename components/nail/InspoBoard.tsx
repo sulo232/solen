@@ -106,7 +106,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
       <div className="absolute inset-0 bg-s-ink/40" onClick={onClose} />
 
       {/* Modal */}
-      <div role="dialog" aria-modal="true" className="relative w-full sm:max-w-lg max-h-[80vh] bg-[--raised] rounded-t-[24px] sm:rounded-[24px] shadow-warm-xl flex flex-col overflow-hidden">
+      <div role="dialog" aria-modal="true" className="relative w-full sm:max-w-lg max-h-[80vh] bg-[--raised] rounded-t-[24px] sm:rounded-[24px] shadow-elevation-3 flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-s-ink/5">
           <h3 className="font-heading font-semibold text-s-ink">{t("board_title")}</h3>
@@ -204,7 +204,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
           <div className="px-4 py-3 border-t border-s-ink/5">
             <button
               onClick={handleConfirm}
-              className="w-full py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
+              className="w-full py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
             >
               {t("board_select_images", { count: selected.size })}
             </button>

@@ -233,7 +233,7 @@ export default function SalonPackagesPage() {
   const l = labels[locale as "de" | "en"] ?? labels.de;
 
   return (
-    <div className="min-h-screen bg-s-bg-base">
+    <div className="min-h-screen bg-white">
       <div className="max-w-2xl mx-auto px-4 py-8">
         <Link href={`/${locale}/salon/${slug}`} className="text-sm text-s-coral flex items-center gap-1 mb-6">
           <ArrowLeft size={14} /> {l.back}

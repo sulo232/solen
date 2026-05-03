@@ -123,7 +123,7 @@ export default memo(function VideoCard({
         {/* Play button overlay — shown when not expanded or when iframe failed */}
         {(!isExpanded || iframeError) && (
           <div className="absolute inset-0 flex items-center justify-center bg-s-ink/20">
-            <div className="w-9 h-9 rounded-full bg-s-coral/90 backdrop-blur-[6px] flex items-center justify-center shadow-coral-glow">
+            <div className="w-9 h-9 rounded-full bg-s-coral/90 backdrop-blur-[6px] flex items-center justify-center shadow-elevation-2">
               <Play size={16} className="text-white ml-0.5" fill="white" />
             </div>
           </div>

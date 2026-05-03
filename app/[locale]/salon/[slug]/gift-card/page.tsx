@@ -64,12 +64,12 @@ export default function GiftCardPage() {
     }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-s-bg-base"><Spinner size="md" /></div>;
-  if (!salon) return <div className="min-h-screen flex items-center justify-center bg-s-bg-base"><p className="text-s-ink/30">Salon nicht gefunden</p></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-white"><Spinner size="md" /></div>;
+  if (!salon) return <div className="min-h-screen flex items-center justify-center bg-white"><p className="text-s-ink/30">Salon nicht gefunden</p></div>;
 
   if (done) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-s-bg-base px-4">
+      <div className="min-h-screen flex items-center justify-center bg-white px-4">
         <div className="text-center max-w-sm">
           <div className="w-16 h-16 rounded-full bg-s-success-bg flex items-center justify-center mx-auto mb-4 animate-bounce">
             <Check size={32} className="text-s-success" />
@@ -88,7 +88,7 @@ export default function GiftCardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-s-bg-base py-8 px-4">
+    <div className="min-h-screen bg-white py-8 px-4">
       <div className="max-w-md mx-auto">
         <div className="text-center mb-6">
           <Gift size={32} className="text-s-coral mx-auto mb-2" />

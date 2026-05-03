@@ -178,7 +178,7 @@ export default function LastMinutePage() {
   }, [pathname, router, searchParams]);
 
   return (
-    <div className="min-h-screen bg-s-bg-base">
+    <div className="min-h-screen bg-white">
       {/* Hero */}
       <div className="pt-8 pb-6" style={{ background: "linear-gradient(180deg, rgba(232,98,74,.07) 0%, rgba(255,255,255,0) 100%)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -202,7 +202,7 @@ export default function LastMinutePage() {
 
       {/* Search + Filters */}
       <div className="sticky top-[57px] z-40 isolate">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-s-bg-base border-b border-s-ink/[0.06]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-white border-b border-s-ink/[0.06]">
           <div className="mb-3">
             <SearchAutocomplete />
           </div>

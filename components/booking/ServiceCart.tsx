@@ -95,7 +95,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
           {/* P7 — Addon checkboxes (custom coral checkbox) */}
           {addons[svc.id]?.map(addon => (
             <label key={addon.id}
-              className="flex items-center gap-3 py-2.5 px-3 rounded-[10px] cursor-pointer hover:bg-s-bg-base transition-colors duration-150"
+              className="flex items-center gap-3 py-2.5 px-3 rounded-[10px] cursor-pointer hover:bg-white transition-colors duration-150"
               style={{ border: selectedAddons.has(addon.id) ? "1px solid rgba(232,98,74,.25)" : "1px solid rgba(26,18,9,.06)" }}>
               {/* Custom checkbox */}
               <div className={`w-4 h-4 rounded-[5px] border flex items-center justify-center shrink-0 transition-[background-color,border-color] duration-150 ${
@@ -139,7 +139,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
             value={promoCode}
             onChange={e => setPromoCode(e.target.value.toUpperCase())}
             placeholder={t("promoPlaceholder")}
-            className="w-full pl-9 pr-3 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base text-xs font-body text-s-ink placeholder:text-s-ink/35 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full pl-9 pr-3 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-xs font-body text-s-ink placeholder:text-s-ink/35 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
         </div>
 
@@ -151,7 +151,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
             value={giftCardCode}
             onChange={e => setGiftCardCode(e.target.value.toUpperCase())}
             placeholder={t("giftCardPlaceholder")}
-            className="w-full pl-9 pr-3 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base text-xs font-body text-s-ink placeholder:text-s-ink/35 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full pl-9 pr-3 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-xs font-body text-s-ink placeholder:text-s-ink/35 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
         </div>
 
@@ -163,7 +163,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
             value={referralCode}
             onChange={e => setReferralCode(e.target.value.toUpperCase())}
             placeholder={t("referralPlaceholder")}
-            className="w-full pl-9 pr-3 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-s-bg-base text-xs font-body text-s-ink placeholder:text-s-ink/35 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full pl-9 pr-3 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-xs font-body text-s-ink placeholder:text-s-ink/35 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
         </div>
       </div>
@@ -184,7 +184,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
       <button
         onClick={() => onCheckout({ totalPrice, totalDuration, addonIds: [...selectedAddons], promoCode, giftCardCode, referralCode })}
         disabled={checking}
-        className="w-full py-4 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
+        className="w-full py-4 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-elevation-2"
       >
         {checking && <Spinner size="sm" invert />}
         {t("payAndBook")}

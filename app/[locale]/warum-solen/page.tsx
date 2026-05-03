@@ -198,7 +198,7 @@ export default function WarumSolenPage() {
           </p>
           <button
             onClick={() => document.getElementById("section-chat")?.scrollIntoView({ behavior: "smooth" })}
-            className="mt-8 inline-flex items-center gap-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] shadow-coral-glow"
+            className="mt-8 inline-flex items-center gap-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] shadow-elevation-2"
           >
             {t("heroCta")}
             <ChevronDown className="w-4 h-4 animate-bounce" />
@@ -421,7 +421,7 @@ export default function WarumSolenPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href={`/${locale}`}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] shadow-coral-glow"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] shadow-elevation-2"
               >
                 {t("ctaBtn")}
                 <ArrowRight className="w-3.5 h-3.5" />

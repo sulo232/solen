@@ -77,7 +77,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           onClick={handleSave}
           disabled={isSaving}
           aria-label={t("save_button")}
-          className="flex items-center justify-center gap-2 bg-s-coral text-white py-2 px-5 rounded-pill font-heading font-bold text-[11px] uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-coral-glow"
+          className="flex items-center justify-center gap-2 bg-s-coral text-white py-2 px-5 rounded-pill font-heading font-bold text-[11px] uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
         >
           {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
           {t("save_button")}

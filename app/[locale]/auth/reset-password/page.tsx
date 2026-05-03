@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
           <div className="mx-auto w-16 h-16 rounded-[20px] flex items-center justify-center mb-4"
             style={{ background: "rgba(76,175,111,.12)" }}>
@@ -86,7 +86,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-s-bg-base flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
       {/* Single ambient glow — Zone 3 exception */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full"
@@ -178,7 +178,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={loading || !passwordValid || !passwordsMatch}
-                className="w-full py-4 rounded-pill bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+                className="w-full py-4 rounded-pill bg-s-coral shadow-elevation-2 text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
                 {loading ? <Spinner size="sm" invert /> : null}
                 Passwort ändern
               </button>

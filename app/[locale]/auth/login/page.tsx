@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   return (
-    <div className="min-h-screen bg-s-bg-base flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
       {/* Single ambient glow — Zone 3 exception */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full"

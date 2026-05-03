@@ -144,7 +144,7 @@ export default function EditorPage() {
   // Mobile gate
   if (width < 1024) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-s-bg-base p-8">
+      <div className="flex items-center justify-center min-h-screen bg-white p-8">
         <div className="text-center max-w-md">
           <Monitor size={48} className="mx-auto text-s-ink/30 mb-4" />
           <h2 className="text-lg font-heading font-bold text-s-ink mb-2">
@@ -161,7 +161,7 @@ export default function EditorPage() {
   const iframeUrl = window.location.origin + urlPath;
 
   return (
-    <div className="flex flex-col h-screen bg-s-bg-base">
+    <div className="flex flex-col h-screen bg-white">
       {/* Toolbar */}
       <div className="flex items-center gap-2 px-3 py-2 border-b border-s-ink/5 bg-white flex-shrink-0">
         {/* Back */}

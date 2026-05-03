@@ -54,7 +54,7 @@ export default function LoyaltyStampPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-s-bg-base p-4">
+    <main className="min-h-screen flex items-center justify-center bg-white p-4">
       <div className="max-w-sm w-full text-center">
         {status === "loading" && (
           <div className="flex items-center justify-center gap-1.5 py-16">
@@ -91,7 +91,7 @@ export default function LoyaltyStampPage() {
             </p>
             <button
               onClick={handleStamp}
-              className="w-full rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] py-3.5 hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] shadow-coral-glow"
+              className="w-full rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] py-3.5 hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] shadow-elevation-2"
             >
               Stempel vergeben
             </button>

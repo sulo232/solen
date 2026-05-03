@@ -270,7 +270,7 @@ export default function TerminePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-s-bg-base px-4 py-8 max-w-lg mx-auto space-y-4">
+      <div className="min-h-screen bg-white px-4 py-8 max-w-lg mx-auto space-y-4">
         {Array.from({ length: 3 }).map((_, i) => (
           <Skeleton key={i} variant="card" />
         ))}

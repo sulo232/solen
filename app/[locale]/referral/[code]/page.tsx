@@ -111,7 +111,7 @@ export default function ReferralLandingPage({ params }: Props) {
             "w-full flex items-center justify-center gap-2",
             "bg-s-coral text-white font-heading font-semibold text-base",
             "rounded-btn px-8 py-4",
-            "shadow-coral-glow",
+            "shadow-elevation-2",
             "hover:brightness-[1.06] active:scale-[0.97]",
             "transition-[transform,filter] duration-150"
           )}

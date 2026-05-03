@@ -63,7 +63,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
               onClick={onClose}
             />
             <motion.div
-              className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl shadow-warm-xl max-h-[80vh] overflow-y-auto"
+              className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl shadow-elevation-3 max-h-[80vh] overflow-y-auto"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
@@ -186,7 +186,7 @@ function SheetContent({
         <Link
           href={`/${locale}/salon/${salon.slug}?book=true`}
           onClick={onClose}
-          className="flex-1 py-3 rounded-pill active:scale-[0.97] bg-s-coral text-white text-sm font-medium text-center shadow-coral-glow hover:brightness-[1.06] transition-[transform,filter] duration-150"
+          className="flex-1 py-3 rounded-pill active:scale-[0.97] bg-s-coral text-white text-sm font-medium text-center shadow-elevation-2 hover:brightness-[1.06] transition-[transform,filter] duration-150"
         >
           {t("book")}
         </Link>

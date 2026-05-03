@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="min-h-screen bg-s-bg-base">
+    <div className="min-h-screen bg-white">
       {/* Gallery skeleton */}
       <div className="max-w-5xl mx-auto px-4 pt-16">
         <div className="w-full aspect-[16/7] rounded-[20px] bg-s-bg-sunken animate-pulse mb-8" />

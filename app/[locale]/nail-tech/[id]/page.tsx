@@ -48,7 +48,7 @@ export default function NailTechProfilePage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-s-bg-base">
+      <main className="min-h-screen flex items-center justify-center bg-white">
         <Spinner />
       </main>
     );
@@ -56,7 +56,7 @@ export default function NailTechProfilePage() {
 
   if (!tech) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center bg-s-bg-base px-4">
+      <main className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
         <p className="text-s-ink/50 mb-4">Nail Tech nicht gefunden</p>
         <Link href={`/${locale}`} className="text-s-coral text-sm hover:underline">
           Zurück zur Startseite
@@ -73,7 +73,7 @@ export default function NailTechProfilePage() {
   };
 
   return (
-    <main className="min-h-screen bg-s-bg-base">
+    <main className="min-h-screen bg-white">
       {/* Header */}
       <div className="bg-white border-b border-s-ink/5">
         <div className="max-w-5xl mx-auto px-4 py-6">

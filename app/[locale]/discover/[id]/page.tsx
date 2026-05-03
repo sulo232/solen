@@ -118,7 +118,7 @@ export default async function DiscoverDetailPage({ params }: PageProps) {
   const isAuthenticated = !!session?.user;
 
   return (
-    <main className="min-h-screen bg-s-bg-base px-4 pt-6 pb-20">
+    <main className="min-h-screen bg-white px-4 pt-6 pb-20">
       <DetailPage item={item} locale={locale} isAuthenticated={isAuthenticated} />
     </main>
   );

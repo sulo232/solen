@@ -219,7 +219,7 @@ function DiscoverPageContent() {
   ];
 
   return (
-    <main className="min-h-screen bg-s-bg-base pt-4 pb-24">
+    <main className="min-h-screen bg-white pt-4 pb-24">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">

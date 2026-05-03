@@ -158,7 +158,7 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
           style={{ background: "rgba(232,98,74,.15)" }}>
           <Clock size={18} className="text-s-coral" />
         </div>
-        <div className="absolute inset-0 rounded-full animate-pulse shadow-coral-glow" />
+        <div className="absolute inset-0 rounded-full animate-pulse shadow-elevation-2" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-heading font-bold text-sm text-s-ink">
@@ -327,7 +327,7 @@ export default function SalonProfilePage() {
         <p className="font-heading font-bold text-s-ink text-2xl">{t("notFound")}</p>
         <p className="font-body text-s-ink/50 text-sm text-center max-w-xs">{t("notFoundMessage")}</p>
         <Link href={`/${locale}/coiffeur`}
-          className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-coral-glow">
+          className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-elevation-2">
           {t("viewAllSalons")}
         </Link>
       </div>

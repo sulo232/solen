@@ -91,7 +91,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 px-3 py-1.5 min-h-12 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-coral-glow"
+          className="flex items-center gap-1 px-3 py-1.5 min-h-12 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
           aria-label={t("retail_new")}
         >
           <Plus size={12} />
@@ -139,7 +139,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
             <button
               onClick={handleAdd}
               disabled={saving}
-              className="px-4 py-2 min-h-12 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter] duration-150"
+              className="px-4 py-2 min-h-12 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] duration-150"
               aria-label={saving ? t("saving") : t("add")}
             >
               {saving ? t("saving") : t("add")}

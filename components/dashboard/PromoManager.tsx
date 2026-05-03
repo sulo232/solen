@@ -199,7 +199,7 @@ export default function PromoManager() {
             <button
               type="submit"
               disabled={creating}
-              className="px-4 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] shadow-coral-glow disabled:opacity-60 flex items-center gap-1.5 transition-[transform,filter] duration-150"
+              className="px-4 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 disabled:opacity-60 flex items-center gap-1.5 transition-[transform,filter] duration-150"
             >
               {creating ? <Spinner size="sm" /> : <Plus className="w-3.5 h-3.5" />}
               {t("create")}
