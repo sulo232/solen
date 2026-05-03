@@ -178,7 +178,7 @@ export default function ServiceAutosuggest({
                     name: item.name_de,
                   })
                 }
-                className="flex items-center gap-2 w-full px-3 py-2.5 hover:bg-s-ink/[0.04] cursor-pointer rounded-lg transition-colors duration-100 text-left"
+                className="flex items-center gap-2 w-full px-3 py-2.5 hover:bg-s-ink/[0.04] cursor-pointer rounded-[8px] transition-colors duration-100 text-left"
               >
                 <span className="text-[13px] font-body font-medium text-s-ink truncate flex-1">
                   {displayName}
@@ -214,7 +214,7 @@ export default function ServiceAutosuggest({
               onClick={() =>
                 onSelect({ type: "salon", name: item.name, slug: item.slug })
               }
-              className="group flex items-center gap-2 w-full px-3 py-2.5 hover:bg-s-ink/[0.04] cursor-pointer rounded-lg transition-colors duration-100 text-left"
+              className="group flex items-center gap-2 w-full px-3 py-2.5 hover:bg-s-ink/[0.04] cursor-pointer rounded-[8px] transition-colors duration-100 text-left"
             >
               <span className="text-[13px] font-body font-medium text-s-ink truncate flex-1">
                 {item.name}

@@ -106,7 +106,7 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
       >
         {isLoading ? (
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[4/5] rounded-2xl">
+            <div key={i} className="shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[4/5] rounded-[16px]">
               <Skeleton className="w-full h-full rounded-[16px]" />
             </div>
           ))

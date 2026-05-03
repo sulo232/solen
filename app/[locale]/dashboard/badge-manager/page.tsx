@@ -117,7 +117,7 @@ function BadgeModal({
                   <button
                     key={name}
                     onClick={() => setIcon(name)}
-                    className={`flex flex-col items-center gap-0.5 p-2 rounded-lg text-[9px] transition-colors ${
+                    className={`flex flex-col items-center gap-0.5 p-2 rounded-[8px] text-[9px] transition-colors ${
                       icon === name ? "bg-s-coral/10 text-s-coral ring-1 ring-s-coral" : "bg-s-bg-surface text-s-ink/40 hover:bg-s-bg-sunken"
                     }`}
                   >

@@ -223,7 +223,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
               {photos.map((p, i) => (
                 <div key={i} className="relative w-16 h-16 rounded-[12px] overflow-hidden border border-s-ink/10 shrink-0">
                   <img src={URL.createObjectURL(p)} alt="Preview" className="w-full h-full object-cover" />
-                  <button type="button" onClick={() => setPhotos(photos.filter((_, idx) => idx !== i))} className="absolute top-1 right-1 bg-black/50 hover:bg-black/70 text-white rounded-full p-0.5 transition-colors" title={t("remove_photo")}>
+                  <button type="button" onClick={() => setPhotos(photos.filter((_, idx) => idx !== i))} className="absolute top-1 right-1 bg-s-ink/50 hover:bg-s-ink/70 text-white rounded-full p-0.5 transition-colors" title={t("remove_photo")}>
                     <X size={10} />
                   </button>
                 </div>

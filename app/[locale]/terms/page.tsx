@@ -39,7 +39,7 @@ export default async function TermsPage() {
             Terms of Service
           </h2>
           
-          <div className="mt-8 p-4 bg-s-yellow-subtle border border-s-yellow/20 rounded-xl text-s-ink text-sm">
+          <div className="mt-8 p-4 bg-s-yellow-subtle border border-s-yellow/20 rounded-[12px] text-s-ink text-sm">
             <p className="font-semibold mb-1">Hinweis: Die deutsche Fassung dieser AGB ist massgebend.</p>
             <p>Die englische Übersetzung dient ausschliesslich der Information. Bei Widersprüchen zwischen den beiden Fassungen gilt die deutsche Version.</p>
             <div className="h-px w-full border-t border-s-yellow/20 my-3" />

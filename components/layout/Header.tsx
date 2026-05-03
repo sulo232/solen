@@ -383,7 +383,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                       animate="visible"
                       exit="exit"
                       style={{ transformOrigin: "top right" }}
-                      className="absolute right-0 top-[calc(100%+8px)] w-52 max-w-[calc(100vw-32px)] rounded-2xl z-[80] overflow-hidden bg-white shadow-v5-float ring-1 ring-black/5"
+                      className="absolute right-0 top-[calc(100%+8px)] w-52 max-w-[calc(100vw-32px)] rounded-[16px] z-[80] overflow-hidden bg-white shadow-v5-float ring-1 ring-black/5"
                     >
                       <nav className="py-2" role="menu">
                         {[
@@ -438,7 +438,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       {/* ── Lights-Out Overlay (Airbnb §1.1) ── */}
       {searchActive && isHomepage && (
         <div
-          className="fixed inset-0 z-40 bg-black/25 transition-opacity duration-300 pointer-events-auto"
+          className="fixed inset-0 z-40 bg-s-ink/25 transition-opacity duration-300 pointer-events-auto"
           style={{ top: 'var(--header-height, 180px)' }}
           onClick={() => window.dispatchEvent(new CustomEvent("cancelAirbnbSearch"))}
           aria-hidden="true"
@@ -457,7 +457,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[45] bg-black/20"
+            className="fixed inset-0 z-[45] bg-s-ink/20"
             onClick={() => setSearchExpanded(false)}
             aria-hidden="true"
           />

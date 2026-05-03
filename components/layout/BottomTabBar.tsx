@@ -165,7 +165,7 @@ export default function BottomTabBar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
-              className="fixed inset-0 z-[60] bg-black/30"
+              className="fixed inset-0 z-[60] bg-s-ink/30"
               style={{ backdropFilter: "blur(3px)", WebkitBackdropFilter: "blur(3px)" }}
               onClick={() => setLoginSheet(s => ({ ...s, open: false }))}
               aria-hidden="true"

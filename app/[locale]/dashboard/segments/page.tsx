@@ -94,7 +94,7 @@ export default function SegmentsPage() {
                 <div className="p-4">
                   <div className="flex items-center gap-3 mb-2">
                     <div
-                      className="w-10 h-10 rounded-lg flex items-center justify-center"
+                      className="w-10 h-10 rounded-[8px] flex items-center justify-center"
                       style={{ backgroundColor: seg.color + "15", color: seg.color }}
                     >
                       <Icon size={20} />

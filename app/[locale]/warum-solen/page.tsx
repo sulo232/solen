@@ -74,17 +74,17 @@ function MockChat() {
       {/* Messages */}
       <div className="px-4 py-3 space-y-2.5 min-h-[180px]">
         <div className="flex justify-end">
-          <div className="bg-s-coral text-white text-xs px-3 py-2 rounded-2xl rounded-br-md max-w-[75%]">
+          <div className="bg-s-coral text-white text-xs px-3 py-2 rounded-[16px] rounded-br-md max-w-[75%]">
             {t("chatMsg1")}
           </div>
         </div>
         <div className="flex">
-          <div className="bg-s-bg-sunken text-s-ink text-xs px-3 py-2 rounded-2xl rounded-bl-md max-w-[75%]">
+          <div className="bg-s-bg-sunken text-s-ink text-xs px-3 py-2 rounded-[16px] rounded-bl-md max-w-[75%]">
             {t("chatReply")}
           </div>
         </div>
         <div className="flex justify-end">
-          <div className="bg-s-coral text-white text-xs px-3 py-2 rounded-2xl rounded-br-md max-w-[75%]">
+          <div className="bg-s-coral text-white text-xs px-3 py-2 rounded-[16px] rounded-br-md max-w-[75%]">
             {t("chatMsg2")}
           </div>
         </div>

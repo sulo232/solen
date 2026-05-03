@@ -69,7 +69,7 @@ export default function TermsSidebar() {
       <div className="md:hidden mb-6 print:hidden">
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="flex items-center justify-between w-full p-4 bg-white border border-s-ink/10 rounded-xl"
+          className="flex items-center justify-between w-full p-4 bg-white border border-s-ink/10 rounded-[12px]"
         >
           <span className="font-semibold text-s-ink flex items-center gap-2">
             <Menu className="w-5 h-5" /> Inhaltsverzeichnis / Table of Contents
@@ -82,16 +82,16 @@ export default function TermsSidebar() {
         </button>
 
         {isMobileMenuOpen && (
-          <div className="mt-2 p-2 bg-white border border-s-ink/10 rounded-xl shadow-elevation-3 absolute z-10 w-[calc(100%-2rem)] max-h-[60vh] overflow-y-auto max-w-[720px]">
+          <div className="mt-2 p-2 bg-white border border-s-ink/10 rounded-[12px] shadow-elevation-3 absolute z-10 w-[calc(100%-2rem)] max-h-[60vh] overflow-y-auto max-w-[720px]">
             <nav className="flex flex-col gap-1">
               {sections.map((section) => (
                 <button
                   key={section.id}
                   onClick={() => scrollToSection(section.id)}
-                  className={`text-left px-4 py-3 rounded-lg text-sm transition-colors ${
+                  className={`text-left px-4 py-3 rounded-[8px] text-sm transition-colors ${
                     activeSection === section.id
                       ? "bg-s-coral/10 text-s-coral font-medium"
-                      : "text-s-ink/70 hover:bg-black/5:bg-white/5"
+                      : "text-s-ink/70 hover:bg-s-ink/5:bg-white/5"
                   }`}
                 >
                   {section.title}
@@ -113,10 +113,10 @@ export default function TermsSidebar() {
               <button
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
-                className={`text-left px-3 py-2 rounded-lg text-sm transition-colors duration-200 border-l-2 ${
+                className={`text-left px-3 py-2 rounded-[8px] text-sm transition-colors duration-200 border-l-2 ${
                   activeSection === section.id
                     ? "border-s-coral bg-s-coral/5 text-s-coral font-medium pl-4"
-                    : "border-transparent text-s-ink/70 hover:bg-black/5:bg-white/5 hover:border-black/20:border-white/20"
+                    : "border-transparent text-s-ink/70 hover:bg-s-ink/5:bg-white/5 hover:border-black/20:border-white/20"
                 }`}
               >
                 {section.title}

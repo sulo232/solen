@@ -158,7 +158,7 @@ export default function RespondAdjustmentPage() {
         ) : (
           <>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-s-amber-subtle flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[8px] bg-s-amber-subtle flex items-center justify-center">
                 <AlertTriangle size={18} className="text-s-amber" />
               </div>
               <div>

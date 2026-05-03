@@ -30,7 +30,7 @@ export default function BookingSidebar({
 }: BookingSidebarProps) {
   return (
     <div
-      className="sticky top-[100px] rounded-2xl border border-s-ink/[0.08] bg-white p-6"
+      className="sticky top-[100px] rounded-[16px] border border-s-ink/[0.08] bg-white p-6"
       style={{ boxShadow: "0 6px 16px rgba(0,0,0,0.12)" }}
     >
       {/* Price + Rating */}

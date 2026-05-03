@@ -216,7 +216,7 @@ export default function AllSalonsPage() {
               >
                 <div className="flex gap-3">
                   {/* Cover thumbnail */}
-                  <div className="w-10 h-10 rounded-lg bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center relative">
+                  <div className="w-10 h-10 rounded-[8px] bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center relative">
                     {salon.cover_photo_url ? (
                       <Image src={salon.cover_photo_url} alt="" fill className="object-cover" />
                     ) : (

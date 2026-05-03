@@ -64,7 +64,7 @@ function StatCard({
       variants={itemVariants}
       className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-5 flex items-start gap-4"
     >
-      <div className={`p-2.5 rounded-xl ${bg} shrink-0`}>
+      <div className={`p-2.5 rounded-[12px] ${bg} shrink-0`}>
         <Icon size={20} className={color} />
       </div>
       <div>

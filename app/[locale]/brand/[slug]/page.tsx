@@ -65,11 +65,11 @@ export default function BrandPage() {
       <div className="bg-white border-b border-s-ink/5">
         <div className="max-w-5xl mx-auto px-4 py-10 flex flex-col sm:flex-row items-center gap-6">
           {group.logo_url ? (
-            <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-s-bg-sunken shrink-0">
+            <div className="relative w-20 h-20 rounded-[12px] overflow-hidden bg-s-bg-sunken shrink-0">
               <Image src={group.logo_url} alt={group.name} fill className="object-contain" />
             </div>
           ) : (
-            <div className="w-20 h-20 rounded-xl bg-s-coral/10 flex items-center justify-center text-s-coral text-2xl font-heading shrink-0">
+            <div className="w-20 h-20 rounded-[12px] bg-s-coral/10 flex items-center justify-center text-s-coral text-2xl font-heading shrink-0">
               {group.name[0]}
             </div>
           )}

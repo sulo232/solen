@@ -56,7 +56,7 @@ export default function PartnerSignupForm() {
           value={salonName}
           onChange={(e) => setSalonName(e.target.value)}
           placeholder={t("form_salon_name_placeholder")}
-          className="w-full px-5 py-3.5 bg-white border border-s-ink/10 rounded-xl text-sm font-body text-s-ink focus:outline-none focus:border-s-coral focus:ring-1 focus:ring-s-coral transition-colors"
+          className="w-full px-5 py-3.5 bg-white border border-s-ink/10 rounded-[12px] text-sm font-body text-s-ink focus:outline-none focus:border-s-coral focus:ring-1 focus:ring-s-coral transition-colors"
         />
         <input
           type="email"
@@ -64,12 +64,12 @@ export default function PartnerSignupForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("form_email_placeholder")}
-          className="w-full px-5 py-3.5 bg-white border border-s-ink/10 rounded-xl text-sm font-body text-s-ink focus:outline-none focus:border-s-coral focus:ring-1 focus:ring-s-coral transition-colors"
+          className="w-full px-5 py-3.5 bg-white border border-s-ink/10 rounded-[12px] text-sm font-body text-s-ink focus:outline-none focus:border-s-coral focus:ring-1 focus:ring-s-coral transition-colors"
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="w-full bg-s-coral hover:brightness-[1.06] text-white font-heading py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center disabled:opacity-70 mt-1"
+          className="w-full bg-s-coral hover:brightness-[1.06] text-white font-heading py-3.5 px-6 rounded-[12px] transition-colors flex items-center justify-center disabled:opacity-70 mt-1"
         >
           {status === "loading" ? (
             <Loader2 className="w-5 h-5 animate-spin" />

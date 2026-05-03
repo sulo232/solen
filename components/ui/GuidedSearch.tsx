@@ -434,7 +434,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[60] bg-black/40"
+              className="fixed inset-0 z-[60] bg-s-ink/40"
               style={{ backdropFilter: "blur(2px)" }}
               onClick={close}
               aria-hidden="true"

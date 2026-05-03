@@ -43,7 +43,7 @@ export default function PrivacyContent() {
           <ParDe>Wir geben Ihre Daten nur an Dienstleister weiter, soweit dies für den Betrieb der Plattform erforderlich ist. Es werden keine Daten verkauft.</ParDe>
           <ParEn>We only share your data with service providers to the extent necessary to operate the platform. No data is sold.</ParEn>
           <div className="overflow-x-auto mt-4">
-            <table className="min-w-full text-sm text-left border border-s-ink/10 rounded-xl overflow-hidden block md:table">
+            <table className="min-w-full text-sm text-left border border-s-ink/10 rounded-[12px] overflow-hidden block md:table">
               <thead className="bg-s-ink/5 border-b border-s-ink/10">
                 <tr>
                   <th className="px-4 py-2 font-semibold">Dienstleister / Provider</th>

@@ -421,7 +421,7 @@ export default function TermsContent() {
         </Article>
 
         <Article titleDe="15.3 Impressum" titleEn="15.3 Legal Notice">
-          <div className="bg-s-ink/5 p-4 rounded-xl text-sm md:text-base text-s-ink">
+          <div className="bg-s-ink/5 p-4 rounded-[12px] text-sm md:text-base text-s-ink">
             <p className="font-semibold mb-2">solen.ch</p>
             <p>Einzelunternehmen</p>
             <p>Basel-Stadt, Schweiz</p>

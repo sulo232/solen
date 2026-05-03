@@ -87,7 +87,7 @@ export default function SalonSidebar({
     <div className="hidden lg:block lg:col-span-1">
       <div className="sticky top-[100px]">
         <div
-          className="rounded-2xl overflow-hidden p-6 bg-white border border-s-ink/[0.08]"
+          className="rounded-[16px] overflow-hidden p-6 bg-white border border-s-ink/[0.08]"
           style={{ boxShadow: "0 6px 16px rgba(26,18,9,0.10)" }}
         >
           <div className="flex flex-col gap-4">

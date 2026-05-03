@@ -112,7 +112,7 @@ export default function HelpEditorPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-s-coral/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
               <BookOpen size={20} className="text-s-coral" />
             </div>
             <div>
