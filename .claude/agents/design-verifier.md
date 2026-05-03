@@ -90,6 +90,39 @@ For each color, font-size, spacing, radius value in the reference:
 - **Star ratings** must be amber `#F3A864`, NOT brand color (Q43 + SOLEN_UI #5b)
 - **Body text** must be warm-ink `#1A1209`, NOT pure black
 
+## Step 4.5 — PRINCIPLE compliance scan (always run; never skip)
+
+Token compliance ≠ principle compliance. The reference HTML itself violates SOLEN_UI in 9+ sections (per the 2026-05-03 5-agent audit, Agent 4). Copying tokens from a principle-violating reference produces principle-violating live code that token-checks PASS. This step closes that gap.
+
+For the live component being verified — count and report:
+
+**A. Primary actions (SOLEN_UI #2 "One primary action").**
+Grep the JSX for solid-fill brand CTAs: `bg-s-coral` / `bg-[#1B4D1B]` / inline `style={{ background: "#1B4D1B" }}` / similar. Count instances within the section. **Target: 1 per section.** If count > 1 without an explicit exception in `_tasks/SOLEN_LIVE_TRUTH.md` §9, FAIL with `principle §2: <N> equal-weight primary CTAs in <section>`.
+
+**B. Brand-color flood (SOLEN_UI #5b + 60/30/10 split).**
+For the rendered HTML (Step 3), count nodes painted in brand-green `#1B4D1B` (or token-resolved). Compare to total interactive nodes (buttons, links, chips). **Target: ≤30%** of interactive surface = brand. If above, FAIL with `principle §5b: brand-flood at <X>% of interactive surface`.
+
+**C. Cross-section redundancy (SOLEN_UI #8 "Redundancy hunt").**
+When dispatched at PAGE level (route argument provided WITHOUT a line range, OR `--page=<route>` flag), grep the rendered HTML for repeated nav-pill clusters. Specifically: any text label appearing in ≥2 distinct nav/category groupings (e.g. "Coiffeur" in both `Header.tsx` icon-tabs AND `CategoriesGrid` AND `BrowseByCitySection`). FAIL with `principle §8: <label> appears in <group A> AND <group B>`.
+
+**D. Effect restraint (SOLEN_UI #5).**
+Count `gradient-*` / `blur-*` / `drop-shadow-*` Tailwind utilities and inline `background: linear-gradient(` / `filter: blur(` / `backdrop-filter:` styles per section. **Target: ≤2 per section.** Warn at 3-4. FAIL at >5.
+
+**E. Multi-icon-library check (SOLEN_UI #6 "Icon discipline").**
+Grep for icon imports across the section's JSX. The locked library is `lucide-react`. If any other icon library appears (`@radix-ui/react-icons`, `@phosphor-icons/*`, `@heroicons/*`, emoji icons in JSX text like `🔒` `🇨🇭`), FAIL with `principle §6: mixed icon libraries — found <X>`.
+
+**F. State coverage (SOLEN_UI #1 "Flow first" + Q19/Q60).**
+For data-driven surfaces (ones that fetch/render lists), check the component file for: empty-state path (FTU + filtered-empty per Q60), loading skeleton path (Q20), error path (Q19). FAIL if any are missing for a list/feed surface.
+
+**Citation requirement:** every PRINCIPLE FAIL must cite the SOLEN_UI rule number AND the exact file:line where the violation occurs. Pattern: `principle §<N>: <violation> at <file>:<line>`.
+
+# Page-level dispatch — additional scope
+
+When the calling agent dispatches you with `--page=<route>` (or with a route URL but no line range), enter PAGE-LEVEL mode:
+- Step 4.5 checks A/B (per-section) become whole-page (count CTAs across all visible sections)
+- Step 4.5 check C (redundancy) becomes mandatory and primary
+- Page-level FAIL on ≥2 same-purpose sections (two category navs, two trust strips, two search affordances) → cite specific file pairs
+
 # Output format — strict, structured
 
 Return EXACTLY one of these two response shapes:

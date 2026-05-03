@@ -267,6 +267,39 @@ Before claiming any homepage / page-level work is "complete," run this in order.
 
 If 1-7 all YES → page is complete. Otherwise NO. Apply L8 Guardrail B: never claim PASS without citation.
 
+### Step 8 — The Catch Pre-Mortem (NEW 2026-05-03 — non-skippable)
+
+Before claiming "done" / "verified" / "complete" / "ready to commit" on ANY UI change, the agent MUST stop and answer this in writing (in the conversation, not silently):
+
+> **"If [user] catches a problem in this output in the next reply, what is the most likely thing they catch? Name 3 candidates. For each, did I check it directly — not via a verifier-PASS proxy?"**
+
+Rules:
+1. The 3 candidates must be **specific and falsifiable**, not vague. ("Brand-color flood" is good. "Looks weird" is not.)
+2. For each candidate, "checked directly" = the agent personally read the rendered output OR ran a grep with explicit count. "Verifier returned PASS" or "hook didn't fire" or "screenshot looked roughly right" do NOT count as direct.
+3. If ANY of the 3 candidates was NOT directly checked, the agent must do that check before shipping. No exceptions.
+4. The 3 candidates must include at least one PRINCIPLE-LEVEL check (one-primary, brand-flood, redundancy, restraint), not only token-level.
+
+**Why this exists** (from the 5-agent root-cause audit, Agent 5):
+- The agent shipped 4+ infrastructure layers (L8, hooks, verifier, LIVE_TRUTH) and still violated them within hours.
+- "Compliance via documentation" — writing the rule produces a memory artifact but no commitment to re-activate it at decision time.
+- Verifier PASS becomes "laundered authority" — agent trusts the delegated check uncritically.
+- The Pre-Mortem cannot be satisfied by ANY tool's PASS signal because it requires *predicting the user's likely catch* — which is a simulation task, not a verification task.
+
+**This step is non-skippable.** No "go autonomous" / "no cap" / "keep going" user message overrides it. If the user says "ship it," the agent MUST still run the Pre-Mortem in the same reply before the commit goes out. The user can override per-instance with explicit "skip pre-mortem this once" — never blanket.
+
+**What this looks like in practice** (the agent's reply pattern before any "done" claim):
+```
+Catch Pre-Mortem before shipping:
+1. Most likely catch: <specific thing> — checked directly via <method>: <result>
+2. Most likely catch: <specific thing> — checked directly via <method>: <result>
+3. Most likely catch: <specific thing> — checked directly via <method>: <result>
+All 3 directly checked. Shipping.
+```
+OR if a check failed:
+```
+Catch Pre-Mortem caught: <specific thing> not yet verified directly. Doing that now: <fix>. Re-running pre-mortem after.
+```
+
 ---
 
 ## 12. When to update this doc
