@@ -19,6 +19,8 @@ import TestimonialCarousel from "@/components/TestimonialCarousel";
 // HomepageHero (V5) replaced 2026-05-02 per Q49 — see new HeroAboveFold below.
 import HeroAboveFold from "@/components/home/HeroAboveFold";
 import CategoriesGrid from "@/components/home/CategoriesGrid";
+import QuartiersGrid from "@/components/home/QuartiersGrid";
+import PartnerBlock from "@/components/home/PartnerBlock";
 import TrustStatsBanner from "@/components/home/TrustStatsBanner";
 import NearbySection from "@/components/home/NearbySection";
 import DiscoverSection from "@/components/home/DiscoverSection";
@@ -188,10 +190,15 @@ export default function HomePage({ initialData }: HomePageProps) {
           </section>
         )}
 
-        {/* ── 5. Browse by City (dark section) ── */}
+        {/* ── 5. Browse by City (dark section, cross-city picker) ── */}
         <div style={{ marginTop: 48 }}>
           <BrowseByCitySection />
         </div>
+
+        {/* ── 5.5 Phase 8.5 (B3 LOCKED 2026-05-03): Quartiers grid for Basel ──
+            Reference public/solen-coral.html:1061-1083. Additive — coexists
+            with the cross-city picker above. */}
+        <QuartiersGrid />
 
         {/* ── 6. Spotlight — DEFERRED Phase 4.b (needs spotlight_salons table + admin curation) ── */}
 
@@ -204,6 +211,13 @@ export default function HomePage({ initialData }: HomePageProps) {
         {/* ── 8. Q51 Trust Stats — 4-tile stat strip ── */}
         <div style={{ marginTop: 48 }}>
           <TrustStatsBanner />
+        </div>
+
+        {/* ── 9. Phase 8.5 (B4 LOCKED 2026-05-03): Partner pitch block ──
+            Reference public/solen-coral.html:1084-1116. Marketing block for
+            salon owners. Additive — links to /partner + /onboarding/salon. */}
+        <div style={{ marginTop: 32 }}>
+          <PartnerBlock />
         </div>
 
       </main>
