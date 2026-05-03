@@ -195,32 +195,38 @@ export default function HomePage({ initialData }: HomePageProps) {
           </section>
         )}
 
+        {/* Phase 9 — bottom-half rhythm reorder 2026-05-03 (page-level
+            verifier flagged 2 adjacent dark sections breaking visual rhythm
+            per LIVE_TRUTH §11). New order alternates dark ↔ light:
+              BrowseByCity (dark) →
+              Testimonials (white/sunken — breaker) →
+              QuartiersGrid (dark) →
+              TrustStatsBanner (white — breaker) →
+              PartnerBlock (plum) →
+              Footer (dark). Plum+dark at end is unavoidable since Footer is
+              always last; plum is visually distinct enough from warm-ink. */}
+
         {/* ── 5. Browse by City (dark section, cross-city picker) ── */}
         <div style={{ marginTop: 48 }}>
           <BrowseByCitySection />
         </div>
 
-        {/* ── 5.5 Phase 8.5 (B3 LOCKED 2026-05-03): Quartiers grid for Basel ──
-            Reference public/solen-coral.html:1061-1083. Additive — coexists
-            with the cross-city picker above. */}
+        {/* ── 6. Testimonials (white/sunken breaker between dark sections) ── */}
+        <div style={{ marginTop: 0 }}>
+          <TestimonialCarousel />
+        </div>
+
+        {/* ── 7. Phase 8.5 (B3 LOCKED 2026-05-03): Quartiers grid for Basel ──
+            Reference public/solen-coral.html:1061-1083. */}
         <QuartiersGrid />
 
-        {/* ── 6. Spotlight — DEFERRED Phase 4.b (needs spotlight_salons table + admin curation) ── */}
-
-        {/* Breathing gap */}
-        <div style={{ height: 48 }} aria-hidden="true" />
-
-        {/* ── 7. Testimonials (only if real reviews exist) ── */}
-        <TestimonialCarousel />
-
-        {/* ── 8. Q51 Trust Stats — 4-tile stat strip ── */}
+        {/* ── 8. Q51 Trust Stats — 4-tile stat strip (white breaker) ── */}
         <div style={{ marginTop: 48 }}>
           <TrustStatsBanner />
         </div>
 
         {/* ── 9. Phase 8.5 (B4 LOCKED 2026-05-03): Partner pitch block ──
-            Reference public/solen-coral.html:1084-1116. Marketing block for
-            salon owners. Additive — links to /partner + /onboarding/salon. */}
+            Reference public/solen-coral.html:1084-1116. */}
         <div style={{ marginTop: 32 }}>
           <PartnerBlock />
         </div>

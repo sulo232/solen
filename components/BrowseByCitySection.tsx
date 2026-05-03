@@ -122,45 +122,13 @@ export default function BrowseByCitySection() {
           ))}
         </div>
 
-        {/* Category pills — single row, no wrap */}
-        <div
-          className="flex gap-2 overflow-x-auto mt-8 md:mt-11"
-          style={{
-            scrollbarWidth: "none",
-            WebkitOverflowScrolling: "touch",
-            flexWrap: "nowrap",
-          }}
-        >
-          {CATEGORY_KEYS.map((key) => (
-            <Link
-              key={key}
-              href={`/${locale}/${key}`}
-              className="flex-shrink-0 font-body text-[13px] font-medium active:scale-[0.97] transition-[transform,background,color,border-color] duration-150"
-              style={{
-                padding: "5px 12px",
-                borderRadius: 99,
-                border: "1px solid rgba(255,255,255,0.2)",
-                color: "rgba(255,255,255,0.6)",
-                background: "transparent",
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.background = "rgba(27, 77, 27,0.18)";
-                el.style.color = "rgba(27, 77, 27,0.95)";
-                el.style.borderColor = "rgba(27, 77, 27,0.28)";
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.background = "transparent";
-                el.style.color = "rgba(255,255,255,0.6)";
-                el.style.borderColor = "rgba(255,255,255,0.2)";
-              }}
-              aria-label={tNav(key)}
-            >
-              {tNav(key)}
-            </Link>
-          ))}
-        </div>
+        {/* Phase 9 (LIVE_TRUTH §11 cross-section redundancy fix 2026-05-03):
+            6-pill category nav REMOVED — was redundant with `CategoriesGrid`
+            above (also 6 categories, more prominent solid-color tiles per ref
+            `solen-coral.html:801-821`). BrowseByCitySection now city-only,
+            matching reference `qrt-sec` purpose.
+            CATEGORY_KEYS const + tNav import retained for backward-compat in
+            case other surfaces import them — but no longer rendered here. */}
       </div>
     </section>
   );

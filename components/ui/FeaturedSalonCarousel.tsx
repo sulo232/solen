@@ -141,7 +141,21 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   // A3 LOCKED 2026-05-03: photos killed pre-launch. Card cover always renders
   // solid category color + Anton uppercase salon name via ImageFallback.
   const showRating = (salon.review_count ?? 0) >= 3;
-  const locationParts = [salon.quartier, salon.city_name ?? "Basel"].filter(Boolean);
+  // Quartier comes as a raw slug (e.g. `grossbasel`, `st_johann`, `kleinbasel`).
+  // Format for display: replace underscores with spaces, title-case, special-case
+  // common Basel district names. Page-level verifier flagged raw slugs leaking.
+  const formatQuartier = (q?: string | null): string => {
+    if (!q) return "";
+    const cleaned = q.replace(/_/g, " ").trim();
+    return cleaned
+      .split(/\s+/)
+      .map((word) => {
+        if (word.toLowerCase() === "st") return "St.";
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      })
+      .join(" ");
+  };
+  const locationParts = [formatQuartier(salon.quartier), salon.city_name ?? "Basel"].filter(Boolean);
   const locationText = locationParts.join(", ");
 
   // DESIGN_SPEC §3.1: max 1 badge per card, only on 4.9+ rating OR 50+ reviews
