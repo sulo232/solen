@@ -312,6 +312,102 @@ session. Each is its own ~1-2 hr surgical operation:
 
 ---
 
+## Phase 4.b + Phase 5 thorough push (2026-05-03)
+
+### L4.4 — Q50 SectionCarousel uses negative-margin scroll trick
+The Airbnb-pattern peek (next card half-visible at edge) requires the
+scroll container to extend INTO the page padding. Standard pattern:
+`-mx-5 md:-mx-10 lg:-mx-20 px-5 md:px-10 lg:px-20`. This way the children
+align with the rest of the page's padding, but the scroll-snap container
+spans edge-to-edge so peek shows. Don't try to do it with overflow only
+— children get clipped at the padding edge.
+
+### L4.5 — `useCityDetection()` returns void, not city
+Phase 4 NearbySection initially called `const { city } = useCityDetection()`
+which TS-errored. The hook is side-effect only — it persists detected
+city to cookie via `lib/city-cookie`. Read with `getPersistedCity()`
+inside `useEffect` (avoids SSR/CSR mismatch). Pattern applied in
+NearbySection.tsx.
+
+### L5.9 — Q52 SalonHero overlay vs h1 SEO trade-off
+Q52 puts the salon name on the photo as an Anton overlay. Existing
+salon page had `<h1>{salon.name}</h1>` below the photo. To preserve SEO
++ screen-reader landmark + the visible Q52 hero overlay, the existing
+h1 was kept but converted to `sr-only` (visually hidden, still in DOM).
+**Pattern:** when moving a heading visually but you still need it for
+SEO/a11y, sr-only the original instead of deleting.
+
+### L5.10 — Q55 booking wizard refactor used belt-and-suspenders
+Wizard 4→3 step merge is HIGH RISK (revenue path). Mitigation:
+1. Kept ConfirmationStep + PaymentStep as orphan files (deleted by
+   Phase 7 only after PayConfirmStep verified ≥7 days in production)
+2. Extended BookingStep type to include both old keys ('confirm',
+   'payment') AND new key ('pay-confirm') — no breaking change
+3. BookingWizard normalizes legacy keys at runtime — in-progress
+   sessions don't lose state on first load post-deploy
+4. Booking-creation API call (POST /api/bookings + /confirmation
+   redirect) preserved verbatim — only the surface combines two steps
+
+### L5.11 — Q53 V5 anti-pattern killed in 2 places
+Both SalonMobileCTA + SalonSidebar opened BookingCalendar inline (in
+BottomSheet on mobile, in sidebar collapsible on desktop). Q53 explicitly
+bans this — booking MUST navigate to the full-page wizard at
+/salon/[slug]/booking. Both refactored to <Link> with query forwarding
+(?service=&staff=). Back button restores salon detail + scroll position
+via Next.js scroll restoration.
+
+### L5.12 — Q54 split = thin summary + reuse heavy component on sub-page
+SalonReviewsSummary is a NEW lightweight component (~155L) for the
+detail tab summary card. The sub-page route `/salon/[slug]/reviews`
+reuses the EXISTING SalonReviews component (389L) which already handles
+filter chips, photo upload, expanded replies, dispute reporting.
+**Pattern:** when a Q-lock says 'split into summary + sub-page', don't
+fork the existing component — build a thin summary alongside, route the
+sub-page to the existing surface.
+
+---
+
+## Phase 6 — Dashboard B2B (2026-05-03)
+
+### L6.1 — Q61 went additive to preserve 37 dashboard components
+Per 'no kill features' rule, Q61 didn't refactor the existing dashboard
+homepage (StatCard grid + ActivityFeed + DashboardLayout sidebar with
+category-injection nav). Instead:
+- TodayLiveCard.tsx (mobile-only, md:hidden) renders ABOVE the existing
+  SetupBanner + Übersicht stats grid
+- DashboardHeaderStrip.tsx (desktop-only, hidden md:flex) renders in the
+  same position as a sticky pill row
+- Owner now sees both: live now/next data on top + their familiar overview
+  below
+- Phase 7 may collapse to viewport-router default (TodayLiveCard alone on
+  mobile, calendar-default on desktop) once live data is verified
+
+### L6.2 — /api/dashboard/today is sequential, not optimized
+v1 runs 4 sequential queries (today's bookings, walk-in queue count,
+inbox unread, salon avg rating). Returns the FIRST 'now' booking (within
+30-min look-back) + up to 3 future 'up-next' rows. Phase 7 may
+consolidate to single SQL CTE if hot path.
+
+### L6.3 — Auth gating on dashboard APIs returns empty payload, not 401
+TodayLiveCard could render on a non-salon-owner page (consumer-side
+admin previews, etc.). Returning 401 would log scary console errors.
+Instead: check `profile.role` and return zeroed-out payload for
+non-salon users. The component renders 'Bereit für heute' fallback +
+zeros. Quiet degradation > scary errors.
+
+### L6.4 — Q62 + Q63 mostly auto-met by Phase 0
+Q62 (same tokens, no sub-palette) — already met by Phase 0 token
+contract. No extra work needed. Sidebar bg already cream
+`s-bg-sunken` from existing DashboardLayout.
+
+Q63 (contextual density) — needs per-component `density` prop on tables/
+lists. Per CODE_SAFETY Rule 8 + 'no kill features', this is a per-table
+opt-in addition done by the consuming surface phase, NOT a wholesale
+sweep. Phase 7 picks the top 5 most-used dashboard tables and adds
+the density prop opt-in.
+
+---
+
 ## Cross-cutting reminders for Phase 4+
 
 ### R1 — Vercel gate is active
