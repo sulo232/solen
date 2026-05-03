@@ -13,6 +13,8 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import SetupBanner from "@/components/dashboard/SetupBanner";
 import { StatCard } from "@/components/dashboard/StatCard";
 import ActivityFeed from "@/components/dashboard/ActivityFeed";
+import TodayLiveCard from "@/components/dashboard/TodayLiveCard";
+import DashboardHeaderStrip from "@/components/dashboard/DashboardHeaderStrip";
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { Booking, SalonCategory } from "@/lib/types";
 import { getCategoryNavGroups } from "@/lib/dashboard/category-nav";
@@ -136,6 +138,14 @@ export default function DashboardPage() {
       </AnimatePresence>
 
       <SetupBanner />
+
+      {/* Q61 (locked 2026-05-02) — additive top-of-page surfaces. Mobile sees TodayLiveCard;
+          desktop sees DashboardHeaderStrip + the existing Übersicht stats grid below. The
+          existing stats homepage stays in place per "no kill features" — owner can choose
+          which to glance at first. Phase 7 may collapse to viewport-router default once
+          live data has been observed. */}
+      <DashboardHeaderStrip />
+      <TodayLiveCard />
 
       <div className="mb-8">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">
