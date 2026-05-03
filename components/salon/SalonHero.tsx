@@ -2,30 +2,35 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { ChevronLeft, Share2, Heart } from "lucide-react";
 import { useTranslations } from "next-intl";
 import PhotoLightbox from "@/components/ui/PhotoLightbox";
 import ImageFallback from "@/components/ui/ImageFallback";
 
 /**
- * SalonHero — Q52 (locked 2026-05-02) salon detail hero.
+ * SalonHero — Q52 (locked 2026-05-02 + Phase 9 top-controls extension 2026-05-03).
  *
  * Replaces the V5-era 5-photo Airbnb grid + carousel-with-dots with the
  * locked Q52 anatomy:
  *   - Single full-bleed hero photo (~50% viewport height; users skip
  *     carousels per UX research, auto-rotate is a11y-hostile)
- *   - Bottom-fade overlay carrying eyebrow + Anton headline (caller
- *     provides via overlayContent prop — typically the Q48 SignatureLockup)
- *   - Below the photo: thumbnail strip of N visible (3 default) + `+N`
- *     overflow tile
- *   - Tap any thumbnail or `+N` → fullscreen gallery (Q52 D-on-tap pattern,
- *     opens the existing PhotoLightbox sheet — Phase 7 may upgrade this to
- *     a dedicated /salon/[slug]/gallery sub-page route with Q35 morph)
+ *   - Top-of-photo controls per Q52: back button (left, 28px circle white-95% bg),
+ *     share + heart (right, same treatment). Heart uses #FF4A6B literal love-red
+ *     per Q36/SOLEN_UI #5b, NOT brand token. Renders only when handlers passed.
+ *   - Optional `topBadges` (Solen Favorit / Top bewertet etc.) — small
+ *     Anton-uppercase chips above the salon name in the bottom-fade overlay.
+ *   - Optional `offPeakBadge` — small chip top-left INSIDE the photo (above
+ *     back button isn't possible — slotted just under the back button column).
+ *   - Bottom-fade overlay carrying eyebrow + Anton headline (caller provides
+ *     via overlayContent prop — typically the Q48 SignatureLockup).
+ *   - Below the photo: thumbnail strip of N visible (3 default) + `+N` overflow tile
+ *   - Tap any thumbnail or `+N` → fullscreen gallery (PhotoLightbox)
  *
  * NO carousel hero. NO auto-rotate. NO dot indicators.
  *
- * Caller is responsible for the SignatureLockup + meta strip rendering
- * BELOW this component (Q52 says hero only carries photo + bottom-fade
- * eyebrow/Anton; meta `★ rating · distance · open-state` is below).
+ * Caller is responsible for the meta strip BELOW this component (Q52 says
+ * hero only carries photo + bottom-fade eyebrow/Anton; meta `★ rating ·
+ * distance · open-state` is below).
  */
 interface SalonHeroProps {
   photos: string[];
@@ -37,6 +42,21 @@ interface SalonHeroProps {
   /** Number of thumbnails to show in the strip (default 3). Anything beyond
    *  this becomes a `+N` overflow tile that also opens the lightbox. */
   thumbnailCount?: number;
+  /** Optional back-button handler. When provided, renders the back chip
+   *  (28px circle white-95% bg, ChevronLeft) at top-left of the photo. */
+  onBack?: () => void;
+  /** Optional share-button handler. When provided, renders share chip top-right. */
+  onShare?: () => void;
+  /** Optional favorite toggle. When provided, renders heart chip top-right.
+   *  Heart fills with #FF4A6B love-red when isFavorited per SOLEN_UI #5b. */
+  onFavoriteToggle?: () => void;
+  isFavorited?: boolean;
+  /** Optional small chip rendered top-left INSIDE the photo (under the back
+   *  button column) — typically off-peak deal text like "−40% Heute". */
+  offPeakBadge?: { text: string; tone?: "brand" | "amber" };
+  /** Optional auto-badges (Solen Favorit, Top bewertet, etc.) rendered
+   *  above the headline inside the bottom-fade overlay. */
+  topBadges?: { text: string }[];
 }
 
 export default function SalonHero({
@@ -44,6 +64,12 @@ export default function SalonHero({
   salonName,
   overlayContent,
   thumbnailCount = 3,
+  onBack,
+  onShare,
+  onFavoriteToggle,
+  isFavorited = false,
+  offPeakBadge,
+  topBadges,
 }: SalonHeroProps) {
   const t = useTranslations("salonDetail");
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -83,16 +109,127 @@ export default function SalonHero({
               />
               {/* Bottom-fade overlay — anchors the eyebrow + Anton headline.
                   Q52: amber eyebrow contrasts on dark gradient; Anton in white. */}
-              {overlayContent && (
+              {(overlayContent || (topBadges && topBadges.length > 0)) && (
                 <div className="absolute inset-x-0 bottom-0 px-5 sm:px-7 pt-16 pb-6"
                      style={{ background: "linear-gradient(to top, rgba(26,18,9,.85) 0%, rgba(26,18,9,.55) 45%, transparent 100%)" }}
                 >
-                  <div className="text-white">{overlayContent}</div>
+                  <div className="text-white">
+                    {/* Auto-badges (Solen Favorit, Top bewertet) above the headline */}
+                    {topBadges && topBadges.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-2.5">
+                        {topBadges.map((b) => (
+                          <span
+                            key={b.text}
+                            className="font-heading uppercase text-white"
+                            style={{
+                              fontSize: 10,
+                              letterSpacing: "0.04em",
+                              padding: "3px 8px",
+                              borderRadius: 99,
+                              background: "rgba(255,255,255,0.18)",
+                              backdropFilter: "blur(6px)",
+                              WebkitBackdropFilter: "blur(6px)",
+                            }}
+                          >
+                            {b.text}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {overlayContent}
+                  </div>
                 </div>
               )}
             </button>
           ) : (
             <ImageFallback salonName={salonName} className="absolute inset-0" />
+          )}
+
+          {/* Top-of-photo controls — Q52 spec.
+              Rendered OUTSIDE the photo button so they're not part of the
+              "open photo" tap target. z-[3] sits above the bottom-fade overlay. */}
+          {(onBack || onShare || onFavoriteToggle || offPeakBadge) && (
+            <div className="absolute inset-x-0 top-0 z-[3] pointer-events-none">
+              <div className="flex items-start justify-between p-3 sm:p-4">
+                {/* LEFT column: back button + optional off-peak badge below */}
+                <div className="flex flex-col gap-2 pointer-events-auto">
+                  {onBack && (
+                    <button
+                      type="button"
+                      onClick={onBack}
+                      aria-label={t("backToList") || "Zurück"}
+                      className="flex items-center justify-center rounded-full transition-transform duration-150 active:scale-[0.92] hover:scale-[1.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+                      style={{
+                        width: 36,
+                        height: 36,
+                        background: "rgba(255,255,255,0.95)",
+                        boxShadow: "0 2px 8px rgba(26,18,9,0.18)",
+                      }}
+                    >
+                      <ChevronLeft size={18} className="text-s-ink" aria-hidden />
+                    </button>
+                  )}
+                  {offPeakBadge && (
+                    <span
+                      className="font-body font-bold uppercase"
+                      style={{
+                        fontSize: 11,
+                        letterSpacing: "0.06em",
+                        padding: "5px 10px",
+                        borderRadius: 99,
+                        background: offPeakBadge.tone === "amber" ? "#F3A864" : "#1B4D1B",
+                        color: "#FFFFFF",
+                        boxShadow: "0 2px 8px rgba(26,18,9,0.18)",
+                      }}
+                    >
+                      {offPeakBadge.text}
+                    </span>
+                  )}
+                </div>
+
+                {/* RIGHT column: share + heart */}
+                <div className="flex items-start gap-2 pointer-events-auto">
+                  {onShare && (
+                    <button
+                      type="button"
+                      onClick={onShare}
+                      aria-label={t("shareProfile") || "Teilen"}
+                      className="flex items-center justify-center rounded-full transition-transform duration-150 active:scale-[0.92] hover:scale-[1.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+                      style={{
+                        width: 36,
+                        height: 36,
+                        background: "rgba(255,255,255,0.95)",
+                        boxShadow: "0 2px 8px rgba(26,18,9,0.18)",
+                      }}
+                    >
+                      <Share2 size={16} className="text-s-ink" aria-hidden />
+                    </button>
+                  )}
+                  {onFavoriteToggle && (
+                    <button
+                      type="button"
+                      onClick={onFavoriteToggle}
+                      aria-pressed={isFavorited}
+                      aria-label={isFavorited ? (t("removeFromFavorites") || "Aus Favoriten entfernen") : (t("addToFavorites") || "Zu Favoriten")}
+                      className="flex items-center justify-center rounded-full transition-transform duration-150 active:scale-[0.92] hover:scale-[1.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+                      style={{
+                        width: 36,
+                        height: 36,
+                        background: "rgba(255,255,255,0.95)",
+                        boxShadow: "0 2px 8px rgba(26,18,9,0.18)",
+                      }}
+                    >
+                      {/* Q36 + SOLEN_UI #5b: heart save state uses literal #FF4A6B love-red, NOT brand. */}
+                      <Heart
+                        size={16}
+                        strokeWidth={2}
+                        style={isFavorited ? { fill: "#FF4A6B", color: "#FF4A6B" } : { fill: "transparent", color: "#1A1209" }}
+                      />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
         </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -242,6 +242,7 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
 
 export default function SalonProfilePage() {
   const { slug } = useParams<{ slug: string }>();
+  const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("salonDetail");
   const posthog = usePostHog();
@@ -399,10 +400,14 @@ export default function SalonProfilePage() {
           </nav>
 
           <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-24 lg:pb-16">
-            {/* ── Q52 Photo Hero — single full-bleed + thumbnail strip + bottom-fade overlay ── */}
+            {/* ── Q52 Photo Hero — single full-bleed + thumbnail strip + bottom-fade overlay ──
+                Phase 9 (2026-05-03): wired top controls (back + share) per Q52.
+                Heart wiring TODO — needs initial favorite-state fetch + toggle API integration. */}
             <SalonHero
               photos={photos}
               salonName={salon.name}
+              onBack={() => router.back()}
+              onShare={handleShare}
               overlayContent={
                 <div>
                   <p className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.20em]" style={{ color: "#F3A864" }}>
