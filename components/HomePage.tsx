@@ -21,6 +21,7 @@ import HeroAboveFold from "@/components/home/HeroAboveFold";
 import CategoriesGrid from "@/components/home/CategoriesGrid";
 import QuartiersGrid from "@/components/home/QuartiersGrid";
 import PartnerBlock from "@/components/home/PartnerBlock";
+import CardFilterRow from "@/components/home/CardFilterRow";
 import TrustStatsBanner from "@/components/home/TrustStatsBanner";
 import NearbySection from "@/components/home/NearbySection";
 import DiscoverSection from "@/components/home/DiscoverSection";
@@ -155,6 +156,10 @@ export default function HomePage({ initialData }: HomePageProps) {
 
         {/* ── 3. Per-category sections (affinity-reordered up to MAX_CATEGORY_SECTIONS) ── */}
         <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 40 }}>
+          {/* Phase 8.5 (A4 LOCKED 2026-05-03): time-window + filter chips above the carousels.
+              Reference public/solen-coral.html:836-844. Phase 1 = decorative; Phase 2 will wire
+              actual filter behavior. */}
+          <CardFilterRow />
           {visibleSections.map(({ key, label }, index) => {
             const salonsForCategory = categorySalons[key] || [];
             return (

@@ -34,6 +34,8 @@ Read the cited line range in `public/solen-coral.html`. Extract:
 
 If the reference uses CSS variables like `var(--coral)`, resolve them by reading the `:root` block at lines 14-30 AND the in-flight pivot block at lines 411-450. **Q64 (2026-05-03) is locked** — `--coral` resolves to `#1B4D1B` (forest green) per the pivot. Always use the post-pivot value.
 
+**EXCEPTION — Q64 explicit "unchanged" tokens** (read `_tasks/SOLEN_DESIGN.md` Q64 lock body for the authoritative list): the in-flight pivot block redefines several non-coral tokens too (e.g. `--ink:#1A1108`, `--ink2:#3C3128`, `--ink3:#6E6259`, `--sur:#F2EDE6`, border `rgba(26,17,8,.X)`), but Q64's lock language explicitly preserves the ORIGINAL warm-ink scale unchanged: ink `#1A1209`, ink-2 `#56463E`, ink-3 `#9F8A7E`, sunken `#FAF7F3`, warm-cream `#FFF4E8`, shadow tint `rgba(26,18,9,0.x)`. **When the live component uses these original values, do NOT flag as drift** — cite Q64 exception (4) + (5) and treat as PASS. Only the brand-coral group (`--coral`, `--coral-h`, `--coral-s`, `--coral-t`) and the locked focus-ring color flip to green per Q64.
+
 ## Step 2 — Read the live component
 
 Read the live component file. Extract:

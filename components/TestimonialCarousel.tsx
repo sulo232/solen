@@ -82,88 +82,91 @@ export default function TestimonialCarousel() {
   if (!loaded) return null;
   if (reviews.length < 3) return null;
 
+  // C6 LOCKED 2026-05-03: refit to match reference REVIEWS section
+  // (public/solen-coral.html:995-1029 + 296-309). 3-column GRID (not carousel),
+  // category-rotating avatars (coral / blue / sage), tighter typography.
+  // Avatar palette per ref :1004,1011,1018 — these are visual variety
+  // accents, NOT brand-restricted; semantic distinction per SOLEN_UI #5b.
+  const AVATAR_BG = ["#1B4D1B", "#6BA3C8", "#7BA688"]; // brand-green / blue / sage
   return (
     <section
-      className="py-8"
-      style={{ background: "#FFFFFF" }}
+      className="px-5 md:px-10 lg:px-20 py-16 md:py-20"
+      style={{ background: "#FAF7F3" }} // var(--sur) sunken surface per ref :296
       aria-labelledby="testimonials-heading"
     >
-      <div className="px-5 md:px-10 lg:px-20">
+      <div className="max-w-[1200px] mx-auto">
+        {/* Eyebrow + headline per ref :999-1000 */}
+        <span
+          className="block font-body font-bold uppercase mb-3"
+          style={{ color: "#F3A864", fontSize: 11, letterSpacing: ".22em" }}
+        >
+          Bewertungen
+        </span>
         <h2
           id="testimonials-heading"
-          className="font-heading text-s-ink"
-          style={{ fontSize: 22, lineHeight: 1.25 }}
+          className="font-heading text-s-ink uppercase mb-7"
+          style={{ fontSize: "clamp(28px, 4vw, 48px)", letterSpacing: "0.01em", lineHeight: 1.05 }}
         >
-          {t("testimonials.title") || "Was unsere Nutzer sagen"}
+          Was Basel sagt
         </h2>
-      </div>
 
-      {/* Horizontal carousel */}
-      <div
-        className="flex gap-4 overflow-x-auto pb-2 mt-4"
-        style={{
-          paddingLeft: 20,
-          paddingRight: 20,
-          scrollSnapType: "x mandatory",
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
-        {reviews.slice(0, 6).map((review) => (
-          <article
-            key={review.id}
-            className="flex-shrink-0 flex flex-col gap-3 active:scale-[0.99] transition-transform duration-150"
-            style={{
-              width: 300,
-              minWidth: 300,
-              maxWidth: 340,
-              padding: 20,
-              borderRadius: 16,
-              background: "#FFFFFF",
-              border: "1px solid rgba(26,18,9,0.08)",
-              boxShadow: "var(--shadow-rest)",
-              scrollSnapAlign: "start",
-            }}
-          >
-            <StarRow count={review.rating} />
-
-            <p
-              className="font-body text-[15px] leading-relaxed flex-1"
+        {/* 3-col grid per ref :297, single col mobile per ref :394, gap 18px */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px]">
+          {reviews.slice(0, 3).map((review, idx) => (
+            <article
+              key={review.id}
+              className="flex flex-col transition-[border-color,transform] duration-[250ms] ease-out hover:border-s-coral/40 hover:-translate-y-0.5"
               style={{
-                color: "#1A1209",
-                fontStyle: "italic",
-                display: "-webkit-box",
-                WebkitLineClamp: 4,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
+                background: "#FFFFFF",
+                border: "1px solid rgba(26,18,9,0.08)",
+                borderRadius: 20,
+                padding: "22px 20px",
               }}
             >
-              &ldquo;{review.comment}&rdquo;
-            </p>
+              {/* Stars — amber per ref :304 (already amber in StarRow component).
+                  10px gap below stars per ref `.rev-stars{margin-bottom:10px}`. */}
+              <div className="mb-2.5">
+                <StarRow count={review.rating} />
+              </div>
 
-            {/* Divider */}
-            <div style={{ width: "100%", height: 1, background: "#EFE7DD", margin: "12px 0" }} aria-hidden="true" />
-
-            {/* Author — ALL avatars coral */}
-            <div className="flex items-center gap-3">
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-heading text-[14px] text-white"
-                style={{ background: "#1B4D1B" }}
-                aria-hidden="true"
+              {/* Quote — Figtree italic 14px ink-2 per ref :305 */}
+              <p
+                className="font-body italic mb-3.5"
+                style={{ fontSize: 14, color: "#56463E", lineHeight: 1.8 }}
               >
-                {review.reviewer_name.charAt(0).toUpperCase()}
+                &ldquo;{review.comment}&rdquo;
+              </p>
+
+              {/* Author row — gap 10px per ref :306 */}
+              <div className="flex items-center" style={{ gap: 10 }}>
+                {/* Avatar — 32px circle, category-rotating bg per ref :307 + the 3 ref examples */}
+                <div
+                  className="rounded-full flex items-center justify-center flex-shrink-0 font-body font-bold text-white"
+                  style={{
+                    width: 32,
+                    height: 32,
+                    background: AVATAR_BG[idx % AVATAR_BG.length],
+                    fontSize: 12,
+                  }}
+                  aria-hidden
+                >
+                  {review.reviewer_name.charAt(0).toUpperCase()}
+                  {(review.reviewer_name.split(/\s+/)[1] || "").charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  {/* Name — Figtree 700 12px ink per ref :308 */}
+                  <div className="font-body font-bold leading-tight" style={{ fontSize: 12, color: "#1A1209" }}>
+                    {review.reviewer_name}
+                  </div>
+                  {/* Location — 11px ink-3 per ref :309 */}
+                  <div className="font-body leading-tight mt-0.5" style={{ fontSize: 11, color: "#9F8A7E" }}>
+                    {review.city || "Basel"} · {getTimeAgo(review.created_at)}
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="font-body font-semibold text-[14px] leading-tight" style={{ color: "#1A1209" }}>
-                  {review.reviewer_name}
-                </p>
-                <p className="font-body text-[12px] leading-tight" style={{ color: "#9F8A7E" }}>
-                  {review.city || "Basel"} · {getTimeAgo(review.created_at)}
-                </p>
-              </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
