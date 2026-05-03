@@ -41,7 +41,7 @@ export default function MobileBookingBar({
             </span>
           )}
           {avgRating != null && avgRating > 0 && (
-            <span className="flex items-center gap-1 text-[12px] text-[#767676]">
+            <span className="flex items-center gap-1 text-[12px] text-[#9F8A7E]">
               <Star className="w-[10px] h-[10px] fill-s-amber text-s-amber" />
               <span className="font-medium">{avgRating.toFixed(1)}</span>
               {reviewCount != null && (

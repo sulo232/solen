@@ -46,7 +46,7 @@ export default function SalonTabBar({ activeTab, onTabClick, tabs }: SalonTabBar
                 relative whitespace-nowrap pb-3 min-h-[44px] flex items-end text-[14px] font-heading transition-colors duration-150 snap-center
                 ${isActive
                   ? "text-s-ink"
-                  : "text-[#767676] hover:text-s-ink"
+                  : "text-[#9F8A7E] hover:text-s-ink"
                 }
               `}
             >

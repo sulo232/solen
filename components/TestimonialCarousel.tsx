@@ -11,12 +11,12 @@ import { useTranslations } from "next-intl";
  *
  * - HORIZONTAL CAROUSEL (not vertical stack)
  * - Only renders when ≥3 real reviews exist in DB
- * - Warm white glass cards: rgba(255,255,255,0.65) + blur(14px)
- * - ALL avatars: coral #E8624A with white Syne letter
- * - Stars: 5× SVG 14px, fill coral
- * - Quote: DM Sans 15px/400 italic
- * - Section heading: DM Sans 28px/700 (Pattern A)
- * - Coral label: Syne 12px/700 uppercase
+ * - Warm white glass cards: rgba(255,255,255,0.65) + blur(14px) per §6
+ * - ALL avatars: coral #E8624A circle with white Anton uppercase letter
+ * - Stars: 5× SVG 14px, fill amber #F3A864 per Q43 + SOLEN_UI #5b
+ * - Quote: Figtree 15px/400 italic per Q24 voice
+ * - Section heading: Anton uppercase per Q48
+ * - Coral label: Figtree 11px/700 .22em uppercase per Q48 eyebrow
  *
  * P0: DELETE all fake testimonials. Show only from DB.
  * Pre-launch fallback: hide section entirely (render null).
@@ -35,7 +35,7 @@ function StarRow({ count = 5 }: { count?: number }) {
   return (
     <div className="flex gap-0.5" role="img" aria-label={`${count} von 5 Sternen`}>
       {[1, 2, 3, 4, 5].map((i) => (
-        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={i <= count ? "#E8624A" : "#EBEBEB"} aria-hidden="true">
+        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={i <= count ? "#F3A864" : "#EFE7DD"} aria-hidden="true">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
       ))}
@@ -142,7 +142,7 @@ export default function TestimonialCarousel() {
             </p>
 
             {/* Divider */}
-            <div style={{ width: "100%", height: 1, background: "#EBEBEB", margin: "12px 0" }} aria-hidden="true" />
+            <div style={{ width: "100%", height: 1, background: "#EFE7DD", margin: "12px 0" }} aria-hidden="true" />
 
             {/* Author — ALL avatars coral */}
             <div className="flex items-center gap-3">
@@ -157,7 +157,7 @@ export default function TestimonialCarousel() {
                 <p className="font-body font-semibold text-[14px] leading-tight" style={{ color: "#1A1209" }}>
                   {review.reviewer_name}
                 </p>
-                <p className="font-body text-[12px] leading-tight" style={{ color: "#767676" }}>
+                <p className="font-body text-[12px] leading-tight" style={{ color: "#9F8A7E" }}>
                   {review.city || "Basel"} · {getTimeAgo(review.created_at)}
                 </p>
               </div>

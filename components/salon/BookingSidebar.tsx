@@ -47,7 +47,7 @@ export default function BookingSidebar({
             <Star className="w-[13px] h-[13px] fill-s-amber text-s-amber" />
             <span className="font-semibold">{avgRating.toFixed(1)}</span>
             {reviewCount != null && (
-              <span className="text-[#767676] font-normal">
+              <span className="text-[#9F8A7E] font-normal">
                 ({reviewCount})
               </span>
             )}
@@ -85,18 +85,18 @@ export default function BookingSidebar({
       {/* Quick info badges */}
       <div className="space-y-3 pt-3 border-t border-s-ink/[0.08]">
         {nextSlotLabel && (
-          <div className="flex items-center gap-2.5 text-[13px] text-[#767676]">
-            <Clock className="w-4 h-4 text-[#767676] shrink-0" />
+          <div className="flex items-center gap-2.5 text-[13px] text-[#9F8A7E]">
+            <Clock className="w-4 h-4 text-[#9F8A7E] shrink-0" />
             <span>Nächster Termin: <span className="font-semibold text-[#16A34A]">{nextSlotLabel}</span></span>
           </div>
         )}
-        <div className="flex items-center gap-2.5 text-[13px] text-[#767676]">
-          <Zap className="w-4 h-4 text-[#767676] shrink-0" />
+        <div className="flex items-center gap-2.5 text-[13px] text-[#9F8A7E]">
+          <Zap className="w-4 h-4 text-[#9F8A7E] shrink-0" />
           <span>Sofort buchbar — Bestätigung in Sekunden</span>
         </div>
         {bookingsThisWeek != null && bookingsThisWeek >= 3 && (
-          <div className="flex items-center gap-2.5 text-[13px] text-[#767676]">
-            <Users className="w-4 h-4 text-[#767676] shrink-0" />
+          <div className="flex items-center gap-2.5 text-[13px] text-[#9F8A7E]">
+            <Users className="w-4 h-4 text-[#9F8A7E] shrink-0" />
             <span>{bookingsThisWeek}× diese Woche gebucht</span>
           </div>
         )}

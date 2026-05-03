@@ -321,7 +321,7 @@
   padding-bottom: 3rem;
 }
 .section-divider {
-  border-top: 1px solid var(--color-border, #EBEBEB);
+  border-top: 1px solid var(--color-border, #EFE7DD);
 }
 
 /* ── P.3: Horizontal scroll containers — right-edge fade gradient ───── */

@@ -72,7 +72,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
               {m.languages && m.languages.length > 0 && (
                 <div className="flex flex-wrap justify-center gap-1 mt-1">
                   {m.languages.map((lang: string) => (
-                    <span key={lang} className="text-xs font-heading uppercase tracking-[.06em] px-2 py-1 rounded-sm bg-s-bg-surface text-[#767676]">
+                    <span key={lang} className="text-xs font-heading uppercase tracking-[.06em] px-2 py-1 rounded-sm bg-s-bg-surface text-[#9F8A7E]">
                       {lang}
                     </span>
                   ))}
@@ -81,7 +81,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
 
               {/* Specialties */}
               {m.specialties?.length > 0 && (
-                <p className="text-[11px] text-[#767676] text-center truncate mt-1">
+                <p className="text-[11px] text-[#9F8A7E] text-center truncate mt-1">
                   {m.specialties.slice(0, 2).join(", ")}
                 </p>
               )}
@@ -95,12 +95,12 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
                   <span className="text-[12px] font-medium text-s-ink">{m.average_rating.toFixed(1)}</span>
                 </div>
               ) : (
-                <span className="text-[12px] text-[#767676]">Neu</span>
+                <span className="text-[12px] text-[#9F8A7E]">Neu</span>
               )}
 
               {/* Next slot mock - in prod this would fetch from an API */}
               <div className="text-right">
-                <p className="text-[9px] font-heading uppercase tracking-wider text-[#767676]">Nächster Termin</p>
+                <p className="text-[9px] font-heading uppercase tracking-wider text-[#9F8A7E]">Nächster Termin</p>
                 <p className="text-[12px] font-medium text-[#16A34A]">Morgen, 10:00</p>
               </div>
             </div>
