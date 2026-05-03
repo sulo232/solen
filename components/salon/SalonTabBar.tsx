@@ -44,6 +44,7 @@ export default function SalonTabBar({ activeTab, onTabClick, tabs }: SalonTabBar
               onClick={() => onTabClick(tab.key)}
               className={`
                 relative whitespace-nowrap pb-3 min-h-[44px] flex items-end text-[14px] font-heading transition-colors duration-150 snap-center
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2
                 ${isActive
                   ? "text-s-ink"
                   : "text-[#9F8A7E] hover:text-s-ink"
@@ -53,8 +54,10 @@ export default function SalonTabBar({ activeTab, onTabClick, tabs }: SalonTabBar
               {isActive && (
                 <motion.div
                   layoutId="salon-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-ink"
-                  transition={{ type: "tween", duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                  // Q52: 2px brand-color underline (post-Q64 `s-coral` resolves to
+                  // brand-green #1B4D1B). 200ms ease per Q35 motion grammar.
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-coral"
+                  transition={{ type: "tween", duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                 />
               )}
               {tab.label}
