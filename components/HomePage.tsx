@@ -18,6 +18,7 @@ import BrowseByCitySection from "@/components/BrowseByCitySection";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 // HomepageHero (V5) replaced 2026-05-02 per Q49 — see new HeroAboveFold below.
 import HeroAboveFold from "@/components/home/HeroAboveFold";
+import CategoriesGrid from "@/components/home/CategoriesGrid";
 import TrustStatsBanner from "@/components/home/TrustStatsBanner";
 import NearbySection from "@/components/home/NearbySection";
 import DiscoverSection from "@/components/home/DiscoverSection";
@@ -126,6 +127,12 @@ export default function HomePage({ initialData }: HomePageProps) {
 
         {/* ── 0a. Q49 Above-fold ── */}
         <HeroAboveFold />
+
+        {/* ── 0a.5 Phase 8.3 (A2 LOCKED 2026-05-03): Categories tile grid ──
+            Reference public/solen-coral.html:801-821. 6 solid-color tiles
+            (per-category, NOT brand) above the per-category carousels.
+            Additive — does not replace the carousels. */}
+        <CategoriesGrid categoryCounts={categoryCounts} />
 
         {/* ── 0b. Recently Viewed (conditional — renders empty if no localStorage history) ── */}
         <section className="px-5 md:px-10 lg:px-20" style={{ marginTop: 32 }}>

@@ -38,13 +38,18 @@ tsconfig.tsbuildinfo
 # Vercel
 .vercel/
 
-# Claude / Agent State — top-level ignore, but track the hooks + settings + launch
-# config so the design-token sweep guard persists across sessions and clones.
+# Claude / Agent State — top-level ignore, but track the persistent project
+# configuration (settings, hooks, custom subagents, custom slash commands) so
+# the design-token sweep guard + verifier infrastructure survive sessions/clones.
 .claude/*
 !.claude/settings.json
 !.claude/launch.json
 !.claude/hooks/
 !.claude/hooks/**
+!.claude/agents/
+!.claude/agents/**
+!.claude/commands/
+!.claude/commands/**
 .claude/sweep-approved.flag
 .agent-*
 .npm-cache/
