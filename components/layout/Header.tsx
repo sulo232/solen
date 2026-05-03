@@ -201,105 +201,28 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               </div>
 
 
-              {/* DESKTOP (≥ md): SVG icon tabs when unscrolled | compact pill when scrolled */}
-              <div className="hidden md:block w-full">
-                {/* SVG category tabs — visible when NOT scrolled */}
-                <div className={cn(
-                  "flex items-center justify-center gap-6 overflow-x-auto scrollbar-hide px-2 transition-opacity duration-200 overscroll-x-contain",
-                  scrolled ? "opacity-0 pointer-events-none absolute" : "opacity-100"
-                )}>
-                  {[
-                    { key: "all",        href: "/",           Icon: Compass,      label: t("discover") },
-                    { key: "coiffeur",   href: "/coiffeur",   Icon: CoiffeurIcon, label: t("coiffeur") },
-                    { key: "nails",      href: "/nails",       Icon: NailsIcon,   label: t("nails") },
-                    { key: "barbershop", href: "/barbershop",  Icon: BarberIcon,  label: t("barbershop") },
-                    { key: "makeup",     href: "/makeup",      Icon: MakeupIcon,  label: t("makeup") },
-                    { key: "waxing",     href: "/waxing",      Icon: WaxingIcon,  label: t("waxing") },
-                  ].map(({ key, href, Icon, label }) => {
-                    const isActive = withoutLocale === href || (withoutLocale.startsWith(href) && href !== "/");
-                    return (
-                      <Link
-                        key={key}
-                        href={`/${locale}${href}`}
-                        className="flex flex-col items-center gap-1 shrink-0 group cursor-pointer py-2 relative"
-                      >
-                        <Icon
-                          width={28} height={28}
-                          className={cn(
-                            "transition-opacity duration-150",
-                            isActive ? "opacity-100" : "opacity-70 group-hover:opacity-90"
-                          )}
-                        />
-                        <span className={cn(
-                          "text-[12px] font-body font-semibold pb-2 transition-colors duration-200 whitespace-nowrap",
-                          isActive ? "text-s-ink" : "text-s-ink/60 group-hover:text-s-ink"
-                        )}>
-                          {label}
-                        </span>
-                        {isActive && (
-                          <motion.div
-                            layoutId="header-tab-indicator"
-                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-ink rounded-full"
-                            transition={{ type: "tween", duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-                          />
-                        )}
-                      </Link>
-                    );
-                  })}
-                </div>
-
-                {/* Compact search pill — visible when scrolled */}
-                <div className={cn(
-                  "flex justify-center transition-opacity duration-200",
-                  scrolled ? "opacity-100" : "opacity-0 pointer-events-none absolute"
-                )}>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => setSearchExpanded(true)}
-                    className="flex items-center gap-2.5 bg-white border border-s-ink/[0.08] shadow-elevation-1 rounded-full px-4 py-2 transition-shadow duration-150 w-[380px]"
-                    aria-label="Suche öffnen"
-                  >
-                    <Search className="w-4 h-4 text-s-ink shrink-0" />
-                    <span className="text-[14px] font-body font-semibold text-s-ink/60 truncate text-left flex-1">
-                      {t("search")}
-                    </span>
-                  </motion.button>
-                </div>
+              {/* DESKTOP (≥ md): always-visible compact search pill.
+                  Phase 8.6 (2026-05-03): the SVG icon-tab category strip
+                  + mobile category strip below were RETIRED on the homepage
+                  (per user lock — option A). They competed with the
+                  CategoriesGrid section already in the page (per Q64 / ref
+                  public/solen-coral.html:801-821) and the Anton hero.
+                  Category pages still render their icon-tab nav (see the
+                  isCategoryPage branch below — unchanged). */}
+              <div className="hidden md:flex justify-center w-full">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setSearchExpanded(true)}
+                  className="flex items-center gap-2.5 bg-white border border-s-ink/[0.08] shadow-elevation-1 rounded-full px-4 py-2 transition-shadow duration-150 w-[380px]"
+                  aria-label="Suche öffnen"
+                >
+                  <Search className="w-4 h-4 text-s-ink shrink-0" />
+                  <span className="text-[14px] font-body font-semibold text-s-ink/60 truncate text-left flex-1">
+                    {t("search")}
+                  </span>
+                </motion.button>
               </div>
-
-              {/* ── Mobile Category Strip (Homepage + Unscrolled) ── */}
-              {!scrolled && (
-                <div className="md:hidden overflow-x-auto scrollbar-hide pb-3 pt-2 px-3 border-t border-s-ink/[0.06] overscroll-x-contain snap-x mt-2">
-                  <div className="flex items-center gap-1.5 w-max">
-                    {[
-                      { key: "all",        href: "/",           Icon: Compass,      label: t("discover") },
-                      { key: "coiffeur",   href: "/coiffeur",   Icon: CoiffeurIcon, label: t("coiffeur") },
-                      { key: "nails",      href: "/nails",       Icon: NailsIcon,   label: t("nails") },
-                      { key: "barbershop", href: "/barbershop",  Icon: BarberIcon,  label: t("barbershop") },
-                      { key: "makeup",     href: "/makeup",      Icon: MakeupIcon,  label: t("makeup") },
-                      { key: "waxing",     href: "/waxing",      Icon: WaxingIcon,  label: t("waxing") },
-                    ].map(({ key, href, Icon, label }) => {
-                      const isActive = withoutLocale === href || (withoutLocale.startsWith(href) && href !== "/");
-                      return (
-                        <Link
-                          key={key}
-                          href={`/${locale}${href}`}
-                          className={cn(
-                            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-heading whitespace-nowrap shrink-0 transition-[background-color,color] duration-150 active:scale-[0.97]",
-                            isActive
-                              ? "bg-s-ink text-white"
-                              : "bg-s-ink/[0.04] text-s-ink/55 hover:bg-s-ink/[0.08]"
-                          )}
-                        >
-                          <Icon width={14} height={14} className="shrink-0" />
-                          {label}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
             </div>
           ) : isCategoryPage ? (
             /* Category page — SVG icon tabs, icon hides on scroll, city-aware */
