@@ -9,12 +9,12 @@ import { useLocale, useTranslations } from "next-intl";
  * Design intent: "This section should feel premium and expansive because
  * it's showing the cities where Solen operates."
  *
- * - Full-width dark glass: rgba(44,36,32,0.85) + blur(20px)
+ * - Full-width dark register: #1A1209 (Q23 s-ink — locked dark surface)
  * - Basel = active (coral left border permanent, 'Entdecken →' visible)
  * - Zürich/Bern = hover only shows coral border
- * - City font: Bebas Neue 48px
+ * - City font: Anton uppercase 36-48px (clamp viewport-responsive) per Q48
  * - Category pills: single row, no wrap, overflow-x auto
- * - Coral label header: Syne 12px/700 uppercase
+ * - Coral label header: Figtree 11px/700 uppercase tracked .22em (Q48 eyebrow)
  */
 
 const CITIES = [
@@ -35,16 +35,16 @@ export default function BrowseByCitySection() {
   return (
     <section
       className="relative overflow-hidden"
-      style={{ background: "#2C2825" }}
+      style={{ background: "#1A1209" }}
       aria-labelledby="city-section-heading"
     >
       <div className="px-5 md:px-10 lg:px-20 py-12">
 
-        {/* Coral label */}
+        {/* Q48 eyebrow — Figtree 700 tracked .22em uppercase coral */}
         <span
           id="city-section-heading"
-          className="block font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-8 md:mb-12"
-          style={{ color: "#E8624A" }}
+          className="block font-body text-[11px] font-bold uppercase tracking-[.22em] mb-8 md:mb-12"
+          style={{ color: "#F3A864" }}
         >
           {t("cities.title") || "Salons in deiner Nähe"}
         </span>
@@ -80,12 +80,13 @@ export default function BrowseByCitySection() {
                 }
               }}
             >
-              {/* City name */}
+              {/* Q48 Anton uppercase city name — locked letter-spacing, leading 0.95 */}
               <span
-                className="font-display group-hover:text-white"
+                className="font-heading group-hover:text-white uppercase"
                 style={{
                   fontSize: "clamp(36px, 6vw, 48px)",
-                  lineHeight: 0.85,
+                  lineHeight: 0.95,
+                  letterSpacing: "0.01em",
                   color: city.active ? "#FFFFFF" : "rgba(255,255,255,0.85)",
                   transition: "color 200ms ease",
                 }}
@@ -96,20 +97,20 @@ export default function BrowseByCitySection() {
               {/* Count + Entdecken link */}
               <div className="flex flex-col items-end gap-1 flex-shrink-0">
                 <span
-                  className="font-body text-xs"
-                  style={{ color: "#767676" }}
+                  className="font-body text-xs tabular-nums"
+                  style={{ color: "rgba(255,255,255,0.55)" }}
                 >
                   {city.count} Salons
                 </span>
-                {/* Active city always shows 'Entdecken →', others on hover only */}
+                {/* Q48 eyebrow — Figtree 700 tracked uppercase, hover-revealed for non-active */}
                 <span
-                  className={`font-heading text-[11px] font-bold uppercase tracking-[.04em] ${
+                  className={`font-body text-[11px] font-bold uppercase tracking-[.22em] ${
                     city.active
                       ? "opacity-100"
                       : "opacity-0 group-hover:opacity-100"
                   }`}
                   style={{
-                    color: "#E8624A",
+                    color: "#F3A864",
                     transition: "opacity 200ms ease",
                   }}
                   aria-hidden={!city.active}
