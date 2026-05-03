@@ -101,18 +101,9 @@ export default function RecentlyViewed() {
               href={`/${locale}/salon/${salon.slug}`}
               className="block w-[180px] group"
             >
-              <div className="relative w-[180px] h-[120px] rounded-[12px] overflow-hidden bg-s-bg-sunken mb-2">
-                {salon.cover_photo_url ? (
-                  <Image
-                    src={salon.cover_photo_url}
-                    alt={salon.name}
-                    fill
-                    className="object-cover transition-none"
-                    sizes="160px"
-                  />
-                ) : (
-                  <ImageFallback salonName={salon.name} className="absolute inset-0" />
-                )}
+              {/* A3 LOCKED 2026-05-03: photos killed pre-launch — always Anton name on category color */}
+              <div className="relative w-[180px] h-[120px] rounded-[12px] overflow-hidden mb-2">
+                <ImageFallback salonName={salon.name} className="absolute inset-0" />
               </div>
               <p className="text-sm font-medium text-s-ink truncate group-hover:text-s-coral transition-colors">
                 {salon.name}

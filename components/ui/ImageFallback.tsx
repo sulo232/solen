@@ -3,26 +3,73 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Warm blur gradient placeholder for salons without photos.
- * Category-specific gradients with optional salon initial overlay.
+ * Salon card cover — A3 LOCKED 2026-05-03 (Phase 8 structural alignment).
+ *
+ * Reference: `public/solen-coral.html:225-245, 847-865`. Pre-launch we are NOT
+ * using uploaded photos on cards — every salon card image is a solid
+ * per-category color block with the salon name in massive Anton uppercase
+ * centered on top. Replaces the gradient+noise placeholder.
+ *
+ * Per-category solid colors (from reference categories grid lines 813-820):
+ *   COIFFEUR  #D4870A  amber-deep
+ *   BARBER    #4A1E3C  plum
+ *   NAILS     #E8624A  coral
+ *   SPA       #7BA688  sage
+ *   MAKEUP    #C9A96E  sand
+ *   WAXING    #6BA3C8  blue
+ *   (default) #1A1209  ink (when no category)
+ *
+ * Salon-name treatment: first word, uppercased, common prefix stripped
+ * ("Salon Amara" → "AMARA", "Studio Lina" → "LINA", "Nori Barber" → "NORI").
+ * Anton 56px desktop / 40px mobile, letter-spacing 0.04em, white 90%.
+ *
+ * Component name kept as `ImageFallback` for backward-compat across 4 import
+ * sites. Misleading — this is no longer a *fallback*, it's the canonical
+ * pattern. Rename to `SalonCardCover` is a future cleanup.
  */
 
-const GRADIENTS: Record<string, string> = {
-  coiffeur:   "from-[#E8D5C4] via-[#D4A574] to-[#C4956A]",
-  barbershop: "from-[#D4C4B0] via-[#B8A08C] to-[#A08868]",
-  nails:      "from-[#F0D4D4] via-[#E8B4B4] to-[#D4949E]",
-  spa:        "from-[#D4E8D4] via-[#B4D4B4] to-[#94B894]",
-  makeup:     "from-[#E8D4E0] via-[#D4B4C8] to-[#C494B0]",
-  waxing:     "from-[#F0E0C4] via-[#E8D0A4] to-[#D4B888]",
+const CATEGORY_COLORS: Record<string, string> = {
+  coiffeur:   "#D4870A",
+  hair:       "#D4870A",
+  barber:     "#4A1E3C",
+  barbershop: "#4A1E3C",
+  nails:      "#E8624A",
+  spa:        "#7BA688",
+  massage:    "#7BA688",
+  makeup:     "#C9A96E",
+  beauty:     "#C9A96E",
+  waxing:     "#6BA3C8",
+  brows:      "#6BA3C8",
 };
 
-const DEFAULT_GRADIENT = "from-[#EDE5D8] via-[#D4C4B0] to-[#C4B098]";
+const DEFAULT_COLOR = "#1A1209";
+
+/** Pick the salon's most distinctive word for the card hero label.
+ *
+ * Reference pattern (`solen-coral.html:847-865`): "AMARA" for "Salon Amara",
+ * "NORI" for "Nori Barber" — i.e. the brand-distinctive word, uppercased.
+ * Strip only the generic German/English prefix "Salon" / "Hairsalon" /
+ * "Atelier"; leave "Studio", "Shop", "Barber", "Nail(s)" intact since those
+ * often carry brand identity in real names ("Nail Studio Bliss" → "NAIL"
+ * better than "STUDIO"; "Atelier Handwerk" → "HANDWERK" since "Atelier"
+ * is purely generic in DACH naming).
+ */
+function pickCardLabel(salonName?: string): string {
+  if (!salonName) return "";
+  const STRIP = /^(salon|hairsalon|haarsalon|atelier)\b\s*/i;
+  const cleaned = salonName.replace(STRIP, "").trim() || salonName.trim();
+  const firstWord = cleaned.split(/\s+/)[0] ?? "";
+  return firstWord.toUpperCase();
+}
 
 interface ImageFallbackProps {
   category?: string;
   salonName?: string;
   className?: string;
-  /** Show a large initial letter overlay */
+  /**
+   * @deprecated A3 lock 2026-05-03: card cover always shows the salon-name
+   * label. Prop retained for caller backward-compat but ignored.
+   */
   showInitial?: boolean;
 }
 
@@ -30,30 +77,32 @@ export default function ImageFallback({
   category,
   salonName,
   className,
-  showInitial = true,
 }: ImageFallbackProps) {
-  const gradient = GRADIENTS[category?.toLowerCase() ?? ""] ?? DEFAULT_GRADIENT;
+  const bg = CATEGORY_COLORS[category?.toLowerCase() ?? ""] ?? DEFAULT_COLOR;
+  const label = pickCardLabel(salonName);
 
+  // Note: `relative` deliberately omitted — every caller passes `absolute inset-0`
+  // and conflicting position utilities (Tailwind source order wins) caused the
+  // div to collapse to text height. Caller owns positioning. 2026-05-03.
   return (
     <div
       className={cn(
-        "relative overflow-hidden bg-gradient-to-br",
-        gradient,
+        "overflow-hidden flex items-center justify-center select-none",
         className
       )}
+      style={{ background: bg }}
+      aria-hidden={!label}
     >
-      {/* Warm noise texture overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.06] mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundSize: "200px",
-        }}
-      />
-      {/* Subtle brand initial */}
-      {showInitial && salonName && (
-        <span className="absolute inset-0 flex items-center justify-center font-display text-white/20 text-6xl select-none pointer-events-none">
-          {salonName[0]}
+      {label && (
+        <span
+          className="font-heading text-white/90 leading-none text-center px-2"
+          style={{
+            fontSize: "clamp(32px, 12vw, 56px)",
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
+          }}
+        >
+          {label}
         </span>
       )}
     </div>

@@ -138,7 +138,8 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   const t = useTranslations("home") as any;
   const [heartBouncing, setHeartBouncing] = useState(false);
   const tCommon = useTranslations("common");
-  const photo = salon.cover_photo_url ?? salon.gallery_urls?.[0] ?? null;
+  // A3 LOCKED 2026-05-03: photos killed pre-launch. Card cover always renders
+  // solid category color + Anton uppercase salon name via ImageFallback.
   const showRating = (salon.review_count ?? 0) >= 3;
   const locationParts = [salon.quartier, salon.city_name ?? "Basel"].filter(Boolean);
   const locationText = locationParts.join(", ");
@@ -154,21 +155,9 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
 
   const cardContent = (
     <div className="">
-      {/* ── Image (1:1 SQUARE — locked 2026-04-20, no box wrapper — text floats on page bg) ── */}
-      <div className="relative w-full aspect-square overflow-hidden bg-s-bg-sunken rounded-[18px]">
-        {photo ? (
-          <Image
-            src={photo}
-            alt={`${salon.name} — Salon in ${salon.quartier || "Basel"}`}
-            fill
-            sizes="(max-width: 768px) 100vw, 320px"
-            className="object-cover"
-            style={{ objectPosition: "center top" }}
-            priority={index < 2}
-          />
-        ) : (
-          <ImageFallback category={salon.categories?.[0]} salonName={salon.name} className="absolute inset-0" />
-        )}
+      {/* ── Cover (1:1 SQUARE) — A3 LOCKED 2026-05-03: solid category color + Anton name only ── */}
+      <div className="relative w-full aspect-square overflow-hidden rounded-[18px]">
+        <ImageFallback category={salon.categories?.[0]} salonName={salon.name} className="absolute inset-0" />
 
         {/* Badge: top-left, max 1, frosted pill — DESIGN_SPEC 3.5 */}
         {badge && (

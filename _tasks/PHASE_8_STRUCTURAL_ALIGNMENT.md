@@ -135,12 +135,12 @@ Every gap below cites a specific reference line. **No invented gaps.**
   - Heart button + optional "Solen Top Pick" badge overlay
   - `.card-body` below: name, rating, location, **availability chip** ("Heute 14:30 frei" — green tint), price, **2 category tags** (with category color per tag)
 - **Live state:** `FeaturedSalonCarousel` cards use real photos from `cover_photo_url`/`gallery_urls`, with a single category badge and no availability chip and no per-card category tags.
-- **Decision needed from user:** This is the biggest visual identity difference. Options:
-  - **A.** Keep photo cards (current). Drop the colored-initial pattern from reference.
-  - **B.** Switch to colored-initial pattern only (kills all uploaded salon photos).
-  - **C.** Hybrid — colored-initial fallback when no photo, photo when present.
-- **Recommend:** C (hybrid). Reference itself uses initials as a *placeholder when no photo* per Q26 lock language; live's `cover_photo_url` should win when present.
-- **Files affected if changes needed:** `components/SalonCard.tsx`, `components/ui/FeaturedSalonCarousel.tsx`, `components/ui/ImageFallback.tsx` (already exists for fallback case).
+- **LOCKED 2026-05-03:** Option **B** — kill photos entirely on cards, full colored-initial only ("we arent even live yet"). No `cover_photo_url` / `gallery_urls` rendering on `.card-img`. Photos may still appear on salon detail page (Phase 9 scope).
+- **Files affected:** `components/SalonCard.tsx`, `components/ui/FeaturedSalonCarousel.tsx`, `components/ui/ImageFallback.tsx` (orphaned — delete after sweep).
+- **Implementation pattern (cited from `public/solen-coral.html:225-245, 847-865`):**
+  - `.card-img`: 1:1 square, solid category bg, Anton 56px white centered, letter-spacing 0.04em
+  - Salon name treatment: first word uppercased, common prefix stripped ("Salon X" → "X")
+  - Category solid colors: COIFFEUR `#D4870A`, BARBER `#4A1E3C`, NAILS `#E8624A`, SPA `#7BA688`, MAKEUP `#C9A96E`, WAXING `#6BA3C8`
 
 ### A4 — Filter row above salon cards
 

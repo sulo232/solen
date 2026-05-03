@@ -110,12 +110,9 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         href={href}
         className="flex items-center gap-3 p-3 rounded-card bg-white border border-s-ink/[0.08] group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
       >
-        <div className="relative w-16 h-16 rounded-input overflow-hidden shrink-0 bg-s-bg-sunken img-hover-zoom">
-          {salon.cover_photo_url ? (
-            <Image src={salon.cover_photo_url} alt={salon.name} fill sizes="64px" className="object-cover" />
-          ) : (
-            <ImageFallback category={salon.categories?.[0]} salonName={salon.name} className="absolute inset-0" showInitial={false} />
-          )}
+        {/* A3 LOCKED 2026-05-03: photos killed pre-launch — solid category color + Anton name only */}
+        <div className="relative w-16 h-16 rounded-input overflow-hidden shrink-0">
+          <ImageFallback category={salon.categories?.[0]} salonName={salon.name} className="absolute inset-0" />
         </div>
         <div className="min-w-0">
           {/* Q26: Anton uppercase for card name */}
@@ -160,39 +157,17 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       )}
 
       <Link href={href} className="block w-full h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 rounded-[16px]">
-        {/* Cover photo — Q1 locked 2026-04-22: 1:1 SQUARE (was 4:3 landscape) */}
-        <div className="relative w-full aspect-square bg-s-bg-sunken overflow-hidden rounded-[16px] group/carousel img-hover-zoom gpu">
-          {allPhotos.length > 0 ? (
-            <div
-              ref={scrollContainerRef}
-              className="flex w-full h-full overflow-x-auto snap-x snap-mandatory scrollbar-hide"
-              onScroll={(e) => {
-                const el = e.currentTarget;
-                const idx = Math.round(el.scrollLeft / el.clientWidth);
-                if (idx !== photoIndex) setPhotoIndex(idx);
-              }}
-            >
-              {allPhotos.map((photo, i) => (
-                <div key={i} className="relative w-full h-full flex-none snap-center">
-                  <Image
-                    src={photo}
-                    alt={`${salon.name} - Photo ${i + 1}`}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    placeholder="blur"
-                    blurDataURL={BLUR_PLACEHOLDER}
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <ImageFallback
-              category={salon.categories?.[0]}
-              salonName={salon.name}
-              className="absolute inset-0"
-            />
-          )}
+        {/* Cover — A3 LOCKED 2026-05-03: photos killed pre-launch. Always render
+            solid category color + Anton uppercase salon name (locked card pattern,
+            ref public/solen-coral.html:225-245, 847-865). Photo carousel state
+            (allPhotos/photoIndex/scrollContainerRef) intentionally left orphan
+            in case we restore opt-in photo support later. */}
+        <div className="relative w-full aspect-square overflow-hidden rounded-[16px] gpu">
+          <ImageFallback
+            category={salon.categories?.[0]}
+            salonName={salon.name}
+            className="absolute inset-0"
+          />
 
           {/* Phase 2.1 — Priority badge system via SalonBadge */}
           <div className="absolute top-2 left-2 z-[2]">
