@@ -25,9 +25,9 @@ import { ReportProblemButton } from "@/components/disputes/ReportProblemButton";
 import { ProfileHero } from "@/components/profile/ProfileHero";
 import { BeautyProfileCard } from "@/components/profile/BeautyProfileCard";
 import { BeautyProfileEditModal } from "@/components/profile/BeautyProfileEditModal";
-import { SalonHighlights } from "@/components/profile/SalonHighlights";
-import { ProfileTabs } from "@/components/profile/ProfileTabs";
-import { LooksGrid } from "@/components/profile/LooksGrid";
+// Q58 (2026-05-02) retired imports removed in Phase 7 cleanup:
+// - SalonHighlights, ProfileTabs deleted (orphan files)
+// - LooksGrid kept on disk for future /profile/looks integration when backend lands
 import { PaymentMethodsSection } from "@/components/profile/PaymentMethodsSection";
 import { DeleteAccountModal } from "@/components/profile/DeleteAccountModal";
 import LiveActivityCard, { type LiveActivityState } from "@/components/profile/LiveActivityCard";
