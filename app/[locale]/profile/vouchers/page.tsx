@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { Gift, ChevronRight, AlertCircle, CheckCircle, Clock, X } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 
 interface Voucher {

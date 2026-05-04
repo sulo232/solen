@@ -8,8 +8,8 @@ import {
   ChevronDown, Send, Check, ArrowRight,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
-import StampCard from "@/components/loyalty/StampCard";
-import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
+import StampCard from "@/components-legacy/loyalty/StampCard";
+import SolenExclusiveBadge from "@/components-legacy/ui/SolenExclusiveBadge";
 
 // ─────────────────────────────────────────
 // Intersection observer hook for scroll animations

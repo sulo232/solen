@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import { Users, BarChart3, Scissors, Trophy } from "lucide-react";
 import { useTranslations } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import LiveQueuePanel from "@/components/dashboard/barber/LiveQueuePanel";
-import ExpressMenu from "@/components/dashboard/barber/ExpressMenu";
-import WalkinAnalytics from "@/components/dashboard/barber/WalkinAnalytics";
-import WalkinHourlyChart from "@/components/dashboard/barber/WalkinHourlyChart";
-import PLComparison from "@/components/dashboard/barber/PLComparison";
-import FadeBlueprint from "@/components/dashboard/barber/FadeBlueprint";
-import BarberLeaderboard from "@/components/dashboard/barber/BarberLeaderboard";
-import ClientSelectorDropdown from "@/components/shared/ClientSelectorDropdown";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import LiveQueuePanel from "@/components-legacy/dashboard/barber/LiveQueuePanel";
+import ExpressMenu from "@/components-legacy/dashboard/barber/ExpressMenu";
+import WalkinAnalytics from "@/components-legacy/dashboard/barber/WalkinAnalytics";
+import WalkinHourlyChart from "@/components-legacy/dashboard/barber/WalkinHourlyChart";
+import PLComparison from "@/components-legacy/dashboard/barber/PLComparison";
+import FadeBlueprint from "@/components-legacy/dashboard/barber/FadeBlueprint";
+import BarberLeaderboard from "@/components-legacy/dashboard/barber/BarberLeaderboard";
+import ClientSelectorDropdown from "@/components-legacy/shared/ClientSelectorDropdown";
 
 type Tab = "queue" | "analytics" | "blueprints" | "leaderboard";
 

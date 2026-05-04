@@ -9,12 +9,12 @@ import {
   Calendar, MessageCircle, Users, TrendingUp, AlertTriangle, ShieldAlert,
   Plus, Scissors, Star, PartyPopper, Zap,
 } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import SetupBanner from "@/components/dashboard/SetupBanner";
-import { StatCard } from "@/components/dashboard/StatCard";
-import ActivityFeed from "@/components/dashboard/ActivityFeed";
-import TodayLiveCard from "@/components/dashboard/TodayLiveCard";
-import DashboardHeaderStrip from "@/components/dashboard/DashboardHeaderStrip";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import SetupBanner from "@/components-legacy/dashboard/SetupBanner";
+import { StatCard } from "@/components-legacy/dashboard/StatCard";
+import ActivityFeed from "@/components-legacy/dashboard/ActivityFeed";
+import TodayLiveCard from "@/components-legacy/dashboard/TodayLiveCard";
+import DashboardHeaderStrip from "@/components-legacy/dashboard/DashboardHeaderStrip";
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { Booking, SalonCategory } from "@/lib/types";
 import { getCategoryNavGroups } from "@/lib/dashboard/category-nav";

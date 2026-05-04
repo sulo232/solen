@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { MapPin, Activity, Clock, Package, Bell, BarChart3 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import BodyZoneSelector from "@/components/dashboard/waxing/BodyZoneSelector";
-import RegrowthConfig from "@/components/dashboard/waxing/RegrowthConfig";
-import SensitivityLog from "@/components/dashboard/waxing/SensitivityLog";
-import ZonePackages from "@/components/dashboard/waxing/ZonePackages";
-import RebookAlerts from "@/components/dashboard/waxing/RebookAlerts";
-import ZoneRevenueChart from "@/components/dashboard/waxing/ZoneRevenueChart";
-import ClientSelectorDropdown from "@/components/shared/ClientSelectorDropdown";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import BodyZoneSelector from "@/components-legacy/dashboard/waxing/BodyZoneSelector";
+import RegrowthConfig from "@/components-legacy/dashboard/waxing/RegrowthConfig";
+import SensitivityLog from "@/components-legacy/dashboard/waxing/SensitivityLog";
+import ZonePackages from "@/components-legacy/dashboard/waxing/ZonePackages";
+import RebookAlerts from "@/components-legacy/dashboard/waxing/RebookAlerts";
+import ZoneRevenueChart from "@/components-legacy/dashboard/waxing/ZoneRevenueChart";
+import ClientSelectorDropdown from "@/components-legacy/shared/ClientSelectorDropdown";
 
 type Tab = "zones" | "sensitivity" | "regrowth" | "packages" | "reminders" | "revenue";
 

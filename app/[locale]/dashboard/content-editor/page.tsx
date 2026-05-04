@@ -3,8 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { FileEdit, Save, Check } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { containerVariants, itemVariants } from "@/lib/animations";
 
 /* ─── Types ─── */

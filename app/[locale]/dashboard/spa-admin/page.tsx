@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { DoorOpen, ShieldCheck, BookHeart, ClipboardCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import RoomManager from "@/components/dashboard/spa/RoomManager";
-import SpaIntake from "@/components/dashboard/spa/SpaIntake";
-import WellnessJournal from "@/components/dashboard/spa/WellnessJournal";
-import ContraindicationAlert from "@/components/dashboard/spa/ContraindicationAlert";
-import TreatmentOutcome from "@/components/dashboard/spa/TreatmentOutcome";
-import ClientSelectorDropdown from "@/components/shared/ClientSelectorDropdown";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import RoomManager from "@/components-legacy/dashboard/spa/RoomManager";
+import SpaIntake from "@/components-legacy/dashboard/spa/SpaIntake";
+import WellnessJournal from "@/components-legacy/dashboard/spa/WellnessJournal";
+import ContraindicationAlert from "@/components-legacy/dashboard/spa/ContraindicationAlert";
+import TreatmentOutcome from "@/components-legacy/dashboard/spa/TreatmentOutcome";
+import ClientSelectorDropdown from "@/components-legacy/shared/ClientSelectorDropdown";
 
 type Tab = "rooms" | "intake" | "journal" | "outcome";
 

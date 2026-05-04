@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { Heart, Check, AlertCircle } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 
 const TIP_PRESETS = [500, 1000, 1500]; // in cents

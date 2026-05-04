@@ -26,8 +26,8 @@ import {
   PartyPopper,
   Mail,
 } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
-import { useToast } from "@/components/ui/Toast";
+import Spinner from "@/components-legacy/ui/Spinner";
+import { useToast } from "@/components-legacy/ui/Toast";
 import { slideSwitch } from "@/lib/animations";
 import type { HairType, AgeGroup, Gender, SalonCategory } from "@/lib/types";
 

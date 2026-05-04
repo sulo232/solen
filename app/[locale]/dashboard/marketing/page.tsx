@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { Package, Gift, Users, Tag, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import PromoManager from "@/components/dashboard/PromoManager";
-import PackageManager from "@/components/dashboard/PackageManager";
-import ReferralDashboard from "@/components/dashboard/ReferralDashboard";
-import GiftCardManager from "@/components/dashboard/GiftCardManager";
-import LastMinuteManager from "@/components/dashboard/LastMinuteManager";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import PromoManager from "@/components-legacy/dashboard/PromoManager";
+import PackageManager from "@/components-legacy/dashboard/PackageManager";
+import ReferralDashboard from "@/components-legacy/dashboard/ReferralDashboard";
+import GiftCardManager from "@/components-legacy/dashboard/GiftCardManager";
+import LastMinuteManager from "@/components-legacy/dashboard/LastMinuteManager";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 type MarketingTab = "pakete" | "geschenkkarten" | "empfehlungen" | "aktionen" | "lastminute";
 

@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { AlertTriangle, CheckCircle, XCircle, Scale } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
-import BookingDisputePanel from "@/components/admin/BookingDisputePanel";
+import BookingDisputePanel from "@/components-legacy/admin/BookingDisputePanel";
 
 interface Dispute {
   id: string;

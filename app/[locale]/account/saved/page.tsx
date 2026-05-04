@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Bookmark, AlertCircle } from "lucide-react";
-import SalonCard from "@/components/SalonCard";
-import EmptyState from "@/components/ui/EmptyState";
-import Skeleton from "@/components/ui/Skeleton";
+import SalonCard from "@/components-legacy/SalonCard";
+import EmptyState from "@/components-legacy/ui/EmptyState";
+import Skeleton from "@/components-legacy/ui/Skeleton";
 import type { SalonCard as SalonCardType } from "@/lib/types";
 
 export default function SavedPage() {

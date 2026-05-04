@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import NailClientTab from "@/components/dashboard/nail/NailClientTab";
-import InfillReminderConfig from "@/components/dashboard/nail/InfillReminderConfig";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import NailClientTab from "@/components-legacy/dashboard/nail/NailClientTab";
+import InfillReminderConfig from "@/components-legacy/dashboard/nail/InfillReminderConfig";
 
 export default function NailClientsPage() {
   const [salonId, setSalonId] = useState<string | undefined>();

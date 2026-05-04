@@ -4,8 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Store, UsersRound, Calendar, DollarSign, Star, BarChart3 } from "lucide-react";
 import { useLocale } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 import { containerVariants, itemVariants } from "@/lib/animations";
 

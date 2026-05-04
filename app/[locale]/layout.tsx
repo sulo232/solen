@@ -1,20 +1,20 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { locales } from "@/i18n";
-import { PostHogProvider } from "@/components/PostHogProvider";
-import { ToastProvider } from "@/components/ui/Toast";
-import Header from "@/components/layout/Header";
+import { PostHogProvider } from "@/components-legacy/PostHogProvider";
+import { ToastProvider } from "@/components-legacy/ui/Toast";
+import Header from "@/components-legacy/layout/Header";
 // BottomTabBar import removed 2026-05-03 per Q58 (deprecated for web rendering).
 // Keep file at components/layout/BottomTabBar.tsx for future PWA mount.
-// import BottomTabBar from "@/components/layout/BottomTabBar";
-import CookieBanner from "@/components/ui/CookieBanner";
-import PWAInstallPrompt from "@/components/ui/PWAInstallPrompt";
-import TosPrompt from "@/components/auth/TosPrompt";
-import TOSUpdateBanner from "@/components/global/TOSUpdateBanner";
-import { CompareProvider } from "@/components/compare/CompareContext";
-import Breadcrumb from "@/components/ui/Breadcrumb";
-import PageTransitionWrapper from "@/components/layout/PageTransitionWrapper";
-import MotionProvider from "@/components/layout/MotionProvider";
+// import BottomTabBar from "@/components-legacy/layout/BottomTabBar";
+import CookieBanner from "@/components-legacy/ui/CookieBanner";
+import PWAInstallPrompt from "@/components-legacy/ui/PWAInstallPrompt";
+import TosPrompt from "@/components-legacy/auth/TosPrompt";
+import TOSUpdateBanner from "@/components-legacy/global/TOSUpdateBanner";
+import { CompareProvider } from "@/components-legacy/compare/CompareContext";
+import Breadcrumb from "@/components-legacy/ui/Breadcrumb";
+import PageTransitionWrapper from "@/components-legacy/layout/PageTransitionWrapper";
+import MotionProvider from "@/components-legacy/layout/MotionProvider";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));

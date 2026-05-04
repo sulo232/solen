@@ -7,8 +7,8 @@ import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from "recharts";
 import { useLocale } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 import { containerVariants, itemVariants } from "@/lib/animations";
 

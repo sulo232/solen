@@ -14,7 +14,7 @@ import {
   ExternalLink,
   GitCompare,
 } from "lucide-react";
-import EmptyState from "@/components/ui/EmptyState";
+import EmptyState from "@/components-legacy/ui/EmptyState";
 import { formatCurrency } from "@/lib/format-currency";
 import { cn } from "@/lib/utils";
 import type { Salon } from "@/lib/types";

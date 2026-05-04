@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Package, Gift, ArrowLeft, X, AlertCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import CategoryPage from "@/components/CategoryPage";
-import { BarbershopAboveGrid, BarbershopBelowGrid } from "@/components/barber/BarbershopSections";
+import CategoryPage from "@/components-legacy/CategoryPage";
+import { BarbershopAboveGrid, BarbershopBelowGrid } from "@/components-legacy/barber/BarbershopSections";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
 

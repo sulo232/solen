@@ -20,8 +20,8 @@ import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getTranslations } from "next-intl/server";
-import SalonReviews from "@/components/salon/SalonReviews";
-import SignatureLockup from "@/components/ui/SignatureLockup";
+import SalonReviews from "@/components-legacy/salon/SalonReviews";
+import SignatureLockup from "@/components-legacy/ui/SignatureLockup";
 
 export async function generateMetadata({
   params,

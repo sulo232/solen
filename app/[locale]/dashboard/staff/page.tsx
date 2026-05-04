@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Mail, Check, Clock as ClockIcon, Send } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 import type { StaffMember } from "@/lib/types";
 
 // ─────────────────────────────────────────

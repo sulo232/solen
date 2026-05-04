@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { BookOpen, ClipboardList, RefreshCw, BarChart3 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import FormulaBook from "@/components/dashboard/coiffeur/FormulaBook";
-import ConsultationNotes from "@/components/dashboard/coiffeur/ConsultationNotes";
-import ColourCycleConfig from "@/components/dashboard/coiffeur/ColourCycleConfig";
-import AllergyAlert from "@/components/dashboard/coiffeur/AllergyAlert";
-import ClientSelectorDropdown from "@/components/shared/ClientSelectorDropdown";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import FormulaBook from "@/components-legacy/dashboard/coiffeur/FormulaBook";
+import ConsultationNotes from "@/components-legacy/dashboard/coiffeur/ConsultationNotes";
+import ColourCycleConfig from "@/components-legacy/dashboard/coiffeur/ColourCycleConfig";
+import AllergyAlert from "@/components-legacy/dashboard/coiffeur/AllergyAlert";
+import ClientSelectorDropdown from "@/components-legacy/shared/ClientSelectorDropdown";
 
 type Tab = "formulas" | "consultations" | "cycles" | "metrics";
 

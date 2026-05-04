@@ -5,10 +5,10 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import dynamic from "next/dynamic";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 import type { Conversation } from "@/lib/types";
 
-const ChatWindow = dynamic(() => import("@/components/ChatWindow"), { ssr: false });
+const ChatWindow = dynamic(() => import("@/components-legacy/ChatWindow"), { ssr: false });
 
 interface ConversationWithMeta extends Conversation {
   other_party_name: string;

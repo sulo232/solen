@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import SignIn from "@/components/auth/SignIn";
+import SignIn from "@/components-legacy/auth/SignIn";
 
 export const dynamic = "force-dynamic";
 

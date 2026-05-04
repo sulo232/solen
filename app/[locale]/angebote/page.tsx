@@ -7,12 +7,12 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Scissors, Sparkles, Droplets, Palette, Zap, X, Clock } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
-import FilterBar from "@/components/ui/FilterBar";
-import SearchAutocomplete from "@/components/ui/SearchAutocomplete";
+import FilterBar from "@/components-legacy/ui/FilterBar";
+import SearchAutocomplete from "@/components-legacy/ui/SearchAutocomplete";
 import { getSearchFilterPills } from "@/lib/search-filter-pills";
-import LastMinuteCard from "@/components/LastMinuteCard";
-import Spinner from "@/components/ui/Spinner";
-import EmptyState from "@/components/ui/EmptyState";
+import LastMinuteCard from "@/components-legacy/LastMinuteCard";
+import Spinner from "@/components-legacy/ui/Spinner";
+import EmptyState from "@/components-legacy/ui/EmptyState";
 import type { LastMinuteSlot, ActiveFilter } from "@/lib/types";
 
 const PAGE_SIZE = 20;

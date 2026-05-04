@@ -5,9 +5,9 @@ import Image from "next/image";
 import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Store, Search, X, ExternalLink } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
-import EmptyState from "@/components/ui/EmptyState";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
+import EmptyState from "@/components-legacy/ui/EmptyState";
 import { containerVariants, itemVariants } from "@/lib/animations";
 
 type StatusFilter = "active" | "pending" | "frozen";

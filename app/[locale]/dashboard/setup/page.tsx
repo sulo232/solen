@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Store } from "lucide-react";
-import SetupWizard from "@/components/onboarding/SetupWizard";
-import SalonProfileStep from "@/components/onboarding/steps/SalonProfileStep";
-import OpeningHoursStep from "@/components/onboarding/steps/OpeningHoursStep";
-import ServicesStep from "@/components/onboarding/steps/ServicesStep";
-import TeamStep from "@/components/onboarding/steps/TeamStep";
-import ScheduleStep from "@/components/onboarding/steps/ScheduleStep";
-import PaymentsStep from "@/components/onboarding/steps/PaymentsStep";
-import GoLiveStep from "@/components/onboarding/steps/GoLiveStep";
-import Spinner from "@/components/ui/Spinner";
+import SetupWizard from "@/components-legacy/onboarding/SetupWizard";
+import SalonProfileStep from "@/components-legacy/onboarding/steps/SalonProfileStep";
+import OpeningHoursStep from "@/components-legacy/onboarding/steps/OpeningHoursStep";
+import ServicesStep from "@/components-legacy/onboarding/steps/ServicesStep";
+import TeamStep from "@/components-legacy/onboarding/steps/TeamStep";
+import ScheduleStep from "@/components-legacy/onboarding/steps/ScheduleStep";
+import PaymentsStep from "@/components-legacy/onboarding/steps/PaymentsStep";
+import GoLiveStep from "@/components-legacy/onboarding/steps/GoLiveStep";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 interface Step {
   key: string;

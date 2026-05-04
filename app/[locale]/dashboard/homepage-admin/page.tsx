@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Loader2, Check, LayoutGrid } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 
 const SECTION_LABELS: Record<string, string> = {
   quartier: "Entdecke dein Quartier",

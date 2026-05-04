@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Gift, Send, Check } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 
 const AMOUNT_PRESETS = [2500, 5000, 10000, 20000]; // in cents

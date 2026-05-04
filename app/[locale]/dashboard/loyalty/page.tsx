@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Award, QrCode, History } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import LoyaltyConfig from "@/components/dashboard/barber/LoyaltyConfig";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import LoyaltyConfig from "@/components-legacy/dashboard/barber/LoyaltyConfig";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 interface RedemptionEntry {
   id: string;

@@ -6,11 +6,11 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ChevronRight, ChevronLeft, PartyPopper, Loader2, Building2, Sparkles, AlertCircle, Camera } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
-import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
+import Spinner from "@/components-legacy/ui/Spinner";
+import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
 import { slideSwitch } from "@/lib/animations";
-import AddressAutocomplete from "@/components/ui/AddressAutocomplete";
-import ImageUpload from "@/components/ui/ImageUpload";
+import AddressAutocomplete from "@/components-legacy/ui/AddressAutocomplete";
+import ImageUpload from "@/components-legacy/ui/ImageUpload";
 import type { SalonCategory } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 

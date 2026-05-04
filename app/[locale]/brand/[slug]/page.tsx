@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { MapPin, Star, ExternalLink } from "lucide-react";
-import SalonCard from "@/components/SalonCard";
-import Spinner from "@/components/ui/Spinner";
+import SalonCard from "@/components-legacy/SalonCard";
+import Spinner from "@/components-legacy/ui/Spinner";
 import type { SalonCard as SalonCardType } from "@/lib/types";
 
 interface SalonGroup {

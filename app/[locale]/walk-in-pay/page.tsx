@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { CreditCard, Check, AlertTriangle, Clock } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 interface BookingData {
   id: string;

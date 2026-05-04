@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { createAdminSupabaseClient } from '@/lib/supabase';
 import { BookingProvider } from '@/lib/booking-context';
-import { BookingWizard } from '@/components/booking';
+import { BookingWizard } from '@/components-legacy/booking';
 import type { StaffMember, Salon } from '@/lib/types';
 
 interface BookingSalonPageProps {

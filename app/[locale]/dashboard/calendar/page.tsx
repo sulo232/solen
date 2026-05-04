@@ -4,9 +4,9 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useLocale } from "next-intl";
 import { ChevronLeft, ChevronRight, Plus, X, Lock, ArrowRight, Clock, UserPlus } from "lucide-react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
-import WalkInModal from "@/components/dashboard/WalkInModal";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
+import WalkInModal from "@/components-legacy/dashboard/WalkInModal";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { AvailabilitySlot } from "@/lib/types";
 

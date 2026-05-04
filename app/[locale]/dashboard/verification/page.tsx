@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { ShieldCheck, Upload, Trash2, File, CheckCircle2, AlertCircle, Clock } from "lucide-react";
 import type { SalonDocument } from "@/lib/types";
 

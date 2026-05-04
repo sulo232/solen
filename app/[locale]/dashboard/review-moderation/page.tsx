@@ -3,9 +3,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Star, MessageSquareWarning, Check, EyeOff, Trash2, X } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
-import EmptyState from "@/components/ui/EmptyState";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
+import EmptyState from "@/components-legacy/ui/EmptyState";
 import { containerVariants, itemVariants } from "@/lib/animations";
 
 interface Review {

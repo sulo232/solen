@@ -3,7 +3,13 @@ module.exports = {
   // darkMode removed 2026-05-02 per Q62 — single light theme.
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    // V2 rebuild (2026-05-03): legacy components moved from `components/` to
+    // `components-legacy/` per Part 9 of the strip-and-rebuild plan. Both
+    // paths kept in `content` so Tailwind scans (a) any new components landing
+    // in `components/` from the rebuild and (b) the legacy tree still in use
+    // until each route gets migrated.
     "./components/**/*.{js,ts,jsx,tsx}",
+    "./components-legacy/**/*.{js,ts,jsx,tsx}",
     "./lib/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
@@ -28,7 +34,7 @@ module.exports = {
         // Contrast: green #1B4D1B on white = 9.89:1 (vs coral 3.35:1) — fixes Q45
         // banned-pair #3 (white-on-coral 3.35:1 body fail).
         "s-coral": { DEFAULT: "#1B4D1B", hover: "#0F3010", subtle: "#E8EFE4", text: "#0F3010", button: "#1B4D1B", "button-hover": "#0F3010" },
-        "s-amber": { DEFAULT: "#F3A864", hover: "#E89953", subtle: "#FFF4E8", text: "#7A4A2D" },
+        "s-amber": { DEFAULT: "#F3A864", hover: "#E89953", subtle: "#FCEBD3", text: "#8C4A14" },
         "s-blue": { DEFAULT: "#6BA3C8", hover: "#4E8AB5", subtle: "#EAF3FB", text: "#1A4D72" },
         "s-plum": { DEFAULT: "#4A1E3C", hover: "#3A1630", subtle: "#F0E8F0", text: "#4A1E3C" },
         "s-yellow": { DEFAULT: "#F2C144", subtle: "#FEF8E0", text: "#7A5C00" },
@@ -81,10 +87,6 @@ module.exports = {
         "warm-lg":    "0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)",
         "warm-xl":    "0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)",
         "warm-float": "0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)",
-        // ── Button glows (updated coral) ──
-        "coral-glow":       "0 2px 4px rgba(232,115,90,.25), 0 4px 16px rgba(232,115,90,.15)",
-        "coral-glow-hover": "0 4px 8px rgba(232,115,90,.32), 0 8px 28px rgba(232,115,90,.22)",
-        "amber-glow":       "0 2px 4px rgba(212,135,10,.22), 0 4px 16px rgba(212,135,10,.14)",
         "pressed":          "0 1px 1px rgba(50,47,44,.12), inset 0 1px 2px rgba(50,47,44,.06)",
         // ── Solen Shadow System (DESIGN_SPEC.md — 3 levels, warm-tinted) ──
         "elevation-1":      "0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03)",
@@ -94,7 +96,6 @@ module.exports = {
         "v5-card":       "0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03)",
         "v5-card-hover": "0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)",
         "v5-float":      "0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)",
-        "v5-glow-coral": "0 0 24px rgba(232,115,90,.12)",
       },
       zIndex: {
         55: '55',
@@ -104,10 +105,6 @@ module.exports = {
       backdropBlur: {
         xs: "4px",
         panel: "20px",  // was: glass — renamed for V3
-      },
-      backgroundImage: {
-        "glass-gradient": "linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.65) 100%)",
-        "mesh-warm": "radial-gradient(at 40% 20%, rgba(232,98,74,0.12) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(212,135,10,0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(107,163,200,0.06) 0px, transparent 50%)",
       },
       transitionTimingFunction: {
         // Legacy alias → mapped to DESIGN_SPEC easing
@@ -126,7 +123,6 @@ module.exports = {
         "colors-shadow": "color, background-color, border-color, box-shadow",
       },
       animation: {
-        "pulse-coral": "pulse-coral 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "count-up": "count-up 0.6s ease-out forwards",
         "slide-in-up": "slide-in-up 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
         "fade-in": "fade-in 0.3s cubic-bezier(0.23, 1, 0.32, 1)",
@@ -139,10 +135,6 @@ module.exports = {
         "shimmer": {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
-        },
-        "pulse-coral": {
-          "0%, 100%": { boxShadow: "0 0 0 0 rgba(232,98,74,0.4)" },
-          "50%": { boxShadow: "0 0 0 8px rgba(232,98,74,0)" },
         },
         "slide-in-up": {
           from: { transform: "translateY(12px)", opacity: "0" },

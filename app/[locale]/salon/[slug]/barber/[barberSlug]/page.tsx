@@ -6,9 +6,9 @@ import { useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { Scissors, Star, ArrowLeft, Share2, MapPin } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
-import StaffAvailability from "@/components/staff/StaffAvailability";
+import StaffAvailability from "@/components-legacy/staff/StaffAvailability";
 
 interface BarberProfile {
   id: string;

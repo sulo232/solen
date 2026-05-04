@@ -5,8 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Store, TrendingUp, Calendar, ArrowRight, Star, Check, ChevronDown, ChevronRight, UserPlus, Settings, Zap, Shield, Lock, CreditCard, Quote, BarChart3, Users, MessageSquare, Clock, Bell, Scissors, Sparkles, Droplets } from "lucide-react";
-import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
-import PartnerSignupForm from "@/components/partner/PartnerSignupForm";
+import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
+import PartnerSignupForm from "@/components-legacy/partner/PartnerSignupForm";
 
 const FEATURES = [
   { icon: Calendar, title: "feat_bookings_title", desc: "feat_bookings_desc", live: true },

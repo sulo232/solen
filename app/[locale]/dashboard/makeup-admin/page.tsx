@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { CalendarHeart, Layers, Package, Droplets } from "lucide-react";
 import { useTranslations } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import BridalPlanner from "@/components/dashboard/makeup/BridalPlanner";
-import FaceChartBuilder from "@/components/dashboard/makeup/FaceChartBuilder";
-import KitInventory from "@/components/dashboard/makeup/KitInventory";
-import SkinToneMatcher from "@/components/dashboard/makeup/SkinToneMatcher";
-import ClientSelectorDropdown from "@/components/shared/ClientSelectorDropdown";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import BridalPlanner from "@/components-legacy/dashboard/makeup/BridalPlanner";
+import FaceChartBuilder from "@/components-legacy/dashboard/makeup/FaceChartBuilder";
+import KitInventory from "@/components-legacy/dashboard/makeup/KitInventory";
+import SkinToneMatcher from "@/components-legacy/dashboard/makeup/SkinToneMatcher";
+import ClientSelectorDropdown from "@/components-legacy/shared/ClientSelectorDropdown";
 
 type Tab = "bridal" | "chart" | "kit" | "tones";
 

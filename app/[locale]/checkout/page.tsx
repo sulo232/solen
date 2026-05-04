@@ -14,8 +14,8 @@ import {
 import { motion } from "framer-motion";
 import { MapPin, Calendar, User, Shield, ChevronRight, Loader2, Lock, CreditCard, Tag, Wallet, PartyPopper, AlertCircle, CheckCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
-import Spinner from "@/components/ui/Spinner";
-import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
+import Spinner from "@/components-legacy/ui/Spinner";
+import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 

@@ -13,8 +13,8 @@ import { motion } from "framer-motion";
 import { Gift, Search, AlertCircle, CheckCircle, ChevronRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/format-currency";
-import Spinner from "@/components/ui/Spinner";
-import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
+import Spinner from "@/components-legacy/ui/Spinner";
+import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 

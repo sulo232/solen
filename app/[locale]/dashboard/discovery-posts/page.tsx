@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useLocale } from "next-intl";
 import { Plus, Upload, Link as LinkIcon, Loader2, Eye, EyeOff, BarChart } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import ToSCheckbox from "@/components/discovery/ToSCheckbox";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import ToSCheckbox from "@/components-legacy/discovery/ToSCheckbox";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender } from "@/lib/types";
 
 const CATEGORIES: { key: DiscoveryCategory; label: string }[] = [

@@ -2,7 +2,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { DiscoveryItem } from "@/lib/types";
-import DetailPage from "@/components/discovery/DetailPage";
+import DetailPage from "@/components-legacy/discovery/DetailPage";
 import { analyzeDiscoveryImage, analyzeDiscoveryTikTok } from "@/lib/ai-vision";
 
 interface PageProps {

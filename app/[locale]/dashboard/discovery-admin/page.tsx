@@ -2,10 +2,10 @@
 
 import { useState, useCallback, useRef } from "react";
 import Image from "next/image";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import AIProcessingIndicator from "@/components/discovery/AIProcessingIndicator";
-import ImportProgressBar from "@/components/discovery/ImportProgressBar";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import AIProcessingIndicator from "@/components-legacy/discovery/AIProcessingIndicator";
+import ImportProgressBar from "@/components-legacy/discovery/ImportProgressBar";
+import Spinner from "@/components-legacy/ui/Spinner";
 import {
   Search, Upload, CheckCircle, XCircle, Trash2, Eye,
   Video, RefreshCw, Sparkles,

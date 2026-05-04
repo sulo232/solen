@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 
 interface TestSalon {
   id: string;

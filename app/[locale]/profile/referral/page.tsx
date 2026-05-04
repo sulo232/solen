@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { Copy, Check, Users, Gift, Share2, ChevronRight } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 
 export default function ReferralPage() {

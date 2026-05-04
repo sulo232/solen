@@ -15,10 +15,10 @@ export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import StampCard from "@/components/loyalty/StampCard";
-import HeroStampCard from "@/components/loyalty/HeroStampCard";
-import EmptyStateFTU from "@/components/ui/EmptyStateFTU";
-import SignatureLockup from "@/components/ui/SignatureLockup";
+import StampCard from "@/components-legacy/loyalty/StampCard";
+import HeroStampCard from "@/components-legacy/loyalty/HeroStampCard";
+import EmptyStateFTU from "@/components-legacy/ui/EmptyStateFTU";
+import SignatureLockup from "@/components-legacy/ui/SignatureLockup";
 
 /**
  * Schema note (verified 2026-05-02): loyalty programs live in `loyalty_cards`;

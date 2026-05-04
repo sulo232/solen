@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { BookOpen, Plus, Pencil, Trash2, Eye, EyeOff } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 interface HelpArticle {
   id: string;

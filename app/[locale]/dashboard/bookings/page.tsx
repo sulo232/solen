@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Check, UserX, RotateCcw, ChevronDown, X, BadgeCheck, AlertTriangle } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
-import ClientTags from "@/components/chat/ClientTags";
-import DisputeNotification from "@/components/dashboard/DisputeNotification";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
+import ClientTags from "@/components-legacy/chat/ClientTags";
+import DisputeNotification from "@/components-legacy/dashboard/DisputeNotification";
 import { formatCurrency } from "@/lib/format-currency";
 import type { Booking, BookingStatus } from "@/lib/types";
 

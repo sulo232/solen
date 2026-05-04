@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { ChevronLeft, Package, Clock, CheckCircle } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 import type { PackagePurchase, ServicePackage } from "@/lib/types";
 
 type PurchaseWithPackage = PackagePurchase & { service_packages: ServicePackage };

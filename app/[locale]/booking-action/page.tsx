@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { Check, X, AlertTriangle } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 export default function BookingActionPage() {
   const searchParams = useSearchParams();

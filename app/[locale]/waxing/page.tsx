@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { WaxingBelowGrid } from "@/components/waxing/WaxingSections";
+import { WaxingBelowGrid } from "@/components-legacy/waxing/WaxingSections";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
 

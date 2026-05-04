@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
-import Skeleton from "@/components/ui/Skeleton";
-import GalleryManager from "@/components/dashboard/GalleryManager";
-import SalonAboutEditor from "@/components/dashboard/SalonAboutEditor";
+import Skeleton from "@/components-legacy/ui/Skeleton";
+import GalleryManager from "@/components-legacy/dashboard/GalleryManager";
+import SalonAboutEditor from "@/components-legacy/dashboard/SalonAboutEditor";
 
 export default function GalleryPage() {
   const locale = useLocale();

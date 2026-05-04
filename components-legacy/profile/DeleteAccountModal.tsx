@@ -1,0 +1,130 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { AlertCircle } from "lucide-react";
+import GlassModal from "@/components-legacy/ui/GlassModal";
+import Spinner from "@/components-legacy/ui/Spinner";
+
+interface DeleteAccountModalProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
+  const router = useRouter();
+  const locale = useLocale();
+  const pathname = usePathname();
+  const t = useTranslations("Profile") as any;
+
+  const [confirmText, setConfirmText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const isConfirmed = confirmText.trim().toUpperCase() === "DELETE MY ACCOUNT";
+
+  const handleDelete = async () => {
+    if (!isConfirmed) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/profile/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.message || "Failed to delete account");
+        return;
+      }
+
+      // Redirect to login after successful deletion request
+      router.push(`/${locale}/auth/login`);
+    } catch (err) {
+      console.error("[DeleteAccountModal] Error:", err);
+      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    setConfirmText("");
+    setError(null);
+    onClose();
+  };
+
+  return (
+    <GlassModal open={open} title={t("deleteAccount")} onClose={handleClose} maxWidth="max-w-md">
+      <div className="space-y-4">
+        {/* Warning */}
+        <div className="flex gap-3 p-3 rounded-input bg-red-50 border border-red-200">
+          <AlertCircle size={20} className="text-red-600 shrink-0 mt-0.5" />
+          <div className="text-sm text-red-800">
+            <p className="font-medium">{t("deleteAccountWarning")}</p>
+            <p className="text-xs mt-1">{t("deleteAccountWarningDesc")}</p>
+          </div>
+        </div>
+
+        {/* Active bookings message */}
+        <p className="text-xs text-s-ink/60">
+          {t("deleteAccountActiveBookings")}
+        </p>
+
+        {/* Confirmation input */}
+        <div>
+          <label className="block text-xs font-medium text-s-ink/50 mb-2">
+            {t("deleteAccountConfirmLabel")}
+          </label>
+          <input
+            type="text"
+            value={confirmText}
+            onChange={(e) => setConfirmText(e.target.value)}
+            placeholder={t("deleteAccountConfirmPlaceholder")}
+            className="w-full px-3 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/15 transition-colors"
+          />
+          <p className="text-xs text-s-ink/40 mt-1">
+            {t("deleteAccountHint")}
+          </p>
+        </div>
+
+        {/* Error message */}
+        {error && (
+          <div className="p-3 rounded-input bg-red-50 border border-red-200">
+            <p className="text-xs text-red-700">{error}</p>
+          </div>
+        )}
+
+        {/* 30-day grace period info */}
+        <div className="p-3 rounded-input bg-s-ink/5 border border-s-ink/10">
+          <p className="text-xs text-s-ink/60">
+            {t("deleteAccount30Days")}
+          </p>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex gap-2 pt-2">
+          <button
+            onClick={handleClose}
+            disabled={loading}
+            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/60 hover:border-s-ink/30 hover:text-s-ink:border-white/30 active:scale-[0.97] transition-[transform,border-color,color] duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {t("cancel")}
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={!isConfirmed || loading}
+            className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-red-600 text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {loading && <Spinner size="sm" invert />}
+            {t("deleteAccountConfirm")}
+          </button>
+        </div>
+      </div>
+    </GlassModal>
+  );
+}

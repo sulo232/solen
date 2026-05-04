@@ -6,8 +6,8 @@ import { useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { Star, ArrowLeft, Sparkles, Award } from "lucide-react";
-import TechPortfolio from "@/components/nail/TechPortfolio";
-import Spinner from "@/components/ui/Spinner";
+import TechPortfolio from "@/components-legacy/nail/TechPortfolio";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 interface TechProfile {
   id: string;

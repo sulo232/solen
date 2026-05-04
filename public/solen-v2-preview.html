@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Solen V2 — Base Layout Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ── Solen tokens (mirror tailwind.config.js + LIVE_TRUTH §1-4) ── */
+  :root {
+    --brand:        #1B4D1B;  /* brand primary (forest green) */
+    --brand-hover:  #0F3010;
+    --brand-subtle: #E8EFE4;
+    --brand-text:   #0F3010;
+
+    --amber:        #F3A864;
+    --amber-hover:  #E69850;
+    --amber-subtle: #FCEBD3;
+    --amber-text:   #8C4A14;
+
+    --love:         #FF4A6B;
+    --success:      #16A34A;
+    --warning:      #E65100;
+    --error:        #C62828;
+
+    --ink:          #1A1209;
+    --ink-2:        #56463E;
+    --ink-3:        #9F8A7E;
+    --ink-disabled: #C4B8A6;
+    --border:       #EFE7DD;
+
+    --bg-page:      #FFFFFF;
+    --bg-cream:     #FFF4E8;
+    --bg-sunken:    #FAF7F3;
+
+    --cat-coiffeur: #D4870A;
+    --cat-barber:   #4A1E3C;
+    --cat-nails:    #E8624A;  /* locked exception (pre-Q64 coral kept for nails category) */
+    --cat-spa:      #7BA688;
+    --cat-makeup:   #C9A96E;
+    --cat-waxing:   #6BA3C8;
+
+    --r-card:       16px;
+    --r-card-lg:    20px;
+    --r-pill:       9999px;
+    --r-btn:        99px;
+
+    --sh-1: 0 1px 3px rgba(26,18,9,0.04), 0 1px 2px rgba(26,18,9,0.03);
+    --sh-2: 0 4px 12px rgba(26,18,9,0.08), 0 2px 4px rgba(26,18,9,0.04);
+    --sh-3: 0 8px 28px rgba(26,18,9,0.12), 0 4px 10px rgba(26,18,9,0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* SOFT + COLORFUL VARIANT (2026-05-03 v3): page substrate stays WHITE per
+     LIVE_TRUTH §4 lock + CLAUDE.md retired list (cream-as-page-bg is banned).
+     Soft feel comes from SECTION-level tints (cream hero, sage app-CTA, peach
+     stats) — not from tinting the page substrate. */
+  html, body { background: var(--bg-page); color: var(--ink); font-family: 'Figtree', system-ui, sans-serif; }
+
+  /* ── Visualizer chrome ── */
+  .viz-chrome {
+    background: #1A1209;
+    color: white;
+    padding: 16px 24px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid #333;
+  }
+  .viz-chrome span { color: var(--amber); }
+  .viz-section-label {
+    background: var(--bg-cream);
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 24px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .viz-section-label strong { color: var(--ink); display: block; font-size: 24px; letter-spacing: 0.01em; text-transform: none; font-family: 'Anton', sans-serif; font-weight: 400; margin-top: 4px; }
+
+  /* ── Color palette ── */
+  .palette {
+    padding: 32px 24px;
+    background: var(--bg-page);
+  }
+  .palette h3 {
+    font-family: 'Figtree', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+    margin-top: 24px;
+  }
+  .palette h3:first-child { margin-top: 0; }
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  .swatch {
+    border-radius: var(--r-card);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .swatch-color {
+    height: 80px;
+  }
+  .swatch-meta {
+    padding: 10px 12px;
+    background: var(--bg-page);
+  }
+  .swatch-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .swatch-hex {
+    font-size: 11px;
+    color: var(--ink-3);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0;
+    text-transform: lowercase;
+    margin-top: 2px;
+  }
+
+  /* ── Typography specimen ── */
+  .specimen {
+    padding: 32px 24px;
+    background: var(--bg-sunken);
+  }
+  .specimen-row {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .specimen-row:last-child { border-bottom: 0; }
+  .specimen-meta {
+    font-family: 'Figtree', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+  .anton {
+    font-family: 'Anton', sans-serif;
+    color: var(--ink);
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+  }
+  .figtree {
+    font-family: 'Figtree', sans-serif;
+    color: var(--ink);
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: var(--bg-cream);  /* warm cream, sets the soft tone */
+    padding: 64px 24px 80px;
+  }
+  @media (min-width: 768px) { .hero { padding: 96px 24px 112px; } }
+  .hero-inner {
+    max-width: 448px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  @media (min-width: 768px) { .hero-inner { max-width: 512px; } }
+  .hero-eyebrow {
+    font-family: 'Figtree', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 16px;
+  }
+  .hero-h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(48px, 12vw, 96px);
+    line-height: 0.87;
+    letter-spacing: 0.01em;
+    color: #2E5E3A;  /* DEEP SAGE — line 1, ties to brand-green family but
+                       lighter than brand. Plum was an outlier (didn't match
+                       eyebrow / CTA / second line). */
+    margin-bottom: 24px;
+  }
+  .hero-h1 .amber { color: var(--amber); }  /* AMBER — line 2 (unchanged) */
+  .hero-sub {
+    font-family: 'Figtree', sans-serif;
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin-bottom: 40px;
+  }
+  @media (min-width: 768px) { .hero-sub { font-size: 17px; } }
+  .search-card {
+    background: var(--bg-page);  /* white card pops against cream bg */
+    border: 1px solid rgba(26,18,9,0.04);  /* hairline, almost invisible */
+    border-radius: var(--r-card-lg);
+    box-shadow: var(--sh-2);
+    overflow: hidden;
+  }
+  .search-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .search-row:nth-last-child(2) { border-bottom: 0; }
+  .search-row svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--ink-3);
+    stroke-width: 1.5;
+    fill: none;
+    flex-shrink: 0;
+  }
+  .search-row span {
+    font-family: 'Figtree', sans-serif;
+    font-size: 15px;
+    color: var(--ink-3);
+  }
+  .search-cta-wrap { padding: 12px; }
+  .search-cta {
+    display: block;
+    width: 100%;
+    background: var(--brand);
+    color: white;
+    border: 0;
+    border-radius: var(--r-btn);
+    padding: 16px 24px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .search-cta:hover { filter: brightness(0.94); }
+  .search-cta:active { filter: brightness(0.88); transform: scale(0.98); }
+  .hero-trust {
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-top: 24px;
+    text-align: center;
+  }
+
+  /* ── Section skeleton ── */
+  .section {
+    padding: 48px 24px;
+    max-width: 1152px;
+    margin: 0 auto;
+    /* page bg is cream, sections inherit — no explicit bg needed unless tinted */
+  }
+  @media (min-width: 768px) { .section { padding: 64px 24px; } }
+  .section-h {
+    font-family: 'Anton', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.01em;
+    /* base color set per-section via inline style — each heading owns a color
+       from the Solen palette so the page reads as colorful, not as
+       black-bold-Anton-everywhere */
+    margin-bottom: 24px;
+  }
+  /* per-section heading color helpers */
+  .h-sage      { color: #2E5E3A; }  /* deep sage */
+  .h-amber     { color: #8C4A14; }  /* deep amber */
+  .h-plum      { color: #4A1E3C; }  /* plum */
+  .h-brand     { color: #1B4D1B; }  /* brand forest green */
+  .h-blue      { color: #1A4D72; }  /* deep blue */
+  .h-sand      { color: #6B5430; }  /* deep sand */
+  .h-yellow    { color: #7A5C00; }  /* deep mustard */
+  @media (min-width: 768px) { .section-h { font-size: 36px; margin-bottom: 32px; } }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); gap: 24px; } }
+  @media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+  .card-skel {
+    aspect-ratio: 1;
+    background: var(--bg-page);  /* white pops against cream page bg */
+    border: 1px solid rgba(26,18,9,0.04);  /* near-invisible hairline */
+    border-radius: var(--r-card);
+    box-shadow: var(--sh-1);
+  }
+
+  /* ── App CTA ── */
+  .app-cta {
+    background: var(--brand-subtle);  /* soft sage-green wash — punctuates the page rhythm */
+    padding: 64px 24px;
+    text-align: center;
+  }
+  @media (min-width: 768px) { .app-cta { padding: 96px 24px; } }
+  .app-cta-inner { max-width: 448px; margin: 0 auto; }
+  .app-cta h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 36px;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    color: var(--brand);  /* brand green — matches the soft sage section bg */
+    margin-bottom: 16px;
+  }
+  @media (min-width: 768px) { .app-cta h2 { font-size: 48px; } }
+  .app-cta p {
+    font-family: 'Figtree', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    margin-bottom: 40px;
+  }
+  @media (min-width: 768px) { .app-cta p { font-size: 17px; } }
+  .phone-mock {
+    width: 176px;
+    height: 320px;
+    margin: 0 auto;
+    border: 2px solid var(--ink);
+    border-radius: 36px;
+    background: var(--bg-sunken);
+  }
+
+  /* ── Reviews scroll ── */
+  .reviews-section { padding: 48px 0; }
+  @media (min-width: 768px) { .reviews-section { padding: 64px 0; } }
+  .reviews-h-wrap { max-width: 1152px; margin: 0 auto; padding: 0 24px; }
+  .reviews-scroll {
+    max-width: 1152px;
+    margin: 0 auto;
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 0 24px 8px;
+    scroll-snap-type: x mandatory;
+  }
+  @media (min-width: 768px) { .reviews-scroll { gap: 24px; } }
+  .review-skel {
+    flex-shrink: 0;
+    width: 288px;
+    height: 176px;
+    scroll-snap-align: start;
+    background: var(--bg-page);  /* white card on cream page */
+    border: 1px solid rgba(26,18,9,0.04);
+    border-radius: var(--r-card);
+    box-shadow: var(--sh-1);
+  }
+  @media (min-width: 768px) { .review-skel { width: 384px; } }
+
+  /* ── Stats ── */
+  .stats {
+    background: var(--amber-subtle);  /* soft peach wash — second punctuation moment */
+    padding: 64px 24px;
+    text-align: center;
+  }
+  @media (min-width: 768px) { .stats { padding: 96px 24px; } }
+  .stats-inner { max-width: 1024px; margin: 0 auto; }
+  .stats h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.01em;
+    color: #8C4A14;  /* deep amber — matches the soft peach section bg */
+    margin-bottom: 48px;
+  }
+  @media (min-width: 768px) { .stats h2 { font-size: 36px; } }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+  @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+  .stat-num {
+    font-family: 'Anton', sans-serif;
+    font-size: 40px;
+    line-height: 1;
+    /* per-stat color via inline style (each number owns a palette color) */
+  }
+  .n-brand { color: #1B4D1B; }
+  .n-amber { color: #8C4A14; }
+  .n-plum  { color: #4A1E3C; }
+  .n-sage  { color: #2E5E3A; }
+  @media (min-width: 768px) { .stat-num { font-size: 56px; } }
+  .stat-label {
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-top: 8px;
+  }
+
+  /* ── City browser ── */
+  .city-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    border-bottom: 1px solid rgba(26,18,9,0.05);  /* softer divider */
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+  }
+  @media (min-width: 768px) { .city-tabs { margin-bottom: 32px; } }
+  .city-tab {
+    flex-shrink: 0;
+    border: 0;
+    background: transparent;
+    padding: 8px 16px;
+    border-radius: var(--r-pill);
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .city-tab.active { background: var(--ink); color: white; }
+  .city-tab:not(.active):hover { background: var(--bg-sunken); }
+  .city-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 24px;
+  }
+  @media (min-width: 768px) { .city-links { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 1024px) { .city-links { grid-template-columns: repeat(4, 1fr); } }
+  .city-link {
+    font-family: 'Figtree', sans-serif;
+    font-size: 14px;
+    color: var(--ink-2);
+    text-decoration: none;
+  }
+  .city-link:hover { color: var(--brand); }
+
+  /* ── Section divider ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+  }
+</style>
+</head>
+<body>
+
+<!-- Sticky chrome strip — orient the viewer -->
+<div class="viz-chrome">
+  Solen V2 base preview · v3 · <span>page bg WHITE (lock) · section tints: cream / sage / peach · headlines colored</span> · 2026-05-03
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────────
+     1. COLOR PALETTE
+─────────────────────────────────────────────────────────────────── -->
+<div class="viz-section-label">
+  Visualization 1 of 3
+  <strong>Color palette</strong>
+</div>
+<div class="palette">
+
+  <h3>Brand</h3>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#1B4D1B"></div><div class="swatch-meta"><div class="swatch-name">brand</div><div class="swatch-hex">#1B4D1B</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#0F3010"></div><div class="swatch-meta"><div class="swatch-name">brand-hover</div><div class="swatch-hex">#0F3010</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#E8EFE4"></div><div class="swatch-meta"><div class="swatch-name">brand-subtle</div><div class="swatch-hex">#E8EFE4</div></div></div>
+  </div>
+
+  <h3>Amber accent</h3>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#F3A864"></div><div class="swatch-meta"><div class="swatch-name">amber</div><div class="swatch-hex">#F3A864</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#E69850"></div><div class="swatch-meta"><div class="swatch-name">amber-hover</div><div class="swatch-hex">#E69850</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#FCEBD3"></div><div class="swatch-meta"><div class="swatch-name">amber-subtle</div><div class="swatch-hex">#FCEBD3</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#8C4A14"></div><div class="swatch-meta"><div class="swatch-name">amber-text</div><div class="swatch-hex">#8C4A14</div></div></div>
+  </div>
+
+  <h3>Warm-ink scale (text + borders)</h3>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#1A1209"></div><div class="swatch-meta"><div class="swatch-name">ink (body)</div><div class="swatch-hex">#1A1209</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#56463E"></div><div class="swatch-meta"><div class="swatch-name">ink-2</div><div class="swatch-hex">#56463E</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#9F8A7E"></div><div class="swatch-meta"><div class="swatch-name">ink-3</div><div class="swatch-hex">#9F8A7E</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#C4B8A6"></div><div class="swatch-meta"><div class="swatch-name">ink-disabled</div><div class="swatch-hex">#C4B8A6</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#EFE7DD"></div><div class="swatch-meta"><div class="swatch-name">border</div><div class="swatch-hex">#EFE7DD</div></div></div>
+  </div>
+
+  <h3>Surfaces (backgrounds)</h3>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#FFFFFF;border:1px solid #EFE7DD"></div><div class="swatch-meta"><div class="swatch-name">page (white)</div><div class="swatch-hex">#FFFFFF</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#FAF7F3"></div><div class="swatch-meta"><div class="swatch-name">sunken</div><div class="swatch-hex">#FAF7F3</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#FFF4E8"></div><div class="swatch-meta"><div class="swatch-name">cream warm</div><div class="swatch-hex">#FFF4E8</div></div></div>
+  </div>
+
+  <h3>Per-category accents (LOCKED, never sweep)</h3>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#D4870A"></div><div class="swatch-meta"><div class="swatch-name">coiffeur</div><div class="swatch-hex">#D4870A</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#4A1E3C"></div><div class="swatch-meta"><div class="swatch-name">barber</div><div class="swatch-hex">#4A1E3C</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#E8624A"></div><div class="swatch-meta"><div class="swatch-name">nails ⚠</div><div class="swatch-hex">#E8624A</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#7BA688"></div><div class="swatch-meta"><div class="swatch-name">spa</div><div class="swatch-hex">#7BA688</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#C9A96E"></div><div class="swatch-meta"><div class="swatch-name">makeup</div><div class="swatch-hex">#C9A96E</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#6BA3C8"></div><div class="swatch-meta"><div class="swatch-name">waxing</div><div class="swatch-hex">#6BA3C8</div></div></div>
+  </div>
+
+  <h3>Semantic (NEVER collapse with brand)</h3>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#FF4A6B"></div><div class="swatch-meta"><div class="swatch-name">love-red (♥)</div><div class="swatch-hex">#FF4A6B</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#16A34A"></div><div class="swatch-meta"><div class="swatch-name">success</div><div class="swatch-hex">#16A34A</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#E65100"></div><div class="swatch-meta"><div class="swatch-name">warning</div><div class="swatch-hex">#E65100</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#C62828"></div><div class="swatch-meta"><div class="swatch-name">error</div><div class="swatch-hex">#C62828</div></div></div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────────
+     2. TYPOGRAPHY SPECIMEN
+─────────────────────────────────────────────────────────────────── -->
+<div class="viz-section-label">
+  Visualization 2 of 3
+  <strong>Typography (Anton + Figtree)</strong>
+</div>
+<div class="specimen">
+
+  <div class="specimen-row">
+    <div class="specimen-meta">Anton · 96px · LH 0.87 · tracking 0.01em · used: hero headline (1× per page)</div>
+    <div class="anton" style="font-size:96px;line-height:0.87">BEAUTY.<br><span style="color:var(--amber)">DIREKT GEBUCHT.</span></div>
+  </div>
+
+  <div class="specimen-row">
+    <div class="specimen-meta">Anton · 56px · LH 1 · used: stat numbers</div>
+    <div class="anton" style="font-size:56px;line-height:1">1.000+ &nbsp; 50K+ &nbsp; 4.7★</div>
+  </div>
+
+  <div class="specimen-row">
+    <div class="specimen-meta">Anton · 48px · LH 1 · used: app-CTA heading</div>
+    <div class="anton" style="font-size:48px;line-height:1">SOLEN UNTERWEGS.</div>
+  </div>
+
+  <div class="specimen-row">
+    <div class="specimen-meta">Anton · 36px · used: section heading (desktop)</div>
+    <div class="anton" style="font-size:36px">Empfohlen</div>
+  </div>
+
+  <div class="specimen-row">
+    <div class="specimen-meta">Anton · 28px · used: section heading (mobile)</div>
+    <div class="anton" style="font-size:28px">Empfohlen</div>
+  </div>
+
+  <div class="specimen-row">
+    <div class="specimen-meta">Figtree italic 17px · ink-2 · used: hero sub-line (desktop)</div>
+    <div class="figtree" style="font-style:italic;font-size:17px;line-height:1.6;color:var(--ink-2)">Coiffeur, Nails, Spa &amp; Massage in deiner Nähe — sofort gebucht.</div>
+  </div>
+
+  <div class="specimen-row">
+    <div class="specimen-meta">Figtree 700 · 11px · uppercase · tracking 0.22em · amber · used: eyebrow</div>
+    <div class="figtree" style="font-weight:700;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--amber)">Von der Schweiz. Für dich.</div>
+  </div>
+
+  <div class="specimen-row">
+    <div class="specimen-meta">Figtree 600 · 15px · used: button label / search input value</div>
+    <div class="figtree" style="font-weight:600;font-size:15px">Salon finden</div>
+  </div>
+
+  <div class="specimen-row">
+    <div class="specimen-meta">Figtree 400 · 15px · ink · used: search input placeholder, body</div>
+    <div class="figtree" style="font-size:15px;color:var(--ink-3)">Was suchst du?</div>
+  </div>
+
+  <div class="specimen-row">
+    <div class="specimen-meta">Figtree 400 · 14px · ink-2 · used: city link</div>
+    <div class="figtree" style="font-size:14px;color:var(--ink-2)">Coiffeur in Basel</div>
+  </div>
+
+  <div class="specimen-row">
+    <div class="specimen-meta">Figtree 400 · 13px · ink-3 · used: trust line, stat label, meta</div>
+    <div class="figtree" style="font-size:13px;color:var(--ink-3)">Über 1000 Salons · Sofortbestätigung · Kostenlos für Kunden</div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────────
+     3. BASE LAYOUT (mirror of app/[locale]/page.tsx)
+─────────────────────────────────────────────────────────────────── -->
+<div class="viz-section-label">
+  Visualization 3 of 3
+  <strong>Base layout (mobile-first, scales to desktop)</strong>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Von der Schweiz. Für dich.</p>
+    <h1 class="hero-h1">BEAUTY.<br><span class="amber">DIREKT GEBUCHT.</span></h1>
+    <p class="hero-sub">Coiffeur, Nails, Spa &amp; Massage in deiner Nähe — sofort gebucht.</p>
+
+    <div class="search-card">
+      <div class="search-row">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <span>Was suchst du?</span>
+      </div>
+      <div class="search-row">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Wo?</span>
+      </div>
+      <div class="search-row">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Wann?</span>
+      </div>
+      <div class="search-cta-wrap">
+        <button class="search-cta">Salon finden</button>
+      </div>
+    </div>
+
+    <p class="hero-trust">Über 1000 Salons · Sofortbestätigung · Kostenlos für Kunden</p>
+  </div>
+</section>
+
+<!-- EMPFOHLEN -->
+<section class="section">
+  <h2 class="section-h h-amber">Empfohlen</h2>
+  <div class="grid">
+    <div class="card-skel"></div><div class="card-skel"></div>
+    <div class="card-skel"></div><div class="card-skel"></div>
+  </div>
+</section>
+
+<!-- NEU -->
+<section class="section">
+  <h2 class="section-h h-sage">Neu auf Solen</h2>
+  <div class="grid">
+    <div class="card-skel"></div><div class="card-skel"></div>
+    <div class="card-skel"></div><div class="card-skel"></div>
+  </div>
+</section>
+
+<!-- TRENDING -->
+<section class="section">
+  <h2 class="section-h h-brand">Trending</h2>
+  <div class="grid">
+    <div class="card-skel"></div><div class="card-skel"></div>
+    <div class="card-skel"></div><div class="card-skel"></div>
+  </div>
+</section>
+
+<!-- APP CTA -->
+<section class="app-cta">
+  <div class="app-cta-inner">
+    <h2>SOLEN<br>UNTERWEGS.</h2>
+    <p>Buche und verwalte deine Termine direkt aus der Solen-App.</p>
+    <div class="phone-mock"></div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews-section">
+  <div class="reviews-h-wrap">
+    <h2 class="section-h h-blue">Stimmen aus der Community</h2>
+  </div>
+  <div class="reviews-scroll">
+    <div class="review-skel"></div>
+    <div class="review-skel"></div>
+    <div class="review-skel"></div>
+    <div class="review-skel"></div>
+    <div class="review-skel"></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="stats-inner">
+    <h2>Die Schweiz bucht mit Solen</h2>
+    <div class="stats-grid">
+      <div><div class="stat-num n-brand">1.000+</div><div class="stat-label">Salons</div></div>
+      <div><div class="stat-num" style="color:#F3A864">50K+</div><div class="stat-label">Kund:innen</div></div>
+      <div><div class="stat-num n-amber">4.7★</div><div class="stat-label">Durchschnitt</div></div>
+      <div><div class="stat-num n-sage">15</div><div class="stat-label">Städte</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BROWSE BY CITY -->
+<section class="section">
+  <h2 class="section-h h-sand">Salons nach Stadt</h2>
+  <div class="city-tabs">
+    <button class="city-tab active">Basel</button>
+    <button class="city-tab">Zürich</button>
+    <button class="city-tab">Bern</button>
+    <button class="city-tab">Genf</button>
+    <button class="city-tab">Lausanne</button>
+    <button class="city-tab">Luzern</button>
+  </div>
+  <div class="city-links">
+    <a class="city-link" href="#">Coiffeur in Basel</a>
+    <a class="city-link" href="#">Nails in Basel</a>
+    <a class="city-link" href="#">Spa in Basel</a>
+    <a class="city-link" href="#">Barber in Basel</a>
+    <a class="city-link" href="#">Makeup in Basel</a>
+    <a class="city-link" href="#">Waxing in Basel</a>
+    <a class="city-link" href="#">Massage in Basel</a>
+    <a class="city-link" href="#">Augenbrauen in Basel</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+<div class="viz-chrome" style="position:static">
+  end of preview · footer rendered separately by app/[locale]/layout.tsx
+</div>
+
+</body>
+</html>

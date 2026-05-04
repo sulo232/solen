@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { MakeupBelowGrid } from "@/components/makeup/MakeupSections";
+import { MakeupBelowGrid } from "@/components-legacy/makeup/MakeupSections";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
 

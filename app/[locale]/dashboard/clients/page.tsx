@@ -3,11 +3,11 @@
 import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { Search, User, Tag, StickyNote, ChevronLeft, Calendar, Beaker, Camera, ClipboardList } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
-import FormulaTab from "@/components/dashboard/FormulaTab";
-import ClientPhotosTab from "@/components/dashboard/ClientPhotosTab";
-import IntakeFormTab from "@/components/dashboard/IntakeFormTab";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
+import FormulaTab from "@/components-legacy/dashboard/FormulaTab";
+import ClientPhotosTab from "@/components-legacy/dashboard/ClientPhotosTab";
+import IntakeFormTab from "@/components-legacy/dashboard/IntakeFormTab";
 
 // ─────────────────────────────────────────
 // Types

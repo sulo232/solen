@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useLocale } from "next-intl";
 import { MessageCircle, ChevronDown } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 
-const ChatWindow = dynamic(() => import("@/components/ChatWindow"), {
+const ChatWindow = dynamic(() => import("@/components-legacy/ChatWindow"), {
   loading: () => <div className="flex justify-center py-12"><Spinner /></div>,
 });
 

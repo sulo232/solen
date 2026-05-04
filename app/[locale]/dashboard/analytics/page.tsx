@@ -7,14 +7,14 @@ import {
 } from "recharts";
 import { useLocale } from "next-intl";
 import { TrendingUp, TrendingDown, Calendar, Users, Scissors, UsersRound, ToggleLeft, ToggleRight } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
-import HeatmapChart from "@/components/dashboard/HeatmapChart";
-import StaffComparison from "@/components/dashboard/StaffComparison";
-import BarberLeaderboard from "@/components/dashboard/barber/BarberLeaderboard";
-import ForecastWidget from "@/components/dashboard/ForecastWidget";
-import { DateRangePicker, type DateRange } from "@/components/ui/DateRangePicker";
-import { ExportButton } from "@/components/ui/ExportButton";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
+import HeatmapChart from "@/components-legacy/dashboard/HeatmapChart";
+import StaffComparison from "@/components-legacy/dashboard/StaffComparison";
+import BarberLeaderboard from "@/components-legacy/dashboard/barber/BarberLeaderboard";
+import ForecastWidget from "@/components-legacy/dashboard/ForecastWidget";
+import { DateRangePicker, type DateRange } from "@/components-legacy/ui/DateRangePicker";
+import { ExportButton } from "@/components-legacy/ui/ExportButton";
 import { useExportCSV } from "@/hooks/useExportCSV";
 import { formatCurrency } from "@/lib/format-currency";
 

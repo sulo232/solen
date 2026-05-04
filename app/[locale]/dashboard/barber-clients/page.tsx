@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import BarberLeaderboard from "@/components/dashboard/barber/BarberLeaderboard";
-import SmartReminderConfig from "@/components/dashboard/barber/SmartReminderConfig";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import BarberLeaderboard from "@/components-legacy/dashboard/barber/BarberLeaderboard";
+import SmartReminderConfig from "@/components-legacy/dashboard/barber/SmartReminderConfig";
 
 export default function BarberClientsPage() {
   const [salonId, setSalonId] = useState<string | undefined>();

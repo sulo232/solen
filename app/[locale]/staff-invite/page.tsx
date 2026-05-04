@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Users, Check, AlertTriangle } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 export default function StaffInvitePage() {
   const searchParams = useSearchParams();

@@ -11,9 +11,9 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import SignatureLockup from "@/components/ui/SignatureLockup";
-import EmptyStateFTU from "@/components/ui/EmptyStateFTU";
-import SalonCard from "@/components/SalonCard";
+import SignatureLockup from "@/components-legacy/ui/SignatureLockup";
+import EmptyStateFTU from "@/components-legacy/ui/EmptyStateFTU";
+import SalonCard from "@/components-legacy/SalonCard";
 
 const HeartIllustration = () => (
   <svg

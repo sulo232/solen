@@ -10,11 +10,11 @@ import type { SalonCategory } from "@/lib/types";
 // ─────────────────────────────────────────
 
 import { CATEGORY_OPTIONS } from "@/lib/constants/categories";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import OffPeakManager from "@/components/dashboard/OffPeakManager";
-import ExpandableTabs from "@/components/ui/ExpandableTabs";
-import SalonCard from "@/components/SalonCard";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import OffPeakManager from "@/components-legacy/dashboard/OffPeakManager";
+import ExpandableTabs from "@/components-legacy/ui/ExpandableTabs";
+import SalonCard from "@/components-legacy/SalonCard";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { useLocale } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
 import type { Salon } from "@/lib/types";

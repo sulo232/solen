@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Check, X, AlertTriangle, ArrowLeft, Receipt, Clock } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 interface DisputeData {
   id: string;

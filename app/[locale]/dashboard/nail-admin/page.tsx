@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { Sparkles, Tag, Layers, ShoppingBag, ImageIcon, Bell } from "lucide-react";
 import { useTranslations } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import AiArtGenerator from "@/components/dashboard/nail/AiArtGenerator";
-import AiArtGallery from "@/components/dashboard/nail/AiArtGallery";
-import DynamicPricingConfig from "@/components/dashboard/nail/DynamicPricingConfig";
-import StationManager from "@/components/dashboard/nail/StationManager";
-import RetailManager from "@/components/dashboard/nail/RetailManager";
-import RetailSalesDashboard from "@/components/dashboard/nail/RetailSalesDashboard";
-import InfillReminderConfig from "@/components/dashboard/nail/InfillReminderConfig";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import AiArtGenerator from "@/components-legacy/dashboard/nail/AiArtGenerator";
+import AiArtGallery from "@/components-legacy/dashboard/nail/AiArtGallery";
+import DynamicPricingConfig from "@/components-legacy/dashboard/nail/DynamicPricingConfig";
+import StationManager from "@/components-legacy/dashboard/nail/StationManager";
+import RetailManager from "@/components-legacy/dashboard/nail/RetailManager";
+import RetailSalesDashboard from "@/components-legacy/dashboard/nail/RetailSalesDashboard";
+import InfillReminderConfig from "@/components-legacy/dashboard/nail/InfillReminderConfig";
 
 type Tab = "ai" | "gallery" | "prices" | "stations" | "retail" | "sales" | "reminders";
 

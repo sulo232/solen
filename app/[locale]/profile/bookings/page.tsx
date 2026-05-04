@@ -1,6 +1,6 @@
 import { createServerSupabaseClient } from '@/lib/supabase';
 import { redirect } from 'next/navigation';
-import { BookingsList } from '@/components/booking';
+import { BookingsList } from '@/components-legacy/booking';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';

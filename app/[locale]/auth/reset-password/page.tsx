@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Lock, Eye, EyeOff, Check } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
-import Spinner from "@/components/ui/Spinner";
-import { useToast } from "@/components/ui/Toast";
+import Spinner from "@/components-legacy/ui/Spinner";
+import { useToast } from "@/components-legacy/ui/Toast";
 
 export default function ResetPasswordPage() {
   const locale = useLocale();

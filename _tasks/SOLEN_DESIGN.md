@@ -367,6 +367,8 @@ All buttons = Fraunces 700 UPPERCASE, `0.04em` tracking, `--r99` pill.
 
 ## 11. SEARCH BAR (Fresha pattern)
 
+> **⚠️ RETIRED 2026-05-03** — This section describes a horizontal-segmented search pattern explicitly banned by LIVE_TRUTH §7 (Q49 stacked Was/Wo/Wann is the locked replacement: "Do NOT replace with horizontal segmented search bar"). Also references DM Sans (retired font per LIVE_TRUTH §6). Kept here for historical context only. **Do not implement this pattern.** See `_tasks/SOLEN_LIVE_TRUTH.md` §7 for current hero search spec.
+
 Segmented horizontal pill with coral CTA at the end.
 
 ```
@@ -385,6 +387,8 @@ Segmented horizontal pill with coral CTA at the end.
 ---
 
 ## 12. SECTION PATTERNS
+
+> **⚠️ RETIRED 2026-05-03** — This section references Bebas Neue (retired display font, replaced by Anton per Q23/Q48) and Fraunces (retired headline font, replaced by Anton+Figtree split). The homepage section order described here is also stale (predates the V2 rebuild starting 2026-05-03). Kept for historical context. See `_tasks/SOLEN_LIVE_TRUTH.md` §6 (typography) and `_tasks/V2_REBUILD_LOG.md` "In-flight" section for the current homepage rebuild.
 
 Every section uses the `.sec` wrapper (`position: relative; overflow: hidden`) and `.w` inner (`max-width: 1200px; margin: 0 auto; padding: 0 48px`).
 

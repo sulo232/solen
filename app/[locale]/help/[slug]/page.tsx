@@ -5,8 +5,8 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import { useParams } from "next/navigation";
-import Spinner from "@/components/ui/Spinner";
-import EmptyState from "@/components/ui/EmptyState";
+import Spinner from "@/components-legacy/ui/Spinner";
+import EmptyState from "@/components-legacy/ui/EmptyState";
 
 type HelpArticle = {
   id: string;

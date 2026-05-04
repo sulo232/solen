@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import HomePage from "@/components/HomePage";
-import { generateWebsiteSchema, buildAlternates } from "@/lib/seo";
+import { buildAlternates } from "@/lib/seo";
 
 const TITLES: Record<string, string> = {
   de: "Solen — Finde & buche die besten Salons in der Schweiz",
@@ -48,115 +47,28 @@ export async function generateMetadata({
   };
 }
 
-import { createServerSupabaseClient } from "@/lib/supabase";
-
-export const revalidate = 300; // Cache the SSR page for 5 minutes (ISR)
+/**
+ * Homepage — V2 rebuild SHELL (2026-05-03).
+ *
+ * Intentionally empty body. The previous v2 hero attempt was deleted because
+ * it violated LIVE_TRUTH §7 (horizontal-segmented search bar — banned), used
+ * plum that didn't match the palette, and briefly reintroduced cream-as-page-bg
+ * (retired per CLAUDE.md). Better to have a clean slate than to keep the broken
+ * attempt as a reference the AI might pull from.
+ *
+ * Awaiting external HTML design mockup from user (will live at
+ * `public/solen-v2-design.html` or similar). When mockup arrives:
+ *   1. Parse the HTML, extract spec, compare against LIVE_TRUTH "locked & surviving"
+ *      table in `_tasks/V2_REBUILD_LOG.md` — flag conflicts BEFORE implementing
+ *   2. Implement homepage hero first as a route-scoped component in
+ *      `app/[locale]/_components/`, judge in isolation
+ *   3. Add other sections one at a time once hero locks
+ *
+ * Header, footer, cookie banner come from `app/[locale]/layout.tsx` (still legacy
+ * `components-legacy/layout/*` until the route-by-route migration reaches chrome).
+ */
+export const revalidate = 300;
 
 export default async function Page() {
-  const jsonLd = generateWebsiteSchema("de");
-  
-  // SSR Critical Data
-  const supabase = await createServerSupabaseClient();
-  
-  // Full cols with services join — only used for popular/new salons where price display matters
-  const SALON_COLS = "id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, postal_code, booking_confirmation_mode, services(price)";
-  // Lean cols without services join — used for category carousel queries (much faster)
-  const SALON_COLS_LEAN = "id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, postal_code, booking_confirmation_mode";
-
-  // Parallel DB queries — wrapped with 8s timeout to prevent SSR hang
-  const withTimeout = <T,>(promise: PromiseLike<T>, fallback: T): Promise<T> =>
-    Promise.race([Promise.resolve(promise), new Promise<T>((resolve) => setTimeout(() => resolve(fallback), 8000))]);
-
-  const emptyResult = { data: null, error: null } as any;
-  const emptyCount = { count: 0, error: null } as any;
-
-  const [
-    { data: popularData, error: pError },
-    { data: lastMinuteData, error: lmError },
-    { data: newSalonsData, error: nsError },
-    { data: sectionsData },
-    { count: coordsCount },
-    { data: trendingData },
-    { data: citiesData },
-    // Per-category salon lists for homepage carousels (lean — no services join)
-    { data: coiffeurData },
-    { data: nailsData },
-    { data: barbershopData },
-    { data: makeupData },
-    { data: waxingData },
-  ] = await Promise.all([
-    withTimeout(supabase.from("salons").select(SALON_COLS).eq("is_active", true).eq("is_test", false).order("average_rating", { ascending: false }).limit(24), emptyResult),
-    withTimeout(supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, last_minute_discount_percent, quartier").eq("is_active", true).eq("is_test", false).gt("last_minute_discount_percent", 0).order("last_minute_discount_percent", { ascending: false }).limit(4), emptyResult),
-    withTimeout(supabase.from("salons").select(SALON_COLS).eq("is_active", true).eq("is_test", false).order("created_at", { ascending: false }).limit(6), emptyResult),
-    withTimeout(supabase.from("site_settings").select("value").eq("key", "homepage_sections").single().then((res) => ({ data: res.error ? null : res.data })), { data: null }),
-    withTimeout(supabase.from("salons").select("*", { count: "exact", head: true }).eq("is_active", true).eq("is_test", false).not("latitude", "is", null).gt("latitude", 0), emptyCount),
-    withTimeout(supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, solen_score, is_active").eq("is_active", true).eq("is_test", false).order("solen_score", { ascending: false, nullsFirst: false }).limit(8), emptyResult),
-    withTimeout(supabase.from("cities").select("id, slug"), emptyResult),
-    // Category-specific queries — lean cols, no services join
-    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["coiffeur"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
-    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["nails"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
-    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["barbershop"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
-    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["makeup"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
-    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["waxing"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
-  ]);
-
-  if (pError) console.error("SSR popular salons query failed:", pError.message);
-  if (lmError) console.error("SSR last-minute query failed:", lmError.message);
-  if (nsError) console.error("SSR new salons query failed:", nsError.message);
-
-  // Build city slug lookup map
-  const cityMap: Record<string, string> = {};
-  (citiesData ?? []).forEach((c: { id: string; slug: string }) => { cityMap[c.id] = c.slug; });
-
-  // Process salons: add city_slug + compute min_price from joined services, then strip services
-  const addCitySlug = (salons: any[]) => salons.map((s) => {
-    if (!s.services) return { ...s, city_slug: s.city_id ? (cityMap[s.city_id] ?? null) : null };
-    const prices = (s.services ?? []).map((sv: { price: number }) => sv.price).filter((p: number) => typeof p === "number" && p > 0);
-    const min_price = prices.length > 0 ? Math.min(...prices) : null;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { services: _services, ...rest } = s;
-    return { ...rest, min_price, city_slug: s.city_id ? (cityMap[s.city_id] ?? null) : null };
-  });
-
-  // Deduplicate trending against popular
-  const popularIds = new Set((popularData ?? []).map((s: any) => s.id));
-  const dedupedTrending = (trendingData ?? [])
-    .filter((s: any) => !popularIds.has(s.id))
-    .slice(0, 6);
-
-  // Category counts — pass empty object (search bar handles gracefully; avoids full-table scan)
-  const categoryCounts: Record<string, number> = {};
-
-  const initialData = {
-    salons: addCitySlug((popularData as unknown as any[]) ?? []),
-    lastMinuteSlots: (lastMinuteData as unknown as any[]) ?? [],
-    newSalons: (newSalonsData as unknown as any[]) ?? [],
-    trendingSalons: dedupedTrending as unknown as any[],
-    categoryCounts,
-    salonsWithCoords: coordsCount ?? 0,
-    sections: (sectionsData?.value as Record<string, boolean>) ?? {
-      trending: true, nearby: true, new_salons: true,
-      rebook: true, reviews: true, last_minute: true, featured: true,
-      social_proof: true, partner_cta: true,
-    },
-    categorySalons: {
-      coiffeur:   addCitySlug((coiffeurData   as unknown as any[]) ?? []),
-      nails:      addCitySlug((nailsData      as unknown as any[]) ?? []),
-      barbershop: addCitySlug((barbershopData as unknown as any[]) ?? []),
-      makeup:     addCitySlug((makeupData     as unknown as any[]) ?? []),
-      waxing:     addCitySlug((waxingData     as unknown as any[]) ?? []),
-    },
-  };
-
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <div>
-        <HomePage initialData={initialData} />
-      </div>
-    </>
-  );
+  return <></>;
 }

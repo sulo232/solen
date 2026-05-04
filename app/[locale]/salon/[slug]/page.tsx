@@ -12,30 +12,30 @@ import {
   Facebook, Globe, Gift, Package, Share2
 } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
-import StaffSection from "@/components/salon/StaffSection";
-import StaffPortfolio from "@/components/StaffPortfolio";
-import SimilarSalons from "@/components/salon/SimilarSalons";
-import WaitTimeDisplay from "@/components/barber/WaitTimeDisplay";
-import RemoteQueueJoin from "@/components/barber/RemoteQueueJoin";
-import ExpressRebook from "@/components/barber/ExpressRebook";
-import Spinner from "@/components/ui/Spinner";
-import { ReportContentButton } from "@/components/ui/ReportContentButton";
-import { trackSalonView } from "@/components/RecentlyViewed";
+import StaffSection from "@/components-legacy/salon/StaffSection";
+import StaffPortfolio from "@/components-legacy/StaffPortfolio";
+import SimilarSalons from "@/components-legacy/salon/SimilarSalons";
+import WaitTimeDisplay from "@/components-legacy/barber/WaitTimeDisplay";
+import RemoteQueueJoin from "@/components-legacy/barber/RemoteQueueJoin";
+import ExpressRebook from "@/components-legacy/barber/ExpressRebook";
+import Spinner from "@/components-legacy/ui/Spinner";
+import { ReportContentButton } from "@/components-legacy/ui/ReportContentButton";
+import { trackSalonView } from "@/components-legacy/RecentlyViewed";
 import { motion } from "framer-motion";
 import { usePostHog } from "posthog-js/react";
 import type { Salon, Service, StaffMember, Review, SalonCategory, OpeningHours } from "@/lib/types";
 import { generateSalonSchema } from "@/lib/seo";
-import SalonSectionNav from "@/components/salon/SalonSectionNav";
-import SalonPageSkeleton from "@/components/salon/SalonPageSkeleton";
+import SalonSectionNav from "@/components-legacy/salon/SalonSectionNav";
+import SalonPageSkeleton from "@/components-legacy/salon/SalonPageSkeleton";
 
 // ── Extracted components ──
-import SalonHero from "@/components/salon/SalonHero";
-import SalonOpeningHours from "@/components/salon/SalonOpeningHours";
-import SalonServices from "@/components/salon/SalonServices";
-import SalonReviews from "@/components/salon/SalonReviews";
-import SalonReviewsSummary from "@/components/salon/SalonReviewsSummary";
-import SalonSidebar from "@/components/salon/SalonSidebar";
-import SalonMobileCTA from "@/components/salon/SalonMobileCTA";
+import SalonHero from "@/components-legacy/salon/SalonHero";
+import SalonOpeningHours from "@/components-legacy/salon/SalonOpeningHours";
+import SalonServices from "@/components-legacy/salon/SalonServices";
+import SalonReviews from "@/components-legacy/salon/SalonReviews";
+import SalonReviewsSummary from "@/components-legacy/salon/SalonReviewsSummary";
+import SalonSidebar from "@/components-legacy/salon/SalonSidebar";
+import SalonMobileCTA from "@/components-legacy/salon/SalonMobileCTA";
 
 
 

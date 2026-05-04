@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SpaBelowGrid } from "@/components/spa/SpaSections";
+import { SpaBelowGrid } from "@/components-legacy/spa/SpaSections";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
 

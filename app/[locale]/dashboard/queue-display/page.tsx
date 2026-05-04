@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import LiveQueuePanel from "@/components/dashboard/barber/LiveQueuePanel";
+import LiveQueuePanel from "@/components-legacy/dashboard/barber/LiveQueuePanel";
 
 export default function QueueDisplayPage() {
   const locale = useLocale();

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import SplitView from "@/components/search/SplitView";
+import SplitView from "@/components-legacy/search/SplitView";
 import { buildAlternates } from "@/lib/seo";
 
 interface Props {
