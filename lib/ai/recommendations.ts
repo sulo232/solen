@@ -2,7 +2,7 @@
  * AI Recommendations Utility
  *
  * Fetches baseline signals for AI-powered salon recommendations:
- * - User location (from Vercel headers x-vercel-ip-city)
+ * - User location (from Netlify x-nf-geo or Vercel x-vercel-ip-city)
  * - Time of day
  * - Day of week
  */
@@ -27,12 +27,36 @@ export function getTimeOfDay(): RecommendationSignals['timeOfDay'] {
 }
 
 /**
+ * Extract user city from platform-specific geolocation headers.
+ * Tries Netlify's `x-nf-geo` (base64-encoded JSON) first, then falls back
+ * to Vercel's `x-vercel-ip-city`. Returns null when neither is present.
+ */
+function extractLocation(headers: Headers): string | null {
+  const netlifyGeo = headers.get('x-nf-geo');
+  if (netlifyGeo) {
+    try {
+      const decoded = Buffer.from(netlifyGeo, 'base64').toString('utf8');
+      const parsed = JSON.parse(decoded) as {
+        city?: string | { names?: { en?: string } };
+      };
+      const city =
+        typeof parsed.city === 'string'
+          ? parsed.city
+          : parsed.city?.names?.en;
+      if (city) return city;
+    } catch {
+      // malformed header — fall through to Vercel/null
+    }
+  }
+  return headers.get('x-vercel-ip-city') || null;
+}
+
+/**
  * Extract baseline recommendation signals from request headers
  * Used by /api/recommendations to contextualize AI engine
  */
 export function extractSignalsFromHeaders(headers: Headers): RecommendationSignals {
-  // Extract location from Vercel geo headers
-  const location = headers.get('x-vercel-ip-city') || null;
+  const location = extractLocation(headers);
 
   // Get current time context
   const now = new Date();

@@ -56,7 +56,7 @@ Two sides:
 | Validation | Zod (`lib/validations.ts`) |
 | Icons | `lucide-react` |
 | Fonts | Bebas Neue + Syne + DM Sans (Google Fonts) |
-| Deploy | Vercel |
+| Deploy | Netlify (migrated from Vercel 2026-05-06) |
 | PWA | `manifest.json` + `sw.js` |
 | AI | Gemini (`@google/generative-ai`), fal.ai (`@fal-ai/client`) |
 | Search | pgvector (Supabase) |
@@ -107,7 +107,7 @@ solen/
 ```bash
 npm install          # Install deps
 npm run dev          # Start dev server (port 3000)
-npm run build        # Production build (Vercel handles on deploy)
+npm run build        # Production build (Netlify handles on deploy)
 npm run lint         # Lint
 ```
 
@@ -119,7 +119,7 @@ npm run lint         # Lint
 
 ## 5. Deployment
 
-- **Platform:** Vercel (auto-deploys from `main`)
+- **Platform:** Netlify (auto-deploys from `main`). Site: `solen-ch.netlify.app` → custom domain `solen.ch`. Cron jobs run via GitHub Actions (`.github/workflows/cron-jobs.yml`).
 - **Dev server:** port 3000
 
 **After every `git push`:**
