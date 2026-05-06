@@ -38,6 +38,9 @@ tsconfig.tsbuildinfo
 # Vercel
 .vercel/
 
+# Netlify
+.netlify/
+
 # Claude / Agent State
 .claude/
 .agent-*
