@@ -122,13 +122,10 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
   ```
 - **NEVER** change an existing API's response structure without grepping for all `fetch("/api/that-route")` calls first
 
-## Rule 12: SINGLE DESIGN SYSTEM
-- There is only ONE design system: **V5** (see `_rules/UI_RULES.md`)
-- Colors: Terracotta Coral `#E8624A` (primary, `s-coral`), Amber `#D4870A` (accent, `s-amber`), Blue `#6BA3C8` (accent, `s-blue`), Warm Ink `#1A1209` (text, `s-ink`)
-- Fonts: Bebas Neue (display ≥40px), Syne (headings), DM Sans (body + data with `data-text`)
-- The old teal/coral design (`#38B2AC`, `#FF6B6B`) and the monolith wine-red design are **RETIRED**
-- **NEVER** use teal, old coral `#FF6B6B`, wine red, gold, DM Serif Display, or Space Grotesk in any new code
-- **NEVER** reference `index.html` or `public/home.html` — they no longer exist
+## Rule 12: DESIGN SYSTEM — IN FLUX
+- The design system is being iterated. **Don't cite locked palette / fonts / patterns as authoritative.**
+- For current values, read `_tasks/SOLEN_DESIGN.md` (if it's been updated) or ask the user.
+- Previous V5 spec is archived at `_tasks/completed/rules-locked-design-tokens-2026-05-06.md` for restoration once a new system stabilizes.
 
 ---
 

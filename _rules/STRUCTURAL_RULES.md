@@ -80,19 +80,11 @@ Feature: [Name]
 
 ---
 
-## Rule 43: INTERACTION STANDARD — HOVER, ACTIVE, FOCUS
+## Rule 43: INTERACTION STANDARD — IN FLUX
 
-> **INCIDENT**: Cards used 5 different hover patterns. Buttons used `hover:bg-s-coral/90` everywhere (banned) instead of `hover:brightness-[1.06]`.
+The hover / active / focus patterns are being iterated alongside the design system. **Don't cite the previous locked patterns** (`hover:brightness-[1.06]`, `hover:-translate-y-[5px]`, specific `s-coral` references, etc.) as authoritative — ask before assuming, or read `_tasks/SOLEN_DESIGN.md` for current rules.
 
-> For complete interaction patterns with code examples, see `_rules/SOLEN_DESIGN_SYSTEM.md` Section 8.
-
-**Quick reference:**
-- **Cards**: `hover:-translate-y-[5px]` + shadow lift. NEVER: `hover:scale-*`, `hover:opacity-*`
-- **CTA Buttons**: `hover:brightness-[1.06] active:scale-[0.98]`. NEVER: `hover:bg-s-coral/90`
-- **Ghost Buttons**: `hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98]`
-- **Text Links**: `hover:text-s-coral transition-colors duration-150`
-- **Filter Pills**: Active = `bg-s-coral text-white`. Inactive = `bg-s-ink/[0.05] hover:bg-s-ink/[0.09]`
-- **Images in cards**: No separate hover effect — card elevation handles it
+Previous spec archived at `_tasks/completed/rules-locked-design-tokens-2026-05-06.md`.
 
 ---
 
@@ -192,16 +184,11 @@ If you cannot satisfy all items, move to `components/_staging/` and log in `_tas
 
 ---
 
-## Rule 47: HOMEPAGE UI/UX OVERHAUL SPEC (V5) STRICT ENFORCEMENT
+## Rule 47: HOMEPAGE SPEC — IN FLUX
 
-> **CONTEXT**: The Solen.ch homepage underwent a major redesign to adhere strictly to V5.
+The homepage spec (V5) is being replaced. **Don't cite specific hex values, font sizes, or component patterns from the previous V5 spec as authoritative.** Ask the user, or read `_tasks/SOLEN_DESIGN.md` for current rules.
 
-1. **Aesthetics:** Page background is Warm Beige (`#F5F0EB`). NO shadows on cards (use simple 1px borders). ALL interactive elements must be pill shapes. Blobs are RETIRED.
-2. **Hero:** Solid `#F5F0EB` background (no images/fade-ups). Horizontal scroll-snap featured salon carousel. Header is Bebas Neue 42px.
-3. **Header/Navigation:** Max height `56px`. Background is `#F5F0EB` glass frost. Header morphs: when hero search bar scrolls out of view, header shows compact Search Pill. `Zuruck` button must never render on `/`.
-4. **Icons:** Category SVG icons render perfectly solid in Coral (`#E8735A`) without opacity layers.
-5. **Footer:** Background is strictly `#2C2825`. Leftover trust pills removed. Instagram natively inside legal links.
-6. **Mobile Tab Bar:** Background `#FFFFFF` glass frost, 1px top border (no shadow), active states Coral (`#E8735A`), `z-index: 50`.
+Previous V5 spec archived at `_tasks/completed/rules-locked-design-tokens-2026-05-06.md`.
 
 ---
 
