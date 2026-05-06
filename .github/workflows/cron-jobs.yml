@@ -1,0 +1,138 @@
+name: Solen cron jobs
+
+# Replaces the 19 vercel.json cron jobs after migrating off Vercel.
+# Each job is gated by its cron schedule via `if:` and pings the listed
+# /api endpoints with the CRON_SECRET bearer header. UTC schedules.
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+    - cron: '*/30 * * * *'
+    - cron: '0 * * * *'
+    - cron: '0 */6 * * *'
+    - cron: '0 2 * * *'
+    - cron: '0 3 * * *'
+    - cron: '0 8 * * *'
+    - cron: '0 9 * * *'
+    - cron: '0 10 * * *'
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+
+jobs:
+
+  every-15-min:
+    if: github.event.schedule == '*/15 * * * *'
+    name: Every 15 min · auto-complete, pending-timeout
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/auto-complete,/api/cron/pending-timeout
+          secret: ${{ secrets.CRON_SECRET }}
+
+  every-30-min:
+    if: github.event.schedule == '*/30 * * * *'
+    name: Every 30 min · late-cancel, sms-reminders, no-show
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/late-cancel,/api/cron/sms-reminders,/api/cron/no-show
+          secret: ${{ secrets.CRON_SECRET }}
+
+  hourly:
+    if: github.event.schedule == '0 * * * *'
+    name: Hourly · reminders, review-prompt, pre-charge
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/reminders,/api/cron/review-prompt,/api/cron/pre-charge
+          secret: ${{ secrets.CRON_SECRET }}
+
+  every-6-hours:
+    if: github.event.schedule == '0 */6 * * *'
+    name: Every 6h · release-deposits, release-payments
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/release-deposits,/api/cron/release-payments
+          secret: ${{ secrets.CRON_SECRET }}
+
+  daily-02-utc:
+    if: github.event.schedule == '0 2 * * *'
+    name: Daily 02:00 UTC · generate-slots
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/generate-slots
+          secret: ${{ secrets.CRON_SECRET }}
+
+  daily-03-utc:
+    if: github.event.schedule == '0 3 * * *'
+    name: Daily 03:00 UTC · solen-score recalc (POST), process-deletions (GET)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: solen-score recalculate (POST)
+        uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/admin/solen-score/recalculate
+          secret: ${{ secrets.CRON_SECRET }}
+          method: POST
+      - name: process-deletions (GET)
+        uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/process-deletions
+          secret: ${{ secrets.CRON_SECRET }}
+
+  daily-08-utc:
+    if: github.event.schedule == '0 8 * * *'
+    name: Daily 08:00 UTC · barber-smart-reminders
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/barber-smart-reminders
+          secret: ${{ secrets.CRON_SECRET }}
+
+  daily-09-utc:
+    if: github.event.schedule == '0 9 * * *'
+    name: Daily 09:00 UTC · salon-onboarding, birthday-messages
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/salon-onboarding,/api/cron/birthday-messages
+          secret: ${{ secrets.CRON_SECRET }}
+
+  daily-10-utc:
+    if: github.event.schedule == '0 10 * * *'
+    name: Daily 10:00 UTC · welcome-series, nail-infill-reminders
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/welcome-series,/api/cron/nail-infill-reminders
+          secret: ${{ secrets.CRON_SECRET }}
+
+  daily-11-utc:
+    if: github.event.schedule == '0 11 * * *'
+    name: Daily 11:00 UTC · rebooking-nudge
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/rebooking-nudge
+          secret: ${{ secrets.CRON_SECRET }}

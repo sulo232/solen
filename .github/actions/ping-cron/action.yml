@@ -1,0 +1,55 @@
+name: Ping Solen cron endpoints
+description: POSTs to one or more /api paths with the CRON_SECRET bearer header.
+
+inputs:
+  paths:
+    description: Comma-separated /api paths to ping
+    required: true
+  secret:
+    description: CRON_SECRET (passed in to avoid exposing the secrets context)
+    required: true
+  base-url:
+    description: Base URL for the Solen site
+    required: false
+    default: https://solen.ch
+  method:
+    description: HTTP method to use (GET or POST)
+    required: false
+    default: GET
+
+runs:
+  using: composite
+  steps:
+    - name: Ping endpoints
+      shell: bash
+      env:
+        PATHS: ${{ inputs.paths }}
+        CRON_SECRET: ${{ inputs.secret }}
+        BASE_URL: ${{ inputs.base-url }}
+        METHOD: ${{ inputs.method }}
+      run: |
+        if [ -z "$CRON_SECRET" ]; then
+          echo "::error::CRON_SECRET input is empty (is the GitHub Actions secret set?)"
+          exit 1
+        fi
+        IFS=',' read -ra arr <<< "$PATHS"
+        fail=0
+        for p in "${arr[@]}"; do
+          url="${BASE_URL}${p}"
+          echo "→ ${METHOD} $url"
+          status=$(curl -sS -o /tmp/body -w "%{http_code}" -X "${METHOD}" \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            -H "Content-Type: application/json" \
+            --max-time 280 \
+            "$url" || echo "000")
+          echo "   HTTP $status"
+          if [ "$status" -lt 200 ] || [ "$status" -ge 400 ]; then
+            echo "::warning::$url returned $status"
+            head -c 500 /tmp/body || true
+            echo
+            fail=$((fail+1))
+          fi
+        done
+        echo "Completed with $fail soft failure(s) of ${#arr[@]} endpoint(s)."
+        # Soft-fail (warnings only) so a single bad endpoint doesn't suppress the others.
+        # Switch to `exit $fail` if you want strict failures.
