@@ -7,7 +7,7 @@
 ## ✅ Already Done
 
 - [x] Gemini API Key → `.env.local` ✅
-- [x] Resend API Key → `.env.local` ✅ (just set: `re_QnpoWHUi_LB9G4W1ZLmbDbRnWkUL94iPR`)
+- [x] Resend API Key → `.env.local` ✅ (just set: `REDACTED_RESEND_KEY_ROTATED_2026-05-06`)
 - [x] Supabase URL + Keys → `.env.local` ✅
 - [x] Supabase Storage `salon-photos` bucket ✅
 
@@ -51,7 +51,7 @@ Host:            smtp.resend.com
 Port number:     465
 Minimum interval: 60
 Username:        resend
-Password:        re_QnpoWHUi_LB9G4W1ZLmbDbRnWkUL94iPR
+Password:        REDACTED_RESEND_KEY_ROTATED_2026-05-06
 ```
 
 5. Click **Save**
@@ -111,8 +111,8 @@ Body:
 
 | Key | Value | Environments |
 |---|---|---|
-| `GEMINI_API_KEY` | `AIzaSyAsyvIz8xnWio5F4-BTcbZkMxEC0rpZGyM` | ✅ Production ✅ Preview ✅ Development |
-| `RESEND_API_KEY` | `re_QnpoWHUi_LB9G4W1ZLmbDbRnWkUL94iPR` | ✅ Production ✅ Preview ✅ Development |
+| `GEMINI_API_KEY` | `REDACTED_GEMINI_KEY_ROTATED_2026-05-06` | ✅ Production ✅ Preview ✅ Development |
+| `RESEND_API_KEY` | `REDACTED_RESEND_KEY_ROTATED_2026-05-06` | ✅ Production ✅ Preview ✅ Development |
 
 3. Click **Save** for each
 
