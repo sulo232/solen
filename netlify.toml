@@ -1,0 +1,35 @@
+# Netlify configuration for Solen
+# Migrated from vercel.json on 2026-05-06.
+# Cron jobs from vercel.json are NOT yet migrated — see _tasks/INCOMPLETE_FEATURES.md.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Next.js Runtime — handles SSR / ISR / middleware / image optimization.
+# Netlify auto-installs this for Next.js projects, but pinning it is safer.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# ----------------------------------------------------------------------------
+# Security headers (mirrored from vercel.json)
+# ----------------------------------------------------------------------------
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-DNS-Prefetch-Control = "on"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(self), payment=(self)"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Cache-Control = "no-store, no-cache, must-revalidate"

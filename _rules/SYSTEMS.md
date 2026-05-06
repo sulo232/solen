@@ -12,7 +12,7 @@
 | Compare code to Figma / audit accuracy | **Figma Sync** | `_rules/FIGMA_CODE_SYNC.md` |
 | Check for visual regressions after changes | **Playwright** | `playwright.config.ts` |
 | Fix a visual bug / something looks wrong | **QA Registry** | `_tasks/VISUAL_QA_REGISTRY.md` |
-| Wrong color / font / spacing / token | **Design Tokens** | `_rules/UI_RULES.md` |
+| Wrong color / font / spacing / token | **Design Tokens** | `_tasks/SOLEN_DESIGN.md` |
 | Animation / hover / interaction polish | **Animation** | `emil-design-eng` skill |
 | Build a feature / new page / API route | **Feature Dev** | `_rules/CODE_SAFETY.md` |
 
@@ -79,17 +79,11 @@ Persistent log of visual bugs. Any agent can read it, fix issues, mark them done
 
 ---
 
-## 5. Design Tokens
+## 5. Design Tokens — IN FLUX
 
-All code must use design tokens. No arbitrary hex, no wrong fonts, no banned patterns.
+The design system is being iterated. **Don't cite the previous locked tokens** (`s-coral` hexes, `s-ink`, banned-class lists, etc.) **as authoritative.** Ask the user, or read `_tasks/SOLEN_DESIGN.md` for current values.
 
-**Component specs:** `_rules/DESIGN_SPEC.md` — the complete design system with exact values for every component, color, shadow, spacing, animation, and interaction. **Read the relevant section BEFORE implementing any component.**
-**Tailwind mapping:** `tailwind.config.js` (tokens), `app/globals.css` (CSS vars).
-**Rules:** `_rules/UI_RULES.md`, `_rules/SOLEN_DESIGN_SYSTEM.md`.
-
-**Key tokens:** `s-coral` (#E8735A accent, #C05038 button, #B84A35 text), `s-ink` (#222222), `s-amber`, `s-blue`. `rounded-card` (16px), `rounded-btn` (99px). `shadow-elevation-1/2/3`. See `_rules/DESIGN_SPEC.md` for all values.
-
-**Banned:** `shadow-sm/md/lg`, `hover:bg-s-coral/90`, `transition-all`, `bg-white`, `text-black`, `rounded-lg`, `ease-in` on enters, `duration-500+` on UI.
+Previous spec archived at `_tasks/completed/rules-locked-design-tokens-2026-05-06.md`. Tailwind / CSS implementation still lives in `tailwind.config.js` + `app/globals.css` — those are the actual code, not anchors.
 
 ---
 

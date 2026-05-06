@@ -1,3 +1,9 @@
+> ⚠️ **STALE — REFERENCES RETIRED DESIGN SYSTEM** (flagged 2026-05-06)
+>
+> This file references the previous V5 design tokens (coral hexes, Bebas Neue, locked component patterns, etc.) which are currently **in flux**. **Don't cite values or rules from this file as authoritative.** Read `_tasks/SOLEN_DESIGN.md` for current state, or ask the user. Archived context: `_tasks/completed/rules-locked-design-tokens-2026-05-06.md`.
+
+---
+
 # Spec: Homepage Hero — Desktop
 > **Source:** Figma node `64:5109` "Revised Hero — Desktop 1200" — extracted 2026-04-12
 > **File:** `cInKwtgkD8TjUSSLDT40eF`
