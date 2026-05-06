@@ -83,7 +83,7 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 
 - **ALWAYS** read the existing file content FIRST before editing
 - **ALWAYS** use existing components (`DashboardLayout`, `SalonCard`, `Spinner`, etc.) — do NOT create replacements
-- **ALWAYS** match the existing styling patterns (read `_rules/UI_RULES.md` + look at `dashboard/page.tsx` for reference)
+- **ALWAYS** match the existing styling patterns (read `_tasks/SOLEN_DESIGN.md` + look at existing pages like `dashboard/page.tsx` for reference)
 - **NEVER** replace a working page with a new one built from scratch
 - **NEVER** create a new layout component when `DashboardLayout` already exists
 - **NEVER** create a new card component when `SalonCard` or the dashboard card pattern already exists

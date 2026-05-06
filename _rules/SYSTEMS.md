@@ -12,7 +12,7 @@
 | Compare code to Figma / audit accuracy | **Figma Sync** | `_rules/FIGMA_CODE_SYNC.md` |
 | Check for visual regressions after changes | **Playwright** | `playwright.config.ts` |
 | Fix a visual bug / something looks wrong | **QA Registry** | `_tasks/VISUAL_QA_REGISTRY.md` |
-| Wrong color / font / spacing / token | **Design Tokens** | `_rules/UI_RULES.md` |
+| Wrong color / font / spacing / token | **Design Tokens** | `_tasks/SOLEN_DESIGN.md` |
 | Animation / hover / interaction polish | **Animation** | `emil-design-eng` skill |
 | Build a feature / new page / API route | **Feature Dev** | `_rules/CODE_SAFETY.md` |
 

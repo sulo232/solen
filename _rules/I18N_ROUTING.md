@@ -48,7 +48,7 @@ ls app/[locale]/discover/
 - **Reasoning**: German copy is typically 30% longer than English and features extensive compound words. Fixed widths clip translations.
 
 ### Rule 36: STYLED LOCALE-AWARE 404 PAGES
-- The `not-found.tsx` component MUST adhere to the **Zone 1** or **Zone 3** rules in `_rules/UI_RULES.md`.
+- The `not-found.tsx` component MUST follow the current design system (see `_tasks/SOLEN_DESIGN.md`). Note: the previous Zone 1/2/3/4 language is retired.
 
 ### Rule 37: FEATURE PROMPT COPY MUST BE TRANSLATED
 - When a feature request includes specific German copy (e.g., "Teile deine Praferenzen"), **NEVER** hardcode it into the component.

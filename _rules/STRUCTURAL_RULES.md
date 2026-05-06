@@ -147,12 +147,12 @@ Previous spec archived at `_tasks/completed/rules-locked-design-tokens-2026-05-0
 - Zone 1-2: Glass on floating UI, animations allowed
 - Zone 3-4: NO glass, NO animations
 
-### D. UI Rules Compliance
-- Read `_rules/SOLEN_DESIGN_SYSTEM.md` before writing ANY styling
-- Only use design tokens for colors, fonts, radii, shadows, icons
+### D. Design System Compliance
+- Read `_tasks/SOLEN_DESIGN.md` before writing ANY styling (system is in flux — confirm current values)
+- Only use design tokens for colors, fonts, radii, shadows, icons; no arbitrary hex
 
 ### E. Interaction Standard
-- Follow the interaction patterns in Rule 43 and `_rules/SOLEN_DESIGN_SYSTEM.md` Section 8
+- Follow current interaction patterns from `_tasks/SOLEN_DESIGN.md` (Rule 43 above is currently a stub while the system is in flux)
 
 ### F. Accessibility
 - Every interactive element needs `aria-label={t('...')}`
