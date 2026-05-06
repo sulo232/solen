@@ -4,15 +4,14 @@
 
 ---
 
-## Netlify Migration: Cron Jobs Not Yet Ported
+## Netlify Migration: Cron Jobs — RESOLVED via GitHub Actions (2026-05-06)
 
 - **Context**: Migrated deploy from Vercel to Netlify on 2026-05-06 (Vercel account blocked). `netlify.toml` covers build + headers; `vercel.json` had 19 cron jobs that do **not** transfer.
-- **Backend**: All 19 `/api/cron/*` route handlers exist and are functional — they just stop being invoked on a schedule.
-- **Missing**: Schedule mechanism on the new platform. Options:
-  1. **External cron service** (cron-job.org, EasyCron, GitHub Actions cron) hitting each endpoint. Simplest, keeps endpoints platform-agnostic.
-  2. **Netlify Scheduled Functions** — one function file per cron, exports `config.schedule`. 19 files.
-  3. **Single dispatcher cron** that fans out to handlers. Reduces files but adds an indirection layer.
-- **Priority**: HIGH — these run booking reminders, review prompts, late-cancel handling, deposit release, payment release, account deletion, SMS reminders, slot generation, no-show timeouts. Silently broken = customer-visible failures.
+- **Backend**: All 19 `/api/cron/*` route handlers exist and are functional.
+- **Status**: ✅ migrated to GitHub Actions cron. See `.github/workflows/cron-jobs.yml` + `.github/actions/ping-cron/action.yml`. Each scheduled job hits the configured `/api/...` endpoint(s) with `Authorization: Bearer ${CRON_SECRET}` (secret stored both in GitHub Actions repo secrets and in Netlify env vars).
+- **HTTP method nuance**: 18 routes use GET; only `/api/admin/solen-score/recalculate` uses POST — handled per-job in the workflow.
+- **What still needs verification**: After the workflow lands on `main`, watch the first scheduled run for each schedule and confirm 2xx responses. The workflow soft-fails on individual endpoint errors so a single bad endpoint doesn't suppress the others.
+- **Priority** (was): HIGH — these run booking reminders, review prompts, late-cancel handling, deposit release, payment release, account deletion, SMS reminders, slot generation, no-show timeouts.
 - **Affected paths** (verbatim from `vercel.json`):
   - `/api/cron/reminders` (hourly)
   - `/api/cron/review-prompt` (hourly)
