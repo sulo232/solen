@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen V3 — §F.1 form primitives · all states</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Sansita:wght@400;700;900&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/cooper-black-std">
+<style>
+  :root {
+    /* V3 brand */
+    --brand: #043338;
+    --brand-mid: #0A6873;
+    --brand-pale: #C2F0F1;
+    --brand-subtle: #E1F4F4;
+
+    /* warm-ink scale */
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #7A6957;
+    --ink-disabled: #C4B8A6;
+
+    /* surfaces */
+    --bg: #FFFFFF;
+    --sunken: #FAF7F3;
+    --active-tint: #FFF4E8;
+
+    /* semantic */
+    --success: #16A34A;
+    --warning: #F59E0B;
+    --error: #D32F2F;
+    --love: #FF4A6B;
+
+    /* borders */
+    --border: rgba(26,18,9,.06);
+    --border-10: rgba(26,18,9,.10);
+    --border-25: rgba(26,18,9,.25);
+
+    /* spacing */
+    --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px;
+    --s-5: 20px; --s-6: 24px; --s-7: 32px; --s-8: 48px;
+
+    /* radii */
+    --r-sm: 6px; --r-md: 10px; --r-lg: 12px; --r-xl: 14px;
+    --r-2xl: 16px; --r-pill: 99px; --r-full: 50%;
+
+    /* easing */
+    --ease-snap: cubic-bezier(.4, 0, .2, 1);
+    --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+    --ease-glide: cubic-bezier(.16, 1, .3, 1);
+    --ease-thud: cubic-bezier(.7, 0, .84, 0);
+
+    /* type stacks */
+    --display: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif;
+    --body: 'ITC Avant Garde Gothic Std', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  body { padding: 56px 20px 100px; }
+  .doc { max-width: 1180px; margin: 0 auto; }
+
+  /* ========== PAGE HEADER (editorial section-break) ========== */
+  .page-head { margin-bottom: 56px; }
+  .page-rule {
+    height: 1px; background: var(--ink); margin-bottom: 14px;
+  }
+  .page-meta-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 18px;
+    font-family: var(--body);
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .page-eyebrow {
+    color: var(--ink); display: inline-flex; align-items: center; gap: 8px;
+  }
+  .page-eyebrow-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--brand);
+  }
+  .page-meta { color: var(--ink-3); }
+  .page-h1 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 64px; line-height: 0.95;
+    letter-spacing: -0.02em; color: var(--ink);
+  }
+  .page-sub {
+    font-family: var(--body);
+    font-weight: 400; font-size: 15px; color: var(--ink-2);
+    margin-top: 18px; max-width: 720px;
+  }
+
+  /* ========== TOC ========== */
+  .toc {
+    margin-top: 28px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .toc a {
+    font-family: var(--body);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink); background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 7px 12px; border-radius: var(--r-pill);
+    text-decoration: none;
+    transition: color 150ms var(--ease-snap), border-color 150ms var(--ease-snap);
+  }
+  .toc a:hover {
+    color: var(--brand);
+    border-color: rgba(4,51,56,.20);
+  }
+
+  /* ========== SECTION-BREAK (per V2-D15-4) ========== */
+  .sec { margin-top: 72px; }
+  .sec-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .sec-meta-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 12px;
+    font-family: var(--body);
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .sec-eyebrow {
+    color: var(--ink); display: inline-flex; align-items: center; gap: 8px;
+  }
+  .sec-eyebrow-dot {
+    width: 5px; height: 5px; border-radius: 50%; background: var(--brand);
+  }
+  .sec-meta { color: var(--ink-3); }
+  .sec-h2 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 36px; line-height: 1;
+    letter-spacing: -0.02em; color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .sec-intro {
+    font-family: var(--body);
+    font-weight: 400; font-size: 14px;
+    line-height: 1.55; color: var(--ink-2);
+    max-width: 720px; margin-bottom: 32px;
+  }
+
+  /* ========== STATE GRID ========== */
+  .grid {
+    display: grid; gap: 18px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 900px) {
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* state card */
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    padding: 22px;
+  }
+  .card-tag {
+    display: inline-block;
+    font-family: var(--body);
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 14px;
+  }
+  .card-tag .num {
+    color: var(--brand);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ========== UNIVERSAL FIELD ANATOMY ========== */
+  .field-block { display: flex; flex-direction: column; gap: 6px; }
+  .label {
+    font-family: var(--body);
+    font-weight: 600; font-size: 12px; line-height: 1.3;
+    color: var(--ink);
+  }
+  .label-required::after {
+    content: '·'; color: var(--error);
+    margin-left: 4px; font-size: 14px; font-weight: 900;
+  }
+  .label-optional {
+    font-weight: 400; font-size: 11px;
+    color: var(--ink-3); margin-left: 6px;
+    text-transform: lowercase;
+  }
+  .helper {
+    font-family: var(--body);
+    font-weight: 400; font-size: 11px; line-height: 1.4;
+    color: var(--ink-3);
+    margin-top: 2px;
+  }
+  .msg-error {
+    font-family: var(--body);
+    font-weight: 500; font-size: 11px; line-height: 1.4;
+    color: var(--error);
+    margin-top: 2px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .msg-warning {
+    font-family: var(--body);
+    font-weight: 500; font-size: 11px; line-height: 1.4;
+    color: var(--warning);
+    margin-top: 2px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .msg-success {
+    font-family: var(--body);
+    font-weight: 500; font-size: 11px; line-height: 1.4;
+    color: var(--success);
+    margin-top: 2px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ========== TEXT INPUT ========== */
+  .input {
+    height: 56px;
+    font-family: var(--body);
+    font-weight: 400; font-size: 14px;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--border-10);
+    border-radius: var(--r-lg);
+    padding: 12px 16px;
+    width: 100%;
+    transition: border-color 150ms var(--ease-snap),
+                background 150ms var(--ease-snap),
+                box-shadow 150ms var(--ease-snap);
+    caret-color: var(--brand);
+  }
+  .input::placeholder { color: var(--ink-3); }
+  .input::selection { background: rgba(4,51,56,.18); color: var(--ink); }
+
+  /* state simulators */
+  .input.is-focus {
+    border: 2px solid var(--brand);
+    padding: 11px 15px; /* compensate +1px border */
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+  .input.is-active {
+    border: 2px solid var(--brand);
+    padding: 11px 15px;
+    background: var(--active-tint);
+  }
+  .input.is-error {
+    border: 2px solid var(--error);
+    padding: 11px 15px;
+  }
+  .input.is-warning {
+    border: 2px solid var(--warning);
+    padding: 11px 15px;
+  }
+  .input.is-success {
+    border: 2px solid var(--success);
+    padding: 11px 15px;
+  }
+  .input.is-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--sunken);
+    color: var(--ink-3);
+  }
+  .input.is-loading { padding-right: 44px; }
+
+  /* live focus (keyboard) */
+  .input:focus-visible {
+    border: 2px solid var(--brand);
+    padding: 11px 15px;
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  /* input wrap (for inline icons, password reveal, success check, loading spinner) */
+  .input-wrap { position: relative; }
+  .input-icon-right {
+    position: absolute;
+    right: 14px; top: 50%; transform: translateY(-50%);
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-2);
+    pointer-events: none;
+  }
+  .input-icon-right.success { color: var(--success); }
+  .input-icon-right.error { color: var(--error); }
+
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(4,51,56,.20);
+    border-top-color: var(--brand);
+    border-radius: 50%;
+    animation: spin 800ms linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ========== SIZES ========== */
+  .input.size-sm {
+    height: 40px; font-size: 13px;
+    padding: 10px 12px;
+  }
+  .input.size-md { /* default 56px */ }
+  .input.size-lg {
+    height: 64px; font-size: 16px;
+    padding: 18px 20px;
+  }
+
+  /* ========== TEXTAREA ========== */
+  .textarea {
+    min-height: 88px;
+    max-height: 280px;
+    resize: vertical;
+    font-family: var(--body);
+    font-weight: 400; font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--border-10);
+    border-radius: var(--r-lg);
+    padding: 12px 16px;
+    width: 100%;
+    transition: border-color 150ms var(--ease-snap),
+                background 150ms var(--ease-snap);
+    caret-color: var(--brand);
+  }
+  .textarea::placeholder { color: var(--ink-3); }
+  .textarea:focus-visible {
+    border: 2px solid var(--brand);
+    padding: 11px 15px;
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+  .textarea-meta {
+    display: flex; justify-content: flex-end;
+    margin-top: 6px;
+    font-family: var(--body);
+    font-weight: 400; font-size: 11px;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .textarea-meta.warn { color: var(--brand); }
+
+  /* ========== SELECT ========== */
+  .select-wrap {
+    position: relative;
+  }
+  .select {
+    appearance: none;
+    -webkit-appearance: none;
+    height: 56px;
+    font-family: var(--body);
+    font-weight: 400; font-size: 14px;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--border-10);
+    border-radius: var(--r-lg);
+    padding: 12px 40px 12px 16px;
+    width: 100%;
+    cursor: pointer;
+    transition: border-color 150ms var(--ease-snap);
+  }
+  .select:focus-visible {
+    border: 2px solid var(--brand);
+    padding: 11px 39px 11px 15px;
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+  .select-chevron {
+    position: absolute;
+    right: 14px; top: 50%; transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--ink-2);
+  }
+
+  /* ========== CHECKBOX (Variant A — boxed) ========== */
+  .check-row {
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+    font-family: var(--body);
+    font-weight: 400; font-size: 14px;
+    color: var(--ink);
+    padding: 6px 0;
+  }
+  .check-box {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border-25);
+    background: var(--bg);
+    border-radius: var(--r-sm);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 150ms var(--ease-snap),
+                border-color 150ms var(--ease-snap),
+                transform 150ms var(--ease-thud);
+  }
+  .check-box.is-checked {
+    background: var(--brand);
+    border-color: var(--brand);
+  }
+  .check-box.is-checked .check-icon { display: block; }
+  .check-icon { display: none; color: #FFFFFF; }
+
+  .check-row.is-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .check-row.is-focus .check-box {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+  .check-row:active .check-box { transform: scale(.92); }
+
+  /* indeterminate */
+  .check-box.is-indeterminate {
+    background: var(--brand);
+    border-color: var(--brand);
+  }
+  .check-box.is-indeterminate .indeterminate-icon { display: block; }
+  .indeterminate-icon { display: none; color: #FFFFFF; }
+
+  /* ========== CHECKBOX (Variant B — pill) ========== */
+  .pill-group {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .pill-check {
+    font-family: var(--body);
+    font-weight: 500; font-size: 12px;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    padding: 7px 12px;
+    cursor: pointer;
+    transition: background 150ms var(--ease-snap),
+                color 150ms var(--ease-snap),
+                border-color 150ms var(--ease-snap);
+  }
+  .pill-check.is-active {
+    background: var(--ink);
+    color: #FFFFFF;
+    border-color: var(--ink);
+    font-weight: 600;
+  }
+  .pill-check:hover:not(.is-active) {
+    border-color: var(--border-10);
+  }
+
+  /* ========== RADIO (Variant A — radio row) ========== */
+  .radio-list {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 0 16px;
+  }
+  .radio-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 0;
+    cursor: pointer;
+    font-family: var(--body);
+    font-weight: 400; font-size: 14px;
+    color: var(--ink);
+    border-bottom: 1px solid rgba(26,18,9,.05);
+  }
+  .radio-row:last-child { border-bottom: none; }
+  .radio-row.is-selected { font-weight: 600; }
+
+  .radio-circle {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border-25);
+    background: transparent;
+    border-radius: var(--r-full);
+    flex-shrink: 0;
+    position: relative;
+    transition: border-color 150ms var(--ease-snap);
+  }
+  .radio-row.is-selected .radio-circle {
+    border-color: var(--brand);
+  }
+  .radio-row.is-selected .radio-circle::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px; height: 8px;
+    background: var(--brand);
+    border-radius: var(--r-full);
+    animation: dot-fade 150ms var(--ease-snap);
+  }
+  @keyframes dot-fade {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(.5); }
+    to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+  .radio-row.is-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .radio-row.is-focus .radio-circle {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  /* ========== SWITCH ========== */
+  .switch-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(26,18,9,.05);
+  }
+  .switch-label {
+    font-family: var(--body);
+    font-weight: 400; font-size: 14px;
+    color: var(--ink);
+  }
+  .switch-sub {
+    font-family: var(--body);
+    font-weight: 400; font-size: 12px;
+    color: var(--ink-3);
+    margin-top: 4px;
+  }
+
+  .switch {
+    position: relative;
+    width: 44px; height: 24px;
+    background: rgba(26,18,9,.15);
+    border-radius: var(--r-pill);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 200ms var(--ease-snap);
+  }
+  .switch::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 20px; height: 20px;
+    background: #FFFFFF;
+    border-radius: var(--r-full);
+    box-shadow: 0 1px 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.04);
+    transition: left 200ms var(--ease-snap), transform 100ms var(--ease-thud);
+  }
+  .switch.is-on {
+    background: var(--brand);
+  }
+  .switch.is-on::after {
+    left: 22px;
+  }
+  .switch:active::after { transform: scale(.92); }
+  .switch.is-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .switch.is-focus {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  /* ========== SECTION ID ========== */
+  .ref-id {
+    font-family: var(--body);
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--brand);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ========== UTIL ========== */
+  .stack { display: flex; flex-direction: column; gap: 14px; }
+  .stack-tight { display: flex; flex-direction: column; gap: 6px; }
+  .row-flex {
+    display: flex; gap: 14px; align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .col-50 { flex: 1 1 calc(50% - 7px); min-width: 280px; }
+
+  .legend {
+    background: var(--sunken);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    padding: 18px 22px;
+    margin-bottom: 32px;
+  }
+  .legend-h {
+    font-family: var(--body);
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+  }
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px 18px;
+    font-family: var(--body);
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .legend-grid div { display: flex; gap: 8px; }
+  .legend-dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; flex-shrink: 0;
+    margin-top: 5px;
+  }
+  .ld-default  { background: var(--border-25); }
+  .ld-focus    { background: var(--brand); }
+  .ld-active   { background: var(--brand-mid); }
+  .ld-filled   { background: var(--ink); }
+  .ld-error    { background: var(--error); }
+  .ld-warning  { background: var(--warning); }
+  .ld-success  { background: var(--success); }
+  .ld-disabled { background: var(--ink-disabled); }
+  .ld-loading  { background: var(--brand-pale); }
+
+  /* tiny-icon vector wrappers */
+  .icon-12 { width: 12px; height: 12px; }
+  .icon-14 { width: 14px; height: 14px; }
+  .icon-16 { width: 16px; height: 16px; }
+  .icon-18 { width: 18px; height: 18px; }
+  .icon-20 { width: 20px; height: 20px; }
+
+  /* anti-pattern strip */
+  .anti {
+    background: rgba(211,47,47,.04);
+    border: 1px solid rgba(211,47,47,.18);
+    border-radius: var(--r-lg);
+    padding: 14px 18px;
+    margin-top: 14px;
+  }
+  .anti-h {
+    font-family: var(--body);
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--error); margin-bottom: 8px;
+  }
+  .anti-list {
+    font-family: var(--body);
+    font-size: 12px; color: var(--ink-2);
+    line-height: 1.6;
+  }
+  .anti-list li { margin-left: 16px; }
+
+  /* footer */
+  .foot {
+    margin-top: 96px; padding-top: 24px;
+    border-top: 1px solid var(--ink);
+    font-family: var(--body);
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    display: flex; justify-content: space-between;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <!-- ============================== PAGE HEAD ============================== -->
+  <header class="page-head">
+    <div class="page-rule"></div>
+    <div class="page-meta-row">
+      <span class="page-eyebrow">
+        <span class="page-eyebrow-dot"></span>
+        Solen V3 · Phase 0
+      </span>
+      <span class="page-meta">§F.1 · 2026-05-08</span>
+    </div>
+    <h1 class="page-h1">Form primitives</h1>
+    <p class="page-sub">
+      The form vocabulary every Solen surface uses. Six primitives × eight states × three sizes,
+      composed against V3 brand-teal, white substrate, ITC Avant Garde Gothic Std body, Cooper BT display.
+      All states are static demos — focus + active states are also live (tab through to feel motion).
+    </p>
+
+    <nav class="toc">
+      <a href="#legend">State legend</a>
+      <a href="#text">§F.1.1 Text input</a>
+      <a href="#textarea">§F.1.2 Textarea</a>
+      <a href="#select">§F.1.3 Select</a>
+      <a href="#check">§F.1.4 Checkbox</a>
+      <a href="#radio">§F.1.5 Radio</a>
+      <a href="#switch">§F.1.6 Switch</a>
+      <a href="#sizes">§F.1.0a Sizes</a>
+      <a href="#validation">§F.1.8 Validation</a>
+      <a href="#anti">§F.1.10 Anti-patterns</a>
+    </nav>
+  </header>
+
+  <!-- ============================== LEGEND ============================== -->
+  <section id="legend" class="legend">
+    <div class="legend-h">State legend (universal)</div>
+    <div class="legend-grid">
+      <div><span class="legend-dot ld-default"></span><span><strong>Default</strong> · 1px ink-1 .10 border, white bg</span></div>
+      <div><span class="legend-dot ld-focus"></span><span><strong>Focus</strong> · 2px brand-teal outline, kbd only</span></div>
+      <div><span class="legend-dot ld-active"></span><span><strong>Active</strong> · 2px brand border + #FFF4E8 bg</span></div>
+      <div><span class="legend-dot ld-filled"></span><span><strong>Filled</strong> · value present, no visual change</span></div>
+      <div><span class="legend-dot ld-error"></span><span><strong>Error</strong> · 2px error-red border + msg</span></div>
+      <div><span class="legend-dot ld-warning"></span><span><strong>Warning</strong> · 2px amber border + msg</span></div>
+      <div><span class="legend-dot ld-success"></span><span><strong>Success</strong> · 2px success-green border + ✓</span></div>
+      <div><span class="legend-dot ld-disabled"></span><span><strong>Disabled</strong> · opacity .5, sunken bg</span></div>
+      <div><span class="legend-dot ld-loading"></span><span><strong>Loading</strong> · inline spinner, editable</span></div>
+    </div>
+  </section>
+
+  <!-- ============================== §F.1.1 TEXT INPUT ============================== -->
+  <section id="text" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Text input</span>
+      <span class="sec-meta">§F.1.1 · 9 states</span>
+    </div>
+    <h2 class="sec-h2">Text input</h2>
+    <p class="sec-intro">
+      The most-used primitive. Default md size locks at 56px tall, 14px font, 12px/16px padding.
+      Caret + selection use brand-teal. Active state warms with #FFF4E8 (matches §14.3 search row).
+      Floating labels are banned — labels stay above the field.
+    </p>
+
+    <div class="grid grid-3">
+      <!-- default -->
+      <div class="card">
+        <div class="card-tag">State <span class="num">01</span> · default</div>
+        <div class="field-block">
+          <label class="label">E-Mail-Adresse</label>
+          <input class="input" type="email" placeholder="lara@example.ch" autocomplete="email">
+          <div class="helper">Wir senden dir eine Bestätigung.</div>
+        </div>
+      </div>
+
+      <!-- focus -->
+      <div class="card">
+        <div class="card-tag">State <span class="num">02</span> · focus (kbd)</div>
+        <div class="field-block">
+          <label class="label">E-Mail-Adresse</label>
+          <input class="input is-focus" type="email" placeholder="lara@example.ch" autocomplete="email">
+          <div class="helper">2px brand outline appears on tab-in.</div>
+        </div>
+      </div>
+
+      <!-- active -->
+      <div class="card">
+        <div class="card-tag">State <span class="num">03</span> · active (typing)</div>
+        <div class="field-block">
+          <label class="label">E-Mail-Adresse</label>
+          <input class="input is-active" type="email" value="lara@" autocomplete="email">
+          <div class="helper">Bg warms to #FFF4E8.</div>
+        </div>
+      </div>
+
+      <!-- filled -->
+      <div class="card">
+        <div class="card-tag">State <span class="num">04</span> · filled</div>
+        <div class="field-block">
+          <label class="label">E-Mail-Adresse</label>
+          <input class="input" type="email" value="lara@example.ch" autocomplete="email">
+          <div class="helper">Has value, no border highlight.</div>
+        </div>
+      </div>
+
+      <!-- error -->
+      <div class="card">
+        <div class="card-tag">State <span class="num">05</span> · error</div>
+        <div class="field-block">
+          <label class="label label-required">E-Mail-Adresse</label>
+          <input class="input is-error" type="email" value="lara@" autocomplete="email">
+          <div class="msg-error">
+            <svg class="icon-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            Diese E-Mail-Adresse ist nicht gültig.
+          </div>
+        </div>
+      </div>
+
+      <!-- warning -->
+      <div class="card">
+        <div class="card-tag">State <span class="num">06</span> · warning</div>
+        <div class="field-block">
+          <label class="label">Passwort</label>
+          <input class="input is-warning" type="password" value="••••••••">
+          <div class="msg-warning">
+            <svg class="icon-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+            Passwort ist schwach — füge eine Zahl hinzu.
+          </div>
+        </div>
+      </div>
+
+      <!-- success -->
+      <div class="card">
+        <div class="card-tag">State <span class="num">07</span> · success</div>
+        <div class="field-block">
+          <label class="label">E-Mail-Adresse</label>
+          <div class="input-wrap">
+            <input class="input is-success" type="email" value="lara@example.ch" style="padding-right: 44px;">
+            <div class="input-icon-right success">
+              <svg class="icon-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+          </div>
+          <div class="helper">Verfügbar — keine zusätzliche Meldung.</div>
+        </div>
+      </div>
+
+      <!-- disabled -->
+      <div class="card">
+        <div class="card-tag">State <span class="num">08</span> · disabled</div>
+        <div class="field-block">
+          <label class="label">E-Mail-Adresse</label>
+          <input class="input is-disabled" type="email" value="lara@example.ch" disabled>
+          <div class="helper">Form ist gesperrt während Login läuft.</div>
+        </div>
+      </div>
+
+      <!-- loading -->
+      <div class="card">
+        <div class="card-tag">State <span class="num">09</span> · loading (async)</div>
+        <div class="field-block">
+          <label class="label">E-Mail-Adresse</label>
+          <div class="input-wrap">
+            <input class="input is-loading" type="email" value="lara@example.ch">
+            <div class="input-icon-right">
+              <div class="spinner"></div>
+            </div>
+          </div>
+          <div class="helper">Prüfe Verfügbarkeit…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Type variants -->
+    <h3 class="ref-id" style="margin-top: 36px; margin-bottom: 14px;">§F.1.1 · Variants by type</h3>
+    <div class="grid grid-3">
+      <div class="card">
+        <div class="card-tag">type · text</div>
+        <div class="field-block">
+          <label class="label">Vorname</label>
+          <input class="input" type="text" placeholder="Lara" autocapitalize="words" autocomplete="given-name">
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-tag">type · tel</div>
+        <div class="field-block">
+          <label class="label">Telefonnummer</label>
+          <input class="input" type="tel" inputmode="tel" placeholder="+41 79 123 45 67" autocomplete="tel">
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-tag">type · password (reveal)</div>
+        <div class="field-block">
+          <label class="label">Passwort</label>
+          <div class="input-wrap">
+            <input class="input" type="password" value="myPassword123" style="padding-right: 44px;">
+            <button class="input-icon-right" style="background: transparent; border: 0; cursor: pointer; pointer-events: auto;">
+              <svg class="icon-18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-tag">type · search</div>
+        <div class="field-block">
+          <label class="label">Service oder Salon</label>
+          <input class="input" type="search" inputmode="search" placeholder="Coiffeur, Maniküre, Massage…">
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-tag">type · number (price)</div>
+        <div class="field-block">
+          <label class="label">Preis (CHF)</label>
+          <input class="input" type="number" inputmode="decimal" placeholder="89" min="0" step="1">
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-tag">type · url</div>
+        <div class="field-block">
+          <label class="label">Website <span class="label-optional">optional</span></label>
+          <input class="input" type="url" inputmode="url" placeholder="https://salon.ch" autocomplete="url">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== §F.1.2 TEXTAREA ============================== -->
+  <section id="textarea" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Textarea</span>
+      <span class="sec-meta">§F.1.2 · multiline</span>
+    </div>
+    <h2 class="sec-h2">Textarea</h2>
+    <p class="sec-intro">
+      Multi-line input for reviews, bios, report-content reasons. min-height 88px (3 lines), max 280px (10 lines).
+      <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--sunken);padding:1px 6px;border-radius:4px;">resize: vertical</code> only.
+      <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--sunken);padding:1px 6px;border-radius:4px;">Cmd/Ctrl + Enter</code> = submit when textarea is the only field.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-tag">Default · empty</div>
+        <div class="field-block">
+          <label class="label">Deine Bewertung</label>
+          <textarea class="textarea" placeholder="Was hat dir gefallen? Worauf können andere achten?"></textarea>
+          <div class="helper">Mindestens 20 Zeichen.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Filled · with counter</div>
+        <div class="field-block">
+          <label class="label">Deine Bewertung</label>
+          <textarea class="textarea">Sehr aufmerksamer Service, Maria hat sich Zeit für Beratung genommen. Der Schnitt sitzt nach 4 Wochen immer noch perfekt. Klare Empfehlung für alle, die feines Haar haben — sie versteht das Material.</textarea>
+          <div class="textarea-meta">218 / 1000</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Approaching limit · warn at 80%</div>
+        <div class="field-block">
+          <label class="label">Deine Bewertung</label>
+          <textarea class="textarea">Dies ist eine längere Bewertung — ich versuche möglichst viel Detail zu geben weil andere Solen-Nutzerinnen davon profitieren sollen. Der Service war durchwegs sehr gut, von der Begrüssung bis zur Verabschiedung. Maria hat alle Wünsche aufgenommen…</textarea>
+          <div class="textarea-meta warn">820 / 1000</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Error · too short</div>
+        <div class="field-block">
+          <label class="label label-required">Deine Bewertung</label>
+          <textarea class="textarea" style="border:2px solid var(--error);padding:11px 15px;">Top.</textarea>
+          <div class="msg-error">
+            <svg class="icon-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            Mindestens 20 Zeichen — andere möchten erfahren, was dir besonders aufgefallen ist.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== §F.1.3 SELECT ============================== -->
+  <section id="select" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Select</span>
+      <span class="sec-meta">§F.1.3 · native</span>
+    </div>
+    <h2 class="sec-h2">Select (dropdown)</h2>
+    <p class="sec-intro">
+      v1 ships native <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--sunken);padding:1px 6px;border-radius:4px;">&lt;select&gt;</code> on every device.
+      iOS and Android render their platform pickers (wheel / sheet) — we get correct mobile UX for free.
+      Custom dropdowns reserve for v2 (typeahead, multi-select, virtualized lists).
+    </p>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <div class="card-tag">Default · with placeholder</div>
+        <div class="field-block">
+          <label class="label">Stadt</label>
+          <div class="select-wrap">
+            <select class="select">
+              <option value="" disabled selected>Stadt wählen</option>
+              <option>Basel</option>
+              <option>Zürich</option>
+              <option>Bern</option>
+            </select>
+            <span class="select-chevron">
+              <svg class="icon-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Filled · selection made</div>
+        <div class="field-block">
+          <label class="label">Stadt</label>
+          <div class="select-wrap">
+            <select class="select">
+              <option>Basel</option>
+              <option>Zürich</option>
+              <option>Bern</option>
+            </select>
+            <span class="select-chevron">
+              <svg class="icon-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Disabled · locked</div>
+        <div class="field-block">
+          <label class="label">Stadt</label>
+          <div class="select-wrap">
+            <select class="select is-disabled" disabled style="opacity:.5;background:var(--sunken);">
+              <option>Basel</option>
+            </select>
+            <span class="select-chevron">
+              <svg class="icon-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== §F.1.4 CHECKBOX ============================== -->
+  <section id="check" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Checkbox</span>
+      <span class="sec-meta">§F.1.4 · 2 variants</span>
+    </div>
+    <h2 class="sec-h2">Checkbox</h2>
+    <p class="sec-intro">
+      Two visual variants on identical data binding. <strong>Variant A (boxed)</strong> for forms — settings,
+      consent, report reasons. <strong>Variant B (pill)</strong> for filter sheets — same shape as filter chips,
+      ink-1 fill when active.
+    </p>
+
+    <h3 class="ref-id" style="margin-bottom: 14px;">Variant A · boxed (forms)</h3>
+    <div class="grid grid-3">
+      <div class="card">
+        <div class="card-tag">Default · unchecked</div>
+        <label class="check-row">
+          <span class="check-box">
+            <svg class="check-icon icon-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg>
+          </span>
+          <span>Newsletter abonnieren</span>
+        </label>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Checked</div>
+        <label class="check-row">
+          <span class="check-box is-checked">
+            <svg class="check-icon icon-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg>
+          </span>
+          <span>Newsletter abonnieren</span>
+        </label>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Indeterminate (parent)</div>
+        <label class="check-row">
+          <span class="check-box is-indeterminate">
+            <svg class="indeterminate-icon icon-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14"/></svg>
+          </span>
+          <span>Alle Cookie-Kategorien</span>
+        </label>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Focus (kbd)</div>
+        <label class="check-row is-focus">
+          <span class="check-box">
+            <svg class="check-icon icon-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg>
+          </span>
+          <span>Newsletter abonnieren</span>
+        </label>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Disabled · unchecked</div>
+        <label class="check-row is-disabled">
+          <span class="check-box">
+            <svg class="check-icon icon-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg>
+          </span>
+          <span>Premium-Funktionen (Upgrade nötig)</span>
+        </label>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Disabled · checked (locked)</div>
+        <label class="check-row is-disabled">
+          <span class="check-box is-checked">
+            <svg class="check-icon icon-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg>
+          </span>
+          <span>Erforderliche Cookies</span>
+        </label>
+      </div>
+    </div>
+
+    <h3 class="ref-id" style="margin-top: 36px; margin-bottom: 14px;">Variant B · pill (filter sheets)</h3>
+    <div class="card">
+      <div class="card-tag">Multi-select · 2 active of 8</div>
+      <label class="label" style="display:block;margin-bottom:10px;">Service-Typ</label>
+      <div class="pill-group">
+        <button class="pill-check is-active">Damen</button>
+        <button class="pill-check is-active">Herren</button>
+        <button class="pill-check">Kinder</button>
+        <button class="pill-check">Coloration</button>
+        <button class="pill-check">Hochsteckfrisur</button>
+        <button class="pill-check">Bart</button>
+        <button class="pill-check">Maniküre</button>
+        <button class="pill-check">Pediküre</button>
+      </div>
+    </div>
+
+    <div class="anti">
+      <div class="anti-h">Don't</div>
+      <ul class="anti-list">
+        <li>Use a switch for "select 1 of 2-5" — that's a radio. Switch = on/off only.</li>
+        <li>Render checkboxes as circles — circles = radio (single-select).</li>
+        <li>Hide the unchecked state (e.g. show only checked items in the list).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================== §F.1.5 RADIO ============================== -->
+  <section id="radio" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Radio</span>
+      <span class="sec-meta">§F.1.5 · 2 variants</span>
+    </div>
+    <h2 class="sec-h2">Radio</h2>
+    <p class="sec-intro">
+      Single-select. <strong>Variant A (radio row)</strong> in sort sheets and forms — full-width row with bottom rule,
+      circle on left. <strong>Variant B (pill)</strong> when 3-5 mutually exclusive options should feel compact.
+    </p>
+
+    <h3 class="ref-id" style="margin-bottom: 14px;">Variant A · radio row (sort sheet, forms)</h3>
+    <div class="grid">
+      <div class="card">
+        <div class="card-tag">Sort sheet · "Distanz" selected</div>
+        <div class="radio-list">
+          <label class="radio-row is-selected">
+            <span class="radio-circle"></span>
+            <span>Distanz (am nächsten zuerst)</span>
+          </label>
+          <label class="radio-row">
+            <span class="radio-circle"></span>
+            <span>Bewertung (höchste zuerst)</span>
+          </label>
+          <label class="radio-row">
+            <span class="radio-circle"></span>
+            <span>Verfügbarkeit (heute frei)</span>
+          </label>
+          <label class="radio-row">
+            <span class="radio-circle"></span>
+            <span>Beliebtheit</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Booking step · "60 Min" selected · with disabled</div>
+        <div class="radio-list">
+          <label class="radio-row is-selected">
+            <span class="radio-circle"></span>
+            <span>60 Minuten · CHF 89</span>
+          </label>
+          <label class="radio-row">
+            <span class="radio-circle"></span>
+            <span>90 Minuten · CHF 129</span>
+          </label>
+          <label class="radio-row is-disabled">
+            <span class="radio-circle"></span>
+            <span>120 Minuten · CHF 169 (heute nicht verfügbar)</span>
+          </label>
+          <label class="radio-row is-focus">
+            <span class="radio-circle"></span>
+            <span>Beratungstermin · CHF 0</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="ref-id" style="margin-top: 36px; margin-bottom: 14px;">Variant B · pill (compact single-select)</h3>
+    <div class="card">
+      <div class="card-tag">3-option group · "Damen" selected</div>
+      <label class="label" style="display:block;margin-bottom:10px;">Bedienung</label>
+      <div class="pill-group">
+        <button class="pill-check is-active">Damen</button>
+        <button class="pill-check">Herren</button>
+        <button class="pill-check">Unisex</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== §F.1.6 SWITCH ============================== -->
+  <section id="switch" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Switch</span>
+      <span class="sec-meta">§F.1.6 · boolean</span>
+    </div>
+    <h2 class="sec-h2">Switch (toggle)</h2>
+    <p class="sec-intro">
+      For boolean settings only — "turn this feature on/off." Distinct from checkbox ("include in this list").
+      Track 44×24px, knob 20×20px. On-state uses brand-teal — accepted exception to §1 ≤ 4-instance rule
+      for settings pages with many switches (per V2-D14).
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-tag">Settings list · mixed states</div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);padding: 0 16px;">
+          <div class="switch-row">
+            <div>
+              <div class="switch-label">Push-Benachrichtigungen</div>
+              <div class="switch-sub">Termin-Erinnerungen 24h vorher</div>
+            </div>
+            <div class="switch is-on" role="switch" aria-checked="true"></div>
+          </div>
+          <div class="switch-row">
+            <div>
+              <div class="switch-label">E-Mail-Newsletter</div>
+              <div class="switch-sub">Neue Salons in deiner Stadt, max 1×/Woche</div>
+            </div>
+            <div class="switch" role="switch" aria-checked="false"></div>
+          </div>
+          <div class="switch-row">
+            <div>
+              <div class="switch-label">Marketing-Cookies</div>
+              <div class="switch-sub">Werbung relevanter machen</div>
+            </div>
+            <div class="switch is-on is-focus" role="switch" aria-checked="true"></div>
+          </div>
+          <div class="switch-row" style="border-bottom: none;">
+            <div>
+              <div class="switch-label">Solen Pro Beta</div>
+              <div class="switch-sub">Bald verfügbar</div>
+            </div>
+            <div class="switch is-on is-disabled" role="switch" aria-checked="true" aria-disabled="true"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">All 4 states · isolated</div>
+        <div class="stack" style="gap:24px;">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div class="switch" role="switch" aria-checked="false"></div>
+            <span style="font-size:13px;color:var(--ink-2);">Off · default</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div class="switch is-on" role="switch" aria-checked="true"></div>
+            <span style="font-size:13px;color:var(--ink-2);">On · brand-teal track</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div class="switch is-focus" role="switch" aria-checked="false"></div>
+            <span style="font-size:13px;color:var(--ink-2);">Off · focus (kbd)</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div class="switch is-disabled" role="switch" aria-checked="false"></div>
+            <span style="font-size:13px;color:var(--ink-2);">Off · disabled</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== §F.1.0a SIZES ============================== -->
+  <section id="sizes" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Sizes</span>
+      <span class="sec-meta">§F.1.0a · sm / md / lg</span>
+    </div>
+    <h2 class="sec-h2">Sizes</h2>
+    <p class="sec-intro">
+      Three sizes, fixed mapping. <strong>md is default for all forms.</strong> sm only in compact filter rows
+      and dropdowns inside list items. lg reserved for hero/landing inputs (currently §13.4 hero is the only md/lg surface).
+    </p>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <div class="card-tag">sm · 40px · 13px</div>
+        <div class="field-block">
+          <label class="label">Filter-Suche</label>
+          <input class="input size-sm" type="search" placeholder="Suchen…">
+          <div class="helper">Kompakte Filter-Reihen, Dropdowns in Listen-Items.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">md · 56px · 14px · default</div>
+        <div class="field-block">
+          <label class="label">Vorname</label>
+          <input class="input" type="text" placeholder="Lara" autocomplete="given-name">
+          <div class="helper">Booking, login, signup, settings — alle Forms.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">lg · 64px · 16px</div>
+        <div class="field-block">
+          <label class="label">Hero-Suche</label>
+          <input class="input size-lg" type="search" placeholder="Coiffeur, Maniküre, Massage…">
+          <div class="helper">Reserviert für Hero-Inputs (§13.4).</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== §F.1.8 INLINE VALIDATION ============================== -->
+  <section id="validation" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Inline validation</span>
+      <span class="sec-meta">§F.1.8 · prevention</span>
+    </div>
+    <h2 class="sec-h2">Inline validation</h2>
+    <p class="sec-intro">
+      The prevention principle: catch errors before submit. 80% of form errors prevent themselves with live validation.
+      On blur for sync rules. Per-keystroke for show-as-you-type validators (strength meter, char counter).
+      Debounced 400ms for async (email available).
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-tag">Password strength meter · 4 levels</div>
+        <div class="stack" style="gap:18px;">
+          <div class="field-block">
+            <label class="label">Passwort · zu schwach</label>
+            <input class="input" type="password" value="••••" style="border-color:var(--error);">
+            <div style="display:flex;gap:4px;margin-top:6px;">
+              <div style="flex:1;height:3px;background:var(--error);border-radius:2px;"></div>
+              <div style="flex:1;height:3px;background:var(--border-10);border-radius:2px;"></div>
+              <div style="flex:1;height:3px;background:var(--border-10);border-radius:2px;"></div>
+              <div style="flex:1;height:3px;background:var(--border-10);border-radius:2px;"></div>
+            </div>
+            <div class="helper" style="color:var(--error);">Zu schwach · mindestens 8 Zeichen, mit einer Zahl.</div>
+          </div>
+
+          <div class="field-block">
+            <label class="label">Passwort · gut</label>
+            <input class="input" type="password" value="••••••••••" style="border-color:var(--success);">
+            <div style="display:flex;gap:4px;margin-top:6px;">
+              <div style="flex:1;height:3px;background:var(--success);border-radius:2px;"></div>
+              <div style="flex:1;height:3px;background:var(--success);border-radius:2px;"></div>
+              <div style="flex:1;height:3px;background:var(--success);border-radius:2px;"></div>
+              <div style="flex:1;height:3px;background:var(--border-10);border-radius:2px;"></div>
+            </div>
+            <div class="helper" style="color:var(--success);">Gut — füge ein Sonderzeichen hinzu für sehr stark.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Confirmation match · live on second blur</div>
+        <div class="stack" style="gap:14px;">
+          <div class="field-block">
+            <label class="label">Passwort</label>
+            <input class="input" type="password" value="••••••••••">
+          </div>
+          <div class="field-block">
+            <label class="label">Passwort bestätigen</label>
+            <input class="input" type="password" value="•••••••" style="border-color:var(--error);border-width:2px;padding:11px 15px;">
+            <div class="msg-error">
+              <svg class="icon-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+              Passwörter stimmen nicht überein.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== §F.1.10 ANTI-PATTERNS ============================== -->
+  <section id="anti" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Anti-patterns</span>
+      <span class="sec-meta">§F.1.10 · banned</span>
+    </div>
+    <h2 class="sec-h2">Anti-patterns</h2>
+    <p class="sec-intro">
+      What Solen forms <strong>do not</strong> do. Each ban exists because the pattern fights either accessibility,
+      autofill, or the §F.1 prevention principle. New surfaces don't reintroduce these — they compose §F.1 instead.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-tag">Banned · floating labels</div>
+        <div style="position:relative;height:56px;border:1px dashed var(--border-25);border-radius:var(--r-lg);padding:0 16px;display:flex;align-items:center;">
+          <span style="position:absolute;left:16px;top:8px;font-size:10px;color:var(--ink-3);font-weight:500;">E-Mail</span>
+          <span style="position:absolute;left:16px;top:30px;font-size:14px;color:var(--ink);">lara@example.ch</span>
+        </div>
+        <div class="anti">
+          <div class="anti-h">Why banned</div>
+          <ul class="anti-list">
+            <li>Hurts screen readers + autofill (label-as-placeholder confusion)</li>
+            <li>Reads as decorative animation, not as a form field</li>
+            <li>Breaks in dense layouts when label needs to live above</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Banned · pill text inputs</div>
+        <div class="field-block">
+          <label class="label">E-Mail-Adresse</label>
+          <input class="input" type="email" value="lara@example.ch" style="border-radius:var(--r-pill);border:1px dashed var(--error);" disabled>
+        </div>
+        <div class="anti">
+          <div class="anti-h">Why banned</div>
+          <ul class="anti-list">
+            <li>Pills look tappable — text inputs are typeable</li>
+            <li>§7 anti-pattern: "buttons-waiting-to-be-pressed"</li>
+            <li>Use radius-lg (12px) for fields, radius-pill (99px) for buttons</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Banned · required asterisk *</div>
+        <div class="field-block">
+          <label class="label">E-Mail-Adresse <span style="color:var(--error);">*</span></label>
+          <input class="input" type="email" placeholder="lara@example.ch" disabled style="opacity:0.5;">
+        </div>
+        <div class="anti">
+          <div class="anti-h">Why banned</div>
+          <ul class="anti-list">
+            <li>Asterisk reads as a footnote marker</li>
+            <li>Use trailing red dot · OR mark optional fields with "Optional" tag</li>
+            <li>Required is the default visual; optional is the exception</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Banned · clear field on error</div>
+        <div class="field-block">
+          <label class="label">E-Mail-Adresse</label>
+          <input class="input" type="email" placeholder="(was geleert nach Fehler)" style="border:1px dashed var(--error);" disabled>
+          <div class="helper" style="color:var(--error);">User typed it. Preserve it. Let them edit.</div>
+        </div>
+        <div class="anti">
+          <div class="anti-h">Why banned</div>
+          <ul class="anti-list">
+            <li>Steals user's work + forces re-typing</li>
+            <li>If a typo, they want to fix it — not retype the whole address</li>
+            <li>Always preserve the input, even on hard errors</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== FOOT ============================== -->
+  <footer class="foot">
+    <span>Solen V3 · Phase 0 · §F.1 form primitives</span>
+    <span>2026-05-08 · V2-D15-4 lock</span>
+  </footer>
+
+</div>
+</body>
+</html>
