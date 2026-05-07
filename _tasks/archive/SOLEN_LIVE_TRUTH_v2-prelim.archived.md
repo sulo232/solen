@@ -1,20 +1,12 @@
-# Solen — Live Truth (V3, V2-D15-3 lock)
+# Solen — Live Truth (v2)
 
-> **Status:** ACTIVE · **Locked:** 2026-05-07 (V2-D15-3 — V3 brand pivot to dark teal `#043338` + Cooper BT + Avant Garde Gothic + 4 categories) · **V3 Preview:** `public/solen-v2-republik-teal.html` (homepage) · `public/solen-v2-palette.html` (palette) · `public/solen-v2-combos.html` (31-combo grid) — serve via `npx serve public -p 4747`
+> **Status:** ACTIVE · **Locked:** 2026-05-05 · **Preview:** `public/solen-v2-locked.html` → `localhost:3000/solen-v2-locked.html`
 >
-> Single source of truth for solen.ch's frontend. V3 foundations locked 2026-05-07 (V2-D15-3) grounded in research on Republik · Yuh · Fresha · Uber · Airbnb. Foundations originally rewritten V2-D15 (hybrid scratch reset) then pivoted V2-D15-3 (orange retired → dark teal + 6 cats → 4 cats + Cooper/Avant Garde). Component patterns + form primitives + category page + accessibility + analytics preserved through both pivots. v2-prelim archived at `_tasks/archive/SOLEN_LIVE_TRUTH_v2-prelim.archived.md`.
+> Single source of truth for solen.ch's V2 frontend rebuild — design system + locked patterns + accessibility + analytics. This document supersedes the V1 spec (archived at `_tasks/archive/SOLEN_LIVE_TRUTH_v1.archived.md`).
+>
+> **Compilation:** Step 1 (color + geo + ink scale) → Step 2 (categories + typography + depth + personality) → Step 3 (spacing + breakpoints + radius + z-index + scroll + safe areas + hit targets) → Step 4 (locked component patterns) → §25 (category page).
 >
 > **Hierarchy when docs conflict** (per CLAUDE.md): this doc wins over Q-locks wins over reference HTML wins over component JSDoc. If this doc is wrong, fix it FIRST, then propagate.
-
----
-
-## §0 What this is
-
-Solen is a Swiss beauty + wellness booking marketplace. Multi-city from launch (Basel, Zürich, Bern). Mobile-first. The product is finding a salon and booking a service. Everything in this spec serves that product.
-
-**The brand voice in one paragraph:** confident, useful, Swiss-direct. Not literary. Not "magazine that printed your haircut" — that V1 framing is retired. Not corporate either. Solen sounds like a competent friend in Zürich who actually books appointments and tells you which salon is good. Du-form German is the default; switch to formal Sie only in legal copy.
-
-**Anti-patterns retired explicitly:** "editorial-magazine" framing, italic-as-moment ornament (Instrument Serif retired), separate mono numerics font (JetBrains Mono retired), warm cream substrate (white substrate now), "Like a Swiss independent magazine printed your haircut" voice.
 
 ---
 
@@ -22,477 +14,267 @@ Solen is a Swiss beauty + wellness booking marketplace. Multi-city from launch (
 
 **Foundations**
 - [§1 Brand color](#1-brand-color) · [§1b Geographic scope](#1b-geographic-scope)
-- [§2 Per-category colorways](#2-per-category-colorways) · [§3 Semantic colors](#3-semantic-colors)
-- [§4 Warm-ink scale + substrate](#4-warm-ink-scale--substrate)
-- [§5 Typography](#5-typography) · [§5a Pill rule](#5a-pill-rule-v2-d15-3-lock) · [§5b Depth system](#5b-depth-system) · [§5c Personality tokens](#5c-personality-tokens) · [§5d Inline emphasis](#5d-inline-emphasis) · [§5e Iconography](#5e-iconography) · [§5f Hierarchy: one hero per info block](#5f-hierarchy-one-hero-per-info-block) · [§5g Atmosphere wash](#5g-atmosphere-wash-recipe-v2-d15-3-lock) · [§5h Color philosophy](#5h-color-philosophy-the-locked-design-law-v2-d15-3) · [§5i Combo library](#5i-combo-library-reference-for-future-categories)
+- [§2 Semantic colors](#2-semantic-colors) · [§3 Warm-ink neutral scale](#3-warm-ink-neutral-scale)
+- [§4 Per-category colors](#4-per-category-colors)
+- [§5 Typography](#5-typography) · [§5b Depth system](#5b-depth-system) · [§5c Personality tokens](#5c-personality-tokens) · [§5d Inline emphasis rule](#5d-inline-emphasis-rule) · [§5e Iconography](#5e-iconography) · [§5f Hierarchy: one hero per info block](#5f-hierarchy-one-hero-per-info-block)
 
-**Layout fundamentals**
-- §6 Spacing scale · §6b Breakpoints · §6c Container & max-width
-- §7 Radius scale · §8 Z-index · §9 Scroll behavior · §10 Safe areas · §11 Hit targets
+**Layout**
+- [§6 Spacing scale](#6-spacing-scale) · [§6b Breakpoints](#6b-breakpoints) · [§6c Container & max-width](#6c-container--max-width)
+- [§7 Radius scale](#7-radius-scale) · [§8 Z-index scale](#8-z-index-scale)
+- [§9 Scroll behavior](#9-scroll-behavior) · [§10 Safe areas](#10-safe-areas-mobile-specific) · [§11 Hit targets](#11-hit-targets-touch--keyboard)
 
 **Foundation primitives (Phase 0)**
-- §F.1 Form primitives — text input · textarea · select · checkbox · radio · switch (locked V2-D14)
+- [§F.1 Form primitives](#f1--form-primitives) — text input · textarea · select · checkbox · radio · switch
 - §F.2 Modal · §F.3 Bottom sheet · §F.4 Toast · §F.5 Date/time picker · §F.6 Skip-link · §F.7 Font fallback · §F.8 Cookie consent (PENDING — locked iteratively)
 
 **Locked components & patterns**
-- §12 Header · §13 Hero · §14 Search system · §15 Section header pattern
-- §16 Salon card · §17 Horizontal scroll row container
-- §18 Entdecken (looks) · §19 City tiles · §20 B2B promo card
-- §21 Footer · §22 Browse-by-city SEO link wall
-- §23 Final v1 homepage flow
+- [§12 Header](#12--header) · [§13 Hero](#13--hero) · [§14 Search system](#14--search-system)
+- [§15 Section header pattern](#15--section-header-pattern) · [§16 Salon card](#16--salon-card) · [§17 Horizontal scroll row container](#17--horizontal-scroll-row-container)
+- [§18 Entdecken (inspo / look discovery)](#18--entdecken-inspo--look-discovery)
+- [§19 City tiles (Solen in deiner Stadt)](#19--city-tiles-solen-in-deiner-stadt)
+- [§20 B2B promo card](#20--b2b-promo-card) · [§21 Footer](#21--footer) · [§22 Browse-by-city SEO link wall](#22--browse-by-city-seo-link-wall-salons-nach-stadt)
+- [§23 Final v1 homepage flow](#23--final-v1-homepage-flow)
 
 **Cross-cutting**
-- §24b Accessibility baseline · §24c Analytics events (PostHog)
+- [§24b Accessibility baseline](#24b--accessibility-baseline) · [§24c Analytics events (PostHog)](#24c--analytics-events-posthog)
 
 **Page templates**
-- §25 Category page — `/[city]/[category]` (Republik colorway applied per §2)
+- [§25 Category page — `/[city]/[category]`](#25--category-page--citycategory)
 
 **Verification**
-- Component PR checklist
+- [Component PR checklist](#component-pr-checklist)
 
 **Roadmap**
-- What's still missing (Phase 0–6 surface gaps)
+- [What's still missing (36 spec gaps)](#whats-still-missing)
 
 ---
 
-## §1 Brand color
+## 1. Brand color
 
-Solen runs on **one accent: dark teal `#043338`** (Republik panel #4 — locked V2-D15-3). Used densely as connective tissue (Yuh discipline): logo, active nav, inline links, list bullets, ONE word per hero h1, CTA pills, status text, ONE saturated feature card per page. **Never as a hero panel bg.**
+Solen runs on **one accent**. The brand color does CTA, signal, and live-state work — nothing else. It never decorates.
 
-|Role                  |Hex      |Token            |Where it appears                                                                                          |
-|----------------------|---------|-----------------|----------------------------------------------------------------------------------------------------------|
-|Brand primary         |`#043338`|`s-brand.DEFAULT`|Logo, active nav state + underline, all CTA pills (white text per pill rule), inline links, "Heute frei" status, hero accent word, stat circles, Solen Pro feature panel bg |
-|Brand pale            |`#C2F0F1`|`s-brand.pale`   |Text on dark-teal panels (Republik exact pair from panel #4). Atmospheric wash component.                  |
-|Brand subtle          |`#E1F4F4`|`s-brand.subtle` |Soft teal-tinted pill bgs (live-counter pill, hint chips). Body text on this bg is `#1A1209`.              |
+|Role                |Hex                                                         |Tailwind token     |Where it appears                                                                                                               |
+|--------------------|------------------------------------------------------------|-------------------|-------------------------------------------------------------------------------------------------------------------------------|
+|Brand primary       |`#E8742A`                                                   |`s-brand.DEFAULT`  |CTA fills, search-CTA button, “Buchen →” links, live-availability pills, eyebrow pulse-dots, focus rings, sliding tab underline|
+|Brand hover         |gradient `linear-gradient(180deg, #F0834D 0%, #E8742A 100%)`|inline             |All hover states on filled brand surfaces. Use the gradient — flat hover reads as “press” not “lift.”                          |
+|Brand subtle/tint bg|`#FFE4D2`                                                   |`s-brand.subtle`   |Soft brand-tinted surfaces (live-counter pill bg, service chip bg, hero promise pills)                                         |
+|Brand deep text     |`#8A3C0F`                                                   |`s-brand.text`     |Deep brand-tinted text on light surfaces (e.g. text inside `s-brand.subtle` pills)                                             |
+|Brand mid text      |`#5C2308`                                                   |`s-brand.text-deep`|Stronger contrast variant for text on warm-cream gradients                                                                     |
 
 **Tailwind classes:** `bg-s-brand`, `text-s-brand`, `border-s-brand`, `focus-visible:ring-s-brand`. Token name matches the value — no legacy aliases.
 
 **Contrast (WCAG):**
-- `#043338` on white = **14.74 : 1 AAA** — body-safe at any size, no `text-deep` variant needed (the orange-era `s-brand.text-deep` is retired)
-- `#C2F0F1` on `#043338` = 11.09 : 1 AAA — Republik panel #4 exact pair, the locked dark-teal-panel typography pair
-- White on `#043338` = 14.74 : 1 AAA — pill rule default for CTAs
 
-### §1.1 · The Yuh-density discipline (the law)
+- White on `#E8742A` = 3.34:1 — **AA Large only.** Use white text on brand-orange ONLY at 18px+/700 OR 14px+/700. For body-size text, use `s-brand.text` (`#8A3C0F`) on `s-brand.subtle` (`#FFE4D2`) which hits 6.84:1 (AA body, AAA large).
+- `#E8742A` on white = 3.34:1 — AA Large only. CTAs are always 13px+/700 → passes.
+- `#8A3C0F` on white = 6.84:1 — AA body.
 
-Brand teal is used **60–100× per page** in tiny accents. The discipline is **density, not size** (Yuh's actual pattern, verified across yuh.com home/pricing/about — coral appears 35–101× per page, ~80% of uses are <18px text). Distribution per page:
+**The one-accent rule.** Brand color appears at most **3-4 times per screen**. Counted: CTA fill, eyebrow pulse-dot, live pill, “Buchen →” link, “Alle →” section link. If a screen shows brand-orange more than ~4 times, restraint is broken — pull some back to ink.
 
-- ~80% small text (<18px): inline links, list bullets, "Heute frei" status, words inside body copy
-- ~10% mid text (18–40px): section CTAs, sub-headers, accent words in headlines
-- ~5% headline-size (one word per hero h1, max one per heading)
-- 1–2 saturated CTA pills (filled brand bg + white text)
-- 1 saturated feature card per page (Solen Pro — same pattern as Yuh's "Swissqoins for the win")
+**Hover.** Filled brand surfaces use the gradient (`#F0834D → #E8742A`) plus an inset top highlight (`inset 0 1px 0 rgba(255,255,255,.3)`) and a warm peach drop shadow (`0 4px 12px rgba(232,116,42,.32)`). Lift, not flatten.
 
-**The brand color is NEVER:**
-- A hero substrate (white substrate is permanent — Yuh law)
-- A category panel bg (categories have their own colorways per §2)
-- The body text color (body is ink-1 `#1A1209`)
-- More than 1 saturated panel per page
+-----
 
-### §1.2 · The Republik-monochrome rule (for the saturated brand panel)
-
-When the Solen Pro feature panel appears as a full-saturated brand bg `#043338`, ALL text inside is `#C2F0F1` pale teal. Headline, deck, byline, link — same color. No multi-color text within a saturated panel (Republik Law 1 from `/tmp/republik-research/colorways.md`).
-
-**Anti-pattern:**
-- Reintroducing brand orange `#E8742A` (retired V2-D15-3 — orange is in retired-list)
-- Inventing `#043338` near-misses like `#0A4A52` or `#053B40`
-- Tinted-of-bg text inside CTA pills — pill text is white-or-black per §pill-rule
-- Brand teal as a hero panel — that's a category panel job, not brand
-
----
-
-## §1b Geographic scope
+## 1b. Geographic scope
 
 Solen is a **multi-city Swiss platform from launch**. Not hyperlocal.
 
 - **Launch cities:** Basel, Zürich, Bern.
-- **Tagline:** "Die Schweizer Salon-Plattform" (NOT "Von Basel, für Basel" — retired with V1).
-- **Homepage city section:** "Stadt wählen" with 3 photo tiles (Basel · Zürich · Bern) + salon counts.
-- **Hero copy is city-aware:** "47 Salons in [city] haben heute frei" — the city resolves to the user's detected/selected city.
-- **Salon detail pages can name districts** (e.g. "Kleinbasel", "Kreis 4 Zürich") — districts are metadata on a salon, not a top-level browse axis.
-- **Footer:** "🇨🇭 Made in Switzerland" — not Made in Basel.
+- **Tagline:** “Die Schweizer Salon-Plattform” (NOT “Von Basel, für Basel” — that’s dead).
+- **Homepage city section:** “Stadt wählen” with 3 photo tiles (Basel · Zürich · Bern) + salon counts.
+- **Hero copy is city-aware:** “47 Salons in [city] haben heute frei” — the city resolves to the user’s detected/selected city.
+- **Salon detail pages can name districts** (e.g. “Kleinbasel”, “Kreis 4 Zürich”) because that’s where the salon actually is. But the homepage navigation never drills into districts — only cities.
+- **Footer:** “🇨🇭 Made in Switzerland” — not Made in Basel.
 
-**Anti-pattern:** any "Quartier wählen" / "Browse Kleinbasel" navigation. Districts are metadata, not browse.
+**Anti-pattern:** any “Quartier wählen” / “Browse Kleinbasel” navigation. Districts are metadata on a salon, not a top-level browse axis.
 
----
+-----
 
-## §2 Per-category colorways
+## 2. Semantic colors
 
-The Republik treatment. **4 categories** (V2-D15-3 lock — was 6, dropped Wellness as separate + retired Makeup). Each category has its own colorway — a saturated bg + monochrome text pair, used as the page-identity color on category-specific surfaces. Combo letters reference the 31-combo library at `public/solen-v2-combos.html`.
-
-|Category        |Combo|Bg hex   |Text hex |Contrast       |Soft tile bg|Republik / Solen origin                              |
-|----------------|-----|---------|---------|---------------|------------|------------------------------------------------------|
-|Coiffeur        |**Z**|`#FFF1DD`|`#B5345A`|5.24 : 1 AA    |`#FFF1DD`   |Cream + cherry — soft warm, hair-salon feeling       |
-|Barbershop      |**G**|`#D8D6CB`|`#000000`|14.40 : 1 AAA  |`#D8D6CB`   |Bone + black — Republik panel #7 (Strassberg)         |
-|Nails           |**A**|`#CAE8FF`|`#B50051`|5.35 : 1 AA    |`#CAE8FF`   |Pale ice blue + magenta — Republik panel #1 (Zumthor) |
-|Spa & Wellness  |**I**|`#193120`|`#948565`|3.86 : 1 AA-l  |`#C2F0F1`   |Forest green + sandy beige — Republik panel #9 (Westjordanland — user-flagged screenshot) |
-
-**Visual rhythm:** 3 light panels (cream / bone / pale ice blue) with saturated text accents + 1 dark panel (Spa forest green) as the grounding moment. The dark Spa panel anchors the set; the others are airy.
-
-**Naming notes:**
-- `barbershop` (not "Barber") — matches `messages/de.json` i18n key
-- `Spa & Wellness` (combined) — Wellness is no longer a separate category; subsumed under Spa. FAQ copy already merged ("Spa & Wellness").
-- `Makeup` retired (V2-D15-3). 4 categories for v1 launch. Waxing deferred to post-launch.
-
-### §2.1 · Where category color appears (full panel commitment, Republik discipline)
-
-The category page IS the colorway. Brand teal retreats from category pages to GLOBAL elements (logo, nav, save-heart, footer) — the per-category combo takes page-identity ownership.
-
-- **Category tile bgs** (homepage cat-strip discovery pills): soft tile bg, black text per pill rule
-- **Salon-card photo placeholders** when no real photo: soft tile bg w light vignette
-- **Category icon fills** when active/hovered (otherwise inherit `currentColor`)
-- **`/[city]/[category]` category page header band:** combo bg at full saturation (cream / bone / pale ice blue / forest)
-- **Category page h1:** combo text color on combo bg (Republik monochrome rule — text inside saturated panel is one color)
-- **Category page sub-text + byline + inline link inside panel:** SAME combo text color (Republik monochrome rule)
-- **Filter pill active state on category page:** brand teal `#043338` bg + white text (the connective tissue — categories don't override pill rule)
-- **Section dividers** within category page: 1px line in combo text color at 30% opacity
-- **Primary "Buchen →" CTA on category page:** brand teal pill + white text. Brand teal is the constant CTA across all category pages — that's the Yuh tie-back.
-- **`/salon/[slug]` salon detail page:** salon's primary category combo used the same way
-
-### §2.2 · Where category color does NOT appear
-
-- **Homepage hero** — white substrate + atmospheric wash + brand teal. Not category-themed.
-- **Header logo, nav, CTA, save-heart** — always brand teal `#043338` + ink-1 + love-red regardless of which page is below
-- **Save heart** — always love-red `#FF4A6B` (semantic, never overridden)
-- **Status indicators** — green for available, red for closed, amber for warning (semantic, never overridden)
-- **Footer** — brand teal links on white substrate
-- **Cross-link footer block on category page** ("Andere Kategorien in Basel"): links use ink + brand-teal-on-hover (cross-category context)
-- **Body text on category pages OUTSIDE the saturated panel** — use ink-2 / ink-3, NOT category color (combos with low-saturation bg are designed for the panel only)
-
-### §2.3 · The Republik+Yuh hybrid discipline
-
-Republik gives each article its own colorway with monochrome typography inside. Yuh keeps ONE brand color across all sub-products. Solen does both: each category page gets a Republik-style saturated panel (combo Z/G/A/I), but the brand teal stays as connective tissue (logo, CTAs, links, hearts) across all 4 categories. The brand teal is the masthead; the combo is the article.
-
-### §2.4 · Anti-patterns
-
-- Reintroducing the retired V2 6-cat hexes (V2-D15-3 lock): `#B5588A` rose (Coiffeur — replaced by combo Z `#FFF1DD` cream), `#E8A957` sunny (Barber — replaced by combo G `#D8D6CB` bone), `#C77A5C` clay (Nails — replaced by combo A `#CAE8FF` pale ice blue), `#88B89E` sage (Spa — replaced by combo I `#193120` forest), `#D66547` coral-orange (Makeup — RETIRED entirely), `#A66E3D` camel (Wellness — merged into Spa & Wellness, replaced by combo I forest), `#9B7BB8` plum (V2-D15-2 purple ban). Plus their deep variants: `#6B2D4D`, `#7A4F1F`, `#7A4030`, `#3F6F55`, `#7C3520`, `#5C3D22` — all retired.
-- Reintroducing Makeup as a 5th category before launch data exists
-- Mixing two category combos on the same surface (one category per surface)
-- "Multi-category gradient" bgs — banned, reads as marketing visual not booking app
-- Treating combos as "secondary brand accents" — they live INSIDE category-page saturated panels, never elsewhere
-- Using black-on-bone (combo G text) outside the Barbershop context — combos belong to their category
-
----
-
-## §3 Semantic colors
-
-Universal-convention colors. **Distinct from brand and category. Never collapse.** Brand color does not do "success" or "error" — those have their own hexes.
+These are universal-convention colors. They are **distinct from brand and never collapse with it.** Brand color does not do “success” or “error” or “save” — those have their own hexes that survive any future brand pivot.
 
 |Semantic         |Hex                         |When to use                                                                                                     |
 |-----------------|----------------------------|----------------------------------------------------------------------------------------------------------------|
-|Love-red         |`#FF4A6B`                   |All heart-save icons (favorites, "love this"). Saved = filled, unsaved = stroke `currentColor` ink.              |
-|Status success   |`#16A34A`                   |Success toasts, "Heute frei" availability chips, confirmation checkmarks, walk-in queue confirmations           |
-|Status warning   |`#F59E0B`                   |Warning toasts, soft notifications, "fast voll" chips                                                           |
+|Love-red         |`#FF4A6B`                   |All heart-save icons (favorites, “love this”) — saved state filled, unsaved state stroke `currentColor` warm-ink|
+|Status success   |`#16A34A`                   |Success toasts, “Heute frei” availability chips, confirmation checkmarks, walk-in queue confirmations           |
+|Status warning   |`#F59E0B`                   |Warning toasts, soft notifications, “fast voll” chips                                                           |
 |Status error     |`#D32F2F`                   |Error toasts, form errors, destructive action confirmations                                                     |
-|Open-state green |`#16A34A` (= status success)|Salon "Jetzt offen" indicator                                                                                   |
-|Closed-state red |`#DC2626`                   |Salon "geschlossen" indicator                                                                                   |
+|Open-state green |`#16A34A` (= status success)|Salon “Jetzt offen” indicator                                                                                   |
+|Closed-state red |`#DC2626`                   |Salon “geschlossen” indicator                                                                                   |
 |Star/rating amber|`#F3A864`                   |Rating stars only — utility color, NOT a second brand accent                                                    |
 
 **Anti-pattern:**
-- Using `s-brand` token for hearts → use literal `#FF4A6B`
-- Using `s-brand` for success/error → use the semantic hex
-- Using star-amber `#F3A864` for anything other than rating stars
 
-**In code:** semantic colors stay as literal hexes (or `s-love`, `s-success`, `s-error` tokens). They never reference the brand token.
+- Using `s-brand` token for hearts → use literal `#FF4A6B`.
+- Using `s-brand` for success/error states → use the semantic hex.
+- Using star-amber `#F3A864` for anything other than rating stars → it’s not a brand secondary, just the universal star color.
 
----
+**In code:** semantic colors stay as literal hexes (or their own dedicated tokens like `s-love`, `s-success`, `s-error`). They never reference the brand token.
 
-## §4 Warm-ink scale + substrate
+-----
 
-The warmth of the ink scale is what keeps Solen feeling warm without resorting to a colored substrate. Substrate is **white** (V2-D15: was warm cream in v2-prelim — research showed all 4 reference brands use white). Cool greys are banned.
+## 3. Warm-ink neutral scale
 
-|Role                  |Hex      |Tailwind                 |Use                                                                                                |
-|----------------------|---------|-------------------------|---------------------------------------------------------------------------------------------------|
-|Ink-1 (primary text)  |`#1A1209`|`text-s-ink` / `bg-s-ink`|All body text, headlines, dark register backgrounds (footer, dark CTAs)                            |
-|Ink-2 (secondary)     |`#56463E`|`text-s-ink-2`           |Secondary text — body sub-lines, meta, small labels                                                |
-|Ink-3 (warm grey)     |`#7A6957`|`text-s-ink-3`           |Tertiary text — sub-headers, location lines, count chips, "(142)" review counts                    |
-|Ink-disabled          |`#C4B8A6`|`text-s-ink-disabled`    |Disabled state text, placeholder separators                                                        |
+The warmth of the ink scale is what makes Solen feel like Solen and not generic SaaS. Lock the four ink levels and the warm-shadow tint. Cool greys are banned.
 
-|Surface                  |Hex                |Tailwind         |Use                                                                       |
-|-------------------------|-------------------|-----------------|--------------------------------------------------------------------------|
-|Page substrate (white)   |`#FFFFFF`          |`bg-s-bg`        |The phone/page background. Was warm cream in v2-prelim; now white per V2-D15. |
-|Sunken (deeper grey)     |`#FAF7F3`          |`bg-s-bg-sunken` |Search bar inactive state, header icon button bg, disabled input bg        |
-|Card surface (white)     |`#FFFFFF`          |`bg-white`       |Salon cards, dropdowns, sheets — same as substrate. Cards delineate via shadow + border, not color shift. |
-|Border (warm hairline)   |`rgba(26,18,9,.06)`|inline           |Hairline borders, dividers, separators                                    |
-|Border (warm hairline+)  |`#E8DFD2`          |`border-s-border`|Visible warm-cream borders — search bar inactive, chip outlines           |
+|Role                  |Hex      |Tailwind                 |Use                                                                                            |
+|----------------------|---------|-------------------------|-----------------------------------------------------------------------------------------------|
+|Ink-1 (primary text)  |`#1A1209`|`text-s-ink` / `bg-s-ink`|All body text, headlines, dark register backgrounds (footer, dark CTAs, ink avatar)            |
+|Ink-2 (secondary text)|`#56463E`|`text-s-ink-2`           |Secondary text — body sub-lines, italic quotes, meta lines on dark surfaces                    |
+|Ink-3 (warm grey)     |`#7A6957`|`text-s-ink-3`           |Tertiary text — sub-headers, location lines, count chips, “(142)” review counts, divider labels|
+|Ink-disabled          |`#C4B8A6`|`text-s-ink-disabled`    |Disabled state text, separators inside placeholder text (the “·” in “Was suchst du? · Basel”)  |
 
-**Note on substrate change:** because cards are now white-on-white, **cards depend on shadow + border for separation** instead of cream-vs-white contrast. This raises the importance of §5b depth system. The visual delineation of "this is a card lifted off the page" is now done entirely by warm-tinted shadow.
+|Surface                         |Hex                |Tailwind         |Use                                                                                      |
+|--------------------------------|-------------------|-----------------|-----------------------------------------------------------------------------------------|
+|Page substrate (warm cream)     |`#FBF8F3`          |`bg-s-bg`        |The phone/page background. Cards lift off this — never white-on-white.                   |
+|Sunken (deeper cream)           |`#FAF7F3`          |`bg-s-bg-sunken` |Search bar inactive state, header icon button bg                                         |
+|Card surface (white)            |`#FFFFFF`          |`bg-white`       |Salon cards, dropdowns, sheets — always white. Adds an inset top highlight per §5b depth.|
+|Border (warm hairline)          |`rgba(26,18,9,.06)`|inline           |Hairline borders, dividers, separators above price rows                                  |
+|Border (warm hairline, stronger)|`#E8DFD2`          |`border-s-border`|Visible warm-cream borders — search bar inactive, chip outlines                          |
 
 **Shadows are warm-tinted, never pure black, never pure ink.** Two acceptable shadow families:
-- **Warm-ink tint** `rgba(26,18,9, X)` — for general elevation. Alpha values: `0.03 / 0.04 / 0.06 / 0.08 / 0.12 / 0.18`.
-- **Brand peach tint** `rgba(4,51,56, X)` — for surfaces that interact w brand or want extra warmth. Alpha values: `0.04 / 0.06 / 0.08 / 0.12 / 0.24 / 0.32`.
 
-Pick **one tint per shadow stack** — don't mix.
+- **Warm-ink tint** `rgba(26,18,9, X)` — for general elevation. Alpha values: `0.03 / 0.04 / 0.06 / 0.08 / 0.12 / 0.18` (low alpha for low elevation).
+- **Brand peach tint** `rgba(232,116,42, X)` — for surfaces that interact w brand or want extra warmth (cards in feed sections, search bar resting state). Alpha values: `0.04 / 0.06 / 0.08 / 0.12 / 0.24 / 0.32`.
+
+Pick one tint per shadow stack — don’t mix. Shadows always lift up; never use a pure dark-down shadow that pulls the surface into the page.
 
 **Anti-pattern:**
-- Pure black `#000000` body text → use ink-1 `#1A1209`
-- Pure-black shadows `rgba(0,0,0, X)` → use warm-ink or brand-peach tint
-- Cool-grey hexes anywhere: `#9E958C`, `#767676`, `#EBEBEB`, Tailwind default `#e5e7eb`, `gray-400`, `slate-500` etc. → always warm-ink tints
-- Mixing both shadow tints in one stack
-- Reverting substrate to warm cream — explicitly retired V2-D15
 
----
+- Pure black `#000000` body text → use ink-1 `#1A1209`.
+- Pure-black shadows `rgba(0,0,0, X)` → use warm-ink or brand-peach tint.
+- Cool-grey hexes anywhere: `#9E958C`, `#767676`, `#EBEBEB`, Tailwind default `#e5e7eb`, `gray-400`, `slate-500` etc. → always warm-ink tints.
+- Mixing both shadow tints in one stack — pick one family per element.
 
-## §5 Typography
+-----
 
-Solen runs on **2 typefaces, no exceptions** (V2-D15-3 lock — Bricolage Grotesque + Inter Tight retired). **Cooper BT** carries display/headlines (chunky warm slab — the brand-mark moments), **ITC Avant Garde Gothic Std** handles body/UI/section heads (clean geometric grotesque). The pairing was user-locked from a graphic-design reference (`Avant Garde Gothic + Cooper BT` — see V2_REBUILD_LOG V2-D15-3).
+*Phase 1 step 1 ends here. Step 2 covers per-category colors + typography + depth system.*
 
-|Role                                              |Family                                          |Weight       |Use                                                                                                                  |
-|--------------------------------------------------|------------------------------------------------|-------------|---------------------------------------------------------------------------------------------------------------------|
-|Display (hero h1, logo, feature panel h2, brand-mark moments)|**Cooper BT** (paid) / **Cooper Black Std** / **Sansita 900** (free fallback)|400 (single-weight) / 900 fallback|Hero h1, "Solen" logo, Solen Pro feature h2, category panel h1s. Tight letter-spacing -0.02em.|
-|Body + UI + section h2 + section heads + everything else      |**ITC Avant Garde Gothic Std** (paid) / **League Spartan** (free fallback)    |300/400/500/600/700|All body, sub-text, meta, button labels, form fields, microcopy, eyebrow text, section h2s, card titles, AND numerics (use `font-variant-numeric: tabular-nums` for prices/counts/ratings). |
+# SOLEN — Live Truth · Step 2
 
-**Free Google Fonts fallbacks (always-load):**
-- Cooper BT → **Sansita** (weights 400/700/900) — closest free Cooper Black analog, chunky rounded slab
-- ITC Avant Garde Gothic Std → **League Spartan** (weights 300/400/500/600/700) — closest free Avant Garde analog, geometric grotesque
-- Final fallback: **Inter Tight** — neutral catch-all (kept only as last-resort sans)
+> Continuing the rewrite from step 1. Step 2 covers per-category colors, typography, depth system, and the personality vocabulary (easing, motion, icon library) the og doc completely lacked.
 
-**Font stacks (locked):**
-- Display: `'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif`
-- Body/UI: `'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif`
+-----
+
+## 4. Per-category colors
+
+Each beauty category gets a dedicated color used on category tile bgs, salon-card photo placeholders (when no real photo), and the category icon’s optional fill state. **These are NOT secondary brand accents** — they’re decorative tagging.
+
+|Category|Hex                     |Glow shadow           |Where it appears                                                                     |
+|--------|------------------------|----------------------|-------------------------------------------------------------------------------------|
+|Coiffeur|`#B5588A` (rose)        |`rgba(181,88,138,.18)`|CategoriesGrid tile, Coiffeur salon card placeholder, CoiffeurIcon fill (when active)|
+|Barber  |`#E8A957` (sunny)       |`rgba(232,169,87,.22)`|CategoriesGrid tile, Barber salon card placeholder, BarberIcon fill                  |
+|Nails   |`#C77A5C` (warm clay)   |`rgba(199,122,92,.2)` |CategoriesGrid tile, Nails salon card placeholder, NailsIcon fill                    |
+|Spa     |`#88B89E` (fresh sage)  |`rgba(136,184,158,.2)`|CategoriesGrid tile, Spa salon card placeholder, SpaIcon fill                        |
+|Makeup  |`#D66547` (coral-orange)|`rgba(214,101,71,.2)` |CategoriesGrid tile, Makeup salon card placeholder, MakeupIcon fill                  |
+|Wellness|`#9B7BB8` (soft plum)   |`rgba(155,123,184,.2)`|CategoriesGrid tile, Wellness salon card placeholder, WellnessIcon fill              |
+
+**Application rules:**
+
+- Tiles use the color as full bg with a top-down highlight gradient: `linear-gradient(160deg, rgba(255,255,255,.3), rgba(255,255,255,0) 60%)` overlaid + the colored shadow lifts the tile.
+- Salon card photo placeholders (when no real photo) use the same color w light vignette pattern from §5b.
+- Category icons inherit `currentColor` — when shown on tile, they’re white. When shown in nav/chips, they’re ink. Filled-state on hover or active uses the category color.
+
+**Anti-pattern:**
+
+- Treating these as a “second brand color.” They never appear in CTAs, headlines, focus rings, or anywhere outside their category context.
+- Using them on text — contrast on white is too low for body text. They’re surface colors only.
+
+-----
+
+## 5. Typography
+
+Solen runs on **3 typefaces, no exceptions.** Bricolage Grotesque carries display/headlines, Inter Tight handles body/UI, Instrument Serif italic appears for accent moments.
+
+|Role                                  |Family                 |Weight                     |Use                                                                                                                  |
+|--------------------------------------|-----------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------|
+|Display (headlines, hero, big numbers)|**Bricolage Grotesque**|700 (variable, 700 default)|All h1-h4, hero text, section headers, salon names, prices, eyebrow numerics. Mixed-case, NEVER all-caps for display.|
+|Body / UI                             |**Inter Tight**        |400, 500, 600, 700         |All body text, sub-lines, meta, chips, button labels, form fields, microcopy                                         |
+|Mono (numerics)                       |**JetBrains Mono**     |400, 500                   |Tabular-nums on prices, ratings, counts, timers, IDs (e.g. “Buchung #1432”)                                          |
+|Accent (italic moments)               |**Instrument Serif**   |400 italic                 |Single accent words inside headlines (e.g. “Hi Lisa, was brauchst du *heute*?”) — used sparingly, max 1 per heading  |
 
 **Sizes (mobile-first, scale up at 768px+):**
 
-|Use                  |Size                          |Weight|Line height|Letter spacing       |Font          |
-|---------------------|------------------------------|------|-----------|---------------------|--------------|
-|Hero h1              |clamp(56px, 7.4vw, 104px)     |900   |0.96       |-0.02em              |Cooper        |
-|Logo "Solen"         |36px (28px mobile)            |900   |1.0        |-0.015em             |Cooper        |
-|Section h2 (general) |clamp(28px, 3.2vw, 40px)      |600   |1.1        |-0.018em             |Avant Garde   |
-|Feature panel h2     |clamp(36px, 4vw, 52px)        |900   |1.0        |-0.02em              |Cooper        |
-|Category panel h1    |clamp(36px, 4.2vw, 56px)      |900   |0.96       |-0.018em             |Cooper        |
-|Card title h3        |18px                          |600   |1.2        |-0.005em             |Avant Garde   |
-|Body                 |16-17px                       |400   |1.5        |0                    |Avant Garde   |
-|Small / meta         |13-14px                       |400/500|1.4-1.45   |0                    |Avant Garde   |
-|Eyebrow              |11-13px                       |600   |1.4        |0.16-0.18em uppercase|Avant Garde   |
-|Big numerics         |clamp(36px, 4vw, 52px)        |900   |1.0        |-0.02em              |Cooper        |
-|Prices (inline)      |16px                          |600   |1.0        |0 (tabular-nums)     |Avant Garde   |
+|Use                  |Size                                    |Line height|Letter spacing       |
+|---------------------|----------------------------------------|-----------|---------------------|
+|Hero h1              |32-44px (mobile-first, scales w `clamp`)|1.0        |-0.03em              |
+|Section h2           |22-28px                                 |1.05       |-0.025em             |
+|Card title h3        |15-16px                                 |1.2        |-0.02em              |
+|Body                 |13-14px                                 |1.5        |0                    |
+|Small / meta         |11-12px                                 |1.45       |0                    |
+|Eyebrow              |9-10px                                  |1.4        |0.18-0.22em uppercase|
+|Big numerics (counts)|32-44px                                 |1.0        |-0.025em             |
+|Prices               |14-16px                                 |1.0        |-0.01em              |
 
-### §5.1 · Display vs Text rule (Uber lesson, V2-D15-3 reapplication)
-
-Uber's discipline: "Use the display font for large titles only. Don't apply it to most other UI text — labels, paragraphs, buttons." Solen applies this to Cooper:
-
-**Cooper ONLY at:** hero h1, "Solen" logo, feature panel h2 (Solen Pro), category panel h1s (Coiffeur "Schnitt für deinen Look", Barbershop "Bart und Schnitt", Nails "Nägel, perfekt gemacht", Spa "Entspannung, ganz nah"). That's it. Cooper is the brand-mark moment, not the workhorse.
-
-**DO NOT apply Cooper to:**
-- Body paragraphs (any size)
-- Button labels (CTAs, secondary buttons, chip pills) → Avant Garde 700
-- Form labels and helper text → Avant Garde 500
-- Microcopy / meta text / sub-text → Avant Garde 400
-- Section h2s on the homepage (e.g. "In Basel diese Woche") → Avant Garde 600
-- Counter-pill text, footer link text, toasts, tooltips → Avant Garde
-
-**Why this matters:** Cooper at small sizes loses its chunky character and just reads as "old-fashioned bold." Reserving it for display moments creates the punch where it lands. Avant Garde at body scales feels clean and modern — and modern IS the goal for body. Cooper for personality, Avant Garde for function.
-
-### §5.2 · Numerics rule
-
-Prices, ratings, counts, dates, times all use Avant Garde Gothic with `font-variant-numeric: tabular-nums`:
-- Salon card rating: Avant Garde 600 11px tabular-nums
-- Prices "ab CHF **85**": Avant Garde 600 ink-1 inline w body Avant Garde 400 ink-2 surrounding text
-- Counts "**23 Salons**": same pattern
-- Swiss apostrophe thousands: `1'247 Salons` not `1247` and not `1,247`
-- Big-numerics (e.g. "1'247 Salons" hero stat): switch to Cooper 900 for hero impact moments only
-
-### §5.3 · No italic accent moments
-
-V1 used Instrument Serif italic for emphasis words in headlines. **Retired V2-D15.** No italic anywhere in UI. If a word needs emphasis inside a headline, use **brand-teal color swap** (the locked V3 emphasis rule — single word in `#043338` per hero h1).
-
-**Retired typography (do NOT reintroduce):**
-- Avant Garde Gothic (V2 display — replaced by Cooper)
-- Inter Tight as PRIMARY body (V2 body — kept only as final fallback)
-- Instrument Serif (V1 italic accent — retired V2-D15)
-- JetBrains Mono (V1 numerics — retired V2-D15)
-- Peace Sans (briefly considered, retired — too "Yuh-chunky shapes")
-- Open Sauce Sans (briefly considered, retired — too rounded)
-- Fraunces (briefly considered as Republik-serif analog, retired)
-- Anton, Bebas Neue, DM Sans, Plus Jakarta, Outfit, Phosphor (font), Figtree
+**Variable axis play (Bricolage):**
+Bricolage Grotesque is a variable font with a `wdth` (width) axis from 75-125. For brand-identity moments — city name in hero (“47 Salons in **Basel**”), big celebratory numbers — animate `font-variation-settings: "wdth" 100 → 110 → 100` over 3s loop. Subtle, only on 1-2 elements per screen. Never on body or button text.
 
 **Anti-pattern:**
-- Cooper on a button label or form input → reject (pattern is wrong even if it "looks fine")
-- All-caps Cooper display text → reads novelty/awkward. Mixed-case only.
-- Negative letter-spacing on body or UI text → only on display sizes 22px+
-- Italic anywhere in UI → period.
-- Mixing Cooper + Avant Garde at the same size in the same component (e.g. half a headline in each) — the discipline is by ROLE, not by mood
 
----
+- Anton, Bebas Neue, Fraunces, DM Sans, Plus Jakarta, Outfit, Phosphor (font), Figtree — all retired or never used. The 3-font stack is non-negotiable.
+- All-caps display text — reads editorial/inaccessible. Mixed-case only.
+- Negative letter-spacing on body or UI text — only on display sizes 22px+.
+- Bold weight on Inter Tight body where text-emphasis is the goal — use color swap to brand-orange instead (cleaner, see §5d emphasis rule).
+- Italic for everything — Instrument Serif italic is the *moment* font, max 1-2 per screen, only inside headlines.
 
-## §5a Pill rule (V2-D15-3 lock)
+-----
 
-**Every pill-shaped UI element with text uses `#FFFFFF` on dark or `#000000` on light. No tinted-of-the-bg colors inside pills.** This applies to: CTA buttons, category tags/chips, badges, numbered step circles, salon-card heart icons (heart character is a text glyph), dropdown triggers, filter pills, toast pills.
+## 5b. Depth system
 
-**Locked pairings:**
-- Brand teal `#043338` pill → **white** text
-- Pastel pill (cream / bone / pale ice blue / pale teal) → **black** text
-- Saturated category panel CTA pill (inside Republik panel, e.g. inside the cream Coiffeur panel) → **brand teal** pill bg + **white** text (the connective tissue)
-- Solen Pro saturated brand panel inner CTA → pale teal `#C2F0F1` pill bg + **black** text
+Lift, never weight. 5 levels, warm-tinted shadows, top-down highlights. Nothing pulls content into the page.
 
-**Where the rule does NOT apply** (tinted text is fine for these):
-- Inline body links (e.g. "So funktioniert's →" in body copy) → brand teal text
-- Status text like "Heute frei" / "Morgen frei" inline on cards → brand teal text
-- Eyebrow labels above hero h1 → brand teal text
-- Section "Alle ansehen →" inline links → brand teal text underlined
-- Inline accent words inside category panels (Republik monochrome rule — text is the combo's text color)
+|Level                  |Where it appears                                              |Shadow stack                                                                                                                              |
+|-----------------------|--------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+|**L0 · base substrate**|Page bg, no shadow                                            |none — flat cream `#FBF8F3`                                                                                                               |
+|**L1 · raised**        |Header icon buttons, chips, small interactive elements        |`inset 0 1px 0 rgba(255,255,255,.6)` + `0 1px 1px rgba(26,18,9,.04)` + `0 2px 6px rgba(232,116,42,.06)`                                   |
+|**L2 · surface**       |Search bar, secondary cards                                   |`inset 0 1px 0 rgba(255,255,255,.6)` + `0 1px 2px rgba(26,18,9,.03)` + `0 6px 16px rgba(232,116,42,.08)`                                  |
+|**L3 · elevated**      |Salon cards, b2b promo card, modals                           |`inset 0 1px 0 rgba(255,255,255,.6)` + `0 1px 2px rgba(26,18,9,.03)` + `0 8px 24px rgba(232,116,42,.06)` + `0 16px 40px rgba(26,18,9,.04)`|
+|**L4 · overlay**       |Glassy badges (top-left), heart buttons (top-right), dropdowns|`backdrop-filter: blur(12px) saturate(1.4)` + `0 1px 2px rgba(0,0,0,.06)` + `0 4px 12px rgba(0,0,0,.08)`                                  |
+|**L5 · accent glow**   |Live pills, active brand-CTA elements that need to “glow”     |`inset 0 1px 0 rgba(255,255,255,.32)` + `0 2px 6px rgba(232,116,42,.28)` — toned-down version, not aggressive                             |
 
-**Why:** pills are functional UI primitives. Tinted-of-bg text inside a pill (e.g. dark teal text on pale teal pill) reads as "category-themed" but creates ambiguity — is this a CTA or a tag? Black-or-white text removes the ambiguity. Inline text is editorial — color expresses voice.
+**Photo treatment:**
+Salon-card photo placeholders use a triple-layer bg to read like a sunlit interior, not a flat color block:
 
----
-
-## §5g Atmosphere wash recipe (V2-D15-3 lock)
-
-The hero substrate is **white** with a layered radial gradient ("atmosphere wash") behind text — pale cyan core + navy framing. NOT a flat colored bg, NOT a saturated panel, NOT four rainbow blobs (those iterations retired).
-
-**Locked CSS recipe (`.hero::before`):**
-```css
-position: absolute;
-inset: 0;
-background:
-  /* Cyan core — pale ice blue + pale teal, kept light */
-  radial-gradient(ellipse 65% 55% at 72% 28%, rgba(202, 232, 255, 0.78) 0%, transparent 55%),
-  radial-gradient(ellipse 58% 50% at 22% 78%, rgba(194, 240, 241, 0.72) 0%, transparent 60%),
-  /* Navy frame — royal blue around the corners, depth without saturation */
-  radial-gradient(ellipse 55% 65% at 100% 105%, rgba(0, 88, 152, 0.32) 0%, transparent 55%),
-  radial-gradient(ellipse 45% 55% at 0% -5%, rgba(0, 88, 152, 0.28) 0%, transparent 50%),
-  /* Subtle deep-navy bleed at the bottom edge — horizon line */
-  linear-gradient(180deg, transparent 65%, rgba(3, 30, 72, 0.06) 100%);
-z-index: 0;
-pointer-events: none;
-```
-
-**Color stops decoded:**
-- `#CAE8FF` pale ice blue at 78% opacity (upper-right cyan core)
-- `#C2F0F1` pale teal at 72% opacity (lower-left cyan core)
-- `#005898` royal blue at 32% opacity (bottom-right navy framing)
-- `#005898` royal blue at 28% opacity (top-left navy framing)
-- `#031E48` deep navy at 6% opacity linear bleed (horizon line)
-
-**Per-category atmospheric variant** (if/when category pages get hero washes per Yuh's sub-product pattern): same recipe but swap the cyan core hexes for the category's light-tier hexes. Coiffeur cyan core → cream-tinted; Nails cyan core → ice-blue (already matches); Spa cyan core → pale teal (already matches).
-
-**Anti-pattern:**
-- Flat colored hero bgs (Republik mode for HEROES specifically — only for category panels below)
-- 4-blob rainbow gradients (retired — read as "Apple Music splash")
-- Painterly SVG illustration assets like Yuh uses (deferred — would need a designer to draw, costs out of scope)
-- Atmosphere with saturation > opacity 0.4 — that's no longer "atmosphere," that's a panel
-
----
-
-## §5h Color philosophy (the locked design law, V2-D15-3)
-
-The synthesis of Republik (colorways) + Yuh (discipline) studied at `/tmp/republik-research/colorways.md` and `/tmp/yuh-research/yuh-system.md`:
-
-1. **White substrate is permanent.** Every page, every screen. ~70-80% of viewport. White is non-negotiable. Yuh-anchored.
-2. **One brand color used densely.** Brand teal `#043338` appears 60–100× per page in tiny accents. Density, not size, is the brand. Yuh-anchored.
-3. **Brand color is NEVER a hero substrate.** Hero is white + atmosphere wash. Brand teal lives in logo / CTAs / links / words / icons / hearts. Yuh-anchored.
-4. **Saturated panels are editorial, not decorative.** When a panel goes saturated (category panels Z/G/A/I, Solen Pro feature card), it follows Republik's monochrome rule: ALL text inside the panel is one color. No multi-color text. Republik-anchored.
-5. **Pastels live as soft tiles or cyan atmosphere only.** Never as section bgs that text reads on at any reasonable density. Pastels organize discovery; saturated panels carry editorial moments.
-6. **Semantic colors stay semantic.** Love-red `#FF4A6B`, success `#16A34A`, warning `#F59E0B`, error `#D32F2F`, closed `#DC2626`, star `#F3A864` — these never collapse into brand or category. Universal-convention beats brand-derivation.
-7. **Pill text is white-or-black.** No tinted-of-bg. (See §5a.)
-8. **One typeface for display, one for everything else.** Cooper for brand-mark moments, Avant Garde Gothic for the rest. The discipline is by ROLE, not by mood. (See §5.)
-
-### §5h.1 · The cumulative palette (every hex authorized for v3)
-
-This is the EXHAUSTIVE list of colors authorized for Solen V3. Anything not in this list is a violation.
-
-**Foundation:**
-- `#FFFFFF` substrate
-- `#FAF7F3` sunken
-- `#1A1209` ink-1
-- `#56463E` ink-2
-- `#7A6957` ink-3
-- `#C4B8A6` ink-disabled
-- `rgba(26,18,9,.06)` hairline
-- `#E8DFD2` border
-
-**Brand:**
-- `#043338` brand primary
-- `#C2F0F1` brand pale (= category Spa text + atmosphere)
-- `#E1F4F4` brand subtle
-
-**Atmosphere wash colors (CSS gradient stops only):**
-- `#CAE8FF` pale ice blue (also: Nails category bg)
-- `#C2F0F1` pale teal (also: brand pale, Spa soft tile)
-- `#005898` royal blue (atmosphere depth, no other use)
-- `#031E48` deep navy (horizon bleed only, no other use)
-
-**Categories (locked V2-D15-3):**
-- Coiffeur Z: bg `#FFF1DD` cream + text `#B5345A` cherry
-- Barbershop G: bg `#D8D6CB` bone + text `#000000` black
-- Nails A: bg `#CAE8FF` pale ice blue + text `#B50051` magenta
-- Spa & Wellness I: bg `#193120` forest green + text `#948565` sandy beige
-
-**Semantic:**
-- `#FF4A6B` love-red
-- `#16A34A` success / open
-- `#F59E0B` warning
-- `#D32F2F` error
-- `#DC2626` closed
-- `#F3A864` star/rating
-
-**Total authorized hexes: 24.** Anything outside this list is unauthorized in production code.
-
----
-
-## §5i Combo library (reference for future categories)
-
-The 31-combo grid lives at `public/solen-v2-combos.html` (rendered preview) — labeled A–EE. 19 are Republik-extracted (A–S, see `/tmp/republik-research/colorways.md`); 12 are fresh combos following the same monochrome-per-panel discipline (T–EE).
-
-This grid is **the exclusive source** when adding a 5th category (e.g. Waxing post-launch) or themed feature pages. Pick a combo letter; the bg + text + contrast are pre-verified WCAG-compliant.
-
-**Currently locked combos:** D (Brand) · Z (Coiffeur) · G (Barbershop) · A (Nails) · I (Spa & Wellness).
-**13 unassigned alternatives:** B, C, H, J, K, L, M, N, O, Q, R, S, plus T, U, V, W, X, Y, AA, BB, CC, DD, EE.
-
-When picking a new combo: select one with hue + value diversity from existing locked combos. Don't add a 5th cream-bg panel (Z is already cream) — pick something with a different hue to maintain visual variety.
-
----
-
-## §5b Depth system
-
-Lift, never weight. Single-shadow approach (Yuh-style) — each elevated surface gets ONE drop shadow, not stacked layers. Warm-tinted shadows, top-down highlights via inset.
-
-|Level                  |Where it appears                                              |Shadow                                                                  |
-|-----------------------|--------------------------------------------------------------|------------------------------------------------------------------------|
-|**L0 · base**          |Page bg, no shadow                                            |none — flat white `#FFFFFF`                                             |
-|**L1 · raised**        |Header icon buttons, chips, small interactive elements        |`inset 0 1px 0 rgba(255,255,255,.6)` + `0 1px 1px rgba(26,18,9,.04)`    |
-|**L2 · surface**       |Search bar, secondary cards                                   |`inset 0 1px 0 rgba(255,255,255,.6)` + `0 2px 8px rgba(26,18,9,.06)`    |
-|**L3 · elevated**      |Salon cards, b2b promo card, modals                           |`inset 0 1px 0 rgba(255,255,255,.6)` + `0 4px 16px rgba(26,18,9,.08)` + `0 16px 40px rgba(4,51,56,.06)` |
-|**L4 · overlay**       |Glassy badges (top-left), heart buttons (top-right), dropdowns|`backdrop-filter: blur(12px) saturate(1.4)` + `0 1px 2px rgba(0,0,0,.06)` |
-|**L5 · accent glow**   |Live pills, active brand-CTA elements that need to "glow"     |`inset 0 1px 0 rgba(255,255,255,.32)` + `0 2px 6px rgba(4,51,56,.28)` — toned, not aggressive |
-
-**Photo treatment (salon-card placeholders w no real photo):**
 ```
 background:
-  linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 35%, transparent 70%, rgba(4,51,56,.08) 100%),
+  linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 35%, transparent 70%, rgba(232,116,42,.08) 100%),
   radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.25), transparent 60%),
   var(--photo-bg);
 ```
-Top-down highlight (sky look), tiny peach kiss at bottom (warm sunset edge), category color underneath.
 
-**Two shadow families:**
-- **Warm-ink** `rgba(26,18,9, X)` — general elevation
-- **Brand-peach** `rgba(4,51,56, X)` — surfaces interacting w brand
+Top-down highlight (sky look), tiny peach kiss at the bottom (warm sunset edge), base color underneath. **NEVER bottom-down dark vignette** — that pulls the image down, reads moody/heavy.
 
-Pick **one family per shadow stack**. Pick warmer (peach) when surface contains brand-teal elements. Pick warm-ink for neutral surfaces.
+**The two shadow families:**
+
+- **Warm-ink** `rgba(26,18,9, X)` — general elevation, surfaces lifting off cream substrate.
+- **Brand-peach** `rgba(232,116,42, X)` — surfaces interacting w brand or wanting extra warmth (cards in feed, search bar).
+
+Pick **one family per shadow stack** — don’t mix `rgba(26,18,9, .04)` and `rgba(232,116,42, .12)` in the same element. Pick the warmer of the two (peach) when the surface contains brand-orange elements (CTAs, live pills). Pick warm-ink for neutral surfaces (header buttons, chips, white modals).
 
 **Anti-pattern:**
-- Pure black shadows `rgba(0,0,0, X)`
-- Bottom-down dark vignettes on photos — moody, pulls down
-- Aggressive glow shadows `rgba(4,51,56, .32+)` on every button — restraint
-- Mixing both shadow families in one stack
-- Stacked-shadow layers on every element (was a v2-prelim anti-pattern; the single-drop-shadow Yuh approach is preferred for cleaner rendering at scale)
 
----
+- Pure black shadows `rgba(0,0,0, X)`.
+- Bottom-down dark vignettes on photos (`linear-gradient(180deg, transparent, rgba(0,0,0,.4))`) — moody, pulls down.
+- Aggressive brand-peach glow shadows `rgba(232,116,42, .32+)` on every button — restraint. Reserved for live pills + critical-action moments only.
+- Mixing both shadow families in one stack.
 
-## §5c Personality tokens
+-----
 
-The animation vocabulary. 4 named easing curves, 6 micro-interactions, 3 signature flourishes. Airbnb principle: **motion is for state continuity, not decoration.** Every motion below maps to a state-change moment.
+## 5c. Personality tokens
+
+The og doc had no animation vocabulary. Solen has 4 named easing curves, 6 micro-interactions, and 4 signature flourishes. These are the toolkit — don’t invent new ones in code.
 
 ### Easing curves (CSS variables)
 
 |Token          |Cubic-bezier                     |Duration|Use                                                                                              |
 |---------------|---------------------------------|--------|-------------------------------------------------------------------------------------------------|
 |`--ease-snap`  |`cubic-bezier(.4, 0, .2, 1)`     |200ms   |Default UI — buttons, hovers, tab switches, search-card transitions, chip toggles                |
-|`--ease-spring`|`cubic-bezier(.34, 1.56, .64, 1)`|400ms   |Delight — heart save, badge appear, "+1" counter pop. Slight overshoot.                          |
+|`--ease-spring`|`cubic-bezier(.34, 1.56, .64, 1)`|400ms   |Delight — heart save, badge appear, “+1” counter pop. Slight overshoot = “yay something happened”|
 |`--ease-glide` |`cubic-bezier(.16, 1, .3, 1)`    |600ms   |Long sweeps — sheet open, modal in, full-page route transitions                                  |
 |`--ease-thud`  |`cubic-bezier(.7, 0, .84, 0)`    |150ms   |Decisive — press states, toast dismiss, confirm tap. Fast accelerate, instant impact             |
 
-**Pick by intent:** snap = "I clicked." spring = "yay!" glide = "we're moving." thud = "done."
+**Pick by intent:** snap = “I clicked.” spring = “yay!” glide = “we’re moving.” thud = “done.”
 
 ### Motion tokens
 
@@ -500,150 +282,92 @@ The animation vocabulary. 4 named easing curves, 6 micro-interactions, 3 signatu
 |----------------|-------------------------------------------------|------------------------------------------------------|
 |`--press-scale` |`scale(.94)` 100ms snap                          |Active state on tappable elements (buttons, cards)    |
 |`--lift-y`      |`translateY(-1px)` + brighter shadow + 200ms snap|Hover state on buttons, cards                         |
+|`--accent-serif`|`"Instrument Serif"` 400 italic                  |The italic moment font — apply via class, never inline|
 
-### Micro-interactions (6 every screen needs)
+### Micro-interactions (the 6 every screen needs)
 
 |Name         |Trigger                        |Animation                                                                                                                                   |
 |-------------|-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
 |Heart save   |Tap heart icon                 |Spring 400ms — scale 1 → 1.4 → 1 + fill color swap to `#FF4A6B`                                                                             |
 |Live pulse   |Always (when live data is real)|Snap 1.6s loop — 5px dot scales 1 → 2.5 + fades opacity 0.6 → 0                                                                             |
 |Chip toggle  |Tap filter chip                |Snap 180ms — bg + text + border color swap                                                                                                  |
-|Skeleton load|Initial data fetch             |Linear 1.6s loop — gradient sweep across placeholder. **Stops after 2 cycles** if data still missing (don't loop forever — anxiety-inducing)|
+|Skeleton load|Initial data fetch             |Linear 1.6s loop — gradient sweep across placeholder. **Stops after 2 cycles** if data still missing (don’t loop forever — anxiety-inducing)|
 |Press scale  |Tap any button/card            |Snap 100ms — scale .94 on `:active`                                                                                                         |
 |Success draw |Booking confirmation           |Glide 850ms — circle stroke draws (500ms) + checkmark stroke draws (350ms, 150ms delay)                                                     |
 
-### Signature flourishes (1-2 per screen max)
+### Signature flourishes (used sparingly, 1-2 per screen max)
 
 |Name                     |Where                                              |Behavior                                                                                                                                        |
 |-------------------------|---------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
-|Magnetic arrow           |Section "→" links, "Mehr erfahren →" links         |Gap text↔arrow grows from 4px → 10px on hover (200ms snap). Arrow itself translates 2px right.                                                  |
+|Magnetic arrow           |Section “→” links, “Mehr erfahren →” links         |Gap between text and arrow grows from 4px → 10px on hover (200ms snap). Arrow itself translates 2px right.                                      |
 |Confetti pop             |Booking confirmation button (ONLY)                 |4 colored dots fly up + fade out on hover/click. Stagger 50ms each. Spring 600ms. NEVER on save/like/generic CTA.                               |
-|Brand-color number accent|Big numbers that "matter" — counts, ratings, prices|Number itself is brand-teal (or category-deep on category pages), surrounding text stays ink. Context-dependent — not all numbers, just the headline. |
+|Wiggle attention         |Urgency badges (“Nur noch 2 frei!”)                |Subtle wiggle every 3s — rotate(-3deg → 3deg → -2deg → 0). Stops on hover. NEVER on nav, buttons, or hero.                                      |
+|Brand-color number accent|Big numbers that “matter” — counts, ratings, prices|Number itself is brand-orange, surrounding text stays ink. Context-dependent — not all numbers, just the one that’s the headline of its element.|
 
-### Motion principle (Airbnb lesson, V2-D15 commit)
+### Variable font axis play
 
-**Motion is for state-change continuity, not decoration.** Airbnb's published rationale: "fluid transitions between states and screens help users preserve context while navigating." Every animation in §5c maps to a moment where user state actually changes (toggle, save, navigate, succeed). Implementation discipline: when a primitive ships, motion MUST be applied at its state-change moments — not specced and forgotten.
+Already covered in §5 — Bricolage `wdth` axis 100 → 110 → 100 over 3s loop on city name + big celebratory numbers only. **1-2 instances max per screen.**
 
-### §5c.7 · Motion application checklist (every state-change → required treatment)
+-----
 
-Implementation rule per V2-D15: every component PR for a primitive or surface MUST verify these motion moments are wired with the named easing tokens. Catalog of state-change moments and their required motion treatments:
+## 5d. Inline emphasis rule
 
-|state-change moment                            |required motion                                                                              |easing             |
-|-----------------------------------------------|---------------------------------------------------------------------------------------------|-------------------|
-|Heart save toggle                              |scale 1 → 1.4 → 1, fill color swap to `#FF4A6B`, 400ms                                       |`--ease-spring`    |
-|Heart unsave                                   |scale 1 → 0.9 → 1, 200ms                                                                     |`--ease-snap`      |
-|Filter chip toggle                             |bg + text + border color swap, 180ms                                                         |`--ease-snap`      |
-|Card press (any tappable card)                 |scale .94 on `:active`, 100ms                                                                |`--ease-snap`      |
-|Button press (any CTA)                         |scale .96 on `:active`, 100ms                                                                |`--ease-thud`      |
-|Card hover (desktop)                           |translateY(-1px) + brighter shadow, 200ms                                                    |`--ease-snap`      |
-|Live counter pulse (counter pill, badge dots)  |opacity 1↔.5, scale 1↔1.3, 1.6s loop infinite                                                |`--ease-snap`      |
-|Skeleton shimmer                               |gradient sweep L→R, 1.6s loop, max 2 cycles then static                                      |linear             |
-|Booking success draw                           |circle stroke draws (500ms) + checkmark stroke draws (350ms, 150ms delay), 850ms total       |`--ease-glide`     |
-|Sheet open (filter sheet, sortieren sheet, look-detail sheet, city-dropdown mobile)|translateY 100% → 0 + dim fade-in, 600ms                  |`--ease-glide`     |
-|Sheet swipe-down dismiss                       |translateY 0 → 100% + dim fade-out, 400ms                                                    |`--ease-snap`      |
-|Modal open (login modal, confirm dialog)       |scale 0.96 → 1 + opacity 0 → 1 + dim fade-in, 600ms                                          |`--ease-glide`     |
-|Modal close                                    |scale 1 → 0.96 + opacity 1 → 0, 300ms                                                        |`--ease-snap`      |
-|Toast appear                                   |translateY 100% → 0 + opacity 0 → 1, 400ms                                                   |`--ease-spring`    |
-|Toast dismiss                                  |opacity 1 → 0, 150ms                                                                          |`--ease-thud`      |
-|Page route transition                          |cross-fade + 8px translateY drift, 600ms                                                     |`--ease-glide`     |
-|Magnetic arrow (Alle →, Mehr erfahren →)       |gap 4 → 10px + arrow translateX(2px), 200ms                                                  |`--ease-snap`      |
-|Confetti pop (booking confirm CTA only)        |4 dots fly up + fade out, stagger 50ms each, 600ms                                           |`--ease-spring`    |
-|Search bar tap → /search transition            |Full-screen route transition (per route-transition row above)                                |`--ease-glide`     |
-|Calendar date select (in WANN search state)    |bg + text color swap, 200ms                                                                  |`--ease-snap`      |
-|Filter pill count badge appear                 |scale 0 → 1 + opacity 0 → 1, 300ms                                                           |`--ease-spring`    |
-|B2B card dismiss                               |opacity 1 → 0 + scale 0.95 (200ms) → max-height collapse 1000 → 0 (additional 200ms), 400ms total|`--ease-snap`  |
-|Number counter increment (live counter pill update)|number swaps with subtle slide-up of new digit, 300ms                                    |`--ease-spring`    |
-|Avatar dropdown open                           |scale 0.96 → 1 + opacity 0 → 1 + translateY -4px → 0, 300ms                                  |`--ease-glide`     |
-
-**PR checklist requirement (extends Component PR checklist below):** every component PR must list which of the above moments the component encounters and confirm the motion is wired. If a component has 0 state-change moments, that's a flag — most components have at least press-scale.
-
-**Anti-pattern:**
-- Motion that doesn't tie to a state change ("decorative bounce on page load") — banned
-- Motion without easing token (raw `ease-in-out` or arbitrary `cubic-bezier(...)`) — must use one of the 4 named easings
-- Motion specced but not applied in implementation — fails PR checklist
-
-### Reduced motion
-
-When `prefers-reduced-motion: reduce`:
-- Pulse animations disabled (static dot)
-- Shimmer loading skeletons disabled (static rect)
-- Magnetic arrow flourishes disabled
-- Card press scale disabled
-- Entdecken video autoplay disabled (per §18)
-
-**DO disable animation, DO NOT disable functional state changes** (color shifts, opacity for visibility) — those convey info.
-
----
-
-## §5d Inline emphasis
-
-When you want to emphasize a word inside a sentence, **swap its color to brand-teal** (or category-deep on category pages). Don't use:
+When you want to emphasize a word inside a sentence, **swap its color to brand-orange**. Don’t use:
 
 - Bold weight (already too much for body)
-- Italic (retired V2-D15 — italic moments are gone from the system)
-- Underline (reserved for inline-prose links)
-- Highlighter bg (banned — too "marker" / Notion-pages-2018)
+- Italic (reserved for Instrument Serif accent moments inside headlines)
+- Underline (reserved for inline-prose links — see §6 link styles)
+- Highlighter bg (banned — too “marker” / Notion-pages-2018)
 
-Example: "Buche jetzt, [heute hingehen](#)." → the words "heute hingehen" are color `#043338`, no other styling.
+Example: “Buche jetzt, [heute hingehen](#).” → the words “heute hingehen” are color `#E8742A`, no other styling.
 
 **Use sparingly — max 1 emphasis per paragraph, max 3 per screen.**
 
----
+-----
 
-## §5e Iconography
+## 5e. Iconography
 
 Solen uses **Lucide** (lucide-react / lucide-icons) as the base icon library. 1500+ icons, MIT licensed, monoline aesthetic at 1.5-2px stroke, professionally drawn, free.
 
 **Implementation:**
-- React: `import { Heart, MapPin, Clock, Star } from 'lucide-react'` → `<Heart size={16} strokeWidth={1.8} />`
-- HTML/inline SVG: copy from lucide.dev, paste with `stroke="currentColor"` so color inherits from parent.
 
-**Icon spec:**
+- React: `import { Heart, MapPin, Clock, Star } from 'lucide-react'` → `<Heart size={16} strokeWidth={1.8} />`
+- HTML/inline SVG: copy from [lucide.dev](https://lucide.dev), paste with `stroke="currentColor"` so color inherits from parent.
+
+**Icon spec (when configuring):**
+
 - `viewBox="0 0 24 24"` (default)
 - `stroke="currentColor"` — always inherit from parent element
-- `stroke-width="1.8"` (Lucide's recommendation for 24px viewBox)
-- `stroke-linecap="round"` · `stroke-linejoin="round"`
+- `stroke-width="1.8"` (Lucide’s recommendation for 24px viewBox)
+- `stroke-linecap="round"`
+- `stroke-linejoin="round"`
 - `fill="none"` (default) — use filled variant only on saved-state hearts and active rating stars
 
 **Sizes:**
+
 - 13-14px in chips and small pills
 - 16-18px in buttons and inline UI
 - 20-24px in standalone icon buttons (nav, header)
 - 28-44px in hero/category tile contexts
 
-### §5e.1 · 10 signature icons (Uber lesson, deferred to v2-launch polish)
-
-Future custom-tweak set. Once v1 ships, these 8 booking-marketplace-specific icons get owned/redrawn for distinctiveness (V2-D15-3 update: 4 categories, was 10 icons w 6 cats):
-
-1. Heart (save) — Lucide currently
-2. Location pin — Lucide currently
-3. Calendar — Lucide currently
-4. Clock — Lucide currently
-5. Scissors (Coiffeur) — Lucide currently
-6. Razor / barber-pole (Barbershop) — Lucide currently
-7. Nail-paint (Nails) — Lucide currently
-8. Spa-leaf (Spa & Wellness — covers spa + wellness merged) — Lucide currently
-
-**Retired V2-D15-3:** Brush icon (Makeup category retired), Yoga-pose icon (Wellness merged into Spa & Wellness).
-
-**Status:** v1 uses Lucide as-is for all 8. Custom commissioning deferred to v2-launch polish phase. CHF 200-500 budget per Fiverr/Dribbble.
-
 **Anti-pattern:**
-- Unicode emoji (👋 ✨ ⚡ 📅 🎉 🔥) — banned. Reads inconsistent across OS, no brand control.
-- Hand-drawing SVG paths in code from scratch — banned. Use the library.
+
+- Unicode emoji (👋 ✨ ⚡ 📅 🎉 🔥) — banned. Reads inconsistent across OS, no brand control, no animation possibilities.
+- Hand-drawing SVG paths in code (`<path d="M9 22 C 8 19..."/>` from scratch) — banned. Use the library.
 - Mixing icon libraries (lucide + phosphor + iconoir in same project) — pick one. Lucide.
-- Font-icon libraries (Font Awesome via CSS class) — outdated. SVG only.
-- Color-locking icons — they should always inherit `currentColor`.
+- Font-icon libraries (Font Awesome, Material Icons via CSS class) — outdated. SVG only.
+- Color-locking icons — they should always inherit `currentColor` so a heart goes love-red where it’s saved, ink-1 where it’s not, white when on dark register.
 
 **Custom illustrations / hero graphics:**
-For brand-defining moments (logo, hero illustrations, success screens), use:
-- **Lottie animations** from lottiefiles.com for animated moments
+For brand-defining moments (logo, mascot, hero illustrations, success screens), use:
+
+- **Lottie animations** from lottiefiles.com for animated moments (success draw, hero loops, loading states)
 - **Custom commissioned SVGs** (designer on Fiverr/Dribbble ~$200-500) for the 5-10 brand-signature illustrations
 - **AI-generated → traced clean in Figma** for one-off scene illustrations
 
-NEVER hand-craft via prompt-to-SVG-paths in code.
+NEVER hand-craft via prompt-to-SVG-paths in code. The output looks amateur. Custom illustrations are a designer skill, not a coding skill.
 
----
+-----
 
 ## 5f. Hierarchy: one hero per info block
 
@@ -655,17 +379,17 @@ This rule is what separates "info dump" from "scannable UI." Equal-weight stat r
 
 |level    |role                                            |how it shows                                                                                                                                                          |
 |---------|------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|hero     |the answer to "what is this card about?"        |Avant Garde Gothic 700 at the panel's display size (per §5), ink-1 `#1A1209`. Optionally brand-teal `#043338` if the number is the celebratory headline (per §5c (signature flourishes)).|
-|secondary|context the hero needs to make sense            |Avant Garde Gothic 400-500, ink-2 `#56463E`, smaller — typically 11-13px. Often dot-separated `·` per §5d typography rules.                                                  |
-|tertiary |meta / source / location / timestamps           |Avant Garde Gothic 400, ink-3 `#7A6957`, 10-12px. Lives at the edge — bottom of card, corner pill, or floating overlay (e.g. location badge ON the map, not in metadata list).|
+|hero     |the answer to "what is this card about?"        |Bricolage Grotesque 700 at the panel's display size (per §5), ink-1 `#1A1209`. Optionally brand-orange `#E8742A` if the number is the celebratory headline (per §5c.4).|
+|secondary|context the hero needs to make sense            |Inter Tight 400-500, ink-2 `#56463E`, smaller — typically 11-13px. Often dot-separated `·` per §5d typography rules.                                                  |
+|tertiary |meta / source / location / timestamps           |Inter Tight 400, ink-3 `#7A6957`, 10-12px. Lives at the edge — bottom of card, corner pill, or floating overlay (e.g. location badge ON the map, not in metadata list).|
 
 ### Picking the hero — by surface
 
 |surface                                |hero                                                          |secondary                            |tertiary                          |
 |---------------------------------------|--------------------------------------------------------------|-------------------------------------|----------------------------------|
-|salon card §16 (availability variant)  |salon name (already locked Avant Garde Gothic 700 14px)                |rating · row 2 availability/price    |badge top-left                    |
-|category sub-text §25.4                |`[N] heute frei` (the actionable count) — brand-teal or ink-1|`[N] Salons` total                   |pulse dot                         |
-|booking confirmation summary §C (Phase 2)|date + time (`Mo. 12. Mai · 14:30`) — Cooper BT 900 hero               |service · staff · salon name         |location · cancellation policy    |
+|salon card §16 (availability variant)  |salon name (already locked Bricolage 700 14px)                |rating · row 2 availability/price    |badge top-left                    |
+|category sub-text §25.4                |`[N] heute frei` (the actionable count) — brand-orange or ink-1|`[N] Salons` total                   |pulse dot                         |
+|booking confirmation summary §C (Phase 2)|date + time (`Mo. 12. Mai · 14:30`) — Bricolage 700 hero      |service · staff · salon name         |location · cancellation policy    |
 |profile bookings row §AC.2 (Phase 3)   |time-until (`Heute · 14:30` / `In 3 Tagen` / `Vor 2 Wochen`)  |salon name · service                 |status pill · cancel link         |
 |salon detail header §SD (Phase 2)      |rating + open-now state combined                              |service categories · price range     |address · phone · opening hours   |
 |search results count §SR (Phase 2)     |`[N] Salons gefunden`                                         |active filter chips · sort indicator |total before filter               |
@@ -675,7 +399,7 @@ This rule is what separates "info dump" from "scannable UI." Equal-weight stat r
 - **Equal-weight stat rows.** Three or four numbers at the same size, weight, and color. The reader's eye has nowhere to land.
 - **Sub-line repeats hero.** Hero says `35m 37s`, secondary says `Time: 35m 37s` — drop the label.
 - **Decorative metadata above the hero.** Source / category / timestamp pinned ABOVE the headline pushes the headline down. Hero leads, meta follows.
-- **Brand-teal stacking on hero (anti-pattern).** §1 one-accent rule still applies — if hero already has brand-teal CTA + accent word + numbered circles, the badge goes ink (white-on-ink-1 pill).
+- **Brand-orange on hero AND a wow badge AND the icon.** §1 one-accent rule still applies — if hero is already brand-orange, the badge goes ink (white-on-ink-1 pill).
 
 ### Compress before you stack
 
@@ -688,7 +412,7 @@ Use the same `·` separator already locked across §15 / §16 / §18. Keep separ
 
 ### Wow moments earn their visual weight
 
-Achievement chips, "New PB!" pills, "Sofort frei" badges (§16.3), "+1 saved" counter pops — these EARN brand-teal or green by being **rare** and **rewarding**. If a panel has more than one wow moment, none of them are wow anymore. **Max 1 wow chip per panel.**
+Achievement chips, "New PB!" pills, "Sofort frei" badges (§16.3), "+1 saved" counter pops — these EARN brand-orange or green by being **rare** and **rewarding**. If a panel has more than one wow moment, none of them are wow anymore. **Max 1 wow chip per panel.**
 
 This is the toolkit version of §5c "Brand-color number accent" — but applied at panel composition time, not just typography time.
 
@@ -699,8 +423,6 @@ This is the toolkit version of §5c "Brand-color number accent" — but applied 
 # SOLEN — Live Truth · Step 3
 
 > Step 3: layout fundamentals. Without this, every component placement decision is vibes. Agents drift.
-
------
 
 -----
 
@@ -907,8 +629,8 @@ The pattern used in feed sections (Heute frei / Empfohlen / Trending / Neu).
 ### 9c. Sticky elements
 
 - **Sticky section headers:** the section title can stick on scroll within long lists (search results page) but NOT on the homepage feed. On homepage, headers scroll w content.
-- **Sticky tab bar (salon detail page):** sticks at top after scrolling past the photo. Bg becomes opaque white (`#FFFFFF`) w `backdrop-filter: blur(12px) saturate(1.4)` once stuck.
-- **Sticky bottom-CTA:** booking wizard’s “Weiter →” button sticks at bottom of viewport always. Has a soft top-shadow `0 -4px 12px rgba(4,51,56,.06)` to separate from content.
+- **Sticky tab bar (salon detail page):** sticks at top after scrolling past the photo. Bg becomes opaque cream (`#FBF8F3`) once stuck.
+- **Sticky bottom-CTA:** booking wizard’s “Weiter →” button sticks at bottom of viewport always. Has a soft top-shadow `0 -4px 12px rgba(232,116,42,.06)` to separate from content.
 
 ### 9d. Pull-to-refresh
 
@@ -979,9 +701,6 @@ Every tappable element has a minimum hit target:
 
 -----
 
-
------
-
 ## §F.1 · Form primitives
 
 The form vocabulary every surface uses: text input, textarea, select, checkbox, radio, switch. Each primitive has a fixed anatomy, a fixed state matrix, and 3 sizes. New form patterns DO NOT invent new visual language — they compose these primitives.
@@ -1002,15 +721,15 @@ The form vocabulary every surface uses: text input, textarea, select, checkbox, 
 
 |element       |spec                                                                                                                                   |
 |--------------|---------------------------------------------------------------------------------------------------------------------------------------|
-|label         |Avant Garde Gothic 600 12px, ink-1 `#1A1209`, line-height 1.3. Always above field. Required = trailing `·` red dot 5px (`#D32F2F`).            |
-|field bg      |default white `#FFFFFF` raised over white substrate (cards lift via shadow + border, not color shift). Active state bg = `#FFF4E8` (matches §14.3 lock). |
-|field border  |1px `rgba(26,18,9,.10)` default. Active = 2px brand-teal `#043338`. Error = 2px error red `#D32F2F`. Success = 2px success `#16A34A`. |
+|label         |Inter Tight 600 12px, ink-1 `#1A1209`, line-height 1.3. Always above field. Required = trailing `·` red dot 5px (`#D32F2F`).            |
+|field bg      |default white `#FFFFFF` raised over cream substrate. Active state bg = `#FFF4E8` (matches §14.3 lock).                                  |
+|field border  |1px `rgba(26,18,9,.10)` default. Active = 2px brand-orange `#E8742A`. Error = 2px error red `#D32F2F`. Success = 2px success `#16A34A`. |
 |field radius  |`var(--radius-lg)` (12px) — fields are NOT pills (per §7 anti-pattern: pill-shaped inputs read as buttons-waiting-to-be-pressed)         |
 |field padding |See size table §F.1.0a. md size locks at `padding 12px 16px` (12px vertical, 16px horizontal) to match §13.4 hero search row.           |
-|helper text   |Avant Garde Gothic 400 11px, ink-3 `#7A6957`, line-height 1.4, margin-top 6px. Max 1 line preferred.                                          |
-|error message |Avant Garde Gothic 500 11px, error red `#D32F2F`, line-height 1.4, margin-top 6px. Optional inline icon: 12px Lucide `alert-circle` before text.|
-|warning msg   |Avant Garde Gothic 500 11px, warning amber `#F59E0B` (use `#7A4A14` deepened on cream for body-text contrast), 12px Lucide `alert-triangle`.   |
-|success msg   |Avant Garde Gothic 500 11px, success green `#16A34A`, 12px Lucide `check-circle`.                                                             |
+|helper text   |Inter Tight 400 11px, ink-3 `#7A6957`, line-height 1.4, margin-top 6px. Max 1 line preferred.                                          |
+|error message |Inter Tight 500 11px, error red `#D32F2F`, line-height 1.4, margin-top 6px. Optional inline icon: 12px Lucide `alert-circle` before text.|
+|warning msg   |Inter Tight 500 11px, warning amber `#F59E0B` (use `#7A4A14` deepened on cream for body-text contrast), 12px Lucide `alert-triangle`.   |
+|success msg   |Inter Tight 500 11px, success green `#16A34A`, 12px Lucide `check-circle`.                                                             |
 |field gap     |`var(--space-2)` (8px) between label-bottom and field-top                                                                              |
 
 **Stacking:** labels NEVER inside the field as floating placeholders. Floating labels were popular 2018-2022 but read as decorative animation, hurt accessibility (screen readers + autofill confusion), and break in dense layouts. Solen uses static labels above.
@@ -1034,14 +753,14 @@ Every primitive supports these states. NOT every state applies to every primitiv
 |state          |trigger                                                |visual change                                                                                                                                                              |
 |---------------|-------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |default        |idle, no user interaction yet                          |1px ink-1 `.10` border, white `#FFFFFF` bg, no outline.                                                                                                                    |
-|focus          |`:focus-visible` (keyboard tab in)                     |2px brand-teal `#043338` outline, 2px offset (per §1). Border + bg unchanged. **NO focus ring on mouse click** — `:focus-visible` only.                                  |
-|active         |currently being typed in / interacted with (mouse focus)|2px brand-teal border replaces the 1px default border. Bg shifts to `#FFF4E8` (matches §14.3 search-row active state).                                                  |
+|focus          |`:focus-visible` (keyboard tab in)                     |2px brand-orange `#E8742A` outline, 2px offset (per §1). Border + bg unchanged. **NO focus ring on mouse click** — `:focus-visible` only.                                  |
+|active         |currently being typed in / interacted with (mouse focus)|2px brand-orange border replaces the 1px default border. Bg shifts to `#FFF4E8` (matches §14.3 search-row active state).                                                  |
 |filled         |has a value / non-empty                                |label color stays ink-1 (NOT a different color — per §F.1.0 floating-label anti-pattern, filled fields don't change label).                                                |
 |error          |validation failed (after submit OR live per §F.1.8 prevention rules)|2px error red `#D32F2F` border. Error message renders below. Field bg unchanged (don't tint red — too aggressive).                                                |
 |warning        |non-blocking concern (e.g. password "weak" but accepted)|2px amber `#F59E0B` border. Warning message below. Use sparingly — most "warnings" are actually errors.                                                                    |
 |success        |validation passed live (e.g. email format valid + available)|2px success green `#16A34A` border. Optional inline checkmark icon on right side of field. **No success message text** — green border + checkmark is enough; words are noise.|
 |disabled       |form not yet ready / field locked / loading parent     |opacity 0.5, cursor not-allowed, bg `#FAF7F3` (sunken cream from §3), label color ink-3. NO hover/focus states.                                                            |
-|loading        |async validation in flight (e.g. checking email availability)|spinner inline at right side of field, 14px brand-teal. Field still editable. Don't lock the field while loading.                                                        |
+|loading        |async validation in flight (e.g. checking email availability)|spinner inline at right side of field, 14px brand-orange. Field still editable. Don't lock the field while loading.                                                        |
 
 **Note on focus + active co-occurrence (V2-D14, 2026-05-05):** the spec defines each state in isolation. In practice, mouse-click focus and keyboard-tab focus rarely co-occur on the same field — `:focus-visible` only fires for keyboard, so a click-and-typing field renders the active state w/o the outline. If both somehow fire (programmatic focus + click), both render and that's accepted — visually busy but not broken. Locked: 3 reference states are sufficient.
 
@@ -1050,11 +769,11 @@ Every primitive supports these states. NOT every state applies to every primitiv
 |prop                |spec                                                                                                                  |
 |--------------------|----------------------------------------------------------------------------------------------------------------------|
 |HTML element        |`<input type="text|email|tel|url|password|search|number">`                                                            |
-|font                |Avant Garde Gothic 400 (filled state goes 500 weight if the form has a "filled vs empty" visual signal — opt-in per surface) |
+|font                |Inter Tight 400 (filled state goes 500 weight if the form has a "filled vs empty" visual signal — opt-in per surface) |
 |color               |ink-1 `#1A1209`                                                                                                       |
-|placeholder         |Avant Garde Gothic 400, ink-3 `#7A6957`. Used for short hint, NOT for label text.                                           |
-|caret               |brand-teal `#043338`                                                                                                |
-|selection bg        |`rgba(4,51,56,.18)` (brand-tinted)                                                                                 |
+|placeholder         |Inter Tight 400, ink-3 `#7A6957`. Used for short hint, NOT for label text.                                           |
+|caret               |brand-orange `#E8742A`                                                                                                |
+|selection bg        |`rgba(232,116,42,.18)` (brand-tinted)                                                                                 |
 |autocomplete        |always opt-in via `autoComplete="..."` attr; never disable for "design" reasons — autofill saves users time           |
 |password reveal     |inline 24px button on right, Lucide `eye` (hidden) / `eye-off` (visible), ink-2 stroke, tap to toggle                 |
 |password strength   |optional inline meter below, see §F.1.10 inline validation                                                            |
@@ -1081,7 +800,7 @@ Every primitive supports these states. NOT every state applies to every primitiv
 |max-height          |280px (~10 lines) — beyond that, internal scroll within textarea                                                              |
 |resize              |`resize: vertical` only. Never `resize: both` (horizontal resize breaks layouts).                                             |
 |line-height         |1.5                                                                                                                           |
-|character counter   |optional, bottom-right outside the field. Avant Garde Gothic 400 11px ink-3 (`[N] / [max]`). Brand-teal `#043338` when within 20% of max.|
+|character counter   |optional, bottom-right outside the field. Inter Tight 400 11px ink-3 (`[N] / [max]`). Brand-orange when within 20% of max.    |
 |enter behavior      |`Enter` = newline. `Cmd/Ctrl + Enter` = submit form (when textarea is the only field, e.g. review write).                     |
 |use cases (v1)      |review write (§RV Phase 2), report-content reason (§CO.5 Phase 4), salon profile bio (§B.5 Phase 6), B2B reply-to-review (§B.9)|
 
@@ -1124,14 +843,14 @@ Solen has TWO checkbox visual variants. The data binding (`<input type="checkbox
 |box border    |2px ink-1 `.25` (`rgba(26,18,9,.25)`)                                                                           |
 |box bg        |white                                                                                                           |
 |box radius    |`var(--radius-sm)` (6px) — squared not pill (distinguishes checkbox from radio per §F.1.5)                       |
-|checked bg    |brand-teal `#043338`                                                                                          |
+|checked bg    |brand-orange `#E8742A`                                                                                          |
 |checked icon  |Lucide `check` 14px white stroke 2.5px, centered                                                                |
-|checked border|brand-teal `#043338` (matches bg, no contrast border)                                                         |
+|checked border|brand-orange `#E8742A` (matches bg, no contrast border)                                                         |
 |indeterminate |Lucide `minus` 14px white (use case: parent-toggle for nested option groups)                                    |
 |disabled      |opacity 0.4, cursor not-allowed                                                                                 |
-|focus-visible |2px brand-teal outline, 2px offset                                                                            |
+|focus-visible |2px brand-orange outline, 2px offset                                                                            |
 |label gap     |10px between box right edge and label left edge                                                                 |
-|label font    |Avant Garde Gothic 400 14px ink-1                                                                                      |
+|label font    |Inter Tight 400 14px ink-1                                                                                      |
 |press         |scale(.92) 100ms `var(--ease-thud)` on the box                                                                  |
 |toggle        |spring scale 1 → 1.15 → 1 over 300ms `var(--ease-spring)` on check                                              |
 
@@ -1152,7 +871,7 @@ Already locked in §25.7 — repeat the spec here so it's anchored:
 |active bg      |ink-1 `#1A1209`                                                 |
 |active color   |white, font-weight 600                                          |
 |active border  |ink-1                                                           |
-|font           |Avant Garde Gothic 12px                                                |
+|font           |Inter Tight 12px                                                |
 |tap            |toggles state, fires whatever debounced recount/recompute applies|
 
 Used in: filter sheets §25.7, future B2B service-type tagging, future entdecken category multi-select.
@@ -1174,11 +893,11 @@ Already locked in §25.6 — repeat here as the canonical primitive:
 |circle border (default)|2px ink-1 `.25` (`rgba(26,18,9,.25)`)                                                                                   |
 |circle bg              |transparent                                                                                                             |
 |circle radius          |`var(--radius-full)` (50%) — actual circle, distinguishes radio from checkbox                                          |
-|circle border (selected)|2px brand-teal `#043338`                                                                                              |
-|inner dot (selected)   |8px brand-teal `#043338`, centered via `radial-gradient(circle, #043338 0%, #043338 50%, transparent 50%)` or pseudo-element|
-|label font             |Avant Garde Gothic 400 14px ink-1                                                                                              |
+|circle border (selected)|2px brand-orange `#E8742A`                                                                                              |
+|inner dot (selected)   |8px brand-orange `#E8742A`, centered via `radial-gradient(circle, #E8742A 0%, #E8742A 50%, transparent 50%)` or pseudo-element|
+|label font             |Inter Tight 400 14px ink-1                                                                                              |
 |label (selected)       |font-weight 600                                                                                                         |
-|focus-visible          |2px brand-teal outline on circle, 2px offset                                                                          |
+|focus-visible          |2px brand-orange outline on circle, 2px offset                                                                          |
 |press                  |scale(.94) 100ms `var(--ease-thud)`                                                                                     |
 |switch animation       |new selection's inner dot fades in 150ms `var(--ease-snap)`; old selection's dot fades out same duration                |
 
@@ -1202,7 +921,7 @@ Notifications                 [●○]
 |----------------------|----------------------------------------------------------------------------------------------------------------|
 |track size            |44×24px (44px wide, 24px tall)                                                                                  |
 |track bg (off)        |ink-1 `.15` (`rgba(26,18,9,.15)`)                                                                               |
-|track bg (on)         |brand-teal `#043338` (V2-D14 lock 2026-05-05 — accepted exception to §1 "≤4 brand instances per screen" rule for settings pages w many switches; brand color holds at scale per §AC.5 review)|
+|track bg (on)         |brand-orange `#E8742A` (V2-D14 lock 2026-05-05 — accepted exception to §1 "≤4 brand instances per screen" rule for settings pages w many switches; brand color holds at scale per §AC.5 review)|
 |track radius          |`var(--radius-pill)` (99px)                                                                                     |
 |knob size             |20×20px white circle, `var(--radius-full)` (50%)                                                                |
 |knob position (off)   |left, 2px inset                                                                                                 |
@@ -1211,9 +930,9 @@ Notifications                 [●○]
 |toggle animation      |knob slides 200ms `var(--ease-snap)`, track bg color crossfades same duration                                   |
 |press                 |knob scale 1 → .92 100ms `var(--ease-thud)` then back                                                           |
 |disabled              |opacity 0.4, cursor not-allowed                                                                                 |
-|focus-visible         |2px brand-teal outline on track, 2px offset                                                                   |
-|label                 |Avant Garde Gothic 400 14px ink-1, left of switch by 16px gap (switch is right-aligned in row)                         |
-|sub-label (optional)  |Avant Garde Gothic 400 12px ink-3, 4px below label                                                                     |
+|focus-visible         |2px brand-orange outline on track, 2px offset                                                                   |
+|label                 |Inter Tight 400 14px ink-1, left of switch by 16px gap (switch is right-aligned in row)                         |
+|sub-label (optional)  |Inter Tight 400 12px ink-3, 4px below label                                                                     |
 |aria-checked          |reflects state                                                                                                  |
 |role                  |`role="switch"` (better screen-reader UX than checkbox-styled-as-switch)                                        |
 
@@ -1284,7 +1003,7 @@ Reuse §F.4 toast and §SY.2 error boundary specs when those land — same copy 
 - **Clearing field on error** — never. The user typed it; preserve it. Let them edit.
 - **Custom dropdowns when native works** — see §F.1.3.
 - **Error messages that say "Try again."** — say WHY and HOW.
-- **Different focus-ring styles per primitive** — every field uses the §1 brand-teal 2px outline. No exceptions.
+- **Different focus-ring styles per primitive** — every field uses the §1 brand-orange 2px outline. No exceptions.
 
 -----
 
@@ -1299,9 +1018,6 @@ Reuse §F.4 toast and §SY.2 error boundary specs when those land — same copy 
 > Components and screen patterns. Continues from step 3 (spacing + breakpoints + radius + z-index + scroll + safe areas + hit targets).
 > 
 > Every section gives exact pixel/hex values, every UI state, every conditional render, every interaction trigger w from+to+duration+cubic-bezier. No “consider removing” — DELETE explicit. No vibes — exact triggers.
-
------
-
 
 -----
 
@@ -1332,14 +1048,13 @@ Layout left-to-right:
 
 Padding inside: `var(--space-4)` (16px) horizontal on mobile, `var(--space-5)` (20px) on tablet+, `var(--space-6)` (24px) on desktop.
 
-### §12.3 · Logo “Solen”
+### §12.3 · Logo “solen”
 
-- Font: **Cooper BT 900** (per §5.1 — logo is one of the brand-mark moments)
-- Size: `clamp(28px, 2.6vw, 36px)`
-- Letter-spacing: `-0.015em`
-- Case: title-case "Solen" (Cooper is mixed-case display; lowercase-only Anton-style retired V2-D15-3)
-- Color: brand teal `#043338` (NOT ink-1 — logo is brand color, see §1)
-- NO sprout glyph in header (sprout glyph is footer-only — see §21)
+- Font: Bricolage Grotesque 700, lowercase
+- Size: `clamp(20px, 2vw, 24px)`
+- Letter-spacing: `-0.03em`
+- Color: ink-1 `#1A1209`
+- NO sprout glyph in header (sprout glyph is footer-only — see §17.3)
 
 ### §12.4 · City pill `[Basel ▾]`
 
@@ -1360,11 +1075,11 @@ URL is source of truth. Cookie is fallback.
 |element             |spec                                                                                             |
 |--------------------|-------------------------------------------------------------------------------------------------|
 |label format        |text only — `Basel ▾` (no pin/flag/icon)                                                         |
-|typography          |Avant Garde Gothic 600 13px, `-0.005em`                                                                 |
+|typography          |Inter Tight 600 13px, `-0.005em`                                                                 |
 |chevron             |12px Lucide `chevron-down`, ink-2 `#56463E`                                                      |
 |chevron gap         |4px                                                                                              |
 |bg                  |`linear-gradient(180deg, #fff, #FDFAF5)`                                                         |
-|shadow              |`inset 0 1px 0 rgba(255,255,255,.8), 0 1px 1px rgba(26,18,9,.04), 0 2px 6px rgba(4,51,56,.06)`|
+|shadow              |`inset 0 1px 0 rgba(255,255,255,.8), 0 1px 1px rgba(26,18,9,.04), 0 2px 6px rgba(232,116,42,.06)`|
 |radius              |`var(--radius-pill)` (99px)                                                                      |
 |padding             |`7px 14px`                                                                                       |
 |pressed state       |`scale(0.96)` 100ms `var(--ease-thud)`                                                           |
@@ -1376,11 +1091,11 @@ Sheet anchored bottom on mobile, dropdown anchored to pill on desktop.
 
 Content:
 
-- Header label: “Stadt wählen” (Avant Garde Gothic 700 16px)
+- Header label: “Stadt wählen” (Bricolage 700 16px)
 - 3 city rows (Basel, Zürich, Bern) — NO salon counts inside dropdown
-- Active city: brand-teal `#043338` text + checkmark right
+- Active city: brand-orange `#E8742A` text + checkmark right
 - Inactive: ink-1, hover bg `#F5F0E8`
-- Each row: 48px height, 14px Avant Garde Gothic 500, 16px horizontal padding
+- Each row: 48px height, 14px Inter Tight 500, 16px horizontal padding
 - Dismiss: tap outside, swipe down (mobile), Esc key
 
 #### City dropdown DO NOT
@@ -1394,7 +1109,7 @@ Content:
 |state                              |spec                                                                                 |
 |-----------------------------------|-------------------------------------------------------------------------------------|
 |default                            |Lucide `bell`, 22px, ink-1 stroke 2px                                                |
-|with notifications                 |8px brand-teal `#043338` dot at top-right corner of bell, 1px ink-1 ring around dot|
+|with notifications                 |8px brand-orange `#E8742A` dot at top-right corner of bell, 1px ink-1 ring around dot|
 |count ≥ 100                        |dot only — never numeric badge                                                       |
 |press                              |`scale(0.94)` 100ms `var(--ease-thud)`                                               |
 |count increments while user on page|dot pulses scale 1→1.3→1 over 400ms `var(--ease-spring)`                             |
@@ -1406,10 +1121,10 @@ Content:
 |condition                                         |display                                                                       |
 |--------------------------------------------------|------------------------------------------------------------------------------|
 |logged in w photo                                 |32px circle, photo `background-size: cover`, 1px ink-1 `.06` ring             |
-|logged in w name (no photo)                       |initial of first name in 32px circle, bg ink-1, white Avant Garde Gothic 700 14px      |
+|logged in w name (no photo)                       |initial of first name in 32px circle, bg ink-1, white Bricolage 700 14px      |
 |logged in w no name + no photo (email-only signup)|first letter of email (uppercase), same styling as name initial               |
 |logged out                                        |32px circle, ink-2 bg, white Lucide `user` 14px stroke icon — taps to `/login`|
-|photo loading                                     |skeleton circle w shimmer per §5c (skeleton shimmer)                                           |
+|photo loading                                     |skeleton circle w shimmer per §5c.5                                           |
 |photo failed to load                              |falls back to initial display                                                 |
 
 Tap target: 44px hit area.
@@ -1423,7 +1138,7 @@ aria-label: `Mein Konto, [name]` when logged-in, `Einloggen` when logged out.
 Header is sticky. Scroll past `8px` from top:
 
 - Add bottom shadow `0 1px 0 rgba(26,18,9,.04), 0 2px 8px rgba(26,18,9,.04)`
-- Bg shifts from white `#FFFFFF` to opaque white `rgba(255,255,255,.92)` w `backdrop-filter: blur(10px) saturate(1.4)`
+- Bg shifts from cream `#FBF8F3` to slightly more opaque cream `#FBF8F3` w `backdrop-filter: blur(10px) saturate(1.4)`
 - Transition: 200ms `var(--ease-snap)`
 
 ### §12.8 · Scroll-up vs scroll-down behavior
@@ -1486,13 +1201,13 @@ This is intentional. Fresha-style minimal header. NO megamenu. NO horizontal nav
 |copy template (count = 1)    |`1 Salon in [city] hat heute frei` (singular: `Salon` + `hat`)                                  |
 |copy template (count = 0)    |`Heute keine freien Termine in [city] — Morgen ab 09:00 verfügbar`                              |
 |copy when API fails          |`Tausende Salons in der Schweiz` (generic fallback, no count)                                   |
-|copy while loading first time|skeleton: 240px wide × 24px tall pill w shimmer per §5c (skeleton shimmer)                                       |
+|copy while loading first time|skeleton: 240px wide × 24px tall pill w shimmer per §5c.5                                       |
 |number formatting            |Swiss apostrophe thousands per §8 i18n: `1'247 Salons` not `1247` and not `1,247`               |
-|typography                   |Avant Garde Gothic 600 12px, `-0.005em`                                                                |
-|pulse dot                    |6px brand-teal `#043338`, animates pulse 1.6s infinite (opacity 1↔.5, scale 1↔1.3) — see §5c.7|
+|typography                   |Inter Tight 600 12px, `-0.005em`                                                                |
+|pulse dot                    |6px brand-orange `#E8742A`, animates pulse 1.6s infinite (opacity 1↔.5, scale 1↔1.3) — see §5c.7|
 |pulse dot when API failed    |hidden (no fake real-time signal when there’s no real-time data)                                |
 |pill bg                      |`rgba(255,255,255,.65)` w `backdrop-filter: blur(12px) saturate(1.4)`                           |
-|pill border                  |1px `rgba(4,51,56,.12)`                                                                      |
+|pill border                  |1px `rgba(232,116,42,.12)`                                                                      |
 |pill padding                 |`6px 12px`                                                                                      |
 |pill radius                  |`var(--radius-pill)` (99px)                                                                     |
 |update                       |counter is REAL-TIME — refetches every 60s OR on visibility change (page becomes active)        |
@@ -1519,7 +1234,7 @@ Time-based, NOT day-based:
 
 |element       |spec                                                                                                     |
 |--------------|---------------------------------------------------------------------------------------------------------|
-|typography    |Avant Garde Gothic 700                                                                                  |
+|typography    |Bricolage Grotesque 700                                                                                  |
 |size          |`clamp(28px, 6vw, 44px)`                                                                                 |
 |line-height   |1.05                                                                                                     |
 |letter-spacing|`-0.03em`                                                                                                |
@@ -1559,9 +1274,9 @@ Same on mobile and desktop. Stacked vertical, NOT horizontal columns.
 
 |element                    |spec                                                                                                                                                                                               |
 |---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|label                      |Avant Garde Gothic 700 9px, brand-teal `#043338`, letter-spacing 0.18em, uppercase                                                                                                                      |
-|value (filled)             |Avant Garde Gothic 600 14px ink-1 `#1A1209`                                                                                                                                                               |
-|placeholder (empty)        |Avant Garde Gothic 400 14px ink-2 `#7A6957`                                                                                                                                                               |
+|label                      |Inter Tight 700 9px, brand-orange `#8A3C0F`, letter-spacing 0.18em, uppercase                                                                                                                      |
+|value (filled)             |Inter Tight 600 14px ink-1 `#1A1209`                                                                                                                                                               |
+|placeholder (empty)        |Inter Tight 400 14px ink-2 `#7A6957`                                                                                                                                                               |
 |row height                 |56px                                                                                                                                                                                               |
 |row padding                |`12px 16px`                                                                                                                                                                                        |
 |row gap (label↔value)      |8px                                                                                                                                                                                                |
@@ -1574,7 +1289,7 @@ Same on mobile and desktop. Stacked vertical, NOT horizontal columns.
 |bg           |`linear-gradient(180deg, #fff 0%, #FDFAF5 100%)`                                                  |
 |radius       |`var(--radius-2xl)` (16px)                                                                        |
 |border       |1px `rgba(26,18,9,.06)`                                                                           |
-|shadow       |`inset 0 1px 0 rgba(255,255,255,.8), 0 1px 2px rgba(26,18,9,.04), 0 8px 24px rgba(4,51,56,.06)`|
+|shadow       |`inset 0 1px 0 rgba(255,255,255,.8), 0 1px 2px rgba(26,18,9,.04), 0 8px 24px rgba(232,116,42,.06)`|
 |row separator|`1px rgba(26,18,9,.06)` between rows                                                              |
 
 #### CTA button (below container)
@@ -1582,8 +1297,8 @@ Same on mobile and desktop. Stacked vertical, NOT horizontal columns.
 |element         |spec                                                                                                      |
 |----------------|----------------------------------------------------------------------------------------------------------|
 |copy            |`Solen durchsuchen →`                                                                                     |
-|typography      |Avant Garde Gothic 700 14px                                                                                      |
-|bg              |`linear-gradient(180deg, #0A6873 0%, #043338 100%)`                                                       |
+|typography      |Inter Tight 700 14px                                                                                      |
+|bg              |`linear-gradient(180deg, #F0834D 0%, #E8742A 100%)`                                                       |
 |color           |white                                                                                                     |
 |radius          |`var(--radius-pill)` (99px)                                                                               |
 |padding         |`14px 24px`                                                                                               |
@@ -1607,7 +1322,7 @@ Dynamic via cookie tracking. Shows top 3 most-used filters by user, plus “Mehr
 
 |chip      |spec                                       |
 |----------|-------------------------------------------|
-|typography|Avant Garde Gothic 600 12px                       |
+|typography|Inter Tight 600 12px                       |
 |bg default|`linear-gradient(180deg, #fff, #FDFAF5)`   |
 |bg active |ink-1 `#1A1209`, white text                |
 |border    |1px `rgba(26,18,9,.06)`                    |
@@ -1678,7 +1393,7 @@ Cookie `solen_chip_usage` stores `{[chipKey]: tapCount}` per user. Updated on ta
 
 - 56px tall on mobile, 64px on tablet+
 - Left: close X (Lucide `x` 22px ink-1) — closes page, returns to previous
-- Center: title `Suche` (Avant Garde Gothic 700 16px, ink-1)
+- Center: title `Suche` (Bricolage 700 16px, ink-1)
 - Right: empty (no nav actions)
 
 ### §14.3 · Sticky compact search bar
@@ -1686,7 +1401,7 @@ Cookie `solen_chip_usage` stores `{[chipKey]: tapCount}` per user. Updated on ta
 Same 3-row stacked format from hero, but:
 
 - Container shrinks slightly: row height 48px
-- Active row gets brand-teal border `2px #043338` + bg `#FFF4E8`
+- Active row gets brand-orange border `2px #E8742A` + bg `#FFF4E8`
 - Inactive rows: bg `#fff`, no border highlight
 - Sticky at top below top bar (z-index `var(--z-sticky)` per §8)
 
@@ -1698,7 +1413,7 @@ Body shows:
 
 - Mobile keyboard pushes up automatically
 - Live suggestions list as user types (debounced 150ms)
-- Section header: `Beliebt in [city]` (Avant Garde Gothic 700 14px ink-1)
+- Section header: `Beliebt in [city]` (Bricolage 700 14px ink-1)
 - Pill row: top 6 popular service categories in current city
 - Below: list of recent searches by user (max 5)
 
@@ -1743,18 +1458,18 @@ User can also tap any row directly to switch focus.
 |state            |copy                                                                         |
 |-----------------|-----------------------------------------------------------------------------|
 |no rows filled   |`Solen durchsuchen →` (disabled state, ink-3 `#7A6957` bg)                   |
-|1+ row filled    |`[N] Filter · [count] Salons in [city]` (active state, brand-teal gradient)|
+|1+ row filled    |`[N] Filter · [count] Salons in [city]` (active state, brand-orange gradient)|
 |count is updating|spinner replaces count, copy: `[N] Filter · zähle...`                        |
 
 |element   |spec                                                                                     |
 |----------|-----------------------------------------------------------------------------------------|
-|bg active |`linear-gradient(180deg, #0A6873 0%, #043338 100%)`                                      |
+|bg active |`linear-gradient(180deg, #F0834D 0%, #E8742A 100%)`                                      |
 |color     |white                                                                                    |
 |radius    |`var(--radius-pill)` (99px)                                                              |
 |padding   |`14px 24px`                                                                              |
-|typography|Avant Garde Gothic 700 14px                                                                     |
+|typography|Inter Tight 700 14px                                                                     |
 |position  |sticky bottom, with `var(--space-4)` margin all sides, `safe-area-inset-bottom` respected|
-|shadow    |`0 1px 2px rgba(26,18,9,.04), 0 16px 32px rgba(4,51,56,.18)`                          |
+|shadow    |`0 1px 2px rgba(26,18,9,.04), 0 16px 32px rgba(232,116,42,.18)`                          |
 |z-index   |`var(--z-sticky)` per §8                                                                 |
 
 Tap CTA → navigates to `/search/results?q=[was]&city=[wo]&date=[wann]`.
@@ -1786,8 +1501,8 @@ Reusable component for every horizontal scroll row on homepage and category page
 |element                 |locked                                                                                              |
 |------------------------|----------------------------------------------------------------------------------------------------|
 |layout                  |A · clean — h2 left, “Alle →” right, NO sub-text, NO count, NO eyebrow                              |
-|typography h2           |Avant Garde Gothic 700 22-26px clamp, `-0.025em`, line-height 1, ink-1                                       |
-|typography Alle link    |Avant Garde Gothic 600 13px, ink-1                                                                         |
+|typography h2           |Bricolage 700 22-26px clamp, `-0.025em`, line-height 1, ink-1                                       |
+|typography Alle link    |Inter Tight 600 13px, ink-1                                                                         |
 |Alle text               |exactly `Alle →` (just word + arrow), nothing more                                                  |
 |arrow                   |Lucide `arrow-right` 12px                                                                           |
 |arrow flourish          |gap text↔arrow: 4px → 10px on hover, arrow `translateX(2px)` on hover, both 200ms `var(--ease-snap)`|
@@ -1818,9 +1533,11 @@ When user taps section title OR “Alle →”, navigate to `/[city]/[category]`
 |`Empfohlen für dich`                        |`/basel/empfohlen` (logged-in)                                          |
 |`Entdecken in Basel`                        |`/entdecken` (no city — entdecken is global)                            |
 |`Coiffeur in Basel`                         |`/basel/coiffeur`                                                       |
-|`Barbershop in Basel`                       |`/basel/barbershop`                                                     |
+|`Barber in Basel`                           |`/basel/barber`                                                         |
 |`Nails in Basel`                            |`/basel/nails`                                                          |
-|`Spa & Wellness in Basel`                   |`/basel/spa`                                                            |
+|`Spa in Basel`                              |`/basel/spa`                                                            |
+|`Makeup in Basel`                           |`/basel/makeup`                                                         |
+|`Wellness in Basel`                         |`/basel/wellness`                                                       |
 |`Solen in deiner Stadt` (city tiles section)|`/staedte` (city directory — special case, not city/category structured)|
 
 NO query strings (`?city=basel&service=coiffeur`). City-first URL structure for SEO. Each URL is a unique landing page w unique `<title>` + `<meta description>`.
@@ -1883,7 +1600,7 @@ State-driven — exactly one state per card per render. Driven by `next_availabl
 
 |state condition                                            |copy                                                           |bg                                           |dot color             |
 |-----------------------------------------------------------|---------------------------------------------------------------|---------------------------------------------|----------------------|
-|next slot is within 30 min from now                        |`Sofort frei`                                                  |glass white `rgba(255,255,255,.85)` w blur 12|brand-teal `#043338`|
+|next slot is within 30 min from now                        |`Sofort frei`                                                  |glass white `rgba(255,255,255,.85)` w blur 12|brand-orange `#E8742A`|
 |next slot is later today (30 min < t ≤ end of business day)|`Heute frei`                                                   |glass white `rgba(255,255,255,.85)` w blur 12|green `#16A34A`       |
 |next slot is tomorrow or later                             |(no badge)                                                     |—                                            |—                     |
 |salon is permanently closed / deactivated                  |(card hidden from feeds entirely — see §16.6)                  |—                                            |—                     |
@@ -1892,7 +1609,7 @@ State-driven — exactly one state per card per render. Driven by `next_availabl
 |element        |spec                                                                           |
 |---------------|-------------------------------------------------------------------------------|
 |position       |`top: 8px; left: 8px;`                                                         |
-|typography     |Avant Garde Gothic 700 10px, ink-1 `#1A1209`                                          |
+|typography     |Inter Tight 700 10px, ink-1 `#1A1209`                                          |
 |dot size       |5px diameter                                                                   |
 |dot ring       |`box-shadow: 0 0 0 3px rgba(<dotcolor>, .2)`                                   |
 |dot pulse      |opacity 1↔.5, scale 1↔1.3, 1.6s infinite                                       |
@@ -1925,10 +1642,10 @@ State-driven — exactly one state per card per render. Driven by `next_availabl
 |element           |spec                                                                       |
 |------------------|---------------------------------------------------------------------------|
 |layout            |flex row, baseline aligned, justify-between                                |
-|name typography   |Avant Garde Gothic 700 14px, `-0.01em`, line-height 1.1, ink-1            |
+|name typography   |Bricolage Grotesque 700 14px, `-0.01em`, line-height 1.1, ink-1            |
 |name truncation   |single line, ellipsis if overflow                                          |
 |name flex         |1, min-width 0                                                             |
-|rating typography |Avant Garde Gothic 600 (tabular-nums) 11px, ink-1                                             |
+|rating typography |JetBrains Mono 500 11px, ink-1                                             |
 |star icon         |10px, fill `#F3A864` (amber), no stroke                                    |
 |star icon position|left of number, 2px gap                                                    |
 |rating format     |`[star] 4.8` — one decimal, NO review count, NO `/5` suffix                |
@@ -1951,7 +1668,7 @@ Format determined by next-available-slot logic:
 |no slots today, has later week|`Nächster Termin [Mo./Di./...] [time]`                                        |
 |no slots ever (closed)        |`Geschlossen` — ink-3 only, no badge                                          |
 
-Typography: Avant Garde Gothic 400 11px, line-height 1.3, ink-2 `#7A6957`. Bold parts use Avant Garde Gothic 600 ink-1 `#1A1209`.
+Typography: Inter Tight 400 11px, line-height 1.3, ink-2 `#7A6957`. Bold parts use Inter Tight 600 ink-1 `#1A1209`.
 
 #### Variant `service`
 
@@ -1965,7 +1682,7 @@ Format: `[Featured Service] · ab CHF [price]`
 |salon has no services in category but is in feed|`[any service] · ab CHF [price]`                           |
 |salon has services but no pricing data          |`[service]` only, no `· ab CHF X`                          |
 
-Typography: Avant Garde Gothic 400 11px, ink-2. Service name plain, `· ab CHF X` plain ink-2 BUT the number `CHF 85` is Avant Garde Gothic 600 ink-1.
+Typography: Inter Tight 400 11px, ink-2. Service name plain, `· ab CHF X` plain ink-2 BUT the number `CHF 85` is Inter Tight 600 ink-1.
 
 ### §16.6 · States
 
@@ -1974,7 +1691,7 @@ Typography: Avant Garde Gothic 400 11px, ink-2. Service name plain, `· ab CHF X
 |default             |as specified above                                                     |
 |press (on tap)      |`scale(0.94)` 100ms `var(--ease-thud)`                                 |
 |hover (desktop only)|`translateY(-1px)` + brighter shadow on photo, 200ms `var(--ease-snap)`|
-|focus-visible       |2px brand-teal `#043338` outline, 2px offset, around the entire card |
+|focus-visible       |2px brand-orange `#E8742A` outline, 2px offset, around the entire card |
 |loading             |skeleton — see §16.7                                                   |
 |heart toggle        |see §16.3                                                              |
 
@@ -1984,7 +1701,7 @@ Tap card → navigates to `/salon/[slug]`.
 
 |element|skeleton                                                                      |
 |-------|------------------------------------------------------------------------------|
-|photo  |rounded rect 1:1, bg `#F0EAE0`, left-to-right shimmer (per §5c (skeleton shimmer)) max 2 cycles|
+|photo  |rounded rect 1:1, bg `#F0EAE0`, left-to-right shimmer (per §5c.5) max 2 cycles|
 |name   |rect 60% width × 14px height, bg `#E8DFD3`                                    |
 |rating |rect 30px × 11px height, right-aligned                                        |
 |row 2  |rect 80% width × 11px height                                                  |
@@ -1996,7 +1713,7 @@ Shimmer animation: `linear-gradient(90deg, transparent, rgba(255,255,255,.4), tr
 |condition                                 |behavior                                                                                                                                                                                                                           |
 |------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |salon has photo (≥ 1 uploaded)            |use first/primary photo, displayed as `next/image` with `fill` + `style={{objectFit: 'cover'}}`                                                                                                                                    |
-|salon has no photo                        |fallback to category-color tile w salon initials in white Avant Garde Gothic 700 32px centered. category colors per §2 — combo Z `#FFF1DD` (Coiffeur), G `#D8D6CB` (Barbershop), A `#CAE8FF` (Nails), I `#193120` (Spa & Wellness). Initial text color uses the combo text pair (e.g. `#B5345A` cherry on Coiffeur cream). Per V2-D15-3.|
+|salon has no photo                        |fallback to category-color tile w salon initials in white Bricolage 700 32px centered. category colors: Coiffeur `#D88A6E`, Barber `#1A1209` w cream initials, Nails `#B5588A`, Spa `#88B89E`, Makeup `#D66547`, Wellness `#9B7BB8`|
 |photo upload is landscape (W > H)         |smart-crop centered (CSS `object-fit: cover` + `object-position: center`)                                                                                                                                                          |
 |photo upload is portrait (H > W)          |smart-crop centered, top-aligned (`object-position: 50% 30%`) so faces aren’t cut off                                                                                                                                              |
 |photo file size limits (salon-side upload)|min 800×800px, max 4000×4000px, max 5MB, formats: jpg/png/webp                                                                                                                                                                     |
@@ -2148,11 +1865,11 @@ CRITICAL: do NOT autoplay all videos in viewport at once. This kills mobile batt
 
 |element                   |spec                                                                                                                                                |
 |--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-|source pill (top-left)    |format `[Category] · [Source]` (e.g. `Hair · TikTok`). Bg gold `rgba(4,51,56,.85)` w blur, ink-1 text, Avant Garde Gothic 700 10px                      |
+|source pill (top-left)    |format `[Category] · [Source]` (e.g. `Hair · TikTok`). Bg gold `rgba(232,116,42,.85)` w blur, ink-1 text, Inter Tight 700 10px                      |
 |heart icon (top-right)    |same as salon card (28px glass)                                                                                                                     |
 |bookmark icon             |28px glass, Lucide `bookmark` 14px ink-1, positioned 4px left of heart — saves to “Mein Look” board (see §18.5)                                     |
-|play indicator (centered) |40px coral circle `#043338`, white play arrow, only visible when video paused or before play                                                        |
-|service name pill (bottom)|bg glass white `rgba(255,255,255,.85)` w blur, ink-1 text, Avant Garde Gothic 600 12px, truncated w ellipsis, position `bottom: 8px; left: 8px; right: 8px`|
+|play indicator (centered) |40px coral circle `#E8742A`, white play arrow, only visible when video paused or before play                                                        |
+|service name pill (bottom)|bg glass white `rgba(255,255,255,.85)` w blur, ink-1 text, Inter Tight 600 12px, truncated w ellipsis, position `bottom: 8px; left: 8px; right: 8px`|
 
 ### §18.3 · /entdecken page
 
@@ -2220,11 +1937,11 @@ Opens fullscreen sheet (mobile) or centered modal (desktop). NOT a navigation �
 |close X                 |top-left                                                                                                                                                                              |
 |heart / bookmark / share|top-right (3 icons in row, 8px gap)                                                                                                                                                   |
 |video container         |16:9 max, centered, padding `var(--space-4)`                                                                                                                                          |
-|meta line               |`[Category] · [Source] · @creator` (Avant Garde Gothic 500 12px ink-2)                                                                                                                       |
-|look name               |Avant Garde Gothic 700 22px ink-1, `-0.025em`                                                                                                                                                  |
-|salon list header       |Avant Garde Gothic 600 13px ink-2: `Verfügbar bei [N] Salons in [city]:`                                                                                                                     |
+|meta line               |`[Category] · [Source] · @creator` (Inter Tight 500 12px ink-2)                                                                                                                       |
+|look name               |Bricolage 700 22px ink-1, `-0.025em`                                                                                                                                                  |
+|salon list header       |Inter Tight 600 13px ink-2: `Verfügbar bei [N] Salons in [city]:`                                                                                                                     |
 |salon row               |mini horizontal card: photo 64px circle, name + rating, service + price, availability + arrow                                                                                         |
-|sticky bottom CTA       |`Buche diesen Look →` (button bg brand-teal gradient) — when tapped, picks salon (auto-picks top one or shows picker if user hasn’t tapped a salon row), navigates to booking wizard|
+|sticky bottom CTA       |`Buche diesen Look →` (button bg brand-orange gradient) — when tapped, picks salon (auto-picks top one or shows picker if user hasn’t tapped a salon row), navigates to booking wizard|
 
 ### §18.5 · Heart vs Bookmark
 
@@ -2233,7 +1950,7 @@ Opens fullscreen sheet (mobile) or centered modal (desktop). NOT a navigation �
 |heart   |private like — saved to user’s `Likes` list (single flat list, no organization). Visible only to user. Tap heart again to unlike.                                                      |
 |bookmark|save to a “Mein Look” board (collection). User can have multiple boards (e.g. Hair / Nails / Sommer-Inspo). On tap: shows board picker sheet — select existing board or create new one.|
 
-Both states visible simultaneously on a card (a look can be both liked AND bookmarked). Bookmark icon shows filled brand-teal when at least one board contains the look.
+Both states visible simultaneously on a card (a look can be both liked AND bookmarked). Bookmark icon shows filled brand-orange when at least one board contains the look.
 
 ### §18.5b · No salons match the look
 
@@ -2288,13 +2005,13 @@ Horizontal scroll row, same pattern as §17.
 
 |element           |spec                                                                        |
 |------------------|----------------------------------------------------------------------------|
-|bg                |brand-teal gradient (V2-D15-3: cities share brand teal, no per-city accent — Yuh discipline):|
-|                  |Basel: `linear-gradient(160deg, #0A6873 0%, #043338 100%)` (brand teal)      |
-|                  |Zürich: `linear-gradient(160deg, #0A6873 0%, #043338 100%)` (brand teal)     |
-|                  |Bern: `linear-gradient(160deg, #0A6873 0%, #043338 100%)` (brand teal)       |
+|bg                |solid color per city, with brand-aligned palette:                           |
+|                  |Basel: `linear-gradient(160deg, #E8742A 0%, #C25E1A 100%)` (brand orange)   |
+|                  |Zürich: `linear-gradient(160deg, #88B89E 0%, #5E9879 100%)` (sage)          |
+|                  |Bern: `linear-gradient(160deg, #9B7BB8 0%, #6B4F8A 100%)` (plum)            |
 |highlight gradient|`linear-gradient(180deg, rgba(255,255,255,.22) 0%, transparent 50%)` overlay|
-|city name         |Avant Garde Gothic 700 22px white, `-0.025em`, line-height 1                         |
-|city meta         |Avant Garde Gothic 500 11px `rgba(255,255,255,.85)` — `[N] Salons`                 |
+|city name         |Bricolage 700 22px white, `-0.025em`, line-height 1                         |
+|city meta         |Inter Tight 500 11px `rgba(255,255,255,.85)` — `[N] Salons`                 |
 |icon              |22px Lucide `map-pin`, `rgba(255,255,255,.95)`, top-left of content area    |
 |content padding   |14px                                                                        |
 |content layout    |flex column, justify-between (icon top, name+meta bottom)                   |
@@ -2307,9 +2024,9 @@ When illustration assets land, swap fallback for SVG illustration on `bg: linear
 |----------------------|-------------------------------------------------------------------------------------------|
 |illustration container|absolute, inset 0, z-index 0, flex center align                                            |
 |illustration          |SVG, viewBox `0 0 200 100`, max 80% width × 80% height, max-height 140px, max-width 200px  |
-|illustration color    |brand-teal `#043338` w opacity 0.85                                                      |
-|city name             |Avant Garde Gothic 700 20px ink-1 `#1A1209`                                                         |
-|city meta             |Avant Garde Gothic 500 10px ink-2 `#7A6957` — `[N] Salons · [Landmark]` (e.g. `47 Salons · Rhein`)|
+|illustration color    |brand-orange `#E8742A` w opacity 0.85                                                      |
+|city name             |Bricolage 700 20px ink-1 `#1A1209`                                                         |
+|city meta             |Inter Tight 500 10px ink-2 `#7A6957` — `[N] Salons · [Landmark]` (e.g. `47 Salons · Rhein`)|
 
 #### Illustration commission spec
 
@@ -2337,8 +2054,8 @@ For when illustrations are commissioned:
 |visibility when no city set yet|hidden — first cold visit shows no Aktuell badge (city pill defaults to Basel via IP, but no badge until user actively engages)|
 |position                       |`top: 10px; left: 10px;`                                                                                                       |
 |copy                           |`Aktuell`                                                                                                                      |
-|typography                     |Avant Garde Gothic 700 9px, letter-spacing 0.04em                                                                                     |
-|dot                            |5px brand-teal `#043338`, before text, 4px gap                                                                               |
+|typography                     |Inter Tight 700 9px, letter-spacing 0.04em                                                                                     |
+|dot                            |5px brand-orange `#E8742A`, before text, 4px gap                                                                               |
 |bg                             |`rgba(255,255,255,.85)` w `backdrop-filter: blur(8px) saturate(1.4)`                                                           |
 |color                          |ink-1 `#1A1209`                                                                                                                |
 |padding                        |`4px 8px`                                                                                                                      |
@@ -2375,7 +2092,7 @@ If user deep-links to a city not in v1 (e.g. `/genf`, `/luzern`, `/lausanne`):
 |default        |as specified                               |
 |hover (desktop)|`translateY(-2px)` 200ms `var(--ease-snap)`|
 |press          |`scale(0.97)` 100ms `var(--ease-thud)`     |
-|focus-visible  |2px brand-teal outline, 2px offset       |
+|focus-visible  |2px brand-orange outline, 2px offset       |
 
 -----
 
@@ -2413,11 +2130,11 @@ Dismiss persistence: cookie `solen_b2b_dismissed_until=<timestamp>`. On render, 
 
 |element                 |spec                                                                                                 |
 |------------------------|-----------------------------------------------------------------------------------------------------|
-|bg                      |`linear-gradient(160deg, #E1F4F4 0%, #FBC9A8 100%)`                                                  |
-|border                  |1px `rgba(4,51,56,.12)`                                                                           |
+|bg                      |`linear-gradient(160deg, #FFE4D2 0%, #FBC9A8 100%)`                                                  |
+|border                  |1px `rgba(232,116,42,.12)`                                                                           |
 |radius                  |`var(--radius-3xl)` (20px)                                                                           |
 |padding                 |`22px 24px`                                                                                          |
-|shadow                  |`inset 0 1px 0 rgba(255,255,255,.6), 0 1px 2px rgba(4,51,56,.1), 0 16px 32px rgba(4,51,56,.18)`|
+|shadow                  |`inset 0 1px 0 rgba(255,255,255,.6), 0 1px 2px rgba(232,116,42,.1), 0 16px 32px rgba(232,116,42,.18)`|
 |margin (page horizontal)|matches page padding                                                                                 |
 
 ### §20.4 · Decorative blobs
@@ -2426,7 +2143,7 @@ Two blurred decorative blobs for warmth (per §5d emphasis pattern):
 
 |blob                |spec                                                                                                           |
 |--------------------|---------------------------------------------------------------------------------------------------------------|
-|blob 1 (top-right)  |220px circle, bg `rgba(4,51,56,.5)`, filter `blur(40px)`, position `top: -60px; right: -60px;`, z-index 0   |
+|blob 1 (top-right)  |220px circle, bg `rgba(232,116,42,.5)`, filter `blur(40px)`, position `top: -60px; right: -60px;`, z-index 0   |
 |blob 2 (bottom-left)|220px circle, bg `rgba(255,255,255,.5)`, filter `blur(40px)`, position `bottom: -80px; left: -40px;`, z-index 0|
 
 ### §20.5 · Content (z-index 2 above blobs)
@@ -2444,9 +2161,9 @@ Du behältst deinen Kalender, wir bringen dir die Kund:innen.
 
 |element             |spec                                                                                                                                                                                   |
 |--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|eyebrow `FÜR SALONS`|Avant Garde Gothic 700 9px, brand-teal `#043338`, letter-spacing 0.22em, uppercase, margin-bottom 8px                                                                                       |
-|heading             |`Solen für dein Studio.` (line 1), `Mehr Termine, weniger Anrufe.` (line 2) — Avant Garde Gothic 700 24px, `-0.025em`, line-height 1.05, ink-1 `#1A1209`, margin-bottom 4px                     |
-|sub-text            |`Beauty + Wellness Buchungen direkt online. Du behältst deinen Kalender, wir bringen dir die Kund:innen.` — Avant Garde Gothic 400 13px, line-height 1.45, ink-2 `#56463E`, margin-bottom 16px|
+|eyebrow `FÜR SALONS`|Inter Tight 700 9px, brand-orange `#8A3C0F`, letter-spacing 0.22em, uppercase, margin-bottom 8px                                                                                       |
+|heading             |`Solen für dein Studio.` (line 1), `Mehr Termine, weniger Anrufe.` (line 2) — Bricolage 700 24px, `-0.025em`, line-height 1.05, ink-1 `#1A1209`, margin-bottom 4px                     |
+|sub-text            |`Beauty + Wellness Buchungen direkt online. Du behältst deinen Kalender, wir bringen dir die Kund:innen.` — Inter Tight 400 13px, line-height 1.45, ink-2 `#56463E`, margin-bottom 16px|
 |primary CTA         |`Mehr erfahren →` (button)                                                                                                                                                             |
 |secondary link      |`Schon Partner?` (text link)                                                                                                                                                           |
 
@@ -2455,9 +2172,9 @@ Du behältst deinen Kalender, wir bringen dir die Kund:innen.
 |element   |spec                                                                                                       |
 |----------|-----------------------------------------------------------------------------------------------------------|
 |copy      |`Mehr erfahren →` (Lucide `arrow-right` 12px after text, 6px gap)                                          |
-|bg        |ink-1 `#1A1209` (NOT brand-teal — contrast against peach)                                                |
+|bg        |ink-1 `#1A1209` (NOT brand-orange — contrast against peach)                                                |
 |color     |white                                                                                                      |
-|typography|Avant Garde Gothic 700 13px                                                                                       |
+|typography|Inter Tight 700 13px                                                                                       |
 |radius    |`var(--radius-pill)` (99px)                                                                                |
 |padding   |`11px 18px`                                                                                                |
 |shadow    |`inset 0 1px 0 rgba(255,255,255,.18), 0 1px 2px rgba(0,0,0,.1)`                                            |
@@ -2469,7 +2186,7 @@ Du behältst deinen Kalender, wir bringen dir die Kund:innen.
 |element    |spec                                                     |
 |-----------|---------------------------------------------------------|
 |copy       |`Schon Partner?`                                         |
-|typography |Avant Garde Gothic 500 12px ink-2 `#043338`                     |
+|typography |Inter Tight 500 12px ink-2 `#8A3C0F`                     |
 |decoration |`text-decoration: underline; text-underline-offset: 3px;`|
 |margin-left|14px (inline w CTA, on same row)                         |
 |tap        |`/business/login`                                        |
@@ -2514,13 +2231,13 @@ Dark register. Sprout glyph lives here (footer-only). 4-column link grid.
 
 ### §21.2 · Decorative glow
 
-Radial brand-teal glow in top-right, anchors warm tone:
+Radial brand-orange glow in top-right, anchors warm tone:
 
 |element       |spec                                                            |
 |--------------|----------------------------------------------------------------|
 |position      |`top: -100px; right: -100px;`                                   |
 |size          |320px × 320px                                                   |
-|bg            |`radial-gradient(circle, rgba(4,51,56,.18), transparent 70%)`|
+|bg            |`radial-gradient(circle, rgba(232,116,42,.18), transparent 70%)`|
 |filter        |`blur(40px)`                                                    |
 |z-index       |0 (behind content)                                              |
 |pointer-events|none                                                            |
@@ -2537,10 +2254,10 @@ Buche Beauty + Wellness in Basel, Zürich, Bern.
 
 |element                  |spec                                                                                                                                                |
 |-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-|sprout                   |28px, brand-teal `#043338`, stroke-width 1.8px, fill none, round caps + joins. SVG paths: stem (vertical line) + 2 sprouting leaves on either side|
-|wordmark                 |Avant Garde Gothic 700 22px white, `-0.03em`                                                                                                                 |
+|sprout                   |28px, brand-orange `#E8742A`, stroke-width 1.8px, fill none, round caps + joins. SVG paths: stem (vertical line) + 2 sprouting leaves on either side|
+|wordmark                 |Bricolage 700 22px white, `-0.03em`                                                                                                                 |
 |brand row gap            |10px between sprout and wordmark                                                                                                                    |
-|tagline                  |Avant Garde Gothic 400 12px `rgba(255,255,255,.6)`, line-height 1.5, max-width 280px                                                                       |
+|tagline                  |Inter Tight 400 12px `rgba(255,255,255,.6)`, line-height 1.5, max-width 280px                                                                       |
 |tagline copy             |`Die Schweizer Salon-Plattform. Buche Beauty + Wellness in Basel, Zürich, Bern.`                                                                    |
 |brand block margin-bottom|28px                                                                                                                                                |
 
@@ -2554,7 +2271,7 @@ Buche Beauty + Wellness in Basel, Zürich, Bern.
 |container padding      |4px                                                                               |
 |container radius       |`var(--radius-pill)` (99px)                                                       |
 |margin-top from tagline|14px                                                                              |
-|button typography      |Avant Garde Gothic 600 11px, letter-spacing 0.02em                                       |
+|button typography      |Inter Tight 600 11px, letter-spacing 0.02em                                       |
 |button padding         |`5px 11px`                                                                        |
 |button radius          |`var(--radius-pill)`                                                              |
 |inactive button        |bg transparent, color `rgba(255,255,255,.55)`                                     |
@@ -2604,7 +2321,7 @@ DO NOT: dropdown style. DO NOT: flag icons. DO NOT: written language names (“D
 
 |element      |spec                                |
 |-------------|------------------------------------|
-|typography   |Avant Garde Gothic 700 12px white, `-0.005em`|
+|typography   |Bricolage 700 12px white, `-0.005em`|
 |margin-bottom|10px                                |
 
 #### Column link
@@ -2612,7 +2329,7 @@ DO NOT: dropdown style. DO NOT: flag icons. DO NOT: written language names (“D
 |element    |spec                  |
 |-----------|----------------------|
 |display    |block                 |
-|typography |Avant Garde Gothic 400 12px  |
+|typography |Inter Tight 400 12px  |
 |color      |`rgba(255,255,255,.6)`|
 |color hover|`#fff`                |
 |padding    |4px 0                 |
@@ -2631,8 +2348,8 @@ DO NOT: dropdown style. DO NOT: flag icons. DO NOT: written language names (“D
 |padding-top  |20px                                                                                                                            |
 |border-top   |`1px rgba(255,255,255,.08)`                                                                                                     |
 |layout       |flex row, justify-between, align-center, flex-wrap, gap 16px                                                                    |
-|copyright    |Avant Garde Gothic 400 11px `rgba(255,255,255,.45)` — `© 2026 Solen GmbH`                                                              |
-|Made in Basel|inline-flex, 6px gap. Swiss flag = filled brand-teal `#043338` 11px square. Text Avant Garde Gothic 400 11px `rgba(255,255,255,.45)`.|
+|copyright    |Inter Tight 400 11px `rgba(255,255,255,.45)` — `© 2026 Solen GmbH`                                                              |
+|Made in Basel|inline-flex, 6px gap. Swiss flag = filled brand-orange `#E8742A` 11px square. Text Inter Tight 400 11px `rgba(255,255,255,.45)`.|
 
 ### §21.7 · NO social media in v1
 
@@ -2655,10 +2372,12 @@ Salons nach Stadt
 Finde Beauty + Wellness Salons in der ganzen Schweiz —
 nach Stadt und Kategorie.
 
-Coiffeur          in Basel · in Zürich · in Bern
-Barbershop        in Basel · in Zürich · in Bern
-Nails             in Basel · in Zürich · in Bern
-Spa & Wellness    in Basel · in Zürich · in Bern
+Coiffeur   in Basel · in Zürich · in Bern
+Barber     in Basel · in Zürich · in Bern
+Nails      in Basel · in Zürich · in Bern
+Spa        in Basel · in Zürich · in Bern
+Makeup     in Basel · in Zürich · in Bern
+Wellness   in Basel · in Zürich · in Bern
 ```
 
 ### §22.2 · Section title
@@ -2666,7 +2385,7 @@ Spa & Wellness    in Basel · in Zürich · in Bern
 |element      |spec                                               |
 |-------------|---------------------------------------------------|
 |copy         |`Salons nach Stadt`                                |
-|typography   |Avant Garde Gothic 700 20px ink-1, `-0.025em`, line-height 1|
+|typography   |Bricolage 700 20px ink-1, `-0.025em`, line-height 1|
 |margin-bottom|6px                                                |
 |tag          |`<h2>` (semantic, for SEO)                         |
 
@@ -2675,7 +2394,7 @@ Spa & Wellness    in Basel · in Zürich · in Bern
 |element      |spec                                                                              |
 |-------------|----------------------------------------------------------------------------------|
 |copy         |`Finde Beauty + Wellness Salons in der ganzen Schweiz — nach Stadt und Kategorie.`|
-|typography   |Avant Garde Gothic 400 12px, ink-2 `#56463E`, line-height 1.5                            |
+|typography   |Inter Tight 400 12px, ink-2 `#56463E`, line-height 1.5                            |
 |max-width    |540px                                                                             |
 |margin-bottom|20px                                                                              |
 
@@ -2692,23 +2411,25 @@ Coiffeur · in Basel · in Zürich · in Bern
 |row layout                     |flex row, flex-wrap, baseline align                                                        |
 |row gap (vertical between rows)|10px                                                                                       |
 |line-height                    |1.7 (for natural wrapping)                                                                 |
-|category name                  |Avant Garde Gothic 700 13px ink-1, `-0.005em`, margin-right 8px, flex-shrink 0                      |
-|city link                      |Avant Garde Gothic 400 12px ink-2 `#56463E`, padding `0 8px`, border-right `1px rgba(26,18,9,.12)`|
+|category name                  |Bricolage 700 13px ink-1, `-0.005em`, margin-right 8px, flex-shrink 0                      |
+|city link                      |Inter Tight 400 12px ink-2 `#56463E`, padding `0 8px`, border-right `1px rgba(26,18,9,.12)`|
 |last link in row               |no border-right                                                                            |
-|`<strong>` tag                 |wraps city name only (NOT “in”), Avant Garde Gothic 600 ink-1                                     |
-|link hover                     |color → brand-teal `#043338`, no underline                                               |
+|`<strong>` tag                 |wraps city name only (NOT “in”), Inter Tight 600 ink-1                                     |
+|link hover                     |color → brand-orange `#E8742A`, no underline                                               |
 |transition                     |color 150ms                                                                                |
 
 ### §22.5 · Categories included v1
 
-In order (V2-D15-3 lock — 4 categories):
+In order:
 
 1. Coiffeur
-1. Barbershop
+1. Barber
 1. Nails
-1. Spa & Wellness
+1. Spa
+1. Makeup
+1. Wellness
 
-(Same 4 categories as homepage feeds. Makeup retired, Wellness merged into Spa.)
+(Same 6 categories as homepage feeds.)
 
 ### §22.6 · Cities included v1
 
@@ -2728,7 +2449,7 @@ Instead, the link to the current city in this wall should still render but with 
 
 ### §22.7 · Total link count
 
-**4 categories × 3 cities = 12 unique links in v1** (V2-D15-3). Each link's URL: `/[city-slug]/[category-slug]` (matches §15.5 URL convention).
+6 categories × 3 cities = 18 unique links in v1. Each link’s URL: `/[city-slug]/[category-slug]` (matches §15.5 URL convention).
 
 ### §22.8 · Section padding
 
@@ -2768,14 +2489,16 @@ Locked component order on `/` (or `/[city]` city homepage):
 5. [Entdecken in Basel →]       §15 + §18
 
 6. [Coiffeur in Basel →]        §15 + §16 (variant: service)
-7. [Barbershop in Basel →]      §15 + §16 (variant: service)
+7. [Barber in Basel →]          §15 + §16 (variant: service)
 8. [Nails in Basel →]           §15 + §16 (variant: service)
-9. [Spa & Wellness in Basel →]  §15 + §16 (variant: service)
+9. [Spa in Basel →]             §15 + §16 (variant: service)
+10. [Makeup in Basel →]         §15 + §16 (variant: service)
+11. [Wellness in Basel →]       §15 + §16 (variant: service)
 
-10. [Solen in deiner Stadt]     §19
-11. [B2B card]                  §20
-12. [Salons nach Stadt]         §22
-13. [Footer]                    §21
+12. [Solen in deiner Stadt]     §19
+13. [B2B card]                  §20
+14. [Salons nach Stadt]         §22
+15. [Footer]                    §21
 ```
 
 ### §23.1 · Sections killed for v1 (re-add in v2)
@@ -2847,28 +2570,14 @@ All text-on-bg combinations MUST meet WCAG AA:
 
 Already-locked safe pairings:
 
-- ink-1 `#1A1209` on white `#FFFFFF` = 16.8:1 ✓
-- ink-2 `#56463E` on white = 8.4:1 ✓
-- ink-3 `#7A6957` on white = 5.0:1 ✓
-- white on ink-1 = 16.8:1 ✓
-- brand-teal `#043338` on white = **14.74:1** ✓ AAA — body-safe at any size, no text-deep variant needed (orange-era 3.34:1 retired V2-D15-3)
-- white on brand-teal `#043338` = 14.74:1 ✓ AAA (same ratio, symmetric)
-- pale teal `#C2F0F1` on brand-teal `#043338` = 11.09:1 ✓ AAA — Republik panel #4 exact pair (text-on-saturated-brand-panel)
+- ink-1 `#1A1209` on cream `#FBF8F3` = 14.8:1 ✓
+- ink-2 `#56463E` on cream = 7.5:1 ✓
+- ink-3 `#7A6957` on cream = 4.6:1 ✓
+- white on ink-1 = 14.8:1 ✓
+- brand-orange `#E8742A` on cream = 3.4:1 — large text only ✓
+- coralText `#8A3C0F` on cream = 6.2:1 ✓ — use this for small ink-on-cream brand text
 
-**V3 category combo contrasts (text on combo bg, Republik exact pairs):**
-- Coiffeur Z: cherry `#B5345A` on cream `#FFF1DD` = 5.24:1 ✓ AA
-- Barbershop G: black `#000000` on bone `#D8D6CB` = 14.40:1 ✓ AAA
-- Nails A: magenta `#B50051` on pale ice blue `#CAE8FF` = 5.35:1 ✓ AA
-- Spa & Wellness I: sandy beige `#948565` on forest `#193120` = 3.86:1 ✓ AA-large (display headlines only, sub-text reads at AA-large minimum)
-
-**On-white contrasts (for category-color text on white substrate, e.g., breadcrumb-current OUTSIDE the saturated panel):**
-- Cherry `#B5345A` on white = 5.55:1 ✓ AA body
-- Black `#000000` on white = 21:1 ✓ AAA
-- Magenta `#B50051` on white = 8.97:1 ✓ AAA
-- Sandy beige `#948565` on white = 3.34:1 — large text only — use forest `#193120` 14.49:1 for body-size
-- Forest `#193120` on white = 14.49:1 ✓ AAA
-
-DO NOT use combo bg colors (cream/bone/pale ice blue/forest) directly for text on white — they're substrate hues. Use combo TEXT colors for category-tinted text on white.
+DO NOT use brand-orange `#E8742A` for body text on cream — fails AA. Use `#8A3C0F` (coralText) for small brand-colored text.
 
 ### §24b.5 · Keyboard support
 
@@ -2950,26 +2659,9 @@ Set on PostHog `identify()` call:
 
 ## §25 · Category page — `/[city]/[category]`
 
-The grid page user lands on when tapping any "Alle →" link from a category feed (e.g. tapping `Alle →` on "Coiffeur in Basel" homepage row navigates to `/basel/coiffeur`).
+The grid page user lands on when tapping any “Alle →” link from a category feed (e.g. tapping `Alle →` on “Coiffeur in Basel” homepage row navigates to `/basel/coiffeur`).
 
 URL format: `/[city]/[category]` per §15.5. Examples: `/basel/coiffeur`, `/zurich/nails`, `/bern/spa`. NO query strings.
-
-### Sequencing principle (Fresha lesson, V2-D15-1)
-
-Fresha's verified booking-flow architecture: **search context → ranked options → social proof → platform expansion → SEO lattice.** Solen mirrors this on category pages:
-
-1. **Header band** (search context) — sticky on scroll past h1: breadcrumbs + h1 + sub stat
-2. **Filter pills row** (search refinement) — sticky on scroll, top: 48px
-3. **Salon grid** (ranked options) — service-variant card, infinite scroll 12 per page
-4. **End-of-list separator** ("Du hast alle 23 Salons gesehen")
-5. **Cross-link footer** (SEO lattice) — "Andere Kategorien in [City]" + "[Category] in anderen Städten"
-6. **Main footer §21**
-
-The order is non-negotiable. Filter sheet results never break sequencing — they re-render the grid in place but never re-order the page. This sequencing applies the Fresha discipline: get user from "I want X" → "here are options" → "decision committed" with no detours.
-
-### Colorway treatment (V2-D15-1, Level 3 Republik)
-
-Per §2.1, this whole page IS the colorway. Every brand-teal reference in this section that existed in v2-prelim has been swapped to category-themed (h1 → category color, breadcrumb-current → category-deep, filter pill active → category color, sticky bottom CTA → category-deep gradient, count badge → category-deep, loading-more spinner → category color). **Brand teal `#043338` does not appear on this page.** It returns at the cross-link footer where multiple categories cross-reference (no single category wins) and at the main footer §21.
 
 ### §25.1 · Layout overview
 
@@ -2992,7 +2684,7 @@ Per §2.1, this whole page IS the colorway. Every brand-teal reference in this s
 │  Du hast alle 23 Salons gesehen                │  ← end of list
 ├────────────────────────────────────────────────┤
 │  Andere Kategorien in Basel                    │  ← cross-link block 1
-│  Barbershop · Nails · Spa & Wellness           │
+│  Barber · Nails · Spa · Makeup · Wellness      │
 │                                                │
 │  Coiffeur in anderen Städten                   │  ← cross-link block 2
 │  Coiffeur in Zürich · Coiffeur in Bern         │
@@ -3015,7 +2707,7 @@ Below header, before h1.
 |----------------------|------------------------------------------------------------|
 |layout                |flex row, wrap, baseline-aligned, gap 4px                   |
 |padding               |`14px 16px 0`                                               |
-|typography            |Avant Garde Gothic 400 11px                                        |
+|typography            |Inter Tight 400 11px                                        |
 |non-current item color|ink-2 `#7A6957`                                             |
 |current item color    |ink-1 `#1A1209`, font-weight 600                            |
 |separator `/`         |ink-1 `.22` opacity, `0 1px` margin                         |
@@ -3026,42 +2718,16 @@ Below header, before h1.
 |`<nav aria-label>`    |`breadcrumb`                                                |
 |JSON-LD               |`BreadcrumbList` schema in `<head>` (per §25.10)            |
 
-### §25.4 · Page title block — full Republik colorway treatment (V2-D15-1)
-
-**Category page IS the colorway** per §2.1. Brand teal retreats to GLOBAL elements only on this page (logo, nav, save-heart, footer accent). The `[Category]` colorway owns:
-- Page header band background tint (category color × 6% alpha)
-- 3px solid stripe at top of header band in category color
-- h1 text color: **the combo's text color** (e.g. Coiffeur cherry `#B5345A` on cream `#FFF1DD` band — combo Z exact pair, Republik monochrome rule)
-- Breadcrumb-current text color: same combo text color (e.g. Coiffeur cherry `#B5345A`) — monochrome panel rule
-- Sub-text count "**23 Salons**": same combo text color
-- Filter pill active state: category-color bg, white text (per §25.5 update below)
-- Section dividers: 1px line in category color at 30% opacity
-- Primary "Buchen →" CTA on this page: brand teal `#043338` pill + white text per §25.8 (the brand-teal CTA is the connective tissue across all category pages, Yuh discipline)
-
-**Header band layout:**
-
-```
-[3px solid category-color stripe]
-[16px tinted-bg padding above breadcrumbs]
-solen / Basel / Coiffeur (breadcrumb-current rose-deep)
-Coiffeur in Basel (h1 in full saturated rose)
-● 23 Salons · 8 heute frei (sub w pulse + count in rose-deep)
-[16px tinted-bg padding below sub]
-[bottom border: solid 1px category-color × 30% alpha]
-[white substrate continues from here — filter pills row, grid, etc.]
-```
+### §25.4 · Page title block
 
 |element                      |spec                                                                                                                                   |
 |-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-|header band bg               |`linear-gradient(180deg, [cat-color × 14% alpha] 0%, [cat-color × 6% alpha] 100%)` — subtle vertical gradient, top stronger             |
-|header band top stripe       |3px solid in category color, 100% width, sits ABOVE the band content                                                                   |
-|header band padding          |`16px` mobile / `20px` tablet+ — bottom of band has the 1px-30%-alpha category-color border                                            |
-|h1                           |`[Category] in [City]` (e.g. `Coiffeur in Basel`) — Cooper BT 900, `clamp(36px, 4.2vw, 56px)`, `-0.018em`, line-height 0.96, **full saturated category color** (not deep — Republik energy per V2-D15-3) |
-|breadcrumb-current           |Avant Garde Gothic 600 11px in **category-deep** variant (e.g. Coiffeur `#B5345A`, Spa `#948565`)                                            |
-|sub-text                     |Avant Garde Gothic 400 12px ink-2, line-height 1.4                                                                                            |
-|sub-text default format      |`[N] Salons · [M] heute frei` — count `<strong>` in **category-deep**                                                                  |
-|sub-text w filters           |`[N] Salons · gefiltert` (replaces "M heute frei" indicator when filters active)                                                       |
-|sub-text w 0 results         |`0 Salons · gefiltert · ` followed by inline link `Filter zurücksetzen` in brand-teal `#043338` underlined (the brand-teal CTA / link is the connective tissue across all category pages, Yuh discipline)|
+|padding                      |`6px 16px 0`                                                                                                                           |
+|h1                           |`[Category] in [City]` (e.g. `Coiffeur in Basel`) — Bricolage Grotesque 700, `clamp(24px, 5vw, 32px)`, `-0.028em`, line-height 1, ink-1|
+|sub-text                     |Inter Tight 400 12px, ink-2 `#7A6957`, line-height 1.4                                                                                 |
+|sub-text default format      |`[N] Salons · [M] heute frei` (e.g. `23 Salons · 8 heute frei`) — count `<strong>` in ink-1                                            |
+|sub-text w filters           |`[N] Salons · gefiltert` (replaces “M heute frei” indicator when filters active)                                                       |
+|sub-text w 0 results         |`0 Salons · gefiltert · ` followed by inline link `Filter zurücksetzen` (brand-orange `#8A3C0F` underlined)                            |
 |pulse dot                    |5px green `#16A34A` before `[N] Salons`, animates pulse 1.6s infinite (per §5c.7)                                                      |
 |pulse dot when filters active|hidden (replaced by no dot — sub-text reflects filtered state instead)                                                                 |
 
@@ -3074,22 +2740,22 @@ Coiffeur in Basel (h1 in full saturated rose)
 |pill 1 |`Alle` — active by default. Tap → clears all filters, sets default sort.                                     |
 |pill 2 |`Heute frei` — quick filter toggle. Tap → toggles `available_today=true`. Active state: ink-1 bg, white text.|
 |pill 3 |`Sortieren ▾` — opens sort sheet (§25.6). Active state when not on default sort.                             |
-|pill 4 |`Filter` — opens filter sheet (§25.7). When filters active: brand-teal count badge appears (`Filter (3)`). |
+|pill 4 |`Filter` — opens filter sheet (§25.7). When filters active: brand-orange count badge appears (`Filter (3)`). |
 
 #### Pill base styling
 
 |element        |spec                                                                                                                                   |
 |---------------|---------------------------------------------------------------------------------------------------------------------------------------|
-|typography     |Avant Garde Gothic 600 12px                                                                                                                   |
+|typography     |Inter Tight 600 12px                                                                                                                   |
 |padding        |`8px 13px`                                                                                                                             |
 |radius         |`var(--radius-pill)` (99px)                                                                                                            |
 |inactive bg    |`linear-gradient(180deg, #fff, #FDFAF5)`                                                                                               |
-|inactive shadow|`inset 0 1px 0 rgba(255,255,255,.85), 0 1px 1px rgba(26,18,9,.04), 0 2px 4px rgba(4,51,56,.06)`                                     |
-|active bg (V2-D15-1)|category color (e.g. Coiffeur `#FFF1DD`, Spa `#193120`) — full saturation, NOT ink-1. The page is themed; active filter participates in the colorway. |
+|inactive shadow|`inset 0 1px 0 rgba(255,255,255,.85), 0 1px 1px rgba(26,18,9,.04), 0 2px 4px rgba(232,116,42,.06)`                                     |
+|active bg      |ink-1 `#1A1209`                                                                                                                        |
 |active color   |`#fff`                                                                                                                                 |
-|active shadow  |`inset 0 1px 0 rgba(255,255,255,.22), 0 1px 2px rgba(category-color, .24)`                                                             |
+|active shadow  |`inset 0 1px 0 rgba(255,255,255,.18), 0 1px 2px rgba(0,0,0,.12)`                                                                       |
 |chevron / icon |10px Lucide, ink-2 (inactive) or `rgba(255,255,255,.85)` (active)                                                                      |
-|count badge (V2-D15-1)|inline-flex, min-width 18px, height 18px, padding `0 5px`, bg **category-deep** (e.g. Coiffeur deep `#B5345A`), color white, Avant Garde Gothic (tabular-nums) 10px 700, radius pill — was brand-teal in v2-prelim, now category-themed per Level 3 commitment|
+|count badge    |inline-flex, min-width 18px, height 18px, padding `0 5px`, bg brand-orange `#E8742A`, color white, JetBrains Mono 10px 700, radius pill|
 
 ### §25.6 · Sortieren sheet
 
@@ -3098,11 +2764,11 @@ Bottom sheet, opened by tapping `Sortieren ▾` pill.
 |element     |spec                                                                                                            |
 |------------|----------------------------------------------------------------------------------------------------------------|
 |presentation|bottom sheet, dimmed backdrop `rgba(0,0,0,.35)`, swipe-down-to-dismiss                                          |
-|sheet bg    |white `#FFFFFF`                                                                                                  |
+|sheet bg    |cream `#FBF8F3`                                                                                                 |
 |sheet radius|`22px 22px 0 0`                                                                                                 |
 |sheet shadow|`0 -8px 32px rgba(26,18,9,.18)`                                                                                 |
 |handle      |36×4px ink-1 `.18` pill at top center, 8px margin                                                               |
-|header      |`Sortieren nach` (Avant Garde Gothic 700 16px, `-0.02em`), padding `8px 18px 14px`, bottom border `1px rgba(26,18,9,.05)`|
+|header      |`Sortieren nach` (Bricolage 700 16px, `-0.02em`), padding `8px 18px 14px`, bottom border `1px rgba(26,18,9,.05)`|
 |body padding|`14px 18px`                                                                                                     |
 |z-index     |`var(--z-modal)` per §8                                                                                         |
 
@@ -3122,15 +2788,15 @@ Bottom sheet, opened by tapping `Sortieren ▾` pill.
 |-----------------------|-----------------------------------------------------------------------------------------------------------------------|
 |layout                 |flex row, align-center, gap 12px, padding `14px 0`, bottom border `1px rgba(26,18,9,.05)` (last has no border)         |
 |radio circle           |18×18px, 2px ink-1 `.25` border, radius pill, transparent bg                                                           |
-|radio circle (selected)|2px brand-teal border, inner brand-teal dot via `radial-gradient(circle, #043338 0%, #043338 50%, transparent 50%)`|
-|label                  |Avant Garde Gothic 400 14px, ink-1. Selected → 600 weight                                                                     |
+|radio circle (selected)|2px brand-orange border, inner brand-orange dot via `radial-gradient(circle, #E8742A 0%, #E8742A 50%, transparent 50%)`|
+|label                  |Inter Tight 400 14px, ink-1. Selected → 600 weight                                                                     |
 |tap                    |sets sort, dismisses sheet, refetches grid w new sort                                                                  |
 
 ### §25.7 · Filter sheet
 
 Bottom sheet, opened by tapping `Filter` pill.
 
-Same shell as §25.6 (handle, header, dim, swipe-down). Header copy: `Filter`. Top-right of header: `Zurücksetzen` text link (Avant Garde Gothic 500 11px, ink-2 underlined, 3px offset).
+Same shell as §25.6 (handle, header, dim, swipe-down). Header copy: `Filter`. Top-right of header: `Zurücksetzen` text link (Inter Tight 500 11px, ink-2 underlined, 3px offset).
 
 #### v1 filter categories (3)
 
@@ -3151,7 +2817,9 @@ For Coiffeur category. Options vary by category in DB.
 Coiffeur: `Damen` · `Herren` · `Kinder` · `Schnitt` · `Föhnen` · `Coloration` · `Highlights`
 Barber: `Bart` · `Schnitt + Bart` · `Walk-in` · `Termin`
 Nails: `Gel` · `Acryl` · `Natur` · `Gel-Nägel` · `French` · `Nail Art`
-Spa & Wellness: `Massage` · `Gesichtsbehandlung` · `Body Wrap` · `Sauna` · `Yoga` · `Meditation` · `Akupunktur` · `Energiearbeit`
+Spa: `Massage` · `Gesichtsbehandlung` · `Body Wrap` · `Sauna`
+Makeup: `Tages-Look` · `Abend-Look` · `Braut` · `Special FX`
+Wellness: `Yoga` · `Meditation` · `Akupunktur` · `Energiearbeit`
 
 ##### 3. Preisspanne (range slider)
 
@@ -3159,9 +2827,9 @@ Spa & Wellness: `Massage` · `Gesichtsbehandlung` · `Body Wrap` · `Sauna` · `
 |------------------|----------------------------------------------------------------------------------------------------------|
 |range             |CHF 0–500                                                                                                 |
 |default           |full range (no filter)                                                                                    |
-|visual            |dual-thumb slider, ink-1 `.1` track, brand-teal filled portion                                          |
-|thumbs            |16×16px white circles, 2px brand-teal border, soft shadow                                               |
-|labels below track|`ab CHF [min]` (left) and `bis CHF [max]` (right) — Avant Garde Gothic 400 11px ink-2, value `<strong>` ink-1 600|
+|visual            |dual-thumb slider, ink-1 `.1` track, brand-orange filled portion                                          |
+|thumbs            |16×16px white circles, 2px brand-orange border, soft shadow                                               |
+|labels below track|`ab CHF [min]` (left) and `bis CHF [max]` (right) — Inter Tight 400 11px ink-2, value `<strong>` ink-1 600|
 
 #### Pill toggle styling (Verfügbarkeit + Service-Typ)
 
@@ -3172,14 +2840,14 @@ Spa & Wellness: `Massage` · `Gesichtsbehandlung` · `Body Wrap` · `Sauna` · `
 |inactive padding|`7px 12px`                                                                             |
 |inactive radius |pill                                                                                   |
 |active          |bg ink-1, color white, border ink-1, font-weight 600                                   |
-|typography      |Avant Garde Gothic, 12px                                                                      |
+|typography      |Inter Tight, 12px                                                                      |
 |tap             |toggles state, debounced 200ms recount fires                                           |
 
 #### Section headers within sheet
 
 |element                 |spec                                                                 |
 |------------------------|---------------------------------------------------------------------|
-|typography              |Avant Garde Gothic 700 11px, letter-spacing 0.04em, uppercase, ink-2 `#56463E`|
+|typography              |Bricolage 700 11px, letter-spacing 0.04em, uppercase, ink-2 `#56463E`|
 |margin-bottom           |10px                                                                 |
 |copy                    |`Verfügbarkeit` / `Service-Typ` / `Preisspanne`                      |
 |spacing between sections|18px                                                                 |
@@ -3190,16 +2858,16 @@ Live-counted “[N] Salons anzeigen” button.
 
 |element                     |spec                                                                                                                                    |
 |----------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
-|container                   |sticky bottom, `padding: 14px 18px 18px`, bg `rgba(255,255,255,.94)` w `backdrop-filter: blur(12px)`, top border `1px rgba(26,18,9,.05)` |
+|container                   |sticky bottom, `padding: 14px 18px 18px`, bg `rgba(251,248,243,.92)` w `backdrop-filter: blur(12px)`, top border `1px rgba(26,18,9,.05)`|
 |button width                |100%                                                                                                                                    |
-|button bg (active, ≥1 match) **(V2-D15-1)**|category-deep gradient (e.g. Coiffeur `linear-gradient(180deg, #8A4068, #B5345A)`, Spa `linear-gradient(180deg, #5B8B71, #948565)`) — was brand-teal in v2-prelim, now category-themed per Level 3 commitment |
+|button bg (active, ≥1 match)|`linear-gradient(180deg, #F0834D, #E8742A)`                                                                                             |
 |button bg (zero matches)    |ink-3 `#7A6957` muted, disabled cursor                                                                                                  |
-|button bg (loading)         |active category-deep gradient w spinner                                                                                                 |
+|button bg (loading)         |active gradient w spinner                                                                                                               |
 |button color                |white                                                                                                                                   |
-|button typography           |Avant Garde Gothic 700 13px                                                                                                                    |
+|button typography           |Inter Tight 700 13px                                                                                                                    |
 |button padding              |`13px 18px`                                                                                                                             |
 |button radius               |pill                                                                                                                                    |
-|button shadow               |`inset 0 1px 0 rgba(255,255,255,.18), 0 1px 2px rgba(4,51,56,.18)`                                                                   |
+|button shadow               |`inset 0 1px 0 rgba(255,255,255,.18), 0 1px 2px rgba(232,116,42,.18)`                                                                   |
 |copy default (no filters)   |`Alle [N] Salons anzeigen`                                                                                                              |
 |copy w filters              |`[N] Salons anzeigen →` (live-counted, debounced 200ms after each filter toggle)                                                        |
 |copy zero matches           |`Keine Treffer` (button disabled)                                                                                                       |
@@ -3232,7 +2900,7 @@ Live-counted “[N] Salons anzeigen” button.
 |padding tablet+            |`4px 24px 24px`                                                                                |
 |pagination                 |infinite scroll — load 12 cards initial, fetch next 12 when user scrolls within 400px of bottom|
 |skeleton during fetch      |6 cards w left-to-right shimmer, max 2 cycles per skeleton                                     |
-|loading-more indicator     |22×22px category-color spinner (e.g. Coiffeur rose `#FFF1DD`) + "Lade weitere Salons…" ink-3, shown grid-column 1 / -1 — was brand-teal in v2-prelim, now category-themed per Level 3 |
+|loading-more indicator     |22×22px brand-orange spinner + “Lade weitere Salons…” italic ink-2, shown grid-column 1 / -1   |
 
 #### End of list
 
@@ -3246,7 +2914,7 @@ Du hast alle 23 Salons gesehen
 |element   |spec                                                        |
 |----------|------------------------------------------------------------|
 |layout    |grid-column 1 / -1, padding `24px 0 12px`, text-align center|
-|typography|Avant Garde Gothic 400 11px, ink-3 `#7A6957`                       |
+|typography|Inter Tight 400 11px italic, ink-3 `#7A6957`                |
 |separator |32×2px ink-1 `.12` pill above text, 12px margin-bottom      |
 |copy      |`Du hast alle [N] Salons gesehen`                           |
 
@@ -3257,27 +2925,27 @@ Du hast alle 23 Salons gesehen
 |element                                 |spec                                                                                                                                              |
 |----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
 |trigger                                 |filters applied, 0 salons match                                                                                                                   |
-|illustration                            |88×88px ink `.06` background circle, brand-teal `#043338` Lucide `search-x` icon at 38×38px stroke 1.5 inside                                   |
+|illustration                            |88×88px ink `.06` background circle, brand-orange `#E8742A` Lucide `search-x` icon at 38×38px stroke 1.5 inside                                   |
 |illustration margin-bottom              |20px                                                                                                                                              |
-|title                                   |`Keine Salons mit diesen Filtern` — Avant Garde Gothic 700 19px, `-0.025em`, ink-1                                                                         |
+|title                                   |`Keine Salons mit diesen Filtern` — Bricolage 700 19px, `-0.025em`, ink-1                                                                         |
 |title margin-bottom                     |8px                                                                                                                                               |
-|body                                    |`Versuch andere Optionen, oder lockere die Suche etwas.` — Avant Garde Gothic 400 13px, ink-2, line-height 1.55, max-width 280px                         |
+|body                                    |`Versuch andere Optionen, oder lockere die Suche etwas.` — Inter Tight 400 13px, ink-2, line-height 1.55, max-width 280px                         |
 |body margin-bottom                      |24px                                                                                                                                              |
 |primary CTA                             |`Filter zurücksetzen` w refresh icon — ink-1 gradient bg, white, pill, 12×20px padding, hover `translateY(-1px)`                                  |
 |CTA tap                                 |clears all filters, refetches w default sort                                                                                                      |
-|secondary link                          |`Mit gleichen Filtern in Zürich suchen →` (or other city if user is in Zürich) — Avant Garde Gothic 400 12px ink-2 underlined 4px offset, margin-top 16px|
+|secondary link                          |`Mit gleichen Filtern in Zürich suchen →` (or other city if user is in Zürich) — Inter Tight 400 12px ink-2 underlined 4px offset, margin-top 16px|
 |secondary tap                           |navigates to `/[other-city]/[category]` w same filter params preserved                                                                            |
 |section padding                         |`48px 28px 36px`                                                                                                                                  |
-|sub-text in title block above filter row|`0 Salons · gefiltert · Filter zurücksetzen` (inline reset link, brand-teal)                                                                    |
+|sub-text in title block above filter row|`0 Salons · gefiltert · Filter zurücksetzen` (inline reset link, brand-orange)                                                                    |
 
-#### Category not in city (e.g. `/bern/barbershop` w 0 barbershop salons)
+#### Category not in city (e.g. `/bern/makeup` w 0 makeup salons)
 
 |element       |spec                                                                                                                                                                                           |
 |--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |trigger       |category exists in DB but 0 salons in current city                                                                                                                                             |
-|illustration  |88×88px brand-subtle teal-tinted circle, soft Lucide icon (vary by category — `scissors` for coiffeur, `flower` for spa & wellness, etc)                                                       |
+|illustration  |88×88px peach-tinted circle, soft Lucide icon (vary by category — `palette` for makeup, `flower` for spa, etc)                                                                                 |
 |h1 sub-text   |`Bald verfügbar` (replaces “X Salons · Y heute frei”)                                                                                                                                          |
-|title         |`[Category] kommt bald nach [City]` — Avant Garde Gothic 700 19px                                                                                                                                       |
+|title         |`[Category] kommt bald nach [City]` — Bricolage 700 19px                                                                                                                                       |
 |body          |`Wir suchen die besten [Category]-Salons der Stadt. Trag dich ein und erfahre als Erste:r, wenn's los geht.` — ink-2 13px                                                                      |
 |primary CTA   |`Benachrichtige mich` w bell icon — ink-1 gradient bg                                                                                                                                          |
 |CTA tap       |opens email-only signup modal: `Ich benachrichtige dich, wenn [Category] in [City] startet.` + email input + `Anmelden` button. Email saved to `waitlist_signups` table w category + city tags.|
@@ -3292,7 +2960,7 @@ Du hast alle 23 Salons gesehen
 |trigger         |grid fetch fails after 3 retries                                                                                          |
 |layout          |inline within grid area (NOT empty-state full block)                                                                      |
 |copy            |`Konnte Salons nicht laden — ` + inline link `Erneut laden`                                                               |
-|typography      |Avant Garde Gothic 400 12px ink-2, link brand-teal underlined                                                                  |
+|typography      |Inter Tight 400 12px ink-2, link brand-orange underlined                                                                  |
 |icon            |small 14px Lucide `wifi-off` ink-2 before text                                                                            |
 |tap retry       |refetches                                                                                                                 |
 |after 5+ retries|escalate to full empty state w title `Etwas ist schief gelaufen` + Erneut laden CTA + `Hilfe kontaktieren` link to `/help`|
@@ -3316,21 +2984,21 @@ Lives between end-of-grid and main footer §21. Pure SEO link surface — google
 |element             |spec                                               |
 |--------------------|---------------------------------------------------|
 |container padding   |`36px 18px 32px`                                   |
-|container bg        |`linear-gradient(180deg, #FFFFFF 0%, #FAF7F3 100%)` (subtle warm-grey gradient — keeps the SEO-link block visually distinct from pure-white surrounding sections without reverting substrate to cream)|
+|container bg        |`linear-gradient(180deg, #FBF8F3 0%, #F5EFE6 100%)`|
 |container top border|`1px rgba(26,18,9,.06)`                            |
 
 #### Block 1: Andere Kategorien in [City]
 
 |element         |spec                                                                                                                                                          |
 |----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|header          |`Andere Kategorien in [City]` — Avant Garde Gothic 700 15px, `-0.02em`, ink-1, margin-bottom 12px                                                                      |
-|links           |flex wrap row, font Avant Garde Gothic 400 12px ink-2, line-height 1.7                                                                                               |
+|header          |`Andere Kategorien in [City]` — Bricolage 700 15px, `-0.02em`, ink-1, margin-bottom 12px                                                                      |
+|links           |flex wrap row, font Inter Tight 400 12px ink-2, line-height 1.7                                                                                               |
 |each link       |padding `0 10px`, right border `1px rgba(26,18,9,.14)` (last has no border)                                                                                   |
 |link strong     |category name in ink-1 600 weight                                                                                                                             |
-|link hover      |brand-teal `#043338`, no underline                                                                                                                          |
+|link hover      |brand-orange `#E8742A`, no underline                                                                                                                          |
 |transition      |color 150ms                                                                                                                                                   |
 |URL per link    |`/[city]/[other-category]`                                                                                                                                    |
-|categories shown|all 3 other v1 categories (excluding current). Order: Barbershop · Nails · Spa & Wellness (if current is Coiffeur). Auto-scales as new categories launch.|
+|categories shown|all 5 other v1 categories (excluding current). Order: Barber · Nails · Spa · Makeup · Wellness (if current is Coiffeur). Auto-scales as new categories launch.|
 
 #### Block 2: [Category] in anderen Städten
 
@@ -3483,9 +3151,6 @@ Combined example: `/basel/coiffeur?heute=1&service=damen&preis=50-150&sort=slot`
 
 -----
 
-
------
-
 ## Component PR checklist
 
 Before any homepage component PR merges, verify against this checklist:
@@ -3498,24 +3163,17 @@ Before any homepage component PR merges, verify against this checklist:
 - [ ] Z-index uses `var(--z-*)` tokens (per §8)
 - [ ] If component contains modal/overlay, uses React portal (per §8 stacking context warning)
 
-### Per-category colorway (per §2)
-
-- [ ] Category pages (`/[city]/[category]`) carry the category color as page-identity (h1, breadcrumb-current, accent bar above breadcrumb)
-- [ ] Brand teal retreats to GLOBAL elements only on category pages (logo, nav, footer). Save-heart stays love-red `#FF4A6B` always (semantic). Category colorway owns h1/header band/CTA per §2.1.
-- [ ] Salon detail pages use the salon's primary category color as page-local accent
-- [ ] Body text on category pages uses ink-2 / ink-3 (NOT category color — fails contrast on white)
-
 ### Hierarchy (per §5f)
 
 - [ ] Data-dense panels (3+ info points) have **one hero** — no equal-weight stat rows
 - [ ] Hero / secondary / tertiary type weights match the §5f surface table (or have an explicit reason to deviate, logged in PR description)
-- [ ] Max one "wow moment" chip per panel (badge / PB pill / brand-teal accent number)
+- [ ] Max one "wow moment" chip per panel (badge / PB pill / brand-orange accent number)
 - [ ] Metadata compressed into dot-separated single line (`·` separator, 6-8px gap) before adding a new stacked row
 
 ### States
 
 - [ ] All states specified: default, hover (desktop), press, focus-visible, disabled, loading
-- [ ] Skeleton loading state implemented w left-to-right shimmer (per §5c (skeleton shimmer))
+- [ ] Skeleton loading state implemented w left-to-right shimmer (per §5c.5)
 - [ ] Empty state behavior specified (hide section vs show copy)
 - [ ] Real-time updates (counter pill, availability) refetch on visibility change
 - [ ] API error states have inline retry affordance
@@ -3533,8 +3191,6 @@ Before any homepage component PR merges, verify against this checklist:
 - [ ] Plural forms handled (count = 1 vs count ≥ 2 — different verb forms)
 - [ ] Long-name + long-text truncation behavior specified
 - [ ] All UI strings live in i18n locale files, NOT hardcoded
-- [ ] No Instrument Serif italic accent moments anywhere (retired V2-D15 — use brand-teal color swap per §5d)
-- [ ] No JetBrains Mono — numerics use Avant Garde Gothic + `font-variant-numeric: tabular-nums` (retired V2-D15)
 - [ ] All 4 languages (DE, EN, FR, IT) have translations before launch
 - [ ] DO NOT cases enumerated where applicable
 
@@ -3569,21 +3225,18 @@ Before any homepage component PR merges, verify against this checklist:
 
 ---
 
-
------
-
 ## What's still missing
 
 Tonight's audit (2026-05-05) of this spec found **36+ surface gaps** vs. what v1 needs. The phased plan in `_tasks/V2_REBUILD_LOG.md` and `/Users/sulo/.claude/plans/immutable-shimmying-meerkat.md` closes them in this order:
 
 ### Phase 0 — Foundation primitives (blocks every later phase)
-- ~~§F.1 Form primitives~~ — **locked V2-D14 2026-05-05** at `public/solen-v2-primitives.html`
+- ~~§F.1 Form primitives~~ — **drafted 2026-05-05, awaiting user sign-off + mockup at `public/solen-v2-primitives.html`** then V2-D14 lock
 - §F.2 Modal primitive — centered dialog, sizes (sm/md/lg), focus trap, mobile vs desktop variant
 - §F.3 Bottom sheet primitive — handle, dim, swipe-down, snap heights, sticky CTA at bottom (mobile-only; desktop falls back to modal)
 - §F.4 Toast primitive — success/info/warning/error variants, auto-dismiss timing, action slot, stacking, ARIA live region
 - §F.5 Date/time picker primitive — calendar grid, time slot list, range picker variant
 - §F.6 Skip-to-main link — visible on `:focus`, hidden otherwise
-- §F.7 Font fallback stack + `font-display` strategy (Cooper BT + ITC Avant Garde Gothic Std only — Bricolage Grotesque, Inter Tight as primary, Instrument Serif, JetBrains Mono all retired V2-D15-3)
+- §F.7 Font fallback stack + `font-display` strategy (Bricolage / Inter Tight / Instrument Serif / JetBrains Mono)
 - §F.8 Cookie consent banner — GDPR baseline (DACH market, non-negotiable)
 
 ### Phase 1 — Auth + identity (blocks favorites, bookings, profile)
@@ -3600,7 +3253,7 @@ Tonight's audit (2026-05-05) of this spec found **36+ surface gaps** vs. what v1
 - §SD Salon detail page `/salon/[slug]` — hero photo gallery, sticky tab bar (Services / Über / Bewertungen / Standort), service list w prices, staff section, reviews tab summary + 3 latest, opening hours, sticky bottom booking CTA
 - §BW Booking wizard `/book/[slug]` — 3 steps: Service+Staff → Date+Time → Pay+Confirm. Wizard chrome (progress bar, Weiter button, back, step indicator). Per-step layouts. State management. Cancel/exit handling.
 - §SR Search results page `/search/results` — distinct from category page (§25): entry from search submit, filters from query, optional map view (V2-D10 PENDING)
-- §C Booking confirmation `/book/[slug]/confirmation` — confetti pop (§5c (signature flourishes)), celebration ring per Q57, summary card (Was / Wann / Wo / Wer), 3 utility chips (Kalender / Wegbeschreibung / Teilen), secondary CTA `Zur Buchung →`. NO upsell, NO ReviewPrompt.
+- §C Booking confirmation `/book/[slug]/confirmation` — confetti pop (§5c.4), celebration ring per Q57, summary card (Was / Wann / Wo / Wer), 3 utility chips (Kalender / Wegbeschreibung / Teilen), secondary CTA `Zur Buchung →`. NO upsell, NO ReviewPrompt.
 - §RV Reviews-write UX — accessed from `/profile/bookings` after a completed booking. Star slider, photo upload, text body, submit + cancel. Inline error states.
 
 ### Phase 3 — User account surfaces

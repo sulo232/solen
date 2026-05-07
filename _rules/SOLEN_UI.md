@@ -55,7 +55,7 @@ Active/selected states (selected tab in nav, active filter chip, "current" indic
 > Ask: *If this surface had three selected states, would I know which one is the active tab vs an active CTA? Or would brand color be doing too many jobs?*
 
 ### 2d. Button states use brightness + motion, never hue shifts
-Hover/active states on a colored button must NOT shift the hue toward a "darker version" with a different hex (`#E8624A` → `#D8553B` reads as "now it's a different orange," not "pressed"). Use **`filter: brightness(0.94)`** on hover and **`filter: brightness(0.88) + transform: scale(0.98)`** on active. Same hue, modulated brightness. The eye reads brightness shift as "same surface, less light" (physical/believable). Hue shift reads as "this turned into another color" (alien). Optionally add an arrow-translate or shadow-tighten for further pressed-feel without inventing colors.
+Hover/active states on a colored button must NOT shift the hue toward a "darker version" with a different hex (e.g. `#043338` → `#0A6873` would read as "now it's a different teal," not "pressed"). Use **`filter: brightness(0.94)`** on hover and **`filter: brightness(0.88) + transform: scale(0.98)`** on active. Same hue, modulated brightness. The eye reads brightness shift as "same surface, less light" (physical/believable). Hue shift reads as "this turned into another color" (alien). Optionally add an arrow-translate or shadow-tighten for further pressed-feel without inventing colors. (Exception: V3 brand-teal hover gradient `linear-gradient(180deg, #0A6873 0%, #043338 100%)` is a deliberate lift-on-hover pattern per LIVE_TRUTH §1 — that's an intentional gradient, not a flat hue swap.)
 
 ### 3. Spacing rhythm
 Beginner UIs are cramped. Use a consistent scale (Solen uses a 4/8/12/16/24/32/48/64 rhythm). Mobile needs **more** space than you think. Stacked content needs vertical breathing room to group naturally.
@@ -160,7 +160,9 @@ Solen's blend: **calm + premium + warm**. Not playful-cartoony like Duolingo; no
 > Ask: *When the user opens this screen, what should they feel? Do the visuals, motion, and copy actually deliver that feeling — or do they just deliver the function?*
 
 ### 10. Brand fit
-Does this look like **Solen** — Swiss beauty marketplace, brand green + amber + warm ink + editorial typography, calm and confident — or like a generic SaaS template? Generic AI output gravitates toward purple gradients, glass cards everywhere, perfectly symmetric grids, dark mode toggles. Resist all of it. (Brand primary flipped from coral to forest green `#1B4D1B` per Q64 lock 2026-05-03 — see `_tasks/SOLEN_DESIGN.md`.)
+Does this look like **Solen** — Swiss beauty marketplace, brand teal `#043338` + Republik colorway panels (4 cats Z/G/A/I) + warm ink + Cooper-display typography, calm and confident — or like a generic SaaS template? Generic AI output gravitates toward purple gradients, glass cards everywhere, perfectly symmetric grids, dark mode toggles. Resist all of it.
+
+Brand history (do not reintroduce): V1 forest green `#1B4D1B` (Q64) → V2 brand orange `#E8742A` (V2-D13/D14) → **V3 dark teal `#043338`** (V2-D15-3, locked 2026-05-07, Republik panel #4). See `_tasks/V2_REBUILD_LOG.md` V2-D15-3 for full lock history.
 
 > Ask: *If I removed the logo, would someone still recognize this as Solen? Or could it be any wellness app?*
 
@@ -174,12 +176,12 @@ Before you write code or generate a mockup, write a one-sentence answer to each 
 > 2. Primary action — "Book now" green button (brand primary), dominant. Secondary actions are ghost links.
 > 3. Spacing — uses 16/24/32 vertical rhythm. Mobile padding bumped from 16 → 20.
 > 4. Consistency — reuses `<SalonCard>`, `<Button variant="primary">`, existing radius token.
-> 5. Restraint — no gradients, no shadows. One brand-green accent, white bg.
+> 5. Restraint — no gradients, no shadows. One brand-teal accent, white bg.
 > 6. Icons — all lucide outlined, 20px, 1.5 stroke.
 > 7. Feedback — button has hover/pressed/loading; save shows filled icon + toast.
 > 8. Redundancy — removed decorative arrow above title; dividers replaced with spacing.
-> 9. Accessibility — brand green `#1B4D1B` on white = 9.89:1; tap targets 48px; focus rings on all CTAs.
-> 10. Brand fit — brand green + amber accents on white bg, Anton display once, square cover photos, line-art accents. Reads as Solen.
+> 9. Accessibility — brand teal `#043338` on white = 9.89:1; tap targets 48px; focus rings on all CTAs.
+> 10. Brand fit — brand teal `#043338` + category-combo panel (Z/G/A/I) per page, Cooper BT display once, square cover photos, line-art accents. Reads as Solen.
 
 If any answer is "I don't know" or "I didn't think about it," **stop and figure it out before outputting**.
 
@@ -190,7 +192,7 @@ If any answer is "I don't know" or "I didn't think about it," **stop and figure 
 The principles above are the *thinking*. These are the **tactical rules of thumb** that turn a beginner-looking design into a polished one. Apply them when actually building:
 
 ### Typography
-- **One font is enough.** Don't pair two display fonts. Solen uses Anton (display, hero only) + Figtree (everything else). Each has a clear role and they never compete in the same block.
+- **One font is enough.** Don't pair two display fonts. Solen uses **Cooper BT** (display: hero h1, logo, feature h2, category panel h1 only) + **ITC Avant Garde Gothic Std** (everything else — body, UI, section h2s, microcopy). V2-D15-3 lock 2026-05-07. Free fallbacks: Sansita 900 + League Spartan + Inter Tight. Each has a clear role and they never compete in the same block.
 - **Tighten large text.** On display/headline sizes (32px+), pull letter-spacing to ~`-2%` to `-3%` and drop line-height to `110%–120%`. Default browser values look loose at scale.
 - **Cap font sizes and weights.** Aim for **~4 sizes and ~2 weights** on a typical surface. Beginners ship 6+ sizes and 4+ weights and the UI feels chaotic. Counting the sizes/weights on your screen is the fastest way to spot the mistake.
 - **Workhorse type scale (Solen's locked sizes — pick from these, don't invent):**
@@ -206,9 +208,9 @@ The principles above are the *thinking*. These are the **tactical rules of thumb
   | Section title | 20 / 600 / 28 |
   | Page sub-heading | 24 / 600 / 32 |
   | Page heading | 32 / 700 / 40 |
-  | Hero (Anton only — ≤1 per page) | 48–60 / 400 / 0.95 |
+  | Hero (Cooper BT only — ≤1 per page) | 48–104 / 900 / 0.95 |
 
-  Anton appears at most once per page (the hero/landing headline). Everywhere else is Figtree.
+  Cooper BT appears at most once per page (the hero/landing headline + logo + ONE category panel headline). Everywhere else is Avant Garde Gothic.
 - **Reuse sizes across roles.** Instead of inventing a new size for "decimal fractions" or "secondary numbers," reuse an existing size from the scale.
 - **Use monospace for variable-length numerics.** Counters, prices, timers, balances — anything that grows or changes — should use a monospace (or tabular-numerals) variant so digits don't jitter as values change.
 - **Group with line-height + space.** Tight line-height inside a paragraph, larger gap between paragraphs. Whitespace groups things — that's another form of hierarchy.
@@ -220,11 +222,11 @@ The principles above are the *thinking*. These are the **tactical rules of thumb
 - **~32px between unrelated items.** Closer for items that belong together (label + input, icon + text).
 
 ### Color
-- **Start with one primary brand color**, then build a ramp from it (lighten for backgrounds, darken for text). For Solen that's brand-green `#1B4D1B` → green tints/shades. (Pre-Q64 this was coral `#E8624A`; pivot ratified 2026-05-03.)
-- **Semantic colors mean things.** Blue = trust/info, red = danger/error, yellow = warning, **status-green `#16A34A` = success** (DISTINCT from brand-green `#1B4D1B` — different jobs, different hexes, never collapse them). Don't repurpose semantic colors for decoration — users learn the meaning across the web and you'll confuse them.
+- **Start with one primary brand color**, then build a ramp from it (lighten for backgrounds, darken for text). For Solen V3 (V2-D15-3) that's brand teal `#043338` → pale teal `#C2F0F1` (text on dark panels) → brand subtle `#E1F4F4` (pill bg) → brand mid `#0A6873` (hover). History: V0 coral `#E8624A` → V1 forest green `#1B4D1B` (Q64) → V2 brand orange `#E8742A` (V2-D13/D14) → V3 dark teal (current).
+- **Semantic colors mean things.** Blue = trust/info, red = danger/error, yellow = warning, **status-green `#16A34A` = success** (DISTINCT from brand-teal `#043338` — different jobs, different hexes, never collapse them). Don't repurpose semantic colors for decoration — users learn the meaning across the web and you'll confuse them.
 - **Color for purpose, not decoration.** If a color isn't doing a job (signaling state, drawing attention to a CTA, branding), it's noise.
-- **60 / 30 / 10 split.** A balanced UI roughly follows: ~60% neutral (white/light gray bg), ~30% complementary (warm ink text, dividers, secondary surfaces), ~10% brand accent (brand-green on CTAs, key indicators, focus). When everything fights for attention with the brand color, nothing wins. When the brand color is starved, the design feels dull.
-- **Reserve strong color for meaning.** If brand-green is on every button, header, icon, and chip, it stops drawing the eye. Save it for the CTA and one or two key indicators per screen — that's where it earns its weight.
+- **60 / 30 / 10 split.** A balanced UI roughly follows: ~60% neutral (white/light gray bg), ~30% complementary (warm ink text, dividers, secondary surfaces), ~10% brand accent (brand-teal on CTAs, key indicators, focus). When everything fights for attention with the brand color, nothing wins. When the brand color is starved, the design feels dull.
+- **Reserve strong color for meaning.** If brand-teal is on every button, header, icon, and chip, it stops drawing the eye. Save it for the CTA and one or two key indicators per screen — that's where it earns its weight.
 
 ### Shadows
 - **Reduce opacity, increase blur.** Default `0 4px 6px rgba(26,18,9,0.1)` shadows look harsh. Drop to ~5–10% opacity, push blur to 16–32px+. (Use warm-ink `rgba(26,18,9,…)` tint per §5c, never pure black.)
@@ -297,7 +299,7 @@ Caveat: only reuse the marker when the things genuinely *are* related. Reusing a
 ### Token architecture — layers, not flat
 Tokens are layered. Don't flatten them into one bucket of named hex values:
 
-1. **Primitive tokens** — raw values: `coral-500: #E8624A`, `mono-300: #F0F0F0`, `scale-600: 16px`.
+1. **Primitive tokens** — raw values: `teal-900: #043338`, `mono-300: #F0F0F0`, `scale-600: 16px`.
 2. **Semantic tokens** — role-based: `text-primary`, `border-default`, `surface-raised`, `status-positive`, `love-red`. They *reference* primitives.
 3. **Component tokens** — component-scoped: `button-primary-fill`, `card-padding`. They reference semantics.
 4. **Product composites** — domain widgets: `salonCard`, `bookingWizard`. They consume component tokens but live outside the design system core.
@@ -363,7 +365,7 @@ These are signals that the agent skipped the checklist:
 - Repeating the parent heading in the row/cell below it ("Voting" heading + "Last 10 votes" row → just "Last 10")
 - 6+ font sizes or 4+ font weights on a single surface (count them — it's the fastest mistake to spot)
 - Proportional-width digits on counters, prices, or timers that change (causes visual jitter)
-- Brand color used so heavily it loses meaning ("if everything is brand-green, nothing is brand-green")
+- Brand color used so heavily it loses meaning ("if everything is brand-teal, nothing is brand-teal")
 - Designing only static screens and ignoring how the user moves between them
 - Skeumorphism stack-up (45 layers of shadows trying to feel "tactile")
 - Treating UI as purely functional — shipping features without thinking about how they *feel*
@@ -373,7 +375,7 @@ These are signals that the agent skipped the checklist:
 - Heavy animation on high-frequency utility actions (turns delight into noise)
 - **Colored shadows** of any kind on buttons, cards, or surfaces (`rgba(coral, 0.x)`, "warm glow," "amber halo") — use neutral grayscale shadows only for actual elevation
 - **Brand primary color tied to emotional / semantic UI atoms** (heart save = brand color, urgency-today = brand color, error/success = brand color). Brand is signal, not substrate (see §5b).
-- **Hue-shifted hover states** on colored buttons (`#E8624A` → `#D8553B` "now it's a different orange"). Use brightness shift only (`filter: brightness(0.94)`).
+- **Hue-shifted hover states** on colored buttons (e.g. swapping one hex for another that's perceptually a different hue). Use brightness shift only (`filter: brightness(0.94)`). Exception: V3 brand-teal hover gradient (LIVE_TRUTH §1) is an intentional lift-on-hover, not a flat hue swap.
 - **`mix-blend-mode: difference` on icons over real photos** (creates muddy gray on mid-tone backgrounds). Use white fill + dark hairline shadow instead.
 - **Pure black `#000000` for body text** in a warm-category app (beauty/wellness). Use warm-ink (`#1A1209`) instead.
 - **Tab-bar / nav selection done via brand-color flood** instead of weight + ink. Selection = bolder weight + dark color, never "the active tab is now coral/green."

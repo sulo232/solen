@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solen V3 homepage — locked V2-D15-3 · 2026-05-07</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Try actual licensed names via cdnfonts (works if cdn has them) -->
+  <link href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/cooper-black-std" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/avant-garde" rel="stylesheet">
+  <!-- Free Google Fonts equivalents that always load: -->
+  <!-- League Spartan = Avant Garde Gothic look-alike (geometric grotesque) -->
+  <!-- Sansita = Cooper Black look-alike (chunky rounded slab) -->
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Sansita:wght@400;700;900&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      /* Substrate (V3-aligned with palette spec — warm-near-black, not cool grey) */
+      --white: #FFFFFF;
+      --sunken: #FAF7F3;
+      --ink: #1A1209;
+      --ink-2: #56463E;
+      --ink-3: #7A6957;
+      --ink-disabled: #C4B8A6;
+      --ink-soft: rgba(26, 18, 9, 0.62);
+      --ink-faint: rgba(26, 18, 9, 0.38);
+      --hairline: rgba(26, 18, 9, 0.06);
+
+      /* BRAND — Republik dark teal */
+      --brand:        #043338;
+      --brand-pale:   #C2F0F1;
+      --brand-subtle: #E1F4F4;
+      --brand-mid:    #0A6873;
+
+      /* Republik blue mix */
+      --navy-deep:   #031E48;
+      --royal-blue:  #005898;
+      --ice-blue:    #CAE8FF;
+
+      /* Republik saturated colorways (used in §multi-color demo) */
+      --rep-pink:    #F090B8;   /* panel #5 hot pink */
+      --rep-bone:    #D8D6CB;   /* panel #7 bone */
+      --rep-tomato:  #CC3733;   /* panel #6 TOMATO RED — Wirtschaft screenshot exact */
+      --rep-forest:  #193120;   /* panel #9 forest green */
+      --rep-yellow:  #F0F49B;   /* panel #14 acid yellow */
+      --rep-sand:    #948565;   /* panel #9 text — sandy beige */
+
+      /* Pastel category bgs — ALL Republik-derived, NO Yuh hex */
+      --cat-coiffeur: #FFF1DD;  /* combo Z cream — bg + cherry text */
+      --cat-coiffeur-text: #B5345A; /* combo Z cherry */
+      --cat-barber:   #D8D6CB;  /* combo G bone — bg + black text */
+      --cat-nails:    #CAE8FF;  /* combo A pale ice blue — bg + magenta text */
+      --cat-nails-text: #B50051;    /* combo A magenta */
+      --cat-spa:      #C2F0F1;  /* pale teal soft tile (brand pale) */
+      --cat-spa-panel: #193120; /* combo I forest panel */
+      --cat-spa-text:  #948565; /* combo I sandy beige */
+    }
+
+    html, body {
+      font-family: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--white);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .page-label {
+      position: fixed;
+      top: 12px; right: 12px;
+      background: rgba(4, 51, 56, 0.94);
+      color: var(--brand-pale);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.05em;
+      z-index: 99;
+    }
+
+    /* ============ NAV ============ */
+    .nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 48px;
+      background: var(--white);
+      border-bottom: 1px solid var(--hairline);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .nav-logo {
+      font-family: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif;
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -0.015em;
+      color: var(--brand); line-height: 1;
+    }
+    .nav-links { display: flex; gap: 36px; font-size: 15px; font-weight: 600; }
+    .nav-links a {
+      color: var(--ink); text-decoration: none;
+      position: relative; padding-bottom: 4px;
+    }
+    .nav-links a.active { color: var(--brand); }
+    .nav-links a.active::after {
+      content: ''; position: absolute;
+      left: 0; right: 0; bottom: -2px;
+      height: 2px; background: var(--brand); border-radius: 2px;
+    }
+    .nav-cta {
+      padding: 11px 22px;
+      background: var(--brand);
+      color: #FFFFFF;                    /* PILL RULE: white on dark */
+      border: none; border-radius: 999px;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease;
+    }
+    .nav-cta:hover { transform: translateY(-1px); }
+
+    /* ============ HERO ============ */
+    .hero {
+      position: relative;
+      background: var(--white);
+      padding: 100px 48px 120px;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 65% 55% at 72% 28%, rgba(202, 232, 255, 0.78) 0%, transparent 55%),
+        radial-gradient(ellipse 58% 50% at 22% 78%, rgba(194, 240, 241, 0.72) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 65% at 100% 105%, rgba(0, 88, 152, 0.32) 0%, transparent 55%),
+        radial-gradient(ellipse 45% 55% at 0% -5%, rgba(0, 88, 152, 0.28) 0%, transparent 50%),
+        linear-gradient(180deg, transparent 65%, rgba(3, 30, 72, 0.06) 100%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    @media (max-width: 900px) { .hero-inner { grid-template-columns: 1fr; } }
+
+    .hero-eyebrow {
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--brand); margin-bottom: 24px;
+    }
+    .hero-h1 {
+      font-family: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif;
+      font-weight: 900;
+      font-size: clamp(56px, 7.4vw, 104px);
+      line-height: 0.96;
+      letter-spacing: -0.02em;
+      max-width: 14ch;
+      margin-bottom: 24px;
+      color: var(--ink);
+    }
+    .hero-h1 em {
+      font-style: normal;
+      color: var(--brand);
+    }
+    .hero-deck {
+      font-size: clamp(17px, 1.4vw, 20px);
+      line-height: 1.45;
+      max-width: 52ch;
+      margin-bottom: 36px;
+      color: var(--ink-soft);
+    }
+    .hero-deck a {
+      color: var(--brand); font-weight: 600;
+      text-decoration: underline;
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 3px;
+    }
+    .hero-cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+    .btn-primary {
+      padding: 16px 28px;
+      background: var(--brand);
+      color: #FFFFFF;                    /* PILL RULE */
+      border: none; border-radius: 999px;
+      font-size: 16px; font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(4, 51, 56, 0.22);
+    }
+    .btn-secondary {
+      padding: 16px 28px;
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--ink);
+      border-radius: 999px;
+      font-size: 16px; font-weight: 600;
+      cursor: pointer;
+    }
+
+    .stat-strip { margin-top: 56px; display: flex; gap: 32px; flex-wrap: wrap; }
+    .stat-item { display: flex; align-items: center; gap: 12px; }
+    .stat-num {
+      width: 36px; height: 36px;
+      border-radius: 999px;
+      background: var(--brand);
+      color: #FFFFFF;                    /* PILL RULE */
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .stat-label { font-size: 14px; font-weight: 500; color: var(--ink-soft); }
+    .stat-label strong { color: var(--ink); font-weight: 700; }
+
+    .hero-preview {
+      position: relative;
+      aspect-ratio: 9 / 16;
+      max-height: 540px;
+      border-radius: 32px;
+      background: var(--white);
+      border: 1px solid var(--hairline);
+      box-shadow: 0 24px 60px rgba(26, 18, 9, 0.10);
+      padding: 24px;
+      overflow: hidden;
+    }
+    .hp-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 12px; color: var(--ink-faint); font-weight: 600; }
+    .hp-h { font-family: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif; font-size: 28px; font-weight: 600; line-height: 1.05; color: var(--ink); margin-bottom: 4px; letter-spacing: -0.015em; }
+    .hp-sub { font-size: 13px; color: var(--ink-soft); margin-bottom: 18px; }
+    .hp-card { background: var(--cat-spa); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; }
+    .hp-card-name { font-size: 14px; font-weight: 700; color: #000; }       /* PILL RULE */
+    .hp-card-meta { font-size: 12px; color: rgba(0,0,0,0.6); margin-top: 2px; }
+    .hp-card.alt { background: var(--cat-coiffeur); }
+    .hp-card.alt .hp-card-name { color: #000; }
+    .hp-card.alt .hp-card-meta { color: rgba(0,0,0,0.6); }
+
+    /* ============ CATEGORY STRIP — pastel pills, BLACK text ============ */
+    .cat-strip {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 80px 48px 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 900px) { .cat-strip { grid-template-columns: repeat(2, 1fr); } }
+    .cat-tile {
+      padding: 28px 24px;
+      border-radius: 22px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      min-height: 140px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .cat-tile:hover { transform: translateY(-2px); }
+    .cat-tile h3 { font-size: 22px; font-weight: 700; letter-spacing: -0.005em; color: #000; }  /* PILL RULE */
+    .cat-tile span { font-size: 13px; font-weight: 500; color: rgba(0,0,0,0.6); }
+
+    .cat-1 { background: var(--cat-coiffeur); }
+    .cat-2 { background: var(--cat-barber); }
+    .cat-3 { background: var(--cat-nails); }
+    .cat-4 { background: var(--cat-spa); }
+
+    /* ============ SALON GRID ============ */
+    .substrate { max-width: 1280px; margin: 0 auto; padding: 64px 48px; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 32px; gap: 24px; }
+    .section-h2 {
+      font-family: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+      font-size: clamp(28px, 3.2vw, 40px);
+      font-weight: 600; line-height: 1.1;
+      color: var(--ink); letter-spacing: -0.018em;
+    }
+    .section-link {
+      font-size: 15px; font-weight: 700;
+      color: var(--brand); text-decoration: none;
+      white-space: nowrap; padding-bottom: 2px;
+      border-bottom: 1.5px solid var(--brand);
+    }
+    .salon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .salon-card {
+      background: white;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid var(--hairline);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .salon-card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px rgba(26, 18, 9, 0.06); }
+
+    .salon-img { aspect-ratio: 4 / 3; background-size: cover; background-position: center; position: relative; }
+    .salon-img.bg-1 { background: linear-gradient(135deg, #d8d5cf, #ebe7df); }
+    .salon-img.bg-2 { background: linear-gradient(135deg, #d6dcd9, #e8eeec); }
+    .salon-img.bg-3 { background: linear-gradient(135deg, #e0d4ce, #efe5df); }
+    .salon-img.bg-4 { background: linear-gradient(135deg, #d4dadf, #e6ebef); }
+
+    .salon-cat-tag {
+      position: absolute;
+      top: 14px; left: 14px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.02em;
+      color: #000;                       /* PILL RULE */
+    }
+    .tag-coiffeur { background: var(--cat-coiffeur); }
+    .tag-barber   { background: var(--cat-barber); }
+    .tag-nails    { background: var(--cat-nails); }
+    .tag-spa      { background: var(--cat-spa); }
+
+    .salon-heart {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 36px; height: 36px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.94);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; cursor: pointer;
+      color: #000;                       /* PILL RULE: heart is text glyph */
+    }
+
+    .salon-meta { padding: 18px 20px 22px; }
+    .salon-name { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+    .salon-detail { font-size: 14px; color: var(--ink-soft); margin-bottom: 14px; }
+    .salon-price { display: flex; justify-content: space-between; align-items: baseline; }
+    .salon-price strong { font-size: 16px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .salon-price em { font-style: normal; font-size: 13px; font-weight: 700; color: var(--brand); }
+
+    /* ============ MULTI-COLOR DEMONSTRATION ============ */
+    .color-demo {
+      max-width: 1280px;
+      margin: 56px auto 24px;
+      padding: 0 48px;
+    }
+    .color-demo-head {
+      margin-bottom: 32px;
+      max-width: 760px;
+    }
+    .color-demo-eyebrow {
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--brand);
+      margin-bottom: 12px;
+    }
+    .color-demo-h2 {
+      font-family: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: clamp(36px, 4vw, 52px);
+      line-height: 1;
+      letter-spacing: -0.018em;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+    .color-demo-h2 em { font-style: normal; color: var(--brand); }
+    .color-demo-lede {
+      font-size: 16px;
+      color: var(--ink-soft);
+      max-width: 56ch;
+      line-height: 1.5;
+    }
+
+    /* Each saturated Republik panel */
+    .cat-block {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      border-radius: 28px;
+      padding: 56px 56px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    @media (max-width: 880px) {
+      .cat-block { grid-template-columns: 1fr; padding: 40px 32px; }
+    }
+
+    .cat-block-eyebrow {
+      display: inline-block;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      margin-bottom: 18px;
+      opacity: 0.85;
+    }
+    .cat-block-h1 {
+      font-family: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: clamp(36px, 4.2vw, 56px);
+      line-height: 0.96;
+      letter-spacing: -0.018em;
+      margin-bottom: 18px;
+    }
+    .cat-block-deck {
+      font-size: 17px; line-height: 1.5;
+      margin-bottom: 28px;
+      max-width: 44ch;
+      opacity: 0.92;
+    }
+
+    /* CTA in each block — brand teal pill, white text (the connective tissue) */
+    .cat-block .btn-primary {
+      background: var(--brand);
+      color: #FFFFFF;                    /* PILL RULE */
+    }
+
+    /* Per-category Republik colorway (saturated bg + monochrome text per Republik rule) */
+    .cat-block.coiffeur {
+      background: #FFF1DD;                /* combo Z cream */
+      color: #B5345A;                     /* combo Z cherry */
+    }
+    .cat-block.barber {
+      background: #D8D6CB;                /* combo G bone */
+      color: #000000;                     /* combo G black */
+    }
+    .cat-block.nails {
+      background: #CAE8FF;                /* combo A pale ice blue */
+      color: #B50051;                     /* combo A magenta */
+    }
+    .cat-block.spa {
+      background: #193120;                /* combo I forest green */
+      color: #948565;                     /* combo I sandy beige */
+    }
+
+    /* Mock content card inside each block — neutral white on saturated bg */
+    .cat-block-mock {
+      background: white;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.10);
+    }
+    .mock-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .mock-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .mock-row:first-child { padding-top: 0; }
+    .mock-avatar {
+      width: 44px; height: 44px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+    .cat-block.coiffeur .mock-avatar { background: var(--cat-coiffeur); }
+    .cat-block.barber   .mock-avatar { background: var(--cat-barber); }
+    .cat-block.nails    .mock-avatar { background: var(--cat-nails); }
+    .cat-block.spa      .mock-avatar { background: var(--cat-spa); }
+    .mock-text { flex: 1; min-width: 0; }
+    .mock-name { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+    .mock-meta { font-size: 12px; color: var(--ink-soft); }
+    .mock-price { font-size: 15px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+    /* ============ SOLEN PRO FEATURE PANEL ============ */
+    .feature-panel {
+      max-width: 1280px;
+      margin: 24px auto 64px;
+      padding: 0 48px;
+    }
+    .feature-card {
+      position: relative;
+      background: var(--brand);
+      color: var(--brand-pale);
+      border-radius: 28px;
+      padding: 64px 56px;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 30%, var(--brand-mid) 0%, transparent 55%);
+      opacity: 0.55;
+      z-index: 0;
+    }
+    .feature-inner { position: relative; z-index: 1; max-width: 56ch; }
+    .feature-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.78; margin-bottom: 16px; }
+    .feature-h2 {
+      font-family: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif;
+      font-weight: 900;
+      font-size: clamp(36px, 4vw, 52px);
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .feature-deck { font-size: 18px; line-height: 1.45; opacity: 0.92; margin-bottom: 28px; }
+    .feature-cta {
+      padding: 14px 24px;
+      background: #FFFFFF;
+      color: #000;                       /* PILL RULE */
+      border: none; border-radius: 999px;
+      font-size: 15px; font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* ============ FOOTER ============ */
+    .footer {
+      padding: 32px 48px 40px;
+      border-top: 1px solid var(--hairline);
+      text-align: center;
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+    .footer a { color: var(--brand); font-weight: 600; text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="page-label">Solen V3 homepage · 4 categories · locked V2-D15-3</div>
+
+  <nav class="nav">
+    <div class="nav-logo">Solen</div>
+    <div class="nav-links">
+      <a href="#" class="active">Coiffeur</a>
+      <a href="#">Barbershop</a>
+      <a href="#">Nails</a>
+      <a href="#">Spa &amp; Wellness</a>
+    </div>
+    <button class="nav-cta">Termin buchen</button>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow">Beauty in der Schweiz</div>
+        <h1 class="hero-h1">Schöner aussehen, schneller <em>buchen</em>.</h1>
+        <p class="hero-deck">Vom Coiffeur in der Steinenvorstadt bis zur Massage am Rheinufer — die besten Beauty-Adressen der Schweiz, alle in einer App. <a href="#">So funktioniert's →</a></p>
+
+        <div class="hero-cta-row">
+          <button class="btn-primary">Salon finden</button>
+          <button class="btn-secondary">App herunterladen</button>
+        </div>
+
+        <div class="stat-strip">
+          <div class="stat-item">
+            <div class="stat-num">1</div>
+            <div class="stat-label"><strong>Stadt wählen</strong> · Basel · Zürich · Bern</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">2</div>
+            <div class="stat-label"><strong>Service buchen</strong> · in 90 Sekunden</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">3</div>
+            <div class="stat-label"><strong>Hingehen</strong> · und schöner sein</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-preview">
+        <div class="hp-row"><span>09:27</span><span>·</span><span>Heute</span></div>
+        <div class="hp-h">Studio Hegelhof</div>
+        <div class="hp-sub">Coiffeur · Steinenvorstadt</div>
+        <div class="hp-card">
+          <div class="hp-card-name">Damenhaarschnitt</div>
+          <div class="hp-card-meta">45 Min · CHF 75 · Heute 14:30</div>
+        </div>
+        <div class="hp-card alt">
+          <div class="hp-card-name">Pflegeschnitt + Föhnen</div>
+          <div class="hp-card-meta">60 Min · CHF 95 · Heute 16:00</div>
+        </div>
+        <div class="hp-card">
+          <div class="hp-card-name">Coloration</div>
+          <div class="hp-card-meta">120 Min · CHF 145 · Morgen 10:00</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cat-strip">
+    <div class="cat-tile cat-1"><h3>Coiffeur</h3><span>248 Salons</span></div>
+    <div class="cat-tile cat-2"><h3>Barbershop</h3><span>72 Salons</span></div>
+    <div class="cat-tile cat-3"><h3>Nails</h3><span>134 Studios</span></div>
+    <div class="cat-tile cat-4"><h3>Spa &amp; Wellness</h3><span>56 Häuser</span></div>
+  </div>
+
+  <section class="substrate">
+    <div class="section-head">
+      <h2 class="section-h2">In Basel diese Woche</h2>
+      <a href="#" class="section-link">Alle ansehen →</a>
+    </div>
+    <div class="salon-grid">
+      <div class="salon-card">
+        <div class="salon-img bg-1">
+          <span class="salon-cat-tag tag-coiffeur">Coiffeur</span>
+          <div class="salon-heart">♡</div>
+        </div>
+        <div class="salon-meta">
+          <div class="salon-name">Studio Hegelhof</div>
+          <div class="salon-detail">Steinenvorstadt · 4 min</div>
+          <div class="salon-price"><strong>ab CHF 65</strong><em>Heute frei</em></div>
+        </div>
+      </div>
+
+      <div class="salon-card">
+        <div class="salon-img bg-2">
+          <span class="salon-cat-tag tag-spa">Spa &amp; Wellness</span>
+          <div class="salon-heart">♡</div>
+        </div>
+        <div class="salon-meta">
+          <div class="salon-name">Maison Atelier</div>
+          <div class="salon-detail">Gerbergasse · 6 min</div>
+          <div class="salon-price"><strong>ab CHF 80</strong><em>Morgen frei</em></div>
+        </div>
+      </div>
+
+      <div class="salon-card">
+        <div class="salon-img bg-3">
+          <span class="salon-cat-tag tag-nails">Nails</span>
+          <div class="salon-heart">♡</div>
+        </div>
+        <div class="salon-meta">
+          <div class="salon-name">Salon Eleven</div>
+          <div class="salon-detail">Aeschenvorstadt · 9 min</div>
+          <div class="salon-price"><strong>ab CHF 55</strong><em>Sa frei</em></div>
+        </div>
+      </div>
+
+      <div class="salon-card">
+        <div class="salon-img bg-4">
+          <span class="salon-cat-tag tag-barber">Barbershop</span>
+          <div class="salon-heart">♡</div>
+        </div>
+        <div class="salon-meta">
+          <div class="salon-name">Otto &amp; Söhne</div>
+          <div class="salon-detail">Rebgasse · 11 min</div>
+          <div class="salon-price"><strong>ab CHF 45</strong><em>Heute frei</em></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MULTI-COLOR DEMONSTRATION ============ -->
+  <section class="color-demo">
+    <div class="color-demo-head">
+      <div class="color-demo-eyebrow">Die Solen-Farbpalette</div>
+      <h2 class="color-demo-h2">Jede Kategorie, ihre <em>eigene Farbe</em>.</h2>
+      <p class="color-demo-lede">Das Solen-Teal bleibt überall — als Logo, Link, CTA. Aber jede Kategorie hat ihre eigene Farbsphäre, abgeleitet aus den Republik-Farbwelten. Fünf Stimmungen, eine Marke.</p>
+    </div>
+
+    <div class="cat-block coiffeur">
+      <div>
+        <span class="cat-block-eyebrow">Coiffeur · 248 Salons · Combo Z #FFF1DD + #B5345A</span>
+        <h3 class="cat-block-h1">Schnitt für deinen Look.</h3>
+        <p class="cat-block-deck">Vom klassischen Bob bis zum mutigen Schnittwunder — die besten Coiffeur-Adressen der Schweiz, alle in einer App.</p>
+        <button class="btn-primary">Coiffeur finden →</button>
+      </div>
+      <div class="cat-block-mock">
+        <div class="mock-row">
+          <div class="mock-avatar"></div>
+          <div class="mock-text">
+            <div class="mock-name">Studio Hegelhof</div>
+            <div class="mock-meta">Damenhaarschnitt · 45 Min</div>
+          </div>
+          <div class="mock-price">CHF 75</div>
+        </div>
+        <div class="mock-row">
+          <div class="mock-avatar"></div>
+          <div class="mock-text">
+            <div class="mock-name">Maison Atelier</div>
+            <div class="mock-meta">Pflegeschnitt + Föhn · 60 Min</div>
+          </div>
+          <div class="mock-price">CHF 95</div>
+        </div>
+        <div class="mock-row">
+          <div class="mock-avatar"></div>
+          <div class="mock-text">
+            <div class="mock-name">Atelier Bellini</div>
+            <div class="mock-meta">Coloration komplett · 120 Min</div>
+          </div>
+          <div class="mock-price">CHF 145</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-block barber">
+      <div>
+        <span class="cat-block-eyebrow">Barbershop · 72 Salons · Combo G #D8D6CB + #000000</span>
+        <h3 class="cat-block-h1">Bart und Schnitt für Männer.</h3>
+        <p class="cat-block-deck">Klassisch, präzise, kein Schnickschnack. Die Barber-Tradition in 72 Schweizer Salons.</p>
+        <button class="btn-primary">Barbershop finden →</button>
+      </div>
+      <div class="cat-block-mock">
+        <div class="mock-row">
+          <div class="mock-avatar"></div>
+          <div class="mock-text">
+            <div class="mock-name">Otto &amp; Söhne</div>
+            <div class="mock-meta">Bart trimmen · 30 Min</div>
+          </div>
+          <div class="mock-price">CHF 35</div>
+        </div>
+        <div class="mock-row">
+          <div class="mock-avatar"></div>
+          <div class="mock-text">
+            <div class="mock-name">Klassik Barber</div>
+            <div class="mock-meta">Komplettpaket · 50 Min</div>
+          </div>
+          <div class="mock-price">CHF 65</div>
+        </div>
+        <div class="mock-row">
+          <div class="mock-avatar"></div>
+          <div class="mock-text">
+            <div class="mock-name">Beard &amp; Co.</div>
+            <div class="mock-meta">Bart-Stylen · 40 Min</div>
+          </div>
+          <div class="mock-price">CHF 45</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-block nails">
+      <div>
+        <span class="cat-block-eyebrow">Nails · 134 Studios · Combo A #CAE8FF + #B50051</span>
+        <h3 class="cat-block-h1">Nägel, perfekt gemacht.</h3>
+        <p class="cat-block-deck">Maniküre, Gel, Acryl, Nailart — Studios mit echten Profis und ehrlichen Preisen.</p>
+        <button class="btn-primary">Studios finden →</button>
+      </div>
+      <div class="cat-block-mock">
+        <div class="mock-row">
+          <div class="mock-avatar"></div>
+          <div class="mock-text">
+            <div class="mock-name">Salon Eleven</div>
+            <div class="mock-meta">Maniküre + Gellack · 60 Min</div>
+          </div>
+          <div class="mock-price">CHF 55</div>
+        </div>
+        <div class="mock-row">
+          <div class="mock-avatar"></div>
+          <div class="mock-text">
+            <div class="mock-name">Nailbar Basel</div>
+            <div class="mock-meta">Acryl-Set · 90 Min</div>
+          </div>
+          <div class="mock-price">CHF 85</div>
+        </div>
+        <div class="mock-row">
+          <div class="mock-avatar"></div>
+          <div class="mock-text">
+            <div class="mock-name">Polished Studio</div>
+            <div class="mock-meta">Nailart French · 75 Min</div>
+          </div>
+          <div class="mock-price">CHF 70</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-block spa">
+      <div>
+        <span class="cat-block-eyebrow">Spa &amp; Wellness · 56 Häuser · Combo I #193120 + #948565</span>
+        <h3 class="cat-block-h1">Entspannung, ganz nah.</h3>
+        <p class="cat-block-deck">Massage, Sauna, Day-Spa — die schönsten Wellness-Adressen, in der Stadt und im Bergland.</p>
+        <button class="btn-primary">Spa finden →</button>
+      </div>
+      <div class="cat-block-mock">
+        <div class="mock-row">
+          <div class="mock-avatar"></div>
+          <div class="mock-text">
+            <div class="mock-name">Maison Atelier Spa</div>
+            <div class="mock-meta">Klassische Massage · 60 Min</div>
+          </div>
+          <div class="mock-price">CHF 120</div>
+        </div>
+        <div class="mock-row">
+          <div class="mock-avatar"></div>
+          <div class="mock-text">
+            <div class="mock-name">Wellness am Rhein</div>
+            <div class="mock-meta">Day-Spa-Eintritt · 4 Std</div>
+          </div>
+          <div class="mock-price">CHF 65</div>
+        </div>
+        <div class="mock-row">
+          <div class="mock-avatar"></div>
+          <div class="mock-text">
+            <div class="mock-name">Bergspa Engelberg</div>
+            <div class="mock-meta">Hot-Stone · 90 Min</div>
+          </div>
+          <div class="mock-price">CHF 165</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- THE ONE saturated brand panel per page (Yuh-style "feature card") -->
+  <div class="feature-panel">
+    <div class="feature-card">
+      <div class="feature-inner">
+        <div class="feature-eyebrow">Solen Pro</div>
+        <h2 class="feature-h2">Stammkunde werden, klüger sparen.</h2>
+        <p class="feature-deck">Drei Buchungen pro Monat? Mit Solen Pro buchst du günstiger, holst Treue-Stempel und siehst neue Slots zuerst.</p>
+        <button class="feature-cta">Mehr erfahren →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Solen — Beauty &amp; Wellness in der Schweiz · Basel · Zürich · Bern · <a href="#">Über uns</a> · <a href="#">Hilfe</a> · <a href="#">Salons aufnehmen</a>
+  </div>
+
+</body>
+</html>

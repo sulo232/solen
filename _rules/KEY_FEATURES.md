@@ -1,6 +1,6 @@
 # Key Features Reference
 
-> **HOMEPAGE LAYOUT**: Per `_tasks/SOLEN_DESIGN.md` §20 Q15 + Q23 + Q48 + Q49: page bg is white `#FFFFFF`; above-fold is the Q48 signature lockup (coral eyebrow + Anton uppercase headline) + Q49 stacked Fresha-flow 3-field search card + 3 quick-action chips. NO hero photo, NO gradient hero, NO floating glass-pill search bar. Carousels in §50 belong to per-section rhythm, not hero.
+> **HOMEPAGE LAYOUT (V3 — V2-D15-3, 2026-05-07)**: Per `_tasks/SOLEN_LIVE_TRUTH.md` §13 (Hero) + §15 (Section header pattern). Page bg white `#FFFFFF` + atmospheric wash (cyan core + navy framing). Above-fold: brand-teal eyebrow + **Cooper BT** mixed-case h1 + ONE accent word in brand teal `#043338` + Avant Garde body deck + brand-teal CTA pill (white text per pill rule) + stacked Fresha-flow search card + quick-action chips. NO hero photo, NO gradient hero, NO floating glass-pill search bar. Per-section scroll-snap carousels per LIVE_TRUTH §17. Live preview: `public/solen-v2-republik-teal.html`. (V1 Q48 signature lockup with coral eyebrow + Anton uppercase headline retired — Anton + coral both retired V2-D15-3.)
 
 1. **Discovery & Booking**: Salon cards + multi-step booking wizard with multi-service, add-ons, guest checkout.
 2. **Direct Messaging**: In-app chat with media upload, price offers, and dispute resolution.

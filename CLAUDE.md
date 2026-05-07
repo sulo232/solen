@@ -11,10 +11,20 @@
 
 - **READ FIRST (the principal — current locked state, no history):** `_tasks/SOLEN_LIVE_TRUTH.md`
 - **History / context (slower-moving Q-lock decision log):** `_tasks/SOLEN_DESIGN.md` §20
-- **Preview:** `public/solen-coral.html` → `localhost:3000/solen-coral.html`
+- **Preview (V3 locked, 2026-05-07):** `public/solen-v2-republik-teal.html` (homepage) · `public/solen-v2-palette.html` (full palette) · `public/solen-v2-combos.html` (31-combo grid) — serve via `npx serve public -p 4747`
 - **Hierarchy when docs conflict:** `SOLEN_LIVE_TRUTH.md` wins over Q-locks wins over reference HTML wins over component JSDoc. **If `SOLEN_LIVE_TRUTH.md` is wrong, fix it first**, then propagate to other files. Never reverse.
 
-**Retired — do not reintroduce:** V2 green+peach palette (`#1B4D1C` / `#F5A962` / Plus Jakarta / Outfit / Phosphor) · V5 zone language · glass-everywhere · 3:2 cover photos · dark mode · blobs-in-every-section. Full retired list in `SOLEN_LIVE_TRUTH.md` §8.
+**Retired — do not reintroduce:**
+- **Brand colors:** V1 green+peach (`#1B4D1C` / `#F5A962`), V2 brand orange `#E8742A` (retired V2-D15-3), `#FFE4D2` brand-subtle peach, `#8A3C0F` brand-text, `#5C2308` brand-text-deep, `#F0834D` hover-top, hover gradient `#F0834D → #E8742A`
+- **6-cat colorways** (retired V2-D15-3): `#B5588A` rose, `#E8A957` sunny, `#C77A5C` clay, `#88B89E` sage, `#D66547` coral-orange, `#A66E3D` camel, `#9B7BB8` plum (V2-D15-2 purple ban). 5th cat Makeup retired entirely.
+- **Typography:** Plus Jakarta, Outfit, Phosphor, Anton, Bebas Neue, Bricolage Grotesque (V2 display — retired V2-D15-3), Inter Tight as PRIMARY (kept only as fallback), Instrument Serif italic, JetBrains Mono, DM Sans, Figtree, Fraunces, Peace Sans, Open Sauce Sans
+- **Surfaces:** warm cream substrate `#FBF8F3` (V2-D15 reverted to white), V5 zone language, glass-everywhere, 3:2 cover photos, dark mode, blobs-in-every-section
+- **Italic anywhere in UI** — period (V2-D15)
+- **Locked V3 brand:** dark teal `#043338` + pale teal `#C2F0F1` + brand subtle `#E1F4F4`
+- **Locked V3 categories (4):** Coiffeur=Z (cream+cherry), Barbershop=G (bone+black), Nails=A (pale ice blue+magenta), Spa & Wellness=I (forest+sandy beige). See `public/solen-v2-combos.html` for the 31-combo library reference.
+- **Locked V3 typography:** Cooper BT (display) + ITC Avant Garde Gothic Std (body/UI). Free fallbacks: Sansita 900 + League Spartan.
+
+Full V3 spec lives in `_tasks/SOLEN_LIVE_TRUTH.md` §1 brand, §2 categories, §5 typography, §5a pill rule, §5g atmosphere wash, §5h color philosophy, §5i combo library. Decision log: `_tasks/V2_REBUILD_LOG.md` V2-D15-3.
 
 ---
 
@@ -31,7 +41,7 @@
 
 ## 🗣 Discuss-before-execute (design + structural)
 
-Order: **PROPOSE → WAIT → EXECUTE → VERIFY**. For design tokens, components, layout, or `SOLEN_DESIGN.md` / `solen-coral.html` edits, propose options first and wait for explicit "ok / lock / go".
+Order: **PROPOSE → WAIT → EXECUTE → VERIFY**. For design tokens, components, layout, or `SOLEN_LIVE_TRUTH.md` / V3 preview HTML (`solen-v2-republik-teal.html`, `solen-v2-palette.html`, `solen-v2-combos.html`) edits, propose options first and wait for explicit "ok / lock / go".
 
 **Skip protocol:** clear-repro bug fixes, terminal commands per §⚡, or user says "just do it / ship it".
 
@@ -76,7 +86,7 @@ Never `.catch(() => {})`. Always `console.error("[Component] desc:", err)`. Auth
 
 ## ⭐ Design enforcement
 
-Anything visual must come from `SOLEN_DESIGN.md`. New colors use existing tokens. To change the design itself: edit `SOLEN_DESIGN.md` + update `solen-coral.html` + log decision in §20.
+Anything visual must come from `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-3, 2026-05-07). New colors use existing tokens. To change the design itself: edit `SOLEN_LIVE_TRUTH.md` first, then update the V3 preview HTML files (`solen-v2-republik-teal.html` / `solen-v2-palette.html` / `solen-v2-combos.html`), then log decision as next `V2-D##` entry in `_tasks/V2_REBUILD_LOG.md`. Historical Q-locks in `SOLEN_DESIGN.md` §20 are context only — V3 supersedes any conflict.
 
 ---
 

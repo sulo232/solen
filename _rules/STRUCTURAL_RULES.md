@@ -82,16 +82,16 @@ Feature: [Name]
 
 ## Rule 43: INTERACTION STANDARD — HOVER, ACTIVE, FOCUS
 
-> **INCIDENT**: Cards used 5 different hover patterns. Buttons used `hover:bg-s-coral/90` everywhere (banned) instead of `hover:brightness-[1.06]`.
+> **INCIDENT**: Cards used 5 different hover patterns. Buttons used `hover:bg-s-brand/90` everywhere (banned) instead of `hover:brightness-[1.06]`.
 
-> For complete interaction patterns with code examples, see `_tasks/SOLEN_DESIGN.md` §20 (Q40 hover scope, Q35 motion timing) + `_rules/SOLEN_UI.md`.
+> For complete interaction patterns with code examples, see `_tasks/SOLEN_LIVE_TRUTH.md` §5b (depth) + §5c (motion) + `_rules/SOLEN_UI.md`. (V3 lock: V2-D15-3 — `s-brand` is the V3 token, `s-coral` retained as backward-compat alias resolving to the same teal value.)
 
-**Quick reference:**
+**Quick reference (V3):**
 - **Cards**: `hover:-translate-y-[5px]` + shadow lift. NEVER: `hover:scale-*`, `hover:opacity-*`
-- **CTA Buttons**: `hover:brightness-[1.06] active:scale-[0.98]`. NEVER: `hover:bg-s-coral/90`
-- **Ghost Buttons**: `hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98]`
-- **Text Links**: `hover:text-s-coral transition-colors duration-150`
-- **Filter Pills**: Active = weight 700 + `text-s-ink` (selection by weight + ink, NOT brand-color flood — per Q23 + SOLEN_UI #2c). Inactive = `font-medium text-s-ink-2 bg-s-ink/[0.05] hover:bg-s-ink/[0.09]`
+- **CTA Buttons**: `hover:brightness-[1.06] active:scale-[0.98]`. NEVER: `hover:bg-s-brand/90` or opacity-modulated brand bg
+- **Ghost Buttons**: `hover:border-s-brand/40 hover:text-s-brand active:scale-[0.98]`
+- **Text Links**: `hover:text-s-brand transition-colors duration-150`
+- **Filter Pills (general)**: Active = weight 700 + `text-s-ink` (selection by weight + ink, NOT brand-color flood — per LIVE_TRUTH §5h.7 + SOLEN_UI). Inactive = `font-medium text-s-ink-2 bg-s-ink/[0.05] hover:bg-s-ink/[0.09]`. **EXCEPTION:** filter pills on category pages use the category combo per LIVE_TRUTH §25.5.
 - **Images in cards**: No separate hover effect — card elevation handles it
 
 ---
@@ -193,17 +193,19 @@ If you cannot satisfy all items, move to `components/_staging/` and log in `_tas
 
 ---
 
-## Rule 47: HOMEPAGE LAYOUT — see SOLEN_DESIGN.md
+## Rule 47: HOMEPAGE LAYOUT — see SOLEN_LIVE_TRUTH.md
 
-> **RETIRED 2026-05-02:** The V5-era homepage spec (Warm Beige `#F5F0EB`, Bebas Neue 42px, glass-frost header, Coral `#E8735A`, footer `#2C2825`) is fully superseded by the Q-locks in `_tasks/SOLEN_DESIGN.md` §20:
+> **V3 LOCK (V2-D15-3, 2026-05-07):** Homepage spec is locked in `_tasks/SOLEN_LIVE_TRUTH.md` §13 (Hero) + §15 (Section header pattern) + §16 (Salon card) + §19 (City tiles) + §20 (B2B card) + §21 (Footer) + §22 (Browse-by-city link wall) + §23 (Homepage flow). Live preview: `public/solen-v2-republik-teal.html`.
 >
-> - **Q15** — page bg is white `#FFFFFF` (cream/beige retired)
-> - **Q23 + Q48** — fonts are Anton (display) + Figtree (body); Bebas Neue + Fraunces + DM Sans retired
-> - **Q23 + §1 palette** — coral is `#E8624A` (NOT `#E8735A`); ink is `#1A1209` (NOT `#2C2825`)
-> - **Q49** — home above-fold = stacked 3-field Fresha-flow search card + 3 quick-action chips, NO hero photo, NO gradient hero
-> - **Q50** — per-section 2.5/3.5/4.5-up scroll-snap carousels (Airbnb pattern)
-> - **Q51** — 8 home sections + Recently Viewed, admin-toggleable, affinity-reordered
-> - **Q62** — dark mode retired; single light theme
+> **V3 foundation:**
+> - Page bg: white `#FFFFFF` (substrate is permanent)
+> - Brand: dark teal `#043338` (V0 coral, V1 forest green, V2 orange all retired)
+> - Fonts: Cooper BT (display ONLY — hero h1, logo, feature h2, category panel h1) + ITC Avant Garde Gothic Std (everything else). Free fallbacks: Sansita 900 + League Spartan + Inter Tight. (Anton, Figtree, Bricolage, Inter Tight as primary, Bebas Neue, Fraunces, DM Sans, Peace Sans, Open Sauce Sans all retired)
+> - Hero pattern: white substrate + atmospheric wash (cyan core + navy framing) + Cooper-display h1 + ONE accent word in brand teal + Avant Garde body deck + brand-teal CTA pill
+> - 4 categories: Coiffeur Z, Barbershop G, Nails A, Spa & Wellness I (Makeup retired, Wellness merged)
+> - Dark mode: retired (single light theme)
+>
+> **Retired V5 spec:** Warm Beige `#F5F0EB`, Bebas Neue 42px, glass-frost header, Coral `#E8735A`, footer `#2C2825` — all gone. Q-locks Q15/Q23/Q48/Q49/Q50/Q51/Q62 from SOLEN_DESIGN.md §20 are historical context only; V3 lock supersedes any conflict.
 
 For homepage layout decisions, **read `_tasks/SOLEN_DESIGN.md` §20** (Q15, Q23, Q48–Q51).
 

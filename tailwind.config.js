@@ -21,43 +21,50 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        // ── Solen Brand Tokens (DESIGN_SPEC.md is source of truth) ──
-        // Q64 GREEN PIVOT (2026-05-03): brand primary flipped from coral #E8624A to
-        // forest green #1B4D1B. Token name `s-coral` retained for backward-compat across
-        // hundreds of import sites — value is GREEN. Future cleanup: rename token group
-        // to `s-brand` so the name matches the value. Per Q64:
-        //   - DEFAULT #1B4D1B forest green (was #E8624A coral)
-        //   - hover #0F3010 deep green (was #D4574A)
-        //   - subtle #E8EFE4 light green tint (was #FAECE7 light coral tint)
-        //   - text #0F3010 deep green (was #C95A3A deep coral)
-        //   - button + button-hover same as DEFAULT/hover
-        // Contrast: green #1B4D1B on white = 9.89:1 (vs coral 3.35:1) — fixes Q45
-        // banned-pair #3 (white-on-coral 3.35:1 body fail).
-        "s-coral": { DEFAULT: "#1B4D1B", hover: "#0F3010", subtle: "#E8EFE4", text: "#0F3010", button: "#1B4D1B", "button-hover": "#0F3010" },
-        "s-amber": { DEFAULT: "#F3A864", hover: "#E89953", subtle: "#FCEBD3", text: "#8C4A14" },
-        "s-blue": { DEFAULT: "#6BA3C8", hover: "#4E8AB5", subtle: "#EAF3FB", text: "#1A4D72" },
-        "s-plum": { DEFAULT: "#4A1E3C", hover: "#3A1630", subtle: "#F0E8F0", text: "#4A1E3C" },
-        "s-yellow": { DEFAULT: "#F2C144", subtle: "#FEF8E0", text: "#7A5C00" },
-        "s-sage": { DEFAULT: "#7BA688", subtle: "#EBF5EE", text: "#2E5E3A" },
-        "s-sand": { DEFAULT: "#C9A96E", dark: "#D4C9B4", subtle: "#F7F0E3", text: "#6B5430" },
-        "s-ink": { DEFAULT: "#1A1209", secondary: "#56463E", tertiary: "#9F8A7E", disabled: "#C4B8A6" },
+        // ── Solen V3 Brand Tokens (V2-D15-3 lock 2026-05-07) ──
+        // Brand orange #E8742A retired. Brand teal #043338 locked (Republik panel #4 user-flagged screenshot).
+        // Backward-compat: `s-coral` token group RETAINED with V3 teal values across hundreds of
+        // legacy import sites. Same token name, V3 value. Future cleanup: rename to `s-brand`.
+        // Contrast: teal #043338 on white = 14.74:1 AAA. No `text-deep` variant needed — body-safe at any size.
+        "s-coral": { DEFAULT: "#043338", hover: "#0A6873", subtle: "#E1F4F4", text: "#043338", button: "#043338", "button-hover": "#0A6873" },
+        // ── V3 brand alias (preferred for new code) ──
+        "s-brand": { DEFAULT: "#043338", pale: "#C2F0F1", subtle: "#E1F4F4", mid: "#0A6873" },
+        // ── V3 category colorway tokens (V2-D15-3 — combo letters from public/solen-v2-combos.html) ──
+        // bg + text per combo. Use as: `bg-s-cat-coiffeur text-s-cat-coiffeur-text`
+        "s-cat-coiffeur":      "#FFF1DD", "s-cat-coiffeur-text": "#B5345A", // combo Z cream + cherry
+        "s-cat-barbershop":    "#D8D6CB", "s-cat-barbershop-text": "#000000", // combo G bone + black
+        "s-cat-nails":         "#CAE8FF", "s-cat-nails-text":     "#B50051", // combo A pale ice blue + magenta
+        "s-cat-spa":           "#193120", "s-cat-spa-text":       "#948565", // combo I forest + sandy beige
+        // ── V3 atmosphere wash colors (used as CSS gradient stops only) ──
+        "s-atm-ice":   "#CAE8FF",  // pale ice blue (also Nails category bg)
+        "s-atm-teal":  "#C2F0F1",  // pale teal (also brand pale, Spa soft tile)
+        "s-atm-royal": "#005898",  // royal blue (atmosphere depth only)
+        "s-atm-navy":  "#031E48",  // deep navy (horizon bleed only)
+        // ── Retired V2/V1 token groups (kept undeclared — referenced as compat) ──
+        // s-amber, s-blue, s-plum, s-yellow, s-sage, s-sand all retired V2-D15-3.
+        // If legacy code still imports these, it will fail to compile until migrated.
+        "s-ink": { DEFAULT: "#1A1209", secondary: "#56463E", tertiary: "#7A6957", disabled: "#C4B8A6" },
         "s-ink-2": "#56463E",
-        "s-ink-3": "#9F8A7E",
-        "s-border": "#EFE7DD",
-        "s-bg": { base: "#FFFFFF", surface: "#FAF7F3", raised: "#FFFFFF", sunken: "#FAF7F3", cream: "#FFF4E8" },
-        // s-dm.* dark-mode tokens removed 2026-05-02 per Q62 — single light theme.
-        // ── Semantic Status Tokens ──
+        "s-ink-3": "#7A6957",  // V3 update: was #9F8A7E (cool grey), now #7A6957 (warm grey) per LIVE_TRUTH §4
+        "s-border": "#E8DFD2",
+        "s-bg": { base: "#FFFFFF", surface: "#FAF7F3", raised: "#FFFFFF", sunken: "#FAF7F3" },  // dropped 'cream' #FFF4E8 (retired V2-D15)
+        // ── Semantic Status Tokens (LIVE_TRUTH §3) ──
+        "s-love":     "#FF4A6B",  // V3 added — heart icons (distinct from error)
         "s-success": { DEFAULT: "#16A34A", bg: "#E8F5E9" },
-        "s-warning": { DEFAULT: "#E65100", bg: "#FFF3E0" },
-        "s-error": { DEFAULT: "#C62828", bg: "#FFEBEE" },
+        "s-warning": { DEFAULT: "#F59E0B", bg: "#FFF3E0" },  // V3: aligned to LIVE_TRUTH §3 hex
+        "s-error":   { DEFAULT: "#D32F2F", bg: "#FFEBEE" },  // V3: aligned to LIVE_TRUTH §3 hex
+        "s-closed":   "#DC2626",  // V3 added — distinct from error
+        "s-star":     "#F3A864",  // V3 added — rating stars only
       },
       fontFamily: {
-        // Q23 + Q48 (2026-05-02): Anton (display) + Figtree (body). Earlier values
-        // (Bebas Neue / Fraunces / DM Sans) retired per SOLEN_DESIGN.md §20.
+        // V2-D15-3 (2026-05-07): Cooper BT (display) + ITC Avant Garde Gothic Std (body).
+        // Free fallbacks: Sansita 900 (Cooper) + League Spartan (Avant Garde) + Inter Tight (final).
+        // Retired V2-D15-3: Bricolage Grotesque, Inter Tight (as primary), Instrument Serif, JetBrains Mono.
+        // Retired earlier: Anton, Bebas Neue, Fraunces, DM Sans, Plus Jakarta, Outfit, Phosphor, Figtree, Peace Sans, Open Sauce Sans.
         // `heading` aliased to display so existing `font-heading` className keeps working.
-        display: ["Anton", "Impact", "sans-serif"],
-        heading: ["Anton", "Impact", "sans-serif"],
-        body: ["Figtree", "system-ui", "sans-serif"],
+        display: ["'Cooper BT'", "'Cooper Black Std'", "'Cooper Black'", "'Sansita'", "Georgia", "serif"],
+        heading: ["'Cooper BT'", "'Cooper Black Std'", "'Cooper Black'", "'Sansita'", "Georgia", "serif"],
+        body:    ["'ITC Avant Garde Gothic Std'", "'Avant Garde'", "'League Spartan'", "'Inter Tight'", "system-ui", "sans-serif"],
       },
       borderRadius: {
         // Legacy Tailwind vars (keep for shadcn compat)

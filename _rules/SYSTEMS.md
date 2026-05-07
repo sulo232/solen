@@ -8,12 +8,13 @@
 
 | User wants... | System | Key file |
 |---|---|---|
-| Design new UI / redesign a component | **Design Lock** | `_tasks/SOLEN_DESIGN.md` §20 + `public/solen-coral.html` preview |
+| Design new UI / redesign a component | **Design Lock** | `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock) + V3 preview HTML files |
 | Compare code to design lock / audit drift | **Drift Audit** | `_audits/_chunks/audit-{1,2,3,4}-*.md` |
 | Check for visual regressions after changes | **Playwright** | `playwright.config.ts` |
 | Fix a visual bug / something looks wrong | **QA Registry** | `_tasks/VISUAL_QA_REGISTRY.md` |
-| Wrong color / font / spacing / token | **Design Tokens** | `_tasks/SOLEN_DESIGN.md` §1–§5 + `_rules/SOLEN_UI.md` |
-| Animation / hover / interaction polish | **Animation** | `_tasks/SOLEN_DESIGN.md` §20 Q35 + Q40 |
+| Wrong color / font / spacing / token | **Design Tokens** | `_tasks/SOLEN_LIVE_TRUTH.md` §1–§5i + `_rules/SOLEN_UI.md` |
+| Animation / hover / interaction polish | **Animation** | `_tasks/SOLEN_LIVE_TRUTH.md` §5c (motion) |
+| Decision history / why-did-we-pick | **Decision Log** | `_tasks/V2_REBUILD_LOG.md` (V2-D## entries) |
 | Build a feature / new page / API route | **Feature Dev** | `_rules/CODE_SAFETY.md` |
 
 ---
@@ -30,7 +31,7 @@ Design in Figma, get approval, then code. For any new or redesigned customer-fac
 
 **Loop:** Design → Screenshot → User approves → Implement → Verify on localhost.
 
-**Reference:** `_tasks/SOLEN_DESIGN.md` §20 (Q-locks) + `public/solen-coral.html` (living preview). Figma artifacts are working drafts; **the lock lives in §20**, not in Figma.
+**Reference:** `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-3, 2026-05-07) + V3 living previews: `public/solen-v2-republik-teal.html` (homepage), `public/solen-v2-palette.html` (palette), `public/solen-v2-combos.html` (combo grid). Figma artifacts are working drafts; **the lock lives in LIVE_TRUTH**, not in Figma. (Historical: SOLEN_DESIGN.md §20 Q-locks Q1–Q63 still hold for context, but V3 supersedes any conflict.)
 
 ---
 
@@ -83,13 +84,15 @@ Persistent log of visual bugs. Any agent can read it, fix issues, mark them done
 
 All code must use design tokens. No arbitrary hex, no wrong fonts, no banned patterns.
 
-**Component specs:** `_tasks/SOLEN_DESIGN.md` — single source of truth. Q-locks live in §20. **Read the relevant Q-lock(s) BEFORE implementing any component.**
-**Tailwind mapping:** `tailwind.config.js` (tokens), `app/globals.css` (CSS vars).
+**Component specs:** `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-3) — single source of truth. **Read the relevant § BEFORE implementing any component.**
+**Tailwind mapping:** `tailwind.config.js` (V3 tokens), `app/globals.css` (V3 CSS imports).
 **Supplemental rules:** `_rules/SOLEN_UI.md` (interaction grammar, semantic-color discipline).
 
-**Key tokens (§1 + Q23 lock):** `s-coral` (`#E8624A` brand signal), `s-amber` (`#F3A864` accent), `s-ink` (`#1A1209`), `s-ink-2` (`#56463E`), `s-ink-3` (`#9F8A7E`), `s-border` (`#EFE7DD`), `s-bg` (`#FFFFFF` page), `s-bg-sunken` (`#FAF7F3`), `s-bg-cream` (`#FFF4E8`). `rounded-card` (16px), `rounded-btn` (99px). `shadow-elevation-1/2/3` (warm-ink-tinted per §5).
+**V3 Key tokens (V2-D15-3):** `s-brand` (`#043338` dark teal — also kept as `s-coral` for backward-compat), `s-brand.pale` (`#C2F0F1`), `s-brand.subtle` (`#E1F4F4`), `s-brand.mid` (`#0A6873`), `s-cat-coiffeur`/`s-cat-barbershop`/`s-cat-nails`/`s-cat-spa` (4 V3 categories with text pairs), `s-ink` (`#1A1209`), `s-ink-2` (`#56463E`), `s-ink-3` (`#7A6957`), `s-border` (`#E8DFD2`), `s-bg` (`#FFFFFF` page), `s-bg-sunken` (`#FAF7F3`). Semantic: `s-love` (`#FF4A6B`), `s-success` (`#16A34A`), `s-warning` (`#F59E0B`), `s-error` (`#D32F2F`), `s-closed` (`#DC2626`), `s-star` (`#F3A864`). `rounded-card` (16px), `rounded-btn` (99px). `shadow-elevation-1/2/3` (warm-ink-tinted per §5b).
 
-**Banned:** `shadow-sm/md/lg`, `hover:bg-s-coral/90`, `transition-all`, `text-black` (use `text-s-ink`), `rounded-lg/xl/2xl` (use `rounded-[Npx]` explicit), `dark:*` utilities (Q62 retired), `ease-in` on enters, `duration-500+` on UI. **`bg-white` is allowed** — Q15 locks page bg = white `#FFFFFF`.
+**Retired tokens:** `s-amber`, `s-blue`, `s-plum`, `s-yellow`, `s-sage`, `s-sand`, `s-bg-cream` (`#FFF4E8`) — V2-D15-3.
+
+**Banned:** `shadow-sm/md/lg`, `hover:bg-s-brand/90` / `hover:bg-s-coral/90` (use brightness shift), `transition-all`, `text-black` (use `text-s-ink`), `rounded-lg/xl/2xl` (use `rounded-[Npx]` explicit), `dark:*` utilities (Q62 retired), `ease-in` on enters, `duration-500+` on UI. **`bg-white` is allowed** — page bg = white `#FFFFFF`.
 
 ---
 

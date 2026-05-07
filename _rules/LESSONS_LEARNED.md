@@ -313,12 +313,12 @@
 - **Why it happened**: Two components were created at different times without coordination.
 - **Fix**: Use SalonSectionNav. It passes `sections={TABS.map(t => ({ id: \`section-\${t.key}\`, label: t.label }))}`. Section divs must have matching `id="section-{key}"` and `scroll-mt-[80px]`.
 
-### Coral rebalance — errors use s-amber not s-coral
-- **Date**: 2026-04-04
+### Coral rebalance — errors use s-amber not s-brand (lesson principle still holds for V3 teal)
+- **Date**: 2026-04-04 (lesson) · **V2-D15-3 supersession** 2026-05-07: V3 brand is dark teal `#043338`, not coral. The discipline below is unchanged — substitute "brand teal" wherever this lesson says "coral".
 - **File(s)**: `components/ui/ErrorFallback.tsx`
-- **What happened**: AlertTriangle in ErrorFallback used `text-s-coral` / `bg-s-coral/10`. Coral is the brand primary, not an error color.
+- **What happened**: AlertTriangle in ErrorFallback used `text-s-coral` / `bg-s-coral/10`. The brand color is not an error color.
 - **Why it happened**: Quick implementation without semantic color system consideration.
-- **Fix**: Error states → `text-s-amber` / `bg-s-amber/10` (or semantic red `#D32F2F` for hard errors). **Coral is ONLY for:** Book Now CTAs, primary action buttons, eyebrow tracked-uppercase (Q48 signature), em underlines, time-pulse signal, focus ring (Q47). **NOT coral:** active hearts (use `#FF4A6B` literal love-red per Q26 + SOLEN_UI #5b), star ratings (use amber `#F3A864` per Q43), "open now" (use semantic green `#16A34A` per Q52), active filter pills (use weight 700 + ink, NOT brand-color flood per SOLEN_UI #2c). See SOLEN_DESIGN.md §1 (palette) + Q23 + SOLEN_UI #5b for the full semantic-color discipline.
+- **Fix (V3-aligned)**: Error states → `text-s-error` `#D32F2F` (or `text-s-warning` `#F59E0B` for soft alerts). **Brand teal `#043338` (`s-brand` / `s-coral` token) is ONLY for:** Book Now CTAs, primary action buttons, eyebrow accents, em underlines, time-pulse signal, focus rings, "Heute frei" status text, the ONE saturated Solen Pro feature panel. **NOT brand teal:** active hearts (use love-red `#FF4A6B` literal per LIVE_TRUTH §3), star ratings (use `s-star` `#F3A864`), "open now" (use `s-success` `#16A34A`), active filter pills on category pages (use category combo bg/text per LIVE_TRUTH §25.5). See `_tasks/SOLEN_LIVE_TRUTH.md` §1 brand + §3 semantic + §5a pill rule + `_rules/SOLEN_UI.md` for the full semantic-color discipline.
 
 ### Booking date/time formatting must use dynamic locale
 - **Date**: 2026-04-04

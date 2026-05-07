@@ -123,14 +123,16 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 - **NEVER** change an existing API's response structure without grepping for all `fetch("/api/that-route")` calls first
 
 ## Rule 12: SINGLE DESIGN SYSTEM
-- Single source of truth: **`_tasks/SOLEN_DESIGN.md` §20** (Q-locks Q1–Q63). Supplemental: `_rules/SOLEN_UI.md`. V5 zone language retired.
-- Colors: Coral `#E8624A` (signal, `s-coral`), Amber `#F3A864` (accent, `s-amber`), Warm Ink `#1A1209` (text, `s-ink`), `s-ink-2` `#56463E`, `s-ink-3` `#9F8A7E`, `s-border` `#EFE7DD`, `s-bg` `#FFFFFF` (Q15 page bg), `s-bg-sunken` `#FAF7F3`, `s-bg-cream` `#FFF4E8`. Status: green `#16A34A` (success), amber `#F3A864` (warning), red `#D32F2F` (error).
-- Fonts: **Anton (display, hero only)** + **Figtree (everything else — body, eyebrows, buttons, meta, prices, forms)** per Q23 + Q48.
-- The old teal/coral design (`#38B2AC`, `#FF6B6B`), the wine-red design, V2 green+peach (`#1B4D1C` + `#F5A962`), and V5 `#E8735A` coral are **RETIRED**.
-- Retired fonts: **Bebas Neue, Syne, Fraunces, DM Sans, Plus Jakarta, Outfit, DM Serif Display, Space Grotesk** — all superseded by Anton + Figtree.
+- **Single source of truth:** `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-3, 2026-05-07). Decision log: `_tasks/V2_REBUILD_LOG.md`. Supplemental: `_rules/SOLEN_UI.md`. SOLEN_DESIGN.md §20 holds historical Q-lock context only.
+- **V3 Brand:** dark teal `#043338` (`s-brand.DEFAULT`, also `s-coral` token kept for backward-compat — same teal value), pale teal `#C2F0F1`, brand subtle `#E1F4F4`, brand mid `#0A6873`.
+- **V3 Categories (4):** Coiffeur Z (`#FFF1DD` + `#B5345A`), Barbershop G (`#D8D6CB` + `#000`), Nails A (`#CAE8FF` + `#B50051`), Spa & Wellness I (`#193120` + `#948565`).
+- **Foundation:** `s-ink` `#1A1209`, `s-ink-2` `#56463E`, `s-ink-3` `#7A6957` (V3 corrected from cool `#9F8A7E`), `s-border` `#E8DFD2`, `s-bg` `#FFFFFF`, `s-bg-sunken` `#FAF7F3`. V2 `s-bg-cream` `#FFF4E8` retired.
+- **Semantic:** love `#FF4A6B`, success `#16A34A`, warning `#F59E0B`, error `#D32F2F`, closed `#DC2626`, star `#F3A864`. Distinct from brand, never collapse.
+- **V3 Fonts:** **Cooper BT 900** (display: hero h1, logo, feature h2, category panel h1 only) + **ITC Avant Garde Gothic Std 300/400/500/600/700** (everything else). Free fallbacks: Sansita 900 + League Spartan + Inter Tight.
+- **RETIRED — do NOT reintroduce:** V0 coral `#E8624A`, V1 forest green `#1B4D1B`, V2 brand orange `#E8742A` + variants (`#FFE4D2`, `#8A3C0F`, `#5C2308`, `#F0834D`), 6-cat colorways (rose/sunny/clay/sage/coral-orange/camel/plum), warm-cream substrate `#FBF8F3`/`#FFF4E8`, all V0 designs (`#38B2AC` teal, `#FF6B6B` red, wine-red, V2 green+peach `#F5A962`, V5 `#E8735A`). Retired fonts: Bricolage Grotesque, Inter Tight as primary, Instrument Serif, JetBrains Mono, Anton, Bebas Neue, Syne, Fraunces, DM Sans, Plus Jakarta, Outfit, Phosphor, DM Serif Display, Space Grotesk, Figtree, Peace Sans, Open Sauce Sans.
 - **NEVER** use any retired color or font in new code.
-- **NEVER** reference `index.html` or `public/home.html` — they no longer exist.
-- **Living preview:** `public/solen-coral.html` (open at `localhost:3000/solen-coral`).
+- **NEVER** reference `index.html`, `public/home.html`, or `public/solen-coral.html` — retired/never existed.
+- **V3 living preview:** `public/solen-v2-republik-teal.html` (homepage) · `public/solen-v2-palette.html` (palette) · `public/solen-v2-combos.html` (31-combo grid). Serve via `npx serve public -p 4747`.
 
 ---
 
