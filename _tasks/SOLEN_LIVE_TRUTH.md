@@ -314,7 +314,9 @@ V1 used Instrument Serif italic for emphasis words in headlines. **Retired V2-D1
 
 ---
 
-## §5a Pill rule (V2-D15-3 lock)
+## §5a Pill rule (V2-D15-3 / V2-D15-4 lock)
+
+### §5a.1 · Pill text color
 
 **Every pill-shaped UI element with text uses `#FFFFFF` on dark or `#000000` on light. No tinted-of-the-bg colors inside pills.** This applies to: CTA buttons, category tags/chips, badges, numbered step circles, salon-card heart icons (heart character is a text glyph), dropdown triggers, filter pills, toast pills.
 
@@ -332,6 +334,42 @@ V1 used Instrument Serif italic for emphasis words in headlines. **Retired V2-D1
 - Inline accent words inside category panels (Republik monochrome rule — text is the combo's text color)
 
 **Why:** pills are functional UI primitives. Tinted-of-bg text inside a pill (e.g. dark teal text on pale teal pill) reads as "category-themed" but creates ambiguity — is this a CTA or a tag? Black-or-white text removes the ambiguity. Inline text is editorial — color expresses voice.
+
+### §5a.2 · Pill surface treatment (V2-D15-4 de-gloss lock)
+
+Pills are FLAT. Drop the Web 2.0 gloss tricks. The §5b depth system applies to CARDS / surfaces / overlays — not to pills.
+
+**Required on pills:**
+- Flat solid background fill (no gradient — even on hover)
+- Hover state via `transition: background 150ms ease` to a slightly lighter or darker variant of the same hue (e.g. brand `#043338` → `#0A6873` mid-teal). NEVER `linear-gradient(180deg, lighter 0%, darker 100%)` — that's the retired Web 2.0 glossy button.
+- Optional `transform: translateY(-1px)` on hover for subtle lift
+- 1px hairline border on light pills (`rgba(26,18,9,.08)` to `rgba(26,18,9,.12)`)
+- Active/pressed: `transform: scale(0.98)` + `transition-duration: 100ms`
+
+**Banned on pills (V2-D15-4):**
+- `inset 0 1px 0 rgba(255,255,255, X)` — the Web 2.0 inner-glow highlight
+- `linear-gradient` backgrounds (flat fill only, even when "modulating" hover)
+- Stacked multi-shadow (`box-shadow: shadow1, shadow2, shadow3` — pills get max ONE soft shadow, and ONLY for elevated/floating contexts like a frosted-glass badge over a photo)
+- `backdrop-filter: ... saturate(1.4)` — the iOS 7 vibrance pump. Use `saturate(1)` for clean glass. (Also see §5b L4.)
+- Brand-color glow ring on dots (`box-shadow: 0 0 0 3px rgba(brand, .2)`) — replace with plain dot
+- Tinted brand-color drop shadows on CTAs (`rgba(4,51,56, .18)`) — use warm-ink tint shadows only on pills, and only when contextually elevated
+
+**Why:** pills are clicked dozens of times per session. Glossy pills age poorly and feel dated within 12-18 months. Flat pills + crisp transitions read as durable / 2026-current. Yuh, Linear, Stripe, Vercel — every modern booking/SaaS app ships flat pills.
+
+### §5a.3 · Two pill-treatment surfaces
+
+For reference (locked from V2-D15-4 preview at `public/solen-v3-pills-titles-tweaks.html`):
+
+| Pill type | Bg | Text | Border | Shadow | Hover |
+|---|---|---|---|---|---|
+| Primary CTA (brand) | `#043338` | white | none | none | bg → `#0A6873`, `translateY(-1px)` |
+| Secondary CTA (ghost) | transparent | ink-1 | `1.5px solid #1A1209` | none | bg → ink-1, text → white |
+| Filter chip (default) | white | ink-1 | `1px solid rgba(26,18,9,.12)` | none | border → brand teal, bg → brand subtle `#E1F4F4` |
+| Filter chip (active) | brand teal `#043338` | white | none | none | bg → `#0A6873` |
+| Glassy badge (over photo) | `rgba(255,255,255,.94)` | ink-1 | `1px solid rgba(26,18,9,.08)` | none | n/a (badges aren't interactive) |
+| Salon-card heart (over photo) | `rgba(255,255,255,.94)` | brand teal | `1px solid rgba(26,18,9,.08)` | none | bg → white, scale(1.04) |
+| Numbered step circle | brand teal `#043338` | white | none | none | n/a |
+| Status dot | solid hue (`#16A34A` / `#043338` / `#D32F2F`) | n/a | none | none | pulse animation per §5c |
 
 ---
 
@@ -452,7 +490,7 @@ Lift, never weight. Single-shadow approach (Yuh-style) — each elevated surface
 |**L1 · raised**        |Header icon buttons, chips, small interactive elements        |`inset 0 1px 0 rgba(255,255,255,.6)` + `0 1px 1px rgba(26,18,9,.04)`    |
 |**L2 · surface**       |Search bar, secondary cards                                   |`inset 0 1px 0 rgba(255,255,255,.6)` + `0 2px 8px rgba(26,18,9,.06)`    |
 |**L3 · elevated**      |Salon cards, b2b promo card, modals                           |`inset 0 1px 0 rgba(255,255,255,.6)` + `0 4px 16px rgba(26,18,9,.08)` + `0 16px 40px rgba(4,51,56,.06)` |
-|**L4 · overlay**       |Glassy badges (top-left), heart buttons (top-right), dropdowns|`backdrop-filter: blur(12px) saturate(1.4)` + `0 1px 2px rgba(0,0,0,.06)` |
+|**L4 · overlay**       |Glassy badges (top-left), heart buttons (top-right), dropdowns|`backdrop-filter: blur(12px) saturate(1)` + `0 1px 2px rgba(0,0,0,.06)` |
 |**L5 · accent glow**   |Live pills, active brand-CTA elements that need to "glow"     |`inset 0 1px 0 rgba(255,255,255,.32)` + `0 2px 6px rgba(4,51,56,.28)` — toned, not aggressive |
 
 **Photo treatment (salon-card placeholders w no real photo):**
@@ -907,7 +945,7 @@ The pattern used in feed sections (Heute frei / Empfohlen / Trending / Neu).
 ### 9c. Sticky elements
 
 - **Sticky section headers:** the section title can stick on scroll within long lists (search results page) but NOT on the homepage feed. On homepage, headers scroll w content.
-- **Sticky tab bar (salon detail page):** sticks at top after scrolling past the photo. Bg becomes opaque white (`#FFFFFF`) w `backdrop-filter: blur(12px) saturate(1.4)` once stuck.
+- **Sticky tab bar (salon detail page):** sticks at top after scrolling past the photo. Bg becomes opaque white (`#FFFFFF`) w `backdrop-filter: blur(12px) saturate(1)` once stuck.
 - **Sticky bottom-CTA:** booking wizard’s “Weiter →” button sticks at bottom of viewport always. Has a soft top-shadow `0 -4px 12px rgba(4,51,56,.06)` to separate from content.
 
 ### 9d. Pull-to-refresh
@@ -1423,7 +1461,7 @@ aria-label: `Mein Konto, [name]` when logged-in, `Einloggen` when logged out.
 Header is sticky. Scroll past `8px` from top:
 
 - Add bottom shadow `0 1px 0 rgba(26,18,9,.04), 0 2px 8px rgba(26,18,9,.04)`
-- Bg shifts from white `#FFFFFF` to opaque white `rgba(255,255,255,.92)` w `backdrop-filter: blur(10px) saturate(1.4)`
+- Bg shifts from white `#FFFFFF` to opaque white `rgba(255,255,255,.92)` w `backdrop-filter: blur(10px) saturate(1)`
 - Transition: 200ms `var(--ease-snap)`
 
 ### §12.8 · Scroll-up vs scroll-down behavior
@@ -1491,7 +1529,7 @@ This is intentional. Fresha-style minimal header. NO megamenu. NO horizontal nav
 |typography                   |Avant Garde Gothic 600 12px, `-0.005em`                                                                |
 |pulse dot                    |6px brand-teal `#043338`, animates pulse 1.6s infinite (opacity 1↔.5, scale 1↔1.3) — see §5c.7|
 |pulse dot when API failed    |hidden (no fake real-time signal when there’s no real-time data)                                |
-|pill bg                      |`rgba(255,255,255,.65)` w `backdrop-filter: blur(12px) saturate(1.4)`                           |
+|pill bg                      |`rgba(255,255,255,.65)` w `backdrop-filter: blur(12px) saturate(1)`                           |
 |pill border                  |1px `rgba(4,51,56,.12)`                                                                      |
 |pill padding                 |`6px 12px`                                                                                      |
 |pill radius                  |`var(--radius-pill)` (99px)                                                                     |
@@ -1583,7 +1621,7 @@ Same on mobile and desktop. Stacked vertical, NOT horizontal columns.
 |----------------|----------------------------------------------------------------------------------------------------------|
 |copy            |`Solen durchsuchen →`                                                                                     |
 |typography      |Avant Garde Gothic 700 14px                                                                                      |
-|bg              |`linear-gradient(180deg, #0A6873 0%, #043338 100%)`                                                       |
+|bg              |`#043338` flat (V2-D15-4: gradient retired — flat brand teal, hover transitions to `#0A6873` mid-teal via `transition: background 150ms ease`)                                                       |
 |color           |white                                                                                                     |
 |radius          |`var(--radius-pill)` (99px)                                                                               |
 |padding         |`14px 24px`                                                                                               |
@@ -1748,7 +1786,7 @@ User can also tap any row directly to switch focus.
 
 |element   |spec                                                                                     |
 |----------|-----------------------------------------------------------------------------------------|
-|bg active |`linear-gradient(180deg, #0A6873 0%, #043338 100%)`                                      |
+|bg active |`#043338` flat (V2-D15-4: gradient retired — flat brand teal, hover transitions to `#0A6873` mid-teal via `transition: background 150ms ease`)                                      |
 |color     |white                                                                                    |
 |radius    |`var(--radius-pill)` (99px)                                                              |
 |padding   |`14px 24px`                                                                              |
@@ -1769,44 +1807,73 @@ Tap CTA → navigates to `/search/results?q=[was]&city=[wo]&date=[wann]`.
 
 -----
 
-## §15 · Section header pattern
+## §15 · Section header pattern (V2-D15-4 lock — editorial section-break)
 
-Reusable component for every horizontal scroll row on homepage and category pages.
+Reusable component for every horizontal scroll row on homepage and category pages. **V2-D15-4 update:** the V2-D15 minimalist `clean` layout (h2 left + `Alle →` right, no eyebrow / no meta) is **retired**. Replaced with the editorial section-break pattern below — adds magazine-style structure that fixes the "bland section title" feedback.
 
-### §15.1 · Anatomy
+### §15.1 · Anatomy (Option D — V2-D15-4 lock)
 
 ```
-[Coiffeur in Basel]                              [Alle →]
+─────────────────────────────────────────────────────────  ← 1px ink-1 top rule
+BASEL · DIESE WOCHE              23 SALONS · 8 HEUTE FREI  ← eyebrow-left + meta-right
+                                                                (Avant Garde 11px 700,
+                                                                letter-spacing 0.18em,
+                                                                uppercase)
+
+In Basel diese Woche                                  Alle →  ← Cooper BT h2 + Alle link
 ─────────────────────────────────────────────────────────
 [horizontal scroll row of cards]
 ```
 
 ### §15.2 · Locked decisions
 
-|element                 |locked                                                                                              |
-|------------------------|----------------------------------------------------------------------------------------------------|
-|layout                  |A · clean — h2 left, “Alle →” right, NO sub-text, NO count, NO eyebrow                              |
-|typography h2           |Avant Garde Gothic 700 22-26px clamp, `-0.025em`, line-height 1, ink-1                                       |
-|typography Alle link    |Avant Garde Gothic 600 13px, ink-1                                                                         |
-|Alle text               |exactly `Alle →` (just word + arrow), nothing more                                                  |
-|arrow                   |Lucide `arrow-right` 12px                                                                           |
-|arrow flourish          |gap text↔arrow: 4px → 10px on hover, arrow `translateX(2px)` on hover, both 200ms `var(--ease-snap)`|
-|URL on tap title or Alle|`/[city]/[category]` per §15.5                                                                      |
+|element                          |locked                                                                                                     |
+|---------------------------------|-----------------------------------------------------------------------------------------------------------|
+|top rule                         |1px solid ink-1 `#1A1209`, full-width within container, margin-bottom 14px                                 |
+|eyebrow (left)                   |Avant Garde Gothic 700 11px, ink-1, `letter-spacing: 0.18em`, `text-transform: uppercase`. Carries section context — typically `[CITY] · [SECTION-LABEL]` (e.g. `BASEL · DIESE WOCHE` / `BASEL · COIFFEUR` / `SOLEN · CITIES`). |
+|eyebrow brand-teal accent        |Optional: lead with a 5px brand-teal `#043338` round dot before the eyebrow text (acts as a section-marker)|
+|meta (right)                     |Avant Garde Gothic 700 10-11px, ink-3 `#7A6957`, `letter-spacing: 0.18em`, `text-transform: uppercase`, `font-variant-numeric: tabular-nums`. Carries the live count (e.g. `23 SALONS · 8 HEUTE FREI`). Hide if no meta is meaningful (e.g. on the city tiles section).|
+|h2 (title row)                   |Cooper BT 900 (display), `clamp(28px, 3.4vw, 40px)`, `letter-spacing: -0.018em`, `line-height: 1.05`, ink-1. NOT Avant Garde 700 (V2-D15 was Avant Garde 700; replaced V2-D15-4 with Cooper for editorial weight)|
+|h2 to title row spacing          |16px between top-rule + 12px between eyebrow row and h2 row                                                |
+|`Alle →` link                    |Avant Garde Gothic 600 13px, brand teal `#043338`, underline-offset 3px, hover → `#0A6873`. Right-aligned in the h2 row, baseline-aligned with h2.|
+|Alle text                        |exactly `Alle →` (just word + arrow), nothing more (count locked OUT — meta carries the count instead)     |
+|arrow                            |Lucide `arrow-right` 12px                                                                                  |
+|arrow flourish                   |gap text↔arrow: 4px → 10px on hover, arrow `translateX(2px)` on hover, both 200ms `var(--ease-snap)`       |
+|URL on tap title or Alle         |`/[city]/[category]` per §15.5                                                                             |
 
 ### §15.3 · Spacing
 
 |spacing                          |value                                          |
 |---------------------------------|-----------------------------------------------|
-|margin-top from previous section |32px mobile / 48px tablet+                     |
-|h2 to scroll row                 |12px                                           |
+|margin-top from previous section |48px mobile / 64px tablet+ (V2-D15-4 — increased from 32/48 to give the editorial section-break more breathing room) |
+|top rule to eyebrow row          |14px                                           |
+|eyebrow row to h2 row            |12px                                           |
+|h2 row to scroll row             |16px                                           |
 |section header horizontal padding|matches page padding (16px mobile, 24px tablet)|
 
 ### §15.4 · DO NOT
 
-- DO NOT add eyebrow tags (“ENTDECKEN” all-caps above title) — locked E1 (none)
-- DO NOT add sub-text below h2 (“5 von 23 Salons”) — locked layout A (clean)
-- DO NOT add count to Alle link (“Alle 23 →”) — locked L1 (just `Alle →`)
+- DO NOT skip the top rule — it's the editorial section-break signature
+- DO NOT add a hairline color other than ink-1 to the top rule (no brand-teal, no category color)
+- DO NOT add count to the `Alle →` link (count goes in the meta-right slot)
+- DO NOT use Avant Garde 700 on h2 (replaced V2-D15-4 with Cooper BT 900 for editorial weight)
+- DO NOT add a second eyebrow row (e.g. eyebrow + sub-eyebrow) — one eyebrow only
 - DO NOT vary section header style by section — single pattern for ALL sections including entdecken
+- DO NOT use the V2-D15 minimalist layout (no eyebrow / no meta / Avant Garde h2) — retired V2-D15-4
+
+### §15.7 · Eyebrow + meta examples per section
+
+| Section | Eyebrow (left) | Meta (right) |
+|---|---|---|
+| `Heute frei in Basel` | `BASEL · DIESE WOCHE` | `[N] SALONS · [M] HEUTE FREI` |
+| `Empfohlen für dich` | `BASEL · FÜR DICH` | `BASIEREND AUF DEINEN BUCHUNGEN` |
+| `Entdecken in Basel` | `LOOKS · DIESE WOCHE` | `[N] NEUE LOOKS` |
+| `Coiffeur in Basel` | `BASEL · COIFFEUR` | `[N] SALONS · AB CHF [P]` |
+| `Barbershop in Basel` | `BASEL · BARBERSHOP` | `[N] SALONS · AB CHF [P]` |
+| `Nails in Basel` | `BASEL · NAILS` | `[N] STUDIOS · AB CHF [P]` |
+| `Spa & Wellness in Basel` | `BASEL · SPA & WELLNESS` | `[N] HÄUSER · AB CHF [P]` |
+| `Solen in deiner Stadt` | `SOLEN · IN DER SCHWEIZ` | `3 STÄDTE · WACHSEND` |
+| `Salons nach Stadt` (link wall) | `SOLEN · ALLE STÄDTE` | (no meta — link wall is its own section) |
 
 ### §15.5 · URL convention
 
@@ -1898,7 +1965,7 @@ State-driven — exactly one state per card per render. Driven by `next_availabl
 |dot pulse      |opacity 1↔.5, scale 1↔1.3, 1.6s infinite                                       |
 |padding        |`4px 9px`                                                                      |
 |radius         |`var(--radius-pill)` (99px)                                                    |
-|backdrop-filter|`blur(12px) saturate(1.4)`                                                     |
+|backdrop-filter|`blur(12px) saturate(1)`                                                     |
 |shadow         |`0 1px 2px rgba(0,0,0,.06)`                                                    |
 |aria-label     |full pill text read out (e.g. `Heute frei`, `Sofort frei`, `Pause bis 15. Mai`)|
 
@@ -2339,7 +2406,7 @@ For when illustrations are commissioned:
 |copy                           |`Aktuell`                                                                                                                      |
 |typography                     |Avant Garde Gothic 700 9px, letter-spacing 0.04em                                                                                     |
 |dot                            |5px brand-teal `#043338`, before text, 4px gap                                                                               |
-|bg                             |`rgba(255,255,255,.85)` w `backdrop-filter: blur(8px) saturate(1.4)`                                                           |
+|bg                             |`rgba(255,255,255,.85)` w `backdrop-filter: blur(8px) saturate(1)`                                                           |
 |color                          |ink-1 `#1A1209`                                                                                                                |
 |padding                        |`4px 8px`                                                                                                                      |
 |radius                         |`var(--radius-pill)` (99px)                                                                                                    |
@@ -3303,7 +3370,7 @@ Du hast alle 23 Salons gesehen
 |----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
 |top of page (scrollY = 0)         |header sticky per §12 (no shadow). Crumbs + h1 + sub + filter pills all visible naturally.                                                        |
 |scrolled past h1 (scrollY ≥ 120px)|filter pills row becomes sticky `position: sticky; top: 48px;`                                                                                    |
-|both header + sticky pills        |gain `rgba(251,248,243,.94)` bg w `backdrop-filter: blur(12px) saturate(1.4)` and shadow `0 1px 0 rgba(26,18,9,.04), 0 4px 12px rgba(26,18,9,.04)`|
+|both header + sticky pills        |gain `rgba(251,248,243,.94)` bg w `backdrop-filter: blur(12px) saturate(1)` and shadow `0 1px 0 rgba(26,18,9,.04), 0 4px 12px rgba(26,18,9,.04)`|
 |transition into sticky            |200ms `var(--ease-snap)` opacity + bg + shadow                                                                                                    |
 |z-index header                    |`var(--z-sticky)` (per §8)                                                                                                                        |
 |z-index sticky pills              |`var(--z-sticky) - 1` (one below header)                                                                                                          |

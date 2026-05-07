@@ -188,6 +188,7 @@
     }
     .hero-cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
 
+    /* §5a.2 V2-D15-4: flat pill, no inset gloss, no brand-color glow */
     .btn-primary {
       padding: 16px 28px;
       background: var(--brand);
@@ -195,12 +196,13 @@
       border: none; border-radius: 999px;
       font-size: 16px; font-weight: 700;
       cursor: pointer;
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      transition: background 150ms ease, transform 150ms ease;
     }
     .btn-primary:hover {
+      background: var(--brand-mid);
       transform: translateY(-1px);
-      box-shadow: 0 12px 24px rgba(4, 51, 56, 0.22);
     }
+    .btn-primary:active { transform: scale(0.98); transition-duration: 100ms; }
     .btn-secondary {
       padding: 16px 28px;
       background: transparent;
@@ -275,19 +277,37 @@
 
     /* ============ SALON GRID ============ */
     .substrate { max-width: 1280px; margin: 0 auto; padding: 64px 48px; }
-    .section-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 32px; gap: 24px; }
-    .section-h2 {
+
+    /* §15 V2-D15-4 editorial section-break (Option D) */
+    .sec-break-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+    .sec-break-meta-row {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+      margin-bottom: 12px;
       font-family: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
-      font-size: clamp(28px, 3.2vw, 40px);
-      font-weight: 600; line-height: 1.1;
+      font-weight: 700; font-size: 11px;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      font-variant-numeric: tabular-nums;
+    }
+    .sec-break-eyebrow { color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+    .sec-break-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); }
+    .sec-break-meta { color: var(--ink-3); }
+    .section-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 16px; gap: 24px; }
+    .section-h2 {
+      font-family: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif;
+      font-weight: 900;
+      font-size: clamp(28px, 3.4vw, 40px);
+      line-height: 1.05;
       color: var(--ink); letter-spacing: -0.018em;
     }
     .section-link {
-      font-size: 15px; font-weight: 700;
-      color: var(--brand); text-decoration: none;
-      white-space: nowrap; padding-bottom: 2px;
-      border-bottom: 1.5px solid var(--brand);
+      font-family: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+      font-size: 13px; font-weight: 600;
+      color: var(--brand); text-decoration: underline;
+      text-underline-offset: 3px;
+      white-space: nowrap;
+      transition: color 150ms ease;
     }
+    .section-link:hover { color: var(--brand-mid); }
     .salon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
     .salon-card {
       background: white;
@@ -586,6 +606,12 @@
   </div>
 
   <section class="substrate">
+    <!-- §15 V2-D15-4 editorial section-break -->
+    <div class="sec-break-rule"></div>
+    <div class="sec-break-meta-row">
+      <span class="sec-break-eyebrow"><span class="sec-break-eyebrow-dot"></span>Basel · diese Woche</span>
+      <span class="sec-break-meta">23 Salons · 8 heute frei</span>
+    </div>
     <div class="section-head">
       <h2 class="section-h2">In Basel diese Woche</h2>
       <a href="#" class="section-link">Alle ansehen →</a>
@@ -645,6 +671,11 @@
   <section class="color-demo">
     <div class="color-demo-head">
       <div class="color-demo-eyebrow">Die Solen-Farbpalette</div>
+      <div class="sec-break-rule"></div>
+      <div class="sec-break-meta-row">
+        <span class="sec-break-eyebrow"><span class="sec-break-eyebrow-dot"></span>Solen · Farbpalette</span>
+        <span class="sec-break-meta">4 Kategorien · 4 Farbwelten</span>
+      </div>
       <h2 class="color-demo-h2">Jede Kategorie, ihre <em>eigene Farbe</em>.</h2>
       <p class="color-demo-lede">Das Solen-Teal bleibt überall — als Logo, Link, CTA. Aber jede Kategorie hat ihre eigene Farbsphäre, abgeleitet aus den Republik-Farbwelten. Fünf Stimmungen, eine Marke.</p>
     </div>
