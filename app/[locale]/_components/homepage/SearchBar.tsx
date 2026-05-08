@@ -121,11 +121,13 @@ export function SearchBar() {
       </AnimatePresence>
 
       {/* Morphing container — animates height + borderRadius w explicit values.
-          will-change hints + translateZ(0) help the browser reserve a
-          compositor layer up front, preventing first-frame chop.
+          NO will-change / translateZ(0) — those forced a permanent GPU
+          compositor layer that rasterized text at the layer's resolution
+          (often less than device DPR), causing blurry text in the resting
+          collapsed state. Motion library promotes layers during animation
+          on its own; we don't need to force it constantly.
           Desktop collapsed = 76px horizontal pill; expanded = 480px
-          tall card. Border-radius morphs from 999px (full pill) to 16px
-          card on expand so the shape change reads as deliberate. */}
+          tall card. */}
       <motion.div
         initial={false}
         animate={{
@@ -133,10 +135,6 @@ export function SearchBar() {
           borderRadius: !isExpanded && isDesktop ? 999 : 16,
         }}
         transition={islandTransition}
-        style={{
-          willChange: "height, border-radius",
-          transform: "translateZ(0)",
-        }}
         className={cn(
           "relative w-full max-w-[540px] overflow-hidden border border-black/5 bg-white",
           "shadow-[0_1px_3px_rgba(50,47,44,0.04),0_4px_12px_rgba(50,47,44,0.04)]",
@@ -146,8 +144,8 @@ export function SearchBar() {
         )}
       >
         {/* COLLAPSED LAYER — 3 segments + submit button.
-            Blur filter dropped for perf (was expensive on this larger card vs
-            the reference's small pill). Opacity + scale are GPU-accelerated. */}
+            Blur filter dropped earlier; will-change hint also dropped to
+            avoid blurry text artifacts from forced GPU rasterization. */}
         <motion.div
           initial={false}
           animate={{
@@ -155,7 +153,6 @@ export function SearchBar() {
             scale: isExpanded ? 0.95 : 1,
           }}
           transition={{ ...islandTransition, delay: isExpanded ? 0 : 0.1 }}
-          style={{ willChange: "opacity, transform" }}
           className={cn(
             "absolute inset-0 flex flex-col p-2 md:flex-row md:items-stretch md:p-[6px_6px_6px_8px]",
             isExpanded && "pointer-events-none",
@@ -199,7 +196,6 @@ export function SearchBar() {
             scale: isExpanded ? 1 : 1.05,
           }}
           transition={{ ...islandTransition, delay: isExpanded ? 0.1 : 0 }}
-          style={{ willChange: "opacity, transform" }}
           className={cn(
             "absolute inset-0 flex flex-col",
             !isExpanded && "pointer-events-none",
