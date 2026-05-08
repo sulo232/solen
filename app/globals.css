@@ -760,3 +760,100 @@ html {
 /* Legacy global focus-visible block removed 2026-05-02 — superseded by Q47 spec
    in the @layer base block above (2px coral solid outline, 2px offset). */
 
+/* ============== PAGE-WIDE ATMOSPHERE WASHES (V3 — LIVE_TRUTH §5g extended) ==============
+   Two layered body-level washes that span the entire scrolling page so V3 sections
+   (hero / recently-viewed / last-minute / nearby / categories / etc.) feel like
+   ONE atmosphere instead of stark white seams between sections.
+
+   Layer 1 — body::before:
+     position: fixed → stays in place during scroll
+     5 radial gradients (cyan / teal / navy whispers)
+     22s drift animation, very subtle
+
+   Layer 2 — body::after:
+     position: absolute → parallax-feel echo, scrolls with document
+     13 stacked radial gradients distributed top-to-bottom (so every section
+     has SOMETHING tinting the bg, not just the viewport-fixed hotspots)
+     28s drift animation, drifts opposite direction
+
+   Hero gets an additional softened §5g wash on top of these (Hero.tsx).
+   prefers-reduced-motion: animations disabled, glows stay still.
+
+   Palette discipline (per V2-D15-3): ONLY brand-coordinate hues — pale teal
+   #C2F0F1, brand subtle #E1F4F4, pale ice blue #CAE8FF, navy #005898 / #031E48.
+   NO cream / cherry / bone / forest (those are CATEGORY-page colors). */
+
+body {
+  /* body must be transparent so the wash layers (z -1, z -2) show through */
+  background: transparent;
+  position: relative;
+  /* Prevent horizontal scroll from -10% / -15% wash insets bleeding past viewport */
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: -15%;
+  background:
+    radial-gradient(ellipse 70% 50% at 75% 12%, rgba(202, 232, 255, 0.32) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 50% at 18% 22%, rgba(194, 240, 241, 0.28) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 45% at 92% 48%, rgba(0, 88, 152, 0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 8% 72%, rgba(194, 240, 241, 0.26) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 50% at 65% 92%, rgba(3, 30, 72, 0.06) 0%, transparent 60%);
+  z-index: -2;
+  pointer-events: none;
+  animation: atm-drift-1 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+body::after {
+  content: '';
+  position: absolute;
+  inset: -10%;
+  background:
+    /* Top-of-fold — pale teal whisper */
+    radial-gradient(ellipse 60% 9% at 50% 7%, rgba(194, 240, 241, 0.28) 0%, transparent 70%),
+    /* 14% — ice blue right + pale teal left */
+    radial-gradient(ellipse 55% 7% at 80% 14%, rgba(202, 232, 255, 0.26) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 6% at 15% 19%, rgba(194, 240, 241, 0.24) 0%, transparent 75%),
+    /* 26% — brand subtle + ice */
+    radial-gradient(ellipse 50% 7% at 60% 26%, rgba(225, 244, 244, 0.30) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 6% at 25% 32%, rgba(202, 232, 255, 0.22) 0%, transparent 75%),
+    /* 40% — brand subtle + pale teal */
+    radial-gradient(ellipse 50% 8% at 75% 40%, rgba(225, 244, 244, 0.32) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 7% at 20% 46%, rgba(194, 240, 241, 0.26) 0%, transparent 75%),
+    /* 54% — ice + pale teal */
+    radial-gradient(ellipse 55% 7% at 60% 54%, rgba(202, 232, 255, 0.28) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 6% at 12% 60%, rgba(194, 240, 241, 0.22) 0%, transparent 75%),
+    /* 66% — pale teal stronger right + brand subtle */
+    radial-gradient(ellipse 50% 7% at 85% 66%, rgba(194, 240, 241, 0.30) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 6% at 30% 72%, rgba(225, 244, 244, 0.22) 0%, transparent 75%),
+    /* 80% — brand subtle */
+    radial-gradient(ellipse 55% 7% at 60% 80%, rgba(225, 244, 244, 0.28) 0%, transparent 70%),
+    /* 88% — barely-there navy hint toward footer transition */
+    radial-gradient(ellipse 50% 7% at 25% 88%, rgba(0, 88, 152, 0.06) 0%, transparent 65%);
+  z-index: -1;
+  pointer-events: none;
+  animation: atm-drift-2 28s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes atm-drift-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  25%      { transform: translate3d(-7%, 4%, 0) scale(1.08); }
+  50%      { transform: translate3d(3%, -5%, 0) scale(1.10); }
+  75%      { transform: translate3d(5%, 3%, 0) scale(1.05); }
+}
+
+@keyframes atm-drift-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  25%      { transform: translate3d(8%, -3%, 0) scale(1.07); }
+  50%      { transform: translate3d(-5%, 6%, 0) scale(1.12); }
+  75%      { transform: translate3d(-7%, -4%, 0) scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after { animation: none !important; }
+}
+
