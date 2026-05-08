@@ -87,7 +87,9 @@ export function SearchBar() {
 
   return (
     <>
-      {/* Backdrop blur overlay */}
+      {/* Backdrop overlay — blur dropped (was extremely expensive on every
+          paint during the morph). Plain rgba dim is much cheaper + visually
+          90% as effective for our purpose (dimming the page behind). */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div
@@ -95,14 +97,16 @@ export function SearchBar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={islandTransition}
-            className="fixed inset-0 z-[60] bg-black/20 backdrop-blur-[4px]"
+            className="fixed inset-0 z-[60] bg-black/30"
             onClick={() => setActive(null)}
             aria-hidden
           />
         )}
       </AnimatePresence>
 
-      {/* Morphing container — animates height + borderRadius w explicit values */}
+      {/* Morphing container — animates height + borderRadius w explicit values.
+          will-change hints + GPU layer hint via translateZ(0) help the
+          browser reserve a compositor layer up front, preventing chop. */}
       <motion.div
         initial={false}
         animate={{
@@ -110,6 +114,10 @@ export function SearchBar() {
           borderRadius: 16,
         }}
         transition={islandTransition}
+        style={{
+          willChange: "height, border-radius",
+          transform: "translateZ(0)",
+        }}
         className={cn(
           "relative w-full max-w-[540px] overflow-hidden border border-black/5 bg-white",
           "shadow-[0_1px_3px_rgba(50,47,44,0.04),0_4px_12px_rgba(50,47,44,0.04)]",
@@ -120,15 +128,17 @@ export function SearchBar() {
           !isExpanded && "md:!rounded-full md:!h-auto",
         )}
       >
-        {/* COLLAPSED LAYER — 3 segments + submit button */}
+        {/* COLLAPSED LAYER — 3 segments + submit button.
+            Blur filter dropped for perf (was expensive on this larger card vs
+            the reference's small pill). Opacity + scale are GPU-accelerated. */}
         <motion.div
           initial={false}
           animate={{
             opacity: isExpanded ? 0 : 1,
             scale: isExpanded ? 0.95 : 1,
-            filter: isExpanded ? "blur(4px)" : "blur(0px)",
           }}
           transition={{ ...islandTransition, delay: isExpanded ? 0 : 0.1 }}
+          style={{ willChange: "opacity, transform" }}
           className={cn(
             "absolute inset-0 flex flex-col p-2 md:flex-row md:items-stretch md:p-[6px_6px_6px_8px]",
             isExpanded && "pointer-events-none",
@@ -172,6 +182,7 @@ export function SearchBar() {
             scale: isExpanded ? 1 : 1.05,
           }}
           transition={{ ...islandTransition, delay: isExpanded ? 0.1 : 0 }}
+          style={{ willChange: "opacity, transform" }}
           className={cn(
             "absolute inset-0 flex flex-col",
             !isExpanded && "pointer-events-none",
