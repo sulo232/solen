@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen V3 — full homepage mockup · V2-D32 candidate · 2026-05-09</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/cooper-black-std" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Sansita:wght@400;700;900&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --white: #FFFFFF; --sunken: #FAF7F3;
+    --ink: #1A1209; --ink-2: #56463E; --ink-3: #7A6957; --ink-disabled: #C4B8A6;
+    --hairline: rgba(26,18,9,.06); --hairline-10: rgba(26,18,9,.10); --hairline-15: rgba(26,18,9,.15);
+    --brand: #043338; --brand-pale: #C2F0F1; --brand-subtle: #E1F4F4; --brand-mid: #0A6873;
+    --love: #FF4A6B; --success: #16A34A; --warning: #F59E0B;
+    /* category colorways per V2-D15-3 */
+    --cat-coiffeur: #FFF1DD;       --cat-coiffeur-text: #B5345A;
+    --cat-barber:   #D8D6CB;       --cat-barber-text: #000000;
+    --cat-nails:    #CAE8FF;       --cat-nails-text: #B50051;
+    --cat-spa:      #193120;       --cat-spa-text: #948565;
+    --display: 'Cooper BT','Cooper Black Std','Cooper Black','Sansita',Georgia,serif;
+    --body: 'ITC Avant Garde Gothic Std','Avant Garde','League Spartan','Inter Tight',system-ui,sans-serif;
+    --ease-snap: cubic-bezier(.4,0,.2,1);
+    --ease-glide: cubic-bezier(.16,1,.3,1);
+  }
+  html, body {
+    font-family: var(--body); color: var(--ink); background: var(--white);
+    line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  body { padding-bottom: 0; }
+
+  /* ============== PAGE LABEL ============== */
+  .page-label {
+    position: fixed; top: 12px; right: 12px; z-index: 1000;
+    background: rgba(4,51,56,.94); color: var(--brand-pale);
+    padding: 8px 14px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  }
+
+  /* ============== HEADER NAV ============== */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 32px; max-width: 1280px; margin: 0 auto;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .nav-logo {
+    font-family: var(--display); font-weight: 900;
+    font-size: 32px; letter-spacing: -0.025em;
+    color: var(--ink); line-height: 1;
+    display: inline-flex; align-items: baseline;
+  }
+  .nav-logo::after {
+    content: ''; display: inline-block;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--brand);
+    margin-left: 4px; transform: translateY(-2px);
+  }
+  .nav-links {
+    display: flex; gap: 36px;
+    font-size: 16px; font-weight: 500;
+    color: var(--ink-2);
+  }
+  .nav-links a { color: inherit; text-decoration: none; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta {
+    background: var(--brand); color: var(--white);
+    border: none; border-radius: 999px;
+    padding: 12px 22px;
+    font-family: var(--body); font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: background 150ms var(--ease-snap);
+  }
+  .nav-cta:hover { background: var(--brand-mid); }
+
+  /* ============== HERO ============== */
+  .hero {
+    max-width: 1280px; margin: 0 auto;
+    padding: 64px 32px 80px;
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: center;
+  }
+  .hero-eyebrow {
+    font-size: 13px; font-weight: 700; color: var(--ink-3);
+    letter-spacing: .18em; text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-bottom: 18px;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--brand);
+  }
+  .hero-h1 {
+    font-family: var(--display); font-weight: 900;
+    font-size: clamp(56px, 7vw, 96px);
+    line-height: 0.92; letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+  .hero-h1 em {
+    font-style: normal; color: var(--brand);
+  }
+  .hero-deck {
+    font-size: 17px; color: var(--ink-2); line-height: 1.55;
+    max-width: 520px; margin-bottom: 32px;
+  }
+  .hero-deck a {
+    color: var(--brand); font-weight: 600;
+    text-decoration: underline; text-underline-offset: 3px;
+    text-decoration-thickness: 1.5px;
+  }
+
+  /* hero search bar — 3-row stacked */
+  .search-bar {
+    background: var(--white);
+    border: 1px solid var(--hairline-10);
+    border-radius: 16px;
+    padding: 8px;
+    box-shadow: 0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03);
+    max-width: 540px;
+  }
+  .search-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 150ms var(--ease-snap);
+  }
+  .search-row:not(:last-child) {
+    border-bottom: 1px solid var(--hairline);
+  }
+  .search-row:hover { background: var(--sunken); }
+  .search-row.is-active {
+    background: #FFF4E8;
+    border-bottom-color: transparent;
+  }
+  .search-label {
+    font-size: 11px; font-weight: 700; color: var(--ink-3);
+    letter-spacing: .14em; text-transform: uppercase;
+    width: 64px; flex-shrink: 0;
+  }
+  .search-value {
+    font-size: 16px; font-weight: 500; color: var(--ink);
+    flex: 1;
+  }
+  .search-value.placeholder { color: var(--ink-3); font-weight: 400; }
+  .search-submit {
+    width: 100%; margin-top: 12px;
+    background: var(--brand); color: var(--white);
+    border: none; border-radius: 12px;
+    padding: 16px;
+    font-family: var(--body); font-size: 16px; font-weight: 600;
+    cursor: pointer;
+    transition: background 150ms var(--ease-snap);
+  }
+  .search-submit:hover { background: var(--brand-mid); }
+
+  /* hero preview right side */
+  .hero-preview {
+    aspect-ratio: 4/5;
+    background: linear-gradient(135deg, var(--brand-subtle) 0%, var(--brand-pale) 100%);
+    border-radius: 24px;
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brand); font-family: var(--display); font-weight: 900; font-size: 80px;
+    opacity: 0.7;
+  }
+  .hero-preview::after {
+    content: '[ photo ]'; font-size: 14px;
+    position: absolute; bottom: 16px; left: 16px;
+    color: var(--brand); opacity: 0.5;
+    font-family: var(--body); font-weight: 600;
+    letter-spacing: .14em; text-transform: uppercase;
+  }
+
+  /* ============== EDITORIAL SECTION-BREAK (V2-D15-4) ============== */
+  .sec { max-width: 1280px; margin: 0 auto; padding: 80px 32px; }
+  .sec-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .sec-meta-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: .18em; text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .sec-eyebrow {
+    color: var(--ink); display: inline-flex; align-items: center; gap: 8px;
+  }
+  .sec-eyebrow::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--brand);
+  }
+  .sec-meta { color: var(--ink-3); }
+  .sec-h2-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 24px; margin-bottom: 24px;
+  }
+  .sec-h2 {
+    font-family: var(--display); font-weight: 900;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1; letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .sec-link {
+    color: var(--brand); font-size: 15px; font-weight: 600;
+    text-decoration: underline; text-underline-offset: 4px;
+    text-decoration-thickness: 1.5px;
+    flex-shrink: 0;
+  }
+
+  /* ============== 4-CATEGORY SHOWCASE ============== */
+  .cats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin-top: 32px;
+  }
+  @media (max-width: 900px) { .cats { grid-template-columns: repeat(2, 1fr); } }
+  .cat-card {
+    aspect-ratio: 4/5;
+    border-radius: 20px;
+    padding: 28px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 200ms var(--ease-glide);
+    position: relative; overflow: hidden;
+  }
+  .cat-card:hover { transform: translateY(-4px); }
+  .cat-card.coiffeur { background: var(--cat-coiffeur); color: var(--cat-coiffeur-text); }
+  .cat-card.barber   { background: var(--cat-barber);   color: var(--cat-barber-text); }
+  .cat-card.nails    { background: var(--cat-nails);    color: var(--cat-nails-text); }
+  .cat-card.spa      { background: var(--cat-spa);      color: var(--cat-spa-text); }
+  .cat-name {
+    font-family: var(--display); font-weight: 900;
+    font-size: clamp(28px, 3vw, 36px);
+    line-height: 1; letter-spacing: -0.02em;
+  }
+  .cat-meta {
+    font-size: 14px; font-weight: 600;
+    letter-spacing: .04em;
+    opacity: 0.75;
+  }
+  .cat-arrow {
+    align-self: flex-end;
+    font-size: 24px;
+  }
+
+  /* ============== HORIZONTAL SCROLL ROW (salons) ============== */
+  .scroll-row {
+    display: flex; gap: 16px; overflow-x: auto; padding: 4px 0;
+    margin-top: 24px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scroll-row::-webkit-scrollbar { display: none; }
+  .salon-card {
+    flex: 0 0 280px; scroll-snap-align: start;
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none; color: inherit;
+    transition: transform 200ms var(--ease-snap);
+  }
+  .salon-card:hover { transform: translateY(-2px); }
+  .salon-photo {
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, var(--brand-pale), var(--brand-subtle));
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brand); font-family: var(--display); font-weight: 900; font-size: 32px;
+    opacity: 0.6;
+  }
+  .salon-heart {
+    position: absolute; top: 12px; right: 12px;
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--ink-2);
+    transition: transform 200ms var(--ease-snap);
+  }
+  .salon-heart:hover { transform: scale(1.06); }
+  .salon-heart.is-saved { color: var(--love); }
+  .salon-info { padding: 16px; }
+  .salon-name {
+    font-size: 16px; font-weight: 700; color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .salon-meta {
+    font-size: 14px; color: var(--ink-3);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .salon-rating {
+    color: var(--ink); font-weight: 600;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .salon-rating::before {
+    content: '★'; color: #F3A864;
+  }
+  .salon-availability {
+    margin-top: 12px;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 600;
+    background: rgba(22,163,74,.10); color: var(--success);
+  }
+  .salon-availability::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--success);
+  }
+
+  /* ============== ENTDECKEN INSPO STRIP ============== */
+  .entdecken {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    margin-top: 24px;
+  }
+  @media (max-width: 900px) { .entdecken { grid-template-columns: repeat(2, 1fr); } }
+  .look-card {
+    aspect-ratio: 3/4;
+    border-radius: 16px;
+    overflow: hidden; cursor: pointer; position: relative;
+    background: linear-gradient(135deg, var(--brand-subtle), var(--cat-coiffeur));
+  }
+  .look-card:nth-child(1) { background: linear-gradient(135deg, #E8DFD2, var(--cat-coiffeur)); }
+  .look-card:nth-child(2) { background: linear-gradient(135deg, var(--cat-nails), var(--brand-pale)); }
+  .look-card:nth-child(3) { background: linear-gradient(135deg, var(--brand-subtle), var(--cat-barber)); }
+  .look-card:nth-child(4) { background: linear-gradient(135deg, var(--cat-coiffeur), #E8DFD2); }
+  .look-card::before {
+    content: '[ look ]';
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--body); font-size: 13px; font-weight: 600;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink); opacity: 0.4;
+  }
+  .look-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.6) 100%);
+    padding: 16px;
+    color: var(--white);
+  }
+  .look-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .look-meta { font-size: 12px; opacity: 0.85; }
+  .look-heart {
+    position: absolute; top: 12px; right: 12px;
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--ink-2);
+  }
+  .look-heart.is-saved { color: var(--love); }
+
+  /* ============== CITY TILES ============== */
+  .cities {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin-top: 24px;
+  }
+  @media (max-width: 900px) { .cities { grid-template-columns: 1fr; } }
+  .city-card {
+    aspect-ratio: 16/10;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--brand-subtle), var(--cat-nails));
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 200ms var(--ease-glide);
+  }
+  .city-card:hover { transform: translateY(-3px); }
+  .city-card:nth-child(2) { background: linear-gradient(135deg, var(--cat-coiffeur), #FFE4D2); }
+  .city-card:nth-child(3) { background: linear-gradient(135deg, var(--cat-barber), var(--brand-pale)); }
+  .city-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 24px 28px;
+    color: var(--ink);
+  }
+  .city-name {
+    font-family: var(--display); font-weight: 900;
+    font-size: 36px; line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .city-meta {
+    font-size: 14px; font-weight: 600; color: var(--ink-2);
+  }
+
+  /* ============== SOLEN PRO FEATURE PANEL ============== */
+  .feature-panel { padding: 80px 32px; max-width: 1280px; margin: 0 auto; }
+  .feature-card {
+    background: var(--brand);
+    border-radius: 28px;
+    padding: 56px;
+    color: var(--brand-pale);
+    display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px;
+    align-items: center;
+  }
+  .feature-eyebrow {
+    font-size: 13px; font-weight: 700;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--brand-pale);
+    margin-bottom: 12px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .feature-eyebrow::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--brand-pale); opacity: 0.7;
+  }
+  .feature-h2 {
+    font-family: var(--display); font-weight: 900;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1; letter-spacing: -0.02em;
+    color: var(--brand-pale);
+    margin-bottom: 16px;
+  }
+  .feature-deck {
+    font-size: 16px; line-height: 1.55;
+    color: var(--brand-pale); opacity: 0.85;
+    margin-bottom: 28px;
+    max-width: 520px;
+  }
+  .feature-cta {
+    background: var(--brand-pale); color: var(--brand);
+    border: none; border-radius: 999px;
+    padding: 14px 24px;
+    font-family: var(--body); font-size: 15px; font-weight: 700;
+    cursor: pointer;
+  }
+  .feature-cta:hover { background: var(--white); }
+  .feature-stats { display: grid; grid-template-columns: repeat(2,1fr); gap: 24px; }
+  .feature-stat-num {
+    font-family: var(--display); font-weight: 900;
+    font-size: 56px; line-height: 1;
+    color: var(--brand-pale);
+  }
+  .feature-stat-label {
+    font-size: 13px; color: var(--brand-pale); opacity: 0.75;
+    margin-top: 6px;
+    letter-spacing: .04em;
+  }
+
+  /* ============== BROWSE-BY-CITY SEO WALL ============== */
+  .seo-wall {
+    background: linear-gradient(180deg, var(--white), var(--sunken));
+    padding: 60px 32px;
+  }
+  .seo-inner { max-width: 1280px; margin: 0 auto; }
+  .seo-title {
+    font-family: var(--display); font-weight: 900;
+    font-size: 24px;
+    color: var(--ink); margin-bottom: 24px;
+  }
+  .seo-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 16px;
+  }
+  @media (max-width: 700px) { .seo-grid { grid-template-columns: repeat(2, 1fr); } }
+  .seo-link {
+    font-size: 14px; color: var(--ink-2);
+    text-decoration: none;
+    padding: 6px 0;
+    transition: color 150ms var(--ease-snap);
+  }
+  .seo-link:hover { color: var(--brand); }
+
+  /* ============== FOOTER ============== */
+  .footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.62);
+    padding: 64px 32px 32px;
+    margin-top: 0;
+  }
+  .footer-inner { max-width: 1280px; margin: 0 auto; }
+  .footer-grid {
+    display: grid; grid-template-columns: 1.3fr repeat(3, 1fr); gap: 48px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+  }
+  @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+  .footer-brand {
+    font-family: var(--display); font-weight: 900;
+    font-size: 36px; letter-spacing: -0.025em;
+    color: var(--white); line-height: 1;
+    display: inline-flex; align-items: baseline;
+    margin-bottom: 16px;
+  }
+  .footer-brand::after {
+    content: ''; display: inline-block;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--brand-pale);
+    margin-left: 4px; transform: translateY(-2px);
+  }
+  .footer-tag {
+    font-size: 14px; line-height: 1.55;
+    color: rgba(255,255,255,0.62);
+    max-width: 280px;
+  }
+  .footer-col-title {
+    font-size: 12px; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--white); margin-bottom: 12px;
+  }
+  .footer-col-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .footer-col-list a {
+    font-size: 14px; color: rgba(255,255,255,0.62);
+    text-decoration: none;
+  }
+  .footer-col-list a:hover { color: var(--white); }
+  .footer-bottom {
+    padding-top: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+  .footer-flag {
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .footer-flag::before {
+    content: ''; width: 11px; height: 11px;
+    background: var(--brand);
+  }
+
+  /* ============== COOKIE BANNER OVERLAY ============== */
+  .cookie-banner {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    z-index: 700;
+    background: var(--white);
+    border-top: 1px solid var(--hairline-10);
+    box-shadow: 0 -4px 16px rgba(50,47,44,0.08);
+  }
+  .cookie-inner {
+    max-width: 1280px; margin: 0 auto;
+    padding: 20px 32px;
+    display: flex; align-items: center; gap: 24px;
+  }
+  @media (max-width: 760px) {
+    .cookie-inner { flex-direction: column; align-items: stretch; padding: 16px 20px; gap: 12px; }
+  }
+  .cookie-text { flex: 1 1 auto; min-width: 0; }
+  .cookie-title { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+  .cookie-body { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+  .cookie-actions {
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+  .cookie-btn-link {
+    background: transparent; border: none;
+    font-family: var(--body); font-weight: 600; font-size: 14px;
+    color: var(--brand); cursor: pointer;
+    padding: 8px 12px;
+  }
+  .cookie-btn-secondary {
+    background: var(--white); border: 1px solid var(--hairline-10);
+    border-radius: 999px;
+    padding: 12px 20px;
+    font-family: var(--body); font-weight: 600; font-size: 14px;
+    color: var(--ink); cursor: pointer;
+  }
+  .cookie-btn-primary {
+    background: var(--brand); color: var(--white);
+    border: none; border-radius: 999px;
+    padding: 12px 20px;
+    font-family: var(--body); font-weight: 600; font-size: 14px;
+    cursor: pointer;
+  }
+
+  /* ============== SECTION ANNOTATIONS ============== */
+  .anno {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(4,51,56,0.10); color: var(--brand);
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase;
+    pointer-events: none;
+  }
+  .sec-wrap { position: relative; }
+</style>
+</head>
+<body>
+
+  <div class="page-label">Solen V3 homepage · V2-D32 candidate · all sections</div>
+
+  <!-- ============== HEADER ============== -->
+  <nav class="nav">
+    <div class="nav-logo">Solen</div>
+    <div class="nav-links">
+      <a href="#">Coiffeur</a>
+      <a href="#">Barbershop</a>
+      <a href="#">Nails</a>
+      <a href="#">Spa &amp; Wellness</a>
+    </div>
+    <button class="nav-cta">Anmelden</button>
+  </nav>
+
+  <!-- ============== HERO ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§13 · hero</span>
+    <section class="hero">
+      <div>
+        <div class="hero-eyebrow">Beauty in der Schweiz</div>
+        <h1 class="hero-h1">Schöner aussehen, schneller <em>buchen</em>.</h1>
+        <p class="hero-deck">
+          Vom Coiffeur in der Steinenvorstadt bis zur Massage am Rheinufer — die besten Beauty-Adressen
+          der Schweiz, alle in einer App. <a href="#">So funktioniert's →</a>
+        </p>
+        <div class="search-bar">
+          <div class="search-row is-active">
+            <span class="search-label">Was</span>
+            <span class="search-value placeholder">Service oder Salon</span>
+          </div>
+          <div class="search-row">
+            <span class="search-label">Wo</span>
+            <span class="search-value">Basel · Kleinbasel</span>
+          </div>
+          <div class="search-row">
+            <span class="search-label">Wann</span>
+            <span class="search-value">Heute · jederzeit</span>
+          </div>
+          <button class="search-submit">Solen durchsuchen</button>
+        </div>
+      </div>
+      <div class="hero-preview">[ hero photo ]</div>
+    </section>
+  </div>
+
+  <!-- ============== 4-CATEGORY SHOWCASE ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§15 · category cards</span>
+    <section class="sec">
+      <div class="sec-rule"></div>
+      <div class="sec-meta-row">
+        <span class="sec-eyebrow">Jede Kategorie, ihre eigene Welt</span>
+        <span class="sec-meta">4 Disziplinen</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">Wofür suchst du?</h2>
+        <a href="#" class="sec-link">Alle Salons →</a>
+      </div>
+      <div class="cats">
+        <a href="#" class="cat-card coiffeur">
+          <div>
+            <div class="cat-name">Coiffeur</div>
+            <div class="cat-meta" style="margin-top:6px;">142 Salons in Basel</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+        <a href="#" class="cat-card barber">
+          <div>
+            <div class="cat-name">Barbershop</div>
+            <div class="cat-meta" style="margin-top:6px;">38 Salons in Basel</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+        <a href="#" class="cat-card nails">
+          <div>
+            <div class="cat-name">Nails</div>
+            <div class="cat-meta" style="margin-top:6px;">76 Salons in Basel</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+        <a href="#" class="cat-card spa">
+          <div>
+            <div class="cat-name">Spa &amp; Wellness</div>
+            <div class="cat-meta" style="margin-top:6px;">29 Studios in Basel</div>
+          </div>
+          <span class="cat-arrow">→</span>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== SALON ROW · "In Basel diese Woche" ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§17 · salon row</span>
+    <section class="sec">
+      <div class="sec-rule"></div>
+      <div class="sec-meta-row">
+        <span class="sec-eyebrow">Basel · diese Woche</span>
+        <span class="sec-meta">23 Salons · 8 heute frei</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">In Basel diese Woche</h2>
+        <a href="#" class="sec-link">Alle ansehen →</a>
+      </div>
+      <div class="scroll-row">
+        <a class="salon-card">
+          <div class="salon-photo">M
+            <div class="salon-heart is-saved" aria-label="Aus Favoriten entfernen">♥</div>
+          </div>
+          <div class="salon-info">
+            <div class="salon-name">Salon Maria</div>
+            <div class="salon-meta">
+              <span class="salon-rating">4.8 (124)</span>
+              <span>· Kleinbasel</span>
+            </div>
+            <span class="salon-availability">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card">
+          <div class="salon-photo">B
+            <div class="salon-heart" aria-label="Zu Favoriten hinzufügen">♡</div>
+          </div>
+          <div class="salon-info">
+            <div class="salon-name">Bohème Hair Studio</div>
+            <div class="salon-meta">
+              <span class="salon-rating">4.9 (98)</span>
+              <span>· Steinenvorstadt</span>
+            </div>
+            <span class="salon-availability">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card">
+          <div class="salon-photo">N
+            <div class="salon-heart" aria-label="Zu Favoriten hinzufügen">♡</div>
+          </div>
+          <div class="salon-info">
+            <div class="salon-name">Nails &amp; Co.</div>
+            <div class="salon-meta">
+              <span class="salon-rating">4.7 (215)</span>
+              <span>· Spalentor</span>
+            </div>
+            <span class="salon-availability">Morgen frei</span>
+          </div>
+        </a>
+        <a class="salon-card">
+          <div class="salon-photo">A
+            <div class="salon-heart" aria-label="Zu Favoriten hinzufügen">♡</div>
+          </div>
+          <div class="salon-info">
+            <div class="salon-name">Atelier Coiffure</div>
+            <div class="salon-meta">
+              <span class="salon-rating">4.9 (340)</span>
+              <span>· Innenstadt</span>
+            </div>
+            <span class="salon-availability">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card">
+          <div class="salon-photo">S
+            <div class="salon-heart" aria-label="Zu Favoriten hinzufügen">♡</div>
+          </div>
+          <div class="salon-info">
+            <div class="salon-name">Spa Rheinufer</div>
+            <div class="salon-meta">
+              <span class="salon-rating">4.8 (87)</span>
+              <span>· Kleinbasel</span>
+            </div>
+            <span class="salon-availability">Diese Woche</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== ENTDECKEN INSPO STRIP ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§18 · entdecken</span>
+    <section class="sec">
+      <div class="sec-rule"></div>
+      <div class="sec-meta-row">
+        <span class="sec-eyebrow">Inspiration · Schweizer Salons</span>
+        <span class="sec-meta">Aktualisiert täglich</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">Looks zum Verlieben</h2>
+        <a href="#" class="sec-link">Mehr entdecken →</a>
+      </div>
+      <div class="entdecken">
+        <div class="look-card">
+          <div class="look-heart">♡</div>
+          <div class="look-overlay">
+            <div class="look-title">Long Bob mit Highlights</div>
+            <div class="look-meta">Salon Maria · Basel</div>
+          </div>
+        </div>
+        <div class="look-card">
+          <div class="look-heart is-saved">♥</div>
+          <div class="look-overlay">
+            <div class="look-title">French Mani · Coral</div>
+            <div class="look-meta">Nails &amp; Co. · Basel</div>
+          </div>
+        </div>
+        <div class="look-card">
+          <div class="look-heart">♡</div>
+          <div class="look-overlay">
+            <div class="look-title">Skin Fade Classic</div>
+            <div class="look-meta">Bohème · Basel</div>
+          </div>
+        </div>
+        <div class="look-card">
+          <div class="look-heart">♡</div>
+          <div class="look-overlay">
+            <div class="look-title">Balayage · Honey</div>
+            <div class="look-meta">Atelier Coiffure · Zürich</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== CITY TILES · "Stadt wählen" ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§19 · city tiles</span>
+    <section class="sec">
+      <div class="sec-rule"></div>
+      <div class="sec-meta-row">
+        <span class="sec-eyebrow">Solen in deiner Stadt</span>
+        <span class="sec-meta">3 Städte · 237 Salons</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">Stadt wählen</h2>
+        <a href="#" class="sec-link">Alle Städte →</a>
+      </div>
+      <div class="cities">
+        <a class="city-card">
+          <div class="city-overlay">
+            <div class="city-name">Basel</div>
+            <div class="city-meta">285 Salons · Coiffeur, Spa, Nails</div>
+          </div>
+        </a>
+        <a class="city-card">
+          <div class="city-overlay">
+            <div class="city-name">Zürich</div>
+            <div class="city-meta">412 Salons · Premium &amp; Boutique</div>
+          </div>
+        </a>
+        <a class="city-card">
+          <div class="city-overlay">
+            <div class="city-name">Bern</div>
+            <div class="city-meta">156 Salons · Altstadt &amp; Länggasse</div>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== SOLEN PRO FEATURE PANEL ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§20 · b2b promo</span>
+    <section class="feature-panel">
+      <div class="feature-card">
+        <div>
+          <div class="feature-eyebrow">Solen Pro</div>
+          <h2 class="feature-h2">Stammkund:in werden, klüger sparen.</h2>
+          <p class="feature-deck">
+            Drei Buchungen pro Monat? Mit Solen Pro buchst du günstiger, holst Treue-Stempel,
+            siehst neue Slots zuerst — und supportest deinen Lieblingssalon.
+          </p>
+          <button class="feature-cta">Mehr erfahren →</button>
+        </div>
+        <div class="feature-stats">
+          <div>
+            <div class="feature-stat-num">15%</div>
+            <div class="feature-stat-label">Rabatt auf jede Buchung</div>
+          </div>
+          <div>
+            <div class="feature-stat-num">3+</div>
+            <div class="feature-stat-label">Buchungen pro Monat</div>
+          </div>
+          <div>
+            <div class="feature-stat-num">24h</div>
+            <div class="feature-stat-label">Frühzugang zu neuen Slots</div>
+          </div>
+          <div>
+            <div class="feature-stat-num">12.–</div>
+            <div class="feature-stat-label">CHF / Monat</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== SEO LINK WALL ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§22 · SEO link wall</span>
+    <section class="seo-wall">
+      <div class="seo-inner">
+        <h3 class="seo-title">Salons nach Stadt &amp; Kategorie</h3>
+        <div class="seo-grid">
+          <a class="seo-link" href="#">Coiffeur in Basel</a>
+          <a class="seo-link" href="#">Barbershop in Basel</a>
+          <a class="seo-link" href="#">Nails in Basel</a>
+          <a class="seo-link" href="#">Spa in Basel</a>
+          <a class="seo-link" href="#">Coiffeur in Zürich</a>
+          <a class="seo-link" href="#">Barbershop in Zürich</a>
+          <a class="seo-link" href="#">Nails in Zürich</a>
+          <a class="seo-link" href="#">Spa in Zürich</a>
+          <a class="seo-link" href="#">Coiffeur in Bern</a>
+          <a class="seo-link" href="#">Barbershop in Bern</a>
+          <a class="seo-link" href="#">Nails in Bern</a>
+          <a class="seo-link" href="#">Spa in Bern</a>
+          <a class="seo-link" href="#">Friseur Damen Basel</a>
+          <a class="seo-link" href="#">Friseur Herren Basel</a>
+          <a class="seo-link" href="#">Maniküre Zürich</a>
+          <a class="seo-link" href="#">Massage Bern</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== FOOTER ============== -->
+  <div class="sec-wrap">
+    <span class="anno" style="background: rgba(255,255,255,.10); color: var(--brand-pale);">§21 · footer</span>
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-brand">Solen</div>
+            <p class="footer-tag">Die Schweizer Salon-Plattform. Beauty &amp; Wellness in Basel, Zürich und Bern.</p>
+          </div>
+          <div>
+            <div class="footer-col-title">Solen</div>
+            <ul class="footer-col-list">
+              <li><a href="#">Über uns</a></li>
+              <li><a href="#">Karriere</a></li>
+              <li><a href="#">Presse</a></li>
+              <li><a href="#">Hilfe</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-col-title">Salons</div>
+            <ul class="footer-col-list">
+              <li><a href="#">Salon werden</a></li>
+              <li><a href="#">Solen Pro</a></li>
+              <li><a href="#">Preise</a></li>
+              <li><a href="#">Onboarding</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-col-title">Rechtliches</div>
+            <ul class="footer-col-list">
+              <li><a href="#">AGB</a></li>
+              <li><a href="#">Datenschutz</a></li>
+              <li><a href="#">Impressum</a></li>
+              <li><a href="#">Cookie-Einstellungen</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div>© 2026 Solen GmbH</div>
+          <div class="footer-flag">Made in Basel</div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ============== COOKIE BANNER OVERLAY ============== -->
+  <div class="cookie-banner">
+    <div class="cookie-inner">
+      <div class="cookie-text">
+        <div class="cookie-title">Wir verwenden Cookies</div>
+        <div class="cookie-body">
+          Notwendige Cookies sind immer aktiv. Analyse + Marketing helfen uns, Solen zu verbessern.
+        </div>
+      </div>
+      <div class="cookie-actions">
+        <button class="cookie-btn-link" type="button">Anpassen</button>
+        <button class="cookie-btn-secondary" type="button">Nur notwendige</button>
+        <button class="cookie-btn-primary" type="button">Alle akzeptieren</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
