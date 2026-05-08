@@ -322,7 +322,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
         <p className="text-[13px] text-s-ink-3 mt-4">
           Du kannst deine Einstellungen jederzeit über den Footer-Link
           "Cookie-Einstellungen" ändern. Mehr in unserer{" "}
-          <a href="/datenschutz" className="text-s-brand hover:text-s-ink underline-offset-2 hover:underline">
+          <a href="/datenschutz" className="text-s-brand hover:text-s-ink transition-colors">
             Datenschutzerklärung
           </a>
           .

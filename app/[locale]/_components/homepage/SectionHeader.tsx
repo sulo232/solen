@@ -67,7 +67,7 @@ export function SectionHeader({
         {link && (
           <Link
             href={link.href}
-            className="shrink-0 font-body text-[15px] font-semibold text-s-brand underline decoration-[1.5px] underline-offset-[4px]"
+            className="shrink-0 font-body text-[15px] font-semibold text-s-brand transition-colors hover:text-s-brand-mid"
           >
             {link.label}
           </Link>
