@@ -41,7 +41,11 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative mx-auto flex max-w-[1280px] flex-col px-8 pt-16 pb-20 max-md:items-center max-md:text-center">
+      {/* pt accounts for the absolute V3 Header (floats over wash):
+          mobile = ~68px header + 32px breathing = 100px (pt-25)
+          desktop = ~80px header + 48px breathing = 128px (pt-32)
+          tailwind doesn't have pt-25, use arbitrary value. */}
+      <div className="relative mx-auto flex max-w-[1280px] flex-col px-8 pt-[100px] pb-20 md:pt-32 max-md:items-center max-md:text-center">
         <div className="max-md:w-full">
           {/* Eyebrow with brand-colored dot before */}
           <span className="font-body mb-[18px] inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.18em] text-s-ink-3 before:block before:h-[6px] before:w-[6px] before:rounded-full before:bg-s-brand before:content-['']">

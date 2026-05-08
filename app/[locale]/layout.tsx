@@ -3,7 +3,7 @@ import { getMessages } from "next-intl/server";
 import { locales } from "@/i18n";
 import { PostHogProvider } from "@/components-legacy/PostHogProvider";
 import { ToastProvider } from "@/components-legacy/ui/Toast";
-import Header from "@/components-legacy/layout/Header";
+import Header from "./_components/layout/Header";
 // BottomTabBar import removed 2026-05-03 per Q58 (deprecated for web rendering).
 // Keep file at components/layout/BottomTabBar.tsx for future PWA mount.
 // import BottomTabBar from "@/components-legacy/layout/BottomTabBar";
