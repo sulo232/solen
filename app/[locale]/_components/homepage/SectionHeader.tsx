@@ -122,16 +122,14 @@ export function Section({
   className?: string;
 }) {
   // Glassmorphic section container (V2-D## modernity pivot, 2026-05-09).
-  // Light-alpha white tint + backdrop-blur(20px) + saturate(1.3) + 1px
-  // white-60 border. Body's atmosphere wash (pale teal + ice blue + navy
-  // whispers) bleeds through the glass surface, so each section reads as
-  // a discrete UI surface floating over the colored page — NOT a solid
-  // gray block that hides the wash. Mobile rounded 32px / desktop 40px.
+  // Subtle-outline mode (per user feedback "thin line... covering too much"):
+  // very light fill + lighter blur, the border + rounded corners do the
+  // sectioning work. Atmosphere wash bleeds through near-fully.
   return (
     <section
       className={cn(
         "relative z-[1] mx-auto max-w-[1280px]",
-        "rounded-[32px] border border-white/60 bg-white/45 backdrop-blur-[20px] backdrop-saturate-[1.3]",
+        "rounded-[32px] border border-white/50 bg-white/20 backdrop-blur-[10px] backdrop-saturate-[1.15]",
         "px-5 py-8 md:px-10 md:py-12 md:rounded-[40px]",
         "mb-4 md:mb-6",
         className,
