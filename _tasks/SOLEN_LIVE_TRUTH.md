@@ -1697,6 +1697,155 @@ The `useResponsiveOverlay` hook is implemented in v1 React. Hook NOT specced in 
 
 -----
 
+## §F.4 · Toast primitive
+
+The transient notification surface for non-blocking feedback: heart-saved confirmations, copy-to-clipboard success, save-look acknowledgments, network errors, and any "hey here's what just happened" message that doesn't need user response. **Distinct from §F.2 modal:** modals demand user resolution; toasts auto-dismiss. **Distinct from inline `<FieldHelper>`:** helpers are anchored to a specific field; toasts float above all content.
+
+**Anchors to existing locks:** the heart-save confirmation (referenced §16 salon card heart icon), the save-look acknowledgement (§18.4 look-detail share button), the booking-saved-as-draft toast (§BW Phase 2 booking wizard), and any future "Link kopiert" / "Look gespeichert" / "Filter zurückgesetzt" feedback. Toasts NEVER replace error messages on form fields — those use `<FieldHelper tone="error">` anchored to the field per §F.1.0.
+
+### §F.4.0 · Anatomy (universal)
+
+```
+┌────── Toast ─────────────────────────────────────────┐
+│ [icon] Title (optional description below)   [Action] │  ← optional action btn
+│                                              [×]     │  ← close X
+└──────────────────────────────────────────────────────┘
+```
+
+|element       |spec                                                                                                                                          |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+|surface       |white `#FFFFFF`, radius `var(--radius-lg)` (12px). NOT pill — toast is a notification card, not a button.                                       |
+|width         |min 280px, max 480px on desktop. Mobile: `calc(100vw - 32px)` with 16px margin each side.                                                       |
+|shadow        |`elevation-3` warm-tinted from §4: `0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)`                                              |
+|tone bar      |left edge 4px-wide vertical bar, color = tone (success green / info brand-teal / warning amber / error red). Acts as the visual category cue.   |
+|padding       |`14px 16px` (compact — toasts are not the focus, just an aside)                                                                                  |
+|icon          |Lucide 18px stroke 2, color = tone, left of title with 12px gap. Icons: `check-circle` (success) / `info` (info) / `alert-triangle` (warning) / `alert-circle` (error)|
+|title         |Avant Garde Gothic 600 14px ink-1 line-height 1.3                                                                                              |
+|description   |optional, Avant Garde Gothic 400 12px ink-3 line-height 1.4, margin-top 2px below title                                                        |
+|action button |optional, right-aligned, Avant Garde 600 13px brand-teal text-only button (no border). Hover ink-1.                                             |
+|close X       |Lucide `x` 16px ink-3 stroke 2, hover ink-1, hit area 32×32 via padding. Always visible.                                                       |
+
+### §F.4.0a · Tone variants
+
+|tone     |bar color       |icon             |use                                                                                          |
+|---------|----------------|-----------------|---------------------------------------------------------------------------------------------|
+|success  |`#16A34A`       |`check-circle`   |"Look gespeichert", "Link kopiert", "Buchung bestätigt", any "yes, that worked" feedback     |
+|info     |`#043338` (brand)|`info`          |Neutral notifications: "Ein neuer Salon in deiner Stadt", soft network-state info             |
+|warning  |`#F59E0B`       |`alert-triangle` |"Du hast unsaved changes", "Internetverbindung instabil" (action recommended but not blocking)|
+|error    |`#D32F2F`       |`alert-circle`   |"Buchung fehlgeschlagen", "Netzwerkfehler — bitte erneut versuchen" (action required)         |
+
+**Anti-pattern:** using brand-teal as the success color. Solen V3 has explicit semantic colors per §3 — `s-success #16A34A` for confirmations. Brand-teal is for navigation + CTAs, not for "this thing succeeded." Mixing breaks the semantic system.
+
+### §F.4.0b · State matrix
+
+|state       |trigger                              |visual change                                                                                                                       |
+|------------|-------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+|queued      |toast triggered, but ≥3 already shown|stays in queue, not rendered. When a visible toast dismisses, the next queued one slides in.                                       |
+|opening     |slot becomes available, toast renders|`translateY(20px) → translateY(0)` + opacity 0 → 1 over 200ms `ease-snap`. New toast appears at the BOTTOM of the stack.            |
+|open        |fully visible, auto-dismiss countdown|static. Auto-dismiss timer (per tone — see §F.4.1). Hovering pauses timer. Action button click triggers `onAction` + dismisses.    |
+|dismissing  |timer fires OR user closes (X / action)|`translateY(0) → translateY(-10px)` + opacity 1 → 0 over 150ms `ease-snap`. Stack above shifts down to fill the gap.               |
+|closed      |after exit animation completes       |unmounted from DOM. Next queued toast (if any) immediately enters opening state.                                                    |
+
+### §F.4.1 · Auto-dismiss timing
+
+|tone     |default duration|behavior                                                                                                                              |
+|---------|----------------|--------------------------------------------------------------------------------------------------------------------------------------|
+|success  |3000ms          |dismisses automatically after 3s. Hovering pauses timer; mouse-leave restarts countdown.                                              |
+|info     |3000ms          |same as success.                                                                                                                      |
+|warning  |6000ms          |longer because user may need to read + decide. Hover pauses.                                                                          |
+|error    |sticky          |does NOT auto-dismiss. User must click X or action button. Errors are too important to flash + disappear.                            |
+
+**Override rule:** any toast can pass `duration={N}` to override default. Pass `duration={Infinity}` (or `sticky={true}`) to make a non-error toast persistent. Pass `duration={N}` on an error to allow auto-dismiss (rare — only for errors that're informational, e.g. "offline mode aktiviert").
+
+**Hover-pause:** timer pauses while pointer is over the toast. Restarts on mouse-leave. Touch devices: tap pauses for 4 seconds, then resumes.
+
+### §F.4.2 · Position
+
+|breakpoint        |position                                                          |
+|------------------|------------------------------------------------------------------|
+|mobile (< 768px)  |bottom-center: `bottom: max(16px, env(safe-area-inset-bottom)+16px)`, `left/right: 16px`. Stacks vertically.|
+|desktop (≥ 768px) |bottom-right: `bottom: 24px`, `right: 24px`. Max width 480px. Stacks vertically.|
+
+Toasts always render at z-index `var(--z-toast)` per §8 — above modals (per §8 line 866 lock: "always above modals so users see 'saved!' even mid-modal").
+
+### §F.4.3 · Stacking
+
+|rule                        |behavior                                                                                                       |
+|----------------------------|---------------------------------------------------------------------------------------------------------------|
+|max visible                 |3 toasts simultaneously. 4th+ goes into queue.                                                                |
+|stack direction             |new toast appears at the BOTTOM of the visible stack (newest closest to user's spatial anchor — viewport edge).|
+|gap between toasts          |8px vertical gap                                                                                                |
+|queue order                 |FIFO — first triggered, first rendered when slot opens.                                                        |
+|priority override           |error tone toasts skip the queue if 3 success/info/warning are visible — error replaces oldest non-error.    |
+
+### §F.4.4 · Action button slot
+
+Optional. Used for "Rückgängig" (undo), "Erneut versuchen" (retry), "Anzeigen" (view-the-thing-just-saved).
+
+|prop                |spec                                                                                                                |
+|--------------------|--------------------------------------------------------------------------------------------------------------------|
+|placement           |right-aligned, between description and close X                                                                       |
+|font                |Avant Garde Gothic 600 13px brand-teal `#043338`, hover ink-1                                                        |
+|background          |transparent (text-only button — toast surface is already a card, button-on-button feels too heavy)                  |
+|behavior            |click fires `onAction` callback then dismisses the toast                                                            |
+|examples            |"Rückgängig" (undo a save), "Erneut versuchen" (retry a failed network call), "Anzeigen" (jump to the saved thing) |
+
+**Anti-pattern:** TWO action buttons on a toast — banned. If you need 2 actions, that's a §F.2 modal (action-required user resolution). Toast = at most 1 action + dismiss.
+
+### §F.4.5 · ARIA live region
+
+|tone     |role            |aria-live           |behavior                                                                                  |
+|---------|----------------|--------------------|------------------------------------------------------------------------------------------|
+|success  |`role="status"` |`aria-live="polite"`|announces after current screen-reader speech finishes. Doesn't interrupt.                  |
+|info     |`role="status"` |`aria-live="polite"`|same as success.                                                                          |
+|warning  |`role="status"` |`aria-live="polite"`|same as success — warnings are not interruptions, just cautions.                          |
+|error    |`role="alert"`  |`aria-live="assertive"`|interrupts current speech. User must hear errors immediately.                            |
+
+Toasts that contain ONLY text + optional action button are friendly to screen readers. Avoid putting interactive widgets (form inputs, multi-step controls) inside toasts — that's modal territory.
+
+### §F.4.6 · Motion specs
+
+|phase   |property                |from                |to                  |duration|easing  |
+|--------|------------------------|--------------------|--------------------|--------|--------|
+|entry   |opacity                 |0                   |1                   |200ms   |ease-snap|
+|entry   |transform: translateY(N)|translateY(20px)    |translateY(0)       |200ms   |ease-snap|
+|exit    |opacity                 |1                   |0                   |150ms   |ease-snap|
+|exit    |transform: translateY(N)|translateY(0)       |translateY(-10px)   |150ms   |ease-snap|
+|stack-shift|transform: translateY(N) on remaining toasts when one above dismisses|prev-position|new-position|150ms|ease-snap|
+
+**Reduced motion:** `prefers-reduced-motion: reduce` collapses all motion to opacity-only fade, 100ms. Per §24b.3.
+
+### §F.4.7 · Hand-rolled queue (architecture note)
+
+**v1 implementation: hand-rolled `<ToastProvider>` + `useToast()` hook.** `react-aria-components` exports only `UNSTABLE_Toast*` primitives at version `^1.16.0` — the API is explicitly marked unstable, locking ourselves in is risky. Hand-rolled queue achieves the same UX with stable API surface + zero new dependencies.
+
+Architecture:
+- `<ToastProvider>` rendered once at the app root (in `app/[locale]/layout.tsx`). Provides Context with `addToast()` + manages the queue.
+- `useToast()` hook returns `{ success, info, warning, error, custom }` methods. Each accepts `{ title, description?, action?, onAction?, duration?, sticky? }`.
+- Toasts rendered into a fixed-position region (per §F.4.2) using a portal to escape parent overflow / stacking context.
+- Auto-dismiss timer is per-toast `setTimeout`, cleared on hover, restarted on mouse-leave.
+- ARIA live region rendered as `<ol role="region" aria-label="Notifications">` per WAI-ARIA pattern.
+
+Migration path: when react-aria-components stabilizes Toast (drops UNSTABLE_ prefix), we MAY migrate. Not before. The hand-roll is intentionally minimal — no swipe-to-dismiss, no rich content widgets — to keep migration easy.
+
+### §F.4.8 · Anti-patterns
+
+- **Toasts replacing form-field error messages** — banned. Field errors use `<FieldHelper tone="error">` anchored to the field (§F.1.0). Toasts are for non-anchored feedback.
+- **Modals masquerading as toasts** — banned. If user must respond, it's a modal. If they don't HAVE to respond, it's a toast.
+- **Two action buttons on a toast** — banned. Toast = at most 1 action + dismiss. Two actions means modal.
+- **Toast that auto-dismisses an error** — banned by default. Errors stick until user acts. Override only for informational errors ("offline mode aktiviert" — informational, not blocking).
+- **Toast stack of 4+ visible** — banned. Max 3 visible. 4th+ queues. Higher visual stack = noise.
+- **Top-of-screen toasts** — banned for v1. Bottom is the locked position (matches user's mobile thumb position, doesn't block primary content).
+- **Brand-teal as success color** — banned per §3 semantic system. Use `#16A34A`.
+- **Italic anywhere in toast** — banned per V2-D15.
+- **Toasts with form inputs / multi-step controls** — banned. That's a modal.
+
+-----
+
+*§F.4 ends here. Phase 0 continues with §F.5 date/time picker primitive — locked next.*
+
+-----
+
 *Step 3 ends here. Step 4 covers §12 the locked patterns: header / hero / search / cards / sections / b2b / footer.*
 
 # SOLEN_LIVE_TRUTH_v2 — Step 4: Locked Patterns

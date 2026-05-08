@@ -36,10 +36,21 @@ import {
   SheetHeader,
   SheetBody,
   SheetCTARow,
+  ToastProvider,
+  useToast,
 } from "../../_components/primitives";
 
 export default function PrimitivesDevPage() {
   if (process.env.NODE_ENV === "production") notFound();
+
+  return (
+    <ToastProvider>
+      <PrimitivesDevPageInner />
+    </ToastProvider>
+  );
+}
+
+function PrimitivesDevPageInner() {
 
   // Live state for interactive demos
   const [reviewText, setReviewText] = React.useState(
@@ -880,10 +891,15 @@ export default function PrimitivesDevPage() {
           </Grid>
         </Section>
 
+        {/* §F.4 TOAST */}
+        <Section eyebrow="Toast" meta="§F.4 · 4 tones" title="Toast (transient notifications)">
+          <ToastDemo />
+        </Section>
+
         {/* FOOT */}
         <footer className="mt-24 pt-6 border-t border-s-ink flex justify-between font-body text-[11px] uppercase tracking-[0.16em] text-s-ink-3 tabular-nums">
-          <span>Solen V3 · Phase 0 · §F.1 + §F.2 + §F.3 React · /dev/primitives</span>
-          <span>2026-05-09 · V2-D19</span>
+          <span>Solen V3 · Phase 0 · §F.1 + §F.2 + §F.3 + §F.4 React · /dev/primitives</span>
+          <span>2026-05-09 · V2-D20</span>
         </footer>
       </div>
     </div>
@@ -944,5 +960,122 @@ function Card({ tag, children }: { tag: string; children: React.ReactNode }) {
       </div>
       {children}
     </div>
+  );
+}
+
+function ToastDemo() {
+  const toast = useToast();
+
+  return (
+    <Grid cols={2}>
+      <Card tag="4 tones · click to fire">
+        <p className="font-body text-[13px] text-s-ink-2 mb-3">
+          Click each button to fire that tone. Hover the toast to pause auto-dismiss timer.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() =>
+              toast.success({
+                title: "Look gespeichert",
+                description: "Long Bob mit Highlights ist jetzt in deinem Mein-Look-Board.",
+                action: "Anzeigen",
+                onAction: () => alert("Navigate to Mein-Look-Board"),
+              })
+            }
+            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-success text-white hover:opacity-90 transition-opacity"
+          >
+            Success
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              toast.info({
+                title: "3 neue Salons in Basel",
+                description: "Schau sie dir in deinem Feed an.",
+              })
+            }
+            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors"
+          >
+            Info
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              toast.warning({
+                title: "Internetverbindung instabil",
+                description: "Deine Buchung wird gespeichert sobald die Verbindung zurück ist.",
+              })
+            }
+            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-warning text-white hover:opacity-90 transition-opacity"
+          >
+            Warning
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              toast.error({
+                title: "Buchung fehlgeschlagen",
+                description: "Der Termin wurde inzwischen gebucht. Wähle einen anderen Slot.",
+                action: "Erneut versuchen",
+                onAction: () => alert("Retry booking"),
+              })
+            }
+            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-error text-white hover:opacity-90 transition-opacity"
+          >
+            Error (sticky)
+          </button>
+        </div>
+      </Card>
+
+      <Card tag="stacking demo · max 3 visible">
+        <p className="font-body text-[13px] text-s-ink-2 mb-3">
+          Click "Fire 5" to queue 5 toasts. Watch as 4th + 5th wait until visible slots open.
+          Errors take priority — a fresh error replaces the oldest non-error.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              toast.success({ title: "Toast 1" });
+              toast.info({ title: "Toast 2" });
+              toast.success({ title: "Toast 3" });
+              setTimeout(() => toast.warning({ title: "Toast 4 (queued)" }), 100);
+              setTimeout(() => toast.success({ title: "Toast 5 (queued)" }), 200);
+            }}
+            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-ink text-white hover:opacity-90 transition-opacity"
+          >
+            Fire 5 (queue 2)
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              toast.success({ title: "Mit Aktion", action: "Rückgängig", onAction: () => alert("Undone") });
+            }}
+            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink border border-s-ink/10 hover:bg-s-bg-sunken transition-colors"
+          >
+            With action
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              toast.success({ title: "Title only — no description" });
+            }}
+            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink border border-s-ink/10 hover:bg-s-bg-sunken transition-colors"
+          >
+            Title only
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              toast.dismissAll();
+            }}
+            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink-3 border border-s-ink/10 hover:text-s-ink transition-colors"
+          >
+            Dismiss all
+          </button>
+        </div>
+      </Card>
+    </Grid>
   );
 }

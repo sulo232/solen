@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen V3 — §F.4 toast primitive · all states</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Sansita:wght@400;700;900&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/cooper-black-std">
+<style>
+  :root {
+    --brand: #043338; --brand-mid: #0A6873;
+    --ink: #1A1209; --ink-2: #56463E; --ink-3: #7A6957;
+    --bg: #FFFFFF; --sunken: #FAF7F3;
+    --success: #16A34A; --warning: #F59E0B; --error: #D32F2F;
+    --border: rgba(26,18,9,.06); --border-10: rgba(26,18,9,.10);
+    --r-sm: 6px; --r-md: 10px; --r-lg: 12px; --r-2xl: 16px; --r-pill: 99px;
+    --display: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif;
+    --body: 'ITC Avant Garde Gothic Std', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+    --shadow-toast: 0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--body); -webkit-font-smoothing: antialiased; line-height: 1.5; }
+  body { padding: 56px 20px 100px; }
+  .doc { max-width: 1180px; margin: 0 auto; }
+
+  .page-head { margin-bottom: 56px; }
+  .page-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .page-meta-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 18px;
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .page-eyebrow { color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+  .page-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand); }
+  .page-meta { color: var(--ink-3); }
+  .page-h1 {
+    font-family: var(--display); font-weight: 900;
+    font-size: 64px; line-height: 0.95;
+    letter-spacing: -0.02em; color: var(--ink);
+  }
+  .page-sub { font-weight: 400; font-size: 15px; color: var(--ink-2); margin-top: 18px; max-width: 720px; }
+
+  .sec { margin-top: 72px; }
+  .sec-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .sec-meta-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 12px;
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .sec-eyebrow { color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+  .sec-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); }
+  .sec-meta { color: var(--ink-3); }
+  .sec-h2 {
+    font-family: var(--display); font-weight: 900;
+    font-size: 36px; line-height: 1;
+    letter-spacing: -0.02em; color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .sec-intro { font-weight: 400; font-size: 14px; line-height: 1.55; color: var(--ink-2); max-width: 720px; margin-bottom: 32px; }
+
+  /* ========== TOAST ========== */
+  .toast {
+    position: relative;
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--bg);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-toast);
+    padding: 14px 16px;
+    padding-left: 20px;
+    width: 100%;
+    max-width: 480px;
+    min-width: 280px;
+    overflow: hidden;
+  }
+  .toast::before {
+    content: ''; position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 4px;
+  }
+  .toast.tone-success::before { background: var(--success); }
+  .toast.tone-info::before    { background: var(--brand); }
+  .toast.tone-warning::before { background: var(--warning); }
+  .toast.tone-error::before   { background: var(--error); }
+
+  .toast-icon { flex-shrink: 0; padding-top: 1px; }
+  .toast.tone-success .toast-icon { color: var(--success); }
+  .toast.tone-info    .toast-icon { color: var(--brand); }
+  .toast.tone-warning .toast-icon { color: var(--warning); }
+  .toast.tone-error   .toast-icon { color: var(--error); }
+
+  .toast-content { flex: 1 1 auto; min-width: 0; }
+  .toast-title {
+    font-weight: 600; font-size: 14px;
+    line-height: 1.3; color: var(--ink);
+  }
+  .toast-desc {
+    font-weight: 400; font-size: 12px;
+    line-height: 1.4; color: var(--ink-3);
+    margin-top: 2px;
+  }
+  .toast-action {
+    flex-shrink: 0;
+    background: transparent; border: none;
+    font-weight: 600; font-size: 13px;
+    color: var(--brand);
+    cursor: pointer;
+    padding: 2px 4px;
+    margin-top: -1px;
+  }
+  .toast-action:hover { color: var(--ink); }
+  .toast-close {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px;
+    margin: -8px -10px -8px 0;
+    background: transparent; border: none;
+    color: var(--ink-3);
+    cursor: pointer;
+    border-radius: var(--r-md);
+  }
+  .toast-close:hover { color: var(--ink); }
+
+  .icon-svg { display: block; }
+
+  /* ========== STAGE (mock app bg + bottom-anchored toast region) ========== */
+  .stage {
+    position: relative;
+    min-height: 540px;
+    background: linear-gradient(180deg, var(--sunken) 0%, var(--bg) 60%, var(--sunken) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    overflow: hidden;
+    padding: 24px;
+  }
+  .stage-bg {
+    pointer-events: none;
+    margin-bottom: 18px;
+  }
+  .stage-bg-text {
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-3); margin-bottom: 12px;
+  }
+  .stage-bg-line {
+    height: 8px; background: var(--ink); opacity: 0.06;
+    border-radius: 4px; margin-bottom: 6px;
+  }
+  .stage-bg-line.short { width: 60%; }
+  .stage-bg-line.tiny  { width: 30%; }
+  .toast-region-mobile {
+    position: absolute;
+    bottom: 16px; left: 16px; right: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .toast-region-desktop {
+    position: absolute;
+    bottom: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 8px;
+    width: min(480px, calc(100% - 48px));
+    align-items: flex-end;
+  }
+
+  /* ========== USE-CASE GRID ========== */
+  .grid { display: grid; gap: 18px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    padding: 22px;
+  }
+  .card-tag {
+    display: inline-block;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-3); margin-bottom: 14px;
+  }
+  .card-tag .num { color: var(--brand); font-variant-numeric: tabular-nums; }
+
+  /* ========== STATE TIMELINE ========== */
+  .timeline { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 720px) { .timeline { grid-template-columns: repeat(5, 1fr); } }
+  .tl-step {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 16px;
+  }
+  .tl-vis {
+    background: var(--sunken);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    height: 80px;
+    margin-bottom: 12px;
+    position: relative; overflow: hidden;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 8px;
+  }
+  .tl-vis-toast {
+    width: 80%; height: 36px;
+    background: var(--bg);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(50,47,44,0.10);
+    border-left: 3px solid var(--success);
+  }
+  .tl-vis.queued .tl-vis-toast { display: none; }
+  .tl-vis.queued::before { content: 'queued (3 visible)'; color: var(--ink-3); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; align-self: center; }
+  .tl-vis.opening .tl-vis-toast { transform: translateY(20px); opacity: 0.5; }
+  .tl-vis.dismissing .tl-vis-toast { transform: translateY(-10px); opacity: 0.4; }
+  .tl-vis.closed .tl-vis-toast { display: none; }
+  .tl-vis.closed::before { content: 'unmounted'; color: var(--ink-3); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; align-self: center; }
+
+  .tl-state {
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--brand); margin-bottom: 8px;
+  }
+  .tl-name { font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 8px; }
+  .tl-desc { font-weight: 400; font-size: 12px; color: var(--ink-3); line-height: 1.5; }
+
+  /* ========== ANTI-PATTERN STRIP ========== */
+  .anti-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .anti-grid { grid-template-columns: repeat(2, 1fr); } }
+  .anti-card {
+    background: rgba(211,47,47,0.04);
+    border: 1px dashed rgba(211,47,47,0.40);
+    border-radius: var(--r-lg);
+    padding: 18px;
+  }
+  .anti-tag {
+    display: inline-block;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--error); margin-bottom: 10px;
+  }
+  .anti-title { font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 8px; }
+  .anti-desc { font-size: 12px; color: var(--ink-2); line-height: 1.5; }
+
+  .foot {
+    margin-top: 96px; padding-top: 24px;
+    border-top: 1px solid var(--ink);
+    font-size: 11px; color: var(--ink-3);
+    letter-spacing: 0.16em; text-transform: uppercase;
+    display: flex; justify-content: space-between;
+    font-variant-numeric: tabular-nums;
+  }
+  .toc { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .toc a {
+    font-size: 11px; font-weight: 600;
+    color: var(--ink); background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 7px 12px; border-radius: var(--r-pill);
+    text-decoration: none;
+  }
+  .toc a:hover { color: var(--brand); }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header class="page-head">
+    <div class="page-rule"></div>
+    <div class="page-meta-row">
+      <span class="page-eyebrow"><span class="page-eyebrow-dot"></span>Solen V3 · Phase 0 · §F.4</span>
+      <span class="page-meta">2026-05-09 · overnight</span>
+    </div>
+    <h1 class="page-h1">Toast primitive</h1>
+    <p class="page-sub">
+      Transient non-blocking notification. Auto-dismisses (3s success/info, 6s warning, sticky for errors).
+      Hand-rolled queue + Context provider — react-aria-components Toast is UNSTABLE_ at v1.16.0,
+      not safe to depend on. 4 tone variants (success / info / warning / error) with left tone-bar +
+      icon. Stacks max 3, FIFO queue beyond.
+    </p>
+    <nav class="toc">
+      <a href="#tones">Tone variants</a>
+      <a href="#position">Position + stacking</a>
+      <a href="#anatomy">Anatomy</a>
+      <a href="#states">State matrix</a>
+      <a href="#anti">Anti-patterns</a>
+    </nav>
+  </header>
+
+  <!-- ============================== TONE VARIANTS ============================== -->
+  <section id="tones" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Tone variants</span>
+      <span class="sec-meta">§F.4.0a · 4 tones</span>
+    </div>
+    <h2 class="sec-h2">Tone variants</h2>
+    <p class="sec-intro">
+      Four semantic tones from §3 Solen color system. Left tone-bar (4px wide) provides the visual
+      category cue without recoloring the surface. Icons are Lucide stroke 2.
+    </p>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-tag">success · 3s auto-dismiss</div>
+        <div class="toast tone-success">
+          <span class="toast-icon">
+            <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          </span>
+          <div class="toast-content">
+            <div class="toast-title">Look gespeichert</div>
+            <div class="toast-desc">Long Bob mit Highlights ist jetzt in deinem Mein-Look-Board.</div>
+          </div>
+          <button class="toast-action" type="button">Anzeigen</button>
+          <button class="toast-close" type="button" aria-label="Schließen">
+            <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">info · 3s auto-dismiss</div>
+        <div class="toast tone-info">
+          <span class="toast-icon">
+            <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          </span>
+          <div class="toast-content">
+            <div class="toast-title">3 neue Salons in Basel</div>
+            <div class="toast-desc">Schau sie dir in deinem Feed an.</div>
+          </div>
+          <button class="toast-close" type="button" aria-label="Schließen">
+            <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">warning · 6s auto-dismiss</div>
+        <div class="toast tone-warning">
+          <span class="toast-icon">
+            <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+          </span>
+          <div class="toast-content">
+            <div class="toast-title">Internetverbindung instabil</div>
+            <div class="toast-desc">Deine Buchung wird gespeichert sobald die Verbindung zurück ist.</div>
+          </div>
+          <button class="toast-close" type="button" aria-label="Schließen">
+            <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">error · sticky (action required)</div>
+        <div class="toast tone-error">
+          <span class="toast-icon">
+            <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          </span>
+          <div class="toast-content">
+            <div class="toast-title">Buchung fehlgeschlagen</div>
+            <div class="toast-desc">Der Termin wurde inzwischen gebucht. Wähle einen anderen Slot.</div>
+          </div>
+          <button class="toast-action" type="button">Erneut versuchen</button>
+          <button class="toast-close" type="button" aria-label="Schließen">
+            <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== POSITION + STACKING ============================== -->
+  <section id="position" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Position + stacking</span>
+      <span class="sec-meta">§F.4.2 + §F.4.3</span>
+    </div>
+    <h2 class="sec-h2">Position + stacking</h2>
+    <p class="sec-intro">
+      Mobile: bottom-center, full-width minus 16px margin, respects iOS safe-area. Desktop: bottom-right,
+      max 480px, 24px from edge. Max 3 visible; 4th+ queues. Newest appears at the BOTTOM (closest to viewport edge).
+    </p>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-tag">mobile · bottom-center · 3 stacked</div>
+        <div class="stage" style="min-height: 540px;">
+          <div class="stage-bg">
+            <div class="stage-bg-text">/basel/coiffeur</div>
+            <div class="stage-bg-line"></div>
+            <div class="stage-bg-line short"></div>
+            <div class="stage-bg-line"></div>
+            <div class="stage-bg-line tiny"></div>
+            <div class="stage-bg-line"></div>
+            <div class="stage-bg-line short"></div>
+          </div>
+          <div class="toast-region-mobile">
+            <div class="toast tone-info">
+              <span class="toast-icon"><svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span>
+              <div class="toast-content"><div class="toast-title">Standort aktualisiert</div></div>
+              <button class="toast-close" type="button" aria-label="Schließen"><svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+            </div>
+            <div class="toast tone-success">
+              <span class="toast-icon"><svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span>
+              <div class="toast-content"><div class="toast-title">Salon zu Favoriten hinzugefügt</div></div>
+              <button class="toast-action" type="button">Rückgängig</button>
+              <button class="toast-close" type="button" aria-label="Schließen"><svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+            </div>
+            <div class="toast tone-success">
+              <span class="toast-icon"><svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span>
+              <div class="toast-content"><div class="toast-title">Link kopiert</div></div>
+              <button class="toast-close" type="button" aria-label="Schließen"><svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">desktop · bottom-right · single</div>
+        <div class="stage" style="min-height: 540px;">
+          <div class="stage-bg">
+            <div class="stage-bg-text">/salon/maria-kleinbasel</div>
+            <div class="stage-bg-line"></div>
+            <div class="stage-bg-line short"></div>
+            <div class="stage-bg-line"></div>
+            <div class="stage-bg-line tiny"></div>
+            <div class="stage-bg-line"></div>
+          </div>
+          <div class="toast-region-desktop">
+            <div class="toast tone-error" style="max-width: 380px;">
+              <span class="toast-icon"><svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></span>
+              <div class="toast-content">
+                <div class="toast-title">Buchung fehlgeschlagen</div>
+                <div class="toast-desc">Der Termin wurde inzwischen gebucht.</div>
+              </div>
+              <button class="toast-action" type="button">Erneut</button>
+              <button class="toast-close" type="button" aria-label="Schließen"><svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== STATE MATRIX ============================== -->
+  <section id="states" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>State matrix</span>
+      <span class="sec-meta">§F.4.0b · 5 phases</span>
+    </div>
+    <h2 class="sec-h2">State matrix</h2>
+    <p class="sec-intro">
+      Toasts use <code style="font-family:'JetBrains Mono',monospace;">ease-snap</code> for both entry (200ms) and exit (150ms). Stack-shift on neighbor dismissal animates over 150ms.
+      Reduced-motion: opacity-only, 100ms.
+    </p>
+
+    <div class="timeline">
+      <div class="tl-step">
+        <div class="tl-vis queued"></div>
+        <div class="tl-state">01 · queued</div>
+        <div class="tl-name">In FIFO queue</div>
+        <div class="tl-desc">≥3 already visible. Waiting for slot.</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-vis opening"><div class="tl-vis-toast"></div></div>
+        <div class="tl-state">02 · opening</div>
+        <div class="tl-name">translateY(20px)→0 + fade</div>
+        <div class="tl-desc">200ms ease-snap. Enters at bottom of stack.</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-vis"><div class="tl-vis-toast"></div></div>
+        <div class="tl-state">03 · open</div>
+        <div class="tl-name">Auto-dismiss timer</div>
+        <div class="tl-desc">3/6/sticky per tone. Hover pauses timer.</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-vis dismissing"><div class="tl-vis-toast"></div></div>
+        <div class="tl-state">04 · dismissing</div>
+        <div class="tl-name">translateY(-10px) + fade</div>
+        <div class="tl-desc">150ms ease-snap. Stack above shifts down.</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-vis closed"></div>
+        <div class="tl-state">05 · closed</div>
+        <div class="tl-name">Unmounted</div>
+        <div class="tl-desc">Next queued toast (if any) immediately enters opening.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== ANTI-PATTERNS ============================== -->
+  <section id="anti" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Anti-patterns</span>
+      <span class="sec-meta">§F.4.8 · banned</span>
+    </div>
+    <h2 class="sec-h2">Anti-patterns</h2>
+    <p class="sec-intro">What Solen toasts <strong>do not</strong> do.</p>
+
+    <div class="anti-grid">
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Toasts replacing form-field error messages</div>
+        <div class="anti-desc">Field errors use <code style="font-family:'JetBrains Mono',monospace;">&lt;FieldHelper tone="error"&gt;</code> anchored to the field per §F.1.0. Toasts are for non-anchored feedback only.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Modals masquerading as toasts</div>
+        <div class="anti-desc">If user MUST respond, it's a modal. If they don't have to, it's a toast. Don't blur the line.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Two action buttons on a toast</div>
+        <div class="anti-desc">At most 1 action + dismiss. Two actions = modal. Toasts are aside, not focus.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Auto-dismissing errors</div>
+        <div class="anti-desc">Errors stick until user acts. Override only for informational errors ("offline mode aktiviert" — not blocking).</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">4+ toasts visible</div>
+        <div class="anti-desc">Max 3 visible. 4th+ queues. Higher visual stack = noise.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Top-of-screen toasts</div>
+        <div class="anti-desc">Bottom is locked v1 position. Matches mobile thumb position; doesn't block primary content.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Brand-teal as success color</div>
+        <div class="anti-desc">Per §3 semantic system: <code style="font-family:'JetBrains Mono',monospace;">#16A34A</code>. Brand-teal is for navigation + CTAs.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Form inputs / multi-step controls inside toasts</div>
+        <div class="anti-desc">That's a modal. Toasts are read-and-dismiss aside notifications, not focus surfaces.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Solen V3 · Phase 0 · §F.4 toast primitive</span>
+    <span>2026-05-09 · V2-D20</span>
+  </footer>
+
+</div>
+</body>
+</html>
