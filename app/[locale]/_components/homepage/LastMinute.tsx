@@ -51,7 +51,7 @@ export default function LastMinute() {
         eyebrow="Heute · letzte Slots"
         meta={`${entries.length} Salons · bis zu −${maxDiscount}%`}
         title="Last-Minute heute"
-        link={{ label: "Alle ansehen →", href: "/last-minute" }}
+        link={{ label: "Alle →", href: "/last-minute" }}
       />
 
       <ScrollRow>

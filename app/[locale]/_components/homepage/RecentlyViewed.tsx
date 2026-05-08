@@ -97,7 +97,7 @@ export default function RecentlyViewed() {
         eyebrow="Bei dir zuletzt"
         meta={`letzte ${list.length} · localStorage`}
         title="Zuletzt angesehen"
-        link={{ label: "Im Profil ansehen →", href: "/profile/recently-viewed" }}
+        link={{ label: "Im Profil →", href: "/profile/recently-viewed" }}
       />
 
       <ScrollRow>
