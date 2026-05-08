@@ -32,6 +32,46 @@
     line-height: 1.55; -webkit-font-smoothing: antialiased;
   }
 
+  /* ============== PAGE-WIDE ATMOSPHERE WASHES (V3 — §5g extended) ============== */
+  /* Layered fixed-position radial gradients give the white page warmth + depth without
+     reverting to a colored substrate. Positioned at distinct viewport locations so as
+     the user scrolls, different glows come into view — never a flat white moment. */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      /* Top-right cyan core (matches hero §5g recipe exactly) */
+      radial-gradient(ellipse 65% 40% at 75% 12%, rgba(202, 232, 255, 0.55) 0%, transparent 60%),
+      /* Top-left pale teal */
+      radial-gradient(ellipse 50% 45% at 18% 22%, rgba(194, 240, 241, 0.50) 0%, transparent 65%),
+      /* Mid-page navy depth (where category carousels live) */
+      radial-gradient(ellipse 45% 35% at 92% 48%, rgba(0, 88, 152, 0.18) 0%, transparent 55%),
+      /* Lower-left teal echo */
+      radial-gradient(ellipse 55% 40% at 8% 72%, rgba(194, 240, 241, 0.40) 0%, transparent 60%),
+      /* Bottom navy bleed */
+      radial-gradient(ellipse 60% 45% at 65% 92%, rgba(3, 30, 72, 0.10) 0%, transparent 55%);
+    z-index: -2;
+    pointer-events: none;
+  }
+  /* A second softer layer that scrolls (gives a parallax-like depth — closer-feeling glows) */
+  body::after {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      /* Pale cream warmth around recently-viewed / last-minute area */
+      radial-gradient(ellipse 50% 25% at 50% 18%, rgba(255, 241, 221, 0.55) 0%, transparent 65%),
+      /* Coiffeur cream warmth around per-category carousels */
+      radial-gradient(ellipse 40% 20% at 15% 38%, rgba(255, 241, 221, 0.40) 0%, transparent 70%),
+      /* Nails ice-blue echo around nails carousel */
+      radial-gradient(ellipse 35% 18% at 85% 48%, rgba(202, 232, 255, 0.35) 0%, transparent 70%),
+      /* Brand-pale around discover */
+      radial-gradient(ellipse 45% 18% at 50% 62%, rgba(225, 244, 244, 0.50) 0%, transparent 65%),
+      /* Brand-teal soft hint around city tiles */
+      radial-gradient(ellipse 40% 14% at 80% 75%, rgba(194, 240, 241, 0.40) 0%, transparent 70%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
   /* ============== PAGE LABEL ============== */
   .page-label {
     position: fixed; top: 12px; right: 12px; z-index: 1000;
@@ -78,7 +118,26 @@
   .nav-cta:hover { background: var(--brand-mid); }
 
   /* ============== HERO ============== */
+  .hero-zone {
+    position: relative;
+    overflow: hidden;
+  }
+  /* Hero gets the FULL §5g atmosphere wash recipe on top of body wash */
+  .hero-zone::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 65% 55% at 72% 28%, rgba(202, 232, 255, 0.78) 0%, transparent 55%),
+      radial-gradient(ellipse 58% 50% at 22% 78%, rgba(194, 240, 241, 0.72) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 65% at 100% 105%, rgba(0, 88, 152, 0.32) 0%, transparent 55%),
+      radial-gradient(ellipse 45% 55% at 0% -5%, rgba(0, 88, 152, 0.28) 0%, transparent 50%),
+      linear-gradient(180deg, transparent 65%, rgba(3, 30, 72, 0.06) 100%);
+    z-index: 0;
+    pointer-events: none;
+  }
   .hero {
+    position: relative;
+    z-index: 1;
     max-width: 1280px; margin: 0 auto;
     padding: 64px 32px 80px;
     display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: center;
@@ -163,7 +222,10 @@
   }
 
   /* ============== EDITORIAL SECTION-BREAK (V2-D15-4) ============== */
-  .sec { max-width: 1280px; margin: 0 auto; padding: 64px 32px; }
+  .sec {
+    position: relative; z-index: 1;
+    max-width: 1280px; margin: 0 auto; padding: 64px 32px;
+  }
   .sec-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
   .sec-meta-row {
     display: flex; align-items: baseline; justify-content: space-between;
@@ -655,22 +717,23 @@
 
   <div class="page-label">Solen V3 · Q51 full · V2-D32 candidate</div>
 
-  <!-- ============== HEADER ============== -->
-  <nav class="nav">
-    <div class="nav-logo">Solen</div>
-    <div class="nav-links">
-      <a href="#">Coiffeur</a>
-      <a href="#">Barbershop</a>
-      <a href="#">Nails</a>
-      <a href="#">Spa &amp; Wellness</a>
-      <a href="#">Entdecken</a>
-    </div>
-    <button class="nav-cta">Anmelden</button>
-  </nav>
+  <!-- ============== HEADER (inside hero zone so the wash extends behind) ============== -->
+  <div class="hero-zone">
+    <nav class="nav" style="position: relative; z-index: 2; background: rgba(255,255,255,0.82); backdrop-filter: blur(12px);">
+      <div class="nav-logo">Solen</div>
+      <div class="nav-links">
+        <a href="#">Coiffeur</a>
+        <a href="#">Barbershop</a>
+        <a href="#">Nails</a>
+        <a href="#">Spa &amp; Wellness</a>
+        <a href="#">Entdecken</a>
+      </div>
+      <button class="nav-cta">Anmelden</button>
+    </nav>
 
   <!-- ============== HERO ============== -->
   <div class="sec-wrap">
-    <span class="anno">§13 · hero</span>
+    <span class="anno">§13 · hero · §5g wash</span>
     <section class="hero">
       <div>
         <div class="hero-eyebrow">Beauty in der Schweiz</div>
@@ -698,6 +761,7 @@
       <div class="hero-preview">[ hero photo ]</div>
     </section>
   </div>
+  </div><!-- /hero-zone -->
 
   <!-- ============== SECTION 0 · RECENTLY VIEWED (CONDITIONAL) ============== -->
   <div class="sec-wrap">
