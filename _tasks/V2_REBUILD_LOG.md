@@ -352,6 +352,31 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
 
+### V2-D34 (2026-05-09 evening) — §16 salon card badge system v2 (light glassmorphic + 2-badge layout + color philosophy)
+
+- **Context:** during V2-D32 homepage mockup work, user audited my §16 salon-card implementation against pre-V3 specs (Q10 from 2026-04-22 + Q26 from 2026-05-01) that I'd missed when first building the cards. Q10 locks 4 curation badges (Solen Favorit / Top bewertet / Beliebt / Neu) with priority order. Q26 locks the 2-badge layout (curation top-left + availability bottom-left). V3 §16 had inherited only the older single-badge availability pattern — never adopted Q10's curation system OR Q26's bottom-left availability placement. This entry locks the full Q10+Q26 spec into V3 §16, refined with V2-D15-4 flat-pill discipline + new color philosophy.
+- **A/B mockup at `public/solen-v2-card-badges.html`:**
+  - **A** — current V3 §16 (single availability badge top-left, no curation)
+  - **B** — full Q10+Q26 spec (curation top-left + availability bottom-left)
+  - User picked B + iterated on visual refinement.
+- **Visual refinement journey (4 iterations):**
+  1. Initial B: solid yellow Solen Favorit bg + solid brand-teal availability pill + dots — too "deep/dark" per user.
+  2. Iter 2: light glassmorphic bgs (rgba 0.62 alpha + blur 14px) + shape differentiation (curation = rounded rect 8px, availability = full pill 999px). Better but still felt unbalanced.
+  3. Iter 3: dropped pulsing dots — pill color carries the meaning ("In 15 Min" green tint = "free now," no dot needed). Heart became floating (no white circle bg) — just SVG with drop-shadow. Heart shadow on saved state was 0.45 alpha — felt too heavy.
+  4. **Iter 4 (LOCKED):** unified color philosophy across all tinted badges. Each state picks its hue, then bg=`rgba(<hue>, 0.22)` + border=`rgba(<hue>, 0.32)` + text=deep version of hue. Solen Favorit yellow → text `#8B5E0F` deep amber. Available green → text `#0E7A38` deep green. This-week brand-teal → text `#043338`. Pause ink-3 → text `#56463E`. Heart unsaved → ink-3 warm gray (was deep ink — too contrast); heart saved shadow reduced to 0.20 alpha (was 0.45).
+- **Final design (V2-D34 lock):**
+  - **Curation badge** (top-left, rounded rectangle 8px radius, light glass) — 4 variants: Solen Favorit (yellow tint + deep amber text), Top bewertet / Beliebt / Neu (white tint + ink-1 text). Backend auto-assigns via `/api/admin/badges/auto-assign`. Priority order Solen Favorit > Top bewertet > Beliebt > Neu. Solen Exclusive (mentioned in BACKEND_NEEDS_UI.md) **NOT in v1** — defer to v2.
+  - **Availability pill** (bottom-left, full pill 999px, light glass, color-coded) — 3 states: today/now (green tint + deep green text), this-week (brand-teal tint + brand-teal text), pause (ink-3 tint + ink-2 text). NO dots — color is the signal.
+  - **Heart** (top-right, floating, no circle bg) — 24px SVG, ink-3 warm gray stroke unsaved (or white-ish on dark Spa bg), love-red `#FF4A6B` filled saved, drop-shadow 0.18 alpha unsaved / 0.20 alpha saved.
+- **Universal color formula** (locked LIVE_TRUTH §16.3.0): `bg: rgba(<hue>, 0.22)` + `border: rgba(<hue>, 0.32)` + `color: <deep-version-of-hue>` + `backdrop-filter: blur(14px) saturate(1)` + `box-shadow: 0 1px 3px rgba(26,18,9,0.06)`. Reusable for any future state badge.
+- **Backend integration TBD (deferred):** `/api/admin/badges/auto-assign` cron + thresholds. Q10 doesn't lock exact threshold values — V2-D34 sets defaults: Top bewertet = ≥4.7 stars + ≥50 reviews; Beliebt = top 10% bookings in city × cat trailing 30d; Neu = first 60d after onboarding; Solen Favorit = algorithmic (rating × volume × reply rate × recency × response time, exact formula TBD with backend team). These thresholds are NEW V2-D34 — not in Q10 or any earlier doc. User can override.
+- **Files patched:**
+  - `_tasks/SOLEN_LIVE_TRUTH.md` §16.1 anatomy diagram updated to show 2-badge layout, §16.3 photo overlays section completely rewritten (added §16.3.0 universal color formula, §16.3.1 curation badge, §16.3.2 availability pill, §16.3.3 heart icon, §16.3.4 anti-patterns)
+  - `public/solen-v2-card-badges.html` — A/B comparison mockup, ~700 lines
+  - `public/solen-v2-homepage.html` — all 25 salon-card instances updated to new V2-D34 design (TODO this commit)
+- **Live site impact:** none currently — no route imports the new cards yet. Will apply when V2-D32 React build lands.
+- **Status:** **locked.** §16 V2-D34 supersedes the V2-D14/V2-D17 single-badge spec. Next: Decision 2 in V2-D33 doc consolidation flow (component naming in LIVE_TRUTH).
+
 ### V2-D31 (2026-05-09 afternoon) — Phase 0 COMPLETE · §F.6 + §F.7 + §F.8 batch ship
 
 **This single commit closes 3 sub-sections (§F.6 skip-link + §F.7 font-display + §F.8 cookie consent) + locks Phase 0 as fully done.** Bundling them because §F.6 + §F.7 are tiny (one component each + spec doc) and §F.8 has its own substantial spec+mockup+React. Single commit reduces commit-message noise; details below.

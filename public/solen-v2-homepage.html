@@ -482,63 +482,92 @@
   .salon-card.cat-spa      .salon-photo { background: var(--cat-spa); }
   .salon-card.cat-spa      .salon-photo .initial { color: var(--cat-spa-text); }
 
-  /* Badge top-left (§16.3) — Sofort frei / Heute frei / pause variants */
-  .salon-badge {
+  /* ==================== V2-D34 BADGE SYSTEM ==================== */
+  /* Universal color philosophy:
+     bg: rgba(<hue>, 0.22) | border: rgba(<hue>, 0.32) | color: deep <hue>
+     backdrop-filter: blur(14px) saturate(1) | shadow: 0 1px 3px rgba(26,18,9,0.06)
+     Each tinted state picks its own hue + matching deep text. */
+
+  /* Curation badge (top-left, rounded rectangle 8px) — quality/identity stamp */
+  .salon-curation {
     position: absolute; top: 8px; left: 8px;
-    display: inline-flex; align-items: center; gap: 5px;
-    background: rgba(255,255,255,0.88);
-    backdrop-filter: blur(12px) saturate(1);
-    -webkit-backdrop-filter: blur(12px) saturate(1);
-    padding: 4px 9px;
-    border-radius: 999px;
+    display: inline-flex; align-items: center;
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(14px) saturate(1);
+    -webkit-backdrop-filter: blur(14px) saturate(1);
+    padding: 5px 10px;
+    border-radius: 8px;            /* rounded rectangle, NOT pill */
+    border: 1px solid rgba(255, 255, 255, 0.45);
     font-family: var(--body); font-weight: 700;
     font-size: 10px; line-height: 1.2;
     color: var(--ink);
-    letter-spacing: .01em;
-    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    letter-spacing: .02em;
+    box-shadow: 0 1px 3px rgba(26, 18, 9, 0.06);
     pointer-events: none;
   }
-  .salon-badge-dot {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: var(--brand);   /* default Sofort frei = brand teal */
-    flex-shrink: 0;
-    animation: badge-pulse 1.6s ease-in-out infinite;
-  }
-  .salon-badge.is-heute .salon-badge-dot { background: var(--success); box-shadow: 0 0 0 3px rgba(22,163,74,.20); }
-  .salon-badge.is-sofort .salon-badge-dot { box-shadow: 0 0 0 3px rgba(4,51,56,.20); }
-  .salon-badge.is-pause .salon-badge-dot { display: none; }
-  .salon-badge.is-pause { color: var(--ink-2); }
-  @keyframes badge-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50%      { opacity: 0.5; transform: scale(1.3); }
+  .salon-curation.is-favorit {
+    background: rgba(242, 193, 68, 0.22);
+    border-color: rgba(242, 193, 68, 0.32);
+    color: #8B5E0F;                /* deep amber — yellow's "deeper hue" */
   }
 
-  /* Heart top-right (§16.3) — 28px circle, 14px Lucide icon */
+  /* Availability pill (bottom-left, full pill 999px) — live state */
+  .salon-avail {
+    position: absolute; bottom: 8px; left: 8px;
+    display: inline-flex; align-items: center;
+    background: rgba(22, 163, 74, 0.22);     /* default = green = today/now */
+    backdrop-filter: blur(14px) saturate(1);
+    -webkit-backdrop-filter: blur(14px) saturate(1);
+    padding: 5px 11px;
+    border-radius: 999px;          /* full pill, distinguishes from curation */
+    border: 1px solid rgba(22, 163, 74, 0.32);
+    font-family: var(--body); font-weight: 700;
+    font-size: 10px; line-height: 1.2;
+    color: #0E7A38;                /* deep green */
+    letter-spacing: .02em;
+    box-shadow: 0 1px 3px rgba(26, 18, 9, 0.06);
+    pointer-events: none;
+  }
+  .salon-avail.is-week {
+    background: rgba(4, 51, 56, 0.14);
+    border-color: rgba(4, 51, 56, 0.22);
+    color: var(--brand);
+  }
+  .salon-avail.is-pause {
+    background: rgba(122, 105, 87, 0.18);
+    border-color: rgba(122, 105, 87, 0.25);
+    color: var(--ink-2);
+  }
+
+  /* Heart top-right (§16.3.3) — floating SVG, NO circle bg */
   .salon-heart {
     position: absolute; top: 8px; right: 8px;
-    width: 28px; height: 28px;
-    background: rgba(255,255,255,0.88);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 50%;
+    width: 24px; height: 24px;
+    background: transparent;
+    border: none;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
-    color: var(--ink);
-    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    color: var(--ink-3);           /* warm gray default — softer contrast */
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18));
     transition: transform 200ms var(--ease-snap);
   }
-  .salon-heart:hover { transform: scale(1.06); }
-  .salon-heart.is-saved { color: var(--love); }
-  .salon-heart svg { width: 14px; height: 14px; }
+  .salon-heart:hover { transform: scale(1.10); }
+  .salon-heart.is-saved {
+    color: var(--love);
+    filter: drop-shadow(0 1px 2px rgba(255, 74, 107, 0.20));
+  }
+  .salon-heart svg { width: 24px; height: 24px; }
+  /* Spa cards (dark forest bg) — heart needs white-ish stroke for legibility */
+  .salon-card.cat-spa .salon-heart:not(.is-saved) { color: rgba(255, 255, 255, 0.85); }
 
-  /* Last-minute discount badge (left, replacing standard badge for that variant) */
+  /* Last-minute discount pill — keeps brand-teal solid (campaign loudness earned) */
   .salon-discount {
     position: absolute; top: 8px; left: 8px;
     background: var(--brand); color: var(--white);
-    padding: 4px 8px; border-radius: 999px;
+    padding: 5px 10px; border-radius: 8px;     /* matches curation rect shape */
     font-family: var(--body); font-weight: 700;
     font-size: 10px; letter-spacing: .02em;
-    box-shadow: 0 1px 2px rgba(0,0,0,.10);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .10);
   }
 
   /* Card text area — 8px gap from photo, no padding (§16.2) */
@@ -1042,7 +1071,7 @@
         <a class="salon-card cat-coiffeur">
           <div class="salon-photo">
             <span class="initial">M</span>
-            <span class="salon-badge is-sofort"><span class="salon-badge-dot"></span>Sofort frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart is-saved" aria-label="Gespeichert"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1056,7 +1085,7 @@
         <a class="salon-card cat-spa">
           <div class="salon-photo">
             <span class="initial">S</span>
-            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1070,7 +1099,7 @@
         <a class="salon-card cat-nails">
           <div class="salon-photo">
             <span class="initial">N</span>
-            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1084,7 +1113,7 @@
         <a class="salon-card cat-coiffeur">
           <div class="salon-photo">
             <span class="initial">A</span>
-            <span class="salon-badge is-sofort"><span class="salon-badge-dot"></span>Sofort frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1098,7 +1127,7 @@
         <a class="salon-card cat-barber">
           <div class="salon-photo">
             <span class="initial">B</span>
-            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1204,7 +1233,7 @@
         <a class="salon-card cat-coiffeur">
           <div class="salon-photo">
             <span class="initial">M</span>
-            <span class="salon-badge is-sofort"><span class="salon-badge-dot"></span>Sofort frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart is-saved" aria-label="Gespeichert"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1218,7 +1247,7 @@
         <a class="salon-card cat-coiffeur">
           <div class="salon-photo">
             <span class="initial">A</span>
-            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1276,7 +1305,7 @@
         <a class="salon-card cat-coiffeur">
           <div class="salon-photo">
             <span class="initial">M</span>
-            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart is-saved" aria-label="Gespeichert"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1290,7 +1319,7 @@
         <a class="salon-card cat-coiffeur">
           <div class="salon-photo">
             <span class="initial">A</span>
-            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1348,7 +1377,7 @@
         <a class="salon-card cat-barber">
           <div class="salon-photo">
             <span class="initial">B</span>
-            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1362,7 +1391,7 @@
         <a class="salon-card cat-barber">
           <div class="salon-photo">
             <span class="initial">F</span>
-            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1420,7 +1449,7 @@
         <a class="salon-card cat-nails">
           <div class="salon-photo">
             <span class="initial">N</span>
-            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1434,7 +1463,7 @@
         <a class="salon-card cat-nails">
           <div class="salon-photo">
             <span class="initial">P</span>
-            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1505,7 +1534,7 @@
         <a class="salon-card cat-spa">
           <div class="salon-photo">
             <span class="initial">T</span>
-            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
@@ -1519,7 +1548,7 @@
         <a class="salon-card cat-spa">
           <div class="salon-photo">
             <span class="initial">A</span>
-            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <span class="salon-avail">Heute frei</span>
             <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">

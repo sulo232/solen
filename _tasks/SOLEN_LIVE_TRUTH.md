@@ -2856,19 +2856,29 @@ Exception: section is hidden entirely if 0 cards (see §16.6 empty states).
 
 Reusable component. 2 variants for v1 (`availability`, `service`). 2 more variants (`trust`, `joined`) deferred to v2 — see §16.8.
 
-### §16.1 · Anatomy
+### §16.1 · Anatomy (V2-D34 lock — 2-badge layout)
 
 ```
-┌──────────────────┐
-│ [badge] [♥]      │ ← photo overlays
-│                  │
-│   PHOTO 1:1      │
-│                  │
-│                  │
-└──────────────────┘
-Salon Name             4.8 ⭐  ← row 1
-Heute frei ab 14:30 · ab CHF 85   ← row 2
+┌──────────────────────┐
+│ [Solen Favorit]   ♥  │ ← top-left curation (rounded rect 8px) + top-right floating heart
+│                      │
+│      PHOTO 1:1       │
+│                      │
+│                      │
+│ [● In 15 Min]        │ ← bottom-left availability (full pill 999px)
+└──────────────────────┘
+Salon Name              4.8 ⭐    ← row 1
+Damen-Schnitt · ab CHF 85         ← row 2
 ```
+
+**Three photo overlays:**
+1. **Top-left**: curation badge (one of 4 variants) — *what the salon IS* (quality/identity stamp)
+2. **Top-right**: heart save toggle — floating icon, no circle bg
+3. **Bottom-left**: availability pill (one of 3 states) — *what's happening NOW* (live state)
+
+The two badges differ in **shape** and **color philosophy**, so users can instantly identify which is which:
+- **Curation = rounded rectangle** (8px radius, "stamp" feel)
+- **Availability = full pill** (999px, "live status" feel)
 
 ### §16.2 · Dimensions
 
@@ -2881,61 +2891,108 @@ Heute frei ab 14:30 · ab CHF 85   ← row 2
 |photo to text gap |8px                                                |
 |total height      |~250-260px (160-180px photo + 8px gap + ~30px text)|
 
-### §16.3 · Photo overlays
+### §16.3 · Photo overlays (V2-D34 lock — light glassmorphic + color-philosophy)
 
-Badge state and row 2 text are TWO SEPARATE renders driven by the SAME data (next available slot). They coexist and reinforce each other — they’re not redundant. Example:
+#### §16.3.0 · The color philosophy (universal formula)
+
+Every tinted badge/pill across the card uses this rhythm:
 
 ```
-[● Sofort frei]   ← badge (orange dot, "Sofort frei")
-   [photo]
-Salon Crémant            4.9 ⭐
-In 25 Min frei           ← row 2 (matching specific time)
+background: rgba(<hue>, 0.22)        — light tint, glass-like
+border:     1px solid rgba(<hue>, 0.32)  — matching alpha border
+color:      <deep-version-of-hue>    — text color is the "dark cousin" of the bg hue
+backdrop-filter: blur(14px) saturate(1)  — the glass effect
+box-shadow: 0 1px 3px rgba(26, 18, 9, 0.06)  — single soft shadow (V2-D15-4 compliant)
 ```
 
-The badge says the *category* of availability (now / today / not today), the row 2 gives the *specific time*.
+Each state picks its own `<hue>` and corresponding deep text color. White-glass variants use ink-1 text. **NO dots, NO inset highlights, NO solid color bgs, NO `saturate(>1)`** (per V2-D15-4 flat-pill discipline). The pill/badge color *is* the signal — meaning it doesn't need a redundant dot to say "free."
 
-#### Badge (top-left)
+#### §16.3.1 · Curation badge (top-left, rounded rectangle)
 
-State-driven — exactly one state per card per render. Driven by `next_available_slot` data:
+State-driven — exactly one badge per card. Backend auto-assigns via `/api/admin/badges/auto-assign`. Priority order applies — only the highest-priority badge shows.
 
-|state condition                                            |copy                                                           |bg                                           |dot color             |
-|-----------------------------------------------------------|---------------------------------------------------------------|---------------------------------------------|----------------------|
-|next slot is within 30 min from now                        |`Sofort frei`                                                  |glass white `rgba(255,255,255,.85)` w blur 12|brand-teal `#043338`|
-|next slot is later today (30 min < t ≤ end of business day)|`Heute frei`                                                   |glass white `rgba(255,255,255,.85)` w blur 12|green `#16A34A`       |
-|next slot is tomorrow or later                             |(no badge)                                                     |—                                            |—                     |
-|salon is permanently closed / deactivated                  |(card hidden from feeds entirely — see §16.6)                  |—                                            |—                     |
-|salon is temporarily closed (vacation, sickness)           |small ink-2 pill `Pause bis [date]` instead of green/orange dot|glass white                                  |(no dot)              |
+|priority|state condition                                                          |label          |bg tint                              |text color    |border                       |
+|--------|-------------------------------------------------------------------------|---------------|-------------------------------------|--------------|-----------------------------|
+|1       |Algorithmic curation (rating × volume × reply rate × recency × response) |`Solen Favorit`|`rgba(242, 193, 68, 0.22)` (yellow)  |`#8B5E0F` (deep amber)|`rgba(242, 193, 68, 0.32)` |
+|2       |Rating ≥ 4.7 + ≥ 50 reviews                                              |`Top bewertet` |`rgba(255, 255, 255, 0.62)` (white)  |`#1A1209` (ink-1)|`rgba(255, 255, 255, 0.45)`|
+|3       |Top 10% bookings in city × category in trailing 30d                       |`Beliebt`      |`rgba(255, 255, 255, 0.62)` (white)  |`#1A1209` (ink-1)|`rgba(255, 255, 255, 0.45)`|
+|4       |First 60 days after onboarding                                           |`Neu`          |`rgba(255, 255, 255, 0.62)` (white)  |`#1A1209` (ink-1)|`rgba(255, 255, 255, 0.45)`|
+|—       |None of the above qualify                                                |(no badge)     |—                                    |—             |—                            |
 
-|element        |spec                                                                           |
-|---------------|-------------------------------------------------------------------------------|
-|position       |`top: 8px; left: 8px;`                                                         |
-|typography     |Avant Garde Gothic 700 10px, ink-1 `#1A1209`                                          |
-|dot size       |5px diameter                                                                   |
-|dot ring       |`box-shadow: 0 0 0 3px rgba(<dotcolor>, .2)`                                   |
-|dot pulse      |opacity 1↔.5, scale 1↔1.3, 1.6s infinite                                       |
-|padding        |`4px 9px`                                                                      |
-|radius         |`var(--radius-pill)` (99px)                                                    |
-|backdrop-filter|`blur(12px) saturate(1)`                                                     |
-|shadow         |`0 1px 2px rgba(0,0,0,.06)`                                                    |
-|aria-label     |full pill text read out (e.g. `Heute frei`, `Sofort frei`, `Pause bis 15. Mai`)|
+|element        |spec                                                                  |
+|---------------|----------------------------------------------------------------------|
+|position       |`top: 8px; left: 8px;`                                                |
+|typography     |Avant Garde Gothic 700 10px, letter-spacing `0.02em`                  |
+|padding        |`5px 10px`                                                            |
+|radius         |`8px` (rounded rectangle — distinguishes from availability pill)     |
+|backdrop-filter|`blur(14px) saturate(1)`                                              |
+|shadow         |`0 1px 3px rgba(26, 18, 9, 0.06)`                                     |
+|aria-label     |reads label text (e.g. `Solen Favorit`, `Top bewertet`)              |
 
-#### Heart icon (top-right)
+**Solen Exclusive (5th badge mentioned in BACKEND_NEEDS_UI.md):** **NOT in v1.** Q10 priority order locks 4 badges. Solen Exclusive defers to v2 — re-evaluate when partner-exclusivity deals exist.
 
-|state                               |spec                                                                                                                           |
-|------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-|not saved                           |Lucide `heart` 14px ink-1 stroke 2px, fill none                                                                                |
-|saved                               |Lucide `heart` filled w love-red `#FF4A6B`, stroke same color                                                                  |
-|size                                |28px circle button                                                                                                             |
-|bg                                  |glass white `rgba(255,255,255,.85)` w blur 12                                                                                  |
-|shadow                              |`0 1px 2px rgba(0,0,0,.06)`                                                                                                    |
-|position                            |`top: 8px; right: 8px;`                                                                                                        |
-|tap                                 |toggles save state, optimistic UI update, syncs to backend                                                                     |
-|animation on save                   |pulse scale `1 → 1.3 → 1` over 300ms `var(--ease-spring)`                                                                      |
-|animation on unsave                 |scale `1 → 0.9 → 1` over 200ms `var(--ease-snap)`                                                                              |
-|aria-label not saved                |`Speichern`                                                                                                                    |
-|aria-label saved                    |`Gespeichert`                                                                                                                  |
-|screen reader announcement on toggle|`[Salon Name] gespeichert` / `[Salon Name] entfernt` (aria-live=“polite”)                                                      |
-|logged-out user tap                 |opens login modal w copy `Speichere deine Lieblings-Salons. Melde dich an oder erstelle ein Konto.` — return to card after auth|
+#### §16.3.2 · Availability pill (bottom-left, full pill)
+
+State-driven — exactly one state per card render OR none (no pill if no live availability).
+
+|state condition                                              |copy examples                          |bg tint                            |text color           |border                           |
+|-------------------------------------------------------------|---------------------------------------|-----------------------------------|---------------------|---------------------------------|
+|Slot within ≤ 30 min OR slot later today                      |`In 15 Min` · `Heute 16:00` · `3 Slots heute`|`rgba(22, 163, 74, 0.22)` (green) |`#0E7A38` (deep green)|`rgba(22, 163, 74, 0.32)`        |
+|No slot today, but slot this week                            |`Diese Woche` · `Nächster Mo. 09:00`   |`rgba(4, 51, 56, 0.14)` (brand-teal)|`#043338` (brand)   |`rgba(4, 51, 56, 0.22)`          |
+|Salon temporarily closed (vacation, sickness)                |`Pause bis [date]`                     |`rgba(122, 105, 87, 0.18)` (ink-3) |`#56463E` (ink-2)   |`rgba(122, 105, 87, 0.25)`       |
+|No slots ever (closed permanently)                           |(card hidden from feeds — see §16.6)   |—                                  |—                   |—                                |
+|Slot exists tomorrow but not today AND not 'this week' state |(no pill)                              |—                                  |—                   |—                                |
+
+|element        |spec                                                                  |
+|---------------|----------------------------------------------------------------------|
+|position       |`bottom: 8px; left: 8px;`                                             |
+|typography     |Avant Garde Gothic 700 10px, letter-spacing `0.02em`                  |
+|padding        |`5px 11px`                                                            |
+|radius         |`var(--radius-pill)` (999px — full pill, distinguishes from curation)|
+|backdrop-filter|`blur(14px) saturate(1)`                                              |
+|shadow         |`0 1px 3px rgba(26, 18, 9, 0.06)`                                     |
+|aria-label     |reads pill text (e.g. `In 15 Minuten frei`, `Heute um 16 Uhr`)        |
+
+**No dots, no pulses.** Color = signal. Removing the dot reduces visual noise and lets the pill itself carry the meaning. The `box-shadow: 0 0 0 3px rgba(<dot>, 0.2)` ring around dots from earlier specs is retired V2-D34.
+
+#### §16.3.3 · Heart icon (top-right, floating)
+
+NO circle background. Just the SVG floating on the photo with a subtle drop-shadow for legibility.
+
+|state                                |spec                                                                                                                            |
+|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+|size                                 |24×24 (was 28 in V2-D17 — reduced V2-D34 to balance the new lighter chrome)                                                     |
+|bg                                   |transparent (no circle — V2-D34 retired the white circle bg)                                                                    |
+|not saved (light photo bg)           |Lucide `heart`, stroke `var(--ink-3)` (#7A6957 warm gray), stroke-width 2, fill none                                            |
+|not saved (dark photo bg, e.g. cat-spa)|stroke `rgba(255, 255, 255, 0.85)` for legibility                                                                              |
+|saved                                |Lucide `heart`, fill + stroke `var(--love)` (#FF4A6B love-red — semantic, NOT brand)                                            |
+|drop-shadow (default)                |`drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18))` — lifts icon off photo                                                              |
+|drop-shadow (saved)                  |`drop-shadow(0 1px 2px rgba(255, 74, 107, 0.20))` — soft love-red glow, much lighter than V2-D17 (was 0.45)                    |
+|position                             |`top: 8px; right: 8px;`                                                                                                         |
+|tap                                  |toggles save state, optimistic UI update, syncs to backend                                                                      |
+|animation on save                    |pulse scale `1 → 1.3 → 1` over 300ms `var(--ease-spring)`                                                                       |
+|animation on unsave                  |scale `1 → 0.9 → 1` over 200ms `var(--ease-snap)`                                                                               |
+|aria-label not saved                 |`Speichern`                                                                                                                     |
+|aria-label saved                     |`Gespeichert`                                                                                                                   |
+|screen reader announcement on toggle |`[Salon Name] gespeichert` / `[Salon Name] entfernt` (aria-live=“polite”)                                                       |
+|logged-out user tap                  |opens login modal w copy `Speichere deine Lieblings-Salons. Melde dich an oder erstelle ein Konto.` — return to card after auth |
+
+**Tone-aware coloring:** the heart's stroke color depends on the photo background tone behind it. On light cat-bg tiles (Coiffeur cream, Barber bone, Nails ice-blue, default brand-pale fallback), use ink-3 warm gray. On dark cat-bg tiles (Spa forest), use white at 0.85 alpha. When a real salon photo is used (not a cat-color fallback), the heart defaults to ink-3 — the drop-shadow handles legibility against varied photo content.
+
+#### §16.3.4 · Anti-patterns (V2-D34)
+
+- ❌ White circle around the heart (retired V2-D34 — floating SVG only)
+- ❌ Dot indicators inside availability pill (retired V2-D34 — color is the signal)
+- ❌ Solid color bg on availability pill (e.g. solid brand-teal w white text — retired V2-D34)
+- ❌ Solid yellow bg on Solen Favorit (retired V2-D34 — light yellow tint + deep amber text)
+- ❌ Curation badge bottom-left or availability pill top-left (positions are fixed per §16.3.1 + §16.3.2)
+- ❌ Multiple curation badges on one card (only the highest-priority renders)
+- ❌ Showing `Neu` badge on salons older than 60 days (auto-expire)
+- ❌ Showing `Top bewertet` on salons with < 50 reviews (low-confidence — show `Beliebt` instead if popular)
+- ❌ Color variants on availability pill bg that don't follow the §16.3.0 formula (each state picks its hue + deep text)
+- ❌ Custom shadow on badges (max single soft shadow per V2-D15-4)
+- ❌ `saturate(>1)` on backdrop-filter (V2-D15-4 — `saturate(1)` only)
+- ❌ Inset highlights / linear-gradient bgs on any badge (V2-D15-4 flat-pill discipline)
 
 ### §16.4 · Row 1 — Name + Rating
 
