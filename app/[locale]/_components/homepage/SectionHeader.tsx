@@ -101,6 +101,11 @@ export function ScrollRow({
         // Bleed beyond container padding so first/last cards align with section gutter.
         // Mobile padding matches Section.px-5 (20px); desktop matches Section.px-8 (32px).
         "-mx-5 px-5 md:-mx-8 md:px-8",
+        // 🔴 CRITICAL fix (2026-05-09): scroll-padding aligns scroll-snap-align:start
+        // to the PADDING edge, not the container edge. Without this, scroll-snap
+        // auto-scrolls cards' left edges flush against viewport (no gutter), and
+        // any swipe attempt snaps back to the same flush state.
+        "scroll-pl-5 md:scroll-pl-8",
         // Right-trailing margin on the last card so when user scrolls to the
         // end, the last card doesn't get its right corner clipped by the
         // overflow boundary.
