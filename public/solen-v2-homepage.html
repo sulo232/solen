@@ -50,18 +50,18 @@
 
   body::before {
     content: '';
-    position: fixed; inset: -15%;       /* extra over-extend to absorb bigger movement */
+    position: fixed; inset: -15%;
     background:
-      /* Top-right cyan core */
-      radial-gradient(ellipse 70% 50% at 75% 12%, rgba(202, 232, 255, 0.92) 0%, transparent 65%),
-      /* Top-left pale teal */
-      radial-gradient(ellipse 55% 50% at 18% 22%, rgba(194, 240, 241, 0.85) 0%, transparent 70%),
-      /* Mid-page navy depth */
-      radial-gradient(ellipse 50% 45% at 92% 48%, rgba(0, 88, 152, 0.45) 0%, transparent 60%),
-      /* Lower-left teal echo */
-      radial-gradient(ellipse 60% 50% at 8% 72%, rgba(194, 240, 241, 0.78) 0%, transparent 65%),
-      /* Bottom navy bleed */
-      radial-gradient(ellipse 65% 50% at 65% 92%, rgba(3, 30, 72, 0.28) 0%, transparent 60%);
+      /* Top-right cyan core — whisper */
+      radial-gradient(ellipse 70% 50% at 75% 12%, rgba(202, 232, 255, 0.32) 0%, transparent 65%),
+      /* Top-left pale teal — whisper */
+      radial-gradient(ellipse 55% 50% at 18% 22%, rgba(194, 240, 241, 0.28) 0%, transparent 70%),
+      /* Mid-page navy depth — very subtle */
+      radial-gradient(ellipse 50% 45% at 92% 48%, rgba(0, 88, 152, 0.10) 0%, transparent 60%),
+      /* Lower-left teal echo — whisper */
+      radial-gradient(ellipse 60% 50% at 8% 72%, rgba(194, 240, 241, 0.26) 0%, transparent 65%),
+      /* Bottom navy bleed — barely there */
+      radial-gradient(ellipse 65% 50% at 65% 92%, rgba(3, 30, 72, 0.06) 0%, transparent 60%);
     z-index: -2;
     pointer-events: none;
     animation: atm-drift-1 22s ease-in-out infinite;
@@ -76,27 +76,27 @@
     content: '';
     position: absolute; inset: -10%;
     background:
-      /* Top-of-fold — pale teal core */
-      radial-gradient(ellipse 60% 9% at 50% 7%, rgba(194, 240, 241, 0.82) 0%, transparent 70%),
+      /* Top-of-fold — pale teal whisper */
+      radial-gradient(ellipse 60% 9% at 50% 7%, rgba(194, 240, 241, 0.28) 0%, transparent 70%),
       /* 14% — ice blue right + pale teal left */
-      radial-gradient(ellipse 55% 7% at 80% 14%, rgba(202, 232, 255, 0.80) 0%, transparent 70%),
-      radial-gradient(ellipse 45% 6% at 15% 19%, rgba(194, 240, 241, 0.72) 0%, transparent 75%),
+      radial-gradient(ellipse 55% 7% at 80% 14%, rgba(202, 232, 255, 0.26) 0%, transparent 70%),
+      radial-gradient(ellipse 45% 6% at 15% 19%, rgba(194, 240, 241, 0.24) 0%, transparent 75%),
       /* 26% — brand subtle + ice */
-      radial-gradient(ellipse 50% 7% at 60% 26%, rgba(225, 244, 244, 0.78) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 6% at 25% 32%, rgba(202, 232, 255, 0.70) 0%, transparent 75%),
+      radial-gradient(ellipse 50% 7% at 60% 26%, rgba(225, 244, 244, 0.30) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 6% at 25% 32%, rgba(202, 232, 255, 0.22) 0%, transparent 75%),
       /* 40% — brand subtle + pale teal */
-      radial-gradient(ellipse 50% 8% at 75% 40%, rgba(225, 244, 244, 0.85) 0%, transparent 70%),
-      radial-gradient(ellipse 45% 7% at 20% 46%, rgba(194, 240, 241, 0.78) 0%, transparent 75%),
+      radial-gradient(ellipse 50% 8% at 75% 40%, rgba(225, 244, 244, 0.32) 0%, transparent 70%),
+      radial-gradient(ellipse 45% 7% at 20% 46%, rgba(194, 240, 241, 0.26) 0%, transparent 75%),
       /* 54% — ice + pale teal */
-      radial-gradient(ellipse 55% 7% at 60% 54%, rgba(202, 232, 255, 0.82) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 6% at 12% 60%, rgba(194, 240, 241, 0.72) 0%, transparent 75%),
+      radial-gradient(ellipse 55% 7% at 60% 54%, rgba(202, 232, 255, 0.28) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 6% at 12% 60%, rgba(194, 240, 241, 0.22) 0%, transparent 75%),
       /* 66% — pale teal stronger right + brand subtle */
-      radial-gradient(ellipse 50% 7% at 85% 66%, rgba(194, 240, 241, 0.88) 0%, transparent 70%),
-      radial-gradient(ellipse 45% 6% at 30% 72%, rgba(225, 244, 244, 0.70) 0%, transparent 75%),
+      radial-gradient(ellipse 50% 7% at 85% 66%, rgba(194, 240, 241, 0.30) 0%, transparent 70%),
+      radial-gradient(ellipse 45% 6% at 30% 72%, rgba(225, 244, 244, 0.22) 0%, transparent 75%),
       /* 80% — brand subtle */
-      radial-gradient(ellipse 55% 7% at 60% 80%, rgba(225, 244, 244, 0.80) 0%, transparent 70%),
-      /* 88% — soft navy deepens toward footer */
-      radial-gradient(ellipse 50% 7% at 25% 88%, rgba(0, 88, 152, 0.18) 0%, transparent 65%);
+      radial-gradient(ellipse 55% 7% at 60% 80%, rgba(225, 244, 244, 0.28) 0%, transparent 70%),
+      /* 88% — barely-there navy hint toward footer transition */
+      radial-gradient(ellipse 50% 7% at 25% 88%, rgba(0, 88, 152, 0.06) 0%, transparent 65%);
     z-index: -1;
     pointer-events: none;
     animation: atm-drift-2 28s ease-in-out infinite;
@@ -234,16 +234,18 @@
     position: relative;
     overflow: hidden;
   }
-  /* Hero gets the FULL §5g atmosphere wash recipe on top of body wash */
+  /* Hero gets a softened version of §5g — still the strongest wash on the page
+     (it's the brand moment), but reduced from full lock alphas so the page
+     overall reads as white-w-hints, not blue-overlay */
   .hero-zone::before {
     content: '';
     position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse 65% 55% at 72% 28%, rgba(202, 232, 255, 0.78) 0%, transparent 55%),
-      radial-gradient(ellipse 58% 50% at 22% 78%, rgba(194, 240, 241, 0.72) 0%, transparent 60%),
-      radial-gradient(ellipse 55% 65% at 100% 105%, rgba(0, 88, 152, 0.32) 0%, transparent 55%),
-      radial-gradient(ellipse 45% 55% at 0% -5%, rgba(0, 88, 152, 0.28) 0%, transparent 50%),
-      linear-gradient(180deg, transparent 65%, rgba(3, 30, 72, 0.06) 100%);
+      radial-gradient(ellipse 65% 55% at 72% 28%, rgba(202, 232, 255, 0.42) 0%, transparent 60%),
+      radial-gradient(ellipse 58% 50% at 22% 78%, rgba(194, 240, 241, 0.38) 0%, transparent 65%),
+      radial-gradient(ellipse 55% 65% at 100% 105%, rgba(0, 88, 152, 0.14) 0%, transparent 55%),
+      radial-gradient(ellipse 45% 55% at 0% -5%, rgba(0, 88, 152, 0.12) 0%, transparent 50%),
+      linear-gradient(180deg, transparent 65%, rgba(3, 30, 72, 0.03) 100%);
     z-index: 0;
     pointer-events: none;
   }
