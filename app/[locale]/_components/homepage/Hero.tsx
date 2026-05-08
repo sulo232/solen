@@ -170,8 +170,11 @@ function SearchRow({
   isActive,
   isFirst,
 }: SearchRowProps) {
-  // Active row gets warm-cream background per V3 §1 substrate active state
-  // (mockup uses #FFF4E8 = s-bg-active token).
+  // Active row gets V3 brand-subtle background (#E1F4F4 pale teal echo)
+  // per V2-D15-3 — replaces the V2-era cream `s-bg-active` (#FFF4E8) which
+  // was a hold-over from the retired warm-cream substrate. Cream is now
+  // reserved for Coiffeur category combo Z only; using it as a generic
+  // "active" state miscoded it as category-specific.
   // Mobile: each row is bordered top (except first) via border-b on previous-sibling.
   // Desktop: no borders between rows; all rounded-full.
   return (
@@ -180,7 +183,7 @@ function SearchRow({
       className={`
         group flex shrink-0 cursor-pointer items-center gap-3 rounded-[10px] p-[14px_16px] text-left
         transition-colors hover:bg-s-bg-sunken
-        ${isActive ? "bg-s-bg-active" : ""}
+        ${isActive ? "bg-s-brand-subtle" : ""}
         ${!isFirst ? "border-t border-black/5 max-md:border-t md:border-t-0" : ""}
         md:flex-1 md:rounded-full md:border-t-0 md:p-[14px_22px]
       `}
