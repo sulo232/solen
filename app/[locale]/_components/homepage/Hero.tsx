@@ -60,18 +60,13 @@ export default function Hero() {
             <span className="text-s-brand">buchen</span>.
           </h1>
 
-          {/* Deck — V3 Swiss-warm voice (Q5), short. Q-locks reconciliation
-              §V2-D39.1 Q5 = "ACTIVE — hardcoded Basel breaks it". Generic
-              fallback when no geo: "deiner Stadt". */}
-          <p className="font-body mb-8 max-w-[520px] text-[17px] leading-[1.55] text-s-ink-2 max-md:mx-auto">
-            Top-Salons in deiner Stadt — ohne Anrufen, ohne Warten.{" "}
-            <a
-              href="#"
-              className="font-semibold text-s-brand underline underline-offset-[3px]"
-            >
-              So funktioniert&apos;s →
-            </a>
-          </p>
+          {/* Deck removed 2026-05-09 (Option A locked): user picked the cleaner
+              eyebrow + h1 + search structure. The "ohne Anrufen, ohne Warten"
+              non-negotiable from §0d.5 stays as a brand law in LIVE_TRUTH;
+              not every page needs to recite it as marketing copy. The "So
+              funktioniert's →" link will surface elsewhere on the page (e.g.
+              footer or a dedicated /so-funktioniert route). */}
+          <div className="mb-8" />
         </div>
 
         <SearchBar />
@@ -195,10 +190,15 @@ function SearchRow({
       <span className="font-body w-14 shrink-0 text-[11px] font-bold uppercase tracking-[0.14em] text-s-ink-3 md:hidden">
         {label}
       </span>
+      {/* All values rendered in s-ink-3 (warm gray) for visual uniformity per
+          user feedback (2026-05-09): "whz is ther graz and black color like
+          i jst want graz". Placeholder vs filled is differentiated by font
+          weight only (normal=placeholder, medium=filled), not by color, so
+          the bar reads as one harmonious gray instead of black-among-grays. */}
       <span
         className={`
-          font-body min-w-0 flex-1 truncate text-base
-          ${isPlaceholder ? "font-normal text-s-ink-3" : "font-medium text-s-ink"}
+          font-body min-w-0 flex-1 truncate text-base text-s-ink-3
+          ${isPlaceholder ? "font-normal" : "font-medium"}
         `}
       >
         {value}
