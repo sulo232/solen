@@ -100,14 +100,14 @@ This file (`SOLEN_LIVE_TRUTH.md`) is the **principal** for UX, visual, and produ
 These docs were the principal in earlier eras. They are now **archived to `_tasks/archive/`** and superseded by V3 LIVE_TRUTH. **A new agent should never quote, build from, or follow these:**
 
 - `_tasks/archive/SOLEN_DESIGN.archived.md` (V2-D39 lock — Q-locks era principal, all 54 Q-locks Q1-Q64 + 10 unnumbered pre-Q decisions classified into ACTIVE/DEFERRED/SHIPPED/SUPERSEDED/OBSOLETE buckets). **Reconciliation table:** `V2_REBUILD_LOG.md §V2-D39.1` — if you find `Q1` / `Q5` / `Q47` / etc. referenced in a code comment / commit / old doc, look it up there for V3 status + current location.
-- `_tasks/REDESIGN_INVENTORY.md` (V2 component inventory — state machines + APIs migrated to LIVE_TRUTH §X.99 implementation mappings).
-- `_tasks/BACKEND_NEEDS_UI.md` (V2 backend → UI gap list — items either built into V3 §16 / §F.x or deferred to v2 with a V2-D## entry).
-- `_tasks/SOLEN_BUILD_MAP.md` (V2 phased build plan — superseded by V3 phase plan in `_tasks/V2_REBUILD_LOG.md` "Status").
+- `_tasks/archive/REDESIGN_INVENTORY.archived.md` (V2-D40 archive — V2 component inventory; §X.99 implementation mappings pattern locked V2-D35 but per-surface migration happens incrementally during phase work, not as a sweep. Original preserved in archive for reference.).
+- `_tasks/archive/BACKEND_NEEDS_UI.archived.md` (V2-D40 archive — V2 backend → UI gap list; ~10 highest-priority items already migrated to `SOLEN_NEXT.md` §3.5. Remaining items re-derive against V3 spec during phase work.).
+- `_tasks/archive/SOLEN_BUILD_MAP.archived.md` (V2-D40 archive — V2 phased build plan, superseded by V3 phase plan in `V2_REBUILD_LOG.md ## Status`).
 - `_tasks/archive/MASTER_ROADMAP.archived.md` (V2-D38 lock — V2 product roadmap from 2026-04-22, ~50% obsolete after V3 shipped. **Strategic survivors split:** 5 brand non-negotiables migrated to LIVE_TRUTH §0d (because they constrain UI/UX); roadmap + deferred features ledger + launch playbook + city expansion + DACH + risk register + target metrics + ops state migrated to `_tasks/SOLEN_NEXT.md`. Tactical phase plan dropped — V2_REBUILD_LOG.md `## Status` already owns active phase status (single source).
 - `_tasks/archive/GAP_AUDIT_V2.archived.md` (V2-D37 lock — point-in-time gap audit from 2026-04-22, ~60% obsolete after V3 shipped V2-D15-3 / V2-D26 / V2-D34. **No §36 in LIVE_TRUTH.** Surviving gaps surface during phase work and either fix-in-place or migrate to `_tasks/INCOMPLETE_FEATURES.md` per CLAUDE.md "INCOMPLETE_FEATURES is sacred"). Re-derive against V3 spec via `grep`/`Read`; do not treat the archived snapshot as authoritative.
-- `_tasks/PHASE_8_STRUCTURAL_ALIGNMENT.md` (historical — already retired).
-- `_tasks/SOLEN_BUILD_LEARNINGS.md` (historical — lessons extracted into LESSONS_LEARNED.md).
-- `_tasks/INVENTORY_FULL.md` (historical app inventory — superseded by component code inspection).
+- `_tasks/archive/PHASE_8_STRUCTURAL_ALIGNMENT.archived.md` (V2-D40 archive — historical phase 8 structural alignment doc, already retired pre-V3).
+- `_tasks/archive/SOLEN_BUILD_LEARNINGS.archived.md` (V2-D40 archive — historical build learnings; canonical lessons live in `_rules/LESSONS_LEARNED.md`).
+- `_tasks/archive/INVENTORY_FULL.archived.md` (V2-D40 archive — historical app inventory, superseded by direct component code inspection).
 
 **If you're a new agent and you find yourself reading any file in `_tasks/archive/`, stop. Re-anchor to `SOLEN_LIVE_TRUTH.md` (this doc) and the active sources in §0c.1.**
 

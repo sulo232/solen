@@ -352,6 +352,20 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
 
+### V2-D40 (2026-05-09 evening) — Archive sweep close-out: 6 remaining §0c.2-listed docs moved to `_tasks/archive/`
+
+- **Context:** §0c.2 ("Archived — do NOT consult") in LIVE_TRUTH already named these docs as archive-bound. The actual `git mv` was deferred until V2-D33 doc consolidation flow finished (V2-D34 through V2-D39 first). With all 6 sub-decisions locked, this is the close-out sweep.
+- **Files moved (`git mv` preserves history):**
+  - `_tasks/REDESIGN_INVENTORY.md` → `_tasks/archive/REDESIGN_INVENTORY.archived.md`
+  - `_tasks/BACKEND_NEEDS_UI.md` → `_tasks/archive/BACKEND_NEEDS_UI.archived.md`
+  - `_tasks/SOLEN_BUILD_MAP.md` → `_tasks/archive/SOLEN_BUILD_MAP.archived.md`
+  - `_tasks/PHASE_8_STRUCTURAL_ALIGNMENT.md` → `_tasks/archive/PHASE_8_STRUCTURAL_ALIGNMENT.archived.md`
+  - `_tasks/SOLEN_BUILD_LEARNINGS.md` → `_tasks/archive/SOLEN_BUILD_LEARNINGS.archived.md`
+  - `_tasks/INVENTORY_FULL.md` → `_tasks/archive/INVENTORY_FULL.archived.md`
+- **Files patched:** `_tasks/SOLEN_LIVE_TRUTH.md` §0c.2 — all 6 entries updated to point at archive paths with V2-D40 dating + clarified status (e.g. REDESIGN_INVENTORY content not pre-migrated; per-surface §X.99 happens during phase work, original preserved for reference).
+- **Not in this sweep (still in `_tasks/` root, NOT yet triaged):** `AGENT-PROMPTS.md` · `CLAUDE_DESIGN_PLAN.md` · `CLAUDE_DESIGN_PROMPT.md` · `CLAUDE_DESIGN_RESEARCH.md` · `DESIGN_AUDIT_MASTER.md` · `OVERNIGHT_LOG.md` · `ROADMAP_AUDIT.md` · `SOLEN_BUILD_PHASE_0.md` · `SOLEN_DESIGN_QUESTIONNAIRE_V3.md` · `TODO-type-fixes.md`. These weren't pre-named in §0c.2 — user should triage separately (some likely archive, e.g. CLAUDE_DESIGN_* workflow stale; some likely keep, e.g. SOLEN_DESIGN_QUESTIONNAIRE_V3 may still be active).
+- **V2-D33 status:** **CLOSED.** All 6 sub-decisions locked (V2-D34, V2-D35, V2-D36, V2-D37, V2-D38, V2-D39) + archive sweep done. The doc consolidation flow that started at user request "make a one big organized file with evrth plus archive the old files" is complete for the named scope. Optional follow-ups: (a) triage the 10 untracked `_tasks/` docs above; (b) re-read LIVE_TRUTH §0c with fresh eyes to confirm new agents can navigate the source map cleanly.
+
 ### V2-D39 (2026-05-09 evening) — Decision 6 lock: Q-lock reconciliation table (54 Q-locks classified, SOLEN_DESIGN.md archived)
 
 - **Context:** Decision 6 in V2-D33 doc consolidation flow asked what to do with the Q-lock decision archeology in `_tasks/SOLEN_DESIGN.md` §20 before that doc gets archived. Options: extract still-valid Q-locks into LIVE_TRUTH cross-refs (A), make every Q-lock a carryover V2-D## entry (B), single reconciliation table here in V2_REBUILD_LOG (C), or archive entirely without extraction (D).
