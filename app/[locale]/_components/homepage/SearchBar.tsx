@@ -30,9 +30,13 @@ const islandTransition: Transition = {
   duration: 0.5,
 };
 
-// Explicit heights per state — animations are smoother w fixed values vs height:auto
-const COLLAPSED_HEIGHT = 280; // 3 rows × ~62px + button + padding
-const EXPANDED_HEIGHT = 480; // header + picker content
+// Explicit heights per viewport+state — animations are smoother w fixed values vs height:auto.
+// Mobile collapsed: stacked card (3 rows × ~62px + button + padding).
+// Desktop collapsed: horizontal pill (~76px tall).
+const HEIGHT = {
+  mobile:  { collapsed: 280, expanded: 480 },
+  desktop: { collapsed: 76,  expanded: 480 },
+};
 
 const SERVICES = [
   "Coiffeur",
@@ -61,6 +65,17 @@ export function SearchBar() {
   const [service, setService] = React.useState("");
   const [stadt, setStadt] = React.useState("");
   const [zeit, setZeit] = React.useState("");
+  const [isDesktop, setIsDesktop] = React.useState(false);
+
+  // Track viewport so the collapsed-state height matches the layout
+  // (mobile = 280 stacked card / desktop = 76 horizontal pill).
+  React.useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   // Lock body scroll when expanded
   React.useEffect(() => {
@@ -84,6 +99,7 @@ export function SearchBar() {
   }, [active]);
 
   const isExpanded = active !== null;
+  const sizes = isDesktop ? HEIGHT.desktop : HEIGHT.mobile;
 
   return (
     <>
@@ -105,13 +121,16 @@ export function SearchBar() {
       </AnimatePresence>
 
       {/* Morphing container — animates height + borderRadius w explicit values.
-          will-change hints + GPU layer hint via translateZ(0) help the
-          browser reserve a compositor layer up front, preventing chop. */}
+          will-change hints + translateZ(0) help the browser reserve a
+          compositor layer up front, preventing first-frame chop.
+          Desktop collapsed = 76px horizontal pill; expanded = 480px
+          tall card. Border-radius morphs from 999px (full pill) to 16px
+          card on expand so the shape change reads as deliberate. */}
       <motion.div
         initial={false}
         animate={{
-          height: isExpanded ? EXPANDED_HEIGHT : COLLAPSED_HEIGHT,
-          borderRadius: 16,
+          height: isExpanded ? sizes.expanded : sizes.collapsed,
+          borderRadius: !isExpanded && isDesktop ? 999 : 16,
         }}
         transition={islandTransition}
         style={{
@@ -124,8 +143,6 @@ export function SearchBar() {
           "max-md:mx-auto",
           isExpanded && "z-[70] md:max-w-[640px]",
           !isExpanded && "md:max-w-none",
-          // Desktop pill morphs less drastically — keep it pill-shaped at idle
-          !isExpanded && "md:!rounded-full md:!h-auto",
         )}
       >
         {/* COLLAPSED LAYER — 3 segments + submit button.
