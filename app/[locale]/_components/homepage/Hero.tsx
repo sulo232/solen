@@ -135,12 +135,15 @@ function SearchBar() {
         isPlaceholder
       />
 
-      {/* Submit — ink bg, hover brand. Full-width on mobile, pill on right desktop. */}
+      {/* Submit — brand-teal bg, hover lighter brand-mid. Full-width on mobile,
+          pill on right desktop. (Was bg-s-ink default → hover bg-s-brand;
+          flipped 2026-05-09 per user feedback — black felt out of place
+          when the rest of the page already pulls toward brand-teal.) */}
       <button
         type="button"
         className="
-          font-body shrink-0 rounded-full border-0 bg-s-ink p-4 font-semibold text-white transition-colors
-          hover:bg-s-brand
+          font-body shrink-0 rounded-full border-0 bg-s-brand p-4 font-semibold text-white transition-colors
+          hover:bg-s-brand-mid
           md:px-7
         "
       >
