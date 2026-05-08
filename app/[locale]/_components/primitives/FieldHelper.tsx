@@ -58,7 +58,7 @@ export function FieldHelper({
       role={tone === "error" ? "alert" : undefined}
       aria-live={ariaLive}
       className={cn(
-        "font-body leading-[1.4] text-[11px] flex items-start gap-[6px] mt-[6px]",
+        "font-body leading-[1.4] text-[13px] flex items-start gap-[6px] mt-[6px]",
         tone === "default" && "font-normal text-s-ink-3",
         tone === "error" && "font-medium text-s-error",
         tone === "warning" && "font-medium text-s-warning",
@@ -68,7 +68,7 @@ export function FieldHelper({
     >
       {Icon && (
         <Icon
-          className="w-3 h-3 shrink-0 mt-[2px]"
+          className="w-[14px] h-[14px] shrink-0 mt-[2px]"
           strokeWidth={2.5}
           aria-hidden="true"
         />

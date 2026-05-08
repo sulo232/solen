@@ -61,8 +61,8 @@ export const PillToggle = React.forwardRef<HTMLButtonElement, PillToggleProps>(
         aria-pressed={active}
         disabled={disabled}
         className={cn(
-          "font-body text-[12px] leading-none",
-          "px-3 py-[7px] rounded-full",
+          "font-body text-[13px] leading-none",
+          "px-3.5 py-2 rounded-full",
           "border transition-colors duration-150 ease-snap",
           "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
           active

@@ -183,7 +183,7 @@ export function SheetHeader({
     >
       <div className="flex flex-col gap-1 min-w-0">
         {eyebrow && (
-          <div className="font-body font-bold text-[11px] uppercase tracking-[0.16em] text-s-ink-3">
+          <div className="font-body font-bold text-[13px] uppercase tracking-[0.16em] text-s-ink-3">
             {eyebrow}
           </div>
         )}
@@ -234,7 +234,7 @@ export function SheetBody({ className, children, ...props }: SheetBodyProps) {
       className={cn(
         "flex-1 min-h-0 overflow-y-auto",
         "px-5 pt-3 pb-4",
-        "font-body font-normal text-[14px] leading-[1.5] text-s-ink",
+        "font-body font-normal text-[16px] leading-[1.55] text-s-ink",
         // momentum scroll on iOS
         "[-webkit-overflow-scrolling:touch]",
         className,

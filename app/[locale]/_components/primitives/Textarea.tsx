@@ -15,7 +15,7 @@ const textareaVariants = cva(
     // base
     "block w-full font-body font-normal text-s-ink leading-[1.5]",
     "bg-s-bg-base border border-s-ink/10 rounded-[12px]",
-    "px-4 py-3 text-[14px]",
+    "px-4 py-3 text-[16px]",
     "placeholder:text-s-ink-3",
     "selection:bg-s-brand/20",
     "transition-[border-color,background-color,box-shadow,color] duration-150 ease-snap",
@@ -102,7 +102,7 @@ export function TextareaCounter({ current, max, className }: TextareaCounterProp
     <p
       aria-live="polite"
       className={cn(
-        "font-body font-normal text-[11px] tabular-nums text-right mt-[6px]",
+        "font-body font-normal text-[12px] tabular-nums text-right mt-[6px]",
         isWarn ? "text-s-brand font-medium" : "text-s-ink-3",
         className,
       )}

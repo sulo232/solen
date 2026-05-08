@@ -33,7 +33,7 @@ export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
       <label
         className={cn(
           "group flex items-center gap-3 cursor-pointer select-none py-[14px]",
-          "font-body font-normal text-[14px] text-s-ink",
+          "font-body font-normal text-[16px] text-s-ink",
           "border-b border-s-ink/[0.05] last:border-b-0",
           "has-[:checked]:font-semibold",
           disabled && "cursor-not-allowed opacity-40",

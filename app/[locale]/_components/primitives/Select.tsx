@@ -32,9 +32,9 @@ const selectVariants = cva(
   {
     variants: {
       size: {
-        sm: "h-10 text-[13px] pl-3 py-[10px]",
-        md: "h-14 text-[14px] pl-4 py-3",
-        lg: "h-16 text-[16px] pl-5 py-[18px]",
+        sm: "h-10 text-[14px] pl-3 py-[10px]",
+        md: "h-14 text-[16px] pl-4 py-3",
+        lg: "h-16 text-[18px] pl-5 py-[18px]",
       },
       tone: {
         default: "",

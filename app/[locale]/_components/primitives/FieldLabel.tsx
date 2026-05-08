@@ -38,7 +38,7 @@ export function FieldLabel({
     <label
       {...props}
       className={cn(
-        "font-body font-semibold text-[12px] leading-[1.3] text-s-ink",
+        "font-body font-semibold text-[14px] leading-[1.3] text-s-ink",
         "inline-flex items-center gap-[6px]",
         className,
       )}
@@ -51,7 +51,7 @@ export function FieldLabel({
         />
       )}
       {!required && optional && (
-        <span className="font-normal text-[11px] text-s-ink-3 lowercase">
+        <span className="font-normal text-[12px] text-s-ink-3 lowercase">
           optional
         </span>
       )}

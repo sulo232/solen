@@ -1040,15 +1040,15 @@ The form vocabulary every surface uses: text input, textarea, select, checkbox, 
 
 |element       |spec                                                                                                                                   |
 |--------------|---------------------------------------------------------------------------------------------------------------------------------------|
-|label         |Avant Garde Gothic 600 12px, ink-1 `#1A1209`, line-height 1.3. Always above field. Required = trailing `·` red dot 5px (`#D32F2F`).            |
+|label         |Avant Garde Gothic 600 14px, ink-1 `#1A1209`, line-height 1.3. Always above field. Required = trailing `·` red dot 5px (`#D32F2F`). Bumped from 12px in V2-D26 (size refresh).|
 |field bg      |default white `#FFFFFF` raised over white substrate (cards lift via shadow + border, not color shift). Active state bg = `#FFF4E8` (matches §14.3 lock). |
 |field border  |1px `rgba(26,18,9,.10)` default. Active = 2px brand-teal `#043338`. Error = 2px error red `#D32F2F`. Success = 2px success `#16A34A`. |
 |field radius  |`var(--radius-lg)` (12px) — fields are NOT pills (per §7 anti-pattern: pill-shaped inputs read as buttons-waiting-to-be-pressed)         |
 |field padding |See size table §F.1.0a. md size locks at `padding 12px 16px` (12px vertical, 16px horizontal) to match §13.4 hero search row.           |
-|helper text   |Avant Garde Gothic 400 11px, ink-3 `#7A6957`, line-height 1.4, margin-top 6px. Max 1 line preferred.                                          |
-|error message |Avant Garde Gothic 500 11px, error red `#D32F2F`, line-height 1.4, margin-top 6px. Optional inline icon: 12px Lucide `alert-circle` before text.|
-|warning msg   |Avant Garde Gothic 500 11px, warning amber `#F59E0B` (use `#7A4A14` deepened on cream for body-text contrast), 12px Lucide `alert-triangle`.   |
-|success msg   |Avant Garde Gothic 500 11px, success green `#16A34A`, 12px Lucide `check-circle`.                                                             |
+|helper text   |Avant Garde Gothic 400 13px, ink-3 `#7A6957`, line-height 1.4, margin-top 6px. Max 1 line preferred. (Bumped from 11px in V2-D26.)             |
+|error message |Avant Garde Gothic 500 13px, error red `#D32F2F`, line-height 1.4, margin-top 6px. Optional inline icon: 14px Lucide `alert-circle` before text.|
+|warning msg   |Avant Garde Gothic 500 13px, warning amber `#F59E0B` (use `#7A4A14` deepened on cream for body-text contrast), 14px Lucide `alert-triangle`.   |
+|success msg   |Avant Garde Gothic 500 13px, success green `#16A34A`, 14px Lucide `check-circle`.                                                             |
 |field gap     |`var(--space-2)` (8px) between label-bottom and field-top                                                                              |
 
 **Stacking:** labels NEVER inside the field as floating placeholders. Floating labels were popular 2018-2022 but read as decorative animation, hurt accessibility (screen readers + autofill confusion), and break in dense layouts. Solen uses static labels above.
@@ -1057,11 +1057,11 @@ The form vocabulary every surface uses: text input, textarea, select, checkbox, 
 
 |size|use                                                                                                                                       |height|font-size|padding-x|padding-y|
 |----|------------------------------------------------------------------------------------------------------------------------------------------|------|---------|---------|---------|
-|sm  |Compact filter rows, dropdown w short text, search bars inside list items                                                                 |40px  |13px     |12px     |10px     |
-|md  |**Default for all forms** — booking wizard, login, signup, settings, salon profile editor (B2B). Hero search rows §13.4 lock at md/56px tall.|56px  |14px     |16px     |12px     |
-|lg  |Reserved for hero/landing search inputs only (currently §13.4 hero is the only md/lg-tall surface; lg used if a future hero needs even more emphasis).|64px  |16px     |20px     |18px     |
+|sm  |Compact filter rows, dropdown w short text, search bars inside list items                                                                 |40px  |14px     |12px     |10px     |
+|md  |**Default for all forms** — booking wizard, login, signup, settings, salon profile editor (B2B). Hero search rows §13.4 lock at md/56px tall.|56px  |16px     |16px     |12px     |
+|lg  |Reserved for hero/landing search inputs only (currently §13.4 hero is the only md/lg-tall surface; lg used if a future hero needs even more emphasis).|64px  |18px     |20px     |18px     |
 
-**iOS zoom on focus (V2-D14, 2026-05-05):** locked at decision **B** — keep 14px on md inputs, accept iOS auto-zoom on focus. Reasoning: density preserved, matches §13.4 search row already locked. Trade-off accepted: iPhone Safari users will see one focus-zoom per input; manual pinch returns. Do NOT use `transform: scale(0.875)` workarounds. Do NOT set `<meta name="viewport" user-scalable=no>` — that's an a11y violation. If a future surface (e.g. critical booking input) needs zoom-free behavior, that specific input can override to 16px — note in surface spec.
+**iOS zoom on focus (V2-D14 → resolved by V2-D26, 2026-05-09):** original V2-D14 picked "decision B" — keep 14px on md inputs, accept iOS auto-zoom. **V2-D26 resolves this:** md now locks at 16px (the V2-D14 alternative), which prevents iOS auto-zoom AND fixes the user feedback about subtexts feeling small. sm stays at 14px (compact filter contexts where iOS zoom is acceptable per the original V2-D14 trade-off). lg locks at 18px. The §F.1.7 anti-pattern below ("all text inputs `font-size ≥ 16px`") is now satisfied by md + lg by default; sm is the explicit exception for compact contexts.
 
 **Touch target:** every interactive form element ≥ 44px hit area per §11. Sm fields visually 40px tall MUST extend hit area via `padding` or pseudo-element to 44px.
 
@@ -1119,7 +1119,7 @@ Every primitive supports these states. NOT every state applies to every primitiv
 |max-height          |280px (~10 lines) — beyond that, internal scroll within textarea                                                              |
 |resize              |`resize: vertical` only. Never `resize: both` (horizontal resize breaks layouts).                                             |
 |line-height         |1.5                                                                                                                           |
-|character counter   |optional, bottom-right outside the field. Avant Garde Gothic 400 11px ink-3 (`[N] / [max]`). Brand-teal `#043338` when within 20% of max.|
+|character counter   |optional, bottom-right outside the field. Avant Garde Gothic 400 12px ink-3 (`[N] / [max]`). Brand-teal `#043338` when within 20% of max. (Bumped from 11px in V2-D26.)|
 |enter behavior      |`Enter` = newline. `Cmd/Ctrl + Enter` = submit form (when textarea is the only field, e.g. review write).                     |
 |use cases (v1)      |review write (§RV Phase 2), report-content reason (§CO.5 Phase 4), salon profile bio (§B.5 Phase 6), B2B reply-to-review (§B.9)|
 
@@ -1169,7 +1169,7 @@ Solen has TWO checkbox visual variants. The data binding (`<input type="checkbox
 |disabled      |opacity 0.4, cursor not-allowed                                                                                 |
 |focus-visible |2px brand-teal outline, 2px offset                                                                            |
 |label gap     |10px between box right edge and label left edge                                                                 |
-|label font    |Avant Garde Gothic 400 14px ink-1                                                                                      |
+|label font    |Avant Garde Gothic 400 16px ink-1 (bumped from 14px in V2-D26)                                                       |
 |press         |scale(.92) 100ms `var(--ease-thud)` on the box                                                                  |
 |toggle        |spring scale 1 → 1.15 → 1 over 300ms `var(--ease-spring)` on check                                              |
 
@@ -1190,7 +1190,7 @@ Already locked in §25.7 — repeat the spec here so it's anchored:
 |active bg      |ink-1 `#1A1209`                                                 |
 |active color   |white, font-weight 600                                          |
 |active border  |ink-1                                                           |
-|font           |Avant Garde Gothic 12px                                                |
+|font           |Avant Garde Gothic 13px (bumped from 12px in V2-D26)                  |
 |tap            |toggles state, fires whatever debounced recount/recompute applies|
 
 Used in: filter sheets §25.7, future B2B service-type tagging, future entdecken category multi-select.
@@ -1214,7 +1214,7 @@ Already locked in §25.6 — repeat here as the canonical primitive:
 |circle radius          |`var(--radius-full)` (50%) — actual circle, distinguishes radio from checkbox                                          |
 |circle border (selected)|2px brand-teal `#043338`                                                                                              |
 |inner dot (selected)   |8px brand-teal `#043338`, centered via `radial-gradient(circle, #043338 0%, #043338 50%, transparent 50%)` or pseudo-element|
-|label font             |Avant Garde Gothic 400 14px ink-1                                                                                              |
+|label font             |Avant Garde Gothic 400 16px ink-1 (bumped from 14px in V2-D26)                                                                  |
 |label (selected)       |font-weight 600                                                                                                         |
 |focus-visible          |2px brand-teal outline on circle, 2px offset                                                                          |
 |press                  |scale(.94) 100ms `var(--ease-thud)`                                                                                     |
@@ -1250,8 +1250,8 @@ Notifications                 [●○]
 |press                 |knob scale 1 → .92 100ms `var(--ease-thud)` then back                                                           |
 |disabled              |opacity 0.4, cursor not-allowed                                                                                 |
 |focus-visible         |2px brand-teal outline on track, 2px offset                                                                   |
-|label                 |Avant Garde Gothic 400 14px ink-1, left of switch by 16px gap (switch is right-aligned in row)                         |
-|sub-label (optional)  |Avant Garde Gothic 400 12px ink-3, 4px below label                                                                     |
+|label                 |Avant Garde Gothic 400 16px ink-1, left of switch by 16px gap (switch is right-aligned in row). Bumped from 14px in V2-D26. |
+|sub-label (optional)  |Avant Garde Gothic 400 13px ink-3, 4px below label. Bumped from 12px in V2-D26.                                       |
 |aria-checked          |reflects state                                                                                                  |
 |role                  |`role="switch"` (better screen-reader UX than checkbox-styled-as-switch)                                        |
 
@@ -1421,7 +1421,7 @@ The centered overlay every Solen surface uses for confirmations, login flows, fo
 |border              |`border-bottom: 1px solid rgba(26,18,9,0.06)`                                                                       |
 |title font          |Avant Garde Gothic 600 18px ink-1 line-height 1.3                                                                   |
 |title element       |`<h2>` with id auto-wired to Dialog's `aria-labelledby`                                                              |
-|eyebrow (optional)  |Avant Garde Gothic 700 11px uppercase ink-3, letter-spacing 0.16em, margin-bottom 4px above title                   |
+|eyebrow (optional)  |Avant Garde Gothic 700 13px uppercase ink-3, letter-spacing 0.16em, margin-bottom 4px above title (bumped from 11px in V2-D26)|
 |close X             |Lucide `x` 24px stroke 2 ink-2, hover ink-1 transition 150ms `ease-snap`. Hit area 44×44 via `padding: 10px`.       |
 |close X position    |right side of header row, after title                                                                                |
 |close X aria-label  |"Schließen" (or `t('close')` via next-intl in caller)                                                                |
@@ -1435,7 +1435,7 @@ The centered overlay every Solen surface uses for confirmations, login flows, fo
 |padding       |per size table §F.2.0a (no top padding — header's border serves as separator)                                         |
 |overflow-y    |`auto` — body scrolls internally when content exceeds available height                                                |
 |max-height    |computed: `min(size-max-height, 100vh - 32px) - header-height - footer-height`                                        |
-|font          |Avant Garde Gothic 400 14px ink-1 line-height 1.5 (body text default)                                                 |
+|font          |Avant Garde Gothic 400 16px ink-1 line-height 1.55 (body text default; bumped from 14px in V2-D26)                  |
 |scrollbar     |default browser. No custom styling in v1 — modals are short enough that scrolling is rare; when needed, default works.|
 
 ### §F.2.5 · Footer (ModalFooter)
@@ -1615,7 +1615,7 @@ Caller passes `height="auto" | "default" | "full"` prop. v1 ships these 3 values
 |title font          |Avant Garde Gothic 600 18px ink-1 line-height 1.3 (matches §F.2 modal title)                                       |
 |title element       |`<h2>` with id auto-wired to Dialog                                                                                  |
 |close X             |Lucide `x` 24px stroke 2 ink-2, hover ink-1, hit area 44×44 via negative margin (same pattern as §F.2)            |
-|optional eyebrow    |Avant Garde 700 11px uppercase ink-3 above title (rare — sort/filter sheets typically have no eyebrow)            |
+|optional eyebrow    |Avant Garde 700 13px uppercase ink-3 above title (rare — sort/filter sheets typically have no eyebrow). Bumped from 11px in V2-D26.|
 
 ### §F.3.4 · Body
 
@@ -1623,7 +1623,7 @@ Caller passes `height="auto" | "default" | "full"` prop. v1 ships these 3 values
 |--------------|----------------------------------------------------------------------------------------------------------------------|
 |padding       |`12px 20px 16px` — top is reduced because header's border serves as separator                                          |
 |overflow-y    |`auto` — body scrolls internally. Sheet height is fixed; content scrolls.                                              |
-|font          |Avant Garde Gothic 400 14px ink-1 line-height 1.5                                                                     |
+|font          |Avant Garde Gothic 400 16px ink-1 line-height 1.55 (bumped from 14px in V2-D26)                                       |
 |scroll behavior|momentum scroll on iOS via `-webkit-overflow-scrolling: touch` (default in modern Safari, no opt-in needed)         |
 |scrollbar     |default browser. Mobile = invisible until scroll. Desktop fallback = §F.2 modal (different primitive).               |
 
@@ -1720,8 +1720,8 @@ The transient notification surface for non-blocking feedback: heart-saved confir
 |tone bar      |left edge 4px-wide vertical bar, color = tone (success green / info brand-teal / warning amber / error red). Acts as the visual category cue.   |
 |padding       |`14px 16px` (compact — toasts are not the focus, just an aside)                                                                                  |
 |icon          |Lucide 18px stroke 2, color = tone, left of title with 12px gap. Icons: `check-circle` (success) / `info` (info) / `alert-triangle` (warning) / `alert-circle` (error)|
-|title         |Avant Garde Gothic 600 14px ink-1 line-height 1.3                                                                                              |
-|description   |optional, Avant Garde Gothic 400 12px ink-3 line-height 1.4, margin-top 2px below title                                                        |
+|title         |Avant Garde Gothic 600 15px ink-1 line-height 1.3 (bumped from 14px in V2-D26)                                                                  |
+|description   |optional, Avant Garde Gothic 400 13px ink-3 line-height 1.4, margin-top 2px below title (bumped from 12px in V2-D26)|
 |action button |optional, right-aligned, Avant Garde 600 13px brand-teal text-only button (no border). Hover ink-1.                                             |
 |close X       |Lucide `x` 16px ink-3 stroke 2, hover ink-1, hit area 32×32 via padding. Always visible.                                                       |
 
@@ -1785,7 +1785,7 @@ Optional. Used for "Rückgängig" (undo), "Erneut versuchen" (retry), "Anzeigen"
 |prop                |spec                                                                                                                |
 |--------------------|--------------------------------------------------------------------------------------------------------------------|
 |placement           |right-aligned, between description and close X                                                                       |
-|font                |Avant Garde Gothic 600 13px brand-teal `#043338`, hover ink-1                                                        |
+|font                |Avant Garde Gothic 600 14px brand-teal `#043338`, hover ink-1 (bumped from 13px in V2-D26)                          |
 |background          |transparent (text-only button — toast surface is already a card, button-on-button feels too heavy)                  |
 |behavior            |click fires `onAction` callback then dismisses the toast                                                            |
 |examples            |"Rückgängig" (undo a save), "Erneut versuchen" (retry a failed network call), "Anzeigen" (jump to the saved thing) |

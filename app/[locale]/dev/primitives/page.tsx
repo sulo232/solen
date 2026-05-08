@@ -102,7 +102,7 @@ function PrimitivesDevPageInner() {
         {/* PAGE HEAD */}
         <header className="mb-14">
           <div className="h-px bg-s-ink mb-3.5" />
-          <div className="flex items-baseline justify-between gap-4 mb-4 font-body font-bold text-[11px] uppercase tracking-[0.18em] tabular-nums">
+          <div className="flex items-baseline justify-between gap-4 mb-4 font-body font-bold text-[13px] uppercase tracking-[0.18em] tabular-nums">
             <span className="text-s-ink inline-flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-s-brand" />
               Solen V3 · Phase 0 · React
@@ -177,7 +177,7 @@ function PrimitivesDevPageInner() {
             </Card>
           </Grid>
 
-          <h3 className="font-body font-bold text-[11px] tracking-[0.16em] uppercase text-s-brand tabular-nums mt-9 mb-3.5">
+          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-brand tabular-nums mt-9 mb-3.5">
             §F.1.1 · Variants by type
           </h3>
           <Grid cols={3}>
@@ -342,7 +342,7 @@ function PrimitivesDevPageInner() {
 
         {/* §F.1.4 CHECKBOX */}
         <Section eyebrow="Checkbox" meta="§F.1.4 · 2 variants" title="Checkbox">
-          <h3 className="font-body font-bold text-[11px] tracking-[0.16em] uppercase text-s-brand tabular-nums mb-3.5">
+          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-brand tabular-nums mb-3.5">
             Variant A · boxed (forms)
           </h3>
           <Grid cols={3}>
@@ -383,7 +383,7 @@ function PrimitivesDevPageInner() {
             </Card>
           </Grid>
 
-          <h3 className="font-body font-bold text-[11px] tracking-[0.16em] uppercase text-s-brand tabular-nums mt-9 mb-3.5">
+          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-brand tabular-nums mt-9 mb-3.5">
             Variant B · pill (filter sheets) — multi-select (live)
           </h3>
           <Card tag={`Service-Typ · ${activeServiceTypes.size} of 8 active`}>
@@ -413,7 +413,7 @@ function PrimitivesDevPageInner() {
 
         {/* §F.1.5 RADIO */}
         <Section eyebrow="Radio" meta="§F.1.5 · 2 variants" title="Radio">
-          <h3 className="font-body font-bold text-[11px] tracking-[0.16em] uppercase text-s-brand tabular-nums mb-3.5">
+          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-brand tabular-nums mb-3.5">
             Variant A · radio row (sort sheets, forms)
           </h3>
           <Grid cols={2}>
@@ -491,7 +491,7 @@ function PrimitivesDevPageInner() {
             </Card>
           </Grid>
 
-          <h3 className="font-body font-bold text-[11px] tracking-[0.16em] uppercase text-s-brand tabular-nums mt-9 mb-3.5">
+          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-brand tabular-nums mt-9 mb-3.5">
             Variant B · pill (compact single-select) — live
           </h3>
           <Card tag={`Bedienung · "${serviceMode}"`}>
@@ -554,19 +554,19 @@ function PrimitivesDevPageInner() {
               <div className="flex flex-col gap-6">
                 <div className="flex items-center gap-3.5">
                   <Switch checked={false} onCheckedChange={() => {}} />
-                  <span className="text-[13px] text-s-ink-2">Off · default</span>
+                  <span className="text-[14px] text-s-ink-2">Off · default</span>
                 </div>
                 <div className="flex items-center gap-3.5">
                   <Switch checked onCheckedChange={() => {}} />
-                  <span className="text-[13px] text-s-ink-2">On · brand-teal track</span>
+                  <span className="text-[14px] text-s-ink-2">On · brand-teal track</span>
                 </div>
                 <div className="flex items-center gap-3.5">
                   <Switch defaultChecked={false} />
-                  <span className="text-[13px] text-s-ink-2">Off · uncontrolled (click me)</span>
+                  <span className="text-[14px] text-s-ink-2">Off · uncontrolled (click me)</span>
                 </div>
                 <div className="flex items-center gap-3.5">
                   <Switch checked={false} disabled onCheckedChange={() => {}} />
-                  <span className="text-[13px] text-s-ink-2">Off · disabled</span>
+                  <span className="text-[14px] text-s-ink-2">Off · disabled</span>
                 </div>
               </div>
             </Card>
@@ -744,7 +744,7 @@ function PrimitivesDevPageInner() {
 
         {/* §F.3 SHEET */}
         <Section eyebrow="Sheet" meta="§F.3 · 3 heights" title="Bottom sheet (mobile-only)">
-          <p className="font-body font-normal text-[13px] text-s-ink-2 mb-4 max-w-[600px]">
+          <p className="font-body font-normal text-[14px] text-s-ink-2 mb-4 max-w-[600px]">
             <strong className="text-s-ink">Resize browser to &lt; 768px to see sheets</strong> in their natural mobile context.
             On desktop they still render but full-width-bottom looks like a banner. Use{" "}
             <code className="bg-s-bg-sunken px-1.5 py-0.5 rounded text-[12px]">useResponsiveOverlay()</code> in real surfaces.
@@ -878,7 +878,7 @@ function PrimitivesDevPageInner() {
               <Sheet isOpen={shareSheetOpen} onOpenChange={setShareSheetOpen} height="auto">
                 <SheetHeader title="Salon teilen" onClose={() => setShareSheetOpen(false)} />
                 <SheetBody>
-                  <p className="text-s-ink-3 text-[13px] mb-3.5">Salon Maria · Kleinbasel</p>
+                  <p className="text-s-ink-3 text-[14px] mb-3.5">Salon Maria · Kleinbasel</p>
                   <PillGroup mode="multi" aria-label="Share targets">
                     <PillToggle>Link kopieren</PillToggle>
                     <PillToggle>WhatsApp</PillToggle>
@@ -897,7 +897,7 @@ function PrimitivesDevPageInner() {
         </Section>
 
         {/* FOOT */}
-        <footer className="mt-24 pt-6 border-t border-s-ink flex justify-between font-body text-[11px] uppercase tracking-[0.16em] text-s-ink-3 tabular-nums">
+        <footer className="mt-24 pt-6 border-t border-s-ink flex justify-between font-body text-[13px] uppercase tracking-[0.16em] text-s-ink-3 tabular-nums">
           <span>Solen V3 · Phase 0 · §F.1 + §F.2 + §F.3 + §F.4 React · /dev/primitives</span>
           <span>2026-05-09 · V2-D20</span>
         </footer>
@@ -922,7 +922,7 @@ function Section({
   return (
     <section className="mt-16">
       <div className="h-px bg-s-ink mb-3.5" />
-      <div className="flex items-baseline justify-between gap-4 mb-3 font-body font-bold text-[11px] uppercase tracking-[0.18em] tabular-nums">
+      <div className="flex items-baseline justify-between gap-4 mb-3 font-body font-bold text-[13px] uppercase tracking-[0.18em] tabular-nums">
         <span className="text-s-ink inline-flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-s-brand" />
           {eyebrow}
@@ -955,7 +955,7 @@ function Grid({ cols, children }: { cols: 2 | 3; children: React.ReactNode }) {
 function Card({ tag, children }: { tag: string; children: React.ReactNode }) {
   return (
     <div className="bg-white border border-s-ink/[0.06] rounded-2xl p-[22px] flex flex-col gap-1.5">
-      <div className="font-body font-bold text-[9px] uppercase tracking-[0.16em] text-s-ink-3 mb-3.5">
+      <div className="font-body font-bold text-[11px] uppercase tracking-[0.16em] text-s-ink-3 mb-3.5">
         {tag}
       </div>
       {children}
@@ -969,7 +969,7 @@ function ToastDemo() {
   return (
     <Grid cols={2}>
       <Card tag="4 tones · click to fire">
-        <p className="font-body text-[13px] text-s-ink-2 mb-3">
+        <p className="font-body text-[14px] text-s-ink-2 mb-3">
           Click each button to fire that tone. Hover the toast to pause auto-dismiss timer.
         </p>
         <div className="flex flex-wrap gap-2">
@@ -983,7 +983,7 @@ function ToastDemo() {
                 onAction: () => alert("Navigate to Mein-Look-Board"),
               })
             }
-            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-success text-white hover:opacity-90 transition-opacity"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-success text-white hover:opacity-90 transition-opacity"
           >
             Success
           </button>
@@ -995,7 +995,7 @@ function ToastDemo() {
                 description: "Schau sie dir in deinem Feed an.",
               })
             }
-            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors"
           >
             Info
           </button>
@@ -1007,7 +1007,7 @@ function ToastDemo() {
                 description: "Deine Buchung wird gespeichert sobald die Verbindung zurück ist.",
               })
             }
-            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-warning text-white hover:opacity-90 transition-opacity"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-warning text-white hover:opacity-90 transition-opacity"
           >
             Warning
           </button>
@@ -1021,7 +1021,7 @@ function ToastDemo() {
                 onAction: () => alert("Retry booking"),
               })
             }
-            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-error text-white hover:opacity-90 transition-opacity"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-error text-white hover:opacity-90 transition-opacity"
           >
             Error (sticky)
           </button>
@@ -1029,7 +1029,7 @@ function ToastDemo() {
       </Card>
 
       <Card tag="stacking demo · max 3 visible">
-        <p className="font-body text-[13px] text-s-ink-2 mb-3">
+        <p className="font-body text-[14px] text-s-ink-2 mb-3">
           Click "Fire 5" to queue 5 toasts. Watch as 4th + 5th wait until visible slots open.
           Errors take priority — a fresh error replaces the oldest non-error.
         </p>
@@ -1043,7 +1043,7 @@ function ToastDemo() {
               setTimeout(() => toast.warning({ title: "Toast 4 (queued)" }), 100);
               setTimeout(() => toast.success({ title: "Toast 5 (queued)" }), 200);
             }}
-            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-ink text-white hover:opacity-90 transition-opacity"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-ink text-white hover:opacity-90 transition-opacity"
           >
             Fire 5 (queue 2)
           </button>
@@ -1052,7 +1052,7 @@ function ToastDemo() {
             onClick={() => {
               toast.success({ title: "Mit Aktion", action: "Rückgängig", onAction: () => alert("Undone") });
             }}
-            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink border border-s-ink/10 hover:bg-s-bg-sunken transition-colors"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink border border-s-ink/10 hover:bg-s-bg-sunken transition-colors"
           >
             With action
           </button>
@@ -1061,7 +1061,7 @@ function ToastDemo() {
             onClick={() => {
               toast.success({ title: "Title only — no description" });
             }}
-            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink border border-s-ink/10 hover:bg-s-bg-sunken transition-colors"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink border border-s-ink/10 hover:bg-s-bg-sunken transition-colors"
           >
             Title only
           </button>
@@ -1070,7 +1070,7 @@ function ToastDemo() {
             onClick={() => {
               toast.dismissAll();
             }}
-            className="font-body font-semibold text-[13px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink-3 border border-s-ink/10 hover:text-s-ink transition-colors"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink-3 border border-s-ink/10 hover:text-s-ink transition-colors"
           >
             Dismiss all
           </button>

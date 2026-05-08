@@ -11,6 +11,8 @@
 
 ## Status (one-liner)
 
+**2026-05-09 (morning, post-overnight, +font fix)** — User confirmed bigger sizes (V2-D26 — typography size refresh, kept ITC Avant Garde Gothic for body, bumped most subtexts +2-3px). 14 files patched (8 primitive components + dev page + 4 mockups need a future cleanup pass + LIVE_TRUTH spec sizes). Body 14→16, label 12→14, helper 11→13, eyebrow 11→13, card-tag 9→11, toast title 14→15, switch sub-label 12→13, pill toggle 12→13, input md size 14→16 (also resolves V2-D14/V2-D17 contradiction about iOS auto-zoom — md ≥16px now prevents focus-zoom). Display headings (Cooper-style h1/h2) unchanged. · 
+
 **2026-05-09 (morning, post-overnight)** — User up. **V2-D09 / V2-D10 / V2-D11 / V2-D12 all resolved** (guest checkout OUT · map view IN · loyalty+packages+gift cards all IN v1 · Stripe Connect locked from DB schema implicit decision). Phase 1 (auth) unblocked. **NEW:** user flagged body font sizes feel small + asked for font visualization — see `public/solen-v2-font-visual.html` showing current Avant Garde Gothic at spec sizes vs +2-3px bumped sizes vs 5 alternative body fonts (Inter / Manrope / Plus Jakarta / DM Sans / Outfit). Cooper Black Std cdnfonts.com URL is currently HTTP 500 — headings silently falling back to Sansita 900 (looks visually similar). Awaiting font decision. · 
 
 **2026-05-09 (OVERNIGHT SUMMARY — autonomous run complete)** — 3 of 3-4 sub-sections shipped + 1 spec drafted. Phase 0 advanced from §F.1 (V2-D17) → §F.4 (V2-D20) without user supervision.
@@ -343,6 +345,61 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Context:** During category-color exploration, user said "stop using purple — purple is banned everywhere" after the Wellness `#9B7BB8` plum and Coiffeur-deep `#6B2D4D` (which reads purple at large saturated surfaces) were tested.
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
+
+### V2-D26 (2026-05-09 morning) — Typography size refresh (kept Avant Garde Gothic, bumped subtexts +2-3px)
+
+- **Context:** User feedback this morning after wake-up: "the fonts in the components so small like what is the font we are using i like the title font but not the sub texts." After font visualization at `public/solen-v2-font-visual.html` showed (a) current sizes vs +2-3px bumped sizes side-by-side and (b) 5 alternative body fonts, user picked option **A — keep ITC Avant Garde Gothic Std, bump sizes**.
+- **Decision:** sweep larger sizes through every Phase 0 primitive + the dev test page + LIVE_TRUTH §F.1-§F.4 spec text. No font swap. Cooper Black Std display fallback chain unchanged (Cooper / Sansita 900) — heads-up logged that `cdnfonts.com/css/cooper-black-std` is currently HTTP 500 so headings render Sansita silently; visual continuity preserved via fallback.
+- **Size mapping (V2-D26 lock):**
+  - Field label 12px → **14px**
+  - Helper / error / warning / success message 11px → **13px** (icon also 12 → 14)
+  - Eyebrow / meta row 11px → **13px**
+  - Card tag (showroom labels) 9px → **11px**
+  - Body / paragraph 14px → **16px**
+  - Input sm: 13 → **14px** · md: 14 → **16px** · lg: 16 → **18px** (heights stay 40/56/64; padding unchanged — already had slack)
+  - Pill toggle / chip 12px → **13px** (padding 7/12 → 8/14 to compensate)
+  - Toast title 14 → **15px** · description 12 → **13px** · action 13 → **14px**
+  - Switch label 14 → **16px** · sub-label 12 → **13px**
+  - Checkbox label / Radio label 14 → **16px** (Variant A boxed/row)
+  - Optional-tag (FieldLabel) 11 → **12px**
+  - Textarea char counter 11 → **12px**
+- **Side-effect: V2-D14 / V2-D17 iOS auto-zoom contradiction RESOLVED.** §F.1.7 line 1266 originally said "all text inputs `font-size ≥ 16px`" but V2-D14 had locked md at 14px. With md now at 16px, the §F.1.7 rule is satisfied for the default input size by default — only sm (compact filter rows) violates it as an explicit accepted exception per V2-D14's original "decision B" trade-off. Spec text updated accordingly.
+- **Files patched (8 primitive components):**
+  - `app/[locale]/_components/primitives/FieldLabel.tsx` — label 12→14, optional-tag 11→12
+  - `app/[locale]/_components/primitives/FieldHelper.tsx` — text 11→13, icon 12→14
+  - `app/[locale]/_components/primitives/TextInput.tsx` — cva sizes sm 13→14, md 14→16, lg 16→18
+  - `app/[locale]/_components/primitives/Textarea.tsx` — body 14→16, counter 11→12
+  - `app/[locale]/_components/primitives/Select.tsx` — cva sizes sm 13→14, md 14→16, lg 16→18
+  - `app/[locale]/_components/primitives/Checkbox.tsx` — label 14→16
+  - `app/[locale]/_components/primitives/Radio.tsx` — label 14→16
+  - `app/[locale]/_components/primitives/Switch.tsx` — label 14→16, sub-label 12→13
+  - `app/[locale]/_components/primitives/PillToggle.tsx` — text 12→13, padding 7/12 → 8/14
+  - `app/[locale]/_components/primitives/Modal.tsx` — eyebrow 11→13, body 14→16
+  - `app/[locale]/_components/primitives/Sheet.tsx` — eyebrow 11→13, body 14→16
+  - `app/[locale]/_components/primitives/Toast.tsx` — title 14→15, description 12→13, action 13→14
+- **Files patched (dev page):**
+  - `app/[locale]/dev/primitives/page.tsx` — replace_all sweep on `text-[13px]` → `text-[14px]`, `text-[11px]` → `text-[13px]`, `text-[9px]` → `text-[11px]`. Buttons stay text-[14px] (not bumping CTAs in this sweep — user complaint was about subtexts, not button labels). Code-element callouts (`<code>` tags inside paragraphs) stay text-[12px] for visual hierarchy.
+- **Files patched (LIVE_TRUTH spec):**
+  - §F.1.0 anatomy table — label / helper / error / warning / success message rows updated
+  - §F.1.0a sizes table — sm 13→14, md 14→16, lg 16→18
+  - §F.1.0a iOS-zoom note rewritten to acknowledge V2-D26 resolves V2-D14/V2-D17 contradiction
+  - §F.1.2 textarea char counter font 11→12
+  - §F.1.4 checkbox Variant A label font 14→16
+  - §F.1.4 checkbox Variant B pill font 12→13
+  - §F.1.5 radio Variant A label font 14→16
+  - §F.1.6 switch label 14→16, sub-label 12→13
+  - §F.2.3 modal eyebrow 11→13
+  - §F.2.4 modal body font 14→16, line-height 1.5→1.55
+  - §F.3.3 sheet eyebrow 11→13
+  - §F.3.4 sheet body font 14→16
+  - §F.4.0 toast title 14→15, description 12→13, action 13→14
+- **Bucket B doc-cleanup TODOs (deferred to attended pass):**
+  - 4 mockup HTML files (`solen-v2-primitives.html` / `solen-v2-modal.html` / `solen-v2-sheet.html` / `solen-v2-toast.html`) still render OLD sizes. They're V2-D## locked references — should be regenerated to match V2-D26 in a future pass. Until then, the React components are the authoritative visual reference (`/dev/primitives` shows current state).
+  - LIVE_TRUTH §13-§25 surface specs reference some text sizes that compose with form primitives — those references are surface-specific and don't have to change with V2-D26 (they're describing how the surface composes the primitives, not the primitive's own typography).
+  - §F.5 date picker spec has size references (day cell 14px, time slot 13px) that should bump to 16/14 respectively when §F.5 is implemented next session.
+- **Live site impact: ZERO.** No existing route imports these primitives. The /dev/primitives page is the only surface that renders them, and it's gated to dev only.
+- **Typecheck:** to verify after commit. Pure className changes, no type changes.
+- **Status:** **shipped.** Verify visually at `/de/dev/primitives` after `npm run dev`.
 
 ### V2-D21 (2026-05-09 overnight, autonomous) — Phase 0 §F.5 date/time picker spec drafted (mockup + React deferred)
 

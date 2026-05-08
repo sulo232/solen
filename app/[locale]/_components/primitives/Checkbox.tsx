@@ -53,7 +53,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       <label
         className={cn(
           "group inline-flex items-center gap-[10px] cursor-pointer select-none py-[6px]",
-          "font-body font-normal text-[14px] text-s-ink",
+          "font-body font-normal text-[16px] text-s-ink",
           disabled && "cursor-not-allowed opacity-40",
           className,
         )}

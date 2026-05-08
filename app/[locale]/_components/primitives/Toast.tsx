@@ -328,11 +328,11 @@ function ToastItem({
         <Icon className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden />
       </span>
       <div className="flex-1 min-w-0">
-        <div className="font-body font-semibold text-[14px] leading-[1.3] text-s-ink">
+        <div className="font-body font-semibold text-[15px] leading-[1.3] text-s-ink">
           {toast.title}
         </div>
         {toast.description && (
-          <div className="font-body font-normal text-[12px] leading-[1.4] text-s-ink-3 mt-0.5">
+          <div className="font-body font-normal text-[13px] leading-[1.4] text-s-ink-3 mt-0.5">
             {toast.description}
           </div>
         )}
@@ -343,7 +343,7 @@ function ToastItem({
           onClick={handleAction}
           className={cn(
             "flex-shrink-0 bg-transparent border-0 cursor-pointer",
-            "font-body font-semibold text-[13px] text-s-brand",
+            "font-body font-semibold text-[14px] text-s-brand",
             "hover:text-s-ink transition-colors duration-150 ease-snap",
             "px-1 py-0.5 rounded-sm",
             "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
