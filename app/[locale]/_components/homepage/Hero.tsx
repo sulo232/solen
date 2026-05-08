@@ -27,21 +27,11 @@ import { SearchBar } from "./SearchBar";
 export default function Hero() {
   return (
     <section className="relative overflow-hidden">
-      {/* §5g atmosphere wash — softened hero variant.
-          5 layered radial + 1 linear gradient per LIVE_TRUTH §5g recipe. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background: `
-            radial-gradient(ellipse 65% 55% at 72% 28%, rgba(202, 232, 255, 0.42) 0%, transparent 60%),
-            radial-gradient(ellipse 58% 50% at 22% 78%, rgba(194, 240, 241, 0.38) 0%, transparent 65%),
-            radial-gradient(ellipse 55% 65% at 100% 105%, rgba(0, 88, 152, 0.14) 0%, transparent 55%),
-            radial-gradient(ellipse 45% 55% at 0% -5%, rgba(0, 88, 152, 0.12) 0%, transparent 50%),
-            linear-gradient(180deg, transparent 65%, rgba(3, 30, 72, 0.03) 100%)
-          `,
-        }}
-      />
+      {/* Local hero wash REMOVED 2026-05-09 — was creating intensity
+          discontinuity between the hero zone and sections below. The
+          page-wide body::before / body::after wash (globals.css) now
+          carries the entire page at the saturated intensity user wanted
+          ("i like how it is in the header... make me one whole page"). */}
 
       {/* pt accounts for the absolute V3 Header (floats over wash):
           mobile = ~68px header + 32px breathing = 100px (pt-25)
