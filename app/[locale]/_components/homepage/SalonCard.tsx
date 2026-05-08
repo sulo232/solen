@@ -293,12 +293,13 @@ export function SalonCard({
         />
       </div>
 
-      {/* Frosted-glass text pill — separated from photo by mt-[10px] gap.
-          Sits on the section container's glass, which sits on the page wash.
-          Three layers of glass = depth without shadow heaviness. */}
+      {/* Frosted-glass text pill — sized down to match the smaller 150px
+          mobile card. Padding tightened (was 14×10), gap from photo
+          reduced (was 10), border-radius tightened (was 14) so the pill
+          reads as proportional to the card body, not bigger than necessary. */}
       <div
         className={cn(
-          "mt-[10px] rounded-[14px] border border-white/60 bg-white/70 px-[14px] py-[10px]",
+          "mt-[8px] rounded-[12px] border border-white/60 bg-white/70 px-[10px] py-[7px]",
           "backdrop-blur-[14px] backdrop-saturate-[1.2]",
           "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
           "flex flex-col gap-[2px]",
