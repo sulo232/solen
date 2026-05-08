@@ -278,6 +278,14 @@
   .hero-text {
     max-width: 880px;
   }
+  /* MOBILE — center hero stack so the search bar isn't stuck to the left */
+  @media (max-width: 760px) {
+    .hero { align-items: center; text-align: center; }
+    .hero-text { width: 100%; }
+    .hero-eyebrow { justify-content: center; }
+    .hero-deck { margin-left: auto; margin-right: auto; }
+    .search-bar { margin-left: auto; margin-right: auto; }
+  }
   .hero-eyebrow {
     font-size: 13px; font-weight: 700; color: var(--ink-3);
     letter-spacing: .18em; text-transform: uppercase;
@@ -318,6 +326,8 @@
     box-shadow: 0 1px 3px rgba(50,47,44,0.04), 0 4px 12px rgba(50,47,44,0.04);
     max-width: 540px;
     display: flex; flex-direction: column;
+    margin: 0 auto;          /* center on mobile */
+    width: 100%;             /* fill available width up to max-width */
   }
   .search-row {
     display: flex; align-items: center; gap: 12px;
@@ -361,6 +371,7 @@
       border-radius: 999px;
       padding: 6px 6px 6px 8px;
       max-width: 100%;
+      margin: 0;           /* desktop full-width, no auto-centering */
       box-shadow:
         0 1px 3px rgba(50,47,44,0.04),
         0 8px 24px rgba(50,47,44,0.08);
