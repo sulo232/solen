@@ -99,7 +99,7 @@ This file (`SOLEN_LIVE_TRUTH.md`) is the **principal** for UX, visual, and produ
 
 These docs were the principal in earlier eras. They are now **archived to `_tasks/archive/`** and superseded by V3 LIVE_TRUTH. **A new agent should never quote, build from, or follow these:**
 
-- `_tasks/SOLEN_DESIGN.md` (Q-locks era — coral / Anton / Figtree / cream — all retired V2-D15-3). Q-lock decision content was extracted into V3 LIVE_TRUTH where still authoritative.
+- `_tasks/archive/SOLEN_DESIGN.archived.md` (V2-D39 lock — Q-locks era principal, all 54 Q-locks Q1-Q64 + 10 unnumbered pre-Q decisions classified into ACTIVE/DEFERRED/SHIPPED/SUPERSEDED/OBSOLETE buckets). **Reconciliation table:** `V2_REBUILD_LOG.md §V2-D39.1` — if you find `Q1` / `Q5` / `Q47` / etc. referenced in a code comment / commit / old doc, look it up there for V3 status + current location.
 - `_tasks/REDESIGN_INVENTORY.md` (V2 component inventory — state machines + APIs migrated to LIVE_TRUTH §X.99 implementation mappings).
 - `_tasks/BACKEND_NEEDS_UI.md` (V2 backend → UI gap list — items either built into V3 §16 / §F.x or deferred to v2 with a V2-D## entry).
 - `_tasks/SOLEN_BUILD_MAP.md` (V2 phased build plan — superseded by V3 phase plan in `_tasks/V2_REBUILD_LOG.md` "Status").

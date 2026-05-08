@@ -352,6 +352,125 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
 
+### V2-D39 (2026-05-09 evening) — Decision 6 lock: Q-lock reconciliation table (54 Q-locks classified, SOLEN_DESIGN.md archived)
+
+- **Context:** Decision 6 in V2-D33 doc consolidation flow asked what to do with the Q-lock decision archeology in `_tasks/SOLEN_DESIGN.md` §20 before that doc gets archived. Options: extract still-valid Q-locks into LIVE_TRUTH cross-refs (A), make every Q-lock a carryover V2-D## entry (B), single reconciliation table here in V2_REBUILD_LOG (C), or archive entirely without extraction (D).
+- **User picked C.** Initial scope estimate was 15 Q-locks → ~25 lines. Re-counted at lock time: SOLEN_DESIGN.md §20 has 54 unique Q-numbered locks (Q1-Q64 with gaps Q17, Q27, Q29, Q31, Q33, Q34, Q37-39, Q44) plus 10 unnumbered pre-Q entries from 2026-04-20. Scope corrected to ~70 rows; user pre-confirmed C still applies.
+- **Triage method:** each Q-lock classified into one of 5 status buckets:
+  - **ACTIVE** — V3 still honors this rule; spec lives in LIVE_TRUTH or SOLEN_NEXT.md
+  - **DEFERRED** — still valid but not yet shipped; entry exists in SOLEN_NEXT.md
+  - **SHIPPED** — implemented in V3 era (with V2-D## reference)
+  - **SUPERSEDED** — V3 changed the specific answer (with V2-D## that did so)
+  - **OBSOLETE** — V3 retired the underlying assumption entirely (e.g. Q12 Bebas Neue scope is moot because V3 retired Bebas)
+
+#### §V2-D39.1 · Q-lock reconciliation table (post-V3)
+
+**Pre-Q era (2026-04-20)** — unnumbered decisions, all superseded by V2-D15-3 (brand pivot to teal) or V2-D26 (typography pivot to Cooper BT + Avant Garde). Not individually tracked here; archived with SOLEN_DESIGN.md.
+
+**Q1-Q16 (2026-04-22 — first numbered Q-batch, ship-blocker era):**
+
+| Q | Decision (1-line) | V3 status | Where it lives now |
+|---|---|---|---|
+| Q1 | Salon card photo = 1:1 square | ACTIVE | LIVE_TRUTH §16.2 |
+| Q2 | Price format `ab CHF X` only | ACTIVE — not yet centralized | SOLEN_NEXT §3.5 (centralization TODO) |
+| Q3 | Swipeable image carousel (Airbnb pattern) | DEFERRED | SOLEN_NEXT §6 candidate |
+| Q4 | Search bar = 3-segment pill (Was · Wo · Wann) | ACTIVE | LIVE_TRUTH §14 |
+| Q5 | Voice = Swiss-wide, "Für [city]" dynamic | ACTIVE — hardcoded Basel breaks it | LIVE_TRUTH §0d.1 + SOLEN_NEXT §3.4 |
+| Q6 | Phase sequence — UI polish first | OBSOLETE | superseded by V3 phase plan in V2_REBUILD_LOG `## Status` |
+| Q7 | Moat priority — chat + allergy first | ACTIVE | SOLEN_NEXT §6.1 + §6.2 |
+| Q8 | TWINT integration required pre-launch | ACTIVE | SOLEN_NEXT §3.3 |
+| Q9 | `/termine` redirects to `/profile/bookings` | ACTIVE — not yet shipped | SOLEN_NEXT §3.5 (TODO) |
+| Q10 | Solen Favorit yellow 4th badge | SHIPPED | LIVE_TRUTH §16.3.1 (V2-D34) |
+| Q11 | `--sh-xl` token removed entirely | SHIPPED | confirmed V3 §5b depth system |
+| Q12 | Bebas Neue scope (hero + Instagram + numerals + footer) | OBSOLETE | V3 retired Bebas (V2-D26) |
+| Q13 | Scraped profiles "Claim this listing" ribbon | DEFERRED | SOLEN_NEXT §4.2 |
+| Q14 | Mobile bottom nav = 4 tabs | ACTIVE | LIVE_TRUTH §12 (header) — verify alignment with V3 spec |
+| Q15 | Page bg = white `#FFFFFF` | ACTIVE | LIVE_TRUTH §1 (V3 honors) |
+| Q16 | Decorative gradients killed | ACTIVE | LIVE_TRUTH §0b + §5a (flat pills, V2-D15-4) |
+
+**Q18-Q26 (2026-05-01 — design-system grammar batch):**
+
+| Q | Decision (1-line) | V3 status | Where it lives now |
+|---|---|---|---|
+| Q18 | Disabled state = token swap to `--ink4`/`--ink3` + `cursor:not-allowed` | ACTIVE | LIVE_TRUTH §F.1 form primitives |
+| Q19 | 5-state lockset (happy / empty-FTU / empty-filtered / error / loading) | ACTIVE | LIVE_TRUTH §F.x state principles |
+| Q20 | Loading default = skeleton (shape-of-real-content) | ACTIVE | LIVE_TRUTH §F.1 + §F.x |
+| Q21 | Empty state = brand illustration | ACTIVE | LIVE_TRUTH §AC favorites empty (heart-with-face) |
+| Q22 | Error grammar = inline (in-place block) | ACTIVE | LIVE_TRUTH §F.1 |
+| Q23 | Brand mood = Bold + Playful + Warm | ACTIVE — refined post-pivot | LIVE_TRUTH §0a + §5h color philosophy |
+| Q24 | Copy tone = direct-friendly · NO EMOJIS | ACTIVE | LIVE_TRUTH §0d.1 voice + content rules |
+| Q25 | Button label grammar = single verb default | ACTIVE | LIVE_TRUTH §F.1 button anatomy |
+| Q26 | Card hierarchy = Airbnb-style (photo + bare text) | SUPERSEDED — spirit honored, specifics rewritten by V2-D34 | LIVE_TRUTH §16 (light glass badges, color philosophy) |
+
+**Q28-Q43 (2026-05-01 to 2026-05-02 — type, color, motion, density batch):**
+
+| Q | Decision (1-line) | V3 status | Where it lives now |
+|---|---|---|---|
+| Q28 | Numeric typography = tabular-nums on movers | ACTIVE | LIVE_TRUTH §5 typography |
+| Q30 | Shadow scale = 3 tiers (sm/md/lg) + border-only | ACTIVE | LIVE_TRUTH §5b depth system |
+| Q32 | Spacing scale = 9 sanctioned + 2 hero-only | ACTIVE | LIVE_TRUTH §6 |
+| Q35 | Inter-screen transitions = SLIDE default + shared-element morph | ACTIVE | LIVE_TRUTH §5b motion |
+| Q36 | 5 sanctioned celebration moments | ACTIVE | LIVE_TRUTH §5c.4 |
+| Q40 | 4 sanctioned hover-scope element classes | ACTIVE | LIVE_TRUTH §F.1 button + card patterns |
+| Q41 | Title truncation = NONE, full text always | ACTIVE | LIVE_TRUTH §F.1 + i18n |
+| Q42 | DE/FR/IT text expansion = full text never truncate | ACTIVE | LIVE_TRUTH §F.1 + i18n |
+| Q43 | Numeric alignment = tabular only on movers | ACTIVE | merged w/ Q28 |
+
+**Q45-Q50 (2026-05-02 — accessibility + signature batch):**
+
+| Q | Decision (1-line) | V3 status | Where it lives now |
+|---|---|---|---|
+| Q45 | WCAG AA floor (4.5:1 body, 3:1 large/UI) + 3 banned pairings | ACTIVE — banned pairs partially obsolete (coral-on-white pair retired w V2-D15-3) | LIVE_TRUTH §3 semantic colors |
+| Q46 | Tap target floor = 48×48 + ≥8px gap | ACTIVE | LIVE_TRUTH §11 hit targets |
+| Q47 | Keyboard focus = 2px coral ring | SUPERSEDED — coral retired, focus ring now brand-teal | LIVE_TRUTH §F.1 (V2-D15-3 + V2-D14) |
+| Q48 | Brand signature = Anton + tracked-coral-eyebrow lockup | OBSOLETE | V3 uses Cooper BT + ITC Avant Garde + brand-teal (V2-D15-3 + V2-D26) |
+| Q49 | Above-fold home = stacked (eyebrow + headline + search + chips), no hero photo | ACTIVE | LIVE_TRUTH §13 hero |
+| Q50 | Card density = horizontal scroll-snap (2.5/3.5/4.5-up) | ACTIVE | LIVE_TRUTH §17 horizontal scroll row |
+
+**Q51-Q64 (2026-05-02 to 2026-05-03 — surface specs + brand pivot batch):**
+
+| Q | Decision (1-line) | V3 status | Where it lives now |
+|---|---|---|---|
+| Q51 | 8-section home rhythm + conditional Recently Viewed | ACTIVE | LIVE_TRUTH §13-§22 (homepage flow) |
+| Q52 | Salon detail hero = full-bleed photo + tab nav (Fresha pattern) | ACTIVE | LIVE_TRUTH §SD (Phase 2) |
+| Q53 | Booking entry = sticky bottom CTA (mobile) + sidebar (desktop) → full-page wizard | ACTIVE | LIVE_TRUTH §SD + §BW |
+| Q54 | Reviews = summary card + 3 latest on detail; full list at sub-page | ACTIVE | LIVE_TRUTH §SD reviews tab + §RV |
+| Q55 | Booking wizard = 3 steps (Service+Staff → Date+Time → Pay+Confirm) | ACTIVE | LIVE_TRUTH §BW |
+| Q56 | Step indicator = 3-segment progress bar + eyebrow `Schritt N/3` | ACTIVE | LIVE_TRUTH §BW chrome |
+| Q57 | Confirmation = celebration animation + summary + 3 utility chips, NO confetti spam, NO upsell | ACTIVE | LIVE_TRUTH §C |
+| Q58 | Profile = hybrid layout (Insta header + grouped lists + Live-Activity card) | ACTIVE | LIVE_TRUTH §AC.4 (Phase 3) |
+| Q59 | Loyalty stamps = 3-surface system (page + meta-strip chip + Live-Activity priority) | DEFERRED | SOLEN_NEXT §6.7 |
+| Q60 | Empty bookings = 3 distinct treatments (FTU full / no-upcoming inline / filtered tile) | ACTIVE | LIVE_TRUTH §AC.2 + §F.x states |
+| Q61 | Dashboard = viewport-split (mobile Live-Activity / desktop calendar+stats) + grouped sidebar | ACTIVE | LIVE_TRUTH §B.3 dashboard shell |
+| Q62 | Dashboard tokens = SAME as consumer (one product, two registers) | ACTIVE — token-unity rule survives even after coral→teal pivot | LIVE_TRUTH §B b2b |
+| Q63 | Dashboard density = contextual per surface (dense in working / comfortable in editor) | ACTIVE | LIVE_TRUTH §B b2b |
+| Q64 | GREEN PIVOT — coral → forest green | OBSOLETE | V3 brand-teal `#043338` (V2-D15-3 superseded green→teal) |
+
+#### §V2-D39.2 · Status summary (54 Q-locks)
+
+- **ACTIVE (V3 honors directly):** 31
+- **DEFERRED (still valid, not shipped):** 4 (Q3 swipe carousel, Q9 /termine redirect, Q13 claim ribbon, Q59 loyalty stamps)
+- **SHIPPED (V3 era):** 3 (Q10, Q11, Q26-spirit)
+- **SUPERSEDED (specifics changed):** 4 (Q26 superseded by V2-D34, Q45 partial, Q47 V2-D15-3, Q26 cards)
+- **OBSOLETE (premise retired):** 12 (Q6, Q12, Q23 partial, Q47 partial, Q48, Q64, Q26 cards rewritten, plus all 10 pre-Q unnumbered rows)
+
+#### §V2-D39.3 · How to use this table
+
+- **If you find `Q5` referenced in a code comment / commit / archived doc:** look it up here. The "Where it lives now" column tells you the V3 home.
+- **Do NOT use this table to make NEW design decisions.** It's archeology only. New decisions go through V2-D## numbering in this log.
+- **Do NOT update this table when V3 changes.** Q-locks are frozen at 2026-04-22 to 2026-05-03. If a V3 spec changes (e.g. §16 card spec changes), the Q reference status doesn't change — only the V3 spec section. Q reconciliation is a one-time historical map.
+- **If you need to revisit a Q-lock's full original rationale:** read `_tasks/archive/SOLEN_DESIGN.archived.md` §20. But §0c.2 stop-sign applies — re-anchor to LIVE_TRUTH after.
+
+#### §V2-D39.4 · Files
+
+- **Patched:** `_tasks/V2_REBUILD_LOG.md` — V2-D39 entry added (this entry, ~80 lines).
+- **Patched:** `_tasks/SOLEN_LIVE_TRUTH.md` §0c.2 — SOLEN_DESIGN.md line updated to confirm archive complete + reference §V2-D39.1 for Q-status.
+- **Archived:** `_tasks/SOLEN_DESIGN.md` → `_tasks/archive/SOLEN_DESIGN.archived.md` via `git mv` (history preserved).
+
+#### §V2-D39.5 · Status
+
+**Locked.** Decision 6 done. V2-D33 doc consolidation flow now has all 6 sub-decisions locked (V2-D34, V2-D35, V2-D36, V2-D37, V2-D38, V2-D39). Next: archive sweep (the remaining un-archived docs from §0c.2 list — REDESIGN_INVENTORY.md, BACKEND_NEEDS_UI.md, SOLEN_BUILD_MAP.md, PHASE_8_STRUCTURAL_ALIGNMENT.md, SOLEN_BUILD_LEARNINGS.md, INVENTORY_FULL.md) + final V2-D33 close-out commit.
+
 ### V2-D38 (2026-05-09 evening) — Decision 5 lock: split MASTER_ROADMAP — brand non-negotiables → LIVE_TRUTH §0d, everything else → SOLEN_NEXT.md, source archived
 
 - **Context:** Decision 5 in V2-D33 doc consolidation flow asked where MASTER_ROADMAP.md (437 lines, dated 2026-04-22) should live: inline as LIVE_TRUTH §35 (Option A), pointer-only stub (Option B), Hybrid w triage (Option C), archive entirely (Option D), or split (Option E — extract survivors to new file or surgical edit).
