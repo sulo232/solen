@@ -2931,6 +2931,29 @@ State-driven — exactly one badge per card. Backend auto-assigns via `/api/admi
 
 **Solen Exclusive (5th badge mentioned in BACKEND_NEEDS_UI.md):** **NOT in v1.** Q10 priority order locks 4 badges. Solen Exclusive defers to v2 — re-evaluate when partner-exclusivity deals exist.
 
+#### §16.3.1b · Discount badge (top-left, when applicable — mutually exclusive w curation)
+
+Last-Minute / promotional cards use this variant in the same top-left slot as curation. They never co-exist with curation — a discounted salon is already "promoted" via the discount, no need to also stamp it.
+
+|state condition                             |copy           |bg tint                              |text color    |border                       |
+|--------------------------------------------|---------------|-------------------------------------|--------------|-----------------------------|
+|Last-minute slot has discount applied       |`−10%` to `−40%` (numeric)|`rgba(245, 158, 11, 0.22)` (warning amber) |`#7A4A14` (deep amber) |`rgba(245, 158, 11, 0.32)` |
+|Promotional campaign (e.g. opening week, partnership) |campaign label (e.g. `Solen Deal`) |same as discount|same|same|
+
+|element        |spec                                                                  |
+|---------------|----------------------------------------------------------------------|
+|position       |`top: 8px; left: 8px;` (same slot as curation)                        |
+|typography     |Avant Garde Gothic 700 10px, letter-spacing `0.02em`                  |
+|padding        |`5px 10px`                                                            |
+|radius         |`8px` (rounded rectangle — matches curation shape)                    |
+|backdrop-filter|`blur(14px) saturate(1)`                                              |
+|shadow         |`0 1px 3px rgba(26, 18, 9, 0.06)`                                     |
+|aria-label     |reads discount + savings (e.g. `20 Prozent Rabatt`)                   |
+
+**Mutually exclusive with curation badge.** A Last-Minute card with `−20%` cannot also show `Solen Favorit` — discount wins (more conversion-relevant signal). Backend assigns one or the other based on context.
+
+**Anti-pattern:** solid orange/red bg discount pill (V1 era) — retired V2-D34. Discount must follow universal color formula (light tint + deep same-hue text + matching alpha border).
+
 #### §16.3.2 · Availability pill (bottom-left, full pill)
 
 State-driven — exactly one state per card render OR none (no pill if no live availability).

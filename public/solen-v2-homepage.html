@@ -560,14 +560,23 @@
   /* Spa cards (dark forest bg) — heart needs white-ish stroke for legibility */
   .salon-card.cat-spa .salon-heart:not(.is-saved) { color: rgba(255, 255, 255, 0.85); }
 
-  /* Last-minute discount pill — keeps brand-teal solid (campaign loudness earned) */
+  /* Last-minute discount badge — V2-D34 universal color philosophy
+     Same shape as curation (rounded rect 8px) — they're mutually exclusive at top-left
+     Hue: warning-amber #F59E0B (V3 §3 semantic palette) for "attention/deal" feel */
   .salon-discount {
     position: absolute; top: 8px; left: 8px;
-    background: var(--brand); color: var(--white);
-    padding: 5px 10px; border-radius: 8px;     /* matches curation rect shape */
+    display: inline-flex; align-items: center;
+    background: rgba(245, 158, 11, 0.22);
+    backdrop-filter: blur(14px) saturate(1);
+    -webkit-backdrop-filter: blur(14px) saturate(1);
+    padding: 5px 10px;
+    border-radius: 8px;                /* matches curation rect — mutually exclusive */
+    border: 1px solid rgba(245, 158, 11, 0.32);
     font-family: var(--body); font-weight: 700;
-    font-size: 10px; letter-spacing: .02em;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, .10);
+    font-size: 10px; line-height: 1.2;
+    color: #7A4A14;                    /* deep amber — warning amber's "deeper hue" */
+    letter-spacing: .02em;
+    box-shadow: 0 1px 3px rgba(26, 18, 9, 0.06);
   }
 
   /* Card text area — 8px gap from photo, no padding (§16.2) */
