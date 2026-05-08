@@ -580,6 +580,199 @@ Spec:
 
 **Locked.** Modernity pass complete after ~30 commits of iterative refinement (latest: `65fbdb3` card pill resize, `fe632aa` 150px cards). User feedback "okay looks amaizing" closes the iteration loop.
 
+### V2-D41-followup (2026-05-09 night) — Gap audit + anti-patterns + dependency map for V2-D41 modernity pass
+
+User instruction: "see for any gaps or like things that in the future it might occur errors n sh like for the specs we jst made cz i want these sh applied like i want u to remember". Below: the failure modes a future agent (Claude or human) is most likely to hit, with prevention rules.
+
+#### V2-D41-fu.1 · 🔴 CRITICAL anti-patterns (will silently break the design)
+
+**A. `bg-white` on the `<body>` element BREAKS THE ATMOSPHERE WASH.**
+
+Symptom: page reads as flat white. Wash gradients are technically painted but invisible because body's opaque white covers them.
+
+Why: `body::before` and `body::after` pseudo-elements paint at z-index -2 / -1 — INSIDE body's stacking context. An opaque body bg paints OVER them.
+
+Architecture (don't break this):
+```css
+html { background-color: #FFFFFF; }   /* white substrate */
+body { background: transparent; }      /* MUST stay transparent */
+body::before, body::after { /* wash gradients with negative z-index */ }
+```
+
+In React layout (`app/layout.tsx`):
+```tsx
+<body style={{ margin: 0, padding: 0 }} className="text-s-ink">
+//                                                  ^^^^^^^^^^
+//   Notice: NO bg-white here. text-s-ink only. Adding bg-white = breaks wash.
+```
+
+This regressed once mid-session (V2-D41-fu happened because of this). Mark as a permanent rule:
+
+> **Anti-pattern (banned permanently):** `bg-white` (or any opaque bg utility) on `<body>` className. White substrate lives at `html` level. Body must be transparent for wash visibility.
+
+**B. Cooper Black Std CDN (fontcdn.com) is HTTP 500 — actual rendered font is Sansita 900.**
+
+Symptom: agent "fixes" the @import URL or notices font discrepancy and tries to "correct" it.
+
+Reality: cooper-black-std on fontcdn.com returns 500. Sansita 900 (loaded from Google Fonts in the same `globals.css` import) is fourth in the cascade and is what actually renders. Looks Cooper-ish, works fine.
+
+Don't:
+- Replace cooper imports with a different "working" Cooper source without checking the rendered visual matches.
+- Reorder font-family list to put Sansita first (might cause flash of different font).
+
+Do:
+- Accept that Sansita 900 IS the de facto primary V3 display font.
+- If you license Cooper Black later, add a legitimate self-hosted @font-face declaration BEFORE the cdnfonts import.
+
+**C. Cat-color halo glows on cards are RETIRED — don't reintroduce.**
+
+Symptom: agent reads V2-D34 §16.3.0 universal color formula, sees that halos use the formula's hue palette, and "applies" it to card photos.
+
+Reality: V2-D41.4 retired the cat-color halos because they read as static-shadow bugs. The §16.3.0 formula is for BADGES (Solen Favorit pill, discount pill, availability pill) — NOT for card-level halos.
+
+Anti-pattern:
+```css
+/* ❌ NEVER do this on .salon-card photo */
+.card-coiffeur .photo { box-shadow: 0 4px 20px rgba(255, 241, 221, 0.9); }
+```
+
+The card uses the simple layered black-shadow stack from V2-D41.4. No category coloring on the photo container or its shadow.
+
+**D. Section padding ↔ ScrollRow negative margin MUST stay coupled.**
+
+Symptom: agent changes Section's `px-1` or SectionFrame's `px-3` without updating ScrollRow's `-mx-3 px-3` — cards either stick out past the rounded border (overflow not clipped properly) or don't extend to the edge (visible gap).
+
+Coupling:
+- ScrollRow's negative margin must MATCH SectionFrame's horizontal padding (so scroll-row outer extends to frame's outer edge)
+- ScrollRow's padding must MATCH the negative margin (so cards align with frame's content area)
+- SectionFrame must have `overflow-hidden` (so any escape past the rounded border clips cleanly)
+
+If you change SectionFrame.px from `px-3` to `px-4`, you must update ScrollRow from `-mx-3 px-3` to `-mx-4 px-4`. Same on desktop side.
+
+#### V2-D41-fu.2 · 🟡 SCOPE — where the V2-D41 patterns apply
+
+The Section/Meta/Frame/Title pattern was locked **for the homepage**. But it's the right pattern for any "scroll-row on a feed" surface.
+
+Apply V2-D41 section-frame to:
+- ✅ Homepage (Recently Viewed / Last-Minute / Nearby / 4 categories / Reviews)
+- ✅ Category pages (`/coiffeur`, `/barbershop`, `/nails`, `/spa`) when they ship
+- ✅ City pages (`/[city]`) per-category sections
+- ✅ Search results page when it ships (`/search/results`)
+- ✅ /favoriten and /profile/* feeds
+
+Don't apply:
+- ❌ Trust banner (`§Q51.8`) — uses solid `bg-s-ink` (dark section), section-frame glass would be invisible on dark substrate. Trust banner's existing inline header is correct.
+- ❌ Hero (`§13`) — its own component with its own typography rhythm
+- ❌ Footer — separate visual language
+- ❌ Modal/sheet/dialog content — those have their own framing
+
+#### V2-D41-fu.3 · 🟡 REDUCED MOTION strategy
+
+V2-D41 added several motion moments: Dynamic Island search morph (500ms tween), card hover (-3px lift, 300ms ease), saved-heart drop-shadow change. Plus the existing atmosphere wash drift (22s + 28s).
+
+Current state:
+- Atmosphere wash drift: ✅ has `@media (prefers-reduced-motion: reduce) { animation: none }` (locked V2-D15-3)
+- Card hover transform: ⚠️ no reduced-motion guard — but transforms are user-initiated (hover), so they're fine to keep
+- Dynamic Island morph: ⚠️ no reduced-motion guard — should be added
+
+**Rule:** any motion that runs WITHOUT user interaction (like atmosphere drift, breathing heart, entry stagger) MUST have a reduced-motion guard. Motion that runs ON user action (hover, tap, scroll) does NOT need a guard.
+
+TODO before Phase 1 ship: add reduced-motion guard to Dynamic Island morph in `SearchBar.tsx`. Specifically:
+```tsx
+const transition = useReducedMotion()
+  ? { duration: 0 }
+  : { type: "tween", ease: [0.22, 1, 0.36, 1], duration: 0.5 };
+```
+
+#### V2-D41-fu.4 · 🟡 EMPTY STATE for card feeds
+
+V2-D41 doesn't address what happens when a feed has 0 cards. Currently:
+- `RecentlyViewed` returns null when localStorage is empty in production (locked V2-D11 era)
+- `LastMinute / Nearby / Coiffeur / Reviews` always render with hardcoded demo data
+
+For Phase 2 when these wire to real Supabase queries:
+- 0 cards → hide the entire `<Section>` (return null from the section component)
+- 1-2 cards → show as-is, no peek of card 3 obviously, scroll-row still works
+- Loading state → show §16.7 skeleton variant (V2-D34 spec) inside the SectionFrame
+
+#### V2-D41-fu.5 · 🟡 SEARCH BAR — wired vs unwired
+
+The V2-D41.8 Dynamic Island morph has all the visual + interaction state but **no actual submit logic**:
+- Service / Stadt / Zeit values are stored in component state but not submitted anywhere
+- "Solen durchsuchen" button has no `onClick` handler
+- "Suchen" footer button (in expanded state) also has no handler
+
+When wired to Phase 2 search backend:
+- Submit handler: `router.push(`/search/results?service=${service}&stadt=${stadt}&zeit=${zeit}`)`
+- Need URL state → component state hydration so `/search/results` opens with the same values pre-filled
+- Body scroll lock + Esc handler stay as-is
+
+#### V2-D41-fu.6 · 🟡 RESPONSIVE EDGE CASES
+
+V2-D41 specs heights/widths for mobile (< 768px) and desktop (≥ 768px). Edge cases:
+
+- **Tablet portrait (768-1023px)**: uses desktop branch. SearchBar is horizontal pill (76px), cards are 180px. Should look fine.
+- **Narrow phone (< 360px)**: 150px cards + 12px gap = 312px. With 4px section padding + 12px frame padding on each side, content area = 360 - 32 = 328px. 2 cards fit, card 3 peek is ~16px. Acceptable.
+- **Ultra-narrow (< 320px, very rare)**: cards might overflow horizontally beyond viewport. Not optimized.
+- **4K / wide (> 1280px)**: Section maxes out at 1280px max-width with `mx-auto`. Plenty of side margin around the centered section.
+
+If a new viewport edge case surfaces, the fix is in `Section` component padding values — don't touch ScrollRow or SalonCard widths first.
+
+#### V2-D41-fu.7 · 🟡 GLASS LAYER PERFORMANCE
+
+V2-D41 stacks 3 glass layers per card section: SectionFrame (40% white + 18px blur) → SalonCard pill (70% white + 14px blur) → page atmosphere wash. Each layer requires the browser to re-rasterize the underneath pixels.
+
+On low-end mobile devices (Android < 12, older iOS), this can hit frame rates. Not yet measured.
+
+Mitigation if it becomes an issue:
+- Reduce backdrop-blur values (10px instead of 18px on SectionFrame)
+- Use `transform: translateZ(0)` JUDICIOUSLY on layers that need GPU promotion, but ONLY during animation, not at rest (we hit a blurry-text bug from this earlier)
+- For very low-end devices, fall back to flat fills (no backdrop-filter) via `@supports not (backdrop-filter: blur(1px))`
+
+NOT yet implemented — flag for Phase 1 perf testing.
+
+#### V2-D41-fu.8 · 🟡 CARD WIDTH SCALES — outside homepage
+
+V2-D41.3 locked card mobile width at 150px specifically for "2 + bit of 3rd peek" on the homepage scroll rows.
+
+For other surfaces using SalonCard:
+- **Search results grid (Phase 2 §SR)**: cards in a 2-column grid on mobile, 3-column tablet, 4-column desktop. Width determined by grid, not fixed 150/180px. Card adapts via parent container.
+- **Salon detail page recommended salons section**: scroll row → use 150/180px (same as homepage)
+- **Favorites grid**: 2-col mobile grid → wider cards (~180px), use grid-derived width
+
+Generalize: 150/180px is for the **horizontal scroll row** mobile peek. Grids use container-derived widths.
+
+#### V2-D41-fu.9 · 🟡 LOCALE / i18n still hardcoded
+
+All V3 homepage components have hardcoded German strings (eyebrows, h2 titles, link labels, search row placeholders). When non-`/de` locales render:
+- They'll show German strings (degraded UX but not broken)
+- Once wired to next-intl, each locale gets its own translations
+
+V2-D41-fu reminder: before Phase 4 launch, audit all V3 components for `useTranslations()` migration. SOLEN_NEXT.md §3.4 already has this on the i18n completeness checklist.
+
+#### V2-D41-fu.10 · 🟢 LONG-TAIL CONSIDERATIONS
+
+- **No automated tests** for V2-D41 components. Visual regression risk on future commits. Recommend Playwright smoke tests for homepage rendering once Phase 2 stabilizes.
+- **CSS migration risk**: V2-D41 uses Tailwind arbitrary values (`px-[10px]`, `mt-[8px]`, `bg-white/40`). If codebase moves off Tailwind, these don't translate cleanly.
+- **CookieConsent provider** must wrap the tree (mount in `app/[locale]/layout.tsx` already done). Forgetting it makes `useCookieConsent()` throw.
+- **Demo data** in section files (`DEMO_SALONS` arrays) gets replaced with real Supabase queries in Phase 2. Don't ship demo data to production — explicit guard via `process.env.NODE_ENV !== "production"`.
+
+#### V2-D41-fu.11 · MEMORY: where to put what
+
+For future agents asking "where do I encode this V2-D41 stuff so I remember":
+
+| Type of decision | Goes in |
+|---|---|
+| Visual spec deltas (§X.Y formula updates) | LIVE_TRUTH §X.Y inline, with V2-D41 prelude warning |
+| Anti-patterns + dependency rules (this entry) | V2_REBUILD_LOG.md V2-D41-fu (this section) |
+| Hard rules a hook should enforce | Add to `.claude/hooks/` if pattern recurs |
+| New surface specs (e.g. Phase 2 §SR using V2-D41 patterns) | LIVE_TRUTH §X new section, citing V2-D41 |
+| Phase planning + deferred work | SOLEN_NEXT.md (V2-D38 lock) |
+
+#### V2-D41-fu.12 · Status
+
+**Locked.** This entry is the canonical reference for "future agent gotchas around V2-D41". Any subsequent V2-D## that touches a §V2-D41 surface must check this list for relevant anti-patterns first.
+
 ### V2-D40 (2026-05-09 evening) — Archive sweep close-out: 6 remaining §0c.2-listed docs moved to `_tasks/archive/`
 
 - **Context:** §0c.2 ("Archived — do NOT consult") in LIVE_TRUTH already named these docs as archive-bound. The actual `git mv` was deferred until V2-D33 doc consolidation flow finished (V2-D34 through V2-D39 first). With all 6 sub-decisions locked, this is the close-out sweep.

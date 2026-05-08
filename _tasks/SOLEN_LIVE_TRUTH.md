@@ -172,6 +172,22 @@ Everything bookable is bookable live. No "call to confirm" flows, no "request qu
 ❌ Adding a new non-negotiable here without a V2-D## decision. The set is intentionally small (5 rules); proliferation = the rules become advisory.
 ❌ Using §0d as a roadmap or TODO list. Strategic + tactical work lives in `_tasks/SOLEN_NEXT.md`. §0d is brand law only.
 
+### §0d.7 · Permanent technical anti-patterns (V2-D41-fu lock)
+
+These are **architectural laws** — breaking any of them silently breaks visible design. Distinct from the brand laws above (§0d.1-§0d.5) because these are how the V3 system is wired, not what it stands for.
+
+❌ **`bg-white` on `<body>` element.** Breaks the §5g atmosphere wash. White substrate lives at `html { background-color: #FFFFFF }`. Body must stay `background: transparent`. See V2_REBUILD_LOG.md §V2-D41-fu.1.A for details.
+
+❌ **Reintroducing cat-color halo glows on `.salon-card .photo`.** Retired V2-D41.4. The §16.3.0 universal color formula applies to BADGES (curation/discount/availability/heart) — NOT to card-level photo halos. See §V2-D41-fu.1.C.
+
+❌ **Section padding ↔ ScrollRow negative margin drift.** `SectionFrame.px-X` MUST match `ScrollRow.{-mx-X, px-X}` AND `SectionFrame` MUST have `overflow-hidden`. Changing one without the others = cards stick out past rounded border. See §V2-D41-fu.1.D.
+
+❌ **"Fixing" the broken Cooper Black Std cdnfonts URL by reordering font-family.** The actual rendered V3 display font is Sansita 900 (Google Fonts fallback). The Cooper imports return HTTP 500. Don't reorder unless replacing with a legitimate licensed Cooper source. See §V2-D41-fu.1.B.
+
+❌ **Adding `will-change` / `transform: translateZ(0)` to elements at REST.** Forces a permanent GPU compositor layer that rasterizes text at the layer's pixel density (often less than device DPR), causing blurry text artifacts. Apply only DURING animation if needed. Motion library handles GPU promotion automatically.
+
+❌ **Animating `width` / `height` from explicit value to `auto` (or vice versa).** Browsers can't smoothly interpolate to `auto`. Always animate between two explicit values, or use a `motion.div` with `layout` ONLY when the auto value is acceptable.
+
 ---
 
 ## Index
