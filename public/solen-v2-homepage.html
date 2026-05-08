@@ -431,84 +431,155 @@
     flex-shrink: 0;
   }
 
-  /* ============== HORIZONTAL SCROLL ROW (Q50 carousel pattern) ============== */
+  /* ============== SALON CARD (§16 lock — 180px wide, 1:1 photo, 8px gap, 14px radius) ============== */
   .scroll-row {
-    display: flex; gap: 16px; overflow-x: auto; padding: 4px 0 4px;
+    display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 4px;
     margin-top: 16px;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
   }
   .scroll-row::-webkit-scrollbar { display: none; }
+
   .salon-card {
-    flex: 0 0 280px; scroll-snap-align: start;
-    background: var(--white);
-    border-radius: 16px;
-    overflow: hidden;
+    flex: 0 0 160px;        /* §16.2 mobile width */
+    scroll-snap-align: start;
+    background: transparent;  /* card has NO bg — photo + text below */
     cursor: pointer;
     text-decoration: none; color: inherit;
     transition: transform 200ms var(--ease-snap);
   }
-  .salon-card:hover { transform: translateY(-2px); }
-  .salon-photo {
-    aspect-ratio: 4/3;
-    background: linear-gradient(135deg, var(--brand-pale), var(--brand-subtle));
-    position: relative;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--brand); font-family: var(--display); font-weight: 900; font-size: 32px;
-    opacity: 0.6;
+  @media (min-width: 768px) {
+    .salon-card { flex: 0 0 180px; }   /* §16.2 tablet+ width */
   }
-  .salon-card.cat-coiffeur .salon-photo { background: linear-gradient(135deg, var(--cat-coiffeur), #FFE4D2); color: var(--cat-coiffeur-text); }
-  .salon-card.cat-barber   .salon-photo { background: linear-gradient(135deg, var(--cat-barber), #B8B6AB);   color: var(--cat-barber-text); }
-  .salon-card.cat-nails    .salon-photo { background: linear-gradient(135deg, var(--cat-nails), var(--brand-pale)); color: var(--cat-nails-text); }
-  .salon-card.cat-spa      .salon-photo { background: linear-gradient(135deg, var(--cat-spa), #2A4530); color: var(--cat-spa-text); }
+  .salon-card:hover { transform: translateY(-1px); }
+  .salon-card:hover .salon-photo {
+    box-shadow: 0 4px 16px rgba(50,47,44,0.10);
+  }
+  .salon-card:active { transform: scale(0.96); transition-duration: 100ms; }
+
+  .salon-photo {
+    aspect-ratio: 1/1;          /* §16.2 — square */
+    border-radius: 14px;        /* §16.2 var(--radius-xl) */
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    transition: box-shadow 200ms var(--ease-snap);
+    /* default fallback (no real photo): brand pale tile w salon initial */
+    background: linear-gradient(135deg, var(--brand-pale), var(--brand-subtle));
+  }
+  .salon-photo .initial {
+    font-family: var(--display); font-weight: 900;
+    font-size: 38px; line-height: 1;
+    color: rgba(4, 51, 56, 0.55);
+  }
+  /* Per-category fallback tiles (§16.7b — combo color + cat-text initial) */
+  .salon-card.cat-coiffeur .salon-photo { background: var(--cat-coiffeur); }
+  .salon-card.cat-coiffeur .salon-photo .initial { color: var(--cat-coiffeur-text); }
+  .salon-card.cat-barber   .salon-photo { background: var(--cat-barber); }
+  .salon-card.cat-barber   .salon-photo .initial { color: var(--cat-barber-text); }
+  .salon-card.cat-nails    .salon-photo { background: var(--cat-nails); }
+  .salon-card.cat-nails    .salon-photo .initial { color: var(--cat-nails-text); }
+  .salon-card.cat-spa      .salon-photo { background: var(--cat-spa); }
+  .salon-card.cat-spa      .salon-photo .initial { color: var(--cat-spa-text); }
+
+  /* Badge top-left (§16.3) — Sofort frei / Heute frei / pause variants */
+  .salon-badge {
+    position: absolute; top: 8px; left: 8px;
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(12px) saturate(1);
+    -webkit-backdrop-filter: blur(12px) saturate(1);
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-family: var(--body); font-weight: 700;
+    font-size: 10px; line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: .01em;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    pointer-events: none;
+  }
+  .salon-badge-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--brand);   /* default Sofort frei = brand teal */
+    flex-shrink: 0;
+    animation: badge-pulse 1.6s ease-in-out infinite;
+  }
+  .salon-badge.is-heute .salon-badge-dot { background: var(--success); box-shadow: 0 0 0 3px rgba(22,163,74,.20); }
+  .salon-badge.is-sofort .salon-badge-dot { box-shadow: 0 0 0 3px rgba(4,51,56,.20); }
+  .salon-badge.is-pause .salon-badge-dot { display: none; }
+  .salon-badge.is-pause { color: var(--ink-2); }
+  @keyframes badge-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  /* Heart top-right (§16.3) — 28px circle, 14px Lucide icon */
   .salon-heart {
-    position: absolute; top: 12px; right: 12px;
-    width: 36px; height: 36px;
-    background: rgba(255,255,255,0.92);
+    position: absolute; top: 8px; right: 8px;
+    width: 28px; height: 28px;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
-    color: var(--ink-2);
+    color: var(--ink);
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
     transition: transform 200ms var(--ease-snap);
   }
   .salon-heart:hover { transform: scale(1.06); }
   .salon-heart.is-saved { color: var(--love); }
-  .salon-info { padding: 16px; }
-  .salon-name { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
-  .salon-meta {
-    font-size: 14px; color: var(--ink-3);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .salon-rating { color: var(--ink); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
-  .salon-rating::before { content: '★'; color: var(--star); }
-  .salon-availability {
-    margin-top: 12px;
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 4px 10px; border-radius: 999px;
-    font-size: 12px; font-weight: 600;
-  }
-  .salon-availability.is-free { background: rgba(22,163,74,.10); color: var(--success); }
-  .salon-availability.is-soon { background: rgba(245,158,11,.10); color: #B45309; }
-  .salon-availability.is-week { background: var(--brand-subtle); color: var(--brand); }
-  .salon-availability::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .salon-heart svg { width: 14px; height: 14px; }
 
-  /* discount badge for last-minute */
+  /* Last-minute discount badge (left, replacing standard badge for that variant) */
   .salon-discount {
-    position: absolute; top: 12px; left: 12px;
+    position: absolute; top: 8px; left: 8px;
     background: var(--brand); color: var(--white);
-    padding: 6px 10px; border-radius: 999px;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: .04em;
+    padding: 4px 8px; border-radius: 999px;
+    font-family: var(--body); font-weight: 700;
+    font-size: 10px; letter-spacing: .02em;
+    box-shadow: 0 1px 2px rgba(0,0,0,.10);
   }
 
-  /* recently viewed - smaller card variant */
-  .recently-card {
-    flex: 0 0 200px;
+  /* Card text area — 8px gap from photo, no padding (§16.2) */
+  .salon-info { margin-top: 8px; }
+
+  /* Row 1 — name + rating (§16.4) */
+  .salon-row-1 {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 8px;
   }
-  .recently-card .salon-photo { aspect-ratio: 1/1; }
-  .recently-card .salon-info { padding: 12px; }
-  .recently-card .salon-name { font-size: 14px; }
-  .recently-card .salon-meta { font-size: 12px; }
+  .salon-name {
+    font-family: var(--body); font-weight: 700;
+    font-size: 14px; line-height: 1.1; letter-spacing: -0.01em;
+    color: var(--ink);
+    flex: 1; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .salon-rating {
+    display: inline-flex; align-items: center; gap: 2px;
+    font-family: var(--body); font-weight: 600;
+    font-size: 11px; color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .salon-rating::before {
+    content: '★';
+    color: var(--star);
+    font-size: 10px;
+  }
+
+  /* Row 2 — variant content (§16.5) */
+  .salon-row-2 {
+    margin-top: 4px;
+    font-family: var(--body); font-weight: 400;
+    font-size: 11px; line-height: 1.3;
+    color: var(--ink-3);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .salon-row-2 strong {
+    font-weight: 600; color: var(--ink);
+  }
 
   /* ============== ENTDECKEN INSPO STRIP ============== */
   .entdecken {
@@ -968,49 +1039,74 @@
         <a href="#" class="sec-link">Im Profil ansehen →</a>
       </div>
       <div class="scroll-row">
-        <a class="salon-card recently-card cat-coiffeur">
-          <div class="salon-photo">M
-            <div class="salon-heart is-saved">♥</div>
+        <a class="salon-card cat-coiffeur">
+          <div class="salon-photo">
+            <span class="initial">M</span>
+            <span class="salon-badge is-sofort"><span class="salon-badge-dot"></span>Sofort frei</span>
+            <button class="salon-heart is-saved" aria-label="Gespeichert"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
-            <div class="salon-name">Salon Maria</div>
-            <div class="salon-meta"><span class="salon-rating">4.8</span> · Kleinbasel</div>
+            <div class="salon-row-1">
+              <span class="salon-name">Salon Maria</span>
+              <span class="salon-rating">4.8</span>
+            </div>
+            <div class="salon-row-2">In <strong>25 Min</strong> frei</div>
           </div>
         </a>
-        <a class="salon-card recently-card cat-spa">
-          <div class="salon-photo">S
-            <div class="salon-heart">♡</div>
+        <a class="salon-card cat-spa">
+          <div class="salon-photo">
+            <span class="initial">S</span>
+            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
-            <div class="salon-name">Spa Rheinufer</div>
-            <div class="salon-meta"><span class="salon-rating">4.8</span> · Kleinbasel</div>
+            <div class="salon-row-1">
+              <span class="salon-name">Spa Rheinufer</span>
+              <span class="salon-rating">4.8</span>
+            </div>
+            <div class="salon-row-2"><strong>14:30, 15:00, 16:30</strong></div>
           </div>
         </a>
-        <a class="salon-card recently-card cat-nails">
-          <div class="salon-photo">N
-            <div class="salon-heart">♡</div>
+        <a class="salon-card cat-nails">
+          <div class="salon-photo">
+            <span class="initial">N</span>
+            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
-            <div class="salon-name">Nails &amp; Co.</div>
-            <div class="salon-meta"><span class="salon-rating">4.7</span> · Spalentor</div>
+            <div class="salon-row-1">
+              <span class="salon-name">Nails &amp; Co.</span>
+              <span class="salon-rating">4.7</span>
+            </div>
+            <div class="salon-row-2">Nächster Termin <strong>Mo. 09:00</strong></div>
           </div>
         </a>
-        <a class="salon-card recently-card cat-coiffeur">
-          <div class="salon-photo">A
-            <div class="salon-heart">♡</div>
+        <a class="salon-card cat-coiffeur">
+          <div class="salon-photo">
+            <span class="initial">A</span>
+            <span class="salon-badge is-sofort"><span class="salon-badge-dot"></span>Sofort frei</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
-            <div class="salon-name">Atelier Coiffure</div>
-            <div class="salon-meta"><span class="salon-rating">4.9</span> · Innenstadt</div>
+            <div class="salon-row-1">
+              <span class="salon-name">Atelier Coiffure</span>
+              <span class="salon-rating">4.9</span>
+            </div>
+            <div class="salon-row-2">In <strong>10 Min</strong> frei</div>
           </div>
         </a>
-        <a class="salon-card recently-card cat-barber">
-          <div class="salon-photo">B
-            <div class="salon-heart">♡</div>
+        <a class="salon-card cat-barber">
+          <div class="salon-photo">
+            <span class="initial">B</span>
+            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
-            <div class="salon-name">Bohème</div>
-            <div class="salon-meta"><span class="salon-rating">4.9</span> · Steinenvorstadt</div>
+            <div class="salon-row-1">
+              <span class="salon-name">Bohème</span>
+              <span class="salon-rating">4.9</span>
+            </div>
+            <div class="salon-row-2"><strong>16:00, 16:30, 17:30</strong></div>
           </div>
         </a>
       </div>
@@ -1032,47 +1128,59 @@
       </div>
       <div class="scroll-row">
         <a class="salon-card cat-coiffeur">
-          <div class="salon-photo">M
-            <div class="salon-discount">−20%</div>
-            <div class="salon-heart">♡</div>
+          <div class="salon-photo">
+            <span class="initial">M</span>
+            <span class="salon-discount">−20%</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
-            <div class="salon-name">Salon Maria</div>
-            <div class="salon-meta"><span class="salon-rating">4.8 (124)</span> · Coiffeur</div>
-            <span class="salon-availability is-free">Heute 14:30 · CHF 64</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Salon Maria</span>
+              <span class="salon-rating">4.8</span>
+            </div>
+            <div class="salon-row-2">Heute <strong>14:30</strong> · ab <strong>CHF 64</strong></div>
           </div>
         </a>
         <a class="salon-card cat-nails">
-          <div class="salon-photo">N
-            <div class="salon-discount">−15%</div>
-            <div class="salon-heart">♡</div>
+          <div class="salon-photo">
+            <span class="initial">N</span>
+            <span class="salon-discount">−15%</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
-            <div class="salon-name">Nails &amp; Co.</div>
-            <div class="salon-meta"><span class="salon-rating">4.7 (215)</span> · Nails</div>
-            <span class="salon-availability is-free">Heute 16:00 · CHF 38</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Nails &amp; Co.</span>
+              <span class="salon-rating">4.7</span>
+            </div>
+            <div class="salon-row-2">Heute <strong>16:00</strong> · ab <strong>CHF 38</strong></div>
           </div>
         </a>
         <a class="salon-card cat-barber">
-          <div class="salon-photo">B
-            <div class="salon-discount">−25%</div>
-            <div class="salon-heart">♡</div>
+          <div class="salon-photo">
+            <span class="initial">B</span>
+            <span class="salon-discount">−25%</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
-            <div class="salon-name">Bohème</div>
-            <div class="salon-meta"><span class="salon-rating">4.9 (98)</span> · Barber</div>
-            <span class="salon-availability is-free">Heute 17:30 · CHF 32</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Bohème</span>
+              <span class="salon-rating">4.9</span>
+            </div>
+            <div class="salon-row-2">Heute <strong>17:30</strong> · ab <strong>CHF 32</strong></div>
           </div>
         </a>
         <a class="salon-card cat-spa">
-          <div class="salon-photo">S
-            <div class="salon-discount">−10%</div>
-            <div class="salon-heart">♡</div>
+          <div class="salon-photo">
+            <span class="initial">S</span>
+            <span class="salon-discount">−10%</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
           </div>
           <div class="salon-info">
-            <div class="salon-name">Spa Rheinufer</div>
-            <div class="salon-meta"><span class="salon-rating">4.8 (87)</span> · Spa</div>
-            <span class="salon-availability is-free">Heute 18:00 · CHF 95</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Spa Rheinufer</span>
+              <span class="salon-rating">4.8</span>
+            </div>
+            <div class="salon-row-2">Heute <strong>18:00</strong> · ab <strong>CHF 95</strong></div>
           </div>
         </a>
       </div>
@@ -1094,35 +1202,57 @@
       </div>
       <div class="scroll-row">
         <a class="salon-card cat-coiffeur">
-          <div class="salon-photo">M<div class="salon-heart is-saved">♥</div></div>
+          <div class="salon-photo">
+            <span class="initial">M</span>
+            <span class="salon-badge is-sofort"><span class="salon-badge-dot"></span>Sofort frei</span>
+            <button class="salon-heart is-saved" aria-label="Gespeichert"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Salon Maria</div>
-            <div class="salon-meta"><span class="salon-rating">4.8</span> · 200 m</div>
-            <span class="salon-availability is-free">Heute frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Salon Maria</span>
+              <span class="salon-rating">4.8</span>
+            </div>
+            <div class="salon-row-2"><strong>200 m</strong> · In <strong>15 Min</strong> frei</div>
           </div>
         </a>
         <a class="salon-card cat-coiffeur">
-          <div class="salon-photo">A<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">A</span>
+            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Atelier Coiffure</div>
-            <div class="salon-meta"><span class="salon-rating">4.9</span> · 450 m</div>
-            <span class="salon-availability is-free">Heute frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Atelier Coiffure</span>
+              <span class="salon-rating">4.9</span>
+            </div>
+            <div class="salon-row-2"><strong>450 m</strong> · <strong>14:30, 16:00</strong></div>
           </div>
         </a>
         <a class="salon-card cat-nails">
-          <div class="salon-photo">N<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">N</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Nails &amp; Co.</div>
-            <div class="salon-meta"><span class="salon-rating">4.7</span> · 800 m</div>
-            <span class="salon-availability is-soon">Morgen frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Nails &amp; Co.</span>
+              <span class="salon-rating">4.7</span>
+            </div>
+            <div class="salon-row-2"><strong>800 m</strong> · Nächster <strong>Mo. 09:00</strong></div>
           </div>
         </a>
         <a class="salon-card cat-spa">
-          <div class="salon-photo">S<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">S</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Spa Rheinufer</div>
-            <div class="salon-meta"><span class="salon-rating">4.8</span> · 1.2 km</div>
-            <span class="salon-availability is-week">Diese Woche</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Spa Rheinufer</span>
+              <span class="salon-rating">4.8</span>
+            </div>
+            <div class="salon-row-2"><strong>1.2 km</strong> · Nächster <strong>Do. 11:00</strong></div>
           </div>
         </a>
       </div>
@@ -1144,35 +1274,57 @@
       </div>
       <div class="scroll-row">
         <a class="salon-card cat-coiffeur">
-          <div class="salon-photo">M<div class="salon-heart is-saved">♥</div></div>
+          <div class="salon-photo">
+            <span class="initial">M</span>
+            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <button class="salon-heart is-saved" aria-label="Gespeichert"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Salon Maria</div>
-            <div class="salon-meta"><span class="salon-rating">4.8 (124)</span> · ab CHF 80</div>
-            <span class="salon-availability is-free">Heute frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Salon Maria</span>
+              <span class="salon-rating">4.8</span>
+            </div>
+            <div class="salon-row-2">Damen-Schnitt · ab <strong>CHF 80</strong></div>
           </div>
         </a>
         <a class="salon-card cat-coiffeur">
-          <div class="salon-photo">A<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">A</span>
+            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Atelier Coiffure</div>
-            <div class="salon-meta"><span class="salon-rating">4.9 (340)</span> · ab CHF 120</div>
-            <span class="salon-availability is-free">Heute frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Atelier Coiffure</span>
+              <span class="salon-rating">4.9</span>
+            </div>
+            <div class="salon-row-2">Balayage · ab <strong>CHF 120</strong></div>
           </div>
         </a>
         <a class="salon-card cat-coiffeur">
-          <div class="salon-photo">L<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">L</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Lina Hair Studio</div>
-            <div class="salon-meta"><span class="salon-rating">4.7 (89)</span> · ab CHF 75</div>
-            <span class="salon-availability is-soon">Morgen frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Lina Hair Studio</span>
+              <span class="salon-rating">4.7</span>
+            </div>
+            <div class="salon-row-2">Föhnen &amp; Styling · ab <strong>CHF 75</strong></div>
           </div>
         </a>
         <a class="salon-card cat-coiffeur">
-          <div class="salon-photo">C<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">C</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Coiffeur Bahnhof</div>
-            <div class="salon-meta"><span class="salon-rating">4.6 (412)</span> · ab CHF 65</div>
-            <span class="salon-availability is-week">Diese Woche</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Coiffeur Bahnhof</span>
+              <span class="salon-rating">4.6</span>
+            </div>
+            <div class="salon-row-2">Herren-Schnitt · ab <strong>CHF 65</strong></div>
           </div>
         </a>
       </div>
@@ -1194,35 +1346,57 @@
       </div>
       <div class="scroll-row">
         <a class="salon-card cat-barber">
-          <div class="salon-photo">B<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">B</span>
+            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Bohème Barber</div>
-            <div class="salon-meta"><span class="salon-rating">4.9 (98)</span> · ab CHF 45</div>
-            <span class="salon-availability is-free">Heute frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Bohème Barber</span>
+              <span class="salon-rating">4.9</span>
+            </div>
+            <div class="salon-row-2">Skin Fade · ab <strong>CHF 45</strong></div>
           </div>
         </a>
         <a class="salon-card cat-barber">
-          <div class="salon-photo">F<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">F</span>
+            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Fade &amp; Co.</div>
-            <div class="salon-meta"><span class="salon-rating">4.8 (276)</span> · ab CHF 50</div>
-            <span class="salon-availability is-free">Heute frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Fade &amp; Co.</span>
+              <span class="salon-rating">4.8</span>
+            </div>
+            <div class="salon-row-2">Bart-Trim · ab <strong>CHF 50</strong></div>
           </div>
         </a>
         <a class="salon-card cat-barber">
-          <div class="salon-photo">G<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">G</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Grossmann Barber</div>
-            <div class="salon-meta"><span class="salon-rating">4.7 (143)</span> · ab CHF 40</div>
-            <span class="salon-availability is-soon">Morgen frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Grossmann Barber</span>
+              <span class="salon-rating">4.7</span>
+            </div>
+            <div class="salon-row-2">Klassisch · ab <strong>CHF 40</strong></div>
           </div>
         </a>
         <a class="salon-card cat-barber">
-          <div class="salon-photo">K<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">K</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Klassisch &amp; Co.</div>
-            <div class="salon-meta"><span class="salon-rating">4.8 (87)</span> · ab CHF 55</div>
-            <span class="salon-availability is-week">Diese Woche</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Klassisch &amp; Co.</span>
+              <span class="salon-rating">4.8</span>
+            </div>
+            <div class="salon-row-2">Hot Towel Shave · ab <strong>CHF 55</strong></div>
           </div>
         </a>
       </div>
@@ -1244,35 +1418,57 @@
       </div>
       <div class="scroll-row">
         <a class="salon-card cat-nails">
-          <div class="salon-photo">N<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">N</span>
+            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Nails &amp; Co.</div>
-            <div class="salon-meta"><span class="salon-rating">4.7 (215)</span> · ab CHF 38</div>
-            <span class="salon-availability is-free">Heute frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Nails &amp; Co.</span>
+              <span class="salon-rating">4.7</span>
+            </div>
+            <div class="salon-row-2">Maniküre · ab <strong>CHF 38</strong></div>
           </div>
         </a>
         <a class="salon-card cat-nails">
-          <div class="salon-photo">P<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">P</span>
+            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Pink Polish</div>
-            <div class="salon-meta"><span class="salon-rating">4.9 (180)</span> · ab CHF 42</div>
-            <span class="salon-availability is-free">Heute frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Pink Polish</span>
+              <span class="salon-rating">4.9</span>
+            </div>
+            <div class="salon-row-2">Gel-Nägel · ab <strong>CHF 42</strong></div>
           </div>
         </a>
         <a class="salon-card cat-nails">
-          <div class="salon-photo">D<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">D</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Diamond Nails</div>
-            <div class="salon-meta"><span class="salon-rating">4.6 (95)</span> · ab CHF 50</div>
-            <span class="salon-availability is-soon">Morgen frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Diamond Nails</span>
+              <span class="salon-rating">4.6</span>
+            </div>
+            <div class="salon-row-2">Acryl-Nägel · ab <strong>CHF 50</strong></div>
           </div>
         </a>
         <a class="salon-card cat-nails">
-          <div class="salon-photo">M<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">M</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Maniküre Spalentor</div>
-            <div class="salon-meta"><span class="salon-rating">4.7 (122)</span> · ab CHF 35</div>
-            <span class="salon-availability is-week">Diese Woche</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Maniküre Spalentor</span>
+              <span class="salon-rating">4.7</span>
+            </div>
+            <div class="salon-row-2">Pediküre · ab <strong>CHF 35</strong></div>
           </div>
         </a>
       </div>
@@ -1294,35 +1490,57 @@
       </div>
       <div class="scroll-row">
         <a class="salon-card cat-spa">
-          <div class="salon-photo">S<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">S</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Spa Rheinufer</div>
-            <div class="salon-meta"><span class="salon-rating">4.8 (87)</span> · ab CHF 95</div>
-            <span class="salon-availability is-week">Diese Woche</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Spa Rheinufer</span>
+              <span class="salon-rating">4.8</span>
+            </div>
+            <div class="salon-row-2">Klassische Massage · ab <strong>CHF 95</strong></div>
           </div>
         </a>
         <a class="salon-card cat-spa">
-          <div class="salon-photo">T<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">T</span>
+            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Thermal Wellness</div>
-            <div class="salon-meta"><span class="salon-rating">4.9 (203)</span> · ab CHF 120</div>
-            <span class="salon-availability is-free">Heute frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Thermal Wellness</span>
+              <span class="salon-rating">4.9</span>
+            </div>
+            <div class="salon-row-2">Hammam · ab <strong>CHF 120</strong></div>
           </div>
         </a>
         <a class="salon-card cat-spa">
-          <div class="salon-photo">A<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">A</span>
+            <span class="salon-badge is-heute"><span class="salon-badge-dot"></span>Heute frei</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Aroma Lounge</div>
-            <div class="salon-meta"><span class="salon-rating">4.7 (156)</span> · ab CHF 85</div>
-            <span class="salon-availability is-free">Heute frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Aroma Lounge</span>
+              <span class="salon-rating">4.7</span>
+            </div>
+            <div class="salon-row-2">Aromaöl-Massage · ab <strong>CHF 85</strong></div>
           </div>
         </a>
         <a class="salon-card cat-spa">
-          <div class="salon-photo">M<div class="salon-heart">♡</div></div>
+          <div class="salon-photo">
+            <span class="initial">M</span>
+            <button class="salon-heart" aria-label="Speichern"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></button>
+          </div>
           <div class="salon-info">
-            <div class="salon-name">Massage am Rhein</div>
-            <div class="salon-meta"><span class="salon-rating">4.8 (98)</span> · ab CHF 110</div>
-            <span class="salon-availability is-soon">Morgen frei</span>
+            <div class="salon-row-1">
+              <span class="salon-name">Massage am Rhein</span>
+              <span class="salon-rating">4.8</span>
+            </div>
+            <div class="salon-row-2">Sport-Massage · ab <strong>CHF 110</strong></div>
           </div>
         </a>
       </div>
