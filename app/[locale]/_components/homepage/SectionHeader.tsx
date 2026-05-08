@@ -98,8 +98,13 @@ export function ScrollRow({
         "mt-4 flex gap-3 overflow-x-auto py-1 [scrollbar-width:none]",
         "[scroll-snap-type:x_mandatory] [-webkit-overflow-scrolling:touch]",
         "[&::-webkit-scrollbar]:hidden",
-        // Bleed beyond container padding so first/last cards align with section gutter
-        "-mx-8 px-8",
+        // Bleed beyond container padding so first/last cards align with section gutter.
+        // Mobile padding matches Section.px-5 (20px); desktop matches Section.px-8 (32px).
+        "-mx-5 px-5 md:-mx-8 md:px-8",
+        // Right-trailing margin on the last card so when user scrolls to the
+        // end, the last card doesn't get its right corner clipped by the
+        // overflow boundary.
+        "[&>*:last-child]:mr-2",
         className,
       )}
     >
@@ -118,9 +123,13 @@ export function Section({
   children: React.ReactNode;
   className?: string;
 }) {
+  // Mobile padding (px-5 = 20px) chosen so two 160px cards + 12px gap (332px)
+  // fit cleanly inside a 375px viewport: 375 - 40 padding = 335 content area,
+  // enough room for 2 full cards w/o the right edge of card 2 being clipped.
+  // Desktop keeps px-8 (32px) — wider viewports have plenty of room.
   return (
     <section
-      className={cn("relative z-[1] mx-auto max-w-[1280px] px-8 py-16", className)}
+      className={cn("relative z-[1] mx-auto max-w-[1280px] px-5 py-16 md:px-8", className)}
     >
       {children}
     </section>

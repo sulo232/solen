@@ -45,7 +45,7 @@ export default function Hero() {
           mobile = ~68px header + 32px breathing = 100px (pt-25)
           desktop = ~80px header + 48px breathing = 128px (pt-32)
           tailwind doesn't have pt-25, use arbitrary value. */}
-      <div className="relative mx-auto flex max-w-[1280px] flex-col px-8 pt-[100px] pb-20 md:pt-32 max-md:items-center max-md:text-center">
+      <div className="relative mx-auto flex max-w-[1280px] flex-col px-5 pt-[100px] pb-20 md:px-8 md:pt-32 max-md:items-center max-md:text-center">
         <div className="max-md:w-full">
           {/* Eyebrow with brand-colored dot before. whitespace-nowrap prevents
               awkward 2-line wrap on narrow desktop widths (~1024px). */}
