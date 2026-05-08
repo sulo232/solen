@@ -1,3 +1,5 @@
+import { SearchBar } from "./SearchBar";
+
 /**
  * Homepage hero — V3 (post V2-D26 typography + V2-D15-3 brand pivot).
  *
@@ -76,16 +78,12 @@ export default function Hero() {
 }
 
 /**
- * Hero search bar — 3 segments (Was / Wo / Wann) + submit.
- *
- * Mobile (default, < 768px): stacked vertical card. Each row has icon + label + value.
- * Desktop (≥ 768px): horizontal pill. Rows flex-row, fully-rounded container.
- *
- * Visual-only for now. Each row will become a button that opens a sheet/dropdown
- * in Phase 1 (Was = service search autocomplete, Wo = location picker, Wann =
- * date+time picker).
+ * @deprecated SearchBar moved to its own file with full Dynamic-Island-style
+ * expand-on-click pickers. The function below is left in place ONLY so the
+ * old non-expanding render path still compiles if anyone re-imports it. Real
+ * SearchBar is now `./SearchBar.tsx`.
  */
-function SearchBar() {
+function _DeprecatedSearchBar() {
   return (
     <div
       className="
