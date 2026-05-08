@@ -168,28 +168,32 @@ function SearchRow({
   isFirst,
 }: SearchRowProps) {
   // Active row: faint brand-teal wash (5% alpha) — barely visible against
-  // the §5g atmosphere wash, signals selection without competing for color
-  // attention. Visible WAS/WO/WANN labels removed 2026-05-09 per user
-  // feedback ("a icon is enough"); button keeps the original label as
-  // aria-label so screen-reader users still hear "Service suchen" etc.
+  // the §5g atmosphere wash. Visible WAS/WO/WANN labels removed; aria-label
+  // preserves accessibility. Vertical divider added 2026-05-09 between icon
+  // and value (per user feedback "make a line and make the text a little
+  // away") — gives the row visual structure and breaks up the empty-feeling
+  // right side after labels were dropped.
   return (
     <button
       type="button"
       aria-label={label}
       className={`
-        group flex shrink-0 cursor-pointer items-center gap-3 rounded-[10px] p-[14px_16px] text-left
+        group flex shrink-0 cursor-pointer items-center text-left
+        rounded-[10px] p-[14px_16px]
         transition-colors hover:bg-s-bg-sunken
         ${isActive ? "bg-s-brand/[0.05]" : ""}
         ${!isFirst ? "border-t border-black/5 max-md:border-t md:border-t-0" : ""}
         md:flex-1 md:rounded-full md:border-t-0 md:p-[14px_22px]
       `}
     >
-      <span className="shrink-0 text-s-ink-2">{icon}</span>
-      {/* Visible label removed (icon + value only). Aria-label on the
-          button preserves accessibility. */}
+      {/* Icon column — right-bordered to create the vertical divider */}
+      <span className="flex shrink-0 items-center justify-center pr-3 text-s-ink-2 border-r border-black/10">
+        {icon}
+      </span>
+      {/* Value column — left-padded so text sits "a little away" from the line */}
       <span
         className={`
-          font-body min-w-0 flex-1 truncate text-base text-s-ink-3
+          font-body min-w-0 flex-1 truncate text-base text-s-ink-3 pl-4
           ${isPlaceholder ? "font-normal" : "font-medium"}
         `}
       >
