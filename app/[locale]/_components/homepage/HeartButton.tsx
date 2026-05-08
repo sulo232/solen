@@ -39,11 +39,14 @@ export function HeartButton({
     // TODO: backend mutate via /api/favorites/toggle
   };
 
-  // V2-D34 §16.3.3 spec: heart is a floating SVG only — NO circle bg.
-  // Drop-shadow on the icon (not a circle behind it) provides legibility
-  // against varied photo backgrounds. The glass-circle refinement attempted
-  // 2026-05-09 was reverted per user feedback ("i like this eaxt hear icon
-  // but i dint want the sourrouding circle i want the heart").
+  // Glass effect ON the heart icon itself (not a circle around it).
+  // Default: outlined heart, ink-3 stroke + soft black drop-shadow for
+  // photo legibility.
+  // Saved: heart filled w semi-transparent love-red (rgba 255,74,107,0.65)
+  // — translucent so the photo bleeds through slightly, giving glass-like
+  // depth. Stroke fully opaque love-red defines the silhouette. Combined w
+  // a soft love-red glow drop-shadow + a soft white inner highlight via a
+  // second drop-shadow to mimic light catching on glass.
   return (
     <>
       <button
@@ -53,8 +56,10 @@ export function HeartButton({
         aria-pressed={isSaved}
         style={{
           filter: isSaved
-            ? "drop-shadow(0 1px 2px rgba(255, 74, 107, 0.20))"
-            : "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18))",
+            ? // Saved: love-red glow + tiny white highlight = glass sheen
+              "drop-shadow(0 1px 3px rgba(255, 74, 107, 0.35)) drop-shadow(0 0 1px rgba(255, 255, 255, 0.6))"
+            : // Default: subtle dark shadow lifts icon off photo
+              "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18))",
         }}
         className={cn(
           "absolute right-2 top-2 grid h-6 w-6 place-items-center bg-transparent border-0 p-0 transition-transform duration-200 ease-snap",
@@ -66,7 +71,9 @@ export function HeartButton({
         <Heart
           size={24}
           strokeWidth={2}
-          fill={isSaved ? "#FF4A6B" : "none"}
+          // Glass fill: semi-transparent love-red so photo shows through
+          fill={isSaved ? "rgba(255, 74, 107, 0.65)" : "none"}
+          // Stroke fully opaque to define the silhouette crisply
           stroke={isSaved ? "#FF4A6B" : "#7A6957"}
           aria-hidden
         />
