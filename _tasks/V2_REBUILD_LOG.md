@@ -352,6 +352,234 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
 
+### V2-D41 (2026-05-09 night) — Modernity pass: glass section-frame + frosted card pill + atmosphere wash 2× saturation + Dynamic Island search
+
+- **Context:** post V2-D40 close-out, user worked through ~30 iterative commits on the live homepage modernity pass. Driven by feedback "looks like a paper and text not an ui ux like overall why". Three direction options were demoed (A photos / B depth+motion / C color+brand). User picked A+B+C combined, then iterated on the visual until "looks great". This entry locks the new state into spec and retires what's contradicted.
+- **Decision:** the homepage modernity pattern locks the following changes. They supersede V2-D15-4 (§15 editorial section-break), parts of V2-D34 (§16 card halos), and V2-D15-3 atmosphere wash alpha values where they conflict.
+
+#### §V2-D41.1 · Section structure — Meta/Frame/Title split (supersedes §15.1 single-component anatomy)
+
+The `<SectionHeader>` from V2-D15-4 was a single component combining eyebrow + meta + title + link rendered above the scroll row. Modernity pass restructures this into 4 named pieces:
+
+```
+<Section>                       ← outer wrapper, max-w-1280, mx-auto, NO glass
+  <SectionMeta />               ← eyebrow + meta — RENDERS OUTSIDE glass (in page-flow)
+  <SectionFrame>                ← glass container — wraps title + content
+    <SectionTitle />            ← h2 + pill link
+    <ScrollRow>{cards}</ScrollRow>
+  </SectionFrame>
+</Section>
+```
+
+**Why split:** user feedback "where it was containing yk its too near to each others section maybe for example cover these area" — pointing at a smaller boundary that wraps just the title + cards, NOT the eyebrow above. Glass frame becomes a discrete UI surface inside the page, with eyebrow/meta floating in the page-flow above.
+
+**Glass frame specs (locked):**
+
+|prop                |value                                                                              |
+|--------------------|-----------------------------------------------------------------------------------|
+|background          |`rgba(255, 255, 255, 0.40)` (40% white tint)                                        |
+|backdrop-filter     |`blur(18px) saturate(1.25)` (heavier blur than V2-D34 §16.3.0 formula's 14px)       |
+|border              |`1px solid rgba(255, 255, 255, 0.55)` (white-edge halo)                             |
+|border-radius       |`20px` mobile / `24px` desktop                                                      |
+|padding mobile      |`px-3 py-4` (12px h / 16px v)                                                       |
+|padding desktop     |`px-4 py-4` (16px h / 16px v)                                                       |
+|overflow            |`hidden` — clips card-row bleed at the rounded border                                |
+
+**Section outer wrapper specs:**
+
+|prop                |value                                                                              |
+|--------------------|-----------------------------------------------------------------------------------|
+|max-width           |1280px                                                                              |
+|margin              |`mx-auto`                                                                           |
+|padding mobile      |`px-1 py-3` (4px h / 12px v) — minimal so frame reaches near-viewport-edge          |
+|padding desktop     |`px-3 py-4` (12px h / 16px v)                                                       |
+|margin between      |`mb-2 md:mb-3` (8 / 12px gap to next section)                                       |
+
+**SectionMeta (eyebrow + meta) specs:**
+
+|prop                |value                                                                              |
+|--------------------|-----------------------------------------------------------------------------------|
+|eyebrow color       |`text-s-brand` (was `text-s-ink` in V2-D15-4 — modernity pivots to brand-teal)      |
+|eyebrow dot         |kept — 5px brand-teal round dot before text                                          |
+|meta color          |`text-s-ink-2`                                                                      |
+|font                |Avant Garde 700 11-13px uppercase, `letter-spacing: 0.18em`                          |
+|layout              |`flex` — mobile stacks eyebrow over meta, desktop side-by-side                       |
+|self-padding        |`px-2` so it aligns with the frame inside (not flush against Section's outer padding)|
+
+**SectionTitle (h2 + link) specs:**
+
+|prop                |value                                                                              |
+|--------------------|-----------------------------------------------------------------------------------|
+|h2 font             |Cooper BT 900, `clamp(28px, 4vw, 44px)` (V2-D15-4 was clamp 28-40 — bumped on desktop)|
+|h2 color            |ink-1 `#1A1209`                                                                     |
+|link style          |**Filled brand-teal pill** — `bg-s-brand`, white text, `rounded-full`, `px-4 py-2`, `text-[13px] font-semibold`. Hover `bg-s-brand-mid`. **NOT** the underlined text-link from V2-D15-4 (retired). |
+
+**RETIRED in V2-D41:**
+- ❌ Top hairline rule above eyebrow (V2-D15-4 had `1px solid ink-1`) — glass frame now does sectioning
+- ❌ "Alle →" as underlined text link — replaced with filled pill button
+- ❌ Eyebrow in `text-s-ink` — now `text-s-brand`
+
+#### §V2-D41.2 · Card frosted-glass text pill (supersedes V2-D34 §16 bare-text-under-photo)
+
+V2-D34 had the salon-card text (name + rating + row 2) rendered as bare text below the photo. Modernity pass wraps it in a **frosted-glass pill** that floats below the photo with a small gap.
+
+```
+[photo 150×150 / 180×180]    ← rounded-14, layered shadow (V2-D34 kept)
+                              
+[╭─ frosted pill ─────────╮]  ← 8px gap from photo
+[│ Name           ★ 4.9   │]
+[│ Service · ab CHF 80    │]
+[╰─────────────────────────╯]
+```
+
+**Pill specs:**
+
+|prop                |value                                                                              |
+|--------------------|-----------------------------------------------------------------------------------|
+|gap from photo      |`mt-[8px]`                                                                          |
+|background          |`rgba(255, 255, 255, 0.70)`                                                         |
+|backdrop-filter     |`blur(14px) saturate(1.2)`                                                          |
+|border              |`1px solid rgba(255, 255, 255, 0.60)`                                               |
+|border-radius       |`12px`                                                                              |
+|padding             |`px-[10px] py-[7px]`                                                                |
+|shadow              |`0 1px 3px rgba(26, 18, 9, 0.04)` (very soft)                                       |
+
+**Why pill, not bare text:** sits on the section-frame's glass (40% white) which sits on the page wash (boosted gradients). Three layers of glass = depth without heavy shadow. Pill reads as "name tag" floating below photo.
+
+**Text contents inside pill** (unchanged from V2-D34 §16.4 + §16.5):
+- Row 1: name (Avant Garde 700 14px ink-1) + rating (Avant Garde 600 11px tabular-nums)
+- Row 2: variant content (availability or service+price)
+- **NEW:** service-variant price uses `text-s-brand` (brand-teal) bold (was `text-s-ink` bold in V2-D34)
+
+#### §V2-D41.3 · Card dimensions update (supersedes §16.2)
+
+|element           |V2-D34 spec      |V2-D41 lock       |
+|------------------|-----------------|-------------------|
+|width mobile      |160px            |**150px**          |
+|width tablet+     |180px            |180px (unchanged)  |
+|photo aspect ratio|1:1              |1:1 (unchanged)    |
+|photo radius      |14px             |14px (unchanged)   |
+|photo to text gap |8px              |8px (unchanged via mt-[8px] on pill)|
+|text container    |bare text        |frosted pill (§V2-D41.2)|
+
+**Why 150 mobile:** to fit "2 full + visible peek of 3rd" cards on 375px viewport without forcing the user to scroll just to see there's more content. With 160px cards + 12px gap + minimal section padding, only ~15px of card 3 was visible (sliver). At 150px, ~31px peek (clear "there's more" affordance).
+
+#### §V2-D41.4 · Card hover softened (supersedes V2-D34 hover spec)
+
+V2-D34 §16.6 specified `translateY(-1px) + brighter shadow` on hover. Modernity pass softens but adds proper depth:
+
+|prop          |V2-D34         |V2-D41 lock          |
+|--------------|---------------|---------------------|
+|translate     |`-1px`         |**`-3px`**           |
+|scale         |none           |**`1.015`**          |
+|base shadow   |default        |`0 1px 2px rgba(26,18,9,0.04), 0 4px 10px rgba(26,18,9,0.05)` (layered)|
+|hover shadow  |brighter       |`0 1px 2px rgba(26,18,9,0.05), 0 6px 14px rgba(26,18,9,0.06), 0 12px 24px rgba(26,18,9,0.05)` (layered, slightly deeper)|
+|cat-color halos|active per V2-D34|**RETIRED** — read as static-shadow bugs|
+|hover glass-shine|none         |briefly tried, retired per user feedback ("remove the card glow on hover")|
+
+#### §V2-D41.5 · Heart icon update (refines V2-D34 §16.3.3)
+
+V2-D34 §16.3.3 had heart filled `var(--love)` (#FF4A6B) when saved. Modernity pass refines:
+- **Saved fill:** `rgba(255, 74, 107, 0.65)` (semi-transparent so photo bleeds through — glass-like depth)
+- **Saved stroke:** `#FF4A6B` (fully opaque — defines silhouette crisply)
+- **Saved drop-shadows:** dual stack — `0 1px 3px rgba(255, 74, 107, 0.35)` (love-red glow) + `0 0 1px rgba(255, 255, 255, 0.6)` (white highlight, mimics glass sheen)
+- **Default unchanged** from V2-D34: outline only, ink-3 stroke, soft black drop-shadow
+
+NO surrounding circle (V2-D34 §16.3.4 anti-pattern still active).
+
+#### §V2-D41.6 · Atmosphere wash boosted ~2× (supersedes V2-D15-3 §5g alpha values)
+
+User feedback: "i like how it is in the header like more color yk can u make me one whole page". Wash on body::before + body::after both boosted across all gradient stops. Numerical update:
+
+**body::before (fixed, 22s drift):**
+|gradient                                  |V2-D15-3 alpha |V2-D41 lock |
+|------------------------------------------|---------------|------------|
+|cyan top-right `rgba(202, 232, 255, X)`   |0.32           |**0.65**    |
+|teal top-left `rgba(194, 240, 241, X)`    |0.28           |**0.58**    |
+|navy mid-right `rgba(0, 88, 152, X)`      |0.10           |**0.18**    |
+|teal lower-left `rgba(194, 240, 241, X)`  |0.26           |**0.50**    |
+|navy bottom `rgba(3, 30, 72, X)`          |0.06           |**0.10**    |
+
+**body::after (parallax, 28s drift):** all 13 stacked gradients boosted ~2×, alphas now in 0.45–0.65 range (was 0.22–0.32).
+
+**Plus:** the LOCAL hero wash from Hero.tsx is REMOVED. Was creating intensity discontinuity (hero zone = 2 washes layered, sections below = 1 wash). One source of truth now: body wash carries entire page.
+
+#### §V2-D41.7 · Hero simplified (Option A locked)
+
+User feedback (2026-05-09 annotated screenshot): picked Option A from `public/solen-v2-hero-options.html` ("Cut hard — drop the deck, keep eyebrow + h1 + search").
+
+|element       |V2-D26 era |V2-D41 lock |
+|--------------|-----------|------------|
+|eyebrow       |`Beauty in der Schweiz` w brand-teal dot |**KEPT**|
+|h1            |`Schöner aussehen, schneller buchen.` w brand-teal `buchen.` |**KEPT**|
+|deck `<p>`    |2-sentence value-prop + "So funktioniert's →" link |**REMOVED** — replaced with empty 32px spacer for h1↔search rhythm|
+|search bar    |3-row stacked card mobile / horizontal pill desktop |**KEPT — restructured per §V2-D41.8**|
+
+#### §V2-D41.8 · Search bar — Dynamic Island morph + simplified rows (supersedes §13.4 + §14 collapsed)
+
+V2-D14 spec'd a static 3-row stacked search bar (Was/Wo/Wann). Modernity pass turns it into a **Dynamic Island-style morphing pill** with smooth height + content cross-fade animations. Plus the row labels are dropped.
+
+**Row simplification:**
+
+|element       |V2-D14 |V2-D41 lock |
+|--------------|-------|------------|
+|labels (WAS/WO/WANN) |visible inline w icon + value |**REMOVED** (icon alone is enough; aria-label preserves accessibility)|
+|values (default) |`Service oder Salon` / `Basel · Kleinbasel` / `Heute · jederzeit` |**`Service` / `Stadt` / `Zeit`** (single-word; Q5 voice fix: no hardcoded Basel)|
+|active row bg |`s-bg-active` (#FFF4E8 cream, V2-D16 lock) |**`s-brand/[0.05]`** (5% alpha brand-teal — cream was a V2-era hold-over that miscoded the search row as Coiffeur category)|
+|value text color |black/active vs gray/placeholder |**`text-s-ink-3` always** (uniform gray; placeholder vs filled distinguished by font-weight only, per user "i jst want graz")|
+|submit button bg|`bg-s-ink` default → `bg-s-brand` hover |**`bg-s-brand` default → `bg-s-brand-mid` hover** (brand-teal as default, lighter on hover)|
+
+**Dynamic Island morph pattern:**
+
+|prop          |value          |
+|--------------|---------------|
+|states        |idle / service-active / stadt-active / zeit-active|
+|tap segment   |morphs container height (mobile 280→480, desktop 76→480) + crossfades content layers|
+|transition    |tween cubic-bezier(0.22, 1, 0.36, 1) 500ms|
+|content layers|two stacked absolute layers with 0.1s stagger delay between fade-out and fade-in|
+|content swap  |AnimatePresence mode="wait", 250ms y-axis fade between segment pickers|
+|backdrop      |fixed inset-0 `bg-black/30` (NO backdrop-blur — was too expensive on every paint frame)|
+|esc / backdrop tap|closes|
+|body scroll lock|active when expanded|
+
+**No `will-change` / `translateZ(0)` GPU hints** — they caused blurry text rasterization at fixed pixel density. Motion library handles GPU promotion DURING animation on its own.
+
+#### §V2-D41.9 · Other lockable details
+
+- **Underline retired** on all V3 link styles (SectionTitle pill button + CookieConsent inline link). Brand-teal color carries clickability.
+- **"ansehen" verb retired** in section "see more" links — `Im Profil ansehen →` → `Im Profil →`, `Alle ansehen →` → `Alle →`. Noun + arrow alone.
+- **V3 Header (§12) — minimal:** logo + hamburger only, no profile button, no inline search, glass `rgba(255,255,255,0.65)` + `backdrop-filter: blur(12px)`, position absolute top-0 z-50. NO border-bottom (was 1px hairline — created visible seam against the wash).
+- **Body bg architecture:** `html { background: white }`, `body { background: transparent }`. Body wash pseudo-elements paint between html bg and body content. Critical: any `bg-white` Tailwind utility on body element BLOCKS the wash. layout.tsx body className must not contain `bg-white`.
+
+#### §V2-D41.10 · Files touched (full list, ordered)
+
+App code:
+- `app/[locale]/layout.tsx` — body className, CookieConsent provider mount
+- `app/[locale]/_components/layout/Header.tsx` — V3 minimal header (commit 6cc5c43)
+- `app/[locale]/_components/homepage/Hero.tsx` — deck dropped, search bar simplified, local wash removed
+- `app/[locale]/_components/homepage/SearchBar.tsx` — Dynamic Island morph (NEW file)
+- `app/[locale]/_components/homepage/SectionHeader.tsx` — split into SectionMeta/SectionFrame/SectionTitle
+- `app/[locale]/_components/homepage/SalonCard.tsx` — frosted pill, 150px mobile, softer hover, brand-teal price accent
+- `app/[locale]/_components/homepage/HeartButton.tsx` — semi-transparent fill + dual drop-shadow when saved
+- `app/[locale]/_components/homepage/RecentlyViewed.tsx` / `LastMinute.tsx` / `Nearby.tsx` / `Coiffeur.tsx` / `Reviews.tsx` — restructured to use Section/Meta/Frame/Title
+
+Style:
+- `app/globals.css` — body wash alphas boosted ~2×, html bg white (body transparent)
+
+Spec:
+- `_tasks/SOLEN_LIVE_TRUTH.md` — this entry's V2-D41 references inline updates to §15 / §16.2 / §16 anatomy
+- `_tasks/V2_REBUILD_LOG.md` — this entry
+
+#### §V2-D41.11 · Pending follow-ups
+
+- **Real photos** — cards still show category-color tile + initial fallback. Need photographer brief OR Unsplash demo URLs in section data files. SOLEN_NEXT.md §3.6 photographer brief.
+- **Card entry stagger animation** on scroll-into-view (Framer Motion `whileInView`) — was in the static demo, not yet ported to React.
+- **Cooper BT primary** — still using `Cooper BT, Cooper Black Std` in font-family list, but fontcdn.com Cooper is HTTP 500. Actual rendered font is Sansita 900 (Google Fonts fallback). User can decide: accept Sansita as primary (rec) or invest in licensed Cooper.
+
+#### §V2-D41.12 · Status
+
+**Locked.** Modernity pass complete after ~30 commits of iterative refinement (latest: `65fbdb3` card pill resize, `fe632aa` 150px cards). User feedback "okay looks amaizing" closes the iteration loop.
+
 ### V2-D40 (2026-05-09 evening) — Archive sweep close-out: 6 remaining §0c.2-listed docs moved to `_tasks/archive/`
 
 - **Context:** §0c.2 ("Archived — do NOT consult") in LIVE_TRUTH already named these docs as archive-bound. The actual `git mv` was deferred until V2-D33 doc consolidation flow finished (V2-D34 through V2-D39 first). With all 6 sub-decisions locked, this is the close-out sweep.

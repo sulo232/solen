@@ -566,7 +566,10 @@ For reference (locked from V2-D15-4 preview at `public/solen-v3-pills-titles-twe
 
 ---
 
-## §5g Atmosphere wash recipe (V2-D15-3 lock)
+## §5g Atmosphere wash recipe (V2-D15-3 → V2-D41 alpha boost)
+
+> ⚠️ **V2-D41 (2026-05-09) boosted the wash alphas ~2× across both `body::before` and `body::after`.** Original V2-D15-3 alphas were "whisper" level — wash was technically there but visually almost imperceptible after html bg + body bg debugging. User feedback "i like how it is in the header like more color yk can u make me one whole page" drove the boost. Plus the LOCAL hero wash on Hero.tsx is removed (was creating intensity discontinuity). **See V2_REBUILD_LOG.md §V2-D41.6 for the new alpha values + body bg architecture.**
+
 
 The hero substrate is **white** with a layered radial gradient ("atmosphere wash") behind text — pale cyan core + navy framing. NOT a flat colored bg, NOT a saturated panel, NOT four rainbow blobs (those iterations retired).
 
@@ -2913,7 +2916,27 @@ Tap CTA → navigates to `/search/results?q=[was]&city=[wo]&date=[wann]`.
 
 -----
 
-## §15 · Section header pattern (V2-D15-4 lock — editorial section-break)
+## §15 · Section header pattern (V2-D41 modernity — supersedes V2-D15-4 editorial)
+
+> ⚠️ **V2-D41 (2026-05-09) restructured this section.** V2-D15-4's "editorial section-break" with the 1px ink top rule + single-component anatomy is **retired**. The new pattern splits into 4 named pieces and wraps title+content in a glass frame. **See V2_REBUILD_LOG.md §V2-D41.1 for the locked spec.** The diagrams + tables below describe the **retired** V2-D15-4 era — kept for archeology, not authoritative.
+
+> **Quick reference (V2-D41 lock):**
+> ```
+> <Section>             ← max-w-1280, mx-auto, px-1 py-3 md:px-3 md:py-4
+>   <SectionMeta />     ← eyebrow + meta — OUTSIDE the glass, in page-flow
+>   <SectionFrame>      ← glass: bg-white/40 + blur(18) + saturate(1.25) + border-white/55 + rounded-20/24 + overflow-hidden
+>     <SectionTitle />  ← h2 + filled brand-teal pill link (NOT underlined text)
+>     <ScrollRow>...</ScrollRow>
+>   </SectionFrame>
+> </Section>
+> ```
+>
+> **Key retirements per V2-D41:**
+> - ❌ 1px ink top rule above eyebrow (glass frame replaces sectioning role)
+> - ❌ Eyebrow in `text-s-ink` — now `text-s-brand`
+> - ❌ Underlined "Alle →" text link — now filled brand-teal pill button
+
+---
 
 Reusable component for every horizontal scroll row on homepage and category pages. **V2-D15-4 update:** the V2-D15 minimalist `clean` layout (h2 left + `Alle →` right, no eyebrow / no meta) is **retired**. Replaced with the editorial section-break pattern below — adds magazine-style structure that fixes the "bland section title" feedback.
 
@@ -3010,9 +3033,17 @@ Exception: section is hidden entirely if 0 cards (see §16.6 empty states).
 
 ## §16 · Salon card
 
+> ⚠️ **V2-D41 (2026-05-09) refined the card.** V2-D34's photo-overlay anatomy still applies, but text-rendering, dimensions, hover, and the heart's saved state were updated. **See V2_REBUILD_LOG.md §V2-D41.2 to §V2-D41.5 for the locked deltas.**
+>
+> Quick deltas:
+> - **§16.2 dimensions**: 160 mobile → **150 mobile** (180 desktop unchanged) — see updated §16.2 table.
+> - **Text below photo**: bare text → **frosted-glass pill** (mt-[8px] / rounded-[12px] / bg-white/70 + blur(14) + saturate(1.2) + border-white/60 + px-[10] py-[7] + soft shadow). Service-variant price now in `text-s-brand`.
+> - **Hover**: `-1px translate` → `-3px translate + 1.015 scale` + layered base/hover shadows. Cat-color halo glows from V2-D34 §16.3.x are RETIRED (read as static-shadow bugs).
+> - **Heart saved state**: solid `var(--love)` fill → semi-transparent `rgba(255, 74, 107, 0.65)` fill + opaque stroke + dual drop-shadow (love-red glow + white highlight, mimicking glass sheen).
+
 Reusable component. 2 variants for v1 (`availability`, `service`). 2 more variants (`trust`, `joined`) deferred to v2 — see §16.8.
 
-### §16.1 · Anatomy (V2-D34 lock — 2-badge layout)
+### §16.1 · Anatomy (V2-D34 + V2-D41 — 2-badge photo layout + frosted text pill)
 
 ```
 ┌──────────────────────┐
@@ -3036,16 +3067,17 @@ The two badges differ in **shape** and **color philosophy**, so users can instan
 - **Curation = rounded rectangle** (8px radius, "stamp" feel)
 - **Availability = full pill** (999px, "live status" feel)
 
-### §16.2 · Dimensions
+### §16.2 · Dimensions (V2-D41 update)
 
 |element           |spec                                               |
 |------------------|---------------------------------------------------|
-|width mobile      |160px                                              |
+|width mobile      |**150px** (V2-D41 — was 160; supports "2 + bit of 3rd" peek on 375 viewport)|
 |width tablet+     |180px                                              |
 |photo aspect ratio|1:1                                                |
 |photo radius      |`var(--radius-xl)` (14px)                          |
-|photo to text gap |8px                                                |
-|total height      |~250-260px (160-180px photo + 8px gap + ~30px text)|
+|photo to text gap |8px (now expressed as `mt-[8px]` on the frosted pill — see §V2-D41.2)|
+|text container    |frosted-glass pill (V2-D41 — was bare text; see §V2-D41.2 for full spec)|
+|total height      |~240-260px (150-180px photo + 8px gap + ~40px frosted pill)|
 
 ### §16.3 · Photo overlays (V2-D34 lock — light glassmorphic + color-philosophy)
 
