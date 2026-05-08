@@ -352,6 +352,25 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
 
+### V2-D36 (2026-05-09 evening) — Decision 3 lock: DB schema = Hybrid w explicit drift prevention + §0c authoritative source map
+
+- **Context:** Decision 3 in V2-D33 doc consolidation flow asked whether DB schema should be inline in LIVE_TRUTH (Option A), stay at `_rules/DB_SCHEMA.md` w pointer only (Option B), or Hybrid (Option C — schema mapping in LIVE_TRUTH §33, full DDL stays in DB_SCHEMA.md).
+- **User picked C.** Plus an explicit instruction: "i dont [want] any drift and [stuff] or the new agent confusing w the old rule [and stuff]." So drift prevention + new-agent-clarity were locked alongside.
+- **Decision:** **C — Hybrid + drift-proofed via §0c "Authoritative source map"**. Three new sections added to LIVE_TRUTH:
+  - **§0c.1** — authoritative-source table: every adjacent doc (`DB_SCHEMA.md` / `SECURITY_RULES.md` / `CODE_SAFETY.md` / `LESSONS_LEARNED.md` / `STRUCTURAL_RULES.md` / `I18N_ROUTING.md` / `V2_REBUILD_LOG.md` / `INCOMPLETE_FEATURES.md` / `CLAUDE.md` + `PROJECT_REFERENCE.md`) listed with its specialty area + LIVE_TRUTH's role + drift rule per overlap zone.
+  - **§0c.2** — archived docs do-NOT-consult list. Identifies all the pre-V3 `_tasks/*` docs that get moved to `_tasks/archive/` in the V2-D33 archive step. New agents reading any archived doc are explicitly redirected back to LIVE_TRUTH.
+  - **§0c.3** — drift prevention protocol: ONE rule. "Update authoritative source FIRST. Then update LIVE_TRUTH ONLY if change crosses LIVE_TRUTH summary scope." Examples for column-rename, security-rule, production-incident.
+  - **§0c.4** — "I'm a new agent, where do I start?" sequence. 7 steps: read §0c → §0b → index → surface §X + §X.99 → adjacent concerns per §0c.1 → V2_REBUILD_LOG latest entries → build.
+- **§33 added:** DB schema → surface mapping. Loud banner at top: "Authoritative source for column types / RLS policies / indexes / migrations: `_rules/DB_SCHEMA.md`. This section is a navigation aid only — it maps surface specs to which Postgres tables they read from / write to. NEVER duplicate column definitions or RLS policies here."
+  - **§33.1** — surface → tables table. Pre-populated with 14 surface rows where the table set is already known (§13 hero, §14 search, §16 salon card, §SD salon detail, §BW booking wizard, §C confirmation, §RV reviews-write, §A auth, §AC favorites/bookings/saved-looks/settings, §B.5/§B.7/§B.12 B2B). Marked "fills in as Phase 1+ surfaces ship" — empty rows added per surface as it specs.
+  - **§33.2** — cross-cutting infrastructure tables (platform_settings, feature_flags, audit_log, bans, rate_limit_events). Not surface-specific.
+  - **§33.3** — anti-patterns: no column types in §33, no DDL snippets, no orphan surfaces (every surface MUST list tables in §33 via its §X.99 mapping).
+- **Drift prevention summary:** column rename = update DB_SCHEMA.md only. New surface using new tables = update §33 only. New table not yet used = update DB_SCHEMA.md only (don't preemptively add to §33). Both rules together = no overlap, no drift.
+- **For new agents:** §0c.4 7-step sequence becomes the canonical "how to onboard" path. Any future agent (Claude Code, sub-agents, human contributors) starts at §0c and never has to wonder "which doc owns this?"
+- **Files patched:**
+  - `_tasks/SOLEN_LIVE_TRUTH.md` — §0c added (~80 lines, between §0b and Index), §33 added (~50 lines, before "What's still missing" phase outlines)
+- **Status:** locked. Decision 3 done. Next: Decision 4 (17 known gaps location).
+
 ### V2-D35 (2026-05-09 evening) — Decision 2 lock: Hybrid spec pattern (UX-first descriptions + concentrated implementation mapping)
 
 - **Context:** during V2-D33 doc consolidation, asked whether LIVE_TRUTH §23 homepage flow (and future surface specs) should name specific React components like `TestimonialCarousel`/`TrustStatsBanner` + their API endpoints, or stay component-agnostic.

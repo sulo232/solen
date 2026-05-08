@@ -73,6 +73,69 @@ When something needs locking, ask: "is this a one-off answer or a rule that appl
 
 ---
 
+## §0c · Authoritative source map (V2-D36 lock — drift prevention)
+
+**For new agents/devs starting cold: read this section first. It tells you which doc owns what.**
+
+This file (`SOLEN_LIVE_TRUTH.md`) is the **principal** for UX, visual, and product spec. But several adjacent docs exist for technical depth that LIVE_TRUTH summarizes-but-does-not-duplicate. Each adjacent doc has a clear ownership boundary. **When LIVE_TRUTH and an adjacent doc overlap, the adjacent doc wins for its specialty area** (LIVE_TRUTH only summarizes — full detail lives in the specialist doc).
+
+### §0c.1 · The authoritative-source table
+
+| Concern | Authoritative source | LIVE_TRUTH role | Drift rule |
+|---|---|---|---|
+| **UX / visual / surface spec** (what the user sees, how it behaves) | THIS DOC (`_tasks/SOLEN_LIVE_TRUTH.md`) | own everything in this domain | nothing supersedes LIVE_TRUTH for visual + UX |
+| **DB schema** (columns, types, RLS policies, indexes, migrations) | `_rules/DB_SCHEMA.md` | §33 has surface→tables mapping only — NO columns / types / RLS | column rename → update DB_SCHEMA.md only. If a surface starts using a new table → update LIVE_TRUTH §33. |
+| **Security rules** (auth → ban → rate limit → Zod, RLS enforcement, secret handling) | `_rules/SECURITY_RULES.md` | §31 cites the 6 rules; full detail in source | new security rule → update SECURITY_RULES.md first; cite in LIVE_TRUTH §31 only if user-facing |
+| **Code safety patterns** (verify imports, getSession not getUser, post-execution smoke checks) | `_rules/CODE_SAFETY.md` | §32 summarizes top rules; full list in source | new pattern from a real incident → update CODE_SAFETY.md + LESSONS_LEARNED.md |
+| **Lessons learned** (anti-patterns from past production incidents) | `_rules/LESSONS_LEARNED.md` | §34 cites highest-impact lessons | new incident → append to LESSONS_LEARNED.md w date + diagnosis |
+| **Structural / governance rules** (Feature Completeness Checklist, component lifecycle, page templates) | `_rules/STRUCTURAL_RULES.md` | §27 summarizes the gates | new gate → update STRUCTURAL_RULES.md |
+| **i18n / routing rules** (no parallel routes, locale handling, AI localization) | `_rules/I18N_ROUTING.md` | §30 cites the rules | new rule → I18N_ROUTING.md |
+| **Decision audit trail** (every V2-D## with full context) | `_tasks/V2_REBUILD_LOG.md` | LIVE_TRUTH cites V2-D## by number; full entry in log | new decision → V2_REBUILD_LOG.md w full context. LIVE_TRUTH only references the number when relevant. |
+| **Incomplete features** (sacred file per CLAUDE.md) | `_tasks/INCOMPLETE_FEATURES.md` | §37 indexes the file | failed/blocked feature → append to INCOMPLETE_FEATURES.md |
+| **Project commands / deployment / stack reference** | `CLAUDE.md` (project) + `_docs/PROJECT_REFERENCE.md` | not duplicated in LIVE_TRUTH | rare changes; CLAUDE.md is the entry-point |
+
+### §0c.2 · Archived — do NOT consult (V2-D33 archive)
+
+These docs were the principal in earlier eras. They are now **archived to `_tasks/archive/`** and superseded by V3 LIVE_TRUTH. **A new agent should never quote, build from, or follow these:**
+
+- `_tasks/SOLEN_DESIGN.md` (Q-locks era — coral / Anton / Figtree / cream — all retired V2-D15-3). Q-lock decision content was extracted into V3 LIVE_TRUTH where still authoritative.
+- `_tasks/REDESIGN_INVENTORY.md` (V2 component inventory — state machines + APIs migrated to LIVE_TRUTH §X.99 implementation mappings).
+- `_tasks/BACKEND_NEEDS_UI.md` (V2 backend → UI gap list — items either built into V3 §16 / §F.x or deferred to v2 with a V2-D## entry).
+- `_tasks/SOLEN_BUILD_MAP.md` (V2 phased build plan — superseded by V3 phase plan in `_tasks/V2_REBUILD_LOG.md` "Status").
+- `_tasks/MASTER_ROADMAP.md` (V2 product roadmap — content extracted into V3 §35 if user opts in during V2-D33 Decision 5; otherwise also archived).
+- `_tasks/GAP_AUDIT_V2.md` (17 gap punch list — extracted into V3 §36 if user opts in during V2-D33 Decision 4).
+- `_tasks/PHASE_8_STRUCTURAL_ALIGNMENT.md` (historical — already retired).
+- `_tasks/SOLEN_BUILD_LEARNINGS.md` (historical — lessons extracted into LESSONS_LEARNED.md).
+- `_tasks/INVENTORY_FULL.md` (historical app inventory — superseded by component code inspection).
+
+**If you're a new agent and you find yourself reading any file in `_tasks/archive/`, stop. Re-anchor to `SOLEN_LIVE_TRUTH.md` (this doc) and the active sources in §0c.1.**
+
+### §0c.3 · Drift prevention protocol
+
+The single rule that prevents drift across all overlap zones:
+
+> **Update the authoritative source FIRST. Then update LIVE_TRUTH ONLY if the change crosses the LIVE_TRUTH summary scope.**
+
+Examples:
+
+- **Column rename** in `salons` table → update `_rules/DB_SCHEMA.md`. LIVE_TRUTH §33 only changes if the surface→tables mapping changes (e.g. a column rename usually doesn't, but adding a new salon column that backs a surface UI might).
+- **New security check** for booking endpoint → update `_rules/SECURITY_RULES.md`. LIVE_TRUTH §31 only changes if it affects what the user sees (e.g. a new error state).
+- **Production incident** revealing a code-safety pattern → update `_rules/LESSONS_LEARNED.md` first w date + diagnosis. Then update `_rules/CODE_SAFETY.md` w the new rule. Then if the incident affected user-facing behavior, update LIVE_TRUTH where relevant + add a V2-D## entry.
+
+**Never** edit LIVE_TRUTH first for things that belong in another doc. The summary will drift from the source — exactly the failure pattern this section prevents.
+
+### §0c.4 · The "I'm a new agent, where do I start?" sequence
+
+1. Read this section (§0c) — know the source map.
+2. Read §0b — know the spec patterns (formula-first + Hybrid pattern).
+3. Read the index (below) — know what's in LIVE_TRUTH.
+4. For the surface you're building: read its `§X` UX-first description + its `§X.99` implementation mapping if it exists.
+5. For each adjacent concern (DB / security / code safety): consult that section's authoritative source per §0c.1.
+6. Check `_tasks/V2_REBUILD_LOG.md` for the latest V2-D## entry on the surface — there may be open decisions or recent changes.
+7. Build. When in conflict, the authoritative source per §0c.1 wins.
+
+---
+
 ## Index
 
 **Foundations**
@@ -4794,6 +4857,56 @@ Before any homepage component PR merges, verify against this checklist:
 
 
 -----
+
+## §33 · DB schema → surface mapping (V2-D36 lock)
+
+> **Authoritative source for column types / RLS policies / indexes / migrations: [`_rules/DB_SCHEMA.md`](../_rules/DB_SCHEMA.md).**
+>
+> This section is a **navigation aid only** — it maps surface specs to which Postgres tables they read from / write to. NEVER duplicate column definitions or RLS policies here. If you need to know "what columns does `salons` have?" → consult `_rules/DB_SCHEMA.md`. If you need to know "which surface uses the `bookings` table?" → consult this section.
+>
+> **Drift rule (§0c.3):** column rename or new column → update `_rules/DB_SCHEMA.md` only. New surface or surface-starts-using-new-table → update §33 only. Both rules together = no overlap, no drift.
+
+### §33.1 · Surface → tables mapping (populated as surfaces lock)
+
+This table is populated by each surface's `§X.99 Implementation mapping` (per §0b.2 Hybrid pattern). Rows added here when a surface specs lands. Currently sparse — fills in as Phase 1+ surfaces ship.
+
+| Surface (§) | Tables read | Tables written | Key columns / FK | Notes |
+|---|---|---|---|---|
+| §13 Hero | `salons`, `cities` | — | `salons.featured_for_homepage`, `cities.slug` | hero featured query |
+| §14 Search system | `salons`, `services`, `cities` | `search_queries` (analytics) | `salons.geo`, `services.category` | category-aware search via `/api/search/detect-category` |
+| §16 Salon card (composed in feeds) | `salons`, `salon_photos`, `services` (for service variant), `next_available_slot` view | — | `salons.id`, `salon_photos.is_primary`, `services.price_chf_min` | per §16.7b photo handling fallback |
+| §F.4 Toast | — | — | (client-only) | toast queue is React Context, no DB |
+| §SD Salon detail (Phase 2) | `salons`, `services`, `staff`, `reviews`, `salon_photos`, `opening_hours` | `salon_views` (analytics) | TBD — fill in when §SD specs lands | |
+| §BW Booking wizard (Phase 2) | `salons`, `services`, `staff`, `availability` view | `bookings`, `payments`, `payment_methods` | `bookings.status enum` (`pending` / `confirmed` / `cancelled` / `completed` / `no_show`) | Stripe Connect via `salon_payouts` (V2-D12) |
+| §C Booking confirmation (Phase 2) | `bookings`, `salons` | — | `bookings.confirmation_code` | celebration UX per §5c.4 |
+| §RV Reviews-write (Phase 2) | `bookings`, `salons` | `reviews`, `review_photos` | `reviews.booking_id` (FK enforces 1-review-per-booking) | |
+| §A Auth surfaces (Phase 1) | `users` (Supabase auth schema) | `profiles` (on signup) | `auth.users.id` ↔ `profiles.id` | OAuth via Supabase, email magic-link |
+| §AC.1 Favorites (Phase 3) | `salons` | `favorites` | `favorites.user_id`, `favorites.salon_id` (composite PK) | localStorage fallback for logged-out per §A.1 login modal |
+| §AC.2 My Bookings (Phase 3) | `bookings`, `salons`, `services` | `bookings.cancelled_at` (cancel action) | `bookings.user_id`, `bookings.starts_at` | |
+| §AC.3 Saved Looks (Phase 3) | `discovery_items`, `look_saves` | `look_saves` | `look_saves.user_id`, `look_saves.discovery_item_id` | |
+| §AC.5 Settings (Phase 3) | `profiles` | `profiles` | `profiles.locale_preference`, `profiles.notification_preferences` (jsonb) | account deletion = soft-delete + GDPR scrub job |
+| §B.5 B2B Salon profile editor (Phase 6) | `salons`, `salon_photos`, `services`, `staff`, `opening_hours` | all of the above | salon_id from `auth.users` → `salon_owners.salon_id` | |
+| §B.7 B2B Calendar / availability (Phase 6) | `bookings`, `availability_overrides`, `staff_schedules` | `availability_overrides`, `staff_schedules` | `staff_schedules.day_of_week` enum | |
+| §B.12 B2B Billing / Stripe Connect (Phase 6) | `salons`, `salon_payouts`, `bookings` | `salon_payouts` | `salon_payouts.stripe_payment_intent_id`, `salon_payouts.commission_amount` | V2-D12 Stripe Connect (locked 2026-05-09 per `_rules/DB_SCHEMA.md` line 8) |
+
+### §33.2 · Cross-cutting infrastructure tables (not surface-specific)
+
+| Table | Purpose | Maintained by |
+|---|---|---|
+| `platform_settings` | Admin toggles (e.g. `homepage_sections` per V2-D## TBD when consumed) | Admin dashboard |
+| `feature_flags` | Per-feature gating | Admin dashboard |
+| `audit_log` | Immutable audit trail of admin actions | Auto by trigger |
+| `bans` | User account bans (per §31 security S1 ban check) | Admin dashboard |
+| `rate_limit_events` | Upstash Redis-backed (not Postgres), see `lib/ratelimit.ts` | Auto |
+
+### §33.3 · Anti-patterns (V2-D36)
+
+- ❌ Listing column types or RLS policies in §33 → that's `_rules/DB_SCHEMA.md`'s job. §33 is a navigation aid, not a schema reference.
+- ❌ Defining new tables in §33 without first adding them to `_rules/DB_SCHEMA.md`. New tables go in DB_SCHEMA.md first; §33 picks them up only if a surface uses them.
+- ❌ Inline DDL or `CREATE TABLE` snippets here. Migrations + DDL live in `supabase/migrations/`. DB_SCHEMA.md documents them.
+- ❌ A surface spec section that doesn't list its tables in §33 (orphan). Every surface §X.99 implementation mapping must include the table list, which gets aggregated here.
+
+---
 
 ## What's still missing
 
