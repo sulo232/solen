@@ -38,12 +38,19 @@ export function SectionHeader({
       {/* Top hairline rule — 1px ink */}
       <hr className="m-0 mb-[14px] h-px border-0 bg-s-ink" aria-hidden />
 
-      {/* Eyebrow + meta row */}
-      <div className="mb-3 flex items-baseline justify-between font-body text-[13px] font-bold uppercase tracking-[0.18em]">
-        <span className="inline-flex items-center gap-2 text-s-ink before:block before:h-[5px] before:w-[5px] before:rounded-full before:bg-s-brand before:content-['']">
+      {/* Eyebrow + meta row.
+          Mobile (< sm): stack vertically — long uppercase strings wrap
+          horribly on narrow viewports.
+          Desktop (≥ sm): side-by-side flex space-between as designed. */}
+      <div className="mb-3 flex flex-col gap-1 font-body text-[13px] font-bold uppercase tracking-[0.18em] sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+        <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-ink before:block before:h-[5px] before:w-[5px] before:rounded-full before:bg-s-brand before:content-['']">
           {eyebrow}
         </span>
-        {meta && <span className="text-s-ink-3">{meta}</span>}
+        {meta && (
+          <span className="whitespace-nowrap text-s-ink-3">
+            {meta}
+          </span>
+        )}
       </div>
 
       {/* H2 + optional link */}
