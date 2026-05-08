@@ -86,3 +86,10 @@ export {
   type ToastTone,
   type ToastOptions,
 } from "./Toast";
+
+export {
+  Logo,
+  type LogoProps,
+  type LogoSize,
+  type LogoTone,
+} from "./Logo";

@@ -95,7 +95,17 @@
       font-size: 36px;
       font-weight: 900;
       letter-spacing: -0.015em;
-      color: var(--brand); line-height: 1;
+      color: var(--ink); line-height: 1;
+      display: inline-flex; align-items: baseline;
+    }
+    .nav-logo::after {
+      content: '';
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--brand);
+      margin-left: 4px;
+      transform: translateY(-2px);
     }
     .nav-links { display: flex; gap: 36px; font-size: 15px; font-weight: 600; }
     .nav-links a {

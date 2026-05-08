@@ -38,6 +38,7 @@ import {
   SheetCTARow,
   ToastProvider,
   useToast,
+  Logo,
 } from "../../_components/primitives";
 
 export default function PrimitivesDevPage() {
@@ -894,6 +895,68 @@ function PrimitivesDevPageInner() {
         {/* §F.4 TOAST */}
         <Section eyebrow="Toast" meta="§F.4 · 4 tones" title="Toast (transient notifications)">
           <ToastDemo />
+        </Section>
+
+        {/* LOGO */}
+        <Section eyebrow="Logo" meta="V2-D27 · 4 sizes" title="Logo (Solen wordmark)">
+          <Grid cols={2}>
+            <Card tag="light tone (white substrate)">
+              <div className="flex flex-col gap-8">
+                <div className="flex items-baseline gap-2">
+                  <Logo size="xl" />
+                  <span className="text-s-ink-3 text-[12px] tracking-[0.16em] uppercase font-semibold">xl · 64px</span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <Logo size="lg" />
+                  <span className="text-s-ink-3 text-[12px] tracking-[0.16em] uppercase font-semibold">lg · 40px</span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <Logo size="md" />
+                  <span className="text-s-ink-3 text-[12px] tracking-[0.16em] uppercase font-semibold">md · 28px (default)</span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <Logo size="sm" />
+                  <span className="text-s-ink-3 text-[12px] tracking-[0.16em] uppercase font-semibold">sm · 18px</span>
+                </div>
+              </div>
+            </Card>
+
+            <Card tag="dark tone (ink-1 substrate)">
+              <div className="bg-s-ink rounded-xl p-8 flex flex-col gap-8">
+                <div className="flex items-baseline gap-2">
+                  <Logo size="xl" tone="dark" />
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <Logo size="lg" tone="dark" />
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <Logo size="md" tone="dark" />
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <Logo size="sm" tone="dark" />
+                </div>
+              </div>
+            </Card>
+
+            <Card tag="in app-header context">
+              <div className="bg-white border border-s-ink/10 rounded-xl px-6 py-4 flex items-center justify-between">
+                <Logo size="md" />
+                <div className="flex items-center gap-4 text-[14px] text-s-ink-2 font-medium">
+                  <span>Entdecken</span>
+                  <span>Städte</span>
+                  <button className="bg-s-brand text-white px-4 py-2 rounded-full font-semibold text-[14px]">Anmelden</button>
+                </div>
+              </div>
+            </Card>
+
+            <Card tag="without dot accent (alt)">
+              <Logo size="lg" noDot />
+              <p className="font-body text-[13px] text-s-ink-3 mt-2">
+                Use <code className="bg-s-bg-sunken px-1.5 py-0.5 rounded">noDot</code> prop for contexts where the dot
+                competes with adjacent UI (e.g. inside a button, next to other dots).
+              </p>
+            </Card>
+          </Grid>
         </Section>
 
         {/* FOOT */}

@@ -98,6 +98,43 @@ When the Solen Pro feature panel appears as a full-saturated brand bg `#043338`,
 - Tinted-of-bg text inside CTA pills — pill text is white-or-black per §pill-rule
 - Brand teal as a hero panel — that's a category panel job, not brand
 
+### §1.3 · The Solen logo wordmark (V2-D27 lock — 2026-05-09)
+
+The brand mark is a typography-rendered wordmark, not a graphic logo. **No icon, no symbol, no monogram beyond the dot accent.** The wordmark IS the brand.
+
+|element  |spec                                                                                                                                  |
+|---------|--------------------------------------------------------------------------------------------------------------------------------------|
+|wordmark |"Solen" rendered in **Cooper BT** (locked display font per §5; free fallback **Sansita 900** since cdnfonts.com Cooper CDN is HTTP 500)|
+|case     |Mixed case (uppercase S, lowercase olen) — Cooper Black's chunky character lives in the lowercase forms                              |
+|color    |ink-1 `#1A1209` on white substrate, white `#FFFFFF` on dark substrate (footer / dark CTAs)                                            |
+|tracking |`-0.025em` letter-spacing (tight, matches Cooper's natural compactness)                                                                |
+|dot accent|trailing dot in **brand-teal `#043338`** (or `brand-pale #C2F0F1` on dark substrate). Sized proportional to font size — see size scale.|
+|dot alignment|baseline-aligned (sits on the wordmark's baseline, NOT centered vertically — gives the dot a "punctuation" feel like a period after Solen)|
+|gap      |`3-6px` between final 'n' and dot (scales with size — see scale table)                                                                 |
+
+**Size scale (V2-D27):**
+
+|size|font size|dot size|dot gap|use                                                                |
+|----|---------|--------|-------|-------------------------------------------------------------------|
+|sm  |18px     |4px     |2px    |Header collapsed / mobile small / footer secondary                |
+|md  |28px     |6px     |3px    |**Default** — app top bar, login modal header, primary brand-mark |
+|lg  |40px     |8px     |4px    |Marketing hero / "Made in Basel" footer brand block               |
+|xl  |64px     |12px    |6px    |Landing splash / brand-mark moments / og:image                    |
+
+**Implementations:**
+- React: `<Logo size="md" />` from `@/app/[locale]/_components/primitives` — uses loaded V3 fonts, perfect rendering
+- Static SVG (favicon / og:image / metadata): `public/logo.svg` — same wordmark as `<text>` with font fallback chain (Sansita / Cooper Black / Georgia / serif). Not pixel-perfect outside contexts where Sansita is loaded, but acceptable for small-format usage.
+- HTML mockups: inline CSS, `font-family: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif` + `::after` pseudo-element for the dot.
+
+**Anti-pattern:**
+- Reintroducing the V1/V2 Bebas Neue tall-narrow caps logo (retired V2-D27)
+- Coral / orange dot accent — banned (retired V2-D15-3, dot is brand-teal `#043338` only)
+- All-caps SOLEN — banned (loses Cooper Black's character)
+- Logo as a graphic icon (S in a circle, abstract mark) — banned. The wordmark IS the brand.
+- Multi-color logo (e.g. teal "Sol" + ink "en") — banned. Single ink-1 color + brand-teal dot only.
+- Italic logo — banned per V2-D15.
+- Decorative effects (drop shadow, gradient, outline) — banned. The logo is flat ink + flat teal dot.
+
 ---
 
 ## §1b Geographic scope

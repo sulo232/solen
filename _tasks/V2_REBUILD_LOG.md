@@ -11,6 +11,8 @@
 
 ## Status (one-liner)
 
+**2026-05-09 (morning, +logo replacement)** — V2-D27 lock: V1/V2 Bebas-Neue-with-coral-dot logo retired. New logo = Cooper-style "Solen" wordmark mixed case + brand-teal `#043338` dot accent (option C from `public/solen-v2-logo-options.html` — user picked after seeing 4 options). 7 files patched: `public/logo.svg` (text+circle SVG, font fallback chain to Sansita), `public/favicon.svg` (coral circle → brand-teal circle), new `app/[locale]/_components/primitives/Logo.tsx` React component (4 sizes + light/dark tone variants + noDot prop), barrel + dev-page demo, V3 homepage mockup `.nav-logo` CSS updated (color brand→ink, added `::after` dot pseudo-element), LIVE_TRUTH §1.3 added with full V2-D27 lock spec. Live header (legacy) auto-fixes via `logo.svg` reference. · 
+
 **2026-05-09 (morning, post-overnight, +font fix)** — User confirmed bigger sizes (V2-D26 — typography size refresh, kept ITC Avant Garde Gothic for body, bumped most subtexts +2-3px). 14 files patched (8 primitive components + dev page + 4 mockups need a future cleanup pass + LIVE_TRUTH spec sizes). Body 14→16, label 12→14, helper 11→13, eyebrow 11→13, card-tag 9→11, toast title 14→15, switch sub-label 12→13, pill toggle 12→13, input md size 14→16 (also resolves V2-D14/V2-D17 contradiction about iOS auto-zoom — md ≥16px now prevents focus-zoom). Display headings (Cooper-style h1/h2) unchanged. · 
 
 **2026-05-09 (morning, post-overnight)** — User up. **V2-D09 / V2-D10 / V2-D11 / V2-D12 all resolved** (guest checkout OUT · map view IN · loyalty+packages+gift cards all IN v1 · Stripe Connect locked from DB schema implicit decision). Phase 1 (auth) unblocked. **NEW:** user flagged body font sizes feel small + asked for font visualization — see `public/solen-v2-font-visual.html` showing current Avant Garde Gothic at spec sizes vs +2-3px bumped sizes vs 5 alternative body fonts (Inter / Manrope / Plus Jakarta / DM Sans / Outfit). Cooper Black Std cdnfonts.com URL is currently HTTP 500 — headings silently falling back to Sansita 900 (looks visually similar). Awaiting font decision. · 
@@ -345,6 +347,38 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Context:** During category-color exploration, user said "stop using purple — purple is banned everywhere" after the Wellness `#9B7BB8` plum and Coiffeur-deep `#6B2D4D` (which reads purple at large saturated surfaces) were tested.
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
+
+### V2-D27 (2026-05-09 morning) — Logo replacement: Bebas+coral retired, Cooper-Solen + brand-teal dot locked
+
+- **Context:** User this morning, after seeing the V2 logo at `public/logo.svg` rendered in the dev-tools or somewhere: "and additionally can you ditch this logo of solen from evrywhere its so hidious." Current logo: Bebas Neue tall-narrow caps "SOLEN" + small `#E8624A` coral dot inside the O. Both font (Bebas Neue) and color (coral) were retired V2-D15-3 — the SVG file was a leftover that never got swept.
+- **4 options visualized at `public/solen-v2-logo-options.html`:**
+  - A — Cooper "Solen" mixed case · plain (no dot)
+  - B — Cooper "SOLEN" all caps
+  - C — Cooper "Solen·" with brand-teal dot accent ← **user pick**
+  - D — Cooper "solen" all lowercase
+- **Decision:** Option **C** locked. Cooper-style "Solen" wordmark (Cooper BT → Sansita 900 fallback since cdnfonts.com Cooper is currently HTTP 500) + trailing brand-teal `#043338` dot accent. The dot is baseline-aligned (sits like a period after Solen) — gives a "Solen." reading. Mixed case preserves Cooper Black's character (chunky lowercase forms are where the font's personality lives).
+- **Rationale per option:**
+  - Option C wins because it (a) preserves the V1/V2 dot-accent brand idea (just in V3 brand-teal instead of retired coral), (b) keeps the warmth of mixed-case Cooper, (c) reads as "Solen·" — a complete brand statement vs Option A's bare wordmark.
+  - Option B (all caps) was rejected — loses Cooper Black's character (caps in Cooper are boring vs lowercase).
+  - Option D (lowercase) was rejected — too "tech startup" (Linear/Notion/Substack vibe doesn't match Solen's beauty marketplace warmth).
+- **Files patched (7):**
+  - `public/logo.svg` — replaced Bebas+coral with Cooper-stack `<text>` + brand-teal `<circle>`. 124×36 viewBox. Font-family fallback chain `'Sansita', 'Cooper Black', 'Cooper Black Std', 'Cooper BT', Georgia, serif` so SVG-as-image renders acceptably even when Cooper isn't loaded. Comment in SVG documents the V2-D27 lock.
+  - `public/favicon.svg` — replaced retired coral `#E8624A` circle with brand-teal `#043338` circle. Tab/bookmark monogram now matches V3 brand.
+  - `app/[locale]/_components/primitives/Logo.tsx` — new React component. cva variants for size (sm 18px / md 28px / lg 40px / xl 64px) + tone (light / dark). Dot uses `s-brand` on light, `s-brand-pale` on dark. `noDot` prop for contexts where the dot competes (e.g. inside a button).
+  - `app/[locale]/_components/primitives/index.ts` — appended Logo + types exports.
+  - `app/[locale]/dev/primitives/page.tsx` — added Logo demo Section showing 4 sizes on light + dark substrate, in-app-header context, and `noDot` variant.
+  - `public/solen-v2-republik-teal.html` — `.nav-logo` CSS updated: color `var(--brand)` → `var(--ink)`, added `display: inline-flex; align-items: baseline` + `::after` brand-teal dot pseudo-element. The V3-locked homepage mockup now matches V2-D27.
+  - `_tasks/SOLEN_LIVE_TRUTH.md` — added §1.3 "The Solen logo wordmark (V2-D27 lock)" subsection. Full spec: anatomy + size scale (sm/md/lg/xl) + 7 anti-patterns. Locked at end of §1 brand color section.
+- **Live site impact (immediate):**
+  - Legacy header at `components-legacy/layout/Header.tsx` uses `<Image src="/logo.svg">` — auto-picks up the new SVG without code change. Live site users see new logo on next page load.
+  - Browser tab favicon updates to brand-teal circle.
+  - V3 mockup at `localhost:4747/solen-v2-republik-teal.html` renders new Cooper+dot logo.
+- **Bucket B doc-cleanup TODOs (deferred):**
+  - 5 archival HTML files in `public/` (`offline.html`, `solen-v2-preview.html`, `solen-v2-locked.html`, `solen-coral.html`, `variations.html`) reference Bebas Neue in CSS BUT no actual logo SVG inline (they're V1 design archives, not user-facing). The grep finding earlier confirmed only one file (`solen-v2-logo-options.html`) intentionally renders the OLD logo for comparison. Other archives use Bebas Neue for image-card placeholders (not logos). Skip in this commit; flag for cleanup pass.
+  - Future React surfaces (Phase 1 auth modal, Phase 2 header rebuild) should use `<Logo>` component, not inline `<Image src="/logo.svg">`. Migration happens incrementally per V2-D05.
+- **Live site impact: minimal.** Live header gets new logo automatically (one SVG file swap). Only footer / og:image / favicon update at the same time. No React route changes needed. New surfaces use `<Logo>` from V2-D27 onward.
+- **Typecheck:** clean for new Logo.tsx + barrel + dev page edits.
+- **Status:** **shipped + locked.** Logo is now V2-D27. To verify: `npm run dev` → `/de/dev/primitives` (Logo demo section) + reload `localhost:3000` (legacy header now shows new logo).
 
 ### V2-D26 (2026-05-09 morning) — Typography size refresh (kept Avant Garde Gothic, bumped subtexts +2-3px)
 
