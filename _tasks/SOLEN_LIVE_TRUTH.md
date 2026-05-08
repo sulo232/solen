@@ -2046,7 +2046,237 @@ Internal composition (implementation detail, not exposed):
 
 -----
 
-*§F.5 ends here. Phase 0 continues with §F.6 skip-to-main link, §F.7 font-display strategy, §F.8 cookie consent banner — all deferred to next attended session.*
+*§F.5 ends here. Phase 0 continues with §F.6 skip-to-main link.*
+
+-----
+
+## §F.6 · Skip-to-main link
+
+The first focusable element on every page. Hidden visually until the user tabs into it via keyboard — then it becomes a visible CTA-style link that, on activation, jumps focus to the page's main content area, bypassing the header / nav. Required for keyboard-only and screen-reader users per WCAG 2.4.1 (Bypass Blocks, Level A).
+
+**Anchors to existing locks:** §11 hit-target rules apply (44×44 hit area when visible); §1 brand-teal for the visible state; mounted in `app/[locale]/layout.tsx` as the very first child of `<body>`.
+
+### §F.6.0 · Anatomy
+
+- An anchor `<a href="#main">Direkt zum Inhalt</a>` (or `t('skipToMain')` via next-intl).
+- Hidden by default via `sr-only` (the standard accessible "screen-reader only" pattern: 1×1 pixel + `clip` + `clip-path` + absolute positioning off-screen, but discoverable to screen readers and to keyboard tab focus).
+- On `:focus` / `:focus-visible`: jumps to a fixed-position visible state in the top-left, brand-teal pill, white text, 2px brand outline. Click / Enter triggers the anchor jump.
+
+### §F.6.1 · Visible (focused) state
+
+|prop          |spec                                                                                                      |
+|--------------|----------------------------------------------------------------------------------------------------------|
+|position      |`fixed; top: 16px; left: 16px;` — top-left of viewport, above all other surfaces                          |
+|z-index       |`var(--z-tooltip)` (per §8) — above modals, sheets, toasts. Skip-link must always be reachable.          |
+|background    |brand-teal `#043338`                                                                                      |
+|color         |white                                                                                                      |
+|padding       |`12px 20px`                                                                                                |
+|border-radius |`var(--radius-pill)` (99px)                                                                               |
+|font          |Avant Garde Gothic 600 14px, line-height 1.3                                                              |
+|outline       |2px brand outline, 2px offset (matches §1 focus ring)                                                     |
+|transition    |`opacity 150ms ease-snap` — appears instantly on focus                                                    |
+
+### §F.6.2 · Hidden (default) state
+
+Use Tailwind's `sr-only` utility (which sets `position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;`). On focus, override with `not-sr-only` + the visible-state styles.
+
+### §F.6.3 · Anchor target
+
+The skip-link's `href="#main"` jumps to a `<main id="main">` element wrapping the page's primary content. `app/[locale]/layout.tsx` enforces this — the layout `<main>` always has `id="main"`. Pages don't need to add their own `<main>` — the layout's wraps them.
+
+### §F.6.4 · Anti-patterns
+
+- **Always-visible skip link** — banned. Distracting for sighted/mouse users. Must be `sr-only` until focused.
+- **`display: none` to hide** — banned. Removes from focus order entirely (defeats the purpose). Use `sr-only` (off-screen but focusable).
+- **Skip link to a non-existent anchor** — banned. The `<main id="main">` MUST exist in the layout.
+- **Italic in the link text** — banned per V2-D15.
+
+-----
+
+*§F.6 ends here. Phase 0 continues with §F.7 font-display strategy.*
+
+-----
+
+## §F.7 · Font fallback stack + `font-display` strategy
+
+The strategy that makes V3 typography survive bad networks, broken CDNs, and slow first-paint. The §5 typography lock specifies Cooper BT for display + ITC Avant Garde Gothic Std for body — both via cdnfonts.com (paid CDN). cdnfonts.com is unreliable (Cooper Black Std currently returns HTTP 500 — see V2-D27 callout). The fallback chain is what keeps the brand alive when the primary font CDN fails.
+
+### §F.7.1 · `font-display` value
+
+**Lock: `font-display: swap` on every web font.**
+
+| value | behavior | Solen verdict |
+|-------|----------|---------------|
+| `auto` | browser default — usually treats like `block` (invisible text up to 3s) | banned — too aggressive |
+| `block` | invisible text 3s, then fallback, then swap | banned — flash-of-invisible-text is the worst UX |
+| `swap` ✅ | show fallback immediately, swap to web font when loaded | **locked** — text is always visible |
+| `fallback` | invisible 100ms, then fallback, then swap with 3s window | rejected — close to swap but with brief FOIT |
+| `optional` | invisible 100ms, then fallback. NO swap if not loaded in time. | rejected — would mean some users never see Cooper |
+
+**Locked rationale:** Solen's brand is the warm slab + clean grotesque pairing. If a user sees Georgia + Inter for the first 200ms of a slow connection, that's acceptable — it's still a credible brand. If they see invisible text for 3 seconds (`block`), they bounce. Always-visible-text wins.
+
+### §F.7.2 · The fallback chains
+
+Locked in `tailwind.config.js` + globals.css:
+
+**Display stack:** `'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif`
+- Cooper BT (paid, our preference) — chunky friendly slab
+- Cooper Black Std / Cooper Black — same family, alternate names some systems use
+- **Sansita 900** (free Google Fonts, always loads via `display=swap`) — closest free Cooper analog
+- Georgia (universal system serif) — last-resort serif, maintains "warm display" feel
+- `serif` — generic ultimate fallback
+
+**Body stack:** `'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif`
+- ITC Avant Garde Gothic Std (paid, our preference) — geometric grotesque
+- Avant Garde — same family alt name
+- **League Spartan** (free Google Fonts) — closest free Avant Garde analog
+- **Inter Tight** (free Google Fonts) — backup neutral grotesque
+- system-ui — OS default sans (SF on macOS, Segoe on Windows)
+- `sans-serif` — generic ultimate fallback
+
+### §F.7.3 · Loading mechanism
+
+**Google Fonts (Sansita / League Spartan / Inter Tight):** loaded via single `@import url('...&display=swap')` in `app/globals.css`. The `&display=swap` query parameter forces all 3 fonts to use swap. Always reliable — Google's CDN is rock solid.
+
+**cdnfonts.com (Cooper Black Std / ITC Avant Garde Gothic Std):** loaded via separate `@import url('...')` lines. cdnfonts CSS files set their own `font-display`. We don't control this parameter — cdnfonts uses `font-display: auto` in their CSS (verified). This means cdnfonts fonts might cause slight FOIT before failing over.
+
+**Mitigation in v1:** the fallback chain catches every failure case. Even when Cooper Black returns HTTP 500 (current state), Sansita 900 takes its slot in the chain — page renders correctly with no broken text. Same for Avant Garde.
+
+**Future hardening (v2):** self-host Cooper + Avant Garde from solen.ch's own static origin. Removes dependency on cdnfonts.com. Cost: licensing concerns (need to verify the paid licenses allow self-hosting).
+
+### §F.7.4 · Visual reference
+
+The dev test page at `/[locale]/dev/primitives` and the V3 mockup at `solen-v2-republik-teal.html` demonstrate the live fallback chain. Currently both render Sansita (Cooper fallback) silently — visually nearly identical to true Cooper. Brand integrity is preserved.
+
+### §F.7.5 · Anti-patterns
+
+- **`display: block` on web fonts** — banned. Causes 3-second flash-of-invisible-text on slow connections.
+- **No fallback chain (single font-family)** — banned. If the font fails to load, the page renders in browser default (Times New Roman on most systems).
+- **System UI fonts as primary brand** — banned. SF / Segoe / Roboto are functional but not brand-distinctive. Solen needs Cooper warmth.
+- **JavaScript-based font loaders (e.g. Web Font Loader)** — banned. CSS `@import` + `display: swap` is sufficient and lighter.
+- **Variable-weight web fonts via JS subsetting** — banned in v1. Adds complexity for marginal byte savings.
+
+-----
+
+*§F.7 ends here. Phase 0 continues with §F.8 cookie consent banner.*
+
+-----
+
+## §F.8 · Cookie consent banner
+
+The legal-baseline GDPR / Swiss DSG (Datenschutzgesetz) consent banner. **Non-negotiable before launch — DACH market requires explicit opt-in for analytics + marketing cookies.** Necessary cookies (auth session, language preference, cart state) are always on (legitimate interest exemption); analytics + marketing require active user consent.
+
+**Anchors to existing locks:** §F.4 toast (pattern reference), §F.2 modal (settings panel uses modal), §F.1.6 switch (per-category toggle), §F.4 sticky-bottom positioning (cookie banner pattern matches toast region).
+
+### §F.8.0 · Anatomy
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│ Wir verwenden Cookies                                               │
+│ Notwendige Cookies sind immer aktiv. Analytics + Marketing helfen   │
+│ uns, Solen zu verbessern. Du kannst jede Kategorie einzeln steuern. │
+│                                                                     │
+│           [Anpassen]  [Nur notwendige]  [Alle akzeptieren]          │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+|element       |spec                                                                                                                                          |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+|position      |`fixed; bottom: 0; left: 0; right: 0;` — full-width sticky bottom strip. Mobile: 16px margin each side.                                       |
+|surface       |white `#FFFFFF`, top-only border 1px `rgba(26,18,9,0.10)`, top-only shadow `0 -4px 16px rgba(50,47,44,0.08)`                                  |
+|padding       |`20px 24px` desktop, `16px 20px` mobile                                                                                                       |
+|max-width     |none — full-bleed bottom strip on all sizes (it's a system-level interruption)                                                                |
+|z-index       |`var(--z-tooltip)` (per §8) — above modals + sheets. Cookie consent must always be reachable + always interrupt (it's legally blocking).      |
+|title         |Avant Garde Gothic 600 16px ink-1 line-height 1.3                                                                                            |
+|body copy     |Avant Garde Gothic 400 14px ink-2 line-height 1.55                                                                                           |
+|button row    |right-aligned, gap 8px. Stacked vertically only on extremely narrow screens (< 360px).                                                        |
+|primary CTA   |"Alle akzeptieren" — brand-teal flat pill, padding 12/20, white text, weight 600                                                              |
+|secondary     |"Nur notwendige" — ghost button, ink-1 text on white, 1px ink-1.10 border, padding 12/20                                                      |
+|tertiary link |"Anpassen" — text-only button left of the action group, brand-teal text, no underline, hover ink-1                                            |
+
+### §F.8.1 · Cookie categories
+
+|key         |label              |default state |purpose                                                                            |always-on |
+|------------|-------------------|--------------|-----------------------------------------------------------------------------------|----------|
+|`necessary` |Notwendig          |on            |Auth session, language preference, cookie consent record itself                    |yes (legit interest)|
+|`analytics` |Analyse            |off           |PostHog event tracking, anonymous usage stats — helps us improve Solen             |no (consent)|
+|`marketing` |Marketing          |off           |Conversion tracking, retargeting pixels (Meta / Google), referral attribution      |no (consent)|
+
+**v1 ships these 3 categories.** v2 may add a 4th `preferences` category if we add user-level personalization cookies.
+
+### §F.8.2 · State matrix
+
+|state             |trigger                                       |banner visibility                                                              |
+|------------------|----------------------------------------------|-------------------------------------------------------------------------------|
+|first-visit       |no consent record in localStorage              |banner visible at bottom of viewport                                           |
+|customizing       |user clicks "Anpassen"                        |banner remains visible; settings modal (§F.2 size lg) opens above              |
+|consent-given     |user clicks accept-all / accept-necessary / save-from-modal|banner hidden, choices persisted to localStorage `solen-cookie-consent` key |
+|revisit-w-consent |existing consent record in localStorage        |banner not rendered                                                            |
+|consent-changed   |user opens consent again from footer link      |banner hidden, settings modal opens directly (re-edit existing consent)        |
+
+### §F.8.3 · Persistence
+
+|where         |what stored                                                                                              |
+|--------------|---------------------------------------------------------------------------------------------------------|
+|localStorage  |key `solen-cookie-consent`, value `JSON.stringify({ necessary: true, analytics: bool, marketing: bool, timestamp: ISO })`|
+|why localStorage |the cookie banner CANNOT use cookies to persist its own consent (chicken-and-egg) — localStorage is the GDPR-compliant alternative |
+|expiration    |consent valid 12 months — after that, banner re-shows on next visit                                     |
+|withdrawal    |footer "Cookie-Einstellungen" link reopens the settings modal where user can withdraw consent           |
+
+### §F.8.4 · Settings modal (§F.2 size lg)
+
+Opens via "Anpassen" button. Composed via §F.2 modal primitive at `size="lg"` — header "Cookie-Einstellungen" + body containing the 3 category toggles + footer with "Speichern" primary + "Abbrechen" secondary.
+
+|category row anatomy|spec                                                                                          |
+|--------------------|---------------------------------------------------------------------------------------------|
+|layout              |`<div role="group">` with name + description on left + §F.1.6 switch on right                |
+|category name       |Avant Garde Gothic 600 15px ink-1 (e.g. "Analyse")                                           |
+|category description|Avant Garde Gothic 400 13px ink-3 (e.g. "Anonyme Nutzungsstatistiken via PostHog…")          |
+|switch              |§F.1.6 switch primitive. `disabled={category === 'necessary'}` — necessary is always on.    |
+|row separator       |1px `rgba(26,18,9,0.05)` bottom border between rows; last row no border                      |
+|row padding         |`14px 0` (matches §F.1.6 switch row spacing)                                                 |
+
+### §F.8.5 · Analytics gating
+
+The cookie consent state controls whether analytics scripts run. Implementation:
+- `<CookieProvider>` exposes `useCookieConsent()` hook returning `{ consent, hasConsented, ... }`
+- `app/[locale]/layout.tsx` checks `consent.analytics === true` before mounting `<PostHogProvider>` (or equivalent)
+- Same pattern for marketing (Meta Pixel, etc.) — only mounted when consent.marketing is true
+- Re-renders on consent change (e.g. user opens settings + flips analytics on, PostHog provider mounts)
+
+**Anti-pattern:** running analytics scripts before consent is given — banned per Swiss DSG + GDPR. Even "anonymous" analytics needs consent in DACH.
+
+### §F.8.6 · Mobile vs desktop
+
+|breakpoint        |layout                                                                                            |
+|------------------|--------------------------------------------------------------------------------------------------|
+|mobile (< 768px)  |banner stacks vertically: title + copy on top, buttons in a row below (or stacked if < 360px). Padding 16/20.|
+|desktop (≥ 768px) |banner two-column: title + copy left, buttons right. Padding 20/24.                              |
+
+### §F.8.7 · Motion
+
+|phase   |property              |from         |to           |duration|easing  |
+|--------|----------------------|-------------|-------------|--------|--------|
+|entry   |translateY            |translateY(100%)|translateY(0)|400ms|ease-glide|
+|entry   |opacity               |0           |1           |400ms   |ease-glide|
+|exit    |translateY            |translateY(0)|translateY(100%)|200ms|ease-snap|
+|exit    |opacity               |1           |0           |200ms   |ease-snap|
+
+**Reduced motion:** opacity-only fade, 100ms.
+
+### §F.8.8 · Anti-patterns
+
+- **Pre-checked analytics / marketing toggles** — banned per GDPR. Default state is OFF. User opts in.
+- **"Reject all" hidden / harder to find than "Accept all"** — banned per "dark pattern" GDPR clarifications. Both buttons must be equally prominent.
+- **Auto-accept on continued browsing** — banned. Active consent only.
+- **Cookie banner that blocks page interaction** — banned. Page must be fully usable while banner is visible (cookies are a layer above content, not a modal).
+- **Persisting consent in cookies** — banned (chicken-and-egg). Use localStorage.
+- **Loading analytics before consent** — banned per Swiss DSG. Analytics scripts mount only after `consent.analytics === true`.
+- **Italic in banner copy** — banned per V2-D15.
+
+-----
+
+*§F.8 ends here. Phase 0 is complete: §F.1 / §F.2 / §F.3 / §F.4 / §F.5 / §F.6 / §F.7 / §F.8 all locked.*
 
 -----
 

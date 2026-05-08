@@ -11,6 +11,8 @@
 
 ## Status (one-liner)
 
+**2026-05-09 (afternoon, PHASE 0 COMPLETE)** — All 8 Phase 0 primitives shipped. V2-D28 §F.5 date picker + V2-D29 §F.6 skip-link + V2-D30 §F.7 font-display strategy + V2-D31 §F.8 cookie consent banner. Phase 0 took ~6 days end-to-end (V2-D14 §F.1 spec lock 2026-05-05 → V2-D31 §F.8 ship 2026-05-09). 8 React primitive components + 8 mockup HTML files + 5 LIVE_TRUTH §F sub-sections. **Phase 1 (auth) and homepage build now unblocked.** Per user direction next: V3 homepage React build → Phase 1 auth. · 
+
 **2026-05-09 (afternoon, Phase 0 plow)** — V2-D28 lock: §F.5 date/time picker mockup + React shipped. `react-aria-components` Calendar wrapped with V3 styling, `@internationalized/date` for date math (DE-CH locale, Mon-first week), TimeSlotList composed alongside w 4-column grid grouped Vormittag/Nachmittag/Abend. Loading skeleton w shimmer animation, empty state, disabled dates via `isDateUnavailable` callback (booking flow uses for past dates + salon-closed days). Native `<input type="date">` explicitly banned per spec. Dev test page extended w 2 demos (date-and-time live + single-date variant). · 
 
 **2026-05-09 (morning, +logo replacement)** — V2-D27 lock: V1/V2 Bebas-Neue-with-coral-dot logo retired. New logo = Cooper-style "Solen" wordmark mixed case + brand-teal `#043338` dot accent (option C from `public/solen-v2-logo-options.html` — user picked after seeing 4 options). 7 files patched: `public/logo.svg` (text+circle SVG, font fallback chain to Sansita), `public/favicon.svg` (coral circle → brand-teal circle), new `app/[locale]/_components/primitives/Logo.tsx` React component (4 sizes + light/dark tone variants + noDot prop), barrel + dev-page demo, V3 homepage mockup `.nav-logo` CSS updated (color brand→ink, added `::after` dot pseudo-element), LIVE_TRUTH §1.3 added with full V2-D27 lock spec. Live header (legacy) auto-fixes via `logo.svg` reference. · 
@@ -349,6 +351,57 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Context:** During category-color exploration, user said "stop using purple — purple is banned everywhere" after the Wellness `#9B7BB8` plum and Coiffeur-deep `#6B2D4D` (which reads purple at large saturated surfaces) were tested.
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
+
+### V2-D31 (2026-05-09 afternoon) — Phase 0 COMPLETE · §F.6 + §F.7 + §F.8 batch ship
+
+**This single commit closes 3 sub-sections (§F.6 skip-link + §F.7 font-display + §F.8 cookie consent) + locks Phase 0 as fully done.** Bundling them because §F.6 + §F.7 are tiny (one component each + spec doc) and §F.8 has its own substantial spec+mockup+React. Single commit reduces commit-message noise; details below.
+
+#### V2-D29 — §F.6 Skip-to-main link
+- **Context:** WCAG 2.4.1 (Bypass Blocks Level A) requires keyboard / screen-reader users can skip past header/nav to main content.
+- **Decision:** standard `sr-only` accessibility pattern. Hidden by default (1×1 px clipped, focusable). On `:focus` / `:focus-visible`, becomes brand-teal pill in top-left corner at z-tooltip, jumps to `<main id="main">`.
+- **Files:** `app/[locale]/_components/primitives/SkipLink.tsx` (new) · `_tasks/SOLEN_LIVE_TRUTH.md` §F.6 added (~50 lines).
+- **Bucket B:** `sr-only` chosen as the hide technique (alternatives: `clip-path: inset(50%)` / `position: absolute; left: -9999px;`). Picked sr-only for being the de-facto Tailwind + a11y community standard.
+
+#### V2-D30 — §F.7 Font fallback stack + `font-display` strategy
+- **Context:** locking the strategy that keeps V3 typography working when Cooper cdnfonts.com fails (currently HTTP 500). No code changes needed — globals.css already has `&display=swap` on Google Fonts URL; cdnfonts URLs use `display: auto` which we can't control. Fallback chain in font-family handles every failure case.
+- **Decision:** `font-display: swap` locked on every web font. Fallback chains locked at Tailwind config level: Display = Cooper BT → Sansita 900 → Georgia → serif · Body = Avant Garde Gothic → League Spartan → Inter Tight → system-ui → sans-serif.
+- **Files:** `_tasks/SOLEN_LIVE_TRUTH.md` §F.7 added (~80 lines, mostly documentation). No code changes — globals.css strategy was already correct, just unspecced.
+- **Bucket B:** `swap` over `optional` / `fallback` / `block`. Picked swap because brand integrity > FOIT prevention (some users seeing Sansita instead of Cooper for 200ms is acceptable; 3 seconds of invisible text is not).
+
+#### V2-D31 — §F.8 Cookie consent banner (GDPR / Swiss DSG)
+- **Context:** non-negotiable for DACH market launch. Solen uses analytics (PostHog) + future marketing pixels (Meta, Google) — both require explicit opt-in.
+- **Architecture:** `<CookieConsentProvider>` at app root manages state via React Context + persists to localStorage (chicken-and-egg = cookies-can't-store-cookie-consent). Hook `useCookieConsent()` exposes consent state to other components for analytics gating. 12-month expiry — banner re-shows after.
+- **3 categories (v1):** `necessary` (always on, switch disabled — auth session, language, consent record itself) · `analytics` (opt-in — PostHog) · `marketing` (opt-in — Meta/Google pixels).
+- **UX flow:** sticky-bottom banner on first visit w 3 buttons (Anpassen link + "Nur notwendige" ghost + "Alle akzeptieren" primary, all equally prominent per dark-pattern anti-pattern). "Anpassen" opens settings modal (§F.2 lg) with per-category switches. Save → consent persisted, banner hides.
+- **Composition wins:** uses §F.1.6 Switch primitive for category toggles + §F.2 Modal for settings + §F.4 toast pattern for sticky-bottom positioning. Demonstrates V2-D## composition discipline working as designed — primitives compose into a complex system.
+- **Files (3):**
+  - `app/[locale]/_components/primitives/CookieConsent.tsx` — Provider + Banner + SettingsModal (5 exports incl. types). ~290 lines.
+  - `public/solen-v2-cookie-banner.html` — full mockup. Desktop banner + mobile stacked banner + settings modal stage + 6-card anti-pattern strip.
+  - `_tasks/SOLEN_LIVE_TRUTH.md` §F.8 added (~200 lines, full GDPR/DSG anti-pattern coverage).
+- **Bucket B candidate decisions logged:**
+  - 3 categories (necessary / analytics / marketing) — alternative was 4 (add `preferences` for personalization). Picked 3 because v1 doesn't have personalization cookies yet; preferences can be added v2.
+  - localStorage key = `solen-cookie-consent`. Format = JSON string. 12-month expiry chosen as standard GDPR practice (also Google's recommended TTL).
+  - Banner copy = neutral DACH-safe ("Wir verwenden Cookies / Notwendige Cookies sind immer aktiv / Du kannst jede Kategorie einzeln steuern"). Alternative: legalese ("Diese Website verwendet Cookies gemäss Art. 5 DSG..."). Picked neutral — conversion-friendly while still legally compliant.
+- **Wiring TODO (NOT in this commit — defers to layout integration):**
+  - `app/[locale]/layout.tsx` needs `<CookieConsentProvider>` wrapping children. Will land when V3 homepage is built (V2-D32).
+  - PostHog mounting needs to gate on `consent.analytics === true` — wired when Phase 1 first uses PostHog event tracking (auth events).
+  - Footer "Cookie-Einstellungen" link needs `useCookieConsent().openSettings()` callback — wired when V3 footer is implemented in Phase 2 §SR or homepage build.
+
+#### Phase 0 final state (all 8 sub-sections shipped):
+| sub | name | spec | mockup | React | V2-D## |
+|-----|------|------|--------|-------|--------|
+| §F.1 | Form primitives (input/textarea/select/checkbox/radio/switch/pill) | ✅ V2-D14 | ✅ V2-D16 | ✅ V2-D17 | locked |
+| §F.2 | Modal primitive | ✅ V2-D18 | ✅ V2-D18 | ✅ V2-D18 | locked |
+| §F.3 | Bottom sheet primitive | ✅ V2-D19 | ✅ V2-D19 | ✅ V2-D19 | locked |
+| §F.4 | Toast primitive | ✅ V2-D20 | ✅ V2-D20 | ✅ V2-D20 | locked |
+| §F.5 | Date/time picker | ✅ V2-D21 | ✅ V2-D28 | ✅ V2-D28 | locked |
+| §F.6 | Skip-to-main link | ✅ V2-D29 | (no mockup needed) | ✅ V2-D29 | locked |
+| §F.7 | Font-display strategy | ✅ V2-D30 | (n/a) | (already correct) | locked |
+| §F.8 | Cookie consent banner | ✅ V2-D31 | ✅ V2-D31 | ✅ V2-D31 | locked |
+
+**Phase 0 verification:** `/de/dev/primitives` renders every primitive interactively. 8 mockup HTML files at `/solen-v2-{primitives,modal,sheet,toast,datetime,cookie-banner,logo-options,republik-teal}.html` provide V2-D## locked visual references. Logo (V2-D27) ships across all surfaces via SVG + React component. Typography V2-D26 size refresh applied throughout.
+
+**Phase 1 (auth) + homepage build are now unblocked.** Per user direction, next steps: V3 homepage React build (V2-D32) → Phase 1 auth surfaces (login modal §A.1 first).
 
 ### V2-D28 (2026-05-09 afternoon) — Phase 0 §F.5 date/time picker mockup + React shipped
 

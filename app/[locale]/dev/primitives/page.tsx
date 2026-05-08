@@ -42,6 +42,7 @@ import {
   DateTimePicker,
   type DateTimeValue,
   type TimeSlot,
+  SkipLink,
 } from "../../_components/primitives";
 import { today, getLocalTimeZone } from "@internationalized/date";
 
@@ -50,6 +51,8 @@ export default function PrimitivesDevPage() {
 
   return (
     <ToastProvider>
+      {/* §F.6 SkipLink mounted at top — hidden until keyboard tab focus reveals it */}
+      <SkipLink />
       <PrimitivesDevPageInner />
     </ToastProvider>
   );
@@ -103,7 +106,7 @@ function PrimitivesDevPageInner() {
 
   return (
     <div className="min-h-screen bg-white py-14 px-5 pb-24">
-      <div className="max-w-[1180px] mx-auto">
+      <div id="main" className="max-w-[1180px] mx-auto">
         {/* PAGE HEAD */}
         <header className="mb-14">
           <div className="h-px bg-s-ink mb-3.5" />
@@ -968,10 +971,67 @@ function PrimitivesDevPageInner() {
           </Grid>
         </Section>
 
+        {/* PHASE 0 FINISHERS — §F.6 / §F.7 / §F.8 reference */}
+        <Section eyebrow="Phase 0 finishers" meta="§F.6 / §F.7 / §F.8" title="SkipLink + Font strategy + Cookie consent">
+          <Grid cols={2}>
+            <Card tag="§F.6 · SkipLink (mounted above this page)">
+              <p className="font-body text-[14px] text-s-ink-2 mb-3">
+                Tab into this page from the address bar to see the skip-link appear in the top-left as a brand-teal pill.
+                Press Enter to jump focus to the page&apos;s <code className="bg-s-bg-sunken px-1.5 py-0.5 rounded text-[13px]">{`<main id="main">`}</code> region.
+              </p>
+              <p className="font-body text-[14px] text-s-ink-2">
+                WCAG 2.4.1 (Bypass Blocks Level A). Hidden via <code className="bg-s-bg-sunken px-1.5 py-0.5 rounded text-[13px]">sr-only</code>;
+                visible via <code className="bg-s-bg-sunken px-1.5 py-0.5 rounded text-[13px]">focus:not-sr-only</code>.
+              </p>
+            </Card>
+
+            <Card tag="§F.7 · Font-display strategy">
+              <p className="font-body text-[14px] text-s-ink-2 mb-3">
+                <strong className="text-s-ink">font-display: swap</strong> on every web font. Always-visible text — fallback first, swap when web font loads.
+              </p>
+              <p className="font-body text-[14px] text-s-ink-2">
+                Cooper Black via cdnfonts.com is currently HTTP 500 — page silently uses the Sansita 900 fallback in the chain. Brand integrity preserved.
+              </p>
+              <p className="font-body text-[13px] text-s-ink-3 mt-3">
+                Display: Cooper BT → Sansita → Georgia · Body: Avant Garde Gothic → League Spartan → Inter Tight → system-ui
+              </p>
+            </Card>
+
+            <Card tag="§F.8 · Cookie consent">
+              <p className="font-body text-[14px] text-s-ink-2 mb-3">
+                GDPR / Swiss DSG compliant banner + settings modal. Composed via §F.2 modal lg + §F.1.6 switch primitives.
+                Provider exposes <code className="bg-s-bg-sunken px-1.5 py-0.5 rounded text-[13px]">{`useCookieConsent()`}</code> hook.
+              </p>
+              <p className="font-body text-[14px] text-s-ink-2">
+                Not mounted on this dev page (would interfere with primitive testing). Mounts at app root in <code className="bg-s-bg-sunken px-1.5 py-0.5 rounded text-[13px]">app/[locale]/layout.tsx</code> when wired.
+              </p>
+              <a
+                href="/solen-v2-cookie-banner.html"
+                className="font-body font-semibold text-[14px] text-s-brand hover:text-s-ink transition-colors mt-3 inline-block"
+              >
+                View locked mockup →
+              </a>
+            </Card>
+
+            <Card tag="Mockup index">
+              <ul className="font-body text-[14px] text-s-ink-2 space-y-2 leading-[1.55]">
+                <li><a href="/solen-v2-primitives.html" className="text-s-brand hover:text-s-ink">§F.1 form primitives →</a></li>
+                <li><a href="/solen-v2-modal.html" className="text-s-brand hover:text-s-ink">§F.2 modal →</a></li>
+                <li><a href="/solen-v2-sheet.html" className="text-s-brand hover:text-s-ink">§F.3 bottom sheet →</a></li>
+                <li><a href="/solen-v2-toast.html" className="text-s-brand hover:text-s-ink">§F.4 toast →</a></li>
+                <li><a href="/solen-v2-datetime.html" className="text-s-brand hover:text-s-ink">§F.5 date / time picker →</a></li>
+                <li><a href="/solen-v2-cookie-banner.html" className="text-s-brand hover:text-s-ink">§F.8 cookie consent →</a></li>
+                <li><a href="/solen-v2-logo-options.html" className="text-s-brand hover:text-s-ink">V2-D27 logo options →</a></li>
+                <li><a href="/solen-v2-republik-teal.html" className="text-s-brand hover:text-s-ink">V3 homepage (locked V2-D15-3) →</a></li>
+              </ul>
+            </Card>
+          </Grid>
+        </Section>
+
         {/* FOOT */}
-        <footer className="mt-24 pt-6 border-t border-s-ink flex justify-between font-body text-[13px] uppercase tracking-[0.16em] text-s-ink-3 tabular-nums">
-          <span>Solen V3 · Phase 0 · §F.1 + §F.2 + §F.3 + §F.4 React · /dev/primitives</span>
-          <span>2026-05-09 · V2-D20</span>
+        <footer className="mt-24 pt-6 border-t border-s-ink flex justify-between font-body text-[14px] uppercase tracking-[0.16em] text-s-ink-3 tabular-nums">
+          <span>Solen V3 · Phase 0 COMPLETE · 8 of 8 primitives · /dev/primitives</span>
+          <span>2026-05-09 · V2-D31</span>
         </footer>
       </div>
     </div>
