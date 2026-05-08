@@ -69,3 +69,13 @@ export {
   type ModalProps,
   type ModalSize,
 } from "./Modal";
+
+export {
+  Sheet,
+  SheetHeader,
+  SheetBody,
+  SheetCTARow,
+  useResponsiveOverlay,
+  type SheetProps,
+  type SheetHeight,
+} from "./Sheet";

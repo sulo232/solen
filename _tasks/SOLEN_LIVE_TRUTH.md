@@ -1516,6 +1516,187 @@ Both entry and exit use `ease-snap` (`cubic-bezier(0.4, 0, 0.2, 1)`) — modals 
 
 -----
 
+## §F.3 · Bottom sheet primitive
+
+The mobile-only bottom-anchored overlay for filters, sort, share, look-detail, and any list-of-options UX where a centered modal would feel cramped on small screens. **Distinct from §F.2 modal:** sheets slide up from the bottom edge, anchor to the bottom of the viewport, and have a visual drag handle. Modals are centered, sized fixed, and confirmation-flow oriented. **On desktop (≥ 768px), Sheet falls back to §F.2 modal** — `useSheet` hook returns the appropriate primitive based on viewport width.
+
+**Anchors to existing locks:** the sort sheet (§25.6) and filter sheet (§25.7) compose §F.3.1-§F.3.5; the look-detail sheet (§18.4) uses §F.3 with full-height variant; future share-modal mobile variant (§F.2 falls back). Note: §25.6 spec text cites a pure-black backdrop hex which contradicts §4 anti-pattern — when §25.6 is implemented via §F.3, the warm-ink hex from this primitive prevails (doc-cleanup TODO logged in V2-D19 Bucket B).
+
+### §F.3.0 · Anatomy (universal)
+
+```
+┌────────── Backdrop (dim + blur) ────────────┐
+│                                             │
+│                                             │
+│                                             │
+│                                             │
+│  ┌───────────────────────────────────────┐  │ ← top corners rounded 28px
+│  │              ─── handle ───           │  │ ← drag handle (visual only v1)
+│  ├───────────────────────────────────────┤  │
+│  │ Header                          [×]   │  │ ← border-bottom 1px ink/.06
+│  ├───────────────────────────────────────┤  │
+│  │                                       │  │
+│  │ Body (scrollable)                     │  │
+│  │                                       │  │
+│  ├───────────────────────────────────────┤  │
+│  │           [Anwenden (47 Salons)]      │  │ ← sticky bottom CTA
+│  └───────────────────────────────────────┘  │
+└─────────────────────────────────────────────┘
+```
+
+|element       |spec                                                                                                                                          |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+|backdrop      |`rgba(26,18,9,0.40)` warm-ink + `backdrop-filter: blur(4px)` (matches §F.2 modal — same warm-ink discipline per §4)                            |
+|surface       |white `#FFFFFF`, top-only radius `var(--radius-sheet)` 28px (bottom flush with viewport edge). Bottom corners NOT rounded.                     |
+|shadow        |`0 -4px 28px rgba(50,47,44,0.12), 0 -2px 8px rgba(50,47,44,0.06)` — inverted elevation-3 (shadow projects upward since the sheet is bottom-anchored)|
+|width         |`100vw` (full viewport width — sheets are full-bleed on mobile)                                                                              |
+|height        |default 75vh; max-height `calc(100dvh - 64px)` (always 64px gap from top — preserves user's spatial anchor that "the page is still up there")|
+|drag handle   |36px wide × 4px tall pill, `rgba(26,18,9,0.20)`, centered, 12px from top                                                                       |
+|header        |20/24 padding, border-bottom 1px `rgba(26,18,9,0.06)`                                                                                        |
+|body          |overflow-y auto, padding per spec, fills remaining height                                                                                      |
+|sticky CTA    |bottom-anchored, padding-top 16, padding-bottom 16 + safe-area-inset-bottom, border-top 1px `rgba(26,18,9,0.06)`                              |
+
+### §F.3.0a · Snap heights
+
+**v1: single fixed height — 75vh (default).** No multi-snap, no swipe gesture. Sheet opens to its locked height; user scrolls within if content exceeds.
+
+**v2 (deferred):** multi-snap (peek 50vh / expanded 90vh) with swipe gesture. v2 needs a JS gesture lib — out of scope for v1.
+
+For surfaces that need different heights:
+- **Sort sheet (§25.6):** short content (4 radio rows) → height auto-fits content (overrides 75vh default with `height: auto`).
+- **Filter sheet (§25.7):** medium content (8-12 chip groups) → 75vh default.
+- **Look-detail sheet (§18.4):** image + meta + actions → 90vh (full).
+
+Caller passes `height="auto" | "default" | "full"` prop. v1 ships these 3 values, no swipe-able multi-snap.
+
+### §F.3.0b · State matrix
+
+|state       |trigger                                |visual change                                                                                                                       |
+|------------|---------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+|closed      |`open=false`, mounted but not displayed|not rendered (or `display: none`). No DOM nodes for sheet interior.                                                                |
+|opening     |`open` flips false → true              |backdrop fades 0 → 1 over 300ms `ease-snap`. Sheet `translateY(100%) → translateY(0)` over 600ms `ease-glide`. Body scroll locked.   |
+|open        |fully visible, user interacting        |static. Backdrop at 0.40 dim.                                                                                                       |
+|dismissing  |user closes (X / esc / backdrop click) |sheet `translateY(0) → translateY(100%)` over 200ms `ease-snap`. Backdrop fades 1 → 0 over 200ms. Then unmount.                     |
+
+**Note on motion:** sheet uses `ease-glide` (cubic-bezier(.16, 1, .3, 1)) for entry — matches §5b motion vocabulary (sheets travel further than modals, glide easing handles long-distance smooth). Exit uses `ease-snap` for snappy dismissal. Reduced-motion: collapse to opacity-only fade, 100ms.
+
+### §F.3.1 · Sheet element
+
+**Implementation:** `react-aria-components` `<Modal>` + `<ModalOverlay>` + `<Dialog>` — same primitives as §F.2 modal. Sheet differs from modal ONLY in CSS positioning (bottom-anchored vs centered) + transform-from-100% animation. The accessibility behavior (focus trap, scroll lock, portal, escape, restore-focus) is identical.
+
+|prop                  |spec                                                                                                                                  |
+|----------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+|HTML role             |`role="dialog"` on the inner Dialog (same as §F.2)                                                                                   |
+|aria-labelledby       |references SheetHeader title's id (auto via Dialog's `aria-labelledby`)                                                              |
+|portal                |renders to document.body via react-aria `<Modal>`                                                                                     |
+|scroll-lock           |body scroll locked while open                                                                                                          |
+|focus-trap            |focus stays within sheet                                                                                                              |
+|focus-restore         |on close, returns to trigger                                                                                                          |
+|positioning           |`position: fixed; bottom: 0; left: 0; right: 0; transform: translateY(0)` when open                                                  |
+
+### §F.3.2 · Drag handle
+
+|prop          |spec                                                                                                            |
+|--------------|----------------------------------------------------------------------------------------------------------------|
+|visual        |36×4px pill, `rgba(26,18,9,0.20)`, border-radius 99px, centered horizontally, 12px from top of sheet            |
+|behavior (v1) |purely visual — no swipe-to-dismiss, no drag interaction                                                        |
+|aria          |`aria-hidden="true"` — purely decorative in v1                                                                  |
+|behavior (v2) |drag-to-dismiss + drag-between-snap-heights (deferred; needs JS gesture lib)                                    |
+
+**Anti-pattern:** showing a drag handle when no drag is wired up creates an affordance lie. v1 accepts this trade-off because mobile users expect a handle visually even without gesture (familiar from iOS / Material). When users discover swipe doesn't work, they fall back to X tap. Not ideal, but acceptable v1 compromise. v2 adds the gesture.
+
+### §F.3.3 · Header
+
+|prop                |spec                                                                                                                |
+|--------------------|--------------------------------------------------------------------------------------------------------------------|
+|layout              |flex row, justify between, align center, gap 12px                                                                  |
+|padding             |`16px 20px` (smaller than modal — sheets are full-width, less side breathing room needed)                          |
+|border              |`border-bottom: 1px solid rgba(26,18,9,0.06)`                                                                      |
+|title font          |Avant Garde Gothic 600 18px ink-1 line-height 1.3 (matches §F.2 modal title)                                       |
+|title element       |`<h2>` with id auto-wired to Dialog                                                                                  |
+|close X             |Lucide `x` 24px stroke 2 ink-2, hover ink-1, hit area 44×44 via negative margin (same pattern as §F.2)            |
+|optional eyebrow    |Avant Garde 700 11px uppercase ink-3 above title (rare — sort/filter sheets typically have no eyebrow)            |
+
+### §F.3.4 · Body
+
+|prop          |spec                                                                                                                  |
+|--------------|----------------------------------------------------------------------------------------------------------------------|
+|padding       |`12px 20px 16px` — top is reduced because header's border serves as separator                                          |
+|overflow-y    |`auto` — body scrolls internally. Sheet height is fixed; content scrolls.                                              |
+|font          |Avant Garde Gothic 400 14px ink-1 line-height 1.5                                                                     |
+|scroll behavior|momentum scroll on iOS via `-webkit-overflow-scrolling: touch` (default in modern Safari, no opt-in needed)         |
+|scrollbar     |default browser. Mobile = invisible until scroll. Desktop fallback = §F.2 modal (different primitive).               |
+
+### §F.3.5 · Sticky CTA at bottom
+
+The sheet's defining feature vs modal: a sticky bottom action area ALWAYS visible while body scrolls. Used for "Anwenden", "Filter zurücksetzen", "Bestätigen", etc.
+
+|prop                |spec                                                                                                                  |
+|--------------------|----------------------------------------------------------------------------------------------------------------------|
+|layout              |single full-width primary CTA OR two buttons (secondary left + primary right). Stacked vertically only on extremely narrow screens (< 360px).|
+|padding             |`16px 20px` + `padding-bottom: max(16px, env(safe-area-inset-bottom))` — respects iOS home-indicator safe area      |
+|border              |`border-top: 1px solid rgba(26,18,9,0.06)`                                                                            |
+|background          |white (NOT translucent — clear contrast against scrolling body content above)                                          |
+|primary CTA         |full-width on filter/sort sheets ("Anwenden (47 Salons)"). Avant Garde 600 14px white on brand-teal flat pill per §5a.2.|
+|reset button        |optional left-aligned text button "Filter zurücksetzen" (Avant Garde 500 14px ink-3, hover ink-1) — for filter sheet only|
+|empty CTA           |allowed — for read-only sheets (look-detail) where bottom interaction lives in body                                  |
+
+### §F.3.6 · Dismiss behavior
+
+|trigger              |default action |overridable via                                            |
+|---------------------|---------------|-----------------------------------------------------------|
+|Escape key           |closes         |`keyboardDismissDisabled={true}` — same as §F.2             |
+|Backdrop click       |closes         |`isDismissable={false}` — same as §F.2                       |
+|Close X              |always closes  |never disable                                               |
+|Swipe down (v2)      |closes         |deferred — v1 uses tap X / backdrop / escape only           |
+
+### §F.3.7 · Mobile-only — desktop falls back to modal
+
+`<Sheet>` and `<Modal>` are SEPARATE primitive components. Caller decides which to use based on responsive context. Helper hook `useResponsiveOverlay()` returns the appropriate primitive based on viewport width:
+
+```tsx
+// Returns "sheet" | "modal" depending on viewport.
+const overlayType = useResponsiveOverlay();
+const Overlay = overlayType === "sheet" ? Sheet : Modal;
+
+return <Overlay isOpen={open} onOpenChange={setOpen}>...</Overlay>;
+```
+
+**Breakpoint:** sheet renders on `< 768px` (mobile + small tablet). Modal renders on `≥ 768px` (desktop). The breakpoint matches Solen's existing mobile/desktop divide in §6 layout.
+
+The `useResponsiveOverlay` hook is implemented in v1 React. Hook NOT specced in detail here — see component implementation. Caller responsibility: ensure body content composes with both Sheet and Modal layouts (avoid sheet-specific padding that breaks in modal).
+
+**Anti-pattern:** rendering Sheet on desktop (full-width bottom-anchored on a 1440px screen looks like a banner ad). Always use the responsive helper or split the component manually.
+
+### §F.3.8 · Motion specs
+
+|phase   |element  |property                |from                |to                  |duration|easing  |
+|--------|---------|------------------------|--------------------|--------------------|--------|--------|
+|entry   |backdrop |opacity                 |0                   |1                   |300ms   |ease-snap|
+|entry   |sheet    |transform: translateY(N)|translateY(100%)    |translateY(0)       |600ms   |ease-glide|
+|exit    |sheet    |transform: translateY(N)|translateY(0)       |translateY(100%)    |200ms   |ease-snap|
+|exit    |backdrop |opacity                 |1                   |0                   |200ms   |ease-snap|
+
+**Reduced motion:** if `prefers-reduced-motion: reduce`, both entry and exit collapse to opacity-only fade, 100ms duration. No transform animation. Per §24b.3 baseline.
+
+### §F.3.9 · Anti-patterns
+
+- **Sheet on desktop** — banned. Sheets are mobile-only. Use `useResponsiveOverlay()` or split components manually.
+- **Multiple sheets stacked** — banned (matches §F.2 anti-pattern). Open one at a time.
+- **Sheet without sticky bottom CTA when there's a confirm action** — banned. The sticky CTA is the sheet's defining UX vs modal. If there's no action, use a sheet anyway (look-detail does this), but if there IS an action, it MUST be sticky bottom.
+- **Drag handle without functional swipe (in v1)** — accepted compromise per §F.3.2. Document, don't fight.
+- **Pure black backdrop** — banned per §4 (warm-ink tint always). Note: §25.6 surface spec has a stale `rgba(0,0,0,.35)` reference — when §25.6 implements via §F.3, this primitive's warm-ink hex prevails.
+- **Sheet height changing without animation** — if content shrinks/grows after open, animate the height change. Don't snap-resize.
+- **Italic anywhere in sheet** — banned per V2-D15.
+- **Bottom corners rounded** — banned. Sheet flush-bottoms to viewport edge. Top-only radius makes the "this slides up from below" affordance clear.
+- **Hidden close X** — banned per §11. Always visible.
+
+-----
+
+*§F.3 ends here. Phase 0 continues with §F.4 toast primitive — locked next.*
+
+-----
+
 *Step 3 ends here. Step 4 covers §12 the locked patterns: header / hero / search / cards / sections / b2b / footer.*
 
 # SOLEN_LIVE_TRUTH_v2 — Step 4: Locked Patterns

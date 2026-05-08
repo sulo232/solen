@@ -32,6 +32,10 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Sheet,
+  SheetHeader,
+  SheetBody,
+  SheetCTARow,
 } from "../../_components/primitives";
 
 export default function PrimitivesDevPage() {
@@ -58,6 +62,19 @@ export default function PrimitivesDevPage() {
   const [loginOpen, setLoginOpen] = React.useState(false);
   const [reportOpen, setReportOpen] = React.useState(false);
   const [destructiveOpen, setDestructiveOpen] = React.useState(false);
+  const [sortSheetOpen, setSortSheetOpen] = React.useState(false);
+  const [filterSheetOpen, setFilterSheetOpen] = React.useState(false);
+  const [shareSheetOpen, setShareSheetOpen] = React.useState(false);
+  const [sheetSortBy, setSheetSortBy] = React.useState("distance");
+  const [sheetFilterTypes, setSheetFilterTypes] = React.useState(new Set(["damen", "herren"]));
+  const toggleSheetFilter = (key: string) => {
+    setSheetFilterTypes((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
 
   const toggleServiceType = (key: string) => {
     setActiveServiceTypes((prev) => {
@@ -714,10 +731,159 @@ export default function PrimitivesDevPage() {
           </Grid>
         </Section>
 
+        {/* §F.3 SHEET */}
+        <Section eyebrow="Sheet" meta="§F.3 · 3 heights" title="Bottom sheet (mobile-only)">
+          <p className="font-body font-normal text-[13px] text-s-ink-2 mb-4 max-w-[600px]">
+            <strong className="text-s-ink">Resize browser to &lt; 768px to see sheets</strong> in their natural mobile context.
+            On desktop they still render but full-width-bottom looks like a banner. Use{" "}
+            <code className="bg-s-bg-sunken px-1.5 py-0.5 rounded text-[12px]">useResponsiveOverlay()</code> in real surfaces.
+          </p>
+          <Grid cols={3}>
+            <Card tag="height auto · sort sheet">
+              <button
+                type="button"
+                onClick={() => setSortSheetOpen(true)}
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors duration-150 ease-snap"
+              >
+                Sort sheet öffnen
+              </button>
+              <Sheet isOpen={sortSheetOpen} onOpenChange={setSortSheetOpen} height="auto">
+                <SheetHeader title="Sortieren nach" onClose={() => setSortSheetOpen(false)} />
+                <SheetBody>
+                  <RadioGroup aria-label="Sortieren nach">
+                    <Radio
+                      name="sheet-sort"
+                      value="distance"
+                      checked={sheetSortBy === "distance"}
+                      onChange={(e) => setSheetSortBy(e.target.value)}
+                    >
+                      Distanz (am nächsten zuerst)
+                    </Radio>
+                    <Radio
+                      name="sheet-sort"
+                      value="rating"
+                      checked={sheetSortBy === "rating"}
+                      onChange={(e) => setSheetSortBy(e.target.value)}
+                    >
+                      Bewertung (höchste zuerst)
+                    </Radio>
+                    <Radio
+                      name="sheet-sort"
+                      value="availability"
+                      checked={sheetSortBy === "availability"}
+                      onChange={(e) => setSheetSortBy(e.target.value)}
+                    >
+                      Verfügbarkeit (heute frei)
+                    </Radio>
+                    <Radio
+                      name="sheet-sort"
+                      value="popularity"
+                      checked={sheetSortBy === "popularity"}
+                      onChange={(e) => setSheetSortBy(e.target.value)}
+                    >
+                      Beliebtheit
+                    </Radio>
+                  </RadioGroup>
+                </SheetBody>
+              </Sheet>
+            </Card>
+
+            <Card tag="height default · filter sheet w sticky CTA">
+              <button
+                type="button"
+                onClick={() => setFilterSheetOpen(true)}
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors duration-150 ease-snap"
+              >
+                Filter sheet öffnen
+              </button>
+              <Sheet isOpen={filterSheetOpen} onOpenChange={setFilterSheetOpen} height="default">
+                <SheetHeader title="Filter" onClose={() => setFilterSheetOpen(false)} />
+                <SheetBody>
+                  <div className="mb-5">
+                    <FieldLabel className="block mb-2.5">Service-Typ</FieldLabel>
+                    <PillGroup mode="multi" aria-label="Service-Typ filter">
+                      {[
+                        ["damen", "Damen"],
+                        ["herren", "Herren"],
+                        ["kinder", "Kinder"],
+                        ["coloration", "Coloration"],
+                        ["hochsteck", "Hochsteckfrisur"],
+                      ].map(([key, label]) => (
+                        <PillToggle
+                          key={key}
+                          active={sheetFilterTypes.has(key)}
+                          onClick={() => toggleSheetFilter(key)}
+                        >
+                          {label}
+                        </PillToggle>
+                      ))}
+                    </PillGroup>
+                  </div>
+                  <div className="mb-5">
+                    <FieldLabel className="block mb-2.5">Preis</FieldLabel>
+                    <PillGroup mode="single" aria-label="Preis filter">
+                      <PillToggle>CHF 0-50</PillToggle>
+                      <PillToggle active>CHF 50-100</PillToggle>
+                      <PillToggle>CHF 100-200</PillToggle>
+                      <PillToggle>CHF 200+</PillToggle>
+                    </PillGroup>
+                  </div>
+                  <div>
+                    <FieldLabel className="block mb-2.5">Bewertung</FieldLabel>
+                    <PillGroup mode="single" aria-label="Bewertung filter">
+                      <PillToggle>4.0+</PillToggle>
+                      <PillToggle active>4.5+</PillToggle>
+                      <PillToggle>4.8+</PillToggle>
+                    </PillGroup>
+                  </div>
+                </SheetBody>
+                <SheetCTARow layout="reset-and-primary">
+                  <button
+                    type="button"
+                    onClick={() => setSheetFilterTypes(new Set())}
+                    className="font-body font-medium text-[14px] text-s-ink-3 hover:text-s-ink transition-colors"
+                  >
+                    Zurücksetzen
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFilterSheetOpen(false)}
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors"
+                  >
+                    47 Salons anzeigen
+                  </button>
+                </SheetCTARow>
+              </Sheet>
+            </Card>
+
+            <Card tag="height auto · share sheet">
+              <button
+                type="button"
+                onClick={() => setShareSheetOpen(true)}
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors duration-150 ease-snap"
+              >
+                Share sheet öffnen
+              </button>
+              <Sheet isOpen={shareSheetOpen} onOpenChange={setShareSheetOpen} height="auto">
+                <SheetHeader title="Salon teilen" onClose={() => setShareSheetOpen(false)} />
+                <SheetBody>
+                  <p className="text-s-ink-3 text-[13px] mb-3.5">Salon Maria · Kleinbasel</p>
+                  <PillGroup mode="multi" aria-label="Share targets">
+                    <PillToggle>Link kopieren</PillToggle>
+                    <PillToggle>WhatsApp</PillToggle>
+                    <PillToggle>Nachricht</PillToggle>
+                    <PillToggle>E-Mail</PillToggle>
+                  </PillGroup>
+                </SheetBody>
+              </Sheet>
+            </Card>
+          </Grid>
+        </Section>
+
         {/* FOOT */}
         <footer className="mt-24 pt-6 border-t border-s-ink flex justify-between font-body text-[11px] uppercase tracking-[0.16em] text-s-ink-3 tabular-nums">
-          <span>Solen V3 · Phase 0 · §F.1 + §F.2 React · /dev/primitives</span>
-          <span>2026-05-09 · V2-D18</span>
+          <span>Solen V3 · Phase 0 · §F.1 + §F.2 + §F.3 React · /dev/primitives</span>
+          <span>2026-05-09 · V2-D19</span>
         </footer>
       </div>
     </div>
