@@ -11,6 +11,65 @@
 
 ## Status (one-liner)
 
+**2026-05-09 (OVERNIGHT SUMMARY — autonomous run complete)** — 3 of 3-4 sub-sections shipped + 1 spec drafted. Phase 0 advanced from §F.1 (V2-D17) → §F.4 (V2-D20) without user supervision.
+
+### Shipped tonight (3 sub-sections, 4 commits):
+- **V2-D18** (`e07d28e`) — §F.2 modal: spec + mockup + React + dev verification. `react-aria-components` Modal+ModalOverlay+Dialog. 3 sizes (sm/md/lg), 4 use cases. `tailwind.config.js` got 6 new z-index tokens.
+- **V2-D19** (`9a112e8`) — §F.3 bottom sheet: spec + mockup + React + dev verification. Same react-aria stack as §F.2 but bottom-anchored. 3 height variants (auto/default 75dvh/full 90dvh). `useResponsiveOverlay()` hook for sheet↔modal switching.
+- **V2-D20** (`07478f4`) — §F.4 toast: spec + mockup + React + dev verification. **Hand-rolled** queue + Context (react-aria-components only exports `UNSTABLE_Toast*` at v1.16.0). `<ToastProvider>` + `useToast()` hook. 4 tones. Max 3 visible, FIFO queue, error-priority override.
+- **V2-D21** (this commit) — §F.5 date/time picker SPEC ONLY (mockup + React deferred — date pickers are the largest single primitive, half-shipping was worse than scheduling cleanly).
+
+### Bucket B candidate decisions logged (need user sign-off — commit if approved as a V2-D## decision):
+
+**§F.2 modal (V2-D18):**
+- §F.2.5 footer destructive-tertiary placement: `<ModalFooter layout="between">` puts destructive on far left, primary group on right. *Picked because it visually separates "irreversible" from "primary action."*
+- §F.2.7 default focus on destructive flows: `autoFocus` on "Abbrechen" (secondary), NOT "Löschen" (destructive). *Per §F.2.7 spec — accidental Enter doesn't fire destructive.*
+- §F.2.8 close X hit-area extension via negative margin (`w-11 h-11 -m-2.5`). *Picked because it doesn't add extra spacing around the icon.*
+
+**§F.3 sheet (V2-D19):**
+- §F.3.0a heights = `auto / default / full`. *Mapped to use-case naming.*
+- §F.3.7 desktop fallback breakpoint = 768px. *Matches Solen's existing mobile/desktop divide.*
+- §F.3.2 drag handle 36×4px, ink/.20. *Middle ground — visible without decorative-loud.*
+
+**§F.4 toast (V2-D20):**
+- §F.4.1 default duration timing — success/info=3s, warning=6s, error=Infinity (sticky). *Split because warnings need longer read time, errors must NOT auto-dismiss.*
+- §F.4.3 stack direction = newest at BOTTOM. *Mobile thumb position = viewport edge = where attention lives.*
+- §F.4.4 action button = text-only brand-teal, hover ink-1. *Toast is already a card; button-on-button feels heavy.*
+
+### Bucket B doc-cleanup TODOs (not blocking, deferred to attended doc-cleanup pass):
+- §25.6 sort sheet line 3353 cites pure-black backdrop hex (`rgba(0,0,0,.35)`) which contradicts §4 anti-pattern. When §25.6 implements via §F.3, primitive's warm-ink prevails; surface text needs cleanup.
+- (Pre-existing from V2-D17): §F.1.4 Variant B inactive bg cites gradient — V2-D15-4 supersedes (pills are flat).
+- (Pre-existing from V2-D17): §F.1.7 line 1266 says inputs ≥ 16px but V2-D14 kept md at 14px.
+
+### Bucket C blockers surfaced: NONE. Three sub-sections shipped cleanly.
+
+### Pending user decisions blocking Phase 1 (still PENDING USER):
+- **V2-D09: Guest checkout** — IN or OUT of v1? Affects §A auth scope + §BW booking wizard.
+- **V2-D10: Map view on /search/results** — IN or OUT of v1? Confirm consistent with §25.16 deferral.
+- **V2-D11: Loyalty / packages / gift cards** — IN or OUT of v1? Affects §BW booking wizard scope.
+- **V2-D12: Stripe Connect vs Stripe regular** — backend architecture decision; affects Phase 6 B2B payouts.
+
+These are product decisions, not visual taste. Halt + queue per autonomous protocol — agent did NOT default-pick.
+
+### Suggested next session scope:
+1. User reviews + signs off (or overrides) each Bucket B candidate decision above. For each sign-off, append a V2-D## entry to V2_REBUILD_LOG.md.
+2. User decides V2-D09 / V2-D10 / V2-D11 / V2-D12.
+3. Once V2-D09-12 lock, next session can either (a) finish Phase 0 (§F.5 mockup + React + §F.6 skip-link + §F.7 font-display + §F.8 cookie banner — all attended because they have taste calls) or (b) start Phase 1 auth (which only needs §F.2 modal already shipped).
+4. Default recommendation: finish Phase 0 first; Phase 1 auth can ship with §F.2 + §F.4 + §F.5 already done. §F.6/§F.7/§F.8 ship in parallel with Phase 1.
+
+### Verification (when user wakes):
+- `npm run dev` then http://localhost:3000/de/dev/primitives — every primitive renders interactively (form primitives + 4 modals + 3 sheets + 8 toast triggers).
+- Static mockups: `npx serve public -p 4747` then open `/solen-v2-modal.html` / `/solen-v2-sheet.html` / `/solen-v2-toast.html`.
+- `git log --oneline | head -5` shows V2-D18/D19/D20/D21 commits.
+- `npx tsc --noEmit | grep -v "components-legacy\|tmp3\|tmp_header"` — empty (only legacy errors remain per V2-D05).
+
+### Spec contradictions still unresolved (not blocking, doc-cleanup):
+- §F.1.4 Variant B gradient (V2-D17 surfaced)
+- §F.1.7 16px iOS rule (V2-D17 surfaced)
+- §25.6 backdrop hex (V2-D19 surfaced)
+
+----
+
 **2026-05-09 (overnight, autonomous, +2)** — Phase 0 §F.4 toast primitive **shipped** (V2-D20). Spec at LIVE_TRUTH §F.4 (~146 lines, 4 tones success/info/warning/error + state matrix queued→opening→open→dismissing→closed + auto-dismiss timing 3s/3s/6s/sticky + bottom-center mobile / bottom-right desktop position + max-3-visible stacking with FIFO queue + error-priority override + ARIA live region rules + 9 anti-patterns). Mockup at `public/solen-v2-toast.html` shows 4 tone variants + mobile vs desktop position stages (3-stack mobile bottom-center, single error desktop bottom-right) + 5-step state timeline. React at `app/[locale]/_components/primitives/Toast.tsx` — **hand-rolled queue + Context** per spec §F.4.7 (react-aria-components only exports `UNSTABLE_Toast*` at v1.16.0, not safe to depend on). 4 exports: `<ToastProvider>` (render once at app root) + `useToast()` hook returning `{success,info,warning,error,custom,dismiss,dismissAll}` + `ToastTone` + `ToastOptions` types. Internal `<ToastRegion>` portal + `<ToastItem>` w hover-pause timer. `motion-reduce:` collapses to opacity-only 100ms. ARIA live region: `role="alert" aria-live="assertive"` for errors, `role="status" aria-live="polite"` for others. Stacking: max 3 visible, error tone replaces oldest non-error if queue full, others FIFO queue. Dev test page wraps `<PrimitivesDevPageInner>` in `<ToastProvider>` + new `<ToastDemo>` w 4 tone-fire buttons + 4 stacking-demo buttons (fire 5 to queue 2, with-action, title-only, dismiss-all). Typecheck clean. Live site impact: ZERO (still no route imports — `<ToastProvider>` will need to be added to `app/[locale]/layout.tsx` when Phase 1 surfaces start using `useToast()`, which is a future commit). **Three Phase 0 sub-sections shipped tonight — autonomous run goal met.** **Next:** §F.5 date/time picker spec only (no mockup, no React) → wake-up summary. · **2026-05-09 (overnight, autonomous, +1)** — Phase 0 §F.3 bottom sheet primitive **shipped** (V2-D19). Spec at LIVE_TRUTH §F.3 (~178 lines, anatomy + 3 height variants auto/default/full + 4-state matrix + drag handle visual-only-v1 + sticky bottom CTA pattern + mobile-only-w-desktop-fallback rule + ease-glide entry 600ms + ease-snap exit 200ms + 8 anti-patterns). Mockup at `public/solen-v2-sheet.html` renders 4 use cases inside iPhone-style frames (sort sheet auto, filter sheet 75vh w sticky CTA, share sheet auto, look-detail 90vh full). React at `app/[locale]/_components/primitives/Sheet.tsx` — composes same `react-aria-components` Modal/ModalOverlay/Dialog stack as §F.2 modal but bottom-anchored (translateY 100→0 motion via `data-[entering]:` modifiers, top-only radius 28px via existing `rounded-sheet` token, top-projecting shadow via arbitrary value). 4 sibling components (Sheet + SheetHeader + SheetBody + SheetCTARow). Plus `useResponsiveOverlay()` hook returning `"sheet"|"modal"` based on `(min-width: 768px)` matchMedia — SSR-safe (defaults to sheet, hydrates on client mount). `safe-area-inset-bottom` respected in SheetCTARow padding for iOS home-indicator. No new tailwind tokens (z-sheet-bg/z-sheet were added in V2-D18 batch). Dev test page extended with 3 sheet demos (sort sheet w live RadioGroup composition, filter sheet w PillGroup multi+single composition, share sheet). Typecheck clean. **Bucket B doc-cleanup logged:** §25.6 sort sheet line 3353 cites `rgba(0,0,0,.35)` backdrop hex which contradicts §4 anti-pattern; when §25.6 implements via §F.3 the warm-ink hex prevails — surface spec text needs cleanup later. Live site impact: ZERO. **Next:** §F.4 toast primitive — same loop. · **2026-05-09 (overnight, autonomous)** — Phase 0 §F.2 modal primitive **shipped** (V2-D18). Spec drafted into LIVE_TRUTH §F.2 (~183 lines, anatomy + 3 sizes + 4-state matrix + dismiss + focus + motion + 8 anti-patterns). Mockup at `public/solen-v2-modal.html` (anatomy stage with full backdrop+modal demo, 3-size grid, 4 use-case examples, 4-step state timeline, 8-card anti-pattern strip). React at `app/[locale]/_components/primitives/Modal.tsx` — composes `react-aria-components` `Modal` + `ModalOverlay` + `Dialog` (explicit V2-D18 architecture deviation from V2-D17 native-first since no native `<dialog>` has cross-browser focus-trap + scroll-lock + portal). Sibling components `ModalHeader` + `ModalBody` + `ModalFooter` follow V2-D17 composition pattern, each receives `size` prop (sm/md/lg) for padding. cva for surface-size variants. Motion via `data-[entering]:` / `data-[exiting]:` Tailwind modifiers + ease-snap (250ms entry, 150ms exit, scale 0.95→1, opacity fade). `motion-reduce:` collapses to opacity-only 100ms per §24b.3. `tailwind.config.js` got 6 new z-index tokens (sheet-bg/sheet/modal-bg/modal/toast/tooltip per LIVE_TRUTH §8 lock — naming aligns with the existing §8 z-index ladder). Dev test page extended with 4 modal demos (sm confirm, md login w TextInput composition, lg report-content w RadioGroup+Textarea composition, sm destructive w isDismissable=false+keyboardDismissDisabled). Typecheck clean for new files. Live site impact: ZERO. **Next:** §F.3 bottom sheet primitive — same loop. · **2026-05-08 (latest, evening)** — Phase 0 §F.1 form primitives **React implementation shipped** (V2-D17). 11 new files in `app/[locale]/_components/primitives/`: 6 primitives (TextInput / Textarea / Select / Checkbox / Radio / Switch) + 2 shared helpers (FieldLabel / FieldHelper) + 2 layout containers (RadioGroup / PillGroup) + 1 layout pill (PillToggle for Variant B of both checkbox + radio) + barrel `index.ts`. Plus dev test page at `app/[locale]/dev/primitives/page.tsx` (gated `notFound()` in production, route at `/[locale]/dev/primitives`). `tailwind.config.js` got 2 token additions: `s-bg.active = #FFF4E8` (input active-typing tint, was wrongly retired in V2-D15 comment) + 4 motion easings (`ease-snap`/`ease-spring`/`ease-glide`/`ease-thud`) per LIVE_TRUTH §F.1 + §5b motion vocabulary. Architecture: native HTML elements + cva for variants + cn() helper, NOT react-aria-components (matches §F.1.3 "v1 decision: native `<select>`" preference). Layout-shift-safe border treatment: 1px border + `ring-1 ring-inset` for second pixel of color (visually identical to 2px border, no layout shift on tone change). Typecheck passes — all 42 pre-existing tsc errors are in legacy code (`components-legacy/`, `tmp3.tsx`, `tmp_header.tsx`) flagged in V2-D05 for incremental retirement. **Live site impact: zero** — no existing route imports the primitives yet, they're dormant utilities. To verify visually: `npm run dev` then navigate to `/de/dev/primitives`. **Next:** §F.2 modal primitive — spec draft + mockup, same loop. · **2026-05-08 (latest)** — Phase 0 §F.1 form primitives mockup **locked** (V2-D16). `public/solen-v2-primitives.html` rebuilt from scratch on V3 tokens (was pre-V3: Bricolage / Inter Tight / orange `#E8742A` / cream substrate / italic — all retired). New mockup uses Cooper BT for page h1 + section h2s only (display moments), ITC Avant Garde Gothic Std for everything else, brand-teal `#043338` for focus/checked/on states, white substrate + `#FFF4E8` warm tint for active inputs + `#FAF7F3` sunken bg for disabled, V2-D15-4 editorial section-break wrapping every primitive section, V2-D15-4 flat-pill discipline (no gradients, no inset gloss, no italic). Renders all 6 primitives × full state matrix: text input (9 states + 6 type variants), textarea (4 states), select (3 states), checkbox (Variant A boxed × 6 states + Variant B pill multi), radio (Variant A row × 4 states + Variant B pill single), switch (4 states + settings list demo). Bonus: 3 sizes (sm/md/lg) demo, password strength meter, confirmation match, anti-pattern strip (floating labels / pill text inputs / required-asterisk / clear-on-error). Spec at LIVE_TRUTH §F.1.1-§F.1.10 (already V3-aligned from prior session) needed only one cosmetic doc fix: §F.1.0b disabled state cited `(sunken cream from §3)` → corrected to `(sunken from §4)` (Sunken `#FAF7F3` lives in §4 surface scale, not §3 semantic colors). **Next:** §F.2 modal primitive — spec draft + mockup, same loop. · **2026-05-07** — V3 design polish (V2-D15-4 — pill de-gloss + Option D editorial section-break). Pills are flat (no inset Web 2.0 gloss, no gradient bg, no `saturate(1.4)` glass pump, no brand-color glow ring on dots), section headers wrap with editorial top-rule + eyebrow-left + meta-right + Cooper-BT h2 (replaces V2-D15 minimalist Avant Garde plain-h2 layout). Cards / atmosphere wash / depth system on non-pill surfaces UNCHANGED. Builds on V2-D15-3 (V3 brand lock, 4 cats Z/G/A/I, Cooper + Avant Garde typography). · **V2-D15-3 (earlier same day):** brand orange `#E8742A` retired, **dark teal `#043338` + pale teal `#C2F0F1`** locked as brand. 6 categories → **4 categories** (Coiffeur=Z cream+cherry, Barbershop=G bone+black, Nails=A pale ice blue+magenta, Spa & Wellness=I forest+sandy beige). Typography: Bricolage + Inter Tight retired, **Cooper BT (display) + ITC Avant Garde Gothic Std (body)** locked with Sansita 900 + League Spartan as free fallbacks. Yuh-density principle + pill rule + atmosphere wash recipe + 31-combo library codified in LIVE_TRUTH §1 / §2 / §5 / §5a / §5c / §5d / §5e. **Preview:** `public/solen-v2-republik-teal.html` (homepage), `solen-v2-palette.html` (palette), `solen-v2-combos.html` (combo grid). **Next:** Phase 0 §F.1 implementation on V3 foundations + tailwind.config.js token swap (sweep flag required).
 
 **2026-05-07 (earlier)** — (superseded by V2-D15-3) Hybrid scratch reset on `SOLEN_LIVE_TRUTH.md` foundations (V2-D15). Foundations rewritten from research on Republik · Fresha · Uber · Airbnb. Brand orange + Bricolage + Inter Tight kept then. Substrate cream → white. Instrument Serif + JetBrains Mono retired. Per-category Republik-style colorway treatment added. v2-prelim archived at `_tasks/archive/SOLEN_LIVE_TRUTH_v2-prelim.archived.md`.
@@ -264,6 +323,29 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Context:** During category-color exploration, user said "stop using purple — purple is banned everywhere" after the Wellness `#9B7BB8` plum and Coiffeur-deep `#6B2D4D` (which reads purple at large saturated surfaces) were tested.
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
+
+### V2-D21 (2026-05-09 overnight, autonomous) — Phase 0 §F.5 date/time picker spec drafted (mockup + React deferred)
+
+- **Context:** Fourth and final sub-section of the autonomous overnight run. Per the plan's scope ceiling: spec only (no mockup, no React). Date/time picker is the largest single primitive in Phase 0 — calendar grid + time slot list + range variant (v2). Half-shipping creates worse outcomes than scheduling cleanly. Spec alone gives the next session a clean starting point.
+- **Decision:** ship §F.5 SPEC into LIVE_TRUTH (~164 lines). DO NOT mockup, DO NOT build React. Spec includes a §F.5.8 implementation-TODO subsection that flags the next-session scope (build via `react-aria-components` `Calendar` + `DateField` + cva V3 styling, mockup at `public/solen-v2-datetime.html`, dev test page integration).
+- **Spec scope (§F.5.0 through §F.5.8):**
+  - Anatomy diagram (calendar grid + time slot list)
+  - 4 variants: single-date / **date-and-time (most-used, booking flow)** / time-only (reserved) / date-range (v2 deferred)
+  - State matrix: default / today / hover / selected / disabled / outside-month / loading / empty
+  - Calendar grid spec (DE-CH locale, Monday-first, month nav via chevrons, kbd nav, min/max date, isDateDisabled callback)
+  - Time slot list spec (Vormittag/Nachmittag/Abend grouping, configurable slot duration, async fetch shape, loading skeleton, empty state)
+  - Composition pattern (`<DateTimePicker>` root managing combined state, internal `<CalendarGrid>`/`<DayCell>`/`<TimeSlotList>`/`<TimeSlot>` not exposed)
+  - Mobile vs desktop (mobile = vertical stack inside §F.3 sheet, desktop = side-by-side card on `/book/[slug]`)
+  - Motion (200ms month transition, 150ms day-select, 100ms slot-select, shimmer skeleton via existing `animate-shimmer` token)
+  - ARIA: `role="grid"` calendar, `role="gridcell"` days, `role="listbox"` time slots, full kbd nav
+  - 5 anti-patterns (year-month picker wheel banned, showing all 24h banned, native `<input type="date">` banned, range in v1 banned, italic banned)
+- **Architecture decision (locked here for next session):** use `react-aria-components` `Calendar` + `DateField` (already installed at `^1.16.0` — these are STABLE exports, not UNSTABLE_) + cva for V3 styling. Native `<input type="date">` explicitly banned in §F.5.7 because native pickers vary wildly across iOS/Android/desktop — we lose visual control over the most user-facing primitive in the booking flow.
+- **Tailwind tokens added:** none. The existing `animate-shimmer` (line 132 in tailwind.config.js) covers the loading skeleton motion.
+- **Files created:** none — spec only.
+- **Files patched:**
+  - `_tasks/SOLEN_LIVE_TRUTH.md` — appended §F.5 section (~164 lines).
+- **Live site impact:** ZERO. No React, no mockup yet.
+- **Status:** **spec drafted, lock pending** (mockup + React in next session). The §F.5.8 implementation-TODO subsection is the explicit handoff to the next session.
 
 ### V2-D20 (2026-05-09 overnight, autonomous) — Phase 0 §F.4 toast primitive shipped
 

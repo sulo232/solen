@@ -1846,6 +1846,173 @@ Migration path: when react-aria-components stabilizes Toast (drops UNSTABLE_ pre
 
 -----
 
+## §F.5 · Date / time picker primitive
+
+> **Status: spec drafted 2026-05-09 overnight (V2-D21, autonomous). Mockup + React deferred to next session — date/time picker is the largest single primitive (calendar grid + time slot list + range variant) and half-shipping is worse than scheduling cleanly.**
+
+The booking-flow primitive for picking a single date + a time slot. Powers booking wizard step 2 (`/book/[slug]`), salon profile editor (B2B closed-day picker), search filter "available date" (deferred to v2), and any other UX where a user selects from constrained calendar dates.
+
+**Anchors to existing locks:** the booking wizard (§BW Phase 2) uses §F.5 for date+time; the search system (§14.4 State C `WANN focused`) uses §F.5 calendar grid embedded in the search sheet; B2B availability (§B.7 calendar / availability) reuses §F.5 with multi-date selection (deferred). When booking wizard is specced, this primitive is the source of truth — surface composes, doesn't reinvent.
+
+### §F.5.0 · Anatomy (universal)
+
+```
+┌─── Calendar grid (month view) ──────────────┐
+│ [‹ Mai 2026 ›]                              │ ← month nav
+│ Mo Di Mi Do Fr Sa So                        │ ← weekday header (DE locale)
+│             1  2  3  4                      │
+│  5  6  7  8  9 10 11                        │
+│ 12 13 14 15 16 17 18                        │
+│ 19 20 21 22 23 24 25                        │
+│ 26 27 28 29 30 31                           │
+└─────────────────────────────────────────────┘
+
+┌─── Time slot list (after date pick) ────────┐
+│ Vormittag                                   │ ← slot group label
+│ [09:00] [09:30] [10:00] [10:30]             │
+│ [11:00] [11:30]                             │
+│                                             │
+│ Nachmittag                                  │
+│ [14:00] [14:30] [15:00] [15:30]             │
+│ ...                                         │
+└─────────────────────────────────────────────┘
+```
+
+|element       |spec                                                                                                                                          |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+|calendar surface|white `#FFFFFF`, radius `var(--radius-lg)` (12px), padding 16px                                                                                |
+|month header  |Avant Garde Gothic 600 14px ink-1, centered. `‹` `›` Lucide chevron-left/right 18px ink-2 in 36px hit-area buttons (left + right of label).        |
+|weekday header|Avant Garde Gothic 600 11px uppercase ink-3 letter-spacing 0.08em, 7-column grid                                                                  |
+|day cell      |36×36px, font Avant Garde Gothic 400 14px ink-1, centered, radius 50% on hover/selected                                                          |
+|day · selected|brand-teal bg `#043338`, white text, weight 600                                                                                                  |
+|day · today (no selection yet)|brand-pale border 2px `#C2F0F1`, brand-teal text                                                                       |
+|day · outside month|opacity 0.4 (greyed but tappable for prev/next month nav)                                                                                  |
+|day · disabled|opacity 0.3, cursor not-allowed (e.g. past dates, salon closed days)                                                                              |
+|day · in range (v2)|bg `#E1F4F4` (brand-subtle), text ink-1                                                                                                       |
+|time slot     |pill button, padding `10px 14px`, border 1px `rgba(26,18,9,.10)`, radius `var(--radius-pill)` (99px), Avant Garde Gothic 600 13px ink-1            |
+|slot · selected|bg `#043338`, color white, border `#043338`                                                                                                     |
+|slot · disabled|opacity 0.4, cursor not-allowed (e.g. already-booked, closed)                                                                                   |
+|slot · hovered|border `rgba(26,18,9,.20)`, bg `#FFF4E8` warm tint                                                                                              |
+|group label   |Avant Garde Gothic 600 12px ink-3 uppercase letter-spacing 0.08em, margin 16px top + 8px bottom                                                  |
+
+### §F.5.0a · Variants
+
+|variant          |use                                                                                                                |
+|-----------------|-------------------------------------------------------------------------------------------------------------------|
+|`single-date`    |default — pick one date, no time. Used in search filter "verfügbar am" (deferred) + B2B closed-day toggle.         |
+|`date-and-time`  |**most-used** — pick one date + one time slot. Booking wizard step 2.                                              |
+|`time-only`      |reserved — time-slot picker without date (rare; e.g. "wann am heutigen Tag"). v1 uses date-and-time always.        |
+|`date-range` (v2)|deferred — pick start + end date. Used for B2B vacation blocks. Out of v1 scope.                                  |
+
+### §F.5.0b · State matrix
+
+|state       |applies to     |trigger                                |visual change                                                                                                |
+|------------|---------------|---------------------------------------|--------------------------------------------------------------------------------------------------------------|
+|default     |day cell       |idle                                  |1px ink-1 .10 hairline on hover (subtle), no fill                                                            |
+|today       |day cell       |is-today, no selection                |2px brand-pale border, brand-teal text                                                                       |
+|hover       |day cell       |pointer over                          |bg ink-1 .04, weight 500                                                                                      |
+|selected    |day cell       |user picks                             |brand-teal bg, white text, weight 600                                                                         |
+|disabled    |day cell       |past date / closed day                 |opacity 0.3, cursor not-allowed                                                                              |
+|outside-month|day cell      |belongs to prev or next month          |opacity 0.4, tap navigates to that month                                                                     |
+|loading     |time slot list |fetching availability                  |skeleton placeholders (gray pills, 6 of them, animated shimmer per existing animation token from V2)         |
+|empty       |time slot list |no slots available for selected date   |"Keine freien Termine. Wähle einen anderen Tag." centered ink-3 14px                                          |
+
+### §F.5.1 · Calendar grid
+
+|prop                |spec                                                                                                                  |
+|--------------------|----------------------------------------------------------------------------------------------------------------------|
+|locale              |DE-CH default — `de-CH` locale via `Intl.DateTimeFormat`. Month names + weekday labels localized via existing next-intl.|
+|first day of week   |Monday (per Swiss + EU convention). Override via `weekStartsOn` prop only if a future surface needs Sunday-first.    |
+|month navigation    |`‹` `›` chevrons + clickable month-name (opens year-month picker — deferred to v2; v1 = chevrons only)                |
+|keyboard nav        |arrow keys move focus by 1 day; PageUp/Down moves by 1 month; Home/End jumps to start/end of week. Enter selects.     |
+|min/max date        |props `minDate` and `maxDate` constrain selectable range. Default: `minDate=today` for booking flows.                |
+|disabled dates      |prop `isDateDisabled(date) => boolean` callback. Booking flow: returns true for salon-closed days + past dates.        |
+|aria-labelledby     |month header text auto-wired                                                                                          |
+|aria-label per cell |"Montag, 12. Mai 2026, verfügbar" / "...nicht verfügbar"                                                              |
+
+### §F.5.2 · Time slot list
+
+|prop                |spec                                                                                                                  |
+|--------------------|----------------------------------------------------------------------------------------------------------------------|
+|grouping            |"Vormittag" (06:00-11:59), "Nachmittag" (12:00-17:59), "Abend" (18:00-23:59). Empty groups not rendered.              |
+|slot duration       |passed by caller (booking flow uses 30min slots; B2B can override to 15 / 60min).                                     |
+|slot data shape     |`{ time: ISO8601 string, available: boolean, unavailableReason?: string }` — caller fetches from backend.            |
+|aria-label per slot |"14:30 Uhr verfügbar" / "14:30 Uhr nicht verfügbar"                                                                   |
+|loading state       |6 skeleton pills with shimmer animation (use existing `animate-shimmer` token from tailwind.config.js)                |
+|empty state         |"Keine freien Termine. Wähle einen anderen Tag." with cal icon — centered ink-3                                       |
+
+### §F.5.3 · Composition
+
+```tsx
+<DateTimePicker
+  variant="date-and-time"
+  value={{ date, time }}
+  onChange={({ date, time }) => ...}
+  minDate={new Date()}
+  isDateDisabled={(d) => salonClosedDays.includes(d.toISOString())}
+  fetchSlots={(date) => fetchAvailableSlots(salonId, date)}
+  slotDuration={30}
+/>
+```
+
+Internal composition (implementation detail, not exposed):
+- `<DateTimePicker>` — root, manages combined state
+- `<CalendarGrid>` — month view + nav
+- `<DayCell>` — single day (button)
+- `<TimeSlotList>` — async fetch + render
+- `<TimeSlot>` — single slot (button)
+
+### §F.5.4 · Mobile vs desktop
+
+|breakpoint        |layout                                                                                                                |
+|------------------|----------------------------------------------------------------------------------------------------------------------|
+|mobile (< 768px)  |stacked vertical: calendar on top, time slots below. Both within a §F.3 sheet (booking wizard mobile).               |
+|desktop (≥ 768px) |side-by-side: calendar left (320px wide), time slots right. Both within a centered card on /book/[slug].             |
+
+### §F.5.5 · Motion specs
+
+|phase   |element       |property              |from         |to           |duration|easing  |
+|--------|--------------|----------------------|-------------|-------------|--------|--------|
+|month transition|grid|opacity            |0.6          |1            |200ms   |ease-snap|
+|day select|day cell    |scale + bg crossfade  |scale 1, bg transparent|scale 1, bg brand|150ms|ease-snap|
+|slot select|slot       |scale + bg crossfade  |scale 1, bg white|scale 0.98, bg brand|100ms|ease-thud|
+|loading shimmer|skeleton|background-position |-200% 0       |200% 0       |1500ms (loop)|ease-snap|
+
+**Reduced motion:** all transitions collapse to opacity-only, 100ms.
+
+### §F.5.6 · ARIA + accessibility
+
+- Calendar role: `role="grid"` per WAI-ARIA combobox-with-grid pattern
+- Day cell role: `role="gridcell"` w `aria-selected` reflecting state
+- Day cell label: includes full date + availability ("Montag, 12. Mai 2026, verfügbar")
+- Time slot role: `role="option"` w `aria-selected`
+- Time slot list role: `role="listbox"` w `aria-label="Verfügbare Zeiten"`
+- Keyboard nav fully functional: Tab to enter grid, Arrow keys within grid, Enter to select
+- Focus rings: §1 brand-teal 2px outline + 2px offset on focus-visible
+
+### §F.5.7 · Anti-patterns
+
+- **Year-month picker as scrolling wheel** — banned for v1 (iOS-specific UX, doesn't translate to desktop). Use chevron month-nav instead. v2 may add a year-picker overlay.
+- **Showing all 24 hours as time slots** — banned. Group by day-period (Vormittag / Nachmittag / Abend). Reduces visual load + matches mental model.
+- **Date picker without disabled-date support** — banned. Booking flow MUST disable past dates + salon-closed days. Default `minDate=today` for any booking-context picker.
+- **Native `<input type="date">` / `<input type="time">`** — banned (per V2-D17 native-first principle, EXCEPTION here). Native pickers vary wildly across iOS / Android / desktop browsers; we lose visual control over the most user-facing primitive. v1 uses custom calendar grid via `react-aria-components` `Calendar` (already installed; the date-picker building blocks like `useDateField`, `useCalendar` exist in the package — see `useDateField` types). Implementation will compose those with V3 styling.
+- **Range picker in v1** — deferred. Pick single date only.
+- **Italic anywhere** — banned per V2-D15.
+
+### §F.5.8 · Implementation TODO (for next session)
+
+- Build `app/[locale]/_components/primitives/DateTimePicker.tsx` using `react-aria-components` `Calendar` + `DateField` + `Heading` (already installed). Wrap with V3 styling via cva.
+- Build `public/solen-v2-datetime.html` mockup with calendar grid + time slot list in all states (default / today / selected / disabled / loading / empty).
+- Extend dev test page with date+time picker demo (booking-style: pick a date → fetch fake slots → render).
+- Add to barrel `index.ts`.
+- The `slot-loading-skeleton` shimmer animation is already in tailwind config (`animate-shimmer`).
+
+-----
+
+*§F.5 ends here. Phase 0 continues with §F.6 skip-to-main link, §F.7 font-display strategy, §F.8 cookie consent banner — all deferred to next attended session.*
+
+-----
+
 *Step 3 ends here. Step 4 covers §12 the locked patterns: header / hero / search / cards / sections / b2b / footer.*
 
 # SOLEN_LIVE_TRUTH_v2 — Step 4: Locked Patterns
