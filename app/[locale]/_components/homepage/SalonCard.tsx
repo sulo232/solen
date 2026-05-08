@@ -234,18 +234,20 @@ export function SalonCard({
       className={cn(
         "group flex shrink-0 flex-col snap-start",
         "w-[160px] md:w-[180px]",
-        "transition-transform duration-200 ease-snap",
-        "hover:-translate-y-px",
         "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-[14px]",
         "active:scale-[0.94] active:duration-100",
         className,
       )}
     >
-      {/* Photo + overlays */}
+      {/* Photo + overlays. Softer hover (-3px lift / 1.015 scale) + layered
+          shadow that doesn't stomp the frosted text pill below. */}
       <div
         className={cn(
           "relative aspect-square w-full overflow-hidden rounded-[14px]",
-          // dark spa cat → light heart icon set via [&_.heart-on-dark] etc.
+          "shadow-[0_1px_2px_rgba(26,18,9,0.04),0_4px_10px_rgba(26,18,9,0.05)]",
+          "transition-[transform,box-shadow] duration-300 ease-snap",
+          "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
+          "group-hover:shadow-[0_1px_2px_rgba(26,18,9,0.05),0_6px_14px_rgba(26,18,9,0.06),0_12px_24px_rgba(26,18,9,0.05)]",
         )}
         style={{ backgroundColor: cat.bg }}
       >
@@ -288,13 +290,20 @@ export function SalonCard({
         />
       </div>
 
-      {/* Text rows under photo */}
-      <div className="mt-2 flex flex-col gap-[2px] px-[2px]">
+      {/* Frosted-glass text pill — separated from photo by mt-[10px] gap.
+          Sits on the section container's glass, which sits on the page wash.
+          Three layers of glass = depth without shadow heaviness. */}
+      <div
+        className={cn(
+          "mt-[10px] rounded-[14px] border border-white/60 bg-white/70 px-[14px] py-[10px]",
+          "backdrop-blur-[14px] backdrop-saturate-[1.2]",
+          "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
+          "flex flex-col gap-[2px]",
+        )}
+      >
         {/* Row 1 — name + rating */}
         <div className="flex items-baseline justify-between gap-2">
-          <h3
-            className="min-w-0 flex-1 truncate font-body text-[14px] font-bold leading-[1.1] tracking-[-0.01em] text-s-ink"
-          >
+          <h3 className="min-w-0 flex-1 truncate font-body text-[14px] font-bold leading-[1.1] tracking-[-0.01em] text-s-ink">
             {name}
           </h3>
           <span className="flex shrink-0 items-center gap-[2px] font-body text-[11px] font-semibold tabular-nums text-s-ink">
@@ -303,7 +312,7 @@ export function SalonCard({
           </span>
         </div>
 
-        {/* Row 2 — variant content */}
+        {/* Row 2 — variant content. Service variant gets brand-teal price accent. */}
         <div className="font-body text-[11px] leading-[1.3] text-s-ink-2">
           {variant === "availability" ? (
             availabilityRow ?? null
@@ -312,8 +321,8 @@ export function SalonCard({
               {service ?? "—"}
               {priceFromCHF != null && (
                 <>
-                  {" · ab "}
-                  <span className="font-semibold text-s-ink">CHF {priceFromCHF}</span>
+                  {" · "}
+                  <span className="font-bold text-s-brand">ab CHF {priceFromCHF}</span>
                 </>
               )}
             </>

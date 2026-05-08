@@ -35,31 +35,24 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <header className={cn("flex flex-col", className)}>
-      {/* Top hairline rule — softened from solid ink to warm-gray 30% alpha
-          (2026-05-09 user feedback: stark dark line felt out of place against
-          the soft wash bg + cards). Still visible as a section divider but
-          no longer competing with the hero's strong typography for attention. */}
-      <hr className="m-0 mb-[14px] h-px border-0 bg-s-ink-3/30" aria-hidden />
+      {/* Hairline rule REMOVED 2026-05-09 — the glass section-container
+          wrapper does the visual sectioning now (modern UI surface) instead
+          of an editorial top-rule. */}
 
-      {/* Eyebrow + meta row.
-          Mobile (< sm): stack vertically — long uppercase strings wrap
-          horribly on narrow viewports.
-          Desktop (≥ sm): side-by-side flex space-between as designed. */}
+      {/* Eyebrow + meta row. Eyebrow now in brand-teal (modernity direction).
+          Mobile stacks vertically, desktop side-by-side. */}
       <div className="mb-3 flex flex-col gap-1 font-body text-[13px] font-bold uppercase tracking-[0.18em] sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-        <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-ink before:block before:h-[5px] before:w-[5px] before:rounded-full before:bg-s-brand before:content-['']">
+        <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-brand before:block before:h-[5px] before:w-[5px] before:rounded-full before:bg-s-brand before:content-['']">
           {eyebrow}
         </span>
         {meta && (
-          // ink-2 (warm dark) instead of ink-3 (cool gray) — secondary info
-          // stays subordinate to the eyebrow but reads warmer against the
-          // wash bg.
           <span className="whitespace-nowrap text-s-ink-2">
             {meta}
           </span>
         )}
       </div>
 
-      {/* H2 + optional link */}
+      {/* H2 + optional pill link */}
       <div className="flex items-baseline justify-between gap-6">
         <h2 className="font-display text-[clamp(28px,4vw,44px)] font-black leading-none tracking-[-0.02em] text-s-ink">
           {title}
@@ -67,7 +60,7 @@ export function SectionHeader({
         {link && (
           <Link
             href={link.href}
-            className="shrink-0 font-body text-[15px] font-semibold text-s-brand transition-colors hover:text-s-brand-mid"
+            className="shrink-0 rounded-full bg-s-brand px-4 py-2 font-body text-[13px] font-semibold text-white transition-colors hover:bg-s-brand-mid"
           >
             {link.label}
           </Link>
@@ -128,13 +121,21 @@ export function Section({
   children: React.ReactNode;
   className?: string;
 }) {
-  // Mobile padding (px-5 = 20px) chosen so two 160px cards + 12px gap (332px)
-  // fit cleanly inside a 375px viewport: 375 - 40 padding = 335 content area,
-  // enough room for 2 full cards w/o the right edge of card 2 being clipped.
-  // Desktop keeps px-8 (32px) — wider viewports have plenty of room.
+  // Glassmorphic section container (V2-D## modernity pivot, 2026-05-09).
+  // Light-alpha white tint + backdrop-blur(20px) + saturate(1.3) + 1px
+  // white-60 border. Body's atmosphere wash (pale teal + ice blue + navy
+  // whispers) bleeds through the glass surface, so each section reads as
+  // a discrete UI surface floating over the colored page — NOT a solid
+  // gray block that hides the wash. Mobile rounded 32px / desktop 40px.
   return (
     <section
-      className={cn("relative z-[1] mx-auto max-w-[1280px] px-5 py-16 md:px-8", className)}
+      className={cn(
+        "relative z-[1] mx-auto max-w-[1280px]",
+        "rounded-[32px] border border-white/60 bg-white/45 backdrop-blur-[20px] backdrop-saturate-[1.3]",
+        "px-5 py-8 md:px-10 md:py-12 md:rounded-[40px]",
+        "mb-4 md:mb-6",
+        className,
+      )}
     >
       {children}
     </section>

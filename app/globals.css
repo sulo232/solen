@@ -803,11 +803,11 @@ body::before {
   position: fixed;
   inset: -15%;
   background:
-    radial-gradient(ellipse 70% 50% at 75% 12%, rgba(202, 232, 255, 0.32) 0%, transparent 65%),
-    radial-gradient(ellipse 55% 50% at 18% 22%, rgba(194, 240, 241, 0.28) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 45% at 92% 48%, rgba(0, 88, 152, 0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 8% 72%, rgba(194, 240, 241, 0.26) 0%, transparent 65%),
-    radial-gradient(ellipse 65% 50% at 65% 92%, rgba(3, 30, 72, 0.06) 0%, transparent 60%);
+    radial-gradient(ellipse 75% 55% at 80% 12%, rgba(202, 232, 255, 0.65) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 55% at 15% 22%, rgba(194, 240, 241, 0.58) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 45% at 92% 48%, rgba(0, 88, 152, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 8% 72%, rgba(194, 240, 241, 0.50) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 50% at 65% 92%, rgba(3, 30, 72, 0.10) 0%, transparent 60%);
   z-index: -2;
   pointer-events: none;
   animation: atm-drift-1 22s ease-in-out infinite;
