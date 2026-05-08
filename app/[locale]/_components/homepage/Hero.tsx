@@ -47,8 +47,9 @@ export default function Hero() {
           tailwind doesn't have pt-25, use arbitrary value. */}
       <div className="relative mx-auto flex max-w-[1280px] flex-col px-8 pt-[100px] pb-20 md:pt-32 max-md:items-center max-md:text-center">
         <div className="max-md:w-full">
-          {/* Eyebrow with brand-colored dot before */}
-          <span className="font-body mb-[18px] inline-flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.18em] text-s-ink-3 before:block before:h-[6px] before:w-[6px] before:rounded-full before:bg-s-brand before:content-['']">
+          {/* Eyebrow with brand-colored dot before. whitespace-nowrap prevents
+              awkward 2-line wrap on narrow desktop widths (~1024px). */}
+          <span className="font-body mb-[18px] inline-flex items-center gap-2 whitespace-nowrap text-[13px] font-bold uppercase tracking-[0.18em] text-s-ink-3 before:block before:h-[6px] before:w-[6px] before:rounded-full before:bg-s-brand before:content-['']">
             Beauty in der Schweiz
           </span>
 
@@ -185,7 +186,11 @@ function SearchRow({
       `}
     >
       <span className="shrink-0 text-s-ink-2">{icon}</span>
-      <span className="font-body w-14 shrink-0 text-[11px] font-bold uppercase tracking-[0.14em] text-s-ink-3">
+      {/* Label visible on mobile (stacked-card layout) for clarity, hidden on
+          desktop (horizontal pill) where the icon + value alone are enough.
+          Hiding desktop labels reclaims ~70px per segment so values aren't
+          truncated to "Ser..." and "Heut..." at common laptop widths. */}
+      <span className="font-body w-14 shrink-0 text-[11px] font-bold uppercase tracking-[0.14em] text-s-ink-3 md:hidden">
         {label}
       </span>
       <span

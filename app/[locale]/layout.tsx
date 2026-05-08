@@ -7,7 +7,10 @@ import Header from "./_components/layout/Header";
 // BottomTabBar import removed 2026-05-03 per Q58 (deprecated for web rendering).
 // Keep file at components/layout/BottomTabBar.tsx for future PWA mount.
 // import BottomTabBar from "@/components-legacy/layout/BottomTabBar";
-import CookieBanner from "@/components-legacy/ui/CookieBanner";
+// Legacy CookieBanner replaced by V3 CookieConsentProvider (§F.8) which
+// auto-mounts the banner + provides useCookieConsent hook. Original at
+// components-legacy/ui/CookieBanner.tsx kept until next sweep.
+import { CookieConsentProvider } from "./_components/primitives/CookieConsent";
 import PWAInstallPrompt from "@/components-legacy/ui/PWAInstallPrompt";
 import TosPrompt from "@/components-legacy/auth/TosPrompt";
 import TOSUpdateBanner from "@/components-legacy/global/TOSUpdateBanner";
@@ -35,6 +38,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider messages={messages}>
       <PostHogProvider>
         <ToastProvider>
+          <CookieConsentProvider>
           {/* Skip-to-content: first focusable element for keyboard users */}
           <a
             href="#main-content"
@@ -58,10 +62,12 @@ export default async function LocaleLayout({
               `components/layout/BottomTabBar.tsx` for the future PWA path.
               FloatingNavPill was already removed; BottomTabBar mount was the
               second resurrection that page-level verifier caught. */}
-          <CookieBanner />
+          {/* CookieConsentProvider auto-mounts the banner; placed at provider
+              level so analytics / marketing consent is queryable everywhere. */}
           <PWAInstallPrompt />
           <TosPrompt />
           <TOSUpdateBanner />
+          </CookieConsentProvider>
         </ToastProvider>
       </PostHogProvider>
     </NextIntlClientProvider>

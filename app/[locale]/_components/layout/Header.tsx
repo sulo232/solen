@@ -35,9 +35,13 @@ import { Menu } from "lucide-react";
 export default function Header({ locale }: { locale: string }) {
   return (
     <header
-      className="absolute left-0 right-0 top-0 z-50 border-b border-black/5"
+      className="absolute left-0 right-0 top-0 z-50"
       style={{
-        background: "rgba(255, 255, 255, 0.82)",
+        // 0.65 alpha (was 0.82) so the §5g atmosphere wash bleeds through
+        // more visibly under the header — kills the "white seam at top"
+        // visual effect where header looked separated from the page wash.
+        // border-b removed for the same reason — clean transition into wash.
+        background: "rgba(255, 255, 255, 0.65)",
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
       }}
