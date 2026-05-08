@@ -60,3 +60,12 @@ export {
   PillGroup,
   type PillToggleProps,
 } from "./PillToggle";
+
+export {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  type ModalProps,
+  type ModalSize,
+} from "./Modal";

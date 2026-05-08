@@ -112,6 +112,16 @@ module.exports = {
         55: '55',
         60: '60',
         70: '70',
+        // ── V3 z-index lock (V2-D18, 2026-05-09) — LIVE_TRUTH §8 ──
+        // Use as `z-modal-bg`, `z-modal`, `z-toast` etc in className.
+        // Backdrop / surface pairs follow §8 naming: `*-bg` for the dim layer,
+        // bare token for the content layer above.
+        "sheet-bg":  "400",
+        "sheet":     "410",
+        "modal-bg":  "500",
+        "modal":     "510",
+        "toast":     "600",
+        "tooltip":   "700",
       },
       backdropBlur: {
         xs: "4px",

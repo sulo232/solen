@@ -1330,6 +1330,192 @@ Reuse §F.4 toast and §SY.2 error boundary specs when those land — same copy 
 
 -----
 
+## §F.2 · Modal primitive
+
+The centered overlay every Solen surface uses for confirmations, login flows, focused single-task interactions, and content that must steal user attention until resolved. Modal is **distinct from sheet** (§F.3): sheets are mobile-only filter / sort / share affordances; modals are confirmation-and-focus dialogs that work identically on mobile and desktop. Modals never auto-dismiss and never stack — one at a time.
+
+**Anchors to existing locks:** the auth-as-modal pattern referenced in §A.1 / §A.2 (Phase 1 to be specced) composes §F.2.1-§F.2.5; the report-content flow in §CO.5 (Phase 4) uses §F.2 lg size; destructive-confirmation flows (delete account §AC.5, cancel booking §AC.2) use §F.2 sm size with `isDismissable={false}` per §F.2.6.
+
+### §F.2.0 · Anatomy (universal)
+
+```
+┌────── Backdrop (dim + blur) ───────────────────────────┐
+│                                                        │
+│      ┌─── Modal surface ─────────────────────────┐     │
+│      │ Header                            [×]     │     │ ← border-bottom 1px ink/.06
+│      ├────────────────────────────────────────── │     │
+│      │ Body (scrollable when content exceeds)    │     │
+│      │                                           │     │
+│      │                                           │     │
+│      ├─────────────────────────────────────────  │     │
+│      │             [Abbrechen]  [Bestätigen]     │     │ ← border-top 1px ink/.06, sticky
+│      └───────────────────────────────────────────┘     │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+```
+
+|element       |spec                                                                                                                                          |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+|backdrop      |`rgba(26,18,9,0.40)` warm-ink dim (NOT pure black per §4) + `backdrop-filter: blur(4px)`. Click = dismiss (overridable). z-index `var(--z-modal-bg)` per §8.|
+|surface       |white `#FFFFFF`, radius `var(--radius-2xl)` (16px). Centered via flex centering on the overlay.                                              |
+|shadow        |`elevation-3` warm-tinted from §4: `0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)`                                            |
+|width         |`min(size-max-width, calc(100vw - 32px))` — mobile gets 16px margin each side, desktop centers within max-width.                              |
+|height        |`max-height: min(size-max-height, calc(100vh - 32px))` — body scrolls internally if content exceeds.                                          |
+|header        |Avant Garde Gothic 600 18px ink-1 title. Optional eyebrow above (Avant Garde 700 11px uppercase ink-3 tracking 0.16em). Close X right.        |
+|close button  |Lucide `x` 24px ink-2 stroke 2. Hit area 44×44 via `padding: 10px` extension. Hover transitions to ink-1 over 150ms ease-snap.                |
+|body          |Padding per size table. Overflow-y auto when content exceeds available height. Default browser scrollbar (no custom styling in v1).          |
+|footer        |Sticky bottom, border-top 1px rgba(26,18,9,0.06). Buttons right-aligned, gap `var(--space-3)` (12px). Optional destructive tertiary left.    |
+
+### §F.2.0a · Sizes
+
+|size|use                                                                              |max-width|header pad |body pad   |footer pad |
+|----|---------------------------------------------------------------------------------|---------|-----------|-----------|-----------|
+|sm  |Confirm dialogs (delete account, cancel booking, leave-without-saving, sign out)|360px    |20px / 24px|0 24px 20px|16px / 24px|
+|md  |**Default** — login modal, share modal, edit single field, generic confirmations|480px    |20px / 24px|0 24px 20px|16px / 24px|
+|lg  |Report content with reasons + free-text, complex forms in a modal context        |640px    |24px / 28px|0 28px 24px|20px / 28px|
+
+**Anti-pattern (banned):** XL or full-screen modals. If content needs more than 640px width or full-height, it's a page route or a §F.3 sheet — not a modal. The whole point of a modal is focused single-task overlay; oversizing breaks that.
+
+### §F.2.0b · State matrix
+
+|state       |trigger                                |visual change                                                                                                                                  |
+|------------|---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+|closed      |`open=false`, mounted but not displayed|not rendered (or `display: none`). No DOM nodes for the modal interior.                                                                        |
+|opening     |`open` flips false → true              |backdrop fades opacity 0 → 1 over 200ms `ease-snap`. Modal `scale(0.95) → scale(1)` + opacity 0 → 1 over 250ms `ease-snap`. Body scroll locked.|
+|open        |fully visible, user interacting        |static. Backdrop stays at 0.40 dim. Modal at scale 1.                                                                                          |
+|dismissing  |user closes (X / esc / backdrop click) |modal `scale(1) → scale(0.95)` + opacity 1 → 0 over 150ms `ease-snap`. Backdrop fades 1 → 0 over 150ms. Then unmount.                          |
+
+**Note on motion:** modals do NOT spring or bounce — they're functional confirmations, not playful reveals. Use `ease-snap` (standard ease-in-out) for both entry and exit. Reserve `ease-spring` / `ease-thud` for toggles + presses (§F.1.4 / §F.1.6 / §F.1.5).
+
+### §F.2.1 · Modal element
+
+**Implementation:** `react-aria-components` `<Modal>` + `<ModalOverlay>` + `<Dialog>`. Already installed at `^1.16.0`. This is the explicit V2-D## architecture deviation from V2-D17 native-first — there is no native `<dialog>` element with the focus-trap + scroll-lock + portal behavior the spec needs across browsers.
+
+|prop                  |spec                                                                                                                  |
+|----------------------|----------------------------------------------------------------------------------------------------------------------|
+|HTML role             |`role="dialog"` on the inner Dialog. `role="presentation"` on the ModalOverlay backdrop.                              |
+|aria-labelledby       |references the ModalHeader title's id automatically (react-aria handles via Dialog's `aria-labelledby`).              |
+|aria-describedby      |optional — references ModalBody's first paragraph if it's a description (caller passes `aria-describedby` to Dialog).|
+|portal                |renders to document.body via react-aria `<Modal>` (escapes parent stacking context — prevents z-index issues).        |
+|scroll-lock           |body scroll locked while open (react-aria handles via `usePreventScroll`).                                            |
+|focus-trap            |focus stays within modal while open (react-aria handles).                                                             |
+|focus-restore         |on close, returns to trigger element (react-aria handles).                                                            |
+|initial-focus         |first focusable element by default. Override via `autoFocus` on a specific child control.                             |
+
+### §F.2.2 · Backdrop
+
+|prop          |spec                                                                                                              |
+|--------------|------------------------------------------------------------------------------------------------------------------|
+|background    |`rgba(26,18,9,0.40)` — warm-ink tint per §4 anti-pattern (NEVER pure black `rgba(0,0,0,X)`)                       |
+|backdrop-filter|`blur(4px)` — tasteful, not aggressive. Pairs with dim for legibility on busy bg photos.                         |
+|click behavior|dismisses by default. Disable via `isDismissable={false}` for destructive-confirm flows where accidental click loss = bad UX.|
+|positioning   |`position: fixed; inset: 0;` — covers entire viewport regardless of scroll position.                              |
+|z-index       |`var(--z-modal-bg)` per §8                                                                                  |
+
+### §F.2.3 · Header (ModalHeader)
+
+|prop                |spec                                                                                                                |
+|--------------------|--------------------------------------------------------------------------------------------------------------------|
+|layout              |flex row, `justify-content: space-between`, `align-items: center`, `gap: var(--space-3)` (12px)                     |
+|padding             |per size table §F.2.0a                                                                                              |
+|border              |`border-bottom: 1px solid rgba(26,18,9,0.06)`                                                                       |
+|title font          |Avant Garde Gothic 600 18px ink-1 line-height 1.3                                                                   |
+|title element       |`<h2>` with id auto-wired to Dialog's `aria-labelledby`                                                              |
+|eyebrow (optional)  |Avant Garde Gothic 700 11px uppercase ink-3, letter-spacing 0.16em, margin-bottom 4px above title                   |
+|close X             |Lucide `x` 24px stroke 2 ink-2, hover ink-1 transition 150ms `ease-snap`. Hit area 44×44 via `padding: 10px`.       |
+|close X position    |right side of header row, after title                                                                                |
+|close X aria-label  |"Schließen" (or `t('close')` via next-intl in caller)                                                                |
+
+**Anti-pattern:** title in the body instead of the header — banned. Header anchors navigation/dismissal; body is content. Mixing breaks the mental model.
+
+### §F.2.4 · Body (ModalBody)
+
+|prop          |spec                                                                                                                  |
+|--------------|----------------------------------------------------------------------------------------------------------------------|
+|padding       |per size table §F.2.0a (no top padding — header's border serves as separator)                                         |
+|overflow-y    |`auto` — body scrolls internally when content exceeds available height                                                |
+|max-height    |computed: `min(size-max-height, 100vh - 32px) - header-height - footer-height`                                        |
+|font          |Avant Garde Gothic 400 14px ink-1 line-height 1.5 (body text default)                                                 |
+|scrollbar     |default browser. No custom styling in v1 — modals are short enough that scrolling is rare; when needed, default works.|
+
+### §F.2.5 · Footer (ModalFooter)
+
+|prop                |spec                                                                                                                  |
+|--------------------|----------------------------------------------------------------------------------------------------------------------|
+|layout              |flex row, `justify-content: flex-end`, `gap: var(--space-3)` (12px). On sm size: full-width buttons stacked vertically.|
+|padding             |per size table §F.2.0a                                                                                                |
+|border              |`border-top: 1px solid rgba(26,18,9,0.06)`                                                                            |
+|sticky              |always visible at bottom; pinned via `flex-shrink: 0` in flex column layout (not CSS sticky — modal interior is flex).|
+|primary CTA         |right-most. Brand-teal flat pill per §5a.2 / §1 hover gradient retired V2-D15-4.                                      |
+|secondary           |"Abbrechen" / "Zurück" — ghost button left of primary.                                                                |
+|tertiary destructive|optional — far left, weight 500 ink-3 14px, hover error-red. Used for "Konto löschen" type irreversibles.            |
+|empty footer        |allowed — for read-only confirmation modals where the only action is the close X.                                     |
+
+### §F.2.6 · Dismiss behavior
+
+|trigger              |default action |overridable via                                            |
+|---------------------|---------------|-----------------------------------------------------------|
+|Escape key           |closes modal   |`keyboardDismissDisabled={true}` (destructive flows)       |
+|Backdrop click       |closes modal   |`isDismissable={false}` (destructive flows + form-in-progress)|
+|Close X button       |closes modal   |always closes — never disable. Only render close X if user has a sane way to exit.|
+|Programmatic close   |caller controls|via `onOpenChange(false)` callback                          |
+
+**Pattern:** for "you have unsaved changes" flows, intercept `onOpenChange` to first show a nested confirm dialog. Never silently lose user input. (See §F.2.10 anti-patterns — nested-modals are banned, so this pattern uses the SAME modal swapped to a "discard changes?" body, not a second modal stacked on top.)
+
+### §F.2.7 · Focus management
+
+|behavior              |how                                                                                                                    |
+|----------------------|-----------------------------------------------------------------------------------------------------------------------|
+|focus on open         |first focusable child (or element marked `autoFocus`). For confirmation dialogs, prefer focusing primary CTA — but ONLY if the action is non-destructive. Destructive (delete) defaults focus to "Abbrechen" so accidental Enter doesn't fire the destructive action.|
+|tab navigation        |cycles within modal forward + backward. react-aria handles.                                                            |
+|focus restore on close|returns to trigger element (the button/link that opened the modal). Caller does not manage this manually.              |
+|outside-modal focus   |blocked while open. Tab key cycles only within modal.                                                                  |
+
+### §F.2.8 · Mobile vs desktop
+
+Modals are **identical primitives on both platforms** — no mobile-specific morph. Differences:
+
+|breakpoint        |behavior                                                                                                             |
+|------------------|---------------------------------------------------------------------------------------------------------------------|
+|mobile (< 640px)  |width = `min(max-width, calc(100vw - 32px))`. 16px margin each side. No swipe-to-dismiss gesture in v1 (close X is the explicit affordance).|
+|desktop (≥ 640px) |width = `max-width` from size table, centered. Backdrop blur fully effective on busy bg.                              |
+
+**Anti-pattern:** auto-morphing modal to bottom sheet on mobile — banned. Sheets are §F.3, distinct primitive with distinct UX (swipe down, snap heights, mobile-only). A confirmation modal stays a centered modal everywhere because that's its UX semantics.
+
+### §F.2.9 · Motion specs
+
+Both entry and exit use `ease-snap` (`cubic-bezier(0.4, 0, 0.2, 1)`) — modals are functional, not playful. No `ease-spring` / `ease-thud` overshoot.
+
+|phase   |element  |property              |from         |to           |duration|easing  |
+|--------|---------|----------------------|-------------|-------------|--------|--------|
+|entry   |backdrop |opacity               |0            |1            |200ms   |ease-snap|
+|entry   |modal    |opacity               |0            |1            |250ms   |ease-snap|
+|entry   |modal    |transform: scale(N)   |scale(0.95)  |scale(1)     |250ms   |ease-snap|
+|exit    |modal    |opacity               |1            |0            |150ms   |ease-snap|
+|exit    |modal    |transform: scale(N)   |scale(1)     |scale(0.95)  |150ms   |ease-snap|
+|exit    |backdrop |opacity               |1            |0            |150ms   |ease-snap|
+
+**Reduced motion:** if `prefers-reduced-motion: reduce`, both entry and exit collapse to opacity-only (no scale transform), duration shortened to 100ms. Per §24b.3 baseline.
+
+### §F.2.10 · Anti-patterns
+
+- **Nested modals (modal-on-modal)** — banned. Open one at a time. For "discard unsaved changes?" flows, swap the SAME modal's body content; don't stack a second modal.
+- **Auto-dismiss timeouts** — banned. Modals never auto-close. User dismisses explicitly. (Auto-dismiss = §F.4 toast — different primitive, different semantics.)
+- **Title in body instead of header** — banned. Header anchors navigation/dismissal; body is content. Mixing breaks the mental model.
+- **Dim backdrop without blur** — banned. Too aggressive on busy bg photos. Always pair `rgba(26,18,9,0.40)` dim + `blur(4px)`.
+- **Pure black backdrop** — banned per §4 (warm-ink tint always). `rgba(0,0,0,X)` reads cold.
+- **Close button hidden until hover** — banned per §11. Always visible.
+- **Modals as marketing prompts** — banned. Use §F.4 toasts for non-actionable info, or pages for marketing content. Modals interrupt; reserve them for must-resolve interactions.
+- **Disabling escape AND backdrop click AND hiding close X** — banned. User must always have at least one explicit way to exit. Trapping users in a modal violates §11 hit-target + §24b.1 keyboard-nav baselines.
+- **Stacking shadows pumped past elevation-3** — banned. Modals already feel "high" in the depth system; over-shadowing them creates floaty unease. Stay at elevation-3 from §4.
+- **Italic anywhere in modal title or body** — banned per V2-D15.
+
+-----
+
+*§F.2 ends here. Phase 0 continues with §F.3 bottom sheet primitive — locked next.*
+
+-----
+
 *Step 3 ends here. Step 4 covers §12 the locked patterns: header / hero / search / cards / sections / b2b / footer.*
 
 # SOLEN_LIVE_TRUTH_v2 — Step 4: Locked Patterns

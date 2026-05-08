@@ -28,6 +28,10 @@ import {
   Switch,
   PillToggle,
   PillGroup,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "../../_components/primitives";
 
 export default function PrimitivesDevPage() {
@@ -50,6 +54,10 @@ export default function PrimitivesDevPage() {
     new Set(["damen", "herren"]),
   );
   const [serviceMode, setServiceMode] = React.useState("damen");
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const [loginOpen, setLoginOpen] = React.useState(false);
+  const [reportOpen, setReportOpen] = React.useState(false);
+  const [destructiveOpen, setDestructiveOpen] = React.useState(false);
 
   const toggleServiceType = (key: string) => {
     setActiveServiceTypes((prev) => {
@@ -537,10 +545,179 @@ export default function PrimitivesDevPage() {
           </Grid>
         </Section>
 
+        {/* §F.2 MODAL */}
+        <Section eyebrow="Modal" meta="§F.2 · 3 sizes" title="Modal (centered overlay)">
+          <Grid cols={2}>
+            <Card tag="size sm · confirmation">
+              <button
+                type="button"
+                onClick={() => setConfirmOpen(true)}
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors duration-150 ease-snap"
+              >
+                Termin bestätigen öffnen
+              </button>
+              <Modal isOpen={confirmOpen} onOpenChange={setConfirmOpen} size="sm">
+                <ModalHeader title="Termin bestätigen" eyebrow="Buchung" size="sm" onClose={() => setConfirmOpen(false)} />
+                <ModalBody size="sm">
+                  <p className="text-s-ink-2">
+                    Du buchst <strong className="text-s-ink font-semibold">Damen-Schnitt &amp; Föhnen</strong> bei
+                    Salon Maria am <strong className="text-s-ink font-semibold">Donnerstag, 16. Mai um 14:30</strong>.
+                  </p>
+                </ModalBody>
+                <ModalFooter size="sm">
+                  <button
+                    type="button"
+                    onClick={() => setConfirmOpen(false)}
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full border border-s-ink/10 bg-white text-s-ink hover:bg-s-bg-sunken transition-colors"
+                  >
+                    Abbrechen
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmOpen(false)}
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors"
+                  >
+                    Bestätigen
+                  </button>
+                </ModalFooter>
+              </Modal>
+            </Card>
+
+            <Card tag="size md · login">
+              <button
+                type="button"
+                onClick={() => setLoginOpen(true)}
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors duration-150 ease-snap"
+              >
+                Login öffnen
+              </button>
+              <Modal isOpen={loginOpen} onOpenChange={setLoginOpen} size="md">
+                <ModalHeader title="Willkommen zurück" eyebrow="Anmelden" size="md" onClose={() => setLoginOpen(false)} />
+                <ModalBody size="md">
+                  <p className="text-s-ink-2 mb-4">
+                    Melde dich mit deiner E-Mail-Adresse an, um deine Buchung abzuschliessen.
+                  </p>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-1.5">
+                      <FieldLabel htmlFor="modal-login-email">E-Mail-Adresse</FieldLabel>
+                      <TextInput id="modal-login-email" type="email" placeholder="lara@example.ch" autoComplete="email" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <FieldLabel htmlFor="modal-login-pw">Passwort</FieldLabel>
+                      <TextInput id="modal-login-pw" type="password" placeholder="••••••••" revealable autoComplete="current-password" />
+                    </div>
+                  </div>
+                </ModalBody>
+                <ModalFooter size="md">
+                  <button
+                    type="button"
+                    onClick={() => setLoginOpen(false)}
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full border border-s-ink/10 bg-white text-s-ink hover:bg-s-bg-sunken transition-colors"
+                  >
+                    Abbrechen
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLoginOpen(false)}
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors"
+                  >
+                    Anmelden
+                  </button>
+                </ModalFooter>
+              </Modal>
+            </Card>
+
+            <Card tag="size lg · report content">
+              <button
+                type="button"
+                onClick={() => setReportOpen(true)}
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors duration-150 ease-snap"
+              >
+                Report-Modal öffnen
+              </button>
+              <Modal isOpen={reportOpen} onOpenChange={setReportOpen} size="lg">
+                <ModalHeader title="Was ist mit diesem Look?" eyebrow="Inhalt melden" size="lg" onClose={() => setReportOpen(false)} />
+                <ModalBody size="lg">
+                  <p className="text-s-ink-2 mb-4">
+                    Wähle einen Grund. Wir prüfen alle Meldungen innerhalb von 24 Stunden.
+                  </p>
+                  <RadioGroup aria-label="Meldungsgrund">
+                    <Radio name="report-reason" value="harassment">Belästigung oder Hassrede</Radio>
+                    <Radio name="report-reason" value="spam">Spam oder irreführende Inhalte</Radio>
+                    <Radio name="report-reason" value="false-info">Falsche Information über einen Salon</Radio>
+                    <Radio name="report-reason" value="other">Anderer Grund</Radio>
+                  </RadioGroup>
+                  <div className="mt-4">
+                    <FieldLabel htmlFor="report-detail" optional>Details</FieldLabel>
+                    <Textarea id="report-detail" placeholder="Optionale Details (mind. 20 Zeichen)" />
+                  </div>
+                </ModalBody>
+                <ModalFooter size="lg">
+                  <button
+                    type="button"
+                    onClick={() => setReportOpen(false)}
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full border border-s-ink/10 bg-white text-s-ink hover:bg-s-bg-sunken transition-colors"
+                  >
+                    Abbrechen
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setReportOpen(false)}
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors"
+                  >
+                    Meldung senden
+                  </button>
+                </ModalFooter>
+              </Modal>
+            </Card>
+
+            <Card tag="size sm · destructive (isDismissable=false)">
+              <button
+                type="button"
+                onClick={() => setDestructiveOpen(true)}
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-error text-white hover:opacity-90 transition-opacity"
+              >
+                Konto löschen öffnen
+              </button>
+              <Modal
+                isOpen={destructiveOpen}
+                onOpenChange={setDestructiveOpen}
+                size="sm"
+                isDismissable={false}
+                keyboardDismissDisabled
+              >
+                <ModalHeader title="Konto wirklich löschen?" size="sm" onClose={() => setDestructiveOpen(false)} />
+                <ModalBody size="sm">
+                  <p className="text-s-ink-2">
+                    Diese Aktion kann nicht rückgängig gemacht werden. Alle Buchungen und Favoriten werden gelöscht.
+                  </p>
+                </ModalBody>
+                <ModalFooter size="sm">
+                  <button
+                    type="button"
+                    onClick={() => setDestructiveOpen(false)}
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full border border-s-ink/10 bg-white text-s-ink hover:bg-s-bg-sunken transition-colors"
+                    autoFocus
+                  >
+                    Abbrechen
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDestructiveOpen(false)}
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-error text-white hover:opacity-90 transition-opacity"
+                  >
+                    Löschen
+                  </button>
+                </ModalFooter>
+              </Modal>
+            </Card>
+          </Grid>
+        </Section>
+
         {/* FOOT */}
         <footer className="mt-24 pt-6 border-t border-s-ink flex justify-between font-body text-[11px] uppercase tracking-[0.16em] text-s-ink-3 tabular-nums">
-          <span>Solen V3 · Phase 0 · §F.1 React · /dev/primitives</span>
-          <span>2026-05-08 · V2-D17</span>
+          <span>Solen V3 · Phase 0 · §F.1 + §F.2 React · /dev/primitives</span>
+          <span>2026-05-09 · V2-D18</span>
         </footer>
       </div>
     </div>
