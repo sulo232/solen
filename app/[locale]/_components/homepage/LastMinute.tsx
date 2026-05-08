@@ -1,4 +1,4 @@
-import { Section, SectionHeader, ScrollRow } from "./SectionHeader";
+import { Section, SectionMeta, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 
 /**
@@ -47,14 +47,16 @@ export default function LastMinute() {
 
   return (
     <Section>
-      <SectionHeader
+      <SectionMeta
         eyebrow="Heute · letzte Slots"
         meta={`${entries.length} Salons · bis zu −${maxDiscount}%`}
-        title="Last-Minute heute"
-        link={{ label: "Alle →", href: "/last-minute" }}
       />
-
-      <ScrollRow>
+      <SectionFrame>
+        <SectionTitle
+          title="Last-Minute heute"
+          link={{ label: "Alle →", href: "/last-minute" }}
+        />
+        <ScrollRow>
         {entries.map((e) => (
           <SalonCard
             key={e.slug}
@@ -74,7 +76,8 @@ export default function LastMinute() {
             }
           />
         ))}
-      </ScrollRow>
+        </ScrollRow>
+      </SectionFrame>
     </Section>
   );
 }

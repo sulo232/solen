@@ -1,4 +1,4 @@
-import { Section, SectionHeader } from "./SectionHeader";
+import { Section, SectionMeta, SectionTitle, SectionFrame } from "./SectionHeader";
 
 /**
  * Echte Bewertungen — V3 (LIVE_TRUTH §Q51.7).
@@ -59,14 +59,16 @@ const DEMO: Review[] = [
 export default function Reviews() {
   return (
     <Section>
-      <SectionHeader
+      <SectionMeta
         eyebrow="Was Kund:innen sagen"
         meta={`4+ Sterne · max ${DEMO.length}`}
-        title="Echte Bewertungen"
-        link={{ label: "Alle Bewertungen →", href: "/reviews" }}
       />
-
-      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+      <SectionFrame>
+        <SectionTitle
+          title="Echte Bewertungen"
+          link={{ label: "Alle Bewertungen →", href: "/reviews" }}
+        />
+        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         {DEMO.map((r) => (
           <article
             key={r.name}
@@ -105,7 +107,8 @@ export default function Reviews() {
             </div>
           </article>
         ))}
-      </div>
+        </div>
+      </SectionFrame>
     </Section>
   );
 }

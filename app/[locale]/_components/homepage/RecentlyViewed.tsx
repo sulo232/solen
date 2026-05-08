@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Section, SectionHeader, ScrollRow } from "./SectionHeader";
+import { Section, SectionMeta, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 
 /**
@@ -93,27 +93,30 @@ export default function RecentlyViewed() {
 
   return (
     <Section>
-      <SectionHeader
+      <SectionMeta
         eyebrow="Bei dir zuletzt"
         meta={`letzte ${list.length} · localStorage`}
-        title="Zuletzt angesehen"
-        link={{ label: "Im Profil →", href: "/profile/recently-viewed" }}
       />
-
-      <ScrollRow>
-        {list.map((s) => (
-          <SalonCard
-            key={s.slug}
-            slug={s.slug}
-            name={s.name}
-            rating={s.rating}
-            category={s.category}
-            photoUrl={s.photoUrl}
-            variant="availability"
-            availabilityRow={s.availabilityRow}
-          />
-        ))}
-      </ScrollRow>
+      <SectionFrame>
+        <SectionTitle
+          title="Zuletzt angesehen"
+          link={{ label: "Im Profil →", href: "/profile/recently-viewed" }}
+        />
+        <ScrollRow>
+          {list.map((s) => (
+            <SalonCard
+              key={s.slug}
+              slug={s.slug}
+              name={s.name}
+              rating={s.rating}
+              category={s.category}
+              photoUrl={s.photoUrl}
+              variant="availability"
+              availabilityRow={s.availabilityRow}
+            />
+          ))}
+        </ScrollRow>
+      </SectionFrame>
     </Section>
   );
 }

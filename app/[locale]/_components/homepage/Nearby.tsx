@@ -1,4 +1,4 @@
-import { Section, SectionHeader, ScrollRow } from "./SectionHeader";
+import { Section, SectionMeta, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 
 /**
@@ -54,14 +54,13 @@ export default function Nearby() {
 
   return (
     <Section>
-      <SectionHeader
-        eyebrow={eyebrow}
-        meta="geo-aware"
-        title="In der Nähe"
-        link={{ label: "Alle in deiner Nähe →", href: "/search/results?nearby=true" }}
-      />
-
-      <ScrollRow>
+      <SectionMeta eyebrow={eyebrow} meta="geo-aware" />
+      <SectionFrame>
+        <SectionTitle
+          title="In der Nähe"
+          link={{ label: "Alle in deiner Nähe →", href: "/search/results?nearby=true" }}
+        />
+        <ScrollRow>
         {entries.map((e) => (
           <SalonCard
             key={e.slug}
@@ -88,7 +87,8 @@ export default function Nearby() {
             }
           />
         ))}
-      </ScrollRow>
+        </ScrollRow>
+      </SectionFrame>
     </Section>
   );
 }

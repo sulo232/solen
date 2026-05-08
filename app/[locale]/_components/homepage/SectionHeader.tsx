@@ -35,38 +35,78 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <header className={cn("flex flex-col", className)}>
-      {/* Hairline rule REMOVED 2026-05-09 — the glass section-container
-          wrapper does the visual sectioning now (modern UI surface) instead
-          of an editorial top-rule. */}
-
-      {/* Eyebrow + meta row. Eyebrow now in brand-teal (modernity direction).
-          Mobile stacks vertically, desktop side-by-side. */}
-      <div className="mb-3 flex flex-col gap-1 font-body text-[13px] font-bold uppercase tracking-[0.18em] sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-        <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-brand before:block before:h-[5px] before:w-[5px] before:rounded-full before:bg-s-brand before:content-['']">
-          {eyebrow}
-        </span>
-        {meta && (
-          <span className="whitespace-nowrap text-s-ink-2">
-            {meta}
-          </span>
-        )}
-      </div>
-
-      {/* H2 + optional pill link */}
-      <div className="flex items-baseline justify-between gap-6">
-        <h2 className="font-display text-[clamp(28px,4vw,44px)] font-black leading-none tracking-[-0.02em] text-s-ink">
-          {title}
-        </h2>
-        {link && (
-          <Link
-            href={link.href}
-            className="shrink-0 rounded-full bg-s-brand px-4 py-2 font-body text-[13px] font-semibold text-white transition-colors hover:bg-s-brand-mid"
-          >
-            {link.label}
-          </Link>
-        )}
-      </div>
+      <SectionMeta eyebrow={eyebrow} meta={meta} />
+      <SectionTitle title={title} link={link} />
     </header>
+  );
+}
+
+/**
+ * Eyebrow + meta row — RENDERED OUTSIDE the glass section-frame so the
+ * frame can be a smaller, content-tight rounded box per user feedback
+ * (2026-05-09: "thin line... covering too much area").
+ */
+export function SectionMeta({ eyebrow, meta }: { eyebrow: string; meta?: string }) {
+  return (
+    <div className="mb-3 flex flex-col gap-1 px-2 font-body text-[13px] font-bold uppercase tracking-[0.18em] sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+      <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-brand before:block before:h-[5px] before:w-[5px] before:rounded-full before:bg-s-brand before:content-['']">
+        {eyebrow}
+      </span>
+      {meta && <span className="whitespace-nowrap text-s-ink-2">{meta}</span>}
+    </div>
+  );
+}
+
+/**
+ * H2 + optional pill link — RENDERED INSIDE the glass section-frame.
+ */
+export function SectionTitle({
+  title,
+  link,
+}: {
+  title: string;
+  link?: { label: string; href: string };
+}) {
+  return (
+    <div className="flex items-baseline justify-between gap-6">
+      <h2 className="font-display text-[clamp(28px,4vw,44px)] font-black leading-none tracking-[-0.02em] text-s-ink">
+        {title}
+      </h2>
+      {link && (
+        <Link
+          href={link.href}
+          className="shrink-0 rounded-full bg-s-brand px-4 py-2 font-body text-[13px] font-semibold text-white transition-colors hover:bg-s-brand-mid"
+        >
+          {link.label}
+        </Link>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Glass section-frame — wraps title + content (NOT the meta above).
+ * Smaller than the page-edge-to-edge container we had before; meta floats
+ * above in the page-flow per user feedback ("not eyebrow above, just title
+ * and cards inside the glass").
+ */
+export function SectionFrame({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "rounded-[28px] border border-white/50 bg-white/20 backdrop-blur-[10px] backdrop-saturate-[1.15]",
+        "px-4 py-6 md:rounded-[32px] md:px-7 md:py-8",
+        className,
+      )}
+    >
+      {children}
+    </div>
   );
 }
 
@@ -121,17 +161,15 @@ export function Section({
   children: React.ReactNode;
   className?: string;
 }) {
-  // Glassmorphic section container (V2-D## modernity pivot, 2026-05-09).
-  // Subtle-outline mode (per user feedback "thin line... covering too much"):
-  // very light fill + lighter blur, the border + rounded corners do the
-  // sectioning work. Atmosphere wash bleeds through near-fully.
+  // Outer Section — max-width wrapper, NO glass styling. Eyebrow + meta
+  // render directly here (in page-flow); the glass frame inside wraps just
+  // the title + content. Per user feedback (2026-05-09 annotated): the
+  // section-container should NOT cover the eyebrow zone.
   return (
     <section
       className={cn(
-        "relative z-[1] mx-auto max-w-[1280px]",
-        "rounded-[32px] border border-white/50 bg-white/20 backdrop-blur-[10px] backdrop-saturate-[1.15]",
-        "px-5 py-8 md:px-10 md:py-12 md:rounded-[40px]",
-        "mb-4 md:mb-6",
+        "relative z-[1] mx-auto max-w-[1280px] px-5 py-8 md:px-8 md:py-10",
+        "mb-2 md:mb-4",
         className,
       )}
     >

@@ -1,4 +1,4 @@
-import { Section, SectionHeader, ScrollRow } from "./SectionHeader";
+import { Section, SectionMeta, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard } from "./SalonCard";
 
 /**
@@ -46,14 +46,16 @@ export default function Coiffeur() {
 
   return (
     <Section>
-      <SectionHeader
+      <SectionMeta
         eyebrow="Coiffeur · ganze Schweiz"
         meta={`${entries.length} Salons · combo Z`}
-        title="Coiffeur-Salons"
-        link={{ label: "Alle Coiffeurs →", href: "/coiffeur" }}
       />
-
-      <ScrollRow>
+      <SectionFrame>
+        <SectionTitle
+          title="Coiffeur-Salons"
+          link={{ label: "Alle Coiffeurs →", href: "/coiffeur" }}
+        />
+        <ScrollRow>
         {entries.map((e) => (
           <SalonCard
             key={e.slug}
@@ -71,7 +73,8 @@ export default function Coiffeur() {
             priceFromCHF={e.priceFromCHF}
           />
         ))}
-      </ScrollRow>
+        </ScrollRow>
+      </SectionFrame>
     </Section>
   );
 }
