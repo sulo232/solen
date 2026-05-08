@@ -194,8 +194,10 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
   isSaved?: boolean;
   /** Variant — controls row 2 content shape (§16.5). */
   variant: "availability" | "service";
-  /** Variant=availability: row 2 text per §16.5 next-slot logic. */
-  availabilityRow?: string;
+  /** Variant=availability: row 2 content per §16.5 next-slot logic.
+   *  Accepts JSX so consumers can mark bold parts via `<strong>` per
+   *  §16.5 typography rule (bold parts = Avant Garde 600 ink-1). */
+  availabilityRow?: React.ReactNode;
   /** Variant=service: featured service name. */
   service?: string;
   /** Variant=service: lowest price (CHF) — renders "ab CHF [price]". */
