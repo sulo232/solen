@@ -2893,90 +2893,161 @@ The two badges differ in **shape** and **color philosophy**, so users can instan
 
 ### §16.3 · Photo overlays (V2-D34 lock — light glassmorphic + color-philosophy)
 
-#### §16.3.0 · The color philosophy (universal formula)
+#### §16.3.0 · The universal badge color formula (the rule, not a list)
 
-Every tinted badge/pill across the card uses this rhythm:
+**The formula is the rule. The states named in §16.3.1 / §16.3.1b / §16.3.2 are illustrations — adding a new state means applying the formula to a new hue, not editing this section.**
 
+##### The recipe (apply to ANY tinted badge or pill)
+
+```css
+.glass-badge {
+  background:               rgba(<hue>, 0.22);            /* light tint */
+  border:                   1px solid rgba(<hue>, 0.32);  /* matching alpha border */
+  color:                    <deep-version-of-hue>;        /* see "deriving deep text" */
+  backdrop-filter:          blur(14px) saturate(1);
+  -webkit-backdrop-filter:  blur(14px) saturate(1);
+  box-shadow:               0 1px 3px rgba(26, 18, 9, 0.06);
+  font-family:              'ITC Avant Garde Gothic Std', ...;
+  font-weight:              700;
+  font-size:                10px;
+  line-height:              1.2;
+  letter-spacing:           0.02em;
+
+  /* shape varies by slot — see §16.3.1, §16.3.2 */
+  padding:                  5px 10px;        /* curation/discount rect padding */
+  /*           OR           5px 11px;          availability pill padding */
+  border-radius:            8px;             /* curation = rounded rect */
+  /*           OR           999px;             availability = full pill */
+}
 ```
-background: rgba(<hue>, 0.22)        — light tint, glass-like
-border:     1px solid rgba(<hue>, 0.32)  — matching alpha border
-color:      <deep-version-of-hue>    — text color is the "dark cousin" of the bg hue
-backdrop-filter: blur(14px) saturate(1)  — the glass effect
-box-shadow: 0 1px 3px rgba(26, 18, 9, 0.06)  — single soft shadow (V2-D15-4 compliant)
-```
 
-Each state picks its own `<hue>` and corresponding deep text color. White-glass variants use ink-1 text. **NO dots, NO inset highlights, NO solid color bgs, NO `saturate(>1)`** (per V2-D15-4 flat-pill discipline). The pill/badge color *is* the signal — meaning it doesn't need a redundant dot to say "free."
+##### Deriving "deep text" from a hue
 
-#### §16.3.1 · Curation badge (top-left, rounded rectangle)
+The text color is the **darker, more saturated cousin** of the bg hue. Method:
+1. Take the bg hue (e.g. yellow `#F2C144`)
+2. Drop the L channel (HSL lightness) by **~40–55%** — yellow `hsl(45, 87%, 60%)` → deep amber `hsl(40, 86%, 30%)` ≈ `#8B5E0F`
+3. Optionally bump saturation slightly to keep it vivid against the 0.22-alpha tint
+4. Verify **WCAG AA contrast** on the resulting tint-over-white surface: ≥ 4.5:1 for body text, ≥ 3:1 for ≥18px UI
 
-State-driven — exactly one badge per card. Backend auto-assigns via `/api/admin/badges/auto-assign`. Priority order applies — only the highest-priority badge shows.
+##### White-neutral variant (when label TEXT differentiates instead of hue)
 
-|priority|state condition                                                          |label          |bg tint                              |text color    |border                       |
-|--------|-------------------------------------------------------------------------|---------------|-------------------------------------|--------------|-----------------------------|
-|1       |Algorithmic curation (rating × volume × reply rate × recency × response) |`Solen Favorit`|`rgba(242, 193, 68, 0.22)` (yellow)  |`#8B5E0F` (deep amber)|`rgba(242, 193, 68, 0.32)` |
-|2       |Rating ≥ 4.7 + ≥ 50 reviews                                              |`Top bewertet` |`rgba(255, 255, 255, 0.62)` (white)  |`#1A1209` (ink-1)|`rgba(255, 255, 255, 0.45)`|
-|3       |Top 10% bookings in city × category in trailing 30d                       |`Beliebt`      |`rgba(255, 255, 255, 0.62)` (white)  |`#1A1209` (ink-1)|`rgba(255, 255, 255, 0.45)`|
-|4       |First 60 days after onboarding                                           |`Neu`          |`rgba(255, 255, 255, 0.62)` (white)  |`#1A1209` (ink-1)|`rgba(255, 255, 255, 0.45)`|
-|—       |None of the above qualify                                                |(no badge)     |—                                    |—             |—                            |
+For "neutral / generic" badges where multiple variants share the same visual treatment and only the label text changes (e.g. Top bewertet / Beliebt / Neu — different qualifications, identical visual style), use:
 
-|element        |spec                                                                  |
-|---------------|----------------------------------------------------------------------|
-|position       |`top: 8px; left: 8px;`                                                |
-|typography     |Avant Garde Gothic 700 10px, letter-spacing `0.02em`                  |
-|padding        |`5px 10px`                                                            |
-|radius         |`8px` (rounded rectangle — distinguishes from availability pill)     |
-|backdrop-filter|`blur(14px) saturate(1)`                                              |
-|shadow         |`0 1px 3px rgba(26, 18, 9, 0.06)`                                     |
-|aria-label     |reads label text (e.g. `Solen Favorit`, `Top bewertet`)              |
+|prop          |value                                  |notes                                              |
+|--------------|---------------------------------------|---------------------------------------------------|
+|bg            |`rgba(255, 255, 255, 0.62)`            |heavier alpha needed for legibility on cat-color bg|
+|border        |`rgba(255, 255, 255, 0.45)`            |                                                   |
+|color         |ink-1 `#1A1209`                        |                                                   |
+|other props   |inherit from §16.3.0 recipe            |                                                   |
 
-**Solen Exclusive (5th badge mentioned in BACKEND_NEEDS_UI.md):** **NOT in v1.** Q10 priority order locks 4 badges. Solen Exclusive defers to v2 — re-evaluate when partner-exclusivity deals exist.
+##### Examples (illustrative — NOT exhaustive)
 
-#### §16.3.1b · Discount badge (top-left, when applicable — mutually exclusive w curation)
+The following 5 examples are the states currently locked in v1. **More can be added by applying the formula above to a new hue:**
 
-Last-Minute / promotional cards use this variant in the same top-left slot as curation. They never co-exist with curation — a discounted salon is already "promoted" via the discount, no need to also stamp it.
+|hue (bg base)         |bg                          |border                       |deep text       |contrast (over white) |currently used for          |
+|----------------------|----------------------------|-----------------------------|----------------|----------------------|----------------------------|
+|yellow `#F2C144`      |`rgba(242,193,68,0.22)`     |`rgba(242,193,68,0.32)`      |`#8B5E0F`       |~5.6:1                |Solen Favorit (§16.3.1)     |
+|success-green `#16A34A`|`rgba(22,163,74,0.22)`     |`rgba(22,163,74,0.32)`       |`#0E7A38`       |~5.4:1                |today/now availability (§16.3.2)|
+|warning-amber `#F59E0B`|`rgba(245,158,11,0.22)`    |`rgba(245,158,11,0.32)`      |`#7A4A14`       |~6.2:1                |discount badge (§16.3.1b)   |
+|brand-teal `#043338`  |`rgba(4,51,56,0.14)`        |`rgba(4,51,56,0.22)`         |brand-teal      |very high             |this-week availability (§16.3.2)|
+|ink-3 `#7A6957`       |`rgba(122,105,87,0.18)`     |`rgba(122,105,87,0.25)`      |ink-2 `#56463E` |~6.8:1                |pause / closed (§16.3.2)    |
+|+ white-neutral variant (above)                                                              |                |                      |Top bewertet / Beliebt / Neu (§16.3.1)|
 
-|state condition                             |copy           |bg tint                              |text color    |border                       |
-|--------------------------------------------|---------------|-------------------------------------|--------------|-----------------------------|
-|Last-minute slot has discount applied       |`−10%` to `−40%` (numeric)|`rgba(245, 158, 11, 0.22)` (warning amber) |`#7A4A14` (deep amber) |`rgba(245, 158, 11, 0.32)` |
-|Promotional campaign (e.g. opening week, partnership) |campaign label (e.g. `Solen Deal`) |same as discount|same|same|
+##### Adding a new state (the meta-rule)
 
-|element        |spec                                                                  |
-|---------------|----------------------------------------------------------------------|
-|position       |`top: 8px; left: 8px;` (same slot as curation)                        |
-|typography     |Avant Garde Gothic 700 10px, letter-spacing `0.02em`                  |
-|padding        |`5px 10px`                                                            |
-|radius         |`8px` (rounded rectangle — matches curation shape)                    |
-|backdrop-filter|`blur(14px) saturate(1)`                                              |
-|shadow         |`0 1px 3px rgba(26, 18, 9, 0.06)`                                     |
-|aria-label     |reads discount + savings (e.g. `20 Prozent Rabatt`)                   |
+When the system needs a new badge state in v1.x or v2 (e.g. "Verifiziert", "Solen Exclusive Partnership", "VIP Member", "Pre-launch"):
 
-**Mutually exclusive with curation badge.** A Last-Minute card with `−20%` cannot also show `Solen Favorit` — discount wins (more conversion-relevant signal). Backend assigns one or the other based on context.
+1. **Pick a hue** from §3 semantic palette OR §1 brand palette OR a documented brand-coordinate
+2. **Apply the formula** above with that hue
+3. **Derive deep text** per the L-shift method
+4. **Verify contrast** (WCAG AA on the 0.22-alpha tint over white)
+5. **Add a new row** to the examples table above — don't replace existing rows
+6. **Log the new state** as a V2-D## decision entry — what triggers it, where it appears, priority order if it conflicts with existing badges
 
-**Anti-pattern:** solid orange/red bg discount pill (V1 era) — retired V2-D34. Discount must follow universal color formula (light tint + deep same-hue text + matching alpha border).
+##### Anti-patterns (formula-breaking — banned)
 
-#### §16.3.2 · Availability pill (bottom-left, full pill)
+- ❌ Solid bg color + white text on any badge (V1 pattern — retired V2-D15-4)
+- ❌ Linear-gradient background (banned per V2-D15-4 flat-pill discipline)
+- ❌ `backdrop-filter: ... saturate(>1)` (V2-D15-4 — must be `saturate(1)`)
+- ❌ Inset highlight `inset 0 1px 0 rgba(255,255,255,X)` (V2-D15-4 Web 2.0 inner-glow ban)
+- ❌ Multi-shadow stacking (max single soft shadow per V2-D15-4)
+- ❌ Inventing new alpha values per state (must be 0.22 bg / 0.32 border, OR documented variant alphas like 0.14/0.22 brand-teal exception above)
+- ❌ Pulsing dot inside a tinted badge (color = signal; dots banned V2-D34)
+- ❌ Coral / orange / red hues (retired V2-D15-3 — only V3 brand + V3 §3 semantic + brand-coordinates allowed)
 
-State-driven — exactly one state per card render OR none (no pill if no live availability).
+#### §16.3.1 · Curation badge slot (top-left, rounded rectangle)
 
-|state condition                                              |copy examples                          |bg tint                            |text color           |border                           |
-|-------------------------------------------------------------|---------------------------------------|-----------------------------------|---------------------|---------------------------------|
-|Slot within ≤ 30 min OR slot later today                      |`In 15 Min` · `Heute 16:00` · `3 Slots heute`|`rgba(22, 163, 74, 0.22)` (green) |`#0E7A38` (deep green)|`rgba(22, 163, 74, 0.32)`        |
-|No slot today, but slot this week                            |`Diese Woche` · `Nächster Mo. 09:00`   |`rgba(4, 51, 56, 0.14)` (brand-teal)|`#043338` (brand)   |`rgba(4, 51, 56, 0.22)`          |
-|Salon temporarily closed (vacation, sickness)                |`Pause bis [date]`                     |`rgba(122, 105, 87, 0.18)` (ink-3) |`#56463E` (ink-2)   |`rgba(122, 105, 87, 0.25)`       |
-|No slots ever (closed permanently)                           |(card hidden from feeds — see §16.6)   |—                                  |—                   |—                                |
-|Slot exists tomorrow but not today AND not 'this week' state |(no pill)                              |—                                  |—                   |—                                |
+**Slot definition:** the top-left position of the photo, rounded rectangle shape (8px radius), 5px-10px padding. Apply §16.3.0 formula — pick a hue, derive deep text, done. Backend assigns via `/api/admin/badges/auto-assign`.
 
-|element        |spec                                                                  |
-|---------------|----------------------------------------------------------------------|
-|position       |`bottom: 8px; left: 8px;`                                             |
-|typography     |Avant Garde Gothic 700 10px, letter-spacing `0.02em`                  |
-|padding        |`5px 11px`                                                            |
-|radius         |`var(--radius-pill)` (999px — full pill, distinguishes from curation)|
-|backdrop-filter|`blur(14px) saturate(1)`                                              |
-|shadow         |`0 1px 3px rgba(26, 18, 9, 0.06)`                                     |
-|aria-label     |reads pill text (e.g. `In 15 Minuten frei`, `Heute um 16 Uhr`)        |
+**Conflict rule:** exactly one badge per card. When a salon qualifies for multiple states, the highest-priority state wins. New states added in v1.x or v2 must be inserted into this priority order via a V2-D## decision entry.
 
-**No dots, no pulses.** Color = signal. Removing the dot reduces visual noise and lets the pill itself carry the meaning. The `box-shadow: 0 0 0 3px rgba(<dot>, 0.2)` ring around dots from earlier specs is retired V2-D34.
+**v1 states (locked V2-D34 — extensible):**
+
+|priority|state condition                                                          |label          |hue applied                |trigger threshold |
+|--------|-------------------------------------------------------------------------|---------------|---------------------------|------------------|
+|1       |Algorithmic curation (rating × volume × reply rate × recency × response) |`Solen Favorit`|yellow `#F2C144` (§16.3.0) |scoring formula TBD with backend|
+|2       |High-confidence rating signal                                            |`Top bewertet` |white-neutral (§16.3.0)    |≥ 4.7 stars + ≥ 50 reviews|
+|3       |Popularity signal                                                        |`Beliebt`      |white-neutral (§16.3.0)    |top 10% bookings in city × category, trailing 30d|
+|4       |New-salon signal                                                         |`Neu`          |white-neutral (§16.3.0)    |first 60d after onboarding|
+|—       |None of the above qualify                                                |(no badge)     |—                          |—                 |
+
+**Solen Exclusive (5th from BACKEND_NEEDS_UI.md):** NOT in v1 — defers to v2 when partner-exclusivity deals exist. When introduced, apply §16.3.0 formula with a chosen hue + insert into priority order.
+
+|element     |spec                                                              |
+|------------|------------------------------------------------------------------|
+|position    |`top: 8px; left: 8px;`                                            |
+|shape       |rounded rectangle, `border-radius: 8px`                          |
+|visual      |per §16.3.0 formula, hue per state row above                      |
+|aria-label  |reads label text (e.g. `Solen Favorit`, `Top bewertet`)           |
+
+#### §16.3.1b · Discount badge slot (top-left — same position, mutually exclusive w curation)
+
+**Slot definition:** same top-left position + rounded rectangle shape as §16.3.1. Discount and curation share the slot — they never co-exist. A salon with a discount is already promoted; piling on a curation stamp would be visually redundant + crowd the slot.
+
+**Conflict rule:** discount wins over curation when both qualify (discount is more conversion-relevant). Backend assigns via `/api/admin/badges/auto-assign` with the same priority logic.
+
+**v1 states (locked V2-D34 — extensible):**
+
+|state condition                                          |copy                                |hue applied                                |
+|---------------------------------------------------------|------------------------------------|-------------------------------------------|
+|Last-minute slot has a discount applied                  |`−10%` to `−40%` (numeric)          |warning-amber `#F59E0B` (§16.3.0)         |
+|Promotional campaign (opening week, partnership, etc.)   |campaign label (e.g. `Solen Deal`)  |warning-amber `#F59E0B` (same hue)        |
+
+**v2+ extension example:** if we introduce a "VIP Member" exclusive deal slot, apply §16.3.0 formula with a different hue (e.g. brand-pale or a dedicated VIP hue) + log as a new V2-D##. Don't reuse the warning-amber unless the new state is semantically the same as discount.
+
+|element     |spec                                                              |
+|------------|------------------------------------------------------------------|
+|position    |`top: 8px; left: 8px;` (same slot as §16.3.1)                     |
+|shape       |rounded rectangle, `border-radius: 8px`                          |
+|visual      |per §16.3.0 formula, hue per state row above                      |
+|aria-label  |reads discount + savings (e.g. `20 Prozent Rabatt`)               |
+
+#### §16.3.2 · Availability pill slot (bottom-left, full pill)
+
+**Slot definition:** bottom-left position of the photo, full pill shape (999px radius), 5px-11px padding. Different shape from §16.3.1 so curation and availability are distinguishable at a glance ("rectangle = stamp / pill = live state"). Apply §16.3.0 formula.
+
+**Conflict rule:** exactly one state per card OR no pill at all (when no live availability data and not in a "this week" or "pause" state).
+
+**v1 states (locked V2-D34 — extensible):**
+
+|state condition                                              |copy examples                          |hue applied                                  |
+|-------------------------------------------------------------|---------------------------------------|---------------------------------------------|
+|Slot within ≤ 30 min OR slot later today                      |`In 15 Min` · `Heute 16:00` · `3 Slots heute`|success-green `#16A34A` (§16.3.0)        |
+|No slot today, but slot this week                            |`Diese Woche` · `Nächster Mo. 09:00`   |brand-teal `#043338` (§16.3.0)              |
+|Salon temporarily closed (vacation, sickness)                |`Pause bis [date]`                     |ink-3 `#7A6957` (§16.3.0)                   |
+|No slots ever (closed permanently)                           |(card hidden from feeds — see §16.6)   |—                                            |
+|Slot exists tomorrow but not today AND not "this week"        |(no pill)                              |—                                            |
+
+**v2+ extension example:** if we introduce a "Walk-in queue · 12 Min Wartezeit" state, apply §16.3.0 formula with brand-teal mid `#0A6873` or a new hue + log as new V2-D## + add to the table above. Don't reuse green (= bookable today) for walk-ins (= different commitment level).
+
+**No dots, no pulses, no animation.** Color = signal. Removing the dot reduces visual noise and lets the pill itself carry the meaning. The `box-shadow: 0 0 0 3px rgba(<dot>, 0.2)` ring around dots from earlier specs is retired V2-D34.
+
+|element     |spec                                                              |
+|------------|------------------------------------------------------------------|
+|position    |`bottom: 8px; left: 8px;`                                         |
+|shape       |full pill, `border-radius: var(--radius-pill)` (999px)            |
+|visual      |per §16.3.0 formula, hue per state row above                      |
+|aria-label  |reads pill text (e.g. `In 15 Minuten frei`, `Heute um 16 Uhr`)    |
 
 #### §16.3.3 · Heart icon (top-right, floating)
 
