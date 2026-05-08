@@ -233,7 +233,10 @@ export function SalonCard({
       aria-label={`${name} — Termin buchen`}
       className={cn(
         "group flex shrink-0 flex-col snap-start",
-        "w-[160px] md:w-[180px]",
+        // 150px mobile (was 160) so 2 full + clear "bit of 3rd" peek visible
+        // on 375px viewport. Desktop unchanged at 180. V3 §16.2 spec deviation
+        // logged as V2-D## TODO.
+        "w-[150px] md:w-[180px]",
         "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-[14px]",
         "active:scale-[0.94] active:duration-100",
         className,

@@ -166,11 +166,11 @@ export function Section({
   className?: string;
 }) {
   // Outer Section — minimal padding so the SectionFrame inside reaches
-  // near-edge of viewport. Both axes "matching nearness" per user feedback.
+  // near-edge of viewport. Pushed to px-1 mobile (4px) for max card peek.
   return (
     <section
       className={cn(
-        "relative z-[1] mx-auto max-w-[1280px] px-2 py-3 md:px-4 md:py-4",
+        "relative z-[1] mx-auto max-w-[1280px] px-1 py-3 md:px-3 md:py-4",
         "mb-2 md:mb-3",
         className,
       )}
