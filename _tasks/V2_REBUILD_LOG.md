@@ -352,6 +352,39 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
 
+### V2-D38 (2026-05-09 evening) — Decision 5 lock: split MASTER_ROADMAP — brand non-negotiables → LIVE_TRUTH §0d, everything else → SOLEN_NEXT.md, source archived
+
+- **Context:** Decision 5 in V2-D33 doc consolidation flow asked where MASTER_ROADMAP.md (437 lines, dated 2026-04-22) should live: inline as LIVE_TRUTH §35 (Option A), pointer-only stub (Option B), Hybrid w triage (Option C), archive entirely (Option D), or split (Option E — extract survivors to new file or surgical edit).
+- **Triage finding:** roadmap is structurally different from gap audit. Two layers, different decay rates:
+  - **Tactical layer (~50%):** "Phases 0-8" sequence, exit criteria, ship-blocker checklists. Already superseded by V2_REBUILD_LOG.md `## Status` (V3 has its own active phase plan).
+  - **Strategic layer (~50%):** market scope, non-negotiables, moat features list, risk register, target metrics, ops state. **No other home in the codebase.**
+- **User reasoning that flipped my recommendation:** "isnt it better if we make a new file of what to do in the future like a checklis typa sh and u mention to me smtimes instead of putting into live truth". I had recommended Option C (inline §35); user pushed back with the point that LIVE_TRUTH is a spec doc and a roadmap pollutes it (different audience, different update cadence, different decay rate).
+- **Re-decision after pushback:** **E (split with triage)** — strategic content that constrains UI/UX → LIVE_TRUTH §0d (5 brand non-negotiables only); everything else → new file `_tasks/SOLEN_NEXT.md`; full original archived.
+- **Triage detail (47-item line-by-line audit):**
+  - **Cropped (17 items):** Phase 0/1 stale (CLAUDE.md 194-line ref, SOLEN_DESIGN.md ref, solen-coral.html ref, V2 archived stuff, build green, reply badges/StaffPortfolio shipped notes, Q3-Q11 ship-blockers, Claude Design iteration workflow, INCOMPLETE_FEATURES Phase 1.5 consolidation TODO, coral non-negotiable, dead branch list 16d old, moat/session3 archive idea, feature/customer-frontend delete-after-merge note, Claude Design usage decision, owner TBD, budget undocumented, final stale status line, Claude-Design-drift risk row).
+  - **Kept (30 items):** photographer brief, quality bar, component-polish list, mobile UX bar, payment ship-blockers, i18n completeness, BACKEND_NEEDS_UI ~10 items, scraped flywheel (why+items+exit), launch playbook (gating+onboarding+marketing+referral+analytics), 7 moat features, 5 growth plays, city expansion, DACH prerequisites + markets + out-of-scope, 5 brand non-negotiables, 6-row risk register (minus Claude-Design row), Vercel auto-deploy + dual project ops state, target metrics table, market scope decision, sequencing rule.
+- **Split mechanic:**
+  - **5 brand non-negotiables → LIVE_TRUTH §0d** (Swiss-warm voice / allergy legal-grade / payment reliability / mobile-first / open booking inventory). These constrain UI/UX directly (e.g. "no call-to-confirm" = no `[Anrufen]` CTA on salon detail) — they belong with the spec.
+  - **Everything else → `_tasks/SOLEN_NEXT.md`** — 13 sections: §1 quality bar, §2 strategic decisions, §3 pre-launch UI work, §4 scraped flywheel, §5 public launch playbook, §6 deferred features ledger, §7 growth plays, §8 city expansion, §9 DACH/EU, §10 risk register, §11 target metrics, §12 ops state, §13 anti-patterns.
+  - **Tactical phase plan dropped entirely** — V2_REBUILD_LOG.md `## Status` already owns active phase status (single source).
+- **Drift prevention:**
+  - SOLEN_NEXT.md banner at top: "Active phase status lives in `V2_REBUILD_LOG.md ## Status`. This file does NOT track current phase — it tracks **what work exists**."
+  - Maintenance rule baked into header: "when an item ships, strike it in the same commit (V2-D05 incremental cleanup pattern)."
+  - File-health check at bottom: "if every checkbox in §3 + §4 + §5 is unchecked when LIVE_TRUTH says we've shipped Phase 4, the file has drifted."
+  - LIVE_TRUTH §0c.1 gets new row for SOLEN_NEXT.md authority (roadmap / deferred / risks / metrics / ops).
+  - LIVE_TRUTH §0c.2 archived list updated for MASTER_ROADMAP.archived.md.
+- **Why this beats my original §35 recommendation:**
+  1. LIVE_TRUTH stays a spec doc (its job per CLAUDE.md "the principal — current locked state").
+  2. Roadmap update cadence (sprint-by-sprint) doesn't churn LIVE_TRUTH.
+  3. New agents see clean separation: §0c.1 row tells them where roadmap lives; they don't have to scroll past 250 lines of TODOs to find spec.
+  4. The "I mention SOLEN_NEXT.md sometimes" pattern (per user) = pull-based reference at decision points, not push-based pollution.
+- **Files:**
+  - **Created:** `_tasks/SOLEN_NEXT.md` (~270 lines, 13 sections + anti-patterns + file-health check).
+  - **Archived:** `_tasks/MASTER_ROADMAP.md` → `_tasks/archive/MASTER_ROADMAP.archived.md` via `git mv` (history preserved).
+  - **Patched:** `_tasks/SOLEN_LIVE_TRUTH.md` — §0c.1 new row added; §0c.2 MASTER_ROADMAP line updated; new §0d section added (~80 lines, between §0c.4 and Index).
+- **Insight (lock):** decisions 4 and 5 both involved point-in-time snapshots (audit / roadmap), but only Decision 4 was pure archive. Roadmap had a strategic layer worth preserving — the meta-skill was recognizing the **layer split** (tactical decay-fast vs strategic decay-slow) and treating each layer with the right placement strategy. Hybrid wasn't right for either, because Hybrid optimizes for "summary+detail of one concern" — neither doc was that.
+- **Status:** locked. Decision 5 done. Next: Decision 6 (retired Q-locks decision archeology — preserve historically useful Q-locks somewhere or just delete?).
+
 ### V2-D37 (2026-05-09 evening) — Decision 4 lock: archive GAP_AUDIT_V2.md + no §36 (point-in-time snapshot, not perpetual tracker)
 
 - **Context:** Decision 4 in V2-D33 doc consolidation flow asked where the 17-gap punch list (`_tasks/GAP_AUDIT_V2.md`, dated 2026-04-22) should live: inline as LIVE_TRUTH §36 (Option A), pointer-only stub from §36 (Option B), Hybrid surface→gap map (Option C), or archive entirely + don't create §36 at all (Option D).

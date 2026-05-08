@@ -92,6 +92,7 @@ This file (`SOLEN_LIVE_TRUTH.md`) is the **principal** for UX, visual, and produ
 | **i18n / routing rules** (no parallel routes, locale handling, AI localization) | `_rules/I18N_ROUTING.md` | §30 cites the rules | new rule → I18N_ROUTING.md |
 | **Decision audit trail** (every V2-D## with full context) | `_tasks/V2_REBUILD_LOG.md` | LIVE_TRUTH cites V2-D## by number; full entry in log | new decision → V2_REBUILD_LOG.md w full context. LIVE_TRUTH only references the number when relevant. |
 | **Incomplete features** (sacred file per CLAUDE.md) | `_tasks/INCOMPLETE_FEATURES.md` | §37 indexes the file | failed/blocked feature → append to INCOMPLETE_FEATURES.md |
+| **Roadmap, deferred features, risk register, ops state** (what's NEXT, not what's locked) | `_tasks/SOLEN_NEXT.md` (V2-D38 lock) | §0d hosts the 5 brand non-negotiables ONLY (because they constrain UI/UX). Everything else (phase plan, moat features ledger, launch playbook, city expansion, DACH, risks, metrics, ops) lives in SOLEN_NEXT.md | feature ships → strike entry from SOLEN_NEXT.md in same commit (V2-D05 incremental cleanup discipline). Active phase status = `V2_REBUILD_LOG.md ## Status` (single source). |
 | **Project commands / deployment / stack reference** | `CLAUDE.md` (project) + `_docs/PROJECT_REFERENCE.md` | not duplicated in LIVE_TRUTH | rare changes; CLAUDE.md is the entry-point |
 
 ### §0c.2 · Archived — do NOT consult (V2-D33 archive)
@@ -102,7 +103,7 @@ These docs were the principal in earlier eras. They are now **archived to `_task
 - `_tasks/REDESIGN_INVENTORY.md` (V2 component inventory — state machines + APIs migrated to LIVE_TRUTH §X.99 implementation mappings).
 - `_tasks/BACKEND_NEEDS_UI.md` (V2 backend → UI gap list — items either built into V3 §16 / §F.x or deferred to v2 with a V2-D## entry).
 - `_tasks/SOLEN_BUILD_MAP.md` (V2 phased build plan — superseded by V3 phase plan in `_tasks/V2_REBUILD_LOG.md` "Status").
-- `_tasks/MASTER_ROADMAP.md` (V2 product roadmap — content extracted into V3 §35 if user opts in during V2-D33 Decision 5; otherwise also archived).
+- `_tasks/archive/MASTER_ROADMAP.archived.md` (V2-D38 lock — V2 product roadmap from 2026-04-22, ~50% obsolete after V3 shipped. **Strategic survivors split:** 5 brand non-negotiables migrated to LIVE_TRUTH §0d (because they constrain UI/UX); roadmap + deferred features ledger + launch playbook + city expansion + DACH + risk register + target metrics + ops state migrated to `_tasks/SOLEN_NEXT.md`. Tactical phase plan dropped — V2_REBUILD_LOG.md `## Status` already owns active phase status (single source).
 - `_tasks/archive/GAP_AUDIT_V2.archived.md` (V2-D37 lock — point-in-time gap audit from 2026-04-22, ~60% obsolete after V3 shipped V2-D15-3 / V2-D26 / V2-D34. **No §36 in LIVE_TRUTH.** Surviving gaps surface during phase work and either fix-in-place or migrate to `_tasks/INCOMPLETE_FEATURES.md` per CLAUDE.md "INCOMPLETE_FEATURES is sacred"). Re-derive against V3 spec via `grep`/`Read`; do not treat the archived snapshot as authoritative.
 - `_tasks/PHASE_8_STRUCTURAL_ALIGNMENT.md` (historical — already retired).
 - `_tasks/SOLEN_BUILD_LEARNINGS.md` (historical — lessons extracted into LESSONS_LEARNED.md).
@@ -133,6 +134,43 @@ Examples:
 5. For each adjacent concern (DB / security / code safety): consult that section's authoritative source per §0c.1.
 6. Check `_tasks/V2_REBUILD_LOG.md` for the latest V2-D## entry on the surface — there may be open decisions or recent changes.
 7. Build. When in conflict, the authoritative source per §0c.1 wins.
+
+---
+
+## §0d · Brand & product non-negotiables (V2-D38 lock)
+
+These five rules are spec-adjacent — they directly constrain UI/UX decisions, so they live in LIVE_TRUTH instead of `_tasks/SOLEN_NEXT.md` with the rest of the strategy material. **Treat them like color tokens or typography rules — non-negotiable, no exceptions, no V2-D## needed to invoke.**
+
+### §0d.1 · Swiss-warm voice
+Never generic, never corporate, never `#beautybooking`. Voice is warm, regional, specific. "Schnitt n Pflege fürs Haar" beats "Hair Care Services." Baseldeutsch tones acceptable in DE strings; FR/IT/EN keep their own native warmth.
+
+**UI consequence:** every user-facing string passes the warmth test. Generic stock copy ("Get started" / "Learn more" / "Book now") gets replaced with a Solen-voiced equivalent.
+
+### §0d.2 · Allergy/health data — legal-grade display
+Customer allergy tags (PPD, parabens, sulfates, latex, etc.) MUST be displayed in salon-side booking views with explicit acknowledgment before service. This is a Swiss consumer-protection + health-regulation requirement, not a UX nice-to-have.
+
+**UI consequence:** allergy display is not collapsible, not behind a tab, not below the fold. Salon-side booking detail surfaces allergies prominently with a checkbox-style acknowledge gate.
+
+### §0d.3 · Payment reliability — no partial states
+Booking confirmed = money flows = salon notified. Any state where the user thinks "booked" but Stripe/DB disagrees is a failure mode that destroys trust. No "call to confirm" handoffs. No "we'll process payment manually" fallbacks.
+
+**UI consequence:** every booking surface shows real-time payment status. Optimistic UI is acceptable IF the rollback path is bulletproof. Confirmation page §C only renders after the full happy-path completes.
+
+### §0d.4 · Mobile-first
+Desktop is a bonus. Phone is the customer's reality — Swiss salon users overwhelmingly book on mobile. Touch targets ≥44px (WCAG). Active-scale on every interactive. Backdrop blur verified on iOS Safari (broken on Android < 12 — fallback to flat).
+
+**UI consequence:** mobile breakpoints are designed first; desktop expands the mobile layout, not the other way around. No desktop-only features in v1 (e.g., hover-only reveal patterns banned).
+
+### §0d.5 · Open booking inventory
+Everything bookable is bookable live. No "call to confirm" flows, no "request quote" wait-states, no "we'll get back to you" delays. If a salon's listed, their next 30 days of slots are queryable + bookable end-to-end.
+
+**UI consequence:** no `[Anrufen]` CTA on salon detail. No "request availability" form. The booking wizard §BW always renders a real slot grid against real availability, not a placeholder.
+
+### §0d.6 · Anti-patterns (V2-D38)
+
+❌ Treating any §0d rule as a "phase 1 polish item" — these are non-negotiables. They precede phase planning.
+❌ Adding a new non-negotiable here without a V2-D## decision. The set is intentionally small (5 rules); proliferation = the rules become advisory.
+❌ Using §0d as a roadmap or TODO list. Strategic + tactical work lives in `_tasks/SOLEN_NEXT.md`. §0d is brand law only.
 
 ---
 
