@@ -47,7 +47,11 @@ module.exports = {
         "s-ink-2": "#56463E",
         "s-ink-3": "#7A6957",  // V3 update: was #9F8A7E (cool grey), now #7A6957 (warm grey) per LIVE_TRUTH §4
         "s-border": "#E8DFD2",
-        "s-bg": { base: "#FFFFFF", surface: "#FAF7F3", raised: "#FFFFFF", sunken: "#FAF7F3" },  // dropped 'cream' #FFF4E8 (retired V2-D15)
+        "s-bg": { base: "#FFFFFF", surface: "#FAF7F3", raised: "#FFFFFF", sunken: "#FAF7F3", active: "#FFF4E8" },
+        // V2-D16 (2026-05-08) note: cream #FFF4E8 was wrongly retired in V2-D15 comment above.
+        // V2-D15 retired CREAM SUBSTRATE (page bg #FBF8F3 → white). It did NOT retire #FFF4E8 micro-tint
+        // for input active-typing state (LIVE_TRUTH §F.1.0 + §14.3 search row both still cite it).
+        // Re-added as `s-bg.active` — distinct from substrate. Use `bg-s-bg-active` in className.
         // ── Semantic Status Tokens (LIVE_TRUTH §3) ──
         "s-love":     "#FF4A6B",  // V3 added — heart icons (distinct from error)
         "s-success": { DEFAULT: "#16A34A", bg: "#E8F5E9" },
@@ -123,6 +127,12 @@ module.exports = {
         "ease-out-back": "cubic-bezier(0.34, 1.56, 0.64, 1)",
         "ease-in-subtle": "cubic-bezier(0.55, 0, 1, 0.45)",
         "spring-bounce": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        // ── V3 motion vocabulary (V2-D16, 2026-05-08) — LIVE_TRUTH §F.1 + §5b ──
+        // Use as `ease-snap`, `ease-spring`, `ease-glide`, `ease-thud` in className.
+        "snap":   "cubic-bezier(0.4, 0, 0.2, 1)",     // standard UI transitions (focus, color)
+        "spring": "cubic-bezier(0.34, 1.56, 0.64, 1)", // bouncy reveal (toggle, check)
+        "glide":  "cubic-bezier(0.16, 1, 0.3, 1)",     // long-distance smooth (sheet open)
+        "thud":   "cubic-bezier(0.7, 0, 0.84, 0)",     // press-down feel (button press scale)
       },
       transitionProperty: {
         "transform-opacity": "transform, opacity",
