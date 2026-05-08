@@ -103,7 +103,7 @@ These docs were the principal in earlier eras. They are now **archived to `_task
 - `_tasks/BACKEND_NEEDS_UI.md` (V2 backend → UI gap list — items either built into V3 §16 / §F.x or deferred to v2 with a V2-D## entry).
 - `_tasks/SOLEN_BUILD_MAP.md` (V2 phased build plan — superseded by V3 phase plan in `_tasks/V2_REBUILD_LOG.md` "Status").
 - `_tasks/MASTER_ROADMAP.md` (V2 product roadmap — content extracted into V3 §35 if user opts in during V2-D33 Decision 5; otherwise also archived).
-- `_tasks/GAP_AUDIT_V2.md` (17 gap punch list — extracted into V3 §36 if user opts in during V2-D33 Decision 4).
+- `_tasks/archive/GAP_AUDIT_V2.archived.md` (V2-D37 lock — point-in-time gap audit from 2026-04-22, ~60% obsolete after V3 shipped V2-D15-3 / V2-D26 / V2-D34. **No §36 in LIVE_TRUTH.** Surviving gaps surface during phase work and either fix-in-place or migrate to `_tasks/INCOMPLETE_FEATURES.md` per CLAUDE.md "INCOMPLETE_FEATURES is sacred"). Re-derive against V3 spec via `grep`/`Read`; do not treat the archived snapshot as authoritative.
 - `_tasks/PHASE_8_STRUCTURAL_ALIGNMENT.md` (historical — already retired).
 - `_tasks/SOLEN_BUILD_LEARNINGS.md` (historical — lessons extracted into LESSONS_LEARNED.md).
 - `_tasks/INVENTORY_FULL.md` (historical app inventory — superseded by component code inspection).

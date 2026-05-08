@@ -352,6 +352,30 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
 
+### V2-D37 (2026-05-09 evening) — Decision 4 lock: archive GAP_AUDIT_V2.md + no §36 (point-in-time snapshot, not perpetual tracker)
+
+- **Context:** Decision 4 in V2-D33 doc consolidation flow asked where the 17-gap punch list (`_tasks/GAP_AUDIT_V2.md`, dated 2026-04-22) should live: inline as LIVE_TRUTH §36 (Option A), pointer-only stub from §36 (Option B), Hybrid surface→gap map (Option C), or archive entirely + don't create §36 at all (Option D).
+- **Triage finding:** the audit was written 16 days before V3 shipped (V2-D15-3 brand pivot 2026-05-07, V2-D26 typography 2026-05-08, V2-D34 §16 card system 2026-05-09). Roughly **10 of 17 gaps are obsolete** because V3 supersedes the underlying Q-locks they audited against:
+  - **Still real (3):** NEW-3 hardcoded "Basel" in messages × 4 locales · NEW-7 price format not centralized · NEW-15 TWINT not integrated.
+  - **Pre-V3, likely obsolete (~10):** NEW-1 `aspect-[4/3]` audited against Q1 (V3 §16 may differ) · NEW-2 dark mode classes (V3 retired dark mode — cleanup, not "spec violation") · NEW-9 bottom nav 5-vs-4 (V3 may redefine) · NEW-10 Solen Favorit badge (**already shipped V2-D34** §16) · NEW-16 Bebas Neue scope (V3 retired Bebas) · NEW-17 blobs (V3 redefined as atmosphere washes) · NEW-13/14 duplicate NEW-1.
+  - **Self-referential (1):** NEW-6 SOLEN_DESIGN.md voice example — but SOLEN_DESIGN.md is being archived per V2-D33.
+- **User picked D.** Chose archive + re-derive over carrying obsolete data forward.
+- **Decision:** **D — archive entirely. No §36 in LIVE_TRUTH.** Three reasons:
+  1. Hybrid pattern (Decisions 2 + 3) optimizes for evergreen mappings; impl-status snapshots go stale by definition.
+  2. Migrating obsolete data anywhere — inline / hybrid / pointer — creates the exact drift §0c was just fortified against.
+  3. CLAUDE.md already designates `_tasks/INCOMPLETE_FEATURES.md` as the sanctioned ongoing tracker for partial features ("INCOMPLETE_FEATURES is sacred"). Don't compete with the existing channel.
+- **Mechanics:**
+  - `_tasks/GAP_AUDIT_V2.md` → `_tasks/archive/GAP_AUDIT_V2.archived.md` via `git mv` (preserves history).
+  - LIVE_TRUTH §0c.2 line for GAP_AUDIT updated: removed "extracted into §36 if user opts in" placeholder; replaced with V2-D37 lock copy + redirect to `INCOMPLETE_FEATURES.md` for surviving gaps.
+  - **No §36 added.** Phase plan in V2_REBUILD_LOG.md "Status" + Locked & Surviving table covers surface-level traceability; ongoing single-feature blockers go to `INCOMPLETE_FEATURES.md`.
+- **What replaces the old workflow:** when a phase begins on a surface (e.g. Phase 2 §SD salon detail), re-audit fresh against current V3 spec via `grep`/`Read` — much cheaper than maintaining a stale snapshot. If a surviving gap exists, fix it in the phase commit; if it can't finish, append to `INCOMPLETE_FEATURES.md` per CLAUDE.md protocol.
+- **Drift prevention:** archived docs are tagged with `.archived.md` suffix in `_tasks/archive/`. §0c.2 explicitly tells new agents: "If you find yourself reading any file in `_tasks/archive/`, stop. Re-anchor to SOLEN_LIVE_TRUTH.md." So even if a future agent stumbles into the archived audit, the stop-sign is loud.
+- **Files patched:**
+  - `_tasks/GAP_AUDIT_V2.md` → `_tasks/archive/GAP_AUDIT_V2.archived.md` (move, not delete — git history preserved)
+  - `_tasks/SOLEN_LIVE_TRUTH.md` — §0c.2 line for GAP_AUDIT_V2.md updated (1 line patched)
+- **Insight:** This is the first V2-D## decision so far where Hybrid was NOT the right answer. Hybrid optimizes for "summary + detail" where both stay useful over time. Stale snapshots have no useful half — Hybrid would just preserve obsolete data with a thinner cover sheet. Recognizing point-in-time vs perpetual was the meta-skill.
+- **Status:** locked. Decision 4 done. Next: Decision 5 (MASTER_ROADMAP.md location — same A/B/C/D framing applies).
+
 ### V2-D36 (2026-05-09 evening) — Decision 3 lock: DB schema = Hybrid w explicit drift prevention + §0c authoritative source map
 
 - **Context:** Decision 3 in V2-D33 doc consolidation flow asked whether DB schema should be inline in LIVE_TRUTH (Option A), stay at `_rules/DB_SCHEMA.md` w pointer only (Option B), or Hybrid (Option C — schema mapping in LIVE_TRUTH §33, full DDL stays in DB_SCHEMA.md).
