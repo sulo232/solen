@@ -96,7 +96,7 @@ function SearchBar() {
         md:shadow-[0_1px_3px_rgba(50,47,44,0.04),0_8px_24px_rgba(50,47,44,0.08)]
       "
     >
-      {/* WAS — active by default to telegraph affordance */}
+      {/* Service — active by default to telegraph affordance */}
       <SearchRow
         icon={
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
@@ -104,8 +104,8 @@ function SearchBar() {
             <path d="m21 21-4.3-4.3" />
           </svg>
         }
-        label="Was"
-        value="Service oder Salon"
+        label="Service suchen"
+        value="Service"
         isPlaceholder
         isActive
         isFirst
@@ -118,8 +118,8 @@ function SearchBar() {
             <circle cx={12} cy={10} r={3} />
           </svg>
         }
-        label="Wo"
-        value="Für deine Stadt"
+        label="Standort wählen"
+        value="Stadt"
         isPlaceholder
       />
 
@@ -130,8 +130,9 @@ function SearchBar() {
             <path d="M16 2v4M8 2v4M3 10h18" />
           </svg>
         }
-        label="Wann"
-        value="Heute · jederzeit"
+        label="Zeit wählen"
+        value="Zeit"
+        isPlaceholder
       />
 
       {/* Submit — ink bg, hover brand. Full-width on mobile, pill on right desktop. */}
@@ -168,12 +169,13 @@ function SearchRow({
 }: SearchRowProps) {
   // Active row: faint brand-teal wash (5% alpha) — barely visible against
   // the §5g atmosphere wash, signals selection without competing for color
-  // attention. V2-era cream `s-bg-active` retired here per V2-D15-3 + user
-  // feedback "the color u choose is ass" (2026-05-09) — pale teal solid
-  // (#E1F4F4) was too loud; 5% alpha brand is a whisper, not a shout.
+  // attention. Visible WAS/WO/WANN labels removed 2026-05-09 per user
+  // feedback ("a icon is enough"); button keeps the original label as
+  // aria-label so screen-reader users still hear "Service suchen" etc.
   return (
     <button
       type="button"
+      aria-label={label}
       className={`
         group flex shrink-0 cursor-pointer items-center gap-3 rounded-[10px] p-[14px_16px] text-left
         transition-colors hover:bg-s-bg-sunken
@@ -183,18 +185,8 @@ function SearchRow({
       `}
     >
       <span className="shrink-0 text-s-ink-2">{icon}</span>
-      {/* Label visible on mobile (stacked-card layout) for clarity, hidden on
-          desktop (horizontal pill) where the icon + value alone are enough.
-          Hiding desktop labels reclaims ~70px per segment so values aren't
-          truncated to "Ser..." and "Heut..." at common laptop widths. */}
-      <span className="font-body w-14 shrink-0 text-[11px] font-bold uppercase tracking-[0.14em] text-s-ink-3 md:hidden">
-        {label}
-      </span>
-      {/* All values rendered in s-ink-3 (warm gray) for visual uniformity per
-          user feedback (2026-05-09): "whz is ther graz and black color like
-          i jst want graz". Placeholder vs filled is differentiated by font
-          weight only (normal=placeholder, medium=filled), not by color, so
-          the bar reads as one harmonious gray instead of black-among-grays. */}
+      {/* Visible label removed (icon + value only). Aria-label on the
+          button preserves accessibility. */}
       <span
         className={`
           font-body min-w-0 flex-1 truncate text-base text-s-ink-3
