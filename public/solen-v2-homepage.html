@@ -32,44 +32,126 @@
     line-height: 1.55; -webkit-font-smoothing: antialiased;
   }
 
-  /* ============== PAGE-WIDE ATMOSPHERE WASHES (V3 — §5g extended) ============== */
-  /* Layered fixed-position radial gradients give the white page warmth + depth without
-     reverting to a colored substrate. Positioned at distinct viewport locations so as
-     the user scrolls, different glows come into view — never a flat white moment. */
+  /* ============== PAGE-WIDE ATMOSPHERE WASHES (V3 — §5g extended + animated) ============== */
+  /* 3 layered atmospheric systems:
+     1. body::before — fixed page-wide cyan/teal/navy wash, drifts slowly (28s)
+     2. body::after — parallax-feel cream/teal echoes that scroll w content, drifts opposite (36s)
+     3. .cat-zone-* — static per-category colorway glows (each cat owns its tint)
+     prefers-reduced-motion: reduce → animations disabled, glows stay still */
+
   body::before {
     content: '';
-    position: fixed; inset: 0;
+    position: fixed; inset: -8%;        /* over-extend so animation movement doesn't expose edge */
     background:
-      /* Top-right cyan core (matches hero §5g recipe exactly) */
-      radial-gradient(ellipse 65% 40% at 75% 12%, rgba(202, 232, 255, 0.55) 0%, transparent 60%),
+      /* Top-right cyan core */
+      radial-gradient(ellipse 65% 40% at 75% 12%, rgba(202, 232, 255, 0.78) 0%, transparent 60%),
       /* Top-left pale teal */
-      radial-gradient(ellipse 50% 45% at 18% 22%, rgba(194, 240, 241, 0.50) 0%, transparent 65%),
-      /* Mid-page navy depth (where category carousels live) */
-      radial-gradient(ellipse 45% 35% at 92% 48%, rgba(0, 88, 152, 0.18) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 45% at 18% 22%, rgba(194, 240, 241, 0.72) 0%, transparent 65%),
+      /* Mid-page navy depth */
+      radial-gradient(ellipse 45% 35% at 92% 48%, rgba(0, 88, 152, 0.30) 0%, transparent 55%),
       /* Lower-left teal echo */
-      radial-gradient(ellipse 55% 40% at 8% 72%, rgba(194, 240, 241, 0.40) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 40% at 8% 72%, rgba(194, 240, 241, 0.55) 0%, transparent 60%),
       /* Bottom navy bleed */
-      radial-gradient(ellipse 60% 45% at 65% 92%, rgba(3, 30, 72, 0.10) 0%, transparent 55%);
+      radial-gradient(ellipse 60% 45% at 65% 92%, rgba(3, 30, 72, 0.16) 0%, transparent 55%);
     z-index: -2;
     pointer-events: none;
+    animation: atm-drift-1 28s ease-in-out infinite alternate;
+    will-change: transform;
   }
-  /* A second softer layer that scrolls (gives a parallax-like depth — closer-feeling glows) */
+  /* Parallax-feel echo — scrolls w document, drifts opposite direction */
   body::after {
     content: '';
-    position: absolute; inset: 0;
+    position: absolute; inset: -6%;
     background:
-      /* Pale cream warmth around recently-viewed / last-minute area */
-      radial-gradient(ellipse 50% 25% at 50% 18%, rgba(255, 241, 221, 0.55) 0%, transparent 65%),
-      /* Coiffeur cream warmth around per-category carousels */
-      radial-gradient(ellipse 40% 20% at 15% 38%, rgba(255, 241, 221, 0.40) 0%, transparent 70%),
-      /* Nails ice-blue echo around nails carousel */
-      radial-gradient(ellipse 35% 18% at 85% 48%, rgba(202, 232, 255, 0.35) 0%, transparent 70%),
+      /* Pale cream warmth around recently-viewed area */
+      radial-gradient(ellipse 50% 18% at 50% 14%, rgba(255, 241, 221, 0.70) 0%, transparent 65%),
+      /* Coiffeur cream warmth around per-category zone */
+      radial-gradient(ellipse 40% 12% at 15% 30%, rgba(255, 241, 221, 0.50) 0%, transparent 70%),
+      /* Nails ice-blue echo */
+      radial-gradient(ellipse 35% 12% at 85% 42%, rgba(202, 232, 255, 0.50) 0%, transparent 70%),
       /* Brand-pale around discover */
-      radial-gradient(ellipse 45% 18% at 50% 62%, rgba(225, 244, 244, 0.50) 0%, transparent 65%),
+      radial-gradient(ellipse 45% 14% at 50% 56%, rgba(225, 244, 244, 0.60) 0%, transparent 65%),
       /* Brand-teal soft hint around city tiles */
-      radial-gradient(ellipse 40% 14% at 80% 75%, rgba(194, 240, 241, 0.40) 0%, transparent 70%);
+      radial-gradient(ellipse 40% 10% at 80% 68%, rgba(194, 240, 241, 0.55) 0%, transparent 70%),
+      /* Spa forest hint at bottom */
+      radial-gradient(ellipse 50% 14% at 30% 84%, rgba(25, 49, 32, 0.10) 0%, transparent 65%);
     z-index: -1;
     pointer-events: none;
+    animation: atm-drift-2 36s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  @keyframes atm-drift-1 {
+    from { transform: translate3d(0, 0, 0) scale(1); }
+    to   { transform: translate3d(-1.5%, 0.8%, 0) scale(1.04); }
+  }
+  @keyframes atm-drift-2 {
+    from { transform: translate3d(0, 0, 0) scale(1); }
+    to   { transform: translate3d(2%, -1.2%, 0) scale(1.06); }
+  }
+  @keyframes atm-cat-pulse {
+    from { opacity: 0.85; transform: scale(1); }
+    to   { opacity: 1;    transform: scale(1.05); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body::before, body::after, .cat-zone-coiffeur::before,
+    .cat-zone-barber::before, .cat-zone-nails::before, .cat-zone-spa::before {
+      animation: none !important;
+    }
+  }
+
+  /* ============== PER-CATEGORY ZONE GLOWS ============== */
+  /* Each per-cat carousel section wrap gets its own colorway-themed glow.
+     Subtle pulse animation gives each cat zone its own breath rhythm (different
+     durations so the 4 cat zones aren't sync'd). */
+  .cat-zone-coiffeur, .cat-zone-barber, .cat-zone-nails, .cat-zone-spa {
+    position: relative;
+    overflow: hidden;
+  }
+  .cat-zone-coiffeur::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 80% at 20% 50%, rgba(255, 241, 221, 0.85) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 90% 30%, rgba(181, 52, 90, 0.10) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 50% at 80% 80%, rgba(255, 228, 210, 0.55) 0%, transparent 60%);
+    z-index: 0; pointer-events: none;
+    animation: atm-cat-pulse 22s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .cat-zone-barber::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 65% 75% at 80% 40%, rgba(216, 214, 203, 0.70) 0%, transparent 60%),
+      radial-gradient(ellipse 45% 55% at 15% 70%, rgba(184, 182, 171, 0.45) 0%, transparent 55%),
+      radial-gradient(ellipse 35% 45% at 50% 20%, rgba(26, 18, 9, 0.08) 0%, transparent 60%);
+    z-index: 0; pointer-events: none;
+    animation: atm-cat-pulse 26s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .cat-zone-nails::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 75% at 25% 45%, rgba(202, 232, 255, 0.75) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 55% at 85% 30%, rgba(181, 0, 81, 0.08) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 50% at 75% 85%, rgba(194, 240, 241, 0.50) 0%, transparent 60%);
+    z-index: 0; pointer-events: none;
+    animation: atm-cat-pulse 24s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .cat-zone-spa::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 65% 80% at 80% 50%, rgba(25, 49, 32, 0.18) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 60% at 15% 30%, rgba(148, 133, 101, 0.20) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 30% 85%, rgba(194, 240, 241, 0.40) 0%, transparent 60%);
+    z-index: 0; pointer-events: none;
+    animation: atm-cat-pulse 28s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .cat-zone-coiffeur > *, .cat-zone-barber > *,
+  .cat-zone-nails > *, .cat-zone-spa > * {
+    position: relative; z-index: 1;
   }
 
   /* ============== PAGE LABEL ============== */
@@ -939,7 +1021,7 @@
   </div>
 
   <!-- ============== SECTION 3a · COIFFEUR CAROUSEL ============== -->
-  <div class="sec-wrap">
+  <div class="sec-wrap cat-zone-coiffeur">
     <span class="anno">§Q51.3a · per-cat: Coiffeur (affinity-ordered)</span>
     <section class="sec">
       <div class="sec-rule"></div>
@@ -989,7 +1071,7 @@
   </div>
 
   <!-- ============== SECTION 3b · BARBERSHOP CAROUSEL ============== -->
-  <div class="sec-wrap">
+  <div class="sec-wrap cat-zone-barber">
     <span class="anno">§Q51.3b · per-cat: Barbershop</span>
     <section class="sec">
       <div class="sec-rule"></div>
@@ -1039,7 +1121,7 @@
   </div>
 
   <!-- ============== SECTION 3c · NAILS CAROUSEL ============== -->
-  <div class="sec-wrap">
+  <div class="sec-wrap cat-zone-nails">
     <span class="anno">§Q51.3c · per-cat: Nails</span>
     <section class="sec">
       <div class="sec-rule"></div>
@@ -1089,7 +1171,7 @@
   </div>
 
   <!-- ============== SECTION 3d · SPA & WELLNESS CAROUSEL ============== -->
-  <div class="sec-wrap">
+  <div class="sec-wrap cat-zone-spa">
     <span class="anno">§Q51.3d · per-cat: Spa &amp; Wellness</span>
     <section class="sec">
       <div class="sec-rule"></div>
