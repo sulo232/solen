@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { buildAlternates } from "@/lib/seo";
+import Hero from "./_components/homepage/Hero";
 
 const TITLES: Record<string, string> = {
   de: "Solen — Finde & buche die besten Salons in der Schweiz",
@@ -48,27 +49,24 @@ export async function generateMetadata({
 }
 
 /**
- * Homepage — V2 rebuild SHELL (2026-05-03).
+ * Homepage — V3 rebuild (V2-D26 typography + V2-D15-3 brand pivot).
  *
- * Intentionally empty body. The previous v2 hero attempt was deleted because
- * it violated LIVE_TRUTH §7 (horizontal-segmented search bar — banned), used
- * plum that didn't match the palette, and briefly reintroduced cream-as-page-bg
- * (retired per CLAUDE.md). Better to have a clean slate than to keep the broken
- * attempt as a reference the AI might pull from.
+ * Section-by-section port from `public/solen-v2-homepage.html`:
+ *   ✅ §13 Hero (this commit)
+ *   ⏳ §16 SalonCard primitive (next)
+ *   ⏳ Recently Viewed / Last-Minute / Nearby / 4 categories
+ *   ⏳ Looks (entdecken) / Loyalty / City picker / Spotlight
+ *   ⏳ Reviews testimonial / Trust banner
  *
- * Awaiting external HTML design mockup from user (will live at
- * `public/solen-v2-design.html` or similar). When mockup arrives:
- *   1. Parse the HTML, extract spec, compare against LIVE_TRUTH "locked & surviving"
- *      table in `_tasks/V2_REBUILD_LOG.md` — flag conflicts BEFORE implementing
- *   2. Implement homepage hero first as a route-scoped component in
- *      `app/[locale]/_components/`, judge in isolation
- *   3. Add other sections one at a time once hero locks
- *
- * Header, footer, cookie banner come from `app/[locale]/layout.tsx` (still legacy
- * `components-legacy/layout/*` until the route-by-route migration reaches chrome).
+ * Header, footer, cookie banner still come from `app/[locale]/layout.tsx`
+ * (legacy `components-legacy/layout/*`) — header port is its own commit.
  */
 export const revalidate = 300;
 
 export default async function Page() {
-  return <></>;
+  return (
+    <>
+      <Hero />
+    </>
+  );
 }
