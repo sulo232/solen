@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Solen V3 — full homepage mockup · V2-D32 candidate · 2026-05-09</title>
+<title>Solen V3 — full homepage mockup · V2-D32 candidate · Q51 · 2026-05-09</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std" rel="stylesheet">
@@ -16,7 +16,7 @@
     --ink: #1A1209; --ink-2: #56463E; --ink-3: #7A6957; --ink-disabled: #C4B8A6;
     --hairline: rgba(26,18,9,.06); --hairline-10: rgba(26,18,9,.10); --hairline-15: rgba(26,18,9,.15);
     --brand: #043338; --brand-pale: #C2F0F1; --brand-subtle: #E1F4F4; --brand-mid: #0A6873;
-    --love: #FF4A6B; --success: #16A34A; --warning: #F59E0B;
+    --love: #FF4A6B; --success: #16A34A; --warning: #F59E0B; --star: #F3A864;
     /* category colorways per V2-D15-3 */
     --cat-coiffeur: #FFF1DD;       --cat-coiffeur-text: #B5345A;
     --cat-barber:   #D8D6CB;       --cat-barber-text: #000000;
@@ -31,7 +31,6 @@
     font-family: var(--body); color: var(--ink); background: var(--white);
     line-height: 1.55; -webkit-font-smoothing: antialiased;
   }
-  body { padding-bottom: 0; }
 
   /* ============== PAGE LABEL ============== */
   .page-label {
@@ -46,6 +45,9 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 24px 32px; max-width: 1280px; margin: 0 auto;
     border-bottom: 1px solid var(--hairline);
+    position: sticky; top: 0; background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(10px);
+    z-index: 100;
   }
   .nav-logo {
     font-family: var(--display); font-weight: 900;
@@ -60,8 +62,8 @@
     margin-left: 4px; transform: translateY(-2px);
   }
   .nav-links {
-    display: flex; gap: 36px;
-    font-size: 16px; font-weight: 500;
+    display: flex; gap: 32px;
+    font-size: 15px; font-weight: 500;
     color: var(--ink-2);
   }
   .nav-links a { color: inherit; text-decoration: none; }
@@ -72,7 +74,6 @@
     padding: 12px 22px;
     font-family: var(--body); font-size: 14px; font-weight: 600;
     cursor: pointer;
-    transition: background 150ms var(--ease-snap);
   }
   .nav-cta:hover { background: var(--brand-mid); }
 
@@ -99,9 +100,7 @@
     color: var(--ink);
     margin-bottom: 24px;
   }
-  .hero-h1 em {
-    font-style: normal; color: var(--brand);
-  }
+  .hero-h1 em { font-style: normal; color: var(--brand); }
   .hero-deck {
     font-size: 17px; color: var(--ink-2); line-height: 1.55;
     max-width: 520px; margin-bottom: 32px;
@@ -109,16 +108,15 @@
   .hero-deck a {
     color: var(--brand); font-weight: 600;
     text-decoration: underline; text-underline-offset: 3px;
-    text-decoration-thickness: 1.5px;
   }
 
-  /* hero search bar — 3-row stacked */
+  /* hero search bar — 3-row stacked smart search */
   .search-bar {
     background: var(--white);
     border: 1px solid var(--hairline-10);
     border-radius: 16px;
     padding: 8px;
-    box-shadow: 0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03);
+    box-shadow: 0 1px 3px rgba(50,47,44,0.04), 0 4px 12px rgba(50,47,44,0.04);
     max-width: 540px;
   }
   .search-row {
@@ -126,25 +124,16 @@
     padding: 14px 16px;
     border-radius: 10px;
     cursor: pointer;
-    transition: background 150ms var(--ease-snap);
   }
-  .search-row:not(:last-child) {
-    border-bottom: 1px solid var(--hairline);
-  }
+  .search-row:not(:last-child) { border-bottom: 1px solid var(--hairline); }
   .search-row:hover { background: var(--sunken); }
-  .search-row.is-active {
-    background: #FFF4E8;
-    border-bottom-color: transparent;
-  }
+  .search-row.is-active { background: #FFF4E8; border-bottom-color: transparent; }
   .search-label {
     font-size: 11px; font-weight: 700; color: var(--ink-3);
     letter-spacing: .14em; text-transform: uppercase;
     width: 64px; flex-shrink: 0;
   }
-  .search-value {
-    font-size: 16px; font-weight: 500; color: var(--ink);
-    flex: 1;
-  }
+  .search-value { font-size: 16px; font-weight: 500; color: var(--ink); flex: 1; }
   .search-value.placeholder { color: var(--ink-3); font-weight: 400; }
   .search-submit {
     width: 100%; margin-top: 12px;
@@ -153,11 +142,9 @@
     padding: 16px;
     font-family: var(--body); font-size: 16px; font-weight: 600;
     cursor: pointer;
-    transition: background 150ms var(--ease-snap);
   }
   .search-submit:hover { background: var(--brand-mid); }
 
-  /* hero preview right side */
   .hero-preview {
     aspect-ratio: 4/5;
     background: linear-gradient(135deg, var(--brand-subtle) 0%, var(--brand-pale) 100%);
@@ -176,7 +163,7 @@
   }
 
   /* ============== EDITORIAL SECTION-BREAK (V2-D15-4) ============== */
-  .sec { max-width: 1280px; margin: 0 auto; padding: 80px 32px; }
+  .sec { max-width: 1280px; margin: 0 auto; padding: 64px 32px; }
   .sec-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
   .sec-meta-row {
     display: flex; align-items: baseline; justify-content: space-between;
@@ -185,12 +172,8 @@
     letter-spacing: .18em; text-transform: uppercase;
     font-variant-numeric: tabular-nums;
   }
-  .sec-eyebrow {
-    color: var(--ink); display: inline-flex; align-items: center; gap: 8px;
-  }
-  .sec-eyebrow::before {
-    content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--brand);
-  }
+  .sec-eyebrow { color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+  .sec-eyebrow::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--brand); }
   .sec-meta { color: var(--ink-3); }
   .sec-h2-row {
     display: flex; align-items: baseline; justify-content: space-between;
@@ -209,46 +192,10 @@
     flex-shrink: 0;
   }
 
-  /* ============== 4-CATEGORY SHOWCASE ============== */
-  .cats {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-    margin-top: 32px;
-  }
-  @media (max-width: 900px) { .cats { grid-template-columns: repeat(2, 1fr); } }
-  .cat-card {
-    aspect-ratio: 4/5;
-    border-radius: 20px;
-    padding: 28px;
-    display: flex; flex-direction: column; justify-content: space-between;
-    cursor: pointer;
-    text-decoration: none;
-    transition: transform 200ms var(--ease-glide);
-    position: relative; overflow: hidden;
-  }
-  .cat-card:hover { transform: translateY(-4px); }
-  .cat-card.coiffeur { background: var(--cat-coiffeur); color: var(--cat-coiffeur-text); }
-  .cat-card.barber   { background: var(--cat-barber);   color: var(--cat-barber-text); }
-  .cat-card.nails    { background: var(--cat-nails);    color: var(--cat-nails-text); }
-  .cat-card.spa      { background: var(--cat-spa);      color: var(--cat-spa-text); }
-  .cat-name {
-    font-family: var(--display); font-weight: 900;
-    font-size: clamp(28px, 3vw, 36px);
-    line-height: 1; letter-spacing: -0.02em;
-  }
-  .cat-meta {
-    font-size: 14px; font-weight: 600;
-    letter-spacing: .04em;
-    opacity: 0.75;
-  }
-  .cat-arrow {
-    align-self: flex-end;
-    font-size: 24px;
-  }
-
-  /* ============== HORIZONTAL SCROLL ROW (salons) ============== */
+  /* ============== HORIZONTAL SCROLL ROW (Q50 carousel pattern) ============== */
   .scroll-row {
-    display: flex; gap: 16px; overflow-x: auto; padding: 4px 0;
-    margin-top: 24px;
+    display: flex; gap: 16px; overflow-x: auto; padding: 4px 0 4px;
+    margin-top: 16px;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
   }
@@ -271,6 +218,10 @@
     color: var(--brand); font-family: var(--display); font-weight: 900; font-size: 32px;
     opacity: 0.6;
   }
+  .salon-card.cat-coiffeur .salon-photo { background: linear-gradient(135deg, var(--cat-coiffeur), #FFE4D2); color: var(--cat-coiffeur-text); }
+  .salon-card.cat-barber   .salon-photo { background: linear-gradient(135deg, var(--cat-barber), #B8B6AB);   color: var(--cat-barber-text); }
+  .salon-card.cat-nails    .salon-photo { background: linear-gradient(135deg, var(--cat-nails), var(--brand-pale)); color: var(--cat-nails-text); }
+  .salon-card.cat-spa      .salon-photo { background: linear-gradient(135deg, var(--cat-spa), #2A4530); color: var(--cat-spa-text); }
   .salon-heart {
     position: absolute; top: 12px; right: 12px;
     width: 36px; height: 36px;
@@ -284,31 +235,41 @@
   .salon-heart:hover { transform: scale(1.06); }
   .salon-heart.is-saved { color: var(--love); }
   .salon-info { padding: 16px; }
-  .salon-name {
-    font-size: 16px; font-weight: 700; color: var(--ink);
-    margin-bottom: 4px;
-  }
+  .salon-name { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
   .salon-meta {
     font-size: 14px; color: var(--ink-3);
     display: flex; align-items: center; gap: 8px;
   }
-  .salon-rating {
-    color: var(--ink); font-weight: 600;
-    display: inline-flex; align-items: center; gap: 4px;
-  }
-  .salon-rating::before {
-    content: '★'; color: #F3A864;
-  }
+  .salon-rating { color: var(--ink); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+  .salon-rating::before { content: '★'; color: var(--star); }
   .salon-availability {
     margin-top: 12px;
     display: inline-flex; align-items: center; gap: 6px;
     padding: 4px 10px; border-radius: 999px;
     font-size: 12px; font-weight: 600;
-    background: rgba(22,163,74,.10); color: var(--success);
   }
-  .salon-availability::before {
-    content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--success);
+  .salon-availability.is-free { background: rgba(22,163,74,.10); color: var(--success); }
+  .salon-availability.is-soon { background: rgba(245,158,11,.10); color: #B45309; }
+  .salon-availability.is-week { background: var(--brand-subtle); color: var(--brand); }
+  .salon-availability::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* discount badge for last-minute */
+  .salon-discount {
+    position: absolute; top: 12px; left: 12px;
+    background: var(--brand); color: var(--white);
+    padding: 6px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: .04em;
   }
+
+  /* recently viewed - smaller card variant */
+  .recently-card {
+    flex: 0 0 200px;
+  }
+  .recently-card .salon-photo { aspect-ratio: 1/1; }
+  .recently-card .salon-info { padding: 12px; }
+  .recently-card .salon-name { font-size: 14px; }
+  .recently-card .salon-meta { font-size: 12px; }
 
   /* ============== ENTDECKEN INSPO STRIP ============== */
   .entdecken {
@@ -320,7 +281,6 @@
     aspect-ratio: 3/4;
     border-radius: 16px;
     overflow: hidden; cursor: pointer; position: relative;
-    background: linear-gradient(135deg, var(--brand-subtle), var(--cat-coiffeur));
   }
   .look-card:nth-child(1) { background: linear-gradient(135deg, #E8DFD2, var(--cat-coiffeur)); }
   .look-card:nth-child(2) { background: linear-gradient(135deg, var(--cat-nails), var(--brand-pale)); }
@@ -352,6 +312,13 @@
     color: var(--ink-2);
   }
   .look-heart.is-saved { color: var(--love); }
+  .look-book {
+    position: absolute; top: 52px; right: 12px;
+    background: var(--brand); color: var(--white);
+    padding: 6px 12px; border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: .02em;
+  }
 
   /* ============== CITY TILES ============== */
   .cities {
@@ -383,12 +350,95 @@
     letter-spacing: -0.02em;
     margin-bottom: 6px;
   }
-  .city-meta {
-    font-size: 14px; font-weight: 600; color: var(--ink-2);
+  .city-meta { font-size: 14px; font-weight: 600; color: var(--ink-2); }
+
+  /* ============== SPOTLIGHT ============== */
+  .spotlight {
+    background: var(--ink);
+    color: var(--white);
+    border-radius: 24px;
+    padding: 56px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+    margin-top: 32px;
+  }
+  @media (max-width: 900px) { .spotlight { grid-template-columns: 1fr; padding: 32px; } }
+  .spotlight-img {
+    aspect-ratio: 4/5;
+    background: linear-gradient(135deg, var(--cat-coiffeur), #FFE4D2);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--cat-coiffeur-text); font-family: var(--display); font-weight: 900;
+    opacity: 0.85;
+  }
+  .spotlight-eyebrow {
+    font-size: 13px; font-weight: 700; color: var(--brand-pale);
+    letter-spacing: .18em; text-transform: uppercase;
+    margin-bottom: 12px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .spotlight-eyebrow::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--brand-pale); opacity: 0.7; }
+  .spotlight-h2 {
+    font-family: var(--display); font-weight: 900;
+    font-size: clamp(28px, 3.5vw, 40px);
+    line-height: 1; letter-spacing: -0.02em;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  .spotlight-deck {
+    font-size: 16px; line-height: 1.55;
+    color: rgba(255,255,255,0.78);
+    margin-bottom: 24px;
+    max-width: 440px;
+  }
+  .spotlight-cta {
+    background: var(--brand-pale); color: var(--brand);
+    border: none; border-radius: 999px;
+    padding: 12px 22px;
+    font-family: var(--body); font-size: 15px; font-weight: 700;
+    cursor: pointer;
   }
 
+  /* ============== TESTIMONIALS ============== */
+  .reviews {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin-top: 24px;
+  }
+  @media (max-width: 900px) { .reviews { grid-template-columns: 1fr; } }
+  .review-card {
+    background: var(--white);
+    border: 1px solid var(--hairline-10);
+    border-radius: 16px;
+    padding: 28px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .review-stars {
+    display: inline-flex; gap: 2px;
+    color: var(--star);
+    font-size: 16px;
+  }
+  .review-text {
+    font-size: 16px; line-height: 1.55;
+    color: var(--ink);
+    flex: 1;
+  }
+  .review-author {
+    display: flex; align-items: center; gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hairline);
+  }
+  .review-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-pale), var(--cat-nails));
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--display); font-weight: 900;
+    color: var(--brand);
+    font-size: 14px;
+  }
+  .review-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .review-meta { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+
   /* ============== SOLEN PRO FEATURE PANEL ============== */
-  .feature-panel { padding: 80px 32px; max-width: 1280px; margin: 0 auto; }
+  .feature-panel { padding: 32px; max-width: 1280px; margin: 0 auto; }
   .feature-card {
     background: var(--brand);
     border-radius: 28px;
@@ -397,6 +447,7 @@
     display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px;
     align-items: center;
   }
+  @media (max-width: 900px) { .feature-card { grid-template-columns: 1fr; padding: 40px; } }
   .feature-eyebrow {
     font-size: 13px; font-weight: 700;
     letter-spacing: .18em; text-transform: uppercase;
@@ -404,10 +455,7 @@
     margin-bottom: 12px;
     display: inline-flex; align-items: center; gap: 8px;
   }
-  .feature-eyebrow::before {
-    content: ''; width: 5px; height: 5px; border-radius: 50%;
-    background: var(--brand-pale); opacity: 0.7;
-  }
+  .feature-eyebrow::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--brand-pale); opacity: 0.7; }
   .feature-h2 {
     font-family: var(--display); font-weight: 900;
     font-size: clamp(32px, 4vw, 48px);
@@ -441,6 +489,49 @@
     letter-spacing: .04em;
   }
 
+  /* ============== TRUST STATS BANNER ============== */
+  .trust-banner {
+    background: var(--ink);
+    color: var(--white);
+    padding: 80px 32px;
+    margin-top: 64px;
+  }
+  .trust-inner {
+    max-width: 1280px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 2fr; gap: 64px; align-items: center;
+  }
+  @media (max-width: 900px) { .trust-inner { grid-template-columns: 1fr; gap: 32px; } }
+  .trust-eyebrow {
+    font-size: 13px; font-weight: 700;
+    color: var(--brand-pale);
+    letter-spacing: .18em; text-transform: uppercase;
+    margin-bottom: 12px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .trust-eyebrow::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--brand-pale); opacity: 0.7; }
+  .trust-h2 {
+    font-family: var(--display); font-weight: 900;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1; letter-spacing: -0.02em;
+    color: var(--white);
+    max-width: 360px;
+  }
+  .trust-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+  }
+  .trust-stat-num {
+    font-family: var(--display); font-weight: 900;
+    font-size: 64px; line-height: 1;
+    color: var(--brand-pale);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .trust-stat-label {
+    font-size: 14px; color: rgba(255,255,255,0.62);
+    margin-top: 8px;
+    letter-spacing: .04em;
+  }
+
   /* ============== BROWSE-BY-CITY SEO WALL ============== */
   .seo-wall {
     background: linear-gradient(180deg, var(--white), var(--sunken));
@@ -460,7 +551,6 @@
     font-size: 14px; color: var(--ink-2);
     text-decoration: none;
     padding: 6px 0;
-    transition: color 150ms var(--ease-snap);
   }
   .seo-link:hover { color: var(--brand); }
 
@@ -469,7 +559,6 @@
     background: var(--ink);
     color: rgba(255,255,255,0.62);
     padding: 64px 32px 32px;
-    margin-top: 0;
   }
   .footer-inner { max-width: 1280px; margin: 0 auto; }
   .footer-grid {
@@ -491,21 +580,14 @@
     background: var(--brand-pale);
     margin-left: 4px; transform: translateY(-2px);
   }
-  .footer-tag {
-    font-size: 14px; line-height: 1.55;
-    color: rgba(255,255,255,0.62);
-    max-width: 280px;
-  }
+  .footer-tag { font-size: 14px; line-height: 1.55; max-width: 280px; }
   .footer-col-title {
     font-size: 12px; font-weight: 700;
     letter-spacing: .14em; text-transform: uppercase;
     color: var(--white); margin-bottom: 12px;
   }
   .footer-col-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-  .footer-col-list a {
-    font-size: 14px; color: rgba(255,255,255,0.62);
-    text-decoration: none;
-  }
+  .footer-col-list a { font-size: 14px; color: rgba(255,255,255,0.62); text-decoration: none; }
   .footer-col-list a:hover { color: var(--white); }
   .footer-bottom {
     padding-top: 24px;
@@ -513,13 +595,8 @@
     font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
     color: rgba(255,255,255,0.45);
   }
-  .footer-flag {
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .footer-flag::before {
-    content: ''; width: 11px; height: 11px;
-    background: var(--brand);
-  }
+  .footer-flag { display: inline-flex; align-items: center; gap: 8px; }
+  .footer-flag::before { content: ''; width: 11px; height: 11px; background: var(--brand); }
 
   /* ============== COOKIE BANNER OVERLAY ============== */
   .cookie-banner {
@@ -540,15 +617,11 @@
   .cookie-text { flex: 1 1 auto; min-width: 0; }
   .cookie-title { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
   .cookie-body { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
-  .cookie-actions {
-    display: flex; align-items: center; gap: 8px;
-    flex-shrink: 0;
-  }
+  .cookie-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .cookie-btn-link {
     background: transparent; border: none;
     font-family: var(--body); font-weight: 600; font-size: 14px;
-    color: var(--brand); cursor: pointer;
-    padding: 8px 12px;
+    color: var(--brand); cursor: pointer; padding: 8px 12px;
   }
   .cookie-btn-secondary {
     background: var(--white); border: 1px solid var(--hairline-10);
@@ -572,14 +645,15 @@
     padding: 4px 10px; border-radius: 999px;
     font-size: 10px; font-weight: 700;
     letter-spacing: .14em; text-transform: uppercase;
-    pointer-events: none;
+    pointer-events: none; z-index: 50;
   }
+  .anno.dark { background: rgba(255,255,255,0.10); color: var(--brand-pale); }
   .sec-wrap { position: relative; }
 </style>
 </head>
 <body>
 
-  <div class="page-label">Solen V3 homepage · V2-D32 candidate · all sections</div>
+  <div class="page-label">Solen V3 · Q51 full · V2-D32 candidate</div>
 
   <!-- ============== HEADER ============== -->
   <nav class="nav">
@@ -589,6 +663,7 @@
       <a href="#">Barbershop</a>
       <a href="#">Nails</a>
       <a href="#">Spa &amp; Wellness</a>
+      <a href="#">Entdecken</a>
     </div>
     <button class="nav-cta">Anmelden</button>
   </nav>
@@ -624,143 +699,389 @@
     </section>
   </div>
 
-  <!-- ============== 4-CATEGORY SHOWCASE ============== -->
+  <!-- ============== SECTION 0 · RECENTLY VIEWED (CONDITIONAL) ============== -->
   <div class="sec-wrap">
-    <span class="anno">§15 · category cards</span>
+    <span class="anno">§Q51.0 · recently viewed (returning user)</span>
     <section class="sec">
       <div class="sec-rule"></div>
       <div class="sec-meta-row">
-        <span class="sec-eyebrow">Jede Kategorie, ihre eigene Welt</span>
-        <span class="sec-meta">4 Disziplinen</span>
+        <span class="sec-eyebrow">Bei dir zuletzt</span>
+        <span class="sec-meta">letzte 5 · localStorage</span>
       </div>
       <div class="sec-h2-row">
-        <h2 class="sec-h2">Wofür suchst du?</h2>
-        <a href="#" class="sec-link">Alle Salons →</a>
-      </div>
-      <div class="cats">
-        <a href="#" class="cat-card coiffeur">
-          <div>
-            <div class="cat-name">Coiffeur</div>
-            <div class="cat-meta" style="margin-top:6px;">142 Salons in Basel</div>
-          </div>
-          <span class="cat-arrow">→</span>
-        </a>
-        <a href="#" class="cat-card barber">
-          <div>
-            <div class="cat-name">Barbershop</div>
-            <div class="cat-meta" style="margin-top:6px;">38 Salons in Basel</div>
-          </div>
-          <span class="cat-arrow">→</span>
-        </a>
-        <a href="#" class="cat-card nails">
-          <div>
-            <div class="cat-name">Nails</div>
-            <div class="cat-meta" style="margin-top:6px;">76 Salons in Basel</div>
-          </div>
-          <span class="cat-arrow">→</span>
-        </a>
-        <a href="#" class="cat-card spa">
-          <div>
-            <div class="cat-name">Spa &amp; Wellness</div>
-            <div class="cat-meta" style="margin-top:6px;">29 Studios in Basel</div>
-          </div>
-          <span class="cat-arrow">→</span>
-        </a>
-      </div>
-    </section>
-  </div>
-
-  <!-- ============== SALON ROW · "In Basel diese Woche" ============== -->
-  <div class="sec-wrap">
-    <span class="anno">§17 · salon row</span>
-    <section class="sec">
-      <div class="sec-rule"></div>
-      <div class="sec-meta-row">
-        <span class="sec-eyebrow">Basel · diese Woche</span>
-        <span class="sec-meta">23 Salons · 8 heute frei</span>
-      </div>
-      <div class="sec-h2-row">
-        <h2 class="sec-h2">In Basel diese Woche</h2>
-        <a href="#" class="sec-link">Alle ansehen →</a>
+        <h2 class="sec-h2">Zuletzt angesehen</h2>
+        <a href="#" class="sec-link">Im Profil ansehen →</a>
       </div>
       <div class="scroll-row">
-        <a class="salon-card">
+        <a class="salon-card recently-card cat-coiffeur">
           <div class="salon-photo">M
-            <div class="salon-heart is-saved" aria-label="Aus Favoriten entfernen">♥</div>
+            <div class="salon-heart is-saved">♥</div>
           </div>
           <div class="salon-info">
             <div class="salon-name">Salon Maria</div>
-            <div class="salon-meta">
-              <span class="salon-rating">4.8 (124)</span>
-              <span>· Kleinbasel</span>
-            </div>
-            <span class="salon-availability">Heute frei</span>
+            <div class="salon-meta"><span class="salon-rating">4.8</span> · Kleinbasel</div>
           </div>
         </a>
-        <a class="salon-card">
-          <div class="salon-photo">B
-            <div class="salon-heart" aria-label="Zu Favoriten hinzufügen">♡</div>
-          </div>
-          <div class="salon-info">
-            <div class="salon-name">Bohème Hair Studio</div>
-            <div class="salon-meta">
-              <span class="salon-rating">4.9 (98)</span>
-              <span>· Steinenvorstadt</span>
-            </div>
-            <span class="salon-availability">Heute frei</span>
-          </div>
-        </a>
-        <a class="salon-card">
-          <div class="salon-photo">N
-            <div class="salon-heart" aria-label="Zu Favoriten hinzufügen">♡</div>
-          </div>
-          <div class="salon-info">
-            <div class="salon-name">Nails &amp; Co.</div>
-            <div class="salon-meta">
-              <span class="salon-rating">4.7 (215)</span>
-              <span>· Spalentor</span>
-            </div>
-            <span class="salon-availability">Morgen frei</span>
-          </div>
-        </a>
-        <a class="salon-card">
-          <div class="salon-photo">A
-            <div class="salon-heart" aria-label="Zu Favoriten hinzufügen">♡</div>
-          </div>
-          <div class="salon-info">
-            <div class="salon-name">Atelier Coiffure</div>
-            <div class="salon-meta">
-              <span class="salon-rating">4.9 (340)</span>
-              <span>· Innenstadt</span>
-            </div>
-            <span class="salon-availability">Heute frei</span>
-          </div>
-        </a>
-        <a class="salon-card">
+        <a class="salon-card recently-card cat-spa">
           <div class="salon-photo">S
-            <div class="salon-heart" aria-label="Zu Favoriten hinzufügen">♡</div>
+            <div class="salon-heart">♡</div>
           </div>
           <div class="salon-info">
             <div class="salon-name">Spa Rheinufer</div>
-            <div class="salon-meta">
-              <span class="salon-rating">4.8 (87)</span>
-              <span>· Kleinbasel</span>
-            </div>
-            <span class="salon-availability">Diese Woche</span>
+            <div class="salon-meta"><span class="salon-rating">4.8</span> · Kleinbasel</div>
+          </div>
+        </a>
+        <a class="salon-card recently-card cat-nails">
+          <div class="salon-photo">N
+            <div class="salon-heart">♡</div>
+          </div>
+          <div class="salon-info">
+            <div class="salon-name">Nails &amp; Co.</div>
+            <div class="salon-meta"><span class="salon-rating">4.7</span> · Spalentor</div>
+          </div>
+        </a>
+        <a class="salon-card recently-card cat-coiffeur">
+          <div class="salon-photo">A
+            <div class="salon-heart">♡</div>
+          </div>
+          <div class="salon-info">
+            <div class="salon-name">Atelier Coiffure</div>
+            <div class="salon-meta"><span class="salon-rating">4.9</span> · Innenstadt</div>
+          </div>
+        </a>
+        <a class="salon-card recently-card cat-barber">
+          <div class="salon-photo">B
+            <div class="salon-heart">♡</div>
+          </div>
+          <div class="salon-info">
+            <div class="salon-name">Bohème</div>
+            <div class="salon-meta"><span class="salon-rating">4.9</span> · Steinenvorstadt</div>
           </div>
         </a>
       </div>
     </section>
   </div>
 
-  <!-- ============== ENTDECKEN INSPO STRIP ============== -->
+  <!-- ============== SECTION 1 · LAST-MINUTE HEUTE ============== -->
   <div class="sec-wrap">
-    <span class="anno">§18 · entdecken</span>
+    <span class="anno">§Q51.1 · last-minute heute</span>
+    <section class="sec">
+      <div class="sec-rule"></div>
+      <div class="sec-meta-row">
+        <span class="sec-eyebrow">Heute · letzte Slots</span>
+        <span class="sec-meta">14 Salons · bis zu -25%</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">Last-Minute heute</h2>
+        <a href="#" class="sec-link">Alle ansehen →</a>
+      </div>
+      <div class="scroll-row">
+        <a class="salon-card cat-coiffeur">
+          <div class="salon-photo">M
+            <div class="salon-discount">−20%</div>
+            <div class="salon-heart">♡</div>
+          </div>
+          <div class="salon-info">
+            <div class="salon-name">Salon Maria</div>
+            <div class="salon-meta"><span class="salon-rating">4.8 (124)</span> · Coiffeur</div>
+            <span class="salon-availability is-free">Heute 14:30 · CHF 64</span>
+          </div>
+        </a>
+        <a class="salon-card cat-nails">
+          <div class="salon-photo">N
+            <div class="salon-discount">−15%</div>
+            <div class="salon-heart">♡</div>
+          </div>
+          <div class="salon-info">
+            <div class="salon-name">Nails &amp; Co.</div>
+            <div class="salon-meta"><span class="salon-rating">4.7 (215)</span> · Nails</div>
+            <span class="salon-availability is-free">Heute 16:00 · CHF 38</span>
+          </div>
+        </a>
+        <a class="salon-card cat-barber">
+          <div class="salon-photo">B
+            <div class="salon-discount">−25%</div>
+            <div class="salon-heart">♡</div>
+          </div>
+          <div class="salon-info">
+            <div class="salon-name">Bohème</div>
+            <div class="salon-meta"><span class="salon-rating">4.9 (98)</span> · Barber</div>
+            <span class="salon-availability is-free">Heute 17:30 · CHF 32</span>
+          </div>
+        </a>
+        <a class="salon-card cat-spa">
+          <div class="salon-photo">S
+            <div class="salon-discount">−10%</div>
+            <div class="salon-heart">♡</div>
+          </div>
+          <div class="salon-info">
+            <div class="salon-name">Spa Rheinufer</div>
+            <div class="salon-meta"><span class="salon-rating">4.8 (87)</span> · Spa</div>
+            <span class="salon-availability is-free">Heute 18:00 · CHF 95</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== SECTION 2 · IN DER NÄHE ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§Q51.2 · in der nähe (geo)</span>
+    <section class="sec">
+      <div class="sec-rule"></div>
+      <div class="sec-meta-row">
+        <span class="sec-eyebrow">Basel · Kleinbasel · 1.2 km</span>
+        <span class="sec-meta">geo-aware</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">In der Nähe</h2>
+        <a href="#" class="sec-link">Alle in Basel →</a>
+      </div>
+      <div class="scroll-row">
+        <a class="salon-card cat-coiffeur">
+          <div class="salon-photo">M<div class="salon-heart is-saved">♥</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Salon Maria</div>
+            <div class="salon-meta"><span class="salon-rating">4.8</span> · 200 m</div>
+            <span class="salon-availability is-free">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-coiffeur">
+          <div class="salon-photo">A<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Atelier Coiffure</div>
+            <div class="salon-meta"><span class="salon-rating">4.9</span> · 450 m</div>
+            <span class="salon-availability is-free">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-nails">
+          <div class="salon-photo">N<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Nails &amp; Co.</div>
+            <div class="salon-meta"><span class="salon-rating">4.7</span> · 800 m</div>
+            <span class="salon-availability is-soon">Morgen frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-spa">
+          <div class="salon-photo">S<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Spa Rheinufer</div>
+            <div class="salon-meta"><span class="salon-rating">4.8</span> · 1.2 km</div>
+            <span class="salon-availability is-week">Diese Woche</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== SECTION 3a · COIFFEUR CAROUSEL ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§Q51.3a · per-cat: Coiffeur (affinity-ordered)</span>
+    <section class="sec">
+      <div class="sec-rule"></div>
+      <div class="sec-meta-row">
+        <span class="sec-eyebrow">Coiffeur · Basel</span>
+        <span class="sec-meta">142 Salons · combo Z</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">Coiffeur-Salons</h2>
+        <a href="#" class="sec-link">Alle Coiffeurs →</a>
+      </div>
+      <div class="scroll-row">
+        <a class="salon-card cat-coiffeur">
+          <div class="salon-photo">M<div class="salon-heart is-saved">♥</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Salon Maria</div>
+            <div class="salon-meta"><span class="salon-rating">4.8 (124)</span> · ab CHF 80</div>
+            <span class="salon-availability is-free">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-coiffeur">
+          <div class="salon-photo">A<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Atelier Coiffure</div>
+            <div class="salon-meta"><span class="salon-rating">4.9 (340)</span> · ab CHF 120</div>
+            <span class="salon-availability is-free">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-coiffeur">
+          <div class="salon-photo">L<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Lina Hair Studio</div>
+            <div class="salon-meta"><span class="salon-rating">4.7 (89)</span> · ab CHF 75</div>
+            <span class="salon-availability is-soon">Morgen frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-coiffeur">
+          <div class="salon-photo">C<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Coiffeur Bahnhof</div>
+            <div class="salon-meta"><span class="salon-rating">4.6 (412)</span> · ab CHF 65</div>
+            <span class="salon-availability is-week">Diese Woche</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== SECTION 3b · BARBERSHOP CAROUSEL ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§Q51.3b · per-cat: Barbershop</span>
+    <section class="sec">
+      <div class="sec-rule"></div>
+      <div class="sec-meta-row">
+        <span class="sec-eyebrow">Barbershop · Basel</span>
+        <span class="sec-meta">38 Salons · combo G</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">Barbershops</h2>
+        <a href="#" class="sec-link">Alle Barber →</a>
+      </div>
+      <div class="scroll-row">
+        <a class="salon-card cat-barber">
+          <div class="salon-photo">B<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Bohème Barber</div>
+            <div class="salon-meta"><span class="salon-rating">4.9 (98)</span> · ab CHF 45</div>
+            <span class="salon-availability is-free">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-barber">
+          <div class="salon-photo">F<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Fade &amp; Co.</div>
+            <div class="salon-meta"><span class="salon-rating">4.8 (276)</span> · ab CHF 50</div>
+            <span class="salon-availability is-free">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-barber">
+          <div class="salon-photo">G<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Grossmann Barber</div>
+            <div class="salon-meta"><span class="salon-rating">4.7 (143)</span> · ab CHF 40</div>
+            <span class="salon-availability is-soon">Morgen frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-barber">
+          <div class="salon-photo">K<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Klassisch &amp; Co.</div>
+            <div class="salon-meta"><span class="salon-rating">4.8 (87)</span> · ab CHF 55</div>
+            <span class="salon-availability is-week">Diese Woche</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== SECTION 3c · NAILS CAROUSEL ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§Q51.3c · per-cat: Nails</span>
+    <section class="sec">
+      <div class="sec-rule"></div>
+      <div class="sec-meta-row">
+        <span class="sec-eyebrow">Nails · Basel</span>
+        <span class="sec-meta">76 Studios · combo A</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">Nail-Studios</h2>
+        <a href="#" class="sec-link">Alle Nails →</a>
+      </div>
+      <div class="scroll-row">
+        <a class="salon-card cat-nails">
+          <div class="salon-photo">N<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Nails &amp; Co.</div>
+            <div class="salon-meta"><span class="salon-rating">4.7 (215)</span> · ab CHF 38</div>
+            <span class="salon-availability is-free">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-nails">
+          <div class="salon-photo">P<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Pink Polish</div>
+            <div class="salon-meta"><span class="salon-rating">4.9 (180)</span> · ab CHF 42</div>
+            <span class="salon-availability is-free">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-nails">
+          <div class="salon-photo">D<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Diamond Nails</div>
+            <div class="salon-meta"><span class="salon-rating">4.6 (95)</span> · ab CHF 50</div>
+            <span class="salon-availability is-soon">Morgen frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-nails">
+          <div class="salon-photo">M<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Maniküre Spalentor</div>
+            <div class="salon-meta"><span class="salon-rating">4.7 (122)</span> · ab CHF 35</div>
+            <span class="salon-availability is-week">Diese Woche</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== SECTION 3d · SPA & WELLNESS CAROUSEL ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§Q51.3d · per-cat: Spa &amp; Wellness</span>
+    <section class="sec">
+      <div class="sec-rule"></div>
+      <div class="sec-meta-row">
+        <span class="sec-eyebrow">Spa &amp; Wellness · Basel</span>
+        <span class="sec-meta">29 Studios · combo I</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">Spa &amp; Wellness</h2>
+        <a href="#" class="sec-link">Alle Spas →</a>
+      </div>
+      <div class="scroll-row">
+        <a class="salon-card cat-spa">
+          <div class="salon-photo">S<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Spa Rheinufer</div>
+            <div class="salon-meta"><span class="salon-rating">4.8 (87)</span> · ab CHF 95</div>
+            <span class="salon-availability is-week">Diese Woche</span>
+          </div>
+        </a>
+        <a class="salon-card cat-spa">
+          <div class="salon-photo">T<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Thermal Wellness</div>
+            <div class="salon-meta"><span class="salon-rating">4.9 (203)</span> · ab CHF 120</div>
+            <span class="salon-availability is-free">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-spa">
+          <div class="salon-photo">A<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Aroma Lounge</div>
+            <div class="salon-meta"><span class="salon-rating">4.7 (156)</span> · ab CHF 85</div>
+            <span class="salon-availability is-free">Heute frei</span>
+          </div>
+        </a>
+        <a class="salon-card cat-spa">
+          <div class="salon-photo">M<div class="salon-heart">♡</div></div>
+          <div class="salon-info">
+            <div class="salon-name">Massage am Rhein</div>
+            <div class="salon-meta"><span class="salon-rating">4.8 (98)</span> · ab CHF 110</div>
+            <span class="salon-availability is-soon">Morgen frei</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== SECTION 4 · DISCOVER / ENTDECKEN ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§Q51.4 · entdecken — book this look</span>
     <section class="sec">
       <div class="sec-rule"></div>
       <div class="sec-meta-row">
         <span class="sec-eyebrow">Inspiration · Schweizer Salons</span>
-        <span class="sec-meta">Aktualisiert täglich</span>
+        <span class="sec-meta">aktualisiert täglich</span>
       </div>
       <div class="sec-h2-row">
         <h2 class="sec-h2">Looks zum Verlieben</h2>
@@ -769,44 +1090,84 @@
       <div class="entdecken">
         <div class="look-card">
           <div class="look-heart">♡</div>
+          <div class="look-book">Buchen</div>
           <div class="look-overlay">
             <div class="look-title">Long Bob mit Highlights</div>
-            <div class="look-meta">Salon Maria · Basel</div>
+            <div class="look-meta">Salon Maria · Basel · ab CHF 180</div>
           </div>
         </div>
         <div class="look-card">
           <div class="look-heart is-saved">♥</div>
+          <div class="look-book">Buchen</div>
           <div class="look-overlay">
             <div class="look-title">French Mani · Coral</div>
-            <div class="look-meta">Nails &amp; Co. · Basel</div>
+            <div class="look-meta">Nails &amp; Co. · Basel · ab CHF 65</div>
           </div>
         </div>
         <div class="look-card">
           <div class="look-heart">♡</div>
+          <div class="look-book">Buchen</div>
           <div class="look-overlay">
             <div class="look-title">Skin Fade Classic</div>
-            <div class="look-meta">Bohème · Basel</div>
+            <div class="look-meta">Bohème · Basel · ab CHF 50</div>
           </div>
         </div>
         <div class="look-card">
           <div class="look-heart">♡</div>
+          <div class="look-book">Buchen</div>
           <div class="look-overlay">
             <div class="look-title">Balayage · Honey</div>
-            <div class="look-meta">Atelier Coiffure · Zürich</div>
+            <div class="look-meta">Atelier Coiffure · Zürich · ab CHF 240</div>
           </div>
         </div>
       </div>
     </section>
   </div>
 
-  <!-- ============== CITY TILES · "Stadt wählen" ============== -->
+  <!-- ============== SOLEN PRO B2B PROMO ============== -->
   <div class="sec-wrap">
-    <span class="anno">§19 · city tiles</span>
+    <span class="anno">§20 · b2b promo · solen pro</span>
+    <section class="feature-panel">
+      <div class="feature-card">
+        <div>
+          <div class="feature-eyebrow">Solen Pro</div>
+          <h2 class="feature-h2">Stammkund:in werden, klüger sparen.</h2>
+          <p class="feature-deck">
+            Drei Buchungen pro Monat? Mit Solen Pro buchst du günstiger, holst Treue-Stempel,
+            siehst neue Slots zuerst — und supportest deinen Lieblingssalon.
+          </p>
+          <button class="feature-cta">Mehr erfahren →</button>
+        </div>
+        <div class="feature-stats">
+          <div>
+            <div class="feature-stat-num">15%</div>
+            <div class="feature-stat-label">Rabatt auf jede Buchung</div>
+          </div>
+          <div>
+            <div class="feature-stat-num">3+</div>
+            <div class="feature-stat-label">Buchungen pro Monat</div>
+          </div>
+          <div>
+            <div class="feature-stat-num">24h</div>
+            <div class="feature-stat-label">Frühzugang zu neuen Slots</div>
+          </div>
+          <div>
+            <div class="feature-stat-num">12.–</div>
+            <div class="feature-stat-label">CHF / Monat</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== SECTION 5 · BROWSE BY CITY ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§Q51.5 · browse by city</span>
     <section class="sec">
       <div class="sec-rule"></div>
       <div class="sec-meta-row">
         <span class="sec-eyebrow">Solen in deiner Stadt</span>
-        <span class="sec-meta">3 Städte · 237 Salons</span>
+        <span class="sec-meta">3 Städte · 853 Salons</span>
       </div>
       <div class="sec-h2-row">
         <h2 class="sec-h2">Stadt wählen</h2>
@@ -835,36 +1196,112 @@
     </section>
   </div>
 
-  <!-- ============== SOLEN PRO FEATURE PANEL ============== -->
+  <!-- ============== SECTION 6 · SPOTLIGHT (OPTIONAL) ============== -->
   <div class="sec-wrap">
-    <span class="anno">§20 · b2b promo</span>
-    <section class="feature-panel">
-      <div class="feature-card">
+    <span class="anno dark">§Q51.6 · spotlight (optional · curated)</span>
+    <section class="sec">
+      <div class="sec-rule"></div>
+      <div class="sec-meta-row">
+        <span class="sec-eyebrow">Spotlight · diese Woche</span>
+        <span class="sec-meta">kuratiert · mai 2026</span>
+      </div>
+      <div class="spotlight">
+        <div class="spotlight-img">[ feature photo ]</div>
         <div>
-          <div class="feature-eyebrow">Solen Pro</div>
-          <h2 class="feature-h2">Stammkund:in werden, klüger sparen.</h2>
-          <p class="feature-deck">
-            Drei Buchungen pro Monat? Mit Solen Pro buchst du günstiger, holst Treue-Stempel,
-            siehst neue Slots zuerst — und supportest deinen Lieblingssalon.
+          <div class="spotlight-eyebrow">Salon im Fokus</div>
+          <h2 class="spotlight-h2">Atelier Coiffure: drei Generationen Handwerk.</h2>
+          <p class="spotlight-deck">
+            Anna führt das Atelier in dritter Generation. Spezialisiert auf Naturhaar-Coloration und
+            slow-Beauty — Termine im Mai sind selten, aber wir haben einen für dich.
           </p>
-          <button class="feature-cta">Mehr erfahren →</button>
+          <button class="spotlight-cta">Geschichte lesen →</button>
         </div>
-        <div class="feature-stats">
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== SECTION 7 · TESTIMONIALS ============== -->
+  <div class="sec-wrap">
+    <span class="anno">§Q51.7 · testimonials</span>
+    <section class="sec">
+      <div class="sec-rule"></div>
+      <div class="sec-meta-row">
+        <span class="sec-eyebrow">Was Kund:innen sagen</span>
+        <span class="sec-meta">4+ Sterne · max 6</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">Echte Bewertungen</h2>
+        <a href="#" class="sec-link">Alle Bewertungen →</a>
+      </div>
+      <div class="reviews">
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">
+            "Die App ist endlich was Solides für die Schweiz. Termin in 30 Sekunden, keine Anrufe,
+            keine Vorab-Zahlung. Salon Maria war wie immer top — aber die Buchung über Solen war diesmal
+            einfach besser."
+          </p>
+          <div class="review-author">
+            <div class="review-avatar">LK</div>
+            <div>
+              <div class="review-name">Lara K.</div>
+              <div class="review-meta">Basel · Coiffeur · 2 Wochen</div>
+            </div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">
+            "Last-Minute heute Abend zu Bohème — 25% Rabatt und der beste Fade meines Lebens. Die
+            Heute-frei-Anzeige ist Gold wert wenn man spontan ist."
+          </p>
+          <div class="review-author">
+            <div class="review-avatar">MH</div>
+            <div>
+              <div class="review-name">Marc H.</div>
+              <div class="review-meta">Basel · Barber · 5 Tage</div>
+            </div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">
+            "Habe einen Look auf Entdecken gespeichert und konnte direkt buchen — same-day. Die
+            Stylistin hatte das Foto schon offen als ich ankam. Magic."
+          </p>
+          <div class="review-author">
+            <div class="review-avatar">SR</div>
+            <div>
+              <div class="review-name">Sara R.</div>
+              <div class="review-meta">Zürich · Nails · 1 Woche</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============== SECTION 8 · TRUST STATS BANNER ============== -->
+  <div class="sec-wrap">
+    <span class="anno dark">§Q51.8 · trust stats banner</span>
+    <section class="trust-banner">
+      <div class="trust-inner">
+        <div>
+          <div class="trust-eyebrow">Solen in Zahlen</div>
+          <h2 class="trust-h2">Die Schweiz bucht bei Solen.</h2>
+        </div>
+        <div class="trust-stats">
           <div>
-            <div class="feature-stat-num">15%</div>
-            <div class="feature-stat-label">Rabatt auf jede Buchung</div>
+            <div class="trust-stat-num">853</div>
+            <div class="trust-stat-label">Salons in 3 Städten</div>
           </div>
           <div>
-            <div class="feature-stat-num">3+</div>
-            <div class="feature-stat-label">Buchungen pro Monat</div>
+            <div class="trust-stat-num">12.4k</div>
+            <div class="trust-stat-label">Echte Bewertungen</div>
           </div>
           <div>
-            <div class="feature-stat-num">24h</div>
-            <div class="feature-stat-label">Frühzugang zu neuen Slots</div>
-          </div>
-          <div>
-            <div class="feature-stat-num">12.–</div>
-            <div class="feature-stat-label">CHF / Monat</div>
+            <div class="trust-stat-num">87k</div>
+            <div class="trust-stat-label">Buchungen / Jahr</div>
           </div>
         </div>
       </div>
@@ -901,7 +1338,7 @@
 
   <!-- ============== FOOTER ============== -->
   <div class="sec-wrap">
-    <span class="anno" style="background: rgba(255,255,255,.10); color: var(--brand-pale);">§21 · footer</span>
+    <span class="anno dark">§21 · footer</span>
     <footer class="footer">
       <div class="footer-inner">
         <div class="footer-grid">
