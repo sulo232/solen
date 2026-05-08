@@ -783,8 +783,15 @@ html {
    #C2F0F1, brand subtle #E1F4F4, pale ice blue #CAE8FF, navy #005898 / #031E48.
    NO cream / cherry / bone / forest (those are CATEGORY-page colors). */
 
+/* HTML carries the base white substrate so the page never falls back to
+   browser default bg when scrolled past the wash bleed area. Body itself
+   stays transparent so body::before / body::after wash layers (z -1 / -2)
+   paint on top of the white substrate, BELOW any section content. */
+html {
+  background-color: #FFFFFF;
+}
+
 body {
-  /* body must be transparent so the wash layers (z -1, z -2) show through */
   background: transparent;
   position: relative;
   /* Prevent horizontal scroll from -10% / -15% wash insets bleeding past viewport */

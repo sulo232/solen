@@ -21,7 +21,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           as="style"
         />
       </head>
-      <body style={{ margin: 0, padding: 0 }} className="bg-white text-s-ink">
+      {/* `bg-white` removed 2026-05-09: it was hiding the page-wide §5g
+          atmosphere wash defined in globals.css (body::before + body::after
+          z -1 / -2 — wash painted BEHIND opaque white). Body bg now
+          transparent (set in globals.css `body { background: transparent }`)
+          so the wash shows. text-s-ink kept. */}
+      <body style={{ margin: 0, padding: 0 }} className="text-s-ink">
         {children}
       </body>
     </html>
