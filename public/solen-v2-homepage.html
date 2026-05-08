@@ -257,13 +257,8 @@
     display: flex; flex-direction: column;
     gap: 40px;
   }
-  .hero-top {
-    display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px;
-    align-items: center;
-  }
-  @media (max-width: 768px) {
-    .hero-top { grid-template-columns: 1fr; gap: 32px; }
-    .hero-preview { aspect-ratio: 4/3; max-width: 100%; }
+  .hero-text {
+    max-width: 880px;
   }
   .hero-eyebrow {
     font-size: 13px; font-weight: 700; color: var(--ink-3);
@@ -372,22 +367,7 @@
     }
   }
 
-  .hero-preview {
-    aspect-ratio: 4/5;
-    background: linear-gradient(135deg, var(--brand-subtle) 0%, var(--brand-pale) 100%);
-    border-radius: 24px;
-    position: relative; overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--brand); font-family: var(--display); font-weight: 900; font-size: 80px;
-    opacity: 0.7;
-  }
-  .hero-preview::after {
-    content: '[ photo ]'; font-size: 14px;
-    position: absolute; bottom: 16px; left: 16px;
-    color: var(--brand); opacity: 0.5;
-    font-family: var(--body); font-weight: 600;
-    letter-spacing: .14em; text-transform: uppercase;
-  }
+  /* .hero-preview retired — hero is now text + search only (V2-D32 candidate) */
 
   /* ============== EDITORIAL SECTION-BREAK (V2-D15-4) ============== */
   .sec {
@@ -906,16 +886,13 @@
   <div class="sec-wrap">
     <span class="anno">§13 · hero · §5g wash</span>
     <section class="hero">
-      <div class="hero-top">
-        <div>
-          <div class="hero-eyebrow">Beauty in der Schweiz</div>
-          <h1 class="hero-h1">Schöner aussehen, schneller <em>buchen</em>.</h1>
-          <p class="hero-deck">
-            Vom Coiffeur in der Steinenvorstadt bis zur Massage am Rheinufer — die besten Beauty-Adressen
-            der Schweiz, alle in einer App. <a href="#">So funktioniert's →</a>
-          </p>
-        </div>
-        <div class="hero-preview">[ hero photo ]</div>
+      <div class="hero-text">
+        <div class="hero-eyebrow">Beauty in der Schweiz</div>
+        <h1 class="hero-h1">Schöner aussehen, schneller <em>buchen</em>.</h1>
+        <p class="hero-deck">
+          Vom Coiffeur in der Steinenvorstadt bis zur Massage am Rheinufer — die besten Beauty-Adressen
+          der Schweiz, alle in einer App. <a href="#">So funktioniert's →</a>
+        </p>
       </div>
       <div class="search-bar">
         <div class="search-row is-active">
