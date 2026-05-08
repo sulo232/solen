@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { buildAlternates } from "@/lib/seo";
 import Hero from "./_components/homepage/Hero";
+import RecentlyViewed from "./_components/homepage/RecentlyViewed";
 
 const TITLES: Record<string, string> = {
   de: "Solen — Finde & buche die besten Salons in der Schweiz",
@@ -67,6 +68,7 @@ export default async function Page() {
   return (
     <>
       <Hero />
+      <RecentlyViewed />
     </>
   );
 }
