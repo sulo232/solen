@@ -35,8 +35,11 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <header className={cn("flex flex-col", className)}>
-      {/* Top hairline rule — 1px ink */}
-      <hr className="m-0 mb-[14px] h-px border-0 bg-s-ink" aria-hidden />
+      {/* Top hairline rule — softened from solid ink to warm-gray 30% alpha
+          (2026-05-09 user feedback: stark dark line felt out of place against
+          the soft wash bg + cards). Still visible as a section divider but
+          no longer competing with the hero's strong typography for attention. */}
+      <hr className="m-0 mb-[14px] h-px border-0 bg-s-ink-3/30" aria-hidden />
 
       {/* Eyebrow + meta row.
           Mobile (< sm): stack vertically — long uppercase strings wrap
@@ -47,7 +50,10 @@ export function SectionHeader({
           {eyebrow}
         </span>
         {meta && (
-          <span className="whitespace-nowrap text-s-ink-3">
+          // ink-2 (warm dark) instead of ink-3 (cool gray) — secondary info
+          // stays subordinate to the eyebrow but reads warmer against the
+          // wash bg.
+          <span className="whitespace-nowrap text-s-ink-2">
             {meta}
           </span>
         )}
