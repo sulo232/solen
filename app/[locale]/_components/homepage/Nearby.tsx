@@ -45,10 +45,12 @@ const DEMO: NearbyEntry[] = [
 export default function Nearby() {
   const entries = DEMO; // TODO: replace w real geo query Phase 2
 
-  // Eyebrow shows the user's resolved location + nearest result distance.
-  // Format mirrors mockup: "Basel · Kleinbasel · 1.2 km" (city · neighborhood · best).
-  // For demo, hardcoded — real impl uses reverse geocode + nearest distance.
-  const eyebrow = "Basel · Kleinbasel · 200 m";
+  // Eyebrow shows distance to nearest result. Q5 voice: NO hyperlocal city
+  // framing in the static fallback. When geolocation is wired (Phase 2),
+  // the city/neighborhood appears dynamically only AFTER the user opts in
+  // and we successfully reverse-geocode their position. Until then, just
+  // distance — applies everywhere in Switzerland equally.
+  const eyebrow = "In deiner Nähe · 200 m";
 
   return (
     <Section>
@@ -56,7 +58,7 @@ export default function Nearby() {
         eyebrow={eyebrow}
         meta="geo-aware"
         title="In der Nähe"
-        link={{ label: "Alle in Basel →", href: "/search/results?city=basel" }}
+        link={{ label: "Alle in deiner Nähe →", href: "/search/results?nearby=true" }}
       />
 
       <ScrollRow>

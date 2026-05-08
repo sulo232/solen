@@ -122,7 +122,8 @@ function SearchBar() {
           </svg>
         }
         label="Wo"
-        value="Basel · Kleinbasel"
+        value="Für deine Stadt"
+        isPlaceholder
       />
 
       <SearchRow

@@ -47,7 +47,7 @@ export default function Coiffeur() {
   return (
     <Section>
       <SectionHeader
-        eyebrow="Coiffeur · Basel"
+        eyebrow="Coiffeur · ganze Schweiz"
         meta={`${entries.length} Salons · combo Z`}
         title="Coiffeur-Salons"
         link={{ label: "Alle Coiffeurs →", href: "/coiffeur" }}
