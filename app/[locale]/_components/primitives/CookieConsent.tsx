@@ -199,8 +199,7 @@ function CookieBanner() {
             Wir verwenden Cookies
           </div>
           <p className="font-body font-normal text-[14px] leading-[1.55] text-s-ink-2">
-            Notwendige Cookies sind immer aktiv. Analyse + Marketing helfen uns, Solen zu
-            verbessern. Du kannst jede Kategorie einzeln steuern.
+            Analyse &amp; Marketing nur mit deinem OK.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2 shrink-0 md:flex-nowrap">

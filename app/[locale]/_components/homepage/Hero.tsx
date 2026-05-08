@@ -60,10 +60,11 @@ export default function Hero() {
             <span className="text-s-brand">buchen</span>.
           </h1>
 
-          {/* Deck */}
+          {/* Deck — V3 Swiss-warm voice (Q5), short. Q-locks reconciliation
+              §V2-D39.1 Q5 = "ACTIVE — hardcoded Basel breaks it". Generic
+              fallback when no geo: "deiner Stadt". */}
           <p className="font-body mb-8 max-w-[520px] text-[17px] leading-[1.55] text-s-ink-2 max-md:mx-auto">
-            Vom Coiffeur in der Steinenvorstadt bis zur Massage am Rheinufer —
-            die besten Beauty-Adressen der Schweiz, alle in einer App.{" "}
+            Top-Salons in deiner Stadt — ohne Anrufen, ohne Warten.{" "}
             <a
               href="#"
               className="font-semibold text-s-brand underline underline-offset-[3px]"
@@ -170,20 +171,18 @@ function SearchRow({
   isActive,
   isFirst,
 }: SearchRowProps) {
-  // Active row gets V3 brand-subtle background (#E1F4F4 pale teal echo)
-  // per V2-D15-3 — replaces the V2-era cream `s-bg-active` (#FFF4E8) which
-  // was a hold-over from the retired warm-cream substrate. Cream is now
-  // reserved for Coiffeur category combo Z only; using it as a generic
-  // "active" state miscoded it as category-specific.
-  // Mobile: each row is bordered top (except first) via border-b on previous-sibling.
-  // Desktop: no borders between rows; all rounded-full.
+  // Active row: faint brand-teal wash (5% alpha) — barely visible against
+  // the §5g atmosphere wash, signals selection without competing for color
+  // attention. V2-era cream `s-bg-active` retired here per V2-D15-3 + user
+  // feedback "the color u choose is ass" (2026-05-09) — pale teal solid
+  // (#E1F4F4) was too loud; 5% alpha brand is a whisper, not a shout.
   return (
     <button
       type="button"
       className={`
         group flex shrink-0 cursor-pointer items-center gap-3 rounded-[10px] p-[14px_16px] text-left
         transition-colors hover:bg-s-bg-sunken
-        ${isActive ? "bg-s-brand-subtle" : ""}
+        ${isActive ? "bg-s-brand/[0.05]" : ""}
         ${!isFirst ? "border-t border-black/5 max-md:border-t md:border-t-0" : ""}
         md:flex-1 md:rounded-full md:border-t-0 md:p-[14px_22px]
       `}
