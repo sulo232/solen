@@ -100,8 +100,16 @@ export function SectionFrame({
   return (
     <div
       className={cn(
-        "rounded-[28px] border border-white/50 bg-white/20 backdrop-blur-[10px] backdrop-saturate-[1.15]",
-        "px-4 py-6 md:rounded-[32px] md:px-7 md:py-8",
+        // More blur + heavier alpha per user feedback "more opacity".
+        // Frame fill is now 40% white + 18px blur + 1.25 saturate.
+        "rounded-[24px] border border-white/55 bg-white/40 backdrop-blur-[18px] backdrop-saturate-[1.25]",
+        // Tighter padding (was px-4 py-6 md:px-7 py-8). Vertical reduced
+        // per user feedback "vertical height is still too big". Horizontal
+        // tightened to match the smaller Section outer padding.
+        "px-3 py-4 md:rounded-[28px] md:px-5 md:py-5",
+        // overflow-hidden so card scroll-row bleed gets clipped cleanly
+        // at the rounded border (no more cards はみ出てる past the frame).
+        "overflow-hidden",
         className,
       )}
     >
@@ -131,17 +139,15 @@ export function ScrollRow({
         "mt-4 flex gap-3 overflow-x-auto py-1 [scrollbar-width:none]",
         "[scroll-snap-type:x_mandatory] [-webkit-overflow-scrolling:touch]",
         "[&::-webkit-scrollbar]:hidden",
-        // Bleed beyond container padding so first/last cards align with section gutter.
-        // Mobile padding matches Section.px-5 (20px); desktop matches Section.px-8 (32px).
-        "-mx-5 px-5 md:-mx-8 md:px-8",
-        // 🔴 CRITICAL fix (2026-05-09): scroll-padding aligns scroll-snap-align:start
-        // to the PADDING edge, not the container edge. Without this, scroll-snap
-        // auto-scrolls cards' left edges flush against viewport (no gutter), and
-        // any swipe attempt snaps back to the same flush state.
-        "scroll-pl-5 md:scroll-pl-8",
-        // Right-trailing margin on the last card so when user scrolls to the
-        // end, the last card doesn't get its right corner clipped by the
-        // overflow boundary.
+        // Negative margin matches the new SectionFrame padding (px-3 mobile /
+        // px-5 desktop) — so cards bleed up to the frame's rounded border but
+        // not past it. SectionFrame has overflow-hidden, so any visual escape
+        // gets clipped at the rounded edge.
+        "-mx-3 px-3 md:-mx-5 md:px-5",
+        // scroll-padding aligns scroll-snap-align:start to the padding edge
+        "scroll-pl-3 md:scroll-pl-5",
+        // Right-trailing margin on the last card so it has rest space at the
+        // end of the scroll without its right corner clipped.
         "[&>*:last-child]:mr-2",
         className,
       )}
@@ -161,15 +167,14 @@ export function Section({
   children: React.ReactNode;
   className?: string;
 }) {
-  // Outer Section — max-width wrapper, NO glass styling. Eyebrow + meta
-  // render directly here (in page-flow); the glass frame inside wraps just
-  // the title + content. Per user feedback (2026-05-09 annotated): the
-  // section-container should NOT cover the eyebrow zone.
+  // Outer Section — max-width wrapper, NO glass styling. Reduced lateral
+  // padding (was px-5/8) so the SectionFrame inside can reach closer to
+  // viewport edges per user feedback "horizontal part is not wide enough".
   return (
     <section
       className={cn(
-        "relative z-[1] mx-auto max-w-[1280px] px-5 py-8 md:px-8 md:py-10",
-        "mb-2 md:mb-4",
+        "relative z-[1] mx-auto max-w-[1280px] px-3 py-5 md:px-6 md:py-7",
+        "mb-2 md:mb-3",
         className,
       )}
     >
