@@ -11,6 +11,8 @@
 
 ## Status (one-liner)
 
+**2026-05-09 (morning, post-overnight)** — User up. **V2-D09 / V2-D10 / V2-D11 / V2-D12 all resolved** (guest checkout OUT · map view IN · loyalty+packages+gift cards all IN v1 · Stripe Connect locked from DB schema implicit decision). Phase 1 (auth) unblocked. **NEW:** user flagged body font sizes feel small + asked for font visualization — see `public/solen-v2-font-visual.html` showing current Avant Garde Gothic at spec sizes vs +2-3px bumped sizes vs 5 alternative body fonts (Inter / Manrope / Plus Jakarta / DM Sans / Outfit). Cooper Black Std cdnfonts.com URL is currently HTTP 500 — headings silently falling back to Sansita 900 (looks visually similar). Awaiting font decision. · 
+
 **2026-05-09 (OVERNIGHT SUMMARY — autonomous run complete)** — 3 of 3-4 sub-sections shipped + 1 spec drafted. Phase 0 advanced from §F.1 (V2-D17) → §F.4 (V2-D20) without user supervision.
 
 ### Shipped tonight (3 sub-sections, 4 commits):
@@ -43,19 +45,16 @@
 
 ### Bucket C blockers surfaced: NONE. Three sub-sections shipped cleanly.
 
-### Pending user decisions blocking Phase 1 (still PENDING USER):
-- **V2-D09: Guest checkout** — IN or OUT of v1? Affects §A auth scope + §BW booking wizard.
-- **V2-D10: Map view on /search/results** — IN or OUT of v1? Confirm consistent with §25.16 deferral.
-- **V2-D11: Loyalty / packages / gift cards** — IN or OUT of v1? Affects §BW booking wizard scope.
-- **V2-D12: Stripe Connect vs Stripe regular** — backend architecture decision; affects Phase 6 B2B payouts.
+### Phase 1 unblocked — V2-D09 / V2-D10 / V2-D11 / V2-D12 all resolved 2026-05-09:
+- **V2-D09:** Guest checkout — **OUT** (signup required). §A.1 / §A.6 spec needs gate copy.
+- **V2-D10:** Map view on /search/results — **IN**. §SR needs Karte/Liste toggle.
+- **V2-D11:** Loyalty / packages / gift cards — **all 3 IN v1.** §BW step 3 needs promo + gift-card redemption + package redemption + loyalty toggle. Risk: scope expansion (~3-4 weeks). Implementation order: gift cards → packages → loyalty.
+- **V2-D12:** **Stripe Connect** (confirmed prior implicit decision per DB_SCHEMA.md line 8 + SOLEN_DESIGN.md Q55).
 
-These are product decisions, not visual taste. Halt + queue per autonomous protocol — agent did NOT default-pick.
-
-### Suggested next session scope:
+### Suggested next session scope (Phase 1 unblocked):
 1. User reviews + signs off (or overrides) each Bucket B candidate decision above. For each sign-off, append a V2-D## entry to V2_REBUILD_LOG.md.
-2. User decides V2-D09 / V2-D10 / V2-D11 / V2-D12.
-3. Once V2-D09-12 lock, next session can either (a) finish Phase 0 (§F.5 mockup + React + §F.6 skip-link + §F.7 font-display + §F.8 cookie banner — all attended because they have taste calls) or (b) start Phase 1 auth (which only needs §F.2 modal already shipped).
-4. Default recommendation: finish Phase 0 first; Phase 1 auth can ship with §F.2 + §F.4 + §F.5 already done. §F.6/§F.7/§F.8 ship in parallel with Phase 1.
+2. **NEW request: font visualization** — user flagged body font sizes feel small + asked to see what fonts we have. See `public/solen-v2-font-visual.html` (V2-D26 candidate, not yet locked). User picks (a) bigger sizes only, (b) different body font + bigger sizes. Affects globals.css + tailwind config + V2-D15-3 typography lock.
+3. **Phase 0 not finished but Phase 1 not gated by Phase 0 except §F.2 modal (shipped V2-D18).** Next session can start Phase 1 spec/mockup/implement loop in parallel with finishing Phase 0 (§F.5 mockup+React + §F.6 + §F.7 + §F.8). Default recommendation: do font fix first (it touches every component), then start Phase 1 auth surfaces (§A.1 login modal first — only needs §F.2 already shipped).
 
 ### Verification (when user wakes):
 - `npm run dev` then http://localhost:3000/de/dev/primitives — every primitive renders interactively (form primitives + 4 modals + 3 sheets + 8 toast triggers).
@@ -282,21 +281,42 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Decision:** Mockups split per surface using naming convention `public/solen-v2-<surface>.html`. Examples: `solen-v2-primitives.html`, `solen-v2-auth.html`, `solen-v2-salon-detail.html`, `solen-v2-booking.html`, `solen-v2-search-results.html`, `solen-v2-account.html`, `solen-v2-system.html`, `solen-v2-b2b.html`. Each file is independently servable for review.
 - **Status:** locked.
 
-### V2-D09 (2026-05-05) — Guest checkout decision (PENDING USER)
-- **Context:** Phase 1 (auth) needs to know whether v1 supports booking-without-account. Affects Phase 2 booking wizard scope significantly.
-- **Decision:** PENDING — see "Cross-cutting questions" in next-actions section.
+### V2-D09 (2026-05-05 / resolved 2026-05-09) — Guest checkout: OUT of v1
+- **Context:** Phase 1 (auth) needed to know whether v1 supports booking-without-account. Affects Phase 2 booking wizard scope significantly.
+- **Decision (2026-05-09):** **OUT of v1.** Users must sign up to book. Reasoning: account creation creates retention surface (favorites, saved looks, booking history, reviews-eligibility). Guest-checkout in beauty-marketplace v1 historically captures less repeat-business signal. Re-evaluate at v2 if signup-friction kills conversion in real data.
+- **Implications for Phase 1:** §A.1 login modal needs a "Konto erstellen" path that's prominent (not buried). §A.6 spec section ("Guest checkout decision") becomes "Required-signup gate copy" — the blocking-screen + "30-Sekunden-Anmeldung" reassurance + social-proof.
+- **Implications for Phase 2:** §BW booking wizard step 1 includes signup gate if user not authenticated. No guest path. The booking-cart state survives the auth flow (don't lose progress).
+- **Status:** locked.
 
-### V2-D10 (2026-05-05) — Map view on /search/results (PENDING USER)
-- **Context:** §25.16 already deferred map view for /[city]/[category]. /search/results is a different surface — confirm consistent.
-- **Decision:** PENDING.
+### V2-D10 (2026-05-05 / resolved 2026-05-09) — Map view on /search/results: IN v1
+- **Context:** §25.16 deferred map view for `/[city]/[category]` category page. /search/results is a different surface — confirm consistent.
+- **Decision (2026-05-09):** **IN v1 for /search/results.** Search results gets a "Karte" toggle alongside list view. The category page (§25) keeps its v2 deferral — the two surfaces have different intents (search-results is geo-bounded query; category-page is browse-by-discipline). Reasoning: search is an explicit "where can I get X?" intent — map answers that intent better than a list. Browse is a discovery intent — list is fine.
+- **Implications for Phase 2:** §SR search results spec needs Karte/Liste toggle pill (matches existing pattern from filter pills §25.7). Map clusters salons by location; each pin shows mini-card on hover/tap. Mobile: full-screen map mode swap. Use Mapbox or Google Maps (both already in package.json — Mapbox preferred per existing imports).
+- **Implications for §25 category page:** unchanged. v2 still defers map.
+- **Status:** locked.
 
-### V2-D11 (2026-05-05) — Loyalty / packages / gift cards in v1 (PENDING USER)
-- **Context:** Phase 2 booking wizard might or might not redeem packages / gift cards. Default would be defer to v2.
-- **Decision:** PENDING.
+### V2-D11 (2026-05-05 / resolved 2026-05-09) — Loyalty / packages / gift cards: IN v1 (all 3)
+- **Context:** Phase 2 booking wizard might or might not redeem packages / gift cards. Default would have been defer to v2.
+- **Decision (2026-05-09):** **All 3 IN v1.** User confirmed "all ship." Reasoning per user — these are differentiating features in DACH beauty market (gift cards especially common at Swiss salons), and the partial backend infrastructure already exists in legacy code (`PackageRedeemBanner.tsx 105L`, `ServiceCart.tsx 194L promo/gift/referral` — see SOLEN_DESIGN.md Q55 component inventory).
+- **Implications for Phase 2:** §BW booking wizard step 3 (Pay+Confirm) needs:
+  - Promo code field (existing input pattern §F.1.1)
+  - Gift card redemption flow (validate code → apply credit → show remaining balance)
+  - Package redemption (if user has active package, show "From package: 2 visits left" line item)
+  - Loyalty points display (if user has accrued points, show "Use 50 points (= CHF 5)" toggle)
+- **Implications for §AC.2 profile bookings:** include past loyalty earned + package usage history.
+- **Implications for §B.6 service management (Phase 6 B2B):** salons need to define which services count toward loyalty + which packages they offer (e.g. "5 cuts for CHF 400").
+- **Risk:** scope expansion. Loyalty + packages + gift cards is ~3-4 weeks of work alone in Phase 2 + Phase 6. Re-flag if Phase 2 timeline starts slipping — may carve out gift cards (highest value, lowest complexity) and defer loyalty + packages to v1.1.
+- **Status:** locked. Implementation order: gift cards first (simplest), then packages, then loyalty (tracking + accrual = most state).
 
-### V2-D12 (2026-05-05) — Stripe Connect (marketplace payouts) vs Stripe regular (PENDING USER)
-- **Context:** Backend decision but affects B2B Phase 6 architecture significantly.
-- **Decision:** PENDING.
+### V2-D12 (2026-05-05 / resolved 2026-05-09) — Stripe Connect (marketplace payouts)
+- **Context:** Backend architecture decision affecting B2B Phase 6 payouts.
+- **Decision (2026-05-09):** **Stripe Connect.** Confirmed implicit-prior-decision per user instruction "I think in the previous version we already talked abt this go find it." Found in:
+  - `_rules/DB_SCHEMA.md` line 8 — `salon_payouts` table already includes `stripe_payment_intent_id`, `commission_percent`, `commission_amount`, `net_amount`. The schema is built FOR Stripe Connect.
+  - `_tasks/SOLEN_DESIGN.md` Q55 (booking wizard) — "default = Karte if Stripe Connect set up" — wizard spec already assumes Connect.
+- **Reasoning:** Solen is a marketplace (consumer pays Solen, Solen takes commission, salon gets paid out). Stripe Connect is the marketplace standard — handles KYC for salons, payout to salon bank account, commission split, refunds. Stripe regular checkout would require building all that custom (or worse, paying salons manually).
+- **Implications for Phase 6 B2B:** §B.12 billing/subscription spec needs Connect onboarding flow (Stripe-hosted) + payout dashboard + tax handling (Swiss VAT). Salon goes through Connect Express onboarding during signup, gets a Connect account, money flows through Solen platform → automatic split (e.g. 90/10) → daily/weekly payout to salon bank account.
+- **Implications for Phase 2 booking wizard:** payment intent creation uses `transfer_data` to split commission at-charge. No post-hoc payout reconciliation needed.
+- **Status:** locked. The DB schema confirms commitment — formalizing here removes the "PENDING USER" marker.
 
 ### V2-D15 (2026-05-06) — Brand color + typography stay v2 · color exploration concluded
 - **Context:** Spent ~2026-05-05 evening exploring whether brand orange `#E8742A` is right. Built 5 comparison labs: font-pivot, font-lab (10 candidates), matrix (palette × fonts), color-lab (8 brand colors), collision-test (which colors fight semantic alerts), ink-brand (Uber/Revolut/Aesop pattern), cta-options. User reached fatigue — every candidate either fought alerts (vibrant orange/coral/mustard/forest-green) or felt cold/disconnected (warm-ink CTA, "doesn't match the warm aesthetic"). Walked away overnight per the "step away 24h" option.
