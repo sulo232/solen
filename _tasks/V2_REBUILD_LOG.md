@@ -352,6 +352,23 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
 
+### V2-D35 (2026-05-09 evening) — Decision 2 lock: Hybrid spec pattern (UX-first descriptions + concentrated implementation mapping)
+
+- **Context:** during V2-D33 doc consolidation, asked whether LIVE_TRUTH §23 homepage flow (and future surface specs) should name specific React components like `TestimonialCarousel`/`TrustStatsBanner` + their API endpoints, or stay component-agnostic.
+- **Three options weighed:**
+  - **A** — component-agnostic spec (clean, refactor-resistant, but agents/devs have to grep to find implementations — exactly the failure mode that caused the §16 mistake)
+  - **B** — component + API named throughout each section (unambiguous, but brittle — every rename = spec edit; couples spec to architecture)
+  - **C — Hybrid** — UX-first descriptions + concentrated `§X.99 Implementation mapping (informational, may drift)` table at end of each surface section
+- **Decision:** **C — Hybrid.** Spec stays readable for designers/PMs, survives renames; mapping table gives agents/devs a single grep-target for "which component implements this section." Disclaimer manages maintenance expectations.
+- **Documented as:** new §0b "How this doc is structured" in LIVE_TRUTH (between §0 What this is and the Index). Three meta-rules locked:
+  - **§0b.1** — Concept + examples > exhaustive lists (formula-first specs). The §16.3.0 universal badge color formula is the canonical example.
+  - **§0b.2** — UX-first descriptions + concentrated implementation mapping (the Hybrid pattern locked here). Includes anti-patterns: scattered implementation details + no mapping at all.
+  - **§0b.3** — When in doubt, document the rule, not the answer. One-off answers go in V2_REBUILD_LOG; rules go in LIVE_TRUTH.
+- **Application:** §0b applies to **all surface specs going forward**. When §23 (homepage flow) is written, it must include §23.99 implementation mapping. Same for §SD salon detail, §BW booking wizard, §A auth surfaces, §AC account surfaces, etc. Existing surface specs (§13-§22) are grandfathered as-is — adding mapping tables retroactively is an opportunistic cleanup, not a blocking task.
+- **Files patched:**
+  - `_tasks/SOLEN_LIVE_TRUTH.md` — new §0b inserted between §0 and Index. ~50 lines.
+- **Status:** locked. Decision 2 done. Next: Decision 3 (DB schema inline vs pointer).
+
 ### V2-D34 (2026-05-09 evening) — §16 salon card badge system v2 (light glassmorphic + 2-badge layout + color philosophy)
 
 - **Context:** during V2-D32 homepage mockup work, user audited my §16 salon-card implementation against pre-V3 specs (Q10 from 2026-04-22 + Q26 from 2026-05-01) that I'd missed when first building the cards. Q10 locks 4 curation badges (Solen Favorit / Top bewertet / Beliebt / Neu) with priority order. Q26 locks the 2-badge layout (curation top-left + availability bottom-left). V3 §16 had inherited only the older single-badge availability pattern — never adopted Q10's curation system OR Q26's bottom-left availability placement. This entry locks the full Q10+Q26 spec into V3 §16, refined with V2-D15-4 flat-pill discipline + new color philosophy.

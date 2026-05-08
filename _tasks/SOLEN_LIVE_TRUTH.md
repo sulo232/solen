@@ -18,6 +18,61 @@ Solen is a Swiss beauty + wellness booking marketplace. Multi-city from launch (
 
 ---
 
+## §0b · How this doc is structured (V2-D35 lock)
+
+Two meta-rules that apply across LIVE_TRUTH. They prevent two distinct flavors of doc rot.
+
+### §0b.1 · Concept + examples > exhaustive lists (formula-first specs)
+
+When a spec describes a system that scales (multiple states, multiple variants, multiple colors, multiple thresholds), write it as a **formula + 3-5 illustrative examples + a meta-rule for how to add new ones**. Do NOT exhaustively list every possible state with hardcoded values — that turns the spec into a closed system that needs editing every time a new state is introduced.
+
+**Example (locked V2-D34):** §16.3.0 universal badge color formula. The formula is the rule. The 5 known badge states (Solen Favorit yellow / today-now green / discount amber / this-week brand-teal / pause ink-3) are illustrations. New states extend the formula by picking a hue + applying the recipe — no spec rewrite needed.
+
+**Anti-pattern:** "to add a 6th badge state, append a row to the table" → ✓ correct. "to add a 6th badge state, write new bg/border/text values from scratch" → ✗ formula-violating.
+
+### §0b.2 · UX-first descriptions + concentrated implementation mapping (Hybrid pattern, V2-D35 lock)
+
+Surface specs (§13 hero · §14 search · §16 salon card · §SD salon detail · §BW booking wizard · etc.) describe **what the user sees and what happens when they interact** — not which React component implements it. Component file paths, API endpoints, line counts, state-machine implementations live in **a single concentrated mapping table at the end of each surface section**, marked `§X.99 · Implementation mapping (informational, may drift)`.
+
+**Why both:** UX-first descriptions stay readable for designers/PMs and survive component renames. The §X.99 mapping gives developers + agents a single place to look up "which component implements §Q51.7" without grepping the codebase. The disclaimer ("may drift") manages the maintenance expectation — mapping is a reference, not a contract.
+
+**Example structure (when §23 homepage flow is written):**
+
+```
+## §23 · Final v1 homepage flow
+
+### §23.1 · Section ordering rhythm
+... 8 sections per Q51 ...
+
+### §Q51.0 · Recently Viewed
+UX: returning users only. last 5 viewed salons from localStorage.
+horizontal scroll row, salon cards per §16. ...
+
+### §Q51.1 · Last-Minute heute
+UX: today-only availability. salon cards w discount badge per §16.3.1b. ...
+
+... 7 more section descriptions ...
+
+### §23.99 · Implementation mapping (informational, may drift)
+
+| Section            | Component (current)        | Data source                   | Notes                  |
+|--------------------|----------------------------|-------------------------------|------------------------|
+| §Q51.0 Recently Viewed | RecentlyViewed.tsx     | localStorage `solen_recently_viewed` | client-only, max 5  |
+| §Q51.1 Last-Minute heute | LastMinuteStrip.tsx  | /api/salons/last-minute       |                        |
+| §Q51.7 Testimonials      | TestimonialCarousel.tsx | /api/reviews/homepage      | 4+ stars, max 6        |
+| ...                |                            |                               |                        |
+```
+
+**Anti-pattern:** scattering implementation details across every §Q51.X section → spec becomes unreadable + every refactor requires editing N spec sections instead of 1.
+
+**Anti-pattern:** no implementation mapping anywhere → developers/agents can't trace spec → component → API. This is exactly the failure mode that caused the §16 salon-card mistake on 2026-05-09 (built homepage cards without consulting §16 because no mapping pointed there).
+
+### §0b.3 · When in doubt, document the rule, not the answer
+
+When something needs locking, ask: "is this a one-off answer or a rule that applies elsewhere?" Document the rule (with examples). One-off answers belong in V2_REBUILD_LOG.md as decision entries with full context.
+
+---
+
 ## Index
 
 **Foundations**
