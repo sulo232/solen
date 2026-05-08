@@ -58,32 +58,36 @@
     animation: atm-drift-1 28s ease-in-out infinite alternate;
     will-change: transform;
   }
-  /* Parallax-feel echo — scrolls w document, covers full body height w 9 staggered stops */
+  /* Parallax-feel echo — scrolls w document, ONE coherent solen-brand atmosphere
+     using ONLY solen main colorways: pale teal #C2F0F1, brand subtle #E1F4F4,
+     pale ice blue #CAE8FF, navy #005898 / #031E48. NO cream / cherry / bone /
+     forest — those are CATEGORY-page colors (each /[locale]/[category] page
+     gets its own colorway atmosphere; see .cat-zone-* rules reserved below). */
   body::after {
     content: '';
     position: absolute; inset: -4%;
     background:
-      /* Top-of-fold cream warmth — recently-viewed area */
-      radial-gradient(ellipse 60% 9% at 50% 7%, rgba(255, 241, 221, 0.85) 0%, transparent 70%),
-      /* Last-minute zone — pale teal wash */
-      radial-gradient(ellipse 55% 7% at 80% 14%, rgba(194, 240, 241, 0.80) 0%, transparent 70%),
-      radial-gradient(ellipse 45% 6% at 15% 19%, rgba(202, 232, 255, 0.70) 0%, transparent 75%),
-      /* In-der-Nähe / Coiffeur transition — cream + pale ice */
-      radial-gradient(ellipse 50% 7% at 60% 26%, rgba(255, 241, 221, 0.75) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 6% at 25% 32%, rgba(202, 232, 255, 0.65) 0%, transparent 75%),
-      /* Mid page (per-cat zone) — brand-pale + cream blend */
+      /* Top-of-fold — pale teal core */
+      radial-gradient(ellipse 60% 9% at 50% 7%, rgba(194, 240, 241, 0.82) 0%, transparent 70%),
+      /* 14% — ice blue right + pale teal left */
+      radial-gradient(ellipse 55% 7% at 80% 14%, rgba(202, 232, 255, 0.80) 0%, transparent 70%),
+      radial-gradient(ellipse 45% 6% at 15% 19%, rgba(194, 240, 241, 0.72) 0%, transparent 75%),
+      /* 26% — brand subtle + ice */
+      radial-gradient(ellipse 50% 7% at 60% 26%, rgba(225, 244, 244, 0.78) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 6% at 25% 32%, rgba(202, 232, 255, 0.70) 0%, transparent 75%),
+      /* 40% — brand subtle + pale teal */
       radial-gradient(ellipse 50% 8% at 75% 40%, rgba(225, 244, 244, 0.85) 0%, transparent 70%),
-      radial-gradient(ellipse 45% 7% at 20% 46%, rgba(255, 241, 221, 0.75) 0%, transparent 75%),
-      /* Discover area — pale teal + ice */
-      radial-gradient(ellipse 55% 7% at 60% 54%, rgba(202, 232, 255, 0.80) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 6% at 12% 60%, rgba(194, 240, 241, 0.70) 0%, transparent 75%),
-      /* City tiles area — brand-teal soft + cream */
-      radial-gradient(ellipse 50% 7% at 85% 66%, rgba(194, 240, 241, 0.85) 0%, transparent 70%),
-      radial-gradient(ellipse 45% 6% at 30% 72%, rgba(255, 241, 221, 0.65) 0%, transparent 75%),
-      /* Spotlight / testimonials zone — soft brand-pale */
+      radial-gradient(ellipse 45% 7% at 20% 46%, rgba(194, 240, 241, 0.78) 0%, transparent 75%),
+      /* 54% — ice + pale teal */
+      radial-gradient(ellipse 55% 7% at 60% 54%, rgba(202, 232, 255, 0.82) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 6% at 12% 60%, rgba(194, 240, 241, 0.72) 0%, transparent 75%),
+      /* 66% — pale teal stronger right + brand subtle */
+      radial-gradient(ellipse 50% 7% at 85% 66%, rgba(194, 240, 241, 0.88) 0%, transparent 70%),
+      radial-gradient(ellipse 45% 6% at 30% 72%, rgba(225, 244, 244, 0.70) 0%, transparent 75%),
+      /* 80% — brand subtle */
       radial-gradient(ellipse 55% 7% at 60% 80%, rgba(225, 244, 244, 0.80) 0%, transparent 70%),
-      /* Trust banner / footer transition — spa forest soft hint */
-      radial-gradient(ellipse 50% 7% at 25% 88%, rgba(25, 49, 32, 0.18) 0%, transparent 65%);
+      /* 88% — soft navy deepens toward footer */
+      radial-gradient(ellipse 50% 7% at 25% 88%, rgba(0, 88, 152, 0.18) 0%, transparent 65%);
     z-index: -1;
     pointer-events: none;
     animation: atm-drift-2 36s ease-in-out infinite alternate;
@@ -110,10 +114,12 @@
     }
   }
 
-  /* ============== PER-CATEGORY ZONE GLOWS ============== */
-  /* Each per-cat carousel section wrap gets its own colorway-themed glow.
-     Subtle pulse animation gives each cat zone its own breath rhythm (different
-     durations so the 4 cat zones aren't sync'd). */
+  /* ============== PER-CATEGORY ZONE GLOWS — RESERVED FOR /[locale]/[category] PAGES ============== */
+  /* IMPORTANT: these classes are NOT applied on the homepage. Homepage uses one
+     coherent solen-brand atmosphere (above). Per-cat colorway atmospheres go on
+     each category landing page — when user clicks Barbershop, the /barbershop
+     page has the .cat-zone-barber atmosphere applied; clicking Coiffeur loads
+     /coiffeur w .cat-zone-coiffeur, etc. CSS kept here as the spec reference. */
   .cat-zone-coiffeur, .cat-zone-barber, .cat-zone-nails, .cat-zone-spa {
     position: relative;
     overflow: hidden;
@@ -686,9 +692,12 @@
   }
 
   /* ============== BROWSE-BY-CITY SEO WALL ============== */
+  /* Transparent so the body atmosphere wash bleeds through — no abrupt
+     white→sunken cutoff that breaks the page-wide glow continuity */
   .seo-wall {
-    background: linear-gradient(180deg, var(--white), var(--sunken));
+    background: transparent;
     padding: 60px 32px;
+    position: relative; z-index: 1;
   }
   .seo-inner { max-width: 1280px; margin: 0 auto; }
   .seo-title {
@@ -1030,7 +1039,7 @@
   </div>
 
   <!-- ============== SECTION 3a · COIFFEUR CAROUSEL ============== -->
-  <div class="sec-wrap cat-zone-coiffeur">
+  <div class="sec-wrap">
     <span class="anno">§Q51.3a · per-cat: Coiffeur (affinity-ordered)</span>
     <section class="sec">
       <div class="sec-rule"></div>
@@ -1080,7 +1089,7 @@
   </div>
 
   <!-- ============== SECTION 3b · BARBERSHOP CAROUSEL ============== -->
-  <div class="sec-wrap cat-zone-barber">
+  <div class="sec-wrap">
     <span class="anno">§Q51.3b · per-cat: Barbershop</span>
     <section class="sec">
       <div class="sec-rule"></div>
@@ -1130,7 +1139,7 @@
   </div>
 
   <!-- ============== SECTION 3c · NAILS CAROUSEL ============== -->
-  <div class="sec-wrap cat-zone-nails">
+  <div class="sec-wrap">
     <span class="anno">§Q51.3c · per-cat: Nails</span>
     <section class="sec">
       <div class="sec-rule"></div>
@@ -1180,7 +1189,7 @@
   </div>
 
   <!-- ============== SECTION 3d · SPA & WELLNESS CAROUSEL ============== -->
-  <div class="sec-wrap cat-zone-spa">
+  <div class="sec-wrap">
     <span class="anno">§Q51.3d · per-cat: Spa &amp; Wellness</span>
     <section class="sec">
       <div class="sec-rule"></div>
