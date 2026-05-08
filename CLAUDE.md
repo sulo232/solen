@@ -88,6 +88,14 @@ Never `.catch(() => {})`. Always `console.error("[Component] desc:", err)`. Auth
 
 Anything visual must come from `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-3, 2026-05-07). New colors use existing tokens. To change the design itself: edit `SOLEN_LIVE_TRUTH.md` first, then update the V3 preview HTML files (`solen-v2-republik-teal.html` / `solen-v2-palette.html` / `solen-v2-combos.html`), then log decision as next `V2-D##` entry in `_tasks/V2_REBUILD_LOG.md`. Historical Q-locks in `SOLEN_DESIGN.md` §20 are context only — V3 supersedes any conflict.
 
+**🚨 Permanent technical anti-patterns (LIVE_TRUTH §0d.7 + V2_REBUILD_LOG.md V2-D41-fu).** Read these BEFORE editing layout, body styles, atmosphere wash, salon cards, search bar, or section frames. Breaking any silently breaks visible design:
+1. ❌ `bg-white` on `<body>` element (kills atmosphere wash)
+2. ❌ Cat-color halo glows on salon cards (retired V2-D41)
+3. ❌ Section padding ↔ ScrollRow margin drift (cards stick out past rounded border)
+4. ❌ "Fixing" Cooper Black Std cdnfonts URL by reordering font-family (actual loaded font is Sansita 900)
+5. ❌ `will-change` / `transform: translateZ(0)` at REST (causes blurry text)
+6. ❌ Animating `width` / `height` to/from `auto` (browsers can't smooth this)
+
 ---
 
 ## 📚 Topic-specific rules (load when relevant)

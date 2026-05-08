@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion, AnimatePresence, type Transition } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion, type Transition } from "motion/react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +29,11 @@ const islandTransition: Transition = {
   ease: [0.22, 1, 0.36, 1],
   duration: 0.5,
 };
+
+// V2-D41-fu.3: when user has prefers-reduced-motion, all morph/crossfade
+// transitions become instant. State changes still happen (segment expands /
+// collapses) but without the animation curve.
+const instantTransition: Transition = { duration: 0 };
 
 // Explicit heights per viewport+state — animations are smoother w fixed values vs height:auto.
 // Mobile collapsed: stacked card (3 rows × ~62px + button + padding).
@@ -66,6 +71,8 @@ export function SearchBar() {
   const [stadt, setStadt] = React.useState("");
   const [zeit, setZeit] = React.useState("");
   const [isDesktop, setIsDesktop] = React.useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const transition = prefersReducedMotion ? instantTransition : islandTransition;
 
   // Track viewport so the collapsed-state height matches the layout
   // (mobile = 280 stacked card / desktop = 76 horizontal pill).
@@ -112,7 +119,7 @@ export function SearchBar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={islandTransition}
+            transition={transition}
             className="fixed inset-0 z-[60] bg-black/30"
             onClick={() => setActive(null)}
             aria-hidden
@@ -134,7 +141,7 @@ export function SearchBar() {
           height: isExpanded ? sizes.expanded : sizes.collapsed,
           borderRadius: !isExpanded && isDesktop ? 999 : 16,
         }}
-        transition={islandTransition}
+        transition={transition}
         className={cn(
           "relative w-full max-w-[540px] overflow-hidden border border-black/5 bg-white",
           "shadow-[0_1px_3px_rgba(50,47,44,0.04),0_4px_12px_rgba(50,47,44,0.04)]",
@@ -152,7 +159,7 @@ export function SearchBar() {
             opacity: isExpanded ? 0 : 1,
             scale: isExpanded ? 0.95 : 1,
           }}
-          transition={{ ...islandTransition, delay: isExpanded ? 0 : 0.1 }}
+          transition={prefersReducedMotion ? instantTransition : { ...islandTransition, delay: isExpanded ? 0 : 0.1 }}
           className={cn(
             "absolute inset-0 flex flex-col p-2 md:flex-row md:items-stretch md:p-[6px_6px_6px_8px]",
             isExpanded && "pointer-events-none",
@@ -195,7 +202,7 @@ export function SearchBar() {
             opacity: isExpanded ? 1 : 0,
             scale: isExpanded ? 1 : 1.05,
           }}
-          transition={{ ...islandTransition, delay: isExpanded ? 0.1 : 0 }}
+          transition={prefersReducedMotion ? instantTransition : { ...islandTransition, delay: isExpanded ? 0.1 : 0 }}
           className={cn(
             "absolute inset-0 flex flex-col",
             !isExpanded && "pointer-events-none",
