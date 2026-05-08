@@ -11,6 +11,8 @@
 
 ## Status (one-liner)
 
+**2026-05-09 (afternoon, Phase 0 plow)** — V2-D28 lock: §F.5 date/time picker mockup + React shipped. `react-aria-components` Calendar wrapped with V3 styling, `@internationalized/date` for date math (DE-CH locale, Mon-first week), TimeSlotList composed alongside w 4-column grid grouped Vormittag/Nachmittag/Abend. Loading skeleton w shimmer animation, empty state, disabled dates via `isDateUnavailable` callback (booking flow uses for past dates + salon-closed days). Native `<input type="date">` explicitly banned per spec. Dev test page extended w 2 demos (date-and-time live + single-date variant). · 
+
 **2026-05-09 (morning, +logo replacement)** — V2-D27 lock: V1/V2 Bebas-Neue-with-coral-dot logo retired. New logo = Cooper-style "Solen" wordmark mixed case + brand-teal `#043338` dot accent (option C from `public/solen-v2-logo-options.html` — user picked after seeing 4 options). 7 files patched: `public/logo.svg` (text+circle SVG, font fallback chain to Sansita), `public/favicon.svg` (coral circle → brand-teal circle), new `app/[locale]/_components/primitives/Logo.tsx` React component (4 sizes + light/dark tone variants + noDot prop), barrel + dev-page demo, V3 homepage mockup `.nav-logo` CSS updated (color brand→ink, added `::after` dot pseudo-element), LIVE_TRUTH §1.3 added with full V2-D27 lock spec. Live header (legacy) auto-fixes via `logo.svg` reference. · 
 
 **2026-05-09 (morning, post-overnight, +font fix)** — User confirmed bigger sizes (V2-D26 — typography size refresh, kept ITC Avant Garde Gothic for body, bumped most subtexts +2-3px). 14 files patched (8 primitive components + dev page + 4 mockups need a future cleanup pass + LIVE_TRUTH spec sizes). Body 14→16, label 12→14, helper 11→13, eyebrow 11→13, card-tag 9→11, toast title 14→15, switch sub-label 12→13, pill toggle 12→13, input md size 14→16 (also resolves V2-D14/V2-D17 contradiction about iOS auto-zoom — md ≥16px now prevents focus-zoom). Display headings (Cooper-style h1/h2) unchanged. · 
@@ -347,6 +349,27 @@ New Q-style locks made during the V2 rebuild. When finalized → propagate to LI
 - **Context:** During category-color exploration, user said "stop using purple — purple is banned everywhere" after the Wellness `#9B7BB8` plum and Coiffeur-deep `#6B2D4D` (which reads purple at large saturated surfaces) were tested.
 - **Decision:** Wellness `#9B7BB8` plum is banned. Coiffeur-deep `#6B2D4D` is banned as a large saturated surface (still acceptable as small text accent for Coiffeur context). Wellness category color replaced with camel `#A66E3D` deep `#5C3D22`. Bern city tile gradient updated to camel.
 - **Status:** applied to LIVE_TRUTH §2 (camel for Wellness in 6-cat era), then superseded by V2-D15-3 which retired Wellness as a separate category entirely.
+
+### V2-D28 (2026-05-09 afternoon) — Phase 0 §F.5 date/time picker mockup + React shipped
+
+- **Context:** Per user direction (finish Phase 0 → homepage → Phase 1), §F.5 spec was drafted V2-D21 overnight; mockup + React deferred to next attended session. This commit ships them.
+- **Architecture:** `react-aria-components` Calendar + CalendarGrid + CalendarGridHeader + CalendarHeaderCell + CalendarGridBody + CalendarCell (all stable exports). Wrapped with V3 styling via cva-free className composition (the cell-level state needs `data-*` attribute access from react-aria's render-prop pattern, simpler than cva for this case). `@internationalized/date` handles DE-CH locale + Mon-first week + min/max + isDateUnavailable callback. Native `<input type="date">` explicitly banned per §F.5.7.
+- **Composition:** `<DateTimePicker>` root manages combined state `{ date, time }`. Internal `<SolenCalendar>` (calendar grid) + `<TimeSlotList>` (async slot fetching) compose side-by-side on desktop, vertical stack on mobile. `groupByPeriod()` helper sorts slots into Vormittag/Nachmittag/Abend buckets via `parseTime()` — robust to malformed time strings (falls back to manual hour parse).
+- **State support:** loading shimmer (animate-shimmer keyframes already in tailwind config), empty (no date selected OR no slots that day), disabled day cells (past + salon-closed via `isDateDisabled` callback), today highlight (2px brand-pale border + brand-teal text), selected day cell (brand-teal bg + white text + 600 weight), outside-month cells (40% opacity, tap navigates to that month), selected time slot (brand-teal pill).
+- **Files created (2):**
+  - `app/[locale]/_components/primitives/DateTimePicker.tsx` — DateTimePicker + internal SolenCalendar + TimeSlotList. 4 type exports (DateTimePickerProps / DateTimeValue / TimeSlot / + component).
+  - `public/solen-v2-datetime.html` — full mockup. Anatomy stage (composed calendar + 4×grid time slots) · 8 day-cell states (default / today / hover / selected / disabled / outside-month / range-start / range-end — range deferred but rendered for v2 reference) · 2 time-slot states (loading skeleton w shimmer + empty state w cal icon) · mobile vs desktop layouts (vertical stack mobile inside §F.3 sheet vs side-by-side desktop card) · 6-card anti-pattern strip.
+- **Files patched (2):**
+  - `app/[locale]/_components/primitives/index.ts` — exports DateTimePicker + types
+  - `app/[locale]/dev/primitives/page.tsx` — added Section "§F.5 · V2-D28" w 2 live demos. Imports `today` + `getLocalTimeZone` from `@internationalized/date`. Demo `slots` is fake data: dates ending in 0 or 5 simulate fully-booked, others have 16 mixed availability slots. `isDateDisabled` returns true for Sundays.
+- **Bucket B candidate decisions logged:**
+  - §F.5 Calendar uses `react-aria-components` w cell-level render-prop instead of full cva variant approach — alternative was hand-roll using `@internationalized/date` math directly. Picked react-aria for proper kbd nav + a11y + locale support; trade-off is slightly heavier render-prop pattern in cell rendering.
+  - §F.5.2 time slot grouping: hard-coded "Vormittag/Nachmittag/Abend" splits at 12:00 / 18:00. Alternative: configurable boundaries. Picked hard-coded because day-period semantics are universal (DACH market) and configurability adds API surface for no benefit.
+  - §F.5.4 mobile/desktop split: CSS `flex-col md:flex-row` at the 768px Tailwind breakpoint. Same as §F.3 sheet. No JS responsive switching.
+- **Tailwind tokens added:** none. `animate-shimmer` already existed in config.
+- **Live site impact: ZERO.** No existing route imports it. Booking wizard (§BW Phase 2) will use it.
+- **Typecheck:** clean for new files.
+- **Status:** **shipped + locked.** Phase 0 §F.5 is complete: spec ✓ (V2-D21) + mockup ✓ + React ✓ + dev verification ✓. **Next:** §F.6 skip-to-main link.
 
 ### V2-D27 (2026-05-09 morning) — Logo replacement: Bebas+coral retired, Cooper-Solen + brand-teal dot locked
 

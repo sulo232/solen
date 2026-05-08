@@ -39,7 +39,11 @@ import {
   ToastProvider,
   useToast,
   Logo,
+  DateTimePicker,
+  type DateTimeValue,
+  type TimeSlot,
 } from "../../_components/primitives";
+import { today, getLocalTimeZone } from "@internationalized/date";
 
 export default function PrimitivesDevPage() {
   if (process.env.NODE_ENV === "production") notFound();
@@ -897,6 +901,11 @@ function PrimitivesDevPageInner() {
           <ToastDemo />
         </Section>
 
+        {/* §F.5 DATE/TIME PICKER */}
+        <Section eyebrow="Date / time picker" meta="§F.5 · V2-D28" title="Date / time picker (booking flow)">
+          <DateTimePickerDemo />
+        </Section>
+
         {/* LOGO */}
         <Section eyebrow="Logo" meta="V2-D27 · 4 sizes" title="Logo (Solen wordmark)">
           <Grid cols={2}>
@@ -1023,6 +1032,74 @@ function Card({ tag, children }: { tag: string; children: React.ReactNode }) {
       </div>
       {children}
     </div>
+  );
+}
+
+function DateTimePickerDemo() {
+  const [pickerValue, setPickerValue] = React.useState<DateTimeValue>({ date: null, time: null });
+
+  // Fake slots — 3 different scenarios based on selected date weekday
+  const slots = React.useMemo<TimeSlot[]>(() => {
+    if (!pickerValue.date) return [];
+    const day = pickerValue.date.day;
+    // No availability on dates ending in 0 or 5 (demo: simulate fully-booked days)
+    if (day % 5 === 0) return [];
+    return [
+      { time: "09:00", available: true },
+      { time: "09:30", available: true },
+      { time: "10:00", available: true },
+      { time: "10:30", available: true },
+      { time: "11:00", available: false },
+      { time: "11:30", available: true },
+      { time: "13:00", available: true },
+      { time: "13:30", available: true },
+      { time: "14:00", available: false },
+      { time: "14:30", available: true },
+      { time: "15:00", available: true },
+      { time: "15:30", available: true },
+      { time: "16:00", available: true },
+      { time: "16:30", available: true },
+      { time: "17:00", available: true },
+      { time: "17:30", available: true },
+      { time: "18:00", available: false },
+    ];
+  }, [pickerValue.date]);
+
+  // Disable some dates as "salon closed" demo
+  const isDateDisabled = React.useCallback((date: import("@internationalized/date").CalendarDate) => {
+    // Sundays are closed (Sunday = 7 in DE locale, or 0 in JS)
+    return date.toDate(getLocalTimeZone()).getDay() === 0;
+  }, []);
+
+  return (
+    <Grid cols={2}>
+      <Card tag="date-and-time · default · live">
+        <p className="font-body text-[14px] text-s-ink-2 mb-4">
+          Pick a date (Sundays closed, dates ending in 0/5 fully-booked). Time slots update live.
+          Selected: <strong className="text-s-ink">{pickerValue.date?.toString() ?? "(none)"}</strong>
+          {pickerValue.time && <> at <strong className="text-s-ink">{pickerValue.time}</strong></>}
+        </p>
+        <DateTimePicker
+          value={pickerValue}
+          onChange={setPickerValue}
+          slots={slots}
+          isDateDisabled={isDateDisabled}
+          minDate={today(getLocalTimeZone())}
+        />
+      </Card>
+
+      <Card tag="single-date · no time slots">
+        <p className="font-body text-[14px] text-s-ink-2 mb-4">
+          Used in search filter "verfügbar am" + B2B closed-day toggle.
+        </p>
+        <DateTimePicker
+          value={pickerValue}
+          onChange={setPickerValue}
+          variant="single-date"
+          minDate={today(getLocalTimeZone())}
+        />
+      </Card>
+    </Grid>
   );
 }
 
