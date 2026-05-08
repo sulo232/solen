@@ -100,15 +100,13 @@ export function SectionFrame({
   return (
     <div
       className={cn(
-        // More blur + heavier alpha per user feedback "more opacity".
-        // Frame fill is now 40% white + 18px blur + 1.25 saturate.
-        "rounded-[24px] border border-white/55 bg-white/40 backdrop-blur-[18px] backdrop-saturate-[1.25]",
-        // Tighter padding (was px-4 py-6 md:px-7 py-8). Vertical reduced
-        // per user feedback "vertical height is still too big". Horizontal
-        // tightened to match the smaller Section outer padding.
-        "px-3 py-4 md:rounded-[28px] md:px-5 md:py-5",
-        // overflow-hidden so card scroll-row bleed gets clipped cleanly
-        // at the rounded border (no more cards はみ出てる past the frame).
+        // Glass: 40% white + 18px blur + 1.25 saturate (kept from previous).
+        "rounded-[20px] border border-white/55 bg-white/40 backdrop-blur-[18px] backdrop-saturate-[1.25]",
+        // Minimal padding (was px-3 py-4 md:px-5 py-5). Both axes pushed
+        // to near-zero "nearness" per user feedback. Cards now have
+        // maximum room → 2 full + sliver of 3rd visible on 375px viewport.
+        "px-3 py-4 md:rounded-[24px] md:px-4 md:py-4",
+        // overflow-hidden clips card-bleed at the rounded border.
         "overflow-hidden",
         className,
       )}
@@ -167,13 +165,12 @@ export function Section({
   children: React.ReactNode;
   className?: string;
 }) {
-  // Outer Section — max-width wrapper, NO glass styling. Reduced lateral
-  // padding (was px-5/8) so the SectionFrame inside can reach closer to
-  // viewport edges per user feedback "horizontal part is not wide enough".
+  // Outer Section — minimal padding so the SectionFrame inside reaches
+  // near-edge of viewport. Both axes "matching nearness" per user feedback.
   return (
     <section
       className={cn(
-        "relative z-[1] mx-auto max-w-[1280px] px-3 py-5 md:px-6 md:py-7",
+        "relative z-[1] mx-auto max-w-[1280px] px-2 py-3 md:px-4 md:py-4",
         "mb-2 md:mb-3",
         className,
       )}
