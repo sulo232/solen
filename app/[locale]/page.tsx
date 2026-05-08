@@ -4,6 +4,7 @@ import Hero from "./_components/homepage/Hero";
 import RecentlyViewed from "./_components/homepage/RecentlyViewed";
 import LastMinute from "./_components/homepage/LastMinute";
 import Nearby from "./_components/homepage/Nearby";
+import Coiffeur from "./_components/homepage/Coiffeur";
 
 const TITLES: Record<string, string> = {
   de: "Solen — Finde & buche die besten Salons in der Schweiz",
@@ -73,6 +74,7 @@ export default async function Page() {
       <RecentlyViewed />
       <LastMinute />
       <Nearby />
+      <Coiffeur />
     </>
   );
 }
