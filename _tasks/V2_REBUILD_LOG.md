@@ -580,6 +580,51 @@ Spec:
 
 **Locked.** Modernity pass complete after ~30 commits of iterative refinement (latest: `65fbdb3` card pill resize, `fe632aa` 150px cards). User feedback "okay looks amaizing" closes the iteration loop.
 
+### V2-D41-rising-panel (2026-05-09 night) — Hero/feed-zone separation via rising-panel pattern
+
+**Context:** post V2-D41-fu, user wanted "the separating sh" from the Base/SocialFi reference (`#CLUB SOCIALFI PEOPLE` mockup) — specifically the rounded-top white panel that rises out of the colored hero region to hold content sections below. NOT the rest of Base's energy (no stacked-shadow type, no spinning badges, no hand-drawn arrows, no lime palette — those were demo'd in `solen-v2-base-energy.html` and rejected).
+
+**Decision:** Add `<FeedZone>` component that wraps all homepage feed sections after the hero. Hero stays in the colorful wash zone; FeedZone is a calmer surface for content. Locked via `solen-v2-rising-panel.html` mockup, signed off "yesss like that".
+
+**FeedZone specs:**
+
+|prop                |value                                                                              |
+|--------------------|-----------------------------------------------------------------------------------|
+|background          |`rgba(255, 255, 255, 0.85)` (85% white tint — NOT opaque solid)                    |
+|backdrop-filter     |`blur(8px)` (lighter than SectionFrame's 18px — this is a panel, not a glass card) |
+|border-radius       |`28px 28px 0 0` mobile / `40px 40px 0 0` desktop (rounded TOP only)                 |
+|margin-top          |`-mt-6` mobile / `-mt-8` desktop (24-32px overlap into hero — emphasizes "rising") |
+|shadow              |`0 -12px 32px rgba(4, 51, 56, 0.06)` mobile / `0 -16px 40px rgba(4, 51, 56, 0.08)` desktop (UPWARD shadow only) |
+|padding             |`pt-2 pb-12 md:pt-4 md:pb-20` (top breathing + bottom padding before footer)        |
+|z-index             |`z-[2]` (above wash, below modals/header)                                           |
+
+**Layer architecture (final, post V2-D41-rising-panel):**
+
+```
+LAYER 5 (z high): Modal/sheet overlays + V3 Header (sticky)
+LAYER 4 (z 2):    FeedZone panel (white 85% glass, rounded top, contains all feed sections)
+LAYER 3 (z 1):    Section frames inside FeedZone (white 40% glass)
+LAYER 2 (z 1):    Card frosted-glass text pills (white 70% glass)
+LAYER 1 (z auto): Hero zone (transparent, full wash visible)
+LAYER 0 (z -1/-2):body::before + body::after atmosphere wash gradients
+LAYER -1:         html bg white substrate
+```
+
+The 85% panel alpha is intentionally HIGHER than SectionFrame's 40% — the panel is the "I'm a calmer surface" cue, the section frames are the "I'm a discrete UI unit floating on the surface" cue.
+
+**Trust banner placement:** stays INSIDE FeedZone. Its own dark `bg-s-ink` covers the panel's white tint locally where it sits, before the footer.
+
+**RETIRED in V2-D41-rising-panel:**
+- ❌ The earlier prelude assumption that the entire page is one continuous wash. Wash is intentionally STRONGER in the hero zone (above panel) than in the feed zone (where panel's white tint mutes it). User asked for matched-intensity wash earlier (V2-D41.6 alpha boost) AND now asked for hero/feed separation — these are compatible: wash IS uniform, the FeedZone panel just paints over it locally with white tint.
+
+**Files patched:**
+- `app/[locale]/_components/homepage/SectionHeader.tsx` — added `FeedZone` export
+- `app/[locale]/page.tsx` — wrapped sections after `<Hero />` in `<FeedZone>`
+
+**LIVE_TRUTH should be updated** to reference this entry from §15 (section pattern) prelude — "NEW: feed sections live inside `<FeedZone>` panel, see V2-D41-rising-panel for spec."
+
+**Status:** locked. Commit `0d45c6e`.
+
 ### V2-D41-followup (2026-05-09 night) — Gap audit + anti-patterns + dependency map for V2-D41 modernity pass
 
 User instruction: "see for any gaps or like things that in the future it might occur errors n sh like for the specs we jst made cz i want these sh applied like i want u to remember". Below: the failure modes a future agent (Claude or human) is most likely to hit, with prevention rules.

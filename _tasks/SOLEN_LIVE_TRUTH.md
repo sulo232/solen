@@ -2936,15 +2936,22 @@ Tap CTA → navigates to `/search/results?q=[was]&city=[wo]&date=[wann]`.
 
 > ⚠️ **V2-D41 (2026-05-09) restructured this section.** V2-D15-4's "editorial section-break" with the 1px ink top rule + single-component anatomy is **retired**. The new pattern splits into 4 named pieces and wraps title+content in a glass frame. **See V2_REBUILD_LOG.md §V2-D41.1 for the locked spec.** The diagrams + tables below describe the **retired** V2-D15-4 era — kept for archeology, not authoritative.
 
-> **Quick reference (V2-D41 lock):**
+> ⚠️ **V2-D41-rising-panel (2026-05-09 night)** — feed sections on the homepage are wrapped in a `<FeedZone>` rising-panel that sits below the hero. The panel has rounded top corners + soft upward shadow + white-glass tint. **See V2_REBUILD_LOG.md §V2-D41-rising-panel for spec.** Section pattern below renders INSIDE this FeedZone.
+
+> **Quick reference (V2-D41 + rising-panel lock):**
 > ```
-> <Section>             ← max-w-1280, mx-auto, px-1 py-3 md:px-3 md:py-4
->   <SectionMeta />     ← eyebrow + meta — OUTSIDE the glass, in page-flow
->   <SectionFrame>      ← glass: bg-white/40 + blur(18) + saturate(1.25) + border-white/55 + rounded-20/24 + overflow-hidden
->     <SectionTitle />  ← h2 + filled brand-teal pill link (NOT underlined text)
->     <ScrollRow>...</ScrollRow>
->   </SectionFrame>
-> </Section>
+> <Hero />                ← stays in colorful wash zone
+> <FeedZone>              ← rounded-top panel, bg-white/85 + blur(8) + upward shadow
+>   <Section>             ← max-w-1280, mx-auto, px-1 py-3 md:px-3 md:py-4
+>     <SectionMeta />     ← eyebrow + meta — OUTSIDE the glass, in page-flow
+>     <SectionFrame>      ← glass: bg-white/40 + blur(18) + saturate(1.25) + border-white/55 + rounded-20/24 + overflow-hidden
+>       <SectionTitle />  ← h2 + filled brand-teal pill link (NOT underlined text)
+>       <ScrollRow>...</ScrollRow>
+>     </SectionFrame>
+>   </Section>
+>   <Section>...</Section>  ← repeat for each feed section
+>   <TrustBanner />         ← dark section, lives inside FeedZone
+> </FeedZone>
 > ```
 >
 > **Key retirements per V2-D41:**
