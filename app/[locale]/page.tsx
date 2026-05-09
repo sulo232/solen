@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { buildAlternates } from "@/lib/seo";
 import Hero from "./_components/homepage/Hero";
+import { FeedZone } from "./_components/homepage/SectionHeader";
 import RecentlyViewed from "./_components/homepage/RecentlyViewed";
 import LastMinute from "./_components/homepage/LastMinute";
 import Nearby from "./_components/homepage/Nearby";
@@ -73,12 +74,18 @@ export default async function Page() {
   return (
     <>
       <Hero />
-      <RecentlyViewed />
-      <LastMinute />
-      <Nearby />
-      <Coiffeur />
-      <Reviews />
-      <TrustBanner />
+      {/* All feed sections sit inside a rising-panel FeedZone (V2-D41-fu
+          rising-panel pattern locked 2026-05-09). Hero zone keeps the
+          colorful wash; feed zone is a calmer white-glass surface that
+          rises with rounded top corners + upward shadow. */}
+      <FeedZone>
+        <RecentlyViewed />
+        <LastMinute />
+        <Nearby />
+        <Coiffeur />
+        <Reviews />
+        <TrustBanner />
+      </FeedZone>
     </>
   );
 }

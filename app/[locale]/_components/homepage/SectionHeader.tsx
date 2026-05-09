@@ -85,6 +85,41 @@ export function SectionTitle({
 }
 
 /**
+ * Feed zone — rounded-top panel that the homepage's section feeds live in.
+ * Creates the visual "we crossed from hero zone into content zone" cue,
+ * inspired by the Base/SocialFi rising-panel pattern but kept in V3 palette
+ * (white-glass tint with backdrop-blur, no opaque solid bg). User signed off
+ * via `public/solen-v2-rising-panel.html` (2026-05-09 night).
+ *
+ * Anchors: rounded top corners, slightly overlaps hero's bottom (negative
+ * mt), soft upward shadow emphasizes the "rising" feel. Atmosphere wash
+ * still bleeds through faintly because the white tint is at 85% alpha.
+ */
+export function FeedZone({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "relative z-[2]",
+        "-mt-6 md:-mt-8",
+        "rounded-t-[28px] md:rounded-t-[40px]",
+        "bg-white/85 backdrop-blur-[8px]",
+        "shadow-[0_-12px_32px_rgba(4,51,56,0.06)] md:shadow-[0_-16px_40px_rgba(4,51,56,0.08)]",
+        "pt-2 pb-12 md:pt-4 md:pb-20",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
+/**
  * Glass section-frame — wraps title + content (NOT the meta above).
  * Smaller than the page-edge-to-edge container we had before; meta floats
  * above in the page-flow per user feedback ("not eyebrow above, just title
