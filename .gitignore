@@ -78,3 +78,12 @@ e2e/visual/test-results/
 e2e/visual/report/
 playwright-report/
 blob-report/
+.playwright-mcp/
+
+# Claude skills runtime cache (skills tracked via skills-lock.json,
+# but the unpacked source under .agents/skills/ is a local cache).
+.agents/
+
+# Screenshot artifacts at repo root (Playwright/screenshot tool dumps).
+# Only the root-level pattern — public/*.png and other tracked PNGs stay tracked.
+/*.png
