@@ -88,6 +88,7 @@ This file (`SOLEN_LIVE_TRUTH.md`) is the **principal** for UX, visual, and produ
 | **Security rules** (auth → ban → rate limit → Zod, RLS enforcement, secret handling) | `_rules/SECURITY_RULES.md` | §31 cites the 6 rules; full detail in source | new security rule → update SECURITY_RULES.md first; cite in LIVE_TRUTH §31 only if user-facing |
 | **Code safety patterns** (verify imports, getSession not getUser, post-execution smoke checks) | `_rules/CODE_SAFETY.md` | §32 summarizes top rules; full list in source | new pattern from a real incident → update CODE_SAFETY.md + LESSONS_LEARNED.md |
 | **Lessons learned** (anti-patterns from past production incidents) | `_rules/LESSONS_LEARNED.md` | §34 cites highest-impact lessons | new incident → append to LESSONS_LEARNED.md w date + diagnosis |
+| **V3 patterns + Fresha translation playbook** (the operational "how to apply LIVE_TRUTH" — pattern library, file-path inventory, Fresha→Solen adaptation guide) | `_rules/SOLEN_PATTERNS.md` | §15/§16/§17/§18 own surface-level patterns; SOLEN_PATTERNS.md is the operational playbook that translates them into a reusable inventory + Fresha adaptation rules | new locked surface → update LIVE_TRUTH §X first; then add a 2.X subsection to SOLEN_PATTERNS.md Part 2 documenting reuse |
 | **Structural / governance rules** (Feature Completeness Checklist, component lifecycle, page templates) | `_rules/STRUCTURAL_RULES.md` | §27 summarizes the gates | new gate → update STRUCTURAL_RULES.md |
 | **i18n / routing rules** (no parallel routes, locale handling, AI localization) | `_rules/I18N_ROUTING.md` | §30 cites the rules | new rule → I18N_ROUTING.md |
 | **Decision audit trail** (every V2-D## with full context) | `_tasks/V2_REBUILD_LOG.md` | LIVE_TRUTH cites V2-D## by number; full entry in log | new decision → V2_REBUILD_LOG.md w full context. LIVE_TRUTH only references the number when relevant. |
@@ -229,7 +230,9 @@ These are **architectural laws** — breaking any of them silently breaks visibl
 
 ## §1 Brand color
 
-Solen runs on **one accent: dark teal `#043338`** (Republik panel #4 — locked V2-D15-3). Used densely as connective tissue (Yuh discipline): logo, active nav, inline links, list bullets, ONE word per hero h1, CTA pills, status text, ONE saturated feature card per page. **Never as a hero panel bg.**
+> **⚠️ V2-D48 OVERRIDE (2026-05-09 — Earthen Wellness Light pivot):** This section was originally written for V2-D15-3 dark teal `#043338`. The brand has since been pivoted to **emerald `#1F5C42` (`s-brand`) + terracotta `#C97A57` (`s-accent`) + cream substrate `#F5EBDD` (`s-bg-base`)**. Brand-mid `#0F3D26`, brand-deep `#0A2917`, brand-pale `#A8CFB8`, brand-subtle `#D4EBD9`. Plus the V2-D49j color rule (§5h.2): emerald = action only, terracotta = heartbeat words only, never invert. When reading the §1 body below, substitute teal hexes with the emerald palette and read the Yuh-density discipline as still applicable. The retired teal trio (`#043338` / `#C2F0F1` / `#E1F4F4`) stays in the cumulative palette §5h.1 only as historical context. See `_tasks/V2_REBUILD_LOG.md` V2-D48 + V2-D49j for the lock entries.
+
+Solen runs on **one accent: emerald `#1F5C42`** (V2-D48 Earthen Wellness Light, supersedes V2-D15-3 dark teal). Used densely as connective tissue (Yuh discipline): logo, active nav, inline links, list bullets, ONE word per hero h1 (now terracotta `s-accent` per §5h.2 V2-D49j), CTA pills, status text, ONE saturated feature card per page. **Never as a hero panel bg.**
 
 |Role                  |Hex      |Token            |Where it appears                                                                                          |
 |----------------------|---------|-----------------|----------------------------------------------------------------------------------------------------------|
@@ -326,14 +329,22 @@ Solen is a **multi-city Swiss platform from launch**. Not hyperlocal.
 
 ## §2 Per-category colorways
 
+> **⚠️ V2-D48 OVERRIDE (2026-05-09 — Earthen Wellness Light):** All 4 cat colorways were re-mapped from the V2-D15-3 Republik combos (cream+cherry / bone+black / pale-ice-blue+magenta / forest+sandy-beige) to earth-tones. Live values:
+> - Coiffeur: bg `#FAF2E5` cream + text `#C97A57` terracotta
+> - Barbershop: bg `#E8DDC9` bone + text `#2A1F18` ink
+> - Nails: bg `#D4DDC8` sage-pale + text `#8E4A2D` terra-deep
+> - Spa & Wellness: bg `#D4EBD9` emerald-subtle + text `#0F3D26` emerald-deep
+>
+> The Republik panel-letter shorthand (Z/G/A/I) is retired in favor of plain category names. The 31-combo library `public/solen-v2-combos.html` is V2-D15-3 era reference only. Below is the original V2-D15-3 Republik table (kept for context, not live spec):
+
 The Republik treatment. **4 categories** (V2-D15-3 lock — was 6, dropped Wellness as separate + retired Makeup). Each category has its own colorway — a saturated bg + monochrome text pair, used as the page-identity color on category-specific surfaces. Combo letters reference the 31-combo library at `public/solen-v2-combos.html`.
 
 |Category        |Combo|Bg hex   |Text hex |Contrast       |Soft tile bg|Republik / Solen origin                              |
 |----------------|-----|---------|---------|---------------|------------|------------------------------------------------------|
-|Coiffeur        |**Z**|`#FFF1DD`|`#B5345A`|5.24 : 1 AA    |`#FFF1DD`   |Cream + cherry — soft warm, hair-salon feeling       |
-|Barbershop      |**G**|`#D8D6CB`|`#000000`|14.40 : 1 AAA  |`#D8D6CB`   |Bone + black — Republik panel #7 (Strassberg)         |
-|Nails           |**A**|`#CAE8FF`|`#B50051`|5.35 : 1 AA    |`#CAE8FF`   |Pale ice blue + magenta — Republik panel #1 (Zumthor) |
-|Spa & Wellness  |**I**|`#193120`|`#948565`|3.86 : 1 AA-l  |`#C2F0F1`   |Forest green + sandy beige — Republik panel #9 (Westjordanland — user-flagged screenshot) |
+|Coiffeur        |**Z**|`#FFF1DD`|`#B5345A`|5.24 : 1 AA    |`#FFF1DD`   |Cream + cherry — soft warm, hair-salon feeling — RETIRED V2-D48 |
+|Barbershop      |**G**|`#D8D6CB`|`#000000`|14.40 : 1 AAA  |`#D8D6CB`   |Bone + black — Republik panel #7 (Strassberg) — RETIRED V2-D48 |
+|Nails           |**A**|`#CAE8FF`|`#B50051`|5.35 : 1 AA    |`#CAE8FF`   |Pale ice blue + magenta — Republik panel #1 (Zumthor) — RETIRED V2-D48 |
+|Spa & Wellness  |**I**|`#193120`|`#948565`|3.86 : 1 AA-l  |`#C2F0F1`   |Forest green + sandy beige — Republik panel #9 — RETIRED V2-D48 |
 
 **Visual rhythm:** 3 light panels (cream / bone / pale ice blue) with saturated text accents + 1 dark panel (Spa forest green) as the grounding moment. The dark Spa panel anchors the set; the others are airy.
 
@@ -443,36 +454,40 @@ Pick **one tint per shadow stack** — don't mix.
 
 ## §5 Typography
 
-Solen runs on **2 typefaces, no exceptions** (V2-D15-3 lock — Bricolage Grotesque + Inter Tight retired). **Cooper BT** carries display/headlines (chunky warm slab — the brand-mark moments), **ITC Avant Garde Gothic Std** handles body/UI/section heads (clean geometric grotesque). The pairing was user-locked from a graphic-design reference (`Avant Garde Gothic + Cooper BT` — see V2_REBUILD_LOG V2-D15-3).
+> **V2-D42 OVERRIDE (2026-05-09):** the Cooper BT + ITC Avant Garde Gothic Std pairing locked in V2-D15-3 was retired and replaced with **Peace Sans** (display) + **Open Sauce One** (body) per user direction off an Instagram graphic-design reference. This is a conscious override — the user signed off knowing they had previously rejected Peace Sans + Open Sauce Sans (V2-D15-3). The choice this round is Peace Sans (cdnfonts, single weight 400 — heavy by design) + Open Sauce **One** (cdnfonts, weights 300-900 — different sister font from the rejected Open Sauce **Sans** which has a broken cdnfonts URL). Inter via Google Fonts is the cdnfonts-failure fallback for body. Sub-sections §5.1-§5.x below were written for the V2-D15-3 pairing but remain valid as principles — substitute Peace Sans for Cooper BT and Open Sauce One for Avant Garde when reading.
+
+Solen runs on **2 typefaces, no exceptions** (V2-D42 lock). **Peace Sans** carries display/headlines (chunky modern sans display — the brand-mark moments), **Open Sauce One** handles body/UI/section heads (clean modern sans, full 300-900 weight range).
 
 |Role                                              |Family                                          |Weight       |Use                                                                                                                  |
 |--------------------------------------------------|------------------------------------------------|-------------|---------------------------------------------------------------------------------------------------------------------|
-|Display (hero h1, logo, feature panel h2, brand-mark moments)|**Cooper BT** (paid) / **Cooper Black Std** / **Sansita 900** (free fallback)|400 (single-weight) / 900 fallback|Hero h1, "Solen" logo, Solen Pro feature h2, category panel h1s. Tight letter-spacing -0.02em.|
-|Body + UI + section h2 + section heads + everything else      |**ITC Avant Garde Gothic Std** (paid) / **League Spartan** (free fallback)    |300/400/500/600/700|All body, sub-text, meta, button labels, form fields, microcopy, eyebrow text, section h2s, card titles, AND numerics (use `font-variant-numeric: tabular-nums` for prices/counts/ratings). |
+|Display (hero h1, logo, feature panel h2, brand-mark moments)|**Peace Sans** (cdnfonts) / Impact (system fallback)|400 (single-weight, font is heavy by design)|Hero h1, "Solen" logo, Solen Pro feature h2, category panel h1s. Tight letter-spacing -0.02em.|
+|Body + UI + section h2 + section heads + everything else      |**Open Sauce One** (cdnfonts) / Inter (Google Fonts fallback)|300/400/500/600/700/800/900|All body, sub-text, meta, button labels, form fields, microcopy, eyebrow text, section h2s, card titles, AND numerics (use `font-variant-numeric: tabular-nums` for prices/counts/ratings).|
 
-**Free Google Fonts fallbacks (always-load):**
-- Cooper BT → **Sansita** (weights 400/700/900) — closest free Cooper Black analog, chunky rounded slab
-- ITC Avant Garde Gothic Std → **League Spartan** (weights 300/400/500/600/700) — closest free Avant Garde analog, geometric grotesque
-- Final fallback: **Inter Tight** — neutral catch-all (kept only as last-resort sans)
+**Loading (always-load via @import in `app/globals.css`):**
+- `https://fonts.cdnfonts.com/css/peace-sans` — Peace Sans
+- `https://fonts.cdnfonts.com/css/open-sauce-one` — Open Sauce One (300-900)
+- `https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900` — Inter (cdnfonts-failure fallback for body only)
 
-**Font stacks (locked):**
-- Display: `'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif`
-- Body/UI: `'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif`
+**Font stacks (locked V2-D42):**
+- Display: `'Peace Sans', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif`
+- Body/UI: `'Open Sauce One', Inter, system-ui, sans-serif`
 
 **Sizes (mobile-first, scale up at 768px+):**
 
-|Use                  |Size                          |Weight|Line height|Letter spacing       |Font          |
-|---------------------|------------------------------|------|-----------|---------------------|--------------|
-|Hero h1              |clamp(56px, 7.4vw, 104px)     |900   |0.96       |-0.02em              |Cooper        |
-|Logo "Solen"         |36px (28px mobile)            |900   |1.0        |-0.015em             |Cooper        |
-|Section h2 (general) |clamp(28px, 3.2vw, 40px)      |600   |1.1        |-0.018em             |Avant Garde   |
-|Feature panel h2     |clamp(36px, 4vw, 52px)        |900   |1.0        |-0.02em              |Cooper        |
-|Category panel h1    |clamp(36px, 4.2vw, 56px)      |900   |0.96       |-0.018em             |Cooper        |
-|Card title h3        |18px                          |600   |1.2        |-0.005em             |Avant Garde   |
-|Body                 |16-17px                       |400   |1.5        |0                    |Avant Garde   |
-|Small / meta         |13-14px                       |400/500|1.4-1.45   |0                    |Avant Garde   |
-|Eyebrow              |11-13px                       |600   |1.4        |0.16-0.18em uppercase|Avant Garde   |
-|Big numerics         |clamp(36px, 4vw, 52px)        |900   |1.0        |-0.02em              |Cooper        |
+> **V2-D44 OVERRIDE (2026-05-09):** Hero h1, Section h2, and Logo sizes shrunk for mobile balance after user feedback that everything was too big. Tracking changed to `tracking-normal` everywhere on Peace Sans elements (Logo, Hero h1, headings) — Peace Sans's chunky letters crashed at negative tracking, neutral lets the font's natural metrics breathe. The values below are the live values; older Cooper-era values remain in the right column as historical reference.
+
+|Use                  |Live size (V2-D44)                |Weight|Line height|Letter spacing|Font (V2-D42) |Pre-V2-D44 (Cooper era) |
+|---------------------|----------------------------------|------|-----------|--------------|--------------|------------------------|
+|Hero h1              |`clamp(26px, 4.5vw, 58px)`        |900   |1.15       |normal        |Peace Sans    |clamp(56px, 7.4vw, 104px) leading 0.96 -0.02em |
+|Logo "Solen"         |22px mobile / 28px desktop        |900   |1.0        |normal        |Peace Sans    |36px / 28px mobile leading 1.0 -0.015em |
+|Section h2 (general) |`clamp(22px, 3.5vw, 38px)`        |900   |1.0        |-0.02em       |Open Sauce One|clamp(28px, 3.2vw, 40px) wt 600 leading 1.1 -0.018em |
+|Feature panel h2     |clamp(36px, 4vw, 52px)            |900   |1.0        |-0.02em       |Peace Sans    |(unchanged from V2-D15-3 Cooper spec)   |
+|Category panel h1    |clamp(36px, 4.2vw, 56px)          |900   |0.96       |-0.018em      |Peace Sans    |(unchanged from V2-D15-3 Cooper spec)   |
+|Card title h3        |18px                              |700   |1.2        |-0.005em      |Open Sauce One|same                                    |
+|Body                 |16-17px                           |400   |1.5        |0             |Open Sauce One|same                                    |
+|Small / meta         |13-14px                           |400/500|1.4-1.45  |0             |Open Sauce One|same                                    |
+|Eyebrow              |11-13px                           |700   |1.4        |0.18em uppercase|Open Sauce One|same                                    |
+|Big numerics         |clamp(36px, 4vw, 52px)            |900   |1.0        |-0.02em       |Peace Sans    |(unchanged from V2-D15-3 Cooper spec)   |
 |Prices (inline)      |16px                          |600   |1.0        |0 (tabular-nums)     |Avant Garde   |
 
 ### §5.1 · Display vs Text rule (Uber lesson, V2-D15-3 reapplication)
@@ -505,12 +520,13 @@ Prices, ratings, counts, dates, times all use Avant Garde Gothic with `font-vari
 V1 used Instrument Serif italic for emphasis words in headlines. **Retired V2-D15.** No italic anywhere in UI. If a word needs emphasis inside a headline, use **brand-teal color swap** (the locked V3 emphasis rule — single word in `#043338` per hero h1).
 
 **Retired typography (do NOT reintroduce):**
-- Avant Garde Gothic (V2 display — replaced by Cooper)
-- Inter Tight as PRIMARY body (V2 body — kept only as final fallback)
+- Avant Garde Gothic (V2 display — V2-D15-3 replaced by Cooper, then V2-D42 retired entirely)
+- Inter Tight as PRIMARY body (V2 body — kept only as final fallback in V2-D15-3, retired entirely V2-D42)
 - Instrument Serif (V1 italic accent — retired V2-D15)
 - JetBrains Mono (V1 numerics — retired V2-D15)
-- Peace Sans (briefly considered, retired — too "Yuh-chunky shapes")
-- Open Sauce Sans (briefly considered, retired — too rounded)
+- Peace Sans (briefly considered V2-D15-3 — too "Yuh-chunky shapes" — **REINSTATED V2-D42** as locked display)
+- Open Sauce Sans (briefly considered V2-D15-3 — too rounded — sister font Open Sauce **One** locked V2-D42)
+- Cooper BT, Cooper Black Std, Sansita 900, League Spartan (V3 V2-D15-3 typography — retired V2-D42)
 - Fraunces (briefly considered as Republik-serif analog, retired)
 - Anton, Bebas Neue, DM Sans, Plus Jakarta, Outfit, Phosphor (font), Figtree
 
@@ -635,13 +651,85 @@ The synthesis of Republik (colorways) + Yuh (discipline) studied at `/tmp/republ
 6. **Semantic colors stay semantic.** Love-red `#FF4A6B`, success `#16A34A`, warning `#F59E0B`, error `#D32F2F`, closed `#DC2626`, star `#F3A864` — these never collapse into brand or category. Universal-convention beats brand-derivation.
 7. **Pill text is white-or-black.** No tinted-of-bg. (See §5a.)
 8. **One typeface for display, one for everything else.** Cooper for brand-mark moments, Avant Garde Gothic for the rest. The discipline is by ROLE, not by mood. (See §5.)
+9. **Emerald = action, terracotta = heartbeat.** The locked V3 brand has TWO accent colors with strict roles. Emerald `s-brand` is the only color allowed on action affordances (CTAs, primary links, confirmation glyphs, success indicators — "do this now" surfaces). Terracotta `s-accent` is reserved for **highlight words** inside display or body text — the one or two words per surface that carry the brand's warmth (the heartbeat). Never invert these. A terracotta CTA reads as washed-out and inconsistent next to surrounding emerald CTAs (proven by SalonRegister "Salon registrieren" being mis-keyed to s-accent — caught + fixed V2-D49j). An emerald heartbeat word reads as a link, not a heartbeat. (V2-D49j, 2026-05-10.)
+
+### §5h.2 · CTA + heartbeat semantics — concrete reference list (V2-D49j, 2026-05-10)
+
+To make principle #9 enforceable without ambiguity. Every consumer-facing surface either uses emerald, uses terracotta, or doesn't use a brand accent — there is no third option.
+
+**Emerald `s-brand` (V2-D48-2 = `#1F5C42`) is the ONLY allowed color on:**
+- Primary submit buttons (Hero "Solen durchsuchen", Search-bar expanded "Suchen", SalonRegister "Salon registrieren")
+- Header "Anmelden" CTA (auth entry primary)
+- Section "see-all" pill links (e.g. "Im Profil →", "Mehr Looks →", "Alle Bewertungen →")
+- Auth modal primary submit buttons
+- Booking wizard "Weiter" / "Zur Buchung →"
+- Confirmation success glyphs (check icons, success toasts)
+- Bullet check-icon backgrounds in feature lists
+- Heart-saved fill (this is one exception — love-red `#FF4A6B` for saved hearts because love-red is a universal-convention semantic per principle #6)
+- Active state of segment tabs / chips inside pickers (e.g. SearchBar service chip "Coiffeur" when selected)
+- `focus-visible:outline` on every interactive element (the focus ring is always emerald)
+
+**Terracotta `s-accent` (`#C97A57`) is the ONLY allowed color on:**
+- ONE-OR-TWO highlighted words inside h1/h2 display text (e.g. Hero "schneller **buchen**", SalonRegister "Werde **Solen-Partner.**")
+- Logo dot accent (the `●` after "Solen" — the heartbeat at the brand mark)
+- Eyebrow leading-dot bullets (the `●` before "BEAUTY IN DER SCHWEIZ", "FÜR SALONS")
+- The single accent stroke under one section header per page if the editorial moment warrants it
+- That's it. Never on buttons. Never on links. Never on glyph backgrounds.
+
+**Anti-patterns banned here:**
+- ❌ Terracotta button bg with white text (reads as washed-out CTA — looks like a disabled button surrounded by emerald active CTAs)
+- ❌ Emerald inside a sentence as a "highlight word" (reads as a link, breaks the heartbeat-word reading)
+- ❌ Mixing both inside one component (e.g. a card with an emerald button AND a terracotta button — visual chaos, unclear which is primary)
+- ❌ Tinting the heart-saved fill emerald (must stay love-red — universal save-state semantic, see principle #6)
+
+**Sage `s-sage` (`#A8B89A`) was retired as a CTA-adjacent color V2-D49j.** Its lightness (`#A8B89A` = HSL ~95° 15% 67%) is dangerously close to the cream panel bg (`#FAF2E5` = HSL ~40° 64% 91%) — too low contrast for action surfaces. Sage stays only as an atmosphere-blob hue (background only, never on a button or icon background that needs to read at glance).
 
 ### §5h.1 · The cumulative palette (every hex authorized for v3)
 
-This is the EXHAUSTIVE list of colors authorized for Solen V3. Anything not in this list is a violation.
+> **⚠️ V2-D48 OVERRIDE (2026-05-09):** This list was the EXHAUSTIVE palette for the V2-D15-3 dark-teal era. The V2-D48 Earthen Wellness Light pivot replaced the foundation, brand, atmosphere, and category palettes. The current authorized palette is below; the older lists are kept for historical reference. **For new code, use only the V2-D48 LIVE palette below.**
+
+**V2-D48 LIVE palette (authorized for new code):**
 
 **Foundation:**
-- `#FFFFFF` substrate
+- `#F5EBDD` cream substrate (`s-bg-base`)
+- `#F8F0E2` sunken (`s-bg-sunken`)
+- `#1A1209` ink-1 (`s-ink`)
+- `#56463E` ink-2 (`s-ink-2`)
+- `#7A6957` ink-3 (`s-ink-3`)
+- `#C4B8A6` ink-disabled
+- `rgba(26,18,9,.06)` hairline
+- `#E8DFD2` border
+
+**Brand (emerald):**
+- `#1F5C42` brand primary (`s-brand`)
+- `#0F3D26` brand-mid (hover state)
+- `#0A2917` brand-deep (active state)
+- `#A8CFB8` brand-pale (atmosphere blob hue)
+- `#D4EBD9` brand-subtle (pill bg, also = Spa category bg)
+
+**Accent (terracotta — heartbeat words ONLY per §5h.2):**
+- `#C97A57` accent primary (`s-accent`)
+- `#8E4A2D` accent-deep (hover state, also = Nails category text)
+
+**Atmosphere wash earth-tones (radial-gradient stops on body::before/after):**
+- `#E8B89B` terra-soft
+- `#D4DDC8` sage-pale (also: Nails category bg)
+- `#F2D77B` butter (sparingly, stat-card highlights)
+- `#E8DDC9` bone (also: Barbershop category bg)
+- `#FAF2E5` cream-warm (also: Coiffeur category bg)
+
+**Categories (V2-D48 Earthen Wellness Light):**
+- Coiffeur: bg `#FAF2E5` cream-warm + text `#C97A57` terracotta
+- Barbershop: bg `#E8DDC9` bone + text `#2A1F18` ink
+- Nails: bg `#D4DDC8` sage-pale + text `#8E4A2D` terra-deep
+- Spa & Wellness: bg `#D4EBD9` emerald-subtle + text `#0F3D26` emerald-deep
+
+---
+
+**V2-D15-3 era palette (RETIRED — historical context only):**
+
+**Foundation:**
+- `#FFFFFF` substrate (retired V2-D48 — was white, now cream)
 - `#FAF7F3` sunken
 - `#1A1209` ink-1
 - `#56463E` ink-2
@@ -651,17 +739,17 @@ This is the EXHAUSTIVE list of colors authorized for Solen V3. Anything not in t
 - `#E8DFD2` border
 
 **Brand:**
-- `#043338` brand primary
-- `#C2F0F1` brand pale (= category Spa text + atmosphere)
-- `#E1F4F4` brand subtle
+- `#043338` brand primary (retired V2-D48)
+- `#C2F0F1` brand pale (retired V2-D48)
+- `#E1F4F4` brand subtle (retired V2-D48)
 
-**Atmosphere wash colors (CSS gradient stops only):**
-- `#CAE8FF` pale ice blue (also: Nails category bg)
-- `#C2F0F1` pale teal (also: brand pale, Spa soft tile)
-- `#005898` royal blue (atmosphere depth, no other use)
-- `#031E48` deep navy (horizon bleed only, no other use)
+**Atmosphere wash colors (V2-D15-3 era — retired V2-D48):**
+- `#CAE8FF` pale ice blue (also: Nails category bg — retired)
+- `#C2F0F1` pale teal (also: brand pale, Spa soft tile — retired)
+- `#005898` royal blue (atmosphere depth — retired)
+- `#031E48` deep navy (horizon bleed — retired)
 
-**Categories (locked V2-D15-3):**
+**Categories (locked V2-D15-3 — retired V2-D48):**
 - Coiffeur Z: bg `#FFF1DD` cream + text `#B5345A` cherry
 - Barbershop G: bg `#D8D6CB` bone + text `#000000` black
 - Nails A: bg `#CAE8FF` pale ice blue + text `#B50051` magenta
@@ -2274,7 +2362,9 @@ The skip-link's `href="#main"` jumps to a `<main id="main">` element wrapping th
 
 ## §F.7 · Font fallback stack + `font-display` strategy
 
-The strategy that makes V3 typography survive bad networks, broken CDNs, and slow first-paint. The §5 typography lock specifies Cooper BT for display + ITC Avant Garde Gothic Std for body — both via cdnfonts.com (paid CDN). cdnfonts.com is unreliable (Cooper Black Std currently returns HTTP 500 — see V2-D27 callout). The fallback chain is what keeps the brand alive when the primary font CDN fails.
+> **⚠️ V2-D42 OVERRIDE (2026-05-09):** The fonts described throughout this section are the V2-D15-3 era pairing (Cooper BT + ITC Avant Garde Gothic Std + Sansita 900 + League Spartan + Inter Tight). **Those are all retired.** Current V3 typography is **Peace Sans** (display) + **Open Sauce One** (body), both via cdnfonts. **Inter** via Google Fonts is the cdnfonts-failure fallback for body (replacing the Sansita / League Spartan / Inter Tight chain). The `font-display: swap` strategy + the principle of "always-visible-text wins" still applies — only the font names change. When reading the body of §F.7 below, substitute Peace Sans for Cooper BT and Open Sauce One for Avant Garde / Sansita / League Spartan. See V2-D42 in `_tasks/V2_REBUILD_LOG.md` for the lock entry.
+
+The strategy that makes V3 typography survive bad networks, broken CDNs, and slow first-paint. The §5 typography lock (V2-D42) specifies Peace Sans for display + Open Sauce One for body — both via cdnfonts.com (paid CDN). cdnfonts.com is unreliable historically (Cooper Black Std previously returned HTTP 500 — see V2-D27 callout). The fallback chain is what keeps the brand alive when the primary font CDN fails.
 
 ### §F.7.1 · `font-display` value
 
@@ -2495,13 +2585,15 @@ Layout left-to-right:
 
 Padding inside: `var(--space-4)` (16px) horizontal on mobile, `var(--space-5)` (20px) on tablet+, `var(--space-6)` (24px) on desktop.
 
-### §12.3 · Logo “Solen”
+### §12.3 · Logo "Solen"
 
-- Font: **Cooper BT 900** (per §5.1 — logo is one of the brand-mark moments)
-- Size: `clamp(28px, 2.6vw, 36px)`
-- Letter-spacing: `-0.015em`
-- Case: title-case "Solen" (Cooper is mixed-case display; lowercase-only Anton-style retired V2-D15-3)
-- Color: brand teal `#043338` (NOT ink-1 — logo is brand color, see §1)
+> **⚠️ V2-D42 + V2-D48 OVERRIDE:** Cooper BT retired V2-D42 → Peace Sans is the live logo font. Brand teal `#043338` retired V2-D48 → logo wordmark is `text-s-ink` with a terracotta `s-accent` dot accent (V2-D27 logo lock + V2-D48 brand pivot). Below is the original V2-D15-3 spec — current values are in the override note.
+
+- Font (V2-D42): **Peace Sans** (per §5.1 — logo is one of the brand-mark moments)
+- Size: `clamp(22px, 2.6vw, 28px)` (V2-D44 mobile balance pass — was clamp 28-36)
+- Letter-spacing: `tracking-normal` (V2-D44 — Peace Sans's chunky letters break at negative tracking)
+- Case: title-case "Solen" + `●` terracotta `s-accent` dot accent (V2-D27)
+- Color: `text-s-ink` ink-1 + `bg-s-accent` terracotta dot
 - NO sprout glyph in header (sprout glyph is footer-only — see §21)
 
 ### §12.4 · City pill `[Basel ▾]`
@@ -2950,8 +3042,8 @@ Tap CTA → navigates to `/search/results?q=[was]&city=[wo]&date=[wann]`.
 >     </SectionFrame>
 >   </Section>
 >   <Section>...</Section>  ← repeat for each feed section
->   <TrustBanner />         ← dark section, lives inside FeedZone
 > </FeedZone>
+> <Footer />                ← negative-footer with cropped wordmark (V2-D49n; replaces the retired TrustBanner dark section — TrustBanner deleted in this session)
 > ```
 >
 > **Key retirements per V2-D41:**

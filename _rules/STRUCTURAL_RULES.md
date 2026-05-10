@@ -122,14 +122,17 @@ Feature: [Name]
 1. `_tasks/INCOMPLETE_FEATURES.md` is the **mandatory registry** for any feature that has been partially built.
 2. When you build an API route without a complete UI flow → add it to this file immediately.
 3. When you build a component that isn't rendered yet → add it to this file immediately.
-4. Format:
+4. **Canonical entry format** (consolidates the format originally specced in CLAUDE.md, AGENT_COORDINATION.md, and the older Backend/Frontend/Missing/Priority shape — they're now unified to one):
    ```markdown
    ## [Feature Name]
+   - **File/Line**: [path:line where the partial work lives]
    - **Backend**: [what exists — API routes, DB tables]
    - **Frontend**: [what exists — components, pages]
-   - **Missing**: [specific gaps — "no checkout integration", "no navigation entry point"]
+   - **Blocker**: [why it's incomplete — missing primitive, undecided UX, blocked by V2-D## decision]
+   - **Next Steps**: [concrete actions to finish]
    - **Priority**: [HIGH/MEDIUM/LOW]
    ```
+   The format merges Feature·File/Line·Blocker·Next Steps (CLAUDE.md/AGENT_COORDINATION.md pattern) with Backend/Frontend/Missing/Priority (older STRUCTURAL_RULES pattern). All three docs now reference this canonical schema.
 5. Before starting a NEW roadmap for a feature, **ALWAYS check `_tasks/INCOMPLETE_FEATURES.md` first** to avoid rebuilding what already exists.
 6. When a feature becomes complete (all 8 layers from Rule 40 done), remove it from this file and add a `[x] Completed` note.
 
@@ -146,7 +149,7 @@ Feature: [Name]
 - Add keys to ALL 4 locale files with ACTUAL translations (not empty strings or German copies)
 
 ### B. Single Light Theme (dark mode retired)
-- Page bg = white `#FFFFFF` per Q15 (NOT banned — `bg-white` is correct on the page surface)
+- **Page substrate (V2-D48 Earthen Wellness Light):** cream `#F5EBDD` (`s-bg-base`) — NOT white. The substrate is set on `<html>` in `app/globals.css`. **Never apply `bg-white` to `<body>`** — it kills the atmosphere wash (CLAUDE.md anti-pattern #1). `bg-white` on individual surface components (e.g. SalonCard pill, footer body) is fine.
 - BANNED: `text-black` (use `text-s-ink` `#1A1209` warm-ink), `dark:*` utility classes (dark mode killed per Q62)
 - Glass restricted to §6 sanctioned contexts only (nav pill / hero card overlay / trust strip) — NOT a default surface treatment
 
@@ -193,21 +196,21 @@ If you cannot satisfy all items, move to `components/_staging/` and log in `_tas
 
 ---
 
-## Rule 47: HOMEPAGE LAYOUT — see SOLEN_LIVE_TRUTH.md
+## Rule 47: HOMEPAGE LAYOUT — see SOLEN_LIVE_TRUTH.md + SOLEN_PATTERNS.md
 
-> **V3 LOCK (V2-D15-3, 2026-05-07):** Homepage spec is locked in `_tasks/SOLEN_LIVE_TRUTH.md` §13 (Hero) + §15 (Section header pattern) + §16 (Salon card) + §19 (City tiles) + §20 (B2B card) + §21 (Footer) + §22 (Browse-by-city link wall) + §23 (Homepage flow). Live preview: `public/solen-v2-republik-teal.html`.
+> **V3 LOCK (V2-D48 Earthen Wellness Light pivot 2026-05-09 + V2-D42 typography pivot 2026-05-09 + V2-D49j color rule 2026-05-10 — supersedes V2-D15-3):** Homepage spec is locked in `_tasks/SOLEN_LIVE_TRUTH.md` §13 (Hero) + §15 (Section header pattern) + §16 (Salon card) + §17 (Horizontal scroll row) + §18 (Entdecken) + §19 (City tiles) + §20 (B2B card) + §21 (Footer) + §22 (Browse-by-city link wall) + §23 (Homepage flow). Operational playbook with all shipped patterns + file paths: `_rules/SOLEN_PATTERNS.md` Part 2. Live preview: `npm run dev` → `http://localhost:3000/de`.
 >
-> **V3 foundation:**
-> - Page bg: white `#FFFFFF` (substrate is permanent)
-> - Brand: dark teal `#043338` (V0 coral, V1 forest green, V2 orange all retired)
-> - Fonts: Cooper BT (display ONLY — hero h1, logo, feature h2, category panel h1) + ITC Avant Garde Gothic Std (everything else). Free fallbacks: Sansita 900 + League Spartan + Inter Tight. (Anton, Figtree, Bricolage, Inter Tight as primary, Bebas Neue, Fraunces, DM Sans, Peace Sans, Open Sauce Sans all retired)
-> - Hero pattern: white substrate + atmospheric wash (cyan core + navy framing) + Cooper-display h1 + ONE accent word in brand teal + Avant Garde body deck + brand-teal CTA pill
-> - 4 categories: Coiffeur Z, Barbershop G, Nails A, Spa & Wellness I (Makeup retired, Wellness merged)
-> - Dark mode: retired (single light theme)
+> **V3 foundation (V2-D48 Earthen Wellness Light):**
+> - Substrate: cream `#F5EBDD` (`s-bg-base`) — NOT white. Set on `<html>` via globals.css. Atmosphere wash (radial gradients) on `body::before/::after`, plus `<AtmosphereBlobs>` + `<AtmosphereGrain>` mounted at page level.
+> - Brand: emerald `#1F5C42` (`s-brand`) + terracotta `#C97A57` (`s-accent`). Mid `#0F3D26`, deep `#0A2917`, pale `#A8CFB8`, subtle `#D4EBD9`. (V0 coral, V1 forest green, V2 orange, V2-D15-3 dark teal `#043338` all retired.)
+> - Fonts (V2-D42): Peace Sans (display ONLY — hero h1, logo, footer cropped wordmark) + Open Sauce One (everything else). Inter via Google Fonts as cdnfonts-failure fallback. Tracking-normal everywhere — Peace Sans's chunky letters break at negative tracking. (Cooper BT, ITC Avant Garde Gothic Std, Sansita 900, League Spartan, Inter Tight all retired V2-D42.)
+> - Hero pattern: cream substrate + atmosphere wash + Peace Sans h1 with ONE terracotta heartbeat word + Open Sauce body + emerald CTA (V2-D49j: emerald=action, terracotta=heartbeat, never invert).
+> - 4 categories (V2-D48): Coiffeur (cream `#FAF2E5` + terracotta `#C97A57`), Barbershop (bone `#E8DDC9` + ink `#2A1F18`), Nails (sage-pale `#D4DDC8` + terra-deep `#8E4A2D`), Spa & Wellness (emerald-subtle `#D4EBD9` + emerald-deep `#0F3D26`). (Makeup retired, Wellness merged.)
+> - Dark mode: retired (single light theme).
 >
-> **Retired V5 spec:** Warm Beige `#F5F0EB`, Bebas Neue 42px, glass-frost header, Coral `#E8735A`, footer `#2C2825` — all gone. Q-locks Q15/Q23/Q48/Q49/Q50/Q51/Q62 from SOLEN_DESIGN.md §20 are historical context only; V3 lock supersedes any conflict.
+> **Retired:** V5 spec (Warm Beige `#F5F0EB`, Bebas Neue, glass-frost header, Coral `#E8735A`, footer `#2C2825`). V2-D15-3 era V3 dark teal `#043338` + cherry/magenta/sandy-beige cat texts. V2-D15-3 era Cooper BT + Avant Garde Gothic typography. Sage `#A8B89A` as a CTA color (retired V2-D49j — atmosphere blob only). Q-locks Q15/Q23/Q48/Q49/Q50/Q51/Q62 from `_tasks/archive/SOLEN_DESIGN.archived.md` §20 are historical context only; V3 LIVE_TRUTH supersedes any conflict.
 
-For homepage layout decisions, **read `_tasks/SOLEN_DESIGN.md` §20** (Q15, Q23, Q48–Q51).
+For homepage layout decisions, **read `_tasks/SOLEN_LIVE_TRUTH.md` §13–§23 + `_rules/SOLEN_PATTERNS.md` Part 2** (every shipped pattern with file path).
 
 ---
 
