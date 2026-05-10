@@ -16,7 +16,7 @@
 ## ❌ Do These (2 steps left)
 
 - [ ] Step 1: Supabase SMTP (noreply@solen.ch)
-- [ ] Step 2: Gemini + Resend keys → Vercel
+- [ ] Step 2: Gemini + Resend keys → Netlify
 
 ---
 
@@ -101,18 +101,18 @@ Body:
 
 ---
 
-# Step 2: Add Keys to Vercel 🔴 REQUIRED
+# Step 2: Add Keys to Netlify 🔴 REQUIRED
 
 > Keys are in `.env.local` but production needs them too.
 
-1. Open: **https://vercel.com/sulo232s-projects/solen/settings/environment-variables**
+1. Open the Netlify dashboard for the `solen` site → **Site settings → Environment variables**.
 
 2. Add these 2 variables:
 
-| Key | Value | Environments |
+| Key | Value | Contexts |
 |---|---|---|
-| `GEMINI_API_KEY` | `AIzaSyAsyvIz8xnWio5F4-BTcbZkMxEC0rpZGyM` | ✅ Production ✅ Preview ✅ Development |
-| `RESEND_API_KEY` | `re_QnpoWHUi_LB9G4W1ZLmbDbRnWkUL94iPR` | ✅ Production ✅ Preview ✅ Development |
+| `GEMINI_API_KEY` | `AIzaSyAsyvIz8xnWio5F4-BTcbZkMxEC0rpZGyM` | ✅ Production ✅ Deploy Preview ✅ Branch deploys |
+| `RESEND_API_KEY` | `re_QnpoWHUi_LB9G4W1ZLmbDbRnWkUL94iPR` | ✅ Production ✅ Deploy Preview ✅ Branch deploys |
 
 3. Click **Save** for each
 
@@ -122,7 +122,7 @@ Body:
 
 ```
 Step 1 ✅ → Supabase SMTP configured
-Step 2 ✅ → Vercel env vars set
+Step 2 ✅ → Netlify env vars set
          ↓
     🚀 RUN ALL 3 CLAUDE CODE SESSIONS SIMULTANEOUSLY
          ↓
@@ -132,4 +132,4 @@ Step 2 ✅ → Vercel env vars set
 ```
 
 ### Post-Sessions (do after all 3 finish):
-- **Vercel Crons**: If on Pro plan → automatic. If free → use [cron-job.org](https://cron-job.org) to hit `/api/cron/*` routes daily.
+- **Crons**: GitHub Actions (`.github/workflows/cron-jobs.yml`) hits `/api/cron/*` routes on schedule. Already wired up — no action needed.

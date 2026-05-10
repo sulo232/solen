@@ -9,5 +9,5 @@
 ## ⏳ Remaining (non-blocking — do anytime)
 - [ ] **Phase C2** — Google Places API quota (skipped — free tier + $200 credit, 48 salons = low risk)
 - [ ] **Phase C3** — Stripe billing alerts (CHF 50/200/500) + enable Radar
-- [ ] **Phase E** — Verify Vercel env var Production vs Preview separation (especially Stripe test vs live keys)
+- [ ] **Phase E** — Verify Netlify env var Production vs Deploy Preview separation (especially Stripe test vs live keys). Phase A/B above were originally on Vercel; env vars have since been migrated to Netlify (2026-05-09).
 - [ ] **Phase F** — Post-deployment verification (after Claude Code finishes all code phases)
