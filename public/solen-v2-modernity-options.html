@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solen V3 — Modernity options B + C (separate)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sansita:wght@900&display=swap');
+    @import url('https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std');
+
+    :root {
+      --ink: #1A1209;
+      --ink-2: #56463E;
+      --ink-3: #7A6957;
+      --brand: #043338;
+      --brand-mid: #0A6873;
+      --brand-pale: #C2F0F1;
+      --brand-subtle: #E1F4F4;
+      --love: #FF4A6B;
+      --display: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif;
+      --body: 'ITC Avant Garde Gothic Std', 'Avant Garde', system-ui, sans-serif;
+      /* V3 4-cat colors per LIVE_TRUTH §2 */
+      --cat-coiffeur-bg: #FFF1DD;
+      --cat-coiffeur-ink: #B5345A;
+      --cat-barber-bg: #D8D6CB;
+      --cat-barber-ink: #1A1209;
+      --cat-nails-bg: #CAE8FF;
+      --cat-nails-ink: #B5345A;
+      --cat-spa-bg: #193120;
+      --cat-spa-ink: #D9C9A8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: #fff; }
+    body {
+      background: transparent;
+      font-family: var(--body);
+      color: var(--ink);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Page label */
+    .opt-label {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--body);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .opt-label .badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-family: var(--display);
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+    .opt-label .desc {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--ink-2);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    /* Section base */
+    .demo-section {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 64px 24px;
+      position: relative;
+    }
+    .sec-rule {
+      height: 1px;
+      background: rgba(122, 105, 87, 0.3);
+      margin-bottom: 14px;
+    }
+    .sec-eyebrow-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-family: var(--body);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .sec-eyebrow {
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sec-eyebrow::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--brand);
+    }
+    .sec-meta { color: var(--ink-2); }
+    .sec-h2-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .sec-h2 {
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .sec-link {
+      color: var(--brand);
+      font-size: 15px;
+      font-weight: 600;
+      flex-shrink: 0;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .sec-link:hover { color: var(--brand-mid); }
+
+    /* Cards row */
+    .scroll-row {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 8px 0;
+    }
+    .scroll-row::-webkit-scrollbar { display: none; }
+
+    .card {
+      flex: 0 0 200px;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    .card-photo {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 14px;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+    .card-initial {
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: 48px;
+    }
+    .card-text { padding: 10px 4px 0; }
+    .card-row1 {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .card-name {
+      font-family: var(--body);
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-rating {
+      font-family: var(--body);
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--ink);
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .card-rating::before {
+      content: '★';
+      color: #F3A864;
+      font-size: 10px;
+    }
+    .card-row2 {
+      font-family: var(--body);
+      font-weight: 400;
+      font-size: 11px;
+      color: var(--ink-2);
+      line-height: 1.3;
+      margin-top: 2px;
+    }
+    .heart {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      color: var(--ink-3);
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.18));
+    }
+    .heart svg { width: 100%; height: 100%; }
+    .heart.saved {
+      color: var(--love);
+      fill: rgba(255, 74, 107, 0.65);
+      filter: drop-shadow(0 1px 3px rgba(255, 74, 107, 0.35));
+    }
+    .heart.saved svg { fill: rgba(255, 74, 107, 0.65); stroke: var(--love); }
+
+    /* ═════════════════════════════════════════════════════════════════
+       OPTION B — DEPTH + MOTION
+       ═════════════════════════════════════════════════════════════════ */
+    .variant-B {
+      /* Subtle wash for context */
+      background:
+        radial-gradient(ellipse 70% 50% at 75% 12%, rgba(202, 232, 255, 0.32) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 50% at 18% 22%, rgba(194, 240, 241, 0.28) 0%, transparent 70%);
+    }
+
+    /* B-1: Layered shadows on cards (depth) */
+    .variant-B .card-photo {
+      box-shadow:
+        0 1px 2px rgba(26, 18, 9, 0.04),
+        0 4px 12px rgba(26, 18, 9, 0.06),
+        0 12px 32px rgba(26, 18, 9, 0.04);
+      transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* B-2: Hover lift + deeper shadow + subtle glass shine */
+    .variant-B .card:hover .card-photo {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow:
+        0 1px 2px rgba(26, 18, 9, 0.06),
+        0 8px 20px rgba(26, 18, 9, 0.08),
+        0 24px 48px rgba(26, 18, 9, 0.10),
+        0 0 0 1px rgba(4, 51, 56, 0.08);
+    }
+    .variant-B .card:hover .card-photo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    /* B-3: Card entry animation — fade up + stagger on page load */
+    .variant-B .card {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: cardEntry 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .variant-B .card:nth-child(1) { animation-delay: 100ms; }
+    .variant-B .card:nth-child(2) { animation-delay: 180ms; }
+    .variant-B .card:nth-child(3) { animation-delay: 260ms; }
+    .variant-B .card:nth-child(4) { animation-delay: 340ms; }
+    .variant-B .card:nth-child(5) { animation-delay: 420ms; }
+    @keyframes cardEntry {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* B-4: Subtle heart pulse animation on saved hearts */
+    .variant-B .heart.saved {
+      animation: heartBreathe 2.4s ease-in-out infinite;
+    }
+    @keyframes heartBreathe {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.08); }
+    }
+
+    /* B-5: Section title fade-in */
+    .variant-B .sec-h2 {
+      opacity: 0;
+      animation: titleEntry 600ms cubic-bezier(0.22, 1, 0.36, 1) 50ms forwards;
+    }
+    .variant-B .sec-eyebrow-row,
+    .variant-B .sec-rule {
+      opacity: 0;
+      animation: titleEntry 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes titleEntry {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       OPTION C — COLOR + BRAND
+       ═════════════════════════════════════════════════════════════════ */
+    .variant-C {
+      /* C-1: 2x more saturated atmosphere wash */
+      background:
+        radial-gradient(ellipse 75% 55% at 80% 15%, rgba(202, 232, 255, 0.65) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 55% at 15% 25%, rgba(194, 240, 241, 0.58) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 45% at 92% 65%, rgba(0, 88, 152, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 8% 80%, rgba(194, 240, 241, 0.50) 0%, transparent 65%);
+    }
+
+    /* C-2: Section eyebrow uses brand-teal instead of ink */
+    .variant-C .sec-eyebrow {
+      color: var(--brand);
+    }
+
+    /* C-3: Section divider is brand-teal accent (not warm gray) */
+    .variant-C .sec-rule {
+      background: linear-gradient(90deg, var(--brand) 0%, transparent 50%);
+      height: 2px;
+    }
+
+    /* C-4: Section title with brand-teal accent on key word */
+    .variant-C .sec-h2 .accent {
+      color: var(--brand);
+    }
+
+    /* C-5: Cards have category-colored halo glow + cat-tinted card text bg */
+    .variant-C .card-photo {
+      box-shadow: 0 4px 16px rgba(26, 18, 9, 0.06);
+      transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 350ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .variant-C .card-text {
+      margin-top: 4px;
+      padding: 8px 12px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+    }
+    /* Card category halo — colored glow behind photo */
+    .variant-C .card-coiffeur .card-photo {
+      box-shadow: 0 4px 20px rgba(255, 241, 221, 0.9), 0 0 32px rgba(181, 52, 90, 0.15);
+    }
+    .variant-C .card-barber .card-photo {
+      box-shadow: 0 4px 20px rgba(216, 214, 203, 0.9), 0 0 32px rgba(26, 18, 9, 0.15);
+    }
+    .variant-C .card-nails .card-photo {
+      box-shadow: 0 4px 20px rgba(202, 232, 255, 0.9), 0 0 32px rgba(181, 52, 90, 0.15);
+    }
+    .variant-C .card-spa .card-photo {
+      box-shadow: 0 4px 20px rgba(25, 49, 32, 0.5), 0 0 32px rgba(217, 201, 168, 0.4);
+    }
+    .variant-C .card:hover .card-photo {
+      transform: translateY(-4px) scale(1.02);
+    }
+    .variant-C .card:hover .card-photo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(4, 51, 56, 0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* C-6: Card prices use brand-teal */
+    .variant-C .card-row2 .price-accent {
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    /* C-7: Section "see more" link is filled brand-teal pill */
+    .variant-C .sec-link {
+      background: var(--brand);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+    .variant-C .sec-link:hover {
+      background: var(--brand-mid);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════ OPTION B — DEPTH + MOTION ════════════════ -->
+  <div class="opt-label">
+    <span class="badge">B</span>
+    <span>Depth + Motion</span>
+    <span class="desc">layered shadows · hover lift · entry stagger · breathing heart</span>
+  </div>
+
+  <div class="variant-B">
+    <section class="demo-section">
+      <div class="sec-rule"></div>
+      <div class="sec-eyebrow-row">
+        <span class="sec-eyebrow">Heute · letzte Slots</span>
+        <span class="sec-meta">6 Salons · bis zu −25%</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">Last-Minute heute</h2>
+        <a href="#" class="sec-link">Alle →</a>
+      </div>
+
+      <div class="scroll-row">
+        <div class="card card-coiffeur">
+          <div class="card-photo" style="background: var(--cat-coiffeur-bg);">
+            <span class="card-initial" style="color: var(--cat-coiffeur-ink);">M</span>
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+          </div>
+          <div class="card-text">
+            <div class="card-row1"><span class="card-name">Salon Maria</span><span class="card-rating">4.8</span></div>
+            <div class="card-row2">Heute <strong>14:30</strong> · ab <strong>CHF 64</strong></div>
+          </div>
+        </div>
+
+        <div class="card card-nails">
+          <div class="card-photo" style="background: var(--cat-nails-bg);">
+            <span class="card-initial" style="color: var(--cat-nails-ink);">N</span>
+            <div class="heart saved"><svg viewBox="0 0 24 24" fill="rgba(255, 74, 107, 0.65)" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+          </div>
+          <div class="card-text">
+            <div class="card-row1"><span class="card-name">Nails &amp; Co.</span><span class="card-rating">4.7</span></div>
+            <div class="card-row2">Heute <strong>16:00</strong> · ab <strong>CHF 38</strong></div>
+          </div>
+        </div>
+
+        <div class="card card-barber">
+          <div class="card-photo" style="background: var(--cat-barber-bg);">
+            <span class="card-initial" style="color: var(--cat-barber-ink);">B</span>
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+          </div>
+          <div class="card-text">
+            <div class="card-row1"><span class="card-name">Bohème</span><span class="card-rating">4.9</span></div>
+            <div class="card-row2">Heute <strong>17:30</strong> · ab <strong>CHF 32</strong></div>
+          </div>
+        </div>
+
+        <div class="card card-spa">
+          <div class="card-photo" style="background: var(--cat-spa-bg);">
+            <span class="card-initial" style="color: var(--cat-spa-ink);">S</span>
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+          </div>
+          <div class="card-text">
+            <div class="card-row1"><span class="card-name">Spa Rheinufer</span><span class="card-rating">4.8</span></div>
+            <div class="card-row2">Heute <strong>18:00</strong> · ab <strong>CHF 95</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ════════════════ OPTION C — COLOR + BRAND ════════════════ -->
+  <div class="opt-label">
+    <span class="badge">C</span>
+    <span>Color + Brand</span>
+    <span class="desc">saturated wash · brand-teal eyebrow · cat halos · pill link · price accent</span>
+  </div>
+
+  <div class="variant-C">
+    <section class="demo-section">
+      <div class="sec-rule"></div>
+      <div class="sec-eyebrow-row">
+        <span class="sec-eyebrow">Heute · letzte Slots</span>
+        <span class="sec-meta">6 Salons · bis zu −25%</span>
+      </div>
+      <div class="sec-h2-row">
+        <h2 class="sec-h2">Last-Minute <span class="accent">heute</span></h2>
+        <a href="#" class="sec-link">Alle →</a>
+      </div>
+
+      <div class="scroll-row">
+        <div class="card card-coiffeur">
+          <div class="card-photo" style="background: var(--cat-coiffeur-bg);">
+            <span class="card-initial" style="color: var(--cat-coiffeur-ink);">M</span>
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+          </div>
+          <div class="card-text">
+            <div class="card-row1"><span class="card-name">Salon Maria</span><span class="card-rating">4.8</span></div>
+            <div class="card-row2">Heute <strong>14:30</strong> · <span class="price-accent">ab CHF 64</span></div>
+          </div>
+        </div>
+
+        <div class="card card-nails">
+          <div class="card-photo" style="background: var(--cat-nails-bg);">
+            <span class="card-initial" style="color: var(--cat-nails-ink);">N</span>
+            <div class="heart saved"><svg viewBox="0 0 24 24" fill="rgba(255, 74, 107, 0.65)" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+          </div>
+          <div class="card-text">
+            <div class="card-row1"><span class="card-name">Nails &amp; Co.</span><span class="card-rating">4.7</span></div>
+            <div class="card-row2">Heute <strong>16:00</strong> · <span class="price-accent">ab CHF 38</span></div>
+          </div>
+        </div>
+
+        <div class="card card-barber">
+          <div class="card-photo" style="background: var(--cat-barber-bg);">
+            <span class="card-initial" style="color: var(--cat-barber-ink);">B</span>
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+          </div>
+          <div class="card-text">
+            <div class="card-row1"><span class="card-name">Bohème</span><span class="card-rating">4.9</span></div>
+            <div class="card-row2">Heute <strong>17:30</strong> · <span class="price-accent">ab CHF 32</span></div>
+          </div>
+        </div>
+
+        <div class="card card-spa">
+          <div class="card-photo" style="background: var(--cat-spa-bg);">
+            <span class="card-initial" style="color: var(--cat-spa-ink);">S</span>
+            <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+          </div>
+          <div class="card-text">
+            <div class="card-row1"><span class="card-name">Spa Rheinufer</span><span class="card-rating">4.8</span></div>
+            <div class="card-row2">Heute <strong>18:00</strong> · <span class="price-accent">ab CHF 95</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</body>
+</html>

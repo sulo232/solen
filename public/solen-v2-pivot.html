@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen V2 — pivot · before / after</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #ECE6DC;
+    color: #1A1209;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  body { padding: 36px 16px 80px; }
+  .doc { max-width: 1320px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 28px; }
+  .eye {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: #8A3C0F; margin-bottom: 10px;
+  }
+  h1.doc-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 38px; line-height: 1;
+    letter-spacing: -0.03em; color: #1A1209;
+  }
+  .sub {
+    font-size: 14px; color: #56463E; margin-top: 12px;
+    max-width: 760px; margin-inline: auto;
+  }
+  .changes {
+    margin-top: 18px;
+    padding: 14px 18px;
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.08);
+    border-radius: 12px;
+    max-width: 760px; margin-inline: auto;
+    text-align: left;
+    font-size: 13px; color: #1A1209;
+    line-height: 1.6;
+  }
+  .changes strong { color: #1A1209; }
+  .changes .ref {
+    font-family: "Inter Tight", monospace; font-size: 11px;
+    background: rgba(232,116,42,.08); color: #8A3C0F;
+    padding: 1px 5px; border-radius: 3px;
+  }
+
+  /* COMPARE GRID — 2 cols */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 28px;
+  }
+  @media (max-width: 1100px) { .compare { grid-template-columns: 1fr; } }
+
+  .col {
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 8px 24px rgba(26,18,9,.08);
+    border: 1px solid rgba(26,18,9,.06);
+  }
+  .col.before { background: #fff; }
+  .col.after { background: #fff; border: 2px solid #1A1209; }
+
+  .col-tag {
+    display: inline-block;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 99px;
+    margin-bottom: 10px;
+    color: #fff;
+    font-family: "Inter Tight", sans-serif;
+  }
+  .col.before .col-tag { background: #7A6957; }
+  .col.after .col-tag { background: #1A1209; }
+  .col-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 19px;
+    letter-spacing: -0.02em; color: #1A1209;
+    margin-bottom: 4px;
+  }
+  .col-meta {
+    font-family: "Inter Tight", monospace; font-size: 11px;
+    color: #7A6957; margin-bottom: 18px; line-height: 1.6;
+  }
+  .col-meta strong { color: #1A1209; }
+
+  /* shared section title */
+  .surface-title {
+    font-family: "Inter Tight", monospace;
+    font-size: 10px; color: #7A6957;
+    margin: 18px 0 8px;
+    letter-spacing: 0.04em;
+  }
+
+  /* HERO surface */
+  .surface {
+    border-radius: 14px;
+    padding: 18px;
+    border: 1px solid rgba(26,18,9,.06);
+  }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 5px 11px;
+    border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 11px; font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .pulse {
+    width: 6px; height: 6px;
+    border-radius: 99px;
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .55; transform: scale(1.3); } }
+
+  /* salon card */
+  .salon-card {
+    display: flex; gap: 12px;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 10px 0;
+  }
+  .photo {
+    width: 64px; height: 64px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 35%, transparent 70%, rgba(0,0,0,.05) 100%),
+      radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.25), transparent 60%),
+      #B5588A;
+    position: relative;
+  }
+  .badge {
+    position: absolute; top: 4px; left: 4px;
+    display: inline-flex; align-items: center; gap: 3px;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(12px);
+    color: #1A1209;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 8px; font-weight: 700;
+    padding: 2px 5px; border-radius: 99px;
+  }
+  .meta { flex: 1; min-width: 0; }
+  .row1 { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; }
+  .name { line-height: 1.1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .rating { font-size: 10px; flex-shrink: 0; }
+  .row2 { font-size: 10px; margin-top: 3px; }
+
+  .cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 11px 20px;
+    border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 700; font-size: 13px;
+    cursor: pointer;
+    border: 0;
+    color: #fff;
+    background: linear-gradient(180deg, #F0834D 0%, #E8742A 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(232,116,42,.32);
+  }
+
+  /* ============== BEFORE (current v2) ============== */
+  .before .surface { background: #FBF8F3; border-color: rgba(26,18,9,.04); }
+  .before .pill {
+    background: rgba(255,255,255,.65); backdrop-filter: blur(12px);
+    border: 1px solid rgba(232,116,42,.12);
+    color: #1A1209;
+  }
+  .before .pulse { background: #E8742A; box-shadow: 0 0 0 4px rgba(232,116,42,.18); }
+  .before .greeting {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
+    font-size: 26px; line-height: 1.05; letter-spacing: -0.025em; color: #1A1209;
+    margin-bottom: 12px;
+  }
+  .before .greeting em {
+    font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400;
+    color: #E8742A;
+  }
+  .before .salon-card { background: #fff; }
+  .before .name {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 13px;
+    letter-spacing: -0.01em; color: #1A1209;
+  }
+  .before .rating { font-family: "JetBrains Mono", monospace; font-weight: 500; color: #1A1209; }
+  .before .row2 { font-family: "Inter Tight", sans-serif; color: #7A6957; }
+  .before .row2 strong { color: #1A1209; font-weight: 600; }
+
+  .before .cat-page {
+    background: #FBF8F3;
+  }
+  .before .crumbs {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 11px; color: #7A6957;
+    margin-bottom: 6px;
+  }
+  .before .crumbs strong { color: #1A1209; font-weight: 600; }
+  .before .cat-h1 {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
+    font-size: 26px; letter-spacing: -0.028em; line-height: 1; color: #1A1209;
+    margin-bottom: 5px;
+  }
+  .before .cat-sub { font-family: "Inter Tight", sans-serif; font-size: 12px; color: #7A6957; }
+  .before .cat-sub strong { color: #1A1209; font-weight: 600; }
+  .before .cat-pulse { width: 5px; height: 5px; background: #16A34A; border-radius: 99px; display: inline-block; margin-right: 4px; vertical-align: middle; }
+
+  /* ============== AFTER (pivot) ============== */
+  .after .surface { background: #FFFFFF; border-color: rgba(26,18,9,.06); }
+  .after .pill {
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.08);
+    color: #1A1209;
+  }
+  .after .pulse { background: #E8742A; box-shadow: 0 0 0 4px rgba(232,116,42,.18); }
+  .after .greeting {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
+    font-size: 26px; line-height: 1.05; letter-spacing: -0.025em; color: #1A1209;
+    margin-bottom: 12px;
+  }
+  /* NOTE — NO Instrument Serif italic. Just Bricolage straight. */
+  .after .greeting em {
+    font-family: "Bricolage Grotesque", sans-serif; font-style: normal; font-weight: 700;
+    color: #1A1209;
+  }
+  .after .salon-card { background: #FAFAFA; }
+  .after .name {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 13px;
+    letter-spacing: -0.01em; color: #1A1209;
+  }
+  /* NO JetBrains Mono — Inter Tight tabular nums */
+  .after .rating {
+    font-family: "Inter Tight", sans-serif; font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: #1A1209;
+  }
+  .after .row2 { font-family: "Inter Tight", sans-serif; color: #4A4A4A; }
+  .after .row2 strong { color: #1A1209; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* CATEGORY PAGE — Republik treatment: category color HEROed */
+  .after .cat-page {
+    background: #FFFFFF;
+    --cat-color: #B5588A;
+    --cat-tint: rgba(181, 88, 138, .06);
+    --cat-deep: #6B2D4D;
+  }
+  .after .crumbs {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 11px; color: #7A6957;
+    margin-bottom: 6px;
+  }
+  .after .crumbs strong { color: var(--cat-deep); font-weight: 600; }
+  .after .cat-h1 {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
+    font-size: 28px; letter-spacing: -0.028em; line-height: 1;
+    color: var(--cat-deep);
+    margin-bottom: 5px;
+  }
+  .after .cat-sub { font-family: "Inter Tight", sans-serif; font-size: 12px; color: #56463E; }
+  .after .cat-sub strong { color: var(--cat-color); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .after .cat-pulse { width: 5px; height: 5px; background: var(--cat-color); border-radius: 99px; display: inline-block; margin-right: 4px; vertical-align: middle; }
+  .after .cat-accent-bar {
+    height: 3px; width: 36px;
+    background: var(--cat-color);
+    border-radius: 99px;
+    margin-bottom: 10px;
+  }
+
+  /* TYPOGRAPHY SAMPLE for the type spec change */
+  .type-row { display: flex; align-items: baseline; gap: 14px; padding: 6px 0; border-bottom: 1px dashed rgba(26,18,9,.08); }
+  .type-row:last-child { border-bottom: 0; }
+  .type-tag {
+    font-family: "Inter Tight", monospace;
+    font-size: 9px; color: #7A6957; min-width: 90px;
+    flex-shrink: 0;
+  }
+  .before .num-sample { font-family: "JetBrains Mono", monospace; font-weight: 500; font-size: 14px; color: #1A1209; }
+  .after .num-sample {
+    font-family: "Inter Tight", sans-serif; font-weight: 600;
+    font-variant-numeric: tabular-nums; font-size: 14px; color: #1A1209;
+  }
+  .before .italic-sample { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; font-size: 22px; color: #E8742A; line-height: 1; }
+  .after .italic-sample { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 22px; color: #1A1209; line-height: 1; }
+
+  .ask {
+    margin-top: 28px;
+    padding: 16px 18px;
+    background: #FFE4D2;
+    border: 1px solid rgba(232,116,42,.18);
+    border-radius: 12px;
+    font-size: 13px;
+    color: #5C2308;
+    line-height: 1.55;
+    font-family: "Inter Tight", sans-serif;
+  }
+  .ask strong { color: #1A1209; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header>
+    <div class="eye">v2 PIVOT · BEFORE / AFTER · GROUNDED IN YOUR REFS</div>
+    <h1 class="doc-h">Same brand, less noise.</h1>
+    <p class="sub">Every change below maps to something you said about a real reference. Brand orange <code>#E8742A</code> stays. Bricolage stays. Inter Tight stays.</p>
+    <div class="changes">
+      <strong>What changes (4 things):</strong>
+      <ol style="padding-left: 20px; margin-top: 8px;">
+        <li><strong>Substrate:</strong> warm cream <code>#FBF8F3</code> → white <code>#FFFFFF</code> · <span class="ref">all 6 of your refs use white/light-grey</span></li>
+        <li><strong>Drop Instrument Serif italic accent</strong> ("Sulo" italic moment) · <span class="ref">none of your refs do this pattern</span></li>
+        <li><strong>Drop JetBrains Mono</strong> — numerics use Inter Tight tabular nums · <span class="ref">Yuh + Fresha do exactly this</span></li>
+        <li><strong>Category pages take on category color</strong> (Coiffeur → rose `#B5588A` heading + breadcrumb + accent bar) · <span class="ref">Republik colorways treatment</span></li>
+      </ol>
+      <strong>What stays:</strong> brand orange `#E8742A` for global CTA + accent · Bricolage Grotesque (display) · Inter Tight (body + numerics) · per-category palette · §F.1 form primitives · all motion tokens · all components.
+    </div>
+  </header>
+
+  <div class="compare">
+
+    <article class="col before">
+      <span class="col-tag">BEFORE · CURRENT v2</span>
+      <h2 class="col-h">Editorial-warm</h2>
+      <p class="col-meta"><strong>4 typefaces</strong> Bricolage + Inter Tight + Instrument Serif + JetBrains Mono · warm cream substrate · italic accent moments · category color = tile bg only</p>
+
+      <div class="surface-title">HOMEPAGE HERO</div>
+      <div class="surface">
+        <span class="pill"><span class="pulse"></span>47 Salons in Basel haben heute frei</span>
+        <h3 class="greeting">Guten Morgen, <em>Sulo</em>.</h3>
+        <button class="cta">Solen durchsuchen →</button>
+      </div>
+
+      <div class="surface-title">SALON CARD</div>
+      <div class="surface" style="padding: 12px;">
+        <div class="salon-card">
+          <div class="photo"><span class="badge">Heute frei</span></div>
+          <div class="meta">
+            <div class="row1"><span class="name">Salon Crémant</span><span class="rating">⭐ 4.9</span></div>
+            <div class="row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="surface-title">CATEGORY PAGE · /basel/coiffeur</div>
+      <div class="surface cat-page" style="padding: 16px;">
+        <p class="crumbs">solen / Basel / <strong>Coiffeur</strong></p>
+        <h3 class="cat-h1">Coiffeur in Basel</h3>
+        <p class="cat-sub"><span class="cat-pulse"></span><strong>23 Salons</strong> · 8 heute frei</p>
+      </div>
+
+      <div class="surface-title">TYPOGRAPHY SAMPLES</div>
+      <div class="surface" style="padding: 14px;">
+        <div class="type-row"><span class="type-tag">italic accent</span><span class="italic-sample">Sulo</span></div>
+        <div class="type-row"><span class="type-tag">numerics</span><span class="num-sample">CHF 1'247 · ⭐ 4.9</span></div>
+      </div>
+    </article>
+
+    <article class="col after">
+      <span class="col-tag">AFTER · PIVOTED v2</span>
+      <h2 class="col-h">Clean & decisive</h2>
+      <p class="col-meta"><strong>2 typefaces</strong> Bricolage + Inter Tight only · white substrate · no italic accents · category color OWNS category page</p>
+
+      <div class="surface-title">HOMEPAGE HERO</div>
+      <div class="surface">
+        <span class="pill"><span class="pulse"></span>47 Salons in Basel haben heute frei</span>
+        <h3 class="greeting">Guten Morgen, <em>Sulo</em>.</h3>
+        <button class="cta">Solen durchsuchen →</button>
+      </div>
+
+      <div class="surface-title">SALON CARD</div>
+      <div class="surface" style="padding: 12px;">
+        <div class="salon-card">
+          <div class="photo"><span class="badge">Heute frei</span></div>
+          <div class="meta">
+            <div class="row1"><span class="name">Salon Crémant</span><span class="rating">⭐ 4.9</span></div>
+            <div class="row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="surface-title">CATEGORY PAGE · /basel/coiffeur (Republik treatment)</div>
+      <div class="surface cat-page" style="padding: 16px;">
+        <span class="cat-accent-bar"></span>
+        <p class="crumbs">solen / Basel / <strong>Coiffeur</strong></p>
+        <h3 class="cat-h1">Coiffeur in Basel</h3>
+        <p class="cat-sub"><span class="cat-pulse"></span><strong>23 Salons</strong> · 8 heute frei</p>
+      </div>
+
+      <div class="surface-title">TYPOGRAPHY SAMPLES</div>
+      <div class="surface" style="padding: 14px;">
+        <div class="type-row"><span class="type-tag">accent (was italic)</span><span class="italic-sample">Sulo</span></div>
+        <div class="type-row"><span class="type-tag">numerics</span><span class="num-sample">CHF 1'247 · ⭐ 4.9</span></div>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="ask">
+    <strong>Ship this pivot?</strong> If yes I'll patch <code>SOLEN_LIVE_TRUTH.md</code>: §3 substrate cream → white · §5 typography drop Instrument Serif + JetBrains Mono · §5d emphasis stops referencing italic moment · add §4b "Category page colorway treatment" · log V2-D15. Then start Phase 0 §F.1 implementation. <br><br>
+    Or call out anything in the AFTER column that's not what you wanted — I'll revise before committing.
+  </div>
+
+</div>
+</body>
+</html>

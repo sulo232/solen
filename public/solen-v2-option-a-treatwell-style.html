@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solen — Option A (Treatwell/Fresha-style revert)</title>
+
+  <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #fff; }
+    body {
+      font-family: "Inter", system-ui, sans-serif;
+      color: #1A1209;
+      min-height: 100vh;
+      padding: 32px 16px 100px;
+      background: #F4F5F7;
+    }
+
+    .stack { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 56px; }
+    @media (min-width: 1000px) { .stack { grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; } }
+
+    .col-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; padding: 6px 12px; border-radius: 999px; display: inline-block; margin-bottom: 16px; }
+    .col-label small { display: block; font-weight: 500; font-size: 10px; letter-spacing: 0.05em; text-transform: none; opacity: 0.6; margin-top: 2px; }
+    .col-current .col-label { background: #C2F0F1; color: #043338; }
+    .col-a       .col-label { background: #E5E7EB; color: #1F2937; }
+
+    /* ─── LEFT — current Solen V3 (what's live tonight) ──────────────── */
+    .phone-current {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(4, 51, 56, 0.12);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(193, 240, 241, 0.65) 0%, transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(255, 233, 217, 0.50) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(193, 240, 241, 0.45) 0%, transparent 60%),
+        #FFFFFF;
+    }
+    .phone-current .nav { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.65); backdrop-filter: blur(12px); }
+    .phone-current .logo { font-family: "Peace Sans", Impact, sans-serif; font-size: 24px; font-weight: 900; }
+    .phone-current .logo .dot { display: inline-block; width: 6px; height: 6px; background: #043338; border-radius: 50%; margin-left: 2px; vertical-align: 2px; }
+    .phone-current .hero { padding: 40px 22px 24px; }
+    .phone-current .eyebrow { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: rgba(26,18,9,0.55); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .phone-current .eyebrow::before { content: ""; display: block; width: 6px; height: 6px; border-radius: 50%; background: #043338; }
+    .phone-current h1 { font-family: "Peace Sans", Impact, sans-serif; font-weight: 900; font-size: 26px; line-height: 1.15; }
+    .phone-current h1 .brand { color: #043338; }
+    .phone-current .search-card { margin: 24px 22px 0; background: #fff; border-radius: 22px; padding: 12px 14px 14px; box-shadow: 0 4px 12px rgba(4, 51, 56, 0.08); }
+    .phone-current .search-row { padding: 10px 4px; border-bottom: 1px solid rgba(4,51,56,0.08); display: flex; align-items: center; gap: 12px; font-size: 14px; color: rgba(26, 18, 9, 0.55); }
+    .phone-current .search-row:last-of-type { border-bottom: 0; }
+    .phone-current .search-row .sep { width: 1px; height: 14px; background: rgba(4,51,56,0.18); }
+    .phone-current .submit { margin-top: 8px; width: 100%; background: #043338; color: #fff; border: 0; padding: 14px; border-radius: 999px; font-size: 14px; font-weight: 700; }
+    .phone-current .feed-zone {
+      margin-top: 24px;
+      border-radius: 28px 28px 0 0;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(24px) saturate(1.3);
+      border-top: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 -12px 32px rgba(4, 51, 56, 0.06);
+      padding: 16px 14px 24px;
+    }
+    .phone-current .h2 { font-family: "Open Sauce One", sans-serif; font-weight: 900; font-size: 24px; line-height: 1.0; }
+    .phone-current .h2 .link { float: right; font-size: 12px; font-weight: 600; color: #043338; line-height: 26px; }
+    .phone-current .cards { display: flex; gap: 12px; overflow-x: auto; padding: 8px 0; }
+    .phone-current .card { flex: 0 0 130px; }
+    .phone-current .card .photo { aspect-ratio: 1; border-radius: 14px; box-shadow: 0 1px 2px rgba(26,18,9,0.04), 0 4px 10px rgba(26,18,9,0.05); position: relative; display: grid; place-items: center; font-family: "Open Sauce One", sans-serif; font-weight: 900; font-size: 28px; }
+    .phone-current .card .heart { position: absolute; top: 8px; right: 8px; font-size: 16px; color: rgba(0,0,0,0.4); }
+    .phone-current .card .pill { margin-top: 8px; background: rgba(255,255,255,0.7); backdrop-filter: blur(14px) saturate(1.2); border: 1px solid rgba(255,255,255,0.6); border-radius: 12px; padding: 7px 10px; box-shadow: 0 1px 3px rgba(26,18,9,0.04); font-size: 11px; line-height: 1.3; }
+    .phone-current .card .pill .name { font-weight: 700; font-size: 13px; }
+    .phone-current .card .pill .meta { color: rgba(26,18,9,0.6); margin-top: 2px; }
+    .phone-current .card .availability { position: absolute; bottom: 8px; left: 8px; background: rgba(34,163,74,0.20); color: #0E7A38; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px; border-radius: 999px; backdrop-filter: blur(8px); }
+
+    /* ─── RIGHT — Option A: Treatwell/Fresha-style revert ──────────────
+       Feedback applied verbatim:
+        • Geometric sans (Inter) at medium weight, no Peace Sans
+        • Off-white app bg #F8F9FA
+        • Solid white cards #FFFFFF with subtle 0 4px 12px shadow
+        • Inputs get subtle border to feel defined
+        • Generic placeholder icon instead of bold initials
+        • Crisper status pill green (vibrant, high contrast)
+        • Generous padding inside card text
+    ──────────────────────────────────────────────────────────────────── */
+    .phone-a {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.10);
+      background: #F8F9FA;
+      font-family: "Inter", system-ui, sans-serif;
+    }
+    .phone-a .nav { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; border-bottom: 1px solid #EAECF0; }
+    .phone-a .logo { font-family: "Inter", sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: #111827; }
+    .phone-a .logo .dot { display: inline-block; width: 6px; height: 6px; background: #043338; border-radius: 50%; margin-left: 2px; vertical-align: 2px; }
+    .phone-a .menu { font-size: 22px; color: #6B7280; }
+
+    .phone-a .hero { padding: 32px 24px 24px; }
+    .phone-a .kicker { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #6B7280; margin-bottom: 12px; }
+    .phone-a h1 {
+      font-family: "Inter", sans-serif;
+      font-weight: 600;
+      font-size: 26px;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: #111827;
+    }
+    .phone-a h1 .brand { color: #043338; font-weight: 700; }
+
+    /* Search: defined inputs with subtle border + light fill */
+    .phone-a .search-card {
+      margin: 24px 24px 0;
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+      border: 1px solid #EAECF0;
+    }
+    .phone-a .search-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px;
+      background: #F8F9FA;
+      border: 1px solid #EAECF0;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #6B7280;
+      margin-bottom: 8px;
+    }
+    .phone-a .search-row:last-of-type { margin-bottom: 0; }
+    .phone-a .search-row .icon { color: #9CA3AF; }
+    .phone-a .submit {
+      margin-top: 12px;
+      width: 100%;
+      background: #043338;
+      color: #fff;
+      border: 0;
+      padding: 14px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .phone-a .section { padding: 32px 24px 16px; }
+    .phone-a .section .h2-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+    .phone-a .section h2 { font-family: "Inter", sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; color: #111827; }
+    .phone-a .section .link { font-size: 13px; font-weight: 500; color: #043338; }
+
+    /* Cards: solid white, subtle shadow, generic placeholder photo */
+    .phone-a .cards { display: flex; gap: 12px; overflow-x: auto; padding: 4px 0; }
+    .phone-a .card {
+      flex: 0 0 150px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 200ms ease, box-shadow 200ms ease;
+    }
+    .phone-a .card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08); }
+    .phone-a .card .photo {
+      aspect-ratio: 1;
+      background: #F3F4F6;
+      position: relative;
+      display: grid;
+      place-items: center;
+      color: #9CA3AF;
+    }
+    .phone-a .card .photo svg { width: 32px; height: 32px; }
+    .phone-a .card .heart { position: absolute; top: 10px; right: 10px; font-size: 16px; color: rgba(0,0,0,0.35); background: rgba(255,255,255,0.85); width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; }
+    .phone-a .card .availability {
+      position: absolute; bottom: 8px; left: 8px;
+      background: #16A34A;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .phone-a .card .body {
+      padding: 14px;
+    }
+    .phone-a .card .name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #111827;
+      letter-spacing: -0.01em;
+    }
+    .phone-a .card .meta {
+      font-size: 12px;
+      color: #6B7280;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+    .phone-a .card .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #6B7280;
+    }
+    .phone-a .card .rating-row .star { color: #F59E0B; font-size: 13px; }
+    .phone-a .card .rating-row .num { color: #111827; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    .diff-list { max-width: 1080px; margin: 64px auto 0; padding: 24px 28px; background: #fff; border-radius: 16px; border: 1px solid #EAECF0; }
+    .diff-list h3 { font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: #1F2937; margin-bottom: 16px; }
+    .diff-list table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .diff-list th { text-align: left; font-weight: 700; padding: 10px 12px; background: #F8F9FA; }
+    .diff-list td { padding: 10px 12px; border-top: 1px solid #EAECF0; vertical-align: top; line-height: 1.5; color: #4B5563; }
+    .diff-list code { font-family: ui-monospace, monospace; font-size: 11.5px; background: #F3F4F6; padding: 1px 5px; border-radius: 3px; white-space: nowrap; color: #1F2937; }
+    .diff-list .gone { color: #B91C1C; }
+    .diff-list .new { color: #047857; }
+  </style>
+</head>
+<body>
+
+  <div class="stack">
+
+    <!-- ───────── LEFT — Current Solen V3 ───────── -->
+    <div class="col-current">
+      <span class="col-label">CURRENT (TONIGHT) <small>V3 brand: Peace Sans + glass + atmosphere wash + Combo Z/G/A/I</small></span>
+      <div class="phone-current">
+        <div class="nav"><span class="logo">Solen<span class="dot"></span></span><span style="font-size:24px;color:#1A1209">☰</span></div>
+        <div class="hero">
+          <span class="eyebrow">Beauty in der Schweiz</span>
+          <h1>Schöner aussehen, schneller <span class="brand">buchen</span>.</h1>
+        </div>
+        <div class="search-card">
+          <div class="search-row">⌕<span class="sep"></span>Service</div>
+          <div class="search-row">⌖<span class="sep"></span>Stadt</div>
+          <div class="search-row">▦<span class="sep"></span>Zeit</div>
+          <button class="submit">Solen durchsuchen</button>
+        </div>
+        <div class="feed-zone">
+          <div class="h2">Zuletzt angesehen <span class="link">Im Profil →</span></div>
+          <div class="cards">
+            <div class="card">
+              <div class="photo" style="background: #FFF1DD; color: #B5345A;">
+                <span class="heart">♡</span>
+                <span class="availability">Heute frei</span>
+                A
+              </div>
+              <div class="pill"><div class="name">Atelier Coiffure</div><div class="meta">14:30 · ★ 4.9</div></div>
+            </div>
+            <div class="card">
+              <div class="photo" style="background: #D8D6CB; color: #1A1209;">
+                <span class="heart">♡</span>
+                <span class="availability">Heute frei</span>
+                S
+              </div>
+              <div class="pill"><div class="name">Studio Nord</div><div class="meta">In 25 Min · ★ 4.7</div></div>
+            </div>
+            <div class="card">
+              <div class="photo" style="background: #CAE8FF; color: #B5345A;">
+                <span class="heart">♡</span>
+                <span class="availability">Heute frei</span>
+                N
+              </div>
+              <div class="pill"><div class="name">Nail Lab</div><div class="meta">Heute 17:30 · ★ 4.8</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── RIGHT — Option A: feedback applied verbatim ───────── -->
+    <div class="col-a">
+      <span class="col-label">OPTION A · TREATWELL-STYLE <small>Inter 600 + flat off-white bg + solid white cards + drop shadows</small></span>
+      <div class="phone-a">
+        <div class="nav"><span class="logo">Solen<span class="dot"></span></span><span class="menu">☰</span></div>
+        <div class="hero">
+          <div class="kicker">Beauty in der Schweiz</div>
+          <h1>Schöner aussehen, schneller <span class="brand">buchen.</span></h1>
+        </div>
+        <div class="search-card">
+          <div class="search-row"><span class="icon">⌕</span>Service auswählen</div>
+          <div class="search-row"><span class="icon">⌖</span>Stadt</div>
+          <div class="search-row"><span class="icon">▦</span>Zeit wählen</div>
+          <button class="submit">Solen durchsuchen</button>
+        </div>
+        <div class="section">
+          <div class="h2-row">
+            <h2>Zuletzt angesehen</h2>
+            <span class="link">Alle ansehen →</span>
+          </div>
+          <div class="cards">
+            <div class="card">
+              <div class="photo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <path d="m21 15-5-5L5 21" />
+                </svg>
+                <span class="heart">♡</span>
+                <span class="availability">Heute frei</span>
+              </div>
+              <div class="body">
+                <div class="name">Atelier Coiffure</div>
+                <div class="meta">Coiffeur · Basel</div>
+                <div class="rating-row">
+                  <span class="star">★</span>
+                  <span class="num">4,9</span>
+                  <span>·</span>
+                  <span>14:30</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="photo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <path d="m21 15-5-5L5 21" />
+                </svg>
+                <span class="heart">♡</span>
+                <span class="availability">Heute frei</span>
+              </div>
+              <div class="body">
+                <div class="name">Studio Nord</div>
+                <div class="meta">Barbershop · 1,2 km</div>
+                <div class="rating-row">
+                  <span class="star">★</span>
+                  <span class="num">4,7</span>
+                  <span>·</span>
+                  <span>In 25 Min</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="photo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <path d="m21 15-5-5L5 21" />
+                </svg>
+                <span class="heart">♡</span>
+                <span class="availability">Heute frei</span>
+              </div>
+              <div class="body">
+                <div class="name">Nail Lab</div>
+                <div class="meta">Nails · Basel St. Johann</div>
+                <div class="rating-row">
+                  <span class="star">★</span>
+                  <span class="num">4,8</span>
+                  <span>·</span>
+                  <span>17:30</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="diff-list">
+    <h3>What option A does to current locks</h3>
+    <table>
+      <thead><tr><th>Element</th><th>Current (locked)</th><th>Option A</th><th>Reverts</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Hero typeface</td>
+          <td><span class="gone">Peace Sans 900</span></td>
+          <td><span class="new">Inter 600</span></td>
+          <td>V2-D42 (locked tonight)</td>
+        </tr>
+        <tr>
+          <td>Logo typeface</td>
+          <td><span class="gone">Peace Sans 900</span></td>
+          <td><span class="new">Inter 700</span></td>
+          <td>V2-D27 + V2-D42</td>
+        </tr>
+        <tr>
+          <td>App background</td>
+          <td><span class="gone">Atmosphere wash (4 radial gradients @ 2x saturation)</span></td>
+          <td><span class="new">Flat #F8F9FA</span></td>
+          <td>V2-D41.6 (boosted wash)</td>
+        </tr>
+        <tr>
+          <td>Feed container</td>
+          <td><span class="gone">Heavy-glass FeedZone (55% white + 24px blur)</span></td>
+          <td><span class="new">No container, flat sections</span></td>
+          <td>V2-D41-rising-panel-3</td>
+        </tr>
+        <tr>
+          <td>Card surface</td>
+          <td><span class="gone">Colored photo block (Combo Z/G/A/I) + frosted-glass info pill</span></td>
+          <td><span class="new">Solid #FFFFFF card with 0 4px 12px shadow + drop-shadow hover</span></td>
+          <td>V2-D34 + V2-D15-3 (4-cat colorways)</td>
+        </tr>
+        <tr>
+          <td>Card photo placeholder</td>
+          <td><span class="gone">Big cherry/black initial in cat color</span></td>
+          <td><span class="new">Generic image icon on grey</span></td>
+          <td>V2-D34 §16.1 anatomy</td>
+        </tr>
+        <tr>
+          <td>"Heute frei" pill</td>
+          <td><span class="gone">Green-tinted glass (rgba 22,163,74,0.20) + ink</span></td>
+          <td><span class="new">Solid #16A34A + white</span></td>
+          <td>V3 §16.3.0 universal glass formula</td>
+        </tr>
+        <tr>
+          <td>Search inputs</td>
+          <td><span class="gone">Hairline-divided rows in white card (Dynamic Island morph)</span></td>
+          <td><span class="new">Bordered + grey-fill rounded fields, 12px padding</span></td>
+          <td>V2-D41 SearchBar morph</td>
+        </tr>
+        <tr>
+          <td>Card text padding</td>
+          <td><span class="gone">7-10px inside frosted pill</span></td>
+          <td><span class="new">14px inside body, line-height 1.4</span></td>
+          <td>V2-D41 modernity tightening</td>
+        </tr>
+        <tr>
+          <td>Section header</td>
+          <td><span class="gone">Open Sauce 900, 24-28px Cooper-style heavy</span></td>
+          <td><span class="new">Inter 700, 18px</span></td>
+          <td>V2-D41-rising-panel-3</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

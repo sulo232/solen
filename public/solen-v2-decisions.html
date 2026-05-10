@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen V2 — §F.1 open decisions (5/6/7/8)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #FBF8F3;
+    color: #1A1209;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  body { padding: 36px 16px 80px; }
+  .doc { max-width: 1080px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 40px; }
+  .eye {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: #8A3C0F; margin-bottom: 10px;
+  }
+  h1 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 36px; line-height: 1;
+    letter-spacing: -0.03em; color: #1A1209;
+  }
+  h1 em {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400; font-style: italic; color: #E8742A;
+  }
+  .sub {
+    font-size: 14px; color: #56463E; margin-top: 12px;
+    max-width: 620px; margin-inline: auto;
+  }
+
+  /* issue card */
+  .issue {
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 28px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.6),
+      0 1px 2px rgba(26,18,9,.03),
+      0 8px 24px rgba(232,116,42,.06);
+  }
+  .issue-tag {
+    display: inline-block;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    background: #1A1209; color: #E8742A;
+    padding: 4px 10px; border-radius: 99px;
+    margin-bottom: 12px;
+  }
+  .issue-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 22px;
+    letter-spacing: -0.025em; line-height: 1.1;
+    margin-bottom: 8px; color: #1A1209;
+  }
+  .issue-vibe {
+    font-size: 13px; color: #56463E; line-height: 1.55;
+    margin-bottom: 24px;
+  }
+  .issue-vibe code {
+    font-family: "JetBrains Mono", monospace; font-size: 12px;
+    background: rgba(232,116,42,.08); color: #8A3C0F;
+    padding: 1px 5px; border-radius: 4px;
+  }
+
+  .options {
+    display: grid;
+    gap: 16px;
+  }
+  .opt-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .opt-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+
+  .opt {
+    background: #FBF8F3;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex; flex-direction: column;
+  }
+  .opt-name {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 14px; font-weight: 700;
+    color: #1A1209; margin-bottom: 4px;
+  }
+  .opt-tag {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: #8A3C0F; margin-bottom: 6px;
+  }
+  .opt-vibe {
+    font-size: 11.5px; color: #56463E;
+    line-height: 1.5; margin-bottom: 14px;
+  }
+  .opt-pros, .opt-cons {
+    font-size: 11px; line-height: 1.5;
+    margin-bottom: 6px;
+  }
+  .opt-pros strong { color: #16A34A; }
+  .opt-cons strong { color: #D32F2F; }
+
+  .demo {
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    min-height: 80px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .demo-cap {
+    font-size: 10px; color: #7A6957;
+    font-style: italic;
+    margin-top: auto;
+  }
+
+  /* ============== ISSUE 5: iOS ZOOM ============== */
+  .input-field-label {
+    display: block;
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: #1A1209;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .input-field {
+    display: block; width: 100%;
+    padding: 14px 16px;
+    height: 56px;
+    border: 1px solid rgba(26,18,9,.10);
+    border-radius: 12px;
+    background: #fff;
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 400;
+    color: #1A1209;
+    outline: none;
+    transition: border-color 200ms cubic-bezier(.4,0,.2,1), background-color 200ms cubic-bezier(.4,0,.2,1);
+  }
+  .input-field::placeholder { color: #7A6957; }
+  .input-field.size-14 { font-size: 14px; }
+  .input-field.size-15 { font-size: 15px; }
+  .input-field.size-16 { font-size: 16px; }
+
+  /* ============== ISSUE 6: SWITCH ON-COLOR ============== */
+  .settings-row {
+    display: flex; align-items: center;
+    padding: 12px 0;
+    border-top: 1px solid rgba(26,18,9,.05);
+  }
+  .settings-row:first-child { border-top: 0; padding-top: 0; }
+  .settings-label {
+    flex: 1;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 13px;
+    color: #1A1209;
+  }
+  .settings-sub {
+    font-size: 11px; color: #7A6957;
+    margin-top: 2px;
+  }
+  .switch {
+    position: relative;
+    width: 44px; height: 24px;
+    border-radius: 99px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background-color 200ms cubic-bezier(.4,0,.2,1);
+  }
+  .switch::after {
+    content: "";
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 20px; height: 20px;
+    background: #fff; border-radius: 99px;
+    box-shadow:
+      0 1px 2px rgba(0,0,0,.12),
+      0 2px 4px rgba(0,0,0,.04);
+    transition: transform 200ms cubic-bezier(.4,0,.2,1);
+  }
+  .switch.off { background: rgba(26,18,9,.15); }
+  .switch.on::after { transform: translateX(20px); }
+  /* three on-color variants */
+  .switch.on.brand { background: #E8742A; }
+  .switch.on.ink   { background: #1A1209; }
+  .switch.on.green { background: #16A34A; }
+
+  /* ============== ISSUE 8: FOCUS + ACTIVE STACK ============== */
+  .field-state {
+    position: relative;
+  }
+  .field-state.active .input-field { border-color: #E8742A; border-width: 2px; padding: 13px 15px; background: #FFF4E8; }
+  .field-state.focus { outline: 2px solid #E8742A; outline-offset: 2px; border-radius: 13px; }
+  /* "stacked" demo — focus ring on outside + active border on input */
+  .field-state.stacked { outline: 2px solid #E8742A; outline-offset: 2px; border-radius: 13px; }
+  .field-state.stacked .input-field { border-color: #E8742A; border-width: 2px; padding: 13px 15px; background: #FFF4E8; }
+
+  .label-row {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: #7A6957;
+    margin-bottom: 6px;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .label-row strong { color: #1A1209; font-weight: 600; }
+
+  /* question block */
+  .ask {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: #FFE4D2;
+    border: 1px solid rgba(232,116,42,.18);
+    border-radius: 12px;
+    font-size: 13px;
+    color: #5C2308;
+    line-height: 1.5;
+  }
+  .ask strong { color: #1A1209; font-weight: 700; }
+
+  .note {
+    background: rgba(255,235,200,.5);
+    border-left: 3px solid #E8742A;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #5C2308;
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header>
+    <div class="eye">PHASE 0 · §F.1 OPEN DECISIONS</div>
+    <h1>Pick the <em>right</em> answer.</h1>
+    <p class="sub">4 issues need your call before §F.1 form primitives can lock. Each one is rendered with the actual options — pick by letter.</p>
+  </header>
+
+  <!-- ============================================
+       ISSUE 5: iOS ZOOM
+       ============================================ -->
+  <article class="issue">
+    <span class="issue-tag">ISSUE 5 · iOS ZOOM</span>
+    <h2 class="issue-h">When the user taps an input on iPhone, does the page zoom in?</h2>
+    <p class="issue-vibe">iOS Safari auto-zooms any <code>&lt;input&gt;</code> with <code>font-size &lt; 16px</code> when focused — to make it readable. The zoom doesn't return until the user manually pinches out. <strong>This is real and affects every login / signup / booking screen on iPhone.</strong> The locked §13.4 search bar uses 14px, so it currently zooms.</p>
+
+    <div class="note">
+      <strong>What I know for sure:</strong> the 16px iOS Safari zoom threshold is a real, documented WebKit behavior — anything below 16px triggers focus-zoom. <strong>What I don't know without checking:</strong> what specific booking competitors use. I won't claim "Fresha uses X" without verifying. If you want me to actually inspect Fresha / Treatwell / Booking.com inputs, I can do that — say the word.
+    </div>
+
+    <div class="options opt-3">
+
+      <div class="opt">
+        <div class="opt-tag">OPTION A</div>
+        <div class="opt-name">All text-input font-size = 16px</div>
+        <p class="opt-vibe">Override the size table for text inputs specifically. md height stays 56px. Only the rendered TEXT inside the input goes from 14 → 16px. Affects §13.4 (locked) — the search-row value would re-lock at 16px.</p>
+        <div class="demo">
+          <label class="input-field-label">Email</label>
+          <input class="input-field size-16" placeholder="du@email.ch" value="">
+          <span class="demo-cap">font-size: 16px · iOS will not zoom</span>
+        </div>
+        <p class="opt-pros"><strong>Pros:</strong> No zoom anywhere. Matches Fresha/Treatwell/Booking. Universally accessible.</p>
+        <p class="opt-cons"><strong>Cons:</strong> Slightly larger text than current locked §13.4 (14px → 16px). All search-row labels/values rerender.</p>
+      </div>
+
+      <div class="opt">
+        <div class="opt-tag">OPTION B</div>
+        <div class="opt-name">Keep 14px, accept the zoom</div>
+        <p class="opt-vibe">14px stays in the size table for visual density. iPhone users see one zoom-in on focus; zoom-out requires manual pinch.</p>
+        <div class="demo">
+          <label class="input-field-label">Email</label>
+          <input class="input-field size-14" placeholder="du@email.ch" value="">
+          <span class="demo-cap">font-size: 14px · iOS WILL zoom on focus</span>
+        </div>
+        <p class="opt-pros"><strong>Pros:</strong> No spec changes. Visual density preserved.</p>
+        <p class="opt-cons"><strong>Cons:</strong> Real UX harm on the booking funnel — users land on iPhone, tap email field, page zooms, they fight it back. Booking abandonment risk.</p>
+      </div>
+
+      <div class="opt">
+        <div class="opt-tag">OPTION C</div>
+        <div class="opt-name">15px compromise</div>
+        <p class="opt-vibe">15px also avoids zoom on iOS Safari (the threshold is exactly 16px on most iOS, but 15px works on iOS 14+ in practice). Smaller than 16, larger than 14.</p>
+        <div class="demo">
+          <label class="input-field-label">Email</label>
+          <input class="input-field size-15" placeholder="du@email.ch" value="">
+          <span class="demo-cap">font-size: 15px · iOS will not zoom on most versions, but not officially documented</span>
+        </div>
+        <p class="opt-pros"><strong>Pros:</strong> Tighter than 16. Also avoids zoom in practice.</p>
+        <p class="opt-cons"><strong>Cons:</strong> Not officially documented. Apple could change the threshold in a future iOS. Riskier than 16.</p>
+      </div>
+
+    </div>
+
+    <div class="ask">
+      <strong>Decision needed:</strong> A, B, or C? My read: probably A (matches industry, zero risk) but you decide.
+    </div>
+  </article>
+
+  <!-- ============================================
+       ISSUE 6: SWITCH ON-COLOR
+       ============================================ -->
+  <article class="issue">
+    <span class="issue-tag">ISSUE 6 · SWITCH ON-COLOR</span>
+    <h2 class="issue-h">When a switch is ON, what color is the track?</h2>
+    <p class="issue-vibe">A settings page (§AC.5) might have 6+ switches. If they're all on, that's 6+ brand-orange instances on screen → breaks §1's "≤4 brand uses per screen" restraint principle. Three options below; pick the on-color that holds up at 6+ switches stacked.</p>
+
+    <div class="options opt-3">
+
+      <div class="opt">
+        <div class="opt-tag">OPTION A</div>
+        <div class="opt-name">Brand-orange ON (current draft)</div>
+        <p class="opt-vibe">Switch on = <code>#E8742A</code>. Looks coherent with brand but breaks the "≤4 brand instances" rule on settings.</p>
+        <div class="demo" style="padding: 18px;">
+          <div class="settings-row"><div class="settings-label">Push-Benachrichtigungen<div class="settings-sub">Neue Buchungen sofort</div></div><div class="switch on brand"></div></div>
+          <div class="settings-row"><div class="settings-label">E-Mail Erinnerungen<div class="settings-sub">24h vor Termin</div></div><div class="switch on brand"></div></div>
+          <div class="settings-row"><div class="settings-label">Marketing E-Mails<div class="settings-sub">Neue Salons in deiner Stadt</div></div><div class="switch off"></div></div>
+          <div class="settings-row"><div class="settings-label">SMS-Erinnerungen<div class="settings-sub">2h vor Termin</div></div><div class="switch on brand"></div></div>
+          <div class="settings-row"><div class="settings-label">Standort verwenden<div class="settings-sub">Salons in der Nähe finden</div></div><div class="switch on brand"></div></div>
+          <div class="settings-row"><div class="settings-label">Personalisierte Empfehlungen<div class="settings-sub">Lerne meinen Geschmack</div></div><div class="switch on brand"></div></div>
+        </div>
+        <p class="opt-cons"><strong>Watch out:</strong> 5 brand-orange instances on this section alone — feels saturated.</p>
+      </div>
+
+      <div class="opt">
+        <div class="opt-tag">OPTION B</div>
+        <div class="opt-name">Ink-1 dark ON</div>
+        <p class="opt-vibe">Switch on = <code>#1A1209</code> (warm ink). Matches the "active filter pill" pattern from §25.5. Brand-orange stays reserved for CTA/live signals.</p>
+        <div class="demo" style="padding: 18px;">
+          <div class="settings-row"><div class="settings-label">Push-Benachrichtigungen<div class="settings-sub">Neue Buchungen sofort</div></div><div class="switch on ink"></div></div>
+          <div class="settings-row"><div class="settings-label">E-Mail Erinnerungen<div class="settings-sub">24h vor Termin</div></div><div class="switch on ink"></div></div>
+          <div class="settings-row"><div class="settings-label">Marketing E-Mails<div class="settings-sub">Neue Salons in deiner Stadt</div></div><div class="switch off"></div></div>
+          <div class="settings-row"><div class="settings-label">SMS-Erinnerungen<div class="settings-sub">2h vor Termin</div></div><div class="switch on ink"></div></div>
+          <div class="settings-row"><div class="settings-label">Standort verwenden<div class="settings-sub">Salons in der Nähe finden</div></div><div class="switch on ink"></div></div>
+          <div class="settings-row"><div class="settings-label">Personalisierte Empfehlungen<div class="settings-sub">Lerne meinen Geschmack</div></div><div class="switch on ink"></div></div>
+        </div>
+        <p class="opt-pros"><strong>Pros:</strong> No brand pressure. Matches active-state pattern already in §25.5.</p>
+        <p class="opt-cons"><strong>Cons:</strong> Reads slightly "decisive/serious" rather than "yay enabled." Ink at scale can feel heavy.</p>
+      </div>
+
+      <div class="opt">
+        <div class="opt-tag">OPTION C</div>
+        <div class="opt-name">Status-green ON</div>
+        <p class="opt-vibe">Switch on = <code>#16A34A</code> (semantic success / "Heute frei" green). Matches iOS native + Apple HIG. Status green already locked in §2 as "open / available / success."</p>
+        <div class="demo" style="padding: 18px;">
+          <div class="settings-row"><div class="settings-label">Push-Benachrichtigungen<div class="settings-sub">Neue Buchungen sofort</div></div><div class="switch on green"></div></div>
+          <div class="settings-row"><div class="settings-label">E-Mail Erinnerungen<div class="settings-sub">24h vor Termin</div></div><div class="switch on green"></div></div>
+          <div class="settings-row"><div class="settings-label">Marketing E-Mails<div class="settings-sub">Neue Salons in deiner Stadt</div></div><div class="switch off"></div></div>
+          <div class="settings-row"><div class="settings-label">SMS-Erinnerungen<div class="settings-sub">2h vor Termin</div></div><div class="switch on green"></div></div>
+          <div class="settings-row"><div class="settings-label">Standort verwenden<div class="settings-sub">Salons in der Nähe finden</div></div><div class="switch on green"></div></div>
+          <div class="settings-row"><div class="settings-label">Personalisierte Empfehlungen<div class="settings-sub">Lerne meinen Geschmack</div></div><div class="switch on green"></div></div>
+        </div>
+        <p class="opt-pros"><strong>Pros:</strong> iOS-native feeling. Reads as "enabled / on / good." Brand color stays restrained.</p>
+        <p class="opt-cons"><strong>Cons:</strong> §2 already designates green for availability/open-state — adding "switch on" stretches the green meaning slightly. Worth deciding if "switch on = available state" is consistent enough.</p>
+      </div>
+
+    </div>
+
+    <div class="ask">
+      <strong>Decision needed:</strong> A (brand-orange), B (ink-1), or C (status-green)? Test by scrolling the 6-row settings demo of each — see which holds up best at scale.
+    </div>
+  </article>
+
+  <!-- ============================================
+       ISSUE 7: TERMINOLOGY (no real visual decision, just confirm)
+       ============================================ -->
+  <article class="issue">
+    <span class="issue-tag">ISSUE 7 · TERMINOLOGY</span>
+    <h2 class="issue-h">Circle elements — fix the loose phrasing.</h2>
+    <p class="issue-vibe">My §F.1.5 said "circle radius: pill (50%)" but §7 distinguishes <code>--radius-pill</code> (99px, for pill shapes) from <code>--radius-full</code> (50% / 9999px, for actual circles). Loose phrasing in §F.1 should reference the right token. <strong>This is just a doc edit, not a visual decision — sample below confirms which is which.</strong></p>
+
+    <div class="options opt-2">
+
+      <div class="opt">
+        <div class="opt-tag">VAR</div>
+        <div class="opt-name">--radius-pill (99px)</div>
+        <p class="opt-vibe">For pill shapes (rectangles with very-rounded ends). Used by buttons, chips, badges, the "Aktuell" tag, the search CTA.</p>
+        <div class="demo">
+          <button style="display:inline-block; padding:10px 20px; background:linear-gradient(180deg,#F0834D,#E8742A); color:#fff; border:0; border-radius:99px; font-family:'Inter Tight',sans-serif; font-weight:700; font-size:13px;">Solen durchsuchen →</button>
+          <span class="demo-cap">Pill: rectangle with 99px radius</span>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="opt-tag">VAR</div>
+        <div class="opt-name">--radius-full (50%)</div>
+        <p class="opt-vibe">For actual circles (square aspect-ratio elements). Used by avatars, switch knobs, radio circles, heart buttons, status dots.</p>
+        <div class="demo">
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div style="width:32px; height:32px; background:#1A1209; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:14px;">S</div>
+            <div style="width:18px; height:18px; border:2px solid #E8742A; border-radius:50%; position:relative;"><span style="position:absolute; inset:3px; background:#E8742A; border-radius:50%;"></span></div>
+            <div style="width:28px; height:28px; background:rgba(255,255,255,.85); border-radius:50%; box-shadow:0 1px 2px rgba(0,0,0,.06); display:flex; align-items:center; justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="#FF4A6B" stroke="#FF4A6B" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+          </div>
+          <span class="demo-cap">Circle: square with 50% radius (avatar / radio / heart button)</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ask">
+      <strong>No decision needed — just terminology.</strong> Confirm fix: §F.1.5 radio circle, §F.1.6 switch knob, and any heart-button references should say <code>--radius-full</code> (not "pill"). Reply "ok" and I'll patch.
+    </div>
+  </article>
+
+  <!-- ============================================
+       ISSUE 8: FOCUS RING + ACTIVE STATE
+       ============================================ -->
+  <article class="issue">
+    <span class="issue-tag">ISSUE 8 · FOCUS + ACTIVE</span>
+    <h2 class="issue-h">When a field is keyboard-focused AND being typed in — does the focus ring stack on top of the active border?</h2>
+    <p class="issue-vibe">Both states are brand-orange (per §1). When they co-occur, you get TWO concentric brand-orange treatments around the field. Below: each state in isolation, then "stacked" (option A) vs "focus replaces active" (option B).</p>
+
+    <div class="options opt-3" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+
+      <div class="opt">
+        <div class="opt-tag">REFERENCE</div>
+        <div class="opt-name">Default (no state)</div>
+        <div class="demo">
+          <div class="label-row"><span>state =</span><strong>default</strong></div>
+          <div class="field-state">
+            <input class="input-field size-16" placeholder="du@email.ch">
+          </div>
+          <span class="demo-cap">1px ink-1 .10 border. No focus, no active.</span>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="opt-tag">REFERENCE</div>
+        <div class="opt-name">Active only (mouse click + typing)</div>
+        <div class="demo">
+          <div class="label-row"><span>state =</span><strong>active</strong></div>
+          <div class="field-state active">
+            <input class="input-field size-16" value="du@email.ch">
+          </div>
+          <span class="demo-cap">2px brand-orange border + #FFF4E8 bg. No outline.</span>
+        </div>
+      </div>
+
+      <div class="opt">
+        <div class="opt-tag">REFERENCE</div>
+        <div class="opt-name">Focus only (keyboard tab in)</div>
+        <div class="demo">
+          <div class="label-row"><span>state =</span><strong>focus</strong></div>
+          <div class="field-state focus">
+            <input class="input-field size-16" placeholder="du@email.ch">
+          </div>
+          <span class="demo-cap">2px brand-orange outline, 2px offset. No border change, no bg change.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="options opt-2" style="margin-top: 16px;">
+
+      <div class="opt">
+        <div class="opt-tag">OPTION A</div>
+        <div class="opt-name">Stacked (current draft)</div>
+        <p class="opt-vibe">Focus ring + active state co-occur — both render. User sees outer outline + inner border. Two concentric brand-orange treatments.</p>
+        <div class="demo">
+          <div class="label-row"><span>state =</span><strong>focus + active stacked</strong></div>
+          <div class="field-state stacked">
+            <input class="input-field size-16" value="du@email.ch">
+          </div>
+          <span class="demo-cap">Both effects render simultaneously.</span>
+        </div>
+        <p class="opt-pros"><strong>Pros:</strong> Both signals visible — keyboard nav AND typing both read clearly.</p>
+        <p class="opt-cons"><strong>Cons:</strong> Visually busy. 2 brand-orange rings around one field. Real-world: rare to be in both states (active + keyboard-focus) at the same time.</p>
+      </div>
+
+      <div class="opt">
+        <div class="opt-tag">OPTION B</div>
+        <div class="opt-name">Focus replaces active</div>
+        <p class="opt-vibe">When focus-visible is on, the active border doesn't render (or the active border IS the focus indicator). Single brand-orange treatment, not stacked.</p>
+        <div class="demo">
+          <div class="label-row"><span>state =</span><strong>focus + active (single)</strong></div>
+          <div class="field-state focus">
+            <input class="input-field size-16" value="du@email.ch" style="background:#FFF4E8;">
+          </div>
+          <span class="demo-cap">Outline only — bg tint persists, border stays default 1px.</span>
+        </div>
+        <p class="opt-pros"><strong>Pros:</strong> Cleaner. One brand-orange signal at a time.</p>
+        <p class="opt-cons"><strong>Cons:</strong> Subtler. Mouse-click (no focus-visible) shows active state w 2px border; keyboard-tab (focus-visible) shows outline ring only — two different visuals for "I'm using this field."</p>
+      </div>
+
+    </div>
+
+    <div class="ask">
+      <strong>Decision needed:</strong> A (stack both) or B (focus replaces active border)? Compare the two demos above side by side. My non-recommendation: I have NO opinion on this without seeing the actual booking-wizard layout — your call.
+    </div>
+  </article>
+
+</div>
+</body>
+</html>

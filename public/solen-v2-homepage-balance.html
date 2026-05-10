@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Homepage — Size balance audit (whole homepage)</title>
+<style>
+  /* ——— V3 tokens ——— */
+  :root {
+    --s-brand:        #1F5C42;
+    --s-brand-pale:   #A8CFB8;
+    --s-brand-subtle: #D4EBD9;
+    --s-brand-mid:    #0F3D26;
+    --s-brand-deep:   #0A2917;
+    --s-accent:       #C97A57;
+    --s-ink:          #1A1209;
+    --s-ink-2:        #4A3F35;
+    --s-ink-3:        #6B6055;
+    --s-bg-base:      #F5EBDD;
+    --s-bg-sunken:    #F8F0E2;
+    --s-sage:         #7A9683;
+    --gold-pill:      #C99B6A;
+    --love:           #FF4A6B;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--s-bg-base);
+    color: var(--s-ink);
+    padding: 32px 24px 64px;
+    line-height: 1.4;
+  }
+
+  .doc-title {
+    font-weight: 900; font-size: 32px; letter-spacing: -0.02em; margin: 0 0 4px;
+  }
+  .doc-deck { color: var(--s-ink-2); margin: 0 0 24px; max-width: 760px; }
+  .legend {
+    display: inline-flex; gap: 16px; padding: 12px 16px;
+    background: white; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px;
+    margin-bottom: 32px; font-size: 13px;
+  }
+
+  /* ——— Section group (each design issue) ——— */
+  .group {
+    margin: 48px 0;
+    padding-top: 32px;
+    border-top: 2px solid rgba(0,0,0,0.08);
+  }
+  .group-title {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.01em;
+    margin: 0 0 4px;
+  }
+  .group-sub {
+    color: var(--s-ink-2); margin: 0 0 20px; max-width: 720px; font-size: 14px;
+  }
+
+  /* ——— Side-by-side panels ——— */
+  .panels-2 {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; align-items: start;
+  }
+  .panel {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  .panel-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 999px;
+    margin-bottom: 12px;
+  }
+  .panel-label.before { background: rgba(0,0,0,0.06); color: var(--s-ink-2); }
+  .panel-label.after  { background: var(--s-brand-subtle); color: var(--s-brand-mid); }
+  .panel-label .badge {
+    font-size: 9px; padding: 2px 5px; background: white; border-radius: 4px; font-weight: 600;
+  }
+
+  /* ——— Frames (mobile + desktop sim) ——— */
+  .frame-mobile {
+    width: 100%; max-width: 350px; margin: 0 auto;
+    background: linear-gradient(135deg, #E8DDC9 0%, #D4EBD9 100%);
+    padding: 14px 12px 18px;
+    border-radius: 24px;
+  }
+  .frame-desktop {
+    background: linear-gradient(135deg, #E8DDC9 0%, #D4EBD9 100%);
+    padding: 24px 20px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* ——— Section header (matches V3 SectionTitle) ——— */
+  .sec-header {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .sec-h2-mobile {
+    font-size: 22px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.05; margin: 0;
+  }
+  .sec-h2-desktop {
+    font-size: 32px; font-weight: 900; letter-spacing: -0.02em; line-height: 1; margin: 0;
+  }
+  .sec-link {
+    color: var(--s-brand); font-size: 13px; font-weight: 600;
+  }
+
+  /* ——— Scroll row ——— */
+  .scroll-row {
+    display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px;
+    scrollbar-width: none; margin: 12px -12px 0;
+    padding-left: 12px; padding-right: 12px;
+  }
+  .scroll-row.gap-16 { gap: 16px; }
+  .scroll-row::-webkit-scrollbar { display: none; }
+
+  /* ——— SalonCard ——— */
+  .salon-card {
+    flex-shrink: 0;
+    display: flex; flex-direction: column;
+  }
+  .salon-card-150 { width: 150px; }
+  .salon-card-180 { width: 180px; }
+  .salon-card-200 { width: 200px; }
+  .salon-photo {
+    aspect-ratio: 1/1; width: 100%;
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(26,18,9,0.04), 0 4px 10px rgba(26,18,9,0.05);
+    position: relative;
+    overflow: hidden;
+    display: grid; place-items: center;
+    font-weight: 900;
+    color: var(--s-accent);
+  }
+  .salon-photo .heart {
+    position: absolute; top: 8px; right: 8px;
+    width: 24px; height: 24px;
+    color: white;
+    filter: drop-shadow(0 1px 3px rgba(42,31,24,0.25)) drop-shadow(0 0 1px rgba(255,255,255,0.5));
+  }
+  .salon-photo .heart svg { width: 100%; height: 100%; }
+  .salon-photo .salon-initial-32 { font-size: 32px; }
+  .salon-photo .salon-initial-40 { font-size: 40px; }
+  .salon-pill {
+    margin-top: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(14px) saturate(1.2);
+    padding: 7px 10px;
+    box-shadow: 0 1px 3px rgba(26,18,9,0.04);
+  }
+  .salon-pill .row1 {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  }
+  .salon-pill .name {
+    font-weight: 700; font-size: 14px; line-height: 1.1; letter-spacing: -0.01em;
+    color: var(--s-ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    flex: 1; min-width: 0;
+  }
+  .salon-pill .rating {
+    font-size: 11px; font-weight: 600; color: var(--s-ink);
+    flex-shrink: 0; display: inline-flex; align-items: center; gap: 2px;
+  }
+  .salon-pill .row2 {
+    font-size: 11px; line-height: 1.3; color: var(--s-ink-2); margin-top: 2px;
+  }
+  .salon-pill .price { color: var(--s-brand); font-weight: 700; }
+
+  /* ——— Stylist circular ——— */
+  .stylist {
+    flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+  .stylist-avatar {
+    border-radius: 50%;
+    background: #FAF2E5;
+    display: grid; place-items: center;
+    color: #B5345A;
+    font-weight: 900;
+    font-size: 42px;
+    box-shadow: 0 4px 14px rgba(4,51,56,0.10);
+    border: 4px solid white;
+    position: relative;
+  }
+  .stylist-avatar .rating-badge {
+    position: absolute; bottom: -4px; right: 8px;
+    background: white; padding: 4px 8px;
+    border-radius: 999px; font-size: 11px; font-weight: 700;
+    box-shadow: 0 2px 8px rgba(4,51,56,0.10);
+    display: inline-flex; align-items: center; gap: 2px;
+    color: var(--s-ink);
+  }
+  .stylist-avatar-110 { width: 110px; height: 110px; }
+  .stylist-avatar-130 { width: 130px; height: 130px; }
+  .stylist-avatar-150 { width: 150px; height: 150px; }
+  .stylist-name {
+    margin-top: 16px;
+    font-weight: 700; font-size: 15px; color: var(--s-ink); line-height: 1.1;
+  }
+  .stylist-meta {
+    margin-top: 4px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--s-ink-2);
+  }
+
+  /* ——— Entdecken cards ——— */
+  .entd-card {
+    flex-shrink: 0; aspect-ratio: 9/16; position: relative; overflow: hidden;
+  }
+  .entd-card-mobile-before { width: 145px; border-radius: 16px; }
+  .entd-card-mobile-after  { width: 145px; border-radius: 18px; }
+  .entd-card-desktop-before { width: 200px; border-radius: 16px; }
+  .entd-card-desktop-after  { width: 240px; border-radius: 18px; }
+  .entd-bg { position: absolute; inset: 0; }
+  .entd-bg::after {
+    content: ''; position: absolute; inset-inline: 0; bottom: 0; height: 50%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+    pointer-events: none;
+  }
+  .entd-source {
+    position: absolute; top: 8px; left: 8px;
+    background: rgba(201,155,106,0.85); backdrop-filter: blur(6px);
+    color: white; font-weight: 600;
+    border-radius: 999px;
+  }
+  .entd-source.before-size { font-size: 10px; padding: 3px 8px; }
+  .entd-source.after-mobile { font-size: 10px; padding: 4px 10px; }
+  .entd-source.after-desktop { font-size: 11px; padding: 5px 11px; }
+  .entd-icons {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    border-radius: 999px;
+    display: inline-flex; align-items: center;
+  }
+  .entd-icons.before-size { padding: 4px 8px; gap: 6px; }
+  .entd-icons.after-mobile { padding: 4px 8px; gap: 6px; }
+  .entd-icons.after-desktop { padding: 5px 10px; gap: 8px; }
+  .entd-icons svg { color: white; }
+  .entd-icons.before-size svg, .entd-icons.after-mobile svg { width: 14px; height: 14px; }
+  .entd-icons.after-desktop svg { width: 16px; height: 16px; }
+  .entd-play {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    border-radius: 999px;
+    display: grid; place-items: center;
+  }
+  .entd-play.before-size { width: 36px; height: 36px; }
+  .entd-play.after-mobile { width: 44px; height: 44px; }
+  .entd-play.after-desktop { width: 48px; height: 48px; }
+  .entd-play svg { color: white; margin-left: 2px; }
+  .entd-play.before-size svg { width: 16px; height: 16px; }
+  .entd-play.after-mobile svg { width: 18px; height: 18px; }
+  .entd-play.after-desktop svg { width: 20px; height: 20px; }
+  .entd-name {
+    position: absolute; bottom: 8px; left: 8px; right: 8px;
+  }
+  .entd-name > span {
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(6px);
+    color: white; font-weight: 500;
+    border-radius: 999px;
+    display: inline-block; max-width: 80%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .entd-name.before-size > span { font-size: 11px; padding: 4px 10px; }
+  .entd-name.after-mobile > span { font-size: 11px; padding: 6px 12px; }
+  .entd-name.after-desktop > span { font-size: 12px; padding: 6px 12px; }
+
+  /* ——— Vertical rhythm strip ——— */
+  .rhythm-strip {
+    background: var(--s-bg-sunken); padding: 16px 12px;
+    border-radius: 12px;
+  }
+  .rhythm-mock {
+    background: white;
+    height: 60px; border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: 12px; font-weight: 700; color: var(--s-ink-2);
+  }
+  .rhythm-strip .gap-4  { margin-bottom: 4px; }
+  .rhythm-strip .gap-8  { margin-bottom: 8px; }
+  .rhythm-strip .gap-16 { margin-bottom: 16px; }
+
+  /* ——— Annotations ——— */
+  .anno {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--s-brand);
+    background: rgba(31,92,66,0.06);
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .anno h4 {
+    margin: 0 0 4px; font-size: 12px; font-weight: 800;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--s-brand-mid);
+  }
+  .anno ul { margin: 0; padding-left: 18px; }
+  .anno code {
+    font-family: ui-monospace, monospace; font-size: 12px;
+    background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px;
+  }
+  .delta { color: var(--s-brand); font-weight: 700; }
+
+  /* ——— Cat colorway swatches (SalonCard fallback bg) ——— */
+  .cat-coiffeur   { background: #FAF2E5; color: #C97A57; }
+  .cat-barbershop { background: #E8DDC9; color: #2A1F18; }
+  .cat-nails      { background: #D4DDC8; color: #8E4A2D; }
+  .cat-spa        { background: #D4EBD9; color: #0F3D26; }
+
+  /* ——— Card Entdecken gradients ——— */
+  .grad-1 { background: linear-gradient(135deg, #D9C9A8 0%, #6B4F37 100%); }
+  .grad-2 { background: linear-gradient(160deg, #E8B89B 0%, #8B5530 100%); }
+  .grad-3 { background: linear-gradient(135deg, #D4DDC8 0%, #4A6B4F 100%); }
+  .grad-4 { background: linear-gradient(135deg, #E8DDC9 0%, #8E4A2D 100%); }
+
+  /* ——— Final summary table ——— */
+  .summary-table {
+    width: 100%; border-collapse: collapse;
+    background: white; border-radius: 12px; overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  .summary-table th, .summary-table td {
+    padding: 10px 14px; text-align: left;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    font-size: 13px;
+    vertical-align: top;
+  }
+  .summary-table th {
+    background: var(--s-bg-sunken); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.04em; font-size: 11px;
+    color: var(--s-ink-2);
+    border-top: none;
+  }
+  .summary-table td:nth-child(1) {
+    font-weight: 700;
+    color: var(--s-ink); width: 200px;
+  }
+  .summary-table td code {
+    font-family: ui-monospace, monospace; font-size: 12px;
+    background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  /* heart svg helper */
+  .heart-svg { fill: none; stroke: white; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* responsive: stack panels on narrow screens */
+  @media (max-width: 900px) {
+    .panels-2 { grid-template-columns: 1fr; }
+  }
+
+</style>
+</head>
+<body>
+
+<h1 class="doc-title">Homepage — Whole-page balance audit</h1>
+<p class="doc-deck">
+  No restructure. No new sections. Just sizing tuned so each element's weight is proportional to where it sits — same way a face's eyes/mouth scale with head size, not absolute pixels. Five focused changes across the 10-section homepage. Most fix desktop where overlays/cards stayed mobile-sized while their containers grew.
+</p>
+
+<span class="legend">
+  <strong>BEFORE</strong> = current shipped state
+  <span>·</span>
+  <strong>AFTER</strong> = proposed
+  <span>·</span>
+  <span style="color:var(--s-brand);font-weight:700">green = changed</span>
+  <span>·</span>
+  total: ~12 className edits across 4 files
+</span>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  GROUP 1 · SalonCard (4 sections)                -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="group">
+  <h2 class="group-title">1. SalonCard — width on desktop <span style="color:var(--s-ink-3);font-weight:500;font-size:14px">(affects RecentlyViewed + LastMinute + Nearby + Coiffeur)</span></h2>
+  <p class="group-sub">Cards on desktop sit at <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px">180px</code> — only 30px bigger than mobile. In a 1280px container with ~5 cards visible, the row reads as "scaled-up phone view," not desktop. Bumping to <code style="background:var(--s-brand-subtle);padding:1px 5px;border-radius:3px;color:var(--s-brand-mid)">200px</code> + slight gap bump gives presence without restructure.</p>
+
+  <h3 style="font-size:14px;font-weight:700;margin:16px 0 8px;color:var(--s-ink-2)">DESKTOP (≥768px)</h3>
+  <div class="panels-2">
+    <!-- DESKTOP BEFORE -->
+    <div class="panel">
+      <span class="panel-label before">Before <span class="badge">180 px</span></span>
+      <div class="frame-desktop">
+        <div class="sec-header">
+          <h3 class="sec-h2-desktop">Zuletzt angesehen</h3>
+          <a class="sec-link" href="#">Im Profil →</a>
+        </div>
+        <div class="scroll-row gap-16">
+          <div class="salon-card salon-card-180">
+            <div class="salon-photo cat-coiffeur"><span class="salon-initial-40">A</span><div class="heart"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div>
+            <div class="salon-pill"><div class="row1"><span class="name">Atelier Coiffure</span><span class="rating">★ 4.9</span></div><div class="row2">14:30, 15:00</div></div>
+          </div>
+          <div class="salon-card salon-card-180">
+            <div class="salon-photo cat-barbershop"><span class="salon-initial-40">S</span><div class="heart"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div>
+            <div class="salon-pill"><div class="row1"><span class="name">Studio Nord</span><span class="rating">★ 4.7</span></div><div class="row2">In 25 Min frei</div></div>
+          </div>
+          <div class="salon-card salon-card-180">
+            <div class="salon-photo cat-nails"><span class="salon-initial-40">N</span><div class="heart"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div>
+            <div class="salon-pill"><div class="row1"><span class="name">Nail Loft</span><span class="rating">★ 4.8</span></div><div class="row2">Heute 17:00</div></div>
+          </div>
+          <div class="salon-card salon-card-180">
+            <div class="salon-photo cat-spa"><span class="salon-initial-40">R</span><div class="heart"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div>
+            <div class="salon-pill"><div class="row1"><span class="name">Rhein Spa</span><span class="rating">★ 4.95</span></div><div class="row2">Mo. 09:00</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- DESKTOP AFTER -->
+    <div class="panel">
+      <span class="panel-label after">After <span class="badge">200 px</span></span>
+      <div class="frame-desktop">
+        <div class="sec-header">
+          <h3 class="sec-h2-desktop">Zuletzt angesehen</h3>
+          <a class="sec-link" href="#">Im Profil →</a>
+        </div>
+        <div class="scroll-row gap-16">
+          <div class="salon-card salon-card-200">
+            <div class="salon-photo cat-coiffeur"><span class="salon-initial-40">A</span><div class="heart"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div>
+            <div class="salon-pill"><div class="row1"><span class="name">Atelier Coiffure</span><span class="rating">★ 4.9</span></div><div class="row2">14:30, 15:00</div></div>
+          </div>
+          <div class="salon-card salon-card-200">
+            <div class="salon-photo cat-barbershop"><span class="salon-initial-40">S</span><div class="heart"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div>
+            <div class="salon-pill"><div class="row1"><span class="name">Studio Nord</span><span class="rating">★ 4.7</span></div><div class="row2">In 25 Min frei</div></div>
+          </div>
+          <div class="salon-card salon-card-200">
+            <div class="salon-photo cat-nails"><span class="salon-initial-40">N</span><div class="heart"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div>
+            <div class="salon-pill"><div class="row1"><span class="name">Nail Loft</span><span class="rating">★ 4.8</span></div><div class="row2">Heute 17:00</div></div>
+          </div>
+          <div class="salon-card salon-card-200">
+            <div class="salon-photo cat-spa"><span class="salon-initial-40">R</span><div class="heart"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div>
+            <div class="salon-pill"><div class="row1"><span class="name">Rhein Spa</span><span class="rating">★ 4.95</span></div><div class="row2">Mo. 09:00</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-size:14px;font-weight:700;margin:16px 0 8px;color:var(--s-ink-2)">MOBILE (375px) — unchanged, just for parity</h3>
+  <div class="panels-2">
+    <div class="panel">
+      <span class="panel-label before">Before <span class="badge">150 px</span></span>
+      <div class="frame-mobile">
+        <div class="sec-header"><h3 class="sec-h2-mobile">Zuletzt angesehen</h3><a class="sec-link" href="#">Im Profil →</a></div>
+        <div class="scroll-row">
+          <div class="salon-card salon-card-150"><div class="salon-photo cat-coiffeur"><span class="salon-initial-32">A</span><div class="heart"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div><div class="salon-pill"><div class="row1"><span class="name">Atelier Coiff…</span><span class="rating">★ 4.9</span></div><div class="row2">14:30, 15:00</div></div></div>
+          <div class="salon-card salon-card-150"><div class="salon-photo cat-barbershop"><span class="salon-initial-32">S</span><div class="heart"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div><div class="salon-pill"><div class="row1"><span class="name">Studio Nord</span><span class="rating">★ 4.7</span></div><div class="row2">In 25 Min frei</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <span class="panel-label after">After <span class="badge">150 px (same)</span></span>
+      <div class="frame-mobile">
+        <div class="sec-header"><h3 class="sec-h2-mobile">Zuletzt angesehen</h3><a class="sec-link" href="#">Im Profil →</a></div>
+        <div class="scroll-row">
+          <div class="salon-card salon-card-150"><div class="salon-photo cat-coiffeur"><span class="salon-initial-32">A</span><div class="heart"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div><div class="salon-pill"><div class="row1"><span class="name">Atelier Coiff…</span><span class="rating">★ 4.9</span></div><div class="row2">14:30, 15:00</div></div></div>
+          <div class="salon-card salon-card-150"><div class="salon-photo cat-barbershop"><span class="salon-initial-32">S</span><div class="heart"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div><div class="salon-pill"><div class="row1"><span class="name">Studio Nord</span><span class="rating">★ 4.7</span></div><div class="row2">In 25 Min frei</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="anno">
+    <h4>What changes (SalonCard.tsx · 1 file, affects 4 sections)</h4>
+    <ul>
+      <li>Card width <code>w-[150px] md:w-[180px]</code> → <code>w-[150px] md:w-<span class="delta">[200px]</span></code> — desktop only</li>
+      <li>ScrollRow gap <code>gap-3</code> → <code>gap-3 md:<span class="delta">gap-4</span></code> — bigger cards need slightly more breathing</li>
+      <li>Mobile <strong>untouched</strong> — already balanced at 150px (2 visible + clear "3rd peek" on 375px viewport)</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  GROUP 2 · FeaturedStylists                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="group">
+  <h2 class="group-title">2. FeaturedStylists — avatar size on desktop</h2>
+  <p class="group-sub">Stylist row sits between salon-card rows on the homepage. Salon cards on desktop become 200px (group 1); stylist avatars at 130px feel orphaned next to them — the row reads as "less important content" purely because of size, not by design intent. Bumping avatar to 150px keeps the row visually proportional.</p>
+
+  <h3 style="font-size:14px;font-weight:700;margin:16px 0 8px;color:var(--s-ink-2)">DESKTOP (≥768px)</h3>
+  <div class="panels-2">
+    <div class="panel">
+      <span class="panel-label before">Before <span class="badge">130 px</span></span>
+      <div class="frame-desktop">
+        <div class="sec-header"><h3 class="sec-h2-desktop">Lass dich verwöhnen.</h3><a class="sec-link" href="#">Alle Stilist:innen →</a></div>
+        <div class="scroll-row gap-16" style="gap:20px">
+          <div class="stylist"><div class="stylist-avatar stylist-avatar-130 cat-coiffeur">E<span class="rating-badge">★ 4.9</span></div><h4 class="stylist-name">Elena Rossi</h4><p class="stylist-meta">Coiffeur · Basel</p></div>
+          <div class="stylist"><div class="stylist-avatar stylist-avatar-130 cat-barbershop">M<span class="rating-badge">★ 5.0</span></div><h4 class="stylist-name">Marcus Chen</h4><p class="stylist-meta">Barbershop · Zürich</p></div>
+          <div class="stylist"><div class="stylist-avatar stylist-avatar-130 cat-nails">S<span class="rating-badge">★ 4.8</span></div><h4 class="stylist-name">Sophie Dubois</h4><p class="stylist-meta">Nails · Bern</p></div>
+          <div class="stylist"><div class="stylist-avatar stylist-avatar-130 cat-spa">L<span class="rating-badge">★ 4.9</span></div><h4 class="stylist-name">Luca Bernasco</h4><p class="stylist-meta">Spa · Lugano</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <span class="panel-label after">After <span class="badge">150 px</span></span>
+      <div class="frame-desktop">
+        <div class="sec-header"><h3 class="sec-h2-desktop">Lass dich verwöhnen.</h3><a class="sec-link" href="#">Alle Stilist:innen →</a></div>
+        <div class="scroll-row gap-16" style="gap:24px">
+          <div class="stylist"><div class="stylist-avatar stylist-avatar-150 cat-coiffeur">E<span class="rating-badge">★ 4.9</span></div><h4 class="stylist-name">Elena Rossi</h4><p class="stylist-meta">Coiffeur · Basel</p></div>
+          <div class="stylist"><div class="stylist-avatar stylist-avatar-150 cat-barbershop">M<span class="rating-badge">★ 5.0</span></div><h4 class="stylist-name">Marcus Chen</h4><p class="stylist-meta">Barbershop · Zürich</p></div>
+          <div class="stylist"><div class="stylist-avatar stylist-avatar-150 cat-nails">S<span class="rating-badge">★ 4.8</span></div><h4 class="stylist-name">Sophie Dubois</h4><p class="stylist-meta">Nails · Bern</p></div>
+          <div class="stylist"><div class="stylist-avatar stylist-avatar-150 cat-spa">L<span class="rating-badge">★ 4.9</span></div><h4 class="stylist-name">Luca Bernasco</h4><p class="stylist-meta">Spa · Lugano</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="anno">
+    <h4>What changes (FeaturedStylists.tsx)</h4>
+    <ul>
+      <li>Avatar size <code>md:h-[130px] md:w-[130px]</code> → <code>md:h-<span class="delta">[150px]</span> md:w-<span class="delta">[150px]</span></code></li>
+      <li>Card outer width <code>md:w-[140px]</code> → <code>md:w-<span class="delta">[160px]</span></code> — keep 10px margin around avatar</li>
+      <li>Inter-card gap <code>gap-5</code> → <code>md:<span class="delta">gap-6</span></code></li>
+      <li>Mobile <strong>untouched</strong> — 110px is right for 375px viewport</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  GROUP 3 · Entdecken                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="group">
+  <h2 class="group-title">3. Entdecken — overlay sizes scale with card</h2>
+  <p class="group-sub">Already audited in detail at <a href="/solen-v2-entdecken-balance.html" style="color:var(--s-brand);font-weight:600">solen-v2-entdecken-balance.html</a>. Same principle as the others: cards grew on desktop but pills/icons stayed mobile-sized.</p>
+
+  <h3 style="font-size:14px;font-weight:700;margin:16px 0 8px;color:var(--s-ink-2)">DESKTOP (condensed view)</h3>
+  <div class="panels-2">
+    <div class="panel">
+      <span class="panel-label before">Before <span class="badge">200 px · 36 play</span></span>
+      <div class="frame-desktop">
+        <div class="sec-header"><h3 class="sec-h2-desktop">Finde deine Inspiration.</h3><a class="sec-link" href="#">Alle entdecken →</a></div>
+        <div class="scroll-row gap-16">
+          <div class="entd-card entd-card-desktop-before"><div class="entd-bg grad-1"></div><span class="entd-source before-size">Hair · TikTok</span><div class="entd-icons before-size"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><svg class="heart-svg" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><div class="entd-play before-size"><svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div><div class="entd-name before-size"><span>Voluminous Layers</span></div></div>
+          <div class="entd-card entd-card-desktop-before"><div class="entd-bg grad-2"></div><span class="entd-source before-size">Hair · TikTok</span><div class="entd-icons before-size"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><svg class="heart-svg" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><div class="entd-play before-size"><svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div><div class="entd-name before-size"><span>Cool Hair for Life</span></div></div>
+          <div class="entd-card entd-card-desktop-before"><div class="entd-bg grad-3"></div><span class="entd-source before-size">Hair · TikTok</span><div class="entd-icons before-size"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><svg class="heart-svg" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><div class="entd-play before-size"><svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div><div class="entd-name before-size"><span>Textured Shag</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <span class="panel-label after">After <span class="badge">240 px · 48 play</span></span>
+      <div class="frame-desktop">
+        <div class="sec-header"><h3 class="sec-h2-desktop">Finde deine Inspiration.</h3><a class="sec-link" href="#">Alle entdecken →</a></div>
+        <div class="scroll-row gap-16" style="gap:20px">
+          <div class="entd-card entd-card-desktop-after"><div class="entd-bg grad-1"></div><span class="entd-source after-desktop">Hair · TikTok</span><div class="entd-icons after-desktop"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><svg class="heart-svg" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><div class="entd-play after-desktop"><svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div><div class="entd-name after-desktop"><span>Voluminous Layers</span></div></div>
+          <div class="entd-card entd-card-desktop-after"><div class="entd-bg grad-2"></div><span class="entd-source after-desktop">Hair · TikTok</span><div class="entd-icons after-desktop"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><svg class="heart-svg" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><div class="entd-play after-desktop"><svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div><div class="entd-name after-desktop"><span>Cool Hair for Life</span></div></div>
+          <div class="entd-card entd-card-desktop-after"><div class="entd-bg grad-3"></div><span class="entd-source after-desktop">Hair · TikTok</span><div class="entd-icons after-desktop"><svg class="heart-svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><svg class="heart-svg" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><div class="entd-play after-desktop"><svg fill="white" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg></div><div class="entd-name after-desktop"><span>Textured Shag</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="anno">
+    <h4>What changes (Entdecken.tsx · ~10 className edits)</h4>
+    <ul>
+      <li>Card width <code>max-w-[200px]</code> → <code>md:max-w-<span class="delta">[240px]</span></code> · radius <code>16 → <span class="delta">18</span></code></li>
+      <li>Play button <code>36×36</code> → <code><span class="delta">44×44</span> mobile / <span class="delta">48×48</span> desktop</code> (was below 44px tap floor on mobile)</li>
+      <li>Source pill text <code>10 → <span class="delta">11</span> px</code> desktop · padding <code><span class="delta">5×11</span></code></li>
+      <li>Heart + Bookmark icons <code>14 → <span class="delta">16</span></code> desktop</li>
+      <li>Style-name pill text <code>11 → <span class="delta">12</span> px</code> desktop · padding <code><span class="delta">6×12</span></code></li>
+      <li>Gap between cards <code>16 → <span class="delta">20</span> px</code> desktop</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  GROUP 4 · Vertical rhythm                       -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="group">
+  <h2 class="group-title">4. Section vertical rhythm</h2>
+  <p class="group-sub"><code>&lt;Section&gt;</code> currently sets <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px">mb-1 md:mb-2</code> — that's only 4–8px between sections. Combined with SectionFrame's <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px">pb-4</code>, the total separation is ~20–24px which reads cramped against the colorful cards. Bumping to <code style="background:var(--s-brand-subtle);padding:1px 5px;border-radius:3px;color:var(--s-brand-mid)">mb-2 md:mb-4</code> = 8–16px adds breathing without restructure.</p>
+
+  <div class="panels-2">
+    <div class="panel">
+      <span class="panel-label before">Before <span class="badge">mb-1 / md:mb-2</span></span>
+      <div class="rhythm-strip">
+        <div class="rhythm-mock gap-4">Zuletzt angesehen</div>
+        <div class="rhythm-mock gap-4">Last-Minute heute</div>
+        <div class="rhythm-mock gap-4">In der Nähe</div>
+        <div class="rhythm-mock gap-4">Lass dich verwöhnen.</div>
+        <div class="rhythm-mock">Coiffeur-Salons</div>
+      </div>
+    </div>
+    <div class="panel">
+      <span class="panel-label after">After <span class="badge">mb-2 / md:mb-4</span></span>
+      <div class="rhythm-strip">
+        <div class="rhythm-mock gap-16">Zuletzt angesehen</div>
+        <div class="rhythm-mock gap-16">Last-Minute heute</div>
+        <div class="rhythm-mock gap-16">In der Nähe</div>
+        <div class="rhythm-mock gap-16">Lass dich verwöhnen.</div>
+        <div class="rhythm-mock">Coiffeur-Salons</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="anno">
+    <h4>What changes (SectionHeader.tsx · &lt;Section&gt; component, 1 className)</h4>
+    <ul>
+      <li><code>mb-1 md:mb-2</code> → <code>mb-<span class="delta">2</span> md:mb-<span class="delta">4</span></code></li>
+      <li>Affects <strong>all 8 feed sections</strong> at once. Hero / TrustBanner / SalonRegister have their own spacing and aren't affected.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  SUMMARY TABLE                                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="group">
+  <h2 class="group-title">5. Full summary</h2>
+  <p class="group-sub">Touch list. Sign off → I ship in one commit.</p>
+
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>Element</th>
+        <th>Mobile</th>
+        <th>Desktop</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>SalonCard.tsx</td>
+        <td>Card width</td>
+        <td><code>w-[150px]</code> (no change)</td>
+        <td><code>md:w-[180px]</code> → <code class="delta">md:w-[200px]</code></td>
+      </tr>
+      <tr>
+        <td>SectionHeader.tsx</td>
+        <td>ScrollRow gap</td>
+        <td><code>gap-3</code> (no change)</td>
+        <td><code>gap-3</code> → <code class="delta">md:gap-4</code></td>
+      </tr>
+      <tr>
+        <td>FeaturedStylists.tsx</td>
+        <td>Avatar size</td>
+        <td><code>h-[110px] w-[110px]</code> (no change)</td>
+        <td><code>md:h-[130px] md:w-[130px]</code> → <code class="delta">md:h-[150px] md:w-[150px]</code></td>
+      </tr>
+      <tr>
+        <td>FeaturedStylists.tsx</td>
+        <td>Card outer width</td>
+        <td><code>w-[120px]</code> (no change)</td>
+        <td><code>md:w-[140px]</code> → <code class="delta">md:w-[160px]</code></td>
+      </tr>
+      <tr>
+        <td>FeaturedStylists.tsx</td>
+        <td>Inter-card gap</td>
+        <td><code>gap-5</code> (no change)</td>
+        <td><code>gap-5</code> → <code class="delta">md:gap-6</code></td>
+      </tr>
+      <tr>
+        <td>SectionHeader.tsx</td>
+        <td>Section bottom margin</td>
+        <td><code>mb-1</code> → <code class="delta">mb-2</code></td>
+        <td><code>md:mb-2</code> → <code class="delta">md:mb-4</code></td>
+      </tr>
+      <tr>
+        <td>Entdecken.tsx</td>
+        <td>Card width</td>
+        <td><code>max-w-[200px]</code> (no change at this cap, mobile uses <code>44vw</code>)</td>
+        <td><code>max-w-[200px]</code> → <code class="delta">md:max-w-[240px]</code></td>
+      </tr>
+      <tr>
+        <td>Entdecken.tsx</td>
+        <td>Play button</td>
+        <td><code>h-9 w-9</code> → <code class="delta">h-11 w-11</code></td>
+        <td><code>h-9 w-9</code> → <code class="delta">md:h-12 md:w-12</code></td>
+      </tr>
+      <tr>
+        <td>Entdecken.tsx</td>
+        <td>Source pill text</td>
+        <td><code>text-[10px]</code> (no change)</td>
+        <td><code>text-[10px]</code> → <code class="delta">md:text-[11px]</code></td>
+      </tr>
+      <tr>
+        <td>Entdecken.tsx</td>
+        <td>Heart/Bookmark icons</td>
+        <td><code>size={14}</code> (no change)</td>
+        <td><code>size={14}</code> → <code class="delta">md:size={16}</code></td>
+      </tr>
+      <tr>
+        <td>Entdecken.tsx</td>
+        <td>Style-name pill</td>
+        <td>padding <code>4×10</code> → <code class="delta">6×12</code></td>
+        <td><code>text-[11px]</code> → <code class="delta">md:text-[12px]</code></td>
+      </tr>
+      <tr>
+        <td>Entdecken.tsx</td>
+        <td>Card border-radius</td>
+        <td><code>rounded-[16px]</code> → <code class="delta">rounded-[18px]</code></td>
+        <td>same</td>
+      </tr>
+      <tr>
+        <td>Entdecken.tsx</td>
+        <td>Inter-card gap</td>
+        <td><code>gap-4</code> (no change)</td>
+        <td><code>gap-4</code> → <code class="delta">md:gap-5</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p style="margin-top:32px;color:var(--s-ink-3);font-size:13px;max-width:760px">
+  Total: 4 files touched (<code>SalonCard.tsx</code>, <code>SectionHeader.tsx</code>, <code>FeaturedStylists.tsx</code>, <code>Entdecken.tsx</code>) · ~12 className edits · 0 new files · 0 token changes · 0 behavior changes. The "human balance" is: every overlay scales with its container, every card scales with its viewport, and section rhythm matches breathing room of the content inside.
+</p>
+
+</body>
+</html>

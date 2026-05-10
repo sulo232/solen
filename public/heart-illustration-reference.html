@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Solen Heart Illustration — Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand: #1B4D1B;
+    --brand-subtle: #E8EFE4;
+    --amber: #F3A864;
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #9F8A7E;
+    --border: #EFE7DD;
+    --bg-cream: #FFF4E8;
+    --bg-page: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg-page); color: var(--ink); font-family: 'Figtree', system-ui, sans-serif; }
+  .chrome {
+    background: var(--ink);
+    color: white;
+    padding: 16px 24px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .chrome span { color: var(--amber); }
+  main { max-width: 880px; margin: 0 auto; padding: 48px 24px 96px; }
+  h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: 56px;
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .lead {
+    font-family: 'Figtree', sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    margin-bottom: 48px;
+    max-width: 600px;
+  }
+  h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.01em;
+    color: var(--brand);
+    margin: 64px 0 16px;
+  }
+  h3 {
+    font-family: 'Figtree', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 32px 0 12px;
+  }
+  p { font-size: 15px; line-height: 1.6; color: var(--ink-2); margin-bottom: 16px; }
+  p strong { color: var(--ink); font-weight: 700; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 13px; background: var(--bg-cream); padding: 2px 6px; border-radius: 4px; color: var(--brand); }
+  pre {
+    background: var(--bg-cream);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+    margin: 16px 0;
+  }
+  pre .cmd { color: var(--brand); font-weight: 600; }
+  pre .num { color: #8C4A14; }
+  pre .anno { color: var(--ink-3); }
+
+  .render-card {
+    background: var(--bg-cream);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px;
+    text-align: center;
+    margin: 24px 0;
+  }
+  .render-card .label {
+    font-family: 'Figtree', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 24px;
+  }
+  .heart-display { display: inline-flex; flex-direction: column; align-items: center; gap: 16px; }
+  .heart-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+
+  .step-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .step {
+    background: var(--bg-page);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+  }
+  .step .step-n {
+    font-family: 'Anton', sans-serif;
+    font-size: 32px;
+    color: var(--brand);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .step .step-cmd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    word-break: break-all;
+  }
+  .step .step-desc {
+    font-family: 'Figtree', sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--ink-2);
+  }
+
+  .anno-card {
+    background: var(--bg-cream);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    text-align: center;
+    margin: 24px 0;
+  }
+  .anno-svg { display: inline-block; }
+  .anno-svg .label-text { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--ink-3); }
+  .anno-svg .point { fill: var(--amber); }
+  .anno-svg .point-text { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--brand); font-weight: 700; }
+
+  .callout {
+    background: var(--brand-subtle);
+    border-left: 3px solid var(--brand);
+    border-radius: 0 12px 12px 0;
+    padding: 16px 20px;
+    margin: 24px 0;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .callout strong { color: var(--brand); }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  Solen heart illustration · <span>reference for V2 design mockup</span>
+</div>
+
+<main>
+  <h1>The Heart.</h1>
+  <p class="lead">
+    The line-art heart in <code>app/[locale]/profile/favorites/page.tsx</code> — used in the empty-favorites
+    state as the personality anchor. <strong>It does NOT have a face today</strong> — it's a single SVG path.
+    Below: the heart as it currently renders, the geometry explained, and the exact path data broken down
+    so you can riff on it for your V2 mockup.
+  </p>
+
+  <h2>1. As it currently renders</h2>
+  <div class="render-card">
+    <div class="heart-display">
+      <div class="label">Live render — 80×80, brand-green stroke</div>
+      <svg width="240" height="240" viewBox="0 0 100 100" fill="none" stroke="#1B4D1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden>
+        <path d="M50 80 L20 50 a14 14 0 0 1 22 -18 l8 8 8 -8 a14 14 0 0 1 22 18 z" />
+      </svg>
+      <div class="heart-meta">stroke: #1B4D1B · width: 2 · viewBox: 100×100 · rendered 240×240 here</div>
+    </div>
+  </div>
+
+  <h2>2. With construction annotations</h2>
+  <div class="anno-card">
+    <svg class="anno-svg" width="360" height="360" viewBox="-20 -20 140 140" fill="none" stroke="#1B4D1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden>
+      <!-- The heart itself -->
+      <path d="M50 80 L20 50 a14 14 0 0 1 22 -18 l8 8 8 -8 a14 14 0 0 1 22 18 z" />
+      <!-- Anchor points (amber dots) -->
+      <circle class="point" cx="50" cy="80" r="1.6" stroke="none" />
+      <circle class="point" cx="20" cy="50" r="1.6" stroke="none" />
+      <circle class="point" cx="42" cy="32" r="1.6" stroke="none" />
+      <circle class="point" cx="50" cy="40" r="1.6" stroke="none" />
+      <circle class="point" cx="58" cy="32" r="1.6" stroke="none" />
+      <circle class="point" cx="80" cy="50" r="1.6" stroke="none" />
+      <!-- Labels -->
+      <text class="point-text" x="50" y="92" text-anchor="middle">P1 (50, 80)</text>
+      <text class="point-text" x="14" y="48" text-anchor="end">P2 (20, 50)</text>
+      <text class="point-text" x="36" y="28" text-anchor="end">P3 (42, 32)</text>
+      <text class="point-text" x="50" y="50" text-anchor="middle">P4 (50, 40)</text>
+      <text class="point-text" x="64" y="28" text-anchor="start">P5 (58, 32)</text>
+      <text class="point-text" x="86" y="48" text-anchor="start">P6 (80, 50)</text>
+    </svg>
+    <div class="heart-meta" style="margin-top:16px">amber dots = path anchor points · viewBox extended for label space</div>
+  </div>
+
+  <h2>3. The path command, broken down</h2>
+  <p>The entire heart is ONE <code>&lt;path d="..."/&gt;</code>. Six commands, traced in order:</p>
+
+  <pre>d="<span class="cmd">M</span><span class="num">50 80</span> <span class="cmd">L</span><span class="num">20 50</span> <span class="cmd">a</span><span class="num">14 14 0 0 1 22 -18</span> <span class="cmd">l</span><span class="num">8 8 8 -8</span> <span class="cmd">a</span><span class="num">14 14 0 0 1 22 18</span> <span class="cmd">z</span>"
+   │     │     │                  │         │                  │
+   1     2     3                  4         5                  6</pre>
+
+  <div class="step-grid">
+    <div class="step">
+      <div class="step-n">1</div>
+      <div class="step-cmd">M 50 80</div>
+      <div class="step-desc"><strong>Move to</strong> point P1 — the bottom tip of the heart. No line drawn yet, just position the pen.</div>
+    </div>
+    <div class="step">
+      <div class="step-n">2</div>
+      <div class="step-cmd">L 20 50</div>
+      <div class="step-desc"><strong>Line to</strong> P2 — straight diagonal up-and-left to where the left curve will start.</div>
+    </div>
+    <div class="step">
+      <div class="step-n">3</div>
+      <div class="step-cmd">a 14 14 0 0 1 22 -18</div>
+      <div class="step-desc"><strong>Arc</strong> (relative) — radius 14×14, sweep up-and-right by +22, -18 → forms the left "bump" of the heart, ending at P4 (50, 40), passing through P3 (42, 32).</div>
+    </div>
+    <div class="step">
+      <div class="step-n">4</div>
+      <div class="step-cmd">l 8 8 8 -8</div>
+      <div class="step-desc"><strong>Two relative lines</strong> — down-right +8,+8 to bottom of V notch, then up-right +8,-8 to top of right bump start. The classic heart "dip" in the middle.</div>
+    </div>
+    <div class="step">
+      <div class="step-n">5</div>
+      <div class="step-cmd">a 14 14 0 0 1 22 18</div>
+      <div class="step-desc"><strong>Arc</strong> (relative) — same radius 14×14, sweep down-and-right by +22, +18 → forms the right "bump", ending at P6 (80, 50).</div>
+    </div>
+    <div class="step">
+      <div class="step-n">6</div>
+      <div class="step-cmd">z</div>
+      <div class="step-desc"><strong>Close path</strong> — auto-line straight from P6 back to P1, completing the heart.</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Why one path?</strong> Drawing the whole heart as a single continuous path (instead of two arcs + a closing line as separate elements) lets the SVG renderer do the join math for the V notch and the bottom point. <code>strokeLinejoin="round"</code> softens those joins so the line-art reads as hand-drawn even though the geometry is precise.
+  </div>
+
+  <h2>4. The full SVG element</h2>
+  <pre>&lt;svg
+  width="80"
+  height="80"
+  viewBox="0 0 100 100"
+  fill="none"
+  stroke="#1B4D1B"           <span class="anno">// brand green per Q21 + Q64</span>
+  strokeWidth="2"            <span class="anno">// 2px line weight per Q22 illustration prompt</span>
+  strokeLinecap="round"      <span class="anno">// soft endpoints — feels hand-drawn</span>
+  strokeLinejoin="round"     <span class="anno">// soft corners at V notch and bottom point</span>
+  aria-hidden                <span class="anno">// decorative — not announced by screen readers</span>
+&gt;
+  &lt;path d="M50 80 L20 50 a14 14 0 0 1 22 -18 l8 8 8 -8 a14 14 0 0 1 22 18 z" /&gt;
+&lt;/svg&gt;</pre>
+
+  <p>
+    The 80×80 width/height is the rendered size; the 100×100 viewBox is the internal coordinate system.
+    SVG scales the heart to fit. <strong>14×14 pixel radius</strong> on the arcs means each "bump" is
+    about a third of the heart's width — the proportion that reads as "heart" rather than "two bumps."
+  </p>
+
+  <h2>5. If you want a face on it (for V2 mockup reference)</h2>
+  <div class="anno-card">
+    <div style="display:flex;justify-content:center;gap:48px;flex-wrap:wrap">
+      <div class="heart-display">
+        <div class="label">Variant A — dots + smile</div>
+        <svg width="160" height="160" viewBox="0 0 100 100" fill="none" stroke="#1B4D1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden>
+          <path d="M50 80 L20 50 a14 14 0 0 1 22 -18 l8 8 8 -8 a14 14 0 0 1 22 18 z" />
+          <circle cx="38" cy="48" r="1.6" fill="#1B4D1B" stroke="none" />
+          <circle cx="62" cy="48" r="1.6" fill="#1B4D1B" stroke="none" />
+          <path d="M40 58 q10 8 20 0" />
+        </svg>
+      </div>
+      <div class="heart-display">
+        <div class="label">Variant B — closed eyes (sleepy)</div>
+        <svg width="160" height="160" viewBox="0 0 100 100" fill="none" stroke="#1B4D1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden>
+          <path d="M50 80 L20 50 a14 14 0 0 1 22 -18 l8 8 8 -8 a14 14 0 0 1 22 18 z" />
+          <path d="M34 47 q4 -3 8 0" />
+          <path d="M58 47 q4 -3 8 0" />
+          <path d="M42 60 q8 4 16 0" />
+        </svg>
+      </div>
+      <div class="heart-display">
+        <div class="label">Variant C — shy (one eye open)</div>
+        <svg width="160" height="160" viewBox="0 0 100 100" fill="none" stroke="#1B4D1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden>
+          <path d="M50 80 L20 50 a14 14 0 0 1 22 -18 l8 8 8 -8 a14 14 0 0 1 22 18 z" />
+          <circle cx="38" cy="48" r="1.6" fill="#1B4D1B" stroke="none" />
+          <path d="M58 47 q4 -3 8 0" />
+          <path d="M42 60 q5 3 10 0" />
+        </svg>
+      </div>
+    </div>
+    <div class="heart-meta" style="margin-top:24px">
+      these are NOT in the codebase — illustrative variants for your mockup reference only
+    </div>
+  </div>
+
+  <p>
+    Each variant adds 3-4 more SVG elements inside the same <code>&lt;svg&gt;</code>: small
+    <code>&lt;circle&gt;</code> for solid dot eyes, <code>&lt;path d="q..."/&gt;</code> for curve-style
+    eyelashes/smiles. Same brand-green stroke, same 2px width, so the face stays consistent with the
+    heart line.
+  </p>
+
+  <div class="callout">
+    <strong>For your V2 mockup:</strong> when you draw the empty-favorites illustration in your HTML,
+    you can either (a) paste this exact SVG and add eye/mouth elements inside, or (b) draw freehand
+    in your tool of choice and I'll translate the bezier paths back to inline SVG. Either workflow
+    keeps the line-art convention intact.
+  </div>
+</main>
+
+</body>
+</html>
