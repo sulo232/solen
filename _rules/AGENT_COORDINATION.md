@@ -50,7 +50,7 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 | `supabase/migrations/*` | CRITICAL | Conflicting migrations = broken DB. |
 | `.env.local` | HIGH | Secrets. Never commit, never overwrite. |
 | `package.json` | HIGH | Affects all agents. Lock before editing. |
-| `vercel.json` | HIGH | Breaking this = site goes down. |
+| `netlify.toml` | HIGH | Breaking this = site goes down. |
 
 ## Agent Roles
 
@@ -58,7 +58,7 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 |---|---|---|
 | `feature-agent` (Dev 2) | `feature/customer-frontend` | `components/`, `app/[locale]/` customer pages, Tailwind |
 | `feature-agent` (Dev 3) | `feature/salon-dashboard` | `components/dashboard/`, `app/[locale]/dashboard/`, onboarding |
-| `bug-agent` | `main` | Hotfixes, config, `package.json`, `vercel.json` |
+| `bug-agent` | `main` | Hotfixes, config, `package.json`, `netlify.toml` |
 | `infra-agent` | `main` | DevOps, migrations, Edge Functions |
 
 ---
@@ -87,8 +87,11 @@ DONE  → Move task file to _tasks/completed/ + note in .agent-comms.md
 If you cannot finish a feature (e.g., missing API route, missing dependency, lack of context):
 1. **DO NOT** delete the feature from the roadmap or hide the failure.
 2. **DO NOT** delete or overwrite `_tasks/INCOMPLETE_FEATURES.md`.
-3. **APPEND** an entry to `_tasks/INCOMPLETE_FEATURES.md` detailing:
+3. **APPEND** an entry to `_tasks/INCOMPLETE_FEATURES.md` using the canonical format defined in `_rules/STRUCTURAL_RULES.md` Rule 45 (Feature · File/Line · Backend · Frontend · Blocker · Next Steps · Priority). Quick reference:
    - **Feature**: What you were trying to build.
    - **File/Line**: Exactly where you stopped (e.g. `path/to/file.tsx:42`).
+   - **Backend**: API routes / DB tables that exist.
+   - **Frontend**: Components / pages that exist.
    - **Blocker**: Why you couldn't finish it (e.g., "Missing `POST /api/stuff` route from Dev 1").
    - **Next Steps**: What the next agent or user needs to do to unblock it.
+   - **Priority**: HIGH/MEDIUM/LOW.

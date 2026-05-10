@@ -153,9 +153,9 @@
 ### Windows local build failures don't block pushes when pre-existing
 - **Date**: 2026-03-31
 - **File(s)**: `.next/`, `package.json`
-- **What happened**: `npm run build` on Windows consistently fails with webpack chunk ID race conditions (`Cannot find module './8548.js'`) when run multiple times in the same session. The error does not occur on Vercel (Linux, clean build environment).
+- **What happened**: `npm run build` on Windows consistently fails with webpack chunk ID race conditions (`Cannot find module './8548.js'`) when run multiple times in the same session. The error does not occur in CI (Linux, clean build environment — was Vercel at the time, now Netlify).
 - **Why it happened**: Windows file system behavior + Next.js webpack incremental cache = chunk IDs change between runs, causing the second build to fail when it can't find chunks from the first.
-- **Fix / What to do instead**: Confirm the error exists on the original unmodified codebase (do a git stash and build). If it does, the error is pre-existing and safe to push — Vercel will build cleanly. Always check Vercel deployment status after push to confirm.
+- **Fix / What to do instead**: Confirm the error exists on the original unmodified codebase (do a git stash and build). If it does, the error is pre-existing and safe to push — Linux CI builds cleanly. Check the Netlify deploy status after push to confirm.
 
 ---
 
