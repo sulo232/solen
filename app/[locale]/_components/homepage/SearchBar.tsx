@@ -1,8 +1,25 @@
 "use client";
 
 import * as React from "react";
+import { useRouter, useParams } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion, type Transition } from "motion/react";
-import { X } from "lucide-react";
+import {
+  Footprints,
+  Hand,
+  Leaf,
+  Moon,
+  Navigation,
+  Palette,
+  Scissors,
+  Sparkles,
+  Sun,
+  Sunrise,
+  Sunset,
+  X,
+  type LucideIcon,
+} from "lucide-react";
+import { type CalendarDate, getLocalTimeZone } from "@internationalized/date";
+import { DateTimePicker } from "@/app/[locale]/_components/primitives";
 import { cn } from "@/lib/utils";
 
 /**
@@ -36,40 +53,72 @@ const islandTransition: Transition = {
 const instantTransition: Transition = { duration: 0 };
 
 // Explicit heights per viewport+state — animations are smoother w fixed values vs height:auto.
-// Mobile collapsed: stacked card (3 rows × ~62px + button + padding).
-// Desktop collapsed: horizontal pill (~76px tall).
+// Mobile collapsed: stacked card (3 rows × ~44px + button ~48px + container 12px).
+// Desktop collapsed: horizontal pill (~60px tall).
+// Tightened from 280/76 → 196/60 (round 2 — first round 232/64 left dead
+// space below the submit button because the height was set for the old
+// bigger row paddings before they shrank).
+// V2-D49: expanded bumped 480 → 600 to fit the real Calendar (~340px tall)
+// + period-of-day chips (~50px) + header (64px) + footer (76px). Mobile
+// viewport ≥700px still leaves room around the dimmed backdrop.
 const HEIGHT = {
-  mobile:  { collapsed: 280, expanded: 480 },
-  desktop: { collapsed: 76,  expanded: 480 },
+  mobile:  { collapsed: 196, expanded: 600 },
+  desktop: { collapsed: 60,  expanded: 600 },
 };
 
-const SERVICES = [
-  "Coiffeur",
-  "Barbershop",
-  "Nails",
-  "Spa & Wellness",
-  "Massage",
-  "Maniküre",
-  "Pediküre",
-  "Färben",
+// V2-D49b: each service chip gets an icon in front (Fresha treatment-list pattern,
+// adapted to our flat chip style). Icons are lucide-react — same set used elsewhere
+// in the homepage. Coiffeur + Barbershop both use Scissors (haircut iconography);
+// the labels disambiguate.
+const SERVICES: { label: string; icon: LucideIcon }[] = [
+  { label: "Coiffeur",       icon: Scissors },
+  { label: "Barbershop",     icon: Scissors },
+  { label: "Nails",          icon: Sparkles },
+  { label: "Spa & Wellness", icon: Leaf },
+  { label: "Massage",        icon: Hand },
+  { label: "Maniküre",       icon: Sparkles },
+  { label: "Pediküre",       icon: Footprints },
+  { label: "Färben",         icon: Palette },
 ];
 
 const CITIES = ["Basel", "Zürich", "Bern", "Lausanne", "Genf", "Luzern", "St. Gallen", "Winterthur"];
 
-const TIMES = [
-  { label: "Jetzt", value: "now" },
-  { label: "Heute", value: "today" },
-  { label: "Morgen", value: "tomorrow" },
-  { label: "Diese Woche", value: "thisweek" },
-  { label: "Nächste Woche", value: "nextweek" },
-  { label: "Datum wählen", value: "custom" },
+// V2-D49: period-of-day chips replace the loose "Jetzt / Heute / Morgen" list.
+// Locked decision (user pick B): day + period chips, NOT hour-by-hour. Exact-slot
+// picking happens on the salon detail page after a salon is chosen.
+// English values for URL params, German labels for display.
+// V2-D49b: time-of-day icons map to the day's arc — sunrise/sun/sunset/moon.
+const PERIODS: { label: string; value: string; icon: LucideIcon }[] = [
+  { label: "Morgens",     value: "morning",   icon: Sunrise },
+  { label: "Mittags",     value: "noon",      icon: Sun },
+  { label: "Nachmittags", value: "afternoon", icon: Sunset },
+  { label: "Abends",      value: "evening",   icon: Moon },
 ];
 
 export function SearchBar() {
+  const router = useRouter();
+  const params = useParams<{ locale: string }>();
+  const locale = params?.locale ?? "de";
+
   const [active, setActive] = React.useState<Segment | null>(null);
   const [service, setService] = React.useState("");
   const [stadt, setStadt] = React.useState("");
-  const [zeit, setZeit] = React.useState("");
+  // V2-D49: zeit splits into structured (date + period) + derived display string.
+  // Display label is computed from the structured state — keeps the rest of the
+  // collapsed/expanded UI ("Zeit" placeholder vs picked label) untouched.
+  const [zeitDate, setZeitDate] = React.useState<CalendarDate | null>(null);
+  const [zeitPeriod, setZeitPeriod] = React.useState<string>("");
+  const zeit = React.useMemo(() => {
+    if (!zeitDate) return zeitPeriod ? PERIODS.find((p) => p.value === zeitPeriod)?.label ?? "" : "";
+    const dateStr = new Intl.DateTimeFormat("de-CH", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    }).format(zeitDate.toDate(getLocalTimeZone()));
+    const periodLabel = PERIODS.find((p) => p.value === zeitPeriod)?.label;
+    return periodLabel ? `${dateStr} · ${periodLabel}` : dateStr;
+  }, [zeitDate, zeitPeriod]);
+
   const [isDesktop, setIsDesktop] = React.useState(false);
   const prefersReducedMotion = useReducedMotion();
   const transition = prefersReducedMotion ? instantTransition : islandTransition;
@@ -107,6 +156,22 @@ export function SearchBar() {
 
   const isExpanded = active !== null;
   const sizes = isDesktop ? HEIGHT.desktop : HEIGHT.mobile;
+
+  // V2-D49: submit builds URL params and navigates to the existing /[locale]/search
+  // route. Empty fields are omitted from the query string, so a fully-empty submit
+  // lands on /search showing all venues with no filters applied.
+  // Decision lock (user pick B): single-select service, single date, day + period
+  // chips, "Alle Services" === empty (placeholder stays "Service" until tap).
+  const handleSubmit = () => {
+    const sp = new URLSearchParams();
+    if (service) sp.set("service", service);
+    if (stadt) sp.set("city", stadt);
+    if (zeitDate) sp.set("date", zeitDate.toString());
+    if (zeitPeriod) sp.set("period", zeitPeriod);
+    const query = sp.toString();
+    router.push(`/${locale}/search${query ? `?${query}` : ""}`);
+    setActive(null);
+  };
 
   return (
     <>
@@ -161,7 +226,7 @@ export function SearchBar() {
           }}
           transition={prefersReducedMotion ? instantTransition : { ...islandTransition, delay: isExpanded ? 0 : 0.1 }}
           className={cn(
-            "absolute inset-0 flex flex-col p-2 md:flex-row md:items-stretch md:p-[6px_6px_6px_8px]",
+            "absolute inset-0 flex flex-col p-[6px] md:flex-row md:items-stretch md:p-[5px_5px_5px_7px]",
             isExpanded && "pointer-events-none",
           )}
         >
@@ -189,7 +254,8 @@ export function SearchBar() {
           />
           <button
             type="button"
-            className="font-body shrink-0 rounded-full border-0 bg-s-brand p-4 font-semibold text-white transition-colors hover:bg-s-brand-mid md:px-7"
+            onClick={handleSubmit}
+            className="font-body shrink-0 rounded-full border-0 bg-s-brand py-3 px-5 font-semibold text-white transition-[colors,transform] duration-200 ease-glide hover:bg-s-brand-mid active:scale-[0.97] active:duration-[80ms] md:py-[10px] md:px-6"
           >
             Solen durchsuchen
           </button>
@@ -260,19 +326,33 @@ export function SearchBar() {
                     className="w-full border-b border-black/5 bg-transparent pb-3 font-display text-[24px] font-black text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:border-s-brand"
                   />
                   <div className="mt-5 flex flex-wrap gap-2">
-                    {SERVICES.map((s) => (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => {
-                          setService(s);
-                          setActive("stadt");
-                        }}
-                        className="rounded-full border border-s-ink/10 bg-white px-4 py-2 font-body text-[14px] font-medium text-s-ink-2 transition-colors hover:border-s-brand hover:text-s-brand"
-                      >
-                        {s}
-                      </button>
-                    ))}
+                    {SERVICES.map((s) => {
+                      const Icon = s.icon;
+                      const isPicked = service === s.label;
+                      return (
+                        <button
+                          key={s.label}
+                          type="button"
+                          onClick={() => {
+                            setService(s.label);
+                            setActive("stadt");
+                          }}
+                          className={cn(
+                            "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 font-body text-[14px] font-medium transition-colors",
+                            isPicked
+                              ? "border-s-brand bg-s-brand text-white"
+                              : "border-s-ink/10 bg-white text-s-ink-2 hover:border-s-brand hover:text-s-brand",
+                          )}
+                        >
+                          <Icon
+                            size={14}
+                            strokeWidth={2.25}
+                            className={cn("shrink-0", !isPicked && "text-s-brand")}
+                          />
+                          {s.label}
+                        </button>
+                      );
+                    })}
                   </div>
                 </motion.div>
               )}
@@ -293,7 +373,28 @@ export function SearchBar() {
                     onChange={(e) => setStadt(e.target.value)}
                     className="w-full border-b border-black/5 bg-transparent pb-3 font-display text-[24px] font-black text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:border-s-brand"
                   />
-                  <div className="mt-5 flex flex-wrap gap-2">
+
+                  {/* V2-D49: primary "current location" row at the top of the
+                      city picker. Stores the literal label as the value for now;
+                      the actual lat/lng resolution is deferred until the search
+                      results page reads it from the query string. */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStadt("Aktueller Standort");
+                      setActive("zeit");
+                    }}
+                    className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-s-brand/15 bg-s-brand-subtle px-4 py-3 transition-colors hover:bg-s-brand/[0.10]"
+                  >
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-brand text-white">
+                      <Navigation size={16} strokeWidth={2.5} />
+                    </span>
+                    <span className="font-body font-semibold text-s-ink">
+                      Aktueller Standort
+                    </span>
+                  </button>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
                     {CITIES.map((c) => (
                       <button
                         key={c}
@@ -322,25 +423,52 @@ export function SearchBar() {
                   <div className="font-display text-[24px] font-black text-s-ink mb-5">
                     Wann?
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {TIMES.map((t) => (
-                      <button
-                        key={t.value}
-                        type="button"
-                        onClick={() => {
-                          setZeit(t.label);
-                          setActive(null);
-                        }}
-                        className={cn(
-                          "rounded-full border px-5 py-2.5 font-body text-[14px] font-medium transition-colors",
-                          zeit === t.label
-                            ? "border-s-brand bg-s-brand text-white"
-                            : "border-s-ink/10 bg-white text-s-ink-2 hover:border-s-brand hover:text-s-brand",
-                        )}
-                      >
-                        {t.label}
-                      </button>
-                    ))}
+
+                  {/* V2-D49: real Calendar primitive (single-date variant) replaces
+                      the loose Jetzt/Heute/Morgen chips. Reuses §F.5 DateTimePicker
+                      so the homepage search and the booking flow share one Calendar
+                      visual. `time: null` because the search bar only goes to period
+                      granularity — exact slot picking happens on salon detail. */}
+                  <DateTimePicker
+                    variant="single-date"
+                    value={{ date: zeitDate, time: null }}
+                    onChange={({ date }) => setZeitDate(date)}
+                  />
+
+                  {/* Period-of-day chips — independent filter from the date.
+                      Tapping the same chip twice clears it (toggle behavior). */}
+                  <div className="mt-5">
+                    <div className="font-body text-[12px] font-bold uppercase tracking-[0.08em] text-s-ink-3 mb-2">
+                      Tageszeit
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {PERIODS.map((p) => {
+                        const Icon = p.icon;
+                        const isPicked = zeitPeriod === p.value;
+                        return (
+                          <button
+                            key={p.value}
+                            type="button"
+                            onClick={() => {
+                              setZeitPeriod(isPicked ? "" : p.value);
+                            }}
+                            className={cn(
+                              "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 font-body text-[14px] font-medium transition-colors",
+                              isPicked
+                                ? "border-s-brand bg-s-brand text-white"
+                                : "border-s-ink/10 bg-white text-s-ink-2 hover:border-s-brand hover:text-s-brand",
+                            )}
+                          >
+                            <Icon
+                              size={14}
+                              strokeWidth={2.25}
+                              className={cn("shrink-0", !isPicked && "text-s-brand")}
+                            />
+                            {p.label}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </motion.div>
               )}
@@ -354,7 +482,8 @@ export function SearchBar() {
               onClick={() => {
                 setService("");
                 setStadt("");
-                setZeit("");
+                setZeitDate(null);
+                setZeitPeriod("");
               }}
               className="font-body text-[14px] font-semibold text-s-ink-3 underline-offset-2 px-3 py-2 hover:text-s-ink transition-colors"
             >
@@ -362,6 +491,7 @@ export function SearchBar() {
             </button>
             <button
               type="button"
+              onClick={handleSubmit}
               className="font-body shrink-0 rounded-full border-0 bg-s-brand px-6 py-3 font-semibold text-white transition-colors hover:bg-s-brand-mid"
             >
               Suchen
@@ -399,10 +529,13 @@ function CollapsedRow({
       onClick={onClick}
       className={cn(
         "group flex shrink-0 cursor-pointer items-center text-left",
-        "rounded-[10px] p-[14px_16px]",
+        // Tightened from p-[14px_16px] → p-[10px_14px] (mobile) and
+        // p-[14px_22px] → p-[11px_22px] (desktop) so search card height
+        // drops 280→232 and stops dominating the hero per user feedback.
+        "rounded-[10px] p-[10px_14px]",
         "transition-colors hover:bg-s-bg-sunken",
         !isFirst && "border-t border-black/5 max-md:border-t md:border-t-0",
-        "md:flex-1 md:rounded-full md:border-t-0 md:p-[14px_22px]",
+        "md:flex-1 md:rounded-full md:border-t-0 md:p-[11px_22px]",
       )}
     >
       <span className="flex shrink-0 items-center justify-center pr-3 text-s-ink-2 border-r border-black/10">

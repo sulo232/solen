@@ -33,23 +33,31 @@ export default function Hero() {
           carries the entire page at the saturated intensity user wanted
           ("i like how it is in the header... make me one whole page"). */}
 
-      {/* pt accounts for the absolute V3 Header (floats over wash):
-          mobile = ~68px header + 32px breathing = 100px (pt-25)
-          desktop = ~80px header + 48px breathing = 128px (pt-32)
-          tailwind doesn't have pt-25, use arbitrary value. */}
-      <div className="relative mx-auto flex max-w-[1280px] flex-col px-5 pt-[100px] pb-20 md:px-8 md:pt-32 max-md:items-center max-md:text-center">
+      {/* V2-D48-3 (2026-05-09): hero now fills most of the viewport and centers
+          content vertically (Fresha pattern). Was pt-[100px] pb-20 (compact),
+          which jammed the h1 + search at the top and let Recently Viewed peek
+          ~half-viewport down. Now min-h fills 80vh mobile / 88vh desktop,
+          flex items-center vertically centers the content block — h1 + search
+          sit middle-screen, Recently Viewed barely peeks below the fold. */}
+      <div className="relative mx-auto flex w-full max-w-[1280px] flex-col justify-center px-5 pt-[100px] pb-20 md:px-8 md:pt-32 max-md:items-center max-md:text-center min-h-[70vh] md:min-h-[78vh]">
         <div className="max-md:w-full">
           {/* Eyebrow with brand-colored dot before. whitespace-nowrap prevents
               awkward 2-line wrap on narrow desktop widths (~1024px). */}
-          <span className="font-body mb-[18px] inline-flex items-center gap-2 whitespace-nowrap text-[13px] font-bold uppercase tracking-[0.18em] text-s-ink-3 before:block before:h-[6px] before:w-[6px] before:rounded-full before:bg-s-brand before:content-['']">
+          <span className="font-body mb-[18px] inline-flex items-center gap-2 whitespace-nowrap text-[13px] font-bold uppercase tracking-[0.18em] text-s-ink-3 before:block before:h-[6px] before:w-[6px] before:rounded-full before:bg-s-accent before:content-['']">
             Beauty in der Schweiz
           </span>
 
-          {/* H1 — Cooper BT 900, clamped 40-96px, brand color on emphasized word.
-              V2-D15: italic banned. The emphasized "buchen" uses brand color, not italic. */}
-          <h1 className="font-display mb-6 text-[clamp(40px,7vw,96px)] font-black leading-[0.95] tracking-[-0.025em] text-s-ink">
+          {/* H1 — Peace Sans (V2-D42 override of Cooper BT). User picked
+              variant A from public/solen-v2-hero-variants.html — smaller
+              font so the heavy display reads less like a wall of text on
+              mobile. clamp(28,5vw,64) + leading 1.2. Brand color on
+              emphasized word. V2-D15: italic banned. */}
+          <h1 className="font-display mb-6 text-[clamp(26px,4.5vw,58px)] font-black leading-[1.15] tracking-normal text-s-ink">
             Schöner aussehen, schneller{" "}
-            <span className="text-s-brand">buchen</span>.
+            {/* V2-D48: hero h1 accent → terracotta (heartbeat) instead of brand moss.
+                Per Earthen Wellness Light spec: brand color = grounded primary (CTAs);
+                accent color = warm heartbeat (highlight words). */}
+            <span className="text-s-accent">buchen</span>.
           </h1>
 
           {/* Deck removed 2026-05-09 (Option A locked): user picked the cleaner
