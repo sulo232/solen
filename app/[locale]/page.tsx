@@ -2,12 +2,16 @@ import type { Metadata } from "next";
 import { buildAlternates } from "@/lib/seo";
 import Hero from "./_components/homepage/Hero";
 import { FeedZone } from "./_components/homepage/SectionHeader";
+import { AtmosphereBlobs } from "./_components/homepage/AtmosphereBlobs";
+import { AtmosphereGrain } from "./_components/homepage/AtmosphereGrain";
 import RecentlyViewed from "./_components/homepage/RecentlyViewed";
 import LastMinute from "./_components/homepage/LastMinute";
 import Nearby from "./_components/homepage/Nearby";
 import Coiffeur from "./_components/homepage/Coiffeur";
+import Entdecken from "./_components/homepage/Entdecken";
+import FeaturedStylists from "./_components/homepage/FeaturedStylists";
+import SalonRegister from "./_components/homepage/WhySolen";
 import Reviews from "./_components/homepage/Reviews";
-import TrustBanner from "./_components/homepage/TrustBanner";
 
 const TITLES: Record<string, string> = {
   de: "Solen — Finde & buche die besten Salons in der Schweiz",
@@ -73,6 +77,16 @@ export const revalidate = 300;
 export default async function Page() {
   return (
     <>
+      {/* V2-D45 (2026-05-09): atmosphere blobs — 6 heavily-blurred
+          organic shapes in V3 palette (no pink/coral). Adds personality
+          + warm anchors (sandy beige + cream) over the all-blue body
+          wash. Sits z-0, fixed, pointer-events-none, isolated. Content
+          siblings render above by document order. */}
+      <AtmosphereBlobs />
+      {/* V2-D45-3 (2026-05-09): subtle film-grain noise overlay via SVG
+          feTurbulence. Adds editorial / tactile texture. opacity 0.05 +
+          overlay blend = barely-there. No asset weight (procedural). */}
+      <AtmosphereGrain />
       <Hero />
       {/* All feed sections sit inside a rising-panel FeedZone (V2-D41-fu
           rising-panel pattern locked 2026-05-09). Hero zone keeps the
@@ -82,9 +96,15 @@ export default async function Page() {
         <RecentlyViewed />
         <LastMinute />
         <Nearby />
+        {/* V2-D46: action-copy stylist showcase between geo+category feeds */}
+        <FeaturedStylists />
         <Coiffeur />
+        {/* V2-D49f: Entdecken preview — TikTok-style vertical look cards
+            sit between category browse + social proof per discovery rhythm. */}
+        <Entdecken />
         <Reviews />
-        <TrustBanner />
+        {/* V2-D46: B2B salon-register CTA */}
+        <SalonRegister />
       </FeedZone>
     </>
   );

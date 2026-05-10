@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Cookie, Settings2 } from "lucide-react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "./Modal";
 import { Switch } from "./Switch";
 import { cn } from "@/lib/utils";
@@ -180,34 +181,82 @@ function CookieBanner() {
       role="region"
       aria-label="Cookie-Einwilligung"
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-tooltip",
-        "bg-s-bg-base border-t border-s-ink/10",
-        "shadow-[0_-4px_16px_rgba(50,47,44,0.08)]",
-        // motion: slide up from bottom on first paint
+        "fixed z-tooltip",
+        // V2-D49o-fu (2026-05-10): mobile gets a rounded floating card with
+        // viewport-edge margins; desktop keeps the full-bleed bottom strip
+        // (cards-everywhere on desktop would feel out-of-context against
+        // the data-dense layout above). Mobile changes:
+        //   • inset from edges (left-3 right-3 bottom-3)
+        //   • rounded-3xl on the whole card (24px corners)
+        //   • soft shadow on all sides (was upward-only strip shadow)
+        //   • Anpassen text-button → Settings icon-button top-right (rare
+        //     action collapsed to a glyph; "Nur notwendige" + "Alle
+        //     akzeptieren" become the visual hierarchy)
+        "left-3 right-3 bottom-3 rounded-3xl",
+        "md:left-0 md:right-0 md:bottom-0 md:rounded-none",
+        "bg-s-bg-base border border-s-ink/10",
+        "md:border-t md:border-l-0 md:border-r-0 md:border-b-0",
+        "shadow-[0_8px_32px_rgba(50,47,44,0.12)]",
+        "md:shadow-[0_-4px_16px_rgba(50,47,44,0.08)]",
         "transition-transform duration-[400ms] ease-glide",
       )}
     >
       <div
         className={cn(
           "max-w-[1240px] mx-auto",
-          "px-5 py-4 md:px-6 md:py-5",
-          "flex flex-col md:flex-row md:items-center gap-4 md:gap-6",
+          // Mobile padding tightened (was px-5 py-4 → px-4 py-3.5)
+          "px-4 py-3.5 md:px-6 md:py-5",
+          "flex flex-col md:flex-row md:items-center gap-3 md:gap-6",
         )}
       >
-        <div className="flex-1 min-w-0">
-          <div className="font-body font-semibold text-[16px] leading-[1.3] text-s-ink mb-1">
-            Wir verwenden Cookies
+        {/* Top row: cookie glyph + title/subtitle block + settings icon button.
+            Desktop: this whole block becomes the left flex-1 child. */}
+        <div className="flex items-start gap-3 flex-1 min-w-0">
+          <span
+            aria-hidden
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-s-accent/15 text-s-accent-deep"
+          >
+            <Cookie size={20} strokeWidth={2} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="font-body font-semibold text-[15px] md:text-[16px] leading-[1.3] text-s-ink mb-0.5">
+              Wir verwenden Cookies
+            </div>
+            <p className="font-body font-normal text-[13px] md:text-[14px] leading-[1.45] text-s-ink-2">
+              Analyse &amp; Marketing nur mit deinem OK.
+            </p>
           </div>
-          <p className="font-body font-normal text-[14px] leading-[1.55] text-s-ink-2">
-            Analyse &amp; Marketing nur mit deinem OK.
-          </p>
+          {/* V2-D49o-fu: Anpassen text → Settings icon button on the far
+              right. Visible on both viewports for consistency, but on
+              mobile it lives in the top row (next to title); on desktop
+              moves into the right cluster via the order/flex below. */}
+          <button
+            type="button"
+            onClick={openSettings}
+            aria-label="Cookie-Einstellungen anpassen"
+            className={cn(
+              "shrink-0 grid h-9 w-9 place-items-center rounded-full",
+              "bg-white border border-s-ink/10 text-s-ink-2 cursor-pointer",
+              "hover:bg-s-bg-sunken hover:text-s-ink transition-colors duration-150 ease-snap",
+              "active:scale-95 active:duration-[80ms]",
+              "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+              "md:hidden",
+            )}
+          >
+            <Settings2 size={16} strokeWidth={2} aria-hidden />
+          </button>
         </div>
-        <div className="flex flex-wrap items-center gap-2 shrink-0 md:flex-nowrap">
+
+        {/* Action buttons row. Mobile: 2 buttons take full width split equally
+            (50/50). Desktop: original cluster with Anpassen text button
+            preserved. */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Desktop-only Anpassen text button */}
           <button
             type="button"
             onClick={openSettings}
             className={cn(
-              "font-body font-semibold text-[14px] text-s-brand",
+              "hidden md:inline-flex font-body font-semibold text-[14px] text-s-brand",
               "bg-transparent border-0 cursor-pointer px-2 py-2",
               "hover:text-s-ink transition-colors duration-150 ease-snap",
               "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 rounded-md",
@@ -219,10 +268,11 @@ function CookieBanner() {
             type="button"
             onClick={acceptNecessary}
             className={cn(
-              "font-body font-semibold text-[14px] text-s-ink",
-              "bg-s-bg-base border border-s-ink/10 cursor-pointer",
-              "px-5 py-3 rounded-full",
+              "flex-1 md:flex-none font-body font-semibold text-[14px] text-s-ink",
+              "bg-white border border-s-ink/10 cursor-pointer",
+              "px-4 py-2.5 md:px-5 md:py-3 rounded-full",
               "hover:bg-s-bg-sunken transition-colors duration-150 ease-snap",
+              "active:scale-[0.97] active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
             )}
           >
@@ -232,10 +282,11 @@ function CookieBanner() {
             type="button"
             onClick={acceptAll}
             className={cn(
-              "font-body font-semibold text-[14px] text-white",
+              "flex-1 md:flex-none font-body font-semibold text-[14px] text-white",
               "bg-s-brand border-0 cursor-pointer",
-              "px-5 py-3 rounded-full",
+              "px-4 py-2.5 md:px-5 md:py-3 rounded-full",
               "hover:bg-s-brand-mid transition-colors duration-150 ease-snap",
+              "active:scale-[0.97] active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
             )}
           >
