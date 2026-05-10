@@ -64,7 +64,7 @@ When executing a roadmap from `_tasks/`:
 - If the roadmap does NOT mention a component/feature → do NOT add it
 - **NEVER** ad-lib features, components, or API calls that aren't in the roadmap
 
-## Rule 6: CHECK VERCEL AFTER EVERY PUSH
+## Rule 6: CHECK DEPLOYMENT AFTER EVERY PUSH
 
 > **⚠️ SUPERSEDED — Netlify auto-deploys from `main`.** The original `npx vercel ls` check no longer applies (`vercel.json` was deleted in the Netlify migration). With Netlify auto-deploy:
 > - Pushes to `main` deploy automatically. Check the Netlify dashboard or `curl https://www.solen.ch/de/` after ~60s to verify.

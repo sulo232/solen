@@ -9,7 +9,7 @@
  *
  * Routes at `/{locale}/dev/primitives` (e.g. `/de/dev/primitives`).
  *
- * Production gate: returns `notFound()` when `NODE_ENV === "production"`. In Vercel
+ * Production gate: returns `notFound()` when `NODE_ENV === "production"`. In Netlify
  * production deploys, this page is invisible. In `npm run dev` it renders normally.
  */
 

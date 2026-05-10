@@ -6,7 +6,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 /**
  * POST /api/admin/solen-score/recalculate
  * Recalculates Solen Score for all active salons.
- * Auth: CRON_SECRET header (Vercel cron) or admin user.
+ * Auth: CRON_SECRET header (GitHub Actions cron — see .github/workflows/cron-jobs.yml) or admin user.
  */
 export async function POST(req: NextRequest) {
   // Auth: cron secret or admin

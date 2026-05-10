@@ -28,7 +28,7 @@ interface RecommendationResult {
  * AI-powered salon recommendations using:
  * - User booking history (past categories)
  * - Last viewed salons (from localStorage)
- * - Location signals (Vercel geo headers)
+ * - Location signals (edge geo headers — Netlify x-nf-geo with Vercel x-vercel-ip-city legacy fallback)
  * - Time of day context
  *
  * Gemini 2.0 Flash ranks candidates and generates locale-aware reason text.
