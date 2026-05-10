@@ -1,4 +1,7 @@
-import { Section, SectionMeta, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
+"use client";
+
+import * as React from "react";
+import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard } from "./SalonCard";
 
 /**
@@ -43,19 +46,17 @@ const DEMO: CoiffeurEntry[] = [
 
 export default function Coiffeur() {
   const entries = DEMO; // TODO: replace w real query Phase 2
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <Section>
-      <SectionMeta
-        eyebrow="Coiffeur · ganze Schweiz"
-        meta={`${entries.length} Salons · combo Z`}
-      />
       <SectionFrame>
         <SectionTitle
           title="Coiffeur-Salons"
           link={{ label: "Alle Coiffeurs →", href: "/coiffeur" }}
+          scrollRef={scrollRef}
         />
-        <ScrollRow>
+        <ScrollRow ref={scrollRef}>
         {entries.map((e) => (
           <SalonCard
             key={e.slug}

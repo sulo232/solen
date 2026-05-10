@@ -1,4 +1,7 @@
-import { Section, SectionMeta, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
+"use client";
+
+import * as React from "react";
+import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 
 /**
@@ -44,19 +47,17 @@ const DEMO: LastMinuteEntry[] = [
 export default function LastMinute() {
   const entries = DEMO; // TODO: replace w real query Phase 2
   const maxDiscount = Math.max(...entries.map((e) => e.discountPercent));
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <Section>
-      <SectionMeta
-        eyebrow="Heute · letzte Slots"
-        meta={`${entries.length} Salons · bis zu −${maxDiscount}%`}
-      />
       <SectionFrame>
         <SectionTitle
           title="Last-Minute heute"
           link={{ label: "Alle →", href: "/last-minute" }}
+          scrollRef={scrollRef}
         />
-        <ScrollRow>
+        <ScrollRow ref={scrollRef}>
         {entries.map((e) => (
           <SalonCard
             key={e.slug}

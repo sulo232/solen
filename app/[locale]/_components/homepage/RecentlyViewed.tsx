@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Section, SectionMeta, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
+import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 
 /**
@@ -73,6 +73,7 @@ function readStorage(): RecentEntry[] {
 
 export default function RecentlyViewed() {
   const [entries, setEntries] = React.useState<RecentEntry[] | null>(null);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     setEntries(readStorage());
@@ -93,16 +94,13 @@ export default function RecentlyViewed() {
 
   return (
     <Section>
-      <SectionMeta
-        eyebrow="Bei dir zuletzt"
-        meta={`letzte ${list.length} · localStorage`}
-      />
       <SectionFrame>
         <SectionTitle
           title="Zuletzt angesehen"
           link={{ label: "Im Profil →", href: "/profile/recently-viewed" }}
+          scrollRef={scrollRef}
         />
-        <ScrollRow>
+        <ScrollRow ref={scrollRef}>
           {list.map((s) => (
             <SalonCard
               key={s.slug}

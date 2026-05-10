@@ -1,4 +1,7 @@
-import { Section, SectionMeta, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
+"use client";
+
+import * as React from "react";
+import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 
 /**
@@ -44,23 +47,17 @@ const DEMO: NearbyEntry[] = [
 
 export default function Nearby() {
   const entries = DEMO; // TODO: replace w real geo query Phase 2
-
-  // Eyebrow shows distance to nearest result. Q5 voice: NO hyperlocal city
-  // framing in the static fallback. When geolocation is wired (Phase 2),
-  // the city/neighborhood appears dynamically only AFTER the user opts in
-  // and we successfully reverse-geocode their position. Until then, just
-  // distance — applies everywhere in Switzerland equally.
-  const eyebrow = "In deiner Nähe · 200 m";
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <Section>
-      <SectionMeta eyebrow={eyebrow} meta="geo-aware" />
       <SectionFrame>
         <SectionTitle
           title="In der Nähe"
           link={{ label: "Alle in deiner Nähe →", href: "/search/results?nearby=true" }}
+          scrollRef={scrollRef}
         />
-        <ScrollRow>
+        <ScrollRow ref={scrollRef}>
         {entries.map((e) => (
           <SalonCard
             key={e.slug}

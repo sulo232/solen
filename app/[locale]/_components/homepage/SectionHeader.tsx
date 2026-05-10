@@ -1,4 +1,8 @@
+"use client";
+
+import * as React from "react";
 import Link from "next/link";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -17,8 +21,6 @@ import { cn } from "@/lib/utils";
 export interface SectionHeaderProps {
   /** Eyebrow label (with brand-colored dot before, uppercase tracked). */
   eyebrow: string;
-  /** Right-side meta text (ink-3, same uppercase tracking). Optional. */
-  meta?: string;
   /** Main section title (Cooper BT 900). */
   title: string;
   /** Optional "see more" link. */
@@ -28,59 +30,167 @@ export interface SectionHeaderProps {
 
 export function SectionHeader({
   eyebrow,
-  meta,
   title,
   link,
   className,
 }: SectionHeaderProps) {
   return (
     <header className={cn("flex flex-col", className)}>
-      <SectionMeta eyebrow={eyebrow} meta={meta} />
+      <SectionMeta eyebrow={eyebrow} />
       <SectionTitle title={title} link={link} />
     </header>
   );
 }
 
 /**
- * Eyebrow + meta row — RENDERED OUTSIDE the glass section-frame so the
- * frame can be a smaller, content-tight rounded box per user feedback
- * (2026-05-09: "thin line... covering too much area").
+ * Eyebrow row — RENDERED OUTSIDE the glass section-frame.
+ *
+ * V2-D41-rising-panel-3 (2026-05-09): meta-text line removed per user
+ * feedback ("delete these and make it more near to each other and
+ * compact"). Each section is now eyebrow + title + cards, no second-line
+ * meta below the eyebrow. Reduces vertical noise + tightens rhythm.
  */
-export function SectionMeta({ eyebrow, meta }: { eyebrow: string; meta?: string }) {
+export function SectionMeta({ eyebrow }: { eyebrow: string }) {
   return (
-    <div className="mb-3 flex flex-col gap-1 px-2 font-body text-[13px] font-bold uppercase tracking-[0.18em] sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+    <div className="mb-2 px-2 font-body text-[13px] font-bold uppercase tracking-[0.18em]">
       <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-brand before:block before:h-[5px] before:w-[5px] before:rounded-full before:bg-s-brand before:content-['']">
         {eyebrow}
       </span>
-      {meta && <span className="whitespace-nowrap text-s-ink-2">{meta}</span>}
     </div>
   );
 }
 
 /**
  * H2 + optional pill link — RENDERED INSIDE the glass section-frame.
+ *
+ * V2-D49m (2026-05-10) — Airbnb-style scroll-arrow mode:
+ *   When `scrollRef` is passed, the right side of the title row swaps from
+ *   the text "Alle X →" link to:
+ *     - Mobile: a single bare ArrowRight icon (no surrounding circle), tappable
+ *       to navigate to `link.href` (the see-all destination).
+ *     - Desktop (md+): two emerald-on-cream circle buttons that scroll the
+ *       referenced row left / right by ~80% of its visible width. The
+ *       see-all text link is dropped on desktop since the circles take its
+ *       slot — Airbnb does the same.
+ *   When `scrollRef` is NOT passed, behaves as before (text label both viewports).
  */
 export function SectionTitle({
   title,
   link,
+  scrollRef,
 }: {
   title: string;
   link?: { label: string; href: string };
+  scrollRef?: React.RefObject<HTMLDivElement | null>;
 }) {
+  const [canScrollLeft, setCanScrollLeft] = React.useState(false);
+  const [canScrollRight, setCanScrollRight] = React.useState(true);
+
+  // Track scroll position so left/right arrow disabled-state matches reality.
+  // Listener only mounts when scrollRef is provided.
+  React.useEffect(() => {
+    if (!scrollRef?.current) return;
+    const el = scrollRef.current;
+    const update = () => {
+      setCanScrollLeft(el.scrollLeft > 4);
+      setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    // Recompute when content changes width (e.g. async images load)
+    const resizeObs = new ResizeObserver(update);
+    resizeObs.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      resizeObs.disconnect();
+    };
+  }, [scrollRef]);
+
+  const scrollByPercent = (dir: 1 | -1) => {
+    const el = scrollRef?.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
+  };
+
   return (
     <div className="flex items-baseline justify-between gap-6">
-      <h2 className="font-display text-[clamp(28px,4vw,44px)] font-black leading-none tracking-[-0.02em] text-s-ink">
+      <h2 className="font-body text-[clamp(22px,3.5vw,38px)] font-black leading-none tracking-[-0.02em] text-s-ink">
         {title}
       </h2>
-      {link && (
+
+      {/* V2-D49m: when a scrollRef is wired, render the Airbnb-style scroll
+          controls. Otherwise fall back to the legacy text link. */}
+      {link && scrollRef ? (
+        <>
+          {/* Mobile — bare arrow icon, no circle, tappable to see-all */}
+          <Link
+            href={link.href}
+            aria-label={link.label}
+            className="md:hidden shrink-0 grid h-9 w-9 -mr-2 place-items-center text-s-ink-2 transition-colors hover:text-s-ink active:scale-95 active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-md"
+          >
+            <ArrowRight size={20} strokeWidth={2.25} aria-hidden />
+          </Link>
+
+          {/* Desktop — two emerald-on-cream circle scroll buttons */}
+          <div className="hidden md:flex shrink-0 items-center gap-2">
+            <ScrollCircleButton
+              direction="left"
+              disabled={!canScrollLeft}
+              onClick={() => scrollByPercent(-1)}
+            />
+            <ScrollCircleButton
+              direction="right"
+              disabled={!canScrollRight}
+              onClick={() => scrollByPercent(1)}
+            />
+          </div>
+        </>
+      ) : link ? (
         <Link
           href={link.href}
-          className="shrink-0 rounded-full bg-s-brand px-4 py-2 font-body text-[13px] font-semibold text-white transition-colors hover:bg-s-brand-mid"
+          className="shrink-0 font-body text-[13px] font-semibold text-s-brand transition-colors hover:text-s-brand-mid"
         >
           {link.label}
         </Link>
-      )}
+      ) : null}
     </div>
+  );
+}
+
+/**
+ * V2-D49m: V3-themed scroll-control circle button. Used on desktop in
+ * Airbnb-style horizontal-scroll section headers. Default = white surface
+ * + emerald icon + soft ink hairline. Hover = emerald-subtle bg + emerald
+ * icon. Disabled (at scroll boundary) = 30% opacity, no pointer events.
+ */
+function ScrollCircleButton({
+  direction,
+  disabled,
+  onClick,
+}: {
+  direction: "left" | "right";
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  const Icon = direction === "left" ? ChevronLeft : ChevronRight;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={direction === "left" ? "Zurückscrollen" : "Weiterscrollen"}
+      className={cn(
+        "grid h-9 w-9 place-items-center rounded-full",
+        "border border-s-ink/10 bg-white text-s-ink",
+        "transition-[colors,transform,opacity] duration-200 ease-glide",
+        "hover:bg-s-brand-subtle hover:border-s-brand/30 hover:text-s-brand",
+        "active:scale-[0.94] active:duration-[80ms]",
+        "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+        "disabled:opacity-30 disabled:pointer-events-none",
+      )}
+    >
+      <Icon size={16} strokeWidth={2.25} aria-hidden />
+    </button>
   );
 }
 
@@ -108,9 +218,21 @@ export function FeedZone({
         "relative z-[2]",
         "-mt-6 md:-mt-8",
         "rounded-t-[28px] md:rounded-t-[40px]",
-        "bg-white/85 backdrop-blur-[8px]",
+        // V2-D45-4 (2026-05-09): pushed BOTH white and blur up per user
+        // "more glassmorphism, more white" — landed on iOS-Control-Center-
+        // style frosted glass: bg-white/45 + blur 22px + saturate 1.6.
+        // The 15% transparency was too see-through (read as "translucent
+        // film" not "frosted glass"). Border softened to white/50 so the
+        // top edge still cues the rising panel without hairline harshness.
+        "border-t border-white/50",
+        "bg-white/45 backdrop-blur-[22px] backdrop-saturate-[1.6]",
         "shadow-[0_-12px_32px_rgba(4,51,56,0.06)] md:shadow-[0_-16px_40px_rgba(4,51,56,0.08)]",
-        "pt-2 pb-12 md:pt-4 md:pb-20",
+        // V2-D49n-fu7 (2026-05-10): bottom padding cut from pb-12/20 → pb-4/6
+        // so the FeedZone's glass panel flows right into the footer instead
+        // of leaving a 96px cream gap. The rounded-top of the footer's
+        // emerald panel now shows the FeedZone's white-glass behind its
+        // corners, not the page's cream bg — cleaner transition.
+        "pt-2 pb-4 md:pt-4 md:pb-6",
         className,
       )}
     >
@@ -120,10 +242,28 @@ export function FeedZone({
 }
 
 /**
- * Glass section-frame — wraps title + content (NOT the meta above).
- * Smaller than the page-edge-to-edge container we had before; meta floats
- * above in the page-flow per user feedback ("not eyebrow above, just title
- * and cards inside the glass").
+ * Section-frame — STRUCTURAL container for title + content.
+ *
+ * V2-D41-rising-panel-3 (2026-05-09): we cycled through multiple visual
+ * treatments (40% glass → no fill → solid white slab) and landed on
+ * STRUCTURAL ONLY because:
+ *   - FeedZone is already the rising-panel container; per-section slabs
+ *     duplicated that role and felt cluttered (2 containers per section).
+ *   - Slab shadows compounded with card photo + card pill shadows down
+ *     the page, creating visual weight bands every section.
+ *   - Eyebrow-outside / title-inside split read as 2 visual zones per
+ *     section, multiplied 6× down the feed.
+ *
+ * Final architecture (V2-D41-rising-panel-3):
+ *   FeedZone (heavy glass, the only container)
+ *     └─ SectionMeta (eyebrow on glass)
+ *     └─ SectionFrame (this — invisible, just padding + clip)
+ *           ├─ SectionTitle (h2 + Im Profil pill on glass)
+ *           └─ ScrollRow (cards w frosted-glass info pills)
+ *
+ * Component kept (not deleted) so the 6 section files don't need edits;
+ * only structural responsibilities remain (padding for ScrollRow's
+ * negative-margin bleed, overflow-hidden for card hover/translate clip).
  */
 export function SectionFrame({
   children,
@@ -135,13 +275,12 @@ export function SectionFrame({
   return (
     <div
       className={cn(
-        // Glass: 40% white + 18px blur + 1.25 saturate (kept from previous).
-        "rounded-[20px] border border-white/55 bg-white/40 backdrop-blur-[18px] backdrop-saturate-[1.25]",
-        // Minimal padding (was px-3 py-4 md:px-5 py-5). Both axes pushed
-        // to near-zero "nearness" per user feedback. Cards now have
-        // maximum room → 2 full + sliver of 3rd visible on 375px viewport.
-        "px-3 py-4 md:rounded-[24px] md:px-4 md:py-4",
-        // overflow-hidden clips card-bleed at the rounded border.
+        // No fill / blur / border / shadow — FeedZone owns the surface.
+        // Padding preserved for ScrollRow's -mx-3/md:-mx-5 negative-margin
+        // bleed trick (cards align to section edge, then clip at parent).
+        // V2-D48-7: pt shaved further per user "abit more". 8→4 (mobile) / 12→8 (desktop).
+        // Title now hugs the section's top edge. pb stays 16 for card breathing room.
+        "px-3 pt-1 pb-4 md:px-4 md:pt-2 md:pb-4",
         "overflow-hidden",
         className,
       )}
@@ -158,18 +297,24 @@ export function SectionFrame({
  * scrollbar. Cards use `scroll-snap-align: start` (already on SalonCard).
  *
  * Padding 4px y to give photos room to translateY(-1px) on hover w/o clipping.
+ *
+ * V2-D49m (2026-05-10): now `forwardRef` so consumer sections can attach a
+ * ref shared with `<SectionTitle scrollRef={ref}>` — the desktop circle
+ * buttons use it to call `.scrollBy()` programmatically.
  */
-export function ScrollRow({
-  children,
-  className,
-}: {
+export const ScrollRow = React.forwardRef<HTMLDivElement, {
   children: React.ReactNode;
   className?: string;
-}) {
+}>(function ScrollRow({ children, className }, ref) {
   return (
     <div
+      ref={ref}
       className={cn(
-        "mt-4 flex gap-3 overflow-x-auto py-1 [scrollbar-width:none]",
+        "mt-3 flex gap-3 overflow-x-auto py-1 [scrollbar-width:none]",
+        // V2-D43 (Emil polish): stagger card entrance on first paint.
+        // Each card fades+rises 50ms after the previous (defined in globals.css).
+        // Reduced-motion users see static (no animation).
+        "salon-card-stagger",
         "[scroll-snap-type:x_mandatory] [-webkit-overflow-scrolling:touch]",
         "[&::-webkit-scrollbar]:hidden",
         // Negative margin matches the new SectionFrame padding (px-3 mobile /
@@ -188,7 +333,7 @@ export function ScrollRow({
       {children}
     </div>
   );
-}
+});
 
 /**
  * Standard homepage section wrapper — gives consistent max-width + padding.
@@ -202,11 +347,13 @@ export function Section({
 }) {
   // Outer Section — minimal padding so the SectionFrame inside reaches
   // near-edge of viewport. Pushed to px-1 mobile (4px) for max card peek.
+  // V2-D41-rising-panel-3: vertical compacted (py-3→py-2, mb-2→mb-1) so
+  // sections sit closer together per user "more near to each other" feedback.
   return (
     <section
       className={cn(
-        "relative z-[1] mx-auto max-w-[1280px] px-1 py-3 md:px-3 md:py-4",
-        "mb-2 md:mb-3",
+        "relative z-[1] mx-auto max-w-[1280px] px-1 py-2 md:px-3 md:py-3",
+        "mb-1 md:mb-2",
         className,
       )}
     >
