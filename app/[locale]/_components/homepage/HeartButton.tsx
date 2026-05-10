@@ -27,12 +27,18 @@ export function HeartButton({
 }) {
   const [isSaved, setIsSaved] = React.useState(initialSaved);
   const [announcement, setAnnouncement] = React.useState("");
+  // V2-D43 (Emil polish): spring-feel pop animation on save toggle.
+  // popKey increments only when toggling FROM unsaved TO saved (not on unsave).
+  // The key change re-mounts the SVG so the @keyframes heart-pop animation
+  // restarts cleanly each time. Range 0.5 → 1.15 → 1.0 mimics Apple's spring.
+  const [popKey, setPopKey] = React.useState(0);
 
   const toggle = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
     e.stopPropagation();
     const next = !isSaved;
     setIsSaved(next);
+    if (next) setPopKey((k) => k + 1);
     setAnnouncement(
       next ? `${salonName} gespeichert` : `${salonName} entfernt`,
     );
@@ -55,26 +61,38 @@ export function HeartButton({
         aria-label={isSaved ? "Gespeichert" : "Speichern"}
         aria-pressed={isSaved}
         style={{
+          // V2-D48-4: glass effect ON the heart ITSELF (no surrounding circle).
+          // Dual drop-shadow: dark for lift off photo + white sliver for glass sheen.
+          // Saved adds love-red glow; unsaved is ink-defined.
           filter: isSaved
-            ? // Saved: love-red glow + tiny white highlight = glass sheen
-              "drop-shadow(0 1px 3px rgba(255, 74, 107, 0.35)) drop-shadow(0 0 1px rgba(255, 255, 255, 0.6))"
-            : // Default: subtle dark shadow lifts icon off photo
-              "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18))",
+            ? "drop-shadow(0 2px 6px rgba(255, 74, 107, 0.40)) drop-shadow(0 0 1px rgba(255, 255, 255, 0.7))"
+            : "drop-shadow(0 1px 3px rgba(42, 31, 24, 0.25)) drop-shadow(0 0 1px rgba(255, 255, 255, 0.5))",
         }}
         className={cn(
-          "absolute right-2 top-2 grid h-6 w-6 place-items-center bg-transparent border-0 p-0 transition-transform duration-200 ease-snap",
-          "hover:scale-110 active:scale-95",
+          "absolute right-2 top-2 grid h-6 w-6 place-items-center bg-transparent border-0 p-0",
+          // V2-D43 motion polish — kept
+          "transition-transform duration-200 ease-glide",
+          "hover:scale-110 active:scale-[0.97] active:duration-[80ms]",
           "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-full",
           className,
         )}
       >
         <Heart
+          // V2-D43: key re-mounts SVG on each save → CSS animation restarts.
+          key={popKey}
           size={24}
-          strokeWidth={2}
-          // Glass fill: semi-transparent love-red so photo shows through
+          strokeWidth={2.25}
+          // V2-D49e: outline-only unsaved state — fill removed entirely so
+          // the photo bleeds through the heart shape with NO inner film.
+          // Saved keeps translucent love-red fill (universal "saved" signal).
           fill={isSaved ? "rgba(255, 74, 107, 0.65)" : "none"}
-          // Stroke fully opaque to define the silhouette crisply
-          stroke={isSaved ? "#FF4A6B" : "#7A6957"}
+          // V2-D49e: glassmorphic outline — translucent white stroke at 0.9
+          // opacity. Reads on dark photos directly + on light photos via the
+          // dual drop-shadow filter (dark halo) on the parent button.
+          // Saved keeps opaque love-red stroke for contrast.
+          stroke={isSaved ? "#FF4A6B" : "rgba(255, 255, 255, 0.9)"}
+          // V2-D43: spring-feel pop on save (not on unsave).
+          className={isSaved && popKey > 0 ? "animate-heart-pop" : undefined}
           aria-hidden
         />
       </button>

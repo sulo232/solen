@@ -34,11 +34,13 @@ import { HeartButton } from "./HeartButton";
  */
 
 const cardCategoryColors = {
-  // V3 4-cat colorways from LIVE_TRUTH §2 (V2-D15-3 lock).
-  coiffeur: { bg: "#FFF1DD", initial: "#B5345A" }, // combo Z (cream + cherry)
-  barbershop: { bg: "#D8D6CB", initial: "#1A1209" }, // combo G (bone + black)
-  nails: { bg: "#CAE8FF", initial: "#B5345A" }, // combo A (pale ice blue + magenta)
-  spa: { bg: "#193120", initial: "#D9C9A8" }, // combo I (forest + sandy beige)
+  // V2-D48 EARTHEN WELLNESS LIGHT (2026-05-09): cat colorways re-mapped from
+  // V3 dark-teal palette to earthen tones. Spa flipped from dark-forest to
+  // moss-pale (now consistent lightness with other 3 cats).
+  coiffeur:   { bg: "#FAF2E5", initial: "#C97A57" }, // cream-warm + terracotta
+  barbershop: { bg: "#E8DDC9", initial: "#2A1F18" }, // bone + ink
+  nails:      { bg: "#D4DDC8", initial: "#8E4A2D" }, // sage-pale + terra-deep
+  spa:        { bg: "#D4EBD9", initial: "#0F3D26" }, // V2-D48-2 emerald subtle + emerald deep
 } as const;
 
 type Category = keyof typeof cardCategoryColors;
@@ -182,7 +184,10 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
   photoUrl?: string;
   /** Photo alt for screen readers — defaults to "Foto von [name]". */
   photoAlt?: string;
-  /** Category for fallback tile + heart contrast adjustment (spa = dark bg). */
+  /** Category for fallback tile colorway. V2-D48: all 4 cats now light-bg
+   *  (Earthen Wellness Light), so the spa-dark-photo heart override is
+   *  vestigial — kept as a no-op until a future dark-photo case (e.g. real
+   *  salon photo with dark composition) re-introduces the need. */
   category: Category;
   /** Curation badge (top-left) — mutex with `discountPercent`. */
   curation?: CurationProps["type"] | null;
@@ -224,13 +229,15 @@ export function SalonCard({
   className,
 }: SalonCardProps) {
   const cat = cardCategoryColors[category];
-  const isDarkPhoto = category === "spa" && !photoUrl;
+  // V2-D48: spa cat flipped to light moss-pale bg, so this is false for all cats.
+  // Kept for forward-compat when real salon photos may have dark composition.
+  const isDarkPhoto = false;
   const initial = name.trim().charAt(0).toUpperCase();
 
   return (
     <Link
       href={`/salon/${slug}`}
-      aria-label={`${name} — Termin buchen`}
+      aria-label={`${name}, Termin buchen`}
       className={cn(
         "group flex shrink-0 flex-col snap-start",
         // 150px mobile (was 160) so 2 full + clear "bit of 3rd" peek visible
@@ -238,17 +245,22 @@ export function SalonCard({
         // logged as V2-D## TODO.
         "w-[150px] md:w-[180px]",
         "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-[14px]",
-        "active:scale-[0.94] active:duration-100",
+        // V2-D43 (Emil polish): scale(0.94) → scale(0.97) per Emil's subtle range
+        // (0.95-0.98). 0.94 felt too jumpy for content cards.
+        "active:scale-[0.97] active:duration-[80ms] active:ease-glide",
         className,
       )}
     >
       {/* Photo + overlays. Softer hover (-3px lift / 1.015 scale) + layered
-          shadow that doesn't stomp the frosted text pill below. */}
+          shadow that doesn't stomp the frosted text pill below.
+          V2-D43 (Emil polish): 300ms ease-snap → 200ms ease-glide.
+          Hovers should be ≤200ms; ease-glide is the strong-ease-out curve
+          that matches Emil's cubic-bezier(0.23, 1, 0.32, 1) recommendation. */}
       <div
         className={cn(
           "relative aspect-square w-full overflow-hidden rounded-[14px]",
           "shadow-[0_1px_2px_rgba(26,18,9,0.04),0_4px_10px_rgba(26,18,9,0.05)]",
-          "transition-[transform,box-shadow] duration-300 ease-snap",
+          "transition-[transform,box-shadow] duration-200 ease-glide",
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
           "group-hover:shadow-[0_1px_2px_rgba(26,18,9,0.05),0_6px_14px_rgba(26,18,9,0.06),0_12px_24px_rgba(26,18,9,0.05)]",
         )}
