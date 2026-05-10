@@ -2,7 +2,7 @@
 
 > Every AI agent must read this file before changes.
 
-**Stack:** Next.js App Router · TS · Tailwind · Supabase · Stripe · Vercel.
+**Stack:** Next.js App Router · TS · Tailwind · Supabase · Stripe · Netlify.
 **Reference (load on demand):** `_docs/PROJECT_REFERENCE.md` (full stack table, architecture, commands, deployment, task-tracking conventions).
 
 ---
@@ -10,21 +10,29 @@
 ## 🎨 Design system — single source of truth
 
 - **READ FIRST (the principal — current locked state, no history):** `_tasks/SOLEN_LIVE_TRUTH.md`
-- **History / context (slower-moving Q-lock decision log):** `_tasks/SOLEN_DESIGN.md` §20
+- **History / context (slower-moving Q-lock decision log — archived):** `_tasks/archive/SOLEN_DESIGN.archived.md` §20
 - **Preview (V3 locked, 2026-05-07):** `public/solen-v2-republik-teal.html` (homepage) · `public/solen-v2-palette.html` (full palette) · `public/solen-v2-combos.html` (31-combo grid) — serve via `npx serve public -p 4747`
 - **Hierarchy when docs conflict:** `SOLEN_LIVE_TRUTH.md` wins over Q-locks wins over reference HTML wins over component JSDoc. **If `SOLEN_LIVE_TRUTH.md` is wrong, fix it first**, then propagate to other files. Never reverse.
 
 **Retired — do not reintroduce:**
 - **Brand colors:** V1 green+peach (`#1B4D1C` / `#F5A962`), V2 brand orange `#E8742A` (retired V2-D15-3), `#FFE4D2` brand-subtle peach, `#8A3C0F` brand-text, `#5C2308` brand-text-deep, `#F0834D` hover-top, hover gradient `#F0834D → #E8742A`
 - **6-cat colorways** (retired V2-D15-3): `#B5588A` rose, `#E8A957` sunny, `#C77A5C` clay, `#88B89E` sage, `#D66547` coral-orange, `#A66E3D` camel, `#9B7BB8` plum (V2-D15-2 purple ban). 5th cat Makeup retired entirely.
-- **Typography:** Plus Jakarta, Outfit, Phosphor, Anton, Bebas Neue, Bricolage Grotesque (V2 display — retired V2-D15-3), Inter Tight as PRIMARY (kept only as fallback), Instrument Serif italic, JetBrains Mono, DM Sans, Figtree, Fraunces, Peace Sans, Open Sauce Sans
+- **Typography:** Plus Jakarta, Outfit, Phosphor, Anton, Bebas Neue, Bricolage Grotesque (V2 display — retired V2-D15-3), Inter Tight (retired as primary V2-D15-3, retired as fallback V2-D42), Instrument Serif italic, JetBrains Mono, DM Sans, Figtree, Fraunces, Cooper BT (V3 display — retired V2-D42), Cooper Black Std, ITC Avant Garde Gothic Std (V3 body — retired V2-D42), Sansita 900 (Cooper fallback — retired V2-D42), League Spartan (Avant Garde fallback — retired V2-D42)
 - **Surfaces:** warm cream substrate `#FBF8F3` (V2-D15 reverted to white), V5 zone language, glass-everywhere, 3:2 cover photos, dark mode, blobs-in-every-section
 - **Italic anywhere in UI** — period (V2-D15)
-- **Locked V3 brand:** dark teal `#043338` + pale teal `#C2F0F1` + brand subtle `#E1F4F4`
-- **Locked V3 categories (4):** Coiffeur=Z (cream+cherry), Barbershop=G (bone+black), Nails=A (pale ice blue+magenta), Spa & Wellness=I (forest+sandy beige). See `public/solen-v2-combos.html` for the 31-combo library reference.
-- **Locked V3 typography:** Cooper BT (display) + ITC Avant Garde Gothic Std (body/UI). Free fallbacks: Sansita 900 + League Spartan.
+- **V2-D15-3 era V3 dark teal trio** (retired V2-D48 2026-05-09): `#043338` brand teal + `#C2F0F1` pale teal + `#E1F4F4` brand subtle + `#0A6873` brand-mid. Replaced by Earthen Wellness Light emerald palette below.
+- **V2-D15-3 era V3 cat text colors** (retired V2-D48): cherry `#B5345A` (was Coiffeur text), magenta `#B50051` (was Nails text), sandy beige `#948565` (was Spa text). Replaced by Earthen Wellness Light cat colors below.
+- **Sage `#A8B89A` as a CTA / button / glyph-bg color** (retired V2-D49j 2026-05-10 — too low contrast on cream). Sage stays only as an atmosphere-blob hue.
 
-Full V3 spec lives in `_tasks/SOLEN_LIVE_TRUTH.md` §1 brand, §2 categories, §5 typography, §5a pill rule, §5g atmosphere wash, §5h color philosophy, §5i combo library. Decision log: `_tasks/V2_REBUILD_LOG.md` V2-D15-3.
+**Locked V3 brand (V2-D48 Earthen Wellness Light, 2026-05-09):** emerald `#1F5C42` (`s-brand`) + terracotta `#C97A57` (`s-accent`) + cream substrate `#F5EBDD` (`s-bg-base`). Pale `#A8CFB8`, subtle `#D4EBD9`, brand-mid `#0F3D26`, brand-deep `#0A2917`.
+
+**Color rule (V2-D49j 2026-05-10, locked LIVE_TRUTH §5h principle 9 + §5h.2):** emerald `s-brand` is the ONLY color allowed on action affordances (CTAs, primary links, focus outlines, success/check glyphs, active chip states). Terracotta `s-accent` is reserved for ONE-OR-TWO highlight words inside h1/h2 display text + logo dot + eyebrow leading-dot — **never on buttons, never on links, never on glyph backgrounds.** Heart-saved fill is the universal-semantic exception (love-red `#FF4A6B`).
+
+**Locked V3 categories (4, V2-D48 Earthen Wellness Light):** Coiffeur `#FAF2E5`/`#C97A57` (cream+terracotta), Barbershop `#E8DDC9`/`#2A1F18` (bone+ink), Nails `#D4DDC8`/`#8E4A2D` (sage-pale+terra-deep), Spa & Wellness `#D4EBD9`/`#0F3D26` (emerald-subtle+emerald-deep).
+
+**Locked V3 typography (V2-D42, 2026-05-09 — overrides V2-D15-3):** Peace Sans (display: hero h1, logo, feature h2) + Open Sauce One (body/UI: section h2s, eyebrows, body text, buttons, microcopy). Both via cdnfonts. Inter via Google Fonts as the cdnfonts-failure fallback for body. Peace Sans + Open Sauce Sans were briefly tried earlier in V2-D15-3 evolution but a different variant (Open Sauce **Sans**, broken on cdnfonts) — V2-D42 picks Open Sauce **One** (sister font, full 300-900 weights, working CDN).
+
+Full V3 spec lives in `_tasks/SOLEN_LIVE_TRUTH.md` §1 brand, §2 categories, §5 typography, §5a pill rule, §5g atmosphere wash, §5h color philosophy, §5i combo library. Operational playbook (pattern library + Fresha translation rules): `_rules/SOLEN_PATTERNS.md`. Decision log: `_tasks/V2_REBUILD_LOG.md` (latest series V2-D48 / V2-D42 / V2-D49j).
 
 ---
 
@@ -35,7 +43,7 @@ Full V3 spec lives in `_tasks/SOLEN_LIVE_TRUTH.md` §1 brand, §2 categories, §
 3. Read before editing.
 4. Never `npm run build` unless asked.
 5. `git diff` after each fix.
-6. **Mass token sweeps are runtime-blocked.** A `PreToolUse` hook (`.claude/hooks/pre-sweep-check.sh`, registered in `.claude/settings.json`) BLOCKS any `Edit` with `replace_all: true` whose `old_string` contains a hex literal that exists in `public/solen-coral.html` or `_tasks/SOLEN_DESIGN.md`. Skipped paths: `tailwind.config.js`, `app/globals.css`, every `_tasks/_rules/_audits/_docs/_specs/_plans/_visual-qa/`, `CLAUDE.md`, `.claude/`, `messages/*.json`. To explicitly authorize a brand-pivot-style sweep (e.g. Q64), the user runs `touch .claude/sweep-approved.flag` — flag auto-expires in 10 minutes. This exists because L8 (SOLEN_BUILD_LEARNINGS.md) self-diagnosed that documentation alone didn't prevent sweep-without-grep failures.
+6. **Mass token sweeps are runtime-blocked.** A `PreToolUse` hook (`.claude/hooks/pre-sweep-check.sh`, registered in `.claude/settings.json`) BLOCKS any `Edit` with `replace_all: true` whose `old_string` contains a hex literal that exists in `public/solen-coral.html` or `_tasks/archive/SOLEN_DESIGN.archived.md`. Skipped paths: `tailwind.config.js`, `app/globals.css`, every `_tasks/_rules/_audits/_docs/_specs/_plans/_visual-qa/`, `CLAUDE.md`, `.claude/`, `messages/*.json`. To explicitly authorize a brand-pivot-style sweep (e.g. Q64), the user runs `touch .claude/sweep-approved.flag` — flag auto-expires in 10 minutes. This exists because lesson L8 in `_tasks/archive/SOLEN_BUILD_LEARNINGS.archived.md` self-diagnosed that documentation alone didn't prevent sweep-without-grep failures.
 
 ---
 
@@ -49,7 +57,7 @@ Order: **PROPOSE → WAIT → EXECUTE → VERIFY**. For design tokens, component
 
 ## 🔍 Verify before asking
 
-Try to answer yourself first. Use `grep` / `Read` / `git log` / `preview_eval` / existing docs (`SOLEN_DESIGN.md`, `_rules/*.md`, `_tasks/REDESIGN_INVENTORY.md`, `_tasks/BACKEND_NEEDS_UI.md`, `_tasks/GAP_AUDIT_V2.md`, `package.json`, `tailwind.config.js`).
+Try to answer yourself first. Use `grep` / `Read` / `git log` / `preview_eval` / existing docs (`_tasks/SOLEN_LIVE_TRUTH.md`, `_rules/*.md`, `_tasks/V2_REBUILD_LOG.md`, `package.json`, `tailwind.config.js`). Older docs (`SOLEN_DESIGN.md`, `REDESIGN_INVENTORY.md`, `BACKEND_NEEDS_UI.md`, `GAP_AUDIT_V2.md`) are archived under `_tasks/archive/` — re-derive against V3 LIVE_TRUTH instead of consulting the archives.
 
 **Only ask the user about:** preferences, taste, intent, business decisions, or info only they have.
 
@@ -60,21 +68,23 @@ Try to answer yourself first. Use `grep` / `Read` / `git log` / `preview_eval` /
 Run npm/npx, git status/add/commit/push/diff/log, tsc, file ops without asking.
 **Ask before:** `git push --force`, `reset --hard`, DB data deletion, `.env.local` edits.
 
-## 🚫 Vercel builds gated (locked 2026-05-02)
+## 🚀 Deploy workflow (Netlify, migrated 2026-05-09)
 
-Preview only via `localhost:3000` (static server `npx serve public` for design preview, or `npm run dev` for app). GitHub push is OK and **does NOT trigger a Vercel build by default** — `vercel.json` has `ignoreCommand` that skips every build unless the commit message contains the literal token `[deploy]`.
+**Local preview:** `npm run dev` for the app · `npx serve public -p 4747` for design preview HTML files.
 
-**To trigger a Vercel build (only when user says so):**
-- Make a commit (regular or empty) with `[deploy]` in the message: `git commit --allow-empty -m "deploy <reason> [deploy]"` then `git push`
-- Or use Vercel dashboard "Redeploy" on a specific commit (overrides `ignoreCommand`)
+**Production:** every push to `main` auto-deploys to Netlify. Build config lives in `netlify.toml`. There's no `[deploy]` commit-message token anymore — pushes to `main` DO deploy, period.
 
-**Default workflow:** commit + push freely; nothing reaches Vercel. Only deploy when user explicitly says "deploy to vercel" / "merge to main" / "ship it."
+**Crons:** GitHub Actions runs `.github/workflows/cron-jobs.yml` to invoke `/api/cron/*` routes on schedule (replaces the old `vercel.json` crons).
+
+**Memory rule (still active):** every commit message must end with `[skip vercel]` — belt-and-suspenders for the paused Vercel project from pre-migration. Has no effect on Netlify deploys; harmless redundancy.
+
+**Default workflow:** commit + push to feature/worktree branches freely; nothing reaches production. Only merge to `main` (or push to `main`) when the user explicitly says "deploy" / "merge to main" / "ship it."
 
 ---
 
 ## ⚠️ INCOMPLETE_FEATURES is sacred
 
-If a feature can't finish: append to `_tasks/INCOMPLETE_FEATURES.md` (Feature · File/Line · Blocker · Next Steps). Never delete or hide failures. File is never deleted.
+If a feature can't finish: append to `_tasks/INCOMPLETE_FEATURES.md` using the canonical format (Feature · File/Line · Backend · Frontend · Blocker · Next Steps · Priority — see `_rules/STRUCTURAL_RULES.md` Rule 45 for the full schema). Never delete or hide failures. File is never deleted.
 
 ---
 
@@ -86,7 +96,7 @@ Never `.catch(() => {})`. Always `console.error("[Component] desc:", err)`. Auth
 
 ## ⭐ Design enforcement
 
-Anything visual must come from `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-3, 2026-05-07). New colors use existing tokens. To change the design itself: edit `SOLEN_LIVE_TRUTH.md` first, then update the V3 preview HTML files (`solen-v2-republik-teal.html` / `solen-v2-palette.html` / `solen-v2-combos.html`), then log decision as next `V2-D##` entry in `_tasks/V2_REBUILD_LOG.md`. Historical Q-locks in `SOLEN_DESIGN.md` §20 are context only — V3 supersedes any conflict.
+Anything visual must come from `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-3 era → V2-D48 Earthen Wellness Light pivot 2026-05-09 → V2-D42 typography pivot 2026-05-09 → V2-D49j color rule 2026-05-10). New colors use existing tokens. To change the design itself: edit `SOLEN_LIVE_TRUTH.md` first, then update any V3 mockup HTML in `public/solen-v2-*.html`, then log decision as next `V2-D##` entry in `_tasks/V2_REBUILD_LOG.md`. Historical Q-locks in `_tasks/archive/SOLEN_DESIGN.archived.md` §20 are context only — V3 supersedes any conflict.
 
 **🚨 Permanent technical anti-patterns (LIVE_TRUTH §0d.7 + V2_REBUILD_LOG.md V2-D41-fu).** Read these BEFORE editing layout, body styles, atmosphere wash, salon cards, search bar, or section frames. Breaking any silently breaks visible design:
 1. ❌ `bg-white` on `<body>` element (kills atmosphere wash)
@@ -109,6 +119,7 @@ Anything visual must come from `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-
 | I18N | `_rules/I18N_ROUTING.md` |
 | Key features (60-entry list) | `_rules/KEY_FEATURES.md` |
 | Lessons learned | `_rules/LESSONS_LEARNED.md` |
+| **V3 patterns + Fresha playbook** | `_rules/SOLEN_PATTERNS.md` |
 | UI principles (skill) | `_rules/SOLEN_UI.md` |
 | Agent coordination | `_rules/AGENT_COORDINATION.md` |
 | Roadmap rules | `_rules/ROADMAP_RULES.md` |
