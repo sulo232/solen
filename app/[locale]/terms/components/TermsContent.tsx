@@ -269,7 +269,7 @@ export default function TermsContent() {
           <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Stripe</strong> — Zahlungsabwicklung / Payment processing</li>
             <li><strong>Supabase</strong> — Datenbank und Authentifizierung (EU-Region) / Database and authentication (EU region)</li>
-            <li><strong>Vercel</strong> — Hosting</li>
+            <li><strong>Netlify</strong> — Hosting</li>
             <li><strong>PostHog</strong> — Analytik / Analytics</li>
             <li><strong>Cloudflare</strong> — DNS und CDN / DNS and CDN</li>
           </ul>

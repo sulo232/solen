@@ -63,7 +63,7 @@ export default function PrivacyContent() {
                   <td className="px-4 py-2">EU (Frankfurt)</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-2"><strong>Vercel</strong></td>
+                  <td className="px-4 py-2"><strong>Netlify</strong></td>
                   <td className="px-4 py-2">Hosting & Computing</td>
                   <td className="px-4 py-2">Global / EU</td>
                 </tr>
