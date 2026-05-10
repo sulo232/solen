@@ -131,7 +131,7 @@ export async function middleware(request: NextRequest) {
     );
 
     // SECURITY: Use getUser() for proper JWT verification — getSession() is not safe for auth decisions
-    // Wrapping with AbortController timeout to prevent Vercel Edge hangs
+    // Defensive 4s timeout via Promise.race — guards against any edge runtime network hang
     const userPromise = supabase.auth.getUser();
     const timeoutPromise = new Promise<{ data: { user: null }, error: Error }>((resolve) =>
       setTimeout(() => resolve({ data: { user: null }, error: new Error("Auth timeout") }), 4000)

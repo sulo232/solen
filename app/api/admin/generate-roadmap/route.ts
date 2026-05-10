@@ -45,11 +45,11 @@ export async function POST(req: NextRequest) {
     .from("feature_requests").select("*").eq("id", validated.requestId).single();
   if (!featureReq) return NextResponse.json({ error: "Request not found" }, { status: 404 });
 
-  // 8. Check API key — uses GEMINI_API_KEY from Vercel env
+  // 8. Check API key — uses GEMINI_API_KEY from Netlify env
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
-      { error: "GEMINI_API_KEY not configured in Vercel environment variables." },
+      { error: "GEMINI_API_KEY not configured in Netlify environment variables." },
       { status: 500 }
     );
   }

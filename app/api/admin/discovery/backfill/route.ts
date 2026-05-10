@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   // Check for Gemini API key early
   if (!process.env.GEMINI_API_KEY) {
     return NextResponse.json(
-      { error: "GEMINI_API_KEY not configured. Add it to Vercel Environment Variables." },
+      { error: "GEMINI_API_KEY not configured. Add it to Netlify Environment Variables." },
       { status: 500 }
     );
   }

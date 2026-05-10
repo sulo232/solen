@@ -9,7 +9,7 @@ import { trackServerEvent } from "@/lib/posthog-server";
 export const runtime = "nodejs";
 
 // POST /api/stripe/webhook
-// Vercel webhook URL to add in Stripe Dashboard:
+// Webhook URL to add in Stripe Dashboard:
 //   https://solen.ch/api/stripe/webhook
 // Events to enable: payment_intent.succeeded, payment_intent.payment_failed,
 //                   charge.dispute.created, account.updated

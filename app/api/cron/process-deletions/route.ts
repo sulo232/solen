@@ -6,7 +6,8 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 export async function GET(request: NextRequest) {
   try {
     const adminAuth = request.headers.get("Authorization");
-    // VERY simple auth for cron jobs (ensure CRON_SECRET matches Vercel Cron Secret)
+    // VERY simple auth for cron jobs — `CRON_SECRET` env var must match the secret
+    // sent by `.github/workflows/cron-jobs.yml` (GitHub Actions invokes this route)
     if (adminAuth !== `Bearer ${process.env.CRON_SECRET}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
