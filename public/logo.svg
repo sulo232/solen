@@ -1,12 +1,12 @@
-<!-- Solen V3 logo (V2-D27, 2026-05-09) — Cooper-style "Solen" wordmark + brand-teal dot accent -->
-<!-- Replaces V2 Bebas-Neue-with-coral-dot version. Color: ink-1 #1A1209 + brand-teal #043338. -->
-<!-- Font fallback: Sansita 900 (closest free Cooper analog) → Cooper Black → Georgia → serif. -->
+<!-- Solen V3 logo (V2-D27 + V2-D42 typography override) — "Solen" wordmark + brand-teal dot accent -->
+<!-- V2-D42 (2026-05-09): font swapped Cooper → Peace Sans. Tracking neutralized (was -0.8 — letters crashed). -->
+<!-- Color: ink-1 #1A1209 + brand-teal #043338. SVG-as-img isolates from page fonts, so system fallback (Impact) usually shows. -->
 <svg width="124" height="36" viewBox="0 0 124 36" fill="none" xmlns="http://www.w3.org/2000/svg">
   <text x="0" y="29"
-        font-family="'Sansita', 'Cooper Black', 'Cooper Black Std', 'Cooper BT', Georgia, serif"
+        font-family="'Peace Sans', Impact, 'Arial Narrow Bold', sans-serif"
         font-size="32"
         font-weight="900"
         fill="#1A1209"
-        letter-spacing="-0.8">Solen</text>
+        letter-spacing="0">Solen</text>
   <circle cx="111" cy="25" r="4.5" fill="#043338"/>
 </svg>

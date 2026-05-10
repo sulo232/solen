@@ -4,6 +4,7 @@ import { locales } from "@/i18n";
 import { PostHogProvider } from "@/components-legacy/PostHogProvider";
 import { ToastProvider } from "@/components-legacy/ui/Toast";
 import Header from "./_components/layout/Header";
+import Footer from "./_components/layout/Footer";
 // BottomTabBar import removed 2026-05-03 per Q58 (deprecated for web rendering).
 // Keep file at components/layout/BottomTabBar.tsx for future PWA mount.
 // import BottomTabBar from "@/components-legacy/layout/BottomTabBar";
@@ -55,6 +56,11 @@ export default async function LocaleLayout({
               </main>
             </CompareProvider>
           </PageTransitionWrapper>
+          {/* V2-D46 (2026-05-09): V3 Footer mounted at locale-layout level
+              so it renders site-wide (not just homepage). Replaces the
+              legacy components-legacy/layout/Footer.tsx which was never
+              mounted in the V3 rebuild. */}
+          <Footer locale={locale} />
           {/* BottomTabBar removed from web rendering 2026-05-03 per Q58
               ("No bottom nav (web-only decision); bottom-nav components
               deprecated for web rendering. Mobile native/PWA can re-introduce

@@ -21,33 +21,44 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        // ── Solen V3 Brand Tokens (V2-D15-3 lock 2026-05-07) ──
-        // Brand orange #E8742A retired. Brand teal #043338 locked (Republik panel #4 user-flagged screenshot).
-        // Backward-compat: `s-coral` token group RETAINED with V3 teal values across hundreds of
-        // legacy import sites. Same token name, V3 value. Future cleanup: rename to `s-brand`.
-        // Contrast: teal #043338 on white = 14.74:1 AAA. No `text-deep` variant needed — body-safe at any size.
-        "s-coral": { DEFAULT: "#043338", hover: "#0A6873", subtle: "#E1F4F4", text: "#043338", button: "#043338", "button-hover": "#0A6873" },
-        // ── V3 brand alias (preferred for new code) ──
-        "s-brand": { DEFAULT: "#043338", pale: "#C2F0F1", subtle: "#E1F4F4", mid: "#0A6873" },
-        // ── V3 category colorway tokens (V2-D15-3 — combo letters from public/solen-v2-combos.html) ──
-        // bg + text per combo. Use as: `bg-s-cat-coiffeur text-s-cat-coiffeur-text`
-        "s-cat-coiffeur":      "#FFF1DD", "s-cat-coiffeur-text": "#B5345A", // combo Z cream + cherry
-        "s-cat-barbershop":    "#D8D6CB", "s-cat-barbershop-text": "#000000", // combo G bone + black
-        "s-cat-nails":         "#CAE8FF", "s-cat-nails-text":     "#B50051", // combo A pale ice blue + magenta
-        "s-cat-spa":           "#193120", "s-cat-spa-text":       "#948565", // combo I forest + sandy beige
-        // ── V3 atmosphere wash colors (used as CSS gradient stops only) ──
-        "s-atm-ice":   "#CAE8FF",  // pale ice blue (also Nails category bg)
-        "s-atm-teal":  "#C2F0F1",  // pale teal (also brand pale, Spa soft tile)
-        "s-atm-royal": "#005898",  // royal blue (atmosphere depth only)
-        "s-atm-navy":  "#031E48",  // deep navy (horizon bleed only)
-        // ── Retired V2/V1 token groups (kept undeclared — referenced as compat) ──
-        // s-amber, s-blue, s-plum, s-yellow, s-sage, s-sand all retired V2-D15-3.
-        // If legacy code still imports these, it will fail to compile until migrated.
-        "s-ink": { DEFAULT: "#1A1209", secondary: "#56463E", tertiary: "#7A6957", disabled: "#C4B8A6" },
-        "s-ink-2": "#56463E",
-        "s-ink-3": "#7A6957",  // V3 update: was #9F8A7E (cool grey), now #7A6957 (warm grey) per LIVE_TRUTH §4
-        "s-border": "#E8DFD2",
-        "s-bg": { base: "#FFFFFF", surface: "#FAF7F3", raised: "#FFFFFF", sunken: "#FAF7F3", active: "#FFF4E8" },
+        // ── Solen V3 Brand Tokens — V2-D48 EARTHEN WELLNESS LIGHT (2026-05-09) ──
+        // Overrides V2-D15-3 dark-teal palette. New primary brand: moss-soft #5C7765.
+        // Heartbeat accent: terracotta #C97A57. Bright accent: butter #F2D77B.
+        // See `_tasks/_beta/EARTHEN_WELLNESS_PALETTE.md` and `public/solen-v2-earthen-wellness-light.html`.
+        // RETIRED V2-D48: dark teal #043338, pale teal #C2F0F1, ice blue #CAE8FF, royal blue #005898,
+        // navy #031E48, magenta #B5345A/#B50051, forest #193120, sandy beige #D9C9A8 (cat letter).
+        //
+        // Backward-compat: `s-coral` token group still references the brand DEFAULT — same token name,
+        // new value. V2-D48-2: shifted from muted moss-soft #5C7765 → vibrant emerald-forest #1F5C42
+        // per user "more vibrant + dark green everywhere". Saturated, classic luxury-craft green.
+        "s-coral": { DEFAULT: "#1F5C42", hover: "#0F3D26", subtle: "#D4EBD9", text: "#1F5C42", button: "#1F5C42", "button-hover": "#0F3D26" },
+        // ── V3 brand alias (preferred for new code) — V2-D48-2 emerald-forest ──
+        "s-brand": { DEFAULT: "#1F5C42", pale: "#A8CFB8", subtle: "#D4EBD9", mid: "#0F3D26", deep: "#0A2917" },
+        // ── Heartbeat accent (terracotta) — used for CTAs + highlight words ──
+        "s-accent": { DEFAULT: "#C97A57", soft: "#E8B89B", deep: "#8E4A2D" },
+        // ── Bright accent (butter) — sparingly, for stat-card highlights ──
+        "s-butter": "#F2D77B",
+        // ── Sage — wellness whisper, never loud ──
+        "s-sage": { DEFAULT: "#A8B89A", pale: "#D4DDC8" },
+        // ── V3 category colorway tokens — V2-D48 Earthen Wellness mapping ──
+        "s-cat-coiffeur":      "#FAF2E5", "s-cat-coiffeur-text":   "#C97A57", // cream-warm + terracotta
+        "s-cat-barbershop":    "#E8DDC9", "s-cat-barbershop-text": "#2A1F18", // bone + ink
+        "s-cat-nails":         "#D4DDC8", "s-cat-nails-text":      "#8E4A2D", // sage-pale + terra-deep
+        "s-cat-spa":           "#D4EBD9", "s-cat-spa-text":        "#0F3D26", // brand subtle + brand mid (emerald)
+        // ── V3 atmosphere wash colors — Earthen Wellness ──
+        "s-atm-cream":  "#F5EBDD",  // page bg base
+        "s-atm-terra":  "#E8B89B",  // warm anchor
+        "s-atm-sage":   "#D4DDC8",  // wellness whisper
+        "s-atm-bone":   "#E8DDC9",  // alt surface tone
+        "s-atm-butter": "#F2D77B",  // bright accent
+        // ── Ink (text) — kept warm-charcoal family from V3 (already aligned with earthen palette) ──
+        "s-ink": { DEFAULT: "#2A1F18", secondary: "#5C4A3A", tertiary: "#8A7A68", disabled: "#C4B8A6" },
+        "s-ink-2": "#5C4A3A",  // V2-D48: deepened from #56463E for warmer tone in earth context
+        "s-ink-3": "#8A7A68",  // V2-D48: cooler than #7A6957, better readability on cream
+        "s-border": "#E8DDC9",  // V2-D48: now equals bone (alt surface tone), unifies tokens
+        "s-bg": { base: "#F5EBDD", surface: "#FAF2E5", raised: "#FFFFFF", sunken: "#E8DDC9", active: "#FAF2E5" },
+        // V2-D48: bg.base flipped white → cream #F5EBDD (Earthen Wellness page bg). Surface +
+        // sunken updated. raised stays white for cards/modals. active = cream-warm input typing.
         // V2-D16 (2026-05-08) note: cream #FFF4E8 was wrongly retired in V2-D15 comment above.
         // V2-D15 retired CREAM SUBSTRATE (page bg #FBF8F3 → white). It did NOT retire #FFF4E8 micro-tint
         // for input active-typing state (LIVE_TRUTH §F.1.0 + §14.3 search row both still cite it).
@@ -61,14 +72,15 @@ module.exports = {
         "s-star":     "#F3A864",  // V3 added — rating stars only
       },
       fontFamily: {
-        // V2-D15-3 (2026-05-07): Cooper BT (display) + ITC Avant Garde Gothic Std (body).
-        // Free fallbacks: Sansita 900 (Cooper) + League Spartan (Avant Garde) + Inter Tight (final).
-        // Retired V2-D15-3: Bricolage Grotesque, Inter Tight (as primary), Instrument Serif, JetBrains Mono.
-        // Retired earlier: Anton, Bebas Neue, Fraunces, DM Sans, Plus Jakarta, Outfit, Phosphor, Figtree, Peace Sans, Open Sauce Sans.
+        // V2-D## (2026-05-09): override of V2-D15-3 — switched display+body to Peace Sans + Open Sauce One
+        // per user direction off Instagram graphic-design reference. The old Cooper BT + ITC Avant Garde
+        // Gothic Std pair retired (along with Sansita 900, League Spartan, Cooper Black Std fallbacks).
+        // Inter via Google Fonts is the safety-net fallback for body (in case cdnfonts dies).
+        // Impact-stack is the system fallback for Peace Sans (heavy display character).
         // `heading` aliased to display so existing `font-heading` className keeps working.
-        display: ["'Cooper BT'", "'Cooper Black Std'", "'Cooper Black'", "'Sansita'", "Georgia", "serif"],
-        heading: ["'Cooper BT'", "'Cooper Black Std'", "'Cooper Black'", "'Sansita'", "Georgia", "serif"],
-        body:    ["'ITC Avant Garde Gothic Std'", "'Avant Garde'", "'League Spartan'", "'Inter Tight'", "system-ui", "sans-serif"],
+        display: ["'Peace Sans'", "Impact", "Haettenschweiler", "'Arial Narrow Bold'", "sans-serif"],
+        heading: ["'Peace Sans'", "Impact", "Haettenschweiler", "'Arial Narrow Bold'", "sans-serif"],
+        body:    ["'Open Sauce One'", "Inter", "system-ui", "sans-serif"],
       },
       borderRadius: {
         // Legacy Tailwind vars (keep for shadcn compat)

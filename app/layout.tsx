@@ -12,14 +12,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="preload" href="/logo.svg" as="image" type="image/svg+xml" />
-        {/* Preload critical Google Fonts (Q23 + Q48: Anton display + Figtree body) */}
+        {/* V2-D## (2026-05-09) typography override of V2-D15-3:
+            Peace Sans (display) + Open Sauce One (body) via cdnfonts;
+            Inter via Google Fonts is the safety-net fallback for body. */}
+        <link rel="preconnect" href="https://fonts.cdnfonts.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="preload"
-          href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-          as="style"
-        />
       </head>
       {/* `bg-white` removed 2026-05-09: it was hiding the page-wide §5g
           atmosphere wash defined in globals.css (body::before + body::after

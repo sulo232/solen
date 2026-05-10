@@ -30,7 +30,9 @@ const logoVariants = cva(
   cn(
     "inline-flex items-baseline shrink-0 select-none",
     "font-display font-black leading-none",
-    "tracking-[-0.025em]",
+    // V2-D42: Peace Sans natural tracking. Negative tracking crashed Peace
+    // Sans's chunky letters together (logo + hero h1 looked like one blob).
+    "tracking-normal",
   ),
   {
     variants: {
