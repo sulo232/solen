@@ -78,6 +78,30 @@ Invoke `screenshot-spec` via the `Skill` tool ONLY when:
 
 **Anti-pattern:** auto-invoking `screenshot-spec` on every pasted image — that was the wrong policy. It made the user do 30 clicks of annotation work for cases where native vision was enough. Default to looking + describing; only escalate when precision is the goal.
 
+### Step 0-deep · `site-teardown` (auto-trigger when user gives a live URL to study)
+
+When the reference is a **live URL** (not a static image), invoke `site-teardown` via the `Skill` tool. Built 2026-05-11 at `~/.agents/skills/site-teardown/`. Runs a 7-step Playwright pipeline that extracts:
+
+- Full typography spec (every font / size / weight / line-height / letter-spacing used, clustered by frequency)
+- Color palette (text + bg, ranked by usage)
+- CTA / button system (geometry + variants)
+- Imagery system (photo vs SVG vs PNG cutout)
+- Page structure (height + section list)
+- Layout / container widths
+
+Outputs `_audits/{YYYY-MM-DD}-{slug}-teardown.md` + a full-page screenshot. Future "match {site}" tasks build from the teardown doc, not from screenshot interpretation.
+
+**Trigger phrases:**
+- "analyze [url]", "study [url]", "teardown [site]"
+- "how does [site] do their typography / colors / spacing"
+- "extract design tokens from [url]"
+- "go look at [site] and tell me about it"
+- "what's the design system of [site]"
+- "audit [site]"
+- "pixel-match [site]" (escalation when vibe-match fails)
+
+**Example output produced 2026-05-11:** `_audits/2026-05-11-fluz-stacking-teardown.md` — full typography scale (132/72/40/24/20/16/14/11px ramp), 3-font system (Greed Condensed display + Greed Semibold nav + Area Semibold body), warm dark/cream palette, CTA pill geometry (radius 200px, h-56, 20px Greed Condensed).
+
 ### Step 1 · `huashu-design` (auto-trigger) — variation exploration
 
 Build 3–5 variations side-by-side at `public/solen-v3-mockup-{topic}.html` using real V3 tokens (`s-brand`, `s-accent`, `s-bg-base`, Peace Sans, Open Sauce One). Has "Design Direction Advisor" fallback for vague briefs (3 directions from 20 design philosophies). User picks a letter → refine micro-variations → lock.

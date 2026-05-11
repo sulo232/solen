@@ -6,7 +6,7 @@
    Both new fonts are by Marie Otsuka (Open Sauce) / Riley Cran (Peace Sans), commercial-use licensed. */
 @import url('https://fonts.cdnfonts.com/css/peace-sans');
 @import url('https://fonts.cdnfonts.com/css/open-sauce-one');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -830,14 +830,18 @@ html {
    stays transparent so body::before / body::after wash layers (z -1 / -2)
    paint on top of the white substrate, BELOW any section content. */
 html {
-  /* V2-D48 (2026-05-09): white → cream #F5EBDD per Earthen Wellness Light.
-     Body stays transparent so body::before / body::after earth-tone wash
-     layers paint on top of the cream substrate. */
-  background-color: #F5EBDD;
+  /* V2-D56 (2026-05-11): dark `#221919` matching the dark header. The cream
+     body wash layers + the rounded green hero panel cover most of the page,
+     so this dark color only shows through the rounded-top corner cutouts
+     of main — where it reads as a continuation of the dark header above. */
+  background-color: #221919;
 }
 
 body {
-  background: transparent;
+  /* V2-D56 (2026-05-11): solid dark bg matching header. Covers the atmosphere
+     wash layers (body::before / body::after) behind it so the rounded corner
+     cutouts of main show pure `#1F1714` matching the header — no wash tint. */
+  background: #1F1714;
   position: relative;
   /* Prevent horizontal scroll from -10% / -15% wash insets bleeding past viewport */
   overflow-x: hidden;
