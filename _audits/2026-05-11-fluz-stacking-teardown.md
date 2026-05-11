@@ -205,6 +205,157 @@ If "match Fluz" is the goal, the levers in priority order:
 
 ## §10 · Open questions
 
-- What's the mobile breakpoint behavior? (Measured separately — see existing Solen Header.tsx for mobile structure match)
-- What motion/scroll triggers does Fluz use? (Not captured in this audit — would need scroll-triggered measurement)
+- Mobile-specific styles at 375px (extracted separately for header — full mobile teardown not done)
+- Hover / focus states (require scripted interaction triggers)
+- Section-level heights per visual chapter (bg-scan only catches color transitions, missed the 9+ visual sections sharing cream bg)
 - What's the actual Greed font license? (Adobe Originals / commercial-only — would need a free condensed substitute for Solen)
+
+---
+
+## §11 · Spacing system (round 2 — measured 2026-05-11)
+
+Most-used spacing values:
+
+### Gap (flex / grid gap)
+| Value | Count | Where |
+|---|---|---|
+| **`5px`** | 35 | The DOMINANT intra-element gap (tight clustering) |
+| `8px` | 12 | Secondary tight gap |
+| `4px` | 7 | Tiniest icon-to-text gap |
+| `20px` | 2 | Inter-card spacing |
+| `28px` | 1 | One-off section gap |
+| `6%` | 1 | Percentage-based responsive |
+
+### Margin (bottom-rhythm)
+| Value | Count | Role |
+|---|---|---|
+| **`0 0 24px`** | 24 | Primary text bottom-margin (paragraph rhythm) |
+| `0 0 8px` | 8 | Tight bottom margin |
+| `0 0 405px` | 4 | Big section break |
+| `0 0 30px` | 4 | Medium section break |
+
+### Padding (containers + buttons)
+| Value | Count | Where |
+|---|---|---|
+| `0 13.96px` | 7+6 | Header inner padding |
+| `12px 0 0` | 7 | Top-pad on stacked elements |
+| **`0 40px`** | 6 | Container side-padding |
+| `135px 0 0` | 5 | Hero top spacing (above-fold breathing room) |
+| **`16px 32px`** | 4 | Button padding (already in §3) |
+
+**Spacing scale inferred:** 4, 5, 8, 12, 16, 20, 24, 30, 40, 135 — a non-strict scale. No tidy 4px/8px multiples everywhere (some 5/13.96px weirdness from CSS calc). Vertical rhythm is dominantly 24px.
+
+---
+
+## §12 · Border-radius system (THIS IS BIG)
+
+| Radius | Count | Role |
+|---|---|---|
+| **`20px`** | 12 | **CARDS** — the dominant card radius |
+| `200px` | 8 | CTA pill buttons (full-round) |
+| `100px` | 7 | Smaller pills / circular badges |
+| `31.5px` | 5 | Icon containers (weird half-px value, possibly calc-derived) |
+| `30px` | 4 | Medium-radius modules |
+| `15px 15px 0 0` | 1 | Top-rounded section (curves only at top edge) |
+| `40px 40px 0 0` | 1 | Larger top-rounded section divider |
+| `57.6px 57.6px 0 0` | 1 | Very pronounced top-rounded section |
+
+**Insight:** Fluz uses **top-only rounded corners on section dividers** (`15/40/57.6px`) — sections curve UP into the next section like overlapping cards. This is a major visual signature. Solen V3 already does this with `rounded-t-[40px]` on the main content wrapper.
+
+---
+
+## §13 · Motion / transition system
+
+| Transition | Count | Easing analysis |
+|---|---|---|
+| **`0.3s ease-out`** | 35 | Default for most things — fast + slowing entrance |
+| `color 0.3s` | 12 | Color-specific 300ms |
+| **`transform 0.65s cubic-bezier(0.05, 0.2, 0.1, 1)`** | 11 | **Custom slow ease for scroll reveals** |
+| `opacity 0.3s ease-out` | 4 | Fade-ins |
+| `opacity 0.2s 0.1s` | 4 | Fade with 100ms delay (stagger) |
+| `border-color 0.15s` | 4 | Fast border-color transitions |
+| `transform 0.45s cubic-bezier(0.3, 0.4, 0.2, 1)` | 4 | **Custom quick ease for transforms** |
+
+### Custom easing curves (the taste part)
+- `cubic-bezier(0.05, 0.2, 0.1, 1)` — **slow ease-out for scroll reveals** (650ms)
+- `cubic-bezier(0.3, 0.4, 0.2, 1)` — **quick ease for transforms** (450ms)
+
+These are **designer-picked custom Bézier curves**, not default `ease-out`. This is the "design engineering" tax that separates premium feel from default. Emil Kowalski territory.
+
+### Duration scale
+- **150ms** — fast property transitions (border-color, micro-interactions)
+- **200ms** — stagger-delayed fades
+- **300ms** — default property transitions (color, opacity, etc.)
+- **450ms** — short transform animations
+- **650ms** — scroll-reveal transform animations
+
+---
+
+## §14 · Elevation / shadow system
+
+**Result: ZERO box-shadows on the entire page.**
+
+Fluz uses **NO elevation effects**. No card shadows, no hover lifts, no modal drops. Hierarchy comes from:
+1. Color contrast (warm dark vs cream)
+2. Typography weight + size
+3. Whitespace
+4. Background color shifts between sections
+
+This is a deliberate brand discipline — flat surfaces, type does the heavy lifting. **Solen V3 currently uses shadows on cards** (`shadow-warm-md`, etc.). If matching Fluz: drop most shadows, lean harder on typography hierarchy.
+
+---
+
+## §15 · Z-index layering
+
+| Z-index | Count | Used for |
+|---|---|---|
+| `10` | 34 | General section layering |
+| `1` | 8 | Stacking within sections |
+| `999` | 4 | Modal / dialog layer |
+| `-1` | 4 | Background decoration (behind content) |
+| **`899`** | 1 | The HEADER element |
+| `100` | 1 | Tooltips / popover |
+
+Header z-index of `899` is interesting — high but below modal layer (999). Leaves room for overlays.
+
+---
+
+## §16 · Link styling
+
+All anchor tags have `text-decoration: none` — **no underlines anywhere**. Link indication is purely through color contrast (`#1A0000` red-black on cream gets attention vs body text).
+
+Link colors found (with counts):
+- `#1A0000` (39 uses) — primary link color (same as body text — no underline OR color change, just bold weight)
+- `#161616` (6 uses) — slightly different dark
+- `#787571` (2 uses) — muted gray link (footer fine print)
+
+**Pattern:** Fluz links use **weight + position** to signal interaction, not color or underline.
+
+---
+
+## §17 · Header positioning
+
+- `position: static` (NOT fixed!) — header scrolls away as you go down
+- `z-index: 899`
+- No `backdrop-filter` — no glass blur effect
+
+**Solen V3 vs Fluz here:** Solen's Header is `position: fixed` (stays visible while scrolling). Fluz's header is `static` (scrolls away). This is a structural difference. To match Fluz exactly we'd change Solen's header to scroll away with content. But fixed/sticky headers are arguably better UX for app-style sites — this might be a place we keep our pattern.
+
+---
+
+## §18 · What this teardown still doesn't capture
+
+Honest list of gaps:
+
+1. **Mobile-specific styles** — only desktop measured. Mobile header structure captured separately (in Solen Header.tsx port), but mobile spacing/typography/layout patterns NOT measured.
+2. **Hover / focus / active states** — would need scripted Playwright hover events to capture.
+3. **Per-section anatomy** — section heights, alignment, max-widths within each visual chapter. The bg-scan only catches color transitions; on Fluz most sections share cream bg so 9+ structural sections show as one.
+4. **Scroll-triggered animations** — the `transform 0.65s cubic-bezier(0.05, 0.2, 0.1, 1)` is clearly used for scroll reveals, but WHICH elements animate and HOW (from where to where) is not captured.
+5. **Iconography patterns** — sizes, treatments, when used.
+6. **Form / input styling** — none on this page.
+7. **Specific content density** — words per line, lines per section, paragraph length conventions.
+8. **Asset weights** — image sizes, font subsetting, performance.
+9. **Color usage CONTEXT** — `#1A0000` is used 463 times but WHERE specifically? No section-level color mapping.
+10. **Specific transform usage** — `transform 0.65s` is used for scroll reveals, but the actual transform values (translateY? scale? rotate?) aren't captured.
+
+To capture the missing items would require: a second mobile pass at 375px, a scripted hover sequence, a section-by-section visual walk, and a scroll-trigger replay. The next iteration of `site-teardown` skill should add these.
