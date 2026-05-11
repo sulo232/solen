@@ -7,6 +7,21 @@
 
 ---
 
+## 💬 Communication — always plain English
+
+- Plain English. Short sentences. Direct statements.
+- No preamble ("let me proceed with...", "I'll now..."). State what changed, ask what's next.
+- No hedging ("could potentially", "might consider"). If recommending, recommend.
+- Lead with the answer. Reasoning comes after.
+- Match the user's register — if they write casual ("ye those", "alr lets"), match that. Don't formalize back.
+- Concrete names over abstract refs: "Solen" not "the user", "Header.tsx" not "the component".
+- Bullets over long prose paragraphs when conveying multiple points.
+- End-of-turn summary: one sentence, what changed and what's next. Not a closing paragraph.
+
+**Anti-pattern:** five paragraphs when one sentence does. Translate "I have successfully completed the task" → "Done." Translate "Would you like me to proceed?" → "Go?"
+
+---
+
 ## 🎨 Design system — single source of truth
 
 - **READ FIRST (the principal — current locked state, no history):** `_tasks/SOLEN_LIVE_TRUTH.md`
@@ -36,29 +51,32 @@ Full V3 spec lives in `_tasks/SOLEN_LIVE_TRUTH.md` §1 brand, §2 categories, §
 
 ---
 
-## 🎨 Design exploration — skill-first 5-stack (auto-trigger sequence)
+## 🎨 Design exploration — skill-first stack
 
 For ANY visual / design question, run this skill sequence INSTEAD of opening `.tsx` components. NEVER iterate on visual questions in real component code.
 
-### Step 0 · `screenshot-spec` (auto-trigger on pasted image) — extract measurable spec
+### Step 0 · Look + describe (default for pasted images, NO auto-skill)
 
-**This is the input quality gate when the user pastes/uploads a design reference image.** Without it, my screenshot-reading limit propagates into every downstream step (huashu-design builds wrong variations because its input is my vibe-read of the image; uiux-audit reviews against the wrong spec; the React port is built on guesses).
+When user pastes a UI/design screenshot, the DEFAULT is native vision — look at the image, describe what you see in plain English, ask what to do, build from your understanding.
 
-**Auto-trigger** (call `Skill` with `skill: "screenshot-spec"` as FIRST action) when the user message contains:
-- An image attachment AND
-- The image is a UI/design reference (NOT a terminal screenshot, error log, code text, photo, or chart) AND
-- Either explicit reference phrasing ("make it like this", "match this", "copy this", "look at this", "this design / this header / this layout", "inspired by") OR a bare image with no other text (assume reference, but confirm if ambiguous)
+**Default workflow on pasted image:**
+1. Look + describe what you see — 3-5 plain-English sentences covering composition, dominant colors, visible text, vibe
+2. Ask user what they want to do with it
+3. Build natively from your understanding
+4. Correct based on user feedback
 
-**Do NOT auto-trigger** when:
-- The image is a terminal output, error message, log, or stack trace → handle as a regular code-fix
-- The image is text/code → ask user to paste as text instead
-- The image is clearly unrelated to design (meme, photo, chart) → ask what they want
+**Native vision is reliable for:** overall composition, dominant colors (rough hex ±10-20 RGB), visible text content, element presence, pattern recognition (card / nav / hero / footer), overall feel.
 
-**Workflow:** skill saves image to `public/_screenshot-spec/{slug}/source.{ext}` → generates interactive `annotate.html` with Canvas-based color picker + ruler + point tools → hands user a localhost URL → user clicks key landmarks in browser → exports JSON spec → pastes back → skill writes `_audits/screenshots/{slug}/spec.md` with measured colors (exact hex), distances (CSS px), labeled points.
+**Native vision is NOT reliable for:** exact corner-radius direction (concave vs convex), subtle spacing (16 vs 20px), font weight nuance (500 vs 600), exact hex when precision matters.
 
-**Anti-pattern (6-round corner-radius failure mode):** trying to interpret a pasted screenshot directly with my eyes. I see "dark header with logo" and miss "the bottom edge curves UP into the cream — concave, not convex." The skill replaces interpretation with measurement.
+### Step 0-escalation · `screenshot-spec` (escalation only — NOT auto-trigger)
 
-**Limit (be honest):** screenshot-spec captures static spec — colors, distances, points. It does NOT capture motion. For motion references, route to `watch` (video frames) or ask for a live URL (Playwright timeline measurement).
+Invoke `screenshot-spec` via the `Skill` tool ONLY when:
+- User explicitly asks for pixel-exact matching: "match this 1:1", "exact dimensions", "copy this exactly"
+- You genuinely can't tell something critical from the image and need user-marked landmarks
+- Six-rounds-of-failure-mode kicks in (multiple wrong interpretations on the same image) — break the loop with measured data
+
+**Anti-pattern:** auto-invoking `screenshot-spec` on every pasted image — that was the wrong policy. It made the user do 30 clicks of annotation work for cases where native vision was enough. Default to looking + describing; only escalate when precision is the goal.
 
 ### Step 1 · `huashu-design` (auto-trigger) — variation exploration
 
