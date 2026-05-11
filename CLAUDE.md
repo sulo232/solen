@@ -36,6 +36,59 @@ Full V3 spec lives in `_tasks/SOLEN_LIVE_TRUTH.md` §1 brand, §2 categories, §
 
 ---
 
+## 🎨 Design exploration — skill-first 4-stack (auto-trigger sequence)
+
+For ANY visual / design question, run this skill sequence INSTEAD of opening `.tsx` components. NEVER iterate on visual questions in real component code.
+
+### Step 1 · `huashu-design` (auto-trigger) — variation exploration
+
+Build 3–5 variations side-by-side at `public/solen-v3-mockup-{topic}.html` using real V3 tokens (`s-brand`, `s-accent`, `s-bg-base`, Peace Sans, Open Sauce One). Has "Design Direction Advisor" fallback for vague briefs (3 directions from 20 design philosophies). User picks a letter → refine micro-variations → lock.
+
+**Auto-trigger phrases** (call `Skill` with `skill: "huashu-design"` as FIRST action — before any Read/Edit/Write on layout components):
+- "redesign / redo / rework / design the X / overhaul"
+- "make it look like [ref]", "match [ref] style", "like [site].com"
+- "mockup", "variations", "options", "explore designs", "show me alternatives"
+- "hero / header / card / footer variants"
+- "design direction", "visual feel", "vibe", "make it more [adj]" applied to style
+- "is this the right look", "does this feel [adj]"
+
+### Step 2 · Execute — port the locked variation to React
+
+Single clean edit to the real component. Use existing V3 tokens. No improvisation, no scope creep, no "while I'm in here" tweaks.
+
+### Step 3 · `uiux-audit` (auto-trigger after build) — production-standards review
+
+Audits the rendered output against 20 production UI/UX standards: visual hierarchy, typography scale, WCAG 2.2 accessibility, animation performance, responsive issues, states (hover/focus/active/disabled/loading), spacing rhythm, contrast ratios. **This compensates for my visual-detail blind spots** — it sees what I miss.
+
+**Auto-trigger phrases:** "review / audit / check / improve / critique / accessibility check / WCAG / responsive / dark mode / states / hierarchy / spacing / make this look better".
+
+Returns a punch list with severity. Fix high-severity items, re-audit. Stop on PASS or after 3 rounds.
+
+### Step 4 · `emil-design-eng` (optional final polish) — motion / micro-interaction
+
+Run ONLY after layout + uiux-audit pass. Reviews timing, easing, choreography for hover / focus / entry / exit animations. Output format: markdown table `| Before | After | Why |`.
+
+### Anti-patterns (V2-D56 session burned 6 rounds on these)
+
+- Opening `Header.tsx` / `Hero.tsx` / `SearchBar.tsx` for a visual question
+- Interpreting visual feedback in words ("rounded the other way") instead of building variations to point at
+- HMR-cycling on real components instead of comparing flat artboards
+- Claiming "done" based on my eye alone — skip `uiux-audit` and I miss details (corner-curve direction, micro-spacing rhythm, contrast failures)
+
+### Exceptions (regular code edits, not design)
+
+- Surgical bug fixes: "the logo is 2px off", "dropdown broken on mobile"
+- Token swaps where decision is already made: "use `s-brand` here"
+- Data wiring / API connection / state logic
+
+### Planned: `solen-design` custom skill
+
+A `skill-creator`-built wrapper that pre-loads V3 tokens + anti-patterns + retired-color list, auto-triggers on Solen visual questions, and calls the 4-stack internally. Status: TBD. Builds in ~1hr, compounds across every future design task.
+
+**Memory backup:** `feedback_check_skills_first.md` in user memory mirrors this stack across sessions.
+
+---
+
 ## 🚨 Surgical edits only
 
 1. Never rewrite a whole file — change only the lines that cause the bug.
@@ -44,6 +97,35 @@ Full V3 spec lives in `_tasks/SOLEN_LIVE_TRUTH.md` §1 brand, §2 categories, §
 4. Never `npm run build` unless asked.
 5. `git diff` after each fix.
 6. **Mass token sweeps are runtime-blocked.** A `PreToolUse` hook (`.claude/hooks/pre-sweep-check.sh`, registered in `.claude/settings.json`) BLOCKS any `Edit` with `replace_all: true` whose `old_string` contains a hex literal that exists in `public/solen-coral.html` or `_tasks/archive/SOLEN_DESIGN.archived.md`. Skipped paths: `tailwind.config.js`, `app/globals.css`, every `_tasks/_rules/_audits/_docs/_specs/_plans/_visual-qa/`, `CLAUDE.md`, `.claude/`, `messages/*.json`. To explicitly authorize a brand-pivot-style sweep (e.g. Q64), the user runs `touch .claude/sweep-approved.flag` — flag auto-expires in 10 minutes. This exists because lesson L8 in `_tasks/archive/SOLEN_BUILD_LEARNINGS.archived.md` self-diagnosed that documentation alone didn't prevent sweep-without-grep failures.
+
+---
+
+## ✅ "Done" claim discipline (runtime-enforced)
+
+Before saying "it's done / fixed / shipped / working / rendering" for any UI work:
+
+1. Open the relevant URL with `mcp__playwright__browser_navigate`
+2. Take a screenshot with `mcp__playwright__browser_take_screenshot`
+3. Quote in 1-2 lines what's literally visible on the rendered page (e.g. "viewport shows header + 4 salon cards bleeding to frame edge; no atmosphere clipping at the boundary")
+4. Then say done.
+
+`tsc --noEmit clean` / `curl 200` / `log-grep returns 0 errors` are **necessary but never sufficient** per global CLAUDE.md rules 7 + 8 + 9. The screenshot + literal description IS the close condition for visual / behavioral claims.
+
+**Runtime enforcement:** `.claude/hooks/pre-done-claim-check.sh` (registered under `hooks.Stop` in `.claude/settings.json`) blocks the agent from ending its turn when ALL three hold:
+- Last assistant text contains done-class language (`it's done` / `renders correctly` / `all sections present` / `no errors` / etc.)
+- AT LEAST ONE `Edit` or `Write` to a UI file (`.tsx` / `.css` / `components-legacy/`) happened in the recent transcript
+- NO `mcp__playwright__browser_*` tool was used in the recent transcript
+
+When blocked, the hook injects a system-reminder telling the agent to either verify in Playwright now or retract the claim.
+
+**Override** (legitimate docs-only or non-UI completion claim the heuristic misjudged):
+```sh
+touch .claude/done-claim-override.flag   # 5-minute TTL
+```
+
+This rule is belt-and-suspenders — the global CLAUDE.md already has rules 7 + 8 + 9 (verifier-loop protocol). This project-level entry exists because documentation alone didn't prevent the failure pattern across the V3 rebuild sessions. The hook is the actual fix; this section is the receipt.
+
+**What this hook does NOT fix:** scope creep, taste-fork skipping, missing-spec-items. Those need pre-build scope confirmation + verifier sub-agents per global rule 9, not post-claim verification.
 
 ---
 
@@ -94,6 +176,23 @@ Never `.catch(() => {})`. Always `console.error("[Component] desc:", err)`. Auth
 
 ---
 
+## 🔌 V3 wire-up status (2026-05-10)
+
+V3 UI is largely shipped (homepage, SearchBar with Path C hub, atmosphere, sections) but **most homepage feed sections still use static `DEMO` arrays** (Coiffeur, LastMinute, Nearby, RecentlyViewed) — the salons shown are fake. The search-results page still renders legacy `SplitView`. Booking flow, auth, favorites, profile = NOT BUILT in V3.
+
+**Active audit:** `_audits/2026-05-10-v3-wireup-audit.md` — phased customer-side wireup + reconnection. Customer surfaces only this round; B2B/Stripe/crons/email = separate audit later.
+
+**Strategy = Modified Z (3-tier rebuild):**
+- **Tier 1 (~15 critical-funnel pages, ~2 weeks):** search, salon detail, salon/booking, checkout, confirmation, auth/login, auth/signup, profile, profile/favorites, profile/bookings, 4 category pages, /[city]. Lock V2-D52, merge to main.
+- **Tier 2 (~30 secondary surfaces, ~3 weeks):** salon detail extras, profile extras, help, vouchers, discover, onboarding, etc. Lock V2-D53.
+- **Tier 3 (~45 long-tail, ~3 weeks):** legal pages, niche flows, brand pages. Lock V2-D54.
+
+**91 of 114 customer page.tsx files import from `components-legacy/` (80%).** The V3 homepage is a beautiful lobby that opens onto a legacy hotel. All 91 eventually get V3 treatment.
+
+**Don't ship Path C alone** — it's calling into broken downstream surfaces. Tier 1 ships together when Phase G.1 verifies all critical-funnel paths.
+
+---
+
 ## ⭐ Design enforcement
 
 Anything visual must come from `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-3 era → V2-D48 Earthen Wellness Light pivot 2026-05-09 → V2-D42 typography pivot 2026-05-09 → V2-D49j color rule 2026-05-10). New colors use existing tokens. To change the design itself: edit `SOLEN_LIVE_TRUTH.md` first, then update any V3 mockup HTML in `public/solen-v2-*.html`, then log decision as next `V2-D##` entry in `_tasks/V2_REBUILD_LOG.md`. Historical Q-locks in `_tasks/archive/SOLEN_DESIGN.archived.md` §20 are context only — V3 supersedes any conflict.
@@ -105,6 +204,7 @@ Anything visual must come from `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-
 4. ❌ "Fixing" Cooper Black Std cdnfonts URL by reordering font-family (actual loaded font is Sansita 900)
 5. ❌ `will-change` / `transform: translateZ(0)` at REST (causes blurry text)
 6. ❌ Animating `width` / `height` to/from `auto` (browsers can't smooth this)
+7. ❌ `mix-blend-mode: multiply` on `AtmosphereBlobs.tsx` (retired V2-D54 2026-05-11 — multiply darkens everything under blobs, producing a brownish film over cream substrate; cards look tinted and the page feels "just beige."). Also ❌ stacking >5 blobs or pushing opacity > 0.10 (retired V2-D55 2026-05-11 — V2-D54's vibrant glow ate the substrate; page felt "designer-pour" not "natural light"). Locked V2-D55 recipe: 5 blobs, `mix-blend-mode: normal`, opacity 0.05-0.08, `blur(130px) saturate(0.85)`. See `_rules/SOLEN_PATTERNS.md` §1.5.
 
 ---
 
@@ -120,6 +220,7 @@ Anything visual must come from `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-
 | Key features (60-entry list) | `_rules/KEY_FEATURES.md` |
 | Lessons learned | `_rules/LESSONS_LEARNED.md` |
 | **V3 patterns + Fresha playbook** | `_rules/SOLEN_PATTERNS.md` |
+| **V3 wire-up audit (in progress 2026-05-10)** | `_audits/2026-05-10-v3-wireup-audit.md` |
 | UI principles (skill) | `_rules/SOLEN_UI.md` |
 | Agent coordination | `_rules/AGENT_COORDINATION.md` |
 | Roadmap rules | `_rules/ROADMAP_RULES.md` |
