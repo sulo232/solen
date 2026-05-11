@@ -36,9 +36,29 @@ Full V3 spec lives in `_tasks/SOLEN_LIVE_TRUTH.md` §1 brand, §2 categories, §
 
 ---
 
-## 🎨 Design exploration — skill-first 4-stack (auto-trigger sequence)
+## 🎨 Design exploration — skill-first 5-stack (auto-trigger sequence)
 
 For ANY visual / design question, run this skill sequence INSTEAD of opening `.tsx` components. NEVER iterate on visual questions in real component code.
+
+### Step 0 · `screenshot-spec` (auto-trigger on pasted image) — extract measurable spec
+
+**This is the input quality gate when the user pastes/uploads a design reference image.** Without it, my screenshot-reading limit propagates into every downstream step (huashu-design builds wrong variations because its input is my vibe-read of the image; uiux-audit reviews against the wrong spec; the React port is built on guesses).
+
+**Auto-trigger** (call `Skill` with `skill: "screenshot-spec"` as FIRST action) when the user message contains:
+- An image attachment AND
+- The image is a UI/design reference (NOT a terminal screenshot, error log, code text, photo, or chart) AND
+- Either explicit reference phrasing ("make it like this", "match this", "copy this", "look at this", "this design / this header / this layout", "inspired by") OR a bare image with no other text (assume reference, but confirm if ambiguous)
+
+**Do NOT auto-trigger** when:
+- The image is a terminal output, error message, log, or stack trace → handle as a regular code-fix
+- The image is text/code → ask user to paste as text instead
+- The image is clearly unrelated to design (meme, photo, chart) → ask what they want
+
+**Workflow:** skill saves image to `public/_screenshot-spec/{slug}/source.{ext}` → generates interactive `annotate.html` with Canvas-based color picker + ruler + point tools → hands user a localhost URL → user clicks key landmarks in browser → exports JSON spec → pastes back → skill writes `_audits/screenshots/{slug}/spec.md` with measured colors (exact hex), distances (CSS px), labeled points.
+
+**Anti-pattern (6-round corner-radius failure mode):** trying to interpret a pasted screenshot directly with my eyes. I see "dark header with logo" and miss "the bottom edge curves UP into the cream — concave, not convex." The skill replaces interpretation with measurement.
+
+**Limit (be honest):** screenshot-spec captures static spec — colors, distances, points. It does NOT capture motion. For motion references, route to `watch` (video frames) or ask for a live URL (Playwright timeline measurement).
 
 ### Step 1 · `huashu-design` (auto-trigger) — variation exploration
 
@@ -74,6 +94,7 @@ Run ONLY after layout + uiux-audit pass. Reviews timing, easing, choreography fo
 - Interpreting visual feedback in words ("rounded the other way") instead of building variations to point at
 - HMR-cycling on real components instead of comparing flat artboards
 - Claiming "done" based on my eye alone — skip `uiux-audit` and I miss details (corner-curve direction, micro-spacing rhythm, contrast failures)
+- **Interpreting a pasted screenshot with my eyes instead of invoking `screenshot-spec`** — Step 0 exists for this exact failure
 
 ### Exceptions (regular code edits, not design)
 
@@ -83,7 +104,7 @@ Run ONLY after layout + uiux-audit pass. Reviews timing, easing, choreography fo
 
 ### Planned: `solen-design` custom skill
 
-A `skill-creator`-built wrapper that pre-loads V3 tokens + anti-patterns + retired-color list, auto-triggers on Solen visual questions, and calls the 4-stack internally. Status: TBD. Builds in ~1hr, compounds across every future design task.
+A `skill-creator`-built wrapper that pre-loads V3 tokens + anti-patterns + retired-color list, auto-triggers on Solen visual questions, and calls the 5-stack internally. Status: TBD. Builds in ~1hr, compounds across every future design task.
 
 **Memory backup:** `feedback_check_skills_first.md` in user memory mirrors this stack across sessions.
 

@@ -87,3 +87,8 @@ blob-report/
 # Screenshot artifacts at repo root (Playwright/screenshot tool dumps).
 # Only the root-level pattern — public/*.png and other tracked PNGs stay tracked.
 /*.png
+
+# screenshot-spec skill working directory — annotation HTML + source images
+# are session-local artifacts, regenerated on each invocation. The spec.md
+# output under _audits/screenshots/ IS tracked separately.
+public/_screenshot-spec/
