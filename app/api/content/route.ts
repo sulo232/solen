@@ -16,11 +16,8 @@ export async function GET(req: NextRequest) {
     const keys = keysParam.split(",").map((k) => k.trim()).filter(Boolean);
     const localeColumn = `value_${locale}`;
 
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      console.error("[api/content GET] SUPABASE_SERVICE_ROLE_KEY is not set");
-      return NextResponse.json({ error: "Internal error" }, { status: 500 });
-    }
-
+    // SUPABASE_SERVICE_ROLE_KEY validation happens inside createAdminSupabaseClient
+    // via getServerEnv() — throws boot-time if missing, no need to re-check here.
     const admin = createAdminSupabaseClient();
     const { data, error } = await admin
       .from("site_content")

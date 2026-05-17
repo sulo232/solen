@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { getServerEnv } from "@/lib/env";
 
 /**
  * GET /api/admin/discovery/check-ai
@@ -16,7 +17,7 @@ export async function GET() {
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const key = process.env.GEMINI_API_KEY;
+  const key = getServerEnv().GEMINI_API_KEY;
   if (!key) {
     return NextResponse.json({ status: "missing", message: "GEMINI_API_KEY not set" });
   }

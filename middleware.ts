@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { locales, defaultLocale } from "./i18n";
+import { getPublicEnv } from "@/lib/env";
 
 function getLocaleFromRequest(request: NextRequest): string {
   // 1. Check URL path
@@ -100,11 +101,14 @@ export async function middleware(request: NextRequest) {
   // Step 2: Supabase session refresh on every request
   let response = NextResponse.next({ request });
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseKey) {
-    console.error("[middleware] MISSING ENV VARS:", { supabaseUrl: !!supabaseUrl, supabaseKey: !!supabaseKey });
+  let supabaseUrl: string;
+  let supabaseKey: string;
+  try {
+    const publicEnv = getPublicEnv();
+    supabaseUrl = publicEnv.NEXT_PUBLIC_SUPABASE_URL;
+    supabaseKey = publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  } catch (err) {
+    console.error("[middleware] MISSING ENV VARS:", err);
     return response;
   }
 

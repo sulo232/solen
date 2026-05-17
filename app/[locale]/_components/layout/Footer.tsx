@@ -153,7 +153,7 @@ export default function Footer({ locale }: { locale: string }) {
                   required
                   placeholder="deine@email.ch"
                   className="w-full rounded-[12px] bg-s-ink/[0.05] py-[12px] pl-[14px] pr-[48px] font-body text-[14px] text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_2px_var(--s-brand-color)]"
-                  style={{ ["--s-brand-color" as string]: "#1F5C42" }}
+                  style={{ ["--s-brand-color" as string]: "#1A8F5C" }}
                 />
                 <button
                   type="submit"

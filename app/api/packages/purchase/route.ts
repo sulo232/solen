@@ -5,11 +5,9 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { validateBody, packagePurchaseSchema } from "@/lib/validations";
+import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import Stripe from "stripe";
-
-function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
-}
+import { getStripe } from "@/lib/stripe";
 
 // POST /api/packages/purchase — Buy a service package via Stripe
 export async function POST(req: NextRequest) {
@@ -50,7 +48,7 @@ export async function POST(req: NextRequest) {
     .eq("key", "commission")
     .single();
 
-  const ratePercent = settings?.value?.rate_percent ?? 1;
+  const ratePercent = settings?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
   const platformFee = Math.round(pkg.price * (ratePercent / 100));
 
   // Create PaymentIntent

@@ -15,8 +15,10 @@ import Link from "next/link";
 import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components-legacy/ui/Spinner";
 import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
+import { getPublicEnv } from "@/lib/env";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const publishableKey = getPublicEnv().NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = publishableKey ? loadStripe(publishableKey) : Promise.resolve(null);
 
 interface Salon {
   id: string;

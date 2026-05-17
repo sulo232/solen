@@ -87,8 +87,8 @@ export async function PATCH(
     const pi_id = booking.payment_intent_id;
     if (pi_id && (booking.payment_status === "paid" || booking.payment_status === "deposit_held")) {
       try {
-        const Stripe = (await import("stripe")).default;
-        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
+        const { getStripe } = await import("@/lib/stripe");
+        const stripe = getStripe();
         const intent = await stripe.paymentIntents.retrieve(pi_id);
         
         const hoursUntilAppointment = (new Date(booking.starts_at).getTime() - Date.now()) / (1000 * 60 * 60);

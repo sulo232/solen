@@ -1,4 +1,5 @@
 import { SearchBar } from "./SearchBar";
+import { getSessionUser } from "@/lib/supabase";
 
 /**
  * Homepage hero — V3 (post V2-D26 typography + V2-D15-3 brand pivot).
@@ -11,9 +12,9 @@ import { SearchBar } from "./SearchBar";
  *
  * Mockup: public/solen-v2-homepage.html lines ~1010-1064.
  *
- * Server component. Search bar is **visual-only** for commit #1; interactions
- * (Was/Wo/Wann segment sheets, autocomplete, submit) wire in a follow-up
- * commit once Phase 1 §F.x sheet/dropdown patterns are wired.
+ * Async server component. Reads session for the V2-D66 friendly greeting
+ * (Hayden move #14). Anon users see h1 + SearchBar; authed users see a
+ * "Hallo, {name} 👋" line above the h1.
  *
  * TODO:
  *   - i18n via next-intl `useTranslations("home.hero")` once de/en/fr/it
@@ -24,7 +25,25 @@ import { SearchBar } from "./SearchBar";
  *   - Body-wide atmosphere wash (currently hero-only — body wash is a
  *     separate page-level concern, not Hero's responsibility).
  */
-export default function Hero() {
+export default async function Hero() {
+  // V2-D66 (2026-05-16, Hayden move #14): personalized greeting for authed users.
+  // Fallback chain: profile.display_name → email local part (capitalized) → no
+  // greeting. Anon visitors see the h1-only hero as before — no fake "Hallo".
+  const { supabase, user } = await getSessionUser();
+  let displayName: string | null = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("id", user.id)
+      .maybeSingle();
+    displayName = (profile as { display_name?: string | null } | null)?.display_name ?? null;
+    if (!displayName && user.email) {
+      const local = user.email.split("@")[0] ?? "";
+      displayName = local ? local.charAt(0).toUpperCase() + local.slice(1) : null;
+    }
+  }
+
   return (
     <section className="relative overflow-hidden">
       {/* Local hero wash REMOVED 2026-05-09 — was creating intensity
@@ -39,34 +58,50 @@ export default function Hero() {
           ~half-viewport down. Now min-h fills 80vh mobile / 88vh desktop,
           flex items-center vertically centers the content block — h1 + search
           sit middle-screen, Recently Viewed barely peeks below the fold. */}
-      <div className="relative mx-auto flex w-full max-w-[1280px] flex-col justify-center px-5 pt-[100px] pb-20 md:px-8 md:pt-32 max-md:items-center max-md:text-center min-h-[70vh] md:min-h-[78vh]">
-        <div className="max-md:w-full">
-          {/* Eyebrow with brand-colored dot before. whitespace-nowrap prevents
-              awkward 2-line wrap on narrow desktop widths (~1024px). */}
-          <span className="font-body mb-[18px] inline-flex items-center gap-2 whitespace-nowrap text-[13px] font-bold uppercase tracking-[0.18em] text-s-ink-3 before:block before:h-[6px] before:w-[6px] before:rounded-full before:bg-s-accent before:content-['']">
-            Beauty in der Schweiz
-          </span>
-
-          {/* H1 — Peace Sans (V2-D42 override of Cooper BT). User picked
-              variant A from public/solen-v2-hero-variants.html — smaller
-              font so the heavy display reads less like a wall of text on
-              mobile. clamp(28,5vw,64) + leading 1.2. Brand color on
-              emphasized word. V2-D15: italic banned. */}
-          <h1 className="font-display mb-6 text-[clamp(26px,4.5vw,58px)] font-black leading-[1.15] tracking-normal text-s-ink">
+      {/* V2-D67 (2026-05-15) — Fresha-aligned hero layout.
+       *  Was: centered (mobile) + eyebrow + h1 + immediate SearchBar.
+       *  Now: LEFT-ALIGNED at all viewports + NO eyebrow + bigger h1 +
+       *  descriptive subtitle below h1 + SearchBar. Matches the Fresha
+       *  pattern (left-anchored editorial header → subtitle → search box).
+       *  Spacing tightened so the h1+subtitle+search read as ONE unit
+       *  instead of three floating elements. */}
+      {/* V2-D67-fu2 (2026-05-15): user feedback "no not more text" — dropped
+       *  the subtitle paragraph that V2-D67 added. Hero is now just h1 +
+       *  SearchBar, with the hero zone made taller (min-h 88vh mobile / 92vh
+       *  desktop) so the Zuletzt-angesehen cards sit further down — gives
+       *  the search box visual room to breathe and matches Fresha's
+       *  "search dominates the fold, content peeks below" pattern. */}
+      {/* V2-D67-fu12 (2026-05-16): mobile min-h dropped 88vh → 70vh to fix the
+          "huge empty gap" complaint on iPhone. Hero stayed Fresha-tall on
+          desktop (92vh) where the longer viewport absorbs it; on phones the
+          88vh reserved 75-85% of screen height for hero + search alone, pushing
+          Recently Viewed too far below the fold and leaving atmosphere-only
+          dead zone during scroll-down. 70vh keeps search comfortably above the
+          fold while sections start ~150-200px sooner. */}
+      <div className="relative mx-auto flex w-full max-w-[1280px] flex-col justify-center px-5 pt-[100px] pb-12 md:px-8 md:pt-32 md:pb-16 min-h-[70vh] md:min-h-[92vh]">
+        <div className="w-full">
+          {displayName && (
+            // V2-D67-fu14 (2026-05-17): dropped the 👋 hand-wave emoji per §5e
+            // iconography rule (Lucide only, no Unicode emoji in UI). Also
+            // removed inline `Plus Jakarta Sans` font-family — Plus Jakarta is
+            // RETIRED (was V2 era). Greeting now uses `font-body` (Open Sauce
+            // One via globals.css) per V2-D42 typography lock.
+            <p className="mb-3 font-body text-[16px] md:text-[18px] font-medium text-s-ink-2">
+              Hallo, {displayName}
+            </p>
+          )}
+          <h1
+            // V2-D67-fu3: h1 size bumped clamp(34,5.5vw,56) → clamp(36,6vw,60)
+            // to match Fresha's "Book local selfcare services" presence. mb-8
+            // → mb-10 for more breathing room before the search card.
+            // V2-D67-fu14 (2026-05-17): dropped inline `Plus Jakarta Sans`
+            // override — that was V2-era drift. h1 now uses `font-display`
+            // (Peace Sans via globals.css) per V2-D42 typography lock.
+            className="mb-10 font-display text-[clamp(36px,6vw,60px)] font-extrabold leading-[1.05] tracking-[-0.02em] text-s-ink"
+          >
             Schöner aussehen, schneller{" "}
-            {/* V2-D48: hero h1 accent → terracotta (heartbeat) instead of brand moss.
-                Per Earthen Wellness Light spec: brand color = grounded primary (CTAs);
-                accent color = warm heartbeat (highlight words). */}
             <span className="text-s-accent">buchen</span>.
           </h1>
-
-          {/* Deck removed 2026-05-09 (Option A locked): user picked the cleaner
-              eyebrow + h1 + search structure. The "ohne Anrufen, ohne Warten"
-              non-negotiable from §0d.5 stays as a brand law in LIVE_TRUTH;
-              not every page needs to recite it as marketing copy. The "So
-              funktioniert's →" link will surface elsewhere on the page (e.g.
-              footer or a dedicated /so-funktioniert route). */}
-          <div className="mb-8" />
         </div>
 
         <SearchBar />

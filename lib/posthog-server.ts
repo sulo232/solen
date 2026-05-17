@@ -1,22 +1,24 @@
 import { PostHog } from 'posthog-node';
+import { getPublicEnv } from "@/lib/env";
 
 // Singleton instance
 let posthogClient: PostHog | null = null;
 
 export function getPostHogClient() {
-  if (!process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+  const key = getPublicEnv().NEXT_PUBLIC_POSTHOG_KEY;
+  if (!key) {
     return null;
   }
-  
+
   if (!posthogClient) {
-    posthogClient = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
+    posthogClient = new PostHog(key, {
       host: 'https://eu.i.posthog.com',
       // Send events immediately so they don't get lost in serverless environments
-      flushAt: 1, 
+      flushAt: 1,
       flushInterval: 0,
     });
   }
-  
+
   return posthogClient;
 }
 

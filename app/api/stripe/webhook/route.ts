@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingConfirmation, type EmailLocale } from "@/lib/email";
 import { paymentFailedNotification } from "@/lib/email-templates/booking-notifications";
 import { trackServerEvent } from "@/lib/posthog-server";
+import { getServerEnv } from "@/lib/env";
 
 export const runtime = "nodejs";
 
@@ -16,7 +17,8 @@ export const runtime = "nodejs";
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const sig = req.headers.get("stripe-signature");
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const env = getServerEnv();
+  const webhookSecret = env.STRIPE_WEBHOOK_SECRET;
 
   if (!sig || !webhookSecret) {
     return NextResponse.json({ error: "Missing signature or webhook secret" }, { status: 400 });
@@ -32,12 +34,34 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
-  // Webhook idempotency — prevent replay attacks
-  const existing = await admin.from("processed_webhook_events")
-    .select("event_id").eq("event_id", event.id).single();
-  if (existing.data) return NextResponse.json({ received: true });
-  await admin.from("processed_webhook_events").insert({ event_id: event.id });
+  // Atomic idempotency claim. The `processed_webhook_events` table has
+  // event_id as PRIMARY KEY, so a duplicate insert returns Postgres error
+  // code 23505 (unique_violation). This is the only safe way to claim an
+  // event without a check-then-insert race.
+  //
+  // Pre-2026-05-16 this was check-then-insert: the claim was committed
+  // BEFORE handlers ran, so a mid-handler throw would mark the event
+  // "processed" and Stripe would never retry. AND the claim insert's
+  // error was never checked, so the table-missing-in-prod bug went
+  // undetected — every event ran every retry. Both fixed below.
+  const { error: claimError } = await admin
+    .from("processed_webhook_events")
+    .insert({ event_id: event.id });
 
+  if (claimError) {
+    if (claimError.code === "23505") {
+      // Already processed — duplicate Stripe delivery, no-op.
+      return NextResponse.json({ received: true });
+    }
+    // Other DB error (e.g. connection blip). Return 5xx so Stripe retries.
+    console.error("[stripe/webhook] failed to claim event:", claimError, { event_id: event.id, type: event.type });
+    return NextResponse.json({ error: "Claim failed" }, { status: 500 });
+  }
+
+  // Handlers wrapped in try/catch — on failure we release the claim so
+  // Stripe's retry will re-run the event. Without this, a transient error
+  // mid-handler would leave the event marked done with partial state.
+  try {
   switch (event.type) {
     case "payment_intent.succeeded": {
       const pi = event.data.object;
@@ -180,12 +204,15 @@ export async function POST(req: NextRequest) {
     case "charge.dispute.created": {
       const dispute = event.data.object;
       console.warn("[stripe/webhook] Dispute created:", dispute.id, dispute.amount / 100, "CHF");
-      const adminEmail = process.env.ADMIN_EMAIL ?? "admin@solen.ch";
-      await sendEmail({
-        to: adminEmail,
-        subject: `[solen.ch] Stripe Dispute: CHF ${(dispute.amount / 100).toFixed(2)}`,
-        html: `<p>A new Stripe dispute has been opened.</p><ul><li><strong>Dispute ID:</strong> ${dispute.id}</li><li><strong>Amount:</strong> CHF ${(dispute.amount / 100).toFixed(2)}</li><li><strong>Reason:</strong> ${dispute.reason}</li><li><strong>Status:</strong> ${dispute.status}</li></ul><p><a href="https://dashboard.stripe.com/disputes/${dispute.id}">View in Stripe →</a></p>`,
-      }).catch((err) => console.error("[StripeWebhook] failed to send dispute admin notification:", err));
+      if (env.ADMIN_EMAIL) {
+        await sendEmail({
+          to: env.ADMIN_EMAIL,
+          subject: `[solen.ch] Stripe Dispute: CHF ${(dispute.amount / 100).toFixed(2)}`,
+          html: `<p>A new Stripe dispute has been opened.</p><ul><li><strong>Dispute ID:</strong> ${dispute.id}</li><li><strong>Amount:</strong> CHF ${(dispute.amount / 100).toFixed(2)}</li><li><strong>Reason:</strong> ${dispute.reason}</li><li><strong>Status:</strong> ${dispute.status}</li></ul><p><a href="https://dashboard.stripe.com/disputes/${dispute.id}">View in Stripe →</a></p>`,
+        }).catch((err) => console.error("[StripeWebhook] failed to send dispute admin notification:", err));
+      } else {
+        console.warn("[stripe/webhook] ADMIN_EMAIL not set — skipping dispute notification");
+      }
       break;
     }
 
@@ -209,12 +236,15 @@ export async function POST(req: NextRequest) {
       await admin.from("salons").update({
         accepts_online_payment: false,
       }).eq("stripe_account_id", account.id);
-      const adminEmail = process.env.ADMIN_EMAIL ?? "admin@solen.ch";
-      await sendEmail({
-        to: adminEmail,
-        subject: `[solen.ch] Stripe Connect: Account deauthorized`,
-        html: `<p>A salon has disconnected their Stripe account.</p><p><strong>Account ID:</strong> ${account.id}</p>`,
-      }).catch((err) => console.error("[StripeWebhook] failed to send account deauthorized admin notification:", err));
+      if (env.ADMIN_EMAIL) {
+        await sendEmail({
+          to: env.ADMIN_EMAIL,
+          subject: `[solen.ch] Stripe Connect: Account deauthorized`,
+          html: `<p>A salon has disconnected their Stripe account.</p><p><strong>Account ID:</strong> ${account.id}</p>`,
+        }).catch((err) => console.error("[StripeWebhook] failed to send account deauthorized admin notification:", err));
+      } else {
+        console.warn("[stripe/webhook] ADMIN_EMAIL not set — skipping deauthorization notification");
+      }
       break;
     }
 
@@ -298,6 +328,14 @@ export async function POST(req: NextRequest) {
       }
       break;
     }
+  }
+  } catch (handlerErr) {
+    // Release the claim so Stripe's retry can re-run the event with a fresh
+    // transactional context. Without this, the event_id stays "claimed" and
+    // Stripe gives up after its retry schedule — partial state is permanent.
+    console.error("[stripe/webhook] handler failed, releasing claim:", handlerErr, { event_id: event.id, type: event.type });
+    await admin.from("processed_webhook_events").delete().eq("event_id", event.id);
+    return NextResponse.json({ error: "Handler failed" }, { status: 500 });
   }
 
   return NextResponse.json({ received: true });

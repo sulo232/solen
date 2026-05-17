@@ -20,10 +20,16 @@ export function HeartButton({
   isSaved: initialSaved = false,
   salonName,
   className,
+  salonId: _salonId,
+  tone: _tone,
 }: {
   isSaved?: boolean;
   salonName: string;
   className?: string;
+  /** Reserved for future `/api/favorites/toggle` wiring (V2-D52 Tier 1 #15). */
+  salonId?: string;
+  /** Optional visual variant hint (e.g. "spa" / "warm") — currently unused; surfaced for caller compatibility. */
+  tone?: string;
 }) {
   const [isSaved, setIsSaved] = React.useState(initialSaved);
   const [announcement, setAnnouncement] = React.useState("");
@@ -61,37 +67,35 @@ export function HeartButton({
         aria-label={isSaved ? "Gespeichert" : "Speichern"}
         aria-pressed={isSaved}
         style={{
-          // V2-D48-4: glass effect ON the heart ITSELF (no surrounding circle).
-          // Dual drop-shadow: dark for lift off photo + white sliver for glass sheen.
-          // Saved adds love-red glow; unsaved is ink-defined.
-          filter: isSaved
-            ? "drop-shadow(0 2px 6px rgba(255, 74, 107, 0.40)) drop-shadow(0 0 1px rgba(255, 255, 255, 0.7))"
-            : "drop-shadow(0 1px 3px rgba(42, 31, 24, 0.25)) drop-shadow(0 0 1px rgba(255, 255, 255, 0.5))",
+          // V2-D60-cards (2026-05-14): frosted-glass CIRCLE wrapper around the heart.
+          // 32px capsule with 12px backdrop blur + 1px white inner border + inset
+          // highlight. Replaces V2-D48-4 naked-heart-with-drop-shadow pattern —
+          // glass circle reads on ANY photo composition without the photo-content
+          // contrast roulette.
+          background: "rgba(255, 255, 255, 0.45)",
+          backdropFilter: "blur(12px) saturate(1.4)",
+          WebkitBackdropFilter: "blur(12px) saturate(1.4)",
+          border: "1px solid rgba(255, 255, 255, 0.6)",
+          boxShadow:
+            "0 1px 3px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.4)",
         }}
         className={cn(
-          "absolute right-2 top-2 grid h-6 w-6 place-items-center bg-transparent border-0 p-0",
-          // V2-D43 motion polish — kept
+          "absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full p-0",
           "transition-transform duration-200 ease-glide",
           "hover:scale-110 active:scale-[0.97] active:duration-[80ms]",
-          "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-full",
+          "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
           className,
         )}
       >
         <Heart
           // V2-D43: key re-mounts SVG on each save → CSS animation restarts.
           key={popKey}
-          size={24}
+          size={18}
           strokeWidth={2.25}
-          // V2-D49e: outline-only unsaved state — fill removed entirely so
-          // the photo bleeds through the heart shape with NO inner film.
-          // Saved keeps translucent love-red fill (universal "saved" signal).
-          fill={isSaved ? "rgba(255, 74, 107, 0.65)" : "none"}
-          // V2-D49e: glassmorphic outline — translucent white stroke at 0.9
-          // opacity. Reads on dark photos directly + on light photos via the
-          // dual drop-shadow filter (dark halo) on the parent button.
-          // Saved keeps opaque love-red stroke for contrast.
-          stroke={isSaved ? "#FF4A6B" : "rgba(255, 255, 255, 0.9)"}
-          // V2-D43: spring-feel pop on save (not on unsave).
+          // V2-D60-heart: SAVED = solid red fill, no stroke. UNSAVED = ink stroke
+          // (no white outline needed — glass circle wrapper handles photo-contrast).
+          fill={isSaved ? "#FF4A6B" : "none"}
+          stroke={isSaved ? "none" : "var(--color-heading)"}
           className={isSaved && popKey > 0 ? "animate-heart-pop" : undefined}
           aria-hidden
         />

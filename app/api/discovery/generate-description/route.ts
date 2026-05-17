@@ -4,6 +4,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, discoveryAdminLimiter } from "@/lib/ratelimit";
 import { z } from "zod";
 import { validateBody } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 
 const schema = z.object({ item_id: z.string().uuid() });
 
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
   if (!item) return NextResponse.json({ error: "Item not found" }, { status: 404 });
 
   // Generate descriptions via Gemini
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) return NextResponse.json({ error: "Gemini API key not configured" }, { status: 500 });
 
   const context = [

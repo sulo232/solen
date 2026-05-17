@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen button hover — graphic + glass options</title>
+<link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #2A1F18;
+    --ink-3: #8A7A68;
+    --bg: #FFFFFF;
+    --rule: #EAE0D0;
+    --brand: #1A8F5C;
+    --brand-mid: #0F6F44;
+    --brand-deep: #084B2D;
+    --brand-subtle: #D4F2E0;
+    --accent: #E0703D;
+    --accent-soft: #F0A98C;
+    --peach: #FFE8D8;
+  }
+  body {
+    font-family: 'Open Sauce One', Inter, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding: 32px 0 80px;
+    line-height: 1.55;
+  }
+  .page-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    text-align: center;
+    margin: 0 24px 6px;
+  }
+  .page-sub {
+    font-size: 13px;
+    color: #5C4A3A;
+    text-align: center;
+    margin: 0 24px 32px;
+    max-width: 660px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .section {
+    max-width: 880px;
+    margin: 0 auto 48px;
+    padding: 0 16px;
+  }
+  .section-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 6px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .section-title::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 0.85em;
+    background: var(--accent);
+    border-radius: 2px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .section-sub {
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-bottom: 18px;
+  }
+  .options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .opt {
+    background: #FFFFFF;
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 22px 18px 18px;
+  }
+  .opt .opt-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .opt .opt-label::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--brand);
+    border-radius: 50%;
+  }
+  .opt .opt-label.recommend { color: var(--brand); }
+  .opt .button-stage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 110px;
+    padding: 18px 12px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #FAF3E6, #FFFFFF);
+    margin-bottom: 14px;
+  }
+  .opt .verdict {
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.55;
+  }
+  .opt .verdict strong { color: var(--ink); font-weight: 700; }
+
+  /* ========== HERO CTA — GRAPHIC HOVER VARIANTS (v2 — match reel pattern) ========== */
+
+  /* Base hero CTA shared shape */
+  .btn-hero {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 30px;
+    border-radius: 999px;
+    background: var(--brand);
+    color: white;
+    border: none;
+    font-family: 'Open Sauce One', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    overflow: hidden;
+    isolation: isolate; /* contain the bloom inside the pill */
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+  .btn-hero:hover { background: var(--brand-mid); }
+  .btn-hero:active { transform: scale(0.97); }
+  .btn-hero > span { position: relative; z-index: 2; }
+
+  /* V3 — ORGANIC blob shapes matching reel's "Buy Now" + Treatwell footer ref.
+     - Asymmetric border-radius (not perfect circles)
+     - Large (fills ~50% of button area)
+     - Bloom from bottom-left corner with scale + slight rotation
+     - Multiple overlapping blobs on some variants (Treatwell stacking) */
+
+  /* Common organic-blob base — set per variant via additional rules */
+  .btn-hero[class*="v"] .blob1,
+  .btn-hero[class*="v"] .blob2,
+  .btn-hero[class*="v"] .blob3 {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    transition: transform 0.45s cubic-bezier(0.4, 1.4, 0.4, 1), opacity 0.3s ease;
+    opacity: 0;
+  }
+  .btn-hero[class*="v"]:hover .blob1,
+  .btn-hero[class*="v"]:hover .blob2,
+  .btn-hero[class*="v"]:hover .blob3 {
+    opacity: 1;
+  }
+
+  /* A — single BIG organic cream blob, bottom-left (closest to reel's Buy Now) */
+  .btn-hero.va .blob1 {
+    bottom: -28px; left: -16px;
+    width: 90px; height: 90px;
+    background: #FAF3E6;
+    border-radius: 62% 38% 58% 42% / 55% 45% 55% 45%;
+    transform: scale(0) rotate(-25deg);
+    transform-origin: 30% 70%;
+  }
+  .btn-hero.va:hover .blob1 {
+    transform: scale(1) rotate(0deg);
+  }
+
+  /* B — TWO blobs using V3 cat colorways: Coiffeur (peach) + Spa (emerald-subtle).
+     Warm + cool — two ends of the V3 cat spectrum. */
+  .btn-hero.vb .blob1 {
+    bottom: -24px; left: -14px;
+    width: 80px; height: 80px;
+    background: #FFE8D8; /* Coiffeur peach */
+    border-radius: 62% 38% 58% 42% / 55% 45% 55% 45%;
+    transform: scale(0) rotate(-30deg);
+    transform-origin: 30% 70%;
+  }
+  .btn-hero.vb .blob2 {
+    top: -22px; right: -10px;
+    width: 70px; height: 70px;
+    background: #D4F2E0; /* Spa emerald-subtle */
+    border-radius: 48% 52% 42% 58% / 60% 50% 50% 40%;
+    transform: scale(0) rotate(20deg);
+    transform-origin: 60% 40%;
+    transition-delay: 0.08s;
+  }
+  .btn-hero.vb:hover .blob1 { transform: scale(1) rotate(-5deg); }
+  .btn-hero.vb:hover .blob2 { transform: scale(1) rotate(0deg); }
+
+  /* C — FOUR blobs, ONE per V3 category. Full Solen system inside the button —
+     "search across all 4 categories." Each blob uses its cat's bg color, sized
+     and positioned so all four are visible without crowding. */
+  .btn-hero.vc .blob1 {
+    bottom: -28px; left: -18px;
+    width: 85px; height: 85px;
+    background: #FFE8D8; /* Coiffeur — peach */
+    border-radius: 62% 38% 58% 42% / 55% 45% 55% 45%;
+    transform: scale(0) rotate(-30deg);
+    transform-origin: 30% 70%;
+  }
+  .btn-hero.vc .blob2 {
+    top: -22px; left: 25%;
+    width: 65px; height: 65px;
+    background: #EAE0D0; /* Barbershop — bone */
+    border-radius: 48% 52% 42% 58% / 60% 50% 50% 40%;
+    transform: scale(0) rotate(20deg);
+    transform-origin: 50% 30%;
+    transition-delay: 0.06s;
+  }
+  .btn-hero.vc .blob3 {
+    bottom: -18px; right: 18%;
+    width: 60px; height: 60px;
+    background: #D4DDC8; /* Nails — sage-pale */
+    border-radius: 58% 42% 48% 52% / 42% 58% 42% 58%;
+    transform: scale(0) rotate(15deg);
+    transform-origin: 50% 60%;
+    transition-delay: 0.12s;
+  }
+  .btn-hero.vc .blob4 {
+    position: absolute;
+    top: -16px; right: -12px;
+    width: 70px; height: 70px;
+    background: #D4F2E0; /* Spa — emerald-subtle */
+    border-radius: 52% 48% 60% 40% / 45% 55% 45% 55%;
+    transform: scale(0) rotate(-15deg);
+    transform-origin: 70% 30%;
+    transition: transform 0.45s cubic-bezier(0.4, 1.4, 0.4, 1), opacity 0.3s ease;
+    transition-delay: 0.18s;
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .btn-hero.vc:hover .blob1 { transform: scale(1) rotate(-8deg); }
+  .btn-hero.vc:hover .blob2 { transform: scale(1) rotate(5deg); }
+  .btn-hero.vc:hover .blob3 { transform: scale(1) rotate(0deg); }
+  .btn-hero.vc:hover .blob4 { transform: scale(1) rotate(-3deg); opacity: 1; }
+
+  /* D — SVG wave/curve (smooth path, organic but cleaner than border-radius blob) */
+  .btn-hero.vd .blob1 {
+    bottom: -10px; left: -5px;
+    width: 130%; height: 70%;
+    transform: translateX(-30%) scale(0.6);
+    transform-origin: 0 100%;
+  }
+  .btn-hero.vd .blob1 svg {
+    width: 100%; height: 100%;
+    display: block;
+  }
+  .btn-hero.vd:hover .blob1 {
+    transform: translateX(0) scale(1);
+  }
+
+  /* ========== NAV CHIPS — GLASS / OTHER HOVER ========== */
+
+  .nav-stage {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #FFE8D8, #D4F2E0);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .nav-stage .logo {
+    font-family: 'Peace Sans', Impact, sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    margin-right: 12px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+  .nav-stage .logo::after { content: '•'; color: var(--accent); }
+
+  /* Base nav chip */
+  .nav-chip {
+    position: relative;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-family: 'Open Sauce One', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    background: transparent;
+    transition: color 0.2s ease;
+  }
+  .nav-chip span { position: relative; z-index: 1; }
+
+  /* A — current (no hover state) */
+  .nav-chip.va:hover { color: var(--brand); }
+
+  /* B — glass pill blooms behind text */
+  .nav-chip.vb::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.30);
+    backdrop-filter: blur(22px) saturate(1.7);
+    -webkit-backdrop-filter: blur(22px) saturate(1.7);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.40), 0 1px 3px rgba(0, 0, 0, 0.08);
+    transform: scale(0.6);
+    opacity: 0;
+    transition: transform 0.28s cubic-bezier(0.4, 1.4, 0.4, 1), opacity 0.22s ease;
+    pointer-events: none;
+  }
+  .nav-chip.vb:hover::before {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  /* C — underline bar grows */
+  .nav-chip.vc::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 4px;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.26s ease;
+  }
+  .nav-chip.vc:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* D — emerald-dot bloom (left-side accent before text) */
+  .nav-chip.vd { padding-left: 18px; }
+  .nav-chip.vd::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    transition: transform 0.26s cubic-bezier(0.4, 1.4, 0.4, 1);
+  }
+  .nav-chip.vd:hover::before {
+    transform: translateY(-50%) scale(1);
+  }
+
+  /* small instruction line */
+  .hover-hint {
+    font-family: 'Open Sauce One', sans-serif;
+    font-size: 10px;
+    color: var(--ink-3);
+    text-align: center;
+    margin: -10px 0 14px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Button hover — graphic + glass options</h1>
+<p class="page-sub">Move your mouse over each button to see the effect. All buttons use V3 palette only.</p>
+
+<!-- ============ HERO CTA ============ -->
+<div class="section">
+  <h2 class="section-title">Hero CTA — "Solen durchsuchen"</h2>
+  <p class="section-sub">The big green button in the homepage search box. Currently solid emerald + white text, no hover detail. Adding a graphic-hover detail makes it feel signature.</p>
+  <div class="hover-hint">↓ hover each button ↓</div>
+  <div class="options">
+
+    <div class="opt">
+      <div class="opt-label">A · BIG organic cream blob (closest to reel's "Buy Now")</div>
+      <div class="button-stage">
+        <button class="btn-hero va">
+          <span class="blob1"></span>
+          <span>Solen durchsuchen</span>
+        </button>
+      </div>
+      <div class="verdict"><strong>Verdict:</strong> single big cream blob with asymmetric border-radius (62% 38% 58% 42%) blooms from bottom-left with rotation. Organic — not a perfect circle. Matches the reel's "Buy Now" pattern.</div>
+    </div>
+
+    <div class="opt">
+      <div class="opt-label">B · 2 cat colorways: Coiffeur + Spa (warm + cool)</div>
+      <div class="button-stage">
+        <button class="btn-hero vb">
+          <span class="blob1"></span>
+          <span class="blob2"></span>
+          <span>Solen durchsuchen</span>
+        </button>
+      </div>
+      <div class="verdict"><strong>Verdict:</strong> Coiffeur peach (bottom-left) + Spa emerald-subtle (top-right) — diagonal warm-cool tension across the button. Minimal cat-system signal.</div>
+    </div>
+
+    <div class="opt">
+      <div class="opt-label recommend">C · ALL 4 cat colorways — full Solen system (RECOMMEND)</div>
+      <div class="button-stage">
+        <button class="btn-hero vc">
+          <span class="blob1"></span>
+          <span class="blob2"></span>
+          <span class="blob3"></span>
+          <span class="blob4"></span>
+          <span>Solen durchsuchen</span>
+        </button>
+      </div>
+      <div class="verdict"><strong>Verdict:</strong> ONE blob per V3 category — Coiffeur peach, Barbershop bone, Nails sage-pale, Spa emerald-subtle. Staggered 60ms apart. "Search across all 4 categories" rendered literally inside the button. Locked colorways, zero arbitrary picks.</div>
+    </div>
+
+    <div class="opt">
+      <div class="opt-label">D · smooth SVG wave/curve</div>
+      <div class="button-stage">
+        <button class="btn-hero vd">
+          <span class="blob1">
+            <svg viewBox="0 0 200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0,40 Q40,15 90,30 T200,25 L200,60 L0,60 Z" fill="#FAF3E6"/>
+              <path d="M0,48 Q60,28 110,40 T200,38 L200,60 L0,60 Z" fill="#F0A98C" opacity="0.7"/>
+            </svg>
+          </span>
+          <span>Solen durchsuchen</span>
+        </button>
+      </div>
+      <div class="verdict"><strong>Verdict:</strong> smooth SVG wave with two layered paths (cream + accent-soft). Cleanest "designed" shape — looks vector-art, less playful than blob-shaped.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ NAV CHIPS ============ -->
+<div class="section">
+  <h2 class="section-title">Header nav chips — Coiffeur / Barbershop / Nails</h2>
+  <p class="section-sub">Currently plain text in the header. On hover, they could grow a glass pill, an underline, or an accent dot. Each variant shows three category links — hover any of them.</p>
+  <div class="hover-hint">↓ hover the category words ↓</div>
+  <div class="options">
+
+    <div class="opt">
+      <div class="opt-label">A · current (color only)</div>
+      <div class="nav-stage">
+        <span class="logo">Solen</span>
+        <span class="nav-chip va"><span>Coiffeur</span></span>
+        <span class="nav-chip va"><span>Barbershop</span></span>
+        <span class="nav-chip va"><span>Nails</span></span>
+      </div>
+      <div class="verdict"><strong>Verdict:</strong> baseline. Color goes emerald on hover. Minimal but no body / no feedback.</div>
+    </div>
+
+    <div class="opt">
+      <div class="opt-label recommend">B · glass pill blooms (RECOMMEND)</div>
+      <div class="nav-stage">
+        <span class="logo">Solen</span>
+        <span class="nav-chip vb"><span>Coiffeur</span></span>
+        <span class="nav-chip vb"><span>Barbershop</span></span>
+        <span class="nav-chip vb"><span>Nails</span></span>
+      </div>
+      <div class="verdict"><strong>Verdict:</strong> liquid-glass pill scales up behind the text on hover. Native Apple-tab-bar feel, ties to the V3 glass family we already shipped on cards.</div>
+    </div>
+
+    <div class="opt">
+      <div class="opt-label">C · underline bar grows</div>
+      <div class="nav-stage">
+        <span class="logo">Solen</span>
+        <span class="nav-chip vc"><span>Coiffeur</span></span>
+        <span class="nav-chip vc"><span>Barbershop</span></span>
+        <span class="nav-chip vc"><span>Nails</span></span>
+      </div>
+      <div class="verdict"><strong>Verdict:</strong> short terracotta bar grows L→R below the word on hover. Editorial / publication feel. Doesn't tie to V3 glass family.</div>
+    </div>
+
+    <div class="opt">
+      <div class="opt-label">D · accent-dot bloom (left)</div>
+      <div class="nav-stage">
+        <span class="logo">Solen</span>
+        <span class="nav-chip vd"><span>Coiffeur</span></span>
+        <span class="nav-chip vd"><span>Barbershop</span></span>
+        <span class="nav-chip vd"><span>Nails</span></span>
+      </div>
+      <div class="verdict"><strong>Verdict:</strong> tiny terracotta dot blooms in front of the word on hover. Matches the section-h2 leading-dot pattern. Quietest of the four.</div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

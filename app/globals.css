@@ -6,7 +6,10 @@
    Both new fonts are by Marie Otsuka (Open Sauce) / Riley Cran (Peace Sans), commercial-use licensed. */
 @import url('https://fonts.cdnfonts.com/css/peace-sans');
 @import url('https://fonts.cdnfonts.com/css/open-sauce-one');
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap');
+/* V2-D67-fu14 (2026-05-17): dropped `Plus+Jakarta+Sans:wght@500;600;700;800` from
+   this import — Plus Jakarta is V2-era RETIRED. Only Inter stays as the
+   cdnfonts-failure fallback for Open Sauce One per §0d.7 anti-pattern #4. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -830,18 +833,16 @@ html {
    stays transparent so body::before / body::after wash layers (z -1 / -2)
    paint on top of the white substrate, BELOW any section content. */
 html {
-  /* V2-D56 (2026-05-11): dark `#221919` matching the dark header. The cream
-     body wash layers + the rounded green hero panel cover most of the page,
-     so this dark color only shows through the rounded-top corner cutouts
-     of main — where it reads as a continuation of the dark header above. */
-  background-color: #221919;
+  /* V2-D60-fresha (2026-05-14): cream → white substrate. Fresha-style — base
+     is white, atmospheric color lives in body::before/::after washes + the
+     JSX blob layer. Pivots away from V2-D60's cream-on-cream so the cards
+     (also white) sit on a pure-white plane and the colored atmosphere comes
+     from the wash layers, not the substrate. */
+  background-color: #FFFFFF;
 }
 
 body {
-  /* V2-D56 (2026-05-11): solid dark bg matching header. Covers the atmosphere
-     wash layers (body::before / body::after) behind it so the rounded corner
-     cutouts of main show pure `#1F1714` matching the header — no wash tint. */
-  background: #1F1714;
+  background: transparent;
   position: relative;
   /* Prevent horizontal scroll from -10% / -15% wash insets bleeding past viewport */
   overflow-x: hidden;
@@ -851,20 +852,22 @@ body::before {
   content: '';
   position: fixed;
   inset: -15%;
-  /* V2-D48 EARTHEN WELLNESS LIGHT (2026-05-09): teal/ice-blue retired. Earthen palette only —
-     terra-soft #E8B89B, sage-pale #D4DDC8, butter #F2D77B, bone #E8DDC9 anchor the corners.
-     Cream page bg dominates ~85% of viewport. */
+  /* V2-D60-fresha (2026-05-14): Fresha-style cloud zones on white substrate.
+     5 V3 cat-color zones (peach + sage-pale + emerald-pale + soft-terra +
+     peach echo) at 0.40-0.85 opacity — distinct cloud shapes the eye can
+     latch onto, not muddied earth-tones. No center white-punch — the
+     white substrate IS the punch now. */
   background:
-    /* V2-D49h: subtle white "punch" centered in the viewport — first in the
-       stack so it renders ON TOP of the earth-tone blobs underneath, softly
-       desaturating them in the mid-screen reading area. Fades to transparent
-       at 60% so the corner blobs stay visible. */
-    radial-gradient(ellipse 55% 40% at 50% 50%, rgba(255, 255, 255, 0.45) 0%, transparent 60%),
-    radial-gradient(ellipse 75% 55% at 80% 12%, rgba(232, 184, 155, 0.20) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 55% at 15% 22%, rgba(212, 221, 200, 0.22) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 45% at 92% 48%, rgba(242, 215, 123, 0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 8% 72%, rgba(168, 184, 154, 0.16) 0%, transparent 65%),
-    radial-gradient(ellipse 65% 50% at 65% 92%, rgba(15, 61, 38, 0.06) 0%, transparent 60%);
+    /* top-right peach (Coiffeur) */
+    radial-gradient(ellipse 75% 55% at 82% 12%, rgba(255, 232, 216, 0.85) 0%, transparent 65%),
+    /* top-left sage-pale (Nails) */
+    radial-gradient(ellipse 60% 55% at 15% 22%, rgba(212, 221, 200, 0.75) 0%, transparent 70%),
+    /* mid-right emerald-pale (Spa) */
+    radial-gradient(ellipse 55% 45% at 92% 48%, rgba(168, 224, 191, 0.55) 0%, transparent 65%),
+    /* bottom-left soft-terra (accent-soft) */
+    radial-gradient(ellipse 60% 50% at 8% 72%, rgba(240, 169, 140, 0.40) 0%, transparent 65%),
+    /* bottom-right peach echo */
+    radial-gradient(ellipse 65% 50% at 70% 92%, rgba(255, 232, 216, 0.55) 0%, transparent 60%);
   z-index: -2;
   pointer-events: none;
   animation: atm-drift-1 22s ease-in-out infinite;
@@ -875,30 +878,31 @@ body::after {
   content: '';
   position: absolute;
   inset: -10%;
-  /* V2-D48 EARTHEN WELLNESS LIGHT (2026-05-09): mid-page stacked gradients in earth tones.
-     Cream/bone/terra-soft/sage-pale rotate down the page. Alphas 0.10-0.22 — whisper, not paint. */
+  /* V2-D60-fresha (2026-05-14): down-page V3 cat-color whispers on white.
+     Earth-tone palette retired. Peach + sage-pale + emerald-pale + soft-terra
+     rotate down the page at 0.10-0.22 opacity — keeps the drift architecture
+     but recolors to V3 atmosphere palette so the white substrate stays mostly
+     white between the cloud zones. */
   background:
-    /* Top-of-fold — terra-soft warm whisper */
-    radial-gradient(ellipse 60% 9% at 50% 7%, rgba(232, 184, 155, 0.16) 0%, transparent 70%),
-    /* 14% — sage-pale + bone */
-    radial-gradient(ellipse 55% 7% at 80% 14%, rgba(212, 221, 200, 0.18) 0%, transparent 70%),
-    radial-gradient(ellipse 45% 6% at 15% 19%, rgba(232, 221, 201, 0.16) 0%, transparent 75%),
-    /* 26% — bone + terra-soft */
-    radial-gradient(ellipse 50% 7% at 60% 26%, rgba(232, 221, 201, 0.20) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 6% at 25% 32%, rgba(232, 184, 155, 0.14) 0%, transparent 75%),
-    /* 40% — sage-pale + butter whisper */
-    radial-gradient(ellipse 50% 8% at 75% 40%, rgba(212, 221, 200, 0.20) 0%, transparent 70%),
-    radial-gradient(ellipse 45% 7% at 20% 46%, rgba(242, 215, 123, 0.10) 0%, transparent 75%),
-    /* 54% — terra-soft + bone */
-    radial-gradient(ellipse 55% 7% at 60% 54%, rgba(232, 184, 155, 0.18) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 6% at 12% 60%, rgba(232, 221, 201, 0.14) 0%, transparent 75%),
+    /* 14% — sage-pale + peach */
+    radial-gradient(ellipse 55% 7% at 80% 14%, rgba(212, 221, 200, 0.20) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 6% at 15% 19%, rgba(255, 232, 216, 0.18) 0%, transparent 75%),
+    /* 26% — peach + soft-terra */
+    radial-gradient(ellipse 50% 7% at 60% 26%, rgba(255, 232, 216, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 6% at 25% 32%, rgba(240, 169, 140, 0.14) 0%, transparent 75%),
+    /* 40% — sage-pale + emerald-pale */
+    radial-gradient(ellipse 50% 8% at 75% 40%, rgba(212, 221, 200, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 7% at 20% 46%, rgba(168, 224, 191, 0.14) 0%, transparent 75%),
+    /* 54% — soft-terra + peach */
+    radial-gradient(ellipse 55% 7% at 60% 54%, rgba(240, 169, 140, 0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 6% at 12% 60%, rgba(255, 232, 216, 0.16) 0%, transparent 75%),
     /* 66% — sage-pale stronger right */
-    radial-gradient(ellipse 50% 7% at 85% 66%, rgba(212, 221, 200, 0.20) 0%, transparent 70%),
-    radial-gradient(ellipse 45% 6% at 30% 72%, rgba(232, 221, 201, 0.14) 0%, transparent 75%),
-    /* 80% — bone */
-    radial-gradient(ellipse 55% 7% at 60% 80%, rgba(232, 221, 201, 0.18) 0%, transparent 70%),
-    /* 88% — barely-there moss hint toward footer */
-    radial-gradient(ellipse 50% 7% at 25% 88%, rgba(15, 61, 38, 0.05) 0%, transparent 65%);
+    radial-gradient(ellipse 50% 7% at 85% 66%, rgba(212, 221, 200, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 6% at 30% 72%, rgba(255, 232, 216, 0.16) 0%, transparent 75%),
+    /* 80% — peach */
+    radial-gradient(ellipse 55% 7% at 60% 80%, rgba(255, 232, 216, 0.18) 0%, transparent 70%),
+    /* 88% — emerald-pale hint near footer */
+    radial-gradient(ellipse 50% 7% at 25% 88%, rgba(168, 224, 191, 0.12) 0%, transparent 65%);
   z-index: -1;
   pointer-events: none;
   animation: atm-drift-2 28s ease-in-out infinite;

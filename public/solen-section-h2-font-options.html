@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen section h2 — font compare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Sora:wght@600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,600&f[]=general-sans@600,700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #2A1F18;
+    --ink-2: #5C4A3A;
+    --ink-3: #8A7A68;
+    --bg: #FAF3E6;
+    --rule: #EAE0D0;
+    --brand: #1A8F5C;
+    --accent: #E0703D;
+    --star: #F3A864;
+  }
+  body {
+    font-family: 'Open Sauce One', Inter, system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    padding: 32px 24px 80px;
+    line-height: 1.55;
+  }
+  .page-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .page-sub {
+    font-size: 13px;
+    color: var(--ink-2);
+    text-align: center;
+    margin-bottom: 32px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .options {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .opt {
+    background: #FFFFFF;
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    padding: 24px 20px 20px;
+  }
+  .opt .label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Open Sauce One', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .opt .label::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--brand);
+    border-radius: 50%;
+  }
+  .opt .label.current {
+    color: var(--accent);
+  }
+  .opt .label.current::before {
+    background: var(--accent);
+  }
+  .opt .label.pick {
+    color: var(--brand);
+  }
+  .opt .pick-tag {
+    display: inline-block;
+    margin-left: 4px;
+    background: var(--brand);
+    color: white;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .opt .font-name {
+    font-family: 'Open Sauce One', sans-serif;
+    font-size: 11px;
+    color: var(--brand);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  /* Mini fake card for visual context */
+  .preview-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .mini-card {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #D4DDC8, #A8E0BF);
+    flex-shrink: 0;
+  }
+  .mini-card.b { background: linear-gradient(135deg, #FFE8D8, #F0A98C); }
+  .mini-card.c { background: linear-gradient(135deg, #E8DDC9, #D4F2E0); }
+
+  /* H2 — per option, font differs */
+  .section-h2 {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  /* Per-option font */
+  .f1 .section-h2 { font-family: 'Open Sauce One', sans-serif; font-weight: 600; letter-spacing: -0.01em; }
+  .f2 .section-h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
+  .f3 .section-h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; }
+  .f4 .section-h2 { font-family: 'Peace Sans', Impact, sans-serif; font-weight: 400; }
+  .f5 .section-h2 { font-family: 'Sora', sans-serif; font-weight: 700; }
+  .f6 .section-h2 { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; }
+  .f7 .section-h2 { font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-variation-settings: "opsz" 60, "SOFT" 60; }
+  .f8 .section-h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; }
+
+  .verdict {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+    font-family: 'Open Sauce One', sans-serif;
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+  .verdict strong { color: var(--ink); font-weight: 700; }
+  .verdict .pro { color: #2D8849; font-weight: 600; }
+  .verdict .con { color: #B23B25; font-weight: 600; }
+
+  .footer-note {
+    max-width: 800px;
+    margin: 32px auto 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Section h2 — font compare</h1>
+<p class="page-sub">Each card shows the section title "Zuletzt angesehen" in a different font at 20px / heavy weight. Same color + size — only the font changes.</p>
+
+<div class="options">
+
+  <div class="opt f1">
+    <div class="label current">Option 1 · WAS · "BLAND" per your feedback</div>
+    <div class="font-name">Open Sauce One 600 — body font, semibold</div>
+    <div class="preview-row"><h2 class="section-h2">Zuletzt angesehen</h2></div>
+    <div class="verdict"><strong>Verdict:</strong> <span class="con">reads like a list subheading.</span> Open Sauce is the body font — using it for section titles makes them blend into body copy. No visual hierarchy break.</div>
+  </div>
+
+  <div class="opt f2">
+    <div class="label pick">Option 2 · CURRENT LIVE STATE <span class="pick-tag">just landed</span></div>
+    <div class="font-name">Plus Jakarta Sans 700 — matches hero font family</div>
+    <div class="preview-row"><h2 class="section-h2">Zuletzt angesehen</h2></div>
+    <div class="verdict"><strong>Verdict:</strong> matches hero h1 family. Tight modern geometric. Reads "marketing-tier header" with proper hierarchy break from body. <span class="pro">Unified display system.</span></div>
+  </div>
+
+  <div class="opt f3">
+    <div class="label">Option 3 · same as 2 but heavier</div>
+    <div class="font-name">Plus Jakarta Sans 800 — extra-bold (matches hero weight)</div>
+    <div class="preview-row"><h2 class="section-h2">Zuletzt angesehen</h2></div>
+    <div class="verdict"><strong>Verdict:</strong> punchier than 700. But competes with hero h1 for visual weight — section titles shouldn't shout as loud as the hero. 700 is the right balance.</div>
+  </div>
+
+  <div class="opt f4">
+    <div class="label">Option 4 · brand voice</div>
+    <div class="font-name">Peace Sans 400 — the chunky display font (locked as Solen logo)</div>
+    <div class="preview-row"><h2 class="section-h2">Zuletzt angesehen</h2></div>
+    <div class="verdict"><strong>Verdict:</strong> matches the "Solen·" logo. At 20px the chunkiness reads as "character" not "blocky." <span class="pro">Strongest brand voice option</span> — but might feel too much-of-the-same with the logo above.</div>
+  </div>
+
+  <div class="opt f5">
+    <div class="label">Option 5 · modern geometric alt</div>
+    <div class="font-name">Sora 700 — wider apertures, tech feel</div>
+    <div class="preview-row"><h2 class="section-h2">Zuletzt angesehen</h2></div>
+    <div class="verdict"><strong>Verdict:</strong> Notion / Linear-adjacent. Cleaner than Plus Jakarta but less warmth. Cool/tech vibe — could read corporate for a warm-marketplace brand.</div>
+  </div>
+
+  <div class="opt f6">
+    <div class="label">Option 6 · editorial display</div>
+    <div class="font-name">Cabinet Grotesk 700 (Fontshare)</div>
+    <div class="preview-row"><h2 class="section-h2">Zuletzt angesehen</h2></div>
+    <div class="verdict"><strong>Verdict:</strong> Indian Type Foundry display sans. More character than Sora at this scale. <span class="pro">Editorial geometric energy</span> — used by Linear-adjacent indie brands. Bigger change (new font load).</div>
+  </div>
+
+  <div class="opt f7">
+    <div class="label">Option 7 · modern serif</div>
+    <div class="font-name">Fraunces 700 — quirky modern serif, variable opsz</div>
+    <div class="preview-row"><h2 class="section-h2">Zuletzt angesehen</h2></div>
+    <div class="verdict"><strong>Verdict:</strong> brings editorial warmth. <span class="pro">Most "designed"</span> of the options. But mixing serif h2 with sans hero h1 creates split typography system — might feel uneven across the page.</div>
+  </div>
+
+  <div class="opt f8">
+    <div class="label">Option 8 · soft serif</div>
+    <div class="font-name">DM Serif Display — pairs with DM Sans</div>
+    <div class="preview-row"><h2 class="section-h2">Zuletzt angesehen</h2></div>
+    <div class="verdict"><strong>Verdict:</strong> warm + soft modern serif. Same caveats as Fraunces (sans-hero + serif-h2 split) but a softer flavor. Lands "playful + soft" hardest if you want serif energy.</div>
+  </div>
+
+</div>
+
+<p class="footer-note">Pick a number and I'll wire it. Currently option 2 is live on the page.</p>
+
+</body>
+</html>

@@ -10,6 +10,8 @@ import Spinner from "@/components-legacy/ui/Spinner";
 
 interface BookingData {
   id: string;
+  salon_id: string;
+  service_id: string;
   salon_name: string;
   service_name: string;
   amount: number;
@@ -53,12 +55,15 @@ export default function WalkInPayPage() {
     setPaying(true);
 
     try {
-      // Create payment intent for walk-in
+      // Create payment intent for walk-in. Use server-trusted salon_id +
+      // service_id from the HMAC-verified booking (NOT booking.id, which is
+      // the booking PK and was passed as salon_id pre-2026-05-16 — bug).
       const res = await fetch("/api/stripe/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          salon_id: booking.id,
+          salon_id: booking.salon_id,
+          service_id: booking.service_id,
           estimated_price: booking.amount,
           deposit_amount: booking.amount,
           service_name: booking.service_name,

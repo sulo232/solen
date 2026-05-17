@@ -8,10 +8,7 @@ import { validateBody, giftCardPurchaseSchema } from "@/lib/validations";
 import { sendEmail } from "@/lib/email";
 import { nanoid } from "nanoid";
 import Stripe from "stripe";
-
-function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
-}
+import { getStripe } from "@/lib/stripe";
 
 // POST /api/gift-cards/purchase — Buy a gift card + email delivery
 export async function POST(req: NextRequest) {

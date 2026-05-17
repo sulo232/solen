@@ -16,8 +16,10 @@ import { MapPin, Calendar, User, Shield, ChevronRight, Loader2, Lock, CreditCard
 import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components-legacy/ui/Spinner";
 import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
+import { getPublicEnv } from "@/lib/env";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const publishableKey = getPublicEnv().NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = publishableKey ? loadStripe(publishableKey) : Promise.resolve(null);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -157,11 +159,16 @@ export default function CheckoutPage() {
     const chargeAmount = parsed.payment_mode === "prepay" ? parsed.estimated_price : parsed.deposit_amount;
 
     // Create payment intent
+    if (!parsed.service_id) {
+      setError(tc("errorValidation")); setLoading(false); return;
+    }
+
     fetch("/api/stripe/create-payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         salon_id: parsed.salon_id,
+        service_id: parsed.service_id,
         service_name: parsed.service_name,
         estimated_price: parsed.estimated_price,
         deposit_amount: chargeAmount,

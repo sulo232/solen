@@ -3,6 +3,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { adminTosNotifySchema, validateBody } from "@/lib/validations";
 import { sendEmail, tosUpdateNotification } from "@/lib/email";
 import { CURRENT_TOS_VERSION, TOS_EFFECTIVE_DATE } from "@/lib/tos-version";
+import { getAppUrl } from "@/lib/env";
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,7 +50,13 @@ export async function POST(req: NextRequest) {
 
     let sentCount = 0;
     const errors = [];
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://solen.ch";
+    let siteUrl: string;
+    try {
+      siteUrl = getAppUrl();
+    } catch {
+      console.warn("[admin/tos/notify] NEXT_PUBLIC_APP_URL not set, falling back to solen.ch");
+      siteUrl = "https://solen.ch";
+    }
 
     for (const user of users) {
       if (!user.email) continue;

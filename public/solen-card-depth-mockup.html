@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=390, initial-scale=1" />
+  <title>Solen · Card depth exploration</title>
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/open-sauce-one" />
+  <style>
+    /* V3 tokens — Earthen Wellness Light (V2-D60 Vibrancy Tune) */
+    :root {
+      --s-bg-base: #FAF3E6;
+      --s-bg-surface: #FFFFFF;
+      --s-brand: #1A8F5C;
+      --s-brand-mid: #0F6F44;
+      --s-brand-deep: #084B2D;
+      --s-brand-pale: #A8E0BF;
+      --s-brand-subtle: #D4F2E0;
+      --s-accent: #E0703D;
+      --s-accent-soft: #F0A98C;
+      --s-accent-deep: #A04A22;
+      --s-ink: #2A1F18;
+      --s-ink-2: #5C4938;
+      --s-ink-3: #8A7660;
+      --cat-coiffeur-bg: #FFE8D8;
+      --cat-barbershop-bg: #EAE0D0;
+      --cat-nails-bg: #D4DDC8;
+      --cat-spa-bg: #D4F2E0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--s-bg-base); }
+    body {
+      font-family: 'Open Sauce One', system-ui, -apple-system, sans-serif;
+      color: var(--s-ink);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* V3 atmosphere wash — replicates AtmosphereBlobs at mobile density.
+       Real homepage stacks 6 blobs at blur(50px) saturate(1.3) on mobile;
+       we mirror that recipe so cards land on the same substrate they will
+       see in production. */
+    .atm {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .atm-blob {
+      position: absolute;
+      filter: blur(50px) saturate(1.3);
+      mix-blend-mode: normal;
+    }
+    .b1 { top: -5vh;  right: -12%; width: 60%; height: 55vh; background: var(--s-accent); border-radius: 60% 40% 50% 50% / 60% 60% 40% 40%; opacity: .32; }
+    .b2 { top: 5vh;   left: -15%;  width: 55%; height: 50vh; background: var(--s-brand-mid); border-radius: 50% 60% 40% 60% / 60% 40% 60% 40%; opacity: .28; }
+    .b3 { top: 70vh;  right: 10%;  width: 55%; height: 50vh; background: var(--s-brand); border-radius: 60% 40% 50% 60% / 50% 40% 60% 50%; opacity: .30; }
+    .b4 { top: 110vh; left: -8%;   width: 55%; height: 45vh; background: var(--s-accent-deep); border-radius: 55% 45% 60% 40% / 50% 55% 45% 50%; opacity: .22; }
+    .b5 { top: 160vh; right: -15%; width: 60%; height: 55vh; background: var(--s-accent); border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; opacity: .34; }
+    .b6 { top: 200vh; left: 10%;   width: 55%; height: 45vh; background: var(--s-accent-deep); border-radius: 58% 42% 48% 52% / 42% 58% 42% 58%; opacity: .26; }
+
+    /* Page chrome */
+    main {
+      position: relative;
+      z-index: 1;
+      padding: 32px 16px 48px;
+      max-width: 390px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+      color: var(--s-ink);
+    }
+    .intro {
+      font-size: 13px;
+      color: var(--s-ink-2);
+      line-height: 1.45;
+      margin-bottom: 28px;
+    }
+    .intro b { color: var(--s-accent-deep); }
+
+    .variation {
+      margin-bottom: 36px;
+    }
+    .variation-label {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding: 0 4px;
+    }
+    .variation-letter {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: var(--s-brand-mid);
+      background: var(--s-brand-subtle);
+      padding: 3px 7px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .variation-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--s-ink);
+    }
+    .variation-desc {
+      font-size: 12px;
+      color: var(--s-ink-3);
+      line-height: 1.4;
+      margin: 0 4px 14px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* ============ CARD VARIATIONS ============ */
+
+    /* Common card text + photo geometry (overridden per variation) */
+    .card {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+    }
+    .card .photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: var(--cat-coiffeur-bg);
+    }
+    .card .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .card .text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .card .text h3 {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--s-ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card .text .meta {
+      font-size: 13px;
+      color: var(--s-ink-3);
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card .text .row3 {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--s-ink-2);
+      line-height: 1.35;
+    }
+    .card .text .row3 .left {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .card .text .row3 .left b {
+      font-weight: 600;
+      color: var(--s-ink);
+    }
+    .card .text .row3 .right {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-weight: 600;
+      color: var(--s-ink);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+    .star { width: 11px; height: 11px; fill: #F3A864; }
+
+    /* Heart placeholder (top-right photo overlay) */
+    .heart {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 28px; height: 28px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: grid; place-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .heart svg { width: 14px; height: 14px; }
+
+    /* Badge placeholder */
+    .badge {
+      position: absolute;
+      top: 8px; left: 8px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 8px;
+      letter-spacing: 0.01em;
+      background: rgba(74, 222, 128, 0.32);
+      border: 1px solid rgba(74, 222, 128, 0.50);
+      color: #14532D;
+    }
+
+    /* ========== A · Baseline (current production) ========== */
+    .variation-a .card .photo {
+      border-radius: 18px;
+      box-shadow: 0 1px 2px rgba(26,18,9,0.04), 0 4px 10px rgba(26,18,9,0.05);
+    }
+    .variation-a .card .text {
+      margin-top: 10px;
+      padding: 0 2px;
+    }
+
+    /* ========== B · Full white card wrapper (Airbnb / Booking) ========== */
+    .variation-b .card {
+      background: var(--s-bg-surface);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow:
+        0 1px 2px rgba(26,18,9,0.05),
+        0 6px 16px rgba(26,18,9,0.07),
+        0 16px 32px rgba(26,18,9,0.05);
+    }
+    .variation-b .card .photo {
+      border-radius: 0;
+    }
+    .variation-b .card .text {
+      padding: 12px 12px 14px;
+    }
+
+    /* ========== C · Text-only white pad (photo stays open) ========== */
+    .variation-c .card .photo {
+      border-radius: 18px 18px 0 0;
+      box-shadow: 0 1px 2px rgba(26,18,9,0.04);
+    }
+    .variation-c .card .text {
+      background: var(--s-bg-surface);
+      padding: 11px 12px 13px;
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 6px 14px rgba(26,18,9,0.06);
+    }
+
+    /* ========== D · Hairline border + soft shadow (Linear / restraint) ========== */
+    .variation-d .card {
+      border: 1px solid rgba(26,18,9,0.08);
+      border-radius: 18px;
+      overflow: hidden;
+      background: transparent;
+      box-shadow: 0 2px 10px rgba(26,18,9,0.04);
+    }
+    .variation-d .card .photo {
+      border-radius: 0;
+    }
+    .variation-d .card .text {
+      padding: 10px 12px 13px;
+    }
+
+    /* ========== E · Glassmorphic frost (translucent white + blur) ========== */
+    .variation-e .card {
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(16px) saturate(1.3);
+      -webkit-backdrop-filter: blur(16px) saturate(1.3);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow:
+        0 1px 2px rgba(26,18,9,0.04),
+        0 8px 20px rgba(26,18,9,0.06);
+    }
+    .variation-e .card .photo {
+      border-radius: 0;
+    }
+    .variation-e .card .text {
+      padding: 11px 12px 13px;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 32px;
+      padding: 20px 8px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 14px;
+      font-size: 12px;
+      color: var(--s-ink-2);
+      line-height: 1.5;
+    }
+    footer h4 {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--s-ink);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    footer p { margin-bottom: 6px; }
+    footer ul { padding-left: 18px; margin-top: 4px; }
+    footer li { margin-bottom: 3px; }
+  </style>
+</head>
+<body>
+
+<div class="atm" aria-hidden="true">
+  <div class="atm-blob b1"></div>
+  <div class="atm-blob b2"></div>
+  <div class="atm-blob b3"></div>
+  <div class="atm-blob b4"></div>
+  <div class="atm-blob b5"></div>
+  <div class="atm-blob b6"></div>
+</div>
+
+<main>
+  <h1>Card depth · 5 options</h1>
+  <p class="intro">
+    Goal: cards should read as <b>discrete lifted objects</b> on the atmosphere wash without losing
+    the V3 airy feel. Same photos, badges, copy in every variation — only the depth treatment changes.
+  </p>
+
+  <!-- ==================== A · Baseline ==================== -->
+  <section class="variation variation-a">
+    <div class="variation-label">
+      <span class="variation-letter">A</span>
+      <span class="variation-title">Baseline (current production)</span>
+    </div>
+    <p class="variation-desc">
+      Photo carries the only shadow. Text sits naked on atmosphere. Photo lifts; text floats.
+    </p>
+    <div class="row">
+      <a class="card" href="#">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=600&fit=crop&q=80" alt="" />
+          <div class="badge">Heute frei</div>
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        </div>
+        <div class="text">
+          <h3>Atelier Coiffure</h3>
+          <div class="meta">Spalenberg 23 · Basel</div>
+          <div class="row3">
+            <div class="left"><b>14:30</b> · CHF 80</div>
+            <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.9</div>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="#">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=600&fit=crop&q=80" alt="" />
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        </div>
+        <div class="text">
+          <h3>Studio Nord</h3>
+          <div class="meta">Klybeckstrasse 12 · Basel</div>
+          <div class="row3">
+            <div class="left"><b>15:00</b> · CHF 50</div>
+            <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==================== B · Full white wrapper ==================== -->
+  <section class="variation variation-b">
+    <div class="variation-label">
+      <span class="variation-letter">B</span>
+      <span class="variation-title">Full white surface (Airbnb / Booking)</span>
+    </div>
+    <p class="variation-desc">
+      Photo + text live inside one white-filled rounded card with layered shadow. Maximum lift,
+      maximum containment — but reads less "open" than baseline.
+    </p>
+    <div class="row">
+      <a class="card" href="#">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=600&fit=crop&q=80" alt="" />
+          <div class="badge">Heute frei</div>
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        </div>
+        <div class="text">
+          <h3>Nail Loft</h3>
+          <div class="meta">Aeschenplatz 15 · Basel</div>
+          <div class="row3">
+            <div class="left"><b>17:00</b> · CHF 45</div>
+            <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.8</div>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="#">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=600&fit=crop&q=80" alt="" />
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        </div>
+        <div class="text">
+          <h3>Rhein Spa</h3>
+          <div class="meta">Steinenvorstadt 22 · Basel</div>
+          <div class="row3">
+            <div class="left"><b>Mo. 09:00</b> · CHF 95</div>
+            <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>5.0</div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==================== C · Text-only white pad ==================== -->
+  <section class="variation variation-c">
+    <div class="variation-label">
+      <span class="variation-letter">C</span>
+      <span class="variation-title">Text-only white pad (hybrid)</span>
+    </div>
+    <p class="variation-desc">
+      Photo stays open (rounded top corners). Text sits in a white pad with rounded bottom + soft shadow.
+      Photo breathes, text gets a real surface.
+    </p>
+    <div class="row">
+      <a class="card" href="#">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=600&fit=crop&q=80" alt="" />
+          <div class="badge">Heute frei</div>
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        </div>
+        <div class="text">
+          <h3>Atelier Coiffure</h3>
+          <div class="meta">Spalenberg 23 · Basel</div>
+          <div class="row3">
+            <div class="left"><b>14:30</b> · CHF 80</div>
+            <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.9</div>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="#">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=600&fit=crop&q=80" alt="" />
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        </div>
+        <div class="text">
+          <h3>Studio Nord</h3>
+          <div class="meta">Klybeckstrasse 12 · Basel</div>
+          <div class="row3">
+            <div class="left"><b>15:00</b> · CHF 50</div>
+            <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==================== D · Hairline border + lift ==================== -->
+  <section class="variation variation-d">
+    <div class="variation-label">
+      <span class="variation-letter">D</span>
+      <span class="variation-title">Hairline border + soft lift (Linear restraint)</span>
+    </div>
+    <p class="variation-desc">
+      No fill, just a 1px ink/8% outline + soft shadow. Atmosphere bleeds through the card.
+      Subtle containment, keeps the open feel.
+    </p>
+    <div class="row">
+      <a class="card" href="#">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=600&fit=crop&q=80" alt="" />
+          <div class="badge">Heute frei</div>
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        </div>
+        <div class="text">
+          <h3>Nail Loft</h3>
+          <div class="meta">Aeschenplatz 15 · Basel</div>
+          <div class="row3">
+            <div class="left"><b>17:00</b> · CHF 45</div>
+            <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.8</div>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="#">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=600&fit=crop&q=80" alt="" />
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        </div>
+        <div class="text">
+          <h3>Rhein Spa</h3>
+          <div class="meta">Steinenvorstadt 22 · Basel</div>
+          <div class="row3">
+            <div class="left"><b>Mo. 09:00</b> · CHF 95</div>
+            <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>5.0</div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==================== E · Glassmorphic frost ==================== -->
+  <section class="variation variation-e">
+    <div class="variation-label">
+      <span class="variation-letter">E</span>
+      <span class="variation-title">Glassmorphic frost (matches §5g atmosphere language)</span>
+    </div>
+    <p class="variation-desc">
+      Translucent white (55%) + backdrop-blur. Atmosphere blobs are visible through the card,
+      but softened. Shares vocab with badges + cookie banner.
+    </p>
+    <div class="row">
+      <a class="card" href="#">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=600&fit=crop&q=80" alt="" />
+          <div class="badge">Heute frei</div>
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        </div>
+        <div class="text">
+          <h3>Atelier Coiffure</h3>
+          <div class="meta">Spalenberg 23 · Basel</div>
+          <div class="row3">
+            <div class="left"><b>14:30</b> · CHF 80</div>
+            <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.9</div>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="#">
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=600&fit=crop&q=80" alt="" />
+          <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        </div>
+        <div class="text">
+          <h3>Studio Nord</h3>
+          <div class="meta">Klybeckstrasse 12 · Basel</div>
+          <div class="row3">
+            <div class="left"><b>15:00</b> · CHF 50</div>
+            <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <h4>My recommendation</h4>
+    <p>
+      <b>C</b> (text-only pad) keeps the V3 open-photo feel AND fixes the floating-text problem
+      with one small move. Photo still bleeds to its corners; text gets a real surface that
+      doesn't compete with the atmosphere wash.
+    </p>
+    <p>
+      <b>D</b> (hairline + lift) is the runner-up if you want the lightest touch — pure outline,
+      no fill, atmosphere shows through.
+    </p>
+    <p>
+      <b>B</b> works but reads more "marketplace listing" (Airbnb / Booking.com) than "salon
+      discovery" — probably too much containment for V3's airy substrate.
+    </p>
+    <p>
+      <b>E</b> (frost) is the most on-brand vocabulary (matches badges + cookie banner) but
+      reads softer/less crisp than C; could be the right call if you want one consistent glass
+      language across the whole UI.
+    </p>
+    <p>
+      <b>A</b> (current) loses on contrast — atmosphere is too saturated for naked text.
+    </p>
+  </footer>
+</main>
+
+</body>
+</html>

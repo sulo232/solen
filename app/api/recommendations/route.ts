@@ -8,6 +8,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody } from "@/lib/validations";
 import { extractSignalsFromHeaders } from "@/lib/ai/recommendations";
+import { getServerEnv } from "@/lib/env";
 import { z } from "zod";
 
 const recommendationRequestSchema = z.object({
@@ -53,7 +54,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Check if Gemini is configured
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) {
     // Graceful degradation: return empty state without crashing
     return NextResponse.json({

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { getServerEnv } from "@/lib/env";
 
 export const runtime = "edge";
 
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const categories = searchParams.get("categories") || "hair";
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = getServerEnv().GEMINI_API_KEY;
     if (!apiKey) {
       return NextResponse.json({ error: "Gemini not configured" }, { status: 500 });
     }

@@ -1,29 +1,40 @@
-import { Section, SectionTitle } from "./SectionHeader";
-import { TestimonialsColumn, type Review } from "./TestimonialsColumn";
+"use client";
+
+import * as React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ChevronRight, Store } from "lucide-react";
+import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
+import { cn } from "@/lib/utils";
 
 /**
- * Bewertungen — V2-D47 (2026-05-09) + V2-D49l card-tap split (2026-05-10).
+ * Bewertungen — Fresha-style horizontal carousel (2026-05-14).
  *
- * Vertical marquee testimonial column pattern. Each card has TWO tap
- * targets per V2-D49l:
- *   1. Card body (review text, avatar, person name, meta) → opens the
- *      review on the homepage (modal/inline expansion — stub today,
- *      wires when /api/reviews/featured ships in Phase 2).
- *   2. Salon name pill (with Store icon) → jumps to /salon/[slug],
- *      letting users discover the salon directly from the testimonial.
+ * SUPERSEDES the V2-D47 / V2-D49l vertical-marquee 3-column layout. New
+ * pattern matches every other homepage carousel (Coiffeur, LastMinute,
+ * Nearby, RecentlyViewed): `Section > SectionFrame > SectionTitle +
+ * ScrollRow` — gets the Airbnb-style scroll arrows (V2-D49m) for free
+ * via SectionTitle's `scrollRef` prop.
  *
- * Layout: 1 col mobile / 2 cols tablet / 3 cols desktop. Each column
- * scrolls at a different speed for organic feel (32s / 26s / 38s).
- *
- * Mask-image fade at top + bottom hides the marquee boundaries so
- * cards appear to enter / leave softly instead of popping in.
+ * V2-D49l SPLIT-TAP preserved: each card has TWO independent click
+ * targets — overlay button on card body opens the review (stub: routes
+ * to /salon/[slug]/reviews until /api/reviews/featured ships), salon
+ * link jumps to /salon/[slug].
  *
  * BACKEND CONTRACT (Phase 2 — `/api/reviews/featured?limit=10`):
- *   The endpoint returns reviews shaped EXACTLY like the demo data below:
+ *   Returns reviews shaped EXACTLY like the demo data below:
  *     { stars, text, initials, name, salonName, salonSlug, meta }
- *   Real data swap only requires replacing the REVIEWS const with a
- *   client-side fetch + state hook. Card structure stays.
  */
+
+interface Review {
+  stars: number;
+  text: string;
+  initials: string;
+  name: string;
+  meta: string;
+  salonName: string;
+  salonSlug: string;
+}
 
 const REVIEWS: Review[] = [
   {
@@ -98,55 +109,118 @@ const REVIEWS: Review[] = [
     salonName: "Rhein Spa",
     salonSlug: "rhein-spa",
   },
-  {
-    stars: 4,
-    text: "Hat mich überzeugt. Die Stornierungsregel ist fair, die Erinnerungen kommen rechtzeitig. Ein paar Salons haben noch keine Echtzeit-Verfügbarkeit, aber das wird sicher besser.",
-    initials: "DK",
-    name: "David K.",
-    meta: "St. Gallen · vor 2 Wochen",
-    salonName: "Haar Atelier",
-    salonSlug: "haar-atelier",
-  },
-  {
-    stars: 5,
-    text: "Es ist die Detailliebe: die Erinnerung am Vortag, die Wegbeschreibung mit dem richtigen Eingang, die Möglichkeit, einfach umzubuchen. Fühlt sich einfach durchdacht an.",
-    initials: "LF",
-    name: "Lena F.",
-    meta: "Basel · vor 3 Tagen",
-    salonName: "Salon Maria",
-    salonSlug: "salon-maria",
-  },
 ];
 
-// Split into 3 columns with intentional overlap so each column has 4-5 cards
-// (long enough for the loop to feel populated, not stark when one card per
-// row would create awkward gaps mid-scroll).
-const COL_A = REVIEWS.slice(0, 5);
-const COL_B = REVIEWS.slice(3, 8);
-const COL_C = REVIEWS.slice(5, 10);
-
 export default function Reviews() {
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  const openReview = (slug: string) => {
+    router.push(`/salon/${slug}/reviews`);
+  };
+
   return (
     <Section>
-      <SectionTitle
-        title="Bewertungen"
-        link={{ label: "Alle Bewertungen →", href: "/reviews" }}
-      />
-      <div
-        className={[
-          // V2-D47-3: container height bumped 380→440 since cards bumped one notch up
-          // (p-4 + 13px body + h-8 avatar). Keeps ~2.5 cards visible at once.
-          "relative mt-6 grid h-[440px] gap-2.5 overflow-hidden md:gap-4",
-          "grid-cols-2 lg:grid-cols-3",
-          // Mask-image: fade out top + bottom so cards enter/leave softly
-          "[mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)]",
-          "[-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_12%,black_88%,transparent_100%)]",
-        ].join(" ")}
-      >
-        <TestimonialsColumn reviews={COL_A} duration={32} />
-        <TestimonialsColumn reviews={COL_B} duration={26} />
-        <TestimonialsColumn reviews={COL_C} duration={38} className="hidden lg:block" />
-      </div>
+      <SectionFrame>
+        <SectionTitle
+          title="Bewertungen"
+          link={{ label: "Alle Bewertungen →", href: "/reviews" }}
+          scrollRef={scrollRef}
+        />
+        <ScrollRow ref={scrollRef}>
+          {REVIEWS.map((r, i) => (
+            <ReviewCard
+              key={`${r.salonSlug}-${i}`}
+              review={r}
+              onOpenReview={() => openReview(r.salonSlug)}
+            />
+          ))}
+        </ScrollRow>
+      </SectionFrame>
     </Section>
+  );
+}
+
+function ReviewCard({
+  review,
+  onOpenReview,
+}: {
+  review: Review;
+  onOpenReview: () => void;
+}) {
+  return (
+    <div
+      className={cn(
+        "relative shrink-0 w-[280px] md:w-[300px]",
+        "flex flex-col min-h-[320px]",
+        "snap-start scroll-snap-align-start",
+        "rounded-2xl border bg-s-bg-surface p-6",
+        "border-s-border",
+        "shadow-[0_1px_3px_rgba(31,23,9,0.04)]",
+        "transition-[transform,box-shadow] duration-200 ease-glide",
+        "hover:-translate-y-[2px] hover:shadow-[0_8px_20px_rgba(31,23,9,0.08)]",
+        "focus-within:-translate-y-[2px] focus-within:shadow-[0_8px_20px_rgba(31,23,9,0.08)]",
+      )}
+    >
+      {/* V2-D49l overlay button — full-card click target for opening review */}
+      <button
+        type="button"
+        onClick={onOpenReview}
+        aria-label={`Bewertung von ${review.name} öffnen`}
+        className={cn(
+          "absolute inset-0 z-0 rounded-2xl",
+          "active:scale-[0.98] active:duration-[80ms] transition-transform",
+          "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+        )}
+      />
+
+      {/* Stars row */}
+      <div
+        className="relative pointer-events-none inline-flex gap-[2px] text-[14px] tracking-[0.05em] mb-4"
+        style={{ color: "#F3A864" }}
+        aria-hidden
+      >
+        {"★".repeat(review.stars)}
+      </div>
+
+      {/* Quote body — flex-1 + line-clamp-5 keeps consistent card heights */}
+      <p className="relative pointer-events-none flex-1 font-body text-[14px] leading-[1.55] text-s-ink line-clamp-5 mb-4">
+        &ldquo;{review.text}&rdquo;
+      </p>
+
+      {/* Footer: avatar + name + meta + salon link, divider above */}
+      <div className="relative mt-auto pt-4 border-t border-s-border flex items-start gap-3">
+        <div
+          className="pointer-events-none font-display grid h-9 w-9 shrink-0 place-items-center rounded-full text-[11px] font-black text-s-brand bg-s-bg-sunken"
+          aria-hidden
+        >
+          {review.initials}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="pointer-events-none font-body text-[13px] font-bold text-s-ink truncate">
+            {review.name}
+          </div>
+          <div className="pointer-events-none font-body text-[11px] text-s-ink-3 truncate">
+            {review.meta}
+          </div>
+          {/* V2-D49l salon link — secondary tap target, z-10 above overlay */}
+          <Link
+            href={`/salon/${review.salonSlug}`}
+            onClick={(e) => e.stopPropagation()}
+            aria-label={`Salon ${review.salonName} ansehen`}
+            className={cn(
+              "relative z-10 mt-1 inline-flex items-center gap-1",
+              "font-body text-[12px] font-semibold text-s-brand",
+              "transition-colors duration-150 ease-glide hover:text-s-brand-mid",
+              "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-sm",
+            )}
+          >
+            <Store size={12} strokeWidth={2.25} aria-hidden />
+            <span className="truncate max-w-[140px]">{review.salonName}</span>
+            <ChevronRight size={12} strokeWidth={2.5} aria-hidden />
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }

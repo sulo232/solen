@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, reviewRespondSchema } from "@/lib/validations";
+import { getAppUrl } from "@/lib/env";
 
 // PATCH /api/reviews/[id]/respond — salon owner only
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -63,7 +64,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // Fire notification to customer (fire-and-forget)
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  let baseUrl: string;
+  try {
+    baseUrl = getAppUrl();
+  } catch {
+    baseUrl = "http://localhost:3000";
+  }
   fetch(`${baseUrl}/api/notify/review-replied`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

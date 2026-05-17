@@ -7,6 +7,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, createReviewSchema } from "@/lib/validations";
 import { trackServerEvent } from "@/lib/posthog-server";
+import { getAppUrl } from "@/lib/env";
 
 export async function POST(request: NextRequest) {
   const disabled = await checkFeatureEnabled("reviews");
@@ -78,7 +79,12 @@ export async function POST(request: NextRequest) {
   if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
 
   // Fire notification to salon (fire-and-forget)
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  let baseUrl: string;
+  try {
+    baseUrl = getAppUrl();
+  } catch {
+    baseUrl = "http://localhost:3000";
+  }
   fetch(`${baseUrl}/api/notify/review-posted`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

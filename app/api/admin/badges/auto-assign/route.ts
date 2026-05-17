@@ -2,13 +2,15 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { getServerEnv } from "@/lib/env";
 
 // POST /api/admin/badges/auto-assign — Auto-assign system badges based on auto_rules
 // Can be called by cron or admin manually
 export async function POST(req: NextRequest) {
   // Verify cron secret or admin auth
+  const expectedCronSecret = getServerEnv().CRON_SECRET;
   const cronSecret = req.headers.get("x-cron-secret");
-  const isValidCron = cronSecret === process.env.CRON_SECRET;
+  const isValidCron = Boolean(expectedCronSecret && cronSecret === expectedCronSecret);
 
   if (!isValidCron) {
     // Fall back to admin auth check

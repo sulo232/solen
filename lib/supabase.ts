@@ -1,11 +1,20 @@
 import { createServerClient } from "@supabase/ssr";
 import { createBrowserClient } from "@supabase/ssr";
+import { getPublicEnv, getServerEnv } from "@/lib/env";
+
+// NOTE: `Database` type from `@/lib/database.types` is intentionally NOT applied
+// to the clients below. Adopting it globally surfaced ~2000 typecheck errors
+// against pre-existing untyped queries — that's a dedicated migration sprint,
+// not a single foundation pass. Use the typed client per-route by doing:
+//   `const supabase = (await createServerSupabaseClient()) as SupabaseClient<Database>;`
+// or by typing query results inline with `.maybeSingle<{ field: string }>()`.
 
 /**
  * Server-side Supabase client — use in Server Components, API routes, and Edge Functions.
  * Reads/writes auth cookies automatically via next/headers.
  */
 export async function createServerSupabaseClient() {
+  const publicEnv = getPublicEnv();
   const { cookies } = await import("next/headers");
   // cookies() itself can throw "The string did not match the expected pattern"
   // when the raw Cookie header contains characters the parser rejects (e.g. long JWTs).
@@ -16,8 +25,8 @@ export async function createServerSupabaseClient() {
     // Fall through — cookieStore stays null, auth will be anonymous
   }
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    publicEnv.NEXT_PUBLIC_SUPABASE_URL,
+    publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() {
@@ -59,9 +68,11 @@ export async function getSessionUser() {
  * Bypasses RLS. Only for Edge Functions and trusted server operations.
  */
 export function createAdminSupabaseClient() {
+  const publicEnv = getPublicEnv();
+  const serverEnv = getServerEnv();
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    publicEnv.NEXT_PUBLIC_SUPABASE_URL,
+    serverEnv.SUPABASE_SERVICE_ROLE_KEY,
     {
       cookies: {
         getAll() { return []; },
@@ -83,9 +94,10 @@ let browserClient: ReturnType<typeof createBrowserClient> | null = null;
 
 export function createBrowserSupabaseClient() {
   if (browserClient) return browserClient;
+  const publicEnv = getPublicEnv();
   browserClient = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    publicEnv.NEXT_PUBLIC_SUPABASE_URL,
+    publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY
   );
   return browserClient;
 }

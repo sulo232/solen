@@ -1,0 +1,73 @@
+- generic [active] [ref=e1]:
+  - link "Zum Inhalt springen" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "Solen zur Startseite" [ref=e5] [cursor=pointer]:
+        - /url: /de
+        - text: Solen
+      - navigation "Kategorien" [ref=e7]:
+        - link "Coiffeur" [ref=e8] [cursor=pointer]:
+          - /url: /de/coiffeur
+        - link "Barbershop" [ref=e9] [cursor=pointer]:
+          - /url: /de/barbershop
+        - link "Nails" [ref=e10] [cursor=pointer]:
+          - /url: /de/nails
+        - link "Entdecken" [ref=e11] [cursor=pointer]:
+          - /url: /de/discover
+      - button "Menü öffnen" [ref=e13] [cursor=pointer]:
+        - img [ref=e14]
+  - main [ref=e16]:
+    - main [ref=e110]:
+      - generic [ref=e113]:
+        - img "Foto von Atelier Haarwerk" [ref=e115]
+        - button "Zurück" [ref=e116] [cursor=pointer]
+        - generic [ref=e119]
+        - button "Alle Fotos ansehen (11)" [ref=e131] [cursor=pointer]
+      - generic [ref=e135]:
+        - heading "Atelier Haarwerk" [level=1] [ref=e136]
+        - generic [ref=e137]
+        - generic [ref=e152]: Empfohlen
+      - navigation "Salon-Abschnitte":
+        - generic
+      - generic [ref=e155]:
+        - generic [ref=e156]
+        - generic [ref=e218]
+        - generic [ref=e261]
+        - generic [ref=e354]
+        - link "Gutscheine Verschenke einen Tag Wohlbefinden bei Atelier Haarwerk." [ref=e369] [cursor=pointer]:
+          - /url: /de/salon/atelier-haarwerk/gift-card
+        - generic [ref=e380]
+        - generic [ref=e399]
+        - generic [ref=e505]
+        - generic [ref=e533]
+        - generic [ref=e578]
+        - generic [ref=e612]
+      - link "Termin buchen" [ref=e626] [cursor=pointer]:
+        - /url: /de/salon/atelier-haarwerk/booking
+        - text: Termin buchen
+        - img [ref=e627]
+  - contentinfo [ref=e23]:
+    - generic [ref=e25]: solen
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - generic [ref=e28]
+        - generic [ref=e48]
+        - generic [ref=e59]
+        - generic [ref=e70]
+      - generic [ref=e77]:
+        - generic [ref=e78]: © 2026 Solen.ch · Alle Rechte vorbehalten
+        - generic [ref=e79]
+  - region "Cookie-Einwilligung" [ref=e84]:
+    - generic [ref=e85]:
+      - generic [ref=e86]:
+        - img [ref=e88]
+        - generic [ref=e90]
+        - button "Cookie-Einstellungen anpassen" [ref=e93] [cursor=pointer]
+      - generic [ref=e97]:
+        - button "Nur notwendige" [ref=e98] [cursor=pointer]
+        - button "Alle akzeptieren" [ref=e99] [cursor=pointer]
+  - alert
+  - alert [ref=e100]
+  - button "Open Next.js Dev Tools" [ref=e106] [cursor=pointer]:
+    - img [ref=e107]

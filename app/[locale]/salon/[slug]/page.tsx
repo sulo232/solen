@@ -36,6 +36,7 @@ import SalonReviews from "@/components-legacy/salon/SalonReviews";
 import SalonReviewsSummary from "@/components-legacy/salon/SalonReviewsSummary";
 import SalonSidebar from "@/components-legacy/salon/SalonSidebar";
 import SalonMobileCTA from "@/components-legacy/salon/SalonMobileCTA";
+import { getPublicEnv } from "@/lib/env";
 
 
 
@@ -746,7 +747,7 @@ export default function SalonProfilePage() {
                       className="block w-full aspect-[2/1] rounded-card overflow-hidden bg-s-bg-surface border border-s-ink/[0.08] hover:border-s-coral/30 transition-colors duration-150 relative group"
                     >
                       <img
-                        src={`https://api.mapbox.com/styles/v1/mapbox/light-v11/static/pin-s+E8624A(${salon.longitude},${salon.latitude})/${salon.longitude},${salon.latitude},14,0/600x300@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''}`}
+                        src={`https://api.mapbox.com/styles/v1/mapbox/light-v11/static/pin-s+E8624A(${salon.longitude},${salon.latitude})/${salon.longitude},${salon.latitude},14,0/600x300@2x?access_token=${getPublicEnv().NEXT_PUBLIC_MAPBOX_TOKEN ?? ''}`}
                         alt={`${salon.name} ${t("location")}`}
                         className="w-full h-full object-cover"
                         loading="lazy"

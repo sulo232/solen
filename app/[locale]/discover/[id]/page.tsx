@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import type { DiscoveryItem } from "@/lib/types";
 import DetailPage from "@/components-legacy/discovery/DetailPage";
 import { analyzeDiscoveryImage, analyzeDiscoveryTikTok } from "@/lib/ai-vision";
+import { getServerEnv } from "@/lib/env";
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>;
@@ -27,7 +28,7 @@ async function ensureAIData(item: DiscoveryItem): Promise<DiscoveryItem> {
   if (item.style_name || item.description_en) return item;
 
   const imageUrl = item.image_url || item.tiktok_thumbnail_url;
-  if (!imageUrl || !process.env.GEMINI_API_KEY) return item;
+  if (!imageUrl || !getServerEnv().GEMINI_API_KEY) return item;
 
   try {
     const isTikTok = !!item.tiktok_url || !!item.tiktok_embed_html || item.media_type === "tiktok";

@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { generateLoyaltyQRToken } from "@/lib/barber/loyalty-qr";
+import { getServerEnv } from "@/lib/env";
 import QRCode from "qrcode";
 
 // GET /api/loyalty/qr/[cardId] — Generate QR code SVG for loyalty stamp
@@ -43,7 +44,7 @@ export async function GET(
     return NextResponse.json({ error: "Card not found or inactive" }, { status: 404 });
   }
 
-  const secret = process.env.LOYALTY_HMAC_SECRET;
+  const secret = getServerEnv().LOYALTY_HMAC_SECRET;
   if (!secret) return NextResponse.json({ error: "Server misconfiguration" }, { status: 500 });
 
   const token = generateLoyaltyQRToken(card.salon_id, user.id, cardId, secret);

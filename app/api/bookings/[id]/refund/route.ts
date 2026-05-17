@@ -5,11 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, bookingRefundSchema } from "@/lib/validations";
-import Stripe from "stripe";
-
-function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
-}
+import { getStripe } from "@/lib/stripe";
 
 // POST /api/bookings/[id]/refund — Salon-triggered manual refund
 export async function POST(

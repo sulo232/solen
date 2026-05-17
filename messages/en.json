@@ -3840,7 +3840,10 @@
     "shareProfile": "Share profile",
     "linkCopied": "Link copied!",
     "nextAvailable": "Next available slot",
-    "shareError": "Unable to share"
+    "shareError": "Unable to share",
+    "backToList": "Back to list",
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites"
   },
   "compare": {
     "back": "Back",

@@ -7,6 +7,7 @@ import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { buildNailPrompt, type NailShotType } from "@/lib/nail/ai-prompts";
 import { checkBudget, recordGeneration, getBudgetStatus } from "@/lib/nail/ai-budget";
 import { validateBody, adminNailGenerateSchema } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 
 // POST /api/admin/nail/generate — Admin-only AI nail art generation with budget tracking
 export async function POST(req: NextRequest) {
@@ -15,7 +16,8 @@ export async function POST(req: NextRequest) {
   if (disabled) return disabled;
 
   // 2. FAL_KEY check
-  if (!process.env.FAL_KEY) {
+  const falKey = getServerEnv().FAL_KEY;
+  if (!falKey) {
     return NextResponse.json({ error: "AI Generation nicht verfügbar" }, { status: 503 });
   }
 
@@ -75,7 +77,7 @@ export async function POST(req: NextRequest) {
     const response = await fetch("https://fal.run/fal-ai/flux/schnell", {
       method: "POST",
       headers: {
-        Authorization: `Key ${process.env.FAL_KEY}`,
+        Authorization: `Key ${falKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

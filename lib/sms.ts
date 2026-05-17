@@ -1,10 +1,12 @@
 import { Redis } from "@upstash/redis";
+import { getServerEnv } from "@/lib/env";
 
+const env = getServerEnv();
 const redis =
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN
     ? new Redis({
-        url: process.env.UPSTASH_REDIS_REST_URL,
-        token: process.env.UPSTASH_REDIS_REST_TOKEN,
+        url: env.UPSTASH_REDIS_REST_URL,
+        token: env.UPSTASH_REDIS_REST_TOKEN,
       })
     : null;
 
@@ -18,7 +20,7 @@ export async function sendSMS(
   message: string
 ): Promise<boolean> {
   // --- env guard ---
-  if (!process.env.SEVEN_IO_API_KEY) {
+  if (!env.SEVEN_IO_API_KEY) {
     console.warn("[SMS] SEVEN_IO_API_KEY not set — skipping");
     return false;
   }
@@ -54,7 +56,7 @@ export async function sendSMS(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Api-Key": process.env.SEVEN_IO_API_KEY,
+        "X-Api-Key": env.SEVEN_IO_API_KEY,
       },
       body: JSON.stringify({
         to,

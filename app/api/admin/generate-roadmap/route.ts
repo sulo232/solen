@@ -6,6 +6,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, roadmapLimiter } from "@/lib/ratelimit";
 import { validateBody, generateRoadmapSchema } from "@/lib/validations";
 import { buildRoadmapSystemPrompt, buildRoadmapUserPrompt } from "@/lib/editor-prompts";
+import { getServerEnv } from "@/lib/env";
 
 export async function POST(req: NextRequest) {
   // 1. Feature flag
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
   if (!featureReq) return NextResponse.json({ error: "Request not found" }, { status: 404 });
 
   // 8. Check API key — uses GEMINI_API_KEY from Netlify env
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
       { error: "GEMINI_API_KEY not configured in Netlify environment variables." },

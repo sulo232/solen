@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { getServerEnv } from "@/lib/env";
 
 /**
  * Cron handler: send review prompt email 24h after completed appointment.
@@ -10,12 +11,14 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
  * Runs hourly. Protected by CRON_SECRET.
  */
 export async function GET(req: NextRequest) {
+  const env = getServerEnv();
+  if (!env.CRON_SECRET) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const resendApiKey = process.env.RESEND_API_KEY;
+  const resendApiKey = env.RESEND_API_KEY;
   if (!resendApiKey) {
     console.warn("[review-prompt] RESEND_API_KEY not set — skipping emails");
     return NextResponse.json({ skipped: true, reason: "no_api_key" });

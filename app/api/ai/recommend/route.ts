@@ -6,6 +6,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 import { z } from "zod";
 
 const recommendSchema = z.object({
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) return NextResponse.json({ error: "AI not configured" }, { status: 503 });
 
   const body = await req.json();

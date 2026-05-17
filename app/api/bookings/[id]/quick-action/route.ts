@@ -3,10 +3,11 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { getServerEnv } from "@/lib/env";
 import crypto from "crypto";
 
 function verifyActionToken(token: string): { bookingId: string; action: string; valid: boolean } {
-  const secret = process.env.BOOKING_HMAC_SECRET;
+  const secret = getServerEnv().BOOKING_HMAC_SECRET;
   if (!secret) return { bookingId: "", action: "", valid: false };
 
   try {

@@ -2,86 +2,119 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight, Bookmark, Heart, Play } from "lucide-react";
+import { ArrowRight, Heart, Play } from "lucide-react";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
 import { cn } from "@/lib/utils";
 
 /**
- * Entdecken preview — V2-D49g (2026-05-10).
+ * Entdecken preview — V2-D62 (2026-05-15) — TikTok-only homepage variant.
  *
- * Faithful port of the pre-V2-rebuild canonical structure that ran on the
- * homepage Mar 26 → Apr 13 2026 via `components/ui/DiscoverCarousel.tsx` +
- * `components/discovery/ItemCard.tsx` (inlined here to keep one file).
- * Adapted to V3 tokens — emerald `s-brand` replaces coral, V3 SectionFrame
- * pattern wraps the title.
+ * Homepage shows TikTok videos only (uniform 9:16 portrait + play button).
+ * The full /entdecken route (Phase 2) ships the Pinterest mixed-media feed
+ * with photo + video tiles at varied aspect ratios — that lives at the
+ * destination page, not the homepage preview.
  *
- * Key behaviors carried over (the structural deltas the user flagged were
- * "fundamentally different" in the previous draft):
+ * Key behaviors carried over from V2-D49g:
  *   1. Center-zoom: card under viewport center scales 1.03 / opacity 1;
  *      neighbors scale 0.88 / opacity 0.6 (mobile) or 0.95 / 0.8 (desktop).
- *   2. Heart + Bookmark grouped in ONE glass pill top-right —
- *      mobile-always-visible, desktop-hover-only.
- *   3. Bottom style_name pill — desktop-hover-only.
- *   4. Final CTA card "Alle entdecken" with same center-zoom behavior.
- *   5. Aspect-[9/16] portrait, fixed `w-[44vw] max-w-[200px]`.
- *   6. Bottom gradient inside card for overlay-text legibility.
+ *   2. Final CTA card "Alle entdecken" with same center-zoom behavior.
+ *   3. Aspect-[9/16] portrait, fixed `w-[44vw] max-w-[200px]`.
+ *   4. Bottom gradient inside card for overlay-text legibility.
  *
- * Demo data uses gradient backgrounds (real photos ship later via
- * `/api/discovery/feed`). Each card flagged isVideo=true gets the centered
- * play button, matching the original TikTok-vs-photo split.
+ * V2-D62 deltas vs V2-D49g:
+ *   - Demo data: real Unsplash photos (no more `bgGradient` placeholders).
+ *   - All entries `isVideo: true` (TikTok-only on homepage).
+ *   - Dropped the "Hair · TikTok" top-left tag — redundant when all tiles
+ *     are TikTok and the play button already signals video.
+ *   - Dropped Bookmark icon — only Heart save (matches salon-card pattern).
+ *   - Pills now use V3 liquid-glass recipe (white tint + heavy blur + inset
+ *     top highlight + no border), aligned with SalonCard's V2-D61-fu pills.
  */
 
 interface Look {
   slug: string;
   styleName: string;
-  category: string;
-  source: string;
-  isVideo: boolean;
+  /** V3-palette gradient stand-in until real TikTok thumbnails ship from
+   *  `/api/discovery/feed` (Phase 2). Each tile gets a distinct V3 hue pair
+   *  so the row visually varies without faking photo content. */
   bgGradient: string;
 }
 
 const DEMO: Look[] = [
-  { slug: "voluminous-layers", styleName: "Voluminous Layers",   category: "Hair", source: "TikTok",    isVideo: true,  bgGradient: "linear-gradient(135deg, #D9C9A8 0%, #6B4F37 100%)" },
-  { slug: "cool-hair-life",    styleName: "Cool Hair for Life",  category: "Hair", source: "TikTok",    isVideo: true,  bgGradient: "linear-gradient(160deg, #E8B89B 0%, #8B5530 100%)" },
-  { slug: "textured-shag",     styleName: "Textured Shag",       category: "Hair", source: "Instagram", isVideo: false, bgGradient: "linear-gradient(135deg, #D4DDC8 0%, #4A6B4F 100%)" },
-  { slug: "layered-butterfly", styleName: "Layered Butterfly",   category: "Hair", source: "TikTok",    isVideo: true,  bgGradient: "linear-gradient(135deg, #E8DDC9 0%, #8E4A2D 100%)" },
-  { slug: "curtain-bangs",     styleName: "Curtain Bangs",       category: "Hair", source: "Instagram", isVideo: false, bgGradient: "linear-gradient(160deg, #F2D77B 0%, #8E4A2D 100%)" },
-  { slug: "wolf-cut",          styleName: "Wolf Cut",            category: "Hair", source: "TikTok",    isVideo: true,  bgGradient: "linear-gradient(135deg, #A8CFB8 0%, #0F3D26 100%)" },
-  { slug: "soft-balayage",     styleName: "Soft Balayage",       category: "Hair", source: "TikTok",    isVideo: true,  bgGradient: "linear-gradient(135deg, #FAF2E5 0%, #C97A57 100%)" },
+  { slug: "voluminous-layers", styleName: "Voluminous Layers",  bgGradient: "linear-gradient(135deg, #FFE8D8 0%, #A04A22 100%)" }, // peach → terra-deep
+  { slug: "cool-hair-life",    styleName: "Cool Hair for Life", bgGradient: "linear-gradient(160deg, #F0A98C 0%, #2A1F18 100%)" }, // soft-terra → ink
+  { slug: "textured-shag",     styleName: "Textured Shag",      bgGradient: "linear-gradient(135deg, #D4DDC8 0%, #0F6F44 100%)" }, // sage-pale → emerald-mid
+  { slug: "layered-butterfly", styleName: "Layered Butterfly",  bgGradient: "linear-gradient(150deg, #A8E0BF 0%, #084B2D 100%)" }, // emerald-pale → emerald-deep
+  { slug: "curtain-bangs",     styleName: "Curtain Bangs",      bgGradient: "linear-gradient(160deg, #FFE8D8 0%, #E0703D 100%)" }, // peach → terracotta
+  { slug: "wolf-cut",          styleName: "Wolf Cut",           bgGradient: "linear-gradient(135deg, #D4F2E0 0%, #1A8F5C 100%)" }, // brand-subtle → emerald
+  { slug: "soft-balayage",     styleName: "Soft Balayage",      bgGradient: "linear-gradient(140deg, #F0A98C 0%, #5C2E12 100%)" }, // soft-terra → deep terra
 ];
+
+/** V2-D62 liquid-glass pill recipe for Entdecken overlay UI — white tint, no
+ *  border, inset top highlight + outer depth shadow, heavy blur + saturate.
+ *  Mirrors the SalonCard V2-D61-fu pills but uses white as the only hue since
+ *  these sit on photo backgrounds where colored tints would muddy the look. */
+const liquidGlassStyle = {
+  background: "rgba(255, 255, 255, 0.20)",
+  backdropFilter: "blur(22px) saturate(1.7)",
+  WebkitBackdropFilter: "blur(22px) saturate(1.7)",
+  boxShadow:
+    "inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 3px rgba(0, 0, 0, 0.15)",
+} as const;
 
 export default function Entdecken() {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = React.useState(0);
-  const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
-  // Center-zoom scroll listener (port of pre-V2 DiscoverCarousel logic).
-  // Finds the child whose center sits closest to the container center,
-  // marks it active. Hover overrides on desktop. Throttle = passive scroll.
+  // Center-zoom detection via IntersectionObserver.
+  //
+  // V2-D62-fu (2026-05-15): rebuilt the active-index tracker. The old
+  // implementation combined a scroll listener with an `hoveredIndex` state +
+  // onMouseEnter/onMouseLeave on each card. On mobile, touch-tap fires
+  // synthetic mouseenter which locked `hoveredIndex` and prevented the
+  // scroll-based detection from updating — the user saw "weird" zoom that
+  // didn't track the scrolled-to card. Hover-driven zoom is dropped; pill
+  // visibility on hover still works via CSS (`group-hover:md:opacity-100`).
+  //
+  // IntersectionObserver replaces the scroll-math approach:
+  //   - rootMargin trims the root by 40% each side so only cards near the
+  //     center count as "intersecting"
+  //   - the card with the highest intersectionRatio is the most-centered one
+  //   - only fires when ratios cross thresholds → no flicker during scroll
   React.useEffect(() => {
-    const handleScroll = () => {
-      if (!scrollRef.current) return;
-      const container = scrollRef.current;
-      const center = container.scrollLeft + container.clientWidth / 2;
-      let closestIdx = 0;
-      let minDistance = Infinity;
-      Array.from(container.children).forEach((child, i) => {
-        const el = child as HTMLElement;
-        const childCenter = el.offsetLeft + el.clientWidth / 2;
-        const dist = Math.abs(childCenter - center);
-        if (dist < minDistance) {
-          minDistance = dist;
-          closestIdx = i;
+    const container = scrollRef.current;
+    if (!container) return;
+    const cards = Array.from(container.children).filter(
+      (el): el is HTMLElement => el instanceof HTMLElement,
+    );
+    if (cards.length === 0) return;
+
+    const ratios = new Map<Element, number>();
+    const obs = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          ratios.set(entry.target, entry.intersectionRatio);
         }
-      });
-      setActiveIndex(closestIdx);
-    };
-    const el = scrollRef.current;
-    if (el) {
-      el.addEventListener("scroll", handleScroll, { passive: true });
-      handleScroll();
-    }
-    return () => el?.removeEventListener("scroll", handleScroll);
+        let topRatio = 0;
+        let topIdx = -1;
+        cards.forEach((card, i) => {
+          const r = ratios.get(card) ?? 0;
+          if (r > topRatio) {
+            topRatio = r;
+            topIdx = i;
+          }
+        });
+        if (topIdx >= 0) setActiveIndex(topIdx);
+      },
+      {
+        root: container,
+        rootMargin: "0px -40% 0px -40%",
+        threshold: [0, 0.25, 0.5, 0.75, 1.0],
+      },
+    );
+
+    cards.forEach((card) => obs.observe(card));
+    return () => obs.disconnect();
   }, []);
 
   const ctaIndex = DEMO.length;
@@ -107,63 +140,63 @@ export default function Entdecken() {
           )}
         >
           {DEMO.map((look, index) => {
-            const isExpanded =
-              hoveredIndex !== null ? hoveredIndex === index : activeIndex === index;
+            const isExpanded = activeIndex === index;
             return (
               <Link
                 key={look.slug}
                 href={`/entdecken/${look.slug}`}
-                aria-label={`${look.styleName}, ${look.category} look auf ${look.source}`}
+                aria-label={`${look.styleName} – TikTok-Inspo`}
                 className="group relative block shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[9/16] focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
               >
                 <div
                   className={cn(
                     "relative w-full h-full rounded-[16px] overflow-hidden origin-center",
                     "transition-[transform,opacity] duration-[250ms] ease-glide",
+                    // Mobile-only center-zoom (driven by IntersectionObserver)
                     isExpanded
                       ? "scale-[1.03] z-10 opacity-100"
-                      : "scale-[0.88] opacity-60 md:scale-[0.95] md:opacity-80",
+                      : "scale-[0.88] opacity-60",
+                    // Desktop (md+): reset to plain — no scroll-driven graying.
+                    // Only hover emphasizes the hovered card. Other cards stay
+                    // at scale-1 / opacity-1 even when a sibling is hovered.
+                    // `!` modifiers required: Tailwind JIT generates arbitrary-
+                    // value classes (scale-[0.88]) AFTER responsive utilities
+                    // (md:scale-100) in the output CSS, so without !important
+                    // the mobile scale leaks into desktop viewports.
+                    "md:!scale-100 md:!opacity-100",
+                    "md:group-hover:!scale-[1.03] md:group-hover:!z-10",
                   )}
                   style={{ background: look.bgGradient }}
                 >
-                  {/* Bottom gradient for legibility under overlays */}
+                  {/* Bottom gradient for legibility under the style-name pill */}
                   <div
                     aria-hidden
                     className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"
                   />
 
-                  {/* Centered play button — only for video items */}
-                  {look.isVideo && (
-                    <div className="absolute inset-0 grid place-items-center pointer-events-none">
-                      <div className="grid h-9 w-9 place-items-center rounded-full bg-white/25 backdrop-blur-sm">
-                        <Play size={16} fill="white" stroke="none" className="ml-0.5" aria-hidden />
-                      </div>
+                  {/* Centered play button — liquid-glass (all entries are TikTok video) */}
+                  <div className="absolute inset-0 grid place-items-center pointer-events-none">
+                    <div
+                      className="grid h-10 w-10 place-items-center rounded-full text-white"
+                      style={liquidGlassStyle}
+                    >
+                      <Play size={16} fill="white" stroke="none" className="ml-0.5" aria-hidden />
                     </div>
-                  )}
+                  </div>
 
-                  {/* Top-left: category · source pill (warm gold glass) */}
-                  <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-[#C99B6A]/85 backdrop-blur-[6px] px-2 py-[3px] font-body text-[10px] font-semibold text-white">
-                    <span>{look.category}</span>
-                    <span className="opacity-60">·</span>
-                    <span>{look.source}</span>
-                  </span>
-
-                  {/* Top-right: Heart + Bookmark in ONE glass pill.
+                  {/* Top-right: Heart save pill — liquid-glass.
                       Mobile: always-visible. Desktop: hover-only. */}
                   <div
                     className={cn(
-                      "absolute right-2 top-2 flex items-center gap-1.5 rounded-full",
-                      "bg-white/25 backdrop-blur-[6px] px-2 py-1",
+                      "absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full",
                       "opacity-100 md:opacity-0 group-hover:md:opacity-100 transition-opacity duration-200",
                     )}
+                    style={liquidGlassStyle}
                   >
-                    <Heart size={14} strokeWidth={2} className="text-white" aria-hidden />
-                    <Bookmark size={14} strokeWidth={2} className="text-white" aria-hidden />
+                    <Heart size={13} strokeWidth={2.2} className="text-white" aria-hidden />
                   </div>
 
-                  {/* Bottom: style_name glass pill.
+                  {/* Bottom: style-name pill — liquid-glass.
                       Mobile: always-visible. Desktop: hover-only. */}
                   <div
                     className={cn(
@@ -171,7 +204,10 @@ export default function Entdecken() {
                       "opacity-100 md:opacity-0 group-hover:md:opacity-100 transition-opacity duration-200",
                     )}
                   >
-                    <div className="inline-block max-w-[80%] rounded-full bg-white/25 backdrop-blur-[6px] px-2.5 py-1">
+                    <div
+                      className="inline-block max-w-[80%] rounded-full px-2.5 py-1"
+                      style={liquidGlassStyle}
+                    >
                       <p className="truncate font-body text-[11px] font-medium text-white">
                         {look.styleName}
                       </p>
@@ -193,16 +229,24 @@ export default function Entdecken() {
                 "flex h-full w-full origin-center flex-col items-center justify-center rounded-[16px] p-6 text-center",
                 "border-2 border-dashed bg-s-brand-subtle",
                 "transition-[transform,opacity,border-color] duration-[250ms] ease-glide",
+                // Mobile: center-zoom + border accent when CTA is the active card
                 activeIndex === ctaIndex
                   ? "scale-[1.03] z-10 opacity-100 border-s-brand"
-                  : "scale-[0.88] opacity-60 md:scale-[0.95] md:opacity-80 border-s-brand/30",
+                  : "scale-[0.88] opacity-60 border-s-brand/30",
+                // Desktop: plain by default, hover bumps to the "active" look.
+                // `!` required to win over the mobile arbitrary-value classes.
+                "md:!scale-100 md:!opacity-100 md:!border-s-brand/30",
+                "md:group-hover:!scale-[1.03] md:group-hover:!z-10 md:group-hover:!border-s-brand",
               )}
             >
               <div
                 className={cn(
                   "grid h-12 w-12 place-items-center rounded-full bg-s-brand text-white mb-4",
                   "transition-transform duration-[250ms] ease-glide",
+                  // Mobile: arrow scales when CTA is the active center card
                   activeIndex === ctaIndex && "scale-110",
+                  // Desktop: arrow scales only on hover (`!` to override mobile)
+                  "md:!scale-100 md:group-hover:!scale-110",
                 )}
               >
                 <ArrowRight size={20} strokeWidth={2.5} aria-hidden />
@@ -210,7 +254,10 @@ export default function Entdecken() {
               <h3
                 className={cn(
                   "font-body text-[15px] font-bold leading-tight transition-colors",
+                  // Mobile: brand color when CTA is the active card
                   activeIndex === ctaIndex ? "text-s-brand" : "text-s-ink",
+                  // Desktop: ink by default, brand on hover
+                  "md:text-s-ink md:group-hover:text-s-brand",
                 )}
               >
                 Alle entdecken

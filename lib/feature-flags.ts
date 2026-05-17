@@ -42,8 +42,21 @@ export async function checkFeatureEnabled(featureKey: FeatureKey): Promise<NextR
 
 export async function checkUserBanned(userId: string): Promise<NextResponse | null> {
   const admin = createAdminSupabaseClient();
-  const { data: profile } = await admin
+  const { data: profile, error } = await admin
     .from("profiles").select("banned_at, ban_reason").eq("id", userId).single();
+
+  // Fail CLOSED on DB error: a banned user must not slip through a transient
+  // DB blip / RLS error. Pre-2026-05-16 this fell back to "not banned" on
+  // any error which would let banned users continue during an outage.
+  // PGRST116 = no rows (legitimate — user has no profile yet, not banned).
+  if (error && error.code !== "PGRST116") {
+    console.error("[checkUserBanned] DB error checking ban status:", error, { userId });
+    return NextResponse.json(
+      { error: "Unable to verify account status. Please try again.", code: "BAN_CHECK_FAILED" },
+      { status: 503 }
+    );
+  }
+
   if (profile?.banned_at) {
     return NextResponse.json(
       { error: "Your account has been suspended.", code: "USER_BANNED", reason: profile.ban_reason ?? undefined },

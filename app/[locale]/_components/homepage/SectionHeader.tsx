@@ -112,25 +112,44 @@ export function SectionTitle({
     el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
   };
 
+  // V2-D66 (2026-05-15): title is plain text again — only the circled arrow
+  // is the click target with its own hover state. The glass pill bloom that
+  // used to wrap the whole title-arrow group is GONE — user feedback was
+  // that the title shouldn't grow a hover affordance (it's a heading, not a
+  // chip). Also kills the duplicate mobile bare-arrow that used to sit on
+  // the right side — the inline circled arrow already serves that role.
   return (
     <div className="flex items-baseline justify-between gap-6">
-      <h2 className="font-body text-[clamp(22px,3.5vw,38px)] font-black leading-none tracking-[-0.02em] text-s-ink">
+      <h2
+        // V2-D67-fu14 (2026-05-17): dropped inline `Plus Jakarta Sans` override —
+        // Plus Jakarta is RETIRED (V2 era). Per V2-D42, section h2s use
+        // `font-body` (Open Sauce One) bold, NOT `font-display` (Peace Sans
+        // reserved for hero h1 + logo + feature h2 moments).
+        className="font-body text-[clamp(20px,2.2vw,26px)] font-bold leading-[1.2] tracking-[-0.02em] text-s-ink"
+      >
         {title}
-      </h2>
-
-      {/* V2-D49m: when a scrollRef is wired, render the Airbnb-style scroll
-          controls. Otherwise fall back to the legacy text link. */}
-      {link && scrollRef ? (
-        <>
-          {/* Mobile — bare arrow icon, no circle, tappable to see-all */}
+        {link ? (
           <Link
             href={link.href}
             aria-label={link.label}
-            className="md:hidden shrink-0 grid h-9 w-9 -mr-2 place-items-center text-s-ink-2 transition-colors hover:text-s-ink active:scale-95 active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-md"
+            className={cn(
+              "group ml-3 inline-grid h-9 w-9 shrink-0 place-items-center align-middle rounded-full",
+              "bg-s-ink/[0.06] text-s-ink transition-all duration-200 ease-glide",
+              "hover:bg-s-ink/[0.12] hover:scale-[1.08]",
+              "active:scale-[0.95] active:duration-[80ms]",
+              "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+            )}
           >
-            <ArrowRight size={20} strokeWidth={2.25} aria-hidden />
+            <ArrowRight size={20} strokeWidth={2.25} aria-hidden className="transition-transform duration-200 ease-glide group-hover:translate-x-0.5" />
           </Link>
+        ) : null}
+      </h2>
 
+      {/* V2-D49m: when a scrollRef is wired, render the desktop scroll
+          controls. The previous mobile-only right-side arrow is gone (V2-D66)
+          since the inline circled arrow next to the title now serves that role. */}
+      {link && scrollRef ? (
+        <>
           {/* Desktop — two emerald-on-cream circle scroll buttons */}
           <div className="hidden md:flex shrink-0 items-center gap-2">
             <ScrollCircleButton
@@ -218,15 +237,13 @@ export function FeedZone({
         "relative z-[2]",
         "-mt-6 md:-mt-8",
         "rounded-t-[28px] md:rounded-t-[40px]",
-        // V2-D45-4 (2026-05-09): pushed BOTH white and blur up per user
-        // "more glassmorphism, more white" — landed on iOS-Control-Center-
-        // style frosted glass: bg-white/45 + blur 22px + saturate 1.6.
-        // The 15% transparency was too see-through (read as "translucent
-        // film" not "frosted glass"). Border softened to white/50 so the
-        // top edge still cues the rising panel without hairline harshness.
-        "border-t border-white/50",
-        "bg-white/45 backdrop-blur-[22px] backdrop-saturate-[1.6]",
-        "shadow-[0_-12px_32px_rgba(4,51,56,0.06)] md:shadow-[0_-16px_40px_rgba(4,51,56,0.08)]",
+        // V2-D67-fu17 (2026-05-17): reverted V2-D67-fu15 tint per user "ditch ts".
+        // Back to V2-D65 transparent FeedZone — atmosphere reads at full chroma
+        // below the cards. Shadow RGB kept as ink (not the retired V2-D15-3 teal
+        // that was there before V2-D67-fu15) — that's a separate drift fix worth
+        // keeping even though the tint is reverted.
+        "border-t border-white/40",
+        "shadow-[0_-12px_32px_rgba(26,18,9,0.04)] md:shadow-[0_-16px_40px_rgba(26,18,9,0.05)]",
         // V2-D49n-fu7 (2026-05-10): bottom padding cut from pb-12/20 → pb-4/6
         // so the FeedZone's glass panel flows right into the footer instead
         // of leaving a 96px cream gap. The rounded-top of the footer's
@@ -327,6 +344,12 @@ export const ScrollRow = React.forwardRef<HTMLDivElement, {
         // Right-trailing margin on the last card so it has rest space at the
         // end of the scroll without its right corner clipped.
         "[&>*:last-child]:mr-2",
+        // V2-D66 (2026-05-16, Hayden move #10): right-edge mask fade so cards
+        // taper out instead of hard-cutting at the frame edge. Same affordance
+        // as the header nav. Mobile only — desktop carousels rarely truncate
+        // since the visible row width usually fits multiple cards comfortably.
+        "[mask-image:linear-gradient(to_right,black_calc(100%-32px),transparent)]",
+        "md:[mask-image:none]",
         className,
       )}
     >
@@ -352,8 +375,8 @@ export function Section({
   return (
     <section
       className={cn(
-        "relative z-[1] mx-auto max-w-[1280px] px-1 py-2 md:px-3 md:py-3",
-        "mb-1 md:mb-2",
+        "relative z-[1] mx-auto max-w-[1280px] px-1 py-3 md:px-3 md:py-4",
+        "mb-4 md:mb-6",
         className,
       )}
     >

@@ -4,15 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail } from "@/lib/email";
 import Stripe from "stripe";
-
-function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
-}
+import { getStripe } from "@/lib/stripe";
+import { getServerEnv } from "@/lib/env";
 
 // Cron: Pre-charge saved cards 5 days before appointment. Daily.
 export async function GET(req: NextRequest) {
+  const cronSecret = getServerEnv().CRON_SECRET;
+  if (!cronSecret) return NextResponse.json({ error: "Cron not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

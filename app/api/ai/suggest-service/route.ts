@@ -6,6 +6,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { z } from "zod";
 import { validateBody } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 
 const suggestSchema = z.object({
   category: z.string().min(1).max(50),
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
   const { data: validated, error: valError } = validateBody(suggestSchema, body);
   if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
 
-  const apiKey = process.env.GOOGLE_AI_API_KEY;
+  const apiKey = getServerEnv().GOOGLE_AI_API_KEY;
   if (!apiKey) {
     // Fallback suggestions when no API key
     const fallbacks: Record<string, string> = {

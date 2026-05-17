@@ -3823,7 +3823,10 @@
     "shareProfile": "Partager le profil",
     "linkCopied": "Lien copié !",
     "nextAvailable": "Prochain créneau disponible",
-    "shareError": "Impossible de partager"
+    "shareError": "Impossible de partager",
+    "backToList": "Retour à la liste",
+    "addToFavorites": "Ajouter aux favoris",
+    "removeFromFavorites": "Retirer des favoris"
   },
   "compare": {
     "back": "Retour",

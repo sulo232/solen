@@ -31,32 +31,39 @@ module.exports = {
         // Backward-compat: `s-coral` token group still references the brand DEFAULT — same token name,
         // new value. V2-D48-2: shifted from muted moss-soft #5C7765 → vibrant emerald-forest #1F5C42
         // per user "more vibrant + dark green everywhere". Saturated, classic luxury-craft green.
-        "s-coral": { DEFAULT: "#1F5C42", hover: "#0F3D26", subtle: "#D4EBD9", text: "#1F5C42", button: "#1F5C42", "button-hover": "#0F3D26" },
-        // ── V3 brand alias (preferred for new code) — V2-D48-2 emerald-forest ──
-        "s-brand": { DEFAULT: "#1F5C42", pale: "#A8CFB8", subtle: "#D4EBD9", mid: "#0F3D26", deep: "#0A2917" },
-        // ── Heartbeat accent (terracotta) — used for CTAs + highlight words ──
-        "s-accent": { DEFAULT: "#C97A57", soft: "#E8B89B", deep: "#8E4A2D" },
+        // ── V2-D60 VIBRANCY TUNE (2026-05-14) — Option B locked ──
+        // Brand: +44% saturation (#1F5C42 49% → #1A8F5C 70% sat), same hue family
+        // Accent: +40% saturation (#C97A57 51% → #E0703D 71% sat), warmer terracotta
+        // Substrate: lighter cream (#F5EBDD → #FAF3E6), less yellow
+        // Cards: cream-on-cream replaced by WHITE on cream — biggest visible fix
+        "s-coral": { DEFAULT: "#1A8F5C", hover: "#0F6F44", subtle: "#D4F2E0", text: "#1A8F5C", button: "#1A8F5C", "button-hover": "#0F6F44" },
+        "s-brand": { DEFAULT: "#1A8F5C", pale: "#A8E0BF", subtle: "#D4F2E0", mid: "#0F6F44", deep: "#084B2D" },
+        "s-accent": { DEFAULT: "#E0703D", soft: "#F0A98C", deep: "#A04A22" },
         // ── Bright accent (butter) — sparingly, for stat-card highlights ──
         "s-butter": "#F2D77B",
         // ── Sage — wellness whisper, never loud ──
         "s-sage": { DEFAULT: "#A8B89A", pale: "#D4DDC8" },
         // ── V3 category colorway tokens — V2-D48 Earthen Wellness mapping ──
-        "s-cat-coiffeur":      "#FAF2E5", "s-cat-coiffeur-text":   "#C97A57", // cream-warm + terracotta
-        "s-cat-barbershop":    "#E8DDC9", "s-cat-barbershop-text": "#2A1F18", // bone + ink
-        "s-cat-nails":         "#D4DDC8", "s-cat-nails-text":      "#8E4A2D", // sage-pale + terra-deep
-        "s-cat-spa":           "#D4EBD9", "s-cat-spa-text":        "#0F3D26", // brand subtle + brand mid (emerald)
+        // V2-D60: cat tile bgs slightly desaturated to stay readable on lighter substrate.
+        // Text colors updated to match new brand-mid + accent-deep values.
+        "s-cat-coiffeur":      "#FFE8D8", "s-cat-coiffeur-text":   "#E0703D", // peach + warm terracotta
+        "s-cat-barbershop":    "#EAE0D0", "s-cat-barbershop-text": "#2A1F18", // bone + ink
+        "s-cat-nails":         "#D4DDC8", "s-cat-nails-text":      "#A04A22", // sage-pale + terra-deep
+        "s-cat-spa":           "#D4F2E0", "s-cat-spa-text":        "#0F6F44", // brand subtle + brand mid (emerald)
         // ── V3 atmosphere wash colors — Earthen Wellness ──
-        "s-atm-cream":  "#F5EBDD",  // page bg base
-        "s-atm-terra":  "#E8B89B",  // warm anchor
-        "s-atm-sage":   "#D4DDC8",  // wellness whisper
-        "s-atm-bone":   "#E8DDC9",  // alt surface tone
-        "s-atm-butter": "#F2D77B",  // bright accent
+        "s-atm-cream":  "#FAF3E6",  // V2-D60: matches new base
+        "s-atm-terra":  "#F0A98C",  // V2-D60: matches new accent-soft (more saturated)
+        "s-atm-sage":   "#D4DDC8",  // wellness whisper (unchanged)
+        "s-atm-bone":   "#EAE0D0",  // V2-D60: matches new sunken
+        "s-atm-butter": "#F2D77B",  // bright accent (unchanged)
         // ── Ink (text) — kept warm-charcoal family from V3 (already aligned with earthen palette) ──
         "s-ink": { DEFAULT: "#2A1F18", secondary: "#5C4A3A", tertiary: "#8A7A68", disabled: "#C4B8A6" },
         "s-ink-2": "#5C4A3A",  // V2-D48: deepened from #56463E for warmer tone in earth context
         "s-ink-3": "#8A7A68",  // V2-D48: cooler than #7A6957, better readability on cream
-        "s-border": "#E8DDC9",  // V2-D48: now equals bone (alt surface tone), unifies tokens
-        "s-bg": { base: "#F5EBDD", surface: "#FAF2E5", raised: "#FFFFFF", sunken: "#E8DDC9", active: "#FAF2E5" },
+        "s-border": "#EAE0D0",  // V2-D60: slightly desaturated bone for rule lines
+        // V2-D60: surface flipped cream-on-cream → WHITE on cream (kills the beige collapse).
+        // base lightened from #F5EBDD → #FAF3E6 (less yellow tint, more cream-fresh).
+        "s-bg": { base: "#FAF3E6", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#EAE0D0", active: "#FFFAF1" },
         // V2-D48: bg.base flipped white → cream #F5EBDD (Earthen Wellness page bg). Surface +
         // sunken updated. raised stays white for cards/modals. active = cream-warm input typing.
         // V2-D16 (2026-05-08) note: cream #FFF4E8 was wrongly retired in V2-D15 comment above.

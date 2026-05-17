@@ -1,0 +1,371 @@
+- generic [active] [ref=e1]:
+  - link "Zum Inhalt springen" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "Solen zur Startseite" [ref=e5] [cursor=pointer]:
+        - /url: /de
+        - text: Solen
+      - navigation "Kategorien" [ref=e7]:
+        - link "Coiffeur" [ref=e8] [cursor=pointer]:
+          - /url: /de/coiffeur
+        - link "Barbershop" [ref=e9] [cursor=pointer]:
+          - /url: /de/barbershop
+        - link "Nails" [ref=e10] [cursor=pointer]:
+          - /url: /de/nails
+        - link "Entdecken" [ref=e11] [cursor=pointer]:
+          - /url: /de/discover
+      - generic [ref=e12]:
+        - link "Über uns" [ref=e13] [cursor=pointer]:
+          - /url: /de/about
+        - link "Anmelden" [ref=e14] [cursor=pointer]:
+          - /url: /de/auth/login
+  - main [ref=e16]:
+    - main [ref=e105]:
+      - navigation "Breadcrumb" [ref=e107]:
+        - link "Home" [ref=e108] [cursor=pointer]:
+          - /url: /de
+        - img [ref=e109]
+        - link "Coiffeure" [ref=e111] [cursor=pointer]:
+          - /url: /de/coiffeur
+        - img [ref=e112]
+        - link "Basel" [ref=e114] [cursor=pointer]:
+          - /url: /de/basel
+        - img [ref=e115]
+        - link "Grossbasel" [ref=e117] [cursor=pointer]:
+          - /url: /de/basel/grossbasel
+        - img [ref=e118]
+        - generic [ref=e120]: Atelier Haarwerk
+      - button "Atelier Haarwerk" [ref=e124] [cursor=pointer]:
+        - img "Atelier Haarwerk" [ref=e125]
+      - generic [ref=e128]:
+        - generic [ref=e129]:
+          - heading "Atelier Haarwerk" [level=1] [ref=e130]
+          - generic [ref=e131]:
+            - generic [ref=e132]:
+              - img [ref=e133]
+              - strong [ref=e135]: "4.8"
+              - generic [ref=e136]: (4)
+            - generic [ref=e137]: ·
+            - generic [ref=e138]: Öffnungszeiten unbekannt
+            - generic [ref=e139]: ·
+            - generic [ref=e140]:
+              - img [ref=e141]
+              - text: Freie Strasse 12, Basel
+            - link "Wegbeschreibung" [ref=e144] [cursor=pointer]:
+              - /url: https://www.google.com/maps/search/?api=1&query=Freie%20Strasse%2012%2C%20Basel
+        - generic [ref=e145]:
+          - button "Salon teilen" [ref=e146] [cursor=pointer]:
+            - img [ref=e147]
+          - button "Speichern" [ref=e153] [cursor=pointer]:
+            - img [ref=e154]
+      - navigation "Salon-Abschnitte":
+        - generic:
+          - generic:
+            - button "Photos": Photos
+            - button "Services"
+            - button "Reviews"
+            - button "About"
+            - button "Loyalty"
+      - generic [ref=e158]:
+        - generic [ref=e159]:
+          - generic [ref=e160]:
+            - heading "Services" [level=2] [ref=e161]
+            - generic [ref=e162]:
+              - button "Alle" [ref=e163] [cursor=pointer]
+              - button "Coiffeur" [ref=e164] [cursor=pointer]
+            - list [ref=e165]:
+              - listitem [ref=e166]:
+                - generic [ref=e167]:
+                  - generic [ref=e168]:
+                    - generic [ref=e169]: Damen-Haarschnitt
+                    - paragraph [ref=e170]: Klassischer oder kreativer Schnitt. Inkl. Beratung, Waschen, Föhnen.
+                    - generic [ref=e171]:
+                      - img [ref=e172]
+                      - text: 60 min
+                    - generic [ref=e175]: CHF 85
+                  - link "Buchen" [ref=e176] [cursor=pointer]:
+                    - /url: /de/salon/atelier-haarwerk/booking?service=373df028-1b70-4546-90a5-057786afdf4b
+              - listitem [ref=e177]:
+                - generic [ref=e178]:
+                  - generic [ref=e179]:
+                    - generic [ref=e180]: Herren-Haarschnitt
+                    - paragraph [ref=e181]: Präziser Schnitt nach Wunsch. Inkl. Waschen + Styling.
+                    - generic [ref=e182]:
+                      - img [ref=e183]
+                      - text: 45 min
+                    - generic [ref=e186]: CHF 55
+                  - link "Buchen" [ref=e187] [cursor=pointer]:
+                    - /url: /de/salon/atelier-haarwerk/booking?service=02fd4a7a-bd93-414e-a4df-39fc81dd5d7f
+              - listitem [ref=e188]:
+                - generic [ref=e189]:
+                  - generic [ref=e190]:
+                    - generic [ref=e191]: Färben (kurz)
+                    - paragraph [ref=e192]: Full-Head Coloration für kurzes Haar.
+                    - generic [ref=e193]:
+                      - img [ref=e194]
+                      - text: 90 min
+                    - generic [ref=e197]: CHF 120
+                  - link "Buchen" [ref=e198] [cursor=pointer]:
+                    - /url: /de/salon/atelier-haarwerk/booking?service=59d9bff9-ff99-4952-a23d-6e329e9ca652
+              - listitem [ref=e199]:
+                - generic [ref=e200]:
+                  - generic [ref=e201]:
+                    - generic [ref=e202]: Balayage
+                    - paragraph [ref=e203]: Sonnengekusste Strähnen, natürlich ausgespielt.
+                    - generic [ref=e204]:
+                      - img [ref=e205]
+                      - text: 180 min
+                    - generic [ref=e208]: CHF 220
+                  - link "Buchen" [ref=e209] [cursor=pointer]:
+                    - /url: /de/salon/atelier-haarwerk/booking?service=0e1b1e80-e241-4c49-9f25-78f94702ccff
+              - listitem [ref=e210]:
+                - generic [ref=e211]:
+                  - generic [ref=e212]:
+                    - generic [ref=e213]: Föhnen & Styling
+                    - generic [ref=e214]:
+                      - img [ref=e215]
+                      - text: 30 min
+                    - generic [ref=e218]: CHF 45
+                  - link "Buchen" [ref=e219] [cursor=pointer]:
+                    - /url: /de/salon/atelier-haarwerk/booking?service=4ca38c3e-fe11-4efb-a922-f2a05b739d6e
+            - button "Alle ansehen" [ref=e221] [cursor=pointer]
+          - generic [ref=e222]:
+            - heading "Bewertungen" [level=2] [ref=e223]
+            - generic [ref=e224]:
+              - generic [ref=e225]:
+                - img [ref=e226]
+                - img [ref=e228]
+                - img [ref=e230]
+                - img [ref=e232]
+                - img [ref=e234]
+              - generic [ref=e236]: "4.8"
+              - generic [ref=e237]: (4)
+            - paragraph [ref=e238]: Noch keine Bewertungen.
+          - generic [ref=e239]:
+            - heading "Über uns" [level=2] [ref=e240]
+            - paragraph [ref=e242]: Modernes Haaratelier im Herzen Basels.
+            - generic "Karte für Atelier Haarwerk" [ref=e244]:
+              - img [ref=e245]
+              - generic [ref=e247]:
+                - generic [ref=e249]: "4.8"
+                - generic [ref=e250]: Interaktive Karte folgt
+            - generic [ref=e251]:
+              - img [ref=e252]
+              - generic [ref=e255]: Freie Strasse 12, Basel, 4001
+              - link "Wegbeschreibung" [ref=e256] [cursor=pointer]:
+                - /url: https://www.google.com/maps/search/?api=1&query=Freie%20Strasse%2012%2C%20Basel%2C%204001
+          - generic [ref=e258]:
+            - heading "Zusatzinformationen" [level=2] [ref=e259]
+            - list [ref=e260]:
+              - listitem [ref=e261]:
+                - img [ref=e263]
+                - generic [ref=e266]: Sofortbestätigung
+              - listitem [ref=e267]:
+                - img [ref=e269]
+                - generic [ref=e274]: Kostenlos bis 24h vorher stornieren
+          - generic [ref=e275]:
+            - heading "Treueprogramm" [level=2] [ref=e276]
+            - list [ref=e277]:
+              - listitem [ref=e278]:
+                - button "Punkte sammeln Erfahre, wie du Punkte sammelst" [ref=e279] [cursor=pointer]:
+                  - img [ref=e281]
+                  - generic [ref=e283]:
+                    - generic [ref=e284]: Punkte sammeln
+                    - generic [ref=e285]: Erfahre, wie du Punkte sammelst
+                  - img [ref=e286]
+              - listitem [ref=e288]:
+                - button "Belohnungen Lös spannende Belohnungen ein" [ref=e289] [cursor=pointer]:
+                  - img [ref=e291]
+                  - generic [ref=e294]:
+                    - generic [ref=e295]: Belohnungen
+                    - generic [ref=e296]: Lös spannende Belohnungen ein
+                  - img [ref=e297]
+              - listitem [ref=e299]:
+                - button "Stufen Entdecke unser Stufenprogramm" [ref=e300] [cursor=pointer]:
+                  - img [ref=e302]
+                  - generic [ref=e304]:
+                    - generic [ref=e305]: Stufen
+                    - generic [ref=e306]: Entdecke unser Stufenprogramm
+                  - img [ref=e307]
+              - listitem [ref=e309]:
+                - button "Freund:in einladen Empfiehl uns weiter" [ref=e310] [cursor=pointer]:
+                  - img [ref=e312]
+                  - generic [ref=e315]:
+                    - generic [ref=e316]: Freund:in einladen
+                    - generic [ref=e317]: Empfiehl uns weiter
+                  - img [ref=e318]
+          - generic [ref=e320]:
+            - generic [ref=e321]:
+              - heading "In der Nähe" [level=2] [ref=e322]
+              - generic [ref=e323]:
+                - button "Vorherige" [disabled] [ref=e324]:
+                  - img [ref=e325]
+                - button "Nächste" [ref=e327] [cursor=pointer]:
+                  - img [ref=e328]
+            - generic [ref=e330]:
+              - link "Salon Lumière 4.8 (98) Coiffeur" [ref=e331] [cursor=pointer]:
+                - /url: /de/salon/salon-lumiere
+                - generic [ref=e333]:
+                  - generic [ref=e334]: Salon Lumière
+                  - generic [ref=e335]:
+                    - img [ref=e336]
+                    - generic [ref=e338]: "4.8"
+                    - generic [ref=e339]: (98)
+                  - generic [ref=e340]: Coiffeur
+              - link "Haarsalon Margot 4.8 (62) Coiffeur" [ref=e341] [cursor=pointer]:
+                - /url: /de/salon/haarsalon-margot
+                - generic [ref=e343]:
+                  - generic [ref=e344]: Haarsalon Margot
+                  - generic [ref=e345]:
+                    - img [ref=e346]
+                    - generic [ref=e348]: "4.8"
+                    - generic [ref=e349]: (62)
+                  - generic [ref=e350]: Coiffeur
+              - link "Studio Schnittkunst 4.7 (45) Coiffeur" [ref=e351] [cursor=pointer]:
+                - /url: /de/salon/studio-schnittkunst
+                - generic [ref=e353]:
+                  - generic [ref=e354]: Studio Schnittkunst
+                  - generic [ref=e355]:
+                    - img [ref=e356]
+                    - generic [ref=e358]: "4.7"
+                    - generic [ref=e359]: (45)
+                  - generic [ref=e360]: Coiffeur
+          - generic [ref=e361]:
+            - heading "Verwöhne dich jederzeit, überall" [level=2] [ref=e362]
+            - generic [ref=e363]:
+              - link "Andere Salons in Basel" [ref=e364] [cursor=pointer]:
+                - /url: /de/search?city=Basel
+              - link "Andere Salons in Grossbasel" [ref=e365] [cursor=pointer]:
+                - /url: /de/search?q=Grossbasel
+              - link "Coiffeure" [ref=e366] [cursor=pointer]:
+                - /url: /de/coiffeur
+              - link "Barbershops" [ref=e367] [cursor=pointer]:
+                - /url: /de/barbershop
+              - link "Nagelstudios" [ref=e368] [cursor=pointer]:
+                - /url: /de/nails
+              - link "Spa & Wellness" [ref=e369] [cursor=pointer]:
+                - /url: /de/spa
+            - link "Termin buchen" [ref=e371] [cursor=pointer]:
+              - /url: /de/salon/atelier-haarwerk/booking
+              - text: Termin buchen
+              - img [ref=e372]
+        - complementary [ref=e374]:
+          - generic [ref=e376]:
+            - generic [ref=e377]: Atelier Haarwerk
+            - generic [ref=e378]:
+              - img [ref=e379]
+              - strong [ref=e381]: "4.8"
+              - generic [ref=e382]: (4)
+            - link "Termin buchen" [ref=e383] [cursor=pointer]:
+              - /url: /de/salon/atelier-haarwerk/booking
+              - text: Termin buchen
+              - img [ref=e384]
+            - button "Öffnungszeiten unbekannt" [ref=e387] [cursor=pointer]:
+              - img [ref=e388]
+              - generic [ref=e391]: Öffnungszeiten unbekannt
+            - generic [ref=e392]:
+              - img [ref=e393]
+              - generic [ref=e396]:
+                - generic [ref=e397]: Freie Strasse 12, Basel, 4001
+                - link "Wegbeschreibung" [ref=e398] [cursor=pointer]:
+                  - /url: https://www.google.com/maps/search/?api=1&query=Freie%20Strasse%2012%2C%20Basel%2C%204001
+                  - text: Wegbeschreibung
+                  - img [ref=e399]
+            - generic [ref=e404]:
+              - generic [ref=e405]:
+                - generic [ref=e406]: Gutscheine
+                - generic [ref=e407]: Verschenke einen Tag Wohlbefinden bei Atelier Haarwerk.
+              - link "Kaufen" [ref=e408] [cursor=pointer]:
+                - /url: /de/salon/atelier-haarwerk/gift-card
+  - contentinfo [ref=e23]:
+    - generic [ref=e25]: solen
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - link "Solen Startseite" [ref=e29] [cursor=pointer]:
+            - /url: /de
+            - text: Solen
+          - paragraph [ref=e31]: Beauty & Wellness Booking für die ganze Schweiz. Salons finden, sofort buchen, Komfort genießen.
+          - heading "Newsletter" [level=3] [ref=e32]
+          - paragraph [ref=e33]: Tipps, neue Salons, monatlich.
+          - form "Newsletter abonnieren" [ref=e34]:
+            - generic [ref=e35]: E-Mail-Adresse
+            - textbox "E-Mail-Adresse" [ref=e36]:
+              - /placeholder: deine@email.ch
+            - button "Abonnieren" [ref=e37] [cursor=pointer]:
+              - img [ref=e38]
+          - generic [ref=e40]:
+            - link "Instagram" [ref=e41] [cursor=pointer]:
+              - /url: https://instagram.com/solen.ch
+              - img [ref=e42]
+            - link "Facebook" [ref=e45] [cursor=pointer]:
+              - /url: https://facebook.com/solen.ch
+              - img [ref=e46]
+        - generic [ref=e48]:
+          - heading "Solen" [level=3] [ref=e49]
+          - list [ref=e50]:
+            - listitem [ref=e51]:
+              - link "Über uns" [ref=e52] [cursor=pointer]:
+                - /url: /de/about
+            - listitem [ref=e53]:
+              - link "Karriere" [ref=e54] [cursor=pointer]:
+                - /url: /de/careers
+            - listitem [ref=e55]:
+              - link "Presse" [ref=e56] [cursor=pointer]:
+                - /url: /de/press
+            - listitem [ref=e57]:
+              - link "Blog" [ref=e58] [cursor=pointer]:
+                - /url: /de/blog
+        - generic [ref=e59]:
+          - heading "Hilfe" [level=3] [ref=e60]
+          - list [ref=e61]:
+            - listitem [ref=e62]:
+              - link "Kund:innen-Hilfe" [ref=e63] [cursor=pointer]:
+                - /url: /de/help
+            - listitem [ref=e64]:
+              - link "Salon-Hilfe" [ref=e65] [cursor=pointer]:
+                - /url: /de/business/help
+            - listitem [ref=e66]:
+              - link "Sicherheit" [ref=e67] [cursor=pointer]:
+                - /url: /de/safety
+            - listitem [ref=e68]:
+              - link "Kontakt" [ref=e69] [cursor=pointer]:
+                - /url: /de/contact
+        - generic [ref=e70]:
+          - heading "Versprechen" [level=3] [ref=e71]
+          - list [ref=e72]:
+            - listitem [ref=e73]: 30 Sekunden buchen
+            - listitem [ref=e74]: Ohne Anrufen
+            - listitem [ref=e75]: Sofortige Bestätigung
+            - listitem [ref=e76]: Faire Preise
+        - generic [ref=e78]:
+          - img [ref=e79]:
+            - generic [ref=e81]: SOLEN · SCHWEIZ · 2026 ·
+          - generic [ref=e83]: S
+      - generic [ref=e84]:
+        - generic [ref=e85]: © 2026 Solen.ch · Alle Rechte vorbehalten
+        - generic [ref=e86]:
+          - link "Datenschutz" [ref=e87] [cursor=pointer]:
+            - /url: /de/privacy
+          - link "AGB" [ref=e88] [cursor=pointer]:
+            - /url: /de/terms
+          - link "Impressum" [ref=e89] [cursor=pointer]:
+            - /url: /de/imprint
+          - link "Cookies" [ref=e90] [cursor=pointer]:
+            - /url: /de/cookies
+  - region "Cookie-Einwilligung" [ref=e91]:
+    - generic [ref=e92]:
+      - generic [ref=e93]:
+        - img [ref=e95]
+        - generic [ref=e97]:
+          - generic [ref=e98]: Wir verwenden Cookies
+          - paragraph [ref=e99]: Analyse & Marketing nur mit deinem OK.
+      - generic [ref=e100]:
+        - button "Anpassen" [ref=e101] [cursor=pointer]
+        - button "Nur notwendige" [ref=e102] [cursor=pointer]
+        - button "Alle akzeptieren" [ref=e103] [cursor=pointer]
+  - alert
+  - alert [ref=e104]
+  - button "Open Next.js Dev Tools" [ref=e414] [cursor=pointer]:
+    - img [ref=e415]

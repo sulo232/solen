@@ -34,87 +34,177 @@ import { HeartButton } from "./HeartButton";
  */
 
 const cardCategoryColors = {
-  // V2-D48 EARTHEN WELLNESS LIGHT (2026-05-09): cat colorways re-mapped from
-  // V3 dark-teal palette to earthen tones. Spa flipped from dark-forest to
-  // moss-pale (now consistent lightness with other 3 cats).
-  coiffeur:   { bg: "#FAF2E5", initial: "#C97A57" }, // cream-warm + terracotta
-  barbershop: { bg: "#E8DDC9", initial: "#2A1F18" }, // bone + ink
-  nails:      { bg: "#D4DDC8", initial: "#8E4A2D" }, // sage-pale + terra-deep
-  spa:        { bg: "#D4EBD9", initial: "#0F3D26" }, // V2-D48-2 emerald subtle + emerald deep
+  // V2-D67-fu14 (2026-05-17): updated from stale V2-D48 hexes to V2-D60 vibrancy
+  // tune. Tailwind tokens updated V2-D60 but this hardcoded photo-fallback map
+  // was missed — meaning no-photo cards rendered in pre-vibrancy V2-D48 colors
+  // while everything else moved to V2-D60. Sync restored.
+  // V2-D48 EARTHEN WELLNESS LIGHT (2026-05-09 original): cat colorways re-mapped
+  // from V3 dark-teal palette to earthen tones.
+  coiffeur:   { bg: "#FFE8D8", initial: "#E0703D" }, // peach + warm terracotta (V2-D60)
+  barbershop: { bg: "#EAE0D0", initial: "#2A1F18" }, // bone + ink (V2-D60 bg shift)
+  nails:      { bg: "#D4DDC8", initial: "#A04A22" }, // sage-pale + terra-deep (V2-D60 text deepened)
+  spa:        { bg: "#D4F2E0", initial: "#0F6F44" }, // emerald-subtle + emerald-mid (V2-D60 sat bump + text lightened)
+} as const;
+
+/** V2-D60-cards-4 (2026-05-14): display labels for the category subtitle row. */
+const CATEGORY_LABEL = {
+  coiffeur:   "Coiffeur",
+  barbershop: "Barbershop",
+  nails:      "Nails",
+  spa:        "Spa & Wellness",
 } as const;
 
 type Category = keyof typeof cardCategoryColors;
 
-/** Curation badge variants — §16.3.1 */
-const curationVariants = cva(
-  cn(
-    "absolute left-2 top-2 z-[2] inline-flex items-center rounded-lg",
-    "px-[10px] py-[5px] font-body text-[10px] font-bold uppercase",
-    "leading-[1.2] tracking-[0.02em]",
-    "shadow-[0_1px_3px_rgba(26,18,9,0.06)]",
-    // backdrop-filter applied via inline style for cross-browser
-  ),
-  {
-    variants: {
-      tone: {
-        favorit: "text-[#8B5E0F]", // yellow hue + deep amber text
-        neutral: "text-s-ink", // white-neutral variant for Top bewertet / Beliebt / Neu
-      },
-    },
-    defaultVariants: { tone: "favorit" },
-  },
+/** Card badge geometry — V2-D63 (2026-05-15).
+ *
+ * Shared geometry across ALL card badges (discount / availability / curation):
+ *  - rounded-[10px] rectangle (NOT a pill — user wanted "long viereck")
+ *  - top-left position (single primary-signal slot per card)
+ *  - px-3 py-1.5 generous padding for the "long" horizontal feel
+ *  - uppercase 10px bold
+ *  - text color set per-variant (white on dark/colored glass, ink on white/yellow)
+ *
+ * The geometry is shared so the system reads as ONE family even though each
+ * semantic is a different color. Visual style (glass + tint) comes from the
+ * inline `style` attribute via `glassStyle()` — see below. */
+const badgeGeometry = cn(
+  "absolute left-2 top-2 z-[2] inline-flex items-center gap-1 rounded-[10px]",
+  // V2-D67-fu7 (2026-05-16): dropped `uppercase` per user "dont use caps lock
+  // like u did on heute frei". Labels render in sentence case as defined by
+  // the data (Heute frei, Schnell weg, In 15 Min, etc.). Size bumped 10 → 11px
+  // to compensate for lowercase having lower visual weight than uppercase.
+  "px-3 py-1.5 font-body text-[11px] font-semibold",
+  "leading-[1.2] tracking-[0.01em]",
+  // V2-D67-fu12 (2026-05-16) — mobile perf: kill backdrop-filter on phones via
+  // arbitrary `!` Tailwind override (inline style on the chip sets it; this
+  // unsets it under 768px). iOS Safari was creating ~11 compositor layers per
+  // scroll frame from these chips alone, killing smoothness. Desktop unchanged.
+  "max-md:![backdrop-filter:none] max-md:![-webkit-backdrop-filter:none]",
 );
 
-/** Discount badge — §16.3.1b (mutex w curation in same slot) */
-const discountClass = cn(
-  "absolute left-2 top-2 z-[2] inline-flex items-center rounded-lg",
-  "px-[10px] py-[5px] font-body text-[10px] font-bold uppercase",
-  "leading-[1.2] tracking-[0.02em] text-[#7A4A14]", // warning-amber deep
-  "shadow-[0_1px_3px_rgba(26,18,9,0.06)]",
-);
+/** Discount badge — V2-D67-fu10: light pink-red layered glass + red-900 text
+ *  (sale semantic, hue-matched text — no brown-on-yellow collision). */
+const discountClass = cn(badgeGeometry, "text-red-900");
 
-/** Availability pill — §16.3.2 */
+/** Availability pill — V2-D63: MOVED to top-left (was bottom-left).
+ *  Same slot as discount + curation, but they're mutex by section logic:
+ *  Last-Minute cards have discount (no availability), Nearby cards have
+ *  availability (no discount). If both ever co-occur, discount wins. */
 const availVariants = cva(
-  cn(
-    "absolute bottom-2 left-2 z-[2] inline-flex items-center rounded-full",
-    "px-[11px] py-[5px] font-body text-[10px] font-bold uppercase",
-    "leading-[1.2] tracking-[0.02em]",
-    "shadow-[0_1px_3px_rgba(26,18,9,0.06)]",
-  ),
+  badgeGeometry,
   {
     variants: {
       tone: {
-        now: "text-[#0E7A38]", // success-green deep
-        week: "text-s-brand", // brand-teal
-        pause: "text-s-ink-2", // ink-2 deep
+        // V2-D67-fu10: text matches the bg hue family — green/green, blue/blue,
+        // red/red. No more brown-on-yellow.
+        now:     "text-emerald-900",  // green chip → green text
+        week:    "text-emerald-900",
+        urgent:  "text-blue-900",     // blue chip → blue text
+        limited: "text-blue-900",
+        angebot: "text-red-900",      // red/pink chip → red text
+        pause:   "text-white",        // ink-2 muted glass (unchanged)
       },
     },
     defaultVariants: { tone: "now" },
   },
 );
 
-/** Universal glass-tint inline style derived from formula §16.3.0. */
-function glassStyle(rgb: string, bgAlpha = 0.22, borderAlpha = 0.32) {
+/** V2-D63 (2026-05-15) — VIBRANT liquid-glass recipe.
+ *
+ *  Supersedes V2-D61-fu's subtle-tint recipe (alpha 0.28-0.55). User feedback:
+ *  "make it more vibrant... make the colors more bright." Bumping alphas to
+ *  0.62-0.88 means the color is DOMINANT now, not a hint — but the backdrop
+ *  blur + saturate-1.8 preserves the glass refraction (you still see the
+ *  photo underneath, just heavily tinted by the badge color).
+ *
+ *  System tokens — one per semantic. ALL share the same glass treatment
+ *  (blur 22px + saturate 1.8 + inset top-edge highlight + outer depth shadow),
+ *  only the base color + alpha differ:
+ *
+ *    discount  · terracotta · sale (% off)
+ *    angebot   · yellow     · special offer / package (NEW V2-D63)
+ *    urgent    · red        · last call / limited spots (NEW V2-D63)
+ *    now       · emerald    · Heute frei
+ *    week      · emerald-mid· Diese Woche
+ *    pause     · ink-2      · closed / unavailable
+ *    favorit   · ink        · Solen Favorit (premium black-glass)
+ *    neutral   · white      · Top bewertet / Beliebt / Neu
+ */
+function glassStyle(rgb: string, bgAlpha = 0.78) {
   return {
     background: `rgba(${rgb}, ${bgAlpha})`,
-    border: `1px solid rgba(${rgb}, ${borderAlpha})`,
-    backdropFilter: "blur(14px) saturate(1)",
-    WebkitBackdropFilter: "blur(14px) saturate(1)",
+    backdropFilter: "blur(22px) saturate(1.8)",
+    WebkitBackdropFilter: "blur(22px) saturate(1.8)",
+    boxShadow:
+      "inset 0 1px 0 rgba(255, 255, 255, 0.40), 0 2px 6px rgba(26, 18, 9, 0.18)",
   } as const;
 }
 
-/** Brand-teal exception alpha pair per §16.3.0 examples table. */
-const tealStyle = glassStyle("4, 51, 56", 0.14, 0.22);
-const yellowStyle = glassStyle("242, 193, 68");
-const amberStyle = glassStyle("245, 158, 11");
-const greenStyle = glassStyle("22, 163, 74");
-const inkStyle = glassStyle("122, 105, 87", 0.18, 0.25);
-const whiteNeutralStyle = {
-  background: "rgba(255, 255, 255, 0.62)",
-  border: "1px solid rgba(255, 255, 255, 0.45)",
-  backdropFilter: "blur(14px) saturate(1)",
-  WebkitBackdropFilter: "blur(14px) saturate(1)",
-} as const;
+/**
+ * V2-D67-fu7 (2026-05-16) — layered-glass recipe, restored from V2-D34-fu
+ * (commit f965ca0, May 2026) per user "i liked that alot, go check commits".
+ *
+ * The recipe = tint at 22% alpha + matching 32% alpha border + crisp drop
+ * shadow + dark hue-matched text. White-light blur creates the "frosted
+ * glass" depth that single-layer tints lack.
+ *
+ * 3-color palette per semantic category (user: "light green, light yellow,
+ * light blue"):
+ *   - GREEN family → availability positive (now/week)
+ *   - YELLOW family → offer/discount (angebot, DiscountBadge)
+ *   - BLUE family → time-pressure (urgent, limited)
+ *
+ * Dark/muted variants kept intentional: pause (closed/negative), favorit
+ * (premium signal), white-neutral (editorial chips).
+ */
+function layeredGlass(rgb: string, bgAlpha = 0.22, borderAlpha = 0.32) {
+  return {
+    background: `rgba(${rgb}, ${bgAlpha})`,
+    border: `1px solid rgba(${rgb}, ${borderAlpha})`,
+    backdropFilter: "blur(14px) saturate(1.1)",
+    WebkitBackdropFilter: "blur(14px) saturate(1.1)",
+    boxShadow: "0 1px 3px rgba(26, 18, 9, 0.06)",
+  } as const;
+}
+
+// V2-D67-fu10 (2026-05-16): swapped discount/angebot OFF yellow per user
+// "brown n yellow doesnt make scence." Yellow chip + amber-900 text reads as
+// brown-on-yellow which is muddy. Discount semantically = sale → light red/pink.
+// Now every chip has hue-matched dark text (no brown-on-yellow collision).
+//
+// Light-bright base colors (Tailwind 300/400-step — pastel-feel but visible):
+//   green-400  (74, 222, 128)  → availability positive (now, week)  + emerald-900 text
+//   blue-400   (96, 165, 250)  → time-pressure (urgent, limited)    + blue-900 text
+//   red-300    (252, 165, 165) → sale/discount (angebot, DiscountBadge) + red-900 text
+const amberStyle    = layeredGlass("252, 165, 165", 0.32, 0.50); // light bright pink-red — discount/sale
+const angebotStyle  = layeredGlass("252, 165, 165", 0.32, 0.50); // same — Angebot
+const urgentStyle   = layeredGlass("96, 165, 250", 0.32, 0.50);  // light bright blue — Schnell weg
+const greenStyle    = layeredGlass("74, 222, 128", 0.32, 0.50);  // light bright green — Heute frei
+const tealStyle     = layeredGlass("74, 222, 128", 0.32, 0.50);  // light bright green — Diese Woche
+// V2-D67-fu11 (2026-05-16): unified ALL badges on the layeredGlass formula
+// (was mixed — action badges layered, but favorit/pause/curation still on the
+// older single-layer glassStyle). Now every badge has consistent border + shadow.
+//   favorit  → dark ink layered (premium signal — high alpha keeps it punchy)
+//   pause    → muted ink-2 layered (negative state, slightly lower alpha)
+//   neutral  → white layered (editorial — Top bewertet / Beliebt / Neu)
+const yellowStyle       = layeredGlass("42, 31, 24",   0.55, 0.85); // dark ink — Solen Favorit (premium)
+const inkStyle          = layeredGlass("122, 105, 87", 0.40, 0.60); // muted ink-2 — Pause/unavailable
+const whiteNeutralStyle = layeredGlass("255, 255, 255", 0.50, 0.75); // white — Top bewertet / Beliebt / Neu
+
+/** Curation badge variants — V2-D63: now uses shared badgeGeometry. */
+const curationVariants = cva(
+  badgeGeometry,
+  {
+    variants: {
+      tone: {
+        favorit: "text-white",  // ink-tint glass + white text (premium feel)
+        neutral: "text-s-ink",  // white glass — dark text still reads
+      },
+    },
+    defaultVariants: { tone: "favorit" },
+  },
+);
 
 interface CurationProps {
   type: "solen-favorit" | "top-bewertet" | "beliebt" | "neu";
@@ -152,18 +242,75 @@ function DiscountBadge({ percentOff }: { percentOff: number }) {
 }
 
 interface AvailabilityProps {
-  state: "now" | "week" | "pause";
+  /** Now: emerald, "Heute frei" (positive direction ↗).
+   *  Urgent: terracotta, "Schnell weg" (filling fast ↘).
+   *  Limited: ink, "Nur 2h" (time-pressure ⚡).
+   *  Week: emerald-mid, "Diese Woche" (no arrow — no urgency).
+   *  Pause: ink-2, closed (no arrow — neutral state). */
+  state: "now" | "week" | "pause" | "urgent" | "limited";
   label: string;
 }
 
+/** Directional arrow per state — V2-D66 (2026-05-16, Hayden move #16).
+ *  Encodes meaning faster than text alone. NOW gets ↗ (positive go-for-it),
+ *  URGENT gets ↘ (filling fast, hurry direction), LIMITED gets ⚡ (time
+ *  pressure, non-directional but high-energy). Other states render without
+ *  an arrow — overuse would make the arrows lose meaning. */
+function ArrowGlyph({ state }: { state: AvailabilityProps["state"] }) {
+  const props = {
+    width: 10,
+    height: 10,
+    viewBox: "0 0 12 12",
+    fill: "none" as const,
+    stroke: "currentColor",
+    strokeWidth: 2.4,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
+  };
+  if (state === "now") {
+    return (
+      <svg {...props}>
+        <path d="M3 9 L 9 3" />
+        <path d="M5 3 L 9 3 L 9 7" />
+      </svg>
+    );
+  }
+  if (state === "urgent") {
+    return (
+      <svg {...props}>
+        <path d="M3 3 L 9 9" />
+        <path d="M5 9 L 9 9 L 9 5" />
+      </svg>
+    );
+  }
+  if (state === "limited") {
+    return (
+      <svg {...props}>
+        <path d="M6 1 L 3 7 L 6 7 L 4 11 L 9 5 L 6 5 Z" />
+      </svg>
+    );
+  }
+  return null;
+}
+
 function AvailabilityPill({ state, label }: AvailabilityProps) {
-  const styleMap = { now: greenStyle, week: tealStyle, pause: inkStyle };
+  const styleMap = {
+    now: greenStyle,
+    week: tealStyle,
+    pause: inkStyle,
+    urgent: urgentStyle,
+    // V2-D67-fu7: limited NOW shares the light-blue urgentStyle (was dark ink
+    // yellowStyle pre-fu7). Both are time-pressure semantic → same color family.
+    limited: urgentStyle,
+  } as const;
   return (
     <span
       className={availVariants({ tone: state })}
       style={styleMap[state]}
       aria-label={label}
     >
+      <ArrowGlyph state={state} />
       {label}
     </span>
   );
@@ -207,6 +354,14 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
   service?: string;
   /** Variant=service: lowest price (CHF) — renders "ab CHF [price]". */
   priceFromCHF?: number | null;
+  /** V2-D60-cards-7: pre-formatted next-slot label (e.g. "Heute 14:30", "Morgen 09:00",
+   *  "Do. 14:00", "21. Mai 14:00"). Renders in Row 3 alongside priceFromCHF. */
+  nextSlotLabel?: string;
+  /** V2-D60-cards-8: street address (Fresha-style Row 2 meta). When present, replaces
+   *  the category label in Row 2. e.g. "Steinenvorstadt 12" */
+  address?: string;
+  /** V2-D60-cards-8: city for Row 2 meta line. Defaults to "Basel" if not set. */
+  city?: string;
   /** Override card width (rare — defaults to §16.2 spec 160 mobile / 180 tablet+). */
   className?: string;
 }
@@ -226,13 +381,21 @@ export function SalonCard({
   availabilityRow,
   service,
   priceFromCHF,
+  nextSlotLabel,
+  address,
+  city,
   className,
 }: SalonCardProps) {
   const cat = cardCategoryColors[category];
   // V2-D48: spa cat flipped to light moss-pale bg, so this is false for all cats.
   // Kept for forward-compat when real salon photos may have dark composition.
   const isDarkPhoto = false;
-  const initial = name.trim().charAt(0).toUpperCase();
+  // V2-D67-fu13 (2026-05-16): defensive guard. Was `name.trim()` which crashed
+  // the whole homepage when a stale localStorage RecentlyViewed entry lacked
+  // a name field (TypeError: Cannot read properties of undefined). Now a
+  // missing/empty name falls back to "?" placeholder initial instead of taking
+  // down the page.
+  const initial = (name ?? "").trim().charAt(0).toUpperCase() || "?";
 
   return (
     <Link
@@ -240,10 +403,21 @@ export function SalonCard({
       aria-label={`${name}, Termin buchen`}
       className={cn(
         "group flex shrink-0 flex-col snap-start",
-        // 150px mobile (was 160) so 2 full + clear "bit of 3rd" peek visible
-        // on 375px viewport. Desktop unchanged at 180. V3 §16.2 spec deviation
-        // logged as V2-D## TODO.
-        "w-[150px] md:w-[180px]",
+        // V2-D60-cards-3 (2026-05-14): Airbnb-style RESPONSIVE widths.
+        // Cards stretch to fill row at each breakpoint; card count changes:
+        //   mobile: viewport-relative — always 2 FULL cards + ~20% peek of the 3rd.
+        //          Formula: (100vw - 44px) / 2.2 → at 375 viewport ≈ 150px card,
+        //          at 414 viewport ≈ 168px. The "−44" accounts for section/frame
+        //          horizontal padding chrome; "/2.2" gives 2 cards + 0.2 peek.
+        //   sm 640+ : 3 cards · md 768+ : 4 · lg 1024+ : 5 · xl 1280+: 6
+        // No 2xl breakpoint — Section is capped at max-w-[1280px], so wider
+        // viewports keep the 6-card layout instead of shrinking cards to fit 7.
+        // Formula per breakpoint: card-width = (100% - (N-1)*12gap) / N
+        "w-[calc((100vw-44px)/2.2)]",
+        "sm:w-[calc((100%-24px)/3)]",
+        "md:w-[calc((100%-36px)/4)]",
+        "lg:w-[calc((100%-48px)/5)]",
+        "xl:w-[calc((100%-60px)/6)]",
         "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-[14px]",
         // V2-D43 (Emil polish): scale(0.94) → scale(0.97) per Emil's subtle range
         // (0.95-0.98). 0.94 felt too jumpy for content cards.
@@ -258,7 +432,15 @@ export function SalonCard({
           that matches Emil's cubic-bezier(0.23, 1, 0.32, 1) recommendation. */}
       <div
         className={cn(
-          "relative aspect-square w-full overflow-hidden rounded-[14px]",
+          // V2-D60-cards-6 (2026-05-14): aspect-[6/5] landscape → aspect-square (1:1)
+          // to make whole-card "noticeably portrait" matching Airbnb. With ~85px of
+          // text below, mobile card lands at ~160×245 = 0.65 ratio (between 5:7 and
+          // 7:10 portrait), desktop ~195×280 = 0.70 (~5:7). More portrait than 4:5
+          // which felt subtle.
+          "relative aspect-square w-full overflow-hidden rounded-[18px]",
+          // V2-D67-fu17 (2026-05-17): reverted V2-D67-fu15 + V2-D67-fu16 depth
+          // experiments per user "meh nvm ditch ts". Back to V2-D41 baseline
+          // shadow — original 2-layer subtle recipe.
           "shadow-[0_1px_2px_rgba(26,18,9,0.04),0_4px_10px_rgba(26,18,9,0.05)]",
           "transition-[transform,box-shadow] duration-200 ease-glide",
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
@@ -305,44 +487,37 @@ export function SalonCard({
         />
       </div>
 
-      {/* Frosted-glass text pill — sized down to match the smaller 150px
-          mobile card. Padding tightened (was 14×10), gap from photo
-          reduced (was 10), border-radius tightened (was 14) so the pill
-          reads as proportional to the card body, not bigger than necessary. */}
-      <div
-        className={cn(
-          "mt-[8px] rounded-[12px] border border-white/60 bg-white/70 px-[10px] py-[7px]",
-          "backdrop-blur-[14px] backdrop-saturate-[1.2]",
-          "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
-          "flex flex-col gap-[2px]",
-        )}
-      >
-        {/* Row 1 — name + rating */}
-        <div className="flex items-baseline justify-between gap-2">
-          <h3 className="min-w-0 flex-1 truncate font-body text-[14px] font-bold leading-[1.1] tracking-[-0.01em] text-s-ink">
-            {name}
-          </h3>
-          <span className="flex shrink-0 items-center gap-[2px] font-body text-[11px] font-semibold tabular-nums text-s-ink">
-            <Star size={10} fill="#F3A864" stroke="none" aria-hidden />
-            {rating != null ? rating.toFixed(1) : "—"}
-          </span>
+      {/* V2-D60-cards-7 (2026-05-14): Unified 3-row hierarchy across ALL sections.
+          Row 1: Name · Row 2: Category label · Row 3: nextSlotLabel · ab CHF X + ★ rating
+          Variant prop kept for backward compat but no longer drives Row 3 content —
+          all cards render the same time-and-price format. Time format hint:
+          "Heute 14:30" today · "Morgen 09:00" tomorrow · "Do. 14:00" weekday · "21. Mai 14:00" later. */}
+      <div className="mt-[10px] px-[2px] flex flex-col gap-[2px]">
+        {/* Row 1 — Name only, full width, truncates */}
+        <h3 className="font-body text-[15px] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink truncate">
+          {name}
+        </h3>
+
+        {/* Row 2 — Address · city if available, else category label */}
+        <div className="font-body text-[13px] leading-[1.35] text-s-ink-3 truncate">
+          {address ? `${address} · ${city ?? "Basel"}` : CATEGORY_LABEL[category]}
         </div>
 
-        {/* Row 2 — variant content. Service variant gets brand-teal price accent. */}
-        <div className="font-body text-[11px] leading-[1.3] text-s-ink-2">
-          {variant === "availability" ? (
-            availabilityRow ?? null
-          ) : (
-            <>
-              {service ?? "—"}
-              {priceFromCHF != null && (
-                <>
-                  {" · "}
-                  <span className="font-bold text-s-brand">ab CHF {priceFromCHF}</span>
-                </>
-              )}
-            </>
-          )}
+        {/* Row 3 — nextSlotLabel · CHF X (left) + rating (right-aligned) */}
+        <div className="flex items-baseline justify-between gap-2 font-body text-[13px] leading-[1.35] text-s-ink-2">
+          <div className="min-w-0 flex-1 truncate">
+            {nextSlotLabel && (
+              <span className="font-semibold text-s-ink">{nextSlotLabel}</span>
+            )}
+            {nextSlotLabel && priceFromCHF != null && <span className="text-s-ink-3">{" · "}</span>}
+            {priceFromCHF != null && (
+              <span>CHF {priceFromCHF}</span>
+            )}
+          </div>
+          <span className="flex shrink-0 items-center gap-[3px] font-semibold tabular-nums text-s-ink">
+            <Star size={11} fill="#F3A864" stroke="none" aria-hidden />
+            {rating != null ? rating.toFixed(1) : "—"}
+          </span>
         </div>
       </div>
     </Link>

@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Calendar } from 'lucide-react';
 import BookingCard, { type Booking } from './BookingCard';
-import { Spinner, EmptyState } from '@/components';
+import Spinner from '@/components-legacy/ui/Spinner';
+import EmptyState from '@/components-legacy/ui/EmptyState';
 
 type BookingTab = 'upcoming' | 'past' | 'cancelled';
 

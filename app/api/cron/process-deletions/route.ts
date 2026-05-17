@@ -2,13 +2,16 @@ export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { getServerEnv } from "@/lib/env";
 
 export async function GET(request: NextRequest) {
   try {
+    const cronSecret = getServerEnv().CRON_SECRET;
+    if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
     const adminAuth = request.headers.get("Authorization");
     // VERY simple auth for cron jobs — `CRON_SECRET` env var must match the secret
     // sent by `.github/workflows/cron-jobs.yml` (GitHub Actions invokes this route)
-    if (adminAuth !== `Bearer ${process.env.CRON_SECRET}`) {
+    if (adminAuth !== `Bearer ${cronSecret}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

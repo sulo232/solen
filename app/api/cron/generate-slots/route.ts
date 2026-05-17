@@ -2,12 +2,15 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { getServerEnv } from "@/lib/env";
 
 // Cron: Generate availability_slots from staff_schedules. Nightly.
 // Bridges staff_schedules → availability_slots for the next 30 days.
 export async function GET(req: NextRequest) {
+  const cronSecret = getServerEnv().CRON_SECRET;
+  if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

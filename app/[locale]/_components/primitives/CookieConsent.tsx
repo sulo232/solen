@@ -194,7 +194,12 @@ function CookieBanner() {
         //     akzeptieren" become the visual hierarchy)
         "left-3 right-3 bottom-3 rounded-3xl",
         "md:left-0 md:right-0 md:bottom-0 md:rounded-none",
-        "bg-s-bg-base border border-s-ink/10",
+        // V2-D64 (2026-05-15): match the header's glass treatment (white-ish
+        // translucent + heavy backdrop blur) instead of the cream `s-bg-base`
+        // slab. The cream was reading as a third surface color that didn't
+        // match anything else; white-glass mirrors the header so the page
+        // feels bookended by the same material at top + bottom.
+        "bg-white/80 backdrop-blur-[22px] backdrop-saturate-[1.7] border border-s-ink/10",
         "md:border-t md:border-l-0 md:border-r-0 md:border-b-0",
         "shadow-[0_8px_32px_rgba(50,47,44,0.12)]",
         "md:shadow-[0_-4px_16px_rgba(50,47,44,0.08)]",

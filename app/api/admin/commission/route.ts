@@ -6,6 +6,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { logAuditEvent } from "@/lib/audit";
 import { validateBody, adminCommissionSchema } from "@/lib/validations";
+import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 
 // GET /api/admin/commission — fetch current commission rate
 export async function GET(req: NextRequest) {
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
     .single();
 
   return NextResponse.json({
-    rate_percent: setting?.value?.rate_percent ?? 15,
+    rate_percent: setting?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT,
     updated_at: setting?.updated_at ?? null,
   });
 }

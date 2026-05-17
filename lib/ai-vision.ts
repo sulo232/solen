@@ -3,6 +3,7 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { AIVisionResult } from "@/lib/types";
+import { getServerEnv } from "@/lib/env";
 
 const VISION_PROMPT = `You are SO.LEN's AI stylist — an expert barber, hairdresser, and colorist based in Basel, Switzerland. You analyze hair and beauty images with the precision of a professional who has worked with EVERY hair type, skin tone, texture, density, and cultural background.
 
@@ -128,7 +129,7 @@ export async function analyzeDiscoveryImage(imageUrl: string): Promise<AIVisionR
     return cache.get(imageUrl)!;
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) {
     console.error("[ai-vision] GEMINI_API_KEY not set");
     throw new Error("GEMINI_API_KEY not configured");
@@ -212,7 +213,7 @@ export async function analyzeDiscoveryTikTok(
   title: string,
   tiktokUrl?: string
 ): Promise<AIVisionResult | null> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY not configured");
 
   const genAI = new GoogleGenerativeAI(apiKey);

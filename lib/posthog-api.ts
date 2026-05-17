@@ -4,9 +4,12 @@
  * Documentation: https://posthog.com/docs/api
  */
 
+import { getServerEnv } from "@/lib/env";
+
 export async function fetchPostHogProfileViews(salonId: string, days: number = 30): Promise<number> {
-  const apiKey = process.env.POSTHOG_PERSONAL_API_KEY;
-  const projectId = process.env.POSTHOG_PROJECT_ID;
+  const env = getServerEnv();
+  const apiKey = env.POSTHOG_PERSONAL_API_KEY;
+  const projectId = env.POSTHOG_PROJECT_ID;
 
   if (!apiKey || !projectId) {
     // Graceful fallback if not configured

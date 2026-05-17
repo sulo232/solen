@@ -2,10 +2,13 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { getServerEnv } from "@/lib/env";
 
 export async function GET(req: NextRequest) {
+  const cronSecret = getServerEnv().CRON_SECRET;
+  if (!cronSecret) return NextResponse.json({ error: "Cron not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -35,8 +38,8 @@ export async function GET(req: NextRequest) {
     // 2. Capture payment if held (no_show = 100% fee)
     if (booking.stripe_payment_intent_id) {
       try {
-        const Stripe = (await import("stripe")).default;
-        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
+        const { getStripe } = await import("@/lib/stripe");
+        const stripe = getStripe();
         const pi = await stripe.paymentIntents.retrieve(booking.stripe_payment_intent_id);
         if (pi.status === "requires_capture") {
           await stripe.paymentIntents.capture(booking.stripe_payment_intent_id);

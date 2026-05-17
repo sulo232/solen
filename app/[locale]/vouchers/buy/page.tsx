@@ -19,10 +19,10 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { Gift, CreditCard, Mail } from "lucide-react";
+import { getPublicEnv } from "@/lib/env";
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
+const publishableKey = getPublicEnv().NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = publishableKey ? loadStripe(publishableKey) : Promise.resolve(null);
 
 interface CheckoutFormProps {
   clientSecret: string;

@@ -8,14 +8,19 @@
  *  2. Update the reactive store (currentUser, currentProfile)
  *  3. Return { data, error } — callers handle DOM/routing side-effects
  *
- * The ADMIN_EMAIL constant is intentionally read from env so it never
- * appears as a hardcoded string in source.
+ * The ADMIN_EMAIL constant is read from VITE_ADMIN_EMAIL env. If unset,
+ * email-based admin matching is disabled and admin role is determined
+ * SOLELY by Supabase user_metadata.role / app_metadata.role.
+ *
+ * Pre-2026-05-16 this had a hardcoded personal email as a fallback —
+ * a real PII leak in source. Removed: missing env now disables the
+ * email path entirely instead of silently granting admin to that user.
  */
 
 import { supabase } from '@/services/supabase.js';
 import { store } from '@/store/index.js';
 
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'habobi1238@proton.me';
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || '';
 
 // ---------------------------------------------------------------------------
 // Rate limiter — prevents brute-force / spam (in-memory, resets on reload)
@@ -299,8 +304,11 @@ export async function saveProfile(profileData) {
  */
 export function isAdmin(user) {
   if (!user) return false;
+  const emailMatchesAllowlist =
+    ADMIN_EMAIL !== '' &&
+    user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
   return (
-    user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() ||
+    emailMatchesAllowlist ||
     user.user_metadata?.role === 'admin' ||
     user.app_metadata?.role === 'admin'
   );

@@ -61,8 +61,11 @@ const instantTransition: Transition = { duration: 0 };
 // V2-D49: expanded bumped 480 → 600 to fit the real Calendar (~340px tall)
 // + period-of-day chips (~50px) + header (64px) + footer (76px). Mobile
 // viewport ≥700px still leaves room around the dimmed backdrop.
+// V2-D67-fu3 (2026-05-15): bumped 248 → 304 because pill padding went
+// p-[12px_18px] → p-[16px_22px] (each row ~62px tall now) and gap-2 → gap-3.
+// Math: 3 rows × ~62px + 3 gaps × 12px + button ~56px + container 28px ≈ 304.
 const HEIGHT = {
-  mobile:  { collapsed: 196, expanded: 600 },
+  mobile:  { collapsed: 246, expanded: 600 },
   desktop: { collapsed: 60,  expanded: 600 },
 };
 
@@ -208,8 +211,10 @@ export function SearchBar() {
         }}
         transition={transition}
         className={cn(
-          "relative w-full max-w-[540px] overflow-hidden border border-black/5 bg-white",
-          "shadow-[0_1px_3px_rgba(50,47,44,0.04),0_4px_12px_rgba(50,47,44,0.04)]",
+          // V2-D67: stronger shadow + larger radius (24px implied via the
+          // borderRadius animate value below) for the layered-card feel.
+          "relative w-full max-w-[540px] overflow-hidden border border-s-ink/8 bg-white",
+          "shadow-[0_2px_4px_rgba(50,47,44,0.04),0_12px_28px_rgba(50,47,44,0.08)]",
           "max-md:mx-auto",
           isExpanded && "z-[70] md:max-w-[640px]",
           !isExpanded && "md:max-w-none",
@@ -226,7 +231,12 @@ export function SearchBar() {
           }}
           transition={prefersReducedMotion ? instantTransition : { ...islandTransition, delay: isExpanded ? 0 : 0.1 }}
           className={cn(
-            "absolute inset-0 flex flex-col p-[6px] md:flex-row md:items-stretch md:p-[5px_5px_5px_7px]",
+            // V2-D67-fu5 (2026-05-15): user feedback "comp replica fr now
+            // the siye is too big bro" — tightened container from p-4 + gap-3
+            // (V2-D67-fu3) → p-3 + gap-2 to match Fresha's more compact
+            // mobile card. Combined with shorter row padding + smaller CTA
+            // below, card height drops 304 → 246px (~20% smaller).
+            "absolute inset-0 flex flex-col gap-2 p-3 md:gap-0 md:p-[5px_5px_5px_7px] md:flex-row md:items-stretch",
             isExpanded && "pointer-events-none",
           )}
         >
@@ -255,7 +265,11 @@ export function SearchBar() {
           <button
             type="button"
             onClick={handleSubmit}
-            className="font-body shrink-0 rounded-full border-0 bg-s-brand py-3 px-5 font-semibold text-white transition-[colors,transform] duration-200 ease-glide hover:bg-s-brand-mid active:scale-[0.97] active:duration-[80ms] md:py-[10px] md:px-6"
+            // V2-D67-fu5: shrunk CTA from py-4 text-[17px] (V2-D67-fu3) →
+            // py-3 text-base. Fresha's "Search Fresha" pill is ~44px tall,
+            // not the ~52px the bigger sizing produced. Stays rounded-full
+            // emerald (locked s-brand action color, V2-D49j).
+            className="font-body shrink-0 rounded-full border-0 bg-s-brand py-3 px-5 text-base font-semibold text-white transition-[colors,transform] duration-200 ease-glide hover:bg-s-brand-mid active:scale-[0.97] active:duration-[80ms] md:py-[10px] md:px-6"
           >
             Solen durchsuchen
           </button>
@@ -438,7 +452,7 @@ export function SearchBar() {
                   {/* Period-of-day chips — independent filter from the date.
                       Tapping the same chip twice clears it (toggle behavior). */}
                   <div className="mt-5">
-                    <div className="font-body text-[12px] font-bold uppercase tracking-[0.08em] text-s-ink-3 mb-2">
+                    <div className="font-body text-[13px] font-medium text-s-ink-3 mb-2">
                       Tageszeit
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -529,21 +543,32 @@ function CollapsedRow({
       onClick={onClick}
       className={cn(
         "group flex shrink-0 cursor-pointer items-center text-left",
-        // Tightened from p-[14px_16px] → p-[10px_14px] (mobile) and
-        // p-[14px_22px] → p-[11px_22px] (desktop) so search card height
-        // drops 280→232 and stops dominating the hero per user feedback.
-        "rounded-[10px] p-[10px_14px]",
-        "transition-colors hover:bg-s-bg-sunken",
-        !isFirst && "border-t border-black/5 max-md:border-t md:border-t-0",
-        "md:flex-1 md:rounded-full md:border-t-0 md:p-[11px_22px]",
+        // V2-D67-fu4 (2026-05-15): rounded-full → rounded-[16px] on mobile.
+        // Fresha uses rounded rectangles (same radius family as the outer
+        // card), not full pills. Card itself is 20px (see motion animate
+        // borderRadius below), rows sit at 16px — slight visual hierarchy.
+        // Desktop keeps the rounded-full segmented look — that's the
+        // horizontal-pill collapsed state, not the stacked one.
+        // V2-D67-fu5: row padding 16/22 → 12/18 to bring row height down
+        // ~10px each, matches Fresha's compact mobile rows.
+        "rounded-[14px] border border-s-ink/12 bg-white p-[12px_18px]",
+        "transition-[border-color,background] duration-150 ease-glide",
+        "hover:border-s-ink/25 hover:bg-s-bg-sunken/40",
+        "md:flex-1 md:rounded-full md:border-transparent md:bg-transparent md:p-[11px_22px] md:hover:border-transparent md:hover:bg-s-bg-sunken",
       )}
     >
-      <span className="flex shrink-0 items-center justify-center pr-3 text-s-ink-2 border-r border-black/10">
+      {/* V2-D67: dropped the icon's right-border vertical divider on mobile
+          (cluttered the row). Desktop keeps it since the horizontal pill
+          uses it to visually segment the 3 inputs. */}
+      <span className="flex shrink-0 items-center justify-center pr-3 text-s-ink-2 md:border-r md:border-black/10">
         {icon}
       </span>
       <span
         className={cn(
-          "font-body min-w-0 flex-1 truncate text-base text-s-ink-3 pl-4",
+          // V2-D67-fu5: text-[17px] → text-base (16px) mobile. fu3's 17px
+          // bumped Fresha's actual size; their mobile pills are 15-16px.
+          // Color stays ink-2 (more present than ink-3 washed-out).
+          "font-body min-w-0 flex-1 truncate text-base text-s-ink-2 md:pl-4",
           isPlaceholder ? "font-normal" : "font-medium",
         )}
       >
@@ -572,7 +597,7 @@ function SegmentTab({
       type="button"
       onClick={onClick}
       className={cn(
-        "rounded-full px-3 py-1.5 font-body text-[12px] font-semibold uppercase tracking-[0.08em] transition-colors",
+        "rounded-full px-3 py-1.5 font-body text-[13px] font-semibold transition-colors",
         active && "bg-s-brand text-white",
         !active && isPlaceholder && "text-s-ink-3 hover:text-s-ink",
         !active && !isPlaceholder && "text-s-ink hover:bg-s-bg-sunken",

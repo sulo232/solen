@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen · Badge gallery — all variations</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sauce+One:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Open Sauce One', system-ui, sans-serif;
+    background: #1A1209;
+    color: #E0CFB8;
+    padding: 32px 20px 80px;
+    line-height: 1.5;
+  }
+  .title {
+    font-family: 'Peace Sans', sans-serif;
+    font-size: 28px;
+    color: #FFFFFF;
+    margin-bottom: 4px;
+  }
+  .sub {
+    color: #8A7965;
+    font-size: 13px;
+    margin-bottom: 28px;
+    max-width: 720px;
+  }
+  .live-link {
+    display: inline-block;
+    background: rgba(74,222,128,.18);
+    color: #74e890;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 28px;
+  }
+  .section-h {
+    font-family: 'Peace Sans', sans-serif;
+    font-size: 18px;
+    color: #FFE8D8;
+    margin: 40px 0 4px;
+    letter-spacing: -0.02em;
+  }
+  .section-num {
+    display: inline-block;
+    padding: 3px 10px;
+    background: rgba(224,112,61,.20);
+    color: #FFE8D8;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 999px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .section-desc {
+    color: #8A7965;
+    font-size: 12px;
+    margin-bottom: 16px;
+    max-width: 720px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    max-width: 1400px;
+  }
+  .opt {
+    background: rgba(255,255,255,.03);
+    border-radius: 14px;
+    padding: 12px;
+    border: 1px solid rgba(255,232,216,.07);
+  }
+  .opt-label {
+    font-family: 'Peace Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #FFE8D8;
+    margin-bottom: 8px;
+  }
+  .opt-meta {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10px;
+    color: #8A7965;
+    margin-bottom: 10px;
+    line-height: 1.45;
+  }
+  .twocard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .card {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(0,0,0,.25);
+  }
+  .photo {
+    position: relative;
+    height: 110px;
+    background-size: cover;
+    background-position: center;
+  }
+  .photo.light  { background-image: url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=80'); }
+  .photo.dark   { background-image: url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&q=80'); }
+  /* Heart placeholder */
+  .heart {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 22px; height: 22px;
+    background: rgba(255,255,255,.85);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+  }
+  /* Universal badge geometry — matches SalonCard.tsx badgeGeometry */
+  .badge {
+    position: absolute;
+    left: 6px; top: 6px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    backdrop-filter: blur(14px) saturate(1.1);
+    -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    box-shadow: 0 1px 3px rgba(26,18,9,0.06);
+  }
+  /* Arrow glyph for availability badges (mimics ArrowGlyph SVG) */
+  .arrow { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  /* Recipe blocks */
+  details {
+    margin-bottom: 36px;
+  }
+  summary {
+    cursor: pointer;
+    font-size: 12px;
+    color: #FFE8D8;
+    margin-bottom: 10px;
+  }
+  .recipe-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px;
+    color: #C8BCA6;
+    margin-top: 10px;
+  }
+  .recipe-table th, .recipe-table td {
+    padding: 4px 8px;
+    text-align: left;
+    border: 1px solid rgba(255,232,216,.08);
+  }
+  .recipe-table th { color: #FFE8D8; background: rgba(255,255,255,.04); }
+  /* Footer */
+  .footer {
+    max-width: 1400px;
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,232,216,.10);
+    font-size: 12px;
+    color: #8A7965;
+  }
+</style>
+</head>
+<body>
+
+<div style="max-width: 1400px;">
+  <h1 class="title">Solen badge system — all variations</h1>
+  <p class="sub">
+    Every badge type rendered with its EXACT production CSS, shown on light + dark salon photos
+    so you can verify the layered-glass refraction in both contexts. Recipe formulas below each variant.
+  </p>
+  <a class="live-link" href="/de" target="_blank">→ View live on homepage</a>
+
+  <!-- ═════════ A/B STYLE DIRECTION (top of page) ═════════ -->
+  <h2 class="section-h" style="margin-top:0;"><span class="section-num">0 · Direction</span>"Pastel + dark text" vs "saturated + white text"</h2>
+  <p class="section-desc">
+    Same 3 hues, same shape, different intensity + text-color philosophy.
+    LEFT = current (V2-D67-fu10): light glass, dark hue text, editorial-soft.
+    RIGHT = what white text would require (V2-D63 territory): saturated bright, white text, loud-decisive.
+    Pick the direction first, then tweak.
+  </p>
+  <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+    <!-- LEFT · current pastel + dark text -->
+    <div class="opt">
+      <div class="opt-label">A · Current (pastel + dark hue text)</div>
+      <div class="opt-meta">bg @ .32 · border @ .50 · text deep-hue (red-900/blue-900/emerald-900)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(252,165,165,.32);border:1px solid rgba(252,165,165,.50);color:#7F1D1D;">−20%</span></div></div>
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(74,222,128,.32);border:1px solid rgba(74,222,128,.50);color:#064E3B;"><svg class="arrow" viewBox="0 0 12 12"><path d="M3 9 L 9 3"/><path d="M5 3 L 9 3 L 9 7"/></svg>Heute frei</span></div></div>
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(96,165,250,.32);border:1px solid rgba(96,165,250,.50);color:#1E3A8A;"><svg class="arrow" viewBox="0 0 12 12"><path d="M6 1 L 3 7 L 6 7 L 4 11 L 9 5 L 6 5 Z"/></svg>15 Min</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(252,165,165,.32);border:1px solid rgba(252,165,165,.50);color:#7F1D1D;">−20%</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(74,222,128,.32);border:1px solid rgba(74,222,128,.50);color:#064E3B;"><svg class="arrow" viewBox="0 0 12 12"><path d="M3 9 L 9 3"/><path d="M5 3 L 9 3 L 9 7"/></svg>Heute frei</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(96,165,250,.32);border:1px solid rgba(96,165,250,.50);color:#1E3A8A;"><svg class="arrow" viewBox="0 0 12 12"><path d="M6 1 L 3 7 L 6 7 L 4 11 L 9 5 L 6 5 Z"/></svg>15 Min</span></div></div>
+      </div>
+    </div>
+    <!-- RIGHT · saturated + white text -->
+    <div class="opt">
+      <div class="opt-label">B · Saturated + white text</div>
+      <div class="opt-meta">bg @ .82 saturated brand hues · no border (or matching @ .95) · text white</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(220,38,38,.82);border:1px solid rgba(220,38,38,.95);color:#FFFFFF;">−20%</span></div></div>
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(22,163,74,.82);border:1px solid rgba(22,163,74,.95);color:#FFFFFF;"><svg class="arrow" viewBox="0 0 12 12"><path d="M3 9 L 9 3"/><path d="M5 3 L 9 3 L 9 7"/></svg>Heute frei</span></div></div>
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(37,99,235,.82);border:1px solid rgba(37,99,235,.95);color:#FFFFFF;"><svg class="arrow" viewBox="0 0 12 12"><path d="M6 1 L 3 7 L 6 7 L 4 11 L 9 5 L 6 5 Z"/></svg>15 Min</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(220,38,38,.82);border:1px solid rgba(220,38,38,.95);color:#FFFFFF;">−20%</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(22,163,74,.82);border:1px solid rgba(22,163,74,.95);color:#FFFFFF;"><svg class="arrow" viewBox="0 0 12 12"><path d="M3 9 L 9 3"/><path d="M5 3 L 9 3 L 9 7"/></svg>Heute frei</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(37,99,235,.82);border:1px solid rgba(37,99,235,.95);color:#FFFFFF;"><svg class="arrow" viewBox="0 0 12 12"><path d="M6 1 L 3 7 L 6 7 L 4 11 L 9 5 L 6 5 Z"/></svg>15 Min</span></div></div>
+      </div>
+    </div>
+  </div>
+  <p style="margin-top:14px;max-width:720px;color:#8A7965;font-size:12px;">
+    <strong style="color:#FFE8D8;">A's tradeoff:</strong> softer, harmonizes with cream V3 aesthetic, harder to scan from across the page.<br>
+    <strong style="color:#FFE8D8;">B's tradeoff:</strong> louder, scans faster, but reads as "alert"/CTA noise — risks competing with the actual buy buttons.
+  </p>
+
+  <!-- ═════════ DISCOUNT BADGES ═════════ -->
+  <h2 class="section-h" style="margin-top:60px;"><span class="section-num">A · Discount</span>Money-saving signal</h2>
+  <p class="section-desc">
+    Component: <code>DiscountBadge</code>. One style, percentOff value varies. Light pink-red layered glass + red-900 text. Renders at top-left of salon card.
+  </p>
+  <div class="grid">
+    <div class="opt">
+      <div class="opt-label">−20% · light photo</div>
+      <div class="opt-meta">bg rgba(252,165,165, .32) · border rgba(252,165,165, .50) · text red-900</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(252,165,165,.32);border:1px solid rgba(252,165,165,.50);color:#7F1D1D;">−20%</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(252,165,165,.32);border:1px solid rgba(252,165,165,.50);color:#7F1D1D;">−20%</span></div></div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="opt-label">−15%</div>
+      <div class="opt-meta">same recipe, different %</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(252,165,165,.32);border:1px solid rgba(252,165,165,.50);color:#7F1D1D;">−15%</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(252,165,165,.32);border:1px solid rgba(252,165,165,.50);color:#7F1D1D;">−15%</span></div></div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="opt-label">−30%</div>
+      <div class="opt-meta">same recipe, different %</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(252,165,165,.32);border:1px solid rgba(252,165,165,.50);color:#7F1D1D;">−30%</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(252,165,165,.32);border:1px solid rgba(252,165,165,.50);color:#7F1D1D;">−30%</span></div></div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="opt-label">−50%</div>
+      <div class="opt-meta">same recipe, max %</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(252,165,165,.32);border:1px solid rgba(252,165,165,.50);color:#7F1D1D;">−50%</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(252,165,165,.32);border:1px solid rgba(252,165,165,.50);color:#7F1D1D;">−50%</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════ AVAILABILITY BADGES ═════════ -->
+  <h2 class="section-h" style="margin-top:48px;"><span class="section-num">B · Availability</span>Booking-state signal</h2>
+  <p class="section-desc">
+    Component: <code>AvailabilityPill</code>. 6 tones. Includes <code>ArrowGlyph</code> for now/urgent/limited.
+    3 hue families: green (positive), blue (time-pressure), red-pink (offer), ink (closed).
+  </p>
+  <div class="grid">
+    <!-- NOW · green + ↗ -->
+    <div class="opt">
+      <div class="opt-label">tone="now" · Heute frei</div>
+      <div class="opt-meta">bg rgba(74,222,128, .32) · text emerald-900 · arrow ↗</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(74,222,128,.32);border:1px solid rgba(74,222,128,.50);color:#064E3B;"><svg class="arrow" viewBox="0 0 12 12"><path d="M3 9 L 9 3"/><path d="M5 3 L 9 3 L 9 7"/></svg>Heute frei</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(74,222,128,.32);border:1px solid rgba(74,222,128,.50);color:#064E3B;"><svg class="arrow" viewBox="0 0 12 12"><path d="M3 9 L 9 3"/><path d="M5 3 L 9 3 L 9 7"/></svg>Heute frei</span></div></div>
+      </div>
+    </div>
+
+    <!-- WEEK · green (same as now, no arrow) -->
+    <div class="opt">
+      <div class="opt-label">tone="week" · Diese Woche</div>
+      <div class="opt-meta">same green family · no arrow</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(74,222,128,.32);border:1px solid rgba(74,222,128,.50);color:#064E3B;">Diese Woche</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(74,222,128,.32);border:1px solid rgba(74,222,128,.50);color:#064E3B;">Diese Woche</span></div></div>
+      </div>
+    </div>
+
+    <!-- URGENT · blue + ↘ -->
+    <div class="opt">
+      <div class="opt-label">tone="urgent" · Schnell weg</div>
+      <div class="opt-meta">bg rgba(96,165,250, .32) · text blue-900 · arrow ↘</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(96,165,250,.32);border:1px solid rgba(96,165,250,.50);color:#1E3A8A;"><svg class="arrow" viewBox="0 0 12 12"><path d="M3 3 L 9 9"/><path d="M5 9 L 9 9 L 9 5"/></svg>Schnell weg</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(96,165,250,.32);border:1px solid rgba(96,165,250,.50);color:#1E3A8A;"><svg class="arrow" viewBox="0 0 12 12"><path d="M3 3 L 9 9"/><path d="M5 9 L 9 9 L 9 5"/></svg>Schnell weg</span></div></div>
+      </div>
+    </div>
+
+    <!-- LIMITED · blue + ⚡ -->
+    <div class="opt">
+      <div class="opt-label">tone="limited" · 15 Min</div>
+      <div class="opt-meta">same blue · bolt glyph for time pressure</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(96,165,250,.32);border:1px solid rgba(96,165,250,.50);color:#1E3A8A;"><svg class="arrow" viewBox="0 0 12 12"><path d="M6 1 L 3 7 L 6 7 L 4 11 L 9 5 L 6 5 Z"/></svg>15 Min</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(96,165,250,.32);border:1px solid rgba(96,165,250,.50);color:#1E3A8A;"><svg class="arrow" viewBox="0 0 12 12"><path d="M6 1 L 3 7 L 6 7 L 4 11 L 9 5 L 6 5 Z"/></svg>15 Min</span></div></div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="opt-label">tone="limited" · 30 Min</div>
+      <div class="opt-meta">same recipe</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(96,165,250,.32);border:1px solid rgba(96,165,250,.50);color:#1E3A8A;"><svg class="arrow" viewBox="0 0 12 12"><path d="M6 1 L 3 7 L 6 7 L 4 11 L 9 5 L 6 5 Z"/></svg>30 Min</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(96,165,250,.32);border:1px solid rgba(96,165,250,.50);color:#1E3A8A;"><svg class="arrow" viewBox="0 0 12 12"><path d="M6 1 L 3 7 L 6 7 L 4 11 L 9 5 L 6 5 Z"/></svg>30 Min</span></div></div>
+      </div>
+    </div>
+
+    <!-- ANGEBOT · red-pink (same as discount) -->
+    <div class="opt">
+      <div class="opt-label">tone="angebot" · Angebot</div>
+      <div class="opt-meta">same recipe as discount (sale family) · text red-900</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(252,165,165,.32);border:1px solid rgba(252,165,165,.50);color:#7F1D1D;">Angebot</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(252,165,165,.32);border:1px solid rgba(252,165,165,.50);color:#7F1D1D;">Angebot</span></div></div>
+      </div>
+    </div>
+
+    <!-- PAUSE · ink-2 muted -->
+    <div class="opt">
+      <div class="opt-label">tone="pause" · Pause</div>
+      <div class="opt-meta">bg rgba(122,105,87, .40) · text white · muted "negative" state</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(122,105,87,.40);border:1px solid rgba(122,105,87,.60);color:#FFFFFF;">Pause</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(122,105,87,.40);border:1px solid rgba(122,105,87,.60);color:#FFFFFF;">Pause</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════ CURATION BADGES ═════════ -->
+  <h2 class="section-h" style="margin-top:48px;"><span class="section-num">C · Curation</span>Editorial/algorithmic pick</h2>
+  <p class="section-desc">
+    Component: <code>CurationBadge</code>. 4 types. Solen Favorit gets the dark "premium" treatment; the others use white-glass.
+  </p>
+  <div class="grid">
+    <div class="opt">
+      <div class="opt-label">type="solen-favorit" · Solen Favorit</div>
+      <div class="opt-meta">bg rgba(42,31,24, .55) · text white · premium dark glass</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(42,31,24,.55);border:1px solid rgba(42,31,24,.85);color:#FFFFFF;">Solen Favorit</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(42,31,24,.55);border:1px solid rgba(42,31,24,.85);color:#FFFFFF;">Solen Favorit</span></div></div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="opt-label">type="top-bewertet" · Top bewertet</div>
+      <div class="opt-meta">bg rgba(255,255,255, .50) · text s-ink · white-glass editorial</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.75);color:#2A1F18;">Top bewertet</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.75);color:#2A1F18;">Top bewertet</span></div></div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="opt-label">type="beliebt" · Beliebt</div>
+      <div class="opt-meta">same white-glass recipe</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.75);color:#2A1F18;">Beliebt</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.75);color:#2A1F18;">Beliebt</span></div></div>
+      </div>
+    </div>
+    <div class="opt">
+      <div class="opt-label">type="neu" · Neu</div>
+      <div class="opt-meta">same white-glass recipe</div>
+      <div class="twocard">
+        <div class="card"><div class="photo light"><div class="heart">♡</div><span class="badge" style="background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.75);color:#2A1F18;">Neu</span></div></div>
+        <div class="card"><div class="photo dark"><div class="heart">♡</div><span class="badge" style="background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.75);color:#2A1F18;">Neu</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════ FULL RECIPE TABLE ═════════ -->
+  <details style="margin-top:56px;">
+    <summary>📋 Full recipe table (all 17 badge variants)</summary>
+    <table class="recipe-table">
+      <thead>
+        <tr><th>Variant</th><th>bg rgba</th><th>border rgba</th><th>text</th><th>icon</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>discount (any %)</td><td>252,165,165, .32</td><td>252,165,165, .50</td><td>red-900 #7F1D1D</td><td>—</td></tr>
+        <tr><td>availability now</td><td>74,222,128, .32</td><td>74,222,128, .50</td><td>emerald-900 #064E3B</td><td>arrow ↗</td></tr>
+        <tr><td>availability week</td><td>74,222,128, .32</td><td>74,222,128, .50</td><td>emerald-900 #064E3B</td><td>—</td></tr>
+        <tr><td>availability urgent</td><td>96,165,250, .32</td><td>96,165,250, .50</td><td>blue-900 #1E3A8A</td><td>arrow ↘</td></tr>
+        <tr><td>availability limited</td><td>96,165,250, .32</td><td>96,165,250, .50</td><td>blue-900 #1E3A8A</td><td>bolt ⚡</td></tr>
+        <tr><td>availability angebot</td><td>252,165,165, .32</td><td>252,165,165, .50</td><td>red-900 #7F1D1D</td><td>—</td></tr>
+        <tr><td>availability pause</td><td>122,105,87, .40</td><td>122,105,87, .60</td><td>white</td><td>—</td></tr>
+        <tr><td>curation favorit</td><td>42,31,24, .55</td><td>42,31,24, .85</td><td>white</td><td>—</td></tr>
+        <tr><td>curation top-bewertet</td><td>255,255,255, .50</td><td>255,255,255, .75</td><td>s-ink #2A1F18</td><td>—</td></tr>
+        <tr><td>curation beliebt</td><td>255,255,255, .50</td><td>255,255,255, .75</td><td>s-ink #2A1F18</td><td>—</td></tr>
+        <tr><td>curation neu</td><td>255,255,255, .50</td><td>255,255,255, .75</td><td>s-ink #2A1F18</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p style="color:#8A7965;font-size:11px;margin-top:10px;">
+      All badges share: <code>backdrop-filter: blur(14px) saturate(1.1)</code> · <code>box-shadow: 0 1px 3px rgba(26,18,9, .06)</code>
+      · <code>border-radius: 10px</code> · <code>padding: 5px 10px</code> · <code>font: 600 11px Open Sauce One</code>
+    </p>
+  </details>
+
+  <div class="footer">
+    <strong style="color:#FFE8D8;">Mockup notes:</strong> Every badge uses the exact CSS values from <code>app/[locale]/_components/homepage/SalonCard.tsx</code> as of V2-D67-fu11. The cards in this gallery use the same photos as the live homepage. View the live version: <a href="/de" style="color:#74e890;">/de</a>.
+  </div>
+
+</div>
+
+</body>
+</html>

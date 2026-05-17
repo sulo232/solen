@@ -50,11 +50,7 @@ export default async function LocaleLayout({
           <Header locale={locale} />
           <PageTransitionWrapper>
             <CompareProvider>
-              <main
-                id="main-content"
-                tabIndex={-1}
-                className="relative mt-[72px] md:mt-[96px] rounded-t-[40px] bg-s-bg-base pb-[env(safe-area-inset-bottom)] isolate"
-              >
+              <main id="main-content" tabIndex={-1} className="pb-[env(safe-area-inset-bottom)] isolate">
                 <Breadcrumb />
                 {children}
               </main>

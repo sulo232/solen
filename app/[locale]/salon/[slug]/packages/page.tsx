@@ -10,6 +10,7 @@ import Spinner from "@/components-legacy/ui/Spinner";
 import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { getPublicEnv } from "@/lib/env";
 
 interface PackageData {
   id: string;
@@ -20,7 +21,7 @@ interface PackageData {
   services: { name_de: string; name_en: string; category: string } | null;
 }
 
-const STRIPE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const STRIPE_KEY = getPublicEnv().NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null;
 
 // ─── Stripe payment form ───────────────────────────────────────────────────

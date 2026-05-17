@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody, loyaltyAwardSchema } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 
 /**
  * POST /api/loyalty/award — Award a loyalty stamp after booking completion.
@@ -12,9 +13,11 @@ import { validateBody, loyaltyAwardSchema } from "@/lib/validations";
  * Also sends "Almost there" email when customer is 1 stamp away from reward.
  */
 export async function POST(req: NextRequest) {
+  const cronSecret = getServerEnv().CRON_SECRET;
+  if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   // Verify cron secret or internal call
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -73,7 +76,7 @@ async function sendAlmostThereEmail(
   card: { stamps_needed: number; reward_text: string; salons: any },
   salonId: string,
 ) {
-  const resendApiKey = process.env.RESEND_API_KEY;
+  const resendApiKey = getServerEnv().RESEND_API_KEY;
   if (!resendApiKey) return;
 
   // Check notification preferences

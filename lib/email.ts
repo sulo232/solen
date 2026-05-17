@@ -3,6 +3,8 @@
 // All emails have DE + EN + FR versions.
 // =============================================================================
 
+import { getServerEnv } from "@/lib/env";
+
 export type EmailLocale = "de" | "en" | "fr" | "it";
 
 export interface EmailPayload {
@@ -16,7 +18,7 @@ export interface EmailPayload {
  * Requires RESEND_API_KEY in environment.
  */
 export async function sendEmail(payload: EmailPayload): Promise<void> {
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = getServerEnv().RESEND_API_KEY;
   if (!apiKey || apiKey === "PASTE_RESEND_KEY_HERE") {
     console.warn("[email] RESEND_API_KEY not configured — skipping email send");
     return;
