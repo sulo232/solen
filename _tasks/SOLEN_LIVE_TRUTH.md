@@ -1,8 +1,10 @@
-# Solen — Live Truth (V3 only, V2-D67-fu14 lock 2026-05-17)
+# Solen — Live Truth (V3 only, V2-D70 lock 2026-05-18)
 
 > **Single source of truth for the current V3 design system.** No V2-era content, no retired specs, no stale palette. Anything labeled "RETIRED" lives in `_tasks/archive/SOLEN_LIVE_TRUTH_v3-pre-cleanup-2026-05-17.archived.md` for historical reference only. Don't grep the archive for "current state" — it has V2-D15-3 dark teal + Cooper BT + Avant Garde + 6-cat colorways + 31-combo Republik library + frosted-pill text spec, all retired.
 
 > **V3 lock chain** (most recent on top):
+> - **V2-D70 (2026-05-18) — Aurex/Fresha warm-minimal pivot**: brand emerald `#1A8F5C` → forest `#3B7A57` · accent `#E0703D` → `#D87352` · substrate `#F8F7F2` → warm pearl `#F9F8F6` · cards bumped to 22px radius + 3-layer soft drop shadow · hero gets peach radial gradient · SearchBar becomes single floating white card · Heute frei badge → pale mint `#E5F2EA` + brand green text · -20% discount → solid terracotta + white text · typography PIVOTED to Plus Jakarta Sans single family at extreme weight contrast (800 h1 vs 500 body vs 400 microcopy) — replaces Peace Sans + Open Sauce One V2-D42 lock
+> - V2-D68 (2026-05-17) — substrate cream → off-white + atmosphere wash retired
 > - **V2-D68 (2026-05-18) — Substrate shift + atmosphere retirement.** Substrate `#FAF3E6` cream → `#F8F7F2` subtle off-white. Page-wide atmosphere wash RETIRED entirely (AtmosphereBlobs JSX + body::before/::after pseudo-element gradients). Cards gained 1px hairline shadow-as-border for edge definition on lower-contrast substrate. High-contrast Gen Z aesthetic — brand colors confined to accent moments only.
 > - V2-D67-fu14 (2026-05-17) — bare text cards permanently locked + agent pre-flight gates + LIVE_TRUTH archived & rewritten
 > - V2-D67-fu13 (2026-05-17) — frosted-pill on card text retired; text region is no-touch
@@ -30,9 +32,9 @@ When a section here contradicts production code, fix the doc OR ask the user —
 
 These don't move. If a design question makes you reach for one of these, the answer is "no" before you ask.
 
-1. **Substrate is subtle off-white `#F8F7F2`.** Not cream (V2-D60 retired V2-D68), not pure white. ~97% lightness with faint warm tint. White is for cards only. (V2-D68)
-2. **Brand is emerald `#1A8F5C` + terracotta `#E0703D`.** No teal, no purple, no orange. (V2-D60)
-3. **Typography is Peace Sans (display) + Open Sauce One (body).** No Cooper, no Avant Garde, no Plus Jakarta, no Inter Tight. (V2-D42)
+1. **Substrate is warm pearl `#F9F8F6`.** Slightly warmer than V2-D68 off-white. Not cream, not pure white. White is for cards only. (V2-D70)
+2. **Brand is forest green `#3B7A57` + terracotta `#D87352`.** No teal, no purple, no neon. Matches Solen logo exactly. (V2-D70 — pivot from V2-D60 emerald `#1A8F5C`.)
+3. **Typography is Plus Jakarta Sans single family.** Extreme weight contrast: 800 h1 vs 500 body vs 400 microcopy. No Peace Sans, no Open Sauce One, no Cooper, no Avant Garde. (V2-D70 single-family pivot supersedes V2-D42.)
 4. **4 categories only**: Coiffeur, Barbershop, Nails, Spa & Wellness. (Makeup retired V2-D15-3)
 5. **Color role rule**: emerald = action affordances only. Terracotta = highlight words only. Never swap. (V2-D49j, see §5h.2)
 6. **Pill rule**: white on dark, black on light. No tinted-of-bg colors on pills. (See §5a)

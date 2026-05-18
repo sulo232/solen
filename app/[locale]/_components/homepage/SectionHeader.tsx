@@ -121,11 +121,12 @@ export function SectionTitle({
   return (
     <div className="flex items-baseline justify-between gap-6">
       <h2
-        // V2-D67-fu14 (2026-05-17): dropped inline `Plus Jakarta Sans` override —
-        // Plus Jakarta is RETIRED (V2 era). Per V2-D42, section h2s use
-        // `font-body` (Open Sauce One) bold, NOT `font-display` (Peace Sans
-        // reserved for hero h1 + logo + feature h2 moments).
-        className="font-body text-[clamp(20px,2.2vw,26px)] font-bold leading-[1.2] tracking-[-0.02em] text-s-ink"
+        // V2-D70 (2026-05-18): Plus Jakarta Sans is now the locked font (no
+        // longer drift). Section h2 stays `font-body` (which IS Plus Jakarta
+        // after V2-D70 single-family pivot) bold 700, slightly tighter
+        // tracking -0.025em to match the hero h1's tight tracking discipline.
+        // Size kept clamp(20, 2.2vw, 26) — section h2 is one tier below hero.
+        className="font-body text-[clamp(20px,2.2vw,26px)] font-bold leading-[1.2] tracking-[-0.025em] text-s-ink"
       >
         {title}
         {link ? (

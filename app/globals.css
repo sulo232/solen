@@ -1,15 +1,12 @@
 /* Solen Design System — globals.css */
-/* V3 typography V2-D## (2026-05-09): override of V2-D15-3.
-   Peace Sans (display, headlines) + Open Sauce One (body/UI, 300-900 weights).
-   Inter via Google Fonts as the safety-net fallback if cdnfonts dies (anti-pattern #4 per §0d.7).
-   Retired this round: Cooper BT, Cooper Black Std, ITC Avant Garde Gothic Std, Sansita 900, League Spartan, Inter Tight (as fallback).
-   Both new fonts are by Marie Otsuka (Open Sauce) / Riley Cran (Peace Sans), commercial-use licensed. */
-@import url('https://fonts.cdnfonts.com/css/peace-sans');
-@import url('https://fonts.cdnfonts.com/css/open-sauce-one');
-/* V2-D67-fu14 (2026-05-17): dropped `Plus+Jakarta+Sans:wght@500;600;700;800` from
-   this import — Plus Jakarta is V2-era RETIRED. Only Inter stays as the
-   cdnfonts-failure fallback for Open Sauce One per §0d.7 anti-pattern #4. */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+/* V2-D70 typography (2026-05-18): override of V2-D42 — single-family pivot.
+   Plus Jakarta Sans (display + body + UI) at extreme weight contrast
+   (800 h1 vs 500 body vs 400 microcopy) per Aurex/Fresha "warm minimal" brief.
+   Retired this round: Peace Sans, Open Sauce One, Inter (as fallback).
+   Plus Jakarta Sans was briefly retired V2-D67-fu14 because it was unauthorized
+   inline drift — V2-D70 makes it the official locked font (no longer drift).
+   Google Fonts has the latest Plus Jakarta Sans weights 400-800. */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -113,14 +110,14 @@
 
   body {
     /* V3 V2-D42 (2026-05-09 override of V2-D15-3): Open Sauce One body */
-    font-family: "Open Sauce One", Inter, system-ui, sans-serif;
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
     background-color: var(--base);
     color: var(--color-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
     /* V3 V2-D42: Peace Sans display (replaces Cooper BT), mixed-case */
-    font-family: "Peace Sans", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
     color: var(--color-heading);
     letter-spacing: -0.018em;
   }
@@ -149,21 +146,21 @@
 
 @layer utilities {
   .font-heading {
-    font-family: "Peace Sans", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   }
   .font-body {
-    font-family: "Open Sauce One", Inter, system-ui, sans-serif;
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   }
   .font-display {
-    font-family: "Peace Sans", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   }
   /* V3 (V2-D15-3): JetBrains Mono retired. Use body font with tabular-nums for prices/counts. */
   .font-mono-code {
-    font-family: "Open Sauce One", Inter, monospace;
+    font-family: "Plus Jakarta Sans", ui-monospace, monospace;
     font-variant-numeric: tabular-nums;
   }
   .data-text {
-    font-family: "Open Sauce One", Inter, system-ui, sans-serif;
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
     font-variant-numeric: tabular-nums;
     font-weight: 500;
   }
@@ -270,7 +267,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     font-size: 1rem;       /* 16px — prevents iOS zoom-on-focus */
-    font-family: "Open Sauce One", Inter, system-ui, sans-serif;
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
     color: var(--color-body);
     background: #ffffff;
     transition: border-color 200ms ease, box-shadow 200ms ease;
@@ -663,13 +660,13 @@ html {
   border: 1px solid rgba(26, 18, 9, 0.08) !important;
   border-radius: 20px !important;
   box-shadow: 0 8px 32px rgba(26,18,9,0.08), 0 24px 72px rgba(26,18,9,0.12) !important;
-  font-family: "Open Sauce One", Inter, system-ui, sans-serif !important;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif !important;
   padding: 24px !important;
   color: #1A1209 !important;
 }
 
 .solen-tour-popover .driver-popover-title {
-  font-family: "Peace Sans", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif !important;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif !important;
   font-size: 1.25rem !important;
   font-weight: 700 !important;
   margin-bottom: 8px !important;
@@ -840,8 +837,9 @@ html {
      ~97% lightness with faint warmth; brand colors live as accents (CTAs,
      badges, category tags), not as a page-wide gradient.
      V2-D60-fresha history: was #FFFFFF white, with atmospheric color coming
-     from body::before/::after wash layers (also retired V2-D68). */
-  background-color: #F8F7F2;
+     from body::before/::after wash layers (also retired V2-D68).
+     V2-D70 (2026-05-18): #F8F7F2 → #F9F8F6 warm pearl per Aurex/Fresha spec. */
+  background-color: #F9F8F6;
 }
 
 body {

@@ -34,16 +34,15 @@ import { HeartButton } from "./HeartButton";
  */
 
 const cardCategoryColors = {
-  // V2-D67-fu14 (2026-05-17): updated from stale V2-D48 hexes to V2-D60 vibrancy
-  // tune. Tailwind tokens updated V2-D60 but this hardcoded photo-fallback map
-  // was missed — meaning no-photo cards rendered in pre-vibrancy V2-D48 colors
-  // while everything else moved to V2-D60. Sync restored.
-  // V2-D48 EARTHEN WELLNESS LIGHT (2026-05-09 original): cat colorways re-mapped
-  // from V3 dark-teal palette to earthen tones.
-  coiffeur:   { bg: "#FFE8D8", initial: "#E0703D" }, // peach + warm terracotta (V2-D60)
-  barbershop: { bg: "#EAE0D0", initial: "#2A1F18" }, // bone + ink (V2-D60 bg shift)
-  nails:      { bg: "#D4DDC8", initial: "#A04A22" }, // sage-pale + terra-deep (V2-D60 text deepened)
-  spa:        { bg: "#D4F2E0", initial: "#0F6F44" }, // emerald-subtle + emerald-mid (V2-D60 sat bump + text lightened)
+  // V2-D70 (2026-05-18): updated cat-text colors to align with the warm-minimal
+  // brand-green shift (#1A8F5C → #3B7A57). Spa's initial color uses the new
+  // brand-mid #2D5E43. Other cats also slightly adjusted to use the new
+  // terracotta family (V2-D60 #E0703D → V2-D70 #D87352). Cat bg stays the same
+  // tile palette — only the text colors track the brand+accent updates.
+  coiffeur:   { bg: "#FFE8D8", initial: "#D87352" }, // peach + V2-D70 terracotta
+  barbershop: { bg: "#EAE0D0", initial: "#1A1C19" }, // bone + V2-D70 ink
+  nails:      { bg: "#D4DDC8", initial: "#A04A22" }, // sage-pale + terra-deep (kept)
+  spa:        { bg: "#E5F2EA", initial: "#2D5E43" }, // V2-D70 brand-subtle + brand-mid
 } as const;
 
 /** V2-D60-cards-4 (2026-05-14): display labels for the category subtitle row. */
@@ -85,7 +84,9 @@ const badgeGeometry = cn(
 
 /** Discount badge — V2-D67-fu10: light pink-red layered glass + red-900 text
  *  (sale semantic, hue-matched text — no brown-on-yellow collision). */
-const discountClass = cn(badgeGeometry, "text-red-900");
+// V2-D70: discount badge text → white (was red-900) to match new solid
+// terracotta bg #D87352. White on terracotta = 4.5:1 contrast, AA Large.
+const discountClass = cn(badgeGeometry, "text-white");
 
 /** Availability pill — V2-D63: MOVED to top-left (was bottom-left).
  *  Same slot as discount + curation, but they're mutex by section logic:
@@ -98,11 +99,16 @@ const availVariants = cva(
       tone: {
         // V2-D67-fu10: text matches the bg hue family — green/green, blue/blue,
         // red/red. No more brown-on-yellow.
-        now:     "text-emerald-900",  // green chip → green text
-        week:    "text-emerald-900",
-        urgent:  "text-blue-900",     // blue chip → blue text
+        // V2-D70 (2026-05-18) — text colors aligned to new solid badge bgs:
+        //   now/week  → solid pale mint #E5F2EA + brand-green #3B7A57 text
+        //   angebot   → solid terracotta #D87352 + white text
+        //   urgent/limited → light blue glass + blue-900 text (kept V2-D67-fu7)
+        //   pause     → ink glass + white text (kept)
+        now:     "text-s-brand",
+        week:    "text-s-brand",
+        urgent:  "text-blue-900",     // blue chip → blue text (kept glass)
         limited: "text-blue-900",
-        angebot: "text-red-900",      // red/pink chip → red text
+        angebot: "text-white",        // V2-D70: terracotta solid → white text
         pause:   "text-white",        // ink-2 muted glass (unchanged)
       },
     },
@@ -168,20 +174,19 @@ function layeredGlass(rgb: string, bgAlpha = 0.22, borderAlpha = 0.32) {
   } as const;
 }
 
-// V2-D67-fu10 (2026-05-16): swapped discount/angebot OFF yellow per user
-// "brown n yellow doesnt make scence." Yellow chip + amber-900 text reads as
-// brown-on-yellow which is muddy. Discount semantically = sale → light red/pink.
-// Now every chip has hue-matched dark text (no brown-on-yellow collision).
-//
-// Light-bright base colors (Tailwind 300/400-step — pastel-feel but visible):
-//   green-400  (74, 222, 128)  → availability positive (now, week)  + emerald-900 text
-//   blue-400   (96, 165, 250)  → time-pressure (urgent, limited)    + blue-900 text
-//   red-300    (252, 165, 165) → sale/discount (angebot, DiscountBadge) + red-900 text
-const amberStyle    = layeredGlass("252, 165, 165", 0.32, 0.50); // light bright pink-red — discount/sale
-const angebotStyle  = layeredGlass("252, 165, 165", 0.32, 0.50); // same — Angebot
-const urgentStyle   = layeredGlass("96, 165, 250", 0.32, 0.50);  // light bright blue — Schnell weg
-const greenStyle    = layeredGlass("74, 222, 128", 0.32, 0.50);  // light bright green — Heute frei
-const tealStyle     = layeredGlass("74, 222, 128", 0.32, 0.50);  // light bright green — Diese Woche
+// V2-D70 (2026-05-18) — Aurex/Fresha warm-minimal badge palette:
+// Heute frei + Diese Woche → SOLID pale mint #E5F2EA bg + brand-green #3B7A57 text.
+// Angebot + Discount → SOLID terracotta #D87352 bg + white text.
+// Urgent (Schnell weg / Limited) → stays light-blue layered glass (V2-D67-fu7
+// recipe, semantically distinct time-pressure signal — kept blue family).
+// V2-D67-fu10 history kept for reference: discount swapped OFF yellow per
+// user "brown n yellow doesnt make scence" — V2-D70 takes this further by
+// going to solid terracotta (brand-aligned + high contrast white text).
+const amberStyle    = { background: "#D87352", border: "1px solid rgba(168, 90, 64, 0.5)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.06)" } as const;
+const angebotStyle  = { background: "#D87352", border: "1px solid rgba(168, 90, 64, 0.5)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.06)" } as const;
+const urgentStyle   = layeredGlass("96, 165, 250", 0.32, 0.50);  // light bright blue — Schnell weg (kept V2-D67-fu7 glass)
+const greenStyle    = { background: "#E5F2EA", border: "1px solid rgba(59, 122, 87, 0.18)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
+const tealStyle     = { background: "#E5F2EA", border: "1px solid rgba(59, 122, 87, 0.18)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
 // V2-D67-fu11 (2026-05-16): unified ALL badges on the layeredGlass formula
 // (was mixed — action badges layered, but favorit/pause/curation still on the
 // older single-layer glassStyle). Now every badge has consistent border + shadow.
@@ -437,20 +442,18 @@ export function SalonCard({
           // text below, mobile card lands at ~160×245 = 0.65 ratio (between 5:7 and
           // 7:10 portrait), desktop ~195×280 = 0.70 (~5:7). More portrait than 4:5
           // which felt subtle.
-          "relative aspect-square w-full overflow-hidden rounded-[18px]",
-          // V2-D68 (2026-05-18): added 1px hairline shadow-as-border (first layer
-          // `0 0 0 1px rgba(26,18,9,0.06)`) to give cards edge definition on the
-          // new subtle off-white substrate `#F8F7F2`. On cream `#FAF3E6` the
-          // white cards had ~5% lightness delta with the substrate (clearly visible
-          // edge); on off-white the delta drops to ~2% so the photo dissolved into
-          // the substrate at the corner radius without a hairline. The hairline is
-          // sharper than CSS `border:` because it doesn't push content (no layout
-          // shift) and stays crisp at 1dpr. Pattern borrowed from Airbnb / Stripe
-          // card recipes. The other two shadow layers are the V2-D41 baseline.
-          "shadow-[0_0_0_1px_rgba(26,18,9,0.06),0_1px_2px_rgba(26,18,9,0.04),0_4px_10px_rgba(26,18,9,0.05)]",
+          "relative aspect-square w-full overflow-hidden rounded-[22px]",
+          // V2-D70 (2026-05-18) — Aurex/Fresha warm-minimal card depth:
+          // radius 18 → 22px (softer welcoming curve per "increase radius on
+          // cards, buttons, images" spec). Hairline shadow-as-border kept
+          // (V2-D68 pattern) but RGB updated cool-ink (26,28,25) matching new
+          // V2-D70 ink #1A1C19. 3-layer soft wide drop shadow (not the previous
+          // 2-layer subtle — V2-D70 needs more lift on the pearl substrate so
+          // cards "float" per Aurex feel).
+          "shadow-[0_0_0_1px_rgba(26,28,25,0.06),0_1px_2px_rgba(26,28,25,0.04),0_6px_18px_rgba(26,28,25,0.06),0_18px_36px_-12px_rgba(26,28,25,0.08)]",
           "transition-[transform,box-shadow] duration-200 ease-glide",
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
-          "group-hover:shadow-[0_0_0_1px_rgba(26,18,9,0.08),0_1px_2px_rgba(26,18,9,0.05),0_6px_14px_rgba(26,18,9,0.06),0_12px_24px_rgba(26,18,9,0.05)]",
+          "group-hover:shadow-[0_0_0_1px_rgba(26,28,25,0.08),0_2px_4px_rgba(26,28,25,0.06),0_10px_24px_rgba(26,28,25,0.08),0_24px_44px_-12px_rgba(26,28,25,0.10)]",
         )}
         style={{ backgroundColor: cat.bg }}
       >

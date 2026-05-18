@@ -78,26 +78,31 @@ export default async function Hero() {
           Recently Viewed too far below the fold and leaving atmosphere-only
           dead zone during scroll-down. 70vh keeps search comfortably above the
           fold while sections start ~150-200px sooner. */}
-      <div className="relative mx-auto flex w-full max-w-[1280px] flex-col justify-center px-5 pt-[100px] pb-12 md:px-8 md:pt-32 md:pb-16 min-h-[70vh] md:min-h-[92vh]">
+      {/* V2-D70 (2026-05-18): peach radial gradient behind hero — the "Fresha
+          touch" per warm-minimal brief. Contained ellipse at 60%/30% blending
+          s-bg-peach (#FFF0E6) into the substrate. Stops well before cards
+          start, so no page-wide wash relapse. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-[100px] -left-[10%] -right-[10%] h-[540px] z-0"
+        style={{
+          background: "radial-gradient(ellipse 60% 50% at 60% 30%, #FFF0E6 0%, transparent 70%)",
+        }}
+      />
+      <div className="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-5 pt-[100px] pb-12 md:px-8 md:pt-32 md:pb-16 min-h-[70vh] md:min-h-[92vh]">
         <div className="w-full">
           {displayName && (
-            // V2-D67-fu14 (2026-05-17): dropped the 👋 hand-wave emoji per §5e
-            // iconography rule (Lucide only, no Unicode emoji in UI). Also
-            // removed inline `Plus Jakarta Sans` font-family — Plus Jakarta is
-            // RETIRED (was V2 era). Greeting now uses `font-body` (Open Sauce
-            // One via globals.css) per V2-D42 typography lock.
-            <p className="mb-3 font-body text-[16px] md:text-[18px] font-medium text-s-ink-2">
+            // V2-D70 (2026-05-18): greeting weight bumped 500 medium → still 500
+            // but now in Plus Jakarta Sans (single-family typography lock).
+            <p className="mb-3 font-body text-[15px] md:text-[17px] font-medium text-s-ink-2 tracking-[-0.005em]">
               Hallo, {displayName}
             </p>
           )}
           <h1
-            // V2-D67-fu3: h1 size bumped clamp(34,5.5vw,56) → clamp(36,6vw,60)
-            // to match Fresha's "Book local selfcare services" presence. mb-8
-            // → mb-10 for more breathing room before the search card.
-            // V2-D67-fu14 (2026-05-17): dropped inline `Plus Jakarta Sans`
-            // override — that was V2-era drift. h1 now uses `font-display`
-            // (Peace Sans via globals.css) per V2-D42 typography lock.
-            className="mb-10 font-display text-[clamp(36px,6vw,60px)] font-extrabold leading-[1.05] tracking-[-0.02em] text-s-ink"
+            // V2-D70 (2026-05-18) — warm minimal h1: Plus Jakarta Sans 800,
+            // larger size clamp(40, 8.5vw, 60), tighter tracking -0.035em.
+            // Extreme weight contrast vs body 500 (single-family system).
+            className="mb-10 font-display text-[clamp(40px,8.5vw,60px)] font-extrabold leading-[1.02] tracking-[-0.035em] text-s-ink"
           >
             Schöner aussehen, schneller{" "}
             <span className="text-s-accent">buchen</span>.

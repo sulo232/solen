@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=390, initial-scale=1" />
+  <title>Solen · Typography + neo-brutalist SearchBar</title>
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/peace-sans" />
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/satoshi" />
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/general-sans" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* V2-D68 + V2-D69 PROPOSAL — typography + searchbar */
+    :root {
+      --s-bg-base: #F8F7F2;
+      --s-bg-surface: #FFFFFF;
+      --s-brand: #1A8F5C;
+      --s-brand-punchy: #10A560;
+      --s-brand-mid: #0F6F44;
+      --s-brand-deep: #084B2D;
+      --s-accent: #E0703D;
+      --s-accent-deep: #A04A22;
+      --s-ink: #2A1F18;
+      --s-ink-2: #5C4938;
+      --s-ink-3: #8A7660;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--s-bg-base); }
+    body {
+      color: var(--s-ink);
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    /* Display font (UNCHANGED across all variants) — Peace Sans */
+    .display { font-family: 'Peace Sans', Impact, Haettenschweiler, sans-serif; }
+
+    /* Body font candidates */
+    .body-satoshi { font-family: 'Satoshi', system-ui, -apple-system, sans-serif; }
+    .body-geist { font-family: 'Geist', system-ui, -apple-system, sans-serif; }
+    .body-general { font-family: 'General Sans', system-ui, -apple-system, sans-serif; }
+    .body-current { font-family: 'Open Sauce One', system-ui, -apple-system, sans-serif; }
+
+    /* Variation switcher */
+    .switcher {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--s-bg-base);
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid rgba(26,18,9,0.08);
+    }
+    .switcher-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--s-ink-2);
+      margin-bottom: 8px;
+    }
+    .switcher-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .switcher button {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 2px solid var(--s-ink);
+      background: white;
+      font-family: 'Satoshi', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--s-ink);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .switcher button.active {
+      background: var(--s-ink);
+      color: white;
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--s-ink);
+    }
+
+    /* Variation container */
+    .variant { display: none; }
+    .variant.active { display: block; }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 32px 20px 28px;
+    }
+    .greeting {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--s-ink-2);
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(36px, 6vw, 48px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--s-ink);
+      margin-bottom: 32px;
+    }
+    h1 .accent { color: var(--s-accent); }
+
+    /* ===== NEO-BRUTALIST SearchBar ===== */
+    /* Thicker 2px ink border + solid offset drop shadow + chunky icons + punchier CTA */
+    .searchbar {
+      background: white;
+      border: 2px solid var(--s-ink);
+      border-radius: 18px;
+      padding: 6px;
+      box-shadow: 4px 4px 0 var(--s-ink);
+      margin-bottom: 32px;
+    }
+    .searchrow {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      border-bottom: 2px solid rgba(26, 18, 9, 0.08);
+      cursor: pointer;
+    }
+    .searchrow:last-of-type { border-bottom: 0; }
+    .searchrow svg {
+      width: 22px; height: 22px;
+      color: var(--s-ink);
+      flex-shrink: 0;
+      stroke-width: 2.4;
+    }
+    .searchrow .label {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--s-ink);
+      flex: 1;
+    }
+    .searchbtn {
+      width: 100%;
+      padding: 16px;
+      margin-top: 6px;
+      background: var(--s-brand-punchy);
+      color: white;
+      border: 2px solid var(--s-ink);
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--s-ink);
+      transition: all 0.12s ease;
+    }
+    .searchbtn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0 var(--s-ink);
+    }
+    .searchbtn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--s-ink);
+    }
+
+    /* ===== CARDS (preserved V2-D68) ===== */
+    .section {
+      padding: 8px 20px 28px;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--s-ink);
+    }
+    .section-link {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--s-ink);
+      background: white;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--s-ink);
+    }
+    .section-link svg { width: 16px; height: 16px; color: var(--s-ink); stroke-width: 2.5; }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, 157px);
+      gap: 14px;
+    }
+    .card { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+    .photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: 18px;
+      box-shadow:
+        0 0 0 1px rgba(26,18,9,0.06),
+        0 1px 2px rgba(26,18,9,0.04),
+        0 4px 10px rgba(26,18,9,0.05);
+    }
+    .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .text { margin-top: 10px; padding: 0 2px; display: flex; flex-direction: column; gap: 2px; }
+    .text h3 {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--s-ink);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .meta {
+      font-size: 13px;
+      color: var(--s-ink-3);
+      line-height: 1.35;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .row3 {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--s-ink-2);
+      line-height: 1.35;
+    }
+    .row3 .left { flex: 1; }
+    .row3 .left b { font-weight: 600; color: var(--s-ink); }
+    .row3 .right {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-weight: 600;
+      color: var(--s-ink);
+      font-variant-numeric: tabular-nums;
+    }
+    .star { width: 11px; height: 11px; fill: #F3A864; }
+    .badge {
+      position: absolute;
+      top: 8px; left: 8px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 8px;
+      background: rgba(74, 222, 128, 0.32);
+      border: 1px solid rgba(74, 222, 128, 0.50);
+      color: #14532D;
+    }
+    .heart {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 28px; height: 28px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .heart svg { width: 14px; height: 14px; color: var(--s-ink-2); stroke-width: 2.4; }
+
+    /* Spec note */
+    .spec {
+      margin: 24px 20px 0;
+      padding: 14px 16px;
+      background: white;
+      border: 2px solid var(--s-ink);
+      border-radius: 14px;
+      box-shadow: 3px 3px 0 var(--s-ink);
+      font-size: 12px;
+      color: var(--s-ink-2);
+      line-height: 1.5;
+    }
+    .spec h4 {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--s-ink);
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .spec ul { padding-left: 18px; margin-top: 4px; }
+    .spec li { margin-bottom: 3px; }
+    .spec b { color: var(--s-accent-deep); font-weight: 700; }
+  </style>
+</head>
+<body class="body-satoshi">
+
+<div class="switcher body-satoshi">
+  <div class="switcher-title">Body font · pick one</div>
+  <div class="switcher-row">
+    <button class="active" data-font="body-satoshi">Satoshi</button>
+    <button data-font="body-geist">Geist</button>
+    <button data-font="body-general">General Sans</button>
+    <button data-font="body-current">Open Sauce One (current)</button>
+  </div>
+</div>
+
+<section class="hero">
+  <p class="greeting">Hallo, Sulo</p>
+  <h1 class="display">Schöner aussehen,<br>schneller <span class="accent">buchen</span>.</h1>
+
+  <div class="searchbar">
+    <div class="searchrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <span class="label">Service</span>
+    </div>
+    <div class="searchrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span class="label">Stadt</span>
+    </div>
+    <div class="searchrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span class="label">Zeit</span>
+    </div>
+    <button class="searchbtn">Solen durchsuchen</button>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Zuletzt angesehen</h2>
+    <a class="section-link" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="row">
+    <a class="card" href="#">
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="badge">Heute frei</div>
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Atelier Coiffure</h3>
+        <div class="meta">Spalenberg 23 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>14:30</b> · CHF 80</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.9</div>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Studio Nord</h3>
+        <div class="meta">Klybeckstrasse 12 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>15:00</b> · CHF 50</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div class="spec">
+  <h4>What changes (V2-D69 proposal)</h4>
+  <ul>
+    <li><b>Display:</b> Peace Sans UNCHANGED (h1, logo)</li>
+    <li><b>Body:</b> Open Sauce One → <i>Satoshi / Geist / General Sans</i> (you pick)</li>
+    <li><b>SearchBar:</b> subtle neo-brutalism — 2px ink border, 4px solid offset drop shadow, 22px chunky icons (was 18px), bold label text (500), tactile feel</li>
+    <li><b>CTA color:</b> <code>s-brand</code> emerald <code>#1A8F5C</code> → <code>#10A560</code> (~10pt more saturation), still emerald hue, more punch</li>
+    <li><b>CTA shadow:</b> 3px solid offset drop shadow (was soft blur), -1px translate on hover, +1px on press</li>
+    <li><b>Section "Alle →" link:</b> circle with 2px ink border + 2px solid drop shadow (tactile, not generic)</li>
+    <li><b>Unchanged:</b> off-white substrate, card hairlines, all V3 brand colors, V2-D49j color role rule</li>
+  </ul>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.switcher button');
+  const body = document.body;
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      body.className = btn.dataset.font;
+    });
+  });
+</script>
+
+</body>
+</html>

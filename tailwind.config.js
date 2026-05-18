@@ -31,14 +31,17 @@ module.exports = {
         // Backward-compat: `s-coral` token group still references the brand DEFAULT — same token name,
         // new value. V2-D48-2: shifted from muted moss-soft #5C7765 → vibrant emerald-forest #1F5C42
         // per user "more vibrant + dark green everywhere". Saturated, classic luxury-craft green.
-        // ── V2-D60 VIBRANCY TUNE (2026-05-14) — Option B locked ──
-        // Brand: +44% saturation (#1F5C42 49% → #1A8F5C 70% sat), same hue family
-        // Accent: +40% saturation (#C97A57 51% → #E0703D 71% sat), warmer terracotta
-        // Substrate: lighter cream (#F5EBDD → #FAF3E6), less yellow
-        // Cards: cream-on-cream replaced by WHITE on cream — biggest visible fix
-        "s-coral": { DEFAULT: "#1A8F5C", hover: "#0F6F44", subtle: "#D4F2E0", text: "#1A8F5C", button: "#1A8F5C", "button-hover": "#0F6F44" },
-        "s-brand": { DEFAULT: "#1A8F5C", pale: "#A8E0BF", subtle: "#D4F2E0", mid: "#0F6F44", deep: "#084B2D" },
-        "s-accent": { DEFAULT: "#E0703D", soft: "#F0A98C", deep: "#A04A22" },
+        // ── V2-D70 WARM MINIMAL PIVOT (2026-05-18) — Aurex/Fresha lane ──
+        // Brand: punchy emerald #1A8F5C → forest #3B7A57 (matches Solen logo green
+        // exactly per user spec). Lower saturation, more "premium minimal" feel.
+        // Accent: terracotta #E0703D → #D87352 (matches Solen logo dot exactly).
+        // Substrate: #FAF3E6 cream (V2-D60) → #F9F8F6 warm pearl/alabaster.
+        // Cards stay WHITE on the pearl bg — soft contrast lets cards float
+        // with shadow (Aurex lift). Plus Jakarta Sans replaces Peace Sans +
+        // Open Sauce One — single family at extreme weight contrast.
+        "s-coral": { DEFAULT: "#3B7A57", hover: "#2D5E43", subtle: "#E5F2EA", text: "#3B7A57", button: "#3B7A57", "button-hover": "#2D5E43" },
+        "s-brand": { DEFAULT: "#3B7A57", pale: "#A6CDB5", subtle: "#E5F2EA", mid: "#2D5E43", deep: "#1A4029" },
+        "s-accent": { DEFAULT: "#D87352", soft: "#E89B83", deep: "#A04A22" },
         // ── Bright accent (butter) — sparingly, for stat-card highlights ──
         "s-butter": "#F2D77B",
         // ── Sage — wellness whisper, never loud ──
@@ -56,20 +59,20 @@ module.exports = {
         "s-atm-sage":   "#D4DDC8",  // wellness whisper (unchanged)
         "s-atm-bone":   "#EAE0D0",  // V2-D60: matches new sunken
         "s-atm-butter": "#F2D77B",  // bright accent (unchanged)
-        // ── Ink (text) — kept warm-charcoal family from V3 (already aligned with earthen palette) ──
-        "s-ink": { DEFAULT: "#2A1F18", secondary: "#5C4A3A", tertiary: "#8A7A68", disabled: "#C4B8A6" },
-        "s-ink-2": "#5C4A3A",  // V2-D48: deepened from #56463E for warmer tone in earth context
-        "s-ink-3": "#8A7A68",  // V2-D48: cooler than #7A6957, better readability on cream
-        "s-border": "#EAE0D0",  // V2-D60: slightly desaturated bone for rule lines
-        // V2-D68 (2026-05-18): substrate base swapped cream #FAF3E6 (V2-D60) → subtle
-        // off-white #F8F7F2 per user "atmosphere wash creates visual mush, lets do
-        // subtle off white" feedback. Page-wide atmosphere blobs RETIRED in the same
-        // commit. High-contrast Gen Z aesthetic — substrate is quiet (~97% lightness
-        // with the faintest warm tint), brand colors live as accents on CTAs/badges/
-        // category tags only, NOT as a page-wide gradient wash.
-        // V2-D60 history: surface flipped cream-on-cream → WHITE on cream (killed the
-        // beige collapse). base lightened from #F5EBDD → #FAF3E6 (less yellow tint).
-        "s-bg": { base: "#F8F7F2", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#EAE0D0", active: "#FFFAF1" },
+        // ── Ink (text) — V2-D70 cool-grey scale (replaces warm-charcoal V3) ──
+        // Per spec: never use pure black (#000000) — causes eye strain. Primary
+        // is dark rich charcoal #1A1C19, secondary is medium cool grey #6B7068.
+        "s-ink": { DEFAULT: "#1A1C19", secondary: "#6B7068", tertiary: "#9BA09A", disabled: "#C5C8C4" },
+        "s-ink-2": "#6B7068",  // V2-D70: medium cool grey per spec (was warm #5C4A3A)
+        "s-ink-3": "#9BA09A",  // V2-D70: lighter cool grey, derived from ink-2
+        "s-border": "#E8E6E0",  // V2-D70: cool-warm neutral hairline for pearl bg (was warm bone #EAE0D0)
+        // V2-D70 (2026-05-18): substrate fine-tuned #F8F7F2 → #F9F8F6 (warm pearl /
+        // alabaster per Aurex/Fresha spec). Slightly warmer + softer than V2-D68.
+        // Hero gets a peach radial gradient via .bg-s-bg-peach + custom CSS layer.
+        // Sunken updated to a soft warm-neutral that pairs with the new pearl base.
+        // V2-D68 history (kept for archeology): substrate F8F7F2 + atmosphere wash retired.
+        // V2-D60 history: cream-on-cream → WHITE on cream (killed beige collapse).
+        "s-bg": { base: "#F9F8F6", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#F2F0EB", active: "#FFFAF1", peach: "#FFF0E6" },
         // V2-D48: bg.base flipped white → cream #F5EBDD (Earthen Wellness page bg). Surface +
         // sunken updated. raised stays white for cards/modals. active = cream-warm input typing.
         // V2-D16 (2026-05-08) note: cream #FFF4E8 was wrongly retired in V2-D15 comment above.
@@ -85,15 +88,16 @@ module.exports = {
         "s-star":     "#F3A864",  // V3 added — rating stars only
       },
       fontFamily: {
-        // V2-D## (2026-05-09): override of V2-D15-3 — switched display+body to Peace Sans + Open Sauce One
-        // per user direction off Instagram graphic-design reference. The old Cooper BT + ITC Avant Garde
-        // Gothic Std pair retired (along with Sansita 900, League Spartan, Cooper Black Std fallbacks).
-        // Inter via Google Fonts is the safety-net fallback for body (in case cdnfonts dies).
-        // Impact-stack is the system fallback for Peace Sans (heavy display character).
-        // `heading` aliased to display so existing `font-heading` className keeps working.
-        display: ["'Peace Sans'", "Impact", "Haettenschweiler", "'Arial Narrow Bold'", "sans-serif"],
-        heading: ["'Peace Sans'", "Impact", "Haettenschweiler", "'Arial Narrow Bold'", "sans-serif"],
-        body:    ["'Open Sauce One'", "Inter", "system-ui", "sans-serif"],
+        // V2-D70 (2026-05-18): single-family pivot per Aurex/Fresha spec.
+        // Plus Jakarta Sans across display + heading + body. "Tighter, more elegant
+        // geometric sans-serif" with extreme weight contrast (800 h1 vs 500 body vs
+        // 400 microcopy) doing the personality work that 2 separate fonts used to.
+        // Retired V2-D42: Peace Sans (display) + Open Sauce One (body) + Inter (fallback).
+        // Plus Jakarta Sans was briefly retired V2-D67-fu14 because it was inline drift —
+        // it is now officially the locked font, no longer drift.
+        display: ["'Plus Jakarta Sans'", "system-ui", "-apple-system", "sans-serif"],
+        heading: ["'Plus Jakarta Sans'", "system-ui", "-apple-system", "sans-serif"],
+        body:    ["'Plus Jakarta Sans'", "system-ui", "-apple-system", "sans-serif"],
       },
       borderRadius: {
         // Legacy Tailwind vars (keep for shadcn compat)
