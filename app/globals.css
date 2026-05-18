@@ -838,8 +838,11 @@ html {
      badges, category tags), not as a page-wide gradient.
      V2-D60-fresha history: was #FFFFFF white, with atmospheric color coming
      from body::before/::after wash layers (also retired V2-D68).
-     V2-D70 (2026-05-18): #F8F7F2 → #F9F8F6 warm pearl per Aurex/Fresha spec. */
-  background-color: #F9F8F6;
+     V2-D70 (2026-05-18): #F8F7F2 → #F9F8F6 warm pearl per Aurex/Fresha spec.
+     V2-D71 (2026-05-18): #F9F8F6 → #F8F7F5 slightly darker warm grey per
+     user "If background too close to white on mobile, darken just a tiny bit"
+     — gives white cards crisper contrast for the Aurex floating effect. */
+  background-color: #F8F7F5;
 }
 
 body {

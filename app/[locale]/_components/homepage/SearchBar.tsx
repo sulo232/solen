@@ -216,12 +216,12 @@ export function SearchBar() {
         }}
         transition={transition}
         className={cn(
-          // V2-D70 (2026-05-18) — Aurex/Fresha warm-minimal chrome:
-          // 24px radius (was 16) for softer welcoming curve, 1px hairline
-          // border at ~4% ink alpha, 3-layer soft diffused drop shadow
-          // (was 2-layer) lifting card off the peach-warmed pearl bg.
-          "relative w-full max-w-[540px] overflow-hidden border border-s-ink/[0.04] bg-white",
-          "shadow-[0_1px_2px_rgba(26,28,25,0.03),0_8px_24px_rgba(26,28,25,0.05),0_24px_48px_-12px_rgba(26,28,25,0.08)]",
+          // V2-D71 (2026-05-18) — Aurex floating shadow per exact user spec:
+          // `0px 8px 24px rgba(0, 0, 0, 0.06)`. Single soft layer doing all
+          // the lift. Border dropped to be near-invisible (just hairline alpha
+          // at 3%) so the shadow does the edge work, not the border.
+          "relative w-full max-w-[540px] overflow-hidden border border-s-ink/[0.03] bg-white",
+          "shadow-[0_8px_24px_rgba(0,0,0,0.06)]",
           "max-md:mx-auto",
           isExpanded && "z-[70] md:max-w-[640px]",
           !isExpanded && "md:max-w-none",

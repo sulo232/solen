@@ -68,11 +68,11 @@ export function HeartButton({
         aria-pressed={isSaved}
         style={{
           // V2-D60-cards (2026-05-14): frosted-glass CIRCLE wrapper around the heart.
-          // 32px capsule with 12px backdrop blur + 1px white inner border + inset
-          // highlight. Replaces V2-D48-4 naked-heart-with-drop-shadow pattern —
-          // glass circle reads on ANY photo composition without the photo-content
-          // contrast roulette.
-          background: "rgba(255, 255, 255, 0.45)",
+          // V2-D71 (2026-05-18): white alpha bumped 0.45 → 0.70 per user spec
+          // "make the white slightly transparent (e.g., 70% opacity)". More
+          // visible glass surface — reads as a deliberate element on ANY photo
+          // background, not just a soft veil.
+          background: "rgba(255, 255, 255, 0.70)",
           backdropFilter: "blur(12px) saturate(1.4)",
           WebkitBackdropFilter: "blur(12px) saturate(1.4)",
           border: "1px solid rgba(255, 255, 255, 0.6)",

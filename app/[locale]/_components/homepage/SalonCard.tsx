@@ -99,15 +99,15 @@ const availVariants = cva(
       tone: {
         // V2-D67-fu10: text matches the bg hue family — green/green, blue/blue,
         // red/red. No more brown-on-yellow.
-        // V2-D70 (2026-05-18) — text colors aligned to new solid badge bgs:
+        // V2-D70/D71 text colors aligned to badge bgs:
         //   now/week  → solid pale mint #E5F2EA + brand-green #3B7A57 text
         //   angebot   → solid terracotta #D87352 + white text
-        //   urgent/limited → light blue glass + blue-900 text (kept V2-D67-fu7)
+        //   urgent/limited → Dusty Slate #EEF2F6 + navy slate #3A5B7C text (V2-D71)
         //   pause     → ink glass + white text (kept)
         now:     "text-s-brand",
         week:    "text-s-brand",
-        urgent:  "text-blue-900",     // blue chip → blue text (kept glass)
-        limited: "text-blue-900",
+        urgent:  "text-[#3A5B7C]",    // V2-D71: deep muted navy on dusty slate
+        limited: "text-[#3A5B7C]",
         angebot: "text-white",        // V2-D70: terracotta solid → white text
         pause:   "text-white",        // ink-2 muted glass (unchanged)
       },
@@ -184,7 +184,11 @@ function layeredGlass(rgb: string, bgAlpha = 0.22, borderAlpha = 0.32) {
 // going to solid terracotta (brand-aligned + high contrast white text).
 const amberStyle    = { background: "#D87352", border: "1px solid rgba(168, 90, 64, 0.5)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.06)" } as const;
 const angebotStyle  = { background: "#D87352", border: "1px solid rgba(168, 90, 64, 0.5)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.06)" } as const;
-const urgentStyle   = layeredGlass("96, 165, 250", 0.32, 0.50);  // light bright blue — Schnell weg (kept V2-D67-fu7 glass)
+// V2-D71 (2026-05-18): swapped from light-bright system-blue glass to "Dusty Slate"
+// per user spec — `#EEF2F6` bg + `#3A5B7C` text. Still registers as "blue/different"
+// vs the green Heute frei badge, but feels expensive (Fresha/Airbnb pattern) and
+// harmonizes with the warm-grey substrate instead of competing with it.
+const urgentStyle   = { background: "#EEF2F6", border: "1px solid rgba(58, 91, 124, 0.18)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
 const greenStyle    = { background: "#E5F2EA", border: "1px solid rgba(59, 122, 87, 0.18)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
 const tealStyle     = { background: "#E5F2EA", border: "1px solid rgba(59, 122, 87, 0.18)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
 // V2-D67-fu11 (2026-05-16): unified ALL badges on the layeredGlass formula
@@ -443,17 +447,16 @@ export function SalonCard({
           // 7:10 portrait), desktop ~195×280 = 0.70 (~5:7). More portrait than 4:5
           // which felt subtle.
           "relative aspect-square w-full overflow-hidden rounded-[22px]",
-          // V2-D70 (2026-05-18) — Aurex/Fresha warm-minimal card depth:
-          // radius 18 → 22px (softer welcoming curve per "increase radius on
-          // cards, buttons, images" spec). Hairline shadow-as-border kept
-          // (V2-D68 pattern) but RGB updated cool-ink (26,28,25) matching new
-          // V2-D70 ink #1A1C19. 3-layer soft wide drop shadow (not the previous
-          // 2-layer subtle — V2-D70 needs more lift on the pearl substrate so
-          // cards "float" per Aurex feel).
-          "shadow-[0_0_0_1px_rgba(26,28,25,0.06),0_1px_2px_rgba(26,28,25,0.04),0_6px_18px_rgba(26,28,25,0.06),0_18px_36px_-12px_rgba(26,28,25,0.08)]",
+          // V2-D71 (2026-05-18) — Aurex floating-card shadow per exact user spec:
+          // `0px 10px 30px rgba(0, 0, 0, 0.05)`. Single layer, wide spread, very
+          // low pure-black alpha, no offset hairline. The trick to Aurex's
+          // "premium float" is one soft blurry shadow doing all the lift work
+          // — multiple stacked layers fight for attention.
+          // V2-D70 history: 3-layer warm-ink shadow + hairline border.
+          "shadow-[0_10px_30px_rgba(0,0,0,0.05)]",
           "transition-[transform,box-shadow] duration-200 ease-glide",
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
-          "group-hover:shadow-[0_0_0_1px_rgba(26,28,25,0.08),0_2px_4px_rgba(26,28,25,0.06),0_10px_24px_rgba(26,28,25,0.08),0_24px_44px_-12px_rgba(26,28,25,0.10)]",
+          "group-hover:shadow-[0_14px_36px_rgba(0,0,0,0.08)]",
         )}
         style={{ backgroundColor: cat.bg }}
       >

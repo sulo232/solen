@@ -78,15 +78,19 @@ export default async function Hero() {
           Recently Viewed too far below the fold and leaving atmosphere-only
           dead zone during scroll-down. 70vh keeps search comfortably above the
           fold while sections start ~150-200px sooner. */}
-      {/* V2-D70 (2026-05-18): peach radial gradient behind hero — the "Fresha
-          touch" per warm-minimal brief. Contained ellipse at 60%/30% blending
-          s-bg-peach (#FFF0E6) into the substrate. Stops well before cards
-          start, so no page-wide wash relapse. */}
+      {/* V2-D71 (2026-05-18) — expanded hero gradient per user "the peach
+          glow is currently a bit too weak, expand the radius so it acts as
+          a warm spotlight behind your text, fading smoothly before the
+          search card." Ellipse 60→85% width, 50→65% height. Center moved
+          50%/30% so it sits behind the h1+greeting more deliberately. Inner
+          stop bumped from #FFF0E6 to #FFE2D0 (deeper, warmer peach — more
+          spotlight, less wash). Fade reaches transparent by 75% (was 70%)
+          so it dissolves well before the search card. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-[100px] -left-[10%] -right-[10%] h-[540px] z-0"
+        className="pointer-events-none absolute -top-[120px] -left-[15%] -right-[15%] h-[640px] z-0"
         style={{
-          background: "radial-gradient(ellipse 60% 50% at 60% 30%, #FFF0E6 0%, transparent 70%)",
+          background: "radial-gradient(ellipse 85% 65% at 50% 30%, #FFE2D0 0%, #FFEFE4 35%, transparent 75%)",
         }}
       />
       <div className="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-5 pt-[100px] pb-12 md:px-8 md:pt-32 md:pb-16 min-h-[70vh] md:min-h-[92vh]">
