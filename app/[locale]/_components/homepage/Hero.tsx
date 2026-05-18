@@ -93,7 +93,11 @@ export default async function Hero() {
           background: "radial-gradient(ellipse 85% 65% at 50% 30%, #FFE2D0 0%, #FFEFE4 35%, transparent 75%)",
         }}
       />
-      <div className="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-5 pt-[100px] pb-12 md:px-8 md:pt-32 md:pb-16 min-h-[70vh] md:min-h-[92vh]">
+      {/* V3-D73 (2026-05-18): vh → dvh per advanced-UI doc — fixes iOS Safari
+          floating bottom address bar collision. dvh dynamically recalculates as
+          Safari's bar expands/contracts, preventing the hero from getting
+          partially hidden beneath the bar when it appears. */}
+      <div className="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-5 pt-[100px] pb-12 md:px-8 md:pt-32 md:pb-16 min-h-[70dvh] md:min-h-[92dvh]">
         <div className="w-full">
           {displayName && (
             // V2-D70 (2026-05-18): greeting weight bumped 500 medium → still 500

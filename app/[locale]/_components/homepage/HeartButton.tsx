@@ -61,46 +61,54 @@ export function HeartButton({
   // second drop-shadow to mimic light catching on glass.
   return (
     <>
+      {/* V3-D73 (2026-05-18) — touch target expansion per advanced-UI doc:
+          button hit area is 44×44 (WCAG + ergonomic minimum), but the VISIBLE
+          glass circle stays 32×32 to preserve the small-deliberate-UI look.
+          Outer button is transparent + larger; inner div carries all the glass
+          styling. Hover/focus/active states scale the inner glass, not the
+          outer button (so the larger hit zone doesn't visually pulse). */}
       <button
         type="button"
         onClick={toggle}
         aria-label={isSaved ? "Gespeichert" : "Speichern"}
         aria-pressed={isSaved}
-        style={{
-          // V2-D60-cards (2026-05-14): frosted-glass CIRCLE wrapper around the heart.
-          // V3-D72 (2026-05-18): refined to user's exact spec — `rgba(255, 255, 255, 0.80)`
-          // + `backdrop-filter: blur(4px)`. White bumped 0.70 → 0.80 (more solid
-          // circle reads as deliberate UI element). Blur dropped 12px → 4px
-          // (subtler — "lets a tiny bit of the image peek through" without
-          // heavy frosted opacity). Saturate dropped from 1.4 (V2-D71) since
-          // 4px blur doesn't need color punch to compensate for heavy blur.
-          background: "rgba(255, 255, 255, 0.80)",
-          backdropFilter: "blur(4px)",
-          WebkitBackdropFilter: "blur(4px)",
-          border: "1px solid rgba(255, 255, 255, 0.6)",
-          boxShadow:
-            "0 1px 3px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.4)",
-        }}
         className={cn(
-          "absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full p-0",
-          "transition-transform duration-200 ease-glide",
-          "hover:scale-110 active:scale-[0.97] active:duration-[80ms]",
+          "group absolute right-[2px] top-[2px] grid h-11 w-11 place-items-center bg-transparent p-0",
           "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+          "focus-visible:rounded-full",
           className,
         )}
       >
-        <Heart
-          // V2-D43: key re-mounts SVG on each save → CSS animation restarts.
-          key={popKey}
-          size={18}
-          strokeWidth={2.25}
-          // V2-D60-heart: SAVED = solid red fill, no stroke. UNSAVED = ink stroke
-          // (no white outline needed — glass circle wrapper handles photo-contrast).
-          fill={isSaved ? "#FF4A6B" : "none"}
-          stroke={isSaved ? "none" : "var(--color-heading)"}
-          className={isSaved && popKey > 0 ? "animate-heart-pop" : undefined}
+        <span
           aria-hidden
-        />
+          style={{
+            // V2-D60-cards / V3-D72: frosted-glass circle wrapper around heart.
+            // V3-D72 spec: 80% white + 4px backdrop blur + 1px white inner border.
+            background: "rgba(255, 255, 255, 0.80)",
+            backdropFilter: "blur(4px)",
+            WebkitBackdropFilter: "blur(4px)",
+            border: "1px solid rgba(255, 255, 255, 0.6)",
+            boxShadow:
+              "0 1px 3px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.4)",
+          }}
+          className={cn(
+            "grid h-8 w-8 place-items-center rounded-full",
+            "transition-transform duration-200 ease-glide",
+            "group-hover:scale-110 group-active:scale-[0.97] group-active:duration-[80ms]",
+          )}
+        >
+          <Heart
+            // V2-D43: key re-mounts SVG on each save → CSS animation restarts.
+            key={popKey}
+            size={18}
+            strokeWidth={2.25}
+            // V2-D60-heart: SAVED = solid red fill, no stroke. UNSAVED = ink stroke.
+            fill={isSaved ? "#FF4A6B" : "none"}
+            stroke={isSaved ? "none" : "var(--color-heading)"}
+            className={isSaved && popKey > 0 ? "animate-heart-pop" : undefined}
+            aria-hidden
+          />
+        </span>
       </button>
       {/* Screen-reader live region for save toggle announcement */}
       <span className="sr-only" aria-live="polite">

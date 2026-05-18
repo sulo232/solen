@@ -1,9 +1,25 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
   title: "solen.ch — Salons in Basel",
   description: "Finde und buche die besten Salons in Basel. Coiffeur, Barbershop, Nails, Spa, Makeup und mehr.",
+};
+
+// V3-D73 (2026-05-18) — Premium production polish per advanced-UI/UX doc audit.
+// `viewport-fit=cover` enables `env(safe-area-inset-*)` to work edge-to-edge
+// (without it, those values silently no-op on devices with notches/dynamic island).
+// `maximumScale=1 + userScalable=false` locks the structural UI so accidental
+// pinch-zoom or double-tap doesn't break the grid system. Content pinch-zoom on
+// specific elements (photos, maps) still works via touch-action: pinch-zoom on
+// those elements if needed.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#F4F4F6",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
