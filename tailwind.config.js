@@ -61,9 +61,15 @@ module.exports = {
         "s-ink-2": "#5C4A3A",  // V2-D48: deepened from #56463E for warmer tone in earth context
         "s-ink-3": "#8A7A68",  // V2-D48: cooler than #7A6957, better readability on cream
         "s-border": "#EAE0D0",  // V2-D60: slightly desaturated bone for rule lines
-        // V2-D60: surface flipped cream-on-cream → WHITE on cream (kills the beige collapse).
-        // base lightened from #F5EBDD → #FAF3E6 (less yellow tint, more cream-fresh).
-        "s-bg": { base: "#FAF3E6", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#EAE0D0", active: "#FFFAF1" },
+        // V2-D68 (2026-05-18): substrate base swapped cream #FAF3E6 (V2-D60) → subtle
+        // off-white #F8F7F2 per user "atmosphere wash creates visual mush, lets do
+        // subtle off white" feedback. Page-wide atmosphere blobs RETIRED in the same
+        // commit. High-contrast Gen Z aesthetic — substrate is quiet (~97% lightness
+        // with the faintest warm tint), brand colors live as accents on CTAs/badges/
+        // category tags only, NOT as a page-wide gradient wash.
+        // V2-D60 history: surface flipped cream-on-cream → WHITE on cream (killed the
+        // beige collapse). base lightened from #F5EBDD → #FAF3E6 (less yellow tint).
+        "s-bg": { base: "#F8F7F2", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#EAE0D0", active: "#FFFAF1" },
         // V2-D48: bg.base flipped white → cream #F5EBDD (Earthen Wellness page bg). Surface +
         // sunken updated. raised stays white for cards/modals. active = cream-warm input typing.
         // V2-D16 (2026-05-08) note: cream #FFF4E8 was wrongly retired in V2-D15 comment above.

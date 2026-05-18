@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import { buildAlternates } from "@/lib/seo";
 import Hero from "./_components/homepage/Hero";
 import { FeedZone } from "./_components/homepage/SectionHeader";
-import { AtmosphereBlobs } from "./_components/homepage/AtmosphereBlobs";
-import { AtmosphereGrain } from "./_components/homepage/AtmosphereGrain";
+// V2-D68 (2026-05-18): AtmosphereBlobs + AtmosphereGrain imports retired
+// (page-wide mount removed). Components preserved at original paths for
+// possible future use as per-section localized accents.
+// import { AtmosphereBlobs } from "./_components/homepage/AtmosphereBlobs";
+// import { AtmosphereGrain } from "./_components/homepage/AtmosphereGrain";
 import RecentlyViewed from "./_components/homepage/RecentlyViewed";
 import LastMinute from "./_components/homepage/LastMinute";
 import Nearby from "./_components/homepage/Nearby";
@@ -77,16 +80,16 @@ export const revalidate = 300;
 export default async function Page() {
   return (
     <>
-      {/* V2-D45 (2026-05-09): atmosphere blobs — 6 heavily-blurred
-          organic shapes in V3 palette (no pink/coral). Adds personality
-          + warm anchors (sandy beige + cream) over the all-blue body
-          wash. Sits z-0, fixed, pointer-events-none, isolated. Content
-          siblings render above by document order. */}
-      <AtmosphereBlobs />
-      {/* V2-D45-3 (2026-05-09): subtle film-grain noise overlay via SVG
-          feTurbulence. Adds editorial / tactile texture. opacity 0.05 +
-          overlay blend = barely-there. No asset weight (procedural). */}
-      <AtmosphereGrain />
+      {/* V2-D68 (2026-05-18): AtmosphereBlobs + AtmosphereGrain RETIRED.
+          User feedback: page-wide gradient wash created "visual mush",
+          washed out UI contrast, made cards look "slapped on top".
+          Substrate shifted from cream #FAF3E6 to subtle off-white #F8F7F2.
+          High-contrast Gen Z aesthetic — colors live as ACCENTS on CTAs +
+          badges + category tags, NOT as a page-wide background gradient.
+          Components preserved at app/[locale]/_components/homepage/
+          AtmosphereBlobs.tsx + AtmosphereGrain.tsx in case we ever want
+          to reintroduce as a per-page-section accent (e.g. behind hero h1
+          only). The page-wide mount is what's retired, not the components. */}
       <Hero />
       {/* All feed sections sit inside a rising-panel FeedZone (V2-D41-fu
           rising-panel pattern locked 2026-05-09). Hero zone keeps the

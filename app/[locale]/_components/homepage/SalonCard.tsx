@@ -438,13 +438,19 @@ export function SalonCard({
           // 7:10 portrait), desktop ~195×280 = 0.70 (~5:7). More portrait than 4:5
           // which felt subtle.
           "relative aspect-square w-full overflow-hidden rounded-[18px]",
-          // V2-D67-fu17 (2026-05-17): reverted V2-D67-fu15 + V2-D67-fu16 depth
-          // experiments per user "meh nvm ditch ts". Back to V2-D41 baseline
-          // shadow — original 2-layer subtle recipe.
-          "shadow-[0_1px_2px_rgba(26,18,9,0.04),0_4px_10px_rgba(26,18,9,0.05)]",
+          // V2-D68 (2026-05-18): added 1px hairline shadow-as-border (first layer
+          // `0 0 0 1px rgba(26,18,9,0.06)`) to give cards edge definition on the
+          // new subtle off-white substrate `#F8F7F2`. On cream `#FAF3E6` the
+          // white cards had ~5% lightness delta with the substrate (clearly visible
+          // edge); on off-white the delta drops to ~2% so the photo dissolved into
+          // the substrate at the corner radius without a hairline. The hairline is
+          // sharper than CSS `border:` because it doesn't push content (no layout
+          // shift) and stays crisp at 1dpr. Pattern borrowed from Airbnb / Stripe
+          // card recipes. The other two shadow layers are the V2-D41 baseline.
+          "shadow-[0_0_0_1px_rgba(26,18,9,0.06),0_1px_2px_rgba(26,18,9,0.04),0_4px_10px_rgba(26,18,9,0.05)]",
           "transition-[transform,box-shadow] duration-200 ease-glide",
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
-          "group-hover:shadow-[0_1px_2px_rgba(26,18,9,0.05),0_6px_14px_rgba(26,18,9,0.06),0_12px_24px_rgba(26,18,9,0.05)]",
+          "group-hover:shadow-[0_0_0_1px_rgba(26,18,9,0.08),0_1px_2px_rgba(26,18,9,0.05),0_6px_14px_rgba(26,18,9,0.06),0_12px_24px_rgba(26,18,9,0.05)]",
         )}
         style={{ backgroundColor: cat.bg }}
       >

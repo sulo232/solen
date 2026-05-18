@@ -3,6 +3,7 @@
 > **Single source of truth for the current V3 design system.** No V2-era content, no retired specs, no stale palette. Anything labeled "RETIRED" lives in `_tasks/archive/SOLEN_LIVE_TRUTH_v3-pre-cleanup-2026-05-17.archived.md` for historical reference only. Don't grep the archive for "current state" — it has V2-D15-3 dark teal + Cooper BT + Avant Garde + 6-cat colorways + 31-combo Republik library + frosted-pill text spec, all retired.
 
 > **V3 lock chain** (most recent on top):
+> - **V2-D68 (2026-05-18) — Substrate shift + atmosphere retirement.** Substrate `#FAF3E6` cream → `#F8F7F2` subtle off-white. Page-wide atmosphere wash RETIRED entirely (AtmosphereBlobs JSX + body::before/::after pseudo-element gradients). Cards gained 1px hairline shadow-as-border for edge definition on lower-contrast substrate. High-contrast Gen Z aesthetic — brand colors confined to accent moments only.
 > - V2-D67-fu14 (2026-05-17) — bare text cards permanently locked + agent pre-flight gates + LIVE_TRUTH archived & rewritten
 > - V2-D67-fu13 (2026-05-17) — frosted-pill on card text retired; text region is no-touch
 > - V2-D67-fu7 to V2-D67-fu12 (2026-05-16) — badge palette per-category + mobile perf
@@ -29,7 +30,7 @@ When a section here contradicts production code, fix the doc OR ask the user —
 
 These don't move. If a design question makes you reach for one of these, the answer is "no" before you ask.
 
-1. **Substrate is cream `#FAF3E6`.** Not white. White is for cards only. (V2-D60)
+1. **Substrate is subtle off-white `#F8F7F2`.** Not cream (V2-D60 retired V2-D68), not pure white. ~97% lightness with faint warm tint. White is for cards only. (V2-D68)
 2. **Brand is emerald `#1A8F5C` + terracotta `#E0703D`.** No teal, no purple, no orange. (V2-D60)
 3. **Typography is Peace Sans (display) + Open Sauce One (body).** No Cooper, no Avant Garde, no Plus Jakarta, no Inter Tight. (V2-D42)
 4. **4 categories only**: Coiffeur, Barbershop, Nails, Spa & Wellness. (Makeup retired V2-D15-3)
@@ -37,7 +38,7 @@ These don't move. If a design question makes you reach for one of these, the ans
 6. **Pill rule**: white on dark, black on light. No tinted-of-bg colors on pills. (See §5a)
 7. **No Unicode emoji in UI**: Lucide icons only. (See §5e)
 8. **No italic anywhere in UI**: V2-D15 retirement, still locked.
-9. **Atmosphere wash is global**: per-page atmosphere variants are not a pattern. (V2-D65)
+9. **No atmosphere wash. Period.** V2-D68 retired page-wide atmosphere entirely (was AtmosphereBlobs JSX + body::before/after pseudo-element gradients). Substrate stays quiet, brand colors live as accents on CTAs / badges / category tags / logo dot / h1 highlight word only — not as a page-wide background gradient. To add a localized accent in the future (e.g. behind hero h1 only), build a per-component glow, NOT a page-wide layer.
 
 ### §0d.7 · Permanent technical anti-patterns
 
@@ -54,6 +55,9 @@ Read these BEFORE editing layout, body styles, atmosphere wash, salon cards, or 
 9. ❌ **Surface / pill / wrapper / border / blur / backdrop-blur on the SalonCard text region.** Retired V2-D67-fu13. Bare text below photo is locked. Depth for cards lives in `.photo` shadow or `<FeedZone>` panel opacity, never in text wrapping.
 10. ❌ **Unicode emoji in UI.** Use Lucide icons. (V2-D67-fu14 surfaced this — Hero greeting had a `👋` that violated §5e.)
 11. ❌ **Inline `style={{ fontFamily: '...' }}` overrides on components.** Use Tailwind `font-display` / `font-body` classes. Inline overrides ship retired fonts (`Plus Jakarta Sans` did this on Hero + SectionHeader for weeks before V2-D67-fu14 caught it).
+12. ❌ **Page-wide atmosphere wash, in any form.** V2-D68 retired the entire pattern: AtmosphereBlobs JSX, AtmosphereGrain JSX, body::before/::after pseudo-element gradients, drift animations. The pattern created "visual mush" — washed UI contrast, cards looked slapped on. V3.1 lock: substrate stays quiet off-white, brand colors are accent-only. If you want a single localized glow (e.g. behind hero h1), build it as a per-section component, NOT a page-wide layer. Never reintroduce as global.
+13. ❌ **Pure white substrate `#FFFFFF`.** Card surface is white; substrate is `#F8F7F2` off-white. White on white = no contrast between card + page. Substrate needs the faint warmth (~3% darker than white) to make card edges visible.
+14. ❌ **Cards without a 1px hairline shadow on V2-D68 substrate.** The 2% lightness delta between off-white substrate and white cards is small — cards need the `0 0 0 1px rgba(26,18,9,0.06)` shadow-as-border to define their edge. Without it, the photo dissolves into the substrate at the corner radius.
 
 > **Shadow research notes (V2-D67-fu16 — kept as reference even though the shadow experiment was reverted V2-D67-fu17).** When card shadow needs revisiting in the future, lessons from the research: (a) pure-black RGB on cream desaturates substrate to grey-brown smudge — use warm-tinted shadow color sampled from substrate hue family per Koos Looijesteijn; (b) uniform alphas across layers read as "stamped" — use exponential decay (e.g. 0.04 → 0.05 → 0.08); (c) Y-offsets > 15% of card width look like "hovering on a stick" — pinch with negative spread; (d) cards on atmospheric substrates need a `0 0 0 1px` hairline shadow-as-border or they dissolve into the wash; (e) Material Design elevation 4-5 is for floating dialogs, not resting cards (M3 elevation 1 only). See V2_REBUILD_LOG V2-D67-fu16 entry for full research citations.
 
@@ -161,12 +165,12 @@ Reserved for universal semantic moments that override the brand's color role rul
 
 ## §4 · Substrate + warm-ink scale
 
-V2-D60 lock: **substrate is cream `#FAF3E6`. Cards are WHITE `#FFFFFF`.** The contrast between cream + white is the depth — cards delineate via lightness shift, not via shadow alone.
+V2-D68 lock: **substrate is subtle off-white `#F8F7F2`. Cards are WHITE `#FFFFFF`.** Substrate has just enough warmth (HSL 43° 21% 96%) not to feel sterile. The 2% lightness delta between substrate + white cards is small — cards rely on a 1px hairline shadow-as-border for edge definition (see §16.2). High-contrast Gen Z aesthetic — brand colors live as accents on CTAs / badges / category tags / hero h1 highlight word, NOT as a page-wide gradient.
 
 | Token | Hex | Class | Use |
 |---|---|---|---|
-| `s-bg.base` | `#FAF3E6` | `bg-s-bg-base` | Page substrate. Set on `html`. |
-| `s-bg.surface` | `#FFFFFF` | `bg-white` | Card surfaces, dropdowns, sheets — WHITE on cream is the V2-D60 fix. |
+| `s-bg.base` | `#F8F7F2` | `bg-s-bg-base` | Page substrate. Set on `html`. (V2-D68 — was `#FAF3E6` cream pre-V2-D68) |
+| `s-bg.surface` | `#FFFFFF` | `bg-white` | Card surfaces, dropdowns, sheets |
 | `s-bg.sunken` | `#EAE0D0` | `bg-s-bg-sunken` | Active input bg, lightly recessed regions |
 | Border (warm hairline) | `#EAE0D0` | `border-s-border` | Card outlines, divider rules |
 
@@ -330,7 +334,30 @@ V2-D67-fu14 surfaced an exception that had been shipping: Hero greeting used `�
 
 ---
 
-## §5g · Atmosphere wash (V2-D67-fu12 recipe)
+## §5g · Atmosphere wash — RETIRED V2-D68
+
+**This section is RETIRED.** Page-wide atmosphere wash was removed entirely V2-D68 (2026-05-18) per user feedback: "atmosphere wash creates visual mush, washes out UI, cards look slapped on top, lets do subtle off white."
+
+What was retired:
+- `<AtmosphereBlobs />` JSX component mount on `app/[locale]/page.tsx` (component file preserved at `_components/homepage/AtmosphereBlobs.tsx` for possible future use as per-section localized accent)
+- `<AtmosphereGrain />` JSX component mount (same — file preserved)
+- `body::before` 5-layer multi-radial-gradient cloud zones (was V2-D60-fresha lock)
+- `body::after` 12-layer micro-gradient cloud echoes (was V2-D60-fresha lock)
+- `@keyframes atm-drift-1` + `atm-drift-2` animations on the body pseudo-elements
+
+What replaced it:
+- Substrate `#F8F7F2` subtle off-white does the entire "page feel" job
+- Brand colors live as accent moments: emerald `s-brand` on CTAs / success glyphs / focus outlines, terracotta `s-accent` on logo dot + h1 highlight word, V3 cat colors on category tag bgs + photo fallbacks, semantic colors on badges (green / pink-red / blue glass per V2-D67-fu7 layered-glass recipe)
+
+If atmosphere needs to come back (e.g. behind hero h1 only), build a **localized component** inside the relevant section — never reintroduce as a page-wide layer.
+
+Historical V2-D67-fu12 recipe (do not implement, archived for reference): 14 blobs desktop / 6 mobile, mix-blend-mode normal, opacity 0.20-0.38, blur(100px) saturate(1.6) desktop / blur(50px) saturate(1.3) mobile, deep V3 cat-text colors. Full recipe lives in the archived doc at `_tasks/archive/SOLEN_LIVE_TRUTH_v3-pre-cleanup-2026-05-17.archived.md` plus git history of `AtmosphereBlobs.tsx`.
+
+---
+
+## §5g-OLD · Atmosphere wash (V2-D67-fu12 recipe — RETIRED V2-D68, kept for archeology)
+
+> Below this line is the previous V2-D67-fu12 atmosphere spec, kept inline only because the V3 lock chain refers to it. Do not implement.
 
 Solen's "feel" comes from a page-wide atmosphere wash — soft blurred color blobs at low opacity that bleed through behind all content. Built as React component `AtmosphereBlobs.tsx` in `app/[locale]/_components/homepage/`.
 
@@ -669,7 +696,7 @@ Address · City            ← Row 2 (Open Sauce One 13px ink-3)
 | Width xl+ | `calc((100% - 60px) / 6)` (6 cards per row) |
 | Photo aspect | 1:1 (`aspect-square`) — V2-D60-cards-6 |
 | Photo radius | `rounded-[18px]` — V2-D60-cards-6 |
-| Photo shadow | `0 1px 2px rgba(26,18,9,0.04), 0 4px 10px rgba(26,18,9,0.05)` (V2-D41 baseline — V2-D67-fu15/fu16 depth experiments reverted V2-D67-fu17). |
+| Photo shadow (V2-D68) | `0 0 0 1px rgba(26,18,9,0.06), 0 1px 2px rgba(26,18,9,0.04), 0 4px 10px rgba(26,18,9,0.05)` — V2-D41 baseline 2-layer subtle shadow + V2-D68 `0 0 0 1px` hairline shadow-as-border for edge definition on off-white substrate. Hover adds proportional emphasis on hairline + shadow. |
 | Photo → text gap | `mt-[10px]` |
 | Text container | **none — BARE TEXT** (V2-D67-fu13) |
 | Text rows | 3: Name / Address · City / nextSlot · CHF + ★rating right-aligned (V2-D60-cards-7) |
