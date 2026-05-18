@@ -216,12 +216,13 @@ export function SearchBar() {
         }}
         transition={transition}
         className={cn(
-          // V2-D71 (2026-05-18) — Aurex floating shadow per exact user spec:
-          // `0px 8px 24px rgba(0, 0, 0, 0.06)`. Single soft layer doing all
-          // the lift. Border dropped to be near-invisible (just hairline alpha
-          // at 3%) so the shadow does the edge work, not the border.
+          // V3-D72 (2026-05-18) — unified Aurex floating shadow with cards
+          // per user "apply a soft, wide shadow to ALL your white cards" —
+          // single value across SearchBar + SalonCard for visual consistency.
+          // `0px 6px 24px rgba(0, 0, 0, 0.06)` + no visible border. Was V2-D71's
+          // slightly different `0 8px 24px 0.06` — now matches cards exactly.
           "relative w-full max-w-[540px] overflow-hidden border border-s-ink/[0.03] bg-white",
-          "shadow-[0_8px_24px_rgba(0,0,0,0.06)]",
+          "shadow-[0_6px_24px_rgba(0,0,0,0.06)]",
           "max-md:mx-auto",
           isExpanded && "z-[70] md:max-w-[640px]",
           !isExpanded && "md:max-w-none",

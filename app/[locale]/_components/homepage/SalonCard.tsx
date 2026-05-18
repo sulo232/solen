@@ -447,16 +447,17 @@ export function SalonCard({
           // 7:10 portrait), desktop ~195×280 = 0.70 (~5:7). More portrait than 4:5
           // which felt subtle.
           "relative aspect-square w-full overflow-hidden rounded-[22px]",
-          // V2-D71 (2026-05-18) — Aurex floating-card shadow per exact user spec:
-          // `0px 10px 30px rgba(0, 0, 0, 0.05)`. Single layer, wide spread, very
-          // low pure-black alpha, no offset hairline. The trick to Aurex's
-          // "premium float" is one soft blurry shadow doing all the lift work
-          // — multiple stacked layers fight for attention.
-          // V2-D70 history: 3-layer warm-ink shadow + hairline border.
-          "shadow-[0_10px_30px_rgba(0,0,0,0.05)]",
+          // V3-D72 (2026-05-18) — refined Aurex floating shadow per user spec
+          // `0px 6px 24px rgba(0, 0, 0, 0.06)` + `border: none`. Tighter Y
+          // offset (10 → 6) keeps shadow closer to card (less "hovering on a
+          // stick"), slightly more alpha (0.05 → 0.06) for crisper edge against
+          // the new cooler grey substrate #F4F4F6. Pairs with the substrate
+          // shift — cooler grey + slightly-stronger shadow = pure-white cards
+          // pop more decisively.
+          "shadow-[0_6px_24px_rgba(0,0,0,0.06)]",
           "transition-[transform,box-shadow] duration-200 ease-glide",
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
-          "group-hover:shadow-[0_14px_36px_rgba(0,0,0,0.08)]",
+          "group-hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)]",
         )}
         style={{ backgroundColor: cat.bg }}
       >

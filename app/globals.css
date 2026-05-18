@@ -841,8 +841,11 @@ html {
      V2-D70 (2026-05-18): #F8F7F2 → #F9F8F6 warm pearl per Aurex/Fresha spec.
      V2-D71 (2026-05-18): #F9F8F6 → #F8F7F5 slightly darker warm grey per
      user "If background too close to white on mobile, darken just a tiny bit"
-     — gives white cards crisper contrast for the Aurex floating effect. */
-  background-color: #F8F7F5;
+     — gives white cards crisper contrast for the Aurex floating effect.
+     V3-D72 (2026-05-18): #F8F7F5 warm grey → #F4F4F6 cool grey per user
+     "Try #F4F4F6 or #F7F7F8" — slight cool shift makes pure-white cards pop
+     more decisively (warmer substrates blended into white at certain angles). */
+  background-color: #F4F4F6;
 }
 
 body {

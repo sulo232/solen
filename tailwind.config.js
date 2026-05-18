@@ -72,7 +72,7 @@ module.exports = {
         // Sunken updated to a soft warm-neutral that pairs with the new pearl base.
         // V2-D68 history (kept for archeology): substrate F8F7F2 + atmosphere wash retired.
         // V2-D60 history: cream-on-cream → WHITE on cream (killed beige collapse).
-        "s-bg": { base: "#F8F7F5", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#F0EFEC", active: "#FFFAF1", peach: "#FFE8D8" },
+        "s-bg": { base: "#F4F4F6", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#EEEEF0", active: "#FFFAF1", peach: "#FFE8D8" },
         // V2-D48: bg.base flipped white → cream #F5EBDD (Earthen Wellness page bg). Surface +
         // sunken updated. raised stays white for cards/modals. active = cream-warm input typing.
         // V2-D16 (2026-05-08) note: cream #FFF4E8 was wrongly retired in V2-D15 comment above.
