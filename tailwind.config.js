@@ -40,7 +40,7 @@ module.exports = {
         // with shadow (Aurex lift). Plus Jakarta Sans replaces Peace Sans +
         // Open Sauce One — single family at extreme weight contrast.
         "s-coral": { DEFAULT: "#3B7A57", hover: "#2D5E43", subtle: "#E5F2EA", text: "#3B7A57", button: "#3B7A57", "button-hover": "#2D5E43" },
-        "s-brand": { DEFAULT: "#3B7A57", pale: "#A6CDB5", subtle: "#E5F2EA", mid: "#2D5E43", deep: "#1A4029" },
+        "s-brand": { DEFAULT: "#1F5037", pale: "#A6CDB5", subtle: "#DCEDDF", mid: "#163A28", deep: "#0E2B1D" },
         "s-accent": { DEFAULT: "#D87352", soft: "#E89B83", deep: "#A04A22" },
         // ── Bright accent (butter) — sparingly, for stat-card highlights ──
         "s-butter": "#F2D77B",
@@ -76,7 +76,7 @@ module.exports = {
         // Sunken updated to a soft warm-neutral that pairs with the new pearl base.
         // V2-D68 history (kept for archeology): substrate F8F7F2 + atmosphere wash retired.
         // V2-D60 history: cream-on-cream → WHITE on cream (killed beige collapse).
-        "s-bg": { base: "#F4F4F6", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#EEEEF0", active: "#FFFAF1", peach: "#FFE8D8" },
+        "s-bg": { base: "#FFFFFF", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#F6F6F8", active: "#FFFAF1", peach: "#FFE8D8" },
         // V2-D48: bg.base flipped white → cream #F5EBDD (Earthen Wellness page bg). Surface +
         // sunken updated. raised stays white for cards/modals. active = cream-warm input typing.
         // V2-D16 (2026-05-08) note: cream #FFF4E8 was wrongly retired in V2-D15 comment above.
@@ -92,16 +92,12 @@ module.exports = {
         "s-star":     "#F3A864",  // V3 added — rating stars only
       },
       fontFamily: {
-        // V2-D70 (2026-05-18): single-family pivot per Aurex/Fresha spec.
-        // Plus Jakarta Sans across display + heading + body. "Tighter, more elegant
-        // geometric sans-serif" with extreme weight contrast (800 h1 vs 500 body vs
-        // 400 microcopy) doing the personality work that 2 separate fonts used to.
-        // Retired V2-D42: Peace Sans (display) + Open Sauce One (body) + Inter (fallback).
-        // Plus Jakarta Sans was briefly retired V2-D67-fu14 because it was inline drift —
-        // it is now officially the locked font, no longer drift.
-        display: ["'Plus Jakarta Sans'", "system-ui", "-apple-system", "sans-serif"],
-        heading: ["'Plus Jakarta Sans'", "system-ui", "-apple-system", "sans-serif"],
-        body:    ["'Plus Jakarta Sans'", "system-ui", "-apple-system", "sans-serif"],
+        // V3-D75 typography (2026-05-18): Bricolage Grotesque (display) +
+        // Hanken Grotesk (body/UI). Bricolage = playful-geometric for h1/h2
+        // hero impact; Hanken = clean neutral workhorse for body + UI labels.
+        display: ["'Bricolage Grotesque'", "system-ui", "-apple-system", "sans-serif"],
+        heading: ["'Bricolage Grotesque'", "system-ui", "-apple-system", "sans-serif"],
+        body:    ["'Hanken Grotesk'", "system-ui", "-apple-system", "sans-serif"],
       },
       borderRadius: {
         // Legacy Tailwind vars (keep for shadcn compat)

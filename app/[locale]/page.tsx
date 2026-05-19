@@ -8,12 +8,24 @@ import { FeedZone } from "./_components/homepage/SectionHeader";
 // import { AtmosphereBlobs } from "./_components/homepage/AtmosphereBlobs";
 // import { AtmosphereGrain } from "./_components/homepage/AtmosphereGrain";
 import RecentlyViewed from "./_components/homepage/RecentlyViewed";
-import LastMinute from "./_components/homepage/LastMinute";
+// V3-D75 (2026-05-18): LastMinute retired per user "ditch last minute".
+// Replaced by ArtistOfTheMonth — curated featured-stylist carousel using
+// AnimatedTestimonials primitive (Aceternity-style). LastMinute.tsx file
+// preserved for now in case we want to re-introduce as a promo banner later.
+import ArtistOfTheMonth from "./_components/homepage/ArtistOfTheMonth";
 import Nearby from "./_components/homepage/Nearby";
+// V3-D75-promos (2026-05-18): Uber-style swipeable category promo cards.
+// Adds a top-level browsing path BY category between location-based (Nearby)
+// and stylist-focused (FeaturedStylists) feeds.
+import CategoryPromos from "./_components/homepage/CategoryPromos";
 import Coiffeur from "./_components/homepage/Coiffeur";
 import Entdecken from "./_components/homepage/Entdecken";
 import FeaturedStylists from "./_components/homepage/FeaturedStylists";
-import SalonRegister from "./_components/homepage/WhySolen";
+// V3-D75-bento (2026-05-18): SalonRegister (WhySolen.tsx) retired in favor of
+// BentoBusiness — Apple-style interactive 4-card bento grid (3D tilt, animated
+// internal visuals, scroll-triggered fade-up). WhySolen.tsx preserved on disk
+// for rollback / reference.
+import BentoBusiness from "./_components/homepage/BentoBusiness";
 import Reviews from "./_components/homepage/Reviews";
 
 const TITLES: Record<string, string> = {
@@ -97,8 +109,9 @@ export default async function Page() {
           rises with rounded top corners + upward shadow. */}
       <FeedZone>
         <RecentlyViewed />
-        <LastMinute />
+        <ArtistOfTheMonth />
         <Nearby />
+        <CategoryPromos />
         {/* V2-D46: action-copy stylist showcase between geo+category feeds */}
         <FeaturedStylists />
         <Coiffeur />
@@ -106,8 +119,8 @@ export default async function Page() {
             sit between category browse + social proof per discovery rhythm. */}
         <Entdecken />
         <Reviews />
-        {/* V2-D46: B2B salon-register CTA */}
-        <SalonRegister />
+        {/* V3-D75-bento: B2B interactive bento grid (4 features) */}
+        <BentoBusiness />
       </FeedZone>
     </>
   );

@@ -1,12 +1,8 @@
 /* Solen Design System — globals.css */
-/* V2-D70 typography (2026-05-18): override of V2-D42 — single-family pivot.
-   Plus Jakarta Sans (display + body + UI) at extreme weight contrast
-   (800 h1 vs 500 body vs 400 microcopy) per Aurex/Fresha "warm minimal" brief.
-   Retired this round: Peace Sans, Open Sauce One, Inter (as fallback).
-   Plus Jakarta Sans was briefly retired V2-D67-fu14 because it was unauthorized
-   inline drift — V2-D70 makes it the official locked font (no longer drift).
-   Google Fonts has the latest Plus Jakarta Sans weights 400-800. */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+/* V3-D75 typography (2026-05-18): Bricolage Grotesque (display) +
+   Hanken Grotesk (body/UI). Bricolage for hero h1/h2 personality, Hanken for
+   clean body + UI labels. Both from Google Fonts. */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -109,15 +105,15 @@
   }
 
   body {
-    /* V3 V2-D42 (2026-05-09 override of V2-D15-3): Open Sauce One body */
-    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    /* V3-D75 typography (2026-05-18): Hanken Grotesk (body/UI) */
+    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
     background-color: var(--base);
     color: var(--color-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    /* V3 V2-D42: Peace Sans display (replaces Cooper BT), mixed-case */
-    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    /* V3-D75 typography (2026-05-18): Bricolage Grotesque (display) */
+    font-family: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
     color: var(--color-heading);
     letter-spacing: -0.018em;
   }
@@ -146,21 +142,21 @@
 
 @layer utilities {
   .font-heading {
-    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    font-family: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
   }
   .font-body {
-    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
   }
   .font-display {
-    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    font-family: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
   }
-  /* V3 (V2-D15-3): JetBrains Mono retired. Use body font with tabular-nums for prices/counts. */
+  /* Numeric data uses body font with tabular-nums (no separate mono family). */
   .font-mono-code {
-    font-family: "Plus Jakarta Sans", ui-monospace, monospace;
+    font-family: "Hanken Grotesk", ui-monospace, monospace;
     font-variant-numeric: tabular-nums;
   }
   .data-text {
-    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
     font-variant-numeric: tabular-nums;
     font-weight: 500;
   }
@@ -845,7 +841,7 @@ html {
      V3-D72 (2026-05-18): #F8F7F5 warm grey → #F4F4F6 cool grey per user
      "Try #F4F4F6 or #F7F7F8" — slight cool shift makes pure-white cards pop
      more decisively (warmer substrates blended into white at certain angles). */
-  background-color: #F4F4F6;
+  background-color: #FFFFFF;
 }
 
 body {

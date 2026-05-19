@@ -134,10 +134,10 @@ function _DeprecatedSearchBar() {
     <div
       className="
         flex w-full max-w-[540px] flex-col rounded-2xl border border-black/5 bg-white p-2
-        shadow-[0_1px_3px_rgba(50,47,44,0.04),0_4px_12px_rgba(50,47,44,0.04)]
+        shadow-[0_20px_40px_rgba(50,47,44,0.04)]
         max-md:mx-auto
         md:max-w-none md:flex-row md:items-stretch md:rounded-full md:p-[6px_6px_6px_8px]
-        md:shadow-[0_1px_3px_rgba(50,47,44,0.04),0_8px_24px_rgba(50,47,44,0.08)]
+        md:shadow-[0_30px_60px_rgba(50,47,44,0.05)]
       "
     >
       {/* Service — active by default to telegraph affordance */}

@@ -454,10 +454,10 @@ export function SalonCard({
           // the new cooler grey substrate #F4F4F6. Pairs with the substrate
           // shift — cooler grey + slightly-stronger shadow = pure-white cards
           // pop more decisively.
-          "shadow-[0_6px_24px_rgba(0,0,0,0.06)]",
+          "shadow-[0_20px_40px_rgba(0,0,0,0.04)]",
           "transition-[transform,box-shadow] duration-200 ease-glide",
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
-          "group-hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)]",
+          "group-hover:shadow-[0_30px_60px_rgba(0,0,0,0.06)]",
         )}
         style={{ backgroundColor: cat.bg }}
       >

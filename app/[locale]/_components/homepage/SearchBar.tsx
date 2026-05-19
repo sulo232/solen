@@ -222,7 +222,7 @@ export function SearchBar() {
           // `0px 6px 24px rgba(0, 0, 0, 0.06)` + no visible border. Was V2-D71's
           // slightly different `0 8px 24px 0.06` — now matches cards exactly.
           "relative w-full max-w-[540px] overflow-hidden border border-s-ink/[0.03] bg-white",
-          "shadow-[0_6px_24px_rgba(0,0,0,0.06)]",
+          "shadow-[0_20px_40px_rgba(0,0,0,0.04)]",
           "max-md:mx-auto",
           isExpanded && "z-[70] md:max-w-[640px]",
           !isExpanded && "md:max-w-none",

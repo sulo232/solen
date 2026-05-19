@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#F4F4F6" />
+  <title>Solen — Homepage Mockup (V3-D73)</title>
+
+  <!-- Plus Jakarta Sans (V2-D70 locked) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@300..800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN with V3 tokens -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            's-coral':  { DEFAULT: '#3B7A57', hover: '#2D5E43', subtle: '#E5F2EA' },
+            's-brand':  { DEFAULT: '#3B7A57', pale: '#A6CDB5', subtle: '#E5F2EA', mid: '#2D5E43', deep: '#1A4029' },
+            's-accent': { DEFAULT: '#D87352', soft: '#E89B83', deep: '#A04A22' },
+            's-butter': '#F2D77B',
+            's-sage':   { DEFAULT: '#A8B89A', pale: '#D4DDC8' },
+            's-ink':    { DEFAULT: '#1A1C19', secondary: '#6B7068', tertiary: '#7A7F78', disabled: '#C5C8C4' },
+            's-ink-2': '#6B7068',
+            's-ink-3': '#7A7F78',
+            's-border': '#E8E6E0',
+            's-bg':     { base: '#F4F4F6', surface: '#FFFFFF', raised: '#FFFFFF', sunken: '#EEEEF0', peach: '#FFE8D8' },
+            's-love':   '#FF4A6B',
+            's-star':   '#F3A864',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+            heading: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+            body:    ['"Hanken Grotesk"', 'system-ui', 'sans-serif'],
+          },
+          transitionTimingFunction: {
+            'glide':  'cubic-bezier(0.16, 1, 0.3, 1)',
+            'snap':   'cubic-bezier(0.4, 0, 0.2, 1)',
+            'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* HTML carries the substrate so no white fallback when scrolled */
+    html { background-color: #F4F4F6; scroll-behavior: smooth; }
+    body {
+      font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+      background: transparent;
+      color: #1A1C19;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, h4 {
+      font-family: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
+    }
+
+    /* V2-D43 heart-pop spring */
+    @keyframes heart-pop {
+      0%   { transform: scale(0.5); }
+      50%  { transform: scale(1.15); }
+      100% { transform: scale(1.0); }
+    }
+    .animate-heart-pop {
+      transform-origin: center;
+      animation: heart-pop 350ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* V2-D43 card stagger */
+    @keyframes card-stagger-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .salon-card-stagger > * {
+      opacity: 0;
+      transform: translateY(8px);
+      animation: card-stagger-in 350ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+    .salon-card-stagger > *:nth-child(1) { animation-delay: 0ms; }
+    .salon-card-stagger > *:nth-child(2) { animation-delay: 50ms; }
+    .salon-card-stagger > *:nth-child(3) { animation-delay: 100ms; }
+    .salon-card-stagger > *:nth-child(4) { animation-delay: 150ms; }
+    .salon-card-stagger > *:nth-child(5) { animation-delay: 200ms; }
+    .salon-card-stagger > *:nth-child(6) { animation-delay: 250ms; }
+    .salon-card-stagger > *:nth-child(7) { animation-delay: 300ms; }
+    .salon-card-stagger > *:nth-child(8) { animation-delay: 350ms; }
+    @media (prefers-reduced-motion: reduce) {
+      .salon-card-stagger > * { animation: none; opacity: 1; transform: none; }
+    }
+
+    /* Hide scrollbars on horizontal scroll rows */
+    .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+
+    /* Hero peach radial gradient (V2-D71 expanded) */
+    .hero-peach {
+      background: radial-gradient(ellipse 85% 65% at 50% 30%, #FFE2D0 0%, #FFEFE4 35%, transparent 75%);
+    }
+
+    /* Right-edge mask fade on horizontal scroll rows (mobile) */
+    @media (max-width: 767px) {
+      .scroll-row-fade {
+        -webkit-mask-image: linear-gradient(to right, black calc(100% - 32px), transparent);
+                mask-image: linear-gradient(to right, black calc(100% - 32px), transparent);
+      }
+      .header-nav-fade {
+        -webkit-mask-image: linear-gradient(to right, black calc(100% - 56px), transparent);
+                mask-image: linear-gradient(to right, black calc(100% - 56px), transparent);
+      }
+    }
+
+    /* Header nav link liquid-glass bloom on hover (V2-D62) */
+    .nav-link {
+      position: relative;
+      transition: color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      inset: -4px -10px;
+      z-index: -1;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.30);
+      -webkit-backdrop-filter: blur(22px) saturate(1.7);
+              backdrop-filter: blur(22px) saturate(1.7);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.40), 0 1px 3px rgba(26, 18, 9, 0.08);
+      transform: scale(0.6);
+      opacity: 0;
+      transition: transform 280ms cubic-bezier(0.4, 1.4, 0.4, 1), opacity 280ms cubic-bezier(0.4, 1.4, 0.4, 1);
+    }
+    @media (hover: hover) {
+      .nav-link:hover::before { transform: scale(1); opacity: 1; }
+      .nav-link:hover { color: #1A1C19; }
+    }
+
+    /* Card hover lift */
+    @media (hover: hover) and (pointer: fine) {
+      .salon-card:hover .salon-photo {
+        transform: translateY(-3px) scale(1.015);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      }
+      .sbar-row:hover { background: rgba(26, 28, 25, 0.025); }
+    }
+    .salon-photo {
+      transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .salon-card:active .salon-photo { transform: scale(0.97); transition-duration: 80ms; }
+
+    /* Mobile press feedback */
+    @media (pointer: coarse) {
+      a:active, button:active, [role="button"]:active {
+        opacity: 0.78;
+        transform: scale(0.97);
+        transition: opacity 80ms, transform 80ms;
+      }
+    }
+
+    /* Scroll-snap horizontal rows */
+    .scroll-row {
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .scroll-row > * { scroll-snap-align: start; }
+
+    /* Solen-stamp circle (footer) */
+    .stamp-text { text-transform: uppercase; }
+
+    /* Search expand modal backdrop */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.30);
+      z-index: 60;
+      animation: fade-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+    .hidden-x { display: none; }
+
+    /* Badge styles */
+    .badge {
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+    }
+    .badge-discount { background: #D87352; border: 1px solid rgba(168, 90, 64, 0.5); color: white; box-shadow: 0 1px 3px rgba(26, 28, 25, 0.06); }
+    .badge-now      { background: #E5F2EA; border: 1px solid rgba(59, 122, 87, 0.18); color: #3B7A57; box-shadow: 0 1px 3px rgba(26, 28, 25, 0.04); }
+    .badge-urgent   { background: #EEF2F6; border: 1px solid rgba(58, 91, 124, 0.18); color: #3A5B7C; box-shadow: 0 1px 3px rgba(26, 28, 25, 0.04); }
+    .badge-limited  { background: #EEF2F6; border: 1px solid rgba(58, 91, 124, 0.18); color: #3A5B7C; box-shadow: 0 1px 3px rgba(26, 28, 25, 0.04); }
+    .badge-bottom { top: auto; bottom: 8px; }
+
+    .tabular { font-variant-numeric: tabular-nums; }
+
+    /* ─── V3-D74 fundamentals audit patch ─── */
+
+    /* Item 4: Focus rings on SearchBar rows (a11y baseline) */
+    .sbar-row:focus-visible {
+      outline: 2px solid #3B7A57;
+      outline-offset: 2px;
+      border-radius: 16px;
+    }
+    @media (min-width: 768px) {
+      .sbar-row:focus-visible { border-radius: 9999px; }
+    }
+
+    /* Item 2: CTA disabled + loading state */
+    #sbar-submit[disabled] {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    #sbar-submit.is-loading {
+      pointer-events: none;
+      color: transparent !important;
+      position: relative;
+    }
+    #sbar-submit.is-loading::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      margin: -9px 0 0 -9px;
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: sbar-spin 0.7s linear infinite;
+    }
+    @keyframes sbar-spin { to { transform: rotate(360deg); } }
+
+    /* Item 3: Heart save confirmation chip (Gespeichert pill) */
+    @keyframes chip-slide-in {
+      from { opacity: 0; transform: translateY(-4px) scale(0.92); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes chip-fade-out {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-3px); }
+    }
+    .heart-confirm-chip {
+      position: absolute;
+      top: 50px;
+      right: 6px;
+      z-index: 5;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #3B7A57;
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+      pointer-events: none;
+      white-space: nowrap;
+      animation:
+        chip-slide-in 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards,
+        chip-fade-out 220ms 1100ms forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- ─────────────────────────────── HEADER ─────────────────────────────── -->
+  <header id="site-header" class="fixed left-0 right-0 top-0 z-50 transition-all duration-300 ease-out bg-transparent py-5">
+    <div class="mx-auto flex max-w-[1280px] items-center gap-2.5 px-4 md:gap-6 md:px-8">
+      <a href="#" class="font-display relative inline-flex shrink-0 items-baseline text-[22px] font-extrabold leading-none tracking-normal text-s-ink md:text-[24px]">
+        Solen
+        <span aria-hidden class="ml-[2px] inline-block h-2 w-2 rounded-full bg-s-accent" style="transform: translateY(-2px);"></span>
+      </a>
+      <nav class="flex min-w-0 flex-1 items-center gap-4 overflow-x-auto no-scrollbar header-nav-fade md:justify-center md:gap-8" aria-label="Kategorien">
+        <a href="#coiffeur"   class="nav-link shrink-0 whitespace-nowrap text-[14px] font-medium text-s-ink-2">Coiffeur</a>
+        <a href="#barbershop" class="nav-link shrink-0 whitespace-nowrap text-[14px] font-medium text-s-ink-2">Barbershop</a>
+        <a href="#nails"      class="nav-link shrink-0 whitespace-nowrap text-[14px] font-medium text-s-ink-2">Nails</a>
+        <a href="#entdecken"  class="nav-link shrink-0 whitespace-nowrap text-[14px] font-medium text-s-ink-2">Entdecken</a>
+      </nav>
+      <div class="flex shrink-0 items-center gap-3 md:gap-5">
+        <a href="#about" class="nav-link hidden md:inline-flex text-[14px] font-medium text-s-ink-2">Über uns</a>
+        <a href="#login" class="hidden md:inline-flex items-center rounded-full bg-s-brand px-5 py-[9px] text-[14px] font-semibold text-white transition-all duration-200 ease-out hover:bg-s-brand-mid active:scale-[0.97]" style="box-shadow: 0 4px 12px rgba(4,51,56,0.18);">Anmelden</a>
+        <button type="button" aria-label="Menü öffnen" class="md:hidden -m-2 grid h-11 w-11 place-items-center rounded-lg p-2 text-s-ink hover:bg-black/5">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden>
+            <line x1="3" y1="6"  x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─────────────────────────────── HERO ─────────────────────────────── -->
+  <section class="relative overflow-hidden">
+    <div aria-hidden class="pointer-events-none absolute -top-[120px] -left-[15%] -right-[15%] h-[640px] z-0 hero-peach"></div>
+    <div class="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-5 pt-[100px] pb-12 md:px-8 md:pt-32 md:pb-16" style="min-height: 70dvh;">
+      <div class="w-full md:min-h-0">
+        <p class="mb-3 text-[15px] md:text-[17px] font-medium text-s-ink-2" style="letter-spacing: -0.005em;">Hallo, Sulo</p>
+        <h1 class="mb-10 font-extrabold text-s-ink" style="font-size: clamp(40px, 8.5vw, 60px); line-height: 1.10; letter-spacing: -0.035em;">
+          Schöner aussehen, schneller <span class="text-s-accent">buchen</span>.
+        </h1>
+      </div>
+
+      <!-- SearchBar -->
+      <div id="searchbar" class="relative w-full max-w-[540px] overflow-hidden border border-s-ink/[0.03] bg-white mx-auto md:mx-0 md:max-w-none transition-all duration-500 ease-out" style="border-radius: 24px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06); height: 280px;">
+        <!-- COLLAPSED LAYER -->
+        <div id="sbar-collapsed" class="absolute inset-0 flex flex-col p-2 md:gap-0 md:p-[5px_5px_5px_7px] md:flex-row md:items-stretch transition-opacity duration-300">
+          <button type="button" data-segment="service" aria-label="Service suchen" class="sbar-row group relative flex shrink-0 cursor-pointer items-center text-left rounded-[16px] p-[18px_18px] transition-all duration-150 md:flex-1 md:rounded-full md:p-[11px_22px]">
+            <span class="flex shrink-0 items-center justify-center pr-3 text-s-ink-2 md:border-r md:border-black/10">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            </span>
+            <span class="sbar-value min-w-0 flex-1 truncate text-[15px] font-medium text-s-ink-2 md:pl-4" style="letter-spacing: -0.005em;">Service</span>
+          </button>
+
+          <button type="button" data-segment="stadt" aria-label="Standort wählen" class="sbar-row group relative flex shrink-0 cursor-pointer items-center text-left rounded-[16px] p-[18px_18px] transition-all duration-150 md:flex-1 md:rounded-full md:p-[11px_22px]">
+            <span class="flex shrink-0 items-center justify-center pr-3 text-s-ink-2 md:border-r md:border-black/10">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </span>
+            <span class="sbar-value min-w-0 flex-1 truncate text-[15px] font-medium text-s-ink-2 md:pl-4" style="letter-spacing: -0.005em;">Stadt</span>
+          </button>
+
+          <button type="button" data-segment="zeit" aria-label="Zeit wählen" class="sbar-row group relative flex shrink-0 cursor-pointer items-center text-left rounded-[16px] p-[18px_18px] transition-all duration-150 md:flex-1 md:rounded-full md:p-[11px_22px]">
+            <span class="flex shrink-0 items-center justify-center pr-3 text-s-ink-2 md:border-r md:border-black/10">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+            </span>
+            <span class="sbar-value min-w-0 flex-1 truncate text-[15px] font-medium text-s-ink-2 md:pl-4" style="letter-spacing: -0.005em;">Zeit</span>
+          </button>
+
+          <button type="button" id="sbar-submit" class="shrink-0 rounded-[16px] border-0 bg-s-brand py-4 px-5 text-base font-bold text-white transition-all duration-200 ease-out hover:bg-s-brand-mid active:scale-[0.97] md:mt-0 md:rounded-full md:py-[10px] md:px-6 mt-1" style="letter-spacing: -0.01em;">
+            Solen durchsuchen
+          </button>
+        </div>
+
+        <!-- EXPANDED LAYER -->
+        <div id="sbar-expanded" class="absolute inset-0 flex flex-col opacity-0 pointer-events-none transition-opacity duration-300">
+          <div class="flex items-center justify-between gap-2 border-b border-black/5 px-5 py-4">
+            <div class="flex gap-1">
+              <button type="button" data-tab="service" class="seg-tab rounded-full px-3 py-1.5 text-[13px] font-semibold text-s-ink-3 transition-colors hover:text-s-ink">Service</button>
+              <button type="button" data-tab="stadt"   class="seg-tab rounded-full px-3 py-1.5 text-[13px] font-semibold text-s-ink-3 transition-colors hover:text-s-ink">Stadt</button>
+              <button type="button" data-tab="zeit"    class="seg-tab rounded-full px-3 py-1.5 text-[13px] font-semibold text-s-ink-3 transition-colors hover:text-s-ink">Zeit</button>
+            </div>
+            <button type="button" id="sbar-close" aria-label="Schliessen" class="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors hover:bg-s-bg-sunken hover:text-s-ink">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+
+          <div class="flex-1 overflow-y-auto px-5 py-5">
+            <div data-panel="service" class="picker-panel">
+              <input type="text" placeholder="Was suchst du?" class="w-full border-b border-black/5 bg-transparent pb-3 text-[24px] font-extrabold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:border-s-brand">
+              <div class="mt-5 flex flex-wrap gap-2" id="service-chips"></div>
+            </div>
+            <div data-panel="stadt" class="picker-panel hidden-x">
+              <input type="text" placeholder="Wo?" class="w-full border-b border-black/5 bg-transparent pb-3 text-[24px] font-extrabold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:border-s-brand">
+              <button type="button" data-pick="Aktueller Standort" class="mt-5 flex w-full items-center gap-3 rounded-2xl border border-s-brand/15 bg-s-brand-subtle px-4 py-3 transition-colors hover:bg-s-brand/10">
+                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-brand text-white">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                </span>
+                <span class="font-semibold text-s-ink">Aktueller Standort</span>
+              </button>
+              <div class="mt-4 flex flex-wrap gap-2" id="city-chips"></div>
+            </div>
+            <div data-panel="zeit" class="picker-panel hidden-x">
+              <div class="text-[24px] font-extrabold text-s-ink mb-5">Wann?</div>
+              <div class="mb-5 rounded-2xl border border-s-border/60 bg-s-bg-sunken/50 p-4 text-center text-[13px] text-s-ink-3">[Kalender-Picker]</div>
+              <div class="text-[13px] font-medium text-s-ink-3 mb-2">Tageszeit</div>
+              <div class="flex flex-wrap gap-2" id="period-chips"></div>
+            </div>
+          </div>
+
+          <div class="border-t border-black/5 p-3 flex items-center justify-between">
+            <button type="button" id="sbar-reset" class="text-[14px] font-semibold text-s-ink-3 px-3 py-2 hover:text-s-ink transition-colors">Zurücksetzen</button>
+            <button type="button" id="sbar-search" class="shrink-0 rounded-full border-0 bg-s-brand px-6 py-3 font-semibold text-white transition-colors hover:bg-s-brand-mid">Suchen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────── FEED ZONE ─────────────────────────────── -->
+  <div class="relative z-[2] -mt-6 md:-mt-8 rounded-t-[28px] md:rounded-t-[40px] border-t border-white/40 pt-2 pb-4 md:pt-4 md:pb-6" style="box-shadow: 0 -12px 32px rgba(26,18,9,0.04);">
+
+    <!-- Section: Zuletzt angesehen -->
+    <section class="relative z-[1] mx-auto max-w-[1280px] px-1 py-3 md:px-3 md:py-4 mb-4 md:mb-6">
+      <div class="px-3 pt-1 pb-4 md:px-4 md:pt-2 md:pb-4 overflow-hidden">
+        <div class="flex items-baseline justify-between gap-6">
+          <h2 class="text-s-ink font-bold leading-[1.2]" style="font-size: clamp(20px, 2.2vw, 26px); letter-spacing: -0.025em;">
+            Zuletzt angesehen
+            <a href="#" aria-label="Im Profil →" class="group ml-3 inline-grid h-9 w-9 shrink-0 place-items-center align-middle rounded-full bg-s-ink/[0.06] text-s-ink transition-all duration-200 ease-out hover:bg-s-ink/[0.12] hover:scale-[1.08]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </h2>
+          <a href="#" class="hidden md:inline shrink-0 text-[13px] font-semibold text-s-brand transition-colors hover:text-s-brand-mid">Im Profil →</a>
+        </div>
+        <div class="salon-card-stagger scroll-row scroll-row-fade mt-3 flex gap-3 overflow-x-auto py-1 no-scrollbar -mx-3 px-3 md:-mx-5 md:px-5" data-section="recent"></div>
+      </div>
+    </section>
+
+    <!-- Section: Last-Minute heute -->
+    <section class="relative z-[1] mx-auto max-w-[1280px] px-1 py-3 md:px-3 md:py-4 mb-4 md:mb-6">
+      <div class="px-3 pt-1 pb-4 md:px-4 md:pt-2 md:pb-4 overflow-hidden">
+        <div class="flex items-baseline justify-between gap-6">
+          <h2 class="text-s-ink font-bold leading-[1.2]" style="font-size: clamp(20px, 2.2vw, 26px); letter-spacing: -0.025em;">
+            Last-Minute heute
+            <a href="#" aria-label="Alle →" class="group ml-3 inline-grid h-9 w-9 shrink-0 place-items-center align-middle rounded-full bg-s-ink/[0.06] text-s-ink transition-all duration-200 ease-out hover:bg-s-ink/[0.12] hover:scale-[1.08]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </h2>
+          <a href="#" class="hidden md:inline shrink-0 text-[13px] font-semibold text-s-brand transition-colors hover:text-s-brand-mid">Alle →</a>
+        </div>
+        <div class="salon-card-stagger scroll-row scroll-row-fade mt-3 flex gap-3 overflow-x-auto py-1 no-scrollbar -mx-3 px-3 md:-mx-5 md:px-5" data-section="lastminute"></div>
+      </div>
+    </section>
+
+    <!-- Section: In der Nähe -->
+    <section class="relative z-[1] mx-auto max-w-[1280px] px-1 py-3 md:px-3 md:py-4 mb-4 md:mb-6">
+      <div class="px-3 pt-1 pb-4 md:px-4 md:pt-2 md:pb-4 overflow-hidden">
+        <div class="flex items-baseline justify-between gap-6">
+          <h2 class="text-s-ink font-bold leading-[1.2]" style="font-size: clamp(20px, 2.2vw, 26px); letter-spacing: -0.025em;">
+            In der Nähe
+            <a href="#" aria-label="Alle in deiner Nähe →" class="group ml-3 inline-grid h-9 w-9 shrink-0 place-items-center align-middle rounded-full bg-s-ink/[0.06] text-s-ink transition-all duration-200 ease-out hover:bg-s-ink/[0.12] hover:scale-[1.08]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </h2>
+          <a href="#" class="hidden md:inline shrink-0 text-[13px] font-semibold text-s-brand transition-colors hover:text-s-brand-mid">Alle in deiner Nähe →</a>
+        </div>
+        <div class="salon-card-stagger scroll-row scroll-row-fade mt-3 flex gap-3 overflow-x-auto py-1 no-scrollbar -mx-3 px-3 md:-mx-5 md:px-5" data-section="nearby"></div>
+      </div>
+    </section>
+
+    <!-- Section: Lass dich verwöhnen (Featured Stylists) -->
+    <section class="relative z-[1] mx-auto max-w-[1280px] px-1 py-3 md:px-3 md:py-4 mb-4 md:mb-6">
+      <div class="px-3 pt-1 pb-4 md:px-4 md:pt-2 md:pb-4 overflow-hidden">
+        <div class="flex items-baseline justify-between gap-6">
+          <h2 class="text-s-ink font-bold leading-[1.2]" style="font-size: clamp(20px, 2.2vw, 26px); letter-spacing: -0.025em;">
+            Lass dich verwöhnen.
+            <a href="#" aria-label="Alle Stilist:innen →" class="group ml-3 inline-grid h-9 w-9 shrink-0 place-items-center align-middle rounded-full bg-s-ink/[0.06] text-s-ink transition-all duration-200 ease-out hover:bg-s-ink/[0.12] hover:scale-[1.08]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </h2>
+          <a href="#" class="hidden md:inline shrink-0 text-[13px] font-semibold text-s-brand transition-colors hover:text-s-brand-mid">Alle Stilist:innen →</a>
+        </div>
+        <div class="salon-card-stagger mt-3 flex gap-5 overflow-x-auto px-1 py-2 no-scrollbar" id="stylists-row"></div>
+      </div>
+    </section>
+
+    <!-- Section: Coiffeur-Salons -->
+    <section id="coiffeur" class="relative z-[1] mx-auto max-w-[1280px] px-1 py-3 md:px-3 md:py-4 mb-4 md:mb-6">
+      <div class="px-3 pt-1 pb-4 md:px-4 md:pt-2 md:pb-4 overflow-hidden">
+        <div class="flex items-baseline justify-between gap-6">
+          <h2 class="text-s-ink font-bold leading-[1.2]" style="font-size: clamp(20px, 2.2vw, 26px); letter-spacing: -0.025em;">
+            Coiffeur-Salons
+            <a href="#" aria-label="Alle Coiffeurs →" class="group ml-3 inline-grid h-9 w-9 shrink-0 place-items-center align-middle rounded-full bg-s-ink/[0.06] text-s-ink transition-all duration-200 ease-out hover:bg-s-ink/[0.12] hover:scale-[1.08]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </h2>
+          <a href="#" class="hidden md:inline shrink-0 text-[13px] font-semibold text-s-brand transition-colors hover:text-s-brand-mid">Alle Coiffeurs →</a>
+        </div>
+        <div class="salon-card-stagger scroll-row scroll-row-fade mt-3 flex gap-3 overflow-x-auto py-1 no-scrollbar -mx-3 px-3 md:-mx-5 md:px-5" data-section="coiffeur"></div>
+      </div>
+    </section>
+
+    <!-- Section: Entdecken -->
+    <section id="entdecken" class="relative z-[1] mx-auto max-w-[1280px] px-1 py-3 md:px-3 md:py-4 mb-4 md:mb-6">
+      <div class="px-3 pt-1 pb-4 md:px-4 md:pt-2 md:pb-4 overflow-hidden">
+        <div class="flex items-baseline justify-between gap-6">
+          <h2 class="text-s-ink font-bold leading-[1.2]" style="font-size: clamp(20px, 2.2vw, 26px); letter-spacing: -0.025em;">
+            Finde deine Inspiration.
+            <a href="#" aria-label="Alle entdecken →" class="group ml-3 inline-grid h-9 w-9 shrink-0 place-items-center align-middle rounded-full bg-s-ink/[0.06] text-s-ink transition-all duration-200 ease-out hover:bg-s-ink/[0.12] hover:scale-[1.08]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </h2>
+          <a href="#" class="hidden md:inline shrink-0 text-[13px] font-semibold text-s-brand transition-colors hover:text-s-brand-mid">Alle entdecken →</a>
+        </div>
+        <div class="mt-3 flex gap-4 overflow-x-auto py-2 no-scrollbar -mx-3 px-3 md:-mx-4 md:px-4 scroll-row" id="entdecken-row"></div>
+      </div>
+    </section>
+
+    <!-- Section: Bewertungen -->
+    <section class="relative z-[1] mx-auto max-w-[1280px] px-1 py-3 md:px-3 md:py-4 mb-4 md:mb-6">
+      <div class="px-3 pt-1 pb-4 md:px-4 md:pt-2 md:pb-4 overflow-hidden">
+        <div class="flex items-baseline justify-between gap-6">
+          <h2 class="text-s-ink font-bold leading-[1.2]" style="font-size: clamp(20px, 2.2vw, 26px); letter-spacing: -0.025em;">
+            Bewertungen
+            <a href="#" aria-label="Alle Bewertungen →" class="group ml-3 inline-grid h-9 w-9 shrink-0 place-items-center align-middle rounded-full bg-s-ink/[0.06] text-s-ink transition-all duration-200 ease-out hover:bg-s-ink/[0.12] hover:scale-[1.08]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </h2>
+          <a href="#" class="hidden md:inline shrink-0 text-[13px] font-semibold text-s-brand transition-colors hover:text-s-brand-mid">Alle Bewertungen →</a>
+        </div>
+        <div class="salon-card-stagger mt-3 flex gap-3 overflow-x-auto py-1 no-scrollbar -mx-3 px-3 md:-mx-5 md:px-5 scroll-row" id="reviews-row"></div>
+      </div>
+    </section>
+
+    <!-- Section: Solen für dein Geschäft (B2B) -->
+    <section class="relative z-[1] mx-auto max-w-[1280px] px-3 py-3 md:px-4 md:py-6 mb-1 md:mb-3">
+      <div class="relative overflow-hidden" style="background: #FFFFFF; border: 1.5px solid #3B7A57; border-radius: 28px; box-shadow: 0 8px 24px rgba(42,31,24,0.06);">
+        <div class="grid grid-cols-1 gap-8 p-6 md:p-12 lg:grid-cols-[1fr_1.2fr] lg:gap-12 lg:p-16">
+          <div class="flex flex-col justify-center text-s-ink">
+            <span class="mb-3 inline-flex items-center gap-2 text-[14px] font-medium text-s-accent">
+              <span aria-hidden style="display:inline-block;width:5px;height:5px;border-radius:9999px;background:#D87352;"></span>
+              Für Salons
+            </span>
+            <h2 class="font-extrabold text-s-ink" style="font-size: clamp(32px, 4.5vw, 64px); line-height: 1.0; letter-spacing: -0.018em;">
+              Solen für<br>
+              <span class="text-s-accent">dein Geschäft.</span>
+            </h2>
+            <p class="mt-5 text-[15px] md:text-[17px] leading-[1.55] text-s-ink-2 max-w-[480px]">
+              Mehr Buchungen, weniger Aufwand. Solen bringt die richtigen Kund:innen zu dir — automatisiert, transparent, fair. Schweizer Salon-Plattform Nr.&nbsp;1 in Basel.
+            </p>
+            <a href="#" class="mt-7 inline-flex items-center gap-2.5 self-start rounded-full bg-s-brand px-6 py-3.5 text-[14px] font-bold text-white transition-all duration-200 ease-out hover:bg-s-brand-mid active:scale-[0.97]" style="box-shadow: 0 4px 14px rgba(31,92,66,0.25);">
+              Mehr erfahren
+              <span aria-hidden class="text-[16px]">→</span>
+            </a>
+            <div class="mt-10">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="font-extrabold text-s-ink leading-none" style="font-size: 22px; letter-spacing: -0.01em;">Bewertet 4.9 / 5</span>
+                <span aria-hidden style="color: #F3A864; font-size: 16px; letter-spacing: 0.06em;">★★★★★</span>
+              </div>
+              <p class="text-[13px] text-s-ink-3">Über 1'200 Salons buchen schon mit Solen</p>
+            </div>
+          </div>
+          <div class="hidden lg:block relative" style="aspect-ratio: 1.2 / 1;">
+            <div class="relative w-full h-full overflow-hidden" style="background: linear-gradient(135deg, #D4F2E0 0%, #FFE8D8 100%); border-radius: 28px;">
+              <div class="absolute top-8 left-8 right-20 bottom-20 bg-white border border-[#E0E5DD] overflow-hidden p-[18px] flex flex-col gap-3" style="border-radius: 16px; box-shadow: 0 12px 40px rgba(31,23,9,0.10);">
+                <div class="flex items-center gap-2 pb-3 border-b border-[#F0EDE8]">
+                  <span class="font-extrabold text-s-ink mr-4 inline-flex items-baseline" style="font-size: 14px;">solen<span class="ml-[2px] inline-block" style="height: 5px; width: 5px; border-radius: 9999px; background: #D87352;"></span></span>
+                  <span class="rounded-md bg-s-brand text-white px-[11px] py-[5px] text-[11px] font-semibold">Heute</span>
+                  <span class="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[11px] font-semibold">Mitarbeiter</span>
+                  <span class="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[11px] font-semibold">Woche</span>
+                  <span class="flex-1"></span>
+                  <span class="text-[11px] text-s-ink-3 font-semibold">Di 14. Mai · 2026</span>
+                </div>
+                <div class="grid gap-1 flex-1" style="grid-template-columns: 50px repeat(5, 1fr);">
+                  <div class="flex flex-col gap-1 pt-3">
+                    <div class="text-[9px] text-s-ink-3 h-7 flex items-start">9:00</div>
+                    <div class="text-[9px] text-s-ink-3 h-7 flex items-start">10:00</div>
+                    <div class="text-[9px] text-s-ink-3 h-7 flex items-start">11:00</div>
+                    <div class="text-[9px] text-s-ink-3 h-7 flex items-start">12:00</div>
+                    <div class="text-[9px] text-s-ink-3 h-7 flex items-start">13:00</div>
+                    <div class="text-[9px] text-s-ink-3 h-7 flex items-start">14:00</div>
+                  </div>
+                  <div class="bg-[#FAFAF8] p-2 flex flex-col gap-1" style="border-radius: 6px;">
+                    <div class="text-[9px] font-bold text-s-ink-2 text-center mb-1">Di</div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #D4F2E0; border-radius: 4px;"><span class="block font-bold text-s-ink">Lara K.</span><span class="text-s-ink-2 text-[8px]">Schnitt + Föhn</span></div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #FFE8D8; border-radius: 4px;"><span class="block font-bold text-s-ink">Marc H.</span><span class="text-s-ink-2 text-[8px]">Fade</span></div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #D4DDC8; border-radius: 4px;"><span class="block font-bold text-s-ink">Anna M.</span><span class="text-s-ink-2 text-[8px]">Coloration</span></div>
+                  </div>
+                  <div class="bg-[#FAFAF8] p-2 flex flex-col gap-1" style="border-radius: 6px;">
+                    <div class="text-[9px] font-bold text-s-ink-2 text-center mb-1">Mi</div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #FFF1C2; border-radius: 4px;"><span class="block font-bold text-s-ink">Sara R.</span><span class="text-s-ink-2 text-[8px]">Gel-Maniküre</span></div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #D4F2E0; border-radius: 4px;"><span class="block font-bold text-s-ink">Tobias W.</span><span class="text-s-ink-2 text-[8px]">Bart-Trim</span></div>
+                  </div>
+                  <div class="bg-[#FAFAF8] p-2 flex flex-col gap-1" style="border-radius: 6px;">
+                    <div class="text-[9px] font-bold text-s-ink-2 text-center mb-1">Do</div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #EAE0D0; border-radius: 4px;"><span class="block font-bold text-s-ink">Eva S.</span><span class="text-s-ink-2 text-[8px]">Hochsteck</span></div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #FFE8D8; border-radius: 4px;"><span class="block font-bold text-s-ink">Niklas B.</span><span class="text-s-ink-2 text-[8px]">Schnitt</span></div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #D4DDC8; border-radius: 4px;"><span class="block font-bold text-s-ink">Sophie L.</span><span class="text-s-ink-2 text-[8px]">Spa</span></div>
+                  </div>
+                  <div class="bg-[#FAFAF8] p-2 flex flex-col gap-1" style="border-radius: 6px;">
+                    <div class="text-[9px] font-bold text-s-ink-2 text-center mb-1">Fr</div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #D4F2E0; border-radius: 4px;"><span class="block font-bold text-s-ink">David K.</span><span class="text-s-ink-2 text-[8px]">Pflege</span></div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #FFF1C2; border-radius: 4px;"><span class="block font-bold text-s-ink">Lena F.</span><span class="text-s-ink-2 text-[8px]">Balayage</span></div>
+                  </div>
+                  <div class="bg-[#FAFAF8] p-2 flex flex-col gap-1" style="border-radius: 6px;">
+                    <div class="text-[9px] font-bold text-s-ink-2 text-center mb-1">Sa</div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #EAE0D0; border-radius: 4px;"><span class="block font-bold text-s-ink">Anna M.</span><span class="text-s-ink-2 text-[8px]">Schnitt</span></div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #D4F2E0; border-radius: 4px;"><span class="block font-bold text-s-ink">Mira L.</span><span class="text-s-ink-2 text-[8px]">Nail-Art</span></div>
+                    <div class="px-1.5 py-1 text-[8.5px] leading-tight" style="background: #FFE8D8; border-radius: 4px;"><span class="block font-bold text-s-ink">Tim O.</span><span class="text-s-ink-2 text-[8px]">Fade</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="absolute bottom-8 right-8 w-[200px] bg-white overflow-hidden" style="border-radius: 18px; box-shadow: 0 16px 48px rgba(31,23,9,0.15);">
+                <div class="w-full relative grid place-items-center" style="aspect-ratio: 4 / 3; background: linear-gradient(135deg, #D4DDC8 0%, #A8E0BF 100%);">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#3B7A57" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.4;" aria-hidden><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+                </div>
+                <div class="p-3">
+                  <div class="font-extrabold text-s-ink mb-1" style="font-size: 13px;">Salon Maria</div>
+                  <div class="flex items-center gap-1 text-[10px] text-s-ink-2">
+                    <span style="color: #F3A864; font-size: 9px; letter-spacing: 0.06em;">★★★★★</span>
+                    <span>5.0 · 247 Bewertungen</span>
+                  </div>
+                  <div class="text-[9px] text-s-ink-3 mt-[2px]">2.0 km · Kleinbasel</div>
+                  <span class="inline-flex items-center gap-1 mt-1.5 px-2 py-[3px] rounded-full bg-s-brand text-white text-[9px] font-bold">
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Sofort buchbar
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ─────────────────────────────── FOOTER ─────────────────────────────── -->
+  <footer class="relative z-[1] bg-white/45" style="backdrop-filter: blur(22px) saturate(1.6); -webkit-backdrop-filter: blur(22px) saturate(1.6);">
+    <div class="relative h-[140px] md:h-[260px] bg-s-brand overflow-hidden" style="border-radius: 28px 28px 0 0; box-shadow: 0 -8px 24px rgba(4,51,56,0.06);">
+      <span aria-hidden class="font-display absolute left-0 right-0 text-center text-white font-extrabold leading-none select-none" style="font-size: clamp(140px, 24vw, 260px); bottom: -18%; letter-spacing: -0.03em;">solen</span>
+      <span aria-hidden class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse 60% 80% at 50% 0%, rgba(255,255,255,0.10) 0%, transparent 70%);"></span>
+    </div>
+    <div class="bg-white px-5 py-8 md:px-8 md:py-14">
+      <div class="mx-auto grid max-w-[1280px] grid-cols-3 gap-x-4 gap-y-8 md:grid-cols-[1.4fr_1fr_1fr_1fr_auto] md:gap-10 md:gap-x-12">
+        <div class="col-span-3 md:col-span-1">
+          <a href="#" class="font-display inline-flex items-baseline text-[22px] font-extrabold leading-none text-s-ink">Solen<span aria-hidden class="ml-[2px] inline-block h-2 w-2 rounded-full bg-s-accent" style="transform: translateY(-2px);"></span></a>
+          <p class="mt-4 max-w-[280px] text-[13px] leading-relaxed text-s-ink-2">Beauty &amp; Wellness Booking für die ganze Schweiz. Salons finden, sofort buchen, Komfort genießen.</p>
+          <h3 class="mt-6 text-[14px] font-bold text-s-ink">Newsletter</h3>
+          <p class="mt-1.5 text-[12px] text-s-ink-3">Tipps, neue Salons, monatlich.</p>
+          <form class="relative mt-3 max-w-[320px]" aria-label="Newsletter abonnieren" onsubmit="event.preventDefault(); alert('Newsletter-Anmeldung (Mockup)');">
+            <input type="email" placeholder="deine@email.ch" required class="w-full rounded-[12px] bg-s-ink/[0.05] py-[12px] pl-[14px] pr-[48px] text-[14px] text-s-ink placeholder:text-s-ink-3 outline-none">
+            <button type="submit" aria-label="Abonnieren" class="absolute right-[6px] top-[6px] grid h-9 w-9 place-items-center rounded-[9px] bg-s-brand text-white transition-transform duration-200 active:scale-95">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </form>
+          <div class="mt-5 flex gap-2">
+            <a href="#" aria-label="Instagram" class="grid h-9 w-9 place-items-center rounded-[10px] bg-s-ink/[0.06] text-s-ink-3 transition-colors hover:bg-s-ink hover:text-white">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </a>
+            <a href="#" aria-label="Facebook" class="grid h-9 w-9 place-items-center rounded-[10px] bg-s-ink/[0.06] text-s-ink-3 transition-colors hover:bg-s-ink hover:text-white">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-[14px] font-bold text-s-ink mb-5">Solen</h3>
+          <ul class="flex flex-col gap-3">
+            <li><a href="#" class="text-[13px] text-s-ink-2 transition-colors hover:text-s-ink">Über uns</a></li>
+            <li><a href="#" class="text-[13px] text-s-ink-2 transition-colors hover:text-s-ink">Karriere</a></li>
+            <li><a href="#" class="text-[13px] text-s-ink-2 transition-colors hover:text-s-ink">Presse</a></li>
+            <li><a href="#" class="text-[13px] text-s-ink-2 transition-colors hover:text-s-ink">Blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-[14px] font-bold text-s-ink mb-5">Hilfe</h3>
+          <ul class="flex flex-col gap-3">
+            <li><a href="#" class="text-[13px] text-s-ink-2 transition-colors hover:text-s-ink">Kund:innen-Hilfe</a></li>
+            <li><a href="#" class="text-[13px] text-s-ink-2 transition-colors hover:text-s-ink">Salon-Hilfe</a></li>
+            <li><a href="#" class="text-[13px] text-s-ink-2 transition-colors hover:text-s-ink">Sicherheit</a></li>
+            <li><a href="#" class="text-[13px] text-s-ink-2 transition-colors hover:text-s-ink">Kontakt</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-[14px] font-bold text-s-ink mb-5">Versprechen</h3>
+          <ul class="flex flex-col gap-3 text-[13px] text-s-ink-2">
+            <li>30 Sekunden buchen</li>
+            <li>Ohne Anrufen</li>
+            <li>Sofortige Bestätigung</li>
+            <li>Faire Preise</li>
+          </ul>
+        </div>
+        <div class="hidden md:flex items-start justify-end">
+          <div class="relative grid h-24 w-24 place-items-center" aria-hidden>
+            <svg viewBox="0 0 100 100" class="absolute inset-0 h-full w-full text-s-brand">
+              <defs><path id="solen-stamp-circle" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"></path></defs>
+              <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="1"></circle>
+              <text fill="currentColor" font-size="9" font-weight="700" letter-spacing="2" class="stamp-text">
+                <textPath href="#solen-stamp-circle" startOffset="0">SOLEN · SCHWEIZ · 2026 ·&nbsp;</textPath>
+              </text>
+              <circle cx="50" cy="50" r="22" fill="currentColor"></circle>
+            </svg>
+            <span class="relative z-[1] font-display text-[24px] font-extrabold leading-none text-white">S</span>
+          </div>
+        </div>
+      </div>
+      <div class="mx-auto mt-12 flex max-w-[1280px] flex-col items-center gap-3 border-t border-s-ink/[0.08] pt-6 text-[11px] font-bold uppercase tracking-[0.15em] text-s-ink-3 md:flex-row md:justify-between md:gap-8">
+        <span>© 2026 Solen.ch · Alle Rechte vorbehalten</span>
+        <div class="flex flex-wrap justify-center gap-x-7 gap-y-2">
+          <a href="#" class="transition-colors hover:text-s-ink">Datenschutz</a>
+          <a href="#" class="transition-colors hover:text-s-ink">AGB</a>
+          <a href="#" class="transition-colors hover:text-s-ink">Impressum</a>
+          <a href="#" class="transition-colors hover:text-s-ink">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─────────────────────────────── JS — DATA + RENDER + INTERACTIONS ─────────────────────────────── -->
+  <script>
+    /* All data below is hardcoded — no user input, no fetch, no localStorage of untrusted values.
+       Static-mockup file. Render uses Range.createContextualFragment + replaceChildren. */
+
+    const CAT_TILE = {
+      coiffeur:   { bg: '#FFE8D8', initial: '#D87352', label: 'Coiffeur' },
+      barbershop: { bg: '#EAE0D0', initial: '#1A1C19', label: 'Barbershop' },
+      nails:      { bg: '#D4DDC8', initial: '#A04A22', label: 'Nails' },
+      spa:        { bg: '#E5F2EA', initial: '#2D5E43', label: 'Spa & Wellness' },
+    };
+
+    const RECENT = [
+      { slug: 'atelier-coiffure', name: 'Atelier Coiffure', rating: 4.9, category: 'coiffeur', photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=600&fit=crop&q=80', nextSlot: '14:30', price: 80, address: 'Aeschenvorstadt 55', city: 'Basel' },
+      { slug: 'studio-nord',      name: 'Studio Nord',      rating: 4.7, category: 'barbershop', photo: 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=600&fit=crop&q=80', nextSlot: 'In 25 Min frei', price: 50, address: 'Klybeckstrasse 12', city: 'Basel' },
+      { slug: 'nail-loft',        name: 'Nail Loft',        rating: 4.8, category: 'nails',     photo: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=600&fit=crop&q=80', nextSlot: '17:00', price: 45, address: 'Spalenberg 23', city: 'Basel' },
+      { slug: 'rheinspa',         name: 'Rhein Spa',        rating: 4.95, category: 'spa',      photo: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=600&fit=crop&q=80', nextSlot: 'Mo. 09:00', price: 95, address: 'Bahnhofstrasse 14', city: 'Zürich' },
+    ];
+
+    const LASTMINUTE = [
+      { slug: 'salon-maria',         name: 'Salon Maria',          rating: 4.8,  category: 'coiffeur',   discount: 20, time: '14:30', price: 64,  photo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=600&fit=crop&q=80', address: 'Steinenvorstadt 22' },
+      { slug: 'nails-und-co',        name: 'Nails & Co.',          rating: 4.7,  category: 'nails',      discount: 15, time: '16:00', price: 38,  photo: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=600&fit=crop&q=80', address: 'Aeschenplatz 15' },
+      { slug: 'boheme',              name: 'Bohème',               rating: 4.9,  category: 'barbershop', discount: 25, time: '17:30', price: 32,  photo: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=600&fit=crop&q=80', address: 'Spalentorweg 8' },
+      { slug: 'spa-rheinufer',       name: 'Spa Rheinufer',        rating: 4.8,  category: 'spa',        discount: 10, time: '18:00', price: 95,  photo: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=600&fit=crop&q=80', address: 'Klosterberg 12' },
+      { slug: 'haar-atelier',        name: 'Haar Atelier',         rating: 4.6,  category: 'coiffeur',   discount: 15, time: '18:30', price: 72,  photo: 'https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&h=600&fit=crop&q=80', address: 'Marktplatz 19' },
+      { slug: 'studio-kleinbasel',   name: 'Studio Kleinbasel',    rating: 4.85, category: 'barbershop', discount: 20, time: '19:00', price: 28,  photo: 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=600&fit=crop&q=80', address: 'Petersgraben 28' },
+      { slug: 'atelier-solene',      name: 'Atelier Solène',       rating: 4.95, category: 'coiffeur',   discount: 30, time: '15:00', price: 56,  photo: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=600&fit=crop&q=80', address: 'Picassoplatz 7' },
+      { slug: 'salon-bellevue',      name: 'Salon Bellevue',       rating: 4.9,  category: 'coiffeur',   discount: 15, time: '15:30', price: 68,  photo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=600&fit=crop&q=80', address: 'Bundesgasse 14' },
+      { slug: 'nail-loft',           name: 'Nail Loft',            rating: 4.8,  category: 'nails',      discount: 20, time: '16:30', price: 42,  photo: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=600&fit=crop&q=80', address: 'Margarethenstrasse 31' },
+      { slug: 'spa-margarethen',     name: 'Spa Margarethen',      rating: 4.7,  category: 'spa',        discount: 15, time: '17:00', price: 78,  photo: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=600&fit=crop&q=80', address: 'Rheingasse 11' },
+      { slug: 'coiffeur-spalentor',  name: 'Coiffeur Spalentor',   rating: 4.6,  category: 'coiffeur',   discount: 25, time: '17:00', price: 45,  photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=600&fit=crop&q=80', address: 'Freie Strasse 44' },
+      { slug: 'barber-kleinbasel',   name: 'Barber Kleinbasel',    rating: 4.75, category: 'barbershop', discount: 30, time: '18:00', price: 24,  photo: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&h=600&fit=crop&q=80', address: 'Gerbergasse 22' },
+      { slug: 'haarwerkstatt',       name: 'Haarwerkstatt',        rating: 4.75, category: 'coiffeur',   discount: 20, time: '18:30', price: 108, photo: 'https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=600&fit=crop&q=80', address: 'Kornhausgasse 9' },
+      { slug: 'studio-nord',         name: 'Studio Nord',          rating: 4.7,  category: 'barbershop', discount: 25, time: '19:00', price: 30,  photo: 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=600&fit=crop&q=80', address: 'Pfeffingerstrasse 17' },
+      { slug: 'salon-felix',         name: 'Salon Felix',          rating: 4.8,  category: 'coiffeur',   discount: 15, time: '19:30', price: 60,  photo: 'https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&h=600&fit=crop&q=80', address: 'St. Alban-Anlage 5' },
+    ];
+
+    const NEARBY = [
+      { slug: 'salon-maria',        name: 'Salon Maria',         rating: 4.8, category: 'coiffeur',   distance: '200 m',  time: 'In 15 Min',      free: true,  state: 'limited', label: 'In 15 Min', price: 80, photo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=600&fit=crop&q=80', address: 'Steinenvorstadt 18' },
+      { slug: 'atelier-coiffure',   name: 'Atelier Coiffure',    rating: 4.9, category: 'coiffeur',   distance: '450 m',  time: '14:30',          free: true,  state: 'now',     label: 'Heute frei', price: 80, photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=600&fit=crop&q=80', address: 'Spalenberg 5' },
+      { slug: 'nails-und-co',       name: 'Nails & Co.',         rating: 4.7, category: 'nails',      distance: '800 m',  time: 'Mo. 09:00',      free: false, price: 45, photo: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=600&fit=crop&q=80', address: 'Rheingasse 14' },
+      { slug: 'spa-rheinufer',      name: 'Spa Rheinufer',       rating: 4.8, category: 'spa',        distance: '1.2 km', time: 'Do. 11:00',      free: false, price: 95, photo: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=600&fit=crop&q=80', address: 'Marktplatz 9' },
+      { slug: 'boheme',             name: 'Bohème',              rating: 4.9, category: 'barbershop', distance: '1.5 km', time: 'In 30 Min',      free: true,  state: 'limited', label: 'In 30 Min', price: 50, photo: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=600&fit=crop&q=80', address: 'Bahnhofstrasse 33' },
+      { slug: 'studio-nord',        name: 'Studio Nord',         rating: 4.7, category: 'barbershop', distance: '1.8 km', time: '18:00',          free: true,  state: 'urgent',  label: 'Schnell weg', price: 50, photo: 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=600&fit=crop&q=80', address: 'Aeschenvorstadt 22' },
+      { slug: 'haar-atelier',       name: 'Haar Atelier',        rating: 4.6, category: 'coiffeur',   distance: '2.0 km', time: '16:30',          free: true,  state: 'urgent',  label: 'Schnell weg', price: 80, photo: 'https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&h=600&fit=crop&q=80', address: 'Margarethenstrasse 12' },
+      { slug: 'nail-loft',          name: 'Nail Loft',           rating: 4.8, category: 'nails',      distance: '2.2 km', time: '17:30',          free: true,  state: 'urgent',  label: 'Schnell weg', price: 45, photo: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=600&fit=crop&q=80', address: 'Freie Strasse 67' },
+      { slug: 'salon-bellevue',     name: 'Salon Bellevue',      rating: 4.9, category: 'coiffeur',   distance: '2.4 km', time: 'Morgen 09:00',   free: false, price: 80, photo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=600&fit=crop&q=80', address: 'Pfeffingerstrasse 8' },
+      { slug: 'studio-rheinblick',  name: 'Studio Rheinblick',   rating: 4.7, category: 'coiffeur',   distance: '2.6 km', time: 'Mi. 14:00',      free: false, price: 80, photo: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=600&fit=crop&q=80', address: 'Gerbergasse 28' },
+      { slug: 'spa-margarethen',    name: 'Spa Margarethen',     rating: 4.7, category: 'spa',        distance: '3.0 km', time: 'Fr. 10:00',      free: false, price: 95, photo: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=600&fit=crop&q=80', address: 'Petersgraben 19' },
+      { slug: 'coiffure-trois-rois',name: 'Coiffure Trois Rois', rating: 4.85, category: 'coiffeur',  distance: '3.2 km', time: '17:00',          free: true,  state: 'urgent',  label: 'Schnell weg', price: 80, photo: 'https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=600&fit=crop&q=80', address: 'Kornhausgasse 14' },
+      { slug: 'atelier-solene',     name: 'Atelier Solène',      rating: 4.95, category: 'coiffeur',  distance: '3.5 km', time: 'Sa. 11:30',      free: false, price: 80, photo: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=600&fit=crop&q=80', address: 'St. Alban-Vorstadt 25' },
+      { slug: 'barber-kleinbasel',  name: 'Barber Kleinbasel',   rating: 4.75, category: 'barbershop', distance: '3.8 km',time: '19:00',          free: true,  state: 'urgent',  label: 'Schnell weg', price: 50, photo: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&h=600&fit=crop&q=80', address: 'Klosterberg 6' },
+      { slug: 'salon-felix',        name: 'Salon Felix',         rating: 4.8, category: 'coiffeur',   distance: '4.1 km', time: 'Di. 13:00',      free: false, price: 80, photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=600&fit=crop&q=80', address: 'Bundesgasse 41' },
+    ];
+
+    const COIFFEUR = [
+      { slug: 'salon-maria',          name: 'Salon Maria',          rating: 4.8,  service: 'Damen-Schnitt', price: 80,  freeToday: true,  time: '14:00',         photo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=600&fit=crop&q=80',  address: 'Steinenvorstadt 12' },
+      { slug: 'atelier-coiffure',     name: 'Atelier Coiffure',     rating: 4.9,  service: 'Balayage',      price: 120, freeToday: true,  time: '15:30',         photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=600&fit=crop&q=80', address: 'Spalenberg 23' },
+      { slug: 'lina-hair-studio',     name: 'Lina Hair Studio',     rating: 4.7,  service: 'Föhnen & Styling', price: 75, freeToday: false, time: 'Morgen 09:00', photo: 'https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=600&fit=crop&q=80', address: 'Rheingasse 7' },
+      { slug: 'coiffeur-bahnhof',     name: 'Coiffeur Bahnhof',     rating: 4.6,  service: 'Herren-Schnitt', price: 65, freeToday: false, time: 'Morgen 10:30',  photo: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&h=600&fit=crop&q=80', address: 'Marktplatz 14' },
+      { slug: 'haar-atelier',         name: 'Haar Atelier',         rating: 4.85, service: 'Color & Cut',    price: 145, freeToday: false, time: 'Mi. 14:00',    photo: 'https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&h=600&fit=crop&q=80', address: 'St. Alban-Vorstadt 18' },
+      { slug: 'studio-rheinblick',    name: 'Studio Rheinblick',    rating: 4.7,  service: 'Highlights',     price: 95, freeToday: false, time: 'Do. 11:00',    photo: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=600&fit=crop&q=80', address: 'Aeschenvorstadt 55' },
+      { slug: 'coiffure-trois-rois',  name: 'Coiffure Trois Rois',  rating: 4.85, service: 'Damen-Schnitt',  price: 90, freeToday: true,  time: '17:00',        photo: 'https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=600&fit=crop&q=80', address: 'Margarethenpark 4' },
+      { slug: 'salon-bellevue',       name: 'Salon Bellevue',       rating: 4.9,  service: 'Pflegeschnitt',  price: 85, freeToday: false, time: 'Fr. 16:00',    photo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=600&fit=crop&q=80', address: 'Bundesgasse 9' },
+      { slug: 'haar-stil',            name: 'Haar & Stil',          rating: 4.7,  service: 'Strähnen',       price: 110, freeToday: false, time: 'Mo. 09:30',   photo: 'https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&h=600&fit=crop&q=80', address: 'Spitalgasse 27' },
+      { slug: 'coiffeur-spalentor',   name: 'Coiffeur Spalentor',   rating: 4.6,  service: 'Föhnen',         price: 55, freeToday: true,  time: '18:30',        photo: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=600&fit=crop&q=80', address: 'Petersgraben 31' },
+      { slug: 'atelier-solene',       name: 'Atelier Solène',       rating: 4.95, service: 'Brautstyling',   price: 180, freeToday: false, time: '21. Mai 14:00', photo: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=600&fit=crop&q=80', address: 'Freie Strasse 88' },
+      { slug: 'coiffeur-margarethen', name: 'Coiffeur Margarethen', rating: 4.65, service: 'Herren-Schnitt', price: 60, freeToday: false, time: 'Morgen 09:00', photo: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&h=600&fit=crop&q=80', address: 'Gerbergasse 16' },
+      { slug: 'haarwerkstatt',        name: 'Haarwerkstatt',        rating: 4.75, service: 'Color & Schnitt', price: 135, freeToday: true, time: '14:00',       photo: 'https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=600&fit=crop&q=80', address: 'Klosterberg 19' },
+      { slug: 'salon-felix',          name: 'Salon Felix',          rating: 4.8,  service: 'Föhnen & Styling', price: 70, freeToday: false, time: 'Mi. 14:00',  photo: 'https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&h=600&fit=crop&q=80', address: 'Picassoplatz 4' },
+      { slug: 'coiffeur-st-alban',    name: 'Coiffeur St. Alban',   rating: 4.75, service: 'Damen-Schnitt',  price: 88, freeToday: false, time: 'Do. 11:00',    photo: 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=600&fit=crop&q=80', address: 'Barfüsserplatz 6' },
+    ];
+
+    const STYLISTS = [
+      { slug: 'elena-rossi',    name: 'Elena Rossi',   specialty: 'coiffeur',   city: 'Basel',      rating: 4.9 },
+      { slug: 'marcus-chen',    name: 'Marcus Chen',   specialty: 'barbershop', city: 'Zürich',     rating: 5.0 },
+      { slug: 'sophie-dubois',  name: 'Sophie Dubois', specialty: 'nails',      city: 'Bern',       rating: 4.8 },
+      { slug: 'luca-bernasco',  name: 'Luca Bernasco', specialty: 'spa',        city: 'Lugano',     rating: 4.9 },
+      { slug: 'anna-keller',    name: 'Anna Keller',   specialty: 'coiffeur',   city: 'Luzern',     rating: 4.7 },
+      { slug: 'tobias-mueller', name: 'Tobias Müller', specialty: 'barbershop', city: 'St. Gallen', rating: 4.8 },
+    ];
+
+    const LOOKS = [
+      { slug: 'voluminous-layers', name: 'Voluminous Layers',  bg: 'linear-gradient(135deg, #FFE8D8 0%, #A04A22 100%)' },
+      { slug: 'cool-hair-life',    name: 'Cool Hair for Life', bg: 'linear-gradient(160deg, #F0A98C 0%, #2A1F18 100%)' },
+      { slug: 'textured-shag',     name: 'Textured Shag',      bg: 'linear-gradient(135deg, #D4DDC8 0%, #0F6F44 100%)' },
+      { slug: 'layered-butterfly', name: 'Layered Butterfly',  bg: 'linear-gradient(150deg, #A8E0BF 0%, #084B2D 100%)' },
+      { slug: 'curtain-bangs',     name: 'Curtain Bangs',      bg: 'linear-gradient(160deg, #FFE8D8 0%, #E0703D 100%)' },
+      { slug: 'wolf-cut',          name: 'Wolf Cut',           bg: 'linear-gradient(135deg, #D4F2E0 0%, #1A8F5C 100%)' },
+      { slug: 'soft-balayage',     name: 'Soft Balayage',      bg: 'linear-gradient(140deg, #F0A98C 0%, #5C2E12 100%)' },
+    ];
+
+    const REVIEWS = [
+      { stars: 5, text: 'Termin in 30 Sekunden, keine Anrufe, keine Vorab-Zahlung. Salon Maria war wie immer top, aber die Buchung über Solen war diesmal einfach besser.', initials: 'LK', name: 'Lara K.', meta: 'Basel · vor 2 Wochen', salon: 'Salon Maria' },
+      { stars: 5, text: 'Last-Minute heute Abend zu Bohème: 25% Rabatt und der beste Fade meines Lebens. Die Heute-frei-Anzeige ist Gold wert wenn man spontan ist.', initials: 'MH', name: 'Marc H.', meta: 'Basel · vor 5 Tagen', salon: 'Bohème' },
+      { stars: 5, text: 'Habe einen Look auf Entdecken gespeichert und konnte direkt buchen, same-day. Die Stylistin hatte das Foto schon offen als ich ankam. Magic.', initials: 'SR', name: 'Sara R.', meta: 'Zürich · vor 1 Woche', salon: 'Nail Lab' },
+      { stars: 5, text: 'Endlich kein Telefonieren mehr. Drei Optionen verglichen, eine gebucht, fertig in unter zwei Minuten. So sollte das überall funktionieren.', initials: 'AM', name: 'Anna M.', meta: 'Bern · vor 3 Tagen', salon: 'Rhein Spa' },
+      { stars: 4, text: 'Buchung war easy, Salon top. Einziger Kritikpunkt: Wegbeschreibung zeigt nicht alle Eingänge. Aber das ist Detail. Komme wieder.', initials: 'TW', name: 'Tobias W.', meta: 'Zürich · vor 1 Woche', salon: 'Atelier Coiffure' },
+      { stars: 5, text: 'Mein Geburtstagsgeschenk war eigentlich der Salonbesuch, aber dass ich es online buchen konnte, ohne fünfmal anzurufen, war fast besser.', initials: 'ES', name: 'Eva S.', meta: 'Basel · vor 4 Tagen', salon: 'Nail Lab' },
+      { stars: 5, text: 'Habe den Salon zufällig über die Karte gefunden, 200 m von zu Hause. Wie konnte ich den nicht kennen? Bewertungen waren spot-on.', initials: 'NB', name: 'Niklas B.', meta: 'Luzern · vor 6 Tagen', salon: 'Studio Nord' },
+      { stars: 5, text: 'Premium ohne Premium-Preise. Spa-Atmosphäre wie in einem 5-Sterne-Hotel, aber ich habe normal mit Solen gebucht: gleicher Preis, sofortige Bestätigung.', initials: 'SL', name: 'Sophie L.', meta: 'Lausanne · vor 10 Tagen', salon: 'Rhein Spa' },
+    ];
+
+    const SERVICES = ['Coiffeur', 'Barbershop', 'Nails', 'Spa & Wellness', 'Massage', 'Maniküre', 'Pediküre', 'Färben'];
+    const CITIES   = ['Basel', 'Zürich', 'Bern', 'Lausanne', 'Genf', 'Luzern', 'St. Gallen', 'Winterthur'];
+    const PERIODS  = ['Morgens', 'Mittags', 'Nachmittags', 'Abends'];
+
+    /* ─── DOM helpers (no innerHTML literal — uses Range API instead) ─── */
+
+    function setMarkup(el, htmlStr) {
+      const range = document.createRange();
+      range.selectNode(el);
+      el.replaceChildren(range.createContextualFragment(htmlStr));
+    }
+
+    function escAttr(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
+
+    function heartMarkup(saved) {
+      return saved
+        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="#FF4A6B" stroke="none" aria-hidden><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1C19" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+    }
+
+    function salonCard(opts) {
+      const { slug, name, rating, category, photo, badge, availability, nextSlot, price, address, city, isSaved } = opts;
+      const tile = CAT_TILE[category];
+      const initial = (name || '?').trim().charAt(0).toUpperCase();
+      const saved = !!isSaved;
+
+      const widthClass = 'w-[calc((100vw-44px)/2.2)] sm:w-[calc((100%-24px)/3)] md:w-[calc((100%-36px)/4)] lg:w-[calc((100%-48px)/5)] xl:w-[calc((100%-60px)/6)]';
+
+      const badgeHTML = badge && badge.type === 'discount'
+        ? `<span class="badge badge-discount">−${badge.value}%</span>`
+        : '';
+
+      const availHTML = availability
+        ? `<span class="badge badge-bottom badge-${availability.state}">${escAttr(availability.label)}</span>`
+        : '';
+
+      const photoOrInitial = photo
+        ? `<img src="${escAttr(photo)}" alt="Foto von ${escAttr(name)}" class="absolute inset-0 w-full h-full object-cover" loading="lazy">`
+        : `<span class="absolute inset-0 grid place-items-center text-[32px] font-extrabold" style="color: ${tile.initial};" aria-hidden>${escAttr(initial)}</span>`;
+
+      const row2 = address ? `${escAttr(address)} · ${escAttr(city || 'Basel')}` : escAttr(tile.label);
+
+      return `
+        <a href="#" data-slug="${escAttr(slug)}" aria-label="${escAttr(name)}, Termin buchen" class="salon-card group flex shrink-0 flex-col snap-start ${widthClass}">
+          <div class="salon-photo relative aspect-square w-full overflow-hidden" style="background-color: ${tile.bg}; border-radius: 22px; box-shadow: 0 6px 24px rgba(0,0,0,0.06);">
+            ${photoOrInitial}
+            ${badgeHTML}
+            ${availHTML}
+            <button type="button" data-heart="${escAttr(slug)}" aria-label="${saved ? 'Gespeichert' : 'Speichern'}" aria-pressed="${saved}" class="absolute right-[2px] top-[2px] grid h-11 w-11 place-items-center bg-transparent p-0">
+              <span aria-hidden class="heart-glass grid h-8 w-8 place-items-center rounded-full transition-transform duration-200 ease-out group-hover:scale-110" style="background: rgba(255,255,255,0.80); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.6); box-shadow: 0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.4);">
+                ${heartMarkup(saved)}
+              </span>
+            </button>
+          </div>
+          <div class="mt-[10px] px-[2px] flex flex-col gap-[2px]">
+            <h3 class="text-[15px] font-semibold leading-[1.25] text-s-ink truncate" style="letter-spacing: -0.01em;">${escAttr(name)}</h3>
+            <div class="text-[13px] leading-[1.35] text-s-ink-3 truncate">${row2}</div>
+            <div class="flex items-baseline justify-between gap-2 text-[13px] leading-[1.35] text-s-ink-2">
+              <div class="min-w-0 flex-1 truncate">
+                ${nextSlot ? `<span class="font-semibold text-s-ink">${escAttr(nextSlot)}</span>` : ''}
+                ${nextSlot && price ? '<span class="text-s-ink-3"> · </span>' : ''}
+                ${price ? `<span>CHF ${price}</span>` : ''}
+              </div>
+              <span class="flex shrink-0 items-center gap-[3px] font-semibold tabular text-s-ink">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#F3A864" stroke="none" aria-hidden><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                ${rating != null ? rating.toFixed(1) : '—'}
+              </span>
+            </div>
+          </div>
+        </a>
+      `;
+    }
+
+    /* ─── Section render ─── */
+
+    setMarkup(document.querySelector('[data-section="recent"]'),
+      RECENT.map(r => salonCard({ ...r, nextSlot: r.nextSlot, price: r.price })).join('')
+    );
+
+    setMarkup(document.querySelector('[data-section="lastminute"]'),
+      LASTMINUTE.map(r => salonCard({
+        ...r, badge: { type: 'discount', value: r.discount },
+        nextSlot: r.time, price: r.price, city: 'Basel',
+      })).join('')
+    );
+
+    setMarkup(document.querySelector('[data-section="nearby"]'),
+      NEARBY.map(r => {
+        const avail = r.free ? { state: r.state, label: r.label } : null;
+        const slot = r.time.replace(/^Heute\s+/, '');
+        return salonCard({
+          ...r, availability: avail, nextSlot: slot, price: r.price, city: 'Basel',
+        });
+      }).join('')
+    );
+
+    setMarkup(document.querySelector('[data-section="coiffeur"]'),
+      COIFFEUR.map(r => {
+        const avail = r.freeToday ? { state: 'now', label: 'Heute frei' } : null;
+        return salonCard({
+          ...r, category: 'coiffeur', availability: avail,
+          nextSlot: r.time, price: r.price, city: 'Basel',
+        });
+      }).join('')
+    );
+
+    setMarkup(document.getElementById('stylists-row'),
+      STYLISTS.map(s => {
+        const tile = CAT_TILE[s.specialty];
+        const initial = s.name.charAt(0).toUpperCase();
+        return `
+          <a href="#" aria-label="${escAttr(s.name)}, ${tile.label} in ${escAttr(s.city)}" class="group flex shrink-0 snap-start flex-col items-center text-center w-[120px] md:w-[140px]">
+            <div class="relative">
+              <div class="grid h-[110px] w-[110px] md:h-[130px] md:w-[130px] place-items-center rounded-full ring-2 ring-white transition-all duration-200 ease-out group-hover:-translate-y-[3px] group-hover:scale-[1.03]" style="background-color: ${tile.bg}; box-shadow: 0 4px 14px rgba(4,51,56,0.10);">
+                <span class="font-display text-[42px] font-extrabold" style="color: ${tile.initial};" aria-hidden>${escAttr(initial)}</span>
+              </div>
+              <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 rounded-full bg-white px-2 py-[3px] text-[11px] font-bold text-s-ink whitespace-nowrap" style="box-shadow: 0 2px 8px rgba(4,51,56,0.10);">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="#F3A864" stroke="none" aria-hidden><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                ${s.rating.toFixed(1)}
+              </span>
+            </div>
+            <h3 class="mt-5 text-[15px] font-bold text-s-ink leading-tight">${escAttr(s.name)}</h3>
+            <p class="mt-1 text-[12px] font-medium text-s-ink-2">${tile.label.split(' ')[0]} · ${escAttr(s.city)}</p>
+          </a>
+        `;
+      }).join('')
+    );
+
+    const liquidGlass = 'background: rgba(255, 255, 255, 0.20); backdrop-filter: blur(22px) saturate(1.7); -webkit-backdrop-filter: blur(22px) saturate(1.7); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 3px rgba(0, 0, 0, 0.15);';
+    setMarkup(document.getElementById('entdecken-row'),
+      LOOKS.map(l => `
+        <a href="#" aria-label="${escAttr(l.name)} – TikTok-Inspo" class="group relative block shrink-0 snap-center w-[44vw] max-w-[200px]" style="aspect-ratio: 9/16;">
+          <div class="relative w-full h-full overflow-hidden transition-transform duration-300 ease-out group-hover:scale-[1.03]" style="background: ${l.bg}; border-radius: 16px;">
+            <div aria-hidden class="absolute inset-x-0 bottom-0 h-1/2 pointer-events-none" style="background: linear-gradient(to top, rgba(0,0,0,0.80), rgba(0,0,0,0.20) 70%, transparent);"></div>
+            <div class="absolute inset-0 grid place-items-center pointer-events-none">
+              <div class="grid h-10 w-10 place-items-center rounded-full text-white" style="${liquidGlass}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none" class="ml-0.5" aria-hidden><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+            </div>
+            <div class="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full" style="${liquidGlass}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <div class="absolute bottom-2 left-2 right-2">
+              <div class="inline-block max-w-[80%] rounded-full px-2.5 py-1" style="${liquidGlass}">
+                <p class="truncate text-[11px] font-medium text-white">${escAttr(l.name)}</p>
+              </div>
+            </div>
+          </div>
+        </a>
+      `).join('') + `
+        <a href="#" aria-label="Alle Looks entdecken" class="group relative block shrink-0 snap-center w-[44vw] max-w-[200px]" style="aspect-ratio: 9/16;">
+          <div class="flex h-full w-full flex-col items-center justify-center p-6 text-center transition-all duration-300 ease-out group-hover:scale-[1.03]" style="border: 2px dashed rgba(59,122,87,0.30); background: #E5F2EA; border-radius: 16px;">
+            <div class="grid h-12 w-12 place-items-center rounded-full bg-s-brand text-white mb-4">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+            <h3 class="text-[15px] font-bold leading-tight text-s-ink group-hover:text-s-brand transition-colors">Alle entdecken</h3>
+            <p class="mt-2 text-[11px] text-s-ink-3">Lass dich von tausenden Looks inspirieren</p>
+          </div>
+        </a>
+      `
+    );
+
+    setMarkup(document.getElementById('reviews-row'),
+      REVIEWS.map(r => `
+        <div class="relative shrink-0 w-[280px] md:w-[300px] flex flex-col min-h-[320px] snap-start rounded-2xl border bg-white p-6 transition-all duration-200 ease-out hover:-translate-y-[2px]" style="border-color: #E8E6E0; box-shadow: 0 1px 3px rgba(31,23,9,0.04);">
+          <div class="inline-flex gap-[2px] text-[14px] mb-4" style="color: #F3A864; letter-spacing: 0.05em;" aria-hidden>${'★'.repeat(r.stars)}</div>
+          <p class="flex-1 text-[14px] leading-[1.55] text-s-ink mb-4" style="display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;">&ldquo;${escAttr(r.text)}&rdquo;</p>
+          <div class="mt-auto pt-4 border-t border-s-border flex items-start gap-3">
+            <div class="grid h-9 w-9 shrink-0 place-items-center rounded-full text-[11px] font-extrabold text-s-brand bg-s-bg-sunken" aria-hidden>${escAttr(r.initials)}</div>
+            <div class="min-w-0 flex-1">
+              <div class="text-[13px] font-bold text-s-ink truncate">${escAttr(r.name)}</div>
+              <div class="text-[11px] text-s-ink-3 truncate">${escAttr(r.meta)}</div>
+              <a href="#" class="mt-1 inline-flex items-center gap-1 text-[12px] font-semibold text-s-brand transition-colors hover:text-s-brand-mid">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span class="truncate max-w-[140px]">${escAttr(r.salon)}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      `).join('')
+    );
+
+    function chipMarkup(label, picked) {
+      const cls = picked
+        ? 'inline-flex items-center gap-2 rounded-full border border-s-brand bg-s-brand px-3.5 py-2 text-[14px] font-medium text-white transition-colors'
+        : 'inline-flex items-center gap-2 rounded-full border border-s-ink/10 bg-white px-3.5 py-2 text-[14px] font-medium text-s-ink-2 transition-colors hover:border-s-brand hover:text-s-brand';
+      return `<button type="button" class="${cls}" data-pick="${escAttr(label)}">${escAttr(label)}</button>`;
+    }
+    setMarkup(document.getElementById('service-chips'), SERVICES.map(s => chipMarkup(s, false)).join(''));
+    setMarkup(document.getElementById('city-chips'),    CITIES.map(c => chipMarkup(c, false)).join(''));
+    setMarkup(document.getElementById('period-chips'),  PERIODS.map(p => chipMarkup(p, false)).join(''));
+
+    /* ─── INTERACTIONS ─── */
+
+    // Heart toggle (with pop animation on save)
+    document.body.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-heart]');
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const wasSaved = btn.getAttribute('aria-pressed') === 'true';
+      const nextSaved = !wasSaved;
+      btn.setAttribute('aria-pressed', nextSaved);
+      btn.setAttribute('aria-label', nextSaved ? 'Gespeichert' : 'Speichern');
+      const heartGlass = btn.querySelector('.heart-glass');
+      setMarkup(heartGlass, heartMarkup(nextSaved));
+      if (nextSaved) {
+        const svg = heartGlass.querySelector('svg');
+        svg.classList.add('animate-heart-pop');
+        setTimeout(() => svg.classList.remove('animate-heart-pop'), 400);
+        // V3-D74 item 3 — confirmation chip "Gespeichert" slides in below heart, fades after 1.3s
+        const cardPhoto = btn.closest('.salon-photo');
+        if (cardPhoto) {
+          const oldChip = cardPhoto.querySelector('.heart-confirm-chip');
+          if (oldChip) oldChip.remove();
+          const chip = document.createElement('span');
+          chip.className = 'heart-confirm-chip';
+          chip.textContent = 'Gespeichert';
+          cardPhoto.appendChild(chip);
+          setTimeout(() => chip.remove(), 1350);
+        }
+      }
+    });
+
+    // Card click prevention (mockup — no real navigation)
+    document.body.addEventListener('click', (e) => {
+      const card = e.target.closest('.salon-card');
+      if (card && !e.target.closest('[data-heart]')) {
+        e.preventDefault();
+      }
+    });
+
+    // Header scroll-frost
+    const header = document.getElementById('site-header');
+    let lastScrolled = false;
+    window.addEventListener('scroll', () => {
+      const isScrolled = window.scrollY > 30;
+      if (isScrolled === lastScrolled) return;
+      lastScrolled = isScrolled;
+      if (isScrolled) {
+        header.style.background = 'rgba(255,255,255,0.78)';
+        header.style.backdropFilter = 'blur(14px) saturate(1.4)';
+        header.style.webkitBackdropFilter = 'blur(14px) saturate(1.4)';
+        header.style.boxShadow = '0 1px 12px rgba(4,51,56,0.06)';
+        header.style.paddingTop = '12px';
+        header.style.paddingBottom = '12px';
+      } else {
+        header.style.background = '';
+        header.style.backdropFilter = '';
+        header.style.webkitBackdropFilter = '';
+        header.style.boxShadow = '';
+        header.style.paddingTop = '20px';
+        header.style.paddingBottom = '20px';
+      }
+    }, { passive: true });
+
+    // SearchBar expand/collapse
+    const searchBar = document.getElementById('searchbar');
+    const sbarCollapsed = document.getElementById('sbar-collapsed');
+    const sbarExpanded = document.getElementById('sbar-expanded');
+    const sbarClose = document.getElementById('sbar-close');
+    const sbarReset = document.getElementById('sbar-reset');
+    let activeSegment = null;
+    let backdropEl = null;
+
+    function openSearch(segment) {
+      activeSegment = segment;
+      if (!backdropEl) {
+        backdropEl = document.createElement('div');
+        backdropEl.className = 'modal-backdrop';
+        backdropEl.addEventListener('click', closeSearch);
+        document.body.appendChild(backdropEl);
+      }
+      searchBar.style.height = '600px';
+      searchBar.style.borderRadius = '24px';
+      searchBar.style.zIndex = '70';
+      searchBar.style.maxWidth = '640px';
+      sbarCollapsed.style.opacity = '0';
+      sbarCollapsed.style.pointerEvents = 'none';
+      sbarExpanded.style.opacity = '1';
+      sbarExpanded.style.pointerEvents = 'auto';
+      showPanel(segment);
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSearch() {
+      activeSegment = null;
+      if (backdropEl) { backdropEl.remove(); backdropEl = null; }
+      const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+      searchBar.style.height = isDesktop ? '60px' : '280px';
+      searchBar.style.borderRadius = isDesktop ? '999px' : '24px';
+      searchBar.style.zIndex = '';
+      searchBar.style.maxWidth = isDesktop ? '' : '540px';
+      sbarCollapsed.style.opacity = '1';
+      sbarCollapsed.style.pointerEvents = 'auto';
+      sbarExpanded.style.opacity = '0';
+      sbarExpanded.style.pointerEvents = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function showPanel(seg) {
+      document.querySelectorAll('.picker-panel').forEach(p => p.classList.add('hidden-x'));
+      const target = document.querySelector('[data-panel="' + seg + '"]');
+      if (target) target.classList.remove('hidden-x');
+      document.querySelectorAll('.seg-tab').forEach(t => {
+        const isActive = t.getAttribute('data-tab') === seg;
+        t.classList.toggle('bg-s-brand', isActive);
+        t.classList.toggle('text-white', isActive);
+        t.classList.toggle('text-s-ink-3', !isActive);
+      });
+    }
+
+    document.querySelectorAll('.sbar-row').forEach(row => {
+      row.addEventListener('click', () => openSearch(row.getAttribute('data-segment')));
+    });
+    document.querySelectorAll('.seg-tab').forEach(tab => {
+      tab.addEventListener('click', () => showPanel(tab.getAttribute('data-tab')));
+    });
+    sbarClose.addEventListener('click', closeSearch);
+    sbarReset.addEventListener('click', () => {
+      document.querySelectorAll('.sbar-value').forEach(v => {
+        const parent = v.closest('.sbar-row');
+        const segment = parent.getAttribute('data-segment');
+        v.textContent = segment.charAt(0).toUpperCase() + segment.slice(1);
+        v.classList.add('font-medium');
+        v.classList.remove('font-semibold');
+        v.style.color = '';
+      });
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && activeSegment) closeSearch();
+    });
+    // Initial viewport-aware sizing
+    closeSearch();
+    window.addEventListener('resize', () => { if (!activeSegment) closeSearch(); });
+
+    // Chip selection — fills the corresponding segment value + advances
+    document.body.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-pick]');
+      if (!btn) return;
+      const panel = btn.closest('[data-panel]') && btn.closest('[data-panel]').getAttribute('data-panel');
+      const label = btn.getAttribute('data-pick');
+      if (!panel) return;
+      const row = document.querySelector('.sbar-row[data-segment="' + panel + '"]');
+      if (row) {
+        const v = row.querySelector('.sbar-value');
+        v.textContent = label;
+        v.classList.remove('font-medium');
+        v.classList.add('font-semibold');
+        v.style.color = '#1A1C19';
+      }
+      const next = panel === 'service' ? 'stadt' : panel === 'stadt' ? 'zeit' : null;
+      if (next) showPanel(next);
+      else closeSearch();
+    });
+
+    /* ─── V3-D74 item 2: CTA disabled until any segment is picked + loading on submit ─── */
+    function isAnyFilled() {
+      const rows = document.querySelectorAll('.sbar-row');
+      return Array.from(rows).some(row => {
+        const segment = row.getAttribute('data-segment');
+        const v = row.querySelector('.sbar-value');
+        const placeholder = segment.charAt(0).toUpperCase() + segment.slice(1);
+        return v.textContent.trim() !== placeholder;
+      });
+    }
+    function updateSubmitState() {
+      const btn = document.getElementById('sbar-submit');
+      if (!btn) return;
+      if (isAnyFilled()) btn.removeAttribute('disabled');
+      else btn.setAttribute('disabled', '');
+    }
+    // Initial: disabled (nothing picked yet)
+    updateSubmitState();
+    // Recompute after any chip selection or reset
+    document.body.addEventListener('click', (e) => {
+      if (e.target.closest('[data-pick]') || e.target.closest('#sbar-reset')) {
+        setTimeout(updateSubmitState, 20);
+      }
+    });
+    // Loading spinner on submit (mockup — 900ms then resets)
+    document.getElementById('sbar-submit').addEventListener('click', (e) => {
+      const btn = e.currentTarget;
+      if (btn.hasAttribute('disabled') || btn.classList.contains('is-loading')) return;
+      btn.classList.add('is-loading');
+      setTimeout(() => btn.classList.remove('is-loading'), 900);
+    });
+  </script>
+</body>
+</html>
