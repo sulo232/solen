@@ -181,6 +181,23 @@ function CarouselInner({
               </motion.div>
             </MorphingDialogTrigger>
 
+            {/* V3-D78 glass pill — name + designation overlaid on active photo.
+                pointer-events-none so taps still hit the MorphingDialogTrigger
+                beneath. Active-keyed motion crossfades on testimonial change. */}
+            <motion.div
+              key={`name-pill-${active}`}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.32, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+              className="pointer-events-none absolute inset-x-4 bottom-4 z-[60] rounded-[20px] border border-white/45 bg-white/35 px-4 py-2.5 shadow-[0_10px_28px_rgba(0,0,0,0.14)] backdrop-blur-xl backdrop-saturate-150"
+            >
+              <div className="font-display text-[15px] font-extrabold leading-tight text-s-ink truncate">
+                {current.name}
+              </div>
+              <div className="mt-0.5 font-body text-[11px] font-medium text-s-ink-2 truncate">
+                {current.designation}
+              </div>
+            </motion.div>
           </div>
 
           {/* ─── Text + nav ─── */}
@@ -191,19 +208,7 @@ function CarouselInner({
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
-              <h3
-                className="font-display font-extrabold leading-tight text-s-ink"
-                style={{
-                  fontSize: "clamp(24px, 3vw, 34px)",
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                {current.name}
-              </h3>
-              <p className="mt-1 font-body text-[14px] text-s-ink-2">
-                {current.designation}
-              </p>
-              <p className="mt-4 font-body text-[15px] leading-[1.55] text-s-ink md:text-[16px]">
+              <p className="font-body text-[15px] leading-[1.55] text-s-ink md:text-[16px]">
                 {current.quote.split(" ").map((word, index) => (
                   <motion.span
                     key={`${active}-${index}`}

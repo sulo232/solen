@@ -118,9 +118,19 @@ function BentoCard({ title, description, visual, className }: BentoCardProps) {
 function VisualBooking() {
   return (
     <div className="relative grid h-full w-full place-items-center">
+      {/* V3-D78 glow halo behind popup — gives glassmorphism something
+          to blur (without it, white-on-white card looks the same as solid). */}
       <div
-        className="relative w-[200px] rounded-[18px] bg-s-bg-sunken p-5"
-        style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-1/2 h-36 w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"
+        style={{
+          background:
+            "radial-gradient(55% 50% at 50% 50%, rgba(31,80,55,0.22) 0%, rgba(224,112,61,0.12) 55%, transparent 85%)",
+        }}
+      />
+      <div
+        className="relative w-[200px] rounded-[18px] border border-white/55 bg-white/55 p-5 backdrop-blur-xl backdrop-saturate-150"
+        style={{ boxShadow: "0 12px 32px rgba(0,0,0,0.10)" }}
       >
         <div className="mb-3 flex items-center gap-3">
           <div className="grid h-9 w-9 place-items-center rounded-full bg-s-brand text-white">
@@ -179,9 +189,11 @@ function VisualCustomerDM() {
           </div>
         </div>
 
-        {/* ── Salon reply (right, brand emerald, typewriter cycles) ── */}
+        {/* ── Salon reply (right, charcoal-ink — neutral "sent message"
+            visual distinct from the grey customer bubble without spending
+            brand emerald on something that isn't a click target). ── */}
         <div className="flex justify-end">
-          <div className="max-w-[80%] rounded-[16px] rounded-br-[4px] bg-s-brand px-3 py-2 text-white">
+          <div className="max-w-[80%] rounded-[16px] rounded-br-[4px] bg-s-ink px-3 py-2 text-white">
             <p className="font-body text-[12px] leading-snug">
               <Typewriter
                 texts={SALON_REPLIES}
