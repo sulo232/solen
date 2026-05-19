@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Solen · typography + color variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #8B7C72;
+    --ink-4: #B5ABA3;
+    --brand: #1638C4;
+    --brand-deep: #0E248F;
+    --brand-soft: #E8EDFA;
+    --accent: #FFC32B;
+    --accent-deep: #E5A800;
+    --white: #FFFFFF;
+    --grey-50: #F9F9F9;
+    --grey-100: #F1F1F2;
+    --grey-150: #E8E8EA;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #ECECEE;
+    color: var(--ink);
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  .page-title {
+    padding: 32px 20px 8px;
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.025em;
+    max-width: 480px;
+    margin: 0 auto;
+    color: var(--ink);
+  }
+  .page-sub {
+    padding: 0 20px 28px;
+    font-size: 14px;
+    color: var(--ink-2);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  .variant {
+    max-width: 420px;
+    margin: 0 auto 40px;
+    background: var(--white);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  }
+  .variant-label {
+    padding: 16px 20px;
+    background: var(--ink);
+    color: var(--white);
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .variant-label span { color: var(--accent); margin-right: 8px; }
+  .variant-meta {
+    padding: 12px 20px;
+    background: var(--grey-50);
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    border-bottom: 1px solid var(--grey-150);
+  }
+  .variant-meta b { color: var(--ink); font-weight: 700; }
+  .variant-meta del { color: var(--ink-3); }
+
+  /* ─── Common page shell ─── */
+  .page {
+    background: var(--white);
+    position: relative;
+  }
+  .page::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 540px;
+    background:
+      radial-gradient(ellipse 90% 50% at 78% 8%, rgba(22,56,196,0.28) 0%, transparent 62%),
+      radial-gradient(ellipse 100% 55% at 14% 14%, rgba(22,56,196,0.16) 0%, transparent 64%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .top-bar {
+    position: relative;
+    z-index: 2;
+    padding: 18px 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: baseline;
+  }
+  .logo-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-left: 3px;
+    transform: translateY(-1.5px);
+  }
+  .hamburger {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--white);
+    border: 1px solid rgba(0,0,0,0.06);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .hamburger svg { width: 18px; height: 18px; color: var(--ink); }
+
+  .hero {
+    position: relative;
+    z-index: 2;
+    padding: 28px 22px 12px;
+  }
+  .hero h1 { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 800; color: var(--ink); }
+  .hero h1 .accent { color: var(--brand); }
+
+  /* SearchBar shell (mobile stack) */
+  .searchbar {
+    position: relative;
+    z-index: 2;
+    margin: 0 22px;
+    background: var(--white);
+    border-radius: 20px;
+    padding: 6px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+  .searchbar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  .searchbar-row:nth-of-type(3) { border-bottom: none; }
+  .searchbar-row svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .searchbar-row .field-text { font-size: 14px; font-weight: 500; }
+  .searchbar-cta {
+    width: 100%;
+    background: var(--brand);
+    color: var(--white);
+    border: none;
+    border-radius: 14px;
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    cursor: pointer;
+    margin-top: 6px;
+  }
+
+  /* Section + cards (below hero) */
+  .section {
+    position: relative;
+    z-index: 2;
+    padding: 36px 22px 32px;
+  }
+  .section-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 700; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .section-eyebrow::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+  .section-h2 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .section-sub { margin-bottom: 18px; line-height: 1.5; }
+
+  .salon-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: var(--white);
+    border: 1px solid var(--grey-150);
+    border-radius: 16px;
+    margin-bottom: 10px;
+  }
+  .salon-photo {
+    flex-shrink: 0;
+    width: 72px; height: 72px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #E8EDFA 0%, #D5DEF2 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .salon-photo::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 8px;
+    background: rgba(22,56,196,0.08);
+  }
+  .salon-meta { flex: 1; min-width: 0; }
+  .salon-name {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+  }
+  .salon-row {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 4px;
+  }
+  .salon-rating {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-weight: 700;
+  }
+  .salon-rating svg { width: 12px; height: 12px; color: var(--accent); }
+  .salon-pill {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  .heart {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+
+  /* ─────────────────────────────────────── */
+  /* A — CURRENT BASELINE                    */
+  /* ─────────────────────────────────────── */
+  .v-a .hero { padding-top: 28px; padding-bottom: 28px; }
+  .v-a .hero h1 {
+    font-size: 46px;
+    line-height: 1.02;
+    letter-spacing: -0.038em;
+    margin-top: 18px;
+    margin-bottom: 28px;
+  }
+  .v-a .searchbar-row .field-icon { color: var(--ink-2); }
+  .v-a .searchbar-row .field-text { color: var(--ink-2); }
+  .v-a .searchbar-cta {
+    padding: 13px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .v-a .section { padding-top: 32px; }
+  .v-a .section-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+  }
+  .v-a .section-eyebrow::before { background: var(--ink-3); }
+  .v-a .section-h2 {
+    font-size: 28px;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  .v-a .section-sub { font-size: 13px; color: var(--ink-3); }
+  .v-a .salon-name { font-size: 14px; color: var(--ink); }
+  .v-a .salon-row { font-size: 11px; color: var(--ink-3); }
+  .v-a .salon-rating { color: var(--ink); }
+  .v-a .salon-pill { background: var(--grey-50); color: var(--ink-3); }
+  .v-a .heart { color: var(--ink-3); }
+
+  /* ─────────────────────────────────────── */
+  /* B — TYPOGRAPHY + CONTRAST               */
+  /* ─────────────────────────────────────── */
+  .v-b .hero { padding-top: 32px; padding-bottom: 26px; }
+  .v-b .hero h1 {
+    font-size: 60px;            /* +14px */
+    line-height: 0.98;          /* tighter */
+    letter-spacing: -0.042em;   /* tighter for the bigger size */
+    margin-top: 22px;
+    margin-bottom: 28px;
+  }
+  .v-b .searchbar-row .field-icon { color: var(--ink); }     /* deeper */
+  .v-b .searchbar-row .field-text { color: var(--ink); font-weight: 600; }
+  .v-b .searchbar-cta {
+    padding: 14px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .v-b .section { padding-top: 38px; }
+  .v-b .section-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.16em;     /* wider tracking, more snap */
+    color: var(--ink);          /* deeper */
+    font-weight: 800;
+  }
+  .v-b .section-eyebrow::before { background: var(--ink); }
+  .v-b .section-h2 {
+    font-size: 36px;            /* +8px — clearer jump from h1 */
+    line-height: 1.02;
+    letter-spacing: -0.034em;
+  }
+  .v-b .section-sub { font-size: 14px; color: var(--ink-2); }   /* lifted from ink-3 */
+  .v-b .salon-name { font-size: 16px; color: var(--ink); }       /* +2px */
+  .v-b .salon-row { font-size: 12px; color: var(--ink-2); }      /* lifted */
+  .v-b .salon-rating { color: var(--ink); font-weight: 800; }
+  .v-b .salon-pill { background: var(--grey-50); color: var(--ink); font-weight: 700; }
+  .v-b .heart { color: var(--ink-2); }
+
+  /* ─────────────────────────────────────── */
+  /* C — TYPOGRAPHY + CONTRAST + CONCENTRATED COLOR */
+  /* ─────────────────────────────────────── */
+  .v-c .hero { padding-top: 32px; padding-bottom: 26px; }
+  .v-c .hero h1 {
+    font-size: 60px;
+    line-height: 0.98;
+    letter-spacing: -0.042em;
+    margin-top: 22px;
+    margin-bottom: 28px;
+  }
+  /* The SearchBar — now the concentrated blue moment. Submit becomes a tall, confident block. */
+  .v-c .searchbar-row .field-icon { color: var(--ink); }
+  .v-c .searchbar-row .field-text { color: var(--ink); font-weight: 600; }
+  .v-c .searchbar-cta {
+    padding: 18px;              /* taller */
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    background: var(--brand);
+    box-shadow: 0 12px 28px rgba(22,56,196,0.22);
+    margin-top: 8px;
+  }
+  /* Section heading stays sharp like B */
+  .v-c .section { padding-top: 38px; }
+  .v-c .section-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .v-c .section-eyebrow::before { background: var(--ink); }
+  .v-c .section-h2 {
+    font-size: 36px;
+    line-height: 1.02;
+    letter-spacing: -0.034em;
+  }
+  .v-c .section-sub { font-size: 14px; color: var(--ink-2); }
+  .v-c .salon-name { font-size: 16px; color: var(--ink); }
+  .v-c .salon-row { font-size: 12px; color: var(--ink-2); }
+  .v-c .salon-rating { color: var(--ink); font-weight: 800; }
+  .v-c .salon-pill { background: var(--grey-50); color: var(--ink); font-weight: 700; }
+  .v-c .heart { color: var(--ink-2); }
+  /* One yellow peak: a single confident "Heute -20%" chip on ONE card only */
+  .v-c .yellow-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--accent);
+    color: var(--ink);
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+  /* Below cards — a small, confident blue tagline (concentrated brand moment, calm) */
+  .v-c .live-tagline {
+    margin-top: 12px;
+    padding: 14px 16px;
+    background: var(--brand-soft);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--brand-deep);
+    font-weight: 700;
+  }
+  .v-c .live-tagline .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--brand);
+    box-shadow: 0 0 0 4px rgba(22,56,196,0.18);
+  }
+
+  footer {
+    padding: 24px 20px 60px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-3);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  footer b { color: var(--ink); }
+</style>
+</head>
+<body>
+  <h1 class="page-title">Typography + color variants</h1>
+  <p class="page-sub">Same content. Same fonts. Same brand colors. Only <b>size</b>, <b>contrast</b>, and <b>where color is concentrated</b> changes. A = where we are now. B = typography + contrast only. C = B + concentrated blue moment + one confident yellow peak.</p>
+
+  <!-- ─── A · CURRENT ─── -->
+  <section class="variant v-a">
+    <div class="variant-label"><span>A</span>Current baseline</div>
+    <div class="variant-meta">
+      h1 = <b>46px</b> · ink-2 body · scattered blue + yellow touches<br/>
+      Section h2 = <b>28px</b> · eyebrow = ink-3<br/>
+      Submit button = standard padding
+    </div>
+    <div class="page">
+      <div class="top-bar">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="hamburger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+        </span>
+      </div>
+      <div class="hero">
+        <h1>Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+      </div>
+      <div class="searchbar">
+        <div class="searchbar-row">
+          <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <span class="field-text">Service</span>
+        </div>
+        <div class="searchbar-row">
+          <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          <span class="field-text">Stadt</span>
+        </div>
+        <div class="searchbar-row">
+          <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          <span class="field-text">Zeit</span>
+        </div>
+        <button class="searchbar-cta">Solen durchsuchen</button>
+      </div>
+      <div class="section">
+        <div class="section-eyebrow">In deiner Nähe</div>
+        <h2 class="section-h2">Salons in Basel</h2>
+        <p class="section-sub">7 verifizierte Salons · innerhalb 15 Minuten</p>
+        <div class="salon-card">
+          <div class="salon-photo"></div>
+          <div class="salon-meta">
+            <div class="salon-name">Studio Lina Coiffure</div>
+            <div class="salon-row">
+              <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.9 (216)</span>
+              <span class="salon-pill">0.4 km</span>
+            </div>
+            <div class="salon-row">Coiffeur · ab CHF 80</div>
+          </div>
+          <svg class="heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo"></div>
+          <div class="salon-meta">
+            <div class="salon-name">Maison de Beauté Mara</div>
+            <div class="salon-row">
+              <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.8 (140)</span>
+              <span class="salon-pill">0.8 km</span>
+            </div>
+            <div class="salon-row">Nails &amp; Spa · ab CHF 65</div>
+          </div>
+          <svg class="heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── B · TYPOGRAPHY + CONTRAST ─── -->
+  <section class="variant v-b">
+    <div class="variant-label"><span>B</span>Typography + contrast only</div>
+    <div class="variant-meta">
+      h1 = <del>46px</del> <b>60px</b> · body lifted from ink-2 → <b>ink</b><br/>
+      Section h2 = <del>28px</del> <b>36px</b> · eyebrow = <del>ink-3</del> <b>ink + 800w + wider tracking</b><br/>
+      SearchBar button = taller, weight 700 · same colors, same fonts
+    </div>
+    <div class="page">
+      <div class="top-bar">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="hamburger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+        </span>
+      </div>
+      <div class="hero">
+        <h1>Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+      </div>
+      <div class="searchbar">
+        <div class="searchbar-row">
+          <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <span class="field-text">Service</span>
+        </div>
+        <div class="searchbar-row">
+          <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          <span class="field-text">Stadt</span>
+        </div>
+        <div class="searchbar-row">
+          <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          <span class="field-text">Zeit</span>
+        </div>
+        <button class="searchbar-cta">Solen durchsuchen</button>
+      </div>
+      <div class="section">
+        <div class="section-eyebrow">In deiner Nähe</div>
+        <h2 class="section-h2">Salons in Basel</h2>
+        <p class="section-sub">7 verifizierte Salons · innerhalb 15 Minuten</p>
+        <div class="salon-card">
+          <div class="salon-photo"></div>
+          <div class="salon-meta">
+            <div class="salon-name">Studio Lina Coiffure</div>
+            <div class="salon-row">
+              <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.9 (216)</span>
+              <span class="salon-pill">0.4 km</span>
+            </div>
+            <div class="salon-row">Coiffeur · ab CHF 80</div>
+          </div>
+          <svg class="heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo"></div>
+          <div class="salon-meta">
+            <div class="salon-name">Maison de Beauté Mara</div>
+            <div class="salon-row">
+              <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.8 (140)</span>
+              <span class="salon-pill">0.8 km</span>
+            </div>
+            <div class="salon-row">Nails &amp; Spa · ab CHF 65</div>
+          </div>
+          <svg class="heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── C · TYPOGRAPHY + CONTRAST + CONCENTRATED COLOR ─── -->
+  <section class="variant v-c">
+    <div class="variant-label"><span>C</span>B + concentrated blue + one yellow peak</div>
+    <div class="variant-meta">
+      Everything from B PLUS:<br/>
+      SearchBar submit = <b>taller, weighted 800, halo shadow</b> (the concentrated blue moment)<br/>
+      One salon = single <b>yellow chip "Heute -20%"</b> (only one — the yellow peak)<br/>
+      Below cards = soft brand-blue tagline "Sofort verfügbar" (calm second blue moment, not scattered)
+    </div>
+    <div class="page">
+      <div class="top-bar">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="hamburger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+        </span>
+      </div>
+      <div class="hero">
+        <h1>Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+      </div>
+      <div class="searchbar">
+        <div class="searchbar-row">
+          <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <span class="field-text">Service</span>
+        </div>
+        <div class="searchbar-row">
+          <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          <span class="field-text">Stadt</span>
+        </div>
+        <div class="searchbar-row">
+          <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          <span class="field-text">Zeit</span>
+        </div>
+        <button class="searchbar-cta">Solen durchsuchen →</button>
+      </div>
+      <div class="section">
+        <div class="section-eyebrow">In deiner Nähe</div>
+        <h2 class="section-h2">Salons in Basel</h2>
+        <p class="section-sub">7 verifizierte Salons · innerhalb 15 Minuten</p>
+        <div class="salon-card">
+          <div class="salon-photo"></div>
+          <div class="salon-meta">
+            <div class="salon-name">Studio Lina Coiffure</div>
+            <div class="salon-row">
+              <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.9 (216)</span>
+              <span class="salon-pill">0.4 km</span>
+            </div>
+            <div class="salon-row">Coiffeur · ab CHF 80</div>
+            <span class="yellow-chip">Heute −20%</span>
+          </div>
+          <svg class="heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo"></div>
+          <div class="salon-meta">
+            <div class="salon-name">Maison de Beauté Mara</div>
+            <div class="salon-row">
+              <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.8 (140)</span>
+              <span class="salon-pill">0.8 km</span>
+            </div>
+            <div class="salon-row">Nails &amp; Spa · ab CHF 65</div>
+          </div>
+          <svg class="heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="live-tagline">
+          <span class="dot"></span>
+          <span>Sofort verfügbar · 320 Buchungen heute</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <b>A</b> = what you have right now. <b>B</b> = same fonts, same colors, just confident sizes + deeper text. <b>C</b> = B plus ONE big blue moment (the submit button) and ONE single yellow chip — color stops being scattered.<br/><br/>
+    My pick: <b>C</b>. B alone is the safe move and already fixes "plain." C is what makes it sing.
+  </footer>
+</body>
+</html>

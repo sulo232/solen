@@ -191,7 +191,7 @@ function ReviewCard({
       {/* Footer: avatar + name + meta + salon link, divider above */}
       <div className="relative mt-auto pt-4 border-t border-s-border flex items-start gap-3">
         <div
-          className="pointer-events-none font-display grid h-9 w-9 shrink-0 place-items-center rounded-full text-[11px] font-black text-s-brand bg-s-bg-sunken"
+          className="pointer-events-none font-display grid h-9 w-9 shrink-0 place-items-center rounded-full text-[11px] font-black text-s-ink-2 bg-s-bg-sunken"
           aria-hidden
         >
           {review.initials}

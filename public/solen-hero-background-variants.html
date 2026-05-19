@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Solen · hero background variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #8B7C72;
+    --brand: #1638C4;
+    --accent: #FFC32B;
+    --white: #FFFFFF;
+    --grey-50: #F9F9F9;
+    --grey-100: #F4F4F6;
+  }
+  html, body {
+    background: #ECECEE;
+    color: var(--ink);
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  .page-title {
+    padding: 32px 20px 8px;
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    max-width: 480px;
+    margin: 0 auto;
+    color: var(--ink);
+  }
+  .page-sub {
+    padding: 0 20px 32px;
+    font-size: 14px;
+    color: var(--ink-2);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  .variant {
+    max-width: 420px;
+    margin: 0 auto 40px;
+    background: var(--white);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  }
+  .variant-label {
+    padding: 16px 20px;
+    background: var(--ink);
+    color: var(--white);
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .variant-label span {
+    color: var(--accent);
+    margin-right: 8px;
+  }
+  .variant-desc {
+    padding: 12px 20px;
+    background: var(--grey-50);
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    border-bottom: 1px solid #E0E0E2;
+  }
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 28px 22px 36px;
+    min-height: 580px;
+    background: var(--white);
+  }
+  .hero-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 10;
+  }
+  .logo {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: baseline;
+  }
+  .logo-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-left: 3px;
+    transform: translateY(-1.5px);
+  }
+  .hamburger {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--white);
+    border: 1px solid rgba(0,0,0,0.06);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .hamburger svg { width: 18px; height: 18px; color: var(--ink); }
+  h1 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: clamp(30px, 8vw, 38px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 10;
+  }
+  h1 .accent { color: var(--brand); }
+  .searchbar {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 8px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.04);
+    position: relative;
+    z-index: 10;
+  }
+  .searchbar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  .searchbar-row:nth-of-type(3) { border-bottom: none; }
+  .searchbar-row svg { width: 16px; height: 16px; color: var(--ink-2); flex-shrink: 0; }
+  .searchbar-row span { color: var(--ink-2); font-size: 14px; font-weight: 500; }
+  .searchbar-cta {
+    margin-top: 8px;
+    background: var(--brand);
+    color: var(--white);
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    width: 100%;
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 14px rgba(22,56,196,0.22);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     V1 — Gradient atmosphere (current Fresha-style)
+     ───────────────────────────────────────────────────────────── */
+  .hero--v1::before {
+    content: "";
+    position: absolute;
+    inset: -40px -20px auto -20px;
+    height: 480px;
+    background:
+      radial-gradient(ellipse 70% 60% at 80% 30%, rgba(255,195,43,0.30) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 70% at 15% 25%, rgba(22,56,196,0.18) 0%, transparent 60%);
+    filter: blur(20px);
+    z-index: 1;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     V2 — Photo mosaic (ClassPass / Depop style)
+     ───────────────────────────────────────────────────────────── */
+  .hero--v2 {
+    background: var(--white);
+  }
+  .v2-mosaic {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 4px;
+    z-index: 1;
+  }
+  .v2-mosaic > div {
+    background-size: cover;
+    background-position: center;
+  }
+  .v2-mosaic::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.92) 60%, var(--white) 100%);
+    z-index: 2;
+  }
+  .hero--v2 .hero-header,
+  .hero--v2 h1,
+  .hero--v2 .searchbar { position: relative; z-index: 3; }
+
+  /* ─────────────────────────────────────────────────────────────
+     V3 — Floating-object collage (Shop-style)
+     ───────────────────────────────────────────────────────────── */
+  .v3-floater {
+    position: absolute;
+    width: 84px;
+    height: 100px;
+    border-radius: 16px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.10);
+    z-index: 1;
+  }
+  .v3-tag {
+    position: absolute;
+    background: var(--white);
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .v3-tag .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--brand);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     V4 — Solid color block + photo (Faire style)
+     ───────────────────────────────────────────────────────────── */
+  .hero--v4 {
+    background: var(--brand);
+    color: var(--white);
+  }
+  .hero--v4 .logo { color: var(--white); }
+  .hero--v4 .logo-dot { background: var(--accent); }
+  .hero--v4 h1 { color: var(--white); }
+  .hero--v4 h1 .accent { color: var(--accent); }
+  .hero--v4 .hamburger { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.2); }
+  .hero--v4 .hamburger svg { color: var(--white); }
+  .v4-photo {
+    position: absolute;
+    inset: 50% 0 0 0;
+    background-size: cover;
+    background-position: center;
+  }
+  .v4-photo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--brand) 0%, transparent 30%);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     V5 — Pure minimal (Hodinkee / Whop)
+     ───────────────────────────────────────────────────────────── */
+  .hero--v5 {
+    background: var(--white);
+    padding-top: 60px;
+  }
+  .hero--v5 h1 {
+    font-size: clamp(36px, 9vw, 44px);
+    margin-bottom: 8px;
+  }
+  .hero--v5 .hero-tagline {
+    font-size: 15px;
+    color: var(--ink-2);
+    margin-bottom: 28px;
+    line-height: 1.5;
+    max-width: 280px;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Footer */
+  footer {
+    padding: 40px 20px 60px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-3);
+    max-width: 480px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+  <h1 class="page-title">Hero background — 5 directions</h1>
+  <p class="page-sub">Same content (logo, hamburger, h1, SearchBar). Different background strategy. Scroll, compare, pick a lane.</p>
+
+  <!-- V1 — Gradient atmosphere -->
+  <section class="variant">
+    <div class="variant-label"><span>V1</span>Gradient atmosphere</div>
+    <div class="variant-desc">Current direction. Soft blue + yellow wash behind hero, white below. Fresha pattern. Brand-coded mood without showing supply.</div>
+    <div class="hero hero--v1">
+      <div class="hero-header">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg></span>
+      </div>
+      <h1>Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+      <div class="searchbar">
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Service</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Stadt</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Zeit</span></div>
+        <button class="searchbar-cta">Solen durchsuchen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- V2 — Photo mosaic -->
+  <section class="variant">
+    <div class="variant-label"><span>V2</span>Photo mosaic (ClassPass / Depop)</div>
+    <div class="variant-desc">Salon + treatment photos tile the entire hero, dimmed under a white-to-clear fade so the text reads. Atmosphere = supply itself.</div>
+    <div class="hero hero--v2">
+      <div class="v2-mosaic">
+        <div style="background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop&q=80')"></div>
+        <div style="background-image:url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop&q=80')"></div>
+        <div style="background-image:url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80')"></div>
+        <div style="background-image:url('https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop&q=80')"></div>
+        <div style="background-image:url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop&q=80')"></div>
+        <div style="background-image:url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=400&fit=crop&q=80')"></div>
+      </div>
+      <div class="hero-header">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg></span>
+      </div>
+      <h1>Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+      <div class="searchbar">
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Service</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Stadt</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Zeit</span></div>
+        <button class="searchbar-cta">Solen durchsuchen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- V3 — Floating-object collage -->
+  <section class="variant">
+    <div class="variant-label"><span>V3</span>Floating salon cards (Shop-style)</div>
+    <div class="variant-desc">Pure white background. Real salon thumbnails + status tags scattered behind the SearchBar at low opacity. Each floater is a teaser for what's inside.</div>
+    <div class="hero" style="background: white;">
+      <div class="v3-floater" style="top: 84px; left: -20px; transform: rotate(-7deg); background-image:url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=200&h=240&fit=crop&q=80');"></div>
+      <div class="v3-tag" style="top: 130px; left: 90px;"><span class="dot"></span>15 Min · Atelier</div>
+      <div class="v3-floater" style="top: 70px; right: -16px; transform: rotate(8deg); background-image:url('https://images.unsplash.com/photo-1604654894610-df63bc536371?w=200&h=240&fit=crop&q=80');"></div>
+      <div class="v3-tag" style="top: 200px; right: 22px;">★ 4.9 · Nail Lab</div>
+      <div class="v3-floater" style="top: 230px; left: 18px; transform: rotate(5deg); background-image:url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=200&h=240&fit=crop&q=80');"></div>
+
+      <div class="hero-header">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg></span>
+      </div>
+      <h1 style="position:relative; z-index:10;">Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+      <div class="searchbar" style="position:relative; z-index:10; margin-top: 220px;">
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Service</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Stadt</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Zeit</span></div>
+        <button class="searchbar-cta">Solen durchsuchen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- V4 — Solid color block + photo -->
+  <section class="variant">
+    <div class="variant-label"><span>V4</span>Color block + photo (Faire-style)</div>
+    <div class="variant-desc">Full-bleed brand color top, lifestyle photo bottom, hero text on the brand block. Maximum brand statement, magazine feel.</div>
+    <div class="hero hero--v4">
+      <div class="v4-photo" style="background-image:url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=400&fit=crop&q=80');"></div>
+      <div class="hero-header">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg></span>
+      </div>
+      <h1>Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+      <div class="searchbar">
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Service</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Stadt</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Zeit</span></div>
+        <button class="searchbar-cta" style="background: var(--accent); color: var(--ink); box-shadow: 0 4px 14px rgba(255,195,43,0.35);">Solen durchsuchen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- V5 — Pure minimal -->
+  <section class="variant">
+    <div class="variant-label"><span>V5</span>Pure minimal (Hodinkee / Whop)</div>
+    <div class="variant-desc">No background, no decoration. White surface, typography + SearchBar carry everything. Premium / quiet / confident.</div>
+    <div class="hero hero--v5">
+      <div class="hero-header">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg></span>
+      </div>
+      <h1>Schöner aussehen, schneller <span class="accent">buchen</span>.</h1>
+      <p class="hero-tagline">In 30 Sekunden zum nächsten Termin — bei einem der besten Salons der Schweiz.</p>
+      <div class="searchbar">
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Service</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>Stadt</span></div>
+        <div class="searchbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Zeit</span></div>
+        <button class="searchbar-cta">Solen durchsuchen</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Tap a variant to pick a lane. I'll wire whichever wins into production.
+  </footer>
+</body>
+</html>

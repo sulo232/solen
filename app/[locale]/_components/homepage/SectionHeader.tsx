@@ -53,7 +53,7 @@ export function SectionHeader({
 export function SectionMeta({ eyebrow }: { eyebrow: string }) {
   return (
     <div className="mb-2 px-2 font-body text-[13px] font-bold uppercase tracking-[0.18em]">
-      <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-brand before:block before:h-[5px] before:w-[5px] before:rounded-full before:bg-s-brand before:content-['']">
+      <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-ink-3 before:block before:h-[5px] before:w-[5px] before:rounded-full before:bg-s-ink-3 before:content-['']">
         {eyebrow}
       </span>
     </div>

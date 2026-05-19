@@ -369,7 +369,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
                     {testimonial.specialties.map((s) => (
                       <span
                         key={s}
-                        className="rounded-full bg-s-brand-subtle px-3 py-1.5 font-body text-[13px] font-semibold text-s-brand"
+                        className="rounded-full bg-s-bg-sunken px-3 py-1.5 font-body text-[13px] font-semibold text-s-ink-2"
                       >
                         {s}
                       </span>
@@ -414,8 +414,8 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
               )}
 
               {testimonial.whySelected && (
-                <div className="mt-6 rounded-[16px] bg-s-brand-subtle p-4">
-                  <h4 className="font-body text-[11px] font-bold uppercase tracking-[0.15em] text-s-brand">
+                <div className="mt-6 rounded-[16px] bg-s-bg-sunken p-4">
+                  <h4 className="font-body text-[11px] font-bold uppercase tracking-[0.15em] text-s-ink-3">
                     Warum Solen-Favorit
                   </h4>
                   <p className="mt-2 font-body text-[14px] leading-[1.55] text-s-ink">

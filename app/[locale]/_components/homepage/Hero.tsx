@@ -86,13 +86,11 @@ export default async function Hero() {
           stop bumped from #FFF0E6 to #FFE2D0 (deeper, warmer peach — more
           spotlight, less wash). Fade reaches transparent by 75% (was 70%)
           so it dissolves well before the search card. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-[120px] -left-[15%] -right-[15%] h-[640px] z-0"
-        style={{
-          background: "radial-gradient(ellipse 85% 65% at 50% 30%, #FFE2D0 0%, #FFEFE4 35%, transparent 75%)",
-        }}
-      />
+      {/* V3-D83 (2026-05-19): atmosphere now lives on the page wrapper
+          (page.tsx) so it bleeds past the hero into the first feed sections,
+          mirroring Fresha's pattern where the spotlight extends ~1500px
+          before fully fading. The Hero itself is now a transparent zone
+          over that wrapper-level wash. */}
       {/* V3-D73 (2026-05-18): vh → dvh per advanced-UI doc — fixes iOS Safari
           floating bottom address bar collision. dvh dynamically recalculates as
           Safari's bar expands/contracts, preventing the hero from getting
@@ -110,10 +108,19 @@ export default async function Hero() {
             // V2-D70 (2026-05-18) — warm minimal h1: Plus Jakarta Sans 800,
             // larger size clamp(40, 8.5vw, 60), tighter tracking -0.035em.
             // Extreme weight contrast vs body 500 (single-family system).
-            className="mb-10 font-display text-[clamp(40px,8.5vw,60px)] font-extrabold leading-[1.02] tracking-[-0.035em] text-s-ink"
+            // V3-D85-semantic (2026-05-19): brand-blue accent moved from
+            // "buchen" (transactional verb) → "Schöner" (the wellness promise).
+            // Per council pushback — highlighting the booking verb signaled
+            // "this is a utility"; highlighting the beauty-promise word signals
+            // "this is a wellness brand." Same color, same hex, same span —
+            // only the placement changes.
+            // V3-D86 (2026-05-19): h1 size bumped per variant-B mockup user
+            // approved — clamp(46→56, 11→13vw, 60→76), leading 1.02→0.98,
+            // tracking -0.038→-0.042. Mobile floor +10px gives the headline
+            // confident presence on small screens (was reading "compact").
+            className="mb-7 font-display text-[clamp(56px,13vw,76px)] font-extrabold leading-[0.98] tracking-[-0.042em] text-s-ink"
           >
-            Schöner aussehen, schneller{" "}
-            <span className="text-s-accent">buchen</span>.
+            <span className="text-s-brand">Schöner</span> aussehen, schneller buchen.
           </h1>
         </div>
 

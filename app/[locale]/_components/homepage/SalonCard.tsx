@@ -86,7 +86,10 @@ const badgeGeometry = cn(
  *  (sale semantic, hue-matched text — no brown-on-yellow collision). */
 // V2-D70: discount badge text → white (was red-900) to match new solid
 // terracotta bg #D87352. White on terracotta = 4.5:1 contrast, AA Large.
-const discountClass = cn(badgeGeometry, "text-white");
+// V3-D85-semantic (2026-05-19): text now uses s-love-deep (#A23548) to be
+// hue-matched on the new s-love-soft (#FAD2DA) bg per council collapsed-warm
+// reduction. Yellow bg is retired — sale collapses into the heart-red family.
+const discountClass = cn(badgeGeometry, "text-s-love-deep");
 
 /** Availability pill — V2-D63: MOVED to top-left (was bottom-left).
  *  Same slot as discount + curation, but they're mutex by section logic:
@@ -104,11 +107,11 @@ const availVariants = cva(
         //   angebot   → solid terracotta #D87352 + white text
         //   urgent/limited → Dusty Slate #EEF2F6 + navy slate #3A5B7C text (V2-D71)
         //   pause     → ink glass + white text (kept)
-        now:     "text-s-brand",
-        week:    "text-s-brand",
+        now:     "text-s-ink-2",
+        week:    "text-s-ink-2",
         urgent:  "text-[#3A5B7C]",    // V2-D71: deep muted navy on dusty slate
         limited: "text-[#3A5B7C]",
-        angebot: "text-white",        // V2-D70: terracotta solid → white text
+        angebot: "text-s-ink",        // V3-D79: yellow solid → ink text (high contrast on yellow)
         pause:   "text-white",        // ink-2 muted glass (unchanged)
       },
     },
@@ -182,8 +185,13 @@ function layeredGlass(rgb: string, bgAlpha = 0.22, borderAlpha = 0.32) {
 // V2-D67-fu10 history kept for reference: discount swapped OFF yellow per
 // user "brown n yellow doesnt make scence" — V2-D70 takes this further by
 // going to solid terracotta (brand-aligned + high contrast white text).
-const amberStyle    = { background: "#D87352", border: "1px solid rgba(168, 90, 64, 0.5)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.06)" } as const;
-const angebotStyle  = { background: "#D87352", border: "1px solid rgba(168, 90, 64, 0.5)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.06)" } as const;
+// V3-D85-semantic (2026-05-19): yellow #FFC32B retired from chips — reserved
+// only for star ratings + logo dot now. Discount + Angebot collapse into the
+// s-love warm-red family (#FAD2DA bg + s-love-deep text via discountClass) so
+// they share a semantic family with heart-saved per Airbnb collapsed-warm
+// pattern. Council-validated 5→4 color reduction.
+const amberStyle    = { background: "#FAD2DA", border: "1px solid rgba(204, 74, 96, 0.22)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
+const angebotStyle  = { background: "#FAD2DA", border: "1px solid rgba(204, 74, 96, 0.22)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
 // V2-D71 (2026-05-18): swapped from light-bright system-blue glass to "Dusty Slate"
 // per user spec — `#EEF2F6` bg + `#3A5B7C` text. Still registers as "blue/different"
 // vs the green Heute frei badge, but feels expensive (Fresha/Airbnb pattern) and
@@ -528,7 +536,7 @@ export function SalonCard({
             )}
           </div>
           <span className="flex shrink-0 items-center gap-[3px] font-semibold tabular-nums text-s-ink">
-            <Star size={11} fill="#F3A864" stroke="none" aria-hidden />
+            <Star size={11} fill="#FFC32B" stroke="none" aria-hidden />
             {rating != null ? rating.toFixed(1) : "—"}
           </span>
         </div>

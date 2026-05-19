@@ -125,7 +125,7 @@ function VisualBooking() {
         className="pointer-events-none absolute left-1/2 top-1/2 h-36 w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"
         style={{
           background:
-            "radial-gradient(55% 50% at 50% 50%, rgba(31,80,55,0.22) 0%, rgba(224,112,61,0.12) 55%, transparent 85%)",
+            "radial-gradient(55% 50% at 50% 50%, rgba(22,56,196,0.22) 0%, rgba(255,195,43,0.18) 55%, transparent 85%)",
         }}
       />
       <div
@@ -360,7 +360,7 @@ const ANALYTICS_PERIODS: AnalyticsPeriod[] = [
  *  the same color story — consistent identity across the row, height alone
  *  signals the peak. Rounded tops give the soft-popsicle silhouette. */
 const BAR_GRADIENT =
-  "linear-gradient(180deg, #C084FC 0%, #FBA4B3 50%, #FB923C 100%)";
+  "linear-gradient(180deg, #1638C4 0%, #B8C4F0 100%)";
 
 /** Catmull-Rom-to-cubic-bezier smoothing. Returns an SVG path `d` string. */
 function smoothPath(yValues: number[]): string {
@@ -703,7 +703,7 @@ export default function BentoBusiness() {
                 width: "5px",
                 height: "5px",
                 borderRadius: "9999px",
-                background: "#D87352",
+                background: "#FFC32B",
               }}
             />
             Für Salons
@@ -717,7 +717,7 @@ export default function BentoBusiness() {
             }}
           >
             Solen für<br />
-            <span className="text-s-accent">dein Geschäft.</span>
+            <span className="text-s-brand">dein Geschäft.</span>
           </h2>
           <p className="mt-5 font-body text-[15px] leading-[1.55] text-s-ink-2 md:text-[17px]">
             Mehr Buchungen, weniger Aufwand. Vier Werkzeuge, eine Plattform.

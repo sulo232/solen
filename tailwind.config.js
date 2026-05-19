@@ -40,8 +40,8 @@ module.exports = {
         // with shadow (Aurex lift). Plus Jakarta Sans replaces Peace Sans +
         // Open Sauce One — single family at extreme weight contrast.
         "s-coral": { DEFAULT: "#3B7A57", hover: "#2D5E43", subtle: "#E5F2EA", text: "#3B7A57", button: "#3B7A57", "button-hover": "#2D5E43" },
-        "s-brand": { DEFAULT: "#1F5037", pale: "#A6CDB5", subtle: "#DCEDDF", mid: "#163A28", deep: "#0E2B1D" },
-        "s-accent": { DEFAULT: "#D87352", soft: "#E89B83", deep: "#A04A22" },
+        "s-brand": { DEFAULT: "#1638C4", pale: "#B8C4F0", subtle: "#E2E8FA", mid: "#0F2BA0", deep: "#08185E" },
+        "s-accent": { DEFAULT: "#FFC32B", soft: "#FFE19F", deep: "#C9941F" },
         // ── Bright accent (butter) — sparingly, for stat-card highlights ──
         "s-butter": "#F2D77B",
         // ── Sage — wellness whisper, never loud ──
@@ -84,7 +84,13 @@ module.exports = {
         // for input active-typing state (LIVE_TRUTH §F.1.0 + §14.3 search row both still cite it).
         // Re-added as `s-bg.active` — distinct from substrate. Use `bg-s-bg-active` in className.
         // ── Semantic Status Tokens (LIVE_TRUTH §3) ──
-        "s-love":     "#FF4A6B",  // V3 added — heart icons (distinct from error)
+        // V3-D85-semantic (2026-05-19): collapsed warm semantic family per council
+        // reduction (5 colors → 4). s-love now does double duty: heart-saved AND
+        // sale/discount chips (Airbnb pattern). Muted from #FF4A6B → #CC4A60 to
+        // escape gendered-pink read and stay calm against the brand royal-blue.
+        // .soft = warm-red light bg for sale chips. .deep = darker warm-red for
+        // hue-matched text on .soft backgrounds.
+        "s-love":     { DEFAULT: "#CC4A60", soft: "#FAD2DA", deep: "#A23548" },
         "s-success": { DEFAULT: "#16A34A", bg: "#E8F5E9" },
         "s-warning": { DEFAULT: "#F59E0B", bg: "#FFF3E0" },  // V3: aligned to LIVE_TRUTH §3 hex
         "s-error":   { DEFAULT: "#D32F2F", bg: "#FFEBEE" },  // V3: aligned to LIVE_TRUTH §3 hex

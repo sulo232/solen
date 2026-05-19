@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import { buildAlternates } from "@/lib/seo";
 import Hero from "./_components/homepage/Hero";
 import { FeedZone } from "./_components/homepage/SectionHeader";
-// V2-D68 (2026-05-18): AtmosphereBlobs + AtmosphereGrain imports retired
-// (page-wide mount removed). Components preserved at original paths for
-// possible future use as per-section localized accents.
-// import { AtmosphereBlobs } from "./_components/homepage/AtmosphereBlobs";
-// import { AtmosphereGrain } from "./_components/homepage/AtmosphereGrain";
+// V3-D82 (2026-05-19): hero atmosphere now lives inline inside Hero.tsx
+// as a CSS double-radial-gradient (locked from V1 variant of the
+// solen-hero-background-variants.html mockup). HeroSpotlight + AtmosphereBlobs
+// retired (kept on disk for reference).
 import RecentlyViewed from "./_components/homepage/RecentlyViewed";
 // V3-D75 (2026-05-18): LastMinute retired per user "ditch last minute".
 // Replaced by ArtistOfTheMonth — curated featured-stylist carousel using
@@ -91,17 +90,13 @@ export const revalidate = 300;
 
 export default async function Page() {
   return (
-    <>
-      {/* V2-D68 (2026-05-18): AtmosphereBlobs + AtmosphereGrain RETIRED.
-          User feedback: page-wide gradient wash created "visual mush",
-          washed out UI contrast, made cards look "slapped on top".
-          Substrate shifted from cream #FAF3E6 to subtle off-white #F8F7F2.
-          High-contrast Gen Z aesthetic — colors live as ACCENTS on CTAs +
-          badges + category tags, NOT as a page-wide background gradient.
-          Components preserved at app/[locale]/_components/homepage/
-          AtmosphereBlobs.tsx + AtmosphereGrain.tsx in case we ever want
-          to reintroduce as a per-page-section accent (e.g. behind hero h1
-          only). The page-wide mount is what's retired, not the components. */}
+    <div className="relative overflow-hidden bg-white">
+      {/* V3-D86 (2026-05-19): atmosphere wash REMOVED per user direction —
+          pure white + (selectively) very-soft off-white sections (Airbnb
+          pattern). Decorative gradients fail the "earned by function" test;
+          they don't help users scan, trust, or act. Background returns to
+          plain white; off-white feature-section bgs added per-section as
+          needed (TBD which sections — user picks). */}
       <Hero />
       {/* All feed sections sit inside a rising-panel FeedZone (V2-D41-fu
           rising-panel pattern locked 2026-05-09). Hero zone keeps the
@@ -122,6 +117,6 @@ export default async function Page() {
         {/* V3-D75-bento: B2B interactive bento grid (4 features) */}
         <BentoBusiness />
       </FeedZone>
-    </>
+    </div>
   );
 }

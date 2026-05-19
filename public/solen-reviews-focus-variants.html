@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Solen · Reviews focus-mode variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #8B7C72;
+    --brand: #1638C4;
+    --accent: #FFC32B;
+    --white: #FFFFFF;
+    --grey-50: #F9F9F9;
+    --grey-100: #F1F1F2;
+    --grey-150: #E8E8EA;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #ECECEE;
+    color: var(--ink);
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  .page-title {
+    padding: 32px 20px 8px;
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.025em;
+    max-width: 480px;
+    margin: 0 auto;
+    color: var(--ink);
+  }
+  .page-sub {
+    padding: 0 20px 28px;
+    font-size: 14px;
+    color: var(--ink-2);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  .variant {
+    max-width: 420px;
+    margin: 0 auto 40px;
+    background: var(--white);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  }
+  .variant-label {
+    padding: 16px 20px;
+    background: var(--ink);
+    color: var(--white);
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .variant-label span { color: var(--accent); margin-right: 8px; }
+  .variant-meta {
+    padding: 12px 20px;
+    background: var(--grey-50);
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    border-bottom: 1px solid var(--grey-150);
+  }
+  .variant-meta b { color: var(--ink); font-weight: 700; }
+
+  .section { padding: 28px 20px 32px; background: var(--white); }
+  .section-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px;
+  }
+  .section-eyebrow::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink-3);
+  }
+  .section-h2 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800; font-size: 28px; line-height: 1.05;
+    letter-spacing: -0.03em; color: var(--ink); margin-bottom: 18px;
+  }
+
+  /* Photo placeholder */
+  .reviewer-photo {
+    background: linear-gradient(135deg, #FFF4D3 0%, #FFE0A8 60%, #F5C77C 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .reviewer-photo::before {
+    content: "";
+    position: absolute;
+    inset: 18% 22% 12% 22%;
+    background: rgba(0,0,0,0.06);
+    border-radius: 50% 50% 45% 45%;
+  }
+  .reviewer-photo::after {
+    content: "";
+    position: absolute;
+    inset: 36% 32% 0 32%;
+    background: rgba(0,0,0,0.04);
+    border-radius: 50% 50% 0 0;
+  }
+
+  /* Stars */
+  .stars { display: inline-flex; gap: 2px; color: var(--accent); }
+  .stars svg { width: 16px; height: 16px; }
+
+  /* Verified badge */
+  .verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brand);
+    background: rgba(22,56,196,0.06);
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+  .verified svg { width: 12px; height: 12px; }
+
+  /* Quote mark */
+  .quote-mark {
+    font-family: "Bricolage Grotesque", serif;
+    font-weight: 800;
+    font-size: 80px;
+    line-height: 0.8;
+    color: var(--ink);
+    opacity: 0.08;
+    display: block;
+    margin-bottom: -8px;
+  }
+
+  /* Dots / arrows */
+  .dots { display: flex; justify-content: center; gap: 6px; margin-top: 20px; }
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--grey-150);
+  }
+  .dot.active {
+    background: var(--ink);
+    width: 18px;
+    border-radius: 4px;
+  }
+
+  .arrows {
+    display: flex; justify-content: space-between;
+    margin-top: 20px;
+  }
+  .arrow {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1px solid var(--grey-150);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .arrow:hover {
+    background: var(--ink);
+    color: var(--white);
+    border-color: var(--ink);
+  }
+  .arrow svg { width: 18px; height: 18px; }
+
+  /* === Variant A — split: quote LEFT (big), photo RIGHT === */
+  .review-a {
+    display: grid;
+    grid-template-columns: 1fr 96px;
+    gap: 16px;
+    align-items: start;
+  }
+  .review-a .reviewer-photo {
+    width: 96px;
+    height: 96px;
+    border-radius: 18px;
+    flex-shrink: 0;
+  }
+  .review-a .review-quote {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+  .review-a .review-meta {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .review-a .reviewer-name {
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .review-a .reviewer-detail {
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+
+  /* === Variant B — photo as background, quote overlay === */
+  .review-b-wrap {
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    aspect-ratio: 4/5;
+  }
+  .review-b-wrap .reviewer-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .review-b-wrap .reviewer-photo::before {
+    inset: 8% 18% 50% 18%;
+  }
+  .review-b-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 30%, rgba(26,18,9,0.65) 100%);
+  }
+  .review-b-content {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 22px 22px 24px;
+    color: var(--white);
+    z-index: 2;
+  }
+  .review-b-content .stars { color: var(--accent); margin-bottom: 8px; }
+  .review-b-content .review-quote {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 1.28;
+    letter-spacing: -0.015em;
+    margin-bottom: 14px;
+  }
+  .review-b-content .reviewer-name {
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--white);
+  }
+  .review-b-content .reviewer-detail {
+    font-size: 12px;
+    color: rgba(255,255,255,0.75);
+    margin-top: 2px;
+  }
+  .review-b-content .verified {
+    background: rgba(255,255,255,0.18);
+    color: var(--white);
+    backdrop-filter: blur(8px);
+    margin-top: 8px;
+  }
+
+  /* === Variant C — centered, photo top, quote below === */
+  .review-c {
+    text-align: center;
+    padding: 16px 0;
+  }
+  .review-c .reviewer-photo {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+  }
+  .review-c .stars { margin-bottom: 14px; }
+  .review-c .review-quote {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.28;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .review-c .reviewer-name {
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .review-c .reviewer-detail {
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+  }
+  .review-c .verified {
+    margin-bottom: 4px;
+  }
+
+  footer {
+    padding: 24px 20px 60px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-3);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  footer b { color: var(--ink); }
+</style>
+</head>
+<body>
+  <h1 class="page-title">Reviews — focus-mode variants</h1>
+  <p class="page-sub">One big testimonial at a time. <b>Not a row of mini-cards. Not a magazine spread.</b> Spotlight one voice, swipe for the next. Three layouts. Pick a letter.</p>
+
+  <!-- ─── A · Split — quote left, photo right ─── -->
+  <section class="variant">
+    <div class="variant-label"><span>A</span>Split — quote left, photo right</div>
+    <div class="variant-meta">
+      Layout = <b>large quote + small photo card</b> · 2-col<br/>
+      Photo is supporting · quote is the hero<br/>
+      Vibe = newspaper sidebar, calm, trustworthy
+    </div>
+    <div class="section">
+      <div class="section-eyebrow">Was Kundinnen sagen</div>
+      <h2 class="section-h2">Echte Stimmen</h2>
+
+      <div class="review-a">
+        <div>
+          <span class="quote-mark">"</span>
+          <div class="review-quote">
+            Beste Coiffeur-Erfahrung in Basel. Die Beratung war einfühlsam, das Ergebnis genau wie besprochen — und schneller gebucht als der nächste Kaffee.
+          </div>
+          <div class="review-meta">
+            <div class="stars">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+            </div>
+            <div class="reviewer-name">Maria K.</div>
+            <div class="reviewer-detail">Studio Lina · Basel</div>
+            <span class="verified" style="align-self: flex-start;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              Verifizierte Buchung
+            </span>
+          </div>
+        </div>
+        <div class="reviewer-photo"></div>
+      </div>
+
+      <div class="arrows">
+        <button class="arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <div class="dots" style="margin: auto;">
+          <span class="dot active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+        <button class="arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── B · Photo background + quote overlay ─── -->
+  <section class="variant">
+    <div class="variant-label"><span>B</span>Photo BG + quote overlay</div>
+    <div class="variant-meta">
+      Layout = <b>full-bleed photo, quote stacked at bottom over gradient</b><br/>
+      Photo carries the emotion · quote is supporting<br/>
+      Vibe = high-end hotel testimonial, immersive
+    </div>
+    <div class="section">
+      <div class="section-eyebrow">Was Kundinnen sagen</div>
+      <h2 class="section-h2">Echte Stimmen</h2>
+
+      <div class="review-b-wrap">
+        <div class="reviewer-photo"></div>
+        <div class="review-b-content">
+          <div class="stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+          </div>
+          <div class="review-quote">
+            Beste Coiffeur-Erfahrung in Basel. Beratung einfühlsam, Ergebnis genau wie besprochen.
+          </div>
+          <div class="reviewer-name">Maria K.</div>
+          <div class="reviewer-detail">Studio Lina · Basel</div>
+          <span class="verified">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Verifizierte Buchung
+          </span>
+        </div>
+      </div>
+
+      <div class="dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── C · Centered, photo top, quote below ─── -->
+  <section class="variant">
+    <div class="variant-label"><span>C</span>Centered — photo top, quote below</div>
+    <div class="variant-meta">
+      Layout = <b>round photo + big centered quote + name + dots</b><br/>
+      Symmetric, calm, classic testimonial format<br/>
+      Vibe = trustpilot-meets-Apple, soft, social-proof first
+    </div>
+    <div class="section">
+      <div class="section-eyebrow">Was Kundinnen sagen</div>
+      <h2 class="section-h2">Echte Stimmen</h2>
+
+      <div class="review-c">
+        <div class="reviewer-photo"></div>
+        <div class="stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+        </div>
+        <div class="review-quote">
+          "Beste Coiffeur-Erfahrung in Basel. Beratung einfühlsam, Ergebnis genau wie besprochen."
+        </div>
+        <div class="reviewer-name">Maria K.</div>
+        <div class="reviewer-detail">Studio Lina · Basel</div>
+        <span class="verified">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Verifizierte Buchung
+        </span>
+      </div>
+
+      <div class="dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <b>A</b> = quote-driven, supporting photo, calm. <b>B</b> = photo-driven, immersive, emotional.<br/>
+    <b>C</b> = symmetric classic, social-proof first, trustpilot-meets-Apple.<br/>
+    My pick: <b>A</b> — most legible on mobile, the quote does the work, photo earns its place without competing.
+  </footer>
+</body>
+</html>

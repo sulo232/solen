@@ -103,7 +103,9 @@ export function HeartButton({
             size={18}
             strokeWidth={2.25}
             // V2-D60-heart: SAVED = solid red fill, no stroke. UNSAVED = ink stroke.
-            fill={isSaved ? "#FF4A6B" : "none"}
+            // V3-D85-semantic (2026-05-19): hex aligned with new s-love value
+            // (#FF4A6B → #CC4A60) per council muted-warm reduction.
+            fill={isSaved ? "#CC4A60" : "none"}
             stroke={isSaved ? "none" : "var(--color-heading)"}
             className={isSaved && popKey > 0 ? "animate-heart-pop" : undefined}
             aria-hidden

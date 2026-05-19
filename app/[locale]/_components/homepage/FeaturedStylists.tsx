@@ -102,7 +102,7 @@ export default function FeaturedStylists() {
                   Soft hover ring transition + scale lift, ease-glide curve. */}
               <div className="relative">
                 <div
-                  className="grid h-[110px] w-[110px] md:h-[130px] md:w-[130px] place-items-center rounded-full ring-2 ring-white shadow-[0_4px_14px_rgba(4,51,56,0.10)] transition-[transform,box-shadow,ring-color] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:scale-[1.03] group-hover:shadow-[0_8px_20px_rgba(4,51,56,0.14)] group-hover:ring-s-brand/30"
+                  className="grid h-[110px] w-[110px] md:h-[130px] md:w-[130px] place-items-center rounded-full ring-2 ring-white shadow-[0_4px_14px_rgba(4,51,56,0.10)] transition-[transform,box-shadow,ring-color] duration-200 ease-glide group-hover:-translate-y-[3px] group-hover:scale-[1.03] group-hover:shadow-[0_8px_20px_rgba(4,51,56,0.14)] group-hover:ring-s-ink/20"
                   style={{ backgroundColor: tokens.photoColor }}
                 >
                   <span
