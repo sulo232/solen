@@ -48,7 +48,7 @@ ls app/[locale]/discover/
 - **Reasoning**: German copy is typically 30% longer than English and features extensive compound words. Fixed widths clip translations.
 
 ### Rule 36: STYLED LOCALE-AWARE 404 PAGES
-- The `not-found.tsx` component MUST follow the layout grammar in `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-3) + `_rules/SOLEN_UI.md`. Zone language retired. Use the empty-state pattern: white substrate + brand-teal `#043338` SVG illustration + Cooper BT h1 + Avant Garde body + brand voice (confident, useful, Swiss-direct). Historical Q19 state lockset and Q21 line-coral SVG retired V2-D15-3 (coral itself retired).
+- The `not-found.tsx` component MUST follow the current design system (see `_tasks/SOLEN_DESIGN.md`). Note: the previous Zone 1/2/3/4 language is retired.
 
 ### Rule 37: FEATURE PROMPT COPY MUST BE TRANSLATED
 - When a feature request includes specific German copy (e.g., "Teile deine Praferenzen"), **NEVER** hardcode it into the component.

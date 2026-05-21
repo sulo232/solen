@@ -7,7 +7,7 @@
 ## ✅ Already Done
 
 - [x] Gemini API Key → `.env.local` ✅
-- [x] Resend API Key → `.env.local` ✅ (just set: `re_QnpoWHUi_LB9G4W1ZLmbDbRnWkUL94iPR`)
+- [x] Resend API Key → `.env.local` ✅ (just set: `REDACTED_RESEND_KEY_ROTATED_2026-05-06`)
 - [x] Supabase URL + Keys → `.env.local` ✅
 - [x] Supabase Storage `salon-photos` bucket ✅
 
@@ -16,7 +16,7 @@
 ## ❌ Do These (2 steps left)
 
 - [ ] Step 1: Supabase SMTP (noreply@solen.ch)
-- [ ] Step 2: Gemini + Resend keys → Netlify
+- [ ] Step 2: Gemini + Resend keys → Vercel
 
 ---
 
@@ -51,7 +51,7 @@ Host:            smtp.resend.com
 Port number:     465
 Minimum interval: 60
 Username:        resend
-Password:        re_QnpoWHUi_LB9G4W1ZLmbDbRnWkUL94iPR
+Password:        REDACTED_RESEND_KEY_ROTATED_2026-05-06
 ```
 
 5. Click **Save**
@@ -101,18 +101,18 @@ Body:
 
 ---
 
-# Step 2: Add Keys to Netlify 🔴 REQUIRED
+# Step 2: Add Keys to Vercel 🔴 REQUIRED
 
 > Keys are in `.env.local` but production needs them too.
 
-1. Open the Netlify dashboard for the `solen` site → **Site settings → Environment variables**.
+1. Open: **https://vercel.com/sulo232s-projects/solen/settings/environment-variables**
 
 2. Add these 2 variables:
 
-| Key | Value | Contexts |
+| Key | Value | Environments |
 |---|---|---|
-| `GEMINI_API_KEY` | `AIzaSyAsyvIz8xnWio5F4-BTcbZkMxEC0rpZGyM` | ✅ Production ✅ Deploy Preview ✅ Branch deploys |
-| `RESEND_API_KEY` | `re_QnpoWHUi_LB9G4W1ZLmbDbRnWkUL94iPR` | ✅ Production ✅ Deploy Preview ✅ Branch deploys |
+| `GEMINI_API_KEY` | `REDACTED_GEMINI_KEY_ROTATED_2026-05-06` | ✅ Production ✅ Preview ✅ Development |
+| `RESEND_API_KEY` | `REDACTED_RESEND_KEY_ROTATED_2026-05-06` | ✅ Production ✅ Preview ✅ Development |
 
 3. Click **Save** for each
 
@@ -122,7 +122,7 @@ Body:
 
 ```
 Step 1 ✅ → Supabase SMTP configured
-Step 2 ✅ → Netlify env vars set
+Step 2 ✅ → Vercel env vars set
          ↓
     🚀 RUN ALL 3 CLAUDE CODE SESSIONS SIMULTANEOUSLY
          ↓
@@ -132,4 +132,4 @@ Step 2 ✅ → Netlify env vars set
 ```
 
 ### Post-Sessions (do after all 3 finish):
-- **Crons**: GitHub Actions (`.github/workflows/cron-jobs.yml`) hits `/api/cron/*` routes on schedule. Already wired up — no action needed.
+- **Vercel Crons**: If on Pro plan → automatic. If free → use [cron-job.org](https://cron-job.org) to hit `/api/cron/*` routes daily.

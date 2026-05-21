@@ -8,13 +8,12 @@
 
 | User wants... | System | Key file |
 |---|---|---|
-| Design new UI / redesign a component | **Design Lock** | `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock) + V3 preview HTML files |
-| Compare code to design lock / audit drift | **Drift Audit** | `_audits/_chunks/audit-{1,2,3,4}-*.md` |
+| Design new UI / redesign a component | **Figma First** | `_rules/FIGMA_CODE_SYNC.md` |
+| Compare code to Figma / audit accuracy | **Figma Sync** | `_rules/FIGMA_CODE_SYNC.md` |
 | Check for visual regressions after changes | **Playwright** | `playwright.config.ts` |
 | Fix a visual bug / something looks wrong | **QA Registry** | `_tasks/VISUAL_QA_REGISTRY.md` |
-| Wrong color / font / spacing / token | **Design Tokens** | `_tasks/SOLEN_LIVE_TRUTH.md` §1–§5i + `_rules/SOLEN_UI.md` |
-| Animation / hover / interaction polish | **Animation** | `_tasks/SOLEN_LIVE_TRUTH.md` §5c (motion) |
-| Decision history / why-did-we-pick | **Decision Log** | `_tasks/V2_REBUILD_LOG.md` (V2-D## entries) |
+| Wrong color / font / spacing / token | **Design Tokens** | `_tasks/SOLEN_DESIGN.md` |
+| Animation / hover / interaction polish | **Animation** | `emil-design-eng` skill |
 | Build a feature / new page / API route | **Feature Dev** | `_rules/CODE_SAFETY.md` |
 
 ---
@@ -31,15 +30,15 @@ Design in Figma, get approval, then code. For any new or redesigned customer-fac
 
 **Loop:** Design → Screenshot → User approves → Implement → Verify on localhost.
 
-**Reference:** `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-3, 2026-05-07) + V3 living previews: `public/solen-v2-republik-teal.html` (homepage), `public/solen-v2-palette.html` (palette), `public/solen-v2-combos.html` (combo grid). Figma artifacts are working drafts; **the lock lives in LIVE_TRUTH**, not in Figma. (Historical: SOLEN_DESIGN.md §20 Q-locks Q1–Q63 still hold for context, but V3 supersedes any conflict.)
+**Reference:** `_rules/FIGMA_CODE_SYNC.md` (section map with node IDs), `_rules/FIGMA.md` (file structure).
 
 ---
 
-## 2. Drift Audit
+## 2. Figma Sync
 
-Compare live code to the locked design. Find and fix mismatches. **§20 Q-locks are source of truth** (Figma is iteration scratchpad).
+Compare Figma designs to live code. Find and fix mismatches. Figma is source of truth.
 
-**Drift findings:** `_audits/_chunks/audit-{1,2,3,4}-*.md` — six narrow scopes (tokens, component class drift, Q-lock implementation, rules contradictions, backend gaps, route coverage).
+**Section map:** `_rules/FIGMA_CODE_SYNC.md` maps 15 homepage sections with exact Figma node IDs to code files.
 
 **Loop:** Screenshot Figma section → Read code file → Spot differences → Fix one at a time → Verify.
 
@@ -80,19 +79,11 @@ Persistent log of visual bugs. Any agent can read it, fix issues, mark them done
 
 ---
 
-## 5. Design Tokens
+## 5. Design Tokens — IN FLUX
 
-All code must use design tokens. No arbitrary hex, no wrong fonts, no banned patterns.
+The design system is being iterated. **Don't cite the previous locked tokens** (`s-coral` hexes, `s-ink`, banned-class lists, etc.) **as authoritative.** Ask the user, or read `_tasks/SOLEN_DESIGN.md` for current values.
 
-**Component specs:** `_tasks/SOLEN_LIVE_TRUTH.md` (V3 lock — V2-D15-3) — single source of truth. **Read the relevant § BEFORE implementing any component.**
-**Tailwind mapping:** `tailwind.config.js` (V3 tokens), `app/globals.css` (V3 CSS imports).
-**Supplemental rules:** `_rules/SOLEN_UI.md` (interaction grammar, semantic-color discipline).
-
-**V3 Key tokens (V2-D15-3):** `s-brand` (`#043338` dark teal — also kept as `s-coral` for backward-compat), `s-brand.pale` (`#C2F0F1`), `s-brand.subtle` (`#E1F4F4`), `s-brand.mid` (`#0A6873`), `s-cat-coiffeur`/`s-cat-barbershop`/`s-cat-nails`/`s-cat-spa` (4 V3 categories with text pairs), `s-ink` (`#1A1209`), `s-ink-2` (`#56463E`), `s-ink-3` (`#7A6957`), `s-border` (`#E8DFD2`), `s-bg` (`#FFFFFF` page), `s-bg-sunken` (`#FAF7F3`). Semantic: `s-love` (`#FF4A6B`), `s-success` (`#16A34A`), `s-warning` (`#F59E0B`), `s-error` (`#D32F2F`), `s-closed` (`#DC2626`), `s-star` (`#F3A864`). `rounded-card` (16px), `rounded-btn` (99px). `shadow-elevation-1/2/3` (warm-ink-tinted per §5b).
-
-**Retired tokens:** `s-amber`, `s-blue`, `s-plum`, `s-yellow`, `s-sage`, `s-sand`, `s-bg-cream` (`#FFF4E8`) — V2-D15-3.
-
-**Banned:** `shadow-sm/md/lg`, `hover:bg-s-brand/90` / `hover:bg-s-coral/90` (use brightness shift), `transition-all`, `text-black` (use `text-s-ink`), `rounded-lg/xl/2xl` (use `rounded-[Npx]` explicit), `dark:*` utilities (Q62 retired), `ease-in` on enters, `duration-500+` on UI. **`bg-white` is allowed** — page bg = white `#FFFFFF`.
+Previous spec archived at `_tasks/completed/rules-locked-design-tokens-2026-05-06.md`. Tailwind / CSS implementation still lives in `tailwind.config.js` + `app/globals.css` — those are the actual code, not anchors.
 
 ---
 
@@ -100,7 +91,7 @@ All code must use design tokens. No arbitrary hex, no wrong fonts, no banned pat
 
 Easing, timing, micro-interactions. Skills: `emil-design-eng`, `frontend-design`.
 
-**Rules (per Q35 + SOLEN_UI):** Easing `cubic-bezier(0.2, 0.8, 0.4, 1)` (out-curve default); shared-element morph 400ms; standard slide 200ms. Enter from `opacity:0, y:12`. Press: `active:scale-[0.97]`. Stagger: 40-60ms. NEVER `transition-all`.
+**Rules:** Easing `cubic-bezier(0.23, 1, 0.32, 1)`. Duration 100-300ms. Enter from `opacity:0, y:12`. Press: `active:scale-[0.97]`. Stagger: 40-60ms.
 
 ---
 
@@ -108,7 +99,7 @@ Easing, timing, micro-interactions. Skills: `emil-design-eng`, `frontend-design`
 
 Building features, pages, API routes. Every feature needs all 8 layers: types, DB migration, API route, component, page, i18n (4 locales), imported + rendered, navigation entry.
 
-**Reference:** `_rules/CODE_SAFETY.md`, `_rules/STRUCTURAL_RULES.md`, `_rules/I18N_ROUTING.md`, `_rules/SECURITY_RULES.md`, `_rules/DB_SCHEMA.md`, `_rules/ROADMAP_RULES.md`, `_rules/LESSONS_LEARNED.md`, `_rules/KEY_FEATURES.md`. Search-bar grammar locked in `_tasks/SOLEN_DESIGN.md` §20 Q4 + Q48 (Fresha-flow stacked card).
+**Reference:** `_rules/CODE_SAFETY.md`, `_rules/STRUCTURAL_RULES.md`, `_rules/I18N_ROUTING.md`, `_rules/SECURITY_RULES.md`, `_rules/DB_SCHEMA.md`, `_rules/ROADMAP_RULES.md`, `_rules/LESSONS_LEARNED.md`, `_rules/KEY_FEATURES.md`, `_rules/search-bar-rules.md`.
 
 **Check first:** `_tasks/INCOMPLETE_FEATURES.md` — might already be half-built.
 
@@ -118,7 +109,9 @@ Building features, pages, API routes. Every feature needs all 8 layers: types, D
 
 | What | File | When |
 |---|---|---|
+| Intentional Figma deviations | `_rules/FIGMA_DEVIATIONS.md` | Code correctly differs from Figma — log it so audits don't re-flag |
 | Multi-agent coordination | `_rules/AGENT_COORDINATION.md` | Multiple agents active, shared file edits |
+| Asset generation | `_rules/GENERATION_TOOLS.md` | Need icons (Recraft.ai), animations (LottieFiles), UI icons (lucide-react) |
 | Solen context for skills | `.agents/skills/{design,review,refine}/SOLEN_CONTEXT.md` | Loaded automatically by those skills |
 
 ---

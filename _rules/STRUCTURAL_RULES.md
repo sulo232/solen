@@ -72,7 +72,7 @@ Feature: [Name]
 ```
 
 **Mandatory rules for every new page:**
-- Page component MUST follow the layout grammar in `_tasks/SOLEN_DESIGN.md` §20 (Q-locks); zone language retired (CLAUDE.md retired list)
+- Page component MUST determine its **zone** (1-4) and pass it to child components as `zone` prop
 - All user-facing text MUST use `useTranslations()` — zero hardcoded strings
 - All interactive elements MUST have `aria-label` props
 - Navigation entry point (link/button) MUST exist to reach the page — no hidden pages
@@ -80,19 +80,11 @@ Feature: [Name]
 
 ---
 
-## Rule 43: INTERACTION STANDARD — HOVER, ACTIVE, FOCUS
+## Rule 43: INTERACTION STANDARD — IN FLUX
 
-> **INCIDENT**: Cards used 5 different hover patterns. Buttons used `hover:bg-s-brand/90` everywhere (banned) instead of `hover:brightness-[1.06]`.
+The hover / active / focus patterns are being iterated alongside the design system. **Don't cite the previous locked patterns** (`hover:brightness-[1.06]`, `hover:-translate-y-[5px]`, specific `s-coral` references, etc.) as authoritative — ask before assuming, or read `_tasks/SOLEN_DESIGN.md` for current rules.
 
-> For complete interaction patterns with code examples, see `_tasks/SOLEN_LIVE_TRUTH.md` §5b (depth) + §5c (motion) + `_rules/SOLEN_UI.md`. (V3 lock: V2-D15-3 — `s-brand` is the V3 token, `s-coral` retained as backward-compat alias resolving to the same teal value.)
-
-**Quick reference (V3):**
-- **Cards**: `hover:-translate-y-[5px]` + shadow lift. NEVER: `hover:scale-*`, `hover:opacity-*`
-- **CTA Buttons**: `hover:brightness-[1.06] active:scale-[0.98]`. NEVER: `hover:bg-s-brand/90` or opacity-modulated brand bg
-- **Ghost Buttons**: `hover:border-s-brand/40 hover:text-s-brand active:scale-[0.98]`
-- **Text Links**: `hover:text-s-brand transition-colors duration-150`
-- **Filter Pills (general)**: Active = weight 700 + `text-s-ink` (selection by weight + ink, NOT brand-color flood — per LIVE_TRUTH §5h.7 + SOLEN_UI). Inactive = `font-medium text-s-ink-2 bg-s-ink/[0.05] hover:bg-s-ink/[0.09]`. **EXCEPTION:** filter pills on category pages use the category combo per LIVE_TRUTH §25.5.
-- **Images in cards**: No separate hover effect — card elevation handles it
+Previous spec archived at `_tasks/completed/rules-locked-design-tokens-2026-05-06.md`.
 
 ---
 
@@ -122,17 +114,14 @@ Feature: [Name]
 1. `_tasks/INCOMPLETE_FEATURES.md` is the **mandatory registry** for any feature that has been partially built.
 2. When you build an API route without a complete UI flow → add it to this file immediately.
 3. When you build a component that isn't rendered yet → add it to this file immediately.
-4. **Canonical entry format** (consolidates the format originally specced in CLAUDE.md, AGENT_COORDINATION.md, and the older Backend/Frontend/Missing/Priority shape — they're now unified to one):
+4. Format:
    ```markdown
    ## [Feature Name]
-   - **File/Line**: [path:line where the partial work lives]
    - **Backend**: [what exists — API routes, DB tables]
    - **Frontend**: [what exists — components, pages]
-   - **Blocker**: [why it's incomplete — missing primitive, undecided UX, blocked by V2-D## decision]
-   - **Next Steps**: [concrete actions to finish]
+   - **Missing**: [specific gaps — "no checkout integration", "no navigation entry point"]
    - **Priority**: [HIGH/MEDIUM/LOW]
    ```
-   The format merges Feature·File/Line·Blocker·Next Steps (CLAUDE.md/AGENT_COORDINATION.md pattern) with Backend/Frontend/Missing/Priority (older STRUCTURAL_RULES pattern). All three docs now reference this canonical schema.
 5. Before starting a NEW roadmap for a feature, **ALWAYS check `_tasks/INCOMPLETE_FEATURES.md` first** to avoid rebuilding what already exists.
 6. When a feature becomes complete (all 8 layers from Rule 40 done), remove it from this file and add a `[x] Completed` note.
 
@@ -140,7 +129,7 @@ Feature: [Name]
 
 ## Rule 46: NEW COMPONENT / SUB-SITE CREATION STANDARD (MANDATORY)
 
-> **INCIDENT**: On 2026-03-26, a scan found ~145 components without `useTranslations()`, 45+ hardcoded white `rgba(255,255,255,...)` glass backgrounds (glass-everywhere violation per §6), and inconsistent hover/interaction patterns.
+> **INCIDENT**: On 2026-03-26, a scan found ~145 components without `useTranslations()`, 45+ hardcoded white `rgba(255,255,255,...)` glass backgrounds that broke dark mode, and inconsistent hover/interaction patterns.
 
 **EVERY new `.tsx` component file MUST satisfy ALL of these requirements before committing. No exceptions.**
 
@@ -148,23 +137,22 @@ Feature: [Name]
 - Import and use `useTranslations()` (client) or `getTranslations()` (server) — NEVER hardcode text
 - Add keys to ALL 4 locale files with ACTUAL translations (not empty strings or German copies)
 
-### B. Single Light Theme (dark mode retired)
-- **Page substrate (V2-D48 Earthen Wellness Light):** cream `#F5EBDD` (`s-bg-base`) — NOT white. The substrate is set on `<html>` in `app/globals.css`. **Never apply `bg-white` to `<body>`** — it kills the atmosphere wash (CLAUDE.md anti-pattern #1). `bg-white` on individual surface components (e.g. SalonCard pill, footer body) is fine.
-- BANNED: `text-black` (use `text-s-ink` `#1A1209` warm-ink), `dark:*` utility classes (dark mode killed per Q62)
-- Glass restricted to §6 sanctioned contexts only (nav pill / hero card overlay / trust strip) — NOT a default surface treatment
+### B. Dark Mode Support — USE CSS VARS FOR GLASS
+- Use `var(--glass-bg)` for glass backgrounds, NOT `rgba(255,255,255,...)`
+- Use `text-s-ink dark:text-s-dm-text` and `bg-[--raised] dark:bg-s-dm-surface`
+- BANNED: `text-black`, raw `bg-white`
 
-### C. Layout Grammar (zone language retired)
-- Every component follows the section grammar in `_tasks/SOLEN_DESIGN.md` §20 (Q15/Q23/Q49/Q50/Q51/Q52)
-- Glass: §6 3-place cap (nav, hero card overlay, trust strip)
-- Hover: Q40 4-class scope only (CTAs, links, cards, nav-icons)
-- Motion: Q35 timing scale (200ms slide / 400ms morph for shared-element)
+### C. Zone Compliance — DECLARE AND ENFORCE
+- Every component that renders visible UI must know its zone (1-4)
+- Zone 1-2: Glass on floating UI, animations allowed
+- Zone 3-4: NO glass, NO animations
 
-### D. UI Rules Compliance
-- Read `_tasks/SOLEN_DESIGN.md` (Q-locks §20) before writing ANY styling; supplemental: `_rules/SOLEN_UI.md`
-- Only use design tokens for colors, fonts, radii, shadows, icons
+### D. Design System Compliance
+- Read `_tasks/SOLEN_DESIGN.md` before writing ANY styling (system is in flux — confirm current values)
+- Only use design tokens for colors, fonts, radii, shadows, icons; no arbitrary hex
 
 ### E. Interaction Standard
-- Follow the interaction patterns in Rule 43 and `_tasks/SOLEN_DESIGN.md` §20 (Q40 hover, Q47 focus, Q46 hit area)
+- Follow current interaction patterns from `_tasks/SOLEN_DESIGN.md` (Rule 43 above is currently a stub while the system is in flux)
 
 ### F. Accessibility
 - Every interactive element needs `aria-label={t('...')}`
@@ -176,9 +164,9 @@ Design:
 □ DESIGN INTENT stated: "This component should feel ___ because ___"
 □ Uses useTranslations() — ZERO hardcoded strings
 □ Keys added to all 4 locale files with actual translations
-□ Layout follows the relevant Q-lock(s) in `_tasks/SOLEN_DESIGN.md` §20
-□ Glass only in §6 sanctioned contexts (nav / hero card overlay / trust strip); everywhere else use solid `--raised`/`--bg`
-□ Hover states follow Rule 43 + Q40 4-class scope
+□ Has zone prop or inherits zone from parent
+□ No rgba(255,255,255,...) — uses var(--glass-*) tokens
+□ Hover states follow Rule 43
 □ Only lucide-react icons
 □ Interactive elements have aria-label
 □ npm run build passes
@@ -196,21 +184,11 @@ If you cannot satisfy all items, move to `components/_staging/` and log in `_tas
 
 ---
 
-## Rule 47: HOMEPAGE LAYOUT — see SOLEN_LIVE_TRUTH.md + SOLEN_PATTERNS.md
+## Rule 47: HOMEPAGE SPEC — IN FLUX
 
-> **V3 LOCK (V2-D48 Earthen Wellness Light pivot 2026-05-09 + V2-D42 typography pivot 2026-05-09 + V2-D49j color rule 2026-05-10 — supersedes V2-D15-3):** Homepage spec is locked in `_tasks/SOLEN_LIVE_TRUTH.md` §13 (Hero) + §15 (Section header pattern) + §16 (Salon card) + §17 (Horizontal scroll row) + §18 (Entdecken) + §19 (City tiles) + §20 (B2B card) + §21 (Footer) + §22 (Browse-by-city link wall) + §23 (Homepage flow). Operational playbook with all shipped patterns + file paths: `_rules/SOLEN_PATTERNS.md` Part 2. Live preview: `npm run dev` → `http://localhost:3000/de`.
->
-> **V3 foundation (V2-D48 Earthen Wellness Light):**
-> - Substrate: cream `#F5EBDD` (`s-bg-base`) — NOT white. Set on `<html>` via globals.css. Atmosphere wash (radial gradients) on `body::before/::after`, plus `<AtmosphereBlobs>` + `<AtmosphereGrain>` mounted at page level.
-> - Brand: emerald `#1F5C42` (`s-brand`) + terracotta `#C97A57` (`s-accent`). Mid `#0F3D26`, deep `#0A2917`, pale `#A8CFB8`, subtle `#D4EBD9`. (V0 coral, V1 forest green, V2 orange, V2-D15-3 dark teal `#043338` all retired.)
-> - Fonts (V2-D42): Peace Sans (display ONLY — hero h1, logo, footer cropped wordmark) + Open Sauce One (everything else). Inter via Google Fonts as cdnfonts-failure fallback. Tracking-normal everywhere — Peace Sans's chunky letters break at negative tracking. (Cooper BT, ITC Avant Garde Gothic Std, Sansita 900, League Spartan, Inter Tight all retired V2-D42.)
-> - Hero pattern: cream substrate + atmosphere wash + Peace Sans h1 with ONE terracotta heartbeat word + Open Sauce body + emerald CTA (V2-D49j: emerald=action, terracotta=heartbeat, never invert).
-> - 4 categories (V2-D48): Coiffeur (cream `#FAF2E5` + terracotta `#C97A57`), Barbershop (bone `#E8DDC9` + ink `#2A1F18`), Nails (sage-pale `#D4DDC8` + terra-deep `#8E4A2D`), Spa & Wellness (emerald-subtle `#D4EBD9` + emerald-deep `#0F3D26`). (Makeup retired, Wellness merged.)
-> - Dark mode: retired (single light theme).
->
-> **Retired:** V5 spec (Warm Beige `#F5F0EB`, Bebas Neue, glass-frost header, Coral `#E8735A`, footer `#2C2825`). V2-D15-3 era V3 dark teal `#043338` + cherry/magenta/sandy-beige cat texts. V2-D15-3 era Cooper BT + Avant Garde Gothic typography. Sage `#A8B89A` as a CTA color (retired V2-D49j — atmosphere blob only). Q-locks Q15/Q23/Q48/Q49/Q50/Q51/Q62 from `_tasks/archive/SOLEN_DESIGN.archived.md` §20 are historical context only; V3 LIVE_TRUTH supersedes any conflict.
+The homepage spec (V5) is being replaced. **Don't cite specific hex values, font sizes, or component patterns from the previous V5 spec as authoritative.** Ask the user, or read `_tasks/SOLEN_DESIGN.md` for current rules.
 
-For homepage layout decisions, **read `_tasks/SOLEN_LIVE_TRUTH.md` §13–§23 + `_rules/SOLEN_PATTERNS.md` Part 2** (every shipped pattern with file path).
+Previous V5 spec archived at `_tasks/completed/rules-locked-design-tokens-2026-05-06.md`.
 
 ---
 

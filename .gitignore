@@ -23,25 +23,32 @@ dist-ssr
 *.sln
 *.sw?
 
-# Sentry Config File
-.env.sentry-build-plugin
-
-# MCP server config — contains secret API keys (Obsidian Local REST API bearer
-# token, etc.). NEVER commit. Each developer creates their own .mcp.json from
-# .mcp.json.example if needed.
-.mcp.json
-
-# Worktrees
-.worktrees/
-
 # Next.js
 .next/
 out/
-build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Coverage reports
+coverage/
+*.lcov
+
+# IDE / Editor
+.idea/
+
+# Misc
+*.tsbuildinfo
 tsconfig.tsbuildinfo
 
 # Vercel
 .vercel/
+
+# Netlify
+.netlify/
 
 # Claude / Agent State — top-level ignore, but track the persistent project
 # configuration (settings, hooks, custom subagents, custom slash commands) so
@@ -59,36 +66,3 @@ tsconfig.tsbuildinfo
 .agent-*
 .npm-cache/
 .npm-local-cache/
-supabase/.temp/
-
-# Environment
-.env
-.env.*
-!.env.example
-.env.*.local
-.env.development
-
-_archive/
-node_modules_old/
-.vercel
-docs/design-specs/CLAUDE_CODE_PROMPT.md
-
-# Playwright — keep baselines, ignore artifacts
-e2e/visual/test-results/
-e2e/visual/report/
-playwright-report/
-blob-report/
-.playwright-mcp/
-
-# Claude skills runtime cache (skills tracked via skills-lock.json,
-# but the unpacked source under .agents/skills/ is a local cache).
-.agents/
-
-# Screenshot artifacts at repo root (Playwright/screenshot tool dumps).
-# Only the root-level pattern — public/*.png and other tracked PNGs stay tracked.
-/*.png
-
-# screenshot-spec skill working directory — annotation HTML + source images
-# are session-local artifacts, regenerated on each invocation. The spec.md
-# output under _audits/screenshots/ IS tracked separately.
-public/_screenshot-spec/
