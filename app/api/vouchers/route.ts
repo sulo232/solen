@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs"; // Use Node runtime for Stripe
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
+import { getStripe } from "@/lib/stripe";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
@@ -19,9 +19,7 @@ const createVoucherSchema = z.object({
 
 export async function POST(req: NextRequest) {
   // Initialize Stripe
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-    apiVersion: "2026-02-25.clover",
-  });
+  const stripe = getStripe();
 
   // Feature flag
   const disabled = await checkFeatureEnabled("bookings");

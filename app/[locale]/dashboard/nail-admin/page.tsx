@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { Sparkles, Tag, Layers, ShoppingBag, ImageIcon, Bell } from "lucide-react";
 import { useTranslations } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import AiArtGenerator from "@/components/dashboard/nail/AiArtGenerator";
-import AiArtGallery from "@/components/dashboard/nail/AiArtGallery";
-import DynamicPricingConfig from "@/components/dashboard/nail/DynamicPricingConfig";
-import StationManager from "@/components/dashboard/nail/StationManager";
-import RetailManager from "@/components/dashboard/nail/RetailManager";
-import RetailSalesDashboard from "@/components/dashboard/nail/RetailSalesDashboard";
-import InfillReminderConfig from "@/components/dashboard/nail/InfillReminderConfig";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import AiArtGenerator from "@/components-legacy/dashboard/nail/AiArtGenerator";
+import AiArtGallery from "@/components-legacy/dashboard/nail/AiArtGallery";
+import DynamicPricingConfig from "@/components-legacy/dashboard/nail/DynamicPricingConfig";
+import StationManager from "@/components-legacy/dashboard/nail/StationManager";
+import RetailManager from "@/components-legacy/dashboard/nail/RetailManager";
+import RetailSalesDashboard from "@/components-legacy/dashboard/nail/RetailSalesDashboard";
+import InfillReminderConfig from "@/components-legacy/dashboard/nail/InfillReminderConfig";
 
 type Tab = "ai" | "gallery" | "prices" | "stations" | "retail" | "sales" | "reminders";
 
@@ -47,8 +47,8 @@ export default function NailAdminPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-6">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 mb-1">Nails</p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/50 mb-1">Nails</p>
+        <h1 className="font-heading text-[28px] text-s-ink leading-none">
           {t("pageTitle")}
         </h1>
       </div>
@@ -60,10 +60,10 @@ export default function NailAdminPage() {
             key={id}
             onClick={() => setActiveTab(id)}
             aria-label={t(labelKey)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading font-semibold whitespace-nowrap transition-colors duration-150 shrink-0 ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading whitespace-nowrap transition-colors duration-150 shrink-0 ${
               activeTab === id
-                ? "bg-s-coral text-white shadow-coral-glow"
-                : "bg-s-ink/[0.05] text-s-ink/55 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09]"
+                ? "bg-s-coral text-white shadow-elevation-2"
+                : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
             }`}
           >
             <Icon size={12} />
@@ -73,7 +73,7 @@ export default function NailAdminPage() {
       </div>
 
       {loading ? (
-        <div className="h-64 bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[12px] animate-pulse" />
+        <div className="h-64 bg-s-ink/[0.04] rounded-[12px] animate-pulse" />
       ) : !salonId ? null : (
         <div>
           {activeTab === "ai" && <AiArtGenerator />}

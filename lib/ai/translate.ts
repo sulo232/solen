@@ -1,7 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getServerEnv } from "@/lib/env";
 
 export async function autoTranslateDescription(textDe: string): Promise<string> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey || !textDe.trim()) return "";
 
   try {

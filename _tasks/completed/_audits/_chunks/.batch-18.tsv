@@ -1,0 +1,10 @@
+95244a33ffafbaaa20a625d25f78e811d3a5958d 2026-03-26 15:16:56 +0100 docs: add incomplete i18n Phase 2 tracking
+76de0ac56c95a1ccd4fa336d7fd4fe152e9849f6 2026-03-26 15:22:39 +0100 phase5: dark mode polish + loading skeletons
+2ee9aaff63f5ecfe106248a652075aca8fa25f76 2026-03-26 15:23:26 +0100 i18n(tier2): Phase 2 component 6 — DisputeNotification
+bc509f4e952343d83e64168cccec8f7edc870162 2026-03-26 16:02:39 +0100 i18n(tier2): Phase 2 complete — components 6-10 migrated
+0a06e0c2b016a84dd9125fd62d03b36db4b64389 2026-03-26 16:18:11 +0100 i18n(tier3): batch 3A — components/ui/ (10 components)
+e588b5e01975607e694b03c7893ce0aba2fa0ca7 2026-03-26 16:37:26 +0100 i18n(tier3): batch 3C partial — admin, auth, barber components (5 components)
+45a6dfa420842c2814739da5605bfed112cac895 2026-03-26 17:32:00 +0100 i18n(batch1): migrate 5 barber components to useTranslations
+73e7782f9b323e891d292c1e9bf66e7a092a7a31 2026-03-26 17:33:21 +0100 docs: add i18n migration status tracker
+5117e87dcf690d7bc2e376a92477dcad2da72bf9 2026-03-26 17:39:05 +0100 feat: remove phone verification from salon registration, email-only flow
+bea96a1c1342c24ce999792a33891ce765ab12e1 2026-03-26 17:42:54 +0100 i18n(tier3): migrate 5 critical user-facing components + add all translation keys

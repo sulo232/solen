@@ -1,0 +1,10 @@
+15020d7b94190821da4359b0bcf26025cff1c52c 2026-03-29 18:23:58 +0200 V5 Session 3: unified pill search capsule (rounded 50px), locale-aware date picker
+750e16cfb37556ce9026549588d2a2fae6e570c5 2026-03-29 18:48:23 +0200 fix(partner): audit fixes — commission qualifier, avatar colors, step arrows, sticky CTA
+20c0b468624247368b3e2832fb538eec7e93517d 2026-03-29 18:50:32 +0200 fix(discover): translate heading, remove emoji from suggestion pills, localise filter labels
+8ac74b576aaad207bde9685b73074b3976b9af56 2026-03-29 18:53:47 +0200 Audit fixes: bg #F7F7F7, hero subtitle 18px, map card, partner coral tint, page metadata, footer tagline
+f06cc8e20e0f840364cb1eeded301e59e4c4b5a4 2026-03-29 18:56:03 +0200 Wire up Breadcrumb globally, exclude dashboard/auth/checkout; footer tagline Bebas Neue
+a86d63053ca12dd5f8561a8cc31446595ff0a6bb 2026-03-29 19:00:00 +0200 Audit fixes: SalonCard new-badge image overlay, CoiffeurIcon animated scissors, design doc updates
+cb8683d1c4f7f9f3f75e0fe8cc5065c7be4cd085 2026-03-29 20:32:07 +0200 feat(favorites): add DELETE endpoint for un-favoriting salons
+85e640f970affee15426db806f5387fb4a4b1cac 2026-03-29 20:32:53 +0200 phase 1.1: filter is_test salons from all public homepage queries
+55bf8aae2e3c88c6ca810a054e0351748b344848 2026-03-29 20:37:21 +0200 phase 1.1b: is_test filter in API routes and admin test-salon creation
+4c5b6837ad68431e25c7f7cf2c7084ed88ba8f3f 2026-03-29 20:37:41 +0200 feat(saved): create saved salons page with empty state + i18n keys

@@ -2,19 +2,21 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { getServerEnv } from "@/lib/env";
 
 /**
  * Cron handler: send SMS reminders for upcoming bookings.
  * Runs every hour. Protected by CRON_SECRET.
  */
 export async function GET(req: NextRequest) {
-  // Verify cron secret
+  const env = getServerEnv();
+  if (!env.CRON_SECRET) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const sevenApiKey = process.env.SEVEN_IO_API_KEY;
+  const sevenApiKey = env.SEVEN_IO_API_KEY;
   if (!sevenApiKey) {
     console.warn("[reminders] SEVEN_IO_API_KEY not set — skipping SMS");
     return NextResponse.json({ skipped: true, reason: "no_api_key" });

@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Store } from "lucide-react";
-import SetupWizard from "@/components/onboarding/SetupWizard";
-import SalonProfileStep from "@/components/onboarding/steps/SalonProfileStep";
-import OpeningHoursStep from "@/components/onboarding/steps/OpeningHoursStep";
-import ServicesStep from "@/components/onboarding/steps/ServicesStep";
-import TeamStep from "@/components/onboarding/steps/TeamStep";
-import ScheduleStep from "@/components/onboarding/steps/ScheduleStep";
-import PaymentsStep from "@/components/onboarding/steps/PaymentsStep";
-import GoLiveStep from "@/components/onboarding/steps/GoLiveStep";
-import Spinner from "@/components/ui/Spinner";
+import SetupWizard from "@/components-legacy/onboarding/SetupWizard";
+import SalonProfileStep from "@/components-legacy/onboarding/steps/SalonProfileStep";
+import OpeningHoursStep from "@/components-legacy/onboarding/steps/OpeningHoursStep";
+import ServicesStep from "@/components-legacy/onboarding/steps/ServicesStep";
+import TeamStep from "@/components-legacy/onboarding/steps/TeamStep";
+import ScheduleStep from "@/components-legacy/onboarding/steps/ScheduleStep";
+import PaymentsStep from "@/components-legacy/onboarding/steps/PaymentsStep";
+import GoLiveStep from "@/components-legacy/onboarding/steps/GoLiveStep";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 interface Step {
   key: string;
@@ -57,15 +57,15 @@ export default function SetupPage() {
 
   if (!salonId) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-s-bg-surface dark:bg-s-dm-bg px-4">
+      <div className="min-h-screen flex items-center justify-center bg-s-bg-surface px-4">
         <div className="text-center max-w-sm">
           <div className="flex justify-center mb-4">
-            <Store size={48} className="text-s-ink/20 dark:text-s-dm-text/20" />
+            <Store size={48} className="text-s-ink/20" />
           </div>
-          <h1 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">
+          <h1 className="font-heading text-xl text-s-ink mb-2">
             {locale === "de" ? "Kein Salon gefunden" : "No salon found"}
           </h1>
-          <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">
+          <p className="text-sm text-s-ink/50 mb-6">
             {locale === "de"
               ? "Du musst zuerst einen Salon erstellen, um das Setup zu starten."
               : "You need to create a salon first to start the setup."}

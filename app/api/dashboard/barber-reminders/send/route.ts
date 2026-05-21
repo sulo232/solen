@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, barberReminderSendSchema } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 
 // POST /api/dashboard/barber-reminders/send — Send reminder to client
 export async function POST(req: NextRequest) {
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
     .eq("id", client_id)
     .single();
 
-  const resendApiKey = process.env.RESEND_API_KEY;
+  const resendApiKey = getServerEnv().RESEND_API_KEY;
   if (!resendApiKey) return NextResponse.json({ error: "Email not configured" }, { status: 500 });
 
   try {

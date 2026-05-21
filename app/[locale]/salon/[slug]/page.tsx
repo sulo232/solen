@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,29 +12,31 @@ import {
   Facebook, Globe, Gift, Package, Share2
 } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
-import StaffSection from "@/components/salon/StaffSection";
-import StaffPortfolio from "@/components/StaffPortfolio";
-import SimilarSalons from "@/components/salon/SimilarSalons";
-import WaitTimeDisplay from "@/components/barber/WaitTimeDisplay";
-import RemoteQueueJoin from "@/components/barber/RemoteQueueJoin";
-import ExpressRebook from "@/components/barber/ExpressRebook";
-import Spinner from "@/components/ui/Spinner";
-import { ReportContentButton } from "@/components/ui/ReportContentButton";
-import { trackSalonView } from "@/components/RecentlyViewed";
+import StaffSection from "@/components-legacy/salon/StaffSection";
+import StaffPortfolio from "@/components-legacy/StaffPortfolio";
+import SimilarSalons from "@/components-legacy/salon/SimilarSalons";
+import WaitTimeDisplay from "@/components-legacy/barber/WaitTimeDisplay";
+import RemoteQueueJoin from "@/components-legacy/barber/RemoteQueueJoin";
+import ExpressRebook from "@/components-legacy/barber/ExpressRebook";
+import Spinner from "@/components-legacy/ui/Spinner";
+import { ReportContentButton } from "@/components-legacy/ui/ReportContentButton";
+import { trackSalonView } from "@/components-legacy/RecentlyViewed";
 import { motion } from "framer-motion";
 import { usePostHog } from "posthog-js/react";
 import type { Salon, Service, StaffMember, Review, SalonCategory, OpeningHours } from "@/lib/types";
 import { generateSalonSchema } from "@/lib/seo";
-import SalonSectionNav from "@/components/salon/SalonSectionNav";
-import SalonPageSkeleton from "@/components/salon/SalonPageSkeleton";
+import SalonSectionNav from "@/components-legacy/salon/SalonSectionNav";
+import SalonPageSkeleton from "@/components-legacy/salon/SalonPageSkeleton";
 
 // ── Extracted components ──
-import SalonHero from "@/components/salon/SalonHero";
-import SalonOpeningHours from "@/components/salon/SalonOpeningHours";
-import SalonServices from "@/components/salon/SalonServices";
-import SalonReviews from "@/components/salon/SalonReviews";
-import SalonSidebar from "@/components/salon/SalonSidebar";
-import SalonMobileCTA from "@/components/salon/SalonMobileCTA";
+import SalonHero from "@/components-legacy/salon/SalonHero";
+import SalonOpeningHours from "@/components-legacy/salon/SalonOpeningHours";
+import SalonServices from "@/components-legacy/salon/SalonServices";
+import SalonReviews from "@/components-legacy/salon/SalonReviews";
+import SalonReviewsSummary from "@/components-legacy/salon/SalonReviewsSummary";
+import SalonSidebar from "@/components-legacy/salon/SalonSidebar";
+import SalonMobileCTA from "@/components-legacy/salon/SalonMobileCTA";
+import { getPublicEnv } from "@/lib/env";
 
 
 
@@ -78,9 +80,9 @@ const CATEGORY_ICONS: Record<SalonCategory, React.FC<{ className?: string }>> = 
 const CAT_TAG_COLOURS: Record<string, { bg: string; text: string }> = {
   coiffeur:   { bg: "rgba(151,123,89,.12)",  text: "#5A4429" },
   barbershop: { bg: "rgba(74,30,60,.12)",    text: "#4A1E3C" },
-  nails:      { bg: "rgba(232,98,74,.12)",   text: "#7A2415" },
+  nails:      { bg: "rgba(27, 77, 27,.12)",   text: "#7A2415" },
   spa:        { bg: "rgba(123,166,136,.15)", text: "#2E5E3A" },
-  makeup:     { bg: "rgba(212,135,10,.10)",  text: "#6B4005" },
+  makeup:     { bg: "rgba(243,168,100,.10)",  text: "#6B4005" },
   waxing:     { bg: "rgba(107,163,200,.15)", text: "#1A4D72" },
 };
 
@@ -91,7 +93,7 @@ function Stars({ rating, size = "md" }: { rating: number; size?: "sm" | "md" }) 
   return (
     <span className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} className={[sz, i <= rounded ? "fill-s-coral text-s-coral" : "text-s-ink/20"].join(" ")} />
+        <Star key={i} className={[sz, i <= rounded ? "fill-s-amber text-s-amber" : "text-s-ink/20"].join(" ")} />
       ))}
     </span>
   );
@@ -151,16 +153,16 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
 
   return (
     <div className="flex items-center gap-4 px-5 py-4 rounded-card-lg shadow-elevation-1"
-      style={{ background: "rgba(232,98,74,.08)", border: "1px solid rgba(232,98,74,.18)" }}>
+      style={{ background: "rgba(27, 77, 27,.08)", border: "1px solid rgba(27, 77, 27,.18)" }}>
       <div className="relative shrink-0">
         <div className="w-10 h-10 rounded-full flex items-center justify-center"
-          style={{ background: "rgba(232,98,74,.15)" }}>
+          style={{ background: "rgba(27, 77, 27,.15)" }}>
           <Clock size={18} className="text-s-coral" />
         </div>
-        <div className="absolute inset-0 rounded-full animate-pulse shadow-coral-glow" />
+        <div className="absolute inset-0 rounded-full animate-pulse shadow-elevation-2" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-heading font-bold text-sm text-s-ink">
+        <p className="font-heading text-sm text-s-ink">
           {t("offPeakDiscount", { percent: slot.discount_percent })}
         </p>
         <p className="text-xs text-s-ink/50 mt-0.5">
@@ -169,7 +171,7 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
       </div>
       <div className="shrink-0 text-right">
         <div className="font-display text-[32px] leading-none text-s-coral">{remaining}</div>
-        <div className="text-[10px] font-heading font-semibold uppercase tracking-[.14em] text-s-ink/45 mt-0.5">{t("remaining")}</div>
+        <div className="text-[10px] font-heading uppercase tracking-[.14em] text-s-ink/45 mt-0.5">{t("remaining")}</div>
       </div>
     </div>
   );
@@ -202,7 +204,7 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
           )}
         </div>
         <div className="min-w-0">
-          <p className="font-heading font-semibold text-sm text-s-ink truncate">{member.name}</p>
+          <p className="font-heading text-sm text-s-ink truncate">{member.name}</p>
           {member.specialties?.length > 0 && (
             <p className="text-xs text-s-ink/50 truncate">{member.specialties.join(", ")}</p>
           )}
@@ -241,6 +243,7 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
 
 export default function SalonProfilePage() {
   const { slug } = useParams<{ slug: string }>();
+  const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("salonDetail");
   const posthog = usePostHog();
@@ -323,10 +326,10 @@ export default function SalonProfilePage() {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-6 px-4">
         <div className="font-display text-[80px] leading-none text-s-ink/10">404</div>
-        <p className="font-heading font-bold text-s-ink text-2xl">{t("notFound")}</p>
+        <p className="font-heading text-s-ink text-2xl">{t("notFound")}</p>
         <p className="font-body text-s-ink/50 text-sm text-center max-w-xs">{t("notFoundMessage")}</p>
         <Link href={`/${locale}/coiffeur`}
-          className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-coral-glow">
+          className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading text-sm uppercase tracking-[.04em] shadow-elevation-2">
           {t("viewAllSalons")}
         </Link>
       </div>
@@ -383,7 +386,7 @@ export default function SalonProfilePage() {
         <div className="relative z-10">
           {/* Breadcrumb */}
           <nav aria-label="Breadcrumb" className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-3">
-            <ol className="flex items-center gap-1.5 text-[11px] font-heading font-semibold uppercase tracking-[.12em]">
+            <ol className="flex items-center gap-1.5 text-[11px] font-heading uppercase tracking-[.12em]">
               <li><Link href={`/${locale}`} className="text-s-ink/45 hover:text-s-coral transition-colors duration-150">Home</Link></li>
               <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
               {salon.categories[0] && (
@@ -398,18 +401,36 @@ export default function SalonProfilePage() {
           </nav>
 
           <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-24 lg:pb-16">
-            {/* ── Photo Gallery ── */}
-            <SalonHero photos={photos} salonName={salon.name} />
+            {/* ── Q52 Photo Hero — single full-bleed + thumbnail strip + bottom-fade overlay ──
+                Phase 9 (2026-05-03): wired top controls (back + share) per Q52.
+                Heart wiring TODO — needs initial favorite-state fetch + toggle API integration. */}
+            <SalonHero
+              photos={photos}
+              salonName={salon.name}
+              onBack={() => router.back()}
+              onShare={handleShare}
+              overlayContent={
+                <div>
+                  <p className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.20em]" style={{ color: "#F3A864" }}>
+                    {salon.categories[0] ?? "SALON"}{(salon as any).quartier ? ` · ${String((salon as any).quartier).replace("_", " ")}` : ""}
+                  </p>
+                  <p className="mt-1.5 font-heading text-[24px] sm:text-[32px] md:text-[40px] uppercase leading-[0.95]" style={{ letterSpacing: "0.01em" }}>
+                    {salon.name}
+                  </p>
+                </div>
+              }
+            />
 
             {/* Two-column grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
               {/* ── Left: info ── */}
               <div className="lg:col-span-2 flex flex-col gap-8">
 
-                {/* Name + meta */}
+                {/* Name + meta — Q52: name now lives in the hero overlay; sr-only h1 retained
+                    for SEO + screen-reader landmark, visible meta below */}
                 <div>
+                  <h1 className="sr-only">{salon.name}</h1>
                   <div className="flex items-center gap-3">
-                    <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.1] tracking-[-0.02em] text-s-ink">{salon.name}</h1>
                     <span className={`flex items-center gap-1.5 text-xs font-medium ${isOpen ? "text-s-success" : "text-s-ink/40"}`}>
                       <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-s-success" : "bg-s-ink/20"}`} />
                       {isOpen ? t("open") : t("closed")}
@@ -418,9 +439,9 @@ export default function SalonProfilePage() {
                   <div className="flex flex-wrap gap-2 mt-2">
                     {salon.categories.map((cat) => {
                       const Icon = CATEGORY_ICONS[cat];
-                      const colours = CAT_TAG_COLOURS[cat] ?? { bg: "rgba(232,98,74,.12)", text: "#7A2415" };
+                      const colours = CAT_TAG_COLOURS[cat] ?? { bg: "rgba(27, 77, 27,.12)", text: "#7A2415" };
                       return (
-                        <span key={cat} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em]"
+                        <span key={cat} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-btn text-xs font-heading uppercase tracking-[.06em]"
                           style={{ background: colours.bg, color: colours.text }}>
                           <Icon className="w-3 h-3" />{cat}
                         </span>
@@ -501,7 +522,7 @@ export default function SalonProfilePage() {
                 <div id="section-info" className="scroll-mt-[80px]">
                   {(salon.about_text_de || salon.about_text_en || salon.about_text_fr || salon.about_text_it) && (
                     <div className="mb-8 p-6 rounded-card-lg bg-white border border-s-ink/5 shadow-elevation-1">
-                      <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("aboutUs")}</h2>
+                      <h2 className="font-heading text-base text-s-ink mb-3">{t("aboutUs")}</h2>
                       <p className="text-sm text-s-ink/70 leading-relaxed whitespace-pre-wrap">
                         {(salon as any)[`about_text_${locale}`] || salon.about_text_en || salon.about_text_de}
                       </p>
@@ -515,7 +536,7 @@ export default function SalonProfilePage() {
                 {/* Salon info — atmosphere, expertise, products, transport */}
                 {((salon as any).atmosphere || (salon as any).expertise || (salon as any).products || (salon as any).nearest_transport) && (
                   <div>
-                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3 flex items-center gap-2">
+                    <h2 className="font-heading text-base text-s-ink mb-3 flex items-center gap-2">
                       <Info className="w-4 h-4 text-s-coral" />{t("salonInfo")}
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -524,11 +545,11 @@ export default function SalonProfilePage() {
                           style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
-                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
+                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(27, 77, 27,.10)" }}>
                             <Sparkles className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
-                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("atmosphere")}</p>
+                            <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("atmosphere")}</p>
                             <p className="text-sm text-s-ink leading-snug">{(salon as any).atmosphere}</p>
                           </div>
                         </div>
@@ -538,11 +559,11 @@ export default function SalonProfilePage() {
                           style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
-                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
+                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(27, 77, 27,.10)" }}>
                             <Award className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
-                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("expertise")}</p>
+                            <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("expertise")}</p>
                             <p className="text-sm text-s-ink leading-snug">{(salon as any).expertise}</p>
                           </div>
                         </div>
@@ -552,11 +573,11 @@ export default function SalonProfilePage() {
                           style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
-                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
+                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(27, 77, 27,.10)" }}>
                             <Droplets className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
-                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("products")}</p>
+                            <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("products")}</p>
                             <p className="text-sm text-s-ink leading-snug">{(salon as any).products}</p>
                           </div>
                         </div>
@@ -566,11 +587,11 @@ export default function SalonProfilePage() {
                           style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
-                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(232,98,74,.10)" }}>
+                          <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(27, 77, 27,.10)" }}>
                             <Bus className="w-4 h-4 text-s-coral" />
                           </div>
                           <div>
-                            <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("publicTransport")}</p>
+                            <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("publicTransport")}</p>
                             <p className="text-sm text-s-ink leading-snug">{(salon as any).nearest_transport}</p>
                           </div>
                         </div>
@@ -582,7 +603,7 @@ export default function SalonProfilePage() {
                 {/* Staff/Team */}
                 {salon.staff.length > 0 && (
                   <div id="section-team" className="scroll-mt-[80px]">
-                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">Team</h2>
+                    <h2 className="font-heading text-base text-s-ink mb-3">Team</h2>
                     <div className="mt-3 md:mt-0">
                       <StaffSection
                         staff={salon.staff}
@@ -611,7 +632,7 @@ export default function SalonProfilePage() {
                 {/* Nail Artists — only for nail salons */}
                 {salon.categories?.includes("nails") && salon.staff.length > 0 && (
                   <div id="section-nail-artists" className="scroll-mt-[80px]">
-                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("team")}</h2>
+                    <h2 className="font-heading text-base text-s-ink mb-3">{t("team")}</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 md:mt-0">
                       {salon.staff.map((m) => (
                         <NailArtistPreviewCard key={m.id} member={m} locale={locale}
@@ -624,7 +645,7 @@ export default function SalonProfilePage() {
                 {/* Barber Roster — only for barbershops */}
                 {salon.categories?.includes("barbershop") && salon.staff.length > 0 && (
                   <div id="section-barbers" className="scroll-mt-[80px]">
-                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("team")}</h2>
+                    <h2 className="font-heading text-base text-s-ink mb-3">{t("team")}</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3 md:mt-0">
                       {salon.staff.map((m) => (
                         <Link key={m.id} href={`/${locale}/salon/${slug}/barber/${(m as any).slug ?? m.id}`}
@@ -651,7 +672,7 @@ export default function SalonProfilePage() {
                 {/* Walk-in Queue — only for barbershops */}
                 {salon.categories?.includes("barbershop") && (
                   <div id="section-walkin" className="scroll-mt-[80px]">
-                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">Walk-in</h2>
+                    <h2 className="font-heading text-base text-s-ink mb-3">Walk-in</h2>
                     <div className="space-y-4 mt-3 md:mt-0">
                       <WaitTimeDisplay salonId={salon.id} />
                       <RemoteQueueJoin
@@ -692,32 +713,41 @@ export default function SalonProfilePage() {
                   </Link>
                 </div>
 
-                {/* ── Reviews ── */}
-                <SalonReviews
-                  reviews={salon.reviews}
-                  averageRating={salon.average_rating}
-                  reviewCount={salon.review_count}
-                  salonId={salon.id}
+                {/* ── Q54 Reviews — summary on detail tab; full list at /salon/[slug]/reviews ── */}
+                <SalonReviewsSummary
                   salonSlug={slug}
-                  unreviewedBookingId={unreviewedBookingId}
-                  locale={locale}
-                  onReviewSubmitted={() => {
-                    setUnreviewedBookingId(null);
-                    reloadSalon();
-                  }}
+                  averageRating={salon.average_rating ?? 0}
+                  reviewCount={salon.review_count ?? 0}
+                  distribution={(() => {
+                    const dist: [number, number, number, number, number] = [0, 0, 0, 0, 0];
+                    (salon.reviews ?? []).forEach((r: any) => {
+                      const star = Math.round(r.rating);
+                      if (star >= 1 && star <= 5) dist[5 - star]++;
+                    });
+                    return dist;
+                  })()}
+                  latestReviews={(salon.reviews ?? []).slice(0, 3).map((r: any) => ({
+                    id: r.id,
+                    rating: r.rating,
+                    comment: r.comment,
+                    created_at: r.created_at,
+                    user_name: r.profiles?.display_name ?? r.user_name,
+                    user_avatar: r.profiles?.avatar_url ?? r.user_avatar,
+                    reply_text: r.reply?.reply_text ?? r.review_replies?.[0]?.reply_text ?? null,
+                  }))}
                 />
 
                 {/* Location / Map */}
                 {salon.latitude && salon.longitude && (
                   <div id="section-standort" className="scroll-mt-[80px]">
-                    <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("location")}</h2>
+                    <h2 className="font-heading text-base text-s-ink mb-3">{t("location")}</h2>
                     <a
                       href={`https://maps.google.com/?q=${salon.latitude},${salon.longitude}`}
                       target="_blank" rel="noopener noreferrer"
                       className="block w-full aspect-[2/1] rounded-card overflow-hidden bg-s-bg-surface border border-s-ink/[0.08] hover:border-s-coral/30 transition-colors duration-150 relative group"
                     >
                       <img
-                        src={`https://api.mapbox.com/styles/v1/mapbox/light-v11/static/pin-s+E8624A(${salon.longitude},${salon.latitude})/${salon.longitude},${salon.latitude},14,0/600x300@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''}`}
+                        src={`https://api.mapbox.com/styles/v1/mapbox/light-v11/static/pin-s+E8624A(${salon.longitude},${salon.latitude})/${salon.longitude},${salon.latitude},14,0/600x300@2x?access_token=${getPublicEnv().NEXT_PUBLIC_MAPBOX_TOKEN ?? ''}`}
                         alt={`${salon.name} ${t("location")}`}
                         className="w-full h-full object-cover"
                         loading="lazy"

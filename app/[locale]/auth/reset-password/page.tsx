@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Lock, Eye, EyeOff, Check } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
-import Spinner from "@/components/ui/Spinner";
-import { useToast } from "@/components/ui/Toast";
+import Spinner from "@/components-legacy/ui/Spinner";
+import { useToast } from "@/components-legacy/ui/Toast";
 
 export default function ResetPasswordPage() {
   const locale = useLocale();
@@ -67,17 +67,17 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex items-center justify-center px-4">
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
           <div className="mx-auto w-16 h-16 rounded-[20px] flex items-center justify-center mb-4"
-            style={{ background: "rgba(76,175,111,.12)" }}>
+            style={{ background: "rgba(22,163,74,.12)" }}>
             <Check size={28} className="text-s-sage" />
           </div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-sage mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-sage mb-2">
             Erfolgreich
           </p>
-          <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Passwort geändert</p>
-          <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 mt-2">
+          <p className="font-heading text-xl text-s-ink">Passwort geändert</p>
+          <p className="text-xs font-body text-s-ink/50 mt-2">
             Du wirst zur Anmeldung weitergeleitet…
           </p>
         </div>
@@ -86,40 +86,40 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
       {/* Single ambient glow — Zone 3 exception */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full"
-          style={{ background: "rgba(232,98,74,.08)", filter: "blur(120px)" }} />
+          style={{ background: "rgba(27, 77, 27,.08)", filter: "blur(120px)" }} />
       </div>
 
       <div className="w-full max-w-sm">
         {/* Logo lockup */}
         <div className="text-center mb-8">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-amber mb-3">
+          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-amber mb-3">
             solen.ch
           </p>
           <Link href={`/${locale}`}
-            className="inline-block font-heading font-bold text-[32px] text-s-ink dark:text-s-dm-text leading-none hover:opacity-80 transition-opacity">
+            className="inline-block font-heading text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity">
             solen<span className="text-s-coral">.</span>ch
           </Link>
         </div>
 
         {/* Auth card — Zone 3, warm shadow */}
-        <div className="rounded-card border border-white/70 dark:border-white/10 p-8"
+        <div className="rounded-card border border-white/70 p-8"
           style={{ background: "rgba(255,255,255,.90)", backdropFilter: "blur(20px) saturate(1.2)",
                    WebkitBackdropFilter: "blur(20px) saturate(1.2)",
                    boxShadow: "0 4px 12px rgba(26,18,9,.08), 0 16px 40px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.90)" }}>
           <div className="text-center mb-6">
             <div className="mx-auto w-14 h-14 rounded-[14px] flex items-center justify-center mb-3"
-              style={{ background: "rgba(232,98,74,.10)" }}>
+              style={{ background: "rgba(27, 77, 27,.10)" }}>
               <Lock size={24} className="text-s-coral" />
             </div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/45 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/45 mb-2">
               Konto-Wiederherstellung
             </p>
-            <p className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">Neues Passwort</p>
-            <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 mt-1">
+            <p className="font-heading text-lg text-s-ink">Neues Passwort</p>
+            <p className="text-xs font-body text-s-ink/50 mt-1">
               Wähle ein neues Passwort für dein Konto.
             </p>
           </div>
@@ -127,7 +127,7 @@ export default function ResetPasswordPage() {
           {!sessionReady ? (
             <div className="flex flex-col items-center gap-3 py-4">
               <Spinner size="md" />
-              <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50">Link wird überprüft…</p>
+              <p className="text-xs font-body text-s-ink/50">Link wird überprüft…</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -138,12 +138,12 @@ export default function ResetPasswordPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Neues Passwort"
                   required
-                  className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+                  className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink/60 dark:hover:text-s-dm-text/60 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/50 hover:text-s-ink/60 transition-colors"
                   aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -165,12 +165,12 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setConfirm(e.target.value)}
                 placeholder="Passwort bestätigen"
                 required
-                className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+                className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
               />
 
               {confirm.length > 0 && !passwordsMatch && (
                 <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
-                  style={{ background: "rgba(232,98,74,.06)" }}>
+                  style={{ background: "rgba(27, 77, 27,.06)" }}>
                   <p className="text-xs font-body text-s-coral">Passwörter stimmen nicht überein</p>
                 </div>
               )}
@@ -178,7 +178,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={loading || !passwordValid || !passwordsMatch}
-                className="w-full py-4 rounded-pill bg-s-coral shadow-coral-glow text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+                className="w-full py-4 rounded-pill bg-s-coral shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
                 {loading ? <Spinner size="sm" invert /> : null}
                 Passwort ändern
               </button>
@@ -188,7 +188,7 @@ export default function ResetPasswordPage() {
 
         <p className="text-center mt-6">
           <Link href={`/${locale}/auth/login`}
-            className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-coral hover:underline">
+            className="text-[11px] font-heading uppercase tracking-[.08em] text-s-coral hover:underline">
             Zurück zur Anmeldung
           </Link>
         </p>
@@ -199,8 +199,8 @@ export default function ResetPasswordPage() {
 
 function Requirement({ met, text }: { met: boolean; text: string }) {
   return (
-    <span className={`flex items-center gap-1.5 ${met ? "text-s-sage" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
-      <Check size={12} className={met ? "text-s-sage" : "text-s-ink/20 dark:text-s-dm-text/20"} />
+    <span className={`flex items-center gap-1.5 ${met ? "text-s-sage" : "text-s-ink/40"}`}>
+      <Check size={12} className={met ? "text-s-sage" : "text-s-ink/20"} />
       {text}
     </span>
   );

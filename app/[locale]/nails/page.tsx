@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import CategoryPage from "@/components/CategoryPage";
-import { NailsAboveGrid, NailsBelowGrid } from "@/components/nail/NailsSections";
+import CategoryPage from "@/components-legacy/CategoryPage";
+import { NailsAboveGrid, NailsBelowGrid } from "@/components-legacy/nail/NailsSections";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
 

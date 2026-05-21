@@ -4,14 +4,14 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import SalonCard from "@/components/SalonCard";
-import CategoryTree from "@/components/ui/CategoryTree";
-import QuickPreviewSheet from "@/components/ui/QuickPreviewSheet";
-import FilterBar from "@/components/ui/FilterBar";
-import SearchAutocomplete from "@/components/ui/SearchAutocomplete";
+import SalonCard from "@/components-legacy/SalonCard";
+import CategoryTree from "@/components-legacy/ui/CategoryTree";
+import QuickPreviewSheet from "@/components-legacy/ui/QuickPreviewSheet";
+import FilterBar from "@/components-legacy/ui/FilterBar";
+import SearchAutocomplete from "@/components-legacy/ui/SearchAutocomplete";
 import { getSearchFilterPills } from "@/lib/search-filter-pills";
-import Skeleton from "@/components/ui/Skeleton";
-import EmptyState from "@/components/ui/EmptyState";
+import Skeleton from "@/components-legacy/ui/Skeleton";
+import EmptyState from "@/components-legacy/ui/EmptyState";
 import { Search } from "lucide-react";
 import type { ActiveFilter } from "@/lib/types";
 
@@ -124,10 +124,10 @@ export default function TreatmentResultsPage() {
   }, [pathname, router, searchParams]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-s-dm-bg">
+    <div className="min-h-screen bg-white">
       {/* Search + Filters */}
       <div className="sticky top-[57px] z-40 isolate">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-white dark:bg-s-dm-bg border-b border-s-ink/[0.06] dark:border-white/[0.06]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-white border-b border-s-ink/[0.06]">
           <div className="mb-3">
             <SearchAutocomplete />
           </div>
@@ -142,10 +142,10 @@ export default function TreatmentResultsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-16">
         {/* Breadcrumb */}
-        <nav className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-4">
+        <nav className="text-xs text-s-ink/40 mb-4">
           <Link href={`/${locale}`} className="hover:text-s-coral">Home</Link>
           <span className="mx-1">›</span>
-          <span className="text-s-ink/70 dark:text-s-dm-text/70">Behandlungen</span>
+          <span className="text-s-ink/70">Behandlungen</span>
           {slugParts.map((part, i) => (
             <span key={i}>
               <span className="mx-1">›</span>
@@ -167,11 +167,11 @@ export default function TreatmentResultsPage() {
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text capitalize">
+                <h1 className="font-heading text-2xl text-s-ink capitalize">
                   {pageTitle || "Behandlungen"}
                 </h1>
                 {!loading && (
-                  <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1">
+                  <p className="text-sm text-s-ink/50 mt-1">
                     {total} {total === 1 ? "Salon" : "Salons"} gefunden
                   </p>
                 )}

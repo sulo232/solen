@@ -5,11 +5,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 import { Redis } from "@upstash/redis";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { getServerEnv } from "@/lib/env";
 
-const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+const env = getServerEnv();
+const redis = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
   ? new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      url: env.UPSTASH_REDIS_REST_URL,
+      token: env.UPSTASH_REDIS_REST_TOKEN,
     })
   : null;
 

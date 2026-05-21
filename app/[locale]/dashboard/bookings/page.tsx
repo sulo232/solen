@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Check, UserX, RotateCcw, ChevronDown, X, BadgeCheck, AlertTriangle } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
-import ClientTags from "@/components/chat/ClientTags";
-import DisputeNotification from "@/components/dashboard/DisputeNotification";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
+import ClientTags from "@/components-legacy/chat/ClientTags";
+import DisputeNotification from "@/components-legacy/dashboard/DisputeNotification";
 import { formatCurrency } from "@/lib/format-currency";
 import type { Booking, BookingStatus } from "@/lib/types";
 
@@ -74,7 +74,7 @@ function SalonCancelModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading font-bold text-base">Termin stornieren</h3>
+          <h3 className="font-heading text-base">Termin stornieren</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <p className="text-sm text-s-ink/50 mb-4">Bitte wähle einen Grund. Der Kunde wird automatisch per E-Mail informiert.</p>
@@ -187,7 +187,7 @@ export default function BookingsPage() {
       )}
 
       <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">Termine</h1>
+        <h1 className="font-heading text-2xl text-s-ink">Termine</h1>
       </div>
 
       {/* Filters */}

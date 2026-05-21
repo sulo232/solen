@@ -1,8 +1,12 @@
-<svg width="96" height="32" viewBox="0 0 96 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- "so" in warm ink -->
-  <text x="0" y="24" font-family="'Bebas Neue', sans-serif" font-size="28" font-weight="400" fill="#1A1209" letter-spacing="1.7">SO</text>
-  <!-- "." in coral -->
-  <circle cx="34" cy="20" r="3.5" fill="#E8624A"/>
-  <!-- "len" in warm ink -->
-  <text x="42" y="24" font-family="'Bebas Neue', sans-serif" font-size="28" font-weight="400" fill="#1A1209" letter-spacing="1.7">LEN</text>
+<!-- Solen V3 logo (V2-D27 + V2-D42 typography override) — "Solen" wordmark + brand-teal dot accent -->
+<!-- V2-D42 (2026-05-09): font swapped Cooper → Peace Sans. Tracking neutralized (was -0.8 — letters crashed). -->
+<!-- Color: ink-1 #1A1209 + brand-teal #043338. SVG-as-img isolates from page fonts, so system fallback (Impact) usually shows. -->
+<svg width="124" height="36" viewBox="0 0 124 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="29"
+        font-family="'Peace Sans', Impact, 'Arial Narrow Bold', sans-serif"
+        font-size="32"
+        font-weight="900"
+        fill="#1A1209"
+        letter-spacing="0">Solen</text>
+  <circle cx="111" cy="25" r="4.5" fill="#043338"/>
 </svg>

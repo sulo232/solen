@@ -9,7 +9,7 @@
 ## 🟡 Stripe
 
 - [x] **Register Stripe Webhook endpoint** — User says this is already done
-- [ ] **Get `STRIPE_WEBHOOK_SECRET`** — Copy signing secret from Stripe Dashboard → Webhooks → click the endpoint → Signing secret → Reveal → Copy → Add to Vercel env vars as `STRIPE_WEBHOOK_SECRET`
+- [ ] **Get `STRIPE_WEBHOOK_SECRET`** — Copy signing secret from Stripe Dashboard → Webhooks → click the endpoint → Signing secret → Reveal → Copy → Add to Netlify env vars as `STRIPE_WEBHOOK_SECRET`
 - [ ] **Stripe Connect Express approval** — Check Stripe Dashboard → Connect → Status. Until approved, salon payouts stay on main account.
 - [ ] **Apple Pay domain verification**
   - Go to Stripe Dashboard → Settings → Payment methods → Apple Pay → Add domain `solen.ch`
@@ -25,17 +25,15 @@
 ## 🔴 Cloudflare — SITE IS DOWN
 
 - [x] **Cloudflare IS active** — Confirmed via 521 error (Ray ID: `9dd632730e280d25`, Zurich)
-- [ ] **⚠️ URGENT: Vercel deployment is paused!**
-  - `solen-ch.vercel.app` → 404 DEPLOYMENT_NOT_FOUND
-  - `solen.vercel.app` → unrelated site (meme coin)
-  - `solen-app.vercel.app` → **"This deployment is temporarily paused"** ← this is likely the origin!
-  - **FIX:** Go to Vercel Dashboard → find the solen.ch project → unpause the deployment
-  - Then verify Cloudflare DNS → CNAME record points to the correct Vercel domain
-- [ ] **After unpausing:** Configure SSL Full (Strict), Auto Minify ON, Cache TTL 4h, Bot Fight Mode ON
+- [x] **✅ RESOLVED — Migrated to Netlify (2026-05-09)**
+  - The original "Vercel deployment paused" symptom was the trigger for the platform migration.
+  - The Vercel project remains paused intentionally as a fallback (no traffic, no active processing).
+  - DNS now points to Netlify; `solen.ch` serves from `netlify.toml` build config.
+- [ ] **Cloudflare config (post-migration):** Configure SSL Full (Strict), Auto Minify ON, Cache TTL 4h, Bot Fight Mode ON. Verify Cloudflare DNS CNAME points to the Netlify domain.
 
-## 🟡 Vercel Env Vars
+## 🟡 Netlify Env Vars
 
-- [ ] **Verify all env vars** — Check Vercel → Settings → Environment Variables → Production:
+- [ ] **Verify all env vars** — Check Netlify dashboard → Site settings → Environment variables → Production:
   - `NEXT_PUBLIC_SUPABASE_URL` ✅
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` ✅
   - `SUPABASE_SERVICE_ROLE_KEY` ✅

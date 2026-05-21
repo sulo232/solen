@@ -6,9 +6,9 @@ import { useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { Scissors, Star, ArrowLeft, Share2, MapPin } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
-import StaffAvailability from "@/components/staff/StaffAvailability";
+import StaffAvailability from "@/components-legacy/staff/StaffAvailability";
 
 interface BarberProfile {
   id: string;
@@ -71,7 +71,7 @@ export default function BarberProfilePage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-s-bg-base dark:bg-s-dm-bg">
+      <main className="min-h-screen flex items-center justify-center bg-white">
         <Spinner />
       </main>
     );
@@ -79,9 +79,9 @@ export default function BarberProfilePage() {
 
   if (!barber) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center bg-s-bg-base dark:bg-s-dm-bg gap-4">
-        <Scissors size={40} className="text-s-ink/20 dark:text-s-dm-text/20" />
-        <p className="text-s-ink/50 dark:text-s-dm-text/50">Barber nicht gefunden</p>
+      <main className="min-h-screen flex flex-col items-center justify-center bg-white gap-4">
+        <Scissors size={40} className="text-s-ink/20" />
+        <p className="text-s-ink/50">Barber nicht gefunden</p>
         <Link href={`/${locale}/salon/${salonSlug}`} className="text-s-coral text-sm hover:underline">
           Zurück zum Salon
         </Link>
@@ -101,9 +101,9 @@ export default function BarberProfilePage() {
   const styleFilters = ["fade", "buzz", "crop", "pompadour", "afro", "braids", "razor_art"];
 
   return (
-    <main className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg">
+    <main className="min-h-screen bg-white">
       {/* Cover */}
-      <div className="relative h-48 sm:h-64 bg-s-ink/10 dark:bg-s-dm-surface">
+      <div className="relative h-48 sm:h-64 bg-s-ink/10">
         {barber.cover_photo_url && (
           <Image
             src={barber.cover_photo_url}
@@ -118,13 +118,13 @@ export default function BarberProfilePage() {
         <div className="absolute top-4 left-4 right-4 flex justify-between">
           <Link
             href={`/${locale}/salon/${salonSlug}`}
-            className="p-2 rounded-full bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur text-s-ink dark:text-s-dm-text"
+            className="p-2 rounded-full bg-white/80 backdrop-blur text-s-ink"
           >
             <ArrowLeft size={18} />
           </Link>
           <button
             onClick={handleShare}
-            className="p-2 rounded-full bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur text-s-ink dark:text-s-dm-text"
+            className="p-2 rounded-full bg-white/80 backdrop-blur text-s-ink"
           >
             <Share2 size={18} />
           </button>
@@ -134,20 +134,20 @@ export default function BarberProfilePage() {
       {/* Profile header */}
       <div className="max-w-2xl mx-auto px-4 -mt-16 relative z-10">
         <div className="flex items-end gap-4 mb-4">
-          <div className="w-24 h-24 rounded-full border-4 border-white dark:border-s-dm-bg bg-s-bg-surface dark:bg-s-dm-surface overflow-hidden shrink-0">
+          <div className="w-24 h-24 rounded-full border-4 border-white bg-s-bg-surface overflow-hidden shrink-0">
             {barber.avatar_url ? (
               <Image src={barber.avatar_url} alt={barber.name} width={96} height={96} className="object-cover w-full h-full" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-s-ink/30 dark:text-s-dm-text/30">
+              <div className="w-full h-full flex items-center justify-center text-s-ink/30">
                 <Scissors size={32} />
               </div>
             )}
           </div>
           <div className="pb-1">
-            <h1 className="font-heading text-xl font-bold text-s-ink dark:text-s-dm-text">{barber.name}</h1>
+            <h1 className="font-heading text-xl font-bold text-s-ink">{barber.name}</h1>
             <Link
               href={`/${locale}/salon/${salonSlug}`}
-              className="text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-coral flex items-center gap-1"
+              className="text-sm text-s-ink/60 hover:text-s-coral flex items-center gap-1"
             >
               <MapPin size={12} />
               {barber.salon_name}
@@ -157,12 +157,12 @@ export default function BarberProfilePage() {
 
         {/* Stats */}
         <div className="flex gap-4 mb-6">
-          <div className="flex items-center gap-1.5 text-sm text-s-ink/70 dark:text-s-dm-text/70">
+          <div className="flex items-center gap-1.5 text-sm text-s-ink/70">
             <Scissors size={14} className="text-s-coral" />
             <span className="font-medium">{barber.cut_count}</span> Schnitte
           </div>
           {barber.specialties?.length > 0 && (
-            <div className="flex items-center gap-1.5 text-sm text-s-ink/70 dark:text-s-dm-text/70">
+            <div className="flex items-center gap-1.5 text-sm text-s-ink/70">
               <Star size={14} className="text-s-amber" />
               {barber.specialties.slice(0, 3).join(", ")}
             </div>
@@ -186,7 +186,7 @@ export default function BarberProfilePage() {
             className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${
               !filter
                 ? "bg-s-coral text-white"
-                : "bg-s-bg-surface dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-ink/5"
+                : "bg-s-bg-surface text-s-ink/70 hover:bg-s-ink/5"
             }`}
           >
             Alle
@@ -198,7 +198,7 @@ export default function BarberProfilePage() {
               className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-medium capitalize transition-colors ${
                 filter === s
                   ? "bg-s-coral text-white"
-                  : "bg-s-bg-surface dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-ink/5"
+                  : "bg-s-bg-surface text-s-ink/70 hover:bg-s-ink/5"
               }`}
             >
               {s.replace("_", " ")}
@@ -242,7 +242,7 @@ export default function BarberProfilePage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 text-s-ink/40 dark:text-s-dm-text/40 text-sm">
+          <div className="text-center py-12 text-s-ink/40 text-sm">
             Noch keine Portfolio-Bilder
           </div>
         )}

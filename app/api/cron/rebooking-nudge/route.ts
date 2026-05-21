@@ -4,12 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, rebookingNudge } from "@/lib/email";
 import type { EmailLocale } from "@/lib/email";
+import { getServerEnv } from "@/lib/env";
 
 // GET /api/cron/rebooking-nudge
 // Daily cron: users whose last booking was 28+ days ago get a nudge email.
 export async function GET(request: NextRequest) {
+  const cronSecret = getServerEnv().CRON_SECRET;
+  if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

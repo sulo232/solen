@@ -4,9 +4,9 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useLocale } from "next-intl";
 import { ChevronLeft, ChevronRight, Plus, X, Lock, ArrowRight, Clock, UserPlus } from "lucide-react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
-import WalkInModal from "@/components/dashboard/WalkInModal";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
+import WalkInModal from "@/components-legacy/dashboard/WalkInModal";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { AvailabilitySlot } from "@/lib/types";
 
@@ -94,7 +94,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading font-bold text-base">Slot erstellen</h3>
+          <h3 className="font-heading text-base">Slot erstellen</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <p className="text-sm text-s-ink/50 mb-4">{date} um {startTime}</p>
@@ -174,7 +174,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading font-bold text-base">Wochenplan erstellen</h3>
+          <h3 className="font-heading text-base">Wochenplan erstellen</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-4 mb-5">
@@ -281,7 +281,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading font-bold text-base">
+          <h3 className="font-heading text-base">
             {rescheduleMode ? "Termin verschieben" : "Termin-Details"}
           </h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
@@ -562,21 +562,21 @@ export default function CalendarPage() {
             if (viewMode === "week") setWeekStart((w) => addDays(w, -7));
             else if (viewMode === "day") { setCurrentDate((d) => addDays(d, -1)); setWeekStart(startOfWeek(addDays(currentDate, -1))); }
             else { const d = new Date(currentDate); d.setMonth(d.getMonth() - 1); setCurrentDate(d); setWeekStart(startOfWeek(d)); }
-          }} className="p-2 rounded-btn border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors">
-            <ChevronLeft size={16} className="text-s-ink dark:text-s-dm-text" />
+          }} className="p-2 rounded-btn border border-s-ink/10 hover:border-s-coral transition-colors">
+            <ChevronLeft size={16} className="text-s-ink" />
           </button>
           <button onClick={() => { const today = new Date(); setCurrentDate(today); setWeekStart(startOfWeek(today)); }}
-            className="px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text hover:border-s-coral transition-colors">
+            className="px-3 py-1.5 rounded-btn border border-s-ink/10 text-sm text-s-ink hover:border-s-coral transition-colors">
             Heute
           </button>
           <button onClick={() => {
             if (viewMode === "week") setWeekStart((w) => addDays(w, 7));
             else if (viewMode === "day") { setCurrentDate((d) => addDays(d, 1)); setWeekStart(startOfWeek(addDays(currentDate, 1))); }
             else { const d = new Date(currentDate); d.setMonth(d.getMonth() + 1); setCurrentDate(d); setWeekStart(startOfWeek(d)); }
-          }} className="p-2 rounded-btn border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors">
-            <ChevronRight size={16} className="text-s-ink dark:text-s-dm-text" />
+          }} className="p-2 rounded-btn border border-s-ink/10 hover:border-s-coral transition-colors">
+            <ChevronRight size={16} className="text-s-ink" />
           </button>
-          <span className="text-sm font-medium text-s-ink dark:text-s-dm-text ml-2">
+          <span className="text-sm font-medium text-s-ink ml-2">
             {viewMode === "day"
               ? currentDate.toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
               : viewMode === "month"
@@ -587,20 +587,20 @@ export default function CalendarPage() {
         </div>
         <div className="flex items-center gap-2">
           {/* View toggle */}
-          <div className="flex rounded-btn border border-s-ink/10 dark:border-white/10 overflow-hidden">
+          <div className="flex rounded-btn border border-s-ink/10 overflow-hidden">
             {(["day", "week", "month"] as ViewMode[]).map((mode) => (
               <button key={mode} onClick={() => setViewMode(mode)}
-                className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-coral text-white" : "text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-coral/5"}`}>
+                className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-coral text-white" : "text-s-ink/60 hover:bg-s-coral/5"}`}>
                 {mode === "day" ? "Tag" : mode === "week" ? "Woche" : "Monat"}
               </button>
             ))}
           </div>
           <button onClick={() => setWalkInModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral hover:text-s-coral transition-colors">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 text-sm text-s-ink/60 hover:border-s-coral hover:text-s-coral transition-colors">
             <UserPlus size={14} /> Walk-in
           </button>
           <button onClick={() => setBulkModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral hover:text-s-coral transition-colors">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 text-sm text-s-ink/60 hover:border-s-coral hover:text-s-coral transition-colors">
             Wochenplan
           </button>
           <button onClick={() => setCreateModal({ date: new Date().toISOString().split("T")[0], time: "09:00" })}
@@ -612,22 +612,22 @@ export default function CalendarPage() {
 
       {/* ═══ WEEK VIEW ═══ */}
       {viewMode === "week" && (
-        <div className="overflow-x-auto rounded-[12px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface shadow-warm-md">
+        <div className="overflow-x-auto rounded-[12px] border border-s-ink/5 bg-white shadow-warm-md">
           <div className="min-w-[600px]">
-            <div className="grid grid-cols-8 border-b border-s-ink/5 dark:border-white/5">
-              <div className="py-3 px-2 text-xs text-s-ink/30 dark:text-s-dm-text/30" />
+            <div className="grid grid-cols-8 border-b border-s-ink/5">
+              <div className="py-3 px-2 text-xs text-s-ink/30" />
               {weekDays.map((d, i) => {
                 const isToday = d.toDateString() === new Date().toDateString();
                 const dateStr = d.toISOString().split("T")[0];
                 return (
-                  <div key={i} className="py-3 px-2 text-center border-l border-s-ink/5 dark:border-white/5">
-                    <p className={`text-xs font-medium ${isToday ? "text-s-coral" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>{DAYS_LABEL[i]}</p>
+                  <div key={i} className="py-3 px-2 text-center border-l border-s-ink/5">
+                    <p className={`text-xs font-medium ${isToday ? "text-s-coral" : "text-s-ink/50"}`}>{DAYS_LABEL[i]}</p>
                     <button onClick={() => { setCurrentDate(d); setViewMode("day"); }}
-                      className={`text-sm font-bold mt-0.5 hover:text-s-coral transition-colors ${isToday ? "text-s-coral" : "text-s-ink dark:text-s-dm-text"}`}>
+                      className={`text-sm font-bold mt-0.5 hover:text-s-coral transition-colors ${isToday ? "text-s-coral" : "text-s-ink"}`}>
                       {d.getDate()}
                     </button>
                     <button onClick={() => blockDay(dateStr)} title="Tag blockieren"
-                      className="mt-1 w-4 h-4 flex items-center justify-center mx-auto text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral transition-colors">
+                      className="mt-1 w-4 h-4 flex items-center justify-center mx-auto text-s-ink/20 hover:text-s-coral transition-colors">
                       <Lock size={10} />
                     </button>
                   </div>
@@ -640,8 +640,8 @@ export default function CalendarPage() {
               Array.from({ length: 13 }, (_, rowIdx) => {
                 const hour = rowIdx + 8;
                 return (
-                  <div key={hour} className="grid grid-cols-8 border-b border-s-ink/5 dark:border-white/5 min-h-[40px]">
-                    <div className="py-1 px-2 text-[10px] text-s-ink/30 dark:text-s-dm-text/30 text-right pr-3 pt-2">
+                  <div key={hour} className="grid grid-cols-8 border-b border-s-ink/5 min-h-[40px]">
+                    <div className="py-1 px-2 text-[10px] text-s-ink/30 text-right pr-3 pt-2">
                       {`${String(hour).padStart(2, "0")}:00`}
                     </div>
                     {weekDays.map((d, dayIdx) => {
@@ -654,7 +654,7 @@ export default function CalendarPage() {
                             <div 
                               ref={provided.innerRef}
                               {...provided.droppableProps}
-                              className={`border-l border-s-ink/5 dark:border-white/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-coral/10" : "hover:bg-s-coral/5"}`}
+                              className={`border-l border-s-ink/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-coral/10" : "hover:bg-s-coral/5"}`}
                               onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
                               {cellSlots.map((s, idx) => {
                                 const staffMember = staff.find((st) => st.id === s.staff_member_id);
@@ -696,17 +696,17 @@ export default function CalendarPage() {
 
       {/* ═══ DAY VIEW ═══ */}
       {viewMode === "day" && (
-        <div className="rounded-[12px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface shadow-warm-md">
+        <div className="rounded-[12px] border border-s-ink/5 bg-white shadow-warm-md">
           {/* Staff column headers */}
-          <div className="grid border-b border-s-ink/5 dark:border-white/5" style={{ gridTemplateColumns: `60px repeat(${Math.max(staff.length, 1)}, 1fr)` }}>
-            <div className="py-3 px-2 text-xs text-s-ink/30 dark:text-s-dm-text/30" />
+          <div className="grid border-b border-s-ink/5" style={{ gridTemplateColumns: `60px repeat(${Math.max(staff.length, 1)}, 1fr)` }}>
+            <div className="py-3 px-2 text-xs text-s-ink/30" />
             {staff.length > 0 ? staff.map((s, i) => (
-              <div key={s.id} className="py-3 px-2 text-center border-l border-s-ink/5 dark:border-white/5">
+              <div key={s.id} className="py-3 px-2 text-center border-l border-s-ink/5">
                 <p className={`text-xs font-medium ${STAFF_COLORS[i % STAFF_COLORS.length].split(" ")[2]}`}>{s.name}</p>
               </div>
             )) : (
-              <div className="py-3 px-2 text-center border-l border-s-ink/5 dark:border-white/5">
-                <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50">Alle</p>
+              <div className="py-3 px-2 text-center border-l border-s-ink/5">
+                <p className="text-xs font-medium text-s-ink/50">Alle</p>
               </div>
             )}
           </div>
@@ -717,9 +717,9 @@ export default function CalendarPage() {
               const hour = rowIdx + 8;
               const dateStr = currentDate.toISOString().split("T")[0];
               return (
-                <div key={hour} className="grid border-b border-s-ink/5 dark:border-white/5 min-h-[48px]"
+                <div key={hour} className="grid border-b border-s-ink/5 min-h-[48px]"
                   style={{ gridTemplateColumns: `60px repeat(${Math.max(staff.length, 1)}, 1fr)` }}>
-                  <div className="py-1 px-2 text-[10px] text-s-ink/30 dark:text-s-dm-text/30 text-right pr-3 pt-2">
+                  <div className="py-1 px-2 text-[10px] text-s-ink/30 text-right pr-3 pt-2">
                     {`${String(hour).padStart(2, "0")}:00`}
                   </div>
                   {staff.length > 0 ? staff.map((staffMember) => {
@@ -735,7 +735,7 @@ export default function CalendarPage() {
                           <div
                             ref={provided.innerRef}
                             {...provided.droppableProps}
-                            className={`border-l border-s-ink/5 dark:border-white/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-coral/10" : "hover:bg-s-coral/5"}`}
+                            className={`border-l border-s-ink/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-coral/10" : "hover:bg-s-coral/5"}`}
                             onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
                             {cellSlots.map((s, idx) => (
                               <Draggable key={s.id} draggableId={s.id} index={idx} isDragDisabled={s.status !== "available"}>
@@ -768,7 +768,7 @@ export default function CalendarPage() {
                         <div
                           ref={provided.innerRef}
                           {...provided.droppableProps}
-                          className={`border-l border-s-ink/5 dark:border-white/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-coral/10" : "hover:bg-s-coral/5"}`}
+                          className={`border-l border-s-ink/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-coral/10" : "hover:bg-s-coral/5"}`}
                           onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
                           {slotForCell(dateStr, hour).map((s, idx) => {
                             const sm = staff.find((st) => st.id === s.staff_member_id);
@@ -805,10 +805,10 @@ export default function CalendarPage() {
         const monthDays = getMonthCalendarDays(currentDate);
         const thisMonth = currentDate.getMonth();
         return (
-          <div className="rounded-[12px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface shadow-warm-md">
-            <div className="grid grid-cols-7 border-b border-s-ink/5 dark:border-white/5">
+          <div className="rounded-[12px] border border-s-ink/5 bg-white shadow-warm-md">
+            <div className="grid grid-cols-7 border-b border-s-ink/5">
               {DAYS_LABEL.map((label) => (
-                <div key={label} className="py-2 text-center text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50">{label}</div>
+                <div key={label} className="py-2 text-center text-xs font-medium text-s-ink/50">{label}</div>
               ))}
             </div>
             <div className="grid grid-cols-7">
@@ -823,16 +823,16 @@ export default function CalendarPage() {
                 return (
                   <div key={i}
                     onClick={() => { setCurrentDate(d); setViewMode("day"); }}
-                    className={`min-h-[80px] p-1.5 border-b border-r border-s-ink/5 dark:border-white/5 cursor-pointer hover:bg-s-coral/5 transition-colors ${!isCurrentMonth ? "opacity-40" : ""}`}>
-                    <p className={`text-xs font-medium mb-1 ${isToday ? "w-5 h-5 rounded-full bg-s-coral text-white flex items-center justify-center" : "text-s-ink dark:text-s-dm-text"}`}>
+                    className={`min-h-[80px] p-1.5 border-b border-r border-s-ink/5 cursor-pointer hover:bg-s-coral/5 transition-colors ${!isCurrentMonth ? "opacity-40" : ""}`}>
+                    <p className={`text-xs font-medium mb-1 ${isToday ? "w-5 h-5 rounded-full bg-s-coral text-white flex items-center justify-center" : "text-s-ink"}`}>
                       {d.getDate()}
                     </p>
                     {daySlots.length > 0 && (
                       <div className="flex flex-wrap gap-0.5">
-                        {bookedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink dark:bg-s-dm-text" title={`${bookedCount} gebucht`} />}
+                        {bookedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink" title={`${bookedCount} gebucht`} />}
                         {availableCount > 0 && <span className="w-2 h-2 rounded-full bg-s-coral/40" title={`${availableCount} frei`} />}
-                        {blockedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink/20 dark:bg-s-dm-text/20" title={`${blockedCount} blockiert`} />}
-                        {daySlots.length > 3 && <span className="text-[8px] text-s-ink/40 dark:text-s-dm-text/40">{daySlots.length}</span>}
+                        {blockedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink/20" title={`${blockedCount} blockiert`} />}
+                        {daySlots.length > 3 && <span className="text-[8px] text-s-ink/40">{daySlots.length}</span>}
                       </div>
                     )}
                   </div>
@@ -844,9 +844,9 @@ export default function CalendarPage() {
       })()}
 
       {/* Legend */}
-      <div className="flex flex-wrap gap-4 mt-3 text-xs text-s-ink/40 dark:text-s-dm-text/40">
+      <div className="flex flex-wrap gap-4 mt-3 text-xs text-s-ink/40">
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral/15 border border-s-coral/30" />Frei</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-ink dark:bg-s-dm-text" />Gebucht</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-ink" />Gebucht</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-bg-sunken border border-dashed border-s-ink/20" />Blockiert</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral border-2 border-s-coral" />Last-Minute</span>
         {/* Service category colors */}

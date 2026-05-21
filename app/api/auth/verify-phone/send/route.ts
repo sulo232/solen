@@ -4,11 +4,13 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 import { Redis } from "@upstash/redis";
+import { getServerEnv } from "@/lib/env";
 
-const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+const env = getServerEnv();
+const redis = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
   ? new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      url: env.UPSTASH_REDIS_REST_URL,
+      token: env.UPSTASH_REDIS_REST_TOKEN,
     })
   : null;
 
@@ -32,7 +34,7 @@ export async function POST(request: NextRequest) {
     // Store in Redis (valid for 10 mins)
     await redis.set(`phone_otp:${phone}`, otp, { ex: 600 });
 
-    const sevenApiKey = process.env.SEVEN_API_KEY;
+    const sevenApiKey = env.SEVEN_API_KEY;
     if (!sevenApiKey) {
       console.warn("SEVEN_API_KEY is missing. OTP generated but not sent:", otp);
       // In development without key, we return success so frontend can continue 

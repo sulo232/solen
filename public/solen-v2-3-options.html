@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen V2 — Yuh restraint vs Republik panels vs Hybrid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand: #E8742A;
+    --brand-deep: #5C2308;
+    --brand-text: #8A3C0F;
+    --brand-subtle: #FFE4D2;
+    --bg: #FFFFFF;
+    --ink-1: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #7A6957;
+    --cream: #F5F0E8;
+    --love-red: #FF4A6B;
+    --success: #16A34A;
+    --warning: #F59E0B;
+    --error: #D32F2F;
+    --star: #F3A864;
+    --coiffeur: #B5588A; --coiffeur-deep: #6B2D4D;
+    --barber: #E8A957; --barber-deep: #7A4F1F;
+    --nails: #C77A5C; --nails-deep: #7A4030;
+    --spa: #88B89E; --spa-deep: #3F6F55;
+    --makeup: #D66547; --makeup-deep: #7C3520;
+    --wellness: #A66E3D; --wellness-deep: #5C3D22;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #ECE6DC;
+    color: var(--ink-1);
+    font-family: "Inter Tight", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  body { padding: 36px 16px 80px; }
+  .doc { max-width: 1400px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 28px; }
+  .eye {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--brand-text); margin-bottom: 10px;
+    font-family: "Inter Tight", sans-serif;
+  }
+  h1.doc-h {
+    font-family: "Fraunces", serif;
+    font-weight: 700; font-size: 36px; line-height: 1;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    letter-spacing: -0.02em; color: var(--ink-1);
+  }
+  .sub {
+    font-size: 14px; color: var(--ink-2); margin-top: 12px;
+    max-width: 760px; margin-inline: auto;
+  }
+
+  /* SECTION header (the "Surface X" label) */
+  .surface-section { margin-top: 36px; }
+  .surface-h {
+    font-family: "Fraunces", serif;
+    font-weight: 700; font-size: 18px;
+    font-variation-settings: "opsz" 96;
+    letter-spacing: -0.015em;
+    color: var(--ink-1);
+    margin-bottom: 12px;
+    padding: 0 4px;
+  }
+
+  /* 3-COL GRID */
+  .opts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 1100px) { .opts { grid-template-columns: 1fr; } }
+
+  .opt-card {
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 1px 2px rgba(26,18,9,.03), 0 8px 24px rgba(26,18,9,.06);
+  }
+  .opt-card.recommend { border: 2px solid var(--ink-1); }
+  .opt-tag {
+    display: block;
+    padding: 10px 16px;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: #fff;
+    background: #1A1209;
+  }
+  .opt-card.opt1 .opt-tag { background: #1A1209; }
+  .opt-card.opt2 .opt-tag { background: var(--coiffeur-deep); }
+  .opt-card.opt3 .opt-tag { background: var(--brand-deep); }
+  .opt-meta {
+    padding: 10px 16px;
+    background: #FAF7F3;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.5;
+    border-bottom: 1px solid rgba(26,18,9,.04);
+  }
+  .opt-meta strong { color: var(--ink-1); }
+
+  /* ============== SURFACE: HOMEPAGE HERO ============== */
+  .hero-canvas {
+    background: #fff;
+    padding: 28px 22px;
+    position: relative;
+    overflow: hidden;
+    min-height: 320px;
+  }
+  /* Yuh-style decorative blobs (option 1 only) */
+  .yuh-blob1 {
+    position: absolute; top: -30px; left: -50px;
+    width: 180px; height: 180px;
+    background: rgba(229,210,225,.55);
+    border-radius: 50%;
+    filter: blur(10px);
+  }
+  .yuh-blob2 {
+    position: absolute; bottom: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: rgba(225,235,225,.55);
+    border-radius: 50%;
+    filter: blur(15px);
+  }
+  .yuh-blob3 {
+    position: absolute; top: 40%; right: 30%;
+    width: 80px; height: 80px;
+    background: rgba(232,232,235,.5);
+    border-radius: 50%;
+    filter: blur(8px);
+  }
+
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(255,255,255,.85); backdrop-filter: blur(8px);
+    border: 1px solid rgba(232,116,42,.18);
+    padding: 5px 11px;
+    border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 11px; font-weight: 600;
+    color: var(--ink-1);
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 2;
+  }
+  .pulse {
+    width: 5px; height: 5px;
+    background: var(--brand);
+    border-radius: 99px;
+    box-shadow: 0 0 0 4px rgba(232,116,42,.18);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .55; transform: scale(1.3); }
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: linear-gradient(180deg, #F0834D 0%, #E8742A 100%);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 99px;
+    border: 0;
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 700; font-size: 12px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(232,116,42,.32);
+    position: relative;
+    z-index: 2;
+  }
+
+  /* OPT 1 hero — Yuh restraint with Bricolage chunky */
+  .opt1 .hero-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 36px; line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ink-1);
+    margin-bottom: 8px;
+    position: relative; z-index: 2;
+  }
+  .opt1 .hero-h .accent { color: var(--brand); }
+  .opt1 .hero-sub {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 12px; color: var(--ink-2); line-height: 1.5;
+    margin-bottom: 14px;
+    max-width: 360px;
+    position: relative; z-index: 2;
+  }
+
+  /* OPT 2 hero — Republik panel with Fraunces serif */
+  .opt2 .hero-canvas {
+    background: var(--coiffeur-deep);
+    color: #F5F0E8;
+    min-height: 360px;
+  }
+  .opt2 .hero-pill {
+    background: rgba(245,240,232,.18);
+    border: 1px solid rgba(245,240,232,.28);
+    color: #F5F0E8;
+    backdrop-filter: blur(6px);
+  }
+  .opt2 .hero-h {
+    font-family: "Fraunces", serif;
+    font-weight: 700; font-size: 38px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    line-height: 0.95; letter-spacing: -0.015em;
+    color: #F5F0E8;
+    margin-bottom: 8px;
+  }
+  .opt2 .hero-h em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+  }
+  .opt2 .hero-sub {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 12px; color: rgba(245,240,232,.85); line-height: 1.5;
+    margin-bottom: 14px;
+    max-width: 360px;
+  }
+  .opt2 .hero-cta {
+    background: rgba(245,240,232,.94);
+    color: var(--coiffeur-deep);
+    box-shadow: 0 4px 12px rgba(0,0,0,.18);
+  }
+
+  /* OPT 3 hero — Hybrid: Fraunces serif but Yuh-restraint white substrate */
+  .opt3 .hero-h {
+    font-family: "Fraunces", serif;
+    font-weight: 700; font-size: 38px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    line-height: 0.95; letter-spacing: -0.015em;
+    color: var(--ink-1);
+    margin-bottom: 8px;
+    position: relative; z-index: 2;
+  }
+  .opt3 .hero-h em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+    color: var(--brand);
+  }
+  .opt3 .hero-sub {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 12px; color: var(--ink-2); line-height: 1.5;
+    margin-bottom: 14px;
+    max-width: 360px;
+    position: relative; z-index: 2;
+  }
+
+  /* ============== SURFACE: CATEGORY PAGE ============== */
+  .cat-canvas {
+    --c: var(--coiffeur);
+    --c-deep: var(--coiffeur-deep);
+    background: #fff;
+  }
+  .cat-pad {
+    padding: 18px 20px;
+  }
+  .crumbs {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 11px; color: var(--ink-3);
+    margin-bottom: 6px;
+  }
+  .crumbs .sep { opacity: .35; margin: 0 4px; }
+  .cat-sub {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 12px; color: var(--ink-2);
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+  .cat-sub strong { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .cat-pulse {
+    width: 5px; height: 5px;
+    background: var(--success);
+    border-radius: 99px;
+    display: inline-block; margin-right: 4px;
+    vertical-align: middle;
+    animation: pulse 1.6s infinite;
+  }
+  .cat-filters { display: flex; gap: 6px; margin: 12px 0; flex-wrap: wrap; }
+  .pill-filter {
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 600; font-size: 10px;
+    background: linear-gradient(180deg, #fff, #FAF7F3);
+    border: 1px solid rgba(26,18,9,.06);
+    color: var(--ink-1);
+    padding: 5px 10px;
+    border-radius: 99px;
+  }
+  .salon-card {
+    display: flex; gap: 10px;
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.04);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 4px 0;
+  }
+  .photo {
+    width: 50px; height: 50px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background: var(--c);
+    background-image:
+      linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 35%, transparent 70%, rgba(0,0,0,.05) 100%),
+      radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.25), transparent 60%);
+    position: relative;
+  }
+  .badge {
+    position: absolute; top: 4px; left: 4px;
+    display: inline-flex; align-items: center; gap: 3px;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(12px);
+    color: var(--ink-1);
+    font-family: "Inter Tight", sans-serif;
+    font-size: 8px; font-weight: 700;
+    padding: 2px 5px; border-radius: 99px;
+  }
+  .badge::before { content: ""; width: 3px; height: 3px; background: var(--success); border-radius: 99px; }
+  .salon-meta { flex: 1; min-width: 0; }
+  .salon-row1 { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; }
+  .salon-name {
+    font-weight: 700; font-size: 13px;
+    color: var(--ink-1);
+    line-height: 1.1;
+  }
+  .salon-rating {
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 600; font-size: 10px;
+    font-variant-numeric: tabular-nums; color: var(--ink-1);
+  }
+  .salon-row2 {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 10px; color: var(--ink-3);
+    margin-top: 3px;
+  }
+  .salon-row2 strong { color: var(--ink-1); font-weight: 600; }
+
+  /* OPT 1 cat page — full Yuh restraint */
+  .opt1 .cat-h1 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 26px;
+    letter-spacing: -0.025em; line-height: 1;
+    color: var(--ink-1);
+    margin-bottom: 5px;
+  }
+  .opt1 .cat-h1 .accent { color: var(--c); }  /* ONE word in category color, like Yuh's "Paying" */
+  .opt1 .cat-sub strong { color: var(--ink-1); }
+  .opt1 .crumbs strong { color: var(--ink-1); font-weight: 600; }
+  .opt1 .pill-filter.active {
+    background: var(--c);  /* Active filter pill in category color — Yuh-style spot */
+    color: #fff;
+    border-color: var(--c);
+  }
+  .opt1 .salon-name {
+    font-family: "Bricolage Grotesque", sans-serif;
+  }
+  .opt1 .body-cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: linear-gradient(180deg, #F0834D, #E8742A);  /* Brand orange — Yuh-style: brand, not category */
+    color: #fff;
+    padding: 9px 16px;
+    border: 0; border-radius: 99px;
+    font-weight: 700; font-size: 11px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(232,116,42,.32);
+    margin-top: 10px;
+  }
+
+  /* OPT 2 cat page — full Republik panel */
+  .opt2 .cat-canvas { background: #fff; }
+  .opt2 .panel {
+    background: var(--c-deep);
+    color: #F5F0E8;
+    padding: 22px 20px 18px;
+  }
+  .opt2 .panel .crumbs { color: rgba(245,240,232,.7); }
+  .opt2 .panel .crumbs strong { color: #F5F0E8; }
+  .opt2 .cat-h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 700; font-size: 30px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    line-height: 0.95; letter-spacing: -0.015em;
+    color: #F5F0E8;
+    margin-bottom: 6px;
+  }
+  .opt2 .cat-h1 em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+  }
+  .opt2 .panel .cat-sub { color: rgba(245,240,232,.85); margin-bottom: 0; }
+  .opt2 .panel .cat-sub strong { color: #F5F0E8; }
+  .opt2 .pill-filter.active {
+    background: var(--c-deep);
+    color: #fff;
+    border-color: var(--c-deep);
+  }
+  .opt2 .salon-name { font-family: "Fraunces", serif; font-weight: 700; }
+  .opt2 .body-cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--c-deep) 80%, white), var(--c-deep));
+    color: #fff;
+    padding: 9px 16px;
+    border: 0; border-radius: 99px;
+    font-weight: 700; font-size: 11px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 4px 12px rgba(0,0,0,.18);
+    margin-top: 10px;
+  }
+
+  /* OPT 3 cat page — hybrid: Yuh restraint, but with Fraunces serif h1 */
+  .opt3 .cat-h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 700; font-size: 28px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    line-height: 0.95; letter-spacing: -0.015em;
+    color: var(--ink-1);
+    margin-bottom: 5px;
+  }
+  .opt3 .cat-h1 em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+    color: var(--c);  /* italic city name in category color — Yuh-style spot */
+  }
+  .opt3 .cat-sub strong { color: var(--ink-1); }
+  .opt3 .crumbs strong { color: var(--c-deep); font-weight: 600; }  /* small category accent */
+  .opt3 .pill-filter.active {
+    background: var(--c);
+    color: #fff;
+    border-color: var(--c);
+  }
+  .opt3 .salon-name { font-family: "Fraunces", serif; font-weight: 700; }
+  .opt3 .body-cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: linear-gradient(180deg, #F0834D, #E8742A);  /* Brand orange — daily-use page keeps brand */
+    color: #fff;
+    padding: 9px 16px;
+    border: 0; border-radius: 99px;
+    font-weight: 700; font-size: 11px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(232,116,42,.32);
+    margin-top: 10px;
+  }
+
+  /* ASK */
+  .ask {
+    margin-top: 32px;
+    padding: 18px 22px;
+    background: #FFE4D2;
+    border: 1px solid rgba(232,116,42,.18);
+    border-radius: 12px;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 13px;
+    color: #5C2308;
+    line-height: 1.6;
+  }
+  .ask strong { color: #1A1209; font-weight: 700; }
+
+  /* legend chips for color count */
+  .color-count {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 10px; color: var(--ink-3);
+    margin-left: 8px;
+  }
+  .color-count strong { color: var(--ink-1); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header>
+    <div class="eye">YUH RESTRAINT · REPUBLIK PANELS · HYBRID</div>
+    <h1 class="doc-h">Same surface, three commitments to color.</h1>
+    <p class="sub">Same Solen homepage hero + same `/basel/coiffeur` category page rendered three ways. Pick by reading WHERE color appears (count the spots) and HOW often the user sees it (homepage = once per session, category page = many times per session).</p>
+  </header>
+
+  <!-- SURFACE 1: HOMEPAGE HERO -->
+  <section class="surface-section">
+    <h2 class="surface-h">Surface 1 · Homepage hero (visited once per session)</h2>
+    <div class="opts">
+
+      <!-- Option 1 — Yuh restraint -->
+      <article class="opt-card opt1">
+        <span class="opt-tag">OPTION 1 · YUH RESTRAINT</span>
+        <p class="opt-meta"><strong>Bricolage display</strong> · white substrate · pastel decorative blobs · ONE word in brand color · brand orange CTA · type emphasis on contrast not color</p>
+        <div class="hero-canvas">
+          <div class="yuh-blob1"></div>
+          <div class="yuh-blob2"></div>
+          <div class="yuh-blob3"></div>
+          <span class="hero-pill"><span class="pulse"></span>47 Salons in Basel haben heute frei</span>
+          <h3 class="hero-h">Coiffeur, <span class="accent">direkt</span> gebucht.</h3>
+          <p class="hero-sub">Suche nach Salon, Tag und Zeit. Sofort Termine in deiner Stadt.</p>
+          <button class="hero-cta">Solen durchsuchen →</button>
+        </div>
+      </article>
+
+      <!-- Option 2 — Republik panels -->
+      <article class="opt-card opt2">
+        <span class="opt-tag">OPTION 2 · REPUBLIK PANELS</span>
+        <p class="opt-meta"><strong>Fraunces serif</strong> · full saturated colored panel · cream text on dark · serif italic accent in headline</p>
+        <div class="hero-canvas">
+          <span class="hero-pill"><span class="pulse"></span>47 Salons in Basel haben heute frei</span>
+          <h3 class="hero-h">Coiffeur, direkt <em>gebucht</em>.</h3>
+          <p class="hero-sub">Suche nach Salon, Tag und Zeit. Sofort Termine in deiner Stadt.</p>
+          <button class="hero-cta">Solen durchsuchen →</button>
+        </div>
+      </article>
+
+      <!-- Option 3 — Hybrid: Fraunces serif on white -->
+      <article class="opt-card opt3 recommend">
+        <span class="opt-tag">OPTION 3 · HYBRID · RECOMMENDED</span>
+        <p class="opt-meta"><strong>Fraunces serif</strong> on white substrate · serif italic accent in headline (in brand orange) · brand orange CTA · Republik typography energy + Yuh restraint substrate</p>
+        <div class="hero-canvas">
+          <span class="hero-pill"><span class="pulse"></span>47 Salons in Basel haben heute frei</span>
+          <h3 class="hero-h">Coiffeur, direkt <em>gebucht</em>.</h3>
+          <p class="hero-sub">Suche nach Salon, Tag und Zeit. Sofort Termine in deiner Stadt.</p>
+          <button class="hero-cta">Solen durchsuchen →</button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- SURFACE 2: CATEGORY PAGE -->
+  <section class="surface-section">
+    <h2 class="surface-h">Surface 2 · Category page `/basel/coiffeur` (visited many times per session) <span class="color-count"><strong>← this is where the choice matters</strong></span></h2>
+    <div class="opts">
+
+      <!-- Option 1 — Yuh restraint -->
+      <article class="opt-card opt1">
+        <span class="opt-tag">OPTION 1 · YUH RESTRAINT</span>
+        <p class="opt-meta"><strong>White substrate</strong> · ONE word in category color · active filter pill in category color · brand-orange Buchen CTA · category color is a 5-spot accent, not a takeover</p>
+        <div class="cat-canvas">
+          <div class="cat-pad">
+            <p class="crumbs">solen <span class="sep">/</span> Basel <span class="sep">/</span> <strong>Coiffeur</strong></p>
+            <h3 class="cat-h1">Coiffeur, <span class="accent">jetzt</span> in Basel.</h3>
+            <p class="cat-sub"><span class="cat-pulse"></span><strong>23 Salons</strong> · 8 heute frei</p>
+            <div class="cat-filters">
+              <span class="pill-filter active">Alle</span>
+              <span class="pill-filter">Heute frei</span>
+              <span class="pill-filter">Sortieren ▾</span>
+              <span class="pill-filter">Filter</span>
+            </div>
+            <div class="salon-card">
+              <div class="photo"><span class="badge">Heute frei</span></div>
+              <div class="salon-meta">
+                <div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div>
+                <div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div>
+              </div>
+            </div>
+            <button class="body-cta">Buchen →</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Option 2 — Republik panels -->
+      <article class="opt-card opt2">
+        <span class="opt-tag">OPTION 2 · REPUBLIK PANELS</span>
+        <p class="opt-meta"><strong>Full dark saturated panel</strong> · serif h1 in cream · category-deep CTA · same treatment per visit · could fatigue on repeat use</p>
+        <div class="cat-canvas">
+          <div class="panel">
+            <p class="crumbs">solen <span class="sep">/</span> Basel <span class="sep">/</span> <strong>Coiffeur</strong></p>
+            <h3 class="cat-h1">Coiffeur in <em>Basel</em></h3>
+            <p class="cat-sub"><span class="cat-pulse"></span><strong>23 Salons</strong> · 8 heute frei</p>
+          </div>
+          <div class="cat-pad">
+            <div class="cat-filters">
+              <span class="pill-filter active">Alle</span>
+              <span class="pill-filter">Heute frei</span>
+              <span class="pill-filter">Sortieren ▾</span>
+              <span class="pill-filter">Filter</span>
+            </div>
+            <div class="salon-card">
+              <div class="photo"><span class="badge">Heute frei</span></div>
+              <div class="salon-meta">
+                <div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div>
+                <div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div>
+              </div>
+            </div>
+            <button class="body-cta">Buchen →</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Option 3 — Hybrid Yuh-restraint on category -->
+      <article class="opt-card opt3 recommend">
+        <span class="opt-tag">OPTION 3 · HYBRID · RECOMMENDED</span>
+        <p class="opt-meta"><strong>Yuh restraint on this page</strong> (visited daily) · serif h1 in ink with italic city name in category color · active filter pill in category color · brand-orange Buchen · cleaner for repeat use</p>
+        <div class="cat-canvas">
+          <div class="cat-pad">
+            <p class="crumbs">solen <span class="sep">/</span> Basel <span class="sep">/</span> <strong>Coiffeur</strong></p>
+            <h3 class="cat-h1">Coiffeur in <em>Basel</em></h3>
+            <p class="cat-sub"><span class="cat-pulse"></span><strong>23 Salons</strong> · 8 heute frei</p>
+            <div class="cat-filters">
+              <span class="pill-filter active">Alle</span>
+              <span class="pill-filter">Heute frei</span>
+              <span class="pill-filter">Sortieren ▾</span>
+              <span class="pill-filter">Filter</span>
+            </div>
+            <div class="salon-card">
+              <div class="photo"><span class="badge">Heute frei</span></div>
+              <div class="salon-meta">
+                <div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div>
+                <div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div>
+              </div>
+            </div>
+            <button class="body-cta">Buchen →</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <div class="ask">
+    <strong>Read the row 2 (category page) carefully.</strong> That's the surface users see most often.
+    <ul style="margin-top: 8px; padding-left: 20px;">
+      <li><strong>Option 1</strong> — full Yuh restraint. Bricolage chunky display, ONE word accent. Cleanest for daily use. Loses serif energy.</li>
+      <li><strong>Option 2</strong> — full Republik. Dramatic but saturated for daily-visit pages.</li>
+      <li><strong>Option 3</strong> — hybrid · my recommended. Fraunces serif (the Republik typography energy you said you liked) + Yuh restraint substrate (white, brand orange CTA, category color as Yuh-style spot accent). Best of both. Italic city name in category color = Yuh's "Paying" pattern in serif.</li>
+    </ul>
+    <strong>Pick 1 / 2 / 3.</strong>
+  </div>
+
+</div>
+</body>
+</html>

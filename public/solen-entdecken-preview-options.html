@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen Entdecken preview — layout options</title>
+<link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #2A1F18;
+    --ink-3: #8A7A68;
+    --bg: #FFFFFF;
+    --rule: #EAE0D0;
+    --brand: #1A8F5C;
+    --accent: #E0703D;
+  }
+  body {
+    font-family: 'Open Sauce One', Inter, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding: 32px 0 80px;
+    line-height: 1.55;
+  }
+  .page-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    text-align: center;
+    margin: 0 24px 6px;
+  }
+  .page-sub {
+    font-size: 13px;
+    color: #5C4A3A;
+    text-align: center;
+    margin: 0 24px 28px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .option {
+    max-width: 760px;
+    margin: 0 auto 32px;
+    background: #FFFFFF;
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 18px 16px 18px;
+  }
+  .option .opt-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .option .opt-label::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--brand);
+    border-radius: 50%;
+  }
+  .option .opt-label.recommend { color: var(--brand); }
+  .option .verdict {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.55;
+  }
+  .option .verdict strong { color: var(--ink); font-weight: 700; }
+
+  /* Mini section header */
+  .mini-h2-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .mini-h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+  }
+  .mini-h2::before {
+    content: '';
+    display: inline-block;
+    width: 3px; height: 0.85em;
+    background: var(--accent);
+    border-radius: 2px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .mini-link {
+    font-size: 12px;
+    color: var(--brand);
+    font-weight: 600;
+  }
+
+  /* shared tile chrome */
+  .tile {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+  }
+  .tile .heart {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,0.20);
+    backdrop-filter: blur(18px) saturate(1.7);
+    -webkit-backdrop-filter: blur(18px) saturate(1.7);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 1px 3px rgba(0,0,0,0.15);
+    color: white;
+    font-size: 14px;
+  }
+  .tile .play {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(18px) saturate(1.7);
+    -webkit-backdrop-filter: blur(18px) saturate(1.7);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 1px 3px rgba(0,0,0,0.15);
+    color: white;
+    font-size: 12px;
+  }
+  .tile .src {
+    position: absolute;
+    bottom: 8px; left: 8px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(18px) saturate(1.7);
+    -webkit-backdrop-filter: blur(18px) saturate(1.7);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.30);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* OPTION A — current: uniform 9:16 portrait, single horizontal row */
+  .row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .row::-webkit-scrollbar { display: none; }
+
+  .opt-a .tile {
+    width: 130px;
+    aspect-ratio: 9/16;
+  }
+
+  /* OPTION B — Pinterest-app style: uniform height ~240px, variable widths per native aspect */
+  .opt-b .tile {
+    height: 240px;
+  }
+  .opt-b .t-916 { width: calc(240px * 9/16); }   /* 135 */
+  .opt-b .t-45  { width: calc(240px * 4/5); }    /* 192 */
+  .opt-b .t-11  { width: calc(240px * 1); }      /* 240 */
+  .opt-b .t-34  { width: calc(240px * 3/4); }    /* 180 */
+
+  /* OPTION C — 2-row horizontal masonry (Spotify/Pinterest pattern) */
+  .opt-c .two-row {
+    display: grid;
+    grid-template-rows: 140px 140px;
+    grid-auto-flow: column;
+    grid-auto-columns: min-content;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .opt-c .two-row::-webkit-scrollbar { display: none; }
+  .opt-c .two-row .tile {
+    height: 140px;
+  }
+  .opt-c .two-row .t-916 { width: calc(140px * 9/16); }   /* 79 */
+  .opt-c .two-row .t-45  { width: calc(140px * 4/5); }    /* 112 */
+  .opt-c .two-row .t-11  { width: calc(140px * 1); }      /* 140 */
+  .opt-c .two-row .t-34  { width: calc(140px * 3/4); }    /* 105 */
+  .opt-c .two-row .tile.tall { grid-row: span 2; height: 288px; }
+  .opt-c .two-row .tile.tall.t-916 { width: calc(288px * 9/16); } /* 162 */
+  .opt-c .two-row .tile.tall.t-45  { width: calc(288px * 4/5); }  /* 230 */
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Entdecken preview — 3 layout options</h1>
+<p class="page-sub">Real photos / videos at mixed aspect ratios. Goal: figure out how the homepage preview row should render a Pinterest-style mixed-media feed.</p>
+
+<!-- OPTION A — current state, but with real photos -->
+<div class="option opt-a">
+  <div class="opt-label">Option A · current (uniform 9:16 portrait, "TikTok feed" feel)</div>
+  <div class="mini-h2-row">
+    <h2 class="mini-h2">Finde deine Inspiration.</h2>
+    <span class="mini-link">Alle entdecken →</span>
+  </div>
+  <div class="row">
+    <div class="tile" style="background-image:url('https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&h=712&fit=crop&q=80')"><span class="heart">♡</span><span class="play">▶</span><span class="src">TikTok</span></div>
+    <div class="tile" style="background-image:url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=712&fit=crop&q=80')"><span class="heart">♡</span><span class="play">▶</span><span class="src">TikTok</span></div>
+    <div class="tile" style="background-image:url('https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=400&h=712&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Instagram</span></div>
+    <div class="tile" style="background-image:url('https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=712&fit=crop&q=80')"><span class="heart">♡</span><span class="play">▶</span><span class="src">TikTok</span></div>
+    <div class="tile" style="background-image:url('https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=400&h=712&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Instagram</span></div>
+    <div class="tile" style="background-image:url('https://images.unsplash.com/photo-1554519515-242161756769?w=400&h=712&fit=crop&q=80')"><span class="heart">♡</span><span class="play">▶</span><span class="src">TikTok</span></div>
+  </div>
+  <div class="verdict"><strong>Verdict:</strong> rhythmic + clean — but signals "TikTok-only" feed. Square photos / before-afters / nail art (non-9:16 content) would have to be cropped weirdly. Loses Pinterest variety.</div>
+</div>
+
+<!-- OPTION B — Pinterest-app row: uniform height, variable widths by native aspect -->
+<div class="option opt-b">
+  <div class="opt-label recommend">Option B · uniform height, variable widths (RECOMMEND — Pinterest-app pattern)</div>
+  <div class="mini-h2-row">
+    <h2 class="mini-h2">Finde deine Inspiration.</h2>
+    <span class="mini-link">Alle entdecken →</span>
+  </div>
+  <div class="row">
+    <div class="tile t-916" style="background-image:url('https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&h=712&fit=crop&q=80')"><span class="heart">♡</span><span class="play">▶</span><span class="src">TikTok</span></div>
+    <div class="tile t-45"  style="background-image:url('https://images.unsplash.com/photo-1559599101-f09722fb4948?w=400&h=500&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Instagram</span></div>
+    <div class="tile t-11"  style="background-image:url('https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Salon</span></div>
+    <div class="tile t-916" style="background-image:url('https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=712&fit=crop&q=80')"><span class="heart">♡</span><span class="play">▶</span><span class="src">TikTok</span></div>
+    <div class="tile t-34"  style="background-image:url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=400&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Instagram</span></div>
+    <div class="tile t-45"  style="background-image:url('https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=400&h=500&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Instagram</span></div>
+    <div class="tile t-11"  style="background-image:url('https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=400&h=400&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Salon</span></div>
+  </div>
+  <div class="verdict"><strong>Verdict:</strong> shows aspect VARIETY → instantly signals "Pinterest mixed-media feed." Uniform height keeps the row rhythmic so it doesn't look jagged. Different content types (tutorial video / portrait photo / nail close-up / before-after) all read at their native crop.</div>
+</div>
+
+<!-- OPTION C — 2-row masonry with occasional tall tiles -->
+<div class="option opt-c">
+  <div class="opt-label">Option C · 2-row masonry scroll (Spotify-style with hero tall tiles)</div>
+  <div class="mini-h2-row">
+    <h2 class="mini-h2">Finde deine Inspiration.</h2>
+    <span class="mini-link">Alle entdecken →</span>
+  </div>
+  <div class="two-row">
+    <div class="tile tall t-916" style="background-image:url('https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&h=712&fit=crop&q=80')"><span class="heart">♡</span><span class="play">▶</span><span class="src">TikTok</span></div>
+    <div class="tile t-11" style="background-image:url('https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Salon</span></div>
+    <div class="tile t-45" style="background-image:url('https://images.unsplash.com/photo-1559599101-f09722fb4948?w=400&h=500&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Instagram</span></div>
+    <div class="tile tall t-45" style="background-image:url('https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=400&h=500&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Instagram</span></div>
+    <div class="tile t-11" style="background-image:url('https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=400&h=400&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Salon</span></div>
+    <div class="tile t-34" style="background-image:url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=400&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Instagram</span></div>
+    <div class="tile tall t-916" style="background-image:url('https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=712&fit=crop&q=80')"><span class="heart">♡</span><span class="play">▶</span><span class="src">TikTok</span></div>
+    <div class="tile t-11" style="background-image:url('https://images.unsplash.com/photo-1554519515-242161756769?w=400&h=400&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Salon</span></div>
+    <div class="tile t-45" style="background-image:url('https://images.unsplash.com/photo-1559599101-f09722fb4948?w=400&h=500&fit=crop&q=80')"><span class="heart">♡</span><span class="src">Instagram</span></div>
+  </div>
+  <div class="verdict"><strong>Verdict:</strong> max content density per scroll-inch + dramatic full-height "hero" tiles every few cards. Most "Pinterest desktop feel." But more visually heavy than the other sections — breaks horizontal-scroll rhythm a bit.</div>
+</div>
+
+</body>
+</html>

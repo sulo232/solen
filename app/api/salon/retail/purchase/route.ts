@@ -5,18 +5,19 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { validateBody, retailPurchaseSchema } from "@/lib/validations";
-import Stripe from "stripe";
-
-const stripe = process.env.STRIPE_SECRET_KEY
-  ? new Stripe(process.env.STRIPE_SECRET_KEY)
-  : null;
+import { getStripe } from "@/lib/stripe";
 
 // POST /api/salon/retail/purchase — Create Stripe PaymentIntent for retail purchase
 export async function POST(req: NextRequest) {
   const disabled = await checkFeatureEnabled("nail_features");
   if (disabled) return disabled;
 
-  if (!stripe) return NextResponse.json({ error: "Payments not configured" }, { status: 503 });
+  let stripe;
+  try {
+    stripe = getStripe();
+  } catch {
+    return NextResponse.json({ error: "Payments not configured" }, { status: 503 });
+  }
 
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();

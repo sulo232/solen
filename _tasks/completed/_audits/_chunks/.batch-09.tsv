@@ -1,0 +1,10 @@
+6393213245641f0c38b13f6eb430e91aba48d41f 2026-03-25 10:09:20 +0100 R32: SalonCard V3 hardening — remove blob morph, fix hover/shadows/tags/availability
+a55a3203e68c6aaed5a63391545aab4db377d3ae 2026-03-25 10:10:35 +0100 R31-P4: quartier dark section, partner 20px fix, trust strip added
+0f6c5c92e7dacb96de79d8a9b12ea2de0a3b03bc 2026-03-25 10:26:39 +0100 CP-P7: DirectoryCard — remove rounded-blob-d/blob-interactive NEVER violations, dashed border style
+7b211ef1b8ee2af496dfcb31e91f05fd6172f578 2026-03-25 10:26:58 +0100 SP-P1–P11,P13,P15: salon profile V3 deep dive — Zone 2 warm cream bg, gallery glass nav, breadcrumb eyebrow, category tag colours, off-peak Bebas timer, glass tab bar, hours today highlight, info tiles glass, services rounded rows, staff glass cards, review eyebrow+sort pills, branded skeleton loader, 404 V3, nearby eyebrow
+ddbc52f5c8fad38b38572af025f914a86fccddbe 2026-03-25 10:28:27 +0100 SP-P12: sidebar booking panel → glass Tier 2 premium sticky card
+a0527644295e8b08e3c8603cbe046a8ac1cc502a 2026-03-25 10:29:45 +0100 SP-P14: mobile bottom sheet glass + drag handle, fixed coral booking button
+8d2f683a7fc0872208a50c5ed19f4db00d75e1c0 2026-03-25 10:30:39 +0100 CP-P1/P3-P6/P10-P15: Category page V3 deep dive — hero, filters, dropdowns, toggles, skeletons
+f01199c63ef6d76d8de46dbbff724dcaaf6c0030 2026-03-25 10:33:47 +0100 R-HP P1–P15: Homepage V3 deep dive — full visual overhaul
+d66777803779e35e28be8a9270ac38861091d683 2026-03-25 10:35:23 +0100 CP-P8+P9: SalonCard → glass Tier 2, spring hover physics, inline category colour spec
+3442a2e8a1feb57fc77f7453ce2d8320c7edd257 2026-03-25 10:37:31 +0100 BF-P5: StaffPicker — remove scale-105, ring active state, Zone 3 14px radius

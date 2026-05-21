@@ -1,0 +1,10 @@
+55f2a97543bac47e8e4042802233867690e07e20 2026-04-02 22:27:11 +0200 phase 4b: remove console.log debug statements and convert to console.error in BookingSuccess
+aa171bcc8cd98bd887f562c471bf1fe664c87ef5 2026-04-02 22:50:05 +0200 audit fix: revert category icons to working SVG implementation (missing PNGs)
+f7c3560158978f23ec8fefceb522cb54d588bd6b 2026-04-02 22:51:09 +0200 audit fix: change SalonCard image aspect ratio to 4:5 (portrait)
+beb15955d1489ea7da7eda951857f508b853deac 2026-04-02 22:54:09 +0200 audit fix: translate CategoryPage hero hardcoded strings (everywhere, salon count, onSolen)
+6ca0be086c210cd2f92efc857cf53099b78324e2 2026-04-02 23:09:21 +0200 audit fix: standardize hover lift to -translate-y-[5px] across 20 components + add hover media query documentation in globals.css
+28de02fa9869f9c886b2b58cccc45171130fd3c9 2026-04-03 17:39:49 +0200 fix: improve input focus ring accessibility (Rule 49) — 100% opacity, 3px thickness
+956a7ddc350473f76c598fd17bca9eae2d6c2012 2026-04-03 17:40:40 +0200 fix: increase touch targets to 44px+ minimum (Rule 50) — photo dots, carousel arrows, close buttons
+90cd98463dff434667dd152daee4ed85f328fecb 2026-04-03 17:41:33 +0200 fix: standardize font sizes to Tailwind scale + migrate colors to design tokens (Rules 48, 55)
+4f93404f9db363af4fca86e66ff212ed13f698f2 2026-04-03 17:43:38 +0200 fix: match skeleton loader aspect ratio to SalonCard + migrate to design token colors (Rule 48)
+1671a0b4dbce88afe7d7fdf22811591569e9e6b9 2026-04-03 17:44:09 +0200 fix: migrate booking status badge colors to design tokens s-sage, s-warning, s-error (Rule 48)

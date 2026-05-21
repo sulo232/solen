@@ -1,5 +1,8 @@
 /* Solen Design System — globals.css */
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+/* V3-D75 typography (2026-05-18): Bricolage Grotesque (display) +
+   Hanken Grotesk (body/UI). Bricolage for hero h1/h2 personality, Hanken for
+   clean body + UI labels. Both from Google Fonts. */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -47,18 +50,22 @@
     --text-2xl: 1.75rem;      /* 28px — page titles */
     --text-3xl: 2rem;         /* 32px — hero text */
 
-    /* ── Text color tokens ────────────────────────────────────── */
-    --color-heading: #222222;
-    --color-body: #222222;    /* DESIGN_SPEC primary text */
-    --color-muted: #767676;   /* DESIGN_SPEC secondary text — 4.54:1 on #FAFAF8 (WCAG AA) */
-    --color-border: #EBEBEB;
-    --color-hover-bg: #F7F7F7;
+    /* ── Text color tokens (Q23 + Q45 — locked 2026-05-02) ──── */
+    --color-heading: #1A1209;     /* s-ink */
+    --color-body: #1A1209;        /* s-ink (primary text) */
+    --color-muted: #56463E;       /* s-ink-2 (secondary text) — WCAG AA on white */
+    --color-border: #EFE7DD;      /* s-border */
+    --color-hover-bg: #FAF7F3;    /* s-bg-sunken */
     --color-error: #D32F2F;
-    --color-success: #2E7D32;
-    --color-warning: #ED6C02;
+    --color-success: #16A34A;
+    --color-warning: #F3A864;     /* s-amber */
 
     /* Base / raised surface tokens — white page (Q15 lock 2026-04-22) */
     --bg: #FFFFFF;
+    /* V3-D94 (2026-05-21): reverted V3-D93 — substrate flipped #FAF8F2 → #FFFFFF
+       per user "revert back to comp white". V3-D93's warm cream felt off once
+       paired with the cool-poster blob mockup; user picked pure white as the
+       base substrate. Brand/atmosphere exploration continues on top of pure white. */
     --base: #FFFFFF;
 
     /* Glass CSS custom properties */
@@ -83,43 +90,17 @@
     --dur-dramatic: 500ms;
   }
 
-  .dark {
-    --border: 30 15% 18%;
-    --input: 30 15% 18%;
-    --ring: 10 70% 55%;
-    --background: 28 30% 5%;
-    --foreground: 34 30% 93%;
-    --primary: 10 70% 55%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 30 15% 12%;
-    --secondary-foreground: 34 30% 93%;
-    --muted: 30 15% 15%;
-    --muted-foreground: 30 20% 60%;
-    --accent: 36 85% 44%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 55%;
-    --popover: 28 25% 8%;
-    --popover-foreground: 34 30% 93%;
-    --card: 28 25% 10%;
-    --card-foreground: 34 30% 93%;
-
-    /* Base / raised surface tokens (dark mode) */
-    --bg: #151009;
-    --base: #151009;
-
-    /* Glass CSS custom properties (dark mode) */
-    --glass-bg: rgba(30,23,16,.85);
-    --glass-bg-strong: rgba(30,23,16,.92);
-    --glass-bg-card: rgba(30,23,16,.80);
-    --glass-bg-subtle: rgba(30,23,16,.62);
-    --glass-border: rgba(245,238,228,.08);
-    --glass-border-subtle: rgba(245,238,228,.06);
-    --glass-shadow-inset: inset 0 1px 0 rgba(245,238,228,.05);
-    --raised: rgba(40,32,24,.90);
-  }
+  /* .dark { ... } block removed 2026-05-02 per Q62 — single light theme. */
 
   * {
     box-sizing: border-box;
+  }
+
+  /* Tailwind v3 preflight defaults `border-color` to gray-200 (#e5e7eb — cool grey).
+     Override globally so any `.border` without an explicit color uses our warm
+     `--color-border` (#EFE7DD). Eliminates rgb(229,231,235) drift from computed styles. */
+  *, ::before, ::after {
+    border-color: var(--color-border);
   }
 
   html {
@@ -128,15 +109,17 @@
   }
 
   body {
-    font-family: "DM Sans", sans-serif;
+    /* V3-D75 typography (2026-05-18): Hanken Grotesk (body/UI) */
+    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
     background-color: var(--base);
     color: var(--color-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: "Fraunces", Georgia, serif;
+    /* V3-D75 typography (2026-05-18): Bricolage Grotesque (display) */
+    font-family: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
     color: var(--color-heading);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.018em;
   }
 
   /* ── Global button press feedback ─────────────────────────── */
@@ -156,27 +139,28 @@
 
   /* Selection highlight ──────────────────────────────────── */
   ::selection {
-    background: rgba(232, 98, 74, 0.15);
+    background: rgba(4, 51, 56, 0.15);
     color: inherit;
   }
 }
 
 @layer utilities {
   .font-heading {
-    font-family: "Fraunces", Georgia, serif;
+    font-family: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
   }
   .font-body {
-    font-family: "DM Sans", sans-serif;
+    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
   }
   .font-display {
-    font-family: "Bebas Neue", sans-serif;
+    font-family: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
   }
+  /* Numeric data uses body font with tabular-nums (no separate mono family). */
   .font-mono-code {
-    font-family: "JetBrains Mono", "Courier New", monospace;
+    font-family: "Hanken Grotesk", ui-monospace, monospace;
     font-variant-numeric: tabular-nums;
   }
   .data-text {
-    font-family: "DM Sans", sans-serif;
+    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
     font-variant-numeric: tabular-nums;
     font-weight: 500;
   }
@@ -199,33 +183,20 @@
   /* Glass Tier 1 — Subtle (Zone 3: Auth, Profile) */
   .glass-subtle {
     background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(12px) saturate(1.2);
-    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    backdrop-filter: blur(12px) saturate(1);
+    -webkit-backdrop-filter: blur(12px) saturate(1);
     border: 1px solid rgba(255, 255, 255, 0.75);
   }
 
   /* Dark mode glass */
-  .dark .glass {
-    background: rgba(30, 23, 16, 0.82);
-    border-color: rgba(255, 255, 255, 0.06);
-  }
-  .dark .glass-strong {
-    background: rgba(30, 23, 16, 0.94);
-    border-color: rgba(255, 255, 255, 0.08);
-  }
-  .dark .glass-subtle {
-    background: rgba(30, 23, 16, 0.90);
-    border-color: rgba(255, 255, 255, 0.06);
-  }
-
   /* Coral pulse animation */
   .animate-coral-pulse {
     animation: coral-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
   @keyframes coral-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(232, 98, 74, 0.4); }
-    50% { box-shadow: 0 0 0 8px rgba(232, 98, 74, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(4, 51, 56, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(4, 51, 56, 0); }
   }
 
   /* will-change hints for animated cards */
@@ -237,16 +208,11 @@
   /* ── V5 Frosted Glass — for floating UI only ──────────────────────── */
   .glass-frost {
     background: rgba(255, 255, 255, 0.72);
-    backdrop-filter: blur(20px) saturate(1.4);
-    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    backdrop-filter: blur(20px) saturate(1);
+    -webkit-backdrop-filter: blur(20px) saturate(1);
     border: 1px solid rgba(255, 255, 255, 0.50);
     box-shadow: 0 1px 3px rgba(26, 18, 9, 0.04), 0 8px 24px rgba(26, 18, 9, 0.06);
   }
-  .dark .glass-frost {
-    background: rgba(30, 23, 16, 0.78);
-    border-color: rgba(255, 255, 255, 0.08);
-  }
-
   /* V5 Search input — Airbnb solid ring style */
   .glass-search {
     background: #ffffff;
@@ -258,49 +224,29 @@
     border-color: rgba(26, 18, 9, 0.22);
     box-shadow: 0 1px 2px rgba(26, 18, 9, 0.08), 0 4px 24px rgba(26, 18, 9, 0.10);
   }
-  .dark .glass-search {
-    background: rgba(30, 23, 16, 0.92);
-    border-color: rgba(255, 255, 255, 0.08);
-  }
-
   /* V5 Filter toolbar — sticks below header */
   .glass-toolbar {
     background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(16px) saturate(1.2);
-    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    backdrop-filter: blur(16px) saturate(1);
+    -webkit-backdrop-filter: blur(16px) saturate(1);
     border-bottom: 1px solid rgba(26, 18, 9, 0.04);
     box-shadow: 0 1px 2px rgba(26, 18, 9, 0.03);
   }
-  .dark .glass-toolbar {
-    background: rgba(30, 23, 16, 0.88);
-    border-color: rgba(255, 255, 255, 0.04);
-  }
-
   /* ── V5 Glass Pill (interactive filter/tag pills in Zone 1+2) ─── */
   .glass-pill {
     background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(12px) saturate(1.2);
-    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    backdrop-filter: blur(12px) saturate(1);
+    -webkit-backdrop-filter: blur(12px) saturate(1);
     border: 1px solid rgba(26, 18, 9, 0.09);
     box-shadow: 0 1px 2px rgba(26,18,9,.06);
   }
-  .dark .glass-pill {
-    background: rgba(30, 23, 16, 0.65);
-    border: 1px solid rgba(245, 238, 228, 0.09);
-  }
-
   /* glass-pill active state (when filter is selected) */
   .glass-pill-active {
-    background: rgba(232, 98, 74, 0.12);
-    backdrop-filter: blur(12px) saturate(1.3);
-    -webkit-backdrop-filter: blur(12px) saturate(1.3);
-    border: 1px solid rgba(232, 98, 74, 0.30);
+    background: rgba(4, 51, 56, 0.12);
+    backdrop-filter: blur(12px) saturate(1);
+    -webkit-backdrop-filter: blur(12px) saturate(1);
+    border: 1px solid rgba(4, 51, 56, 0.30);
     color: #7A2415;
-  }
-  .dark .glass-pill-active {
-    background: rgba(232, 98, 74, 0.20);
-    border: 1px solid rgba(232, 98, 74, 0.35);
-    color: #F07560;
   }
 }
 
@@ -321,7 +267,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     font-size: 1rem;       /* 16px — prevents iOS zoom-on-focus */
-    font-family: "DM Sans", sans-serif;
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
     color: var(--color-body);
     background: #ffffff;
     transition: border-color 200ms ease, box-shadow 200ms ease;
@@ -341,52 +287,27 @@
     border-color: var(--color-error);
   }
 
-  .dark input[type="text"],
-  .dark input[type="email"],
-  .dark input[type="password"],
-  .dark input[type="tel"],
-  .dark input[type="number"],
-  .dark input[type="search"],
-  .dark input[type="url"],
-  .dark textarea,
-  .dark select {
-    background: rgba(30,23,16,0.85);
-    border-color: rgba(245,238,228,0.12);
-    color: #F5EEE4;
-  }
 }
 
-/* ── Accessibility: Focus-visible rings ────────────────────────────── */
+/* ── Q47 (locked 2026-05-02): Focus-visible ring = 2px coral, 2px outside-offset ─ */
 @layer base {
   a:focus-visible,
   button:focus-visible,
-  [tabindex]:focus-visible {
-    outline: 2px solid rgba(232, 98, 74, 0.5);
+  [role="button"]:focus-visible,
+  [tabindex]:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid #043338;
     outline-offset: 2px;
     border-radius: 4px;
   }
 
-  /* Inputs use box-shadow ring (respects border-radius) */
+  /* Inputs/textareas use box-shadow ring instead of outline so it follows border-radius cleanly */
   input:focus-visible,
   textarea:focus-visible,
   select:focus-visible {
     outline: none;
-    border-color: #E8735A;
-    box-shadow: 0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), 0 0 0 3px #FAECE7;
-  }
-
-  /* Dark mode: brighter ring */
-  .dark a:focus-visible,
-  .dark button:focus-visible,
-  .dark [tabindex]:focus-visible {
-    outline-color: rgba(232, 98, 74, 0.9);
-  }
-
-  .dark input:focus-visible,
-  .dark textarea:focus-visible,
-  .dark select:focus-visible {
-    border-color: #F07560;
-    box-shadow: 0 0 0 3px rgba(240,117,96,.20);
+    border-color: #043338;
+    box-shadow: 0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), 0 0 0 2px #ffffff, 0 0 0 4px #043338;
   }
 }
 
@@ -408,13 +329,54 @@
   animation: fadeSlideUp 500ms var(--ease-out-strong, cubic-bezier(0.23, 1, 0.32, 1)) forwards;
 }
 
+/* ── V2-D43 (Emil polish): heart-pop spring-feel save animation ──────────
+   Used by HeartButton when toggling FROM unsaved TO saved. Range
+   0.5 → 1.15 → 1.0 with strong ease-out gives the Apple spring feel
+   without needing a JS spring library. transform-origin: center is
+   critical — without it, the heart pops from the corner. */
+@keyframes heart-pop {
+  0%   { transform: scale(0.5); }
+  50%  { transform: scale(1.15); }
+  100% { transform: scale(1.0); }
+}
+.animate-heart-pop {
+  transform-origin: center;
+  animation: heart-pop 350ms var(--ease-out-strong, cubic-bezier(0.23, 1, 0.32, 1));
+}
+
+/* ── V2-D43 (Emil polish): card stagger entrance on first paint ──────────
+   Each card fades up with translateY(8px) → 0 + opacity 0 → 1. Stagger
+   delay of 50ms between cards (Emil's recommended 30-80ms range) creates
+   the cascading entrance feel without blocking interaction. Apply on
+   .salon-card-stagger > * children. */
+@keyframes card-stagger-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.salon-card-stagger > * {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: card-stagger-in 350ms var(--ease-out-strong, cubic-bezier(0.23, 1, 0.32, 1)) forwards;
+}
+.salon-card-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.salon-card-stagger > *:nth-child(2) { animation-delay: 50ms; }
+.salon-card-stagger > *:nth-child(3) { animation-delay: 100ms; }
+.salon-card-stagger > *:nth-child(4) { animation-delay: 150ms; }
+.salon-card-stagger > *:nth-child(5) { animation-delay: 200ms; }
+.salon-card-stagger > *:nth-child(6) { animation-delay: 250ms; }
+.salon-card-stagger > *:nth-child(7) { animation-delay: 300ms; }
+.salon-card-stagger > *:nth-child(8) { animation-delay: 350ms; }
+@media (prefers-reduced-motion: reduce) {
+  .salon-card-stagger > * { animation: none; opacity: 1; transform: none; }
+}
+
 /* ── Section layout utilities ──────────────────────────────────────── */
 .section-spacing {
   padding-top: 3rem;
   padding-bottom: 3rem;
 }
 .section-divider {
-  border-top: 1px solid var(--color-border, #EBEBEB);
+  border-top: 1px solid var(--color-border, #EFE7DD);
 }
 
 /* ── P.3: Horizontal scroll containers — right-edge fade gradient ───── */
@@ -503,14 +465,6 @@ html {
   box-shadow: 0 4px 12px rgba(26, 18, 9, 0.06), 0 16px 40px rgba(26, 18, 9, 0.08);
   transform: translateY(-4px);
 }
-.dark .card-v4 {
-  background: rgba(30, 23, 16, 0.95);
-  border-color: rgba(255, 255, 255, 0.06);
-}
-.dark .card-v4:hover {
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
-}
-
 /* ── V5 Listing Card — Airbnb style, no elevation ───────────────────── */
 .card-listing {
   background: #FFFFFF;
@@ -625,41 +579,22 @@ html {
 /* ── V4 Subtle ambient gradient (replaces blobs) ─────────────────── */
 .ambient-v4 {
   background:
-    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(232,98,74,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(4,51,56,0.04) 0%, transparent 70%),
     radial-gradient(ellipse 60% 50% at 80% 80%, rgba(107,163,200,0.03) 0%, transparent 70%);
 }
-.dark .ambient-v4 {
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(232,98,74,0.03) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(107,163,200,0.02) 0%, transparent 70%);
-}
-
 /* ── V5 Ambient gradient (warmer, unified) ────────────────────────── */
 .ambient-v5 {
   background:
-    radial-gradient(ellipse 70% 50% at 0% 0%, rgba(232,98,74,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(212,135,10,0.03) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 50% at 0% 0%, rgba(4,51,56,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(243,168,100,0.03) 0%, transparent 60%);
 }
-.dark .ambient-v5 {
-  background:
-    radial-gradient(ellipse 70% 50% at 0% 0%, rgba(232,98,74,0.03) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(212,135,10,0.02) 0%, transparent 60%);
-}
-
 /* ── V5 Hero Cinematic Gradient ────────────────────────────────── */
 .hero-cinematic {
   background:
-    radial-gradient(ellipse 60% 50% at 15% 70%, rgba(232, 98, 74, 0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 15% 70%, rgba(4, 51, 56, 0.05) 0%, transparent 70%),
     radial-gradient(ellipse 50% 40% at 85% 25%, rgba(242, 193, 68, 0.04) 0%, transparent 60%),
     var(--bg);
 }
-.dark .hero-cinematic {
-  background:
-    radial-gradient(ellipse 60% 50% at 15% 70%, rgba(232, 98, 74, 0.07) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 85% 25%, rgba(242, 193, 68, 0.05) 0%, transparent 60%),
-    var(--bg);
-}
-
 /* ── Smooth scroll for anchor links ────────────────────────────────── */
 html {
   scroll-behavior: smooth;
@@ -715,29 +650,23 @@ html {
 
 /* ── Driver.js theme override ─────────────────────────────────────── */
 .driver-popover {
-  --driver-theme-color: #E8735A;
+  --driver-theme-color: #043338;
 }
 
 .solen-tour-popover {
   background: rgba(255, 255, 255, 0.95) !important;
-  backdrop-filter: blur(24px) saturate(1.3) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(1.3) !important;
+  backdrop-filter: blur(24px) saturate(1) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1) !important;
   border: 1px solid rgba(26, 18, 9, 0.08) !important;
   border-radius: 20px !important;
   box-shadow: 0 8px 32px rgba(26,18,9,0.08), 0 24px 72px rgba(26,18,9,0.12) !important;
-  font-family: "DM Sans", sans-serif !important;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif !important;
   padding: 24px !important;
   color: #1A1209 !important;
 }
 
-.dark .solen-tour-popover {
-  background: rgba(30, 23, 16, 0.95) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  color: #F5EEE4 !important;
-}
-
 .solen-tour-popover .driver-popover-title {
-  font-family: "Fraunces", Georgia, serif !important;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif !important;
   font-size: 1.25rem !important;
   font-weight: 700 !important;
   margin-bottom: 8px !important;
@@ -747,10 +676,6 @@ html {
   color: rgba(26, 18, 9, 0.7) !important;
   font-size: 0.9rem !important;
   line-height: 1.5 !important;
-}
-
-.dark .solen-tour-popover .driver-popover-description {
-  color: rgba(245, 238, 228, 0.7) !important;
 }
 
 .solen-tour-popover .driver-popover-footer button {
@@ -763,7 +688,7 @@ html {
 }
 
 .solen-tour-popover .driver-popover-next-btn {
-  background-color: #E8735A !important;
+  background-color: #043338 !important;
   color: white !important;
   border: none !important;
   text-shadow: none !important;
@@ -773,11 +698,6 @@ html {
   background-color: transparent !important;
   color: #1A1209 !important;
   border: 1px solid rgba(26, 18, 9, 0.1) !important;
-}
-
-.dark .solen-tour-popover .driver-popover-prev-btn {
-  color: #F5EEE4 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 /* ── Scrollbar hide utility ───────────────────────────────────────── */
@@ -879,14 +799,138 @@ html {
   animation-play-state: paused;
 }
 
-/* ── Global focus-visible ring (WCAG AAA keyboard accessibility) ────── */
-*:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px #FAFAF8, 0 0 0 4px #C05038;
+/* Legacy global focus-visible block removed 2026-05-02 — superseded by Q47 spec
+   in the @layer base block above (2px coral solid outline, 2px offset). */
+
+/* ============== PAGE-WIDE ATMOSPHERE WASHES (V3 — LIVE_TRUTH §5g extended) ==============
+   Two layered body-level washes that span the entire scrolling page so V3 sections
+   (hero / recently-viewed / last-minute / nearby / categories / etc.) feel like
+   ONE atmosphere instead of stark white seams between sections.
+
+   Layer 1 — body::before:
+     position: fixed → stays in place during scroll
+     5 radial gradients (cyan / teal / navy whispers)
+     22s drift animation, very subtle
+
+   Layer 2 — body::after:
+     position: absolute → parallax-feel echo, scrolls with document
+     13 stacked radial gradients distributed top-to-bottom (so every section
+     has SOMETHING tinting the bg, not just the viewport-fixed hotspots)
+     28s drift animation, drifts opposite direction
+
+   Hero gets an additional softened §5g wash on top of these (Hero.tsx).
+   prefers-reduced-motion: animations disabled, glows stay still.
+
+   Palette discipline (per V2-D15-3): ONLY brand-coordinate hues — pale teal
+   #C2F0F1, brand subtle #E1F4F4, pale ice blue #CAE8FF, navy #005898 / #031E48.
+   NO cream / cherry / bone / forest (those are CATEGORY-page colors). */
+
+/* HTML carries the base white substrate so the page never falls back to
+   browser default bg when scrolled past the wash bleed area. Body itself
+   stays transparent so body::before / body::after wash layers (z -1 / -2)
+   paint on top of the white substrate, BELOW any section content. */
+html {
+  /* V2-D68 (2026-05-18): substrate swapped from pure white #FFFFFF to subtle
+     off-white #F8F7F2. Atmosphere wash (body::before + body::after + JSX
+     AtmosphereBlobs) RETIRED in the same commit per user "atmosphere wash
+     creates visual mush, lets do subtle off white". Substrate is now a quiet
+     ~97% lightness with faint warmth; brand colors live as accents (CTAs,
+     badges, category tags), not as a page-wide gradient.
+     V2-D60-fresha history: was #FFFFFF white, with atmospheric color coming
+     from body::before/::after wash layers (also retired V2-D68).
+     V2-D70 (2026-05-18): #F8F7F2 → #F9F8F6 warm pearl per Aurex/Fresha spec.
+     V2-D71 (2026-05-18): #F9F8F6 → #F8F7F5 slightly darker warm grey per
+     user "If background too close to white on mobile, darken just a tiny bit"
+     — gives white cards crisper contrast for the Aurex floating effect.
+     V3-D72 (2026-05-18): #F8F7F5 warm grey → #F4F4F6 cool grey per user
+     "Try #F4F4F6 or #F7F7F8" — slight cool shift makes pure-white cards pop
+     more decisively (warmer substrates blended into white at certain angles).
+     V3-D86 (2026-05-19): #F4F4F6 → #FFFFFF pure white per user "atmosphere
+     wash removed → pure white (Airbnb pattern)." Trade-off: white cards on
+     white page → depth flat, wrap/halo effects fight to be visible.
+     V3-D93 (2026-05-21): #FFFFFF → #FAF8F2 subtle warm. Variant B picked from
+     public/solen-substrate-variants.html. Cards (#FFFFFF) now visibly float
+     on a barely-warmer substrate. Yellow-cream cast (vs V3-D72's cool grey)
+     so salon photos harmonize. 1.5% warmer + 1.5% darker than pure white —
+     below the threshold of "looks beige", above the threshold of "white
+     cards float." V2-D60 cards-stay-white fix preserved.
+     V3-D94 (2026-05-21): REVERTED V3-D93 — #FAF8F2 → #FFFFFF per user
+     "revert back to comp white". Atmosphere/blob exploration continues on
+     pure white substrate; the warm cream experiment did not survive contact
+     with the cool-poster blob mockup. */
+  background-color: #FFFFFF;
 }
-button:focus-visible,
-a:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px #FAFAF8, 0 0 0 4px #C05038;
+
+body {
+  background: transparent;
+  position: relative;
+  /* Prevent horizontal scroll from -10% / -15% wash insets bleeding past viewport */
+  overflow-x: hidden;
+}
+
+/* V2-D68 (2026-05-18): body::before + body::after atmosphere wash layers
+   RETIRED. They were the page-wide gradient that created the "visual mush"
+   user feedback — 5-layer cloud zones at 0.40-0.85 opacity (::before) + 12
+   micro-gradients down the page (::after). Substrate is now subtle off-white
+   #F8F7F2 with NO atmosphere overlay. Brand colors live as accents on CTAs
+   + badges + category tags only, not as a page-wide background.
+   To re-introduce as per-section accent (e.g. behind hero h1 only), build a
+   localized component instead of pseudo-elements on body.
+   V2-D60-fresha history preserved in git blame + archived LIVE_TRUTH §5g.
+body::before {
+  content: '';
+  position: fixed;
+  inset: -15%;
+  background:
+    radial-gradient(ellipse 75% 55% at 82% 12%, rgba(255, 232, 216, 0.85) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 55% at 15% 22%, rgba(212, 221, 200, 0.75) 0%, transparent 70%),
+    radial-gradient(ellipse 55% 45% at 92% 48%, rgba(168, 224, 191, 0.55) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 8% 72%, rgba(240, 169, 140, 0.40) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 50% at 70% 92%, rgba(255, 232, 216, 0.55) 0%, transparent 60%);
+  z-index: -2;
+  pointer-events: none;
+  animation: atm-drift-1 22s ease-in-out infinite;
+  will-change: transform;
+}
+body::after {
+  content: '';
+  position: absolute;
+  inset: -10%;
+  background:
+    radial-gradient(ellipse 55% 7% at 80% 14%, rgba(212, 221, 200, 0.20) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 6% at 15% 19%, rgba(255, 232, 216, 0.18) 0%, transparent 75%),
+    radial-gradient(ellipse 50% 7% at 60% 26%, rgba(255, 232, 216, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 6% at 25% 32%, rgba(240, 169, 140, 0.14) 0%, transparent 75%),
+    radial-gradient(ellipse 50% 8% at 75% 40%, rgba(212, 221, 200, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 7% at 20% 46%, rgba(168, 224, 191, 0.14) 0%, transparent 75%),
+    radial-gradient(ellipse 55% 7% at 60% 54%, rgba(240, 169, 140, 0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 6% at 12% 60%, rgba(255, 232, 216, 0.16) 0%, transparent 75%),
+    radial-gradient(ellipse 50% 7% at 85% 66%, rgba(212, 221, 200, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 6% at 30% 72%, rgba(255, 232, 216, 0.16) 0%, transparent 75%),
+    radial-gradient(ellipse 55% 7% at 60% 80%, rgba(255, 232, 216, 0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 7% at 25% 88%, rgba(168, 224, 191, 0.12) 0%, transparent 65%);
+  z-index: -1;
+  pointer-events: none;
+  animation: atm-drift-2 28s ease-in-out infinite;
+  will-change: transform;
+}
+*/
+
+@keyframes atm-drift-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  25%      { transform: translate3d(-7%, 4%, 0) scale(1.08); }
+  50%      { transform: translate3d(3%, -5%, 0) scale(1.10); }
+  75%      { transform: translate3d(5%, 3%, 0) scale(1.05); }
+}
+
+@keyframes atm-drift-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  25%      { transform: translate3d(8%, -3%, 0) scale(1.07); }
+  50%      { transform: translate3d(-5%, 6%, 0) scale(1.12); }
+  75%      { transform: translate3d(-7%, -4%, 0) scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after { animation: none !important; }
 }
 

@@ -1,9 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
+  // darkMode removed 2026-05-02 per Q62 — single light theme.
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    // V2 rebuild (2026-05-03): legacy components moved from `components/` to
+    // `components-legacy/` per Part 9 of the strip-and-rebuild plan. Both
+    // paths kept in `content` so Tailwind scans (a) any new components landing
+    // in `components/` from the rebuild and (b) the legacy tree still in use
+    // until each route gets migrated.
     "./components/**/*.{js,ts,jsx,tsx}",
+    "./components-legacy/**/*.{js,ts,jsx,tsx}",
     "./lib/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
@@ -15,26 +21,93 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        // ── Solen Brand Tokens (DESIGN_SPEC.md is source of truth) ──
-        "s-coral": { DEFAULT: "#E8735A", hover: "#D4654E", subtle: "#FAECE7", text: "#B84A35", button: "#C05038", "button-hover": "#A8442F" },
-        "s-amber": { DEFAULT: "#D4870A", hover: "#B3700A", subtle: "#FEF4E0", text: "#6B4005" },
-        "s-blue": { DEFAULT: "#6BA3C8", hover: "#4E8AB5", subtle: "#EAF3FB", text: "#1A4D72" },
-        "s-plum": { DEFAULT: "#4A1E3C", hover: "#3A1630", subtle: "#F0E8F0", text: "#4A1E3C" },
-        "s-yellow": { DEFAULT: "#F2C144", subtle: "#FEF8E0", text: "#7A5C00" },
-        "s-sage": { DEFAULT: "#7BA688", subtle: "#EBF5EE", text: "#2E5E3A" },
-        "s-sand": { DEFAULT: "#C9A96E", dark: "#D4C9B4", subtle: "#F7F0E3", text: "#6B5430" },
-        "s-ink": { DEFAULT: "#222222", secondary: "#767676", tertiary: "#8A7A66", disabled: "#C4B8A6" },
-        "s-bg": { base: "#FAFAF8", surface: "#F3EDE2", raised: "#FFFFFF", sunken: "#EDE5D8" },
-        "s-dm": { bg: "#151009", surface: "#1E1710", raised: "#26201A", sunken: "#120D07", text: "#F5EEE4", "text-secondary": "#C8BAA8" },
-        // ── Semantic Status Tokens ──
-        "s-success": { DEFAULT: "#2E7D32", bg: "#E8F5E9" },
-        "s-warning": { DEFAULT: "#E65100", bg: "#FFF3E0" },
-        "s-error": { DEFAULT: "#C62828", bg: "#FFEBEE" },
+        // ── Solen V3 Brand Tokens — V2-D48 EARTHEN WELLNESS LIGHT (2026-05-09) ──
+        // Overrides V2-D15-3 dark-teal palette. New primary brand: moss-soft #5C7765.
+        // Heartbeat accent: terracotta #C97A57. Bright accent: butter #F2D77B.
+        // See `_tasks/_beta/EARTHEN_WELLNESS_PALETTE.md` and `public/solen-v2-earthen-wellness-light.html`.
+        // RETIRED V2-D48: dark teal #043338, pale teal #C2F0F1, ice blue #CAE8FF, royal blue #005898,
+        // navy #031E48, magenta #B5345A/#B50051, forest #193120, sandy beige #D9C9A8 (cat letter).
+        //
+        // Backward-compat: `s-coral` token group still references the brand DEFAULT — same token name,
+        // new value. V2-D48-2: shifted from muted moss-soft #5C7765 → vibrant emerald-forest #1F5C42
+        // per user "more vibrant + dark green everywhere". Saturated, classic luxury-craft green.
+        // ── V2-D70 WARM MINIMAL PIVOT (2026-05-18) — Aurex/Fresha lane ──
+        // Brand: punchy emerald #1A8F5C → forest #3B7A57 (matches Solen logo green
+        // exactly per user spec). Lower saturation, more "premium minimal" feel.
+        // Accent: terracotta #E0703D → #D87352 (matches Solen logo dot exactly).
+        // Substrate: #FAF3E6 cream (V2-D60) → #F9F8F6 warm pearl/alabaster.
+        // Cards stay WHITE on the pearl bg — soft contrast lets cards float
+        // with shadow (Aurex lift). Plus Jakarta Sans replaces Peace Sans +
+        // Open Sauce One — single family at extreme weight contrast.
+        "s-coral": { DEFAULT: "#3B7A57", hover: "#2D5E43", subtle: "#E5F2EA", text: "#3B7A57", button: "#3B7A57", "button-hover": "#2D5E43" },
+        "s-brand": { DEFAULT: "#1638C4", pale: "#B8C4F0", subtle: "#E2E8FA", mid: "#0F2BA0", deep: "#08185E" },
+        "s-accent": { DEFAULT: "#FFC32B", soft: "#FFE19F", deep: "#C9941F" },
+        // ── Bright accent (butter) — sparingly, for stat-card highlights ──
+        "s-butter": "#F2D77B",
+        // ── Sage — wellness whisper, never loud ──
+        "s-sage": { DEFAULT: "#A8B89A", pale: "#D4DDC8" },
+        // ── V3 category colorway tokens — V2-D48 Earthen Wellness mapping ──
+        // V2-D60: cat tile bgs slightly desaturated to stay readable on lighter substrate.
+        // Text colors updated to match new brand-mid + accent-deep values.
+        "s-cat-coiffeur":      "#FFE8D8", "s-cat-coiffeur-text":   "#E0703D", // peach + warm terracotta
+        "s-cat-barbershop":    "#EAE0D0", "s-cat-barbershop-text": "#2A1F18", // bone + ink
+        "s-cat-nails":         "#D4DDC8", "s-cat-nails-text":      "#A04A22", // sage-pale + terra-deep
+        "s-cat-spa":           "#D4F2E0", "s-cat-spa-text":        "#0F6F44", // brand subtle + brand mid (emerald)
+        // ── V3 atmosphere wash colors — Earthen Wellness ──
+        "s-atm-cream":  "#FAF3E6",  // V2-D60: matches new base
+        "s-atm-terra":  "#F0A98C",  // V2-D60: matches new accent-soft (more saturated)
+        "s-atm-sage":   "#D4DDC8",  // wellness whisper (unchanged)
+        "s-atm-bone":   "#EAE0D0",  // V2-D60: matches new sunken
+        "s-atm-butter": "#F2D77B",  // bright accent (unchanged)
+        // ── Ink (text) — V2-D70 cool-grey scale + V3-D73 contrast fix + V3-D87 white-substrate retune ──
+        // Per spec: never use pure black (#000000) — causes eye strain. Primary
+        // is dark rich charcoal #1A1C19, secondary is medium cool grey #6B7068.
+        // V3-D73 (2026-05-18): tertiary darkened #9BA09A → #7A7F78 — calculated
+        // against pearl substrate #F4F4F6 (passed AA Normal at that bg).
+        // V3-D87 (2026-05-20): tertiary darkened AGAIN #7A7F78 → #5F635D after
+        // V3-D86 substrate flip to pure #FFFFFF. Old #7A7F78 against white = 3.86:1
+        // (FAILS WCAG AA Normal 4.5:1). New #5F635D = ~5.0:1 against white. Fixes
+        // washed-out reading of section eyebrows + salon-card category meta +
+        // Reviews meta lines (the "feels muted" complaint root-caused by uiux-audit
+        // skill, 2026-05-20).
+        "s-ink": { DEFAULT: "#1A1C19", secondary: "#6B7068", tertiary: "#5F635D", disabled: "#C5C8C4" },
+        "s-ink-2": "#6B7068",  // V2-D70: medium cool grey per spec (was warm #5C4A3A)
+        "s-ink-3": "#5F635D",  // V3-D87: darkened from #7A7F78 (failed WCAG vs white substrate after V3-D86 atmosphere kill)
+        "s-border": "#E8E6E0",  // V2-D70: cool-warm neutral hairline for pearl bg (was warm bone #EAE0D0)
+        // V2-D70 (2026-05-18): substrate fine-tuned #F8F7F2 → #F9F8F6 (warm pearl /
+        // alabaster per Aurex/Fresha spec). Slightly warmer + softer than V2-D68.
+        // Hero gets a peach radial gradient via .bg-s-bg-peach + custom CSS layer.
+        // Sunken updated to a soft warm-neutral that pairs with the new pearl base.
+        // V2-D68 history (kept for archeology): substrate F8F7F2 + atmosphere wash retired.
+        // V2-D60 history: cream-on-cream → WHITE on cream (killed beige collapse).
+        "s-bg": { base: "#FFFFFF", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#F6F6F8", active: "#FFFAF1", peach: "#FFE8D8" },
+        // V2-D48: bg.base flipped white → cream #F5EBDD (Earthen Wellness page bg). Surface +
+        // sunken updated. raised stays white for cards/modals. active = cream-warm input typing.
+        // V2-D16 (2026-05-08) note: cream #FFF4E8 was wrongly retired in V2-D15 comment above.
+        // V2-D15 retired CREAM SUBSTRATE (page bg #FBF8F3 → white). It did NOT retire #FFF4E8 micro-tint
+        // for input active-typing state (LIVE_TRUTH §F.1.0 + §14.3 search row both still cite it).
+        // Re-added as `s-bg.active` — distinct from substrate. Use `bg-s-bg-active` in className.
+        // ── Semantic Status Tokens (LIVE_TRUTH §3) ──
+        // V3-D85-semantic (2026-05-19): collapsed warm semantic family per council
+        // reduction (5 colors → 4). s-love now does double duty: heart-saved AND
+        // sale/discount chips (Airbnb pattern). Muted from #FF4A6B → #CC4A60 to
+        // escape gendered-pink read and stay calm against the brand royal-blue.
+        // .soft = warm-red light bg for sale chips. .deep = darker warm-red for
+        // hue-matched text on .soft backgrounds.
+        "s-love":     { DEFAULT: "#CC4A60", soft: "#FAD2DA", deep: "#A23548" },
+        "s-success": { DEFAULT: "#16A34A", bg: "#E8F5E9" },
+        "s-warning": { DEFAULT: "#F59E0B", bg: "#FFF3E0" },  // V3: aligned to LIVE_TRUTH §3 hex
+        "s-error":   { DEFAULT: "#D32F2F", bg: "#FFEBEE" },  // V3: aligned to LIVE_TRUTH §3 hex
+        "s-closed":   "#DC2626",  // V3 added — distinct from error
+        "s-star":     "#F3A864",  // V3 added — rating stars only
       },
       fontFamily: {
-        heading: ["Fraunces", "Georgia", "serif"],
-        body: ["DM Sans", "sans-serif"],
-        display: ["Bebas Neue", "sans-serif"],
+        // V3-D75 typography (2026-05-18): Bricolage Grotesque (display) +
+        // Hanken Grotesk (body/UI). Bricolage = playful-geometric for h1/h2
+        // hero impact; Hanken = clean neutral workhorse for body + UI labels.
+        display: ["'Bricolage Grotesque'", "system-ui", "-apple-system", "sans-serif"],
+        heading: ["'Bricolage Grotesque'", "system-ui", "-apple-system", "sans-serif"],
+        body:    ["'Hanken Grotesk'", "system-ui", "-apple-system", "sans-serif"],
       },
       borderRadius: {
         // Legacy Tailwind vars (keep for shadcn compat)
@@ -64,10 +137,6 @@ module.exports = {
         "warm-lg":    "0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)",
         "warm-xl":    "0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)",
         "warm-float": "0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)",
-        // ── Button glows (updated coral) ──
-        "coral-glow":       "0 2px 4px rgba(232,115,90,.25), 0 4px 16px rgba(232,115,90,.15)",
-        "coral-glow-hover": "0 4px 8px rgba(232,115,90,.32), 0 8px 28px rgba(232,115,90,.22)",
-        "amber-glow":       "0 2px 4px rgba(212,135,10,.22), 0 4px 16px rgba(212,135,10,.14)",
         "pressed":          "0 1px 1px rgba(50,47,44,.12), inset 0 1px 2px rgba(50,47,44,.06)",
         // ── Solen Shadow System (DESIGN_SPEC.md — 3 levels, warm-tinted) ──
         "elevation-1":      "0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03)",
@@ -77,20 +146,25 @@ module.exports = {
         "v5-card":       "0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03)",
         "v5-card-hover": "0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)",
         "v5-float":      "0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)",
-        "v5-glow-coral": "0 0 24px rgba(232,115,90,.12)",
       },
       zIndex: {
         55: '55',
         60: '60',
         70: '70',
+        // ── V3 z-index lock (V2-D18, 2026-05-09) — LIVE_TRUTH §8 ──
+        // Use as `z-modal-bg`, `z-modal`, `z-toast` etc in className.
+        // Backdrop / surface pairs follow §8 naming: `*-bg` for the dim layer,
+        // bare token for the content layer above.
+        "sheet-bg":  "400",
+        "sheet":     "410",
+        "modal-bg":  "500",
+        "modal":     "510",
+        "toast":     "600",
+        "tooltip":   "700",
       },
       backdropBlur: {
         xs: "4px",
         panel: "20px",  // was: glass — renamed for V3
-      },
-      backgroundImage: {
-        "glass-gradient": "linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.65) 100%)",
-        "mesh-warm": "radial-gradient(at 40% 20%, rgba(232,98,74,0.12) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(212,135,10,0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(107,163,200,0.06) 0px, transparent 50%)",
       },
       transitionTimingFunction: {
         // Legacy alias → mapped to DESIGN_SPEC easing
@@ -102,6 +176,12 @@ module.exports = {
         "ease-out-back": "cubic-bezier(0.34, 1.56, 0.64, 1)",
         "ease-in-subtle": "cubic-bezier(0.55, 0, 1, 0.45)",
         "spring-bounce": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        // ── V3 motion vocabulary (V2-D16, 2026-05-08) — LIVE_TRUTH §F.1 + §5b ──
+        // Use as `ease-snap`, `ease-spring`, `ease-glide`, `ease-thud` in className.
+        "snap":   "cubic-bezier(0.4, 0, 0.2, 1)",     // standard UI transitions (focus, color)
+        "spring": "cubic-bezier(0.34, 1.56, 0.64, 1)", // bouncy reveal (toggle, check)
+        "glide":  "cubic-bezier(0.16, 1, 0.3, 1)",     // long-distance smooth (sheet open)
+        "thud":   "cubic-bezier(0.7, 0, 0.84, 0)",     // press-down feel (button press scale)
       },
       transitionProperty: {
         "transform-opacity": "transform, opacity",
@@ -109,7 +189,6 @@ module.exports = {
         "colors-shadow": "color, background-color, border-color, box-shadow",
       },
       animation: {
-        "pulse-coral": "pulse-coral 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "count-up": "count-up 0.6s ease-out forwards",
         "slide-in-up": "slide-in-up 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
         "fade-in": "fade-in 0.3s cubic-bezier(0.23, 1, 0.32, 1)",
@@ -122,10 +201,6 @@ module.exports = {
         "shimmer": {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
-        },
-        "pulse-coral": {
-          "0%, 100%": { boxShadow: "0 0 0 0 rgba(232,98,74,0.4)" },
-          "50%": { boxShadow: "0 0 0 8px rgba(232,98,74,0)" },
         },
         "slide-in-up": {
           from: { transform: "translateY(12px)", opacity: "0" },

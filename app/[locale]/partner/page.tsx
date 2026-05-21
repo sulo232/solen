@@ -5,8 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Store, TrendingUp, Calendar, ArrowRight, Star, Check, ChevronDown, ChevronRight, UserPlus, Settings, Zap, Shield, Lock, CreditCard, Quote, BarChart3, Users, MessageSquare, Clock, Bell, Scissors, Sparkles, Droplets } from "lucide-react";
-import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
-import PartnerSignupForm from "@/components/partner/PartnerSignupForm";
+import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
+import PartnerSignupForm from "@/components-legacy/partner/PartnerSignupForm";
 
 const FEATURES = [
   { icon: Calendar, title: "feat_bookings_title", desc: "feat_bookings_desc", live: true },
@@ -37,27 +37,27 @@ export default function PartnerPage() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-s-dm-bg">
+    <div className="min-h-screen bg-white">
       {/* Hero — Split Layout */}
       <div className="pt-24 pb-16 overflow-hidden"
-        style={{ background: "linear-gradient(180deg, rgba(232,98,74,.04) 0%, rgba(255,255,255,0) 100%)" }}>
+        style={{ background: "linear-gradient(180deg, rgba(27, 77, 27,.04) 0%, rgba(255,255,255,0) 100%)" }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
           {/* Left — Text + CTA */}
           <div className="text-center lg:text-left">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-coral mb-3">
+            <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-coral mb-3">
               {t("for_owners")}
             </p>
-            <h1 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-s-ink dark:text-s-dm-text mb-4 leading-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl text-s-ink mb-4 leading-tight">
               {t("hero_title_1")}{" "}
               <span className="text-s-coral">{t("hero_title_accent")}</span>
               <br />{t("hero_title_2")}
             </h1>
-            <p className="text-lg font-body text-s-ink/60 dark:text-s-dm-text/60 max-w-lg mb-8">
+            <p className="text-lg font-body text-s-ink/60 max-w-lg mb-8">
               {t("hero_subtitle")}
             </p>
             <PartnerSignupForm />
-            <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/45 dark:text-s-dm-text/45 mt-3">
+            <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-ink/45 mt-3">
               {t("hero_subtext")}
             </p>
           </div>
@@ -82,7 +82,7 @@ export default function PartnerPage() {
                   alt={t("alt_profile")}
                   width={180}
                   height={360}
-                  className="rounded-[12px] border-4 border-white dark:border-s-dm-surface"
+                  className="rounded-[12px] border-4 border-white"
                   style={{ boxShadow: "0 4px 8px rgba(26,18,9,.10), 0 12px 32px rgba(26,18,9,.14)" }}
                 />
               </div>
@@ -96,46 +96,46 @@ export default function PartnerPage() {
       {/* Features */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
         <div className="text-center mb-10">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
             {t("section_features")}
           </p>
-          <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
+          <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
             {t("features_title")}
           </h2>
-          <p className="text-s-ink/60 dark:text-s-dm-text/60">
+          <p className="text-s-ink/60">
             {t("features_subtitle")}
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {FEATURES.map((f, i) => (
-            <div key={i} className="relative p-5 rounded-[14px] bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/[0.05] dark:border-white/[0.06] hover:shadow-warm-sm transition-[border-color,box-shadow] duration-200">
+            <div key={i} className="relative p-5 rounded-[14px] bg-s-bg-surface border border-s-ink/[0.05] hover:shadow-warm-sm transition-[border-color,box-shadow] duration-200">
               {!f.live && (
-                <span className="absolute top-3 right-3 text-[9px] font-heading font-bold uppercase tracking-[.06em] px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral">
+                <span className="absolute top-3 right-3 text-[9px] font-heading uppercase tracking-[.06em] px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral">
                   {t("coming_soon")}
                 </span>
               )}
               <div className="w-10 h-10 rounded-[10px] flex items-center justify-center mb-3"
-                style={{ background: "rgba(232,98,74,.09)" }}>
+                style={{ background: "rgba(27, 77, 27,.09)" }}>
                 <f.icon className="w-5 h-5 text-s-coral" />
               </div>
-              <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mb-1">{t(f.title as any)}</h3>
-              <p className="text-xs font-body text-s-ink/55 dark:text-s-dm-text/55 leading-relaxed">{t(f.desc as any)}</p>
+              <h3 className="font-heading text-sm text-s-ink mb-1">{t(f.title as any)}</h3>
+              <p className="text-xs font-body text-s-ink/55 leading-relaxed">{t(f.desc as any)}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Categories */}
-      <div className="py-16 bg-s-bg-base dark:bg-s-dm-bg">
+      <div className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
               {t("section_categories")}
             </p>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
+            <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
               {t("cat_title")}
             </h2>
-            <p className="text-s-ink/60 dark:text-s-dm-text/60">
+            <p className="text-s-ink/60">
               {t("cat_subtitle")}
             </p>
           </div>
@@ -148,10 +148,10 @@ export default function PartnerPage() {
               { icon: Star, key: "cat_makeup" },
               { icon: Zap, key: "cat_waxing" },
             ].map((cat) => (
-              <div key={cat.key} className="p-5 rounded-[14px] bg-white dark:bg-s-dm-bg border border-s-ink/[0.05] dark:border-white/[0.06] hover:border-s-coral/20 hover:shadow-warm-sm transition-[border-color,box-shadow] duration-200">
+              <div key={cat.key} className="p-5 rounded-[14px] bg-white border border-s-ink/[0.05] hover:border-s-coral/20 hover:shadow-warm-sm transition-[border-color,box-shadow] duration-200">
                 <cat.icon className="w-6 h-6 text-s-coral mb-3" />
-                <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mb-1">{t(`${cat.key}_title` as any)}</h3>
-                <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 leading-relaxed">{t(`${cat.key}_desc` as any)}</p>
+                <h3 className="font-heading text-sm text-s-ink mb-1">{t(`${cat.key}_title` as any)}</h3>
+                <p className="text-xs font-body text-s-ink/50 leading-relaxed">{t(`${cat.key}_desc` as any)}</p>
               </div>
             ))}
           </div>
@@ -159,16 +159,16 @@ export default function PartnerPage() {
       </div>
 
       {/* How It Works */}
-      <div className="py-16 bg-s-bg-surface dark:bg-s-dm-surface">
+      <div className="py-16 bg-s-bg-surface">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
               {t("section_how_it_works")}
             </p>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
+            <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
               {t("hiw_title")}
             </h2>
-            <p className="text-s-ink/60 dark:text-s-dm-text/60">
+            <p className="text-s-ink/60">
               {t("hiw_subtitle")}
             </p>
           </div>
@@ -185,19 +185,19 @@ export default function PartnerPage() {
 
             {/* Step 1 */}
             <div className="relative text-center md:text-center pl-16 md:pl-0">
-              <div className="w-12 h-12 rounded-pill bg-s-coral text-white font-heading font-bold text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
+              <div className="w-12 h-12 rounded-pill bg-s-coral text-white font-heading text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
                 1
               </div>
               <div className="mt-2 md:mt-4">
                 <UserPlus className="w-6 h-6 text-s-coral mx-auto mb-2 hidden md:block" />
-                <h3 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-1">
+                <h3 className="font-heading text-base text-s-ink mb-1">
                   {t("hiw_step1_title")}
                 </h3>
-                <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-2">
+                <p className="text-sm text-s-ink/60 mb-2">
                   {t("hiw_step1_desc")}
                 </p>
-                <span className="inline-block text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-coral px-3 py-1.5 rounded-pill"
-                  style={{ background: "rgba(232,98,74,.10)" }}>
+                <span className="inline-block text-[9px] font-heading uppercase tracking-[.12em] text-s-coral px-3 py-1.5 rounded-pill"
+                  style={{ background: "rgba(27, 77, 27,.10)" }}>
                   {t("hiw_step1_time")}
                 </span>
               </div>
@@ -205,19 +205,19 @@ export default function PartnerPage() {
 
             {/* Step 2 */}
             <div className="relative text-center md:text-center pl-16 md:pl-0">
-              <div className="w-12 h-12 rounded-pill bg-s-coral text-white font-heading font-bold text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
+              <div className="w-12 h-12 rounded-pill bg-s-coral text-white font-heading text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
                 2
               </div>
               <div className="mt-2 md:mt-4">
                 <Settings className="w-6 h-6 text-s-coral mx-auto mb-2 hidden md:block" />
-                <h3 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-1">
+                <h3 className="font-heading text-base text-s-ink mb-1">
                   {t("hiw_step2_title")}
                 </h3>
-                <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-2">
+                <p className="text-sm text-s-ink/60 mb-2">
                   {t("hiw_step2_desc")}
                 </p>
-                <span className="inline-block text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-coral px-3 py-1.5 rounded-pill"
-                  style={{ background: "rgba(232,98,74,.10)" }}>
+                <span className="inline-block text-[9px] font-heading uppercase tracking-[.12em] text-s-coral px-3 py-1.5 rounded-pill"
+                  style={{ background: "rgba(27, 77, 27,.10)" }}>
                   {t("hiw_step2_time")}
                 </span>
               </div>
@@ -225,18 +225,18 @@ export default function PartnerPage() {
 
             {/* Step 3 */}
             <div className="relative text-center md:text-center pl-16 md:pl-0">
-              <div className="w-12 h-12 rounded-pill bg-s-coral text-white font-heading font-bold text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
+              <div className="w-12 h-12 rounded-pill bg-s-coral text-white font-heading text-lg flex items-center justify-center mx-auto md:mx-auto absolute md:relative left-0 md:left-auto top-0 md:top-auto mb-4">
                 3
               </div>
               <div className="mt-2 md:mt-4">
                 <Zap className="w-6 h-6 text-s-coral mx-auto mb-2 hidden md:block" />
-                <h3 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-1">
+                <h3 className="font-heading text-base text-s-ink mb-1">
                   {t("hiw_step3_title")}
                 </h3>
-                <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-2">
+                <p className="text-sm text-s-ink/60 mb-2">
                   {t("hiw_step3_desc")}
                 </p>
-                <span className="inline-block text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-sage px-3 py-1.5 rounded-pill"
+                <span className="inline-block text-[9px] font-heading uppercase tracking-[.12em] text-s-sage px-3 py-1.5 rounded-pill"
                   style={{ background: "rgba(123,166,136,.10)" }}>
                   {t("hiw_step3_time")}
                 </span>
@@ -247,16 +247,16 @@ export default function PartnerPage() {
       </div>
 
       {/* Social Proof — Trust Badges + Testimonials */}
-      <div className="py-16 bg-white dark:bg-s-dm-bg">
+      <div className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
               {t("section_testimonials")}
             </p>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
+            <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
               {t("social_title")}
             </h2>
-            <p className="text-s-ink/60 dark:text-s-dm-text/60">
+            <p className="text-s-ink/60">
               {t("social_subtitle")}
             </p>
           </div>
@@ -269,9 +269,9 @@ export default function PartnerPage() {
               { icon: CreditCard, key: "trust_stripe" },
               { icon: Check, key: "trust_no_contract" },
             ].map((badge) => (
-              <div key={badge.key} className="flex flex-col items-center text-center p-4 bg-s-bg-surface dark:bg-s-dm-surface rounded-[14px] border border-s-ink/[0.05] dark:border-white/[0.06]">
+              <div key={badge.key} className="flex flex-col items-center text-center p-4 bg-s-bg-surface rounded-[14px] border border-s-ink/[0.05]">
                 <badge.icon className="w-6 h-6 text-s-coral mb-2" />
-                <span className="text-xs font-heading font-bold text-s-ink dark:text-s-dm-text">{t(badge.key as any)}</span>
+                <span className="text-xs font-heading text-s-ink">{t(badge.key as any)}</span>
               </div>
             ))}
           </div>
@@ -281,40 +281,40 @@ export default function PartnerPage() {
       </div>
 
       {/* Pricing */}
-      <div className="py-16 bg-white dark:bg-s-dm-bg">
+      <div className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* Section header */}
           <div className="text-center mb-12">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
               {t("section_pricing")}
             </p>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
+            <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
               {t("pricing_title")}
             </h2>
-            <p className="text-s-ink/60 dark:text-s-dm-text/60 max-w-2xl mx-auto">
+            <p className="text-s-ink/60 max-w-2xl mx-auto">
               {t("pricing_subtitle")}
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
             {/* Left — Pricing Card */}
-            <div className="bg-white dark:bg-s-dm-surface border border-s-ink/[0.05] dark:border-white/[0.06] rounded-[18px] p-8 relative overflow-hidden"
+            <div className="bg-white border border-s-ink/[0.05] rounded-[18px] p-8 relative overflow-hidden"
               style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 32px rgba(26,18,9,.09)" }}>
               {/* Badge */}
-              <div className="absolute top-4 right-4 text-s-coral text-[9px] font-heading font-bold uppercase tracking-[.14em] px-3 py-1.5 rounded-pill"
-                style={{ background: "rgba(232,98,74,.10)" }}>
+              <div className="absolute top-4 right-4 text-s-coral text-[9px] font-heading uppercase tracking-[.14em] px-3 py-1.5 rounded-pill"
+                style={{ background: "rgba(27, 77, 27,.10)" }}>
                 {t("pricing_badge")}
               </div>
 
               {/* Price */}
-              <p className="text-sm font-body text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("pricing_label")}</p>
+              <p className="text-sm font-body text-s-ink/50 mb-1">{t("pricing_label")}</p>
               <div className="flex items-baseline gap-2 mb-1">
-                <span className="font-heading font-bold text-4xl text-s-coral">15%</span>
-                <span className="text-s-ink/50 dark:text-s-dm-text/50 text-sm">{t("pricing_per_booking")}</span>
+                <span className="font-heading text-4xl text-s-coral">15%</span>
+                <span className="text-s-ink/50 text-sm">{t("pricing_per_booking")}</span>
               </div>
-              <p className="text-[11px] font-body text-s-ink/55 dark:text-s-dm-text/55 mb-0.5">{t("pricing_intro_model")}</p>
+              <p className="text-[11px] font-body text-s-ink/55 mb-0.5">{t("pricing_intro_model")}</p>
               <p className="text-[10px] font-body text-s-amber italic mb-5">{t("pricing_intro_qualifier")}</p>
-              <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-6">{t("pricing_no_fixed")}</p>
+              <p className="text-xs text-s-ink/40 mb-6">{t("pricing_no_fixed")}</p>
 
               {/* Feature checklist */}
               <ul className="space-y-3">
@@ -330,15 +330,15 @@ export default function PartnerPage() {
                 ].map((key) => (
                   <li key={key} className="flex items-start gap-3">
                     <Check className="w-4 h-4 text-s-sage mt-0.5 shrink-0" />
-                    <span className="text-sm text-s-ink/80 dark:text-s-dm-text/80">{t(key as any)}</span>
+                    <span className="text-sm text-s-ink/80">{t(key as any)}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* Right — Competitor Comparison Chart */}
-            <div className="bg-s-bg-surface dark:bg-s-dm-surface rounded-[16px] p-8">
-              <h3 className="font-heading font-semibold text-lg text-s-ink dark:text-s-dm-text mb-6">
+            <div className="bg-s-bg-surface rounded-[16px] p-8">
+              <h3 className="font-heading text-lg text-s-ink mb-6">
                 {t("compare_title")}
               </h3>
 
@@ -350,7 +350,7 @@ export default function PartnerPage() {
                     <span className="text-sm font-body font-semibold text-s-coral">solen.ch</span>
                     <span className="text-sm font-body font-bold text-s-coral">15%</span>
                   </div>
-                  <div className="h-8 w-full bg-s-ink/5 dark:bg-s-dm-text/5 rounded-btn overflow-hidden">
+                  <div className="h-8 w-full bg-s-ink/5 rounded-btn overflow-hidden">
                     <div
                       className="h-full bg-s-coral rounded-btn"
                       style={{ width: "33%" }}
@@ -361,12 +361,12 @@ export default function PartnerPage() {
                 {/* Treatwell */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-body text-s-ink/60 dark:text-s-dm-text/60">{t("compare_treatwell")}</span>
-                    <span className="text-sm font-body font-bold text-s-ink/60 dark:text-s-dm-text/60">~30%</span>
+                    <span className="text-sm font-body text-s-ink/60">{t("compare_treatwell")}</span>
+                    <span className="text-sm font-body font-bold text-s-ink/60">~30%</span>
                   </div>
-                  <div className="h-8 w-full bg-s-ink/5 dark:bg-s-dm-text/5 rounded-btn overflow-hidden">
+                  <div className="h-8 w-full bg-s-ink/5 rounded-btn overflow-hidden">
                     <div
-                      className="h-full bg-s-ink/20 dark:bg-s-dm-text/20 rounded-btn"
+                      className="h-full bg-s-ink/20 rounded-btn"
                       style={{ width: "100%" }}
                     />
                   </div>
@@ -375,12 +375,12 @@ export default function PartnerPage() {
                 {/* Others */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-body text-s-ink/60 dark:text-s-dm-text/60">{t("compare_others")}</span>
-                    <span className="text-sm font-body font-bold text-s-ink/60 dark:text-s-dm-text/60">15–25%</span>
+                    <span className="text-sm font-body text-s-ink/60">{t("compare_others")}</span>
+                    <span className="text-sm font-body font-bold text-s-ink/60">15–25%</span>
                   </div>
-                  <div className="h-8 w-full bg-s-ink/5 dark:bg-s-dm-text/5 rounded-btn overflow-hidden">
+                  <div className="h-8 w-full bg-s-ink/5 rounded-btn overflow-hidden">
                     <div
-                      className="h-full bg-s-ink/15 dark:bg-s-dm-text/15 rounded-btn"
+                      className="h-full bg-s-ink/15 rounded-btn"
                       style={{ width: "66%" }}
                     />
                   </div>
@@ -390,8 +390,8 @@ export default function PartnerPage() {
               {/* Savings callout */}
               <div className="mt-8 p-4 rounded-[12px] border border-s-sage/20"
                 style={{ background: "rgba(107,166,120,.08)" }}>
-                <p className="text-sm font-body text-s-sage-text dark:text-s-sage">
-                  <span className="font-heading font-bold">{t("compare_savings_bold")}</span>{" "}
+                <p className="text-sm font-body text-s-sage-text">
+                  <span className="font-heading">{t("compare_savings_bold")}</span>{" "}
                   {t("compare_savings_text")}
                 </p>
               </div>
@@ -401,16 +401,16 @@ export default function PartnerPage() {
       </div>
 
       {/* FAQ — Swipable Cards */}
-      <div className="py-16 bg-s-bg-surface dark:bg-s-dm-bg">
+      <div className="py-16 bg-s-bg-surface">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8">
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
               {t("section_faq")}
             </p>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
+            <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
               {t("faq_title")}
             </h2>
-            <p className="text-s-ink/60 dark:text-s-dm-text/60">
+            <p className="text-s-ink/60">
               {t("faq_subtitle")}
             </p>
           </div>
@@ -423,17 +423,17 @@ export default function PartnerPage() {
                 onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
                 className={`snap-start shrink-0 w-72 sm:w-80 text-left rounded-[16px] border transition-[border-color,box-shadow] duration-300 ${
                   expandedFaq === i
-                    ? "bg-white dark:bg-s-dm-surface border-s-coral/30 shadow-warm-md"
-                    : "bg-white dark:bg-s-dm-surface border-s-ink/[0.05] dark:border-white/[0.06] shadow-warm-sm hover:shadow-warm-md hover:border-s-coral/20"
+                    ? "bg-white border-s-coral/30 shadow-warm-md"
+                    : "bg-white border-s-ink/[0.05] shadow-warm-sm hover:shadow-warm-md hover:border-s-coral/20"
                 }`}
               >
                 <div className="p-6">
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text leading-snug">
+                    <h3 className="font-heading text-sm text-s-ink leading-snug">
                       {t(`${key}_q` as any)}
                     </h3>
                     <ChevronDown
-                      className={`w-4 h-4 shrink-0 text-s-ink/50 dark:text-s-dm-text/50 transition-transform duration-300 ${
+                      className={`w-4 h-4 shrink-0 text-s-ink/50 transition-transform duration-300 ${
                         expandedFaq === i ? "rotate-180 text-s-coral" : ""
                       }`}
                     />
@@ -443,7 +443,7 @@ export default function PartnerPage() {
                       expandedFaq === i ? "max-h-48 opacity-100 mt-4" : "max-h-0 opacity-0"
                     }`}
                   >
-                    <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 leading-relaxed">
+                    <p className="text-sm text-s-ink/60 leading-relaxed">
                       {t(`${key}_a` as any)}
                     </p>
                   </div>
@@ -455,10 +455,10 @@ export default function PartnerPage() {
       </div>
 
       {/* Sticky bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-s-dm-surface border-t border-s-ink/[0.06] dark:border-white/[0.06] shadow-elevation-1 p-3 flex justify-center z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-s-ink/[0.06] shadow-elevation-1 p-3 flex justify-center z-50">
         <a
           href="#contact"
-          className="bg-s-coral text-white font-heading font-semibold text-sm px-7 py-3 rounded-btn hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+          className="bg-s-coral text-white font-heading text-sm px-7 py-3 rounded-btn hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
         >
           {t("sticky_cta")}
         </a>
@@ -485,15 +485,15 @@ export default function PartnerPage() {
 
       {/* CTA */}
       <div className="py-20"
-        style={{ background: "linear-gradient(180deg, rgba(26,18,9,.025) 0%, rgba(232,98,74,.05) 100%)" }}>
+        style={{ background: "linear-gradient(180deg, rgba(26,18,9,.025) 0%, rgba(27, 77, 27,.05) 100%)" }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-ink/50 mb-2">
             {t("section_start")}
           </p>
-          <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
+          <h2 className="font-heading text-2xl sm:text-3xl text-s-ink mb-3">
             {t("cta_title")}
           </h2>
-          <p className="text-s-ink/50 dark:text-s-dm-text/50 mb-8">
+          <p className="text-s-ink/50 mb-8">
             {t("cta_subtitle")}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -505,12 +505,12 @@ export default function PartnerPage() {
             </Link>
             <a
               href={`mailto:info@solen.ch?subject=${encodeURIComponent(t("cta_consult_subject"))}`}
-              className="text-xs font-heading font-semibold text-s-coral hover:text-s-coral/80 transition-colors underline underline-offset-4"
+              className="text-xs font-heading text-s-coral hover:text-s-coral/80 transition-colors underline underline-offset-4"
             >
               {t("cta_consult")}
             </a>
           </div>
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-6">
+          <p className="text-xs text-s-ink/40 mt-6">
             {t("cta_counter")}
           </p>
         </div>

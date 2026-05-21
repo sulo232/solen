@@ -1,0 +1,10 @@
+3052859e3be323b834b5814f507491116d60354a 2026-03-25 00:02:12 +0100 R30 phase 3: blur placeholders for hero and cover images
+8002d9f4ccce13170833e16fca725599cc9b797d 2026-03-25 00:03:54 +0100 feat(seo): R27 — JSON-LD structured data, canonical URLs, sitemap + robots enhancements
+d68f1cad56fa3611404ed9ffbeb096a21c2a8ec0 2026-03-25 00:06:57 +0100 R29 phase 2: Dashboard nav i18n — 38 labels moved to translation files
+a6e211ca1e7b160bf4949ea71bd731260a2733b7 2026-03-25 09:38:08 +0100 feat(a11y): R28 accessibility hardening — skip-to-content, focus traps, aria-live, form error linking
+d26de07ac7ab718b88044b5f95c6d8e6ec4148e2 2026-03-25 09:39:49 +0100 R29 phase 3: remaining hardcoded strings moved to i18n translation files
+91699c88acc138c82cda1869e1fb610c4855bf5f 2026-03-25 10:00:51 +0100 R31-P1: hero editorial 2-column split + floating salon card
+d607920b0095ce9ae90b02ae1ab58796cab2a9c4 2026-03-25 10:03:56 +0100 R31-P2: category tiles → gradient fills + Bebas Neue labels
+4421f3f838c56556afce790850bad11a9312437d 2026-03-25 10:03:57 +0100 R33-P2: replace cold shadow-card/glass tokens with warm-sm/lg/xl globally
+7773547b2b0de12fcf6534e406341762c44a6fcd 2026-03-25 10:07:14 +0100 R31-P3: Last Minute → plum dark section with deco blobs
+6a29d7cd54ed74a45f7e7e40c1db94075bc074bd 2026-03-25 10:07:52 +0100 R33-P4: input coral focus ring, universal prefers-reduced-motion

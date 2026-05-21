@@ -5,6 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, reportDisputeSchema, salonDisputeResponseSchema } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 
 // GET — customer views their dispute for a booking
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -81,7 +82,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }
 
   // Phase 7: Email notification to salon owner
-  const resendApiKey = process.env.RESEND_API_KEY;
+  const resendApiKey = getServerEnv().RESEND_API_KEY;
   if (!resendApiKey) {
     console.warn("[booking-disputes] RESEND_API_KEY not set — skipping email notification");
   }

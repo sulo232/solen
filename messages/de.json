@@ -3850,7 +3850,10 @@
     "wed": "Mittwoch",
     "thu": "Donnerstag",
     "fri": "Freitag",
-    "sat": "Samstag"
+    "sat": "Samstag",
+    "backToList": "Zurück zur Liste",
+    "addToFavorites": "Zu Favoriten hinzufügen",
+    "removeFromFavorites": "Aus Favoriten entfernen"
   },
   "compare": {
     "back": "Zurück",

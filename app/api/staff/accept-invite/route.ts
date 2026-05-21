@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody, staffAcceptInviteSchema } from "@/lib/validations";
 
 // POST /api/staff/accept-invite — Accept staff invite via token
@@ -23,8 +23,11 @@ export async function POST(req: NextRequest) {
     }, { status: 401 });
   }
 
-  // Find the invite
-  const { data: invite } = await supabase
+  // Find the invite via admin client. The `invites_by_token` public RLS
+  // policy was dropped on 2026-05-16 (it let anon enumerate every token);
+  // server-side lookup with strict email-match below is now the gate.
+  const admin = createAdminSupabaseClient();
+  const { data: invite } = await admin
     .from("staff_invites")
     .select("*")
     .eq("token", token)
@@ -37,13 +40,21 @@ export async function POST(req: NextRequest) {
 
   // Check expiry
   if (new Date(invite.expires_at) < new Date()) {
-    await supabase.from("staff_invites").update({ status: "expired" }).eq("id", invite.id);
+    await admin.from("staff_invites").update({ status: "expired" }).eq("id", invite.id);
     return NextResponse.json({ error: "Invite has expired" }, { status: 410 });
   }
 
-  // Check if email matches (optional — we allow any authenticated user to accept)
-  // But warn if mismatch
-  const emailMismatch = user.email !== invite.email;
+  // REQUIRE email match. Pre-2026-05-16 this only WARNED on mismatch — meant
+  // anyone with a leaked invite URL could accept it from their own account
+  // and become staff at the target salon. (Audit slice 5D finding #6.)
+  if (!user.email || user.email.toLowerCase() !== invite.email.toLowerCase()) {
+    return NextResponse.json({
+      error: "This invite was sent to a different email address.",
+      code: "EMAIL_MISMATCH",
+    }, { status: 403 });
+  }
+
+  const emailMismatch = false;
 
   // Find or create staff_member record for this user at this salon
   const { data: existingStaff } = await supabase
@@ -100,8 +111,9 @@ export async function POST(req: NextRequest) {
     .update({ staff_salon_id: invite.salon_id })
     .eq("id", user.id);
 
-  // Mark invite as accepted
-  await supabase
+  // Mark invite as accepted. Admin client because the accepting user is not
+  // the salon owner, so the `invites_salon_owner` policy would deny.
+  await admin
     .from("staff_invites")
     .update({ status: "accepted", accepted_by: user.id })
     .eq("id", invite.id);

@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solen — Cobalt System Mockup</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@300..800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* ── New palette — Cobalt System ── */
+      --white:           #FFFFFF;
+      --paper:           #FAF7F2;
+      --cream:           #F5EFE0;
+      --charcoal:        #1A1C19;
+      --charcoal-2:      #6B7068;
+      --charcoal-3:      #7A7F78;
+
+      --cobalt:          #2C3FB5;
+      --cobalt-soft:     #E8EBFA;
+      --cobalt-deep:     #1F2D85;
+
+      --forest:          #2D4A3E;
+      --forest-soft:     #DCE6E0;
+      --forest-deep:     #1B2F26;
+
+      --mustard:         #EDBD60;
+      --mustard-soft:    #FAEFD0;
+      --mustard-deep:    #B0883D;
+
+      --strawberry:      #B84A35;
+      --strawberry-soft: #F5DAD2;
+      --strawberry-deep: #8A2F1F;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: var(--paper); }
+    body {
+      font-family: "Hanken Grotesk", system-ui, sans-serif;
+      color: var(--charcoal);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      letter-spacing: -0.018em;
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 16px 96px;
+    }
+    @media (min-width: 768px) {
+      .page { padding: 56px 32px 120px; }
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .page-header h1 {
+      font-size: clamp(36px, 6vw, 56px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+    .page-header h1 .accent { color: var(--cobalt); }
+    .page-header p {
+      margin-top: 16px;
+      font-size: 16px;
+      color: var(--charcoal-2);
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: clamp(24px, 3.2vw, 32px);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 8px;
+    }
+    .section-sub {
+      font-size: 14px;
+      color: var(--charcoal-2);
+      margin-bottom: 28px;
+      max-width: 600px;
+    }
+    .section { margin-bottom: 72px; }
+
+    /* ── Swatch grid (matching user's reference layout) ── */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 768px) {
+      .swatch-grid { grid-template-columns: repeat(2, 1fr); max-width: 720px; }
+    }
+    .swatch-card {
+      background: var(--white);
+      border: 1px solid rgba(26, 28, 25, 0.06);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .swatch {
+      width: 100%;
+      height: 80px;
+      border-radius: 8px;
+      border: 1px solid rgba(26, 28, 25, 0.04);
+      margin-bottom: 12px;
+    }
+    .swatch-name {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+    }
+    .swatch-meta {
+      font-size: 13px;
+      color: var(--charcoal-2);
+      margin-top: 2px;
+    }
+
+    /* ── Role usage cards ── */
+    .role-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 768px) {
+      .role-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .role-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.04);
+    }
+    .role-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .role-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+    .role-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-top: 12px;
+      margin-bottom: 4px;
+    }
+    .role-desc {
+      font-size: 14px;
+      color: var(--charcoal-2);
+      margin-bottom: 20px;
+    }
+    .role-demo {
+      padding: 20px;
+      border-radius: 14px;
+      background: var(--paper);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100px;
+    }
+
+    /* ── Button styles per role ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: "Hanken Grotesk", sans-serif;
+      font-weight: 700;
+      padding: 12px 22px;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      transition: transform 200ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-cobalt { background: var(--cobalt); color: var(--white); }
+    .btn-forest { background: var(--forest); color: var(--cream); }
+    .btn-mustard { background: var(--mustard); color: var(--charcoal); }
+
+    /* ── Composition demo (mini hero + searchbar + cards) ── */
+    .demo-frame {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 24px;
+      max-width: 420px;
+      margin: 0 auto;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.06);
+    }
+
+    .demo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(26,28,25,0.06);
+    }
+    .demo-logo {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+      display: inline-flex;
+      align-items: baseline;
+    }
+    .demo-logo .dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-left: 3px;
+      background: var(--cobalt);
+      transform: translateY(-2px);
+    }
+    .demo-nav {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--charcoal-2);
+      font-weight: 500;
+    }
+
+    .demo-hero {
+      padding: 32px 0 24px;
+    }
+    .demo-hero p {
+      font-size: 13px;
+      color: var(--charcoal-2);
+      margin-bottom: 8px;
+    }
+    .demo-hero h2 {
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .demo-hero h2 .accent { color: var(--cobalt); }
+
+    .demo-searchbar {
+      background: var(--white);
+      border: 1px solid rgba(26,28,25,0.06);
+      border-radius: 18px;
+      padding: 6px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    }
+    .demo-sbar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: var(--charcoal-2);
+    }
+    .demo-sbar-row + .demo-sbar-row { border-top: 1px solid rgba(26,28,25,0.06); }
+    .demo-sbar-cta {
+      background: var(--cobalt);
+      color: var(--white);
+      text-align: center;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    /* ── Salon card ── */
+    .salon-cards { margin-top: 32px; display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; }
+    .salon-cards::-webkit-scrollbar { display: none; }
+    .salon-cards { scrollbar-width: none; }
+    .salon-card {
+      flex: 0 0 160px;
+      position: relative;
+    }
+    .salon-photo {
+      aspect-ratio: 1 / 1;
+      background: var(--cobalt-soft);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    }
+    .salon-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .salon-meta { padding: 8px 2px 0; }
+    .salon-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 1px;
+    }
+    .salon-sub {
+      font-size: 11px;
+      color: var(--charcoal-3);
+    }
+    .salon-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      font-size: 12px;
+    }
+    .salon-time { font-weight: 700; }
+    .salon-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-weight: 700;
+    }
+    .star {
+      width: 11px; height: 11px;
+      fill: var(--mustard);
+    }
+
+    /* Badges on photo */
+    .badge {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .badge-now {
+      background: var(--forest-soft);
+      color: var(--forest-deep);
+    }
+    .badge-favorit {
+      background: var(--strawberry);
+      color: var(--cream);
+    }
+    .badge-bottom { top: auto; bottom: 6px; }
+
+    /* Heart */
+    .heart {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.85);
+      border-radius: 50%;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .heart svg { width: 14px; height: 14px; }
+    .heart.saved svg { fill: var(--strawberry); stroke: none; }
+    .heart:not(.saved) svg { fill: none; stroke: var(--charcoal); stroke-width: 2.25; }
+
+    /* ── Category tile demo ── */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .cat-tile {
+      padding: 18px;
+      border-radius: 16px;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .cat-coiffeur { background: var(--mustard-soft); color: var(--mustard-deep); }
+    .cat-barber { background: var(--cream); color: var(--charcoal); }
+    .cat-nails { background: var(--strawberry-soft); color: var(--strawberry-deep); }
+    .cat-spa { background: var(--forest-soft); color: var(--forest-deep); }
+    .cat-tile-name {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+    .cat-tile-sub {
+      font-size: 11px;
+      font-weight: 600;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+    .cat-tile-count {
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: auto;
+    }
+
+    /* ── Footer wordmark preview ── */
+    .footer-preview {
+      background: var(--forest);
+      color: var(--cream);
+      padding: 60px 24px 80px;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      margin-top: 32px;
+    }
+    .footer-wordmark {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-weight: 800;
+      font-size: clamp(80px, 18vw, 180px);
+      letter-spacing: -0.04em;
+      line-height: 0.85;
+      text-align: center;
+    }
+    .footer-tagline {
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.7;
+      margin-top: 16px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <header class="page-header">
+      <h1>Solen — <span class="accent">Cobalt System</span></h1>
+      <p>Neue Farbpalette mit Rollen-basierter Anwendung. Jede Farbe hat eine Bedeutung, nicht nur eine Stelle. Mockup zur Bewertung vor dem Production-Port.</p>
+    </header>
+
+    <!-- ── 1. Palette swatches ── -->
+    <section class="section">
+      <h2 class="section-title">Die Palette</h2>
+      <p class="section-sub">10 Farben in 5 Familien. Cream-soft Sektionen halten alles zusammen, Cobalt + Forest + Mustard + Strawberry tragen die Bedeutung.</p>
+
+      <div class="swatch-grid">
+        <div class="swatch-card">
+          <div class="swatch" style="background: var(--white); border: 1px solid rgba(26,28,25,0.10);"></div>
+          <div class="swatch-name">White</div>
+          <div class="swatch-meta">#FFFFFF · base bg</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch" style="background: var(--paper);"></div>
+          <div class="swatch-name">Paper</div>
+          <div class="swatch-meta">#FAF7F2 · soft sections</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch" style="background: var(--cream);"></div>
+          <div class="swatch-name">Cream</div>
+          <div class="swatch-meta">#F5EFE0 · type on dark</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch" style="background: var(--cobalt);"></div>
+          <div class="swatch-name">Cobalt</div>
+          <div class="swatch-meta">#2C3FB5 · primary</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch" style="background: var(--cobalt-soft);"></div>
+          <div class="swatch-name">Cobalt soft</div>
+          <div class="swatch-meta">#E8EBFA · soft sec</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch" style="background: var(--forest);"></div>
+          <div class="swatch-name">Forest</div>
+          <div class="swatch-meta">#2D4A3E · secondary</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch" style="background: var(--mustard);"></div>
+          <div class="swatch-name">Mustard</div>
+          <div class="swatch-meta">#EDBD60 · accent / CTA on dark</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch" style="background: var(--mustard-soft);"></div>
+          <div class="swatch-name">Mustard soft</div>
+          <div class="swatch-meta">#FAEFD0 · soft sec</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch" style="background: var(--strawberry);"></div>
+          <div class="swatch-name">Strawberry</div>
+          <div class="swatch-meta">#B84A35 · alert / accent</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch" style="background: var(--strawberry-soft);"></div>
+          <div class="swatch-name">Strawberry soft</div>
+          <div class="swatch-meta">#F5DAD2 · saved / liked</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 2. Roles in real UI ── -->
+    <section class="section">
+      <h2 class="section-title">Rollen in echtem UI</h2>
+      <p class="section-sub">Jede Farbe hat einen Job. Hier siehst du sie an der richtigen Stelle.</p>
+
+      <div class="role-grid">
+
+        <!-- COBALT — primary brand -->
+        <div class="role-card">
+          <div class="role-label">
+            <span class="role-dot" style="background: var(--cobalt);"></span>
+            <span style="color: var(--cobalt);">Cobalt · Primary</span>
+          </div>
+          <div class="role-title">"Das hier ist Solen."</div>
+          <div class="role-desc">Logo-Akzent, primary CTA, Hero-Highlight-Wort, Fokus-Outline, Brand-Konstanten. Nirgends sonst.</div>
+          <div class="role-demo">
+            <button class="btn btn-cobalt">Solen durchsuchen</button>
+          </div>
+        </div>
+
+        <!-- FOREST — trust / confirmation -->
+        <div class="role-card">
+          <div class="role-label">
+            <span class="role-dot" style="background: var(--forest);"></span>
+            <span style="color: var(--forest);">Forest · Trust</span>
+          </div>
+          <div class="role-title">"Es hat geklappt."</div>
+          <div class="role-desc">Confirmed-Buchungen, Erfolg-Toasts, "Heute frei"-Pills, Verified-Badges. Wenn was bestätigt ist, wird's Forest.</div>
+          <div class="role-demo">
+            <button class="btn btn-forest">✓ Buchung bestätigt</button>
+          </div>
+        </div>
+
+        <!-- MUSTARD — warmth / discover -->
+        <div class="role-card">
+          <div class="role-label">
+            <span class="role-dot" style="background: var(--mustard);"></span>
+            <span style="color: var(--mustard-deep);">Mustard · Discover</span>
+          </div>
+          <div class="role-title">"Schau mal hier."</div>
+          <div class="role-desc">Kategorie-Tiles, Browse-Sektionen, Entdecken-CTAs, Star-Ratings, Empfehlungs-Badges. Die "warme Neugier"-Farbe.</div>
+          <div class="role-demo">
+            <button class="btn btn-mustard">Coiffeurs in Basel</button>
+          </div>
+        </div>
+
+        <!-- STRAWBERRY — love / proof -->
+        <div class="role-card">
+          <div class="role-label">
+            <span class="role-dot" style="background: var(--strawberry);"></span>
+            <span style="color: var(--strawberry);">Strawberry · Love</span>
+          </div>
+          <div class="role-title">"Du liebst das."</div>
+          <div class="role-desc">Heart-Fills, gespeichert-Badge, Top-Pick-Curation, Bewertungen, Solen Favorit. Wenn Emotion im Spiel ist.</div>
+          <div class="role-demo" style="gap: 12px; display: flex;">
+            <span class="badge badge-favorit" style="position: relative; top: auto; left: auto;">Solen Favorit</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--strawberry)" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── 3. Composition demo ── -->
+    <section class="section">
+      <h2 class="section-title">Im Zusammenspiel</h2>
+      <p class="section-sub">Header + Hero + SearchBar + Salon-Cards mit dem neuen System. Charcoal Text auf Paper-Substrat, Cobalt durchgehend als Brand, Strawberry für Liebe, Mustard für Sterne, Forest für "Heute frei".</p>
+
+      <div class="demo-frame">
+        <div class="demo-header">
+          <div class="demo-logo">Solen<span class="dot"></span></div>
+          <div class="demo-nav">Coiffeur · Barber · Spa</div>
+        </div>
+
+        <div class="demo-hero">
+          <p>Hallo, Sulo</p>
+          <h2>Schöner aussehen, schneller <span class="accent">buchen</span>.</h2>
+          <div class="demo-searchbar">
+            <div class="demo-sbar-row">🔍 Service</div>
+            <div class="demo-sbar-row">📍 Stadt</div>
+            <div class="demo-sbar-row">📅 Zeit</div>
+            <div class="demo-sbar-cta">Solen durchsuchen</div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 18px; font-weight: 700; margin-top: 12px;">Last-Minute heute</h3>
+        <div class="salon-cards">
+          <!-- Salon Maria — saved, Heute frei -->
+          <div class="salon-card">
+            <div class="salon-photo">
+              <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop&q=80" alt="">
+              <span class="badge badge-bottom badge-now">↗ Heute frei</span>
+              <button class="heart saved" aria-label="Gespeichert">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
+            </div>
+            <div class="salon-meta">
+              <div class="salon-name">Salon Maria</div>
+              <div class="salon-sub">Steinenvorstadt 12 · Basel</div>
+              <div class="salon-bottom">
+                <span class="salon-time">14:30 · CHF 80</span>
+                <span class="salon-rating">
+                  <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  4.9
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Atelier Coiffure — Solen Favorit -->
+          <div class="salon-card">
+            <div class="salon-photo">
+              <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80" alt="">
+              <span class="badge badge-favorit">Solen Favorit</span>
+              <button class="heart" aria-label="Speichern">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
+            </div>
+            <div class="salon-meta">
+              <div class="salon-name">Atelier Coiffure</div>
+              <div class="salon-sub">Spalenberg 5 · Basel</div>
+              <div class="salon-bottom">
+                <span class="salon-time">15:00 · CHF 120</span>
+                <span class="salon-rating">
+                  <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  4.8
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Studio Nord — saved -->
+          <div class="salon-card">
+            <div class="salon-photo">
+              <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=400&h=400&fit=crop&q=80" alt="">
+              <button class="heart saved" aria-label="Gespeichert">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
+            </div>
+            <div class="salon-meta">
+              <div class="salon-name">Studio Nord</div>
+              <div class="salon-sub">Klybeckstrasse 12</div>
+              <div class="salon-bottom">
+                <span class="salon-time">In 25 Min</span>
+                <span class="salon-rating">
+                  <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  4.7
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category tiles -->
+        <h3 style="font-size: 18px; font-weight: 700; margin-top: 32px;">Stöber nach Kategorie</h3>
+        <div class="cat-grid">
+          <div class="cat-tile cat-coiffeur">
+            <div>
+              <div class="cat-tile-name">Coiffeur</div>
+              <div class="cat-tile-sub">Schneiden, färben</div>
+            </div>
+            <div class="cat-tile-count">183 Salons</div>
+          </div>
+          <div class="cat-tile cat-barber">
+            <div>
+              <div class="cat-tile-name">Barbershop</div>
+              <div class="cat-tile-sub">Fade, Bart</div>
+            </div>
+            <div class="cat-tile-count">94 Salons</div>
+          </div>
+          <div class="cat-tile cat-nails">
+            <div>
+              <div class="cat-tile-name">Nails</div>
+              <div class="cat-tile-sub">Gel, Nail-Art</div>
+            </div>
+            <div class="cat-tile-count">71 Studios</div>
+          </div>
+          <div class="cat-tile cat-spa">
+            <div>
+              <div class="cat-tile-name">Spa</div>
+              <div class="cat-tile-sub">Massage, Pause</div>
+            </div>
+            <div class="cat-tile-count">42 Studios</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 4. Footer wordmark preview ── -->
+    <section class="section">
+      <h2 class="section-title">Footer — Forest als Trust-Layer</h2>
+      <p class="section-sub">Der Footer trägt Forest weil's das "die Plattform funktioniert"-Signal ist. Cream-Wordmark auf Forest fühlt sich wie etwas Verlässliches an, nicht wie Marketing.</p>
+
+      <div class="footer-preview">
+        <div class="footer-wordmark">solen</div>
+        <div class="footer-tagline">Beauty &amp; Wellness · Schweiz · 2026</div>
+      </div>
+    </section>
+
+    <!-- ── 5. Comparison aside ── -->
+    <section class="section">
+      <h2 class="section-title">Was sich ändert</h2>
+      <p class="section-sub">Direktvergleich aktuell (V3-D75 Emerald/Terracotta) → neu (Cobalt System).</p>
+
+      <div style="background: var(--white); border-radius: 16px; padding: 24px; font-size: 14px;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="border-bottom: 1px solid rgba(26,28,25,0.08);">
+              <th style="text-align: left; padding: 12px 8px; font-weight: 700;">Element</th>
+              <th style="text-align: left; padding: 12px 8px; font-weight: 700;">Aktuell</th>
+              <th style="text-align: left; padding: 12px 8px; font-weight: 700;">Neu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid rgba(26,28,25,0.04);"><td style="padding: 12px 8px;">Primary brand</td><td style="padding: 12px 8px;">Emerald #3B7A57</td><td style="padding: 12px 8px; font-weight: 700; color: var(--cobalt);">Cobalt #2C3FB5</td></tr>
+            <tr style="border-bottom: 1px solid rgba(26,28,25,0.04);"><td style="padding: 12px 8px;">Heart / saves</td><td style="padding: 12px 8px;">Love-red #FF4A6B</td><td style="padding: 12px 8px; font-weight: 700; color: var(--strawberry);">Strawberry #B84A35</td></tr>
+            <tr style="border-bottom: 1px solid rgba(26,28,25,0.04);"><td style="padding: 12px 8px;">"Heute frei" pill</td><td style="padding: 12px 8px;">Brand-subtle + emerald text</td><td style="padding: 12px 8px; font-weight: 700; color: var(--forest);">Forest-soft + Forest text</td></tr>
+            <tr style="border-bottom: 1px solid rgba(26,28,25,0.04);"><td style="padding: 12px 8px;">Star rating</td><td style="padding: 12px 8px;">Star-orange #F3A864</td><td style="padding: 12px 8px; font-weight: 700; color: var(--mustard-deep);">Mustard #EDBD60</td></tr>
+            <tr style="border-bottom: 1px solid rgba(26,28,25,0.04);"><td style="padding: 12px 8px;">Substrate</td><td style="padding: 12px 8px;">Cool grey #F4F4F6</td><td style="padding: 12px 8px; font-weight: 700;">Paper #FAF7F2 (warmer)</td></tr>
+            <tr style="border-bottom: 1px solid rgba(26,28,25,0.04);"><td style="padding: 12px 8px;">Solen Favorit badge</td><td style="padding: 12px 8px;">Dark ink glass</td><td style="padding: 12px 8px; font-weight: 700; color: var(--strawberry);">Strawberry solid</td></tr>
+            <tr><td style="padding: 12px 8px;">Hero accent word</td><td style="padding: 12px 8px;">"buchen" terracotta</td><td style="padding: 12px 8px; font-weight: 700; color: var(--cobalt);">"buchen" cobalt</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

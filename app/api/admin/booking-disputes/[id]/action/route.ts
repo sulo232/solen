@@ -5,6 +5,8 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { logAuditEvent } from "@/lib/audit";
 import { validateBody, adminDisputeBookingActionSchema } from "@/lib/validations";
+import { getStripe } from "@/lib/stripe";
+import { getServerEnv } from "@/lib/env";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: disputeId } = await params;
@@ -61,7 +63,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         .select("id, email")
         .in("id", [dispute.reporter_id, dispute.reported_id]);
         
-      const resendApiKey = process.env.RESEND_API_KEY;
+      const resendApiKey = getServerEnv().RESEND_API_KEY;
       if (!resendApiKey) {
         console.warn("[booking-disputes] RESEND_API_KEY not set — skipping email notification");
       }
@@ -114,8 +116,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: "Refund exceeds maximum refundable amount" }, { status: 400 });
     }
 
-    const Stripe = require("stripe");
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
+    const stripe = getStripe();
     try {
       await stripe.refunds.create({
         payment_intent: booking.payment_intent_id,

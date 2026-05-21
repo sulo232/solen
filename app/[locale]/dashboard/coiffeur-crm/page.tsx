@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { BookOpen, ClipboardList, RefreshCw, BarChart3 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import FormulaBook from "@/components/dashboard/coiffeur/FormulaBook";
-import ConsultationNotes from "@/components/dashboard/coiffeur/ConsultationNotes";
-import ColourCycleConfig from "@/components/dashboard/coiffeur/ColourCycleConfig";
-import AllergyAlert from "@/components/dashboard/coiffeur/AllergyAlert";
-import ClientSelectorDropdown from "@/components/shared/ClientSelectorDropdown";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import FormulaBook from "@/components-legacy/dashboard/coiffeur/FormulaBook";
+import ConsultationNotes from "@/components-legacy/dashboard/coiffeur/ConsultationNotes";
+import ColourCycleConfig from "@/components-legacy/dashboard/coiffeur/ColourCycleConfig";
+import AllergyAlert from "@/components-legacy/dashboard/coiffeur/AllergyAlert";
+import ClientSelectorDropdown from "@/components-legacy/shared/ClientSelectorDropdown";
 
 type Tab = "formulas" | "consultations" | "cycles" | "metrics";
 
@@ -63,15 +63,15 @@ export default function CoiffeurCRMPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-6">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 mb-1">Coiffeur</p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/50 mb-1">Coiffeur</p>
+        <h1 className="font-heading text-[28px] text-s-ink leading-none">
           {t("pageTitle")}
         </h1>
       </div>
 
       {/* Client selector */}
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 mb-5">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-ink/45 dark:text-s-dm-text/45 mb-2">
+      <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4 mb-5">
+        <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/45 mb-2">
           {t("selectClient")}
         </p>
         <ClientSelectorDropdown
@@ -89,10 +89,10 @@ export default function CoiffeurCRMPage() {
             key={id}
             onClick={() => setActiveTab(id)}
             aria-label={t(labelKey)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading font-semibold whitespace-nowrap transition-colors duration-150 shrink-0 ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading whitespace-nowrap transition-colors duration-150 shrink-0 ${
               activeTab === id
-                ? "bg-s-coral text-white shadow-coral-glow"
-                : "bg-s-ink/[0.05] text-s-ink/55 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09]"
+                ? "bg-s-coral text-white shadow-elevation-2"
+                : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
             }`}
           >
             <Icon size={12} />
@@ -102,7 +102,7 @@ export default function CoiffeurCRMPage() {
       </div>
 
       {loading ? (
-        <div className="h-64 bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[12px] animate-pulse" />
+        <div className="h-64 bg-s-ink/[0.04] rounded-[12px] animate-pulse" />
       ) : !salonId ? null : (
         <>
           {/* ── Formulas ── */}
@@ -123,32 +123,32 @@ export default function CoiffeurCRMPage() {
           {activeTab === "metrics" && (
             <div className="space-y-4">
               {metricsLoading ? (
-                <div className="h-32 animate-pulse bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[12px]" />
+                <div className="h-32 animate-pulse bg-s-ink/[0.04] rounded-[12px]" />
               ) : cycleMetrics ? (
                 <>
                   <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-3 text-center">
-                      <p className="text-2xl font-heading font-bold data-text text-s-coral">
+                    <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-3 text-center">
+                      <p className="text-2xl font-heading data-text text-s-coral">
                         {cycleMetrics.avg_days_between_visits}
                       </p>
-                      <p className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40 mt-1">{t("metricsAvgDays")}</p>
+                      <p className="text-[9px] text-s-ink/40 mt-1">{t("metricsAvgDays")}</p>
                     </div>
-                    <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-3 text-center">
-                      <p className="text-2xl font-heading font-bold data-text text-s-amber">
+                    <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-3 text-center">
+                      <p className="text-2xl font-heading data-text text-s-amber">
                         {cycleMetrics.adherence_rate}%
                       </p>
-                      <p className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40 mt-1">{t("metricsAdherence")}</p>
+                      <p className="text-[9px] text-s-ink/40 mt-1">{t("metricsAdherence")}</p>
                     </div>
-                    <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-3 text-center">
-                      <p className="text-2xl font-heading font-bold data-text text-s-blue">
+                    <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-3 text-center">
+                      <p className="text-2xl font-heading data-text text-s-blue">
                         {cycleMetrics.total_tracked_clients}
                       </p>
-                      <p className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40 mt-1">{t("metricsClients")}</p>
+                      <p className="text-[9px] text-s-ink/40 mt-1">{t("metricsClients")}</p>
                     </div>
                   </div>
                   {/* Sparkline */}
-                  <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
-                    <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-ink/45 dark:text-s-dm-text/45 mb-3">
+                  <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4">
+                    <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/45 mb-3">
                       {t("metricsSparkTitle")}
                     </p>
                     <div className="flex items-end gap-1 h-12">
@@ -166,7 +166,7 @@ export default function CoiffeurCRMPage() {
                   </div>
                 </>
               ) : (
-                <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 text-center py-8">{t("noData")}</p>
+                <p className="text-sm text-s-ink/40 text-center py-8">{t("noData")}</p>
               )}
             </div>
           )}

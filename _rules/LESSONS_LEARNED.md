@@ -153,9 +153,9 @@
 ### Windows local build failures don't block pushes when pre-existing
 - **Date**: 2026-03-31
 - **File(s)**: `.next/`, `package.json`
-- **What happened**: `npm run build` on Windows consistently fails with webpack chunk ID race conditions (`Cannot find module './8548.js'`) when run multiple times in the same session. The error does not occur on Vercel (Linux, clean build environment).
+- **What happened**: `npm run build` on Windows consistently fails with webpack chunk ID race conditions (`Cannot find module './8548.js'`) when run multiple times in the same session. The error does not occur in CI (Linux, clean build environment — was Vercel at the time, now Netlify).
 - **Why it happened**: Windows file system behavior + Next.js webpack incremental cache = chunk IDs change between runs, causing the second build to fail when it can't find chunks from the first.
-- **Fix / What to do instead**: Confirm the error exists on the original unmodified codebase (do a git stash and build). If it does, the error is pre-existing and safe to push — Vercel will build cleanly. Always check Vercel deployment status after push to confirm.
+- **Fix / What to do instead**: Confirm the error exists on the original unmodified codebase (do a git stash and build). If it does, the error is pre-existing and safe to push — Linux CI builds cleanly. Check the Netlify deploy status after push to confirm.
 
 ---
 
@@ -313,12 +313,12 @@
 - **Why it happened**: Two components were created at different times without coordination.
 - **Fix**: Use SalonSectionNav. It passes `sections={TABS.map(t => ({ id: \`section-\${t.key}\`, label: t.label }))}`. Section divs must have matching `id="section-{key}"` and `scroll-mt-[80px]`.
 
-### Coral rebalance — errors use s-amber not s-coral
-- **Date**: 2026-04-04
+### Coral rebalance — errors use s-amber not s-brand (lesson principle still holds for V3 teal)
+- **Date**: 2026-04-04 (lesson) · **V2-D15-3 supersession** 2026-05-07: V3 brand is dark teal `#043338`, not coral. The discipline below is unchanged — substitute "brand teal" wherever this lesson says "coral".
 - **File(s)**: `components/ui/ErrorFallback.tsx`
-- **What happened**: AlertTriangle in ErrorFallback used `text-s-coral` / `bg-s-coral/10`. Coral is the brand primary, not an error color.
+- **What happened**: AlertTriangle in ErrorFallback used `text-s-coral` / `bg-s-coral/10`. The brand color is not an error color.
 - **Why it happened**: Quick implementation without semantic color system consideration.
-- **Fix**: Error states → `text-s-amber` / `bg-s-amber/10`. Coral is ONLY for: Book Now CTAs, active filter pills, progress bars, star ratings, active hearts, price highlights, "open now" status.
+- **Fix (V3-aligned)**: Error states → `text-s-error` `#D32F2F` (or `text-s-warning` `#F59E0B` for soft alerts). **Brand teal `#043338` (`s-brand` / `s-coral` token) is ONLY for:** Book Now CTAs, primary action buttons, eyebrow accents, em underlines, time-pulse signal, focus rings, "Heute frei" status text, the ONE saturated Solen Pro feature panel. **NOT brand teal:** active hearts (use love-red `#FF4A6B` literal per LIVE_TRUTH §3), star ratings (use `s-star` `#F3A864`), "open now" (use `s-success` `#16A34A`), active filter pills on category pages (use category combo bg/text per LIVE_TRUTH §25.5). See `_tasks/SOLEN_LIVE_TRUTH.md` §1 brand + §3 semantic + §5a pill rule + `_rules/SOLEN_UI.md` for the full semantic-color discipline.
 
 ### Booking date/time formatting must use dynamic locale
 - **Date**: 2026-04-04

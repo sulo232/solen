@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Bookmark, AlertCircle } from "lucide-react";
-import SalonCard from "@/components/SalonCard";
-import EmptyState from "@/components/ui/EmptyState";
-import Skeleton from "@/components/ui/Skeleton";
+import SalonCard from "@/components-legacy/SalonCard";
+import EmptyState from "@/components-legacy/ui/EmptyState";
+import Skeleton from "@/components-legacy/ui/Skeleton";
 import type { SalonCard as SalonCardType } from "@/lib/types";
 
 export default function SavedPage() {
@@ -65,7 +65,7 @@ export default function SavedPage() {
   return (
     <main className="min-h-screen bg-[--base] pb-24">
       <div className="max-w-5xl mx-auto px-4 pt-6 pb-4">
-        <h1 className="font-heading text-2xl font-bold text-s-ink dark:text-s-dm-text mb-6">
+        <h1 className="font-heading text-2xl font-bold text-s-ink mb-6">
           {t("title")}
         </h1>
 
@@ -89,7 +89,7 @@ export default function SavedPage() {
             action={
               <Link
                 href={`/${locale}/discover`}
-                className="inline-flex items-center gap-2 bg-s-coral text-white font-heading font-semibold text-sm px-5 py-2.5 rounded-btn hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter]"
+                className="inline-flex items-center gap-2 bg-s-coral text-white font-heading text-sm px-5 py-2.5 rounded-btn hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter]"
               >
                 {t("discoverCta")}
               </Link>

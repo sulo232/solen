@@ -90,20 +90,19 @@ Need to specify:
 
 ---
 
-## 🌐 Vercel Config (Phase 7)
+## 🌐 Cron Config (Phase 7)
 
 ### 9. Cron Jobs
-Add to `vercel.json`:
-```json
-{
-  "crons": [
-    { "path": "/api/cron/reminders", "schedule": "0 * * * *" },
-    { "path": "/api/cron/review-prompt", "schedule": "0 9 * * *" },
-    { "path": "/api/cron/late-cancel", "schedule": "*/30 * * * *" }
-  ]
-}
-```
-- **Note:** Vercel Hobby plan = 1 cron job. Pro plan = unlimited. Check your plan.
+
+> **Status (2026-05-09):** crons migrated from `vercel.json` to GitHub Actions during the Netlify migration. The schedule below is now wired in `.github/workflows/cron-jobs.yml`.
+
+GitHub Actions workflow invokes `/api/cron/*` routes on schedule:
+- `/api/cron/reminders` — `0 * * * *` (hourly)
+- `/api/cron/review-prompt` — `0 9 * * *` (daily 09:00 UTC)
+- `/api/cron/late-cancel` — `*/30 * * * *` (every 30 min)
+
+- **Auth:** each route checks `Authorization: Bearer ${CRON_SECRET}`. The secret must match the `CRON_SECRET` env var set in both Netlify (for the route handler) and the GitHub Actions workflow (for invocation).
+- **No plan-tier limits** — GitHub Actions free tier covers far more than this schedule needs.
 
 ---
 

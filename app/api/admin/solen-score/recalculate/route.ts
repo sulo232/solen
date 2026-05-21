@@ -2,16 +2,18 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
+import { getServerEnv } from "@/lib/env";
 
 /**
  * POST /api/admin/solen-score/recalculate
  * Recalculates Solen Score for all active salons.
- * Auth: CRON_SECRET header (Vercel cron) or admin user.
+ * Auth: CRON_SECRET header (GitHub Actions cron — see .github/workflows/cron-jobs.yml) or admin user.
  */
 export async function POST(req: NextRequest) {
   // Auth: cron secret or admin
+  const expectedCronSecret = getServerEnv().CRON_SECRET;
   const cronSecret = req.headers.get("authorization")?.replace("Bearer ", "");
-  const isCron = cronSecret === process.env.CRON_SECRET;
+  const isCron = Boolean(expectedCronSecret && cronSecret === expectedCronSecret);
 
   if (!isCron) {
     // Check admin auth

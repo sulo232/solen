@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=390, initial-scale=1" />
+  <title>Solen · Fresha-style SearchBar + CTA color test</title>
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/peace-sans" />
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/open-sauce-one" />
+  <style>
+    :root {
+      --s-bg-base: #F8F7F2;
+      --s-ink: #2A1F18;
+      --s-ink-2: #5C4938;
+      --s-ink-3: #8A7660;
+      --s-accent: #E0703D;
+      --s-brand: #1A8F5C;
+      --s-brand-mid: #0F6F44;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--s-bg-base); }
+    body {
+      font-family: 'Open Sauce One', system-ui, -apple-system, sans-serif;
+      color: var(--s-ink);
+      min-height: 100vh;
+      padding-bottom: 48px;
+    }
+
+    /* Variation switcher (sticky) */
+    .switcher {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--s-bg-base);
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid rgba(26,18,9,0.06);
+    }
+    .switcher-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--s-ink-2);
+      margin-bottom: 8px;
+    }
+    .switcher-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .switcher button {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(26,18,9,0.12);
+      background: white;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--s-ink);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .switcher button.active {
+      border-color: var(--s-ink);
+      background: var(--s-ink);
+      color: white;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 32px 20px 28px;
+    }
+    .greeting {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--s-ink-2);
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-family: 'Peace Sans', Impact, Haettenschweiler, sans-serif;
+      font-size: clamp(36px, 6vw, 48px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--s-ink);
+      margin-bottom: 32px;
+    }
+    h1 .accent { color: var(--s-accent); }
+
+    /* ===== FRESHA-STYLE SearchBar ===== */
+    /* White card. Thin refined 1px border at low-alpha ink. Soft diffuse
+       multi-layer drop shadow at low opacity. Clean inputs with no inner
+       border lines (Fresha uses divider only). Big rounded corners. */
+    .searchbar {
+      background: white;
+      border: 1px solid rgba(26, 18, 9, 0.08);
+      border-radius: 24px;
+      padding: 8px;
+      box-shadow:
+        0 1px 2px rgba(26, 18, 9, 0.04),
+        0 8px 24px rgba(26, 18, 9, 0.06),
+        0 24px 48px -16px rgba(26, 18, 9, 0.08);
+      margin-bottom: 32px;
+    }
+    .searchrow {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .searchrow:hover { background: rgba(26, 18, 9, 0.03); }
+    .searchrow + .searchrow {
+      position: relative;
+    }
+    /* Hairline divider between rows (Fresha pattern — divider not border) */
+    .searchrow + .searchrow::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 18px;
+      right: 18px;
+      height: 1px;
+      background: rgba(26, 18, 9, 0.06);
+    }
+    .searchrow svg {
+      width: 18px; height: 18px;
+      color: var(--s-ink-3);
+      flex-shrink: 0;
+      stroke-width: 2;
+    }
+    .searchrow .label {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--s-ink-3);
+      flex: 1;
+    }
+
+    .searchbtn {
+      width: 100%;
+      padding: 16px;
+      margin-top: 8px;
+      color: white;
+      border: 0;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      transition: opacity 0.15s ease;
+    }
+    .searchbtn:hover { opacity: 0.92; }
+
+    /* === CTA color variants === */
+    /* SATURATED BLUE (user pick — 3 saturation levels to fine-tune) */
+    /* B1: bright Klein-leaning saturated blue */
+    .cta-blue-bright .searchbtn { background: #0066FF; }
+    /* B2: vibrant tailwind-600 saturated blue */
+    .cta-blue-vibrant .searchbtn { background: #2563EB; }
+    /* B3: deep saturated cobalt */
+    .cta-blue-deep .searchbtn { background: #1E40AF; }
+    /* B4: electric pure blue (high contrast) */
+    .cta-blue-electric .searchbtn { background: #1D4ED8; }
+
+    /* Spec note */
+    .spec {
+      margin: 0 20px 24px;
+      padding: 14px 16px;
+      background: white;
+      border: 1px solid rgba(26,18,9,0.08);
+      border-radius: 14px;
+      font-size: 12px;
+      color: var(--s-ink-2);
+      line-height: 1.55;
+    }
+    .spec h4 {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--s-ink);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .spec p { margin-bottom: 6px; }
+    .spec b { color: var(--s-accent); font-weight: 700; }
+
+    /* Tiny annotation label below CTA */
+    .cta-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--s-ink-3);
+      letter-spacing: 0.04em;
+      text-align: center;
+      margin-top: -24px;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body class="cta-blue-vibrant">
+
+<div class="switcher">
+  <div class="switcher-title">Saturated blue · fine-tune the shade</div>
+  <div class="switcher-row">
+    <button data-cta="cta-blue-bright">Bright #0066FF</button>
+    <button class="active" data-cta="cta-blue-vibrant">Vibrant #2563EB</button>
+    <button data-cta="cta-blue-electric">Electric #1D4ED8</button>
+    <button data-cta="cta-blue-deep">Deep #1E40AF</button>
+  </div>
+</div>
+
+<section class="hero">
+  <p class="greeting">Hallo, Sulo</p>
+  <h1>Schöner aussehen,<br>schneller <span class="accent">buchen</span>.</h1>
+
+  <div class="searchbar">
+    <div class="searchrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <span class="label">Service</span>
+    </div>
+    <div class="searchrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span class="label">Stadt</span>
+    </div>
+    <div class="searchrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span class="label">Zeit</span>
+    </div>
+    <button class="searchbtn">Solen durchsuchen</button>
+  </div>
+  <p class="cta-label" id="ctaLabel">Vibrant #2563EB · saturated Tailwind blue-600</p>
+</section>
+
+<div class="spec">
+  <h4>What stays Fresha-clean</h4>
+  <p><b>Card:</b> stark white, 24px rounded, 1px refined border at <code>rgba(26,18,9,0.08)</code></p>
+  <p><b>Shadow:</b> 3-layer soft diffuse drop shadow (<code>0 1px 2px / 0 8px 24px / 0 24px 48px -16px</code>) at 0.04-0.08 opacity ink RGB</p>
+  <p><b>Inputs:</b> no inner borders. Hairline divider between rows. Service / Stadt / Zeit placeholders in <code>ink-3</code>. Hover row gets very faint ink/3% bg tint.</p>
+  <p><b>Icons:</b> 18px, stroke-width 2, ink-3 color. Refined not chunky.</p>
+
+  <h4 style="margin-top:12px;">What's only the CTA</h4>
+  <p>4 color variants — same Fresha chrome, only background fill changes. Tap the switcher above to compare.</p>
+</div>
+
+<script>
+  const labels = {
+    'cta-blue-bright': 'Bright #0066FF · Klein-leaning pure blue, max electric punch',
+    'cta-blue-vibrant': 'Vibrant #2563EB · saturated Tailwind blue-600 (~83% sat)',
+    'cta-blue-electric': 'Electric #1D4ED8 · slightly deeper, still strong saturation',
+    'cta-blue-deep': 'Deep #1E40AF · cobalt — most premium / least cartoon-y'
+  };
+  const buttons = document.querySelectorAll('.switcher button');
+  const body = document.body;
+  const label = document.getElementById('ctaLabel');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      body.className = btn.dataset.cta;
+      label.textContent = labels[btn.dataset.cta];
+    });
+  });
+</script>
+
+</body>
+</html>

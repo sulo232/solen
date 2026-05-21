@@ -1,0 +1,10 @@
+1f7036d43163ca3d9fd06fdf511c153744bcf7c7 2026-03-26 10:29:03 +0100 phase1: add glass CSS custom properties for dark mode
+2ea865a94f3aba1839ef7bfeecfa5cc41e25b265 2026-03-26 10:30:38 +0100 phase1: create grouped search filter pill config + i18n keys
+afeaba75643ec27e17cc33aaa46dd2e10819646e 2026-03-26 10:42:23 +0100 phase2: migrate last-minute page to grouped FilterBar
+7ce0b3a5b51c4b3b9fd4332e00b53eee37793ab5 2026-03-26 10:46:17 +0100 phase3: migrate behandlungen pages to grouped FilterBar
+68b3bd6be180bb08fffdec42ac82f1871ad9933f 2026-03-26 10:51:23 +0100 phase4: migrate remaining pages + delete SearchFilterBar
+2918ac4a9868e296c57cad161043ba55f17a7ad0 2026-03-26 10:55:07 +0100 phase1: add beauty SVG icon library + types + i18n keys (all 4 locales)
+2638e71233d6bc89394e808e4178445bbce9a3b8 2026-03-26 11:05:53 +0100 phase1: add beauty SVG icon library + types + i18n keys (all 4 locales)
+c280c2aa7ffe613fb8ccabc4cec9dc14d2ed64c8 2026-03-26 11:11:31 +0100 phase2: build profile subcomponents (hero, beauty card, highlights, tabs, grid)
+c70017448a94e6f3679ef4cbebf08747f73d2607 2026-03-26 15:09:14 +0100 phase3: beauty profile edit modal with persistence
+59de27f8d9bcc843271d3e120a28f5719906ba74 2026-03-26 15:15:56 +0100 i18n(tier2): Phase 2 partial — dashboard components 1-5 (ScheduleGrid, PromoManager, PackageManager, PriceAdjustmentModal, GoLiveGate)

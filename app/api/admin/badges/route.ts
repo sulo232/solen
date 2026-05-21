@@ -48,8 +48,8 @@ export async function POST(req: NextRequest) {
       name_de,
       name_en,
       icon: icon ?? "Star",
-      color: color ?? "#E8735A",
-      bg_color: bg_color ?? "rgba(232,98,74,0.1)",
+      color: color ?? "#1B4D1B",
+      bg_color: bg_color ?? "rgba(27, 77, 27,0.1)",
       is_system: false,
     })
     .select()

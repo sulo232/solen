@@ -11,12 +11,15 @@ import {
   onboardingReady,
 } from "@/lib/email-templates/salon-onboarding";
 import type { EmailLocale } from "@/lib/email";
+import { getServerEnv } from "@/lib/env";
 
 // GET /api/cron/salon-onboarding
 // Daily cron: adaptive 5-email drip for new salon owners.
 export async function GET(request: NextRequest) {
+  const cronSecret = getServerEnv().CRON_SECRET;
+  if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

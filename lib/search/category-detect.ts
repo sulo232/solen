@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { SalonCategory } from "@/lib/types";
+import { getServerEnv } from "@/lib/env";
 
 const VALID_CATEGORIES: SalonCategory[] = [
   "coiffeur", "barbershop", "nails", "spa", "makeup", "waxing"
@@ -12,7 +13,7 @@ const VALID_CATEGORIES: SalonCategory[] = [
 export async function detectCategory(
   query: string
 ): Promise<SalonCategory | null> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) return null;
 
   const genAI = new GoogleGenerativeAI(apiKey);

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
+import { getServerEnv } from "@/lib/env";
 
 // POST /api/salons/[slug]/ai-info
 // Generate AI suggestions for salon description, atmosphere, expertise.
@@ -61,7 +62,7 @@ export async function POST(
 
   const prompt = prompts[field] ?? prompts.description;
 
-  const geminiKey = process.env.GEMINI_API_KEY;
+  const geminiKey = getServerEnv().GEMINI_API_KEY;
   if (!geminiKey) {
     return NextResponse.json({ error: "GEMINI_API_KEY not configured" }, { status: 500 });
   }

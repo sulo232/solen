@@ -5,10 +5,12 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, intakeRecommendationSchema } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 
 // POST /api/ai/intake-recommendation — Generate AI recommendation from intake responses
 export async function POST(req: NextRequest) {
-  if (!process.env.GEMINI_API_KEY) {
+  const geminiKey = getServerEnv().GEMINI_API_KEY;
+  if (!geminiKey) {
     return NextResponse.json({ error: "AI not configured" }, { status: 503 });
   }
 
@@ -60,7 +62,7 @@ Gib eine konkrete, hilfreiche Empfehlung für den Stylisten, inklusive empfohlen
 
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — ink as brand · the Uber/Revolut pattern</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #FBF8F3;
+    color: #1A1209;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  body { padding: 36px 16px 80px; }
+  .doc { max-width: 1280px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 32px; }
+  .eye {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: #8A3C0F; margin-bottom: 10px;
+  }
+  h1.doc-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 40px; line-height: 1;
+    letter-spacing: -0.03em; color: #1A1209;
+  }
+  h1.doc-h em {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400; font-style: italic; color: #E8742A;
+  }
+  .sub {
+    font-size: 14px; color: #56463E; margin-top: 12px;
+    max-width: 720px; margin-inline: auto;
+  }
+
+  /* PATTERN EXPLANATION */
+  .pattern-card {
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: #56463E;
+    line-height: 1.6;
+  }
+  .pattern-card h2 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 17px;
+    color: #1A1209;
+    margin-bottom: 8px;
+  }
+  .pattern-card strong { color: #1A1209; font-weight: 600; }
+
+  /* COMPARE GRID */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 880px) { .compare { grid-template-columns: 1fr; } }
+
+  .col {
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.6),
+      0 1px 2px rgba(26,18,9,.03),
+      0 8px 24px rgba(0,0,0,.04);
+  }
+  .col-tag {
+    display: inline-block;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 99px;
+    margin-bottom: 12px;
+    font-family: "Inter Tight", sans-serif;
+    color: #fff;
+  }
+  .col.orange .col-tag { background: #E8742A; }
+  .col.ink .col-tag { background: #1A1209; }
+
+  .col-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 18px;
+    letter-spacing: -0.02em; color: #1A1209;
+    margin-bottom: 4px;
+  }
+  .col-meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; color: #7A6957;
+    margin-bottom: 18px;
+  }
+  .col-meta strong { color: #1A1209; font-weight: 500; }
+
+  /* SURFACES */
+  .surfaces { display: flex; flex-direction: column; gap: 14px; }
+  .surface {
+    background: #FBF8F3;
+    border: 1px solid rgba(26,18,9,.04);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.65); backdrop-filter: blur(12px) saturate(1.4);
+    border: 1px solid rgba(0,0,0,.06);
+    padding: 5px 11px;
+    border-radius: 99px;
+    font-size: 11px; font-weight: 600;
+    color: #1A1209;
+    margin-bottom: 10px;
+  }
+  .pulse-dot {
+    width: 6px; height: 6px;
+    background: var(--brand);
+    border-radius: 99px;
+    box-shadow: 0 0 0 4px var(--brand-pulse);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .55; transform: scale(1.3); }
+  }
+  .hero-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 26px;
+    line-height: 1.05; letter-spacing: -0.025em;
+    color: #1A1209;
+    margin-bottom: 12px;
+  }
+  .italic-accent {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400; font-style: italic;
+    color: var(--brand-italic);
+  }
+
+  /* ORANGE col CTA — current v2 lock w peach glow */
+  .col.orange .cta {
+    background: linear-gradient(180deg, #F0834D 0%, #E8742A 100%);
+    color: #fff;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(232,116,42,.32);
+  }
+
+  /* INK col CTA — clean, no colored glow */
+  .col.ink .cta {
+    background: #1A1209;
+    color: #fff;
+    /* clean transparent-tint shadow only — NO colored halo */
+    box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 4px 8px rgba(0,0,0,.04);
+  }
+  .col.ink .cta:hover {
+    background: #2A2018;
+    box-shadow: 0 1px 2px rgba(0,0,0,.1), 0 6px 14px rgba(0,0,0,.06);
+  }
+
+  .cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 12px 22px;
+    border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 700; font-size: 13px;
+    cursor: pointer;
+    border: 0;
+    transition: background-color 200ms cubic-bezier(.4,0,.2,1), box-shadow 200ms cubic-bezier(.4,0,.2,1);
+  }
+
+  /* salon card */
+  .salon-card {
+    display: flex; gap: 12px;
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.04);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .salon-photo {
+    width: 76px; height: 76px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 35%, transparent 70%, rgba(232,116,42,.08) 100%),
+      radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.25), transparent 60%),
+      #B5588A;
+    position: relative;
+  }
+  .salon-badge {
+    position: absolute; top: 5px; left: 5px;
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(12px);
+    color: #1A1209;
+    font-size: 9px; font-weight: 700;
+    padding: 3px 6px; border-radius: 99px;
+  }
+  .badge-dot { width: 4px; height: 4px; background: #16A34A; border-radius: 99px; box-shadow: 0 0 0 2px rgba(22,163,74,.2); }
+  .heart-btn {
+    position: absolute; top: 5px; right: 5px;
+    width: 24px; height: 24px;
+    border-radius: 99px;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(12px);
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+  .heart-btn svg { width: 12px; height: 12px; fill: #FF4A6B; stroke: #FF4A6B; stroke-width: 2; }
+  .salon-meta { flex: 1; min-width: 0; }
+  .salon-name {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 14px;
+    letter-spacing: -0.01em; color: #1A1209;
+    line-height: 1.1;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .salon-row1 { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
+  .salon-rating {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 500; font-size: 10px;
+    color: #1A1209; flex-shrink: 0;
+  }
+  .salon-row2 {
+    font-size: 10px; color: #7A6957;
+    margin-top: 3px;
+  }
+  .salon-row2 strong { color: #1A1209; font-weight: 600; }
+
+  /* link in inline emphasis (the §5d brand-color emphasis rule still works) */
+  .emph-link { color: var(--brand-italic); font-weight: 600; }
+
+  .footer-row {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px;
+    color: #56463E;
+    flex-wrap: wrap;
+  }
+
+  /* alert collision row — to confirm ink doesn't fight alerts */
+  .alert-row {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+  .chip-warn {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(245,158,11,.12);
+    border: 1px solid rgba(245,158,11,.3);
+    color: #7A4A14;
+    padding: 5px 10px;
+    border-radius: 99px;
+    font-weight: 600; font-size: 11px;
+  }
+  .chip-warn::before { content: ""; width: 5px; height: 5px; background: #F59E0B; border-radius: 99px; }
+  .chip-ok {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(22,163,74,.1);
+    border: 1px solid rgba(22,163,74,.3);
+    color: #15803D;
+    padding: 5px 10px;
+    border-radius: 99px;
+    font-weight: 600; font-size: 11px;
+  }
+  .chip-ok::before { content: ""; width: 5px; height: 5px; background: #16A34A; border-radius: 99px; }
+
+  .col.orange { --brand: #E8742A; --brand-italic: #E8742A; --brand-pulse: rgba(232,116,42,.18); }
+  .col.ink {
+    /* Brand orange STILL exists — for italic accents, links, pulse dots, eyebrow text.
+       It's just NOT used on action buttons. */
+    --brand: #E8742A;
+    --brand-italic: #E8742A;
+    --brand-pulse: rgba(232,116,42,.18);
+  }
+
+  /* ASK */
+  .ask {
+    margin-top: 28px;
+    padding: 16px 18px;
+    background: #FFE4D2;
+    border: 1px solid rgba(232,116,42,.18);
+    border-radius: 12px;
+    font-size: 13px;
+    color: #5C2308;
+    line-height: 1.55;
+    font-family: "Inter Tight", sans-serif;
+  }
+  .ask strong { color: #1A1209; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header>
+    <div class="eye">PATTERN: BRAND IDENTITY ≠ ACTION COLOR</div>
+    <h1 class="doc-h">Brand color where it <em>shines</em>. Ink where it <em>acts</em>.</h1>
+    <p class="sub">Strategic pattern from Uber + Revolut + most mature consumer apps: brand color appears in the <strong>logo, hero italic accent, links, pulse dots, eyebrow text</strong> — but the action button is <strong>warm ink</strong>. Brand identity stays loud where you want personality; action buttons stay neutral where you want clarity.</p>
+  </header>
+
+  <div class="pattern-card">
+    <h2>Why this works (no inventing — observable pattern across mature consumer apps):</h2>
+    <p>
+      <strong>Uber</strong> rebranded to black-button-on-white in 2018. Their brand identity is the "U" mark + Uber Move typography — not a colored CTA. <strong>Revolut</strong> uses near-black action buttons; brand color appears in marketing surfaces + onboarding hero, almost never in transactional CTAs. <strong>Apple Pay / Apple Books / Apple Wallet</strong> all use ink-black action buttons. <strong>Aesop</strong> (closer to Solen's brand vibe — warm editorial beauty) uses a warm dark olive/black for action and reserves their amber accent for headlines + identity moments only.
+    </p>
+    <p style="margin-top:8px;">
+      The principle: <strong>brand color isn't a button color, it's an identity color.</strong> Putting brand on every CTA means the brand never gets a "this is special" moment because it's used so much it becomes background. Reserving brand for accents (italic words in headlines, pulse dots, links, "Alle →") makes those moments pop.
+    </p>
+  </div>
+
+  <div class="compare">
+
+    <!-- ORANGE CTA — current v2 lock -->
+    <article class="col orange">
+      <span class="col-tag">CURRENT v2 LOCK</span>
+      <h2 class="col-h">Brand orange CTA (status quo)</h2>
+      <p class="col-meta"><strong>action button:</strong> orange gradient · peach glow shadow · <strong>brand orange used in:</strong> CTA + accent + pulse + hero italic + links</p>
+
+      <div class="surfaces">
+        <div class="surface">
+          <span class="pill"><span class="pulse-dot"></span>47 Salons in Basel haben heute frei</span>
+          <h3 class="hero-h">Guten Morgen, <em class="italic-accent">Sulo</em>.</h3>
+          <button class="cta">Solen durchsuchen →</button>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo">
+            <span class="salon-badge"><span class="badge-dot"></span>Heute frei</span>
+            <div class="heart-btn"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+          </div>
+          <div class="salon-meta">
+            <div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div>
+            <div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div>
+          </div>
+        </div>
+        <div class="surface" style="background:#fff;">
+          <p class="footer-row" style="margin-bottom:10px;font-weight:500;color:#1A1209;">Buche jetzt, <a href="#" class="emph-link">heute hingehen</a>.</p>
+          <button class="cta">Buchen →</button>
+        </div>
+        <div class="surface" style="background:#fff;">
+          <p style="font-size:11px;color:#7A6957;margin-bottom:8px;">alert collision check</p>
+          <div class="alert-row">
+            <button class="cta" style="padding:8px 16px;font-size:12px;">Buchen →</button>
+            <span class="chip-warn">Fast voll</span>
+            <span class="chip-ok">Heute frei</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- INK CTA — corrected pattern -->
+    <article class="col ink">
+      <span class="col-tag">PATTERN · INK ACTION</span>
+      <h2 class="col-h">Warm ink CTA, brand-orange identity</h2>
+      <p class="col-meta"><strong>action button:</strong> #1A1209 (warm ink) · clean shadow no colored halo · <strong>brand orange used in:</strong> italic accents + pulse + links + eyebrow only — NOT on CTAs</p>
+
+      <div class="surfaces">
+        <div class="surface">
+          <span class="pill"><span class="pulse-dot"></span>47 Salons in Basel haben heute frei</span>
+          <h3 class="hero-h">Guten Morgen, <em class="italic-accent">Sulo</em>.</h3>
+          <button class="cta">Solen durchsuchen →</button>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo">
+            <span class="salon-badge"><span class="badge-dot"></span>Heute frei</span>
+            <div class="heart-btn"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
+          </div>
+          <div class="salon-meta">
+            <div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div>
+            <div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div>
+          </div>
+        </div>
+        <div class="surface" style="background:#fff;">
+          <p class="footer-row" style="margin-bottom:10px;font-weight:500;color:#1A1209;">Buche jetzt, <a href="#" class="emph-link">heute hingehen</a>.</p>
+          <button class="cta">Buchen →</button>
+        </div>
+        <div class="surface" style="background:#fff;">
+          <p style="font-size:11px;color:#7A6957;margin-bottom:8px;">alert collision check</p>
+          <div class="alert-row">
+            <button class="cta" style="padding:8px 16px;font-size:12px;">Buchen →</button>
+            <span class="chip-warn">Fast voll</span>
+            <span class="chip-ok">Heute frei</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="ask">
+    <strong>Two real options on the table now:</strong><br>
+    <strong>(A)</strong> Keep current v2 — orange CTA + orange accent. Vibrant brand identity, alert-collision risk on warning amber + error red.<br>
+    <strong>(B)</strong> Pivot to ink-CTA pattern — orange stays the brand color but ONLY appears in italic accents, pulse dots, "Alle →" links, eyebrow text. Action buttons go warm-ink. <strong>Brand identity gets MORE distinctive</strong> because orange is no longer wallpaper.<br><br>
+    Note: option B doesn't kill the orange you locked. It moves orange from "every button" to "the moments that matter." The "Sulo" italic, the pulse dot in the counter pill, the "heute hingehen" emphasis link, the "Alle →" arrow — those stay orange. Just not "Buchen →".<br><br>
+    <strong>A or B?</strong> Or want me to inspect Aesop's actual site (similar warm-editorial beauty positioning) for a real reference comparison before deciding?
+  </div>
+
+</div>
+</body>
+</html>

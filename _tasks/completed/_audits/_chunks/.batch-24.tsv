@@ -1,0 +1,10 @@
+32e7ff68259199303c5b1aed3c9e9d31934cf278 2026-03-28 10:15:39 +0100 UI Audit: Fix typography and shadows in MapView and Checkout for V3 compliance
+85c65d14257deb1cd651b03e6d1af4e9a7bcfdb2 2026-03-28 15:05:33 +0100 chore: resolve remaining 130 typescript definitions across dashboard and api
+1434e67c1d6a600c51e563c56b979e3fcb9b5a67 2026-03-28 15:11:10 +0100 Homepage quality pass: Rule 43 hover fixes, i18n, design token cleanup
+98bda58d5a301cc8f2e53f7fd28cdd2457de4f33 2026-03-28 15:13:22 +0100 Batch sync: TypeScript fixes, new dashboard components, style updates
+766412e3d500f95659bf35f0a81a648c55f00caf 2026-03-28 15:35:23 +0100 chore: resolve all remaining TypeScript errors across the codebase
+59825c0ca884e87bc458506ef8da22f7b1275478 2026-03-28 15:39:36 +0100 UI consistency pass: codify §21 interaction patterns and apply site-wide
+c0328c3421d262a6b9191d1d118c8c0db1ecd7a0 2026-03-28 15:45:11 +0100 Dashboard overhaul: Phase 3d-3f + Phase 3e makeup + Phase 4 backend
+d5998459c811beacfdce03055fae594127936cc7 2026-03-28 15:56:07 +0100 feat: Admin Sandbox — create/seed/delete test salons from dashboard
+15cb7a9e7944dad7312994430b7b10596ed8e009 2026-03-28 16:01:25 +0100 fix: discover card TikTok cookie wall + carousel black corners
+a2e16ec8564d0dd753624b7676b3a93832405817 2026-03-28 16:23:00 +0100 UI consistency pass: all subsites — transition-all, rounded-btn, duration-500

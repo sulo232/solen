@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, offPeakNotificationSchema } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 
 /**
  * POST /api/notifications/off-peak
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const resendApiKey = process.env.RESEND_API_KEY;
+  const resendApiKey = getServerEnv().RESEND_API_KEY;
   if (!resendApiKey) {
     return NextResponse.json({ skipped: true, reason: "no_api_key" });
   }

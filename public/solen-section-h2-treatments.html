@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen section h2 — punctuation treatments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #2A1F18;
+    --ink-2: #5C4A3A;
+    --ink-3: #8A7A68;
+    --bg: #FAF3E6;
+    --rule: #EAE0D0;
+    --brand: #1A8F5C;
+    --accent: #E0703D;
+    --pale: #FFF6E6;
+  }
+  body {
+    font-family: 'Open Sauce One', Inter, system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    padding: 32px 24px 80px;
+    line-height: 1.55;
+  }
+  .page-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .page-sub {
+    font-size: 13px;
+    color: var(--ink-2);
+    text-align: center;
+    margin-bottom: 32px;
+    max-width: 660px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .options {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .opt {
+    background: #FFFFFF;
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    padding: 22px 20px 18px;
+  }
+  .opt .opt-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .opt .opt-label::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--brand);
+    border-radius: 50%;
+  }
+  .opt .opt-label.current {
+    color: var(--accent);
+  }
+  .opt .opt-label.current::before {
+    background: var(--accent);
+  }
+  .opt .opt-label.recommend {
+    color: var(--brand);
+  }
+  .recommend-tag {
+    display: inline-block;
+    margin-left: 6px;
+    background: var(--brand);
+    color: white;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Section h2 — base style (same across all options) */
+  .section-h2-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .section-h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+  }
+  .section-link {
+    font-size: 13px;
+    color: var(--brand);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* T2 Leading dot */
+  .t2 .section-h2::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-bottom: 2px;
+  }
+
+  /* T3 Tinted highlight word */
+  .t3 .section-h2 .tint { color: var(--accent); }
+
+  /* T4 Eyebrow + dot above */
+  .t4 .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Open Sauce One', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 4px;
+  }
+  .t4 .eyebrow::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  /* T5 Underline accent */
+  .t5 .section-h2 {
+    position: relative;
+    padding-bottom: 7px;
+  }
+  .t5 .section-h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 36px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* T6 Vertical bar left */
+  .t6 .section-h2::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 2px;
+    margin-right: 10px;
+    margin-bottom: -3px;
+  }
+
+  /* T7 Subhead below */
+  .t7 .section-h2-row {
+    align-items: flex-end;
+  }
+  .t7 .subhead {
+    font-family: 'Open Sauce One', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--ink-3);
+    margin-top: 2px;
+  }
+
+  /* T8 Sliced section background card */
+  .t8 .section-wrap {
+    background: var(--pale);
+    border: 1px solid #F2E6CF;
+    border-radius: 16px;
+    padding: 16px 16px 14px;
+    margin: -2px -2px 0;
+  }
+
+  /* Mini card row inside each option */
+  .mini-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .mini-card {
+    width: 90px;
+    height: 90px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #D4DDC8, #A8E0BF);
+    flex-shrink: 0;
+  }
+  .mini-card.b { background: linear-gradient(135deg, #FFE8D8, #F0A98C); }
+  .mini-card.c { background: linear-gradient(135deg, #E8DDC9, #D4F2E0); }
+
+  .verdict {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+    font-family: 'Open Sauce One', sans-serif;
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+  .verdict strong { color: var(--ink); font-weight: 700; }
+  .verdict .pro { color: #2D8849; font-weight: 600; }
+  .verdict .con { color: #B23B25; font-weight: 600; }
+
+  .footer-note {
+    max-width: 760px;
+    margin: 32px auto 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Section h2 — punctuation treatments</h1>
+<p class="page-sub">Same font (Plus Jakarta 700), same size (20px), same color. Only the punctuation around the h2 changes. Goal: stop 9 identical section titles from feeling flat.</p>
+
+<div class="options">
+
+  <div class="opt t1">
+    <div class="opt-label current">Option 1 · plain (CURRENT LIVE)</div>
+    <div class="section-h2-row"><h2 class="section-h2">Zuletzt angesehen</h2><span class="section-link">Im Profil →</span></div>
+    <div class="mini-row"><div class="mini-card"></div><div class="mini-card b"></div><div class="mini-card c"></div></div>
+    <div class="verdict"><strong>Verdict:</strong> baseline. Nothing wrong, just flat. <span class="con">Eye gets bored after 3 identical sections.</span></div>
+  </div>
+
+  <div class="opt t2">
+    <div class="opt-label recommend">Option 2 · leading dot<span class="recommend-tag">recommend</span></div>
+    <div class="section-h2-row"><h2 class="section-h2">Zuletzt angesehen</h2><span class="section-link">Im Profil →</span></div>
+    <div class="mini-row"><div class="mini-card"></div><div class="mini-card b"></div><div class="mini-card c"></div></div>
+    <div class="verdict"><strong>Verdict:</strong> tiny terracotta dot before each h2. <span class="pro">Small, classy, ties back to the Solen· logo dot.</span> Locked-allowed (LIVE_TRUTH §5h.2 "eyebrow leading-dot"). Smallest change, most punctuation per pixel.</div>
+  </div>
+
+  <div class="opt t3">
+    <div class="opt-label">Option 3 · tinted highlight word</div>
+    <div class="section-h2-row"><h2 class="section-h2">Zuletzt <span class="tint">angesehen</span></h2><span class="section-link">Im Profil →</span></div>
+    <div class="mini-row"><div class="mini-card"></div><div class="mini-card b"></div><div class="mini-card c"></div></div>
+    <div class="verdict"><strong>Verdict:</strong> second word in terracotta. Playful, conversational. Locked-allowed (LIVE_TRUTH §5h.2 "one or two highlight words in h2"). <span class="con">But picking the right word per section is editorial work × 9.</span></div>
+  </div>
+
+  <div class="opt t4">
+    <div class="opt-label">Option 4 · eyebrow + dot above</div>
+    <div class="eyebrow">Entdecke</div>
+    <div class="section-h2-row"><h2 class="section-h2">Zuletzt angesehen</h2><span class="section-link">Im Profil →</span></div>
+    <div class="mini-row"><div class="mini-card"></div><div class="mini-card b"></div><div class="mini-card c"></div></div>
+    <div class="verdict"><strong>Verdict:</strong> tiny uppercase kicker above h2 with terracotta dot. <span class="pro">Most "designed" — editorial texture.</span> Adds a second typographic element to every section. Needs 9 different eyebrow labels written.</div>
+  </div>
+
+  <div class="opt t5">
+    <div class="opt-label">Option 5 · underline accent</div>
+    <div class="section-h2-row"><h2 class="section-h2">Zuletzt angesehen</h2><span class="section-link">Im Profil →</span></div>
+    <div class="mini-row"><div class="mini-card"></div><div class="mini-card b"></div><div class="mini-card c"></div></div>
+    <div class="verdict"><strong>Verdict:</strong> short terracotta underline below h2. Clean, designer-y. <span class="con">Reads more "corporate / dashboard"</span> than brand-tie. Architectural rather than personal.</div>
+  </div>
+
+  <div class="opt t6">
+    <div class="opt-label">Option 6 · vertical bar left</div>
+    <div class="section-h2-row"><h2 class="section-h2">Zuletzt angesehen</h2><span class="section-link">Im Profil →</span></div>
+    <div class="mini-row"><div class="mini-card"></div><div class="mini-card b"></div><div class="mini-card c"></div></div>
+    <div class="verdict"><strong>Verdict:</strong> 3px terracotta bar left of h2. <span class="pro">Strong "section" signal.</span> Editorial-modern. <span class="con">Risk of looking like every B2B dashboard.</span></div>
+  </div>
+
+  <div class="opt t7">
+    <div class="opt-label">Option 7 · subhead below</div>
+    <div class="section-h2-row">
+      <div>
+        <h2 class="section-h2">Zuletzt angesehen</h2>
+        <p class="subhead">Salons, die du in den letzten Tagen besucht hast</p>
+      </div>
+      <span class="section-link">Im Profil →</span>
+    </div>
+    <div class="mini-row"><div class="mini-card"></div><div class="mini-card b"></div><div class="mini-card c"></div></div>
+    <div class="verdict"><strong>Verdict:</strong> one-line context tagline under each h2. <span class="pro">Most informative — gives each section a personality.</span> <span class="con">Adds vertical height across 9 sections. Needs 9 taglines written.</span></div>
+  </div>
+
+  <div class="opt t8">
+    <div class="opt-label">Option 8 · sliced background card · YOUR HYPOTHESIS</div>
+    <div class="section-wrap">
+      <div class="section-h2-row"><h2 class="section-h2">Zuletzt angesehen</h2><span class="section-link">Im Profil →</span></div>
+      <div class="mini-row"><div class="mini-card"></div><div class="mini-card b"></div><div class="mini-card c"></div></div>
+    </div>
+    <div class="verdict"><strong>Verdict:</strong> each section sits on a slightly-warmer cream card (one shade lighter than page bg). Directly tests your "background is the issue" hypothesis. <span class="con">Big structural change — interacts with cards, atmosphere blobs, all 9 sections.</span></div>
+  </div>
+
+</div>
+
+<p class="footer-note">Pick a number. 2/3/5/6 wire into <code>SectionHeader.tsx</code> only. 4 + 7 add a copy task per section. 8 changes the section wrapper structure.</p>
+
+</body>
+</html>

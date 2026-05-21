@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { AlertTriangle, CheckCircle, XCircle, Scale } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
-import BookingDisputePanel from "@/components/admin/BookingDisputePanel";
+import BookingDisputePanel from "@/components-legacy/admin/BookingDisputePanel";
 
 interface Dispute {
   id: string;
@@ -110,7 +110,7 @@ export default function DisputesPage() {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <Scale className="w-6 h-6 text-s-coral" />
-          <h1 className="font-heading font-bold text-2xl text-s-ink">Preisstreitigkeiten</h1>
+          <h1 className="font-heading text-2xl text-s-ink">Preisstreitigkeiten</h1>
         </div>
 
         {loading ? (
@@ -125,7 +125,7 @@ export default function DisputesPage() {
               <div key={d.id} className="rounded-[12px] border border-s-ink/5 bg-white p-5">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div>
-                    <p className="font-heading font-semibold text-s-ink">
+                    <p className="font-heading text-s-ink">
                       {d.bookings?.salons?.name ?? "Salon"}
                     </p>
                     <p className="text-xs text-s-ink/50 font-body mt-0.5">

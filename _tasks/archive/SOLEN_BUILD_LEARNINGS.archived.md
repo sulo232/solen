@@ -1,0 +1,632 @@
+# Solen — Build learnings (cross-phase)
+
+> Things discovered during execution that the next phase should know.
+> Append-only. Each entry: phase + date + what + why-it-matters.
+
+---
+
+## Phase 0 — Token contract migration (2026-05-02)
+
+### L0.1 — Pre-edit grep saves bulk-deletion disasters
+181 components reference legacy palette tokens (`s-blue/plum/sage/sand`). Plan said
+"remove legacy tokens" — would have silently broken 181 components if executed
+without grep-first. **Always grep before deleting any shared token, prop, or import.**
+
+### L0.2 — Vercel `[skip vercel]` is NOT honored by Vercel
+Vercel ignores commit-message skip tokens. The actual skip mechanism is
+`vercel.json` `ignoreCommand` (a script that exits 0 to skip, 1 to build). User
+locked: builds ONLY trigger when commit message contains literal `[deploy]` token.
+Don't add `[deploy]` proactively — wait for explicit user instruction.
+
+### L0.3 — Audit agents can search the wrong folder
+Agent 3 reported Q59's `LoyaltyCard.tsx` + `LoyaltyCardList.tsx` as "fabricated
+file paths." Reality: they exist at `components/barber/`, not `components/loyalty/`.
+**Verify subagent findings with file existence checks before fixing the lock as
+broken.** Updated Q59 to fully-qualify the paths so future phases don't repeat
+the search.
+
+---
+
+## Phase 1 — State primitives (2026-05-02)
+
+### L1.1 — `useReducedMotion` is the one motion gate
+All Q35 + Q36 animation work uses `framer-motion`'s `useReducedMotion` hook.
+`prefers-reduced-motion: reduce` returns `true` → skip the animation, instant
+swap. Pattern: build the component to render BOTH the animated and instant paths;
+the hook picks. Do NOT rely on CSS-only `@media (prefers-reduced-motion)` for
+component animations — framer-motion bypasses it.
+
+### L1.2 — `Q60 EmptyState` trio is a system, not 3 separate components
+Don't build each empty state per-page from scratch. Use `<EmptyStateFTU>` /
+`<EmptyStateInline>` / `<EmptyStateFiltered>` consistently. Pass:
+- `eyebrow` (Figtree 700 .22em uppercase coral)
+- `headline` (Anton uppercase)
+- `subCopy` (Figtree ink/65)
+- `ctaLabel` + `ctaHref` (FTU + Inline only) OR `resetLabel` + `onReset` (Filtered)
+- `illustration` (inline SVG with `stroke="#E8624A"` per Q21 — caller picks anchor:
+  calendar+clock for bookings, heart for favorites, magnifier for filtered, sparkle
+  for looks, stamp circle for loyalty)
+
+**Common mistake to avoid:** using lucide-react icons as the FTU illustration. Q21
+locks line-coral SVG with explicit stroke, NOT lucide. Lucide is for utility chrome
+(chevrons, action icons, pictograms in chips), not for illustration anchors.
+
+### L1.3 — Q47 focus ring conflicts existed (now reconciled)
+`globals.css` had TWO competing `:focus-visible` blocks (one in `@layer base` with
+0.5-alpha coral, one global with white inner + button-coral outer). Q47 locks
+**2px solid `#E8624A` + 2px outline-offset, focus-visible only**. Inputs use
+box-shadow ring instead of outline (radius compatibility). Don't add a third block.
+
+### L1.4 — `CelebrationRing` placement
+`<CelebrationRing kind="..." active={...}>` is positioned `absolute inset-0` so
+the parent must be `relative`. The component fires once and resets — pass `active`
+as a one-shot toggle (parent sets true on event, the ring auto-clears after the
+animation duration).
+
+---
+
+## Phase 2 — Brand primitives (2026-05-02)
+
+### L2.1 — `SignatureLockup` is the brand fingerprint
+Every page header should use `<SignatureLockup eyebrow="..." headline="..."
+size="md|lg|xl">`. Eyebrow auto-renders coral `#C95A3A` Figtree 700 tracked
+uppercase; headline auto-renders Anton uppercase with locked letter-spacing 0.01em
++ leading 0.95. Don't reimplement the eyebrow + Anton combo per page.
+
+### L2.2 — `lib/format.ts` is the canonical numeric formatter
+Use `formatPrice(85)` for `CHF 85`, `formatTime(14, 30)` for `14:30`,
+`formatRating(4.83)` for `4.8`, `formatTimeOffset(120)` for `in 2h`. Apply
+`tabular-nums` Tailwind class on the containing element so digits column-align —
+the helpers don't impose typography, just stringify.
+
+### L2.3 — Don't refactor existing Button/Card components in primitive phase
+`components/ui/button.tsx` (shadcn-style) + `components/ui/card.tsx` +
+`components/SalonCard.tsx` (378L) all exist and work. Per CODE_SAFETY Rule 8,
+extend per-surface in the consuming phase (Phase 4 stress-tests Card via section
+carousels; Phase 5 stress-tests Button via booking wizard). Building parallel
+duplicates would break 200+ existing imports.
+
+---
+
+## Phase 3 — Profile shell + loyalty + anti-confetti (2026-05-02)
+
+### L3.1 — Aggressive deletion is safer than additive when routes already exist
+Initial instinct: inject LiveActivityCard above the existing 5-tab system (additive,
+~30% Q58). Better: delete the entire ProfileTabs render, route each "tab" to its
+own dedicated sub-page (~95% Q58). Why safer: the sub-routes already exist or are
+trivial stubs. Additive shipped a hybrid layout that looks broken visually
+(LiveActivityCard + tabs side-by-side = inconsistent). **Aggressive ≠ risky when
+the destinations already exist.**
+
+### L3.2 — Q58 + Q60 are co-designed
+Don't treat them as independent. Q58 says "profile = grouped lists." Q60 says
+"each list-page has 3 empty treatments." Together: each grouped-list row routes
+to a sub-page that uses one of the EmptyState variants. This is one system, not
+two.
+
+### L3.3 — `<ProfileTabs>`, `<LooksGrid>`, `<SalonHighlights>` are now orphans
+After Phase 3, these components are imported in `ProfilePage.tsx` but no longer
+rendered. **Phase 7 (drift sweep) deletes them after confirming no other call
+sites.** Leaving the imports for now to avoid cascading lint changes; Phase 7
+sweep handles cleanup.
+
+### L3.4 — `/profile/looks` is a stub
+The looks feature has no backend table yet (per BACKEND_NEEDS_UI). The page
+always renders the EmptyStateFTU. When the backend lands, swap the EmptyState
+for the existing `LooksGrid` component.
+
+### L3.5 — `/api/profile/live-state` is sequential, not optimized
+v1 runs 5 sequential Supabase queries (upcoming → loyalty → deal → reply →
+rebook). Returns the FIRST qualifying state. Phase 7 may rewrite as a single
+SQL CTE if the access-pattern hot path needs it. For now correctness > speed.
+
+### L3.6 — Bottom-nav fully removed from web
+`<FloatingNavPill>` no longer rendered anywhere on web. `<BottomNav>` exists but
+is unused on web routes. Per Q58 mobile-native/PWA can re-introduce later — **a
+future Q-lock will design the mobile-only bottom-nav surface separately.**
+
+### L3.7 — `setActiveTab` callbacks need replacement when tabs deleted
+Existing `<ProfileHero>` accepts `onEditProfile={() => setActiveTab('einstellungen')}`.
+After tab deletion, swapped to anchor-scroll: `() =>
+document.getElementById("settings")?.scrollIntoView({ behavior: "smooth" })`.
+Phase 7 replaces with proper route to `/profile/settings` once that page exists.
+
+### L3.8 — StampCard `celebrate` prop is event-driven, NEVER on mount
+Confetti was firing on EVERY mount when `isComplete=true`. Per Q59 anti-pattern
+("per-stamp celebration animation that fires on the dedicated page when user
+just opens it"), the new `celebrate` prop is opt-in by the caller — only fires
+when a stamp event actually happens. Default `false`. Reward-unlock celebration
+runs at milestone scale (1200ms ring + amber checkmark).
+
+---
+
+## Phase 3 verification pass (2026-05-02 follow-up)
+
+### L3.9 — Time estimates were padded; testing wasn't done
+Phase 3 took ~55 min, not 6-7 hr. Reason: Q-locks make every render-layer
+decision so component code is mostly transcription, not architecture. BUT
+the original ship had **zero runtime verification**. A verification pass found:
+
+### L3.10 — Schema column names: 4 wrong guesses, all fixable
+- `bookings.slot_at` does NOT exist; the column is `starts_at`. Fixed in
+  `/api/profile/live-state/route.ts` (3 query sites).
+- `loyalty_stamp_cards` table exists but the active loyalty-program flow
+  uses `loyalty_cards` + `loyalty_stamps` JOIN. Pattern from
+  `/api/loyalty/route.ts`:
+  ```ts
+  .from("loyalty_cards")
+  .select(`id, salon_id, stamps_needed, reward_text, salons(slug, name, cover_photo_url),
+           loyalty_stamps!inner(id, customer_id)`)
+  .eq("is_active", true)
+  .eq("loyalty_stamps.customer_id", userId)
+  ```
+- `stamps_collected` is computed (count of loyalty_stamps for this card+
+  customer), NOT a column. Same for `is_complete` (compares count to
+  `stamps_needed`).
+- `salons.cover_url` does NOT exist; the column is `cover_photo_url`.
+  Same on Salon `cover_photo_url` everywhere.
+- `salons.average_rating` (NOT `rating`); `review_count` (NOT
+  `rating_count`); no `price_band` column — derive from joined services.
+
+### L3.11 — Drop existing prop without grep = TS regression
+Phase 1 dropped `zone` prop from `EmptyState`. I greped for `<EmptyState`
+imports but not for `zone={` JSX call sites. Result: 3 TS errors in
+SalonReviews / SalonServices / PageState. Fixed in 0104958.
+**Pattern: when removing a prop, grep for all JSX call sites with
+`grep -rn "PropName=" components/ app/` BEFORE shipping.**
+
+### L3.12 — Pre-existing node_modules corruption blocks Next.js dev
+Project has multiple node_modules issues unrelated to Phase 3:
+- `postcss-selector-parser` was missing — `npm i` fixed it
+- `@vercel/otel` was missing — `npm i` fixed it
+- `picomatch/lib/picomatch` resolution still fails despite the package
+  existing — needs full `rm -rf node_modules && npm install` cycle to
+  resolve. Deferred to user.
+**Workaround:** static design preview at `localhost:3000/solen-coral`
+(via `npx serve public`) is unaffected. Use that for design verification.
+
+### L3.13 — Mirror existing API patterns instead of guessing schema
+For `/profile/favorites/page.tsx`, instead of enumerating salon columns
+in the select, mirror the `/api/profile/favorites/route.ts` approach:
+two-step fetch (favorites → salon ids → full salons + services price
+average). Less guessing, less drift, returns the canonical SalonCard
+shape that <SalonCard> already accepts.
+
+---
+
+## Phase 2 finish (2026-05-02)
+
+### L2.4 — Phase 0d regex left 120 dark-mode artifacts in 70 files
+The `\s+dark:...` regex in scripts/strip-dark-mode.mjs required leading
+whitespace, which missed nested `hover:dark:bg-...` and chained
+`:dark:bg-...` modifiers. Result: invalid Tailwind strings like
+`hover:bg-s-ink/[0.09]:bg-s-dm-text/[0.14]` that silently fail at render.
+Caught while reading button.tsx. Fixed via a corrective regex pass that
+strips orphan `:bg-s-dm-`/`:text-s-dm-`/`:border-s-dm-`/etc fragments +
+dangling `hover:`/`focus:`/`active:` modifiers. **Lesson:** when writing
+a regex sweep over a class-name space, also test against nested-modifier
+patterns like `hover:dark:` and `lg:dark:`. The naive `\s+dark:` pattern
+misses them.
+
+---
+
+## Phase 4 — Home + discovery (2026-05-02)
+
+### L4.1 — Q49 above-fold replaces V5 cinematic hero
+NEW: `components/home/HeroAboveFold.tsx`. Old `HomepageHero.tsx` (V5
+cinematic + AirbnbSearchBar pill) is now orphan — Phase 7 deletes it +
+the `.figma.tsx` mirror file. Bg color changed `#FAFAF8` → white per Q15.
+
+### L4.2 — Search field opens existing GuidedSearch sheet via [data-gs-trigger]
+The Q49 stacked search card is a presentational trigger; tapping any
+field clicks the hidden `[data-gs-trigger]` element which opens the
+existing GuidedSearch sheet (preserves all input/filter logic).
+**Pattern:** when refactoring a UI surface, find the existing sheet/modal
+trigger via DOM attribute and reuse it instead of duplicating the input
+flow.
+
+### L4.3 — Q51 partial — 4 sections deferred to Phase 4.b
+Shipped: Q49 hero + Q51 #8 TrustStatsBanner. Deferred (need design call
+or backend wiring):
+- **Nearby section (#2):** geolocation hook (`useCityDetection` exists)
+  + a Nearby SectionCarousel pulling from existing `/api/salons/nearby`.
+  Quick if existing API works — verify before building.
+- **Discover section (#4):** Pinterest+booking-bridge. Needs
+  `discovery_items` table data flow + a new card pattern (mixed card
+  sizes, image-led). Substantial work; needs a Q-lock for the Discover
+  card anatomy first (no spec exists).
+- **Spotlight section (#6):** salon-of-the-week curation. Needs admin
+  curation UI + a `spotlight_salons` table or feature flag. Lowest
+  priority since it's marked `[optional]` in Q51.
+- **Per-section canonical SectionCarousel:** existing
+  `FeaturedSalonCarousel` (280L) already does the Q50 scroll-snap
+  pattern. Refactoring to a generic SectionCarousel is cosmetic
+  harmonization, not functional. Defer to Phase 7.
+
+---
+
+## Phase 5a — Q57 confirmation (2026-05-02)
+
+### L5.1 — Q57 BookingSuccess used CelebrationRing primitive directly
+The Phase 1 `<CelebrationRing kind="booking">` primitive plugged in
+exactly as designed. Mount-time `useEffect` sets `celebrate=true`,
+component auto-resets internal state. Reduced-motion: instant
+overlay-only via the primitive's built-in handling.
+
+### L5.2 — Replacing window-wide CSS confetti
+Old BookingSuccess generated 50 colored particles via direct DOM
+manipulation (`document.createElement` + appended to body, with
+`@keyframes confetti-fall` injected as a `<style>` tag). Replaced with
+a single React component that respects `prefers-reduced-motion`. **Net
+LOC: -8** while shipping a more sophisticated celebration.
+
+### L5.3 — Q57 anti-pattern enforcement (referral CTA killed)
+Old BookingSuccess had a "refer a friend, both get CHF 10" CTA panel
+right below the summary card. Q57 explicitly bans this — feels
+predatory immediately after pay. Removed entirely. Referral discovery
+moved into the Q58 profile grouped-list (Misc group, 'Freunde einladen'
+row with `CHF 10` reward chip — already shipped in Phase 3).
+
+---
+
+## Phase 5b-f — Q52-Q56 deferred (2026-05-02)
+
+These remaining Phase 5 locks need substantial refactors and a focused
+session. Each is its own ~1-2 hr surgical operation:
+
+### L5.4 — Q52 SalonHero + sticky scrollspy tab nav
+- `SalonHero.tsx` (180L): evolve carousel → A pattern (single full-bleed
+  photo + bottom-fade Anton overlay + thumbnail strip + tap-to-fullscreen
+  gallery sub-page). Significant JSX rewrite.
+- `SalonSectionNav.tsx` (124L) + `SalonTabBar.tsx` (67L): Fresha-pattern
+  pin-on-scroll, header-collapse, sliding coral underline (200ms),
+  IntersectionObserver scrollspy. 7 behaviors per Q52 lock.
+- Need to build the gallery sub-page route (`/salon/[slug]/gallery`).
+
+### L5.5 — Q53 booking entry — 3 entry points → /book/[slug]
+- Sticky bottom CTA (`SalonMobileCTA.tsx` 92L), sticky sidebar
+  (`SalonSidebar.tsx` 136L), in-flow service+ rows: ALL three route to
+  `/book/[slug]` full-page wizard with Q35 shared-element morph.
+- The shared-element morph requires Framer Motion `<LayoutGroup>` or
+  `next/router` view-transitions API. Test on mobile especially.
+
+### L5.6 — Q54 reviews split (summary + sub-page)
+- `SalonReviews.tsx` (383L): summary on detail tab + new
+  `/salon/[slug]/reviews` sub-page route with filter chips + infinite
+  scroll + reply threads expanded.
+- The sub-page route doesn't exist yet — needs to be built.
+
+### L5.7 — Q55 wizard 4→3 step merge (HIGHEST RISK)
+- Delete `ConfirmationStep.tsx` (194L) + `PaymentStep.tsx` (216L).
+- NEW: `PayConfirmStep.tsx` (~250-300L) merges both into single screen.
+- `BookingWizard.tsx` (172L) progress bar 4 segments → 3.
+- `BookingContext` formData stays unchanged; currentStep enum changes.
+- **HIGH RISK:** this is the revenue path. Must preserve all Stripe
+  integration, deposit flows, gift card redeem, package redeem,
+  group booking modal. Test pay flow end-to-end before shipping.
+
+### L5.8 — Q56 step indicator
+- `BookingWizard.tsx` progress bar: 3-segment + eyebrow `Schritt N / 3`
+  + Anton step label. Smaller than Q55 but couples with it (Q56 spec
+  assumes 3 steps from Q55). Ship in same commit as Q55.
+
+---
+
+## Phase 4.b + Phase 5 thorough push (2026-05-03)
+
+### L4.4 — Q50 SectionCarousel uses negative-margin scroll trick
+The Airbnb-pattern peek (next card half-visible at edge) requires the
+scroll container to extend INTO the page padding. Standard pattern:
+`-mx-5 md:-mx-10 lg:-mx-20 px-5 md:px-10 lg:px-20`. This way the children
+align with the rest of the page's padding, but the scroll-snap container
+spans edge-to-edge so peek shows. Don't try to do it with overflow only
+— children get clipped at the padding edge.
+
+### L4.5 — `useCityDetection()` returns void, not city
+Phase 4 NearbySection initially called `const { city } = useCityDetection()`
+which TS-errored. The hook is side-effect only — it persists detected
+city to cookie via `lib/city-cookie`. Read with `getPersistedCity()`
+inside `useEffect` (avoids SSR/CSR mismatch). Pattern applied in
+NearbySection.tsx.
+
+### L5.9 — Q52 SalonHero overlay vs h1 SEO trade-off
+Q52 puts the salon name on the photo as an Anton overlay. Existing
+salon page had `<h1>{salon.name}</h1>` below the photo. To preserve SEO
++ screen-reader landmark + the visible Q52 hero overlay, the existing
+h1 was kept but converted to `sr-only` (visually hidden, still in DOM).
+**Pattern:** when moving a heading visually but you still need it for
+SEO/a11y, sr-only the original instead of deleting.
+
+### L5.10 — Q55 booking wizard refactor used belt-and-suspenders
+Wizard 4→3 step merge is HIGH RISK (revenue path). Mitigation:
+1. Kept ConfirmationStep + PaymentStep as orphan files (deleted by
+   Phase 7 only after PayConfirmStep verified ≥7 days in production)
+2. Extended BookingStep type to include both old keys ('confirm',
+   'payment') AND new key ('pay-confirm') — no breaking change
+3. BookingWizard normalizes legacy keys at runtime — in-progress
+   sessions don't lose state on first load post-deploy
+4. Booking-creation API call (POST /api/bookings + /confirmation
+   redirect) preserved verbatim — only the surface combines two steps
+
+### L5.11 — Q53 V5 anti-pattern killed in 2 places
+Both SalonMobileCTA + SalonSidebar opened BookingCalendar inline (in
+BottomSheet on mobile, in sidebar collapsible on desktop). Q53 explicitly
+bans this — booking MUST navigate to the full-page wizard at
+/salon/[slug]/booking. Both refactored to <Link> with query forwarding
+(?service=&staff=). Back button restores salon detail + scroll position
+via Next.js scroll restoration.
+
+### L5.12 — Q54 split = thin summary + reuse heavy component on sub-page
+SalonReviewsSummary is a NEW lightweight component (~155L) for the
+detail tab summary card. The sub-page route `/salon/[slug]/reviews`
+reuses the EXISTING SalonReviews component (389L) which already handles
+filter chips, photo upload, expanded replies, dispute reporting.
+**Pattern:** when a Q-lock says 'split into summary + sub-page', don't
+fork the existing component — build a thin summary alongside, route the
+sub-page to the existing surface.
+
+---
+
+## Phase 6 — Dashboard B2B (2026-05-03)
+
+### L6.1 — Q61 went additive to preserve 37 dashboard components
+Per 'no kill features' rule, Q61 didn't refactor the existing dashboard
+homepage (StatCard grid + ActivityFeed + DashboardLayout sidebar with
+category-injection nav). Instead:
+- TodayLiveCard.tsx (mobile-only, md:hidden) renders ABOVE the existing
+  SetupBanner + Übersicht stats grid
+- DashboardHeaderStrip.tsx (desktop-only, hidden md:flex) renders in the
+  same position as a sticky pill row
+- Owner now sees both: live now/next data on top + their familiar overview
+  below
+- Phase 7 may collapse to viewport-router default (TodayLiveCard alone on
+  mobile, calendar-default on desktop) once live data is verified
+
+### L6.2 — /api/dashboard/today is sequential, not optimized
+v1 runs 4 sequential queries (today's bookings, walk-in queue count,
+inbox unread, salon avg rating). Returns the FIRST 'now' booking (within
+30-min look-back) + up to 3 future 'up-next' rows. Phase 7 may
+consolidate to single SQL CTE if hot path.
+
+### L6.3 — Auth gating on dashboard APIs returns empty payload, not 401
+TodayLiveCard could render on a non-salon-owner page (consumer-side
+admin previews, etc.). Returning 401 would log scary console errors.
+Instead: check `profile.role` and return zeroed-out payload for
+non-salon users. The component renders 'Bereit für heute' fallback +
+zeros. Quiet degradation > scary errors.
+
+### L6.4 — Q62 + Q63 mostly auto-met by Phase 0
+Q62 (same tokens, no sub-palette) — already met by Phase 0 token
+contract. No extra work needed. Sidebar bg already cream
+`s-bg-sunken` from existing DashboardLayout.
+
+Q63 (contextual density) — needs per-component `density` prop on tables/
+lists. Per CODE_SAFETY Rule 8 + 'no kill features', this is a per-table
+opt-in addition done by the consuming surface phase, NOT a wholesale
+sweep. Phase 7 picks the top 5 most-used dashboard tables and adds
+the density prop opt-in.
+
+---
+
+## Phase 7.b — V5 residue deep sweep (2026-05-03 follow-up)
+
+The Phase 0 token migration only updates components that USE the tokens.
+~50 components had hardcoded V5 hex values inline (style={{...}}, SVG fill
+attributes, etc.) that bypassed Tailwind entirely. User caught it: 'the
+color grid we talked about isnt here and still residues of old designs'.
+
+Mass mechanical sweeps via one-shot Node scripts (each deleted after run):
+
+### L7.1 — V5 hex sweep (138 hexes / 56 files) — commit 0430809
+  #E8735A → #E8624A   (V5 coral → Q23 coral)
+  #D4870A → #F3A864   (V5 honey-amber → Q23 peach-amber — large hue shift)
+  #FAFAF8 → #FFFFFF   (V5 off-white page bg → Q15 white)
+  #F5F0EB → #FAF7F3   (V5 warm beige → Q23 s-bg-sunken)
+  #2E7D32 → #16A34A   (V5 success green → Q23 success)
+  #222222 → #1A1209   (V5 ink → Q23 s-ink) — guarded against false matches
+  + matching rgba() variants for each
+
+### L7.2 — V5 class sweep (197 classes / 114 files) — commit 6560770
+  shadow-coral-glow / shadow-coral-glow-hover → shadow-elevation-2/3
+  shadow-amber-glow → shadow-elevation-2
+  shadow-warm-xl / shadow-warm-float → shadow-elevation-3
+  shadow-v5-glow-coral → shadow-elevation-2
+  bg-s-bg-base → bg-white (Q15 lock — verbose alias)
+
+### L7.3 — V5 typography sweep (1181 modifiers / 278 files) — commit f39e944
+  tracking-[-0.02em] → tracking-[0.01em] (Q48: positive tracking, NOT
+    Fraunces-era negative tight tracking — wrong direction for Anton)
+  font-heading font-{bold,extrabold,semibold,medium} → font-heading
+    (Anton is single-weight 400 — bold variants silently no-op)
+  font-display font-{bold,extrabold} → font-display
+
+### L7.4 — V5 cool-grey sweep (14 hits / 5 files) — commit bfc7ed4
+  #767676 → #9F8A7E   (V5 cool muted → Q23 warm s-ink-3)
+  #EBEBEB → #EFE7DD   (V5 cool border → Q23 warm s-border)
+  Q23: all greys must be warm-tinted to stay in the tonal family with
+  coral + amber + cream. Cool greys read clinical against the warm palette.
+
+### L7.5 — V5 banned-class sweep (48 hits / 27 files) — commit 95e8c11
+  rounded-lg → rounded-[8px]    (Q26: explicit rounded-[Npx] only)
+  rounded-xl → rounded-[12px]   (Tailwind defaults inconsistent)
+  rounded-2xl → rounded-[16px]
+  rounded-3xl → rounded-[24px]
+  bg-black → bg-s-ink           (Q23: pure black banned, use warm s-ink)
+  text-black → text-s-ink
+
+### L7.6 — Per-component refits (high-impact surfaces)
+  - SalonCard.tsx: Anton uppercase salon name, amber stars, tabular
+    nums, formatPrice (CHF prefix), focus-visible ring per Q47, heart
+    semantic-color #FF4A6B love-red (NOT brand coral) per SOLEN_UI #5b
+  - BrowseByCitySection.tsx: dark register bg V5 #2C2825 → Q23 #1A1209;
+    eyebrow coral → amber for dark-bg contrast; Anton uppercase city
+    names with locked letter-spacing + leading
+  - SalonBadge.tsx: Top badge coral hex corrected; Neu badge bg literal
+    fixed (was the broken string 's-ink' renderering invalid CSS); all
+    shadows pure-black → warm-ink-tinted per §5
+  - TestimonialCarousel.tsx: stars amber not coral; warm-tinted divider
+  - FeaturedSalonCarousel.tsx: same Q26+Q43 treatment as SalonCard +
+    heart love-red semantic; formatPrice migration
+
+### L7.7 — Heart semantic-color discipline
+  ALL heart save-state icons MUST use literal #FF4A6B love-red, NOT
+  brand coral, per SOLEN_UI #5b. Caught in SalonCard + FeaturedSalonCarousel.
+  The semantic distinction matters: coral = brand signal, love-red = the
+  universal romantic-save semantic. Mixing them dilutes both signals.
+
+### L7.8 — V5 residue is invisible to the token system
+  Each component that hardcoded a hex VALUE (vs using a Tailwind token
+  CLASS) survived Phase 0's token migration unchanged. The site looked
+  V5 because half the components painted V5 colors directly.
+  **Pattern for future phases:** when locking a token contract, also
+  immediately grep for hardcoded hex values matching the OLD value and
+  replace them. Don't assume token-class users cover everything.
+
+### L7.9 — Total Phase 7 V5-residue cleanup metrics
+  - 138 hex values
+  - 197 class names
+  - 1181 typography modifiers
+  - 14 cool-grey hexes
+  - 48 banned classes
+  - 22 coral-star semantic drifts
+  - **= 1600+ V5-residue fixes across ~350 files**
+
+---
+
+## Cross-cutting reminders for Phase 4+
+
+### R1 — Vercel gate is active
+Push freely. No commit triggers a Vercel build unless the message contains
+literal `[deploy]`. Don't add `[deploy]` proactively.
+
+### R2 — `solen-coral.html` static preview at localhost:3000
+Run `npx serve public --listen 3000` (or use the launch.json `Design preview
+(static)` config). Open `localhost:3000/solen-coral`. Live app preview is a
+separate surface — `npm run dev` for that.
+
+### R3 — Anton headlines are uppercase by default
+`globals.css` `@layer base` rule: all `h1-h6` elements get `text-transform:
+uppercase`. So when using raw `<h2>` etc., Anton + uppercase auto-applies. When
+using `<SignatureLockup>`, it's explicit. When using `<motion.h2>` or other
+custom elements, you may need to add `uppercase` class manually.
+
+### R4 — Body bg is white (`#FFFFFF`)
+Q15 lock. Don't override on individual pages (no cream bg, no gradient bg).
+Only sub-surfaces (cards, tiles) use `s-bg-sunken` (`#FAF7F3`) or `s-bg-cream`
+(`#FFF4E8`).
+
+### R5 — Use existing primitives before reinventing
+`SignatureLockup`, `EmptyStateFTU/Inline/Filtered`, `InlineError`, `Toast`,
+`CelebrationRing`, `Skeleton` all exist. Building parallel duplicates means more
+maintenance. Search `components/ui/` first.
+
+### R6 — `cn()` from `@/lib/utils` is the standard className merger
+Used everywhere for conditional classes. Don't introduce alternatives.
+
+### R7 — All user-facing strings localize via `useTranslations()` / `getTranslations()`
+Server components: `getTranslations({ locale, namespace })`. Client components:
+`useTranslations()`. Hardcoded strings break on EN/FR/IT.
+
+### R8 — Phase 7 backlog (track here, don't lose)
+- Delete orphan components: `ProfileTabs.tsx`, `LooksGrid.tsx`, `SalonHighlights.tsx`,
+  `BottomNav.tsx` (after confirming no other call sites)
+- Extract inline `#settings` section from `ProfilePage.tsx` to `/profile/settings/page.tsx`
+- Extract `PaymentMethodsSection` to `/profile/payment-methods/page.tsx` (Q58 grouped
+  list "Zahlungsmethoden" row should route there, not anchor-scroll)
+- Single SQL CTE for `/api/profile/live-state` if hot path
+- Build `looks` table + ingestion flow per BACKEND_NEEDS_UI (Q-lock TBD in V4)
+- Sweep remaining `dark:` JSDoc comments (cosmetic)
+- Sweep retired token JSDoc references (mention V5 Bebas/Fraunces/DM Sans)
+- 181 legacy palette token (`s-blue/plum/sage/sand`) usages — needs design call
+  on what they should map to
+- Several retired shadow tokens (`warm-xl`, `coral-glow`, `coral-glow-hover`)
+  still referenced in components — replace with locked `elevation-1/2/3`
+
+---
+
+## L8 — Pre-completion verification protocol (locked 2026-05-03)
+
+### What broke
+
+Three rounds in a row, claimed "ALL CLEAN / verified / done" while real drift
+was still rendering. Root cause was NOT memory or tool failure — was skipping
+the source-of-truth check. Specific failures this session:
+
+- Ran a `#C95A3A` sweep treating it as V5 residue. Reverted the same hour
+  after grep'ing the reference: **`#C95A3A` appears 286× in
+  `public/solen-coral.html`** — it's the locked deep-coral text variant for
+  AA-contrast on white. A 5-second `grep -c` would have caught the mistake
+  before any code touched.
+- Claimed "all clean" after `preview_eval` returned `{}` for a 9-hex scan.
+  A narrow color scan can't tell *intentional* from *drift*. It only proves
+  those 9 strings aren't on the page — orthogonal to "design system applied".
+- Wrote sweep scripts and shipped 23-file diffs without ever opening the
+  reference file. Big diff felt like progress; reading the reference felt
+  slow. Optimized for "feels productive" instead of "verifies against truth".
+
+### The three pattern names (so they're nameable in future sessions)
+
+1. **"Sweep first, verify never"** — find unfamiliar value → assume drift →
+   write mechanical sweep → ship → never grep'd reference.
+2. **"Narrow scan = blanket claim"** — pass a micro-test (color hex absent)
+   → claim a macro-property (design system applied). Different categories.
+3. **"Productive-feeling work over verifying work"** — bias toward big diffs
+   and scripts because they look like progress; bias against opening the
+   reference file because it looks like reading.
+
+### Three guardrails — apply mechanically before shipping a design claim
+
+**Guardrail A — Reference-grep before any sweep**
+Before any `replace_all` / sweep script for a hex/class/token value:
+
+```bash
+grep -c '<value>' public/solen-coral.html _tasks/SOLEN_DESIGN.md
+```
+
+- count > 0 → value is **locked**. Do NOT sweep. Propose the change to user
+  with a citation showing where the value is locked.
+- count == 0 → value is candidate drift. Sweep is allowed.
+
+**Guardrail B — Citation-or-no-claim**
+Cannot say "verified" / "all clean" / "matches design system" without a
+cited line from `public/solen-coral.html` or `_tasks/SOLEN_DESIGN.md`:
+- ✗ "Footer matches the design system."
+- ✓ "Footer bg `#1A1209` confirmed at `public/solen-coral.html:294` (root
+  `--ink` var). Warm grey text `#9F8A7E` confirmed at line 312."
+
+No citation = haven't actually checked, just feel like I have. Skip the
+claim entirely.
+
+**Guardrail C — Visual diff before "done"**
+For any design-system claim about a page, take BOTH screenshots:
+1. Live page (`localhost:3000/<route>`)
+2. Reference (`localhost:3000/solen-coral.html` for matching section)
+
+`preview_eval` color scans are a sanity check, not the verdict. The verdict
+is "do these two screenshots look like the same design system."
+
+### When to use this protocol
+
+Triggers — apply BEFORE the action, not after:
+
+- Any sweep script touching > 5 files
+- Any change to `tailwind.config.js` or `app/globals.css` token values
+- Any "this is done / verified / clean" message to the user
+- Any time about to claim a Phase / Q-lock / refit is complete
+
+### Anti-pattern signal
+
+If I'm about to ship a > 10-file diff with hex/class replacements and
+I haven't opened `public/solen-coral.html` in this session, **STOP**.
+That's the failure pattern firing. Open the reference, run Guardrail A,
+then re-decide whether to ship.
+
+### Honest scope of structural mismatch (separate from token drift)
+
+Token sweeps cannot fix structural component mismatch. The live
+`app/[locale]/page.tsx` hero is "FINDE DEINEN SALON." in solid ink. The
+reference at `public/solen-coral.html:721` is "BEAUTY. / DIREKT GEBUCHT."
+with `.coral` class on the second line (overridden to amber per the
+in-file `.hero-h1 .coral { color: var(--amber) !important; }` at line ~750).
+That's not drift — that's the wrong hero on the live site. See Phase 8
+plan for sequenced page-by-page structural alignment against reference.

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen V3 — §F.5 date / time picker · all states</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Sansita:wght@400;700;900&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/cooper-black-std">
+<style>
+  :root {
+    --brand: #043338;
+    --brand-mid: #0A6873;
+    --brand-pale: #C2F0F1;
+    --brand-subtle: #E1F4F4;
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #7A6957;
+    --bg: #FFFFFF;
+    --sunken: #FAF7F3;
+    --active-tint: #FFF4E8;
+    --error: #D32F2F;
+    --success: #16A34A;
+    --border: rgba(26,18,9,.06);
+    --border-10: rgba(26,18,9,.10);
+    --border-25: rgba(26,18,9,.25);
+    --r-sm: 6px; --r-md: 10px; --r-lg: 12px; --r-2xl: 16px; --r-pill: 99px;
+    --ease-snap: cubic-bezier(.4, 0, .2, 1);
+    --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+    --display: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif;
+    --body: 'ITC Avant Garde Gothic Std', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--body);
+    -webkit-font-smoothing: antialiased; line-height: 1.5;
+  }
+  body { padding: 56px 20px 100px; }
+  .doc { max-width: 1180px; margin: 0 auto; }
+
+  .page-head { margin-bottom: 56px; }
+  .page-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .page-meta-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 18px;
+    font-weight: 700; font-size: 13px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .page-eyebrow { color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+  .page-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand); }
+  .page-meta { color: var(--ink-3); }
+  .page-h1 {
+    font-family: var(--display); font-weight: 900;
+    font-size: 64px; line-height: 0.95;
+    letter-spacing: -0.025em; color: var(--ink);
+    display: inline-flex; align-items: baseline;
+  }
+  .page-h1::after {
+    content: ''; display: inline-block;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--brand); margin-left: 6px; margin-bottom: 6px;
+  }
+  .page-sub {
+    font-weight: 400; font-size: 16px; color: var(--ink-2);
+    margin-top: 18px; max-width: 720px; line-height: 1.55;
+  }
+
+  .sec { margin-top: 72px; }
+  .sec-rule { height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .sec-meta-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 12px;
+    font-weight: 700; font-size: 13px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .sec-eyebrow { color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+  .sec-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); }
+  .sec-meta { color: var(--ink-3); }
+  .sec-h2 {
+    font-family: var(--display); font-weight: 900;
+    font-size: 36px; line-height: 1;
+    letter-spacing: -0.02em; color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .sec-intro {
+    font-weight: 400; font-size: 16px; line-height: 1.55;
+    color: var(--ink-2); max-width: 720px; margin-bottom: 32px;
+  }
+
+  /* ========== CALENDAR ========== */
+  .cal {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 16px;
+    width: 320px;
+    display: inline-block;
+  }
+  .cal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 0 4px;
+  }
+  .cal-month {
+    font-weight: 600; font-size: 16px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .cal-nav {
+    display: flex; gap: 4px;
+  }
+  .cal-nav-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    background: transparent; border: none;
+    color: var(--ink-2);
+    cursor: pointer;
+    border-radius: var(--r-md);
+    transition: background 150ms var(--ease-snap), color 150ms var(--ease-snap);
+  }
+  .cal-nav-btn:hover { color: var(--ink); background: var(--sunken); }
+  .cal-weekdays {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 4px;
+  }
+  .cal-weekday {
+    text-align: center;
+    font-weight: 600; font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding: 6px 0;
+  }
+  .cal-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .cal-day {
+    aspect-ratio: 1/1;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--body);
+    font-weight: 400; font-size: 14px;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 150ms var(--ease-snap), color 150ms var(--ease-snap);
+    font-variant-numeric: tabular-nums;
+  }
+  .cal-day:hover { background: rgba(26,18,9,.04); }
+  .cal-day.is-today {
+    border: 2px solid var(--brand-pale);
+    color: var(--brand);
+    font-weight: 600;
+  }
+  .cal-day.is-selected {
+    background: var(--brand);
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+  .cal-day.is-selected.is-today { border: none; }
+  .cal-day.is-disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    color: var(--ink-3);
+  }
+  .cal-day.is-outside {
+    opacity: 0.4;
+    color: var(--ink-3);
+  }
+  .cal-day.in-range {
+    background: var(--brand-subtle);
+    color: var(--ink);
+    border-radius: 0;
+  }
+  .cal-day.in-range.is-range-start {
+    background: var(--brand);
+    color: #FFFFFF;
+    border-radius: 50% 0 0 50%;
+    font-weight: 600;
+  }
+  .cal-day.in-range.is-range-end {
+    background: var(--brand);
+    color: #FFFFFF;
+    border-radius: 0 50% 50% 0;
+    font-weight: 600;
+  }
+
+  /* ========== TIME SLOT LIST ========== */
+  .slots {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 16px 20px;
+    max-width: 360px;
+    flex: 1;
+  }
+  .slots-group { margin-bottom: 18px; }
+  .slots-group:last-child { margin-bottom: 0; }
+  .slots-group-label {
+    font-weight: 600; font-size: 12px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 16px; margin-bottom: 8px;
+  }
+  .slots-group:first-child .slots-group-label { margin-top: 0; }
+  .slots-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .slot {
+    background: var(--bg);
+    border: 1px solid var(--border-10);
+    border-radius: var(--r-pill);
+    padding: 10px 14px;
+    font-family: var(--body);
+    font-weight: 600; font-size: 13px;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: center;
+    transition: background 150ms var(--ease-snap),
+                border-color 150ms var(--ease-snap);
+    font-variant-numeric: tabular-nums;
+  }
+  .slot:hover {
+    background: var(--active-tint);
+    border-color: var(--border-25);
+  }
+  .slot.is-selected {
+    background: var(--brand);
+    color: #FFFFFF;
+    border-color: var(--brand);
+  }
+  .slot.is-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: var(--bg);
+  }
+  .slot.is-disabled:hover {
+    background: var(--bg);
+    border-color: var(--border-10);
+  }
+
+  /* skeleton loading state */
+  .slot.is-skeleton {
+    background: linear-gradient(90deg, var(--sunken) 0%, rgba(26,18,9,.08) 50%, var(--sunken) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-color: transparent;
+    color: transparent;
+    pointer-events: none;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* empty state */
+  .slots-empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--ink-3);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .slots-empty-icon {
+    display: block;
+    margin: 0 auto 12px;
+    width: 48px; height: 48px;
+    color: var(--ink-disabled);
+    opacity: 0.5;
+  }
+
+  /* ========== COMPOSITION DEMO ========== */
+  .picker-row {
+    display: flex; gap: 24px; flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  /* ========== SECTION CARD ========== */
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-2xl);
+    padding: 24px;
+    margin-bottom: 18px;
+  }
+  .card-tag {
+    display: inline-block;
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 18px;
+  }
+  .card-tag .num {
+    color: var(--brand);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ========== TWO-COLUMN GRID ========== */
+  .grid-2 {
+    display: grid; gap: 18px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 760px)  { .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ========== ANTI-PATTERNS ========== */
+  .anti-grid {
+    display: grid; gap: 16px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 720px) { .anti-grid { grid-template-columns: repeat(2, 1fr); } }
+  .anti-card {
+    background: rgba(211,47,47,0.04);
+    border: 1px dashed rgba(211,47,47,0.40);
+    border-radius: var(--r-lg);
+    padding: 18px;
+  }
+  .anti-tag {
+    display: inline-block;
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--error); margin-bottom: 10px;
+  }
+  .anti-title {
+    font-weight: 600; font-size: 15px;
+    color: var(--ink); margin-bottom: 8px;
+  }
+  .anti-desc {
+    font-size: 13px; color: var(--ink-2);
+    line-height: 1.5;
+  }
+
+  /* ========== FOOT ========== */
+  .foot {
+    margin-top: 96px; padding-top: 24px;
+    border-top: 1px solid var(--ink);
+    font-size: 13px; color: var(--ink-3);
+    letter-spacing: 0.16em; text-transform: uppercase;
+    display: flex; justify-content: space-between;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .icon-svg { display: block; }
+
+  .toc { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .toc a {
+    font-size: 13px; font-weight: 600;
+    color: var(--ink); background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 7px 12px; border-radius: var(--r-pill);
+    text-decoration: none;
+  }
+  .toc a:hover { color: var(--brand); }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header class="page-head">
+    <div class="page-rule"></div>
+    <div class="page-meta-row">
+      <span class="page-eyebrow"><span class="page-eyebrow-dot"></span>Solen V3 · Phase 0 · §F.5</span>
+      <span class="page-meta">2026-05-09 · V2-D28</span>
+    </div>
+    <h1 class="page-h1">Date / time picker</h1>
+    <p class="page-sub">
+      The booking-flow primitive. Calendar grid + time-slot list, composed for the booking
+      wizard's "pick a date + pick a time" step. v1 ships <strong>single-date</strong> and
+      <strong>date-and-time</strong>. Range picker (vacation blocks) defers to v2.
+      Localized to DE-CH (Monday-first week). Native input banned per spec — too inconsistent
+      across iOS / Android / desktop.
+    </p>
+    <nav class="toc">
+      <a href="#anatomy">Anatomy</a>
+      <a href="#variants">Variants</a>
+      <a href="#states">Day cell states</a>
+      <a href="#slots">Time slots</a>
+      <a href="#mobile">Mobile vs desktop</a>
+      <a href="#anti">Anti-patterns</a>
+    </nav>
+  </header>
+
+  <!-- ============================== ANATOMY (composed) ============================== -->
+  <section id="anatomy" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Anatomy · composed</span>
+      <span class="sec-meta">date-and-time · default</span>
+    </div>
+    <h2 class="sec-h2">Booking flow · pick a date + time</h2>
+    <p class="sec-intro">
+      The most-used variant. Side-by-side on desktop, stacked vertical on mobile (within a §F.3 sheet).
+      Calendar selects the date; time-slot list updates with that date's available slots from the backend.
+    </p>
+
+    <div class="card">
+      <div class="card-tag">Default · 16 May 2026 selected · 14:30 chosen</div>
+      <div class="picker-row">
+        <!-- Calendar -->
+        <div class="cal">
+          <div class="cal-head">
+            <div class="cal-month">Mai 2026</div>
+            <div class="cal-nav">
+              <button class="cal-nav-btn" aria-label="Voriger Monat">
+                <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <button class="cal-nav-btn" aria-label="Nächster Monat">
+                <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="cal-weekdays">
+            <span class="cal-weekday">Mo</span>
+            <span class="cal-weekday">Di</span>
+            <span class="cal-weekday">Mi</span>
+            <span class="cal-weekday">Do</span>
+            <span class="cal-weekday">Fr</span>
+            <span class="cal-weekday">Sa</span>
+            <span class="cal-weekday">So</span>
+          </div>
+          <div class="cal-grid">
+            <button class="cal-day is-outside">27</button>
+            <button class="cal-day is-outside">28</button>
+            <button class="cal-day is-outside">29</button>
+            <button class="cal-day is-outside">30</button>
+            <button class="cal-day is-disabled">1</button>
+            <button class="cal-day is-disabled">2</button>
+            <button class="cal-day is-disabled">3</button>
+            <button class="cal-day is-disabled">4</button>
+            <button class="cal-day is-disabled">5</button>
+            <button class="cal-day is-disabled">6</button>
+            <button class="cal-day is-disabled">7</button>
+            <button class="cal-day is-disabled">8</button>
+            <button class="cal-day">9</button>
+            <button class="cal-day">10</button>
+            <button class="cal-day">11</button>
+            <button class="cal-day">12</button>
+            <button class="cal-day">13</button>
+            <button class="cal-day is-today">14</button>
+            <button class="cal-day">15</button>
+            <button class="cal-day is-selected">16</button>
+            <button class="cal-day">17</button>
+            <button class="cal-day">18</button>
+            <button class="cal-day">19</button>
+            <button class="cal-day">20</button>
+            <button class="cal-day is-disabled">21</button>
+            <button class="cal-day">22</button>
+            <button class="cal-day">23</button>
+            <button class="cal-day">24</button>
+            <button class="cal-day">25</button>
+            <button class="cal-day">26</button>
+            <button class="cal-day">27</button>
+            <button class="cal-day">28</button>
+            <button class="cal-day">29</button>
+            <button class="cal-day">30</button>
+            <button class="cal-day">31</button>
+            <button class="cal-day is-outside">1</button>
+            <button class="cal-day is-outside">2</button>
+            <button class="cal-day is-outside">3</button>
+            <button class="cal-day is-outside">4</button>
+            <button class="cal-day is-outside">5</button>
+            <button class="cal-day is-outside">6</button>
+            <button class="cal-day is-outside">7</button>
+          </div>
+        </div>
+
+        <!-- Time slots -->
+        <div class="slots">
+          <div class="slots-group">
+            <div class="slots-group-label">Vormittag</div>
+            <div class="slots-grid">
+              <button class="slot">09:00</button>
+              <button class="slot">09:30</button>
+              <button class="slot">10:00</button>
+              <button class="slot">10:30</button>
+              <button class="slot">11:00</button>
+              <button class="slot is-disabled">11:30</button>
+            </div>
+          </div>
+          <div class="slots-group">
+            <div class="slots-group-label">Nachmittag</div>
+            <div class="slots-grid">
+              <button class="slot">13:00</button>
+              <button class="slot">13:30</button>
+              <button class="slot">14:00</button>
+              <button class="slot is-selected">14:30</button>
+              <button class="slot">15:00</button>
+              <button class="slot is-disabled">15:30</button>
+              <button class="slot">16:00</button>
+              <button class="slot">16:30</button>
+            </div>
+          </div>
+          <div class="slots-group">
+            <div class="slots-group-label">Abend</div>
+            <div class="slots-grid">
+              <button class="slot">17:00</button>
+              <button class="slot">17:30</button>
+              <button class="slot">18:00</button>
+              <button class="slot">18:30</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== DAY CELL STATES ============================== -->
+  <section id="states" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Day cell states</span>
+      <span class="sec-meta">§F.5.0b · 8 states</span>
+    </div>
+    <h2 class="sec-h2">Day cell states</h2>
+    <p class="sec-intro">
+      Every state a day cell can render. Booking flow always sets <code style="font-family:'JetBrains Mono',monospace;background:var(--sunken);padding:1px 6px;border-radius:4px;font-size:13px;">minDate=today</code>
+      so all past dates render disabled, and the salon's closed days come back from the backend as also-disabled.
+    </p>
+
+    <div class="card">
+      <div class="card-tag">All 8 states · isolated</div>
+      <div style="display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <button class="cal-day" style="width:36px;height:36px;">14</button>
+          <span style="font-size:11px;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Default</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <button class="cal-day is-today" style="width:36px;height:36px;">14</button>
+          <span style="font-size:11px;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Today</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <button class="cal-day" style="width:36px;height:36px;background:rgba(26,18,9,.04);">14</button>
+          <span style="font-size:11px;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Hover</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <button class="cal-day is-selected" style="width:36px;height:36px;">14</button>
+          <span style="font-size:11px;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Selected</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <button class="cal-day is-disabled" style="width:36px;height:36px;">14</button>
+          <span style="font-size:11px;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Disabled</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <button class="cal-day is-outside" style="width:36px;height:36px;">14</button>
+          <span style="font-size:11px;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Outside month</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="display:flex;">
+            <button class="cal-day in-range is-range-start" style="width:36px;height:36px;">14</button>
+            <button class="cal-day in-range" style="width:36px;height:36px;border-radius:0;">15</button>
+            <button class="cal-day in-range is-range-end" style="width:36px;height:36px;">16</button>
+          </div>
+          <span style="font-size:11px;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">In range (v2)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== TIME SLOTS ============================== -->
+  <section id="slots" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Time slot states</span>
+      <span class="sec-meta">§F.5.2 · loading + empty</span>
+    </div>
+    <h2 class="sec-h2">Time slot states</h2>
+    <p class="sec-intro">
+      Slots fetch async from the backend after a date is picked. Loading shows skeleton pills with shimmer.
+      Empty state when no availability that day prompts user to pick another date.
+    </p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-tag">Loading · 6 skeleton pills shimmer</div>
+        <div class="slots" style="max-width: 100%;">
+          <div class="slots-group">
+            <div class="slots-group-label">Vormittag</div>
+            <div class="slots-grid">
+              <button class="slot is-skeleton">09:00</button>
+              <button class="slot is-skeleton">09:30</button>
+              <button class="slot is-skeleton">10:00</button>
+              <button class="slot is-skeleton">10:30</button>
+              <button class="slot is-skeleton">11:00</button>
+              <button class="slot is-skeleton">11:30</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Empty · no slots that day</div>
+        <div class="slots" style="max-width: 100%;">
+          <div class="slots-empty">
+            <svg class="slots-empty-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="8" y="10" width="32" height="32" rx="4"/>
+              <path d="M8 18h32M16 6v8M32 6v8"/>
+              <path d="m18 28 6 6 6-6" stroke-linecap="round"/>
+            </svg>
+            <div style="font-weight:600;color:var(--ink);font-size:15px;margin-bottom:6px;">Keine freien Termine</div>
+            <div style="font-size:14px;">Wähle einen anderen Tag oder einen anderen Salon.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== MOBILE VS DESKTOP ============================== -->
+  <section id="mobile" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Mobile vs desktop</span>
+      <span class="sec-meta">§F.5.4 · responsive</span>
+    </div>
+    <h2 class="sec-h2">Mobile vs desktop</h2>
+    <p class="sec-intro">
+      Mobile (< 768px): calendar on top, time slots below — vertical stack inside a §F.3 sheet.
+      Desktop (≥ 768px): side-by-side within a centered card on <code style="font-family:'JetBrains Mono',monospace;background:var(--sunken);padding:1px 6px;border-radius:4px;font-size:13px;">/book/[slug]</code>.
+    </p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-tag">Mobile · vertical stack</div>
+        <div style="background:var(--sunken);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;align-items:center;gap:12px;max-width:380px;margin:0 auto;">
+          <div class="cal" style="width:100%;max-width:340px;">
+            <div class="cal-head">
+              <div class="cal-month">Mai 2026</div>
+              <div class="cal-nav">
+                <button class="cal-nav-btn" aria-label="Voriger Monat">
+                  <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                <button class="cal-nav-btn" aria-label="Nächster Monat">
+                  <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="cal-weekdays">
+              <span class="cal-weekday">Mo</span>
+              <span class="cal-weekday">Di</span>
+              <span class="cal-weekday">Mi</span>
+              <span class="cal-weekday">Do</span>
+              <span class="cal-weekday">Fr</span>
+              <span class="cal-weekday">Sa</span>
+              <span class="cal-weekday">So</span>
+            </div>
+            <div class="cal-grid">
+              <button class="cal-day is-outside">27</button>
+              <button class="cal-day is-outside">28</button>
+              <button class="cal-day is-outside">29</button>
+              <button class="cal-day is-outside">30</button>
+              <button class="cal-day is-disabled">1</button>
+              <button class="cal-day is-disabled">2</button>
+              <button class="cal-day is-disabled">3</button>
+              <button class="cal-day is-disabled">4</button>
+              <button class="cal-day is-disabled">5</button>
+              <button class="cal-day is-disabled">6</button>
+              <button class="cal-day is-disabled">7</button>
+              <button class="cal-day is-disabled">8</button>
+              <button class="cal-day">9</button>
+              <button class="cal-day">10</button>
+              <button class="cal-day">11</button>
+              <button class="cal-day">12</button>
+              <button class="cal-day">13</button>
+              <button class="cal-day is-today">14</button>
+              <button class="cal-day">15</button>
+              <button class="cal-day is-selected">16</button>
+              <button class="cal-day">17</button>
+              <button class="cal-day">18</button>
+              <button class="cal-day">19</button>
+              <button class="cal-day">20</button>
+            </div>
+          </div>
+          <div class="slots" style="width:100%;max-width:340px;">
+            <div class="slots-group">
+              <div class="slots-group-label">Nachmittag</div>
+              <div class="slots-grid">
+                <button class="slot">14:00</button>
+                <button class="slot is-selected">14:30</button>
+                <button class="slot">15:00</button>
+                <button class="slot is-disabled">15:30</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-tag">Desktop · side-by-side</div>
+        <div style="background:var(--sunken);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;">
+          <div class="picker-row">
+            <div class="cal" style="width:280px;">
+              <div class="cal-head">
+                <div class="cal-month">Mai 2026</div>
+                <div class="cal-nav">
+                  <button class="cal-nav-btn" aria-label="Voriger Monat">
+                    <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+                  </button>
+                  <button class="cal-nav-btn" aria-label="Nächster Monat">
+                    <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="cal-weekdays">
+                <span class="cal-weekday">Mo</span>
+                <span class="cal-weekday">Di</span>
+                <span class="cal-weekday">Mi</span>
+                <span class="cal-weekday">Do</span>
+                <span class="cal-weekday">Fr</span>
+                <span class="cal-weekday">Sa</span>
+                <span class="cal-weekday">So</span>
+              </div>
+              <div class="cal-grid">
+                <button class="cal-day is-outside">27</button>
+                <button class="cal-day is-outside">28</button>
+                <button class="cal-day is-outside">29</button>
+                <button class="cal-day is-outside">30</button>
+                <button class="cal-day is-disabled">1</button>
+                <button class="cal-day is-disabled">2</button>
+                <button class="cal-day is-disabled">3</button>
+                <button class="cal-day is-disabled">4</button>
+                <button class="cal-day is-disabled">5</button>
+                <button class="cal-day is-disabled">6</button>
+                <button class="cal-day is-disabled">7</button>
+                <button class="cal-day is-disabled">8</button>
+                <button class="cal-day">9</button>
+                <button class="cal-day">10</button>
+                <button class="cal-day">11</button>
+                <button class="cal-day">12</button>
+                <button class="cal-day">13</button>
+                <button class="cal-day is-today">14</button>
+                <button class="cal-day">15</button>
+                <button class="cal-day is-selected">16</button>
+                <button class="cal-day">17</button>
+                <button class="cal-day">18</button>
+                <button class="cal-day">19</button>
+                <button class="cal-day">20</button>
+              </div>
+            </div>
+            <div class="slots" style="flex:1;min-width:240px;">
+              <div class="slots-group">
+                <div class="slots-group-label">Nachmittag</div>
+                <div class="slots-grid">
+                  <button class="slot">14:00</button>
+                  <button class="slot is-selected">14:30</button>
+                  <button class="slot">15:00</button>
+                  <button class="slot is-disabled">15:30</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== ANTI-PATTERNS ============================== -->
+  <section id="anti" class="sec">
+    <div class="sec-rule"></div>
+    <div class="sec-meta-row">
+      <span class="sec-eyebrow"><span class="sec-eyebrow-dot"></span>Anti-patterns</span>
+      <span class="sec-meta">§F.5.7 · banned</span>
+    </div>
+    <h2 class="sec-h2">Anti-patterns</h2>
+    <p class="sec-intro">What Solen date pickers <strong>do not</strong> do.</p>
+
+    <div class="anti-grid">
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Native &lt;input type="date" /&gt;</div>
+        <div class="anti-desc">Native pickers vary wildly across iOS / Android / desktop. We lose visual control over the most user-facing primitive in the booking flow.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Year-month picker as scrolling wheel</div>
+        <div class="anti-desc">iOS-specific UX, doesn't translate to desktop. Use chevron month-nav. v2 may add a year-picker overlay.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Showing all 24 hours flat</div>
+        <div class="anti-desc">Group by day-period (Vormittag / Nachmittag / Abend). Reduces visual load + matches mental model.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">No disabled-date support</div>
+        <div class="anti-desc">Booking flow MUST disable past dates + salon-closed days. Default <code style="font-family:'JetBrains Mono',monospace;font-size:12px;">minDate=today</code>.</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Range picker in v1</div>
+        <div class="anti-desc">Single date only. Range deferred to v2 (used for B2B vacation blocks).</div>
+      </div>
+      <div class="anti-card">
+        <div class="anti-tag">Banned</div>
+        <div class="anti-title">Italic anywhere</div>
+        <div class="anti-desc">Per V2-D15. Days, time slots, group labels — all upright Avant Garde Gothic.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Solen V3 · Phase 0 · §F.5 date / time picker</span>
+    <span>2026-05-09 · V2-D28</span>
+  </footer>
+
+</div>
+</body>
+</html>

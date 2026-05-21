@@ -1,0 +1,10 @@
+58fa492bf7902b486b9f4a5bf1d55d99984ca535 2026-03-28 18:44:42 +0100 booking: fix API mismatches, cancellation guards, bg-white tokens, i18n, accessibility
+195e5293e4a63cb3e36b3bbf653ceb4746ba2ef4 2026-03-28 18:52:19 +0100 dashboard: fix missing API routes, .ok checks, bg-white tokens, i18n, accessibility
+be9c9b3438d4bdb1b399ba463dcb7ae17263237f 2026-03-28 19:03:49 +0100 fix(profile-auth): interaction consistency pass — i18n, transition-all, accessibility
+b963f6a36bf4dafbe82810988e959b4441226e5c 2026-03-28 19:17:00 +0100 UI pass: coiffeur/nails subsite — bg-white→bg-[--raised], backdrop-blur fixes, cancellation guards, aria-labels, i18n
+2c73438385b06a869277a3e9df84a95f52bf53a6 2026-03-28 19:27:05 +0100 UI pass: discovery subsite — backdrop-blur, bg-white, .ok checks, cancellation guards, aria-pressed, i18n
+bcb60a55432c155f14dc3d2558dd56fe78a599c7 2026-03-28 19:34:57 +0100 Homepage audit: i18n, .ok guards, transition fixes
+0a1d68da4443b6b5248ee3d68e8a94bbb6930104 2026-03-28 19:39:20 +0100 homepage: audit fixes — dark mode, i18n, grid layout, a11y, API consolidation, typography
+b44e6ae22c83311638cf58cc1f0ef1730355ad1b 2026-03-28 19:40:06 +0100 Booking flow audit: .ok guards, i18n, a11y, transition fixes
+2e076399beb328e4dc4e3360a94406dcec91d2ac 2026-03-28 19:45:50 +0100 Dashboard audit: transitions, .ok guards, a11y fixes
+961dd229bc6b2b463348d8d120741323c2379705 2026-03-28 19:49:29 +0100 homepage: sub-agent audit fixes — dark mode, i18n, typography

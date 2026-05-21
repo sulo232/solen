@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=390, initial-scale=1, viewport-fit=cover" />
+  <title>Solen · Level 4 upgrades</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F4F4F6;
+      --surface: #FFFFFF;
+      --brand: #3B7A57;        /* current production forest green */
+      --brand-mid: #2D5E43;
+      --accent: #D87352;       /* terracotta */
+      --ink: #1A1C19;
+      --ink-2: #6B7068;
+      --ink-3: #7A7F78;
+      --peach: #FFE2D0;
+      --mint: #E5F2EA;
+      --slate-bg: #EEF2F6;
+      --slate-text: #3A5B7C;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg); }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+      padding-bottom: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .serif-italic { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; }
+
+    /* ===== HEADER with MEGA MENU (Tier 3) ===== */
+    .header {
+      position: relative;
+      padding: 16px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: rgba(244, 244, 246, 0.92);
+      backdrop-filter: blur(12px);
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+    }
+    .logo .dot { color: var(--accent); }
+    .cat-nav {
+      display: flex;
+      gap: 16px;
+      flex: 1;
+      overflow-x: auto;
+      scrollbar-width: none;
+      mask-image: linear-gradient(90deg, black 85%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, black 85%, transparent 100%);
+    }
+    .cat-nav::-webkit-scrollbar { display: none; }
+    .cat-item {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink-2);
+      white-space: nowrap;
+      position: relative;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+    .cat-item.active {
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .cat-item.active::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      bottom: -4px;
+      height: 2px;
+      background: var(--brand);
+      border-radius: 2px;
+    }
+    .menu-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 0;
+      display: grid; place-items: center;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .menu-btn svg { width: 18px; height: 18px; color: var(--ink); stroke-width: 2.2; }
+
+    /* MEGA MENU PANEL (visible state demo — Tier 3) */
+    .megamenu {
+      position: absolute;
+      top: 100%;
+      left: 16px;
+      right: 16px;
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
+      border: 1px solid rgba(26, 28, 25, 0.04);
+      z-index: 50;
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 14px;
+    }
+    .megamenu-arrow {
+      position: absolute;
+      top: -7px; left: 88px;
+      width: 14px; height: 14px;
+      background: var(--surface);
+      transform: rotate(45deg);
+      border-left: 1px solid rgba(26, 28, 25, 0.04);
+      border-top: 1px solid rgba(26, 28, 25, 0.04);
+    }
+    .megamenu-photo {
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #FFE8D8;
+    }
+    .megamenu-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .megamenu-body { display: flex; flex-direction: column; gap: 4px; }
+    .megamenu-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+    .megamenu-title {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+    .megamenu-stats {
+      display: flex;
+      gap: 12px;
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--ink-3);
+    }
+    .megamenu-stats b {
+      font-weight: 700;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+    .megamenu-link {
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brand);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ===== HERO (current production V3-D73) ===== */
+    .hero {
+      position: relative;
+      padding: 60px 20px 28px;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -100px; left: -15%; right: -15%;
+      height: 580px;
+      z-index: 0;
+      background: radial-gradient(ellipse 85% 65% at 50% 30%, var(--peach) 0%, #FFEFE4 35%, transparent 75%);
+    }
+    .hero-inner { position: relative; z-index: 1; }
+    .greeting {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink-2);
+      margin-bottom: 14px;
+    }
+    h1 {
+      font-size: clamp(36px, 8vw, 52px);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      color: var(--ink);
+      margin-bottom: 32px;
+    }
+    h1 .acc { color: var(--accent); }
+
+    .searchbar {
+      background: var(--surface);
+      border: 1px solid rgba(26, 28, 25, 0.04);
+      border-radius: 24px;
+      padding: 8px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+    }
+    .searchrow {
+      display: flex; align-items: center; gap: 14px;
+      padding: 18px;
+      border-radius: 16px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.15s ease;
+    }
+    .searchrow:hover { background: rgba(26, 28, 25, 0.025); }
+    .searchrow:hover svg.row-icon { transform: translateX(2px); }
+    .searchrow + .searchrow::before {
+      content: '';
+      position: absolute; top: 0; left: 50px; right: 18px;
+      height: 1px;
+      background: rgba(26, 28, 25, 0.06);
+    }
+    .searchrow svg.row-icon {
+      width: 20px; height: 20px; color: var(--ink-2);
+      flex-shrink: 0; stroke-width: 2;
+      transition: transform 0.18s ease;
+    }
+    .searchrow .label {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink-2);
+      flex: 1;
+    }
+    .searchbtn {
+      width: 100%;
+      padding: 18px;
+      margin-top: 6px;
+      background: var(--brand);
+      color: white;
+      border: 0;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      padding: 48px 20px 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+    .section-title:hover {
+      color: var(--brand);
+    }
+    .section-sub {
+      margin-top: -8px;
+      margin-bottom: 14px;
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--ink-3);
+      letter-spacing: 0.005em;
+    }
+    .section-link {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(26, 28, 25, 0.06);
+      display: grid; place-items: center;
+      cursor: pointer;
+    }
+    .section-link svg { width: 16px; height: 16px; color: var(--ink); stroke-width: 2.4; }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      padding-bottom: 8px;
+    }
+
+    /* ===== CARDS with HOVER-REVEAL CTA (Tier 1 motion) ===== */
+    .card {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    .photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: 22px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+      transition: box-shadow 0.2s ease;
+    }
+    .photo img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.4s ease;
+    }
+    .card:hover .photo img { transform: scale(1.04); }
+    .card:hover .photo { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10); }
+
+    /* Hover-reveal "Termin buchen →" CTA — Tier 1 motion */
+    .photo-cta {
+      position: absolute;
+      left: 10px; right: 10px; bottom: 10px;
+      padding: 10px 14px;
+      background: var(--ink);
+      color: white;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -0.005em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      pointer-events: none;
+    }
+    .card:hover .photo-cta {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .photo-cta svg { width: 12px; height: 12px; stroke-width: 2.6; }
+
+    .text { margin-top: 12px; padding: 0 4px; display: flex; flex-direction: column; gap: 3px; }
+    .text h3 {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .meta {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-3);
+      line-height: 1.35;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .row3 {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-3);
+      margin-top: 2px;
+    }
+    .row3 .left b { font-weight: 700; color: var(--ink); }
+    .row3 .right {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-weight: 700; color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+    .star { width: 11px; height: 11px; fill: #F3A864; }
+    .badge-free {
+      position: absolute; top: 10px; left: 10px;
+      padding: 5px 11px;
+      font-size: 11px; font-weight: 700;
+      border-radius: 999px;
+      background: var(--mint);
+      color: var(--brand);
+    }
+    .heart {
+      position: absolute; top: 10px; right: 10px;
+      width: 32px; height: 32px;
+      background: rgba(255, 255, 255, 0.80);
+      backdrop-filter: blur(4px);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .heart svg { width: 16px; height: 16px; color: var(--ink); stroke-width: 2.2; }
+
+    /* Hint annotation (mockup-only, marks where Tier 1 hover-CTA appears) */
+    .hint {
+      position: relative;
+      padding: 6px 10px;
+      background: var(--ink);
+      color: white;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      width: fit-content;
+      margin: -10px auto 0;
+      z-index: 5;
+    }
+    .hint::before {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 8px; height: 8px;
+      background: var(--ink);
+    }
+
+    /* ===== BENTO STYLISTS (Tier 2 — break uniform grid) ===== */
+    .bento {
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 12px;
+    }
+    /* Hero stylist card — full width, large portrait + signature work */
+    .bento-hero {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      aspect-ratio: 16 / 11;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+    }
+    .bento-hero img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .bento-hero:hover img { transform: scale(1.04); }
+    .bento-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(26, 28, 25, 0.5) 75%, rgba(26, 28, 25, 0.85) 100%);
+    }
+    .bento-hero-text {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      color: white;
+    }
+    .bento-hero-eyebrow {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 4px;
+    }
+    .bento-hero-name {
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .bento-hero-meta {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .bento-hero-meta .signal {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .bento-hero-meta .signal::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #4ADE80;
+    }
+
+    /* Small side stylist cards (row of 2 below) */
+    .bento-small {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .stylist-small {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      aspect-ratio: 4 / 5;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+    }
+    .stylist-small img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .stylist-small-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(26, 28, 25, 0.8) 100%);
+    }
+    .stylist-small-text {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      color: white;
+    }
+    .stylist-small-name {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+    .stylist-small-cat {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 2px;
+    }
+
+    /* ===== PULL-QUOTE — "Echte Geschichten" (Tier 1 copy) ===== */
+    .pullquote {
+      padding: 56px 24px 40px;
+      text-align: left;
+    }
+    .pullquote .mark {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 120px;
+      line-height: 0.6;
+      color: var(--accent);
+      margin-bottom: -8px;
+      display: block;
+    }
+    .pullquote .quote {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(24px, 5.6vw, 32px);
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+    .pullquote .attribution {
+      display: flex; align-items: center; gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(26, 28, 25, 0.1);
+    }
+    .pullquote .av {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #FFE8D8;
+      display: grid; place-items: center;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .pullquote .att-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .pullquote .att-meta {
+      font-size: 12px;
+      color: var(--ink-3);
+      margin-top: 2px;
+    }
+    .pullquote .att-meta b {
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    /* ===== B2B — "Dein Studio, online — in Minuten." (Tier 1 copy rewrite) ===== */
+    .b2b {
+      margin: 0 20px;
+      padding: 40px 28px;
+      background: var(--surface);
+      border-radius: 28px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(59, 122, 87, 0.15);
+    }
+    .b2b-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .b2b-eyebrow::before {
+      content: ''; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--accent);
+    }
+    .b2b-h2 {
+      font-size: clamp(28px, 6.5vw, 38px);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 14px;
+    }
+    .b2b-h2 .italic {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+    }
+    .b2b-body {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ink-2);
+      margin-bottom: 20px;
+    }
+    .b2b-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 22px;
+      background: var(--brand);
+      color: white;
+      border: 0;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .b2b-cta svg { width: 14px; height: 14px; }
+
+    /* ===== SPEC CALLOUT ===== */
+    .spec {
+      margin: 32px 20px 40px;
+      padding: 18px 20px;
+      background: var(--surface);
+      border-radius: 18px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+      font-size: 12px;
+      color: var(--ink-2);
+      line-height: 1.55;
+    }
+    .spec h4 {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--ink);
+      margin: 14px 0 6px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .spec h4:first-child { margin-top: 0; }
+    .spec ul { padding-left: 16px; margin-top: 4px; }
+    .spec li { margin-bottom: 4px; }
+    .spec b { color: var(--brand); font-weight: 700; }
+    .spec code {
+      font-family: ui-monospace, SF Mono, monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: rgba(216, 115, 82, 0.08);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+    .tier {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--ink);
+      color: white;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ==================== HEADER + MEGA MENU ==================== -->
+<header class="header">
+  <div class="logo">Solen<span class="dot">.</span></div>
+  <div class="cat-nav">
+    <span class="cat-item active">Coiffeur</span>
+    <span class="cat-item">Barbershop</span>
+    <span class="cat-item">Nails</span>
+    <span class="cat-item">Spa</span>
+  </div>
+  <button class="menu-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+
+  <!-- MEGA MENU panel (Tier 3 — Coiffeur category preview on hover) -->
+  <div class="megamenu">
+    <div class="megamenu-arrow"></div>
+    <div class="megamenu-photo">
+      <img src="https://images.unsplash.com/photo-1635368117196-7d6f4d4d04ed?w=200&h=200&fit=crop&q=80" alt="" />
+    </div>
+    <div class="megamenu-body">
+      <div class="megamenu-eyebrow">Heute frei</div>
+      <div class="megamenu-title">214 Coiffeure mit freien Plätzen heute</div>
+      <div class="megamenu-stats">
+        <span><b>87</b> Basel</span>
+        <span><b>54</b> Zürich</span>
+        <span><b>42</b> Bern</span>
+      </div>
+      <a class="megamenu-link" href="#">
+        Alle Coiffeure ansehen →
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="hero-inner">
+    <p class="greeting">Hallo, Sulo</p>
+    <h1>Schöner aussehen,<br>schneller <span class="acc">buchen</span>.</h1>
+
+    <div class="searchbar">
+      <div class="searchrow">
+        <svg class="row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="label">Service</span>
+      </div>
+      <div class="searchrow">
+        <svg class="row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span class="label">Stadt</span>
+      </div>
+      <div class="searchrow">
+        <svg class="row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span class="label">Zeit</span>
+      </div>
+      <button class="searchbtn">Solen durchsuchen</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TIER 1 — Copy rewrite: "Heute. Sofort." + serif sub ==================== -->
+<section class="section">
+  <div class="section-header">
+    <div>
+      <h2 class="section-title">Heute. Sofort.</h2>
+    </div>
+    <a class="section-link" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <p class="section-sub">Salons mit freien Stühlen in den nächsten 2 Stunden.</p>
+
+  <div class="row">
+    <a class="card" href="#">
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="badge-free">In 15 Min</div>
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <!-- Tier 1 hover-reveal CTA (visible state on the LEFT card to show what it looks like) -->
+        <div class="photo-cta" style="opacity: 1; transform: translateY(0);">
+          Termin buchen
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+      <div class="text">
+        <h3>Salon Maria</h3>
+        <div class="meta">Steinenvorstadt 18 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>14:15</b> · CHF 64</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.8</div>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="photo">
+        <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="badge-free">Heute frei</div>
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <div class="photo-cta">Termin buchen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Studio Nord</h3>
+        <div class="meta">Klybeckstrasse 12 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>15:00</b> · CHF 50</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.7</div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="hint">← Tier 1: "Termin buchen" CTA only on hover</div>
+</section>
+
+<!-- ==================== TIER 2 — Bento Stylists "Lass dich verwöhnen" ==================== -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Verwöhn dich heute</h2>
+    <a class="section-link" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <p class="section-sub">Stylisten, die diese Woche Plätze frei haben.</p>
+
+  <div class="bento">
+    <!-- Featured hero stylist (full-width, big portrait) -->
+    <a class="bento-hero" href="#">
+      <img src="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=420&fit=crop&q=80" alt="" />
+      <div class="bento-hero-overlay"></div>
+      <div class="bento-hero-text">
+        <div class="bento-hero-eyebrow">Diese Woche besonders gefragt</div>
+        <div class="bento-hero-name">Elena Rossi</div>
+        <div class="bento-hero-meta">
+          <span>Coiffeur · Basel · ★ 4.9</span>
+          <span class="signal">5 Termine heute</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Two smaller side stylists -->
+    <div class="bento-small">
+      <a class="stylist-small" href="#">
+        <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=300&h=375&fit=crop&q=80" alt="" />
+        <div class="stylist-small-overlay"></div>
+        <div class="stylist-small-text">
+          <div class="stylist-small-name">Marcus Chen</div>
+          <div class="stylist-small-cat">Barbershop · Zürich</div>
+        </div>
+      </a>
+      <a class="stylist-small" href="#">
+        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=375&fit=crop&q=80" alt="" />
+        <div class="stylist-small-overlay"></div>
+        <div class="stylist-small-text">
+          <div class="stylist-small-name">Sophie Dubois</div>
+          <div class="stylist-small-cat">Nails · Bern</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TIER 2 — Curated close-up photos for category ==================== -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Schnitt. Farbe. Style.</h2>
+    <a class="section-link" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <p class="section-sub">Coiffeur-Studios mit Top-Bewertungen in deiner Stadt.</p>
+
+  <div class="row">
+    <a class="card" href="#">
+      <div class="photo">
+        <!-- Curated: close-up coiffeur detail (composition, not wide interior) -->
+        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <div class="photo-cta">Termin buchen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Atelier Coiffure</h3>
+        <div class="meta">Spalenberg 23 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>14:30</b> · CHF 80</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.9</div>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="#">
+      <div class="photo">
+        <!-- Curated: close-up styling detail -->
+        <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop&q=80" alt="" />
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <div class="photo-cta">Termin buchen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="text">
+        <h3>Boho Hair</h3>
+        <div class="meta">Aeschenvorstadt 41 · Basel</div>
+        <div class="row3">
+          <div class="left"><b>16:00</b> · CHF 95</div>
+          <div class="right"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>4.9</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ==================== TIER 1 — "Echte Geschichten" pull-quote ==================== -->
+<section class="pullquote">
+  <div class="section-header" style="margin-bottom: 24px;">
+    <h2 class="section-title">Echte Geschichten</h2>
+    <a class="section-link" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <span class="mark">"</span>
+  <p class="quote">30 Sekunden. Keine Anrufe. Keine Vorab&shy;zahlung. Salon Maria war wie immer top.</p>
+  <div class="attribution">
+    <div class="av">LK</div>
+    <div>
+      <div class="att-name">Lara K.</div>
+      <div class="att-meta">Basel · <b>Salon Maria</b> · vor 2 Wochen</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TIER 1 — B2B copy rewrite: "Dein Studio, online — in Minuten." ==================== -->
+<section style="padding: 0 0 48px;">
+  <div class="b2b">
+    <div class="b2b-eyebrow">Für Salons</div>
+    <h2 class="b2b-h2">Dein Studio.<br><span class="italic">Online.</span> In Minuten.</h2>
+    <p class="b2b-body">Kostenlose Online-Buchungen. Keine versteckten Gebühren. Du behältst die Kontrolle über deinen Kalender, deine Kunden und deine Marke.</p>
+    <button class="b2b-cta">
+      Solen-Partner werden
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ==================== SPEC ==================== -->
+<div class="spec">
+  <h4>Tier 1 (1 hour ship — i18n + 1 CSS file)</h4>
+  <ul>
+    <li><span class="tier">T1</span><b>Copy rewrite:</b> all section titles shifted from "what it is" → "how it helps you." Examples in mockup: <code>Last-Minute heute</code> → <b>Heute. Sofort.</b> · <code>Lass dich verwöhnen</code> → <b>Verwöhn dich heute</b> · <code>Coiffeur-Salons</code> → <b>Schnitt. Farbe. Style.</b> · <code>Bewertungen</code> → <b>Echte Geschichten</b> · <code>Solen für dein Geschäft</code> → <b>Dein Studio. Online. In Minuten.</b></li>
+    <li><span class="tier">T1</span><b>Section sub in serif italic:</b> single editorial italic line under each h2 explaining "why this section matters" — adds personality without commitment to a full italic-font swap.</li>
+    <li><span class="tier">T1</span><b>Hover-reveal "Termin buchen →" CTA</b> inside each card photo. Slides up + fades in on hover. Mockup shows it visible on the LEFT card to demo what it looks like; hover the right cards to see the actual interaction.</li>
+    <li><span class="tier">T1</span><b>Section h2 hover</b> shifts text color from ink to brand green (subtle but communicates "this is also tappable").</li>
+    <li><span class="tier">T1</span><b>Search row hover</b> nudges the icon 2px right (currently inert).</li>
+  </ul>
+
+  <h4>Tier 2 (1 week — needs content team)</h4>
+  <ul>
+    <li><span class="tier">T2</span><b>Bento Stylists section</b> — broke uniform 3-circle grid into 1 BIG featured stylist hero card (with portrait, gradient overlay, "5 Termine heute" signal pill) + 2 smaller side cards stacked. Same content, designed instead of templated.</li>
+    <li><span class="tier">T2</span><b>Curated close-up photos</b> — swapped Unsplash interior-wides for detail compositions (scissors mid-cut, hands styling, color work). Same Unsplash source but selected for compositional cohesion. Production should commission salon-shot photography with the same brief: "no wide interiors, only detail moments."</li>
+  </ul>
+
+  <h4>Tier 3 (deferred — bigger lift)</h4>
+  <ul>
+    <li><span class="tier">T3</span><b>Mega menu on category nav</b> — hover Coiffeur (top of mockup) shows a preview panel with featured stylist photo + city stats + "Alle Coiffeure ansehen →" link. Signals "depth, this is a product worth exploring" per the video.</li>
+    <li><span class="tier">T3</span><b>Scroll-spy section blur</b> — section h2 enters viewport with a 1-frame blur(8px) → 0 transition. Subtle but reads as "level 4 detail."</li>
+    <li><span class="tier">T3</span><b>Outdated vs Modern</b> partner-page block (not in this mockup — would live on /fuer-salons): "Telefon klingelt durch" / "Vergessene Termine" / "Keine Übersicht" → "30 Sekunden. Solen."</li>
+  </ul>
+
+  <h4 style="color: var(--accent); margin-top: 18px;">Video's #1 insight applied</h4>
+  <p>From the transcript at 7:58: <i>"The trick with copy between level 3 and level 4 is to transform from what it does to how it helps."</i> Every section title in this mockup follows that rule. Highest-impact, lowest-cost move in the whole audit.</p>
+</div>
+
+</body>
+</html>

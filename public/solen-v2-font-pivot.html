@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — font pivot comparison · v2 vs V1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:wght@400;500;600;700&family=Figtree:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #FBF8F3;
+    color: #1A1209;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  body { padding: 36px 16px 80px; }
+  .doc { max-width: 1280px; margin: 0 auto; }
+
+  /* ============== HEADER ============== */
+  header { text-align: center; margin-bottom: 40px; }
+  .eye {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: #8A3C0F; margin-bottom: 10px;
+    font-family: "Inter Tight", sans-serif;
+  }
+  h1.doc-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 40px; line-height: 1;
+    letter-spacing: -0.03em; color: #1A1209;
+  }
+  h1.doc-h em {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400; font-style: italic; color: #E8742A;
+  }
+  .sub {
+    font-size: 14px; color: #56463E; margin-top: 12px;
+    max-width: 700px; margin-inline: auto;
+  }
+  .sub code {
+    font-family: "JetBrains Mono", monospace; font-size: 12px;
+    background: rgba(232,116,42,.08); color: #8A3C0F;
+    padding: 1px 5px; border-radius: 4px;
+  }
+
+  /* ============== SECTION ============== */
+  .sect { margin-top: 40px; }
+  .sect-h {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 14px; padding: 0 4px;
+  }
+  .sect-h h2 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 24px;
+    letter-spacing: -0.025em; line-height: 1; color: #1A1209;
+  }
+  .sect-h .ref {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    color: #7A6957;
+  }
+
+  /* ============== TWO-COL COMPARE ============== */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 900px) {
+    .compare { grid-template-columns: 1fr; }
+  }
+
+  .col {
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.6),
+      0 1px 2px rgba(26,18,9,.03),
+      0 8px 24px rgba(232,116,42,.06);
+  }
+  .col-tag {
+    display: inline-block;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 99px;
+    margin-bottom: 14px;
+    font-family: "Inter Tight", sans-serif;
+  }
+  .col.v2 .col-tag {
+    background: #E8742A; color: #fff;
+  }
+  .col.v1 .col-tag {
+    background: #1B4D1B; color: #F3A864;
+  }
+  .col-meta {
+    font-size: 11px; color: #7A6957; line-height: 1.5;
+    margin-bottom: 18px;
+    font-family: "Inter Tight", sans-serif;
+  }
+  .col-meta strong { color: #1A1209; font-weight: 600; }
+  .col-meta code {
+    font-family: "JetBrains Mono", monospace; font-size: 10px;
+    background: rgba(232,116,42,.08); color: #8A3C0F;
+    padding: 1px 5px; border-radius: 4px;
+  }
+
+  /* ============== FONT FAMILIES ============== */
+  /* v2 */
+  .v2 .display { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; }
+  .v2 .body { font-family: "Inter Tight", sans-serif; }
+  .v2 .italic { font-family: "Instrument Serif", serif; font-weight: 400; font-style: italic; }
+  .v2 .mono { font-family: "JetBrains Mono", monospace; font-weight: 500; }
+  /* V1 */
+  .v1 .display { font-family: "Anton", sans-serif; font-weight: 400; text-transform: uppercase; }
+  .v1 .body { font-family: "Figtree", sans-serif; }
+  .v1 .italic { font-family: "Figtree", sans-serif; font-style: italic; font-weight: 500; }
+  .v1 .mono { font-family: "Figtree", sans-serif; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* ============== TYPOGRAPHY SPECIMEN ============== */
+  .spec-row {
+    padding: 10px 0;
+    border-bottom: 1px dashed rgba(26,18,9,.08);
+  }
+  .spec-row:last-child { border-bottom: 0; }
+  .spec-tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; color: #7A6957;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .h-hero { font-size: 40px; line-height: 1; letter-spacing: -0.03em; color: #1A1209; }
+  .v1 .h-hero { letter-spacing: 0.005em; line-height: 1; font-size: 44px; }
+  .h-section { font-size: 26px; line-height: 1.05; letter-spacing: -0.025em; color: #1A1209; }
+  .v1 .h-section { letter-spacing: 0.005em; font-size: 28px; }
+  .h-card { font-size: 16px; line-height: 1.2; letter-spacing: -0.01em; color: #1A1209; }
+  .v1 .h-card { letter-spacing: 0.01em; font-size: 18px; }
+  .h-body { font-size: 14px; line-height: 1.5; color: #1A1209; }
+  .h-meta { font-size: 12px; line-height: 1.45; color: #7A6957; }
+  .h-eye {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: #8A3C0F;
+  }
+  .v1 .h-eye { letter-spacing: 0.18em; text-transform: none; }
+  .h-num { font-size: 16px; line-height: 1; letter-spacing: -0.01em; color: #1A1209; }
+
+  /* ============== HERO COMPOSITION ============== */
+  .hero {
+    background: #FBF8F3;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 14px;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.65); backdrop-filter: blur(12px) saturate(1.4);
+    border: 1px solid rgba(232,116,42,.12);
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-size: 12px; font-weight: 600;
+    color: #1A1209;
+    margin-bottom: 14px;
+  }
+  .v1 .pill { font-family: "Figtree", sans-serif; }
+  .v2 .pill { font-family: "Inter Tight", sans-serif; letter-spacing: -0.005em; }
+  .pulse-dot {
+    width: 6px; height: 6px; background: #E8742A;
+    border-radius: 99px;
+    box-shadow: 0 0 0 4px rgba(232,116,42,.18);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .55; transform: scale(1.3); }
+  }
+  .hero-h {
+    font-size: 36px; line-height: 1.05;
+    color: #1A1209;
+    margin-bottom: 14px;
+  }
+  .v2 .hero-h { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; letter-spacing: -0.03em; }
+  .v1 .hero-h { font-family: "Anton", sans-serif; font-weight: 400; letter-spacing: 0.005em; text-transform: uppercase; font-size: 40px; }
+  .hero-search {
+    background: linear-gradient(180deg, #fff 0%, #FDFAF5 100%);
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 16px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 8px 24px rgba(232,116,42,.06);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .srow {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px; height: 56px;
+    border-bottom: 1px solid rgba(26,18,9,.06);
+  }
+  .srow:last-child { border-bottom: 0; }
+  .slabel {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: #8A3C0F;
+  }
+  .v1 .slabel { font-family: "Figtree", sans-serif; }
+  .v2 .slabel { font-family: "Inter Tight", sans-serif; }
+  .sval {
+    font-size: 14px; color: #1A1209; font-weight: 600;
+  }
+  .v1 .sval { font-family: "Figtree", sans-serif; }
+  .v2 .sval { font-family: "Inter Tight", sans-serif; }
+  .sval.empty { color: #7A6957; font-weight: 400; }
+  .cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: linear-gradient(180deg, #F0834D 0%, #E8742A 100%);
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 99px;
+    font-weight: 700; font-size: 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(232,116,42,.32);
+    width: 100%; justify-content: center;
+  }
+  .v1 .cta { font-family: "Figtree", sans-serif; }
+  .v2 .cta { font-family: "Inter Tight", sans-serif; }
+
+  /* ============== SECTION HEADER ============== */
+  .section-h-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+  }
+  .section-h-row h3 {
+    color: #1A1209;
+    font-size: 24px;
+    line-height: 1;
+  }
+  .v2 .section-h-row h3 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; letter-spacing: -0.025em; }
+  .v1 .section-h-row h3 { font-family: "Anton", sans-serif; font-weight: 400; letter-spacing: 0.005em; text-transform: uppercase; font-size: 26px; }
+  .alle {
+    font-size: 13px; font-weight: 600; color: #1A1209;
+  }
+  .v1 .alle { font-family: "Figtree", sans-serif; }
+  .v2 .alle { font-family: "Inter Tight", sans-serif; }
+
+  /* ============== SALON CARD ============== */
+  .salon-card {
+    width: 100%;
+    max-width: 200px;
+  }
+  .salon-photo {
+    aspect-ratio: 1;
+    border-radius: 14px;
+    margin-bottom: 8px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 35%, transparent 70%, rgba(232,116,42,.08) 100%),
+      radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.25), transparent 60%),
+      #B5588A;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(232,116,42,.06);
+  }
+  .salon-badge {
+    position: absolute; top: 8px; left: 8px;
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,.85); backdrop-filter: blur(12px);
+    color: #1A1209;
+    font-size: 10px; font-weight: 700;
+    padding: 4px 9px; border-radius: 99px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+  .v1 .salon-badge { font-family: "Figtree", sans-serif; }
+  .v2 .salon-badge { font-family: "Inter Tight", sans-serif; }
+  .badge-dot {
+    width: 5px; height: 5px;
+    background: #E8742A;
+    border-radius: 99px;
+    box-shadow: 0 0 0 3px rgba(232,116,42,.2);
+  }
+  .salon-row1 {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 6px;
+  }
+  .salon-name {
+    color: #1A1209;
+    line-height: 1.1;
+    flex: 1; min-width: 0;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .v2 .salon-name { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 14px; letter-spacing: -0.01em; }
+  .v1 .salon-name { font-family: "Anton", sans-serif; font-weight: 400; font-size: 16px; letter-spacing: 0.01em; text-transform: uppercase; }
+  .salon-rating {
+    font-size: 11px; color: #1A1209;
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 2px;
+  }
+  .v2 .salon-rating { font-family: "JetBrains Mono", monospace; font-weight: 500; }
+  .v1 .salon-rating { font-family: "Figtree", sans-serif; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .salon-row2 {
+    font-size: 11px; color: #7A6957;
+    margin-top: 3px; line-height: 1.3;
+  }
+  .v1 .salon-row2 { font-family: "Figtree", sans-serif; }
+  .v2 .salon-row2 { font-family: "Inter Tight", sans-serif; }
+  .salon-row2 strong { color: #1A1209; font-weight: 600; }
+
+  /* ============== CATEGORY PAGE HEADING ============== */
+  .cat-h1 {
+    color: #1A1209;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .v2 .cat-h1 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 28px; letter-spacing: -0.028em; }
+  .v1 .cat-h1 { font-family: "Anton", sans-serif; font-weight: 400; font-size: 32px; letter-spacing: 0.005em; text-transform: uppercase; }
+  .cat-sub {
+    font-size: 12px; color: #7A6957; line-height: 1.4;
+  }
+  .v1 .cat-sub { font-family: "Figtree", sans-serif; }
+  .v2 .cat-sub { font-family: "Inter Tight", sans-serif; }
+  .cat-sub strong { color: #1A1209; font-weight: 600; }
+  .cat-pulse {
+    display: inline-block;
+    width: 5px; height: 5px;
+    background: #16A34A;
+    border-radius: 99px;
+    margin-right: 4px;
+    vertical-align: middle;
+    animation: pulse 1.6s infinite;
+  }
+
+  /* ============== B2B CARD ============== */
+  .b2b {
+    position: relative;
+    background: linear-gradient(160deg, #FFE4D2 0%, #FBC9A8 100%);
+    border: 1px solid rgba(232,116,42,.12);
+    border-radius: 18px;
+    padding: 22px 24px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 16px 32px rgba(232,116,42,.18);
+  }
+  .b2b::before {
+    content: "";
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    background: rgba(232,116,42,.5); filter: blur(40px);
+    border-radius: 999px;
+  }
+  .b2b > * { position: relative; }
+  .b2b-eye {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: #8A3C0F;
+    margin-bottom: 8px;
+  }
+  .v1 .b2b-eye { font-family: "Figtree", sans-serif; }
+  .v2 .b2b-eye { font-family: "Inter Tight", sans-serif; }
+  .b2b-h {
+    color: #1A1209;
+    line-height: 1.05;
+    margin-bottom: 4px;
+  }
+  .v2 .b2b-h { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.025em; }
+  .v1 .b2b-h { font-family: "Anton", sans-serif; font-weight: 400; font-size: 26px; letter-spacing: 0.005em; text-transform: uppercase; }
+  .b2b-sub {
+    font-size: 13px; line-height: 1.45; color: #56463E;
+    margin-bottom: 16px;
+  }
+  .v1 .b2b-sub { font-family: "Figtree", sans-serif; }
+  .v2 .b2b-sub { font-family: "Inter Tight", sans-serif; }
+  .b2b-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #1A1209; color: #fff;
+    padding: 11px 18px; border-radius: 99px;
+    font-weight: 700; font-size: 13px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 1px 2px rgba(0,0,0,.1);
+  }
+  .v1 .b2b-cta { font-family: "Figtree", sans-serif; }
+  .v2 .b2b-cta { font-family: "Inter Tight", sans-serif; }
+
+  /* ============== LOGIN FORM ============== */
+  .login-card {
+    max-width: 420px;
+    margin: 0 auto;
+    background: #FBF8F3;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .login-h {
+    color: #1A1209;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .v2 .login-h { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.025em; }
+  .v1 .login-h { font-family: "Anton", sans-serif; font-weight: 400; font-size: 28px; letter-spacing: 0.005em; text-transform: uppercase; }
+  .v2 .login-h em { font-family: "Instrument Serif", serif; font-weight: 400; font-style: italic; color: #E8742A; text-transform: none; }
+  .v1 .login-h em { font-family: "Figtree", sans-serif; font-weight: 500; font-style: italic; color: #E8742A; text-transform: none; letter-spacing: 0; }
+  .login-sub {
+    font-size: 13px; color: #56463E; line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .v1 .login-sub { font-family: "Figtree", sans-serif; }
+  .v2 .login-sub { font-family: "Inter Tight", sans-serif; }
+  .form-label {
+    display: block;
+    font-weight: 600; font-size: 12px;
+    color: #1A1209; line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .v1 .form-label { font-family: "Figtree", sans-serif; }
+  .v2 .form-label { font-family: "Inter Tight", sans-serif; }
+  .form-input {
+    display: block; width: 100%;
+    height: 56px; padding: 12px 16px;
+    border: 1px solid rgba(26,18,9,.10);
+    border-radius: 12px;
+    background: #fff;
+    font-weight: 400; font-size: 14px;
+    color: #1A1209;
+    margin-bottom: 16px;
+  }
+  .v1 .form-input { font-family: "Figtree", sans-serif; }
+  .v2 .form-input { font-family: "Inter Tight", sans-serif; }
+  .form-cta {
+    display: block; width: 100%;
+    padding: 14px 24px;
+    background: linear-gradient(180deg, #F0834D 0%, #E8742A 100%);
+    color: #fff;
+    border: 0; border-radius: 99px;
+    font-weight: 700; font-size: 14px;
+  }
+  .v1 .form-cta { font-family: "Figtree", sans-serif; }
+  .v2 .form-cta { font-family: "Inter Tight", sans-serif; }
+
+  /* ============== ASK BLOCK ============== */
+  .ask {
+    margin-top: 28px;
+    padding: 16px 18px;
+    background: #FFE4D2;
+    border: 1px solid rgba(232,116,42,.18);
+    border-radius: 12px;
+    font-size: 13px;
+    color: #5C2308;
+    line-height: 1.55;
+    font-family: "Inter Tight", sans-serif;
+  }
+  .ask strong { color: #1A1209; font-weight: 700; }
+
+  /* ============== NOTE ============== */
+  .note {
+    background: rgba(255,235,200,.5);
+    border-left: 3px solid #E8742A;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #5C2308;
+    line-height: 1.5;
+    margin-bottom: 14px;
+    font-family: "Inter Tight", sans-serif;
+  }
+  .note strong { color: #1A1209; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header>
+    <div class="eye">FONT PIVOT · COMPARISON</div>
+    <h1 class="doc-h">v2 fonts vs <em>V1 fonts</em></h1>
+    <p class="sub">Same v2 palette (orange <code>#E8742A</code> + cream <code>#FBF8F3</code> + warm-ink scale) on every surface. Only the typography swaps. <strong>Left:</strong> v2-locked (Bricolage Grotesque + Inter Tight + Instrument Serif italic + JetBrains Mono numerics). <strong>Right:</strong> V1 (Anton display + Figtree body, no Instrument Serif, no JetBrains Mono). Pick after seeing every surface.</p>
+  </header>
+
+  <!-- ============== TYPOGRAPHY SPECIMEN ============== -->
+  <section class="sect">
+    <div class="sect-h">
+      <h2>1 · Typography specimen — every locked size</h2>
+      <span class="ref">§5</span>
+    </div>
+
+    <div class="compare">
+      <div class="col v2">
+        <span class="col-tag">V2 · LOCKED</span>
+        <p class="col-meta"><strong>Bricolage Grotesque 700</strong> display · <strong>Inter Tight</strong> 400/500/600/700 body · <strong>Instrument Serif</strong> italic · <strong>JetBrains Mono</strong> numerics. Variable, scales 9px → 96px gracefully.</p>
+        <div class="spec-row"><span class="spec-tag">hero h1 · 40px</span><div class="display h-hero">Guten Morgen, <em class="italic" style="color:#E8742A;">Sulo</em></div></div>
+        <div class="spec-row"><span class="spec-tag">section h2 · 26px</span><div class="display h-section">Coiffeur in Basel</div></div>
+        <div class="spec-row"><span class="spec-tag">card title h3 · 16px</span><div class="display h-card">Salon Crémant</div></div>
+        <div class="spec-row"><span class="spec-tag">body · 14px</span><div class="body h-body">Buche Coiffeur Termine in Basel online — 23 Salons, ab CHF 65. Heute frei: 8.</div></div>
+        <div class="spec-row"><span class="spec-tag">meta · 12px</span><div class="body h-meta">Heute frei ab 14:30 · ab CHF 85 · Kleinbasel</div></div>
+        <div class="spec-row"><span class="spec-tag">eyebrow · 10px uppercase</span><div class="body h-eye">FÜR SALONS</div></div>
+        <div class="spec-row"><span class="spec-tag">numerics · JetBrains Mono</span><div class="mono h-num">CHF 1'247 · ⭐ 4.9 · 23 Salons</div></div>
+      </div>
+
+      <div class="col v1">
+        <span class="col-tag">V1 · PROPOSED PIVOT</span>
+        <p class="col-meta"><strong>Anton 400</strong> single weight display (condensed, all-caps feeling, was made for posters) · <strong>Figtree</strong> 400/500/600/700 body. <strong>No Instrument Serif</strong> (fall back to Figtree italic). <strong>No JetBrains Mono</strong> (Figtree tabular nums).</p>
+        <div class="spec-row"><span class="spec-tag">hero h1 · 44px</span><div class="display h-hero">Guten Morgen, <em class="italic" style="color:#E8742A;">Sulo</em></div></div>
+        <div class="spec-row"><span class="spec-tag">section h2 · 28px</span><div class="display h-section">Coiffeur in Basel</div></div>
+        <div class="spec-row"><span class="spec-tag">card title h3 · 18px</span><div class="display h-card">Salon Crémant</div></div>
+        <div class="spec-row"><span class="spec-tag">body · 14px</span><div class="body h-body">Buche Coiffeur Termine in Basel online — 23 Salons, ab CHF 65. Heute frei: 8.</div></div>
+        <div class="spec-row"><span class="spec-tag">meta · 12px</span><div class="body h-meta">Heute frei ab 14:30 · ab CHF 85 · Kleinbasel</div></div>
+        <div class="spec-row"><span class="spec-tag">eyebrow · 10px</span><div class="body h-eye">Für Salons</div></div>
+        <div class="spec-row"><span class="spec-tag">numerics · Figtree tabular</span><div class="mono h-num">CHF 1'247 · ⭐ 4.9 · 23 Salons</div></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Watch in the specimen:</strong> Anton has only one weight (400). Bold/medium/light don't exist. So when you need emphasis at body size (like "ab CHF <strong>85</strong>" on the salon card row 2), there's no bolder Anton — you'd use Figtree 600 in a different family. v2's Bricolage has 4 weights (400/500/600/700) so the same family carries display + emphasis.
+    </div>
+  </section>
+
+  <!-- ============== HERO ============== -->
+  <section class="sect">
+    <div class="sect-h">
+      <h2>2 · Hero composition</h2>
+      <span class="ref">§13</span>
+    </div>
+
+    <div class="compare">
+      <div class="col v2">
+        <span class="col-tag">V2 · LOCKED</span>
+        <div class="hero">
+          <span class="pill body"><span class="pulse-dot"></span>47 Salons in Basel haben heute frei</span>
+          <h2 class="hero-h">Guten Morgen, <em class="italic" style="color:#E8742A;font-weight:400;">Sulo</em>.</h2>
+          <div class="hero-search">
+            <div class="srow"><span class="slabel">WAS</span><span class="sval empty">Service oder Salon</span></div>
+            <div class="srow"><span class="slabel">WO</span><span class="sval">Basel · Kleinbasel</span></div>
+            <div class="srow"><span class="slabel">WANN</span><span class="sval empty">Wann passt's?</span></div>
+          </div>
+          <button class="cta">Solen durchsuchen →</button>
+        </div>
+      </div>
+
+      <div class="col v1">
+        <span class="col-tag">V1 · PROPOSED PIVOT</span>
+        <div class="hero">
+          <span class="pill body"><span class="pulse-dot"></span>47 Salons in Basel haben heute frei</span>
+          <h2 class="hero-h">Guten Morgen, <em class="italic" style="color:#E8742A;font-weight:500;">Sulo</em>.</h2>
+          <div class="hero-search">
+            <div class="srow"><span class="slabel">WAS</span><span class="sval empty">Service oder Salon</span></div>
+            <div class="srow"><span class="slabel">WO</span><span class="sval">Basel · Kleinbasel</span></div>
+            <div class="srow"><span class="slabel">WANN</span><span class="sval empty">Wann passt's?</span></div>
+          </div>
+          <button class="cta">Solen durchsuchen →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== SECTION HEADER ============== -->
+  <section class="sect">
+    <div class="sect-h">
+      <h2>3 · Section header pattern</h2>
+      <span class="ref">§15</span>
+    </div>
+
+    <div class="compare">
+      <div class="col v2">
+        <span class="col-tag">V2 · LOCKED</span>
+        <div class="section-h-row">
+          <h3>Coiffeur in Basel</h3>
+          <a class="alle" style="color:#1A1209;">Alle →</a>
+        </div>
+        <p class="col-meta">h2 carries the Bricolage 700 weight. Tight letter-spacing.</p>
+      </div>
+
+      <div class="col v1">
+        <span class="col-tag">V1 · PROPOSED PIVOT</span>
+        <div class="section-h-row">
+          <h3>Coiffeur in Basel</h3>
+          <a class="alle" style="color:#1A1209;">Alle →</a>
+        </div>
+        <p class="col-meta">Anton always uppercase-feel even when not all-caps — no lowercase glyphs to compare against.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== SALON CARD ============== -->
+  <section class="sect">
+    <div class="sect-h">
+      <h2>4 · Salon card · 14-16px name (the stress test)</h2>
+      <span class="ref">§16</span>
+    </div>
+
+    <div class="compare">
+      <div class="col v2">
+        <span class="col-tag">V2 · LOCKED</span>
+        <div style="display:flex;justify-content:center;padding:8px 0 14px;">
+          <article class="salon-card">
+            <div class="salon-photo">
+              <span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span>
+            </div>
+            <div class="salon-row1">
+              <span class="salon-name">Salon Crémant</span>
+              <span class="salon-rating">⭐ 4.9</span>
+            </div>
+            <div class="salon-row2">In <strong>25 Min</strong> frei · ab CHF <strong>85</strong></div>
+          </article>
+        </div>
+        <p class="col-meta">Bricolage at 14px reads as a clean grotesk. <strong>Bold</strong> emphasis on the time + price uses Bricolage 700 in the same family.</p>
+      </div>
+
+      <div class="col v1">
+        <span class="col-tag">V1 · PROPOSED PIVOT</span>
+        <div style="display:flex;justify-content:center;padding:8px 0 14px;">
+          <article class="salon-card">
+            <div class="salon-photo">
+              <span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span>
+            </div>
+            <div class="salon-row1">
+              <span class="salon-name">Salon Crémant</span>
+              <span class="salon-rating">⭐ 4.9</span>
+            </div>
+            <div class="salon-row2">In <strong>25 Min</strong> frei · ab CHF <strong>85</strong></div>
+          </article>
+        </div>
+        <p class="col-meta">Anton at 16px feels poster-y in the card name; the "25 Min" + "85" emphasis switches to Figtree 600 (different family) — minor visual mismatch.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== CATEGORY PAGE H1 ============== -->
+  <section class="sect">
+    <div class="sect-h">
+      <h2>5 · Category page heading + sub</h2>
+      <span class="ref">§25.4</span>
+    </div>
+
+    <div class="compare">
+      <div class="col v2">
+        <span class="col-tag">V2 · LOCKED</span>
+        <h1 class="cat-h1">Coiffeur in Basel</h1>
+        <p class="cat-sub"><span class="cat-pulse"></span><strong>23 Salons</strong> · 8 heute frei</p>
+      </div>
+
+      <div class="col v1">
+        <span class="col-tag">V1 · PROPOSED PIVOT</span>
+        <h1 class="cat-h1">Coiffeur in Basel</h1>
+        <p class="cat-sub"><span class="cat-pulse"></span><strong>23 Salons</strong> · 8 heute frei</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== B2B CARD ============== -->
+  <section class="sect">
+    <div class="sect-h">
+      <h2>6 · B2B promo card</h2>
+      <span class="ref">§20</span>
+    </div>
+
+    <div class="compare">
+      <div class="col v2">
+        <span class="col-tag">V2 · LOCKED</span>
+        <div class="b2b">
+          <div class="b2b-eye">FÜR SALONS</div>
+          <div class="b2b-h">Solen für dein Studio.<br>Mehr Termine, weniger Anrufe.</div>
+          <p class="b2b-sub">Beauty + Wellness Buchungen direkt online. Du behältst deinen Kalender, wir bringen dir die Kund:innen.</p>
+          <button class="b2b-cta">Mehr erfahren →</button>
+        </div>
+      </div>
+
+      <div class="col v1">
+        <span class="col-tag">V1 · PROPOSED PIVOT</span>
+        <div class="b2b">
+          <div class="b2b-eye">Für Salons</div>
+          <div class="b2b-h">Solen für dein Studio.<br>Mehr Termine, weniger Anrufe.</div>
+          <p class="b2b-sub">Beauty + Wellness Buchungen direkt online. Du behältst deinen Kalender, wir bringen dir die Kund:innen.</p>
+          <button class="b2b-cta">Mehr erfahren →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== LOGIN FORM ============== -->
+  <section class="sect">
+    <div class="sect-h">
+      <h2>7 · Login form (Phase 1 §A)</h2>
+      <span class="ref">composed primitive</span>
+    </div>
+
+    <div class="compare">
+      <div class="col v2">
+        <span class="col-tag">V2 · LOCKED</span>
+        <div class="login-card">
+          <h3 class="login-h">Willkommen zurück, <em>Sulo</em>.</h3>
+          <p class="login-sub">Melde dich mit deiner E-Mail an.</p>
+          <label class="form-label">E-Mail</label>
+          <input class="form-input" type="email" value="lisa@solen.ch">
+          <label class="form-label">Passwort</label>
+          <input class="form-input" type="password" value="••••••••••">
+          <button class="form-cta">Anmelden →</button>
+        </div>
+      </div>
+
+      <div class="col v1">
+        <span class="col-tag">V1 · PROPOSED PIVOT</span>
+        <div class="login-card">
+          <h3 class="login-h">Willkommen zurück, <em>Sulo</em>.</h3>
+          <p class="login-sub">Melde dich mit deiner E-Mail an.</p>
+          <label class="form-label">E-Mail</label>
+          <input class="form-input" type="email" value="lisa@solen.ch">
+          <label class="form-label">Passwort</label>
+          <input class="form-input" type="password" value="••••••••••">
+          <button class="form-cta">Anmelden →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== ASK ============== -->
+  <div class="ask">
+    <strong>Decision needed:</strong> stay v2 (Bricolage + Inter Tight + Instrument Serif + JetBrains Mono — variable, scales 9→96px, italic accents possible, distinct mono for prices) or pivot V1 (Anton + Figtree — single-weight display made for posters, no italic accent, prices in Figtree tabular)?<br><br>
+    <strong>Things to look at:</strong>
+    <ul style="margin-top:8px; padding-left:20px;">
+      <li>The <strong>salon card</strong> name at 14-16px — Anton was made for billboards, see how it reads on a 200px-wide card</li>
+      <li>The <strong>italic accent</strong> in "Guten Morgen, <em>Sulo</em>" — v2 has Instrument Serif (real italic moment), V1 falls back to Figtree italic (a body-font italic, less distinctive)</li>
+      <li>The <strong>numerics</strong> "ab CHF <strong>85</strong>" — v2 has JetBrains Mono (distinct mono character), V1 uses Figtree tabular nums (same body family)</li>
+      <li>The <strong>section header</strong> "Coiffeur in Basel" — Anton at 28px on cream substrate is the loudest comparison point. Decide which energy you want.</li>
+    </ul>
+    Tell me: <strong>"keep v2"</strong> or <strong>"pivot to V1 fonts"</strong> or <strong>"hybrid"</strong> (e.g. v2 body + V1 display).
+  </div>
+
+</div>
+</body>
+</html>

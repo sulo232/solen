@@ -8,6 +8,7 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody } from "@/lib/validations";
 import { extractSignalsFromHeaders } from "@/lib/ai/recommendations";
+import { getServerEnv } from "@/lib/env";
 import { z } from "zod";
 
 const recommendationRequestSchema = z.object({
@@ -28,7 +29,7 @@ interface RecommendationResult {
  * AI-powered salon recommendations using:
  * - User booking history (past categories)
  * - Last viewed salons (from localStorage)
- * - Location signals (Vercel geo headers)
+ * - Location signals (edge geo headers — Netlify x-nf-geo with Vercel x-vercel-ip-city legacy fallback)
  * - Time of day context
  *
  * Gemini 2.0 Flash ranks candidates and generates locale-aware reason text.
@@ -53,7 +54,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Check if Gemini is configured
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) {
     // Graceful degradation: return empty state without crashing
     return NextResponse.json({

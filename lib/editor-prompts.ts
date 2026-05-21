@@ -1,4 +1,4 @@
-// NO fs import — static strings only. Works on Vercel serverless.
+// NO fs import — static strings only. Works in serverless / edge runtime (Netlify).
 
 // Component index — update this when adding/removing major components
 // This is a static snapshot. To keep it current, regenerate via:

@@ -7,12 +7,12 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Scissors, Sparkles, Droplets, Palette, Zap, X, Clock } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
-import FilterBar from "@/components/ui/FilterBar";
-import SearchAutocomplete from "@/components/ui/SearchAutocomplete";
+import FilterBar from "@/components-legacy/ui/FilterBar";
+import SearchAutocomplete from "@/components-legacy/ui/SearchAutocomplete";
 import { getSearchFilterPills } from "@/lib/search-filter-pills";
-import LastMinuteCard from "@/components/LastMinuteCard";
-import Spinner from "@/components/ui/Spinner";
-import EmptyState from "@/components/ui/EmptyState";
+import LastMinuteCard from "@/components-legacy/LastMinuteCard";
+import Spinner from "@/components-legacy/ui/Spinner";
+import EmptyState from "@/components-legacy/ui/EmptyState";
 import type { LastMinuteSlot, ActiveFilter } from "@/lib/types";
 
 const PAGE_SIZE = 20;
@@ -178,22 +178,22 @@ export default function LastMinutePage() {
   }, [pathname, router, searchParams]);
 
   return (
-    <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg">
+    <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="pt-8 pb-6" style={{ background: "linear-gradient(180deg, rgba(232,98,74,.07) 0%, rgba(255,255,255,0) 100%)" }}>
+      <div className="pt-8 pb-6" style={{ background: "linear-gradient(180deg, rgba(27, 77, 27,.07) 0%, rgba(255,255,255,0) 100%)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-coral mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-coral mb-2">
             letzte freie Termine
           </p>
           <div className="flex items-center gap-3">
-            <h1 className="font-heading font-bold text-[clamp(24px,4vw,40px)] leading-tight text-s-ink dark:text-s-dm-text">
+            <h1 className="font-heading text-[clamp(24px,4vw,40px)] leading-tight text-s-ink">
               Last-Minute Angebote
             </h1>
             {/* Live indicator dot — keep animate-pulse */}
             <span className="w-2.5 h-2.5 rounded-full bg-s-coral animate-pulse shrink-0" aria-label="Live" />
           </div>
           {total > 0 && (
-            <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40 mt-2">
+            <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-ink/40 mt-2">
               {total} verfügbare Termine heute
             </p>
           )}
@@ -202,7 +202,7 @@ export default function LastMinutePage() {
 
       {/* Search + Filters */}
       <div className="sticky top-[57px] z-40 isolate">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-s-bg-base dark:bg-s-dm-bg border-b border-s-ink/[0.06] dark:border-white/[0.06]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-white border-b border-s-ink/[0.06]">
           <div className="mb-3">
             <SearchAutocomplete />
           </div>
@@ -219,7 +219,7 @@ export default function LastMinutePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
         {/* Sorting toggle */}
         <div className="mb-4 flex items-center gap-2 flex-wrap">
-          <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40">
+          <span className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/40">
             Sortieren nach:
           </span>
           {[
@@ -231,12 +231,12 @@ export default function LastMinutePage() {
               key={key}
               onClick={() => setSortBy(key as "discount" | "price" | "time")}
               className={[
-                "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold transition-colors duration-150",
+                "px-3.5 py-2 rounded-pill text-[10px] font-heading transition-colors duration-150",
                 sortBy === key
                   ? "bg-s-coral text-white"
-                  : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.07] dark:hover:bg-white/[0.10]",
+                  : "bg-s-bg-sunken text-s-ink/55 hover:bg-s-ink/[0.07]:bg-white/[0.10]",
               ].join(" ")}
-              style={sortBy === key ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
+              style={sortBy === key ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
             >
               {label}
             </button>
@@ -250,12 +250,12 @@ export default function LastMinutePage() {
               key={key}
               onClick={() => toggleCategory(key)}
               className={[
-                "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150",
+                "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-pill text-[10px] font-heading uppercase tracking-[.06em] transition-colors duration-150",
                 selectedCategories.includes(key)
                   ? "bg-s-coral text-white"
-                  : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.07] dark:hover:bg-white/[0.10]",
+                  : "bg-s-bg-sunken text-s-ink/55 hover:bg-s-ink/[0.07]:bg-white/[0.10]",
               ].join(" ")}
-              style={selectedCategories.includes(key) ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
+              style={selectedCategories.includes(key) ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
             >
               <Icon size={12} />
               {label}
@@ -267,12 +267,12 @@ export default function LastMinutePage() {
               key={price}
               onClick={() => setMaxPrice(maxPrice === price ? null : price)}
               className={[
-                "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold transition-colors duration-150",
+                "px-3.5 py-2 rounded-pill text-[10px] font-heading transition-colors duration-150",
                 maxPrice === price
                   ? "bg-s-coral text-white"
-                  : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.07] dark:hover:bg-white/[0.10]",
+                  : "bg-s-bg-sunken text-s-ink/55 hover:bg-s-ink/[0.07]:bg-white/[0.10]",
               ].join(" ")}
-              style={maxPrice === price ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
+              style={maxPrice === price ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
             >
               {"< CHF " + price}
             </button>
@@ -280,7 +280,7 @@ export default function LastMinutePage() {
           {(selectedCategories.length > 0 || maxPrice !== null) && (
             <button
               onClick={() => { setSelectedCategories([]); setMaxPrice(null); }}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-pill border border-s-ink/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 hover:border-s-ink/20 hover:text-s-ink/65 transition-colors duration-150"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-pill border border-s-ink/[0.08] text-[10px] font-heading uppercase tracking-[.06em] text-s-ink/45 hover:border-s-ink/20 hover:text-s-ink/65 transition-colors duration-150"
             >
               <X size={11} />
               Zurücksetzen
@@ -293,14 +293,14 @@ export default function LastMinutePage() {
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 animate-pulse">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="rounded-[16px] overflow-hidden bg-s-bg-surface dark:bg-s-dm-surface">
+              <div key={i} className="rounded-[16px] overflow-hidden bg-s-bg-surface">
                 {/* Image area */}
-                <div className="aspect-[3/4] bg-s-bg-sunken dark:bg-s-dm-raised" />
+                <div className="aspect-[3/4] bg-s-bg-sunken" />
                 {/* Content area */}
                 <div className="p-3 space-y-2">
-                  <div className="h-2.5 w-3/4 bg-s-bg-sunken dark:bg-s-dm-raised rounded" />
-                  <div className="h-2 w-1/2 bg-s-bg-sunken dark:bg-s-dm-raised rounded" />
-                  <div className="h-6 w-full bg-s-bg-sunken dark:bg-s-dm-raised rounded-full mt-3" />
+                  <div className="h-2.5 w-3/4 bg-s-bg-sunken rounded" />
+                  <div className="h-2 w-1/2 bg-s-bg-sunken rounded" />
+                  <div className="h-6 w-full bg-s-bg-sunken rounded-full mt-3" />
                 </div>
               </div>
             ))}
@@ -315,7 +315,7 @@ export default function LastMinutePage() {
 
             {/* Suggested categories */}
             <div className="mt-6">
-              <h3 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">
+              <h3 className="font-heading text-base text-s-ink mb-3">
                 {tEmpty("lastMinuteSuggestedTitle")}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -323,7 +323,7 @@ export default function LastMinutePage() {
                   <Link
                     key={cat}
                     href={`/${locale}/${cat}`}
-                    className="px-4 py-2.5 rounded-pill bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 hover:text-s-coral transition-[transform,filter,border-color,background-color] duration-150"
+                    className="px-4 py-2.5 rounded-pill bg-white border border-s-ink/10 text-sm text-s-ink/70 hover:border-s-coral/30 hover:text-s-coral transition-[transform,filter,border-color,background-color] duration-150"
                   >
                     {cat.charAt(0).toUpperCase() + cat.slice(1)}
                   </Link>
@@ -367,7 +367,7 @@ export default function LastMinutePage() {
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="flex items-center gap-2 px-6 py-3 rounded-btn bg-white dark:bg-s-dm-surface border border-s-ink/[0.08] dark:border-white/[0.08] text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral hover:text-s-coral transition-colors duration-150 disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-3 rounded-btn bg-white border border-s-ink/[0.08] text-xs font-heading uppercase tracking-[.06em] text-s-ink/55 hover:border-s-coral hover:text-s-coral transition-colors duration-150 disabled:opacity-50"
                 >
                   {loadingMore ? <Spinner size="sm" /> : null}
                   {loadingMore ? "Lade mehr…" : "Mehr laden"}

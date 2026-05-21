@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { validateBody, giftCardRedeemSchema } from "@/lib/validations";
@@ -26,8 +26,12 @@ export async function POST(req: NextRequest) {
   const { data: validated, error: valError } = validateBody(giftCardRedeemSchema, body);
   if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
 
-  // Find active gift card
-  const { data: card } = await supabase
+  // Code lookup via admin client. The public `gc_public_check` RLS policy was
+  // dropped on 2026-05-16 (let anon list every voucher code with remaining
+  // balance). Auth + ban-check above is the gate; admin client here is just
+  // the lookup mechanism.
+  const admin = createAdminSupabaseClient();
+  const { data: card } = await admin
     .from("gift_cards")
     .select("*")
     .eq("code", validated.code)
@@ -51,7 +55,7 @@ export async function POST(req: NextRequest) {
 
   // Deduct amount (optimistic lock via remaining_amount check)
   const newRemaining = card.remaining_amount - validated.amount;
-  const { error } = await supabase
+  const { error } = await admin
     .from("gift_cards")
     .update({
       remaining_amount: newRemaining,

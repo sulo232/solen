@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Mail, Check, Clock as ClockIcon, Send } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 import type { StaffMember } from "@/lib/types";
 
 // ─────────────────────────────────────────
@@ -133,30 +133,30 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">{initial ? "Bearbeiten" : "Mitarbeiter hinzufügen"}</h3>
-          <button onClick={onClose} aria-label="Schliessen"><X size={18} className="text-s-ink/30 dark:text-s-dm-text/30" /></button>
+          <h3 className="font-heading text-base text-s-ink">{initial ? "Bearbeiten" : "Mitarbeiter hinzufügen"}</h3>
+          <button onClick={onClose} aria-label="Schliessen"><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-5">
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Name *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Name *</label>
             <input value={name} onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Foto URL</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Foto URL</label>
             <input value={avatar} onChange={(e) => setAvatar(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Spezialitäten</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Spezialitäten</label>
             <div className="flex gap-2 mb-2">
               <input value={specInput} onChange={(e) => setSpecInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSpec(); } }}
                 placeholder="z. B. Balayage…"
-                className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
-              <button type="button" onClick={addSpec} aria-label="Spezialisierung hinzufügen" className="px-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60"><Plus size={14} /></button>
+                className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
+              <button type="button" onClick={addSpec} aria-label="Spezialisierung hinzufügen" className="px-2.5 rounded-btn bg-s-bg-sunken text-s-ink/60"><Plus size={14} /></button>
             </div>
             <div className="flex flex-wrap gap-1">
               {specialties.map((s, i) => (
@@ -170,11 +170,11 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
           {/* Service assignment */}
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">Services zuweisen</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-2">Services zuweisen</label>
             {loadingServices ? (
               <Spinner size="sm" />
             ) : services.length === 0 ? (
-              <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">Keine Services vorhanden</p>
+              <p className="text-xs text-s-ink/30">Keine Services vorhanden</p>
             ) : (
               <div className="space-y-1 max-h-32 overflow-y-auto">
                 {services.map(svc => (
@@ -185,7 +185,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
                       onChange={() => toggleService(svc.id)}
                       className="w-3.5 h-3.5 rounded accent-s-coral"
                     />
-                    <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">{svc.name_de}</span>
+                    <span className="text-sm text-s-ink/70">{svc.name_de}</span>
                   </label>
                 ))}
               </div>
@@ -194,41 +194,41 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
           {/* Permissions */}
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">Berechtigungen</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-2">Berechtigungen</label>
             <div className="space-y-2">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={canEditSchedule} onChange={e => setCanEditSchedule(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-coral" />
-                <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Kalender bearbeiten</span>
+                <span className="text-sm text-s-ink/70">Kalender bearbeiten</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={canViewOwnBookings} onChange={e => setCanViewOwnBookings(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-coral" />
-                <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Buchungen sehen</span>
+                <span className="text-sm text-s-ink/70">Buchungen sehen</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={canManagePortfolio} onChange={e => setCanManagePortfolio(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-coral" />
-                <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Portfolio verwalten</span>
+                <span className="text-sm text-s-ink/70">Portfolio verwalten</span>
               </label>
             </div>
           </div>
 
           {/* Commission rate */}
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Provision (%)</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Provision (%)</label>
             <input type="number" min="0" max="100" value={commissionRate}
               onChange={(e) => setCommissionRate(Math.max(0, Math.min(100, parseInt(e.target.value) || 0)))}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
-            <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 mt-1">Anteil des Mitarbeiters am Umsatz (0–100%)</p>
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
+            <p className="text-[10px] text-s-ink/30 mt-1">Anteil des Mitarbeiters am Umsatz (0–100%)</p>
           </div>
 
           <label className="flex items-center gap-3 cursor-pointer">
-            <button type="button" onClick={() => setActive(!active)} className={active ? "text-s-coral" : "text-s-ink/30 dark:text-s-dm-text/30"}>
+            <button type="button" onClick={() => setActive(!active)} className={active ? "text-s-coral" : "text-s-ink/30"}>
               {active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
             </button>
-            <span className="text-sm text-s-ink/60 dark:text-s-dm-text/60">Aktiv</span>
+            <span className="text-sm text-s-ink/60">Aktiv</span>
           </label>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button onClick={handleSave} disabled={!name || loading}
             className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Speichern
@@ -274,29 +274,29 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
+      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
             <Mail size={16} className="text-s-coral" />
-            <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">Mitarbeiter einladen</h3>
+            <h3 className="font-heading text-base text-s-ink">Mitarbeiter einladen</h3>
           </div>
-          <button onClick={onClose} aria-label="Schliessen"><X size={18} className="text-s-ink/30 dark:text-s-dm-text/30" /></button>
+          <button onClick={onClose} aria-label="Schliessen"><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-4">
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Name *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Name *</label>
             <input value={name} onChange={e => setName(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">E-Mail *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">E-Mail *</label>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
           </div>
         </div>
         {error && <p className="text-xs text-s-coral mb-3">{error}</p>}
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button onClick={handleSend} disabled={!email || !name.trim() || sending}
             className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {sending && <Spinner size="sm" invert />}<Send size={14} /> Einladen
@@ -331,16 +331,16 @@ function DeleteModal({ member, onClose, onDeleted }: {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
-        <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3">Mitarbeiter löschen</h3>
-        <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-2">Möchtest du <strong>{member.name}</strong> wirklich löschen?</p>
+      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
+        <h3 className="font-heading text-base text-s-ink mb-3">Mitarbeiter löschen</h3>
+        <p className="text-sm text-s-ink/60 mb-2">Möchtest du <strong>{member.name}</strong> wirklich löschen?</p>
         {member.future_bookings && member.future_bookings > 0 ? (
           <p className="text-sm text-s-coral font-medium mb-4">
             Diese Person hat {member.future_bookings} Termine. Diese werden storniert.
           </p>
         ) : null}
         <div className="flex gap-2 mt-4">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button onClick={handleDelete} disabled={loading}
             className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Löschen
@@ -380,15 +380,15 @@ function PendingInvites({ salonId }: { salonId: string }) {
 
   return (
     <div className="mb-6">
-      <h2 className="text-sm font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2 flex items-center gap-1.5">
+      <h2 className="text-sm font-medium text-s-ink/50 mb-2 flex items-center gap-1.5">
         <ClockIcon size={14} /> Ausstehende Einladungen
       </h2>
       <div className="space-y-2">
         {invites.map(inv => (
           <div key={inv.id} className="bg-s-amber-subtle rounded-[12px] border border-s-amber/10 p-3 flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{inv.name}</p>
-              <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{inv.email}</p>
+              <p className="text-sm font-medium text-s-ink">{inv.name}</p>
+              <p className="text-xs text-s-ink/40">{inv.email}</p>
             </div>
             <span className="text-[10px] font-medium text-s-amber px-2 py-0.5 bg-s-amber/10 rounded-pill">Ausstehend</span>
           </div>
@@ -466,7 +466,7 @@ export default function StaffPage() {
       )}
 
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">Team</h1>
+        <h1 className="font-heading text-2xl text-s-ink">Team</h1>
         <div className="flex items-center gap-2">
           <button onClick={() => setInviteOpen(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-coral text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors">
@@ -485,36 +485,36 @@ export default function StaffPage() {
       {loading ? (
         <div className="flex justify-center py-12"><Spinner size="lg" /></div>
       ) : staff.length === 0 ? (
-        <div className="text-center py-12 text-s-ink/30 dark:text-s-dm-text/30">
+        <div className="text-center py-12 text-s-ink/30">
           <p className="text-sm">Noch keine Mitarbeiter</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {staff.map((s) => (
-            <div key={s.id} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 flex items-start gap-3">
+            <div key={s.id} className="bg-white rounded-[12px] border border-s-ink/5 p-4 flex items-start gap-3">
               <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-sm font-bold text-s-coral overflow-hidden relative">
                 {s.avatar_url ? (
                   <Image src={s.avatar_url} alt="" fill className="object-cover" unoptimized />
                 ) : (s.name?.charAt(0) ?? "?").toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm text-s-ink dark:text-s-dm-text">{s.name}</p>
+                <p className="font-medium text-sm text-s-ink">{s.name}</p>
                 {s.specialties.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-1">
                     {s.specialties.slice(0, 3).map((sp, i) => (
-                      <span key={i} className="text-[10px] px-1.5 py-0.5 bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/50 dark:text-s-dm-text/50 rounded-pill">{sp}</span>
+                      <span key={i} className="text-[10px] px-1.5 py-0.5 bg-s-bg-sunken text-s-ink/50 rounded-pill">{sp}</span>
                     ))}
                   </div>
                 )}
               </div>
               <div className="flex items-center gap-1 shrink-0">
-                <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-coral" : "text-s-ink/20 dark:text-s-dm-text/20"}>
+                <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-coral" : "text-s-ink/20"}>
                   {s.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                 </button>
-                <button onClick={() => setEditTarget(s)} className="p-1.5 text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-coral transition-colors">
+                <button onClick={() => setEditTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors">
                   <Pencil size={14} />
                 </button>
-                <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-coral transition-colors">
+                <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors">
                   <Trash2 size={14} />
                 </button>
               </div>

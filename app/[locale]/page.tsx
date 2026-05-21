@@ -1,6 +1,31 @@
 import type { Metadata } from "next";
-import HomePage from "@/components/HomePage";
-import { generateWebsiteSchema, buildAlternates } from "@/lib/seo";
+import { buildAlternates } from "@/lib/seo";
+import Hero from "./_components/homepage/Hero";
+import { FeedZone } from "./_components/homepage/SectionHeader";
+// V3-D82 (2026-05-19): hero atmosphere now lives inline inside Hero.tsx
+// as a CSS double-radial-gradient (locked from V1 variant of the
+// solen-hero-background-variants.html mockup). HeroSpotlight + AtmosphereBlobs
+// retired (kept on disk for reference).
+import RecentlyViewed from "./_components/homepage/RecentlyViewed";
+// V3-D75 (2026-05-18): LastMinute retired per user "ditch last minute".
+// Replaced by ArtistOfTheMonth — curated featured-stylist carousel using
+// AnimatedTestimonials primitive (Aceternity-style). LastMinute.tsx file
+// preserved for now in case we want to re-introduce as a promo banner later.
+import ArtistOfTheMonth from "./_components/homepage/ArtistOfTheMonth";
+import Nearby from "./_components/homepage/Nearby";
+// V3-D75-promos (2026-05-18): Uber-style swipeable category promo cards.
+// Adds a top-level browsing path BY category between location-based (Nearby)
+// and stylist-focused (FeaturedStylists) feeds.
+import CategoryPromos from "./_components/homepage/CategoryPromos";
+import Coiffeur from "./_components/homepage/Coiffeur";
+import Entdecken from "./_components/homepage/Entdecken";
+import FeaturedStylists from "./_components/homepage/FeaturedStylists";
+// V3-D75-bento (2026-05-18): SalonRegister (WhySolen.tsx) retired in favor of
+// BentoBusiness — Apple-style interactive 4-card bento grid (3D tilt, animated
+// internal visuals, scroll-triggered fade-up). WhySolen.tsx preserved on disk
+// for rollback / reference.
+import BentoBusiness from "./_components/homepage/BentoBusiness";
+import Reviews from "./_components/homepage/Reviews";
 
 const TITLES: Record<string, string> = {
   de: "Solen — Finde & buche die besten Salons in der Schweiz",
@@ -48,115 +73,52 @@ export async function generateMetadata({
   };
 }
 
-import { createServerSupabaseClient } from "@/lib/supabase";
-
-export const revalidate = 300; // Cache the SSR page for 5 minutes (ISR)
+/**
+ * Homepage — V3 rebuild (V2-D26 typography + V2-D15-3 brand pivot).
+ *
+ * Section-by-section port from `public/solen-v2-homepage.html`:
+ *   ✅ §13 Hero (this commit)
+ *   ⏳ §16 SalonCard primitive (next)
+ *   ⏳ Recently Viewed / Last-Minute / Nearby / 4 categories
+ *   ⏳ Looks (entdecken) / Loyalty / City picker / Spotlight
+ *   ⏳ Reviews testimonial / Trust banner
+ *
+ * Header, footer, cookie banner still come from `app/[locale]/layout.tsx`
+ * (legacy `components-legacy/layout/*`) — header port is its own commit.
+ */
+export const revalidate = 300;
 
 export default async function Page() {
-  const jsonLd = generateWebsiteSchema("de");
-  
-  // SSR Critical Data
-  const supabase = await createServerSupabaseClient();
-  
-  // Full cols with services join — only used for popular/new salons where price display matters
-  const SALON_COLS = "id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, postal_code, booking_confirmation_mode, services(price)";
-  // Lean cols without services join — used for category carousel queries (much faster)
-  const SALON_COLS_LEAN = "id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, postal_code, booking_confirmation_mode";
-
-  // Parallel DB queries — wrapped with 8s timeout to prevent SSR hang
-  const withTimeout = <T,>(promise: PromiseLike<T>, fallback: T): Promise<T> =>
-    Promise.race([Promise.resolve(promise), new Promise<T>((resolve) => setTimeout(() => resolve(fallback), 8000))]);
-
-  const emptyResult = { data: null, error: null } as any;
-  const emptyCount = { count: 0, error: null } as any;
-
-  const [
-    { data: popularData, error: pError },
-    { data: lastMinuteData, error: lmError },
-    { data: newSalonsData, error: nsError },
-    { data: sectionsData },
-    { count: coordsCount },
-    { data: trendingData },
-    { data: citiesData },
-    // Per-category salon lists for homepage carousels (lean — no services join)
-    { data: coiffeurData },
-    { data: nailsData },
-    { data: barbershopData },
-    { data: makeupData },
-    { data: waxingData },
-  ] = await Promise.all([
-    withTimeout(supabase.from("salons").select(SALON_COLS).eq("is_active", true).eq("is_test", false).order("average_rating", { ascending: false }).limit(24), emptyResult),
-    withTimeout(supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, last_minute_discount_percent, quartier").eq("is_active", true).eq("is_test", false).gt("last_minute_discount_percent", 0).order("last_minute_discount_percent", { ascending: false }).limit(4), emptyResult),
-    withTimeout(supabase.from("salons").select(SALON_COLS).eq("is_active", true).eq("is_test", false).order("created_at", { ascending: false }).limit(6), emptyResult),
-    withTimeout(supabase.from("site_settings").select("value").eq("key", "homepage_sections").single().then((res) => ({ data: res.error ? null : res.data })), { data: null }),
-    withTimeout(supabase.from("salons").select("*", { count: "exact", head: true }).eq("is_active", true).eq("is_test", false).not("latitude", "is", null).gt("latitude", 0), emptyCount),
-    withTimeout(supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, solen_score, is_active").eq("is_active", true).eq("is_test", false).order("solen_score", { ascending: false, nullsFirst: false }).limit(8), emptyResult),
-    withTimeout(supabase.from("cities").select("id, slug"), emptyResult),
-    // Category-specific queries — lean cols, no services join
-    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["coiffeur"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
-    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["nails"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
-    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["barbershop"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
-    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["makeup"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
-    withTimeout(supabase.from("salons").select(SALON_COLS_LEAN).eq("is_active", true).eq("is_test", false).contains("categories", ["waxing"]).order("average_rating", { ascending: false }).limit(8), emptyResult),
-  ]);
-
-  if (pError) console.error("SSR popular salons query failed:", pError.message);
-  if (lmError) console.error("SSR last-minute query failed:", lmError.message);
-  if (nsError) console.error("SSR new salons query failed:", nsError.message);
-
-  // Build city slug lookup map
-  const cityMap: Record<string, string> = {};
-  (citiesData ?? []).forEach((c: { id: string; slug: string }) => { cityMap[c.id] = c.slug; });
-
-  // Process salons: add city_slug + compute min_price from joined services, then strip services
-  const addCitySlug = (salons: any[]) => salons.map((s) => {
-    if (!s.services) return { ...s, city_slug: s.city_id ? (cityMap[s.city_id] ?? null) : null };
-    const prices = (s.services ?? []).map((sv: { price: number }) => sv.price).filter((p: number) => typeof p === "number" && p > 0);
-    const min_price = prices.length > 0 ? Math.min(...prices) : null;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { services: _services, ...rest } = s;
-    return { ...rest, min_price, city_slug: s.city_id ? (cityMap[s.city_id] ?? null) : null };
-  });
-
-  // Deduplicate trending against popular
-  const popularIds = new Set((popularData ?? []).map((s: any) => s.id));
-  const dedupedTrending = (trendingData ?? [])
-    .filter((s: any) => !popularIds.has(s.id))
-    .slice(0, 6);
-
-  // Category counts — pass empty object (search bar handles gracefully; avoids full-table scan)
-  const categoryCounts: Record<string, number> = {};
-
-  const initialData = {
-    salons: addCitySlug((popularData as unknown as any[]) ?? []),
-    lastMinuteSlots: (lastMinuteData as unknown as any[]) ?? [],
-    newSalons: (newSalonsData as unknown as any[]) ?? [],
-    trendingSalons: dedupedTrending as unknown as any[],
-    categoryCounts,
-    salonsWithCoords: coordsCount ?? 0,
-    sections: (sectionsData?.value as Record<string, boolean>) ?? {
-      trending: true, nearby: true, new_salons: true,
-      rebook: true, reviews: true, last_minute: true, featured: true,
-      social_proof: true, partner_cta: true,
-    },
-    categorySalons: {
-      coiffeur:   addCitySlug((coiffeurData   as unknown as any[]) ?? []),
-      nails:      addCitySlug((nailsData      as unknown as any[]) ?? []),
-      barbershop: addCitySlug((barbershopData as unknown as any[]) ?? []),
-      makeup:     addCitySlug((makeupData     as unknown as any[]) ?? []),
-      waxing:     addCitySlug((waxingData     as unknown as any[]) ?? []),
-    },
-  };
-
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <div>
-        <HomePage initialData={initialData} />
-      </div>
-    </>
+    <div className="relative overflow-hidden bg-white">
+      {/* V3-D94 (2026-05-21): REVERTED V3-D93 — wrapper bg-white restored per
+          user "revert back to comp white". V3-D93 had removed bg-white to let
+          the body substrate (#FAF8F2) show through; V3-D94 puts pure white
+          back as the page substrate.
+          Prior V3-D93 (2026-05-21): substrate flipped pure white → subtle warm
+          #FAF8F2. Did not survive contact with the cool-poster blob mockup.
+          Prior V3-D86 (2026-05-19): atmosphere wash REMOVED → pure white
+          (Airbnb pattern). Open card-depth-collapse problem returns at V3-D94. */}
+      <Hero />
+      {/* All feed sections sit inside a rising-panel FeedZone (V2-D41-fu
+          rising-panel pattern locked 2026-05-09). Hero zone keeps the
+          colorful wash; feed zone is a calmer white-glass surface that
+          rises with rounded top corners + upward shadow. */}
+      <FeedZone>
+        <RecentlyViewed />
+        <ArtistOfTheMonth />
+        <Nearby />
+        <CategoryPromos />
+        {/* V2-D46: action-copy stylist showcase between geo+category feeds */}
+        <FeaturedStylists />
+        <Coiffeur />
+        {/* V2-D49f: Entdecken preview — TikTok-style vertical look cards
+            sit between category browse + social proof per discovery rhythm. */}
+        <Entdecken />
+        <Reviews />
+        {/* V3-D75-bento: B2B interactive bento grid (4 features) */}
+        <BentoBusiness />
+      </FeedZone>
+    </div>
   );
 }

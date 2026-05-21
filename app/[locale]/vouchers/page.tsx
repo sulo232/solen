@@ -13,10 +13,12 @@ import { motion } from "framer-motion";
 import { Gift, Search, AlertCircle, CheckCircle, ChevronRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/format-currency";
-import Spinner from "@/components/ui/Spinner";
-import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
+import Spinner from "@/components-legacy/ui/Spinner";
+import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
+import { getPublicEnv } from "@/lib/env";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const publishableKey = getPublicEnv().NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = publishableKey ? loadStripe(publishableKey) : Promise.resolve(null);
 
 interface Salon {
   id: string;
@@ -67,7 +69,7 @@ function VoucherPaymentForm({
 
       {error && (
         <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
-          style={{ background: "rgba(232,98,74,.06)" }}>
+          style={{ background: "rgba(27, 77, 27,.06)" }}>
           <AlertCircle size={13} className="text-s-coral shrink-0" />
           <p className="text-xs font-body text-s-coral">{error}</p>
         </div>
@@ -77,7 +79,7 @@ function VoucherPaymentForm({
         type="submit"
         disabled={!stripe || loading}
         text={loading ? "Verarbeite..." : t("payNow")}
-        className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-60"
+        className="w-full py-3.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
       />
     </form>
   );
@@ -186,7 +188,7 @@ export default function VouchersPage() {
   // Step 1: Browse salons
   if (step === "browse") {
     return (
-      <div className="min-h-screen bg-s-bg-base py-12 px-4">
+      <div className="min-h-screen bg-white py-12 px-4">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <motion.div
@@ -198,10 +200,10 @@ export default function VouchersPage() {
                 <Gift size={24} className="text-s-coral" />
               </div>
               <div>
-                <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
+                <h1 className="font-heading text-2xl text-s-ink">
                   {t("title")}
                 </h1>
-                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
+                <p className="text-sm text-s-ink/50 mt-0.5">
                   {t("subtitle")}
                 </p>
               </div>
@@ -210,13 +212,13 @@ export default function VouchersPage() {
 
           {/* Search */}
           <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-s-ink/30 dark:text-s-dm-text/30" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-s-ink/30" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t("searchPlaceholder")}
-              className="w-full pl-10 pr-4 py-3 rounded-[12px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-surface text-sm placeholder:text-s-ink/35 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
+              className="w-full pl-10 pr-4 py-3 rounded-[12px] border border-s-ink/[0.08] bg-white text-sm placeholder:text-s-ink/35 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
             />
           </div>
 
@@ -228,7 +230,7 @@ export default function VouchersPage() {
           ) : filteredSalons.length === 0 ? (
             <div className="text-center py-12">
               <Gift className="w-12 h-12 mx-auto mb-3 opacity-20" />
-              <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">
+              <p className="text-sm text-s-ink/40">
                 {t("noSalons")}
               </p>
             </div>
@@ -242,18 +244,18 @@ export default function VouchersPage() {
                     setStep("configure");
                   }}
                   whileHover={{ y: -2 }}
-                  className="p-4 rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface hover:shadow-elevation-2 transition-[background-color] duration-150 text-left"
+                  className="p-4 rounded-[12px] border border-s-ink/[0.06] bg-white hover:shadow-elevation-2 transition-[background-color] duration-150 text-left"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">
+                      <p className="font-heading text-sm text-s-ink">
                         {locale === "en" ? salon.name_en : salon.name_de}
                       </p>
-                      <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-1">
+                      <p className="text-xs text-s-ink/50 mt-1">
                         {t("selectToGift")}
                       </p>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-s-ink/20 dark:text-s-dm-text/20" />
+                    <ChevronRight className="w-4 h-4 text-s-ink/20" />
                   </div>
                 </motion.button>
               ))}
@@ -267,12 +269,12 @@ export default function VouchersPage() {
   // Step 2: Configure voucher
   if (step === "configure" && selectedSalon) {
     return (
-      <div className="min-h-screen bg-s-bg-base py-12 px-4">
+      <div className="min-h-screen bg-white py-12 px-4">
         <div className="max-w-lg mx-auto">
           {/* Back button */}
           <button
             onClick={() => setStep("browse")}
-            className="mb-6 text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/30 hover:text-s-coral transition-colors flex items-center gap-1.5"
+            className="mb-6 text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 hover:text-s-coral transition-colors flex items-center gap-1.5"
           >
             <ChevronRight size={12} className="rotate-180" />
             {t("backToSalons")}
@@ -282,18 +284,18 @@ export default function VouchersPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             onSubmit={handleConfigureVoucher}
-            className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/[0.06] dark:border-white/[0.06] p-6 space-y-4"
+            className="bg-white rounded-[16px] border border-s-ink/[0.06] p-6 space-y-4"
           >
-            <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">
+            <h2 className="font-heading text-lg text-s-ink">
               {t("configure.title")}
             </h2>
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">
+            <p className="text-sm text-s-ink/50">
               {locale === "en" ? selectedSalon.name_en : selectedSalon.name_de}
             </p>
 
             {/* Amount selection */}
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-2 block">
+              <label className="text-xs font-medium text-s-ink/60 mb-2 block">
                 {t("configure.amount")}
               </label>
               <div className="flex gap-2 mb-3">
@@ -302,10 +304,10 @@ export default function VouchersPage() {
                     key={preset}
                     type="button"
                     onClick={() => setAmount(preset)}
-                    className={`px-3 py-2 rounded-pill text-xs font-heading font-bold uppercase tracking-[.06em] transition-colors ${
+                    className={`px-3 py-2 rounded-pill text-xs font-heading uppercase tracking-[.06em] transition-colors ${
                       amount === preset
                         ? "bg-s-coral text-white"
-                        : "bg-s-bg-sunken dark:bg-white/10 text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink/5 dark:hover:bg-white/15"
+                        : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-ink/5:bg-white/15"
                     }`}
                   >
                     CHF {preset}
@@ -318,13 +320,13 @@ export default function VouchersPage() {
                 onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
                 min={10}
                 max={999}
-                className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
+                className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm text-s-ink focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
               />
             </div>
 
             {/* Recipient details */}
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-2 block">
+              <label className="text-xs font-medium text-s-ink/60 mb-2 block">
                 {t("configure.recipientName")}
               </label>
               <input
@@ -332,12 +334,12 @@ export default function VouchersPage() {
                 value={recipientName}
                 onChange={(e) => setRecipientName(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
+                className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm text-s-ink placeholder:text-s-ink/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
               />
             </div>
 
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-2 block">
+              <label className="text-xs font-medium text-s-ink/60 mb-2 block">
                 {t("configure.recipientEmail")}
               </label>
               <input
@@ -345,13 +347,13 @@ export default function VouchersPage() {
                 value={recipientEmail}
                 onChange={(e) => setRecipientEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
+                className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm text-s-ink placeholder:text-s-ink/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
               />
             </div>
 
             {/* Message */}
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-2 block">
+              <label className="text-xs font-medium text-s-ink/60 mb-2 block">
                 {t("configure.message")} <span className="text-s-ink/30">({t("optional")})</span>
               </label>
               <textarea
@@ -359,26 +361,26 @@ export default function VouchersPage() {
                 onChange={(e) => setMessage(e.target.value)}
                 maxLength={200}
                 placeholder={t("configure.messagePlaceholder")}
-                className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none resize-none h-20"
+                className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm text-s-ink placeholder:text-s-ink/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none resize-none h-20"
               />
-              <p className="text-[9px] text-s-ink/30 dark:text-s-dm-text/30 mt-1">
+              <p className="text-[9px] text-s-ink/30 mt-1">
                 {message.length}/200
               </p>
             </div>
 
             {createError && (
               <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
-                style={{ background: "rgba(232,98,74,.06)" }}>
+                style={{ background: "rgba(27, 77, 27,.06)" }}>
                 <AlertCircle size={13} className="text-s-coral shrink-0" />
                 <p className="text-xs font-body text-s-coral">{createError}</p>
               </div>
             )}
 
             {/* CTA and summary */}
-            <div className="pt-4 border-t border-s-ink/[0.06] dark:border-white/[0.06]">
+            <div className="pt-4 border-t border-s-ink/[0.06]">
               <div className="flex justify-between mb-4">
-                <span className="text-sm text-s-ink/60 dark:text-s-dm-text/60">{t("configure.total")}</span>
-                <span className="font-heading font-bold text-xl text-s-coral">
+                <span className="text-sm text-s-ink/60">{t("configure.total")}</span>
+                <span className="font-heading text-xl text-s-coral">
                   {formatCurrency(amount, locale)}
                 </span>
               </div>
@@ -387,7 +389,7 @@ export default function VouchersPage() {
                 type="submit"
                 disabled={creating || !recipientName || !recipientEmail}
                 text={creating ? "Lädt..." : t("configure.continue")}
-                className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-60"
+                className="w-full py-3.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] shadow-elevation-2 disabled:opacity-60"
               />
             </div>
           </motion.form>
@@ -400,16 +402,16 @@ export default function VouchersPage() {
   if (step === "payment" && clientSecret && selectedSalon) {
     return (
       <Elements stripe={stripePromise} options={{ clientSecret }}>
-        <div className="min-h-screen bg-s-bg-base py-12 px-4">
+        <div className="min-h-screen bg-white py-12 px-4">
           <div className="max-w-lg mx-auto">
-            <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-2">
+            <h2 className="font-heading text-2xl text-s-ink mb-2">
               {t("payment.title")}
             </h2>
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">
+            <p className="text-sm text-s-ink/50 mb-6">
               {locale === "en" ? selectedSalon.name_en : selectedSalon.name_de} · {formatCurrency(amount, locale)}
             </p>
 
-            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-6">
+            <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-6">
               <VoucherPaymentForm
                 clientSecret={clientSecret}
                 onSuccess={handlePaymentSuccess}

@@ -5,8 +5,8 @@ import Image from "next/image";
 import { useLocale } from "next-intl";
 import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Camera, Check, Clock, Upload, GripVertical, FileUp } from "lucide-react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 import { serviceTemplates } from "@/lib/service-templates";
 import type { ServiceTemplate } from "@/lib/service-templates";
@@ -82,7 +82,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading font-bold text-base">{initial ? "Service bearbeiten" : "Service hinzufügen"}</h3>
+          <h3 className="font-heading text-base">{initial ? "Service bearbeiten" : "Service hinzufügen"}</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-5">
@@ -270,7 +270,7 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
     <div className="mb-6">
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors mb-2"
+        className="text-xs font-medium text-s-ink/50 hover:text-s-coral transition-colors mb-2"
       >
         {collapsed ? "Vorlagen anzeigen +" : "Vorlagen ausblenden −"}
       </button>
@@ -288,16 +288,16 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
                   "flex items-center justify-between px-3 py-2.5 rounded-[12px] border text-left transition-[background-color,border-color]",
                   added
                     ? "bg-s-coral/5 border-s-coral/20 opacity-60 cursor-default"
-                    : "border-s-ink/10 dark:border-white/10 hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
+                    : "border-s-ink/10 hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
                 ].join(" ")}
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">{tmpl.name_de}</p>
+                  <p className="text-sm font-medium text-s-ink truncate">{tmpl.name_de}</p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="inline-flex items-center gap-0.5 text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+                    <span className="inline-flex items-center gap-0.5 text-[10px] text-s-ink/40">
                       <Clock size={10} /> {tmpl.duration} min
                     </span>
-                    <span className="text-xs data-text font-semibold text-s-ink/60 dark:text-s-dm-text/60">{formatCurrency(tmpl.price, locale)}</span>
+                    <span className="text-xs data-text font-semibold text-s-ink/60">{formatCurrency(tmpl.price, locale)}</span>
                   </div>
                 </div>
                 {adding === tmpl.name_de ? (
@@ -383,7 +383,7 @@ export default function ServicesPage() {
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
           <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
-            <h3 className="font-heading font-bold text-base mb-3">Service löschen</h3>
+            <h3 className="font-heading text-base mb-3">Service löschen</h3>
             <p className="text-sm text-s-ink/60 mb-4">Möchtest du <strong>{deleteTarget.name_de}</strong> löschen?</p>
             <div className="flex gap-2">
               <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
@@ -397,7 +397,7 @@ export default function ServicesPage() {
       )}
 
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">Services</h1>
+        <h1 className="font-heading text-2xl text-s-ink">Services</h1>
         <div className="flex items-center gap-2">
           <button onClick={() => setImportOpen(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/50 text-sm font-medium hover:border-s-coral hover:text-s-coral transition-colors">
@@ -438,7 +438,7 @@ export default function ServicesPage() {
             </thead>
             <Droppable droppableId="services-list">
               {(provided) => (
-              <tbody ref={provided.innerRef} {...provided.droppableProps} className="divide-y divide-gray-50">
+              <tbody ref={provided.innerRef} {...provided.droppableProps} className="divide-y divide-s-border">
                 {services.map((s, index) => (
                   <Draggable key={s.id} draggableId={s.id} index={index}>
                     {(provided, snapshot) => (
@@ -485,7 +485,7 @@ export default function ServicesPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
           <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6">
             <div className="flex items-start justify-between mb-4">
-              <h3 className="font-heading font-bold text-base">CSV Import</h3>
+              <h3 className="font-heading text-base">CSV Import</h3>
               <button onClick={() => setImportOpen(false)}><X size={18} className="text-s-ink/30" /></button>
             </div>
             <p className="text-sm text-s-ink/60 mb-4">

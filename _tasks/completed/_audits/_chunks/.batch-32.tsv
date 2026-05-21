@@ -1,0 +1,10 @@
+a2ed51457630d2ff9b969fd9dfb715e5ba78d59d 2026-03-29 20:59:02 +0200 fix(header): hide ThemeToggle/Bell/Messages for logged-out users
+08a400910970f146548aed1828654af17c1ed76e 2026-03-29 21:03:06 +0200 phase 1.4: TikTok thumbnail fallback when embed fails or times out
+4841174f42ea43f6940624f4c53def8042ea02be 2026-03-29 21:07:08 +0200 phase 2.2: remove duplicate city selector and orphaned ANGEBOTE link from hero
+767b31b563b94c8a417d9f1e40e3c6812b45d88f 2026-03-29 21:12:12 +0200 phase 2.3: add trust chips inline below search bar in hero
+1aecddae72c3331477221c6e51dfb015e038ca54 2026-03-29 23:13:42 +0200 fix: audit fixes — cancel error handling, Stripe guard, packages buy flow
+cba28e080b07617b05c7ea71bb21f8b766f7626b 2026-03-29 23:16:15 +0200 phase 2.5: hide map CTA when fewer than 3 salons have coordinates
+e554c035be3eb9eaffc2e0ba8ef7fe4810eef338 2026-03-29 23:17:32 +0200 fix: code review - wire CitySelector, remove dead itemVariants, fix hero-cinematic var(--bg), retire section-alt
+a2101108acc97ba59d55c5247d966b0f8c80fac7 2026-03-29 23:18:07 +0200 fix(loyalty): query stamps_needed/reward_text from loyalty_cards not loyalty_stamps
+3b69ec8bee64d43f8b28ffda4c39d8023e22d018 2026-03-29 23:21:04 +0200 phase 3.1+3.2: discover after featured salons; unified category icon containers
+81a202534a6de40cea1ebb6b9f46c91ce050b667 2026-03-29 23:22:29 +0200 phase 1: commit production-ready untracked ui components, pages, and roadmaps

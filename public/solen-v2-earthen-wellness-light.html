@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solen — Earthen Wellness LIGHT palette</title>
+
+  <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════
+       EARTHEN WELLNESS LIGHT — addresses the "too dark" feedback from
+       the original Earthen Wellness mockup. Five specific changes:
+
+       1. Primary brand moss #2D3F33 → soft-moss #5C7765 (lighter)
+       2. B2B panel dark moss bg → cream bg + thin moss border
+       3. Blob alphas 0.45-0.55 → 0.18-0.32 (whisper, not paint)
+       4. Buttery yellow #F2D77B added as bright secondary accent
+       5. Spa cat: moss bg → moss-pale bg (was the dark panel)
+
+       Hue family unchanged — same earth-tone identity, lighter values.
+       ═══════════════════════════════════════════════════════════════════ */
+    :root {
+      /* Primary palette */
+      --moss-soft:   #5C7765;       /* NEW primary — lighter than #2D3F33 */
+      --moss-deep:   #2D3F33;       /* DEMOTED to accent — used sparingly */
+      --moss-pale:   #C8D4C9;
+      --terracotta:  #C97A57;
+      --terra-soft:  #E8B89B;
+      --terra-deep:  #8E4A2D;
+      --butter:      #F2D77B;       /* NEW — bright optional accent */
+      --cream:       #F5EBDD;
+      --cream-warm:  #FAF2E5;
+      --bone:        #E8DDC9;
+      --sage:        #A8B89A;
+      --sage-pale:   #D4DDC8;
+      --ink:         #2A1F18;
+      --ink-2:       #5C4A3A;
+      --ink-3:       #8A7A68;
+      --ease-glide:  cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--cream); }
+    body {
+      font-family: "Open Sauce One", Inter, system-ui, sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 0 0 100px;
+      /* Atmosphere wash — alphas cut ~50% from original Earthen Wellness */
+      background:
+        radial-gradient(ellipse 75% 55% at 80% 12%, rgba(232, 184, 155, 0.22) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 55% at 15% 22%, rgba(212, 221, 200, 0.28) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 45% at 92% 48%, rgba(242, 215, 123, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 8% 72%, rgba(168, 184, 154, 0.18) 0%, transparent 65%),
+        var(--cream);
+    }
+
+    /* ═══ Legend ═══ */
+    .legend { max-width: 1280px; margin: 0 auto; padding: 32px 24px 0; }
+    .legend h1 {
+      font-family: "Peace Sans", Impact, sans-serif;
+      font-size: 28px; font-weight: 900; color: var(--ink);
+    }
+    .legend .sub {
+      font-size: 14px; color: var(--ink-2);
+      margin-top: 6px; max-width: 720px; line-height: 1.55;
+    }
+    .legend .badge {
+      display: inline-block; padding: 4px 10px; border-radius: 999px;
+      background: var(--butter); color: var(--ink);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+    .swatches {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px; margin-top: 20px;
+    }
+    .swatch {
+      border-radius: 14px; padding: 16px;
+      background: #fff;
+      border: 1px solid rgba(42, 31, 24, 0.06);
+    }
+    .swatch .chip {
+      width: 100%; height: 64px; border-radius: 8px; margin-bottom: 12px;
+    }
+    .swatch .name { font-size: 12px; font-weight: 700; color: var(--ink); }
+    .swatch .hex  { font-family: ui-monospace, monospace; font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+    .swatch .why  { font-size: 11.5px; color: var(--ink-2); line-height: 1.5; margin-top: 8px; }
+    .swatch.changed { border-color: var(--terracotta); }
+    .swatch.changed::before {
+      content: "CHANGED"; display: inline-block;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--terracotta); margin-bottom: 6px;
+    }
+    .swatch.new::before {
+      content: "NEW"; display: inline-block;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--moss-deep); margin-bottom: 6px;
+    }
+    .swatch.new { border-color: var(--moss-deep); }
+
+    /* ═══ Phone frame ═══ */
+    .phone-wrap {
+      max-width: 420px; margin: 56px auto 0;
+      border-radius: 32px; overflow: hidden;
+      box-shadow: 0 24px 60px rgba(42, 31, 24, 0.10);
+      background: var(--cream);
+      position: relative; isolation: isolate;
+    }
+
+    /* Atmosphere blobs — cut ~50% alpha from original Earthen Wellness */
+    .blobs { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+    .blobs > div { position: absolute; filter: blur(60px); mix-blend-mode: multiply; }
+    .blob-1 { top: -10%; left: -20%; width: 70%; height: 50%; background: var(--moss-pale); border-radius: 60% 40% 50% 50%; opacity: 0.32; }
+    .blob-2 { top: 5%; right: -25%; width: 70%; height: 45%; background: var(--terra-soft); border-radius: 50% 60% 40% 60%; opacity: 0.28; }
+    .blob-3 { top: 35%; left: -10%; width: 80%; height: 30%; background: var(--bone); border-radius: 60% 40% 50% 60%; opacity: 0.40; }
+    .blob-4 { top: 55%; right: -15%; width: 65%; height: 30%; background: var(--butter); border-radius: 50% 50% 60% 40%; opacity: 0.18; }
+    .blob-5 { bottom: -8%; left: -25%; width: 80%; height: 40%; background: var(--sage-pale); border-radius: 50%; opacity: 0.30; }
+
+    .phone-wrap > .nav,
+    .phone-wrap > .hero,
+    .phone-wrap > .feed { position: relative; z-index: 1; }
+
+    /* Navbar */
+    .nav { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;
+           background: rgba(245, 235, 221, 0.65); backdrop-filter: blur(12px); }
+    .logo { font-family: "Peace Sans", Impact, sans-serif; font-size: 22px; font-weight: 900; color: var(--ink); }
+    .logo .dot { display: inline-block; width: 6px; height: 6px; background: var(--terracotta); border-radius: 50%; margin-left: 2px; vertical-align: 2px; }
+    .menu { font-size: 22px; color: var(--ink); }
+
+    /* Hero */
+    .hero { padding: 36px 22px 24px; }
+    .eyebrow { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em;
+               color: var(--ink-3); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .eyebrow::before { content: ""; display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--terracotta); }
+    .hero h1 { font-family: "Peace Sans", Impact, sans-serif; font-weight: 900; font-size: 28px; line-height: 1.15; color: var(--ink); }
+    .hero h1 .accent { color: var(--terracotta); }
+    .lede { margin-top: 14px; font-size: 14px; color: var(--ink-2); line-height: 1.55; max-width: 320px; }
+
+    /* Search card */
+    .search-card { margin: 24px 22px 0; background: #fff; border-radius: 16px; padding: 6px;
+                   box-shadow: 0 4px 12px rgba(42, 31, 24, 0.06);
+                   border: 1px solid rgba(42, 31, 24, 0.04); }
+    .search-row { padding: 11px 16px; border-bottom: 1px solid rgba(42, 31, 24, 0.05);
+                  display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--ink-3); }
+    .search-row:last-of-type { border-bottom: 0; }
+    .search-row .sep { width: 1px; height: 14px; background: rgba(42, 31, 24, 0.15); }
+    /* Submit uses LIGHTER moss-soft instead of dark moss */
+    .submit { margin-top: 6px; width: 100%; background: var(--moss-soft); color: #fff; border: 0;
+              padding: 14px; border-radius: 999px; font-size: 14px; font-weight: 700;
+              transition: background 200ms var(--ease-glide); }
+    .submit:hover { background: var(--moss-deep); }
+
+    /* Feed */
+    .feed { margin-top: 32px; border-radius: 28px 28px 0 0;
+            background: rgba(255, 255, 255, 0.50); backdrop-filter: blur(16px) saturate(1.4);
+            border-top: 1px solid rgba(255, 255, 255, 0.55);
+            box-shadow: 0 -12px 32px rgba(42, 31, 24, 0.04);
+            padding: 16px 14px 32px; }
+    .h2 { font-family: "Open Sauce One", sans-serif; font-weight: 900;
+          font-size: 22px; line-height: 1.0; color: var(--ink); margin-bottom: 12px; }
+    .h2 .link { float: right; font-size: 12px; font-weight: 600; color: var(--terra-deep); line-height: 24px; }
+    .cards { display: flex; gap: 12px; overflow-x: auto; padding: 4px 0; }
+    .card { flex: 0 0 130px; cursor: pointer; }
+    .card .photo { aspect-ratio: 1; border-radius: 14px; position: relative;
+                   box-shadow: 0 1px 2px rgba(42, 31, 24, 0.04), 0 4px 10px rgba(42, 31, 24, 0.05);
+                   display: grid; place-items: center;
+                   font-family: "Open Sauce One", sans-serif; font-weight: 900; font-size: 28px; }
+    .card .heart { position: absolute; top: 8px; right: 8px; font-size: 16px; color: rgba(42, 31, 24, 0.5); }
+    .card .pill { margin-top: 8px; background: rgba(255, 255, 255, 0.80); backdrop-filter: blur(10px);
+                  border: 1px solid rgba(255, 255, 255, 0.55);
+                  border-radius: 12px; padding: 7px 10px;
+                  box-shadow: 0 1px 3px rgba(42, 31, 24, 0.04);
+                  font-size: 11px; line-height: 1.3; }
+    .card .pill .name { font-weight: 700; font-size: 13px; color: var(--ink); }
+    .card .pill .meta { color: var(--ink-2); margin-top: 2px; }
+
+    /* Cat colorways — Spa changed to LIGHTER bg */
+    .cat-coiffeur { background: var(--cream-warm); }
+    .cat-coiffeur .letter { color: var(--terracotta); }
+    .cat-barber { background: var(--bone); }
+    .cat-barber .letter { color: var(--ink); }
+    .cat-nails { background: var(--sage-pale); }
+    .cat-nails .letter { color: var(--terra-deep); }
+    .cat-spa { background: var(--moss-pale); }              /* WAS: --moss (dark) */
+    .cat-spa .letter { color: var(--moss-deep); }            /* WAS: --cream */
+
+    /* B2B panel — CREAM bg + thin moss border (was dark moss panel) */
+    .panel { margin: 32px 14px 0;
+             background: var(--cream-warm);
+             border: 1.5px solid var(--moss-soft);
+             border-radius: 24px; padding: 32px 24px;
+             color: var(--ink);
+             box-shadow: 0 8px 24px rgba(42, 31, 24, 0.06); }
+    .panel .eb { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em;
+                 color: var(--terra-deep); margin-bottom: 12px; display: inline-block; }
+    .panel h2 { font-family: "Peace Sans", Impact, sans-serif; font-weight: 900;
+                font-size: 26px; line-height: 1.1; color: var(--ink); }
+    .panel h2 .accent { color: var(--terracotta); }
+    .panel p { margin-top: 12px; font-size: 13px; line-height: 1.55; color: var(--ink-2); }
+    /* Bullets — sage check icons in white circles */
+    .bullets { margin-top: 18px; display: flex; flex-direction: column; gap: 12px; }
+    .bullet { display: flex; gap: 10px; align-items: flex-start; }
+    .bullet .check { flex-shrink: 0; width: 22px; height: 22px;
+                     background: var(--sage); color: #fff;
+                     border-radius: 50%; display: grid; place-items: center;
+                     font-weight: 900; font-size: 11px; }
+    .bullet .b-title { font-size: 14px; font-weight: 700; color: var(--ink); }
+    .bullet .b-body { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+    /* CTA — terracotta pill */
+    .cta { margin-top: 22px; display: inline-flex; align-items: center; gap: 10px;
+           background: var(--terracotta); color: #fff; padding: 11px 20px;
+           border-radius: 999px; font-size: 14px; font-weight: 700;
+           box-shadow: 0 4px 14px rgba(201, 122, 87, 0.30);
+           transition: background 200ms var(--ease-glide); }
+    .cta:hover { background: var(--terra-deep); }
+
+    /* Stat card (separate, butter highlight) */
+    .stat-card { display: inline-flex; align-items: center; gap: 12px;
+                 background: var(--butter); padding: 12px 16px; border-radius: 16px;
+                 margin-top: 20px; }
+    .stat-card .num { font-family: "Peace Sans", Impact, sans-serif;
+                      font-size: 22px; font-weight: 900; color: var(--ink); line-height: 1; }
+    .stat-card .lbl { font-size: 10px; font-weight: 700; text-transform: uppercase;
+                      letter-spacing: 0.1em; color: var(--ink-2); margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <div class="legend">
+    <span class="badge">LIGHT VARIANT</span>
+    <h1>Earthen Wellness — lighter</h1>
+    <p class="sub">
+      Five specific changes from the original mockup to address "too dark":
+      <b>(1)</b> primary brand lightened from moss-deep to soft-moss,
+      <b>(2)</b> B2B panel flipped from dark-moss bg to cream bg with thin moss border,
+      <b>(3)</b> blob alphas cut ~50% (whisper of color, not paint),
+      <b>(4)</b> butter-yellow accent introduced as bright counterpoint to terracotta,
+      <b>(5)</b> Spa cat changed from full-moss bg → moss-pale bg with moss-deep letter.
+      Hue family unchanged — same earth-tone identity.
+    </p>
+    <div class="swatches">
+      <div class="swatch changed">
+        <div class="chip" style="background: #5C7765;"></div>
+        <div class="name">Moss soft (PRIMARY)</div>
+        <div class="hex">#5C7765</div>
+        <div class="why">New primary brand. Lighter than original #2D3F33. Used on submit + Solen-Partner border. Still trustworthy, much less heavy.</div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #C97A57;"></div>
+        <div class="name">Terracotta</div>
+        <div class="hex">#C97A57</div>
+        <div class="why">Heartbeat (unchanged). Promoted to primary CTA in B2B panel since dark-moss panel was retired.</div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #F5EBDD;"></div>
+        <div class="name">Cream</div>
+        <div class="hex">#F5EBDD</div>
+        <div class="why">Page bg (unchanged). With darker tones reduced, cream now dominates ~85% of viewport — proper marketplace lightness.</div>
+      </div>
+      <div class="swatch new">
+        <div class="chip" style="background: #F2D77B;"></div>
+        <div class="name">Butter</div>
+        <div class="hex">#F2D77B</div>
+        <div class="why">New optional accent. Bright counterpoint to terracotta without breaking earth family. Used on stat-card highlight.</div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #A8B89A;"></div>
+        <div class="name">Sage</div>
+        <div class="hex">#A8B89A</div>
+        <div class="why">Wellness accent (unchanged). Used as check-icon bg in B2B bullets.</div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background: #2D3F33;"></div>
+        <div class="name">Moss deep (demoted)</div>
+        <div class="hex">#2D3F33</div>
+        <div class="why">Was primary, now sparingly-used accent. Hover state for Submit button + ink for Spa cat letter.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phone mockup -->
+  <div class="phone-wrap">
+    <div class="blobs">
+      <div class="blob-1"></div><div class="blob-2"></div><div class="blob-3"></div>
+      <div class="blob-4"></div><div class="blob-5"></div>
+    </div>
+
+    <div class="nav">
+      <span class="logo">Solen<span class="dot"></span></span>
+      <span class="menu">☰</span>
+    </div>
+
+    <div class="hero">
+      <span class="eyebrow">Beauty in der Schweiz</span>
+      <h1>Schöner aussehen,<br /><span class="accent">schneller buchen.</span></h1>
+      <p class="lede">Über 1'200 Salons in Basel, Zürich und Bern. Sofort online buchen, instant bestätigt.</p>
+    </div>
+
+    <div class="search-card">
+      <div class="search-row">⌕<span class="sep"></span>Service</div>
+      <div class="search-row">⌖<span class="sep"></span>Stadt</div>
+      <div class="search-row">▦<span class="sep"></span>Zeit</div>
+      <button class="submit">Solen durchsuchen</button>
+    </div>
+
+    <div class="feed">
+      <div class="h2">Zuletzt angesehen <span class="link">Im Profil →</span></div>
+      <div class="cards">
+        <div class="card">
+          <div class="photo cat-coiffeur"><span class="heart">♡</span><span class="letter">A</span></div>
+          <div class="pill"><div class="name">Atelier Coiffure</div><div class="meta">14:30 · ★ 4.9</div></div>
+        </div>
+        <div class="card">
+          <div class="photo cat-barber"><span class="heart">♡</span><span class="letter">S</span></div>
+          <div class="pill"><div class="name">Studio Nord</div><div class="meta">In 25 Min · ★ 4.7</div></div>
+        </div>
+        <div class="card">
+          <div class="photo cat-nails"><span class="heart">♡</span><span class="letter">N</span></div>
+          <div class="pill"><div class="name">Nail Lab</div><div class="meta">Heute 17:30 · ★ 4.8</div></div>
+        </div>
+        <div class="card">
+          <div class="photo cat-spa"><span class="heart">♡</span><span class="letter">R</span></div>
+          <div class="pill"><div class="name">Rhein Spa</div><div class="meta">Mo. 09:00 · ★ 5.0</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <span class="eb">Für Salons</span>
+        <h2>Werde<br /><span class="accent">Solen-Partner.</span></h2>
+        <p>Mehr Buchungen, weniger Aufwand. Solen bringt die richtigen Kund:innen zu dir — automatisiert, transparent, fair.</p>
+
+        <div class="bullets">
+          <div class="bullet">
+            <div class="check">✓</div>
+            <div>
+              <div class="b-title">Mehr Sichtbarkeit</div>
+              <div class="b-body">Erreiche tausende neue Kund:innen in deiner Stadt.</div>
+            </div>
+          </div>
+          <div class="bullet">
+            <div class="check">✓</div>
+            <div>
+              <div class="b-title">Weniger Verwaltung</div>
+              <div class="b-body">Buchungen, Erinnerungen — alles automatisch.</div>
+            </div>
+          </div>
+          <div class="bullet">
+            <div class="check">✓</div>
+            <div>
+              <div class="b-title">Schnelle Auszahlung</div>
+              <div class="b-body">Direkt aufs Geschäftskonto. Keine Wartezeiten.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div>
+            <div class="num">1'200+</div>
+            <div class="lbl">Partner Salons</div>
+          </div>
+        </div>
+        <br />
+
+        <a class="cta" href="#">Salon registrieren →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend" style="margin-top: 56px;">
+    <h1 style="font-size: 18px;">What changed vs the original Earthen Wellness mockup</h1>
+    <p class="sub">
+      <b>1. Primary brand:</b> moss-deep <code>#2D3F33</code> → moss-soft <code>#5C7765</code>. Same hue family, ~25% lighter value. Search submit + B2B border use the lighter version. Old moss demoted to accent (Spa cat letter, hover state).<br /><br />
+      <b>2. B2B panel anatomy:</b> was dark-moss bg + cream text + white floating stat. Now cream bg + thin moss-soft border + ink text + butter-yellow stat-card. Dropping the dark panel removes ~25% of darkness from the page.<br /><br />
+      <b>3. Atmosphere wash alphas:</b> 0.45-0.55 → 0.18-0.32. Color hint preserved, but cream bg now dominates ~85% of viewport (was ~65%).<br /><br />
+      <b>4. Butter <code>#F2D77B</code> introduced:</b> bright accent in stat-card + a soft blob (alpha 0.18). Adds visual energy without breaking earth-tone family. Optional — could remove if too playful.<br /><br />
+      <b>5. Spa cat colorway:</b> bg moss <code>#2D3F33</code> + letter cream → bg moss-pale <code>#C8D4C9</code> + letter moss-deep <code>#2D3F33</code>. Now consistent lightness with the other 3 cats.<br /><br />
+      <b>What didn't change:</b> hue family (still earth-tones), structure (same anatomy), typography (Peace Sans + Open Sauce One), heart icon, sage accent role, bone alt-surface role.
+    </p>
+  </div>
+
+</body>
+</html>

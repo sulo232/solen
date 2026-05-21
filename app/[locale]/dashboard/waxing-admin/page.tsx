@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { MapPin, Activity, Clock, Package, Bell, BarChart3 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import BodyZoneSelector from "@/components/dashboard/waxing/BodyZoneSelector";
-import RegrowthConfig from "@/components/dashboard/waxing/RegrowthConfig";
-import SensitivityLog from "@/components/dashboard/waxing/SensitivityLog";
-import ZonePackages from "@/components/dashboard/waxing/ZonePackages";
-import RebookAlerts from "@/components/dashboard/waxing/RebookAlerts";
-import ZoneRevenueChart from "@/components/dashboard/waxing/ZoneRevenueChart";
-import ClientSelectorDropdown from "@/components/shared/ClientSelectorDropdown";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import BodyZoneSelector from "@/components-legacy/dashboard/waxing/BodyZoneSelector";
+import RegrowthConfig from "@/components-legacy/dashboard/waxing/RegrowthConfig";
+import SensitivityLog from "@/components-legacy/dashboard/waxing/SensitivityLog";
+import ZonePackages from "@/components-legacy/dashboard/waxing/ZonePackages";
+import RebookAlerts from "@/components-legacy/dashboard/waxing/RebookAlerts";
+import ZoneRevenueChart from "@/components-legacy/dashboard/waxing/ZoneRevenueChart";
+import ClientSelectorDropdown from "@/components-legacy/shared/ClientSelectorDropdown";
 
 type Tab = "zones" | "sensitivity" | "regrowth" | "packages" | "reminders" | "revenue";
 
@@ -49,8 +49,8 @@ export default function WaxingAdminPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-6">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 mb-1">Waxing</p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/50 mb-1">Waxing</p>
+        <h1 className="font-heading text-[28px] text-s-ink leading-none">
           {t("pageTitle")}
         </h1>
       </div>
@@ -62,10 +62,10 @@ export default function WaxingAdminPage() {
             key={id}
             onClick={() => setActiveTab(id)}
             aria-label={t(labelKey)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading font-semibold whitespace-nowrap transition-colors duration-150 shrink-0 ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading whitespace-nowrap transition-colors duration-150 shrink-0 ${
               activeTab === id
-                ? "bg-s-coral text-white shadow-coral-glow"
-                : "bg-s-ink/[0.05] text-s-ink/55 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/55 hover:bg-s-ink/[0.09]"
+                ? "bg-s-coral text-white shadow-elevation-2"
+                : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
             }`}
           >
             <Icon size={12} />
@@ -76,8 +76,8 @@ export default function WaxingAdminPage() {
 
       {/* Client selector */}
       {needsClient && (
-        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 mb-4">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-ink/45 dark:text-s-dm-text/45 mb-2">
+        <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4 mb-4">
+          <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/45 mb-2">
             {t("selectClient")}
           </p>
           <ClientSelectorDropdown
@@ -90,7 +90,7 @@ export default function WaxingAdminPage() {
       )}
 
       {loading ? (
-        <div className="h-64 bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[12px] animate-pulse" />
+        <div className="h-64 bg-s-ink/[0.04] rounded-[12px] animate-pulse" />
       ) : !salonId ? null : (
         <div className="space-y-4">
           {activeTab === "zones" && (
@@ -115,8 +115,8 @@ export default function WaxingAdminPage() {
 
 function EmptyClientPrompt({ label }: { label: string }) {
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] border-dashed p-12 text-center bg-white dark:bg-s-dm-surface">
-      <p className="text-xs font-heading text-s-ink/50 dark:text-s-dm-text/50 uppercase tracking-[.10em]">{label}</p>
+    <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-12 text-center bg-white">
+      <p className="text-xs font-heading text-s-ink/50 uppercase tracking-[.10em]">{label}</p>
     </div>
   );
 }

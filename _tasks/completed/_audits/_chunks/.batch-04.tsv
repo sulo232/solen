@@ -1,0 +1,10 @@
+f3156a1a76e8d447d8a7d1bb62135f89b6dca979 2026-03-24 17:29:30 +0100 feat(booking): V3 tokens, strip glassmorphism, InteractiveHoverButton CTAs
+6e4a8c7e9a72b2f07a56e22b1960372909bb0f74 2026-03-24 17:59:01 +0100 feat(homepage): Phase 1-8 — hero rework, section toggle, UI fixes, category tiles, footer, locale
+1449635f09ccea16ee791fa695165dfc37da1687 2026-03-24 19:49:43 +0100 feat(coiffeur): wire up hair-type pills, trending strip, AI matcher modal
+c971d6db6c1331abb80c0945eb6f1d49c055812e 2026-03-24 19:51:30 +0100 fix(checkout): replace banned rounded-button tokens with V3 design tokens
+49b64cf54d5061582021fb95d510a2746d4c218f 2026-03-24 19:59:13 +0100 feat(barbershop): URL-synced filters, V3 design tokens, WalkinQueue UX
+85fb7741f4202b08fa09be97d92bd3a9e01d6198 2026-03-24 19:59:56 +0100 feat(cleanup): R08 dead code removal + coming-soon wrappers
+c9bc4f8f6e1b8a96ea8ef762f9393cc2fc8ecf32 2026-03-24 20:13:40 +0100 feat(onboarding): salon registration overhaul — auth guard, draft persistence, Zone 3 design
+0bfc6972830556636ee5c2d096d9a0c1f158cfbe 2026-03-24 21:00:25 +0100 feat(dashboard): Zone 3 purity — strip glassmorphism, fix token confusion, 82+ violations
+99dbde5f83b2ef9f93d32aff1ae86e8ae72f3c08 2026-03-24 21:01:12 +0100 fix(api): remove edge runtime from admin review routes
+224b2a000b2e15779295604c7baff0f4e6d49d45 2026-03-24 21:09:29 +0100 phase 1: rebuild wizard as 3-step flow (basics → OTP → AI quick win)

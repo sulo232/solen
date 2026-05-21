@@ -1,0 +1,10 @@
+5409bc9978b07fe9266f7b4777ec640a84530897 2026-03-25 10:37:38 +0100 BF-P10: GuestBookingForm — eyebrow header, larger input padding, CTA coral shadow
+dc49367089d84726ff2faf007fa7fbbc3c6131fa 2026-03-25 10:37:50 +0100 BF-P14: PackageRedeemBanner — amber tint, icon box, compact layout
+d91d99b0e5c92cb08eae02785dcd6b421b1515be 2026-03-25 10:37:56 +0100 BF-P6-P9: ServiceCart — Zone 3 12px radius, eyebrow labels, custom checkboxes, icon-inset inputs, coral CTA shadow
+387666f63aac514626c06997a864e10fc46f3cb0 2026-03-25 10:38:04 +0100 BF-P1-P4,P11-P13,P15: BookingCalendar full Zone 3 restyle
+28167e9573093c702d1e1bcef6dd5d98a65701be 2026-03-25 10:46:18 +0100 AUTH-P1–P15: auth pages V3 deep dive — Zone 3 compliance
+e67d78a4f6db5b3fc5a367689c63ddcd2b772347 2026-03-25 10:52:05 +0100 GLOBAL-P1–P15: global components V3 deep dive — NEVER violations fixed
+f9d8ef41d78ac5b2a31c3580bf076ac229ad4d89 2026-03-25 10:52:35 +0100 DB-P1–P15: dashboard V3 deep dive — Zone 4 compliance, grouped nav, skeleton loading
+bf22e7f3ffbbb4636b6ba1e82aa2a962b2b4eaa2 2026-03-25 14:16:32 +0100 TOKEN-P1–P11: V3 design token sweep — remove banned tokens, fix NEVER violations
+a6c01c92e71f8f8aefa8962d4609325bb1004941 2026-03-25 14:21:31 +0100 PROF-P1–P15: User Profile V3 deep-dive — Zone 3 restyle
+30c947d7ad85c211090851f20717e5d797d7ebf7 2026-03-25 14:50:43 +0100 DISC-P1–P15: Discover page V3 deep dive — Zone 2 editorial restyle

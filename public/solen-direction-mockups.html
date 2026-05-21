@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Solen — Direction Mockups (Round 1)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lilita+One&family=Bowlby+One&family=Fredoka:wght@500;600;700&family=Ultra&family=Yeseva+One&family=Caveat:wght@500;700&family=Patrick+Hand&family=Shrikhand&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            's-brand':  { DEFAULT: '#3B7A57', mid: '#2D5E43', subtle: '#E5F2EA' },
+            's-accent': { DEFAULT: '#D87352', soft: '#E89B83', deep: '#A04A22' },
+            's-ink':    { DEFAULT: '#1A1C19', secondary: '#6B7068', tertiary: '#7A7F78' },
+            's-ink-2': '#6B7068',
+            's-ink-3': '#7A7F78',
+            's-border': '#E8E6E0',
+            's-bg':     { base: '#F4F4F6', surface: '#FFFFFF', sunken: '#EEEEF0' },
+            // Flor retro vintage palette
+            'flor-cream':  '#F7E7AF',
+            'flor-maroon': '#800000',
+            'flor-forest': '#004800',
+            // Editorial maximalist
+            'edit-orange': '#E0703D',
+            'edit-butter': '#F2D77B',
+            'edit-mint':   '#A8E0BF',
+            'edit-lavender': '#D4D2F0',
+            'edit-red':    '#D85040',
+          },
+          fontFamily: {
+            'jakarta': ['"Plus Jakarta Sans"', 'sans-serif'],
+            'ultra':   ['Ultra', 'serif'],
+            'lilita':  ['"Lilita One"', 'cursive'],
+            'bowlby':  ['"Bowlby One"', 'cursive'],
+            'fredoka': ['Fredoka', 'sans-serif'],
+            'yeseva':  ['"Yeseva One"', 'serif'],
+            'shrikhand': ['Shrikhand', 'cursive'],
+            'caveat':  ['Caveat', 'cursive'],
+            'patrick': ['"Patrick Hand"', 'cursive'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html { background-color: #F4F4F6; scroll-behavior: smooth; }
+    body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; color: #1A1C19; -webkit-font-smoothing: antialiased; }
+
+    /* Page wrapper */
+    .page { max-width: 1280px; margin: 0 auto; padding: 32px 16px 80px; }
+    @media (min-width: 768px) { .page { padding: 48px 32px 96px; } }
+
+    /* Section title style */
+    .section-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      color: #1A1C19;
+      margin-bottom: 8px;
+    }
+    .section-sub {
+      font-size: 15px;
+      color: #6B7068;
+      margin-bottom: 28px;
+      max-width: 680px;
+    }
+    .section-divider {
+      margin: 64px 0 40px;
+      border: 0;
+      border-top: 1px solid #E8E6E0;
+    }
+
+    /* Mockup card frame */
+    .mockup-card {
+      position: relative;
+      background: #FFFFFF;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+      transition: transform 200ms cubic-bezier(0.16,1,0.3,1), box-shadow 200ms;
+    }
+    .mockup-card:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(0,0,0,0.08); }
+    .mockup-card .label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 5;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(26,28,25,0.92);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 9999px;
+      letter-spacing: 0.02em;
+    }
+    .recommended-pill {
+      background: #3B7A57 !important;
+    }
+
+    /* Mini hero — used inside each lane mockup */
+    .mini-hero {
+      padding: 56px 20px 28px;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+    }
+    .mini-h1 {
+      font-size: clamp(22px, 3.4vw, 30px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .mini-greeting {
+      font-size: 13px;
+      font-weight: 500;
+      color: #6B7068;
+      margin-bottom: 10px;
+    }
+    .mini-searchbar {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+      padding: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      border: 1px solid rgba(26,28,25,0.03);
+      margin-top: auto;
+    }
+    .mini-sbar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #6B7068;
+    }
+    .mini-sbar-row + .mini-sbar-row { border-top: 1px solid rgba(26,28,25,0.06); }
+    .mini-sbar-cta {
+      background: #3B7A57;
+      color: white;
+      text-align: center;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    /* Hero peach radial (Lane A) */
+    .hero-peach {
+      background: radial-gradient(ellipse 85% 65% at 50% 30%, #FFE2D0 0%, #FFEFE4 35%, transparent 75%);
+    }
+
+    /* SVG goo filter (used by blob wordmarks) */
+    .blob-filter { filter: url(#goo); }
+
+    /* Cards row for lane previews */
+    .lane-cards {
+      display: flex;
+      gap: 8px;
+      padding: 0 20px 20px;
+    }
+    .lane-card {
+      flex: 1;
+      aspect-ratio: 1 / 1;
+      border-radius: 14px;
+      background: #EAE0D0;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .lane-card img { width: 100%; height: 100%; object-fit: cover; }
+    .lane-card-meta {
+      padding: 6px 2px 0;
+      font-size: 11px;
+    }
+    .lane-card-meta .name { font-weight: 700; color: #1A1C19; }
+    .lane-card-meta .sub  { color: #7A7F78; font-size: 10px; }
+
+    /* Doodle SVG sizing */
+    .doodle-svg { position: absolute; pointer-events: none; }
+
+    /* Grid layouts */
+    .lane-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 768px) {
+      .lane-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    }
+
+    .logo-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 640px) {
+      .logo-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 1024px) {
+      .logo-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    }
+    .logo-card {
+      background: white;
+      border-radius: 20px;
+      padding: 36px 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      text-align: center;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .logo-label {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #6B7068;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .logo-caption {
+      margin-top: 18px;
+      font-size: 12px;
+      color: #6B7068;
+    }
+
+    /* Logo wordmark styles */
+    .wm-current {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 56px;
+      letter-spacing: -0.02em;
+      color: #1A1C19;
+      display: inline-flex;
+      align-items: baseline;
+    }
+    .wm-current .dot {
+      width: 9px; height: 9px;
+      background: #D87352;
+      border-radius: 50%;
+      margin-left: 4px;
+      transform: translateY(-4px);
+      display: inline-block;
+    }
+    .wm-blob-1 {
+      font-family: 'Lilita One', cursive;
+      font-size: 64px;
+      color: #1A1C19;
+      letter-spacing: -0.08em;
+      line-height: 1;
+      filter: url(#goo-soft);
+    }
+    .wm-blob-2 {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 64px;
+      color: #1A1C19;
+      letter-spacing: -0.06em;
+      line-height: 1;
+      filter: url(#goo-strong);
+    }
+    .wm-blob-3 {
+      font-family: 'Shrikhand', cursive;
+      font-size: 60px;
+      color: #1A1C19;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+
+    /* Doodle context cards */
+    .doodle-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 768px) {
+      .doodle-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    }
+
+    /* Empty state for Q3-B */
+    .empty-state {
+      background: #FFFFFF;
+      border-radius: 14px;
+      padding: 32px 20px;
+      text-align: center;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      position: relative;
+    }
+
+    /* Helper notes below mockups */
+    .pros-cons {
+      padding: 18px 20px 22px;
+      background: #FAFAFA;
+      border-top: 1px solid #EEEEF0;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #6B7068;
+    }
+    .pros-cons strong { color: #1A1C19; font-weight: 700; }
+    .pros-cons li { margin-bottom: 4px; }
+    .pros-cons .good { color: #2D5E43; }
+    .pros-cons .bad  { color: #A04A22; }
+
+    /* Page header */
+    .page-header {
+      padding: 56px 0 32px;
+      text-align: center;
+    }
+    .page-header h1 {
+      font-size: clamp(36px, 6vw, 56px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: #1A1C19;
+    }
+    .page-header p {
+      margin-top: 16px;
+      font-size: 16px;
+      color: #6B7068;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Pill nav at top */
+    .quick-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 24px 0 0;
+    }
+    .quick-nav a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      border: 1px solid #E8E6E0;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1A1C19;
+      text-decoration: none;
+      transition: all 200ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .quick-nav a:hover {
+      border-color: #3B7A57;
+      color: #3B7A57;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SVG filter definitions (used for blob wordmarks) -->
+  <svg width="0" height="0" style="position:absolute;">
+    <defs>
+      <filter id="goo-soft">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+        <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+        <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+      </filter>
+      <filter id="goo-strong">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+        <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10" result="goo" />
+        <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+      </filter>
+    </defs>
+  </svg>
+
+  <div class="page">
+
+    <!-- ─── PAGE HEADER ─── -->
+    <header class="page-header">
+      <h1>Solen Direction Mockups</h1>
+      <p>Round 1 — pick lane + logo + doodle. Each option is a flat artboard (not the real homepage). When you lock, I port the winner into the real components.</p>
+      <nav class="quick-nav">
+        <a href="#q1">Q1 · Lane</a>
+        <a href="#q2">Q2 · Logo</a>
+        <a href="#q3">Q3 · Doodle</a>
+      </nav>
+    </header>
+
+    <!-- ──────────────────────────── Q1 · LANE ──────────────────────────── -->
+    <section id="q1">
+      <h2 class="section-title">Q1 — Which lane drives the homepage?</h2>
+      <p class="section-sub">Same h1 + searchbar + 2 cards rendered 4 ways. Look for: substrate feel, type personality, color temperature. Hover the cards.</p>
+
+      <div class="lane-grid">
+
+        <!-- ── LANE A: V2-D70 + accents (recommended) ── -->
+        <article class="mockup-card" style="background: #F4F4F6;">
+          <span class="label recommended-pill">A · Recommended · V2-D70 + accents</span>
+          <div class="mini-hero hero-peach" style="position: relative; padding-top: 64px;">
+            <!-- Tiny blob "solen" mark top-left -->
+            <div style="position: absolute; top: 18px; left: 20px; font-family: 'Lilita One', cursive; font-size: 22px; color: #1A1C19; letter-spacing: -0.05em; filter: url(#goo-soft);">solen</div>
+            <p class="mini-greeting">Hallo, Sulo</p>
+            <h3 class="mini-h1" style="color: #1A1C19;">
+              Schöner aussehen, schneller <span style="color: #D87352;">buchen</span>.
+            </h3>
+            <!-- Scissors squiggle doodle accent -->
+            <svg class="doodle-svg" width="80" height="60" viewBox="0 0 80 60" style="top: 80px; right: 18px; opacity: 0.55;">
+              <path d="M5 35 Q 20 5, 35 25 T 65 30" stroke="#D87352" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <circle cx="68" cy="32" r="3" fill="#D87352"/>
+              <path d="M62 50 L 72 55" stroke="#3B7A57" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div class="mini-searchbar">
+              <div class="mini-sbar-row">🔍 Service</div>
+              <div class="mini-sbar-row">📍 Stadt</div>
+              <div class="mini-sbar-row">📅 Zeit</div>
+              <div class="mini-sbar-cta">Solen durchsuchen</div>
+            </div>
+          </div>
+          <div class="lane-cards">
+            <div class="lane-card">
+              <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop&q=80" alt="">
+            </div>
+            <div class="lane-card">
+              <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop&q=80" alt="">
+            </div>
+          </div>
+          <div class="pros-cons">
+            <strong>What's in it:</strong> Substrate #F4F4F6 cool grey · brand #3B7A57 emerald · accent #D87352 terracotta · Plus Jakarta single-family · peach hero radial. Plus: blob "solen" top-left + small scissors doodle behind h1.<br>
+            <span class="good">✓</span> What we already locked V2-D70. Zero rebuild.<br>
+            <span class="good">✓</span> Reads "premium minimal" (Aurex/Fresha lane).<br>
+            <span class="bad">✗</span> Risk: too safe. Doesn't pop vs. competitors.
+          </div>
+        </article>
+
+        <!-- ── LANE B: Flor retro vintage ── -->
+        <article class="mockup-card" style="background: #F7E7AF;">
+          <span class="label" style="background: #800000;">B · Flor retro vintage</span>
+          <div class="mini-hero" style="padding-top: 64px; background: #F7E7AF;">
+            <!-- "Solen" in retro chunky -->
+            <div style="position: absolute; top: 16px; left: 20px; font-family: 'Ultra', serif; font-size: 26px; color: #800000; line-height: 1;">Solen<span style="display:inline-block; width: 8px; height: 8px; background: #004800; border-radius: 50%; margin-left: 4px; vertical-align: middle;"></span></div>
+            <p class="mini-greeting" style="color: #800000; opacity: 0.7;">Hallo, Sulo</p>
+            <h3 class="mini-h1" style="font-family: 'Ultra', serif; color: #800000; letter-spacing: -0.01em; line-height: 1.02;">
+              Schöner aussehen,<br>schneller <span style="color: #004800;">buchen</span>.
+            </h3>
+            <div class="mini-searchbar" style="background: #FFFCF0; border-color: rgba(128,0,0,0.1);">
+              <div class="mini-sbar-row" style="color: #800000;">🔍 Service</div>
+              <div class="mini-sbar-row" style="color: #800000;">📍 Stadt</div>
+              <div class="mini-sbar-row" style="color: #800000;">📅 Zeit</div>
+              <div class="mini-sbar-cta" style="background: #800000; font-family: 'Ultra', serif; letter-spacing: 0.02em;">Solen durchsuchen</div>
+            </div>
+          </div>
+          <div class="lane-cards" style="background: #F7E7AF;">
+            <div class="lane-card" style="background: #FFFCF0;">
+              <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop&q=80" alt="">
+            </div>
+            <div class="lane-card" style="background: #FFFCF0;">
+              <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop&q=80" alt="">
+            </div>
+          </div>
+          <div class="pros-cons">
+            <strong>What's in it:</strong> Substrate #F7E7AF vanilla custard · brand #800000 maroon · accent #004800 black forest · display font Ultra (retro slab — Cooper Black family). No gradient.<br>
+            <span class="good">✓</span> Strong personality. Memorable. Thrifting/apothecary vibe.<br>
+            <span class="bad">✗</span> RETIRES V2-D70 entirely — every screen/component touched. ~2 weeks rebuild.<br>
+            <span class="bad">✗</span> Risk: clashes with category color tiles (peach Coiffeur, mint Spa). Whole token system needs revision.<br>
+            <span class="bad">✗</span> Risk: maroon reads "old", less "modern booking platform".
+          </div>
+        </article>
+
+        <!-- ── LANE C: Editorial color blocks ── -->
+        <article class="mockup-card" style="background: #F4F4F6;">
+          <span class="label" style="background: #E0703D;">C · Editorial color blocks</span>
+          <div class="mini-hero hero-peach" style="padding-top: 64px;">
+            <p class="mini-greeting">Hallo, Sulo</p>
+            <h3 class="mini-h1" style="font-family: 'Yeseva One', serif; font-weight: 400; line-height: 1.05; letter-spacing: -0.02em;">
+              Schöner aussehen,<br>schneller <span style="color: #D87352;">buchen</span>.
+            </h3>
+            <div class="mini-searchbar">
+              <div class="mini-sbar-row">🔍 Service</div>
+              <div class="mini-sbar-row">📍 Stadt</div>
+              <div class="mini-sbar-row">📅 Zeit</div>
+              <div class="mini-sbar-cta" style="background: #1A1C19;">Solen durchsuchen</div>
+            </div>
+          </div>
+          <!-- Editorial color block — Coiffeur section as orange tile -->
+          <div style="background: #E0703D; padding: 18px 20px 24px; margin: 0;">
+            <p style="color: #FFE8D8; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px;">●  Coiffeur</p>
+            <h4 style="font-family: 'Yeseva One', serif; font-size: 24px; color: white; line-height: 1; margin-bottom: 16px; letter-spacing: -0.01em;">Schnitt. Farbe.<br>Style.</h4>
+            <div class="lane-cards" style="padding: 0;">
+              <div class="lane-card" style="background: #FFE8D8;">
+                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop&q=80" alt="">
+              </div>
+              <div class="lane-card" style="background: #FFE8D8;">
+                <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop&q=80" alt="">
+              </div>
+            </div>
+          </div>
+          <div class="pros-cons">
+            <strong>What's in it:</strong> V2-D70 hero + each section gets a strong color block (Coiffeur orange, Nails butter, Spa mint, Last-Minute red). Big serif h2s (Yeseva One). Black CTA. Section dividers are the color blocks themselves.<br>
+            <span class="good">✓</span> Maximalist, editorial, memorable.<br>
+            <span class="good">✓</span> Each section feels distinct — easier to navigate.<br>
+            <span class="bad">✗</span> Risk: visually loud — 8 vivid blocks down the page is a lot.<br>
+            <span class="bad">✗</span> Cards inside colored sections look weird (their tile colors fight the block).
+          </div>
+        </article>
+
+        <!-- ── LANE D: Mix all 3 (chaos demo) ── -->
+        <article class="mockup-card" style="background: #F7E7AF;">
+          <span class="label" style="background: #D85040;">D · Mix all 3 (chaos demo)</span>
+          <div class="mini-hero" style="padding-top: 64px; background: linear-gradient(135deg, #F7E7AF 0%, #FFE2D0 100%);">
+            <!-- Blob solen retro -->
+            <div style="position: absolute; top: 16px; left: 20px; font-family: 'Shrikhand', cursive; font-size: 26px; color: #800000;">solen</div>
+            <p class="mini-greeting" style="color: #800000;">Hallo, Sulo</p>
+            <h3 class="mini-h1" style="font-family: 'Ultra', serif; color: #800000; line-height: 1.02;">
+              Schöner aussehen,<br>schneller <span style="color: #004800;">buchen</span>.
+            </h3>
+            <!-- Multiple doodles competing -->
+            <svg class="doodle-svg" width="60" height="50" viewBox="0 0 60 50" style="top: 50px; right: 10px;">
+              <path d="M5 25 Q 20 5, 35 25 T 55 25" stroke="#E0703D" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            </svg>
+            <svg class="doodle-svg" width="40" height="40" viewBox="0 0 40 40" style="bottom: 130px; left: 30%;">
+              <path d="M5 35 L 20 5 L 35 35 Z" fill="#004800" opacity="0.4"/>
+            </svg>
+            <div class="mini-searchbar" style="background: #FFFCF0;">
+              <div class="mini-sbar-row" style="color: #800000;">🔍 Service</div>
+              <div class="mini-sbar-row" style="color: #800000;">📍 Stadt</div>
+              <div class="mini-sbar-row" style="color: #800000;">📅 Zeit</div>
+              <div class="mini-sbar-cta" style="background: #800000; font-family: 'Ultra', serif;">Solen durchsuchen</div>
+            </div>
+          </div>
+          <div style="background: #E0703D; padding: 14px 20px;">
+            <p style="color: #FFE8D8; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;">● Coiffeur</p>
+            <h4 style="font-family: 'Shrikhand', cursive; font-size: 22px; color: white;">Schnitt. Farbe.</h4>
+          </div>
+          <div class="lane-cards" style="background: #F7E7AF;">
+            <div class="lane-card"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop&q=80" alt=""></div>
+            <div class="lane-card"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop&q=80" alt=""></div>
+          </div>
+          <div class="pros-cons">
+            <strong>What's in it:</strong> Flor palette (custard + maroon + forest) + Ultra retro + Yeseva serif h2s + editorial orange section blocks + blob "solen" + scattered doodles.<br>
+            <span class="bad">✗</span> Reads "designer couldn't decide." Visual cacophony — 4 different personalities fighting.<br>
+            <span class="bad">✗</span> No anchor — eye doesn't know where to land first.<br>
+            <span class="bad">✗</span> Hardest to maintain (every new component needs to negotiate 4 systems).<br>
+            <strong>Showing this so you see what I'm warning against.</strong>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ──────────────────────────── Q2 · LOGO ──────────────────────────── -->
+    <section id="q2">
+      <h2 class="section-title">Q2 — Logo wordmark</h2>
+      <p class="section-sub">All four at the same size for direct comparison. Used at: header, footer giant wordmark, OG image, favicon. Body type stays Plus Jakarta regardless.</p>
+
+      <div class="logo-grid">
+
+        <!-- A: Current Plus Jakarta -->
+        <div class="logo-card">
+          <span class="logo-label">A · Current</span>
+          <div class="wm-current">Solen<span class="dot"></span></div>
+          <p class="logo-caption">Plus Jakarta 800 + accent dot · V2-D70 locked · clean modern · "tech booking app"</p>
+        </div>
+
+        <!-- B: Blob Lilita -->
+        <div class="logo-card">
+          <span class="logo-label">B · Blob (Lilita)</span>
+          <div class="wm-blob-1">solen</div>
+          <p class="logo-caption">Lilita One + soft goo filter · rounded chunky · "playful but premium" · closest to Tapon/Maglie reference</p>
+        </div>
+
+        <!-- C: Blob Fredoka -->
+        <div class="logo-card">
+          <span class="logo-label">C · Blob (Fredoka)</span>
+          <div class="wm-blob-2">solen</div>
+          <p class="logo-caption">Fredoka 700 + heavy goo filter · maximum blob merging · "Wine-style flowing" · most expressive</p>
+        </div>
+
+        <!-- D: Shrikhand -->
+        <div class="logo-card">
+          <span class="logo-label">D · Shrikhand</span>
+          <div class="wm-blob-3">solen</div>
+          <p class="logo-caption">Shrikhand display · retro-leaning · slightly Indian-poster vibe · closest to "The Bear" reference</p>
+        </div>
+
+      </div>
+
+      <!-- Logo in CONTEXT row -->
+      <div style="margin-top: 32px; padding: 24px; background: white; border-radius: 16px;">
+        <p style="font-size: 12px; font-weight: 700; color: #6B7068; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 16px;">In context — header treatment</p>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: #F4F4F6; border-radius: 12px;">
+            <span style="font-size: 11px; font-weight: 700; color: #6B7068; min-width: 24px;">A</span>
+            <div style="font-family: 'Plus Jakarta Sans'; font-weight: 800; font-size: 22px; letter-spacing: -0.02em;">Solen<span style="display:inline-block; width: 7px; height: 7px; background: #D87352; border-radius: 50%; margin-left: 3px; transform: translateY(-3px); vertical-align: middle;"></span></div>
+            <div style="margin-left: auto; display: flex; gap: 16px; font-size: 13px; color: #6B7068;">Coiffeur · Barbershop · Nails · Entdecken</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: #F4F4F6; border-radius: 12px;">
+            <span style="font-size: 11px; font-weight: 700; color: #6B7068; min-width: 24px;">B</span>
+            <div style="font-family: 'Lilita One', cursive; font-size: 24px; color: #1A1C19; letter-spacing: -0.06em; filter: url(#goo-soft);">solen</div>
+            <div style="margin-left: auto; display: flex; gap: 16px; font-size: 13px; color: #6B7068;">Coiffeur · Barbershop · Nails · Entdecken</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: #F4F4F6; border-radius: 12px;">
+            <span style="font-size: 11px; font-weight: 700; color: #6B7068; min-width: 24px;">C</span>
+            <div style="font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 26px; color: #1A1C19; letter-spacing: -0.05em; filter: url(#goo-strong);">solen</div>
+            <div style="margin-left: auto; display: flex; gap: 16px; font-size: 13px; color: #6B7068;">Coiffeur · Barbershop · Nails · Entdecken</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: #F4F4F6; border-radius: 12px;">
+            <span style="font-size: 11px; font-weight: 700; color: #6B7068; min-width: 24px;">D</span>
+            <div style="font-family: 'Shrikhand', cursive; font-size: 24px; color: #1A1C19;">solen</div>
+            <div style="margin-left: auto; display: flex; gap: 16px; font-size: 13px; color: #6B7068;">Coiffeur · Barbershop · Nails · Entdecken</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ──────────────────────────── Q3 · DOODLE ──────────────────────────── -->
+    <section id="q3">
+      <h2 class="section-title">Q3 — Doodle moment placement</h2>
+      <p class="section-sub">Same Lane A treatment + one doodle per option. Compare where the hand-drawn personality lands.</p>
+
+      <div class="doodle-grid">
+
+        <!-- A: Behind hero h1 -->
+        <article class="mockup-card" style="background: #F4F4F6;">
+          <span class="label">A · Behind hero h1</span>
+          <div class="mini-hero hero-peach" style="padding-top: 48px;">
+            <p class="mini-greeting">Hallo, Sulo</p>
+            <div style="position: relative;">
+              <!-- Doodle layered behind h1 -->
+              <svg class="doodle-svg" width="100" height="80" viewBox="0 0 100 80" style="top: -10px; right: -10px; opacity: 0.55;">
+                <path d="M10 50 Q 25 10, 45 35 Q 65 60, 90 30" stroke="#D87352" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <circle cx="92" cy="32" r="4" fill="#D87352"/>
+                <path d="M75 65 Q 85 55, 95 65" stroke="#3B7A57" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <circle cx="20" cy="20" r="2" fill="#3B7A57"/>
+              </svg>
+              <h3 class="mini-h1" style="position: relative; z-index: 1;">
+                Schöner aussehen, schneller <span style="color: #D87352;">buchen</span>.
+              </h3>
+            </div>
+            <div class="mini-searchbar">
+              <div class="mini-sbar-row">🔍 Service</div>
+              <div class="mini-sbar-row">📍 Stadt</div>
+              <div class="mini-sbar-row">📅 Zeit</div>
+              <div class="mini-sbar-cta">Solen durchsuchen</div>
+            </div>
+          </div>
+          <div class="pros-cons">
+            <strong>What it is:</strong> Hand-drawn squiggle + sparkle + curl SVG layered behind the h1, opacity 0.55. Subtle but present.<br>
+            <span class="good">✓</span> Every user sees it on first paint.<br>
+            <span class="good">✓</span> Lowest disruption — doesn't replace any existing element.<br>
+            <span class="bad">✗</span> Risk: competes with h1 for attention — needs careful balance.
+          </div>
+        </article>
+
+        <!-- B: Empty state -->
+        <article class="mockup-card" style="background: #F4F4F6;">
+          <span class="label">B · 'Zuletzt angesehen' empty state</span>
+          <div style="padding: 28px 20px;">
+            <p style="font-size: 11px; font-weight: 700; color: #3B7A57; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px;">● Bei dir zuletzt</p>
+            <h4 style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 20px;">Zuletzt angesehen</h4>
+
+            <div class="empty-state">
+              <!-- Hand-drawn person-looking doodle -->
+              <svg width="90" height="100" viewBox="0 0 90 100" style="margin-bottom: 8px;">
+                <!-- Head -->
+                <circle cx="45" cy="28" r="14" fill="none" stroke="#1A1C19" stroke-width="2.5"/>
+                <!-- Eyes -->
+                <circle cx="40" cy="25" r="1.5" fill="#1A1C19"/>
+                <circle cx="50" cy="25" r="1.5" fill="#1A1C19"/>
+                <!-- Smile -->
+                <path d="M40 32 Q 45 36, 50 32" stroke="#1A1C19" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <!-- Body -->
+                <path d="M45 42 L 45 75" stroke="#1A1C19" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Arms (hand near eye, "looking") -->
+                <path d="M45 52 L 35 48 Q 30 42, 38 38" stroke="#1A1C19" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <path d="M45 52 L 60 60" stroke="#1A1C19" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Legs -->
+                <path d="M45 75 L 38 95" stroke="#1A1C19" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M45 75 L 52 95" stroke="#1A1C19" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Floating sparkles -->
+                <path d="M75 25 L 75 35 M 70 30 L 80 30" stroke="#D87352" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="15" cy="50" r="2" fill="#3B7A57"/>
+              </svg>
+              <p style="font-size: 15px; font-weight: 600; color: #1A1C19;">Noch nichts angeschaut.</p>
+              <p style="font-size: 13px; color: #6B7068; max-width: 240px;">Sobald du Salons öffnest, sammelst du sie hier.</p>
+              <a href="#" style="margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; background: #3B7A57; color: white; padding: 8px 16px; border-radius: 9999px; font-size: 13px; font-weight: 600; text-decoration: none;">Stöbern starten →</a>
+            </div>
+          </div>
+          <div class="pros-cons">
+            <strong>What it is:</strong> Hand-drawn person-looking figure as the empty-state illustration for logged-out / new users. Replaces showing demo cards or hiding the section entirely.<br>
+            <span class="good">✓</span> Solves a real problem — section currently shows DEMO data for logged-out, which is awkward.<br>
+            <span class="good">✓</span> Section becomes a feature, not a placeholder.<br>
+            <span class="bad">✗</span> Only logged-out users see it. Lower visibility.
+          </div>
+        </article>
+
+        <!-- C: B2B section illustration -->
+        <article class="mockup-card" style="background: #F4F4F6;">
+          <span class="label">C · B2B section illustration</span>
+          <div style="padding: 24px 20px; background: white; border: 1.5px solid #3B7A57; border-radius: 16px; margin: 16px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: center;">
+              <div>
+                <span style="font-size: 11px; font-weight: 600; color: #D87352;">● Für Salons</span>
+                <h4 style="font-size: 20px; font-weight: 800; line-height: 1; margin-top: 8px; letter-spacing: -0.02em;">Solen für<br><span style="color: #D87352;">dein Geschäft.</span></h4>
+                <p style="font-size: 11px; color: #6B7068; margin-top: 8px; line-height: 1.4;">Mehr Buchungen, weniger Aufwand.</p>
+                <div style="margin-top: 12px; background: #3B7A57; color: white; display: inline-flex; padding: 6px 14px; border-radius: 9999px; font-size: 11px; font-weight: 700;">Mehr erfahren →</div>
+              </div>
+              <!-- Doodle illustration replacing dashboard -->
+              <svg viewBox="0 0 140 140" style="width: 100%; height: auto;">
+                <!-- Chair -->
+                <rect x="40" y="70" width="60" height="40" rx="6" fill="#FFE8D8" stroke="#1A1C19" stroke-width="2"/>
+                <path d="M40 110 L 35 130 M 100 110 L 105 130" stroke="#1A1C19" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Chair back -->
+                <rect x="48" y="40" width="44" height="35" rx="6" fill="#FFE8D8" stroke="#1A1C19" stroke-width="2"/>
+                <!-- Mirror behind -->
+                <rect x="60" y="8" width="50" height="35" rx="4" fill="#E5F2EA" stroke="#1A1C19" stroke-width="2"/>
+                <!-- Scissors floating top-right -->
+                <g transform="translate(105, 20) rotate(20)">
+                  <circle cx="0" cy="0" r="4" fill="none" stroke="#D87352" stroke-width="2"/>
+                  <circle cx="0" cy="10" r="4" fill="none" stroke="#D87352" stroke-width="2"/>
+                  <path d="M3 -3 L 15 -15 M 3 13 L 15 25" stroke="#D87352" stroke-width="2" stroke-linecap="round"/>
+                </g>
+                <!-- Floating sparkles -->
+                <path d="M20 20 L 20 30 M 15 25 L 25 25" stroke="#3B7A57" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="120" cy="100" r="2.5" fill="#D87352"/>
+                <circle cx="15" cy="110" r="2" fill="#3B7A57"/>
+              </svg>
+            </div>
+          </div>
+          <div class="pros-cons">
+            <strong>What it is:</strong> Replaces the dashboard calendar mockup (which is currently on the live B2B section) with a hand-drawn salon scene: chair + mirror + scissors.<br>
+            <span class="good">✓</span> Warmer, more brand-aligned than the corporate dashboard.<br>
+            <span class="bad">✗</span> <strong>Hurts B2B credibility.</strong> Salon owners want to see "this looks like real software." Cartoonish illustration signals "playful toy" not "manage my business."<br>
+            <span class="bad">✗</span> I'd push back on this one.
+          </div>
+        </article>
+
+        <!-- D: Skip -->
+        <article class="mockup-card" style="background: #F4F4F6;">
+          <span class="label">D · No doodle (baseline)</span>
+          <div class="mini-hero hero-peach" style="padding-top: 56px;">
+            <p class="mini-greeting">Hallo, Sulo</p>
+            <h3 class="mini-h1">
+              Schöner aussehen, schneller <span style="color: #D87352;">buchen</span>.
+            </h3>
+            <div class="mini-searchbar">
+              <div class="mini-sbar-row">🔍 Service</div>
+              <div class="mini-sbar-row">📍 Stadt</div>
+              <div class="mini-sbar-row">📅 Zeit</div>
+              <div class="mini-sbar-cta">Solen durchsuchen</div>
+            </div>
+          </div>
+          <div class="pros-cons">
+            <strong>What it is:</strong> Current homepage exactly as-is. No doodle anywhere. Reference for comparison.<br>
+            <span class="good">✓</span> Cleanest — lets photography and typography do the work.<br>
+            <span class="good">✓</span> Safest for "premium minimal" lane.<br>
+            <span class="bad">✗</span> Less distinctive — looks like every other Fresha-style site.
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ─── Decision footer ─── -->
+    <section style="margin-top: 80px; padding: 32px 24px; background: white; border-radius: 24px; text-align: center; box-shadow: 0 6px 24px rgba(0,0,0,0.06);">
+      <p style="font-size: 11px; font-weight: 700; color: #3B7A57; letter-spacing: 0.18em; text-transform: uppercase;">● Wenn du gewählt hast</p>
+      <h3 style="font-size: 22px; font-weight: 800; margin-top: 12px; letter-spacing: -0.025em;">Sag mir: A1 · B3 · C1 (z.B.)</h3>
+      <p style="font-size: 14px; color: #6B7068; margin-top: 8px; max-width: 540px; margin-left: auto; margin-right: auto;">Eine Buchstabe-Zahl-Kombi pro Frage. Ich baue dann den Sieger als echten Mockup mit voller Homepage (alle Sektionen, nicht nur Hero) und du siehst es vor dem Production-Port.</p>
+    </section>
+
+  </div>
+
+</body>
+</html>

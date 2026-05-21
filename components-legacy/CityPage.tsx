@@ -1,0 +1,169 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
+import SalonCard from "@/components-legacy/SalonCard";
+import Skeleton from "@/components-legacy/ui/Skeleton";
+import EmptyState from "@/components-legacy/ui/EmptyState";
+import { MapPin, Scissors } from "lucide-react";
+import { getCityName, type CitySlug } from "@/lib/cities";
+import type { SalonCard as SalonCardType, SalonCategory } from "@/lib/types";
+import Link from "next/link";
+
+const CATEGORIES: SalonCategory[] = [
+  "coiffeur",
+  "barbershop",
+  "nails",
+  "spa",
+  "makeup",
+  "waxing",
+];
+
+interface CityPageProps {
+  city: CitySlug;
+  locale: string;
+  initialCategory?: SalonCategory;
+}
+
+export default function CityPage({ city, locale, initialCategory = undefined }: CityPageProps) {
+  const t = useTranslations("home.featured") as any;
+  const tCityPage = useTranslations("cityPage");
+  const tNav = useTranslations("navigation");
+  const [salons, setSalons] = useState<SalonCardType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState<SalonCategory | null>(initialCategory || null);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+
+  const cityName = getCityName(city, locale);
+
+  const fetchSalons = useCallback(() => {
+    setLoading(true);
+    const params = new URLSearchParams({ city, limit: "24", sort: "rating" });
+    if (activeCategory) params.set("category", activeCategory);
+
+    fetch(`/api/salons?${params}`)
+      .then((r) => r.json())
+      .then((data) => setSalons(data.items ?? []))
+      .catch(() => setSalons([]))
+      .finally(() => setLoading(false));
+  }, [city, activeCategory]);
+
+  useEffect(() => { fetchSalons(); }, [fetchSalons]);
+
+  // Fetch favorites
+  useEffect(() => {
+    fetch("/api/profile/favorites")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        const favs = data?.favorites ?? [];
+        setFavoriteIds(new Set(favs.map((f: { salon_id: string }) => f.salon_id)));
+      })
+      .catch((err) => console.error("[CityPage] failed to fetch favorites:", err));
+  }, []);
+
+  const handleFavoriteToggle = useCallback((salonId: string) => {
+    setFavoriteIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(salonId)) {
+        next.delete(salonId);
+        fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" }).catch((err) => console.error("[CityPage] failed to remove favorite:", err));
+      } else {
+        next.add(salonId);
+        fetch("/api/profile/favorites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ salon_id: salonId }),
+        }).catch((err) => console.error("[CityPage] failed to add favorite:", err));
+      }
+      return next;
+    });
+  }, []);
+
+  return (
+    <main className="min-h-screen bg-white">
+      {/* City header */}
+      <section className="max-w-5xl mx-auto px-4 pt-12 pb-8">
+        <div className="flex items-center gap-2 mb-2">
+          <MapPin size={16} className="text-s-ink/60" />
+          <span className="font-heading text-[11px] uppercase tracking-[.20em] text-s-amber">
+            {cityName}
+          </span>
+        </div>
+        <h1 className="font-heading text-s-ink"
+          style={{ fontSize: "clamp(26px, 4vw, 48px)", letterSpacing: "-0.02em" }}>
+          {tCityPage("title", { cityName })}
+        </h1>
+        <p className="text-sm text-s-ink/50 font-body mt-1">
+          {tCityPage("subtitle")}
+        </p>
+      </section>
+
+      {/* Category filter chips */}
+      <section className="max-w-5xl mx-auto px-4 pb-6">
+        <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+          <Link
+            href={`/${locale}/${city}`}
+            className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
+              activeCategory === null
+                ? "bg-s-coral text-white shadow-elevation-2"
+                : "bg-[--raised] border border-s-ink/10 text-s-ink/70 hover:border-s-ink/20"
+            }`}
+          >
+            {tCityPage("all_categories")}
+          </Link>
+          {CATEGORIES.map((key) => (
+            <Link
+              key={key}
+              href={`/${locale}/${city}/${key}`}
+              className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
+                activeCategory === key
+                  ? "bg-s-coral text-white shadow-elevation-2"
+                  : "bg-[--raised] border border-s-ink/10 text-s-ink/70 hover:border-s-ink/20"
+              }`}
+            >
+              {tNav(key)}
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Salon grid */}
+      <section className="max-w-5xl mx-auto px-4 pb-16">
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(6)].map((_, i) => <Skeleton key={i} variant="card" />)}
+          </div>
+        ) : salons.length === 0 ? (
+          <EmptyState
+            icon={Scissors}
+            title={t("emptyTitle")}
+            message={t("emptyMessage")}
+          />
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+            initial="hidden"
+            animate="visible"
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.04 } } }}
+          >
+            {salons.map((salon) => (
+              <motion.div
+                key={salon.id}
+                variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
+              >
+                <SalonCard
+                  salon={salon}
+                  locale={locale}
+                  showCompare
+                  isFavorited={favoriteIds.has(salon.id)}
+                  onFavoriteToggle={handleFavoriteToggle}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </section>
+    </main>
+  );
+}

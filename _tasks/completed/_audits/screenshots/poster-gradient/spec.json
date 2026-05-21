@@ -1,0 +1,31 @@
+{
+  "slug": "poster-gradient",
+  "image": "./source.png",
+  "timestamp": "2026-05-21T18:38:03Z",
+  "dimensions": { "w": 814, "h": 456 },
+  "calibration_px_per_css_px": 1,
+  "marks": [
+    { "label": "top-left-blue", "type": "color", "x": 122, "y": 68, "hex": "#0C7BAC", "rgba": [12, 123, 172, 255] },
+    { "label": "top-center-cyan", "type": "color", "x": 407, "y": 68, "hex": "#0D90A1", "rgba": [13, 144, 161, 255] },
+    { "label": "top-right-blue", "type": "color", "x": 692, "y": 68, "hex": "#466AAE", "rgba": [70, 106, 174, 255] },
+    { "label": "mid-left-grey", "type": "color", "x": 122, "y": 228, "hex": "#B2B1BC", "rgba": [178, 177, 188, 255] },
+    { "label": "mid-center-sage", "type": "color", "x": 407, "y": 228, "hex": "#AAC0B3", "rgba": [170, 192, 179, 255] },
+    { "label": "mid-right-deep-blue", "type": "color", "x": 692, "y": 228, "hex": "#015FA2", "rgba": [1, 95, 162, 255] },
+    { "label": "bot-left-bluegrey", "type": "color", "x": 122, "y": 388, "hex": "#889ABD", "rgba": [136, 154, 189, 255] },
+    { "label": "bot-center-cream", "type": "color", "x": 407, "y": 388, "hex": "#D6CCC3", "rgba": [214, 204, 195, 255] },
+    { "label": "bot-right-mint", "type": "color", "x": 692, "y": 388, "hex": "#9FD2C5", "rgba": [159, 210, 197, 255] },
+    { "label": "blob-cyan-saturated", "type": "color", "x": 400, "y": 100, "hex": "#179694", "rgba": [23, 150, 148, 255] },
+    { "label": "blob-deepblue-pocket", "type": "color", "x": 700, "y": 250, "hex": "#3199A1", "rgba": [49, 153, 161, 255] },
+    { "label": "blob-warm-cream-center", "type": "color", "x": 400, "y": 320, "hex": "#EAD6C6", "rgba": [234, 214, 198, 255] },
+    { "label": "image-width", "type": "ruler", "x1": 0, "y1": 228, "x2": 814, "y2": 228, "px": 814, "css_px": 814 },
+    { "label": "image-height", "type": "ruler", "x1": 407, "y1": 0, "x2": 407, "y2": 456, "px": 456, "css_px": 456 },
+    { "label": "cyan-blob-width", "type": "ruler", "x1": 220, "y1": 80, "x2": 580, "y2": 80, "px": 360, "css_px": 360 },
+    { "label": "cyan-blob-height", "type": "ruler", "x1": 400, "y1": 20, "x2": 400, "y2": 180, "px": 160, "css_px": 160 },
+    { "label": "topleft-blue-width", "type": "ruler", "x1": 20, "y1": 68, "x2": 220, "y2": 68, "px": 200, "css_px": 200 },
+    { "label": "topright-blue-width", "type": "ruler", "x1": 580, "y1": 68, "x2": 810, "y2": 68, "px": 230, "css_px": 230 },
+    { "label": "deepblue-spot-width", "type": "ruler", "x1": 600, "y1": 230, "x2": 800, "y2": 230, "px": 200, "css_px": 200 },
+    { "label": "deepblue-spot-height", "type": "ruler", "x1": 700, "y1": 180, "x2": 700, "y2": 290, "px": 110, "css_px": 110 },
+    { "label": "cream-zone-vertical", "type": "ruler", "x1": 407, "y1": 280, "x2": 407, "y2": 456, "px": 176, "css_px": 176 },
+    { "label": "cream-zone-horizontal", "type": "ruler", "x1": 50, "y1": 388, "x2": 770, "y2": 388, "px": 720, "css_px": 720 }
+  ]
+}

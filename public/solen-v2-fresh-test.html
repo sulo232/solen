@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen — Die Schweizer Salon-Plattform</title>
+
+<!-- Free fallback fonts via Google Fonts: Sansita 900 (Cooper analog), League Spartan (Avant Garde analog), Inter Tight (final fallback) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sansita:wght@400;700;800;900&family=League+Spartan:wght@300;400;500;600;700&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Optional: try to load Cooper BT and ITC Avant Garde Gothic Std via cdnfonts.com.
+     Design must work even if these don't load — Sansita/League Spartan are the working fallbacks. -->
+<link href="https://fonts.cdnfonts.com/css/cooper-bt" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/itc-avant-garde-gothic" rel="stylesheet">
+
+<style>
+/* ============================================================
+   TOKENS — every value in the file maps to one of these
+   ============================================================ */
+:root {
+  /* Spacing scale (4px-based, §6) */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 48px;
+  --space-9: 64px;
+  --space-10: 96px;
+
+  /* Radius scale §7 */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+  --radius-pill: 99px;
+  --radius-full: 9999px;
+
+  /* Z-index scale §8 */
+  --z-below: -1;
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-dropdown: 300;
+  --z-sheet-bg: 400;
+  --z-sheet: 410;
+  --z-modal-bg: 500;
+  --z-modal: 510;
+  --z-toast: 600;
+  --z-tooltip: 700;
+  --z-alert: 800;
+
+  /* Easing curves §5c */
+  --ease-snap: cubic-bezier(.4, 0, .2, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --ease-glide: cubic-bezier(.16, 1, .3, 1);
+  --ease-thud: cubic-bezier(.7, 0, .84, 0);
+
+  /* Foundation §4 */
+  --bg: #FFFFFF;
+  --bg-sunken: #FAF7F3;
+  --ink-1: #1A1209;
+  --ink-2: #56463E;
+  --ink-3: #7A6957;
+  --ink-disabled: #C4B8A6;
+  --hairline: rgba(26,18,9,.06);
+  --border-warm: #E8DFD2;
+
+  /* Brand §1 */
+  --brand: #043338;
+  --brand-pale: #C2F0F1;
+  --brand-subtle: #E1F4F4;
+
+  /* Atmosphere §5g — gradient stops only */
+  --pale-ice-blue: #CAE8FF;
+  --royal-blue: #005898;
+  --deep-navy: #031E48;
+
+  /* Categories §2 (V2-D15-3 lock) */
+  --coiffeur-bg: #FFF1DD;
+  --coiffeur-text: #B5345A;
+  --barber-bg: #D8D6CB;
+  --barber-text: #000000;
+  --nails-bg: #CAE8FF;
+  --nails-text: #B50051;
+  --spa-bg: #193120;
+  --spa-text: #948565;
+
+  /* Semantic §3 */
+  --love-red: #FF4A6B;
+  --success: #16A34A;
+  --warning: #F59E0B;
+  --error: #D32F2F;
+  --closed: #DC2626;
+  --star: #F3A864;
+
+  /* Safe areas §10 */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Font stacks (locked §5) */
+  --font-display: 'Cooper BT', 'Cooper Black Std', 'Cooper Black', 'Sansita', Georgia, serif;
+  --font-body: 'ITC Avant Garde Gothic Std', 'Avant Garde', 'League Spartan', 'Inter Tight', system-ui, sans-serif;
+}
+
+/* ============================================================
+   RESET + BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink-1);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'ss01', 'cv11';
+  font-variant-numeric: normal;
+  /* Safe areas §10 */
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; border: none; background: none; padding: 0; }
+img { max-width: 100%; display: block; }
+ul, ol { list-style: none; padding: 0; margin: 0; }
+
+/* ============================================================
+   PAGE CONTAINER §6c
+   ============================================================ */
+.page {
+  width: 100%;
+  margin: 0 auto;
+  background: var(--bg);
+}
+.container {
+  width: 100%;
+  padding: 0 var(--space-4);
+  margin: 0 auto;
+}
+@media (min-width: 768px) {
+  .container { padding: 0 var(--space-6); }
+}
+@media (min-width: 1024px) {
+  .container { max-width: 1024px; padding: 0 var(--space-8); }
+}
+@media (min-width: 1280px) {
+  .container { max-width: 1200px; }
+}
+
+/* ============================================================
+   HEADER §12
+   ============================================================ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  width: 100%;
+  height: 56px;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-4);
+  transition: box-shadow 200ms var(--ease-snap), background 200ms var(--ease-snap);
+}
+@media (min-width: 768px) {
+  .header { height: 64px; padding: 0 var(--space-5); }
+}
+@media (min-width: 1024px) {
+  .header { height: 72px; padding: 0 var(--space-6); }
+}
+.header.is-stuck {
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(10px) saturate(1.4);
+  -webkit-backdrop-filter: blur(10px) saturate(1.4);
+  box-shadow: 0 1px 0 rgba(26,18,9,.04), 0 2px 8px rgba(26,18,9,.04);
+}
+.header__inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.header__logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(28px, 2.6vw, 36px);
+  letter-spacing: -0.015em;
+  line-height: 1;
+  color: var(--brand);
+  margin-right: auto;
+  /* Cooper-look balance — Sansita 900 fallback uses similar density */
+}
+.header__city {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 7px 14px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.005em;
+  color: var(--ink-1);
+  background: linear-gradient(180deg, #fff, #FDFAF5);
+  border-radius: var(--radius-pill);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.8),
+    0 1px 1px rgba(26,18,9,.04),
+    0 2px 6px rgba(4,51,56,.06);
+  transition: transform 100ms var(--ease-thud);
+  /* 44px hit area extension §11 */
+  position: relative;
+}
+.header__city::after {
+  content: '';
+  position: absolute;
+  inset: -6px -2px;
+}
+.header__city:active { transform: scale(0.96); }
+.header__city svg { color: var(--ink-2); }
+.header__bell {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.header__bell svg { color: var(--ink-1); }
+.header__bell::before {
+  content: '';
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand);
+  box-shadow: 0 0 0 1px var(--ink-1);
+}
+.header__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ink-1);
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 1px rgba(26,18,9,.06);
+  /* extend hit area to 44px §11 */
+  position: relative;
+}
+.header__avatar::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+}
+
+/* ============================================================
+   HERO §13
+   ============================================================ */
+.hero {
+  position: relative;
+  background: var(--bg);
+  padding: var(--space-6) 0 var(--space-8);
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .hero { padding: var(--space-8) 0 var(--space-9); }
+}
+@media (min-width: 1024px) {
+  .hero { padding: var(--space-9) 0 var(--space-9); }
+}
+
+/* §5g atmosphere wash — VERBATIM from spec */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    /* Cyan core — pale ice blue + pale teal, kept light */
+    radial-gradient(ellipse 65% 55% at 72% 28%, rgba(202, 232, 255, 0.78) 0%, transparent 55%),
+    radial-gradient(ellipse 58% 50% at 22% 78%, rgba(194, 240, 241, 0.72) 0%, transparent 60%),
+    /* Navy frame — royal blue around the corners, depth without saturation */
+    radial-gradient(ellipse 55% 65% at 100% 105%, rgba(0, 88, 152, 0.32) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 55% at 0% -5%, rgba(0, 88, 152, 0.28) 0%, transparent 50%),
+    /* Subtle deep-navy bleed at the bottom edge — horizon line */
+    linear-gradient(180deg, transparent 65%, rgba(3, 30, 72, 0.06) 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+.hero__inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* §13.2 counter pill */
+.counter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(255,255,255,.65);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  border: 1px solid rgba(4,51,56,.12);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: -0.005em;
+  color: var(--ink-1);
+}
+.counter-pill__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand);
+  animation: pulse 1.6s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .5; transform: scale(1.3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .counter-pill__dot { animation: none; }
+}
+
+/* §13.3 greeting */
+.hero__greeting {
+  margin-top: var(--space-3);
+  margin-bottom: var(--space-5);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: clamp(28px, 6vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--ink-1);
+}
+
+/* §13.4 search bar */
+.search {
+  margin-top: var(--space-5);
+}
+.search__container {
+  background: linear-gradient(180deg, #fff 0%, #FDFAF5 100%);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(26,18,9,.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.8),
+    0 1px 2px rgba(26,18,9,.04),
+    0 8px 24px rgba(4,51,56,.06);
+  overflow: hidden;
+}
+.search__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(26,18,9,.06);
+}
+.search__row:first-child { border-top: none; }
+.search__row-label {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand);
+  width: 44px;
+  flex-shrink: 0;
+}
+.search__row-value {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink-1);
+}
+.search__row-placeholder {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.search__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: var(--space-3);
+  padding: 14px 24px;
+  width: 100%;
+  background: linear-gradient(180deg, #0A6873 0%, #043338 100%);
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 1px 2px rgba(26,18,9,.04), 0 8px 20px rgba(4,51,56,.18);
+  transition: transform 100ms var(--ease-thud);
+}
+.search__cta:active { transform: scale(0.96); }
+@media (min-width: 768px) {
+  .search__cta { width: auto; }
+}
+
+/* §13.6 quick chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 8px 14px;
+  background: linear-gradient(180deg, #fff, #FDFAF5);
+  border: 1px solid rgba(26,18,9,.06);
+  color: var(--ink-1);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  border-radius: var(--radius-pill);
+  transition: transform 100ms var(--ease-thud);
+}
+.chip:active { transform: scale(0.96); }
+.chip--more {
+  /* same default styling — "Mehr Filter →" is just a chip per §13.6 */
+}
+
+/* ============================================================
+   SECTION HEADER §15
+   ============================================================ */
+.section {
+  margin-top: var(--space-7);
+}
+@media (min-width: 768px) {
+  .section { margin-top: var(--space-8); }
+}
+.section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  padding: 0 var(--space-4);
+}
+@media (min-width: 768px) {
+  .section__head { padding: 0 var(--space-6); }
+}
+@media (min-width: 1024px) {
+  .section__head { padding: 0 var(--space-8); }
+}
+.section__title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: clamp(22px, 2.6vw, 26px);
+  letter-spacing: -0.025em;
+  line-height: 1;
+  color: var(--ink-1);
+  margin: 0;
+}
+.section__alle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink-1);
+  flex-shrink: 0;
+  transition: gap 200ms var(--ease-snap);
+}
+.section__alle:hover { gap: 10px; }
+.section__alle svg {
+  transition: transform 200ms var(--ease-snap);
+}
+.section__alle:hover svg { transform: translateX(2px); }
+
+/* ============================================================
+   HORIZONTAL SCROLL §17
+   ============================================================ */
+.hscroll {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 0 var(--space-4) 8px;
+  scroll-snap-type: x proximity;
+  scroll-padding-left: var(--space-4);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.hscroll::-webkit-scrollbar { display: none; }
+@media (min-width: 768px) {
+  .hscroll { padding-left: var(--space-6); padding-right: var(--space-6); scroll-padding-left: var(--space-6); }
+}
+@media (min-width: 1024px) {
+  .hscroll { padding-left: var(--space-8); padding-right: var(--space-8); scroll-padding-left: var(--space-8); }
+}
+
+/* ============================================================
+   SALON CARD §16
+   ============================================================ */
+.card {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform 100ms var(--ease-thud);
+}
+@media (min-width: 768px) {
+  .card { width: 180px; }
+}
+.card:active { transform: scale(0.94); }
+.card__photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  /* placeholder treatment per §16.7b — solid color w sky highlight + bottom warm kiss §5b photo treatment */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 35%, transparent 70%, rgba(4,51,56,.08) 100%),
+    radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.25), transparent 60%),
+    var(--photo-bg, #E8DFD2);
+}
+/* salon initials inside placeholder */
+.card__initials {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 32px;
+  color: var(--initials-color, #FFFFFF);
+  letter-spacing: -0.02em;
+}
+
+/* card photo overlays §16.3 */
+.card__badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 10px;
+  color: var(--ink-1);
+}
+.card__badge-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 3px rgba(22,163,74,.2);
+  animation: pulse 1.6s infinite;
+}
+.card__badge-dot--sofort {
+  background: var(--brand);
+  box-shadow: 0 0 0 3px rgba(4,51,56,.2);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card__badge-dot { animation: none; }
+}
+.card__heart {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.card__heart svg { color: var(--ink-1); }
+.card__heart--saved svg { color: var(--love-red); fill: var(--love-red); }
+
+/* card text rows */
+.card__row1 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.card__name {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  color: var(--ink-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card__rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--ink-1);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.card__rating svg { fill: var(--star); color: var(--star); }
+.card__row2 {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--ink-2);
+}
+.card__row2 strong {
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--ink-1);
+  font-variant-numeric: tabular-nums;
+}
+
+/* category placeholder color combos §16.7b */
+.card[data-cat="coiffeur"] { --photo-bg: var(--coiffeur-bg); --initials-color: var(--coiffeur-text); }
+.card[data-cat="barber"]   { --photo-bg: var(--barber-bg);   --initials-color: var(--barber-text); }
+.card[data-cat="nails"]    { --photo-bg: var(--nails-bg);    --initials-color: var(--nails-text); }
+.card[data-cat="spa"]      { --photo-bg: var(--spa-bg);      --initials-color: var(--spa-text); }
+/* mixed-availability row uses muted warm placeholder */
+.card[data-cat="mixed"]    { --photo-bg: #E8DFD2; --initials-color: var(--brand); }
+
+/* ============================================================
+   CITY TILES §19
+   ============================================================ */
+.tile {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  position: relative;
+  width: 220px;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  /* every tile uses brand-teal gradient per §19.5 v1 fallback (Yuh discipline) */
+  background: linear-gradient(160deg, #0A6873 0%, #043338 100%);
+  transition: transform 200ms var(--ease-snap);
+}
+.tile:hover { transform: translateY(-2px); }
+.tile:active { transform: scale(0.97); }
+.tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.22) 0%, transparent 50%);
+  pointer-events: none;
+}
+.tile__content {
+  position: absolute;
+  inset: 0;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 1;
+}
+.tile__icon {
+  color: rgba(255,255,255,.95);
+}
+.tile__name {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: #FFFFFF;
+  margin: 0;
+}
+.tile__meta {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 11px;
+  color: rgba(255,255,255,.85);
+  margin-top: 2px;
+}
+.tile__aktuell {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(8px) saturate(1.4);
+  -webkit-backdrop-filter: blur(8px) saturate(1.4);
+  border-radius: var(--radius-pill);
+  z-index: 3;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: var(--ink-1);
+}
+.tile__aktuell::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--brand);
+}
+
+/* ============================================================
+   B2B PROMO §20
+   ============================================================ */
+.b2b-wrap {
+  margin-top: var(--space-8);
+  padding: 0 var(--space-4);
+}
+@media (min-width: 768px) {
+  .b2b-wrap { padding: 0 var(--space-6); }
+}
+@media (min-width: 1024px) {
+  .b2b-wrap { padding: 0 var(--space-8); }
+}
+.b2b {
+  position: relative;
+  background: linear-gradient(160deg, #E1F4F4 0%, #FBC9A8 100%);
+  border: 1px solid rgba(4,51,56,.12);
+  border-radius: var(--radius-3xl);
+  padding: 22px 24px;
+  overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.6),
+    0 1px 2px rgba(4,51,56,.1),
+    0 16px 32px rgba(4,51,56,.18);
+}
+.b2b__blob1 {
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: rgba(4,51,56,.5);
+  filter: blur(40px);
+  z-index: 0;
+  pointer-events: none;
+}
+.b2b__blob2 {
+  position: absolute;
+  bottom: -80px;
+  left: -40px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.5);
+  filter: blur(40px);
+  z-index: 0;
+  pointer-events: none;
+}
+.b2b__inner { position: relative; z-index: 2; }
+.b2b__eyebrow {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin: 0 0 8px;
+}
+.b2b__head {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: var(--ink-1);
+  margin: 0 0 4px;
+}
+.b2b__sub {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-2);
+  margin: 0 0 16px;
+  max-width: 540px;
+}
+.b2b__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 18px;
+  background: var(--ink-1);
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: var(--radius-pill);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    0 1px 2px rgba(0,0,0,.1);
+  transition: transform 200ms var(--ease-snap), gap 200ms var(--ease-snap);
+}
+.b2b__cta:hover { transform: translateY(-1px); gap: 10px; }
+.b2b__cta svg { transition: transform 200ms var(--ease-snap); }
+.b2b__cta:hover svg { transform: translateX(2px); }
+.b2b__second {
+  display: inline-block;
+  margin-left: 14px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.b2b__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  color: var(--ink-2);
+  background: transparent;
+  z-index: 3;
+  transition: background 150ms;
+}
+.b2b__close:hover { background: rgba(26,18,9,.06); }
+
+/* ============================================================
+   SEO LINK WALL §22
+   ============================================================ */
+.seo-wall {
+  margin-top: var(--space-8);
+  padding: 36px var(--space-4);
+}
+@media (min-width: 768px) {
+  .seo-wall { padding: 36px var(--space-6); }
+}
+@media (min-width: 1024px) {
+  .seo-wall { padding: 36px var(--space-8); }
+}
+.seo-wall__title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  color: var(--ink-1);
+  margin: 0 0 6px;
+}
+.seo-wall__intro {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  max-width: 540px;
+  margin: 0 0 20px;
+}
+.seo-wall__list {
+  line-height: 1.7;
+}
+.seo-wall__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0;
+  margin-bottom: 10px;
+}
+.seo-wall__cat {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.005em;
+  color: var(--ink-1);
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.seo-wall__link {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--ink-2);
+  padding: 0 8px;
+  border-right: 1px solid rgba(26,18,9,.12);
+  transition: color 150ms;
+}
+.seo-wall__link:last-child { border-right: none; }
+.seo-wall__link:hover { color: var(--brand); }
+.seo-wall__link strong { font-weight: 600; color: var(--ink-1); }
+
+/* ============================================================
+   FOOTER §21
+   ============================================================ */
+.footer {
+  position: relative;
+  background: linear-gradient(180deg, #1A1209 0%, #0F0805 100%);
+  color: rgba(255,255,255,.78);
+  padding: 36px 16px 20px;
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .footer { padding: 48px 32px 24px; }
+}
+.footer::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(4,51,56,.18), transparent 70%);
+  filter: blur(40px);
+  z-index: 0;
+  pointer-events: none;
+}
+.footer__inner { position: relative; z-index: 1; }
+.footer__brand {
+  margin-bottom: 28px;
+}
+.footer__brandrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.footer__sprout {
+  color: var(--brand);
+}
+.footer__wordmark {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+  color: #FFFFFF;
+}
+.footer__tagline {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255,255,255,.6);
+  max-width: 280px;
+  margin: 0;
+}
+.lang {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius-pill);
+  margin-top: 14px;
+}
+.lang__btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 5px 11px;
+  border-radius: var(--radius-pill);
+  color: rgba(255,255,255,.55);
+  background: transparent;
+  transition: background 150ms var(--ease-snap), color 150ms var(--ease-snap);
+}
+.lang__btn[aria-pressed="true"] {
+  background: rgba(255,255,255,.95);
+  color: var(--ink-1);
+}
+
+.footer__cols {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 24px;
+  row-gap: 28px;
+}
+@media (max-width: 379px) {
+  .footer__cols { grid-template-columns: 1fr; }
+}
+@media (min-width: 768px) {
+  .footer__cols { grid-template-columns: repeat(4, 1fr); column-gap: 24px; }
+}
+@media (min-width: 1024px) {
+  .footer__cols { column-gap: 32px; }
+}
+.footer__colhead {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: -0.005em;
+  color: #FFFFFF;
+  margin: 0 0 10px;
+}
+.footer__link {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  color: rgba(255,255,255,.6);
+  padding: 4px 0;
+  line-height: 1.5;
+  transition: color 150ms;
+}
+.footer__link:hover { color: #FFFFFF; }
+
+.footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 11px;
+  color: rgba(255,255,255,.45);
+}
+.footer__made {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.footer__flag {
+  width: 11px;
+  height: 11px;
+  background: var(--brand);
+  display: inline-block;
+}
+
+/* ============================================================
+   ACCESSIBILITY: focus-visible only §11
+   ============================================================ */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* skip-link §11 / §F.6 */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: var(--z-alert);
+  padding: 8px 12px;
+  background: var(--ink-1);
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 0 0 8px 0;
+}
+.skip-link:focus {
+  left: 0;
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Zum Inhalt springen</a>
+
+<div class="page">
+
+  <!-- =========================================================
+       HEADER §12
+       ========================================================= -->
+  <header class="header" id="appHeader">
+    <div class="header__inner">
+      <span class="header__logo">Solen</span>
+
+      <button class="header__city" aria-label="Stadt wählen, aktuell Basel" type="button">
+        Basel
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+
+      <button class="header__bell" aria-label="Benachrichtigungen, 2 neue" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+        </svg>
+      </button>
+
+      <button class="header__avatar" aria-label="Mein Konto, Sulo" type="button">S</button>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- =========================================================
+         HERO §13
+         ========================================================= -->
+    <section class="hero" aria-labelledby="hero-greeting">
+      <div class="container hero__inner">
+
+        <!-- §13.2 counter pill -->
+        <div class="counter-pill" aria-live="polite">
+          <span class="counter-pill__dot" aria-hidden="true"></span>
+          <span>47 Salons in Basel haben heute frei</span>
+        </div>
+
+        <!-- §13.3 greeting -->
+        <h1 class="hero__greeting" id="hero-greeting">Guten Tag, Sulo.</h1>
+
+        <!-- §13.4 search bar (display-only, tap → /search) -->
+        <div class="search">
+          <div class="search__container" role="search">
+            <button class="search__row" type="button" aria-label="Service oder Salon suchen">
+              <span class="search__row-label">Was</span>
+              <span class="search__row-placeholder">Service oder Salon</span>
+            </button>
+            <button class="search__row" type="button" aria-label="Standort wählen">
+              <span class="search__row-label">Wo</span>
+              <span class="search__row-value">Basel · Kleinbasel</span>
+            </button>
+            <button class="search__row" type="button" aria-label="Datum und Zeit wählen">
+              <span class="search__row-label">Wann</span>
+              <span class="search__row-placeholder">Wann passt's?</span>
+            </button>
+          </div>
+
+          <button class="search__cta" type="button">
+            Solen durchsuchen
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- §13.6 quick chips (cold visit default order) -->
+        <div class="chips" role="group" aria-label="Schnellfilter">
+          <button class="chip" type="button">Heute</button>
+          <button class="chip" type="button">Last-Minute</button>
+          <button class="chip" type="button">In der Nähe</button>
+          <button class="chip chip--more" type="button">
+            Mehr Filter
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECTION: Heute frei in Basel — §15 + §16 (variant: availability)
+         ========================================================= -->
+    <section class="section" aria-labelledby="sec-heute">
+      <div class="section__head">
+        <h2 class="section__title" id="sec-heute">Heute frei in Basel</h2>
+        <a class="section__alle" href="/basel/heute">
+          Alle
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      <div class="hscroll">
+        <a class="card" data-cat="coiffeur" href="/salon/cremant" aria-label="Salon Crémant — Sofort frei">
+          <div class="card__photo">
+            <span class="card__initials">SC</span>
+            <span class="card__badge" aria-label="Sofort frei">
+              <span class="card__badge-dot card__badge-dot--sofort" aria-hidden="true"></span>
+              Sofort frei
+            </span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Salon Crémant</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.9
+            </span>
+          </div>
+          <div class="card__row2"><strong>In 25 Min frei</strong></div>
+        </a>
+
+        <a class="card" data-cat="barber" href="/salon/strassberg" aria-label="Strassberg Barbershop — Heute frei">
+          <div class="card__photo">
+            <span class="card__initials">SB</span>
+            <span class="card__badge" aria-label="Heute frei">
+              <span class="card__badge-dot" aria-hidden="true"></span>
+              Heute frei
+            </span>
+            <button class="card__heart card__heart--saved" aria-label="Gespeichert" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Strassberg</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.7
+            </span>
+          </div>
+          <div class="card__row2"><strong>14:30, 15:00, 16:30</strong></div>
+        </a>
+
+        <a class="card" data-cat="nails" href="/salon/nagelstube" aria-label="Nagelstube — Heute frei">
+          <div class="card__photo">
+            <span class="card__initials">NS</span>
+            <span class="card__badge" aria-label="Heute frei">
+              <span class="card__badge-dot" aria-hidden="true"></span>
+              Heute frei
+            </span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Nagelstube Klein</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.8
+            </span>
+          </div>
+          <div class="card__row2"><strong>15:15, 16:45</strong></div>
+        </a>
+
+        <a class="card" data-cat="spa" href="/salon/aare-spa" aria-label="Aare Spa">
+          <div class="card__photo">
+            <span class="card__initials">AS</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Aare Spa</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.6
+            </span>
+          </div>
+          <div class="card__row2">Nächster Termin Mo. <strong>10:00</strong></div>
+        </a>
+
+        <a class="card" data-cat="coiffeur" href="/salon/figaro" aria-label="Figaro &amp; Co — Heute frei">
+          <div class="card__photo">
+            <span class="card__initials">FC</span>
+            <span class="card__badge" aria-label="Heute frei">
+              <span class="card__badge-dot" aria-hidden="true"></span>
+              Heute frei
+            </span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Figaro &amp; Co</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.5
+            </span>
+          </div>
+          <div class="card__row2"><strong>16:00, 17:30, 18:15</strong></div>
+        </a>
+
+        <a class="card" data-cat="barber" href="/salon/north-side" aria-label="North Side Barber — Heute frei">
+          <div class="card__photo">
+            <span class="card__initials">NB</span>
+            <span class="card__badge" aria-label="Heute frei">
+              <span class="card__badge-dot" aria-hidden="true"></span>
+              Heute frei
+            </span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">North Side</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.8
+            </span>
+          </div>
+          <div class="card__row2"><strong>17:00, 17:45</strong></div>
+        </a>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         SECTION: Coiffeur in Basel — §15 + §16 (variant: service)
+         ========================================================= -->
+    <section class="section" aria-labelledby="sec-coiffeur">
+      <div class="section__head">
+        <h2 class="section__title" id="sec-coiffeur">Coiffeur in Basel</h2>
+        <a class="section__alle" href="/basel/coiffeur">
+          Alle
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      <div class="hscroll">
+        <a class="card" data-cat="coiffeur" href="/salon/cremant">
+          <div class="card__photo">
+            <span class="card__initials">SC</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Salon Crémant</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.9
+            </span>
+          </div>
+          <div class="card__row2">Schnitt + Föhnen · ab CHF <strong>85</strong></div>
+        </a>
+
+        <a class="card" data-cat="coiffeur" href="/salon/figaro">
+          <div class="card__photo">
+            <span class="card__initials">FC</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Figaro &amp; Co</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.5
+            </span>
+          </div>
+          <div class="card__row2">Damenschnitt · ab CHF <strong>72</strong></div>
+        </a>
+
+        <a class="card" data-cat="coiffeur" href="/salon/atelier-haar">
+          <div class="card__photo">
+            <span class="card__initials">AH</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Atelier Haar</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.7
+            </span>
+          </div>
+          <div class="card__row2">Balayage · ab CHF <strong>180</strong></div>
+        </a>
+
+        <a class="card" data-cat="coiffeur" href="/salon/herzschnitt">
+          <div class="card__photo">
+            <span class="card__initials">HS</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Herzschnitt</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.6
+            </span>
+          </div>
+          <div class="card__row2">Herrenschnitt · ab CHF <strong>55</strong></div>
+        </a>
+
+        <a class="card" data-cat="coiffeur" href="/salon/blond-and-co">
+          <div class="card__photo">
+            <span class="card__initials">BC</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Blond &amp; Co</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.4
+            </span>
+          </div>
+          <div class="card__row2">Tönung · ab CHF <strong>120</strong></div>
+        </a>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         SECTION: Barbershop in Basel — §15 + §16 (variant: service)
+         ========================================================= -->
+    <section class="section" aria-labelledby="sec-barber">
+      <div class="section__head">
+        <h2 class="section__title" id="sec-barber">Barbershop in Basel</h2>
+        <a class="section__alle" href="/basel/barbershop">
+          Alle
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      <div class="hscroll">
+        <a class="card" data-cat="barber" href="/salon/strassberg">
+          <div class="card__photo">
+            <span class="card__initials">SB</span>
+            <button class="card__heart card__heart--saved" aria-label="Gespeichert" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Strassberg</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.7
+            </span>
+          </div>
+          <div class="card__row2">Schnitt + Bart · ab CHF <strong>65</strong></div>
+        </a>
+
+        <a class="card" data-cat="barber" href="/salon/north-side">
+          <div class="card__photo">
+            <span class="card__initials">NB</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">North Side</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.8
+            </span>
+          </div>
+          <div class="card__row2">Klassischer Schnitt · ab CHF <strong>45</strong></div>
+        </a>
+
+        <a class="card" data-cat="barber" href="/salon/scheermesser">
+          <div class="card__photo">
+            <span class="card__initials">SM</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Scheermesser</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.9
+            </span>
+          </div>
+          <div class="card__row2">Hot-Towel-Rasur · ab CHF <strong>55</strong></div>
+        </a>
+
+        <a class="card" data-cat="barber" href="/salon/herrenhaus">
+          <div class="card__photo">
+            <span class="card__initials">HH</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Herrenhaus Basel</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.6
+            </span>
+          </div>
+          <div class="card__row2">Bartpflege · ab CHF <strong>38</strong></div>
+        </a>
+
+        <a class="card" data-cat="barber" href="/salon/oldschool">
+          <div class="card__photo">
+            <span class="card__initials">OB</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Oldschool</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.5
+            </span>
+          </div>
+          <div class="card__row2">Fade · ab CHF <strong>50</strong></div>
+        </a>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         SECTION: Nails in Basel — §15 + §16 (variant: service)
+         ========================================================= -->
+    <section class="section" aria-labelledby="sec-nails">
+      <div class="section__head">
+        <h2 class="section__title" id="sec-nails">Nails in Basel</h2>
+        <a class="section__alle" href="/basel/nails">
+          Alle
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      <div class="hscroll">
+        <a class="card" data-cat="nails" href="/salon/nagelstube">
+          <div class="card__photo">
+            <span class="card__initials">NS</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Nagelstube Klein</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.8
+            </span>
+          </div>
+          <div class="card__row2">Gel-Maniküre · ab CHF <strong>55</strong></div>
+        </a>
+
+        <a class="card" data-cat="nails" href="/salon/glanz">
+          <div class="card__photo">
+            <span class="card__initials">GL</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Glanz Studio</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.7
+            </span>
+          </div>
+          <div class="card__row2">Pediküre · ab CHF <strong>65</strong></div>
+        </a>
+
+        <a class="card" data-cat="nails" href="/salon/nagel-atelier">
+          <div class="card__photo">
+            <span class="card__initials">NA</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Nagel Atelier</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.9
+            </span>
+          </div>
+          <div class="card__row2">Nail-Art · ab CHF <strong>85</strong></div>
+        </a>
+
+        <a class="card" data-cat="nails" href="/salon/sweet-nails">
+          <div class="card__photo">
+            <span class="card__initials">SN</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Sweet Nails</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.5
+            </span>
+          </div>
+          <div class="card__row2">Shellac · ab CHF <strong>60</strong></div>
+        </a>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         SECTION: Spa & Wellness in Basel — §15 + §16 (variant: service)
+         ========================================================= -->
+    <section class="section" aria-labelledby="sec-spa">
+      <div class="section__head">
+        <h2 class="section__title" id="sec-spa">Spa &amp; Wellness in Basel</h2>
+        <a class="section__alle" href="/basel/spa">
+          Alle
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      <div class="hscroll">
+        <a class="card" data-cat="spa" href="/salon/aare-spa">
+          <div class="card__photo">
+            <span class="card__initials">AS</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Aare Spa</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.6
+            </span>
+          </div>
+          <div class="card__row2">Massage · ab CHF <strong>120</strong></div>
+        </a>
+
+        <a class="card" data-cat="spa" href="/salon/ruhe-haus">
+          <div class="card__photo">
+            <span class="card__initials">RH</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Ruhe-Haus</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.8
+            </span>
+          </div>
+          <div class="card__row2">Gesichtsbehandlung · ab CHF <strong>110</strong></div>
+        </a>
+
+        <a class="card" data-cat="spa" href="/salon/badehaus-1862">
+          <div class="card__photo">
+            <span class="card__initials">B1</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Badehaus 1862</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.9
+            </span>
+          </div>
+          <div class="card__row2">Sauna + Massage · ab CHF <strong>180</strong></div>
+        </a>
+
+        <a class="card" data-cat="spa" href="/salon/lichthaus">
+          <div class="card__photo">
+            <span class="card__initials">LH</span>
+            <button class="card__heart" aria-label="Speichern" type="button" onclick="event.preventDefault();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="card__row1">
+            <span class="card__name">Lichthaus</span>
+            <span class="card__rating">
+              <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/></svg>
+              4.7
+            </span>
+          </div>
+          <div class="card__row2">Aromatherapie · ab CHF <strong>95</strong></div>
+        </a>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         CITY TILES §19 — Solen in deiner Stadt
+         ========================================================= -->
+    <section class="section" aria-labelledby="sec-cities">
+      <div class="section__head">
+        <h2 class="section__title" id="sec-cities">Solen in deiner Stadt</h2>
+        <a class="section__alle" href="/staedte">
+          Alle
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      <div class="hscroll">
+        <a class="tile" href="/basel" aria-label="Basel — Aktuell">
+          <span class="tile__aktuell" aria-label="Aktuelle Stadt">Aktuell</span>
+          <div class="tile__content">
+            <svg class="tile__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <div>
+              <h3 class="tile__name">Basel</h3>
+              <p class="tile__meta">47 Salons</p>
+            </div>
+          </div>
+        </a>
+
+        <a class="tile" href="/zurich" aria-label="Zürich — 128 Salons">
+          <div class="tile__content">
+            <svg class="tile__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <div>
+              <h3 class="tile__name">Zürich</h3>
+              <p class="tile__meta">128 Salons</p>
+            </div>
+          </div>
+        </a>
+
+        <a class="tile" href="/bern" aria-label="Bern — 62 Salons">
+          <div class="tile__content">
+            <svg class="tile__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <div>
+              <h3 class="tile__name">Bern</h3>
+              <p class="tile__meta">62 Salons</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         B2B PROMO §20
+         ========================================================= -->
+    <div class="b2b-wrap">
+      <aside class="b2b" aria-labelledby="b2b-head">
+        <div class="b2b__blob1" aria-hidden="true"></div>
+        <div class="b2b__blob2" aria-hidden="true"></div>
+        <button class="b2b__close" type="button" aria-label="Schliessen">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <div class="b2b__inner">
+          <p class="b2b__eyebrow">Für Salons</p>
+          <h2 class="b2b__head" id="b2b-head">Solen für dein Studio.<br>Mehr Termine, weniger Anrufe.</h2>
+          <p class="b2b__sub">Beauty + Wellness Buchungen direkt online. Du behältst deinen Kalender, wir bringen dir die Kund:innen.</p>
+          <a class="b2b__cta" href="/business">
+            Mehr erfahren
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a class="b2b__second" href="/business/login">Schon Partner?</a>
+        </div>
+      </aside>
+    </div>
+
+
+    <!-- =========================================================
+         SEO LINK WALL §22 — Salons nach Stadt
+         ========================================================= -->
+    <section class="seo-wall" aria-labelledby="seo-wall-title">
+      <h2 class="seo-wall__title" id="seo-wall-title">Salons nach Stadt</h2>
+      <p class="seo-wall__intro">Finde Beauty + Wellness Salons in der ganzen Schweiz — nach Stadt und Kategorie.</p>
+
+      <div class="seo-wall__list">
+        <div class="seo-wall__row">
+          <span class="seo-wall__cat">Coiffeur</span>
+          <a class="seo-wall__link" href="/basel/coiffeur" aria-current="page">in <strong>Basel</strong></a>
+          <a class="seo-wall__link" href="/zurich/coiffeur">in <strong>Zürich</strong></a>
+          <a class="seo-wall__link" href="/bern/coiffeur">in <strong>Bern</strong></a>
+        </div>
+        <div class="seo-wall__row">
+          <span class="seo-wall__cat">Barbershop</span>
+          <a class="seo-wall__link" href="/basel/barbershop" aria-current="page">in <strong>Basel</strong></a>
+          <a class="seo-wall__link" href="/zurich/barbershop">in <strong>Zürich</strong></a>
+          <a class="seo-wall__link" href="/bern/barbershop">in <strong>Bern</strong></a>
+        </div>
+        <div class="seo-wall__row">
+          <span class="seo-wall__cat">Nails</span>
+          <a class="seo-wall__link" href="/basel/nails" aria-current="page">in <strong>Basel</strong></a>
+          <a class="seo-wall__link" href="/zurich/nails">in <strong>Zürich</strong></a>
+          <a class="seo-wall__link" href="/bern/nails">in <strong>Bern</strong></a>
+        </div>
+        <div class="seo-wall__row">
+          <span class="seo-wall__cat">Spa &amp; Wellness</span>
+          <a class="seo-wall__link" href="/basel/spa" aria-current="page">in <strong>Basel</strong></a>
+          <a class="seo-wall__link" href="/zurich/spa">in <strong>Zürich</strong></a>
+          <a class="seo-wall__link" href="/bern/spa">in <strong>Bern</strong></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- =========================================================
+       FOOTER §21
+       ========================================================= -->
+  <footer class="footer">
+    <div class="footer__inner">
+
+      <div class="footer__brand">
+        <div class="footer__brandrow">
+          <!-- Sprout glyph: stem + 2 sprouting leaves §21.3 -->
+          <svg class="footer__sprout" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="14" y1="26" x2="14" y2="13"></line>
+            <path d="M14 16 C 9 14, 5 10, 5 6 C 9 6, 13 9, 14 14"></path>
+            <path d="M14 12 C 19 10, 23 7, 23 3 C 19 3, 15 5, 14 10"></path>
+          </svg>
+          <span class="footer__wordmark">Solen</span>
+        </div>
+        <p class="footer__tagline">Die Schweizer Salon-Plattform. Buche Beauty + Wellness in Basel, Zürich, Bern.</p>
+
+        <div class="lang" role="group" aria-label="Sprache wählen">
+          <button class="lang__btn" type="button" aria-label="Sprache: Deutsch" aria-pressed="true">DE</button>
+          <button class="lang__btn" type="button" aria-label="Language: English" aria-pressed="false">EN</button>
+          <button class="lang__btn" type="button" aria-label="Langue: Français" aria-pressed="false">FR</button>
+          <button class="lang__btn" type="button" aria-label="Lingua: Italiano" aria-pressed="false">IT</button>
+        </div>
+      </div>
+
+      <div class="footer__cols">
+        <div>
+          <h3 class="footer__colhead">Solen</h3>
+          <a class="footer__link" href="/ueber-uns">Über uns</a>
+          <a class="footer__link" href="/karriere">Karriere</a>
+          <a class="footer__link" href="/press">Press</a>
+          <a class="footer__link" href="/kontakt">Kontakt</a>
+          <a class="footer__link" href="/blog">Blog</a>
+        </div>
+        <div>
+          <h3 class="footer__colhead">Entdecken</h3>
+          <a class="footer__link" href="/alle-salons">Alle Salons</a>
+          <a class="footer__link" href="/basel/coiffeur">Coiffeur</a>
+          <a class="footer__link" href="/basel/barbershop">Barber</a>
+          <a class="footer__link" href="/basel/nails">Nails</a>
+          <a class="footer__link" href="/basel/spa">Spa &amp; Wellness</a>
+          <a class="footer__link" href="/basel/heute">Heute frei</a>
+        </div>
+        <div>
+          <h3 class="footer__colhead">Für Salons</h3>
+          <a class="footer__link" href="/business">Werde Partner</a>
+          <a class="footer__link" href="/business/pricing">Pricing</a>
+          <a class="footer__link" href="/business/login">Salon-Login</a>
+          <a class="footer__link" href="/business/hilfe">Hilfe für Salons</a>
+        </div>
+        <div>
+          <h3 class="footer__colhead">Rechtliches</h3>
+          <a class="footer__link" href="/agb">AGB</a>
+          <a class="footer__link" href="/datenschutz">Datenschutz</a>
+          <a class="footer__link" href="/impressum">Impressum</a>
+          <a class="footer__link" href="/cookies">Cookies</a>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <span>© 2026 Solen GmbH</span>
+        <span class="footer__made">
+          <span class="footer__flag" aria-hidden="true"></span>
+          Made in Switzerland
+        </span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// §12.7 sticky shadow on scroll
+(function() {
+  const header = document.getElementById('appHeader');
+  if (!header) return;
+  const onScroll = () => {
+    if (window.scrollY > 8) header.classList.add('is-stuck');
+    else header.classList.remove('is-stuck');
+  };
+  document.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+
+</body>
+</html>

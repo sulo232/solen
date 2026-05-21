@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solen V3 — Hero options A + C</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+  <style>
+    /* Cooper Black on fontcdn.com is currently HTTP 500. Sansita 900 from Google
+       Fonts is the V3-locked free fallback (chunky-serif, Cooper-ish). Loading
+       both — Sansita does the real work, Cooper is aspirational. */
+    @import url('https://fonts.googleapis.com/css2?family=Sansita:wght@900&display=swap');
+    @import url('https://fonts.cdnfonts.com/css/cooper-black-std');
+    @import url('https://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std');
+
+    :root {
+      --ink: #1A1209;
+      --ink-2: #56463E;
+      --ink-3: #7A6957;
+      --brand: #043338;
+      --brand-pale: #C2F0F1;
+      --brand-subtle: #E1F4F4;
+      --display: 'Cooper BT', 'Cooper Black Std', 'Sansita', Georgia, serif;
+      --body: 'ITC Avant Garde Gothic Std', 'Avant Garde', system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: #fff; }
+    body {
+      background: transparent;
+      font-family: var(--body);
+      color: var(--ink);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Page-wide §5g atmosphere wash */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: -15%;
+      background:
+        radial-gradient(ellipse 70% 50% at 75% 12%, rgba(202, 232, 255, 0.32) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 50% at 18% 22%, rgba(194, 240, 241, 0.28) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 45% at 92% 48%, rgba(0, 88, 152, 0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 8% 72%, rgba(194, 240, 241, 0.26) 0%, transparent 65%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Page label / nav */
+    .pagewrap {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0;
+    }
+    .opt-label {
+      font-family: var(--body);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--brand);
+      padding: 24px 20px 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .opt-label::before {
+      content: '';
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #fff;
+      display: inline-grid;
+      place-items: center;
+      font-family: var(--display);
+      font-size: 14px;
+      font-weight: 900;
+      padding-top: 1px;
+    }
+    .opt-label.A::before { content: 'A'; }
+    .opt-label.C::before { content: 'C'; }
+    .opt-note {
+      font-family: var(--body);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--ink-2);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    /* Header */
+    .nav {
+      background: rgba(255,255,255,0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: 28px;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      line-height: 1;
+      display: inline-flex;
+      align-items: baseline;
+    }
+    .nav-logo::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--brand);
+      margin-left: 2px;
+      transform: translateY(-2px);
+    }
+    .nav-burger {
+      width: 44px; height: 44px;
+      display: grid; place-items: center;
+      background: transparent;
+      border: 0;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    /* Hero base */
+    .hero {
+      padding: 36px 20px 60px;
+      display: flex;
+      flex-direction: column;
+    }
+    .hero-eyebrow {
+      font-family: var(--body);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      white-space: nowrap;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brand);
+    }
+    .hero-h1 {
+      font-family: var(--display);
+      font-weight: 900;
+      /* Match React Hero.tsx exactly so static preview reads at the same scale */
+      font-size: clamp(40px, 7vw, 96px);
+      line-height: 0.95;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+    .hero-h1 em {
+      font-style: normal;
+      color: var(--brand);
+      position: relative;
+    }
+    .hero-deck {
+      font-family: var(--body);
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--ink-2);
+      max-width: 520px;
+      margin-bottom: 28px;
+    }
+    .hero-deck a {
+      color: var(--brand);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* Search bar */
+    .search-bar {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 16px;
+      padding: 8px;
+      box-shadow: 0 1px 3px rgba(50,47,44,0.04), 0 4px 12px rgba(50,47,44,0.04);
+      max-width: 540px;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+    .search-row + .search-row { border-top: 1px solid rgba(0,0,0,0.05); }
+    .search-row.is-active { background: rgba(4, 51, 56, 0.05); }
+    .search-icon {
+      flex-shrink: 0;
+      color: var(--ink-2);
+      width: 18px; height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .search-label {
+      font-family: var(--body);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-3);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      width: 56px;
+      flex-shrink: 0;
+    }
+    .search-value {
+      font-family: var(--body);
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--ink);
+      flex: 1;
+      min-width: 0;
+    }
+    .search-value.placeholder {
+      color: var(--ink-3);
+      font-weight: 400;
+    }
+    .search-submit {
+      background: var(--ink);
+      color: #fff;
+      border: 0;
+      border-radius: 999px;
+      padding: 16px;
+      font-family: var(--body);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ───────────── OPTION A — Cut hard (drop deck only, keep eyebrow) ───────────── */
+    /* Just hide the deck via a class. Hero structure unchanged. */
+    .variant-A .hero-deck { display: none; }
+
+    /* ───────────── OPTION C — Cut + Add playful ───────────── */
+    /* C-1: Animated brand-teal underline draws across "buchen" on mount */
+    .variant-C .hero-h1 em::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      height: 4px;
+      width: 100%;
+      background: var(--brand);
+      border-radius: 4px;
+      transform-origin: left center;
+      transform: scaleX(0);
+      animation: underlineDraw 700ms cubic-bezier(0.22, 1, 0.36, 1) 400ms forwards;
+    }
+    @keyframes underlineDraw {
+      0%   { transform: scaleX(0); opacity: 0; }
+      30%  { opacity: 1; }
+      100% { transform: scaleX(1); opacity: 1; }
+    }
+
+    /* C-2: Eyebrow gets a subtle "twinkle" — an extra dot that fades in */
+    .variant-C .hero-eyebrow::after {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--brand);
+      opacity: 0.4;
+      margin-left: 6px;
+      animation: twinkle 2.4s ease-in-out infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50%      { opacity: 0.7; transform: scale(1.2); }
+    }
+
+    /* C-3: Playful deck copy — short + warm, replaces the value-prop deck */
+    .variant-C .hero-deck {
+      font-style: normal;
+      font-weight: 500;
+    }
+    .variant-C .hero-deck strong {
+      font-weight: 700;
+      color: var(--ink);
+      font-style: normal;
+    }
+
+    /* C-4: Active search row gets a soft pulsing dot accent */
+    .variant-C .search-row.is-active {
+      background: rgba(4, 51, 56, 0.05);
+      position: relative;
+    }
+    .variant-C .search-row.is-active::after {
+      content: '';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brand);
+      animation: pulseDot 1.8s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 0.4; transform: translateY(-50%) scale(0.85); }
+      50%      { opacity: 1;   transform: translateY(-50%) scale(1.15); }
+    }
+
+    /* Divider between options */
+    .opt-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,0,0,0.08), transparent);
+      margin: 0 0;
+    }
+
+    /* SVG icons inline so they show without external deps */
+    .icon-search, .icon-pin, .icon-calendar, .icon-menu {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="pagewrap">
+
+    <!-- ════════════════ OPTION A ════════════════ -->
+    <div class="opt-label A">
+      <span class="opt-note">Cut hard — drop the deck, keep eyebrow + h1 + search</span>
+    </div>
+
+    <div class="variant-A">
+      <nav class="nav">
+        <span class="nav-logo">Solen</span>
+        <button class="nav-burger" aria-label="Menü öffnen">
+          <svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </nav>
+
+      <section class="hero">
+        <span class="hero-eyebrow">Beauty in der Schweiz</span>
+        <h1 class="hero-h1">Schöner aussehen, schneller <em>buchen</em>.</h1>
+        <p class="hero-deck">
+          Top-Salons in deiner Stadt — ohne Anrufen, ohne Warten.
+          <a href="#">So funktioniert's →</a>
+        </p>
+
+        <div class="search-bar">
+          <div class="search-row is-active">
+            <span class="search-icon">
+              <svg class="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7"/>
+                <path d="m21 21-4.3-4.3"/>
+              </svg>
+            </span>
+            <span class="search-label">Was</span>
+            <span class="search-value placeholder">Service oder Salon</span>
+          </div>
+          <div class="search-row">
+            <span class="search-icon">
+              <svg class="icon-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <span class="search-label">Wo</span>
+            <span class="search-value placeholder">Für deine Stadt</span>
+          </div>
+          <div class="search-row">
+            <span class="search-icon">
+              <svg class="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18"/>
+              </svg>
+            </span>
+            <span class="search-label">Wann</span>
+            <span class="search-value">Heute · jederzeit</span>
+          </div>
+          <button class="search-submit">Solen durchsuchen</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="opt-divider"></div>
+
+    <!-- ════════════════ OPTION C ════════════════ -->
+    <div class="opt-label C">
+      <span class="opt-note">Cut + add playful — animated underline, eyebrow twinkle, pulse dot, warmer deck</span>
+    </div>
+
+    <div class="variant-C">
+      <nav class="nav">
+        <span class="nav-logo">Solen</span>
+        <button class="nav-burger" aria-label="Menü öffnen">
+          <svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </nav>
+
+      <section class="hero">
+        <span class="hero-eyebrow">Beauty in der Schweiz</span>
+        <h1 class="hero-h1">Schöner aussehen, schneller <em>buchen</em>.</h1>
+        <p class="hero-deck">
+          Schnitt, Maniküre, Massage — <strong>getappt</strong> statt angerufen.
+          <a href="#">So funktioniert's →</a>
+        </p>
+
+        <div class="search-bar">
+          <div class="search-row is-active">
+            <span class="search-icon">
+              <svg class="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7"/>
+                <path d="m21 21-4.3-4.3"/>
+              </svg>
+            </span>
+            <span class="search-label">Was</span>
+            <span class="search-value placeholder">Service oder Salon</span>
+          </div>
+          <div class="search-row">
+            <span class="search-icon">
+              <svg class="icon-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <span class="search-label">Wo</span>
+            <span class="search-value placeholder">Für deine Stadt</span>
+          </div>
+          <div class="search-row">
+            <span class="search-icon">
+              <svg class="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18"/>
+              </svg>
+            </span>
+            <span class="search-label">Wann</span>
+            <span class="search-value">Heute · jederzeit</span>
+          </div>
+          <button class="search-submit">Solen durchsuchen</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="opt-divider"></div>
+    <div style="padding: 32px 20px 64px; font-family: var(--body); font-size: 13px; color: var(--ink-3); line-height: 1.6;">
+      <strong style="color: var(--ink); font-weight: 700;">What changed in C vs A:</strong><br/>
+      • Animated brand-teal underline draws across "<em style="color: var(--brand); font-style: normal; font-weight: 700;">buchen</em>" on mount (700ms ease-out, 400ms delay)<br/>
+      • Eyebrow gets a subtle pulsing dot after the text (2.4s breathing animation)<br/>
+      • Active search row gets a tiny pulsing brand-teal dot on the right (1.8s breathing)<br/>
+      • Deck rewritten: "Schnitt, Maniküre, Massage — getappt statt angerufen." (3 specific things + a German pun: getappt/angerufen)<br/>
+      <br/>
+      All animations respect <code>prefers-reduced-motion</code> when wired into React (CSS-only here for demo).
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+"use client";
+
+import { useEffect, useState, useRef } from "react";
+import { useTranslations } from "next-intl";
+import { motion, AnimatePresence } from "framer-motion";
+import { Check, X, Loader2 } from "lucide-react";
+
+interface AISuggestionProps {
+  conversationId: string;
+  salonName: string;
+  salonServices: string[];
+  lastCustomerMessage: string | null;
+  onAccept: (text: string) => void;
+  visible: boolean;
+}
+
+export default function AISuggestion({
+  conversationId,
+  salonName,
+  salonServices,
+  lastCustomerMessage,
+  onAccept,
+  visible,
+}: AISuggestionProps) {
+  const t = useTranslations("chat.aiSuggestion") as any;
+  const [suggestion, setSuggestion] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const lastMsgRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!visible || !lastCustomerMessage || lastCustomerMessage === lastMsgRef.current) return;
+    setDismissed(false);
+
+    const timeout = setTimeout(async () => {
+      lastMsgRef.current = lastCustomerMessage;
+      setLoading(true);
+      setSuggestion(null);
+
+      try {
+        const res = await fetch("/api/chat/suggest", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            customerMessage: lastCustomerMessage,
+            salonName,
+            salonServices,
+          }),
+        });
+
+        if (res.status === 204 || !res.ok) {
+          setSuggestion(null);
+          return;
+        }
+
+        const data = await res.json();
+        if (data.suggestion) setSuggestion(data.suggestion);
+      } catch {
+        setSuggestion(null);
+      } finally {
+        setLoading(false);
+      }
+    }, 1000); // debounce 1s
+
+    return () => clearTimeout(timeout);
+  }, [lastCustomerMessage, visible, salonName, salonServices]);
+
+  const show = visible && !dismissed && (loading || !!suggestion);
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2 }}
+          className="mx-4 mb-2 bg-s-blue-subtle border border-s-blue/20 rounded-[12px] p-3"
+        >
+          {loading ? (
+            <div className="flex items-center gap-2 text-s-blue text-sm">
+              <Loader2 size={14} className="animate-spin" />
+              <span>{t("loading")}</span>
+            </div>
+          ) : suggestion ? (
+            <div>
+              <p className="text-sm text-s-ink mb-2">
+                <span className="font-medium">{t("suggestedReply")} </span>
+                {suggestion}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => { onAccept(suggestion); setDismissed(true); }}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-btn bg-s-blue/10 text-s-blue text-xs font-medium hover:bg-s-blue/20:bg-s-blue/30 transition-colors"
+                >
+                  <Check size={12} /> {t("accept")}
+                </button>
+                <button
+                  onClick={() => setDismissed(true)}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-btn bg-s-bg-sunken text-s-ink/60 text-xs font-medium hover:bg-s-sand:bg-s-ink/60 transition-colors"
+                >
+                  <X size={12} /> {t("dismiss")}
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}

@@ -3,9 +3,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Star, MessageSquareWarning, Check, EyeOff, Trash2, X } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
-import EmptyState from "@/components/ui/EmptyState";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
+import EmptyState from "@/components-legacy/ui/EmptyState";
 import { containerVariants, itemVariants } from "@/lib/animations";
 
 interface Review {
@@ -30,7 +30,7 @@ function Stars({ rating }: { rating: number }) {
         <Star
           key={i}
           size={12}
-          className={i <= rating ? "fill-s-coral text-s-coral" : "text-s-ink/20 dark:text-s-dm-text/20"}
+          className={i <= rating ? "fill-s-amber text-s-amber" : "text-s-ink/20"}
         />
       ))}
     </div>
@@ -49,11 +49,11 @@ function DeleteModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-v5-float w-full max-w-sm p-6">
-        <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-2">Bewertung löschen</h3>
-        <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-5">Bewertung endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.</p>
+      <div className="bg-white rounded-[12px] shadow-v5-float w-full max-w-sm p-6">
+        <h3 className="font-heading text-base text-s-ink mb-2">Bewertung löschen</h3>
+        <p className="text-sm text-s-ink/50 mb-5">Bewertung endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button
             onClick={onConfirm}
             disabled={loading}
@@ -136,8 +136,8 @@ export default function ReviewModerationPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">Bewertungs-Moderation</h1>
-        <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">Gemeldete und neue Bewertungen prüfen</p>
+        <h1 className="font-heading text-2xl text-s-ink">Bewertungs-Moderation</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">Gemeldete und neue Bewertungen prüfen</p>
       </div>
 
       {/* Tabs */}
@@ -150,7 +150,7 @@ export default function ReviewModerationPage() {
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${
-              tab === t.id ? "bg-s-coral text-white" : "bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral"
+              tab === t.id ? "bg-s-coral text-white" : "bg-white border border-s-ink/10 text-s-ink/60 hover:border-s-coral"
             }`}
           >
             {t.label}
@@ -169,29 +169,29 @@ export default function ReviewModerationPage() {
             <motion.div
               key={r.id}
               variants={itemVariants}
-              className={`bg-white dark:bg-s-dm-surface rounded-[12px] border shadow-warm-md p-4 ${
-                r.is_hidden ? "border-s-coral/30 bg-s-coral/[0.02]" : r.is_flagged ? "border-s-coral/30" : "border-s-ink/5 dark:border-white/5"
+              className={`bg-white rounded-[12px] border shadow-warm-md p-4 ${
+                r.is_hidden ? "border-s-coral/30 bg-s-coral/[0.02]" : r.is_flagged ? "border-s-coral/30" : "border-s-ink/5"
               }`}
             >
               {/* Header */}
               <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <Stars rating={r.rating} />
-                <span className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
-                  Kunde: <strong className="text-s-ink/70 dark:text-s-dm-text/70">{r.profiles?.display_name ?? "Anonym"}</strong>
+                <span className="text-xs text-s-ink/50">
+                  Kunde: <strong className="text-s-ink/70">{r.profiles?.display_name ?? "Anonym"}</strong>
                 </span>
-                <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">·</span>
-                <span className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
-                  Salon: <strong className="text-s-ink/70 dark:text-s-dm-text/70">{r.salons?.name ?? "—"}</strong>
+                <span className="text-xs text-s-ink/30">·</span>
+                <span className="text-xs text-s-ink/50">
+                  Salon: <strong className="text-s-ink/70">{r.salons?.name ?? "—"}</strong>
                 </span>
-                <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">·</span>
-                <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">
+                <span className="text-xs text-s-ink/30">·</span>
+                <span className="text-xs text-s-ink/30">
                   {new Date(r.created_at).toLocaleDateString("de-CH")}
                 </span>
               </div>
 
               {/* Comment */}
               {r.comment && (
-                <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 mb-2">&ldquo;{r.comment}&rdquo;</p>
+                <p className="text-sm text-s-ink/70 mb-2">&ldquo;{r.comment}&rdquo;</p>
               )}
 
               {/* Flag + hidden badges */}
@@ -212,7 +212,7 @@ export default function ReviewModerationPage() {
               {r.admin_response && (
                 <div className="bg-s-coral/5 rounded-btn p-3 mb-3">
                   <p className="text-[10px] font-bold text-s-coral mb-1">Admin-Antwort</p>
-                  <p className="text-xs text-s-ink/70 dark:text-s-dm-text/70">{r.admin_response}</p>
+                  <p className="text-xs text-s-ink/70">{r.admin_response}</p>
                 </div>
               )}
 
@@ -224,7 +224,7 @@ export default function ReviewModerationPage() {
                     placeholder="Öffentliche Antwort schreiben..."
                     value={adminResponses[r.id] ?? ""}
                     onChange={(e) => setAdminResponses((prev) => ({ ...prev, [r.id]: e.target.value }))}
-                    className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text text-xs focus:outline-none focus:border-s-coral"
+                    className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-s-ink text-xs focus:outline-none focus:border-s-coral"
                   />
                   <button
                     onClick={() => handleAdminResponse(r.id)}
@@ -237,7 +237,7 @@ export default function ReviewModerationPage() {
               )}
 
               {/* Actions */}
-              <div className="flex items-center gap-2 pt-2 border-t border-s-ink/5 dark:border-white/5">
+              <div className="flex items-center gap-2 pt-2 border-t border-s-ink/5">
                 <button
                   onClick={() => handleAction(r.id, "approve")}
                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"

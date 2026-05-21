@@ -3,23 +3,23 @@
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import CategoryTabBar from "@/components/discovery/CategoryTabBar";
-import MasonryGrid from "@/components/discovery/MasonryGrid";
-import ItemCard from "@/components/discovery/ItemCard";
-import VideoCard from "@/components/discovery/VideoCard";
-import DiscoverySearchBar from "@/components/discovery/SearchBar";
-import DiscoveryGridSkeleton from "@/components/discovery/DiscoveryGridSkeleton";
-import DiscoveryEmptyState from "@/components/discovery/DiscoveryEmptyState";
-import ProfileSetupModal from "@/components/discovery/ProfileSetupModal";
-import InlinePrefsPanel from "@/components/discovery/InlinePrefsPanel";
-import FeaturedBoards from "@/components/discovery/FeaturedBoards";
-import FilterDrawer from "@/components/discovery/FilterDrawer";
-import DiscoveryErrorState from "@/components/discovery/DiscoveryErrorState";
-import PostFromDiscover from "@/components/discovery/PostFromDiscover";
-import ForYouSection from "@/components/discovery/ForYouSection";
-import AISuggestionPills from "@/components/discovery/AISuggestionPills";
-import DiscoveryAdmin from "@/components/discovery/DiscoveryAdmin";
-import FilterBar from "@/components/ui/FilterBar";
+import CategoryTabBar from "@/components-legacy/discovery/CategoryTabBar";
+import MasonryGrid from "@/components-legacy/discovery/MasonryGrid";
+import ItemCard from "@/components-legacy/discovery/ItemCard";
+import VideoCard from "@/components-legacy/discovery/VideoCard";
+import DiscoverySearchBar from "@/components-legacy/discovery/SearchBar";
+import DiscoveryGridSkeleton from "@/components-legacy/discovery/DiscoveryGridSkeleton";
+import DiscoveryEmptyState from "@/components-legacy/discovery/DiscoveryEmptyState";
+import ProfileSetupModal from "@/components-legacy/discovery/ProfileSetupModal";
+import InlinePrefsPanel from "@/components-legacy/discovery/InlinePrefsPanel";
+import FeaturedBoards from "@/components-legacy/discovery/FeaturedBoards";
+import FilterDrawer from "@/components-legacy/discovery/FilterDrawer";
+import DiscoveryErrorState from "@/components-legacy/discovery/DiscoveryErrorState";
+import PostFromDiscover from "@/components-legacy/discovery/PostFromDiscover";
+import ForYouSection from "@/components-legacy/discovery/ForYouSection";
+import AISuggestionPills from "@/components-legacy/discovery/AISuggestionPills";
+import DiscoveryAdmin from "@/components-legacy/discovery/DiscoveryAdmin";
+import FilterBar from "@/components-legacy/ui/FilterBar";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
 
 function DiscoverPageContent() {
@@ -219,15 +219,15 @@ function DiscoverPageContent() {
   ];
 
   return (
-    <main className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg pt-4 pb-24">
+    <main className="min-h-screen bg-white pt-4 pb-24">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.05] tracking-[-0.02em] text-s-ink dark:text-s-dm-text">
+            <h1 className="font-heading text-[clamp(28px,4vw,44px)] leading-[1.05] tracking-[0.01em] text-s-ink">
               {t("title")}
             </h1>
-            <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40 mt-1.5">
+            <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 mt-1.5">
               {t("subtitle")}
             </p>
           </div>

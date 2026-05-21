@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen Reviews — Fresha-style carousel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #7A6957;
+    --bg: #F5EBDD;
+    --bg-card: #FAF2E5;
+    --rule: #E8DDC9;
+    --brand: #1F5C42;
+    --brand-mid: #0F3D26;
+    --accent: #C97A57;
+    --star: #F3A864;
+  }
+  html, body {
+    font-family: 'Open Sauce One', Inter, system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    min-height: 100vh;
+  }
+  body {
+    padding: 64px 0 120px;
+    line-height: 1.55;
+  }
+  .section {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .section-title {
+    font-family: 'Peace Sans', Impact, sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 3.5vw, 44px);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .section-link {
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--brand);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .section-link:hover { color: var(--brand-mid); }
+
+  /* Carousel */
+  .carousel {
+    position: relative;
+  }
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .cards-row::-webkit-scrollbar { display: none; }
+
+  @media (max-width: 968px) {
+    .cards-row {
+      grid-template-columns: repeat(4, minmax(280px, 1fr));
+      grid-auto-flow: column;
+      gap: 14px;
+      padding: 0 24px;
+      margin: 0 -24px;
+    }
+  }
+
+  /* Card */
+  .card {
+    scroll-snap-align: start;
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+    border: 1px solid var(--rule);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+    position: relative;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(31, 23, 9, 0.08);
+  }
+
+  .stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--star);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .body {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+    margin-bottom: auto;
+    padding-bottom: 24px;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .footer {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+  }
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: #E8DDC9;
+    color: var(--brand);
+    font-family: 'Peace Sans', Impact, sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+  .person {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+  .name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .meta {
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.3;
+  }
+  .salon-pill {
+    margin-top: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--brand);
+    text-decoration: none;
+  }
+  .salon-pill::before {
+    content: '🏪';
+    font-size: 11px;
+  }
+  .salon-pill::after {
+    content: '›';
+    font-size: 14px;
+    opacity: 0.7;
+  }
+
+  /* Arrow buttons */
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    font-size: 18px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 14px rgba(31, 23, 9, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 2;
+  }
+  .arrow:hover {
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 6px 20px rgba(31, 23, 9, 0.12);
+  }
+  .arrow-left { left: -22px; }
+  .arrow-right { right: -22px; }
+
+  @media (max-width: 968px) {
+    .arrow { display: none; }
+  }
+
+  .footer-note {
+    max-width: 1280px;
+    margin: 60px auto 0;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-3);
+    padding: 0 24px;
+  }
+  .footer-note code {
+    background: var(--bg-card);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 11px;
+    color: var(--ink);
+  }
+</style>
+</head>
+<body>
+
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">Bewertungen</h2>
+    <a class="section-link" href="#">Alle Bewertungen →</a>
+  </div>
+
+  <div class="carousel">
+    <button class="arrow arrow-left" aria-label="Vorherige">‹</button>
+
+    <div class="cards-row">
+
+      <div class="card">
+        <div class="stars" aria-hidden="true">★★★★★</div>
+        <p class="body">"Termin in 30 Sekunden, keine Anrufe, keine Vorab-Zahlung. Salon Maria war wie immer top, aber die Buchung über Solen war diesmal einfach besser."</p>
+        <div class="footer">
+          <div class="avatar">LK</div>
+          <div class="person">
+            <div class="name">Lara K.</div>
+            <div class="meta">Basel · vor 2 Wochen</div>
+            <a class="salon-pill" href="#">Salon Maria</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="stars" aria-hidden="true">★★★★★</div>
+        <p class="body">"Last-Minute heute Abend zu Bohème: 25% Rabatt und der beste Fade meines Lebens. Die Heute-frei-Anzeige ist Gold wert wenn man spontan ist."</p>
+        <div class="footer">
+          <div class="avatar">MH</div>
+          <div class="person">
+            <div class="name">Marc H.</div>
+            <div class="meta">Basel · vor 5 Tagen</div>
+            <a class="salon-pill" href="#">Bohème</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="stars" aria-hidden="true">★★★★★</div>
+        <p class="body">"Habe einen Look auf Entdecken gespeichert und konnte direkt buchen, same-day. Die Stylistin hatte das Foto schon offen als ich ankam. Magic."</p>
+        <div class="footer">
+          <div class="avatar">SR</div>
+          <div class="person">
+            <div class="name">Sara R.</div>
+            <div class="meta">Zürich · vor 1 Woche</div>
+            <a class="salon-pill" href="#">Nail Lab</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="stars" aria-hidden="true">★★★★★</div>
+        <p class="body">"Endlich kein Telefonieren mehr. Drei Optionen verglichen, eine gebucht, fertig in unter zwei Minuten. So sollte das überall funktionieren."</p>
+        <div class="footer">
+          <div class="avatar">AM</div>
+          <div class="person">
+            <div class="name">Anna M.</div>
+            <div class="meta">Bern · vor 3 Tagen</div>
+            <a class="salon-pill" href="#">Rhein Spa</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="arrow arrow-right" aria-label="Nächste">›</button>
+  </div>
+</section>
+
+<p class="footer-note">Solen brand tokens (Peace Sans display, Open Sauce body, amber stars `#F3A864`, emerald `#1F5C42` for salon link) applied to Fresha's horizontal carousel + arrow-button pattern. Replaces the current vertical marquee in <code>Reviews.tsx</code> + <code>TestimonialsColumn.tsx</code>.</p>
+
+</body>
+</html>

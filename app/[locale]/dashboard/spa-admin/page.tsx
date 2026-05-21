@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { DoorOpen, ShieldCheck, BookHeart, ClipboardCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import RoomManager from "@/components/dashboard/spa/RoomManager";
-import SpaIntake from "@/components/dashboard/spa/SpaIntake";
-import WellnessJournal from "@/components/dashboard/spa/WellnessJournal";
-import ContraindicationAlert from "@/components/dashboard/spa/ContraindicationAlert";
-import TreatmentOutcome from "@/components/dashboard/spa/TreatmentOutcome";
-import ClientSelectorDropdown from "@/components/shared/ClientSelectorDropdown";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import RoomManager from "@/components-legacy/dashboard/spa/RoomManager";
+import SpaIntake from "@/components-legacy/dashboard/spa/SpaIntake";
+import WellnessJournal from "@/components-legacy/dashboard/spa/WellnessJournal";
+import ContraindicationAlert from "@/components-legacy/dashboard/spa/ContraindicationAlert";
+import TreatmentOutcome from "@/components-legacy/dashboard/spa/TreatmentOutcome";
+import ClientSelectorDropdown from "@/components-legacy/shared/ClientSelectorDropdown";
 
 type Tab = "rooms" | "intake" | "journal" | "outcome";
 
@@ -46,8 +46,8 @@ export default function SpaAdminPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-6">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 mb-1">Spa</p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/50 mb-1">Spa</p>
+        <h1 className="font-heading text-[28px] text-s-ink leading-none">
           {t("pageTitle")}
         </h1>
       </div>
@@ -59,10 +59,10 @@ export default function SpaAdminPage() {
             key={id}
             onClick={() => setActiveTab(id)}
             aria-label={t(labelKey)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading font-semibold whitespace-nowrap transition-colors duration-150 shrink-0 ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading whitespace-nowrap transition-colors duration-150 shrink-0 ${
               activeTab === id
-                ? "bg-s-coral text-white shadow-coral-glow"
-                : "bg-s-ink/[0.05] text-s-ink/55 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/55 hover:bg-s-ink/[0.09]"
+                ? "bg-s-coral text-white shadow-elevation-2"
+                : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
             }`}
           >
             <Icon size={12} />
@@ -73,8 +73,8 @@ export default function SpaAdminPage() {
 
       {/* Client selector for non-room tabs */}
       {needsClient && (
-        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 mb-4">
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-ink/45 dark:text-s-dm-text/45 mb-2">
+        <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4 mb-4">
+          <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink/45 mb-2">
             {t("selectClient")}
           </p>
           <ClientSelectorDropdown
@@ -88,7 +88,7 @@ export default function SpaAdminPage() {
 
       {loading ? (
         <div className="animate-pulse space-y-4">
-          <div className="h-64 bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[12px]" />
+          <div className="h-64 bg-s-ink/[0.04] rounded-[12px]" />
         </div>
       ) : !salonId ? null : (
         <div className="space-y-4">
@@ -124,8 +124,8 @@ export default function SpaAdminPage() {
 
 function EmptyClientPrompt({ label }: { label: string }) {
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] border-dashed p-12 text-center bg-white dark:bg-s-dm-surface">
-      <p className="text-xs font-heading text-s-ink/50 dark:text-s-dm-text/50 uppercase tracking-[.10em]">{label}</p>
+    <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-12 text-center bg-white">
+      <p className="text-xs font-heading text-s-ink/50 uppercase tracking-[.10em]">{label}</p>
     </div>
   );
 }

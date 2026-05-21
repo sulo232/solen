@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { isValidCitySlug, getCityName, type CitySlug } from "@/lib/cities";
 import { buildAlternates } from "@/lib/seo";
-import CityPage from "@/components/CityPage";
+import CityPage from "@/components-legacy/CityPage";
 
 interface Props {
   params: Promise<{ locale: string; city: string }>;

@@ -71,6 +71,7 @@ export const createConversationSchema = z.object({
 
 export const createPaymentIntentSchema = z.object({
   salon_id: uuid,
+  service_id: uuid,
   service_name: z.string().max(200).optional(),
   estimated_price: z.number().positive(),
   deposit_amount: z.number().positive(),

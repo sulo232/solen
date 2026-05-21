@@ -7,14 +7,14 @@ import {
 } from "recharts";
 import { useLocale } from "next-intl";
 import { TrendingUp, TrendingDown, Calendar, Users, Scissors, UsersRound, ToggleLeft, ToggleRight } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
-import HeatmapChart from "@/components/dashboard/HeatmapChart";
-import StaffComparison from "@/components/dashboard/StaffComparison";
-import BarberLeaderboard from "@/components/dashboard/barber/BarberLeaderboard";
-import ForecastWidget from "@/components/dashboard/ForecastWidget";
-import { DateRangePicker, type DateRange } from "@/components/ui/DateRangePicker";
-import { ExportButton } from "@/components/ui/ExportButton";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
+import HeatmapChart from "@/components-legacy/dashboard/HeatmapChart";
+import StaffComparison from "@/components-legacy/dashboard/StaffComparison";
+import BarberLeaderboard from "@/components-legacy/dashboard/barber/BarberLeaderboard";
+import ForecastWidget from "@/components-legacy/dashboard/ForecastWidget";
+import { DateRangePicker, type DateRange } from "@/components-legacy/ui/DateRangePicker";
+import { ExportButton } from "@/components-legacy/ui/ExportButton";
 import { useExportCSV } from "@/hooks/useExportCSV";
 import { formatCurrency } from "@/lib/format-currency";
 
@@ -40,8 +40,8 @@ interface AnalyticsData {
   posthog_conversion_rate?: number;
 }
 
-const CORAL = "#E8735A";
-const AMBER = "#D4870A";
+const CORAL = "#1B4D1B";
+const AMBER = "#F3A864";
 
 const TABS: { key: AnalyticsTab; label: string; icon: typeof Calendar }[] = [
   { key: "overview", label: "Übersicht", icon: TrendingUp },
@@ -134,14 +134,14 @@ export default function AnalyticsPage() {
       {/* Page header with date range picker */}
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">Statistiken</h1>
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">Detaillierte Salon-Auswertung</p>
+          <h1 className="font-heading text-2xl text-s-ink">Statistiken</h1>
+          <p className="text-sm text-s-ink/40 mt-0.5">Detaillierte Salon-Auswertung</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={onToggleComparison}
             aria-label="Vorperiode vergleichen"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/[0.08] text-[10px] font-heading font-bold text-s-ink/55 hover:border-s-coral/40 hover:text-s-coral transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/[0.08] text-[10px] font-heading text-s-ink/55 hover:border-s-coral/40 hover:text-s-coral transition-colors"
           >
             {showComparison ? <ToggleRight size={13} className="text-s-coral" /> : <ToggleLeft size={13} />}
             Vergleich
@@ -154,7 +154,7 @@ export default function AnalyticsPage() {
       <div className="flex gap-1 mb-5 overflow-x-auto pb-1">
         {TABS.map((t) => (
           <button key={t.key} onClick={() => setTab(t.key)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-btn text-xs font-medium whitespace-nowrap transition-colors ${tab === t.key ? "bg-s-coral text-white" : "text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-coral/5"}`}>
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-btn text-xs font-medium whitespace-nowrap transition-colors ${tab === t.key ? "bg-s-coral text-white" : "text-s-ink/50 hover:bg-s-coral/5"}`}>
             <t.icon size={12} /> {t.label}
           </button>
         ))}
@@ -175,21 +175,21 @@ export default function AnalyticsPage() {
                 { label: "Neue Kunden", value: String(data.customer_breakdown.new_customers), highlight: true },
                 ...(data.retention_rate != null ? [{ label: "Retention", value: `${data.retention_rate.toFixed(0)}%` }] : []),
               ].map((kpi) => (
-                <div key={kpi.label} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 shadow-warm-md">
-                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1">{kpi.label}</p>
-                  <p className={`data-text font-bold text-2xl ${kpi.highlight ? "text-s-coral" : "text-s-ink dark:text-s-dm-text"}`}>{kpi.value}</p>
+                <div key={kpi.label} className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md">
+                  <p className="text-xs text-s-ink/40 mb-1">{kpi.label}</p>
+                  <p className={`data-text font-bold text-2xl ${kpi.highlight ? "text-s-coral" : "text-s-ink"}`}>{kpi.value}</p>
                 </div>
               ))}
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 mb-3">
-              <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 shadow-warm-md">
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1">Profilaufrufe</p>
-                <p className="data-text font-bold text-2xl text-s-ink dark:text-s-dm-text">{data.posthog_profile_views ?? 0}</p>
+              <div className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md">
+                <p className="text-xs text-s-ink/40 mb-1">Profilaufrufe</p>
+                <p className="data-text font-bold text-2xl text-s-ink">{data.posthog_profile_views ?? 0}</p>
               </div>
-              <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 shadow-warm-md">
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1">Conversion Rate</p>
-                <p className="data-text font-bold text-2xl text-s-ink dark:text-s-dm-text">{(data.posthog_conversion_rate ?? 0).toFixed(1)}%</p>
+              <div className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md">
+                <p className="text-xs text-s-ink/40 mb-1">Conversion Rate</p>
+                <p className="data-text font-bold text-2xl text-s-ink">{(data.posthog_conversion_rate ?? 0).toFixed(1)}%</p>
               </div>
             </div>
 
@@ -199,18 +199,18 @@ export default function AnalyticsPage() {
                   <TrendingUp size={20} className="text-s-coral" />
                 </div>
                 <div>
-                  <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm">
+                  <p className="font-heading text-s-ink text-sm">
                     Deine Bewertung: {data.average_rating.toFixed(1)} — Top {data.percentile_rank}% in Basel
                   </p>
-                  <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">Basierend auf allen aktiven Salons in deiner Stadt</p>
+                  <p className="text-xs text-s-ink/50 mt-0.5">Basierend auf allen aktiven Salons in deiner Stadt</p>
                 </div>
               </div>
             )}
 
             {/* Revenue chart + comparison */}
-            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
+            <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Umsatz CHF (wöchentlich)</h2>
+                <h2 className="font-heading text-base text-s-ink">Umsatz CHF (wöchentlich)</h2>
                 <ExportButton
                   onClick={() => triggerExport("umsatz", data.revenue_by_week.map(w => ({ Woche: w.week, "Umsatz CHF": Math.round(w.revenue / 100) })))}
                   loading={exporting}
@@ -245,9 +245,9 @@ export default function AnalyticsPage() {
 
           {/* ═══ BOOKINGS TAB ═══ */}
           {tab === "bookings" && (<>
-            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
+            <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Termine (täglich)</h2>
+                <h2 className="font-heading text-base text-s-ink">Termine (täglich)</h2>
                 <ExportButton
                   onClick={() => triggerExport("termine", data.bookings_by_day.map(d => ({ Datum: d.date, Termine: d.count })))}
                   loading={exporting}
@@ -268,15 +268,15 @@ export default function AnalyticsPage() {
             </div>
 
             {data.peak_hours_heatmap && (
-              <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
-                <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-4">Stosszeiten</h2>
+              <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
+                <h2 className="font-heading text-base text-s-ink mb-4">Stosszeiten</h2>
                 <HeatmapChart data={data.peak_hours_heatmap} />
               </div>
             )}
 
             {data.last_minute_performance && (
-              <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
-                <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-4">Last-Minute Performance</h2>
+              <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
+                <h2 className="font-heading text-base text-s-ink mb-4">Last-Minute Performance</h2>
                 <ResponsiveContainer width="100%" height={180}>
                   <BarChart data={data.last_minute_performance}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
@@ -294,8 +294,8 @@ export default function AnalyticsPage() {
           {/* ═══ CUSTOMERS TAB ═══ */}
           {tab === "customers" && (<>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
-                <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-4">Neu vs. Stammkunden</h2>
+              <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
+                <h2 className="font-heading text-base text-s-ink mb-4">Neu vs. Stammkunden</h2>
                 <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
                     <Pie
@@ -316,9 +316,9 @@ export default function AnalyticsPage() {
               </div>
 
               {data.acquisition_sources && data.acquisition_sources.length > 0 && (
-                <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
+                <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Wie haben sie uns gefunden?</h2>
+                    <h2 className="font-heading text-base text-s-ink">Wie haben sie uns gefunden?</h2>
                     <ExportButton
                       onClick={() => triggerExport("quellen", data.acquisition_sources!.map(s => ({ Quelle: s.source, Buchungen: s.count })))}
                       loading={exporting}
@@ -340,9 +340,9 @@ export default function AnalyticsPage() {
 
           {/* ═══ SERVICES TAB ═══ */}
           {tab === "services" && (<>
-            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
+            <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Top Services</h2>
+                <h2 className="font-heading text-base text-s-ink">Top Services</h2>
                 <ExportButton
                   onClick={() => triggerExport("services", data.top_services.map(s => ({ Service: s.name, Buchungen: s.bookings })))}
                   loading={exporting}
@@ -360,9 +360,9 @@ export default function AnalyticsPage() {
             </div>
 
             {data.popular_services && data.popular_services.length > 0 && (
-              <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
+              <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Service-Details</h2>
+                  <h2 className="font-heading text-base text-s-ink">Service-Details</h2>
                   <ExportButton
                     onClick={() => triggerExport("service-details", data.popular_services!.map(s => ({ Service: s.name, Buchungen: s.count, "Umsatz CHF": Math.round(s.revenue / 100) })))}
                     loading={exporting}
@@ -371,18 +371,18 @@ export default function AnalyticsPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs">
                     <thead>
-                      <tr className="border-b border-s-ink/5 dark:border-white/5">
-                        <th className="text-left py-2 pr-3 font-medium text-s-ink/50 dark:text-s-dm-text/50">Service</th>
-                        <th className="text-right py-2 px-2 font-medium text-s-ink/50 dark:text-s-dm-text/50">Buchungen</th>
-                        <th className="text-right py-2 pl-2 font-medium text-s-ink/50 dark:text-s-dm-text/50">Umsatz</th>
+                      <tr className="border-b border-s-ink/5">
+                        <th className="text-left py-2 pr-3 font-medium text-s-ink/50">Service</th>
+                        <th className="text-right py-2 px-2 font-medium text-s-ink/50">Buchungen</th>
+                        <th className="text-right py-2 pl-2 font-medium text-s-ink/50">Umsatz</th>
                       </tr>
                     </thead>
                     <tbody>
                       {data.popular_services.map((s) => (
-                        <tr key={s.name} className="border-b border-s-ink/5 dark:border-white/5">
-                          <td className="py-2 pr-3 text-s-ink dark:text-s-dm-text">{s.name}</td>
-                          <td className="py-2 px-2 text-right data-text text-s-ink dark:text-s-dm-text">{s.count}</td>
-                          <td className="py-2 pl-2 text-right data-text text-s-ink dark:text-s-dm-text">CHF {(s.revenue / 100).toFixed(0)}</td>
+                        <tr key={s.name} className="border-b border-s-ink/5">
+                          <td className="py-2 pr-3 text-s-ink">{s.name}</td>
+                          <td className="py-2 px-2 text-right data-text text-s-ink">{s.count}</td>
+                          <td className="py-2 pl-2 text-right data-text text-s-ink">CHF {(s.revenue / 100).toFixed(0)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -394,7 +394,7 @@ export default function AnalyticsPage() {
 
           {/* ═══ TEAM TAB ═══ */}
           {tab === "team" && salonId && (<>
-            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
+            <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
               <StaffComparison salonId={salonId} />
             </div>
             {isBarbershop && <BarberLeaderboard salonId={salonId} />}

@@ -1,0 +1,7 @@
+# New components for the V2 rebuild (started 2026-05-03) live in this folder.
+# Old components are quarantined at ../components-legacy/ during the route-by-route
+# migration. Once a new route is built and locked, its components either:
+#   (a) live route-scoped in app/[locale]/<route>/_components/ if they're truly
+#       single-route, or
+#   (b) graduate to this folder if they're shared across multiple new routes.
+# The first new shared primitive lands here when the second route needs it.

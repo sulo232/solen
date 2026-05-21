@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — alert collision test · 8 brand colors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #FBF8F3;
+    color: #1A1209;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  body { padding: 36px 16px 80px; }
+  .doc { max-width: 1280px; margin: 0 auto; }
+
+  /* HEADER */
+  header { text-align: center; margin-bottom: 32px; }
+  .eye {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: #8A3C0F; margin-bottom: 10px;
+  }
+  h1.doc-h {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 40px; line-height: 1;
+    letter-spacing: -0.03em; color: #1A1209;
+  }
+  h1.doc-h em {
+    font-family: "Instrument Serif", serif;
+    font-weight: 400; font-style: italic; color: #E8742A;
+  }
+  .sub {
+    font-size: 14px; color: #56463E; margin-top: 12px;
+    max-width: 720px; margin-inline: auto;
+  }
+
+  /* SEMANTIC LEGEND */
+  .legend {
+    margin-top: 22px;
+    padding: 14px 18px;
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 14px;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;
+    font-size: 11px;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .legend-item {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: #56463E;
+  }
+  .legend-sw {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .legend-item strong { color: #1A1209; font-weight: 500; }
+
+  /* MATRIX */
+  .matrix {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 880px) { .matrix { grid-template-columns: 1fr; } }
+
+  .row {
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 1px 2px rgba(26,18,9,.03), 0 8px 24px rgba(0,0,0,.04);
+  }
+  .row.locked { border: 2px solid var(--brand); }
+  .row.disqualified { opacity: 0.7; }
+
+  .row-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 6px;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .row-name {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 17px;
+    letter-spacing: -0.02em; line-height: 1.1;
+    color: #1A1209;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .row-sw {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+  }
+  .row-tag {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    color: #fff;
+  }
+  .row-tag.pass { background: #16A34A; }
+  .row-tag.fail { background: #D32F2F; }
+  .row-tag.locked-tag { background: var(--brand); }
+
+  .row-verdict {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 12px; line-height: 1.5;
+    color: #56463E;
+    margin-bottom: 16px;
+  }
+  .row-verdict strong { color: #1A1209; font-weight: 600; }
+
+  /* THE STRESS-TEST SURFACE */
+  .test-surface {
+    background: #FBF8F3;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+
+  /* salon card mini */
+  .salon-card {
+    display: flex; gap: 12px;
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.04);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .salon-photo {
+    width: 76px; height: 76px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 35%, transparent 70%, rgba(232,116,42,.08) 100%),
+      radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.25), transparent 60%),
+      #B5588A;
+    position: relative;
+  }
+  .salon-badge {
+    position: absolute; top: 5px; left: 5px;
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(12px);
+    color: #1A1209;
+    font-size: 9px; font-weight: 700;
+    padding: 3px 6px; border-radius: 99px;
+  }
+  .badge-dot {
+    width: 4px; height: 4px;
+    background: #16A34A;
+    border-radius: 99px;
+    box-shadow: 0 0 0 2px rgba(22,163,74,.2);
+  }
+  .heart-btn {
+    position: absolute; top: 5px; right: 5px;
+    width: 24px; height: 24px;
+    border-radius: 99px;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(12px);
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+  .heart-btn svg { width: 12px; height: 12px; fill: #FF4A6B; stroke: #FF4A6B; stroke-width: 2; }
+
+  .salon-meta { flex: 1; min-width: 0; }
+  .salon-row1 {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 6px;
+  }
+  .salon-name {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700; font-size: 14px;
+    letter-spacing: -0.01em; color: #1A1209;
+    line-height: 1.1;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    flex: 1; min-width: 0;
+  }
+  .salon-rating {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 500; font-size: 10px;
+    color: #1A1209; flex-shrink: 0;
+  }
+  .salon-row2 {
+    font-size: 10px; color: #7A6957;
+    margin-top: 3px;
+  }
+  .salon-row2 strong { color: #1A1209; font-weight: 600; }
+
+  /* CTA — uses brand */
+  .cta-row {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .cta-brand {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--brand-grad);
+    color: #fff;
+    padding: 9px 16px;
+    border-radius: 99px;
+    font-weight: 700; font-size: 12px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px var(--brand-glow);
+    flex: 1; justify-content: center;
+  }
+
+  /* warning chip — semantic warning amber */
+  .chip-warn {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(245,158,11,.12);
+    border: 1px solid rgba(245,158,11,.3);
+    color: #7A4A14;
+    padding: 6px 10px;
+    border-radius: 99px;
+    font-weight: 600; font-size: 11px;
+    flex-shrink: 0;
+  }
+  .chip-warn::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: #F59E0B;
+    border-radius: 99px;
+  }
+
+  /* error toast — semantic error red */
+  .toast-err {
+    background: #FFF1F0;
+    border: 1px solid rgba(211,47,47,.25);
+    border-left: 3px solid #D32F2F;
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .toast-err svg { width: 14px; height: 14px; stroke: #D32F2F; flex-shrink: 0; margin-top: 1px; }
+  .toast-err-text {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 12px; color: #1A1209;
+    line-height: 1.4;
+  }
+  .toast-err-text strong { color: #D32F2F; font-weight: 600; display: block; margin-bottom: 2px; }
+
+  /* success state — semantic green */
+  .toast-ok {
+    background: rgba(22,163,74,.08);
+    border: 1px solid rgba(22,163,74,.25);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toast-ok svg { width: 14px; height: 14px; stroke: #16A34A; flex-shrink: 0; }
+  .toast-ok-text {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 12px; color: #1A1209;
+    line-height: 1.4;
+  }
+
+  /* per-candidate brand variables */
+  .c1 { /* terracotta orange — current v2 lock */
+    --brand: #E8742A; --brand-grad: linear-gradient(180deg, #F0834D, #E8742A);
+    --brand-glow: rgba(232,116,42,.32);
+  }
+  .c2 { /* forest green */
+    --brand: #1B4D1B; --brand-grad: linear-gradient(180deg, #2C6B2C, #1B4D1B);
+    --brand-glow: rgba(27,77,27,.32);
+  }
+  .c3 { /* burgundy */
+    --brand: #8B2D3F; --brand-grad: linear-gradient(180deg, #A33A4F, #8B2D3F);
+    --brand-glow: rgba(139,45,63,.32);
+  }
+  .c4 { /* coral red */
+    --brand: #E14B5C; --brand-grad: linear-gradient(180deg, #ED6271, #E14B5C);
+    --brand-glow: rgba(225,75,92,.32);
+  }
+  .c5 { /* mustard */
+    --brand: #C9821A; --brand-grad: linear-gradient(180deg, #D9942F, #C9821A);
+    --brand-glow: rgba(201,130,26,.32);
+  }
+  .c6 { /* camel */
+    --brand: #A66E3D; --brand-grad: linear-gradient(180deg, #B98050, #A66E3D);
+    --brand-glow: rgba(166,110,61,.32);
+  }
+  .c7 { /* aubergine */
+    --brand: #5D2E47; --brand-grad: linear-gradient(180deg, #75395A, #5D2E47);
+    --brand-glow: rgba(93,46,71,.32);
+  }
+  .c8 { /* olive sage */
+    --brand: #6B7F4C; --brand-grad: linear-gradient(180deg, #7C9258, #6B7F4C);
+    --brand-glow: rgba(107,127,76,.32);
+  }
+  /* extra muted candidates */
+  .c9 { /* deep terracotta / rust */
+    --brand: #B8541F; --brand-grad: linear-gradient(180deg, #C66835, #B8541F);
+    --brand-glow: rgba(184,84,31,.32);
+  }
+
+  /* ASK */
+  .ask {
+    margin-top: 28px;
+    padding: 16px 18px;
+    background: #FFE4D2;
+    border: 1px solid rgba(232,116,42,.18);
+    border-radius: 12px;
+    font-size: 13px;
+    color: #5C2308;
+    line-height: 1.55;
+    font-family: "Inter Tight", sans-serif;
+  }
+  .ask strong { color: #1A1209; font-weight: 700; }
+  .ask code {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    background: rgba(232,116,42,.1); color: #5C2308;
+    padding: 1px 5px; border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header>
+    <div class="eye">ALERT COLLISION TEST · DOES BRAND FIGHT THE ALERTS?</div>
+    <h1 class="doc-h">Brand vs <em>semantic colors</em>.</h1>
+    <p class="sub">Each row puts the brand color on a CTA next to all 4 semantic colors firing at once: <strong>warning chip</strong> · <strong>error toast</strong> · <strong>success badge</strong> · <strong>love-red heart</strong>. If the brand color disappears (recedes), it passes. If it competes with the alerts, it fails. Same v2 fonts everywhere.</p>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-sw" style="background:#D32F2F;"></span>error <strong>#D32F2F</strong></div>
+      <div class="legend-item"><span class="legend-sw" style="background:#F59E0B;"></span>warning <strong>#F59E0B</strong></div>
+      <div class="legend-item"><span class="legend-sw" style="background:#16A34A;"></span>success <strong>#16A34A</strong></div>
+      <div class="legend-item"><span class="legend-sw" style="background:#FF4A6B;"></span>love-red <strong>#FF4A6B</strong></div>
+    </div>
+  </header>
+
+  <div class="matrix">
+
+    <!-- 1. TERRACOTTA ORANGE -->
+    <article class="row c1 disqualified">
+      <div class="row-head">
+        <div class="row-name"><span class="row-sw" style="background:#E8742A;"></span>1 · Terracotta orange #E8742A</div>
+        <span class="row-tag fail">FAILS · CLASHES</span>
+      </div>
+      <p class="row-verdict">Bright + warm. Sits between warning amber and error red on the spectrum. <strong>Brand CTA fights the warning chip + error toast for attention.</strong> Currently locked v2 — the user's instinct that this conflicts is correct.</p>
+      <div class="test-surface">
+        <div class="salon-card">
+          <div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span><div class="heart-btn"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div></div>
+          <div class="salon-meta">
+            <div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div>
+            <div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div>
+          </div>
+        </div>
+        <div class="cta-row">
+          <button class="cta-brand">Buchen →</button>
+          <span class="chip-warn">Fast voll</span>
+        </div>
+        <div class="toast-err">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div class="toast-err-text"><strong>Buchung fehlgeschlagen</strong>Termin wurde gerade vergeben. Erneut versuchen.</div>
+        </div>
+        <div class="toast-ok">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <div class="toast-ok-text">E-Mail bestätigt — du kannst jetzt buchen.</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2. FOREST GREEN -->
+    <article class="row c2 disqualified">
+      <div class="row-head">
+        <div class="row-name"><span class="row-sw" style="background:#1B4D1B;"></span>2 · Forest green #1B4D1B</div>
+        <span class="row-tag fail">FAILS · CLASHES</span>
+      </div>
+      <p class="row-verdict">Forest green sits in the same family as status-success <code>#16A34A</code>. <strong>"Buchen →" CTA visually reads similar to the "E-Mail bestätigt" success toast</strong> — they fight for the "go / done / safe" semantic.</p>
+      <div class="test-surface">
+        <div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span><div class="heart-btn"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div>
+        <div class="cta-row"><button class="cta-brand">Buchen →</button><span class="chip-warn">Fast voll</span></div>
+        <div class="toast-err"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div class="toast-err-text"><strong>Buchung fehlgeschlagen</strong>Termin wurde gerade vergeben.</div></div>
+        <div class="toast-ok"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><div class="toast-ok-text">E-Mail bestätigt — du kannst jetzt buchen.</div></div>
+      </div>
+    </article>
+
+    <!-- 3. BURGUNDY -->
+    <article class="row c3">
+      <div class="row-head">
+        <div class="row-name"><span class="row-sw" style="background:#8B2D3F;"></span>3 · Burgundy #8B2D3F</div>
+        <span class="row-tag pass">PASSES · DEEP</span>
+      </div>
+      <p class="row-verdict">Deep, low-saturation. Far from any semantic alert color. <strong>CTA stays calm; the red error toast still pops.</strong> Sophisticated wine vibe — slightly heavier brand tone.</p>
+      <div class="test-surface">
+        <div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span><div class="heart-btn"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div>
+        <div class="cta-row"><button class="cta-brand">Buchen →</button><span class="chip-warn">Fast voll</span></div>
+        <div class="toast-err"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div class="toast-err-text"><strong>Buchung fehlgeschlagen</strong>Termin wurde gerade vergeben.</div></div>
+        <div class="toast-ok"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><div class="toast-ok-text">E-Mail bestätigt — du kannst jetzt buchen.</div></div>
+      </div>
+    </article>
+
+    <!-- 4. CORAL RED -->
+    <article class="row c4 disqualified">
+      <div class="row-head">
+        <div class="row-name"><span class="row-sw" style="background:#E14B5C;"></span>4 · Coral red #E14B5C</div>
+        <span class="row-tag fail">FAILS · LOOKS LIKE LOVE-RED</span>
+      </div>
+      <p class="row-verdict">Reads exactly as the love-red <code>#FF4A6B</code> hearts. <strong>Hearts and brand CTA become indistinguishable.</strong> Plus collides with error red.</p>
+      <div class="test-surface">
+        <div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span><div class="heart-btn"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div>
+        <div class="cta-row"><button class="cta-brand">Buchen →</button><span class="chip-warn">Fast voll</span></div>
+        <div class="toast-err"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div class="toast-err-text"><strong>Buchung fehlgeschlagen</strong>Termin wurde gerade vergeben.</div></div>
+        <div class="toast-ok"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><div class="toast-ok-text">E-Mail bestätigt — du kannst jetzt buchen.</div></div>
+      </div>
+    </article>
+
+    <!-- 5. MUSTARD -->
+    <article class="row c5 disqualified">
+      <div class="row-head">
+        <div class="row-name"><span class="row-sw" style="background:#C9821A;"></span>5 · Mustard #C9821A</div>
+        <span class="row-tag fail">FAILS · NEAR WARNING AMBER</span>
+      </div>
+      <p class="row-verdict">Sits very close to warning amber <code>#F59E0B</code>. <strong>"Buchen" CTA reads as another warning chip.</strong> User can't tell brand from alert.</p>
+      <div class="test-surface">
+        <div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span><div class="heart-btn"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div>
+        <div class="cta-row"><button class="cta-brand">Buchen →</button><span class="chip-warn">Fast voll</span></div>
+        <div class="toast-err"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div class="toast-err-text"><strong>Buchung fehlgeschlagen</strong>Termin wurde gerade vergeben.</div></div>
+        <div class="toast-ok"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><div class="toast-ok-text">E-Mail bestätigt — du kannst jetzt buchen.</div></div>
+      </div>
+    </article>
+
+    <!-- 6. CAMEL / earth brown -->
+    <article class="row c6">
+      <div class="row-head">
+        <div class="row-name"><span class="row-sw" style="background:#A66E3D;"></span>6 · Camel #A66E3D</div>
+        <span class="row-tag pass">PASSES · EARTHY</span>
+      </div>
+      <p class="row-verdict">Brown / earth tone. Far from every alert. <strong>CTA recedes; alerts pop where they should.</strong> Warm, grounded, unmistakable as a "neutral going about its business" — perfect for a CTA-heavy app.</p>
+      <div class="test-surface">
+        <div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span><div class="heart-btn"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div>
+        <div class="cta-row"><button class="cta-brand">Buchen →</button><span class="chip-warn">Fast voll</span></div>
+        <div class="toast-err"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div class="toast-err-text"><strong>Buchung fehlgeschlagen</strong>Termin wurde gerade vergeben.</div></div>
+        <div class="toast-ok"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><div class="toast-ok-text">E-Mail bestätigt — du kannst jetzt buchen.</div></div>
+      </div>
+    </article>
+
+    <!-- 7. AUBERGINE -->
+    <article class="row c7">
+      <div class="row-head">
+        <div class="row-name"><span class="row-sw" style="background:#5D2E47;"></span>7 · Aubergine #5D2E47</div>
+        <span class="row-tag pass">PASSES · REFINED</span>
+      </div>
+      <p class="row-verdict">Deep warm purple. No alert lives in this region. <strong>CTA is dignified; alerts are unmistakably alerts.</strong> Slightly serious / mood. Beauty + spa territory.</p>
+      <div class="test-surface">
+        <div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span><div class="heart-btn"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div>
+        <div class="cta-row"><button class="cta-brand">Buchen →</button><span class="chip-warn">Fast voll</span></div>
+        <div class="toast-err"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div class="toast-err-text"><strong>Buchung fehlgeschlagen</strong>Termin wurde gerade vergeben.</div></div>
+        <div class="toast-ok"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><div class="toast-ok-text">E-Mail bestätigt — du kannst jetzt buchen.</div></div>
+      </div>
+    </article>
+
+    <!-- 8. OLIVE SAGE -->
+    <article class="row c8">
+      <div class="row-head">
+        <div class="row-name"><span class="row-sw" style="background:#6B7F4C;"></span>8 · Olive sage #6B7F4C</div>
+        <span class="row-tag pass">PASSES · CALM</span>
+      </div>
+      <p class="row-verdict">Muted earth-green, nothing like vibrant <code>#16A34A</code> success green. <strong>CTA reads as "neutral, do this." Alerts dominate when they fire.</strong> Calm, premium, slightly Aesop-like.</p>
+      <div class="test-surface">
+        <div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span><div class="heart-btn"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div>
+        <div class="cta-row"><button class="cta-brand">Buchen →</button><span class="chip-warn">Fast voll</span></div>
+        <div class="toast-err"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div class="toast-err-text"><strong>Buchung fehlgeschlagen</strong>Termin wurde gerade vergeben.</div></div>
+        <div class="toast-ok"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><div class="toast-ok-text">E-Mail bestätigt — du kannst jetzt buchen.</div></div>
+      </div>
+    </article>
+
+    <!-- 9. RUST (DEEP TERRACOTTA) -->
+    <article class="row c9">
+      <div class="row-head">
+        <div class="row-name"><span class="row-sw" style="background:#B8541F;"></span>9 · Rust #B8541F</div>
+        <span class="row-tag pass">PASSES · WARM-DEEP</span>
+      </div>
+      <p class="row-verdict">Deeper, more saturated than v2's terracotta. Closer to clay/rust. <strong>Brand orange's family but less vibrant — passes the alert test.</strong> Could be "v2 spirit, less loud."</p>
+      <div class="test-surface">
+        <div class="salon-card"><div class="salon-photo"><span class="salon-badge"><span class="badge-dot"></span>Sofort frei</span><div class="heart-btn"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div></div><div class="salon-meta"><div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div><div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div></div></div>
+        <div class="cta-row"><button class="cta-brand">Buchen →</button><span class="chip-warn">Fast voll</span></div>
+        <div class="toast-err"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div class="toast-err-text"><strong>Buchung fehlgeschlagen</strong>Termin wurde gerade vergeben.</div></div>
+        <div class="toast-ok"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><div class="toast-ok-text">E-Mail bestätigt — du kannst jetzt buchen.</div></div>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="ask">
+    <strong>4 colors fail the alert-collision test (1, 2, 4, 5). 5 pass (3, 6, 7, 8, 9).</strong><br><br>
+    Which of the 5 passing colors feels most "Solen" to you on the salon-card-with-everything-firing surface?<br>
+    • <strong>3</strong> burgundy · <strong>6</strong> camel · <strong>7</strong> aubergine · <strong>8</strong> olive sage · <strong>9</strong> rust<br><br>
+    If none — name a vibe and I'll add 2-3 more rows in that direction. Alert clash is the real test; pretty in isolation isn't enough.
+  </div>
+
+</div>
+</body>
+</html>

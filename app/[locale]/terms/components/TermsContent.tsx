@@ -1,6 +1,6 @@
 export default function TermsContent() {
   return (
-    <div className="prose prose-s-ink dark:prose-invert max-w-none w-full space-y-12">
+    <div className="prose prose-s-ink max-w-none w-full space-y-12">
       <Section id="section-1" titleDe="1. Geltungsbereich und Vertragsparteien" titleEn="1. Scope and Contracting Parties">
         <Article titleDe="1.1 Betreiberin der Plattform" titleEn="1.1 Platform Operator">
           <ParDe>solen.ch wird betrieben als Einzelunternehmen mit Sitz in Basel-Stadt, Schweiz (nachfolgend «solen.ch», «wir» oder «uns»).</ParDe>
@@ -33,7 +33,7 @@ export default function TermsContent() {
         <Article titleDe="2.2 Kontotypen" titleEn="2.2 Account Types">
           <ParDe>solen.ch bietet folgende Kontotypen an:</ParDe>
           <ParEn>solen.ch offers the following account types:</ParEn>
-          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Kundenkonto (Customer Account):</strong> Für Personen, die Dienstleistungen buchen möchten. / For individuals who wish to book services.</li>
             <li><strong>Salonpartner-Konto (Salon Partner Account):</strong> Für Unternehmen, die ihre Dienstleistungen auf solen.ch anbieten möchten. / For businesses that wish to offer their services on solen.ch.</li>
             <li><strong>Mitarbeiterkonto (Staff Account):</strong> Für Mitarbeitende eines Salonpartners, die vom Saloninhaber eingeladen werden. / For employees of a Salon Partner, invited by the salon owner.</li>
@@ -61,7 +61,7 @@ export default function TermsContent() {
         <Article titleDe="3.1 Buchungsbestätigung" titleEn="3.1 Booking Confirmation">
           <ParDe>Die Buchungsbestätigung hängt von den Einstellungen des jeweiligen Salonpartners ab:</ParDe>
           <ParEn>Booking confirmation depends on the settings of the respective Salon Partner:</ParEn>
-          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Sofortige Bestätigung (Instant Confirmation):</strong> Die Buchung wird automatisch bestätigt, sobald die Zahlung erfolgreich ist. / The booking is automatically confirmed once payment succeeds.</li>
             <li><strong>Bestätigung durch den Salon (Salon Approval):</strong> Die Buchung bleibt bis zur Bestätigung durch den Salonpartner im Status «ausstehend». / The booking remains in "pending" status until confirmed by the Salon Partner.</li>
           </ul>
@@ -103,8 +103,8 @@ export default function TermsContent() {
           <ParDe>Erscheint ein Kunde nicht zum gebuchten Termin und hat nicht storniert, gilt dies als Nichterscheinen. In diesem Fall wird der <strong>volle Buchungswert</strong> dem Kunden belastet und nach Abzug der Plattformgebühr an den Salonpartner ausbezahlt.</ParDe>
           <ParEn>If a Customer fails to appear for a booked appointment without cancelling, this is considered a no-show. In this case, the <strong>full booking value</strong> will be charged to the Customer and, after deduction of the platform commission, paid out to the Salon Partner.</ParEn>
           
-          <p className="mt-4 font-semibold text-s-ink dark:text-s-dm-text text-sm md:text-base">Wiederholtes Nichterscheinen / Repeated No-Shows:</p>
-          <ul className="list-disc pl-5 space-y-1 mt-2 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <p className="mt-4 font-semibold text-s-ink text-sm md:text-base">Wiederholtes Nichterscheinen / Repeated No-Shows:</p>
+          <ul className="list-disc pl-5 space-y-1 mt-2 text-sm md:text-base text-s-ink opacity-90">
             <li>3 Nichterscheinen innerhalb von 6 Monaten: Verwarnung / 3 no-shows within 6 months: warning</li>
             <li>5 Nichterscheinen innerhalb von 6 Monaten: Mögliche Kontosperrung / 5 no-shows within 6 months: possible account suspension</li>
           </ul>
@@ -120,7 +120,7 @@ export default function TermsContent() {
         <Article titleDe="5.1 Zahlungsmethoden" titleEn="5.1 Payment Methods">
           <ParDe>solen.ch akzeptiert folgende Zahlungsmethoden:</ParDe>
           <ParEn>solen.ch accepts the following payment methods:</ParEn>
-          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li>TWINT</li>
             <li>Kreditkarten (Visa, Mastercard) / Credit cards (Visa, Mastercard)</li>
             <li>Apple Pay / Google Pay</li>
@@ -148,7 +148,7 @@ export default function TermsContent() {
         </Article>
 
         <Article titleDe="5.5 Rückerstattungen" titleEn="5.5 Refunds">
-          <ul className="list-disc pl-5 space-y-3 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90 pb-2">
+          <ul className="list-disc pl-5 space-y-3 text-sm md:text-base text-s-ink opacity-90 pb-2">
             <li><strong>Stornierung durch den Salonpartner:</strong> Vollständige Rückerstattung an den Kunden. solen.ch trägt die anfallenden Stripe-Bearbeitungsgebühren. / <strong>Salon Partner cancellation:</strong> Full refund to Customer. solen.ch absorbs the Stripe processing fees.</li>
             <li><strong>Kostenlose Stornierung durch den Kunden (&gt;24h):</strong> Vollständige Rückerstattung. solen.ch trägt die Bearbeitungsgebühren. / <strong>Free cancellation by Customer (&gt;24h):</strong> Full refund. solen.ch absorbs the processing fees.</li>
             <li><strong>Verspätete Stornierung durch den Kunden (&lt;24h):</strong> 50 % werden einbehalten; 50 % werden erstattet. / <strong>Late cancellation by Customer (&lt;24h):</strong> 50% is retained; 50% is refunded.</li>
@@ -181,7 +181,7 @@ export default function TermsContent() {
         <Article titleDe="6.5 Inhaltsrichtlinien" titleEn="6.5 Content Guidelines">
           <ParDe>Salonpartner dürfen eigene Fotos hochladen und Preise in CHF festlegen. Es gelten folgende Regeln:</ParDe>
           <ParEn>Salon Partners may upload their own photos and set prices in CHF. The following rules apply:</ParEn>
-          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li>Keine Verwendung von Stockfotos, die als eigene Arbeiten dargestellt werden / No use of stock photos presented as own work</li>
             <li>Keine irreführenden Vorher-Nachher-Bilder / No misleading before-and-after images</li>
             <li>Keine Darstellung von Minderjährigen / No depiction of minors</li>
@@ -196,7 +196,7 @@ export default function TermsContent() {
         <Article titleDe="6.6 Massnahmen bei wiederholten Beschwerden" titleEn="6.6 Measures for Repeated Complaints">
           <ParDe>Bei wiederholten negativen Bewertungen oder Beschwerden behält sich solen.ch folgende abgestufte Massnahmen vor:</ParDe>
           <ParEn>In the event of repeated negative reviews or complaints, solen.ch reserves the right to take the following tiered measures:</ParEn>
-          <ol className="list-decimal pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ol className="list-decimal pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Verwarnung</strong> — schriftliche Benachrichtigung an den Salonpartner / <strong>Warning</strong> — written notification to Salon Partner</li>
             <li><strong>Herabstufung</strong> — reduzierte Sichtbarkeit in den Suchergebnissen / <strong>Demotion</strong> — reduced visibility in search results</li>
             <li><strong>Sperrung</strong> — vorübergehende Deaktivierung des Kontos bis zur Klärung / <strong>Suspension</strong> — temporary deactivation of account pending review</li>
@@ -219,7 +219,7 @@ export default function TermsContent() {
           <div className="mt-4" />
           <ParDe>solen.ch kann Bewertungen entfernen, die:</ParDe>
           <ParEn>solen.ch may remove reviews that are:</ParEn>
-          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li>nachweislich gefälscht (keine passende Buchung vorhanden) / provably fake (no matching booking exists)</li>
             <li>verleumderisch oder ehrverletzend im Sinne des schweizerischen Persönlichkeitsrechts / defamatory within the meaning of Swiss personality rights</li>
             <li>Hassrede, persönliche Angriffe oder Drohungen enthalten / containing hate speech, personal attacks, or threats</li>
@@ -266,10 +266,10 @@ export default function TermsContent() {
         <Article titleDe="9.2 Datenverarbeiter" titleEn="9.2 Data Processors">
           <ParDe>solen.ch nutzt folgende Drittanbieter zur Datenverarbeitung:</ParDe>
           <ParEn>solen.ch uses the following third-party data processors:</ParEn>
-          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Stripe</strong> — Zahlungsabwicklung / Payment processing</li>
             <li><strong>Supabase</strong> — Datenbank und Authentifizierung (EU-Region) / Database and authentication (EU region)</li>
-            <li><strong>Vercel</strong> — Hosting</li>
+            <li><strong>Netlify</strong> — Hosting</li>
             <li><strong>PostHog</strong> — Analytik / Analytics</li>
             <li><strong>Cloudflare</strong> — DNS und CDN / DNS and CDN</li>
           </ul>
@@ -280,7 +280,7 @@ export default function TermsContent() {
         <Article titleDe="9.3 Cookies und Tracking" titleEn="9.3 Cookies and Tracking">
           <ParDe>solen.ch verwendet folgende Cookies und Tracking-Technologien:</ParDe>
           <ParEn>solen.ch uses the following cookies and tracking technologies:</ParEn>
-          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li>PostHog (Analytik / Analytics)</li>
             <li>Stripe (Zahlungscookies / Payment cookies)</li>
             <li>Funktionale und Sitzungscookies / Functional and session cookies</li>
@@ -290,7 +290,7 @@ export default function TermsContent() {
         </Article>
 
         <Article titleDe="9.4 Datenspeicherung nach Kontolöschung" titleEn="9.4 Data Retention After Account Deletion">
-          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90 pb-2">
+          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90 pb-2">
             <li><strong>Personenbezogene Daten</strong> (Name, E-Mail, Telefonnummer): werden innerhalb von 30 Tagen nach Löschungsantrag gelöscht. / <strong>Personal data</strong> (name, email, phone number): deleted within 30 days of deletion request.</li>
             <li><strong>Finanz- und Buchungsdaten:</strong> werden in anonymisierter Form 10 Jahre lang aufbewahrt, wie es das schweizerische Recht vorschreibt (OR Art. 958f). / <strong>Financial and booking data:</strong> retained in anonymized form for 10 years as required by Swiss law (CO Art. 958f).</li>
           </ul>
@@ -326,7 +326,7 @@ export default function TermsContent() {
         </Article>
 
         <Article titleDe="11.2 Ankündigungsfristen" titleEn="11.2 Notice Periods">
-          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90 pb-2">
+          <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90 pb-2">
             <li><strong>Geringfügige Änderungen</strong> (Tippfehler, Klarstellungen): treten sofort in Kraft. / <strong>Minor changes</strong> (typos, clarifications): effective immediately.</li>
             <li><strong>Wesentliche Änderungen</strong> (Gebühren, Rechte, Pflichten): werden mindestens 30 Tage im Voraus angekündigt. / <strong>Major changes</strong> (fees, rights, obligations): announced at least 30 days in advance.</li>
           </ul>
@@ -335,7 +335,7 @@ export default function TermsContent() {
         <Article titleDe="11.3 Benachrichtigung" titleEn="11.3 Notification">
           <ParDe>Nutzer werden über Änderungen informiert durch:</ParDe>
           <ParEn>Users will be notified of changes via:</ParEn>
-          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li>E-Mail-Benachrichtigung / Email notification</li>
             <li>In-App-Banner / In-app banner</li>
             <li>Aktualisierung des Datums «Letzte Aktualisierung» auf dieser Seite / Update of the "Last Updated" date on this page</li>
@@ -349,7 +349,7 @@ export default function TermsContent() {
         <Article titleDe="12.1 Sperrungsgründe" titleEn="12.1 Grounds for Suspension">
           <ParDe>solen.ch kann Konten aus folgenden Gründen verwarnen, sperren oder dauerhaft deaktivieren:</ParDe>
           <ParEn>solen.ch may warn, suspend, or permanently deactivate accounts for the following reasons:</ParEn>
-          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li>Betrug oder betrügerische Aktivitäten / Fraud or fraudulent activity</li>
             <li>Gefälschte Bewertungen / Fake reviews</li>
             <li>Wiederholtes Nichterscheinen (siehe Abschnitt 4.4) / Repeated no-shows (see Section 4.4)</li>
@@ -364,7 +364,7 @@ export default function TermsContent() {
         <Article titleDe="12.2 Sofortige Kündigung" titleEn="12.2 Immediate Termination">
           <ParDe>In folgenden Fällen kann solen.ch ein Konto ohne Vorankündigung sofort und dauerhaft deaktivieren:</ParDe>
           <ParEn>In the following cases, solen.ch may immediately and permanently deactivate an account without prior notice:</ParEn>
-          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li>Betrug / Fraud</li>
             <li>Angebot illegaler Dienstleistungen / Offering illegal services</li>
             <li>Belästigung, Diskriminierung oder Bedrohung / Harassment, discrimination, or threats</li>
@@ -377,7 +377,7 @@ export default function TermsContent() {
         <Article titleDe="12.3 Auswirkungen auf laufende Buchungen" titleEn="12.3 Effect on Pending Bookings">
           <ParDe>Bei Sperrung oder Deaktivierung eines Salonpartner-Kontos:</ParDe>
           <ParEn>Upon suspension or deactivation of a Salon Partner account:</ParEn>
-          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink dark:text-s-dm-text opacity-90">
+          <ul className="list-disc pl-5 my-2 space-y-1 text-sm md:text-base text-s-ink opacity-90">
             <li>Alle ausstehenden und bestätigten Buchungen werden automatisch storniert. / All pending and confirmed bookings are automatically cancelled.</li>
             <li>Betroffene Kunden erhalten eine vollständige Rückerstattung. / Affected Customers receive a full refund.</li>
             <li>Auszahlungen für bereits abgeschlossene Buchungen werden weiterhin verarbeitet. / Payouts for already completed bookings continue to be processed.</li>
@@ -421,7 +421,7 @@ export default function TermsContent() {
         </Article>
 
         <Article titleDe="15.3 Impressum" titleEn="15.3 Legal Notice">
-          <div className="bg-s-ink/5 dark:bg-white/5 p-4 rounded-xl text-sm md:text-base text-s-ink dark:text-s-dm-text">
+          <div className="bg-s-ink/5 p-4 rounded-[12px] text-sm md:text-base text-s-ink">
             <p className="font-semibold mb-2">solen.ch</p>
             <p>Einzelunternehmen</p>
             <p>Basel-Stadt, Schweiz</p>
@@ -437,11 +437,11 @@ export default function TermsContent() {
 
 function Section({ id, titleDe, titleEn, children }: { id: string, titleDe: string, titleEn: string, children: React.ReactNode }) {
   return (
-    <section id={id} className="scroll-mt-32 pb-8 border-b border-s-ink/10 dark:border-s-dm-text/10 last:border-0 relative">
-      <h2 className="font-heading font-bold text-xl md:text-2xl text-s-ink dark:text-s-dm-text mb-1">
+    <section id={id} className="scroll-mt-32 pb-8 border-b border-s-ink/10 last:border-0 relative">
+      <h2 className="font-heading text-xl md:text-2xl text-s-ink mb-1">
         {titleDe}
       </h2>
-      <h3 className="font-heading font-medium text-lg text-s-ink/60 dark:text-s-dm-text/60 mb-6 italic">
+      <h3 className="font-heading text-lg text-s-ink/60 mb-6 italic">
         {titleEn}
       </h3>
       <div className="space-y-8">
@@ -456,9 +456,9 @@ function Article({ titleDe, titleEn, children }: { titleDe: string, titleEn: str
     <div className="space-y-3">
       {(titleDe || titleEn) && (
         <div className="mb-4">
-          <h3 className="font-heading font-semibold text-lg text-s-ink dark:text-s-dm-text">
+          <h3 className="font-heading text-lg text-s-ink">
             {titleDe} 
-            {titleEn && <span className="text-s-ink/50 dark:text-s-dm-text/50 font-normal ml-2">/ {titleEn}</span>}
+            {titleEn && <span className="text-s-ink/50 font-normal ml-2">/ {titleEn}</span>}
           </h3>
         </div>
       )}
@@ -471,7 +471,7 @@ function Article({ titleDe, titleEn, children }: { titleDe: string, titleEn: str
 
 function ParDe({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-sm md:text-base text-s-ink dark:text-s-dm-text leading-relaxed">
+    <p className="text-sm md:text-base text-s-ink leading-relaxed">
       {children}
     </p>
   );
@@ -479,8 +479,8 @@ function ParDe({ children }: { children: React.ReactNode }) {
 
 function ParEn({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-3 pl-4 border-l-2 border-s-ink/10 dark:border-s-dm-text/10 mt-2 mb-4">
-      <p className="text-xs md:text-sm text-s-ink/70 dark:text-s-dm-text/70 italic leading-relaxed">
+    <div className="flex items-start gap-3 pl-4 border-l-2 border-s-ink/10 mt-2 mb-4">
+      <p className="text-xs md:text-sm text-s-ink/70 italic leading-relaxed">
         {children}
       </p>
     </div>

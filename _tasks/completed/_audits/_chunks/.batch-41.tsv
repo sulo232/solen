@@ -1,0 +1,10 @@
+4f6004e3a68d844b6015576ef52cece80982cb4c 2026-03-31 09:47:54 +0200 fix: resolve TS error in coming-soon page — use description map instead of dynamic t() key
+b5943e1312ec2cbfd712eab8ff2b97ec1060cfec 2026-03-31 09:48:18 +0200 docs: log lesson — /api/waitlist is booking-only, not generic email capture
+8d601f14cf835903a8e795e86e3c0417541242e9 2026-03-31 09:51:54 +0200 docs: log lessons — pre-existing feature detection + Windows build quirk
+4e4b6c69e27d8def8cc00ee138eef2d7cb24cd36 2026-03-31 09:52:36 +0200 feat: i18n migration of warum-solen marketing page
+3c9af1033a4abfd9f57c4b963782d245556a81d1 2026-03-31 10:05:15 +0200 fix: add missing guestFavorite/topRated/newOnSolen i18n keys + remove unsupported fallback option
+cb0045a9471946fb798e08ba8d10263ae4e0a6d8 2026-03-31 10:05:44 +0200 docs: log lesson — next-intl does not support t() fallback option
+bb18d2e1213b860f6bbef945c02f243ddbd75ed8 2026-03-31 10:11:02 +0200 fix: remove breadcrumb from homepage — improve locale-root detection
+3f21c8535fcb7b3830698b504d4151fb5a37bda0 2026-03-31 10:14:34 +0200 design: shrink section headers from 42px extrabold to 18px semibold — Airbnb style
+65b46363f8ebedebc7515ee10532b2f09b628144 2026-03-31 10:17:48 +0200 design: tighten homepage vertical spacing — reduce dead space between search and carousels
+4dae6fe1552816dadd7ddc97a951d5e6aa6100c7 2026-03-31 10:45:20 +0200 design: card & carousel micro-interactions (roadmap-card-interactions phases 1-5)

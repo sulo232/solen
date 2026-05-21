@@ -5,6 +5,7 @@ import { searchStockPhotos } from "@/lib/stock-photos";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { validateBody, adminDiscoverySmartImportSchema } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 
 /**
  * POST /api/admin/discovery/smart-import
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
   const { description, category, limit = 20 } = validated;
 
   // 1. Use Gemini to generate search queries
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) return NextResponse.json({ error: "GEMINI_API_KEY not set" }, { status: 500 });
 
   const genAI = new GoogleGenerativeAI(apiKey);

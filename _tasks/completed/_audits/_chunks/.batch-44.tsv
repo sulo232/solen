@@ -1,0 +1,10 @@
+1df72352c15f00266ef47c0cab89a6d655600ca2 2026-04-01 23:18:36 +0200 phase 1.1: add staff selection step component
+7c9da1688ce1930ed67d3435ba9b9e5c1ea4ad4c 2026-04-01 23:22:41 +0200 phase 1.1: add date selection step with calendar and availability API
+cdc75810830266ca83d3c72a6f3b022026bef382 2026-04-01 23:28:10 +0200 phase 1.1: add time selection step with slot fetching API
+e6e9443f3767e58d4896ecc24b60a27e797ba6d7 2026-04-01 23:40:12 +0200 phase 1.1: add confirmation step with summary display
+10b7899fc91cd33da0a41b4f50dd8a94ac19da23 2026-04-01 23:42:17 +0200 doc: add booking step naming convention to lessons learned
+197e121a4fd7b51f412d319aa34f66dbad858d9d 2026-04-01 23:45:52 +0200 phase 1.1: add payment step component with booking creation
+902ff1ca7859afbadbdbc95d89ecdecb330b6099 2026-04-01 23:48:07 +0200 phase 1.1: create main booking wizard page and router
+d0a0477528af816d45cfebbd5b05f299a8e3ed14 2026-04-01 23:50:20 +0200 fix: correct booking page types and imports
+e3c43888fa3f57149997aaecf1419b8ddef039db 2026-04-01 23:51:11 +0200 docs: add booking wizard implementation lessons learned
+7d64e4aaa47f4138f26bb8836e4cfb6051289f25 2026-04-01 23:59:51 +0200 phase 1.1: create post-booking confirmation page

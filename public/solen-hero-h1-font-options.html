@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen hero h1 — font options compare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Plus+Jakarta+Sans:wght@700;800&family=Fraunces:opsz,wght@9..144,700;9..144,800&family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,700&f[]=general-sans@700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #2A1F18;
+    --ink-2: #5C4A3A;
+    --ink-3: #8A7A68;
+    --bg: #FAF3E6;
+    --rule: #EAE0D0;
+    --brand: #1A8F5C;
+    --accent: #E0703D;
+  }
+  body {
+    font-family: 'Open Sauce One', Inter, system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    padding: 40px 24px 80px;
+    line-height: 1.55;
+  }
+  .page-title {
+    font-family: 'Open Sauce One', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .page-sub {
+    font-size: 13px;
+    color: var(--ink-2);
+    text-align: center;
+    margin-bottom: 32px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Stack of options */
+  .options {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .opt {
+    background: #FFFFFF;
+    border: 1px solid var(--rule);
+    border-radius: 20px;
+    padding: 28px 24px 24px;
+    position: relative;
+  }
+  .opt .label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Open Sauce One', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .opt .label::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--brand);
+    border-radius: 50%;
+  }
+  .opt .label.pick {
+    color: var(--brand);
+  }
+  .opt .pick-tag {
+    display: inline-block;
+    margin-left: 6px;
+    background: var(--brand);
+    color: white;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .opt .font-name {
+    font-family: 'Open Sauce One', sans-serif;
+    font-size: 12px;
+    color: var(--brand);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  /* Eyebrow */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Open Sauce One', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ink-3);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  /* H1 — per option, font differs */
+  .h1 {
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .h1 .hl { color: var(--accent); }
+
+  /* Per-option font */
+  .f1 .h1 { font-family: 'Peace Sans', Impact, sans-serif; font-weight: 400; }
+  .f2 .h1 { font-family: 'Open Sauce One', sans-serif; font-weight: 800; }
+  .f3 .h1 { font-family: 'Open Sauce One', sans-serif; font-weight: 700; }
+  .f4 .h1 { font-family: 'Sora', sans-serif; font-weight: 800; letter-spacing: -0.03em; }
+  .f5 .h1 { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 800; letter-spacing: -0.03em; }
+  .f6 .h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; letter-spacing: -0.03em; }
+  .f7 .h1 { font-family: 'Fraunces', Georgia, serif; font-weight: 800; letter-spacing: -0.02em; font-variation-settings: "opsz" 96, "SOFT" 60; }
+  .f8 .h1 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; letter-spacing: -0.02em; }
+
+  .verdict {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+    font-family: 'Open Sauce One', sans-serif;
+    font-size: 12px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+  .verdict strong { color: var(--ink); font-weight: 700; }
+  .verdict .pro { color: #2D8849; font-weight: 600; }
+  .verdict .con { color: #B23B25; font-weight: 600; }
+
+  .footer-note {
+    max-width: 800px;
+    margin: 40px auto 0;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-3);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Hero h1 — font compare</h1>
+<p class="page-sub">Same eyebrow + headline + size (32px) rendered in 8 candidate fonts. Eyebrow + accent color + substrate are all V3-locked tokens. Only the h1 font + weight changes per option.</p>
+
+<div class="options">
+
+  <div class="opt f1">
+    <div class="label">Option 1 · CURRENT LOCKED (V2-D42)</div>
+    <div class="font-name">Peace Sans · single-weight chunky display</div>
+    <div class="eyebrow">Beauty in der Schweiz</div>
+    <h2 class="h1">Schöner aussehen, schneller <span class="hl">buchen</span>.</h2>
+    <div class="verdict"><strong>Verdict:</strong> <span class="con">single-weight font, can't be made lighter.</span> Chunky letterforms are the design. Reads "memorable + approachable" but feels heavy at hero scale on cream substrate. This is what you said reads "too bold."</div>
+  </div>
+
+  <div class="opt f2">
+    <div class="label pick">Option 2 · my recommendation <span class="pick-tag">PICK</span></div>
+    <div class="font-name">Open Sauce One 800 — already the body font, variable weight</div>
+    <div class="eyebrow">Beauty in der Schweiz</div>
+    <h2 class="h1">Schöner aussehen, schneller <span class="hl">buchen</span>.</h2>
+    <div class="verdict"><strong>Verdict:</strong> <span class="pro">same font family as body</span> = unified system. 800 weight is heavy but the letterforms have proper modern proportions (not chunky-blocky). Smallest change — Open Sauce is already loaded. Keeps Peace Sans alive on the logo + feature panels where its chunkiness IS the brand mark.</div>
+  </div>
+
+  <div class="opt f3">
+    <div class="label">Option 3 · same as 2 but lighter</div>
+    <div class="font-name">Open Sauce One 700 — bold, not extra-bold</div>
+    <div class="eyebrow">Beauty in der Schweiz</div>
+    <h2 class="h1">Schöner aussehen, schneller <span class="hl">buchen</span>.</h2>
+    <div class="verdict"><strong>Verdict:</strong> if 800 still feels heavy, 700 lands closer to "confident statement" vs "billboard." Loses some hero punch though.</div>
+  </div>
+
+  <div class="opt f4">
+    <div class="label">Option 4 · geometric modern</div>
+    <div class="font-name">Sora 800 (Google Fonts)</div>
+    <div class="eyebrow">Beauty in der Schweiz</div>
+    <h2 class="h1">Schöner aussehen, schneller <span class="hl">buchen</span>.</h2>
+    <div class="verdict"><strong>Verdict:</strong> <span class="pro">wider apertures</span>, very modern. Notion / Discord-adjacent. Reads cooler / more tech than Solen's warm wellness positioning.</div>
+  </div>
+
+  <div class="opt f5">
+    <div class="label">Option 5 · editorial geometric</div>
+    <div class="font-name">Cabinet Grotesk 800 (Fontshare)</div>
+    <div class="eyebrow">Beauty in der Schweiz</div>
+    <h2 class="h1">Schöner aussehen, schneller <span class="hl">buchen</span>.</h2>
+    <div class="verdict"><strong>Verdict:</strong> Indian Type Foundry display sans, used by Linear-adjacent brands. More character than Sora at heavy weight, retains modern feel. Bigger system change (new font load).</div>
+  </div>
+
+  <div class="opt f6">
+    <div class="label">Option 6 · friendly geometric</div>
+    <div class="font-name">Plus Jakarta Sans 800 (Google Fonts)</div>
+    <div class="eyebrow">Beauty in der Schweiz</div>
+    <h2 class="h1">Schöner aussehen, schneller <span class="hl">buchen</span>.</h2>
+    <div class="verdict"><strong>Verdict:</strong> warm-friendly geometric, similar vibe to Peace Sans's "approachable" goal but with proper weight range. Razorpay, Linear-adjacent SaaS use it.</div>
+  </div>
+
+  <div class="opt f7">
+    <div class="label">Option 7 · modern serif</div>
+    <div class="font-name">Fraunces 800 (Google Fonts, variable opsz)</div>
+    <div class="eyebrow">Beauty in der Schweiz</div>
+    <h2 class="h1">Schöner aussehen, schneller <span class="hl">buchen</span>.</h2>
+    <div class="verdict"><strong>Verdict:</strong> quirky modern serif. Brings back V3's pre-Peace-Sans editorial-warm energy without going Cooper-Black-premium-cold. Most distinctive option here.</div>
+  </div>
+
+  <div class="opt f8">
+    <div class="label">Option 8 · pair-with-body serif</div>
+    <div class="font-name">DM Serif Display 400 (Google Fonts) — pairs with DM Sans</div>
+    <div class="eyebrow">Beauty in der Schweiz</div>
+    <h2 class="h1">Schöner aussehen, schneller <span class="hl">buchen</span>.</h2>
+    <div class="verdict"><strong>Verdict:</strong> warm + soft modern serif. Letterforms have brackets that read handcrafted. Designed by Colophon Foundry. Strongest "playful + soft" candidate of the lot.</div>
+  </div>
+
+</div>
+
+<p class="footer-note">Pick a letter and I'll wire it into <code>Hero.tsx</code> + verify live. Or push back on any of these and I'll iterate.</p>
+
+</body>
+</html>

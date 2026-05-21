@@ -6,11 +6,11 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ChevronRight, ChevronLeft, PartyPopper, Loader2, Building2, Sparkles, AlertCircle, Camera } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
-import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
+import Spinner from "@/components-legacy/ui/Spinner";
+import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
 import { slideSwitch } from "@/lib/animations";
-import AddressAutocomplete from "@/components/ui/AddressAutocomplete";
-import ImageUpload from "@/components/ui/ImageUpload";
+import AddressAutocomplete from "@/components-legacy/ui/AddressAutocomplete";
+import ImageUpload from "@/components-legacy/ui/ImageUpload";
 import type { SalonCategory } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
@@ -34,15 +34,15 @@ const STEP_META = [
 function StepContainer({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
   return (
     <div className="max-w-xl mx-auto">
-      <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.07] dark:border-white/[0.06] p-6 sm:p-8"
+      <div className="bg-white rounded-card border border-s-ink/[0.07] p-6 sm:p-8"
         style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 16px rgba(26,18,9,.06)" }}
         role="form">
         {subtitle && (
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/50 dark:text-s-dm-text/50 mb-1.5">
+          <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/50 mb-1.5">
             {subtitle}
           </p>
         )}
-        <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-6">{title}</h2>
+        <h2 className="font-heading text-2xl text-s-ink mb-6">{title}</h2>
         {children}
       </div>
     </div>
@@ -80,30 +80,30 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
     <StepContainer title={t("step1.title")} subtitle={t("step1.subtitle")}>
       <div className="space-y-4">
         <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("step1.name")}</label>
+          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.name")}</label>
           <input
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
-            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.name ? "border-s-coral" : "border-s-ink/10 dark:border-white/10"}`}
+            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.name ? "border-s-coral" : "border-s-ink/10"}`}
             placeholder={t("step1.namePlaceholder")}
           />
           {errors.name && <p className="text-xs text-s-coral mt-0.5">{errors.name}</p>}
         </div>
 
         <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("step1.email")}</label>
+          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.email")}</label>
           <input
             type="email"
             value={data.email}
             onChange={(e) => onChange({ ...data, email: e.target.value })}
-            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.email ? "border-s-coral" : "border-s-ink/10 dark:border-white/10"}`}
+            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink bg-white focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.email ? "border-s-coral" : "border-s-ink/10"}`}
             placeholder={t("step1.emailPlaceholder")}
           />
           {errors.email && <p className="text-xs text-s-coral mt-0.5">{errors.email}</p>}
         </div>
 
         <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-2">{t("step1.categories")}</label>
+          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-2">{t("step1.categories")}</label>
           <div className="flex flex-wrap gap-2">
             {CATEGORY_OPTIONS.map((c) => (
               <button
@@ -111,10 +111,10 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 type="button"
                 onClick={() => toggleCat(c.value)}
                 className={[
-                  "px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-colors active:scale-[0.97]",
+                  "px-4 py-2.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-colors active:scale-[0.97]",
                   data.categories.includes(c.value)
-                    ? "bg-s-coral text-white border-s-coral shadow-coral-glow"
-                    : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/50",
+                    ? "bg-s-coral text-white border-s-coral shadow-elevation-2"
+                    : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/50",
                 ].join(" ")}
               >
                 {c.label}
@@ -126,11 +126,11 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
 
         <div className="grid grid-cols-1 gap-4">
           <div>
-            <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{/* will add translations later if needed */} Stadt</label>
+            <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{/* will add translations later if needed */} Stadt</label>
             <select
               value={data.city}
               onChange={(e) => onChange({ ...data, city: e.target.value })}
-              className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised shadow-warm-sm transition-[border-color,box-shadow] ${errors.city ? "border-s-coral" : "border-s-ink/5 dark:border-white/5"}`}
+              className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white shadow-warm-sm transition-[border-color,box-shadow] ${errors.city ? "border-s-coral" : "border-s-ink/5"}`}
             >
               <option value="">Stadt wählen</option>
               <option value="zuerich">Zürich</option>
@@ -142,7 +142,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("step1.address")}</label>
+          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.address")}</label>
           <AddressAutocomplete
             value={data.address}
             onChange={(val) => onChange({ ...data, address: val })}
@@ -160,9 +160,9 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
               type="checkbox"
               checked={data.tos_accepted}
               onChange={(e) => onChange({ ...data, tos_accepted: e.target.checked })}
-              className="mt-0.5 w-4 h-4 rounded border-s-ink/20 dark:border-white/20 accent-s-coral"
+              className="mt-0.5 w-4 h-4 rounded border-s-ink/20 accent-s-coral"
             />
-            <span className="text-xs text-s-ink/60 dark:text-s-dm-text/60 leading-relaxed">
+            <span className="text-xs text-s-ink/60 leading-relaxed">
               {t("step1.tosPrefix")}{" "}
               <a href={`/${locale}/legal/terms`} target="_blank" rel="noopener noreferrer" className="text-s-coral hover:underline">{t("step1.tosLink")}</a>
               {" & "}
@@ -226,14 +226,14 @@ function Step3({ data, onChange, category, t }: {
     <StepContainer title={t("step3Quick.title")} subtitle={t("step3Quick.subtitle")}>
       <div className="space-y-4">
         <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
+          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
             {t("step3Quick.serviceName")}
           </label>
           <div className="relative">
             <input
               value={data.service_name}
               onChange={(e) => onChange({ ...data, service_name: e.target.value })}
-              className="w-full px-4 py-3 rounded-input border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] shadow-warm-sm"
+              className="w-full px-4 py-3 rounded-input border border-s-ink/10 text-sm text-s-ink bg-white focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] shadow-warm-sm"
               placeholder="z. B. Waschen, Schneiden, Föhnen"
             />
             {suggesting && (
@@ -245,7 +245,7 @@ function Step3({ data, onChange, category, t }: {
           {suggested && data.service_name && (
             <div className="flex items-center gap-1.5 mt-1.5">
               <Sparkles size={10} className="text-s-coral" />
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/45">
+              <p className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/45">
                 KI-Vorschlag · anpassbar
               </p>
             </div>
@@ -254,13 +254,13 @@ function Step3({ data, onChange, category, t }: {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
+            <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
               {t("step3Quick.duration")}
             </label>
             <select
               value={data.service_duration}
               onChange={(e) => onChange({ ...data, service_duration: +e.target.value })}
-              className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised shadow-warm-sm transition-[border-color,box-shadow]"
+              className="w-full px-4 py-3 rounded-input border border-s-ink/5 text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white shadow-warm-sm transition-[border-color,box-shadow]"
             >
               {[15, 30, 45, 60, 75, 90, 120].map((d) => (
                 <option key={d} value={d}>{d} min</option>
@@ -268,7 +268,7 @@ function Step3({ data, onChange, category, t }: {
             </select>
           </div>
           <div>
-            <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
+            <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
               {t("step3Quick.price")}
             </label>
             <input
@@ -276,21 +276,21 @@ function Step3({ data, onChange, category, t }: {
               min={0}
               value={data.service_price}
               onChange={(e) => onChange({ ...data, service_price: +e.target.value })}
-              className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm"
+              className="w-full px-4 py-3 rounded-input border border-s-ink/5 text-sm text-s-ink bg-white focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm"
               placeholder="CHF"
             />
           </div>
         </div>
 
         <div className="rounded-[12px] border border-s-coral/[0.12] p-4"
-          style={{ background: "rgba(232,98,74,.04)" }}>
+          style={{ background: "rgba(27, 77, 27,.04)" }}>
           <div className="flex items-center gap-1.5 mb-1.5">
             <Sparkles size={12} className="text-s-coral shrink-0" />
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-coral">
+            <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-coral">
               {t("step3Quick.hint")}
             </p>
           </div>
-          <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 leading-relaxed">
+          <p className="text-xs font-body text-s-ink/50 leading-relaxed">
             {t("step3Quick.hintDesc")}
           </p>
         </div>
@@ -315,7 +315,7 @@ function StepPhotos({
   return (
     <StepContainer title={t("stepPhotos.title")} subtitle={t("stepPhotos.subtitle")}>
       <div className="space-y-5">
-        <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60">
+        <p className="text-sm text-s-ink/60">
           {t("stepPhotos.desc")}
         </p>
 
@@ -328,14 +328,14 @@ function StepPhotos({
         />
 
         <div className="rounded-[12px] border border-s-coral/[0.12] p-4"
-          style={{ background: "rgba(232,98,74,.04)" }}>
+          style={{ background: "rgba(27, 77, 27,.04)" }}>
           <div className="flex items-center gap-1.5 mb-1.5">
             <Camera size={12} className="text-s-coral shrink-0" />
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-coral">
+            <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-coral">
               {t("stepPhotos.hint")}
             </p>
           </div>
-          <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 leading-relaxed">
+          <p className="text-xs font-body text-s-ink/50 leading-relaxed">
             {t("stepPhotos.hintDesc")}
           </p>
         </div>
@@ -536,9 +536,9 @@ export default function SalonOnboardingPage() {
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg">
+      <div className="min-h-screen bg-white">
         {/* Header skeleton */}
-        <div className="bg-white dark:bg-s-dm-surface border-b border-s-ink/[0.06] px-4 py-4">
+        <div className="bg-white border-b border-s-ink/[0.06] px-4 py-4">
           <div className="max-w-xl mx-auto space-y-3 animate-pulse">
             <div className="flex justify-between">
               <div className="h-4 w-20 bg-s-bg-sunken rounded" />
@@ -550,7 +550,7 @@ export default function SalonOnboardingPage() {
         </div>
         {/* Card skeleton */}
         <div className="px-4 py-8">
-          <div className="max-w-xl mx-auto rounded-card border border-s-ink/[0.06] bg-white dark:bg-s-dm-surface p-8 animate-pulse">
+          <div className="max-w-xl mx-auto rounded-card border border-s-ink/[0.06] bg-white p-8 animate-pulse">
             <div className="h-2 w-24 bg-s-bg-sunken rounded mb-3" />
             <div className="h-7 w-48 bg-s-bg-sunken rounded mb-8" />
             <div className="space-y-5">
@@ -570,11 +570,11 @@ export default function SalonOnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg pb-36">
+    <div className="min-h-screen bg-white pb-36">
       {/* Subtle warm linear gradient for depth — Zone 3 compliant */}
       <div className="fixed inset-0 -z-10 pointer-events-none" aria-hidden>
         <div className="absolute top-0 left-0 right-0 h-[300px]"
-          style={{ background: "linear-gradient(180deg, rgba(232,98,74,.03) 0%, transparent 100%)" }} />
+          style={{ background: "linear-gradient(180deg, rgba(27, 77, 27,.03) 0%, transparent 100%)" }} />
       </div>
 
       {/* Celebration overlay */}
@@ -584,7 +584,7 @@ export default function SalonOnboardingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95 dark:bg-s-dm-bg/95"
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95"
           >
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -594,25 +594,25 @@ export default function SalonOnboardingPage() {
             >
               {/* Icon box — NO scale animation */}
               <div className="w-20 h-20 rounded-[22px] flex items-center justify-center"
-                style={{ background: "rgba(232,98,74,.10)" }}>
+                style={{ background: "rgba(27, 77, 27,.10)" }}>
                 <PartyPopper size={34} className="text-s-coral" />
               </div>
 
               <div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-coral mb-2">
+                <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-coral mb-2">
                   Willkommen
                 </p>
-                <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
+                <h2 className="font-heading text-2xl text-s-ink">
                   {t("done.title")}
                 </h2>
-                <p className="text-xs font-body text-s-ink/45 dark:text-s-dm-text/45 max-w-xs mt-2 leading-relaxed">
+                <p className="text-xs font-body text-s-ink/45 max-w-xs mt-2 leading-relaxed">
                   {t("done.subtitle")}
                 </p>
-                <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 mt-3">
+                <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/50 mt-3">
                   {t("done.dashboardHint")}
                 </p>
                 <Link href={`/${locale}/dashboard?onboarded=1`}
-                  className="mt-4 px-6 py-3 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow">
+                  className="mt-4 px-6 py-3 rounded-btn bg-s-coral text-white text-xs font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2">
                   Zum Dashboard →
                 </Link>
               </div>
@@ -634,18 +634,18 @@ export default function SalonOnboardingPage() {
       </AnimatePresence>
 
       {/* Header */}
-      <div className="bg-white dark:bg-s-dm-surface border-b border-s-ink/[0.06] dark:border-white/[0.05] px-4 py-4 sticky top-0 z-10">
+      <div className="bg-white border-b border-s-ink/[0.06] px-4 py-4 sticky top-0 z-10">
         <div className="max-w-xl mx-auto">
           <div className="flex items-center justify-between mb-3">
-            <span className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">
+            <span className="font-heading text-base text-s-ink">
               solen<span className="text-s-coral">.</span>ch
             </span>
-            <span className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/45 dark:text-s-dm-text/45">
+            <span className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/45">
               {t("header.stepOf", { step, total: TOTAL_STEPS })}
             </span>
           </div>
           {/* Progress Segment Line */}
-          <div className="flex items-center gap-1 mt-1 bg-s-bg-sunken dark:bg-s-dm-raised rounded-full p-1" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={TOTAL_STEPS} aria-label={t("header.stepOf", { step, total: TOTAL_STEPS })}>
+          <div className="flex items-center gap-1 mt-1 bg-s-bg-sunken rounded-full p-1" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={TOTAL_STEPS} aria-label={t("header.stepOf", { step, total: TOTAL_STEPS })}>
             {Array.from({ length: TOTAL_STEPS }, (_, i) => (
               <div
                 key={i}
@@ -656,7 +656,7 @@ export default function SalonOnboardingPage() {
               />
             ))}
           </div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/45 dark:text-s-dm-text/45 mt-2 text-center">
+          <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mt-2 text-center">
             {t(`progress.${STEP_META[step - 1]?.label}` as any)}
           </p>
         </div>
@@ -697,7 +697,7 @@ export default function SalonOnboardingPage() {
       {submitError && step >= TOTAL_STEPS - 1 && (
         <div className="max-w-xl mx-auto px-4 mb-4">
           <div className="flex items-start gap-3 rounded-[12px] border border-s-coral/20 p-4"
-            style={{ background: "rgba(232,98,74,.05)" }}>
+            style={{ background: "rgba(27, 77, 27,.05)" }}>
             <AlertCircle size={15} className="text-s-coral shrink-0 mt-0.5" />
             <p className="text-xs font-body text-s-coral">{submitError}</p>
           </div>
@@ -705,13 +705,13 @@ export default function SalonOnboardingPage() {
       )}
 
       {/* Nav buttons */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-s-dm-surface border-t border-s-ink/[0.06] dark:border-white/[0.05] px-4 py-4" aria-label="Wizard navigation">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-s-ink/[0.06] px-4 py-4" aria-label="Wizard navigation">
         <div className="max-w-xl mx-auto flex gap-3">
           {step > 1 && (
             <button
               type="button"
               onClick={goPrev}
-              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] dark:border-white/[0.08] text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-bg-sunken hover:border-s-ink/20 active:translate-y-[1px] active:shadow-pressed transition-[transform,filter]"
+              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] text-xs font-heading uppercase tracking-[.06em] text-s-ink/55 hover:bg-s-bg-sunken hover:border-s-ink/20 active:translate-y-[1px] active:shadow-pressed transition-[transform,filter]"
             >
               <ChevronLeft size={16} /> {t("nav.back")}
             </button>
@@ -720,7 +720,7 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goNext}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-[transform,filter] group shadow-coral-glow"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-[transform,filter] group shadow-elevation-2"
             >
               <span>{t("nav.next")}</span>
               <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />
@@ -729,7 +729,7 @@ export default function SalonOnboardingPage() {
             <div className="flex-1" onClick={submitting ? undefined : handleSubmit}>
               <InteractiveHoverButton
                 text={submitting ? "..." : t("nav.finish")}
-                className="w-full bg-s-coral text-white shadow-coral-glow"
+                className="w-full bg-s-coral text-white shadow-elevation-2"
               />
             </div>
           )}

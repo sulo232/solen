@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import SplitView from "@/components/search/SplitView";
+import SplitView from "@/components-legacy/search/SplitView";
 import { buildAlternates } from "@/lib/seo";
 
 interface Props {
@@ -36,7 +36,7 @@ export default async function SearchPage({ params, searchParams }: Props) {
   const sp = await searchParams;
 
   return (
-    <main className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg">
+    <main className="min-h-screen bg-white">
       <Suspense>
         <SplitView locale={locale} initialFilters={sp} />
       </Suspense>

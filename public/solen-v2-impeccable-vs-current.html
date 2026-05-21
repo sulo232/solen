@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solen — without vs with the impeccable skill</title>
+
+  <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #fff; }
+    body {
+      font-family: "Open Sauce One", Inter, system-ui, sans-serif;
+      color: #1A1209;
+      min-height: 100vh;
+      padding: 40px 16px 100px;
+      background: oklch(0.985 0.005 80);
+    }
+
+    .stack {
+      max-width: 920px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    @media (min-width: 880px) { .stack { grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; } }
+
+    .col-label {
+      font-family: "Open Sauce One", Inter, sans-serif;
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em;
+      color: #1A1209; padding: 6px 12px; border-radius: 999px;
+      display: inline-block; margin-bottom: 16px;
+    }
+    .col-label small { display: block; font-weight: 500; font-size: 10px; letter-spacing: 0.05em; text-transform: none; opacity: 0.6; margin-top: 2px; }
+    .col-current .col-label { background: #C2F0F1; color: #043338; }
+    .col-skill   .col-label { background: oklch(0.92 0.018 95); color: oklch(0.30 0.01 95); }
+
+    /* ─────────────────────────────────────────────────────────────────────
+       LEFT/TOP: WITHOUT — Solen V3 current (glass, frosted, atmosphere)
+    ───────────────────────────────────────────────────────────────────── */
+    .phone-current {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(4, 51, 56, 0.12);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(193, 240, 241, 0.65) 0%, transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(255, 233, 217, 0.50) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(193, 240, 241, 0.45) 0%, transparent 60%),
+        #FFFFFF;
+    }
+    .phone-current .nav { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.65); backdrop-filter: blur(12px); }
+    .phone-current .logo { font-family: "Peace Sans", Impact, sans-serif; font-size: 24px; font-weight: 900; color: #1A1209; }
+    .phone-current .logo .dot { display: inline-block; width: 6px; height: 6px; background: #043338; border-radius: 50%; margin-left: 2px; vertical-align: 2px; }
+    .phone-current .menu { font-size: 24px; color: #1A1209; }
+    .phone-current .hero { padding: 56px 22px 32px; }
+    .phone-current .eyebrow { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: rgba(26,18,9,0.55); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; }
+    .phone-current .eyebrow::before { content: ""; display: block; width: 6px; height: 6px; border-radius: 50%; background: #043338; }
+    .phone-current h1 { font-family: "Peace Sans", Impact, sans-serif; font-weight: 900; font-size: 28px; line-height: 1.15; letter-spacing: 0; color: #1A1209; }
+    .phone-current h1 .brand { color: #043338; }
+    .phone-current .search-card { margin-top: 28px; background: #fff; border-radius: 22px; padding: 16px 14px 18px; box-shadow: 0 4px 12px rgba(4, 51, 56, 0.08); }
+    .phone-current .search-row { display: flex; align-items: center; gap: 12px; padding: 11px 4px; border-bottom: 1px solid rgba(4, 51, 56, 0.08); font-size: 15px; color: rgba(26, 18, 9, 0.55); }
+    .phone-current .search-row:last-of-type { border-bottom: 0; }
+    .phone-current .search-row .sep { width: 1px; height: 14px; background: rgba(4, 51, 56, 0.18); }
+    .phone-current .submit { margin-top: 8px; width: 100%; background: #043338; color: #fff; border: 0; padding: 16px; border-radius: 999px; font-family: inherit; font-size: 15px; font-weight: 700; }
+
+    /* Glass FeedZone */
+    .phone-current .feed-zone {
+      margin-top: 24px;
+      border-radius: 28px 28px 0 0;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(24px) saturate(1.3);
+      border-top: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 -12px 32px rgba(4, 51, 56, 0.06);
+      padding: 16px 14px 32px;
+    }
+    .phone-current .section-h2 { font-family: "Open Sauce One", sans-serif; font-weight: 900; font-size: 28px; line-height: 1.0; color: #1A1209; margin-bottom: 12px; }
+    .phone-current .section-h2 .link { float: right; font-size: 13px; font-weight: 600; color: #043338; line-height: 30px; }
+    .phone-current .cards { display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 8px; }
+    .phone-current .card { flex: 0 0 130px; }
+    .phone-current .card .photo { aspect-ratio: 1; border-radius: 14px; box-shadow: 0 1px 2px rgba(26,18,9,0.04), 0 4px 10px rgba(26,18,9,0.05); position: relative; display: grid; place-items: center; font-family: "Open Sauce One", sans-serif; font-weight: 900; font-size: 28px; }
+    .phone-current .card .heart { position: absolute; top: 8px; right: 8px; font-size: 18px; color: rgba(0,0,0,0.4); }
+    .phone-current .card .pill { margin-top: 8px; background: rgba(255,255,255,0.7); backdrop-filter: blur(14px) saturate(1.2); border: 1px solid rgba(255,255,255,0.6); border-radius: 12px; padding: 7px 10px; box-shadow: 0 1px 3px rgba(26,18,9,0.04); font-size: 11px; line-height: 1.3; }
+    .phone-current .card .pill .name { font-weight: 700; color: #1A1209; font-size: 13px; }
+    .phone-current .card .pill .meta { color: rgba(26,18,9,0.6); margin-top: 2px; }
+
+    /* ─────────────────────────────────────────────────────────────────────
+       RIGHT/BOTTOM: WITH — what impeccable's rules would produce
+       Hard rules applied:
+        • No glass (anywhere)
+        • No nested cards (salon listings as a flowing inline list)
+        • No "modal as first thought" — search is inline, not a card
+        • OKLCH colors, tinted neutrals, no #fff/#000
+        • Editorial typography (Instrument Serif for personality, Inter for body)
+        • Restrained color strategy: tinted neutrals + one accent (≤10%)
+        • Hierarchy through scale + weight contrast
+        • No em dashes
+        • Vary spacing for rhythm
+    ───────────────────────────────────────────────────────────────────── */
+    .phone-skill {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px oklch(0.30 0.005 95 / 0.10);
+      background: oklch(0.985 0.005 95);
+      font-family: "Inter", system-ui, sans-serif;
+      color: oklch(0.20 0.01 95);
+    }
+    .phone-skill .nav { padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid oklch(0.92 0.005 95); }
+    .phone-skill .logo { font-family: "Instrument Serif", Georgia, serif; font-size: 22px; font-weight: 400; letter-spacing: -0.01em; color: oklch(0.20 0.01 95); }
+    .phone-skill .menu { font-size: 13px; font-weight: 500; color: oklch(0.40 0.01 95); }
+    .phone-skill .hero { padding: 64px 28px 40px; }
+    .phone-skill .kicker { font-family: "Inter", sans-serif; font-size: 12px; font-weight: 500; color: oklch(0.50 0.01 95); margin-bottom: 24px; letter-spacing: 0.02em; }
+    .phone-skill h1 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 44px; line-height: 1.0; letter-spacing: -0.015em; color: oklch(0.20 0.01 95); }
+    .phone-skill h1 em { font-style: italic; color: oklch(0.45 0.10 175); }
+    .phone-skill .lede { margin-top: 16px; font-size: 15px; line-height: 1.55; color: oklch(0.40 0.005 95); max-width: 320px; }
+
+    /* Inline search: not a card, just a single grouped input */
+    .phone-skill .search-inline {
+      margin-top: 32px;
+      border-top: 1px solid oklch(0.88 0.005 95);
+      border-bottom: 1px solid oklch(0.88 0.005 95);
+    }
+    .phone-skill .search-inline .row { padding: 14px 4px; display: flex; gap: 12px; align-items: baseline; border-bottom: 1px solid oklch(0.92 0.003 95); }
+    .phone-skill .search-inline .row:last-child { border-bottom: 0; }
+    .phone-skill .search-inline .label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: oklch(0.50 0.01 95); width: 60px; flex-shrink: 0; }
+    .phone-skill .search-inline .value { font-size: 16px; color: oklch(0.20 0.01 95); }
+    .phone-skill .search-inline .value.empty { color: oklch(0.55 0.01 95); }
+    .phone-skill .search-cta {
+      margin-top: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: oklch(0.45 0.10 175);
+      padding: 0;
+      background: transparent;
+      border: 0;
+      border-bottom: 1.5px solid oklch(0.45 0.10 175);
+      padding-bottom: 4px;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* Section: editorial header, no container, no panel */
+    .phone-skill .section { padding: 56px 28px 16px; }
+    .phone-skill .section h2 {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.01em;
+      color: oklch(0.20 0.01 95);
+    }
+    .phone-skill .section .deck { font-size: 13px; color: oklch(0.50 0.01 95); margin-top: 6px; max-width: 280px; line-height: 1.5; }
+
+    /* Salon listings: editorial inline list, NOT cards */
+    .phone-skill .listing { padding: 24px 28px; border-bottom: 1px solid oklch(0.92 0.005 95); display: flex; gap: 16px; align-items: flex-start; }
+    .phone-skill .listing:last-child { border-bottom: 0; }
+    .phone-skill .listing .photo {
+      flex-shrink: 0;
+      width: 72px; height: 72px; border-radius: 4px; /* sharp, not card-rounded */
+      background: oklch(0.94 0.012 80);
+      display: grid; place-items: center;
+      font-family: "Instrument Serif", Georgia, serif; font-size: 28px; font-weight: 400;
+      color: oklch(0.30 0.05 30);
+    }
+    .phone-skill .listing .body { flex: 1; min-width: 0; }
+    .phone-skill .listing .name { font-family: "Inter", sans-serif; font-weight: 600; font-size: 17px; letter-spacing: -0.01em; color: oklch(0.20 0.01 95); }
+    .phone-skill .listing .meta-line { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; font-size: 13px; color: oklch(0.50 0.01 95); }
+    .phone-skill .listing .meta-line .rating { color: oklch(0.45 0.05 70); font-variant-numeric: tabular-nums; }
+    .phone-skill .listing .meta-line .dot-sep { color: oklch(0.75 0.005 95); }
+    .phone-skill .listing .availability { font-size: 13px; font-weight: 500; color: oklch(0.45 0.10 175); margin-top: 8px; }
+
+    /* Diff annotations  */
+    .diff-list { max-width: 920px; margin: 64px auto 0; padding: 24px 28px; background: oklch(0.96 0.003 95); border-radius: 16px; }
+    .diff-list h3 { font-family: "Inter", sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: oklch(0.30 0.005 95); margin-bottom: 16px; }
+    .diff-list ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .diff-list li { font-size: 14px; line-height: 1.5; color: oklch(0.30 0.005 95); }
+    .diff-list b { color: oklch(0.20 0.005 95); }
+    .diff-list code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; background: oklch(0.92 0.005 95); padding: 1px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+  <div class="stack">
+
+    <!-- ───────── WITHOUT impeccable (= Solen V3 current live) ───────── -->
+    <div class="col-current">
+      <span class="col-label">WITHOUT IMPECCABLE <small>Solen V3 current — what's live</small></span>
+      <div class="phone-current">
+        <div class="nav">
+          <span class="logo">Solen<span class="dot"></span></span>
+          <span class="menu">☰</span>
+        </div>
+        <div class="hero">
+          <span class="eyebrow">Beauty in der Schweiz</span>
+          <h1>Schöner aussehen, schneller <span class="brand">buchen</span>.</h1>
+          <div class="search-card">
+            <div class="search-row"><span>⌕</span><span class="sep"></span>Service</div>
+            <div class="search-row"><span>⌖</span><span class="sep"></span>Stadt</div>
+            <div class="search-row"><span>▦</span><span class="sep"></span>Zeit</div>
+            <button class="submit">Solen durchsuchen</button>
+          </div>
+        </div>
+        <div class="feed-zone">
+          <div class="section-h2">Zuletzt angesehen <span class="link">Im Profil →</span></div>
+          <div class="cards">
+            <div class="card">
+              <div class="photo" style="background: #FFF1DD; color: #B5345A;">
+                <span class="heart">♡</span>A
+              </div>
+              <div class="pill">
+                <div class="name">Atelier Coiffure</div>
+                <div class="meta">14:30, 15:00, 16:30</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="photo" style="background: #D8D6CB; color: #1A1209;">
+                <span class="heart">♡</span>S
+              </div>
+              <div class="pill">
+                <div class="name">Studio Nord</div>
+                <div class="meta">In 25 Min frei</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="photo" style="background: #CAE8FF; color: #B5345A;">
+                <span class="heart">♡</span>N
+              </div>
+              <div class="pill">
+                <div class="name">Nail Lab</div>
+                <div class="meta">Heute 17:30</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── WITH impeccable (= what its hard rules produce) ───────── -->
+    <div class="col-skill">
+      <span class="col-label">WITH IMPECCABLE <small>Hard rules applied: no glass, no nested cards, OKLCH, editorial</small></span>
+      <div class="phone-skill">
+        <div class="nav">
+          <span class="logo">Solen.</span>
+          <span class="menu">Anmelden</span>
+        </div>
+        <div class="hero">
+          <span class="kicker">Schweiz · Salons, Spas, Studios</span>
+          <h1>Schöner aussehen,<br /><em>schneller buchen.</em></h1>
+          <p class="lede">Über 1'200 Salons in Basel, Zürich, Bern. Sofort online buchen, Termin in 30 Sekunden.</p>
+          <div class="search-inline">
+            <div class="row"><span class="label">Service</span><span class="value empty">Coiffeur, Nails, Spa</span></div>
+            <div class="row"><span class="label">Stadt</span><span class="value empty">Basel</span></div>
+            <div class="row"><span class="label">Zeit</span><span class="value empty">Heute Abend</span></div>
+          </div>
+          <button class="search-cta">Salons durchsuchen →</button>
+        </div>
+        <div class="section">
+          <h2>Zuletzt angesehen.</h2>
+          <p class="deck">Drei Salons, die du gerade angeschaut hast.</p>
+        </div>
+        <div class="listing">
+          <div class="photo">A</div>
+          <div class="body">
+            <div class="name">Atelier Coiffure</div>
+            <div class="meta-line">
+              <span class="rating">4,9</span>
+              <span class="dot-sep">·</span>
+              <span>Coiffeur</span>
+              <span class="dot-sep">·</span>
+              <span>Basel Zentrum</span>
+            </div>
+            <div class="availability">Heute frei: 14:30, 15:00, 16:30</div>
+          </div>
+        </div>
+        <div class="listing">
+          <div class="photo" style="background: oklch(0.88 0.003 95); color: oklch(0.20 0.005 95);">S</div>
+          <div class="body">
+            <div class="name">Studio Nord</div>
+            <div class="meta-line">
+              <span class="rating">4,7</span>
+              <span class="dot-sep">·</span>
+              <span>Barbershop</span>
+              <span class="dot-sep">·</span>
+              <span>1,2 km</span>
+            </div>
+            <div class="availability">In 25 Min frei</div>
+          </div>
+        </div>
+        <div class="listing">
+          <div class="photo" style="background: oklch(0.93 0.030 220); color: oklch(0.30 0.10 30);">N</div>
+          <div class="body">
+            <div class="name">Nail Lab</div>
+            <div class="meta-line">
+              <span class="rating">4,8</span>
+              <span class="dot-sep">·</span>
+              <span>Nails</span>
+              <span class="dot-sep">·</span>
+              <span>Basel St. Johann</span>
+            </div>
+            <div class="availability">Heute 17:30</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="diff-list">
+    <h3>What changed and why</h3>
+    <ul>
+      <li><b>Hero typeface:</b> chunky display Peace Sans → editorial Instrument Serif italic accent. Skill rejects "category-reflex" big-display, prefers personality through serif italic.</li>
+      <li><b>Surfaces:</b> heavy-glass FeedZone + frosted card pills → flat surfaces with hairline borders. Skill bans glassmorphism as default ("rare and purposeful, or nothing").</li>
+      <li><b>Salon listings:</b> nested-card grid (photo block + frosted text pill) → flowing editorial list (small square photo + name + meta line + availability). Skill bans nested cards categorically.</li>
+      <li><b>Search:</b> opaque white card with rounded edges + saturated CTA pill → inline form between hairline rules + bordered text-button CTA. Skill says "don't wrap everything in a container" and the CTA shouldn't be the loudest object on the page.</li>
+      <li><b>Color space:</b> hex tokens (<code>#043338</code>, <code>#FFF1DD</code>) → OKLCH with chroma-tinted neutrals (<code>oklch(0.985 0.005 95)</code>). One accent (teal, &lt;10% surface area).</li>
+      <li><b>Copy:</b> em dashes used freely → em dashes removed. Lede sentence added. "Schweiz · Salons, Spas, Studios" replaces "Beauty in der Schweiz" (more concrete).</li>
+      <li><b>Atmosphere wash:</b> 4-color radial gradient ambient → flat tinted-neutral background. Skill prefers commitment to one color strategy (Restrained for product register).</li>
+      <li><b>Card category colorways:</b> Combo Z / G / A / I named-pair palette → muted OKLCH-shifted neutrals per category. Less brand identity, more editorial restraint.</li>
+    </ul>
+  </div>
+
+</body>
+</html>

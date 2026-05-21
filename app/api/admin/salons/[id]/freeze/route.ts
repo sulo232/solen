@@ -59,8 +59,8 @@ export async function POST(
     // Process refund if held/paid
     if (b.stripe_payment_intent_id) {
        try {
-         const Stripe = (await import("stripe")).default;
-         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
+         const { getStripe } = await import("@/lib/stripe");
+         const stripe = getStripe();
          await stripe.refunds.create({
            payment_intent: b.stripe_payment_intent_id,
            reason: "requested_by_customer"

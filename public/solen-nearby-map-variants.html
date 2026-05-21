@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Solen · Nearby map+cards variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #8B7C72;
+    --brand: #1638C4;
+    --brand-soft: #E8EDFA;
+    --accent: #FFC32B;
+    --white: #FFFFFF;
+    --grey-50: #F9F9F9;
+    --grey-100: #F1F1F2;
+    --grey-150: #E8E8EA;
+    --map-bg: #EEF1F6;
+    --map-land: #E3E8F0;
+    --map-water: #DEE4EE;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #ECECEE;
+    color: var(--ink);
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  .page-title {
+    padding: 32px 20px 8px;
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.025em;
+    max-width: 480px;
+    margin: 0 auto;
+    color: var(--ink);
+  }
+  .page-sub {
+    padding: 0 20px 28px;
+    font-size: 14px;
+    color: var(--ink-2);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  .variant {
+    max-width: 420px;
+    margin: 0 auto 40px;
+    background: var(--white);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+  }
+  .variant-label {
+    padding: 16px 20px;
+    background: var(--ink);
+    color: var(--white);
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .variant-label span { color: var(--accent); margin-right: 8px; }
+  .variant-meta {
+    padding: 12px 20px;
+    background: var(--grey-50);
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    border-bottom: 1px solid var(--grey-150);
+  }
+  .variant-meta b { color: var(--ink); font-weight: 700; }
+
+  /* Section shell */
+  .section { padding: 28px 20px 32px; background: var(--white); }
+  .section-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px;
+  }
+  .section-eyebrow::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink-3);
+  }
+  .section-h2 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800; font-size: 28px; line-height: 1.05;
+    letter-spacing: -0.03em; color: var(--ink); margin-bottom: 6px;
+  }
+  .section-sub {
+    font-size: 14px; color: var(--ink-2); line-height: 1.5; margin-bottom: 20px;
+  }
+
+  /* Switzerland map mock */
+  .map {
+    position: relative;
+    background: var(--map-bg);
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--grey-150);
+  }
+  .map-svg { display: block; width: 100%; height: auto; }
+  .pin {
+    position: absolute;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: 3px solid var(--white);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: transform 0.18s;
+  }
+  .pin.active {
+    background: var(--brand);
+    width: 20px; height: 20px;
+    box-shadow: 0 6px 20px rgba(22,56,196,0.4), 0 0 0 6px rgba(22,56,196,0.12);
+  }
+  .pin:hover { transform: translate(-50%, -50%) scale(1.2); }
+  .pin-label {
+    position: absolute;
+    transform: translate(-50%, 12px);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--white);
+    padding: 3px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--grey-150);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* Salon card */
+  .salon-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: var(--white);
+    border: 1px solid var(--grey-150);
+    border-radius: 16px;
+    transition: all 0.18s ease-out;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+  .salon-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+    border-color: rgba(22,56,196,0.2);
+  }
+  .salon-card.active {
+    border-color: var(--brand);
+    box-shadow: 0 12px 30px rgba(22,56,196,0.12);
+  }
+  .salon-photo {
+    flex-shrink: 0;
+    width: 72px; height: 72px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #E8EDFA 0%, #D5DEF2 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .salon-photo::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 8px;
+    background: rgba(22,56,196,0.08);
+  }
+  .salon-meta { flex: 1; min-width: 0; }
+  .salon-name {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    margin-bottom: 2px;
+    line-height: 1.15;
+  }
+  .salon-row {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--ink-3);
+    margin-top: 2px;
+  }
+  .salon-rating {
+    display: inline-flex; align-items: center; gap: 3px;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .salon-rating svg { width: 12px; height: 12px; color: var(--accent); }
+  .salon-distance {
+    background: var(--grey-50);
+    color: var(--ink-2);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  .salon-card-cta {
+    flex-shrink: 0;
+    align-self: center;
+    background: var(--brand);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* Variant A — Map LEFT 55% / Cards RIGHT 45% (desktop), stacked mobile */
+  .nearby-a { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .nearby-a .map { aspect-ratio: 4/3; }
+  .nearby-a .cards { display: flex; flex-direction: column; gap: 8px; }
+
+  /* Variant B — Map TOP / Cards ROW BELOW */
+  .nearby-b .map { aspect-ratio: 16/7; margin-bottom: 12px; }
+  .nearby-b .cards {
+    display: flex; gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin: 0 -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .nearby-b .salon-card {
+    flex-shrink: 0;
+    width: 260px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .nearby-b .salon-photo { width: 100%; aspect-ratio: 16/10; height: auto; }
+  .nearby-b .salon-card-cta { align-self: flex-start; margin-top: 8px; }
+
+  /* Variant C — Map FULL BLEED / Cards FLOAT */
+  .nearby-c { position: relative; }
+  .nearby-c .map { aspect-ratio: 4/3.4; border-radius: 18px; }
+  .nearby-c .cards-float {
+    position: absolute;
+    bottom: 12px; left: 12px; right: 12px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0;
+  }
+  .nearby-c .salon-card {
+    flex-shrink: 0;
+    width: 240px;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    border-color: rgba(255,255,255,0.6);
+  }
+
+  footer {
+    padding: 24px 20px 60px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-3);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  footer b { color: var(--ink); }
+</style>
+</head>
+<body>
+  <h1 class="page-title">Nearby — map + cards variants</h1>
+  <p class="page-sub">App-style map + salon cards. <b>Not editorial.</b> Uber / Airbnb / Fresha pattern: see geography, tap a pin, see the card. Three layouts. Pick a letter.</p>
+
+  <!-- ─── A · Map + cards stacked ─── -->
+  <section class="variant">
+    <div class="variant-label"><span>A</span>Map + vertical cards stack</div>
+    <div class="variant-meta">
+      Layout = <b>map on top, vertical card list below</b><br/>
+      Active pin highlights matching card · scrolling cards moves pin focus<br/>
+      Vibe = Airbnb mobile, calm, scannable
+    </div>
+    <div class="section">
+      <div class="section-eyebrow">In deiner Nähe</div>
+      <h2 class="section-h2">Salons in Basel</h2>
+      <p class="section-sub">7 verifizierte Salons · alle innerhalb 15 Minuten</p>
+
+      <div class="nearby-a">
+        <div class="map">
+          <svg class="map-svg" viewBox="0 0 380 280" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="280" fill="#EEF1F6"/>
+            <path d="M40,130 Q50,90 90,80 Q130,65 170,75 Q210,70 250,80 Q290,75 320,95 Q350,115 340,150 Q330,180 290,195 Q250,210 210,205 Q170,215 130,205 Q90,200 60,180 Q35,160 40,130 Z"
+                  fill="#E3E8F0" stroke="#D5DCE6" stroke-width="1.5"/>
+            <path d="M120,140 Q140,135 160,145 Q180,150 175,165 Q165,175 150,170 Q130,165 120,140 Z"
+                  fill="#DEE4EE" opacity="0.6"/>
+          </svg>
+          <div class="pin active" style="left: 22%; top: 38%;"></div>
+          <div class="pin-label" style="left: 22%; top: 38%;">Basel</div>
+          <div class="pin" style="left: 55%; top: 32%;"></div>
+          <div class="pin-label" style="left: 55%; top: 32%;">Zürich</div>
+          <div class="pin" style="left: 45%; top: 62%;"></div>
+          <div class="pin-label" style="left: 45%; top: 62%;">Bern</div>
+          <div class="pin" style="left: 78%; top: 28%;"></div>
+          <div class="pin-label" style="left: 78%; top: 28%;">St. Gallen</div>
+          <div class="pin" style="left: 28%; top: 72%;"></div>
+          <div class="pin-label" style="left: 28%; top: 72%;">Genève</div>
+        </div>
+
+        <div class="cards">
+          <a href="#" class="salon-card active">
+            <div class="salon-photo"></div>
+            <div class="salon-meta">
+              <div class="salon-name">Studio Lina Coiffure</div>
+              <div class="salon-row">
+                <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.9 (216)</span>
+                <span class="salon-distance">0.4 km</span>
+              </div>
+              <div class="salon-row" style="margin-top: 4px;">Coiffeur · ab CHF 80</div>
+            </div>
+            <button class="salon-card-cta">Buchen</button>
+          </a>
+          <a href="#" class="salon-card">
+            <div class="salon-photo"></div>
+            <div class="salon-meta">
+              <div class="salon-name">Maison de Beauté Mara</div>
+              <div class="salon-row">
+                <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.8 (140)</span>
+                <span class="salon-distance">0.8 km</span>
+              </div>
+              <div class="salon-row" style="margin-top: 4px;">Nails &amp; Spa · ab CHF 65</div>
+            </div>
+            <button class="salon-card-cta">Buchen</button>
+          </a>
+          <a href="#" class="salon-card">
+            <div class="salon-photo"></div>
+            <div class="salon-meta">
+              <div class="salon-name">Atelier Schnitt</div>
+              <div class="salon-row">
+                <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.9 (302)</span>
+                <span class="salon-distance">1.2 km</span>
+              </div>
+              <div class="salon-row" style="margin-top: 4px;">Barbershop · ab CHF 45</div>
+            </div>
+            <button class="salon-card-cta">Buchen</button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── B · Map slim banner + horizontal cards ─── -->
+  <section class="variant">
+    <div class="variant-label"><span>B</span>Wide map banner + horizontal cards</div>
+    <div class="variant-meta">
+      Layout = <b>slim map on top (16:7), horizontal scroll cards below</b><br/>
+      Map is overview; cards are the action surface<br/>
+      Vibe = Uber Eats restaurant pick, productful
+    </div>
+    <div class="section">
+      <div class="section-eyebrow">In deiner Nähe</div>
+      <h2 class="section-h2">Schweiz im Überblick</h2>
+      <p class="section-sub">Karte zeigt verfügbare Städte, Karten zeigen Top-Salons.</p>
+
+      <div class="nearby-b">
+        <div class="map">
+          <svg class="map-svg" viewBox="0 0 380 165" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="165" fill="#EEF1F6"/>
+            <path d="M40,80 Q60,40 110,40 Q160,30 210,40 Q260,30 310,50 Q345,70 340,100 Q325,125 280,130 Q230,138 180,130 Q130,135 80,125 Q45,115 40,80 Z"
+                  fill="#E3E8F0" stroke="#D5DCE6" stroke-width="1.5"/>
+          </svg>
+          <div class="pin active" style="left: 20%; top: 50%;"></div>
+          <div class="pin-label" style="left: 20%; top: 50%;">Basel</div>
+          <div class="pin" style="left: 50%; top: 38%;"></div>
+          <div class="pin-label" style="left: 50%; top: 38%;">Zürich</div>
+          <div class="pin" style="left: 42%; top: 72%;"></div>
+          <div class="pin-label" style="left: 42%; top: 72%;">Bern</div>
+          <div class="pin" style="left: 78%; top: 36%;"></div>
+          <div class="pin-label" style="left: 78%; top: 36%;">St. Gallen</div>
+          <div class="pin" style="left: 24%; top: 84%;"></div>
+          <div class="pin-label" style="left: 24%; top: 84%;">Genève</div>
+        </div>
+
+        <div class="cards">
+          <a href="#" class="salon-card">
+            <div class="salon-photo"></div>
+            <div class="salon-meta">
+              <div class="salon-name">Studio Lina</div>
+              <div class="salon-row">
+                <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.9</span>
+                <span class="salon-distance">0.4 km</span>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="salon-card">
+            <div class="salon-photo"></div>
+            <div class="salon-meta">
+              <div class="salon-name">Maison Mara</div>
+              <div class="salon-row">
+                <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.8</span>
+                <span class="salon-distance">0.8 km</span>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="salon-card">
+            <div class="salon-photo"></div>
+            <div class="salon-meta">
+              <div class="salon-name">Atelier Schnitt</div>
+              <div class="salon-row">
+                <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.9</span>
+                <span class="salon-distance">1.2 km</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── C · Full-bleed map + floating glass cards ─── -->
+  <section class="variant">
+    <div class="variant-label"><span>C</span>Full-bleed map + floating glass cards</div>
+    <div class="variant-meta">
+      Layout = <b>map fills the section, cards float over the bottom with glass blur</b><br/>
+      Strongest visual moment · richest atmosphere<br/>
+      Vibe = Apple Maps, Find My, Uber pickup screen
+    </div>
+    <div class="section">
+      <div class="section-eyebrow">In deiner Nähe</div>
+      <h2 class="section-h2">Karte erkunden</h2>
+      <p class="section-sub">Pin antippen oder Karte unten swipen.</p>
+
+      <div class="nearby-c">
+        <div class="map">
+          <svg class="map-svg" viewBox="0 0 380 320" xmlns="http://www.w3.org/2000/svg">
+            <rect width="380" height="320" fill="#EEF1F6"/>
+            <path d="M40,140 Q50,90 100,80 Q150,65 200,75 Q250,70 295,85 Q335,100 340,140 Q335,180 300,195 Q260,215 210,210 Q160,220 110,210 Q70,200 50,180 Q35,160 40,140 Z"
+                  fill="#E3E8F0" stroke="#D5DCE6" stroke-width="1.5"/>
+            <path d="M130,150 Q160,140 195,150 Q225,160 220,180 Q200,195 175,190 Q145,180 130,150 Z"
+                  fill="#DEE4EE" opacity="0.6"/>
+          </svg>
+          <div class="pin active" style="left: 24%; top: 40%;"></div>
+          <div class="pin-label" style="left: 24%; top: 40%;">Basel</div>
+          <div class="pin" style="left: 54%; top: 36%;"></div>
+          <div class="pin-label" style="left: 54%; top: 36%;">Zürich</div>
+          <div class="pin" style="left: 44%; top: 60%;"></div>
+          <div class="pin-label" style="left: 44%; top: 60%;">Bern</div>
+          <div class="pin" style="left: 76%; top: 32%;"></div>
+          <div class="pin-label" style="left: 76%; top: 32%;">St. Gallen</div>
+          <div class="pin" style="left: 30%; top: 68%;"></div>
+          <div class="pin-label" style="left: 30%; top: 68%;">Genève</div>
+        </div>
+        <div class="cards-float">
+          <a href="#" class="salon-card active">
+            <div class="salon-photo"></div>
+            <div class="salon-meta">
+              <div class="salon-name">Studio Lina</div>
+              <div class="salon-row">
+                <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.9</span>
+                <span class="salon-distance">0.4 km</span>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="salon-card">
+            <div class="salon-photo"></div>
+            <div class="salon-meta">
+              <div class="salon-name">Maison Mara</div>
+              <div class="salon-row">
+                <span class="salon-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>4.8</span>
+                <span class="salon-distance">0.8 km</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <b>A</b> = scannable, calm, Airbnb-style. <b>B</b> = map as overview, cards do the work.<br/>
+    <b>C</b> = strongest visual moment, productful, Apple Maps feel.<br/>
+    My pick: <b>A</b> for production — clearest tap targets on phone. <b>C</b> is the showpiece variant.
+  </footer>
+</body>
+</html>

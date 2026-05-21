@@ -5,6 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 import { z } from "zod";
 
 const suggestSchema = z.object({
@@ -16,7 +17,8 @@ const suggestSchema = z.object({
 // POST /api/chat/suggest — Get AI-suggested reply for salon owner
 export async function POST(req: NextRequest) {
   // If no Gemini key configured, return 204 silently
-  if (!process.env.GEMINI_API_KEY) {
+  const geminiKey = getServerEnv().GEMINI_API_KEY;
+  if (!geminiKey) {
     return new NextResponse(null, { status: 204 });
   }
 
@@ -39,7 +41,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen V2 — full Republik treatment · Fraunces serif + saturated panels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand: #E8742A;
+    --brand-text: #8A3C0F;
+    --brand-deep: #5C2308;
+    --bg: #FFFFFF;
+    --ink-1: #1A1209;
+    --ink-2: #56463E;
+    --ink-3: #7A6957;
+    --cream: #F5EFE6;
+    --love-red: #FF4A6B;
+    --success: #16A34A;
+    --warning: #F59E0B;
+    --error: #D32F2F;
+    --star: #F3A864;
+    /* category colorways — V2-D15-1 (purple banned per V2-D15-2) */
+    --coiffeur: #B5588A; --coiffeur-deep: #6B2D4D;
+    --barber: #E8A957; --barber-deep: #7A4F1F;
+    --nails: #C77A5C; --nails-deep: #7A4030;
+    --spa: #88B89E; --spa-deep: #3F6F55;
+    --makeup: #D66547; --makeup-deep: #7C3520;
+    --wellness: #A66E3D; --wellness-deep: #5C3D22;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #ECE6DC;
+    color: var(--ink-1);
+    font-family: "Inter Tight", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  body { padding: 36px 16px 80px; }
+  .doc { max-width: 1320px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 32px; }
+  .eye {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--brand-text); margin-bottom: 10px;
+    font-family: "Inter Tight", sans-serif;
+  }
+  h1.doc-h {
+    font-family: "Fraunces", serif;
+    font-weight: 700; font-size: 44px; line-height: 1;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+    letter-spacing: -0.02em; color: var(--ink-1);
+  }
+  h1.doc-h em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+    color: var(--brand);
+  }
+  .sub {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 14px; color: var(--ink-2); margin-top: 14px;
+    max-width: 760px; margin-inline: auto;
+  }
+
+  .changes-panel {
+    margin: 22px auto 0;
+    max-width: 760px;
+    padding: 16px 20px;
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 12px;
+    text-align: left;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 13px; color: var(--ink-2);
+    line-height: 1.6;
+  }
+  .changes-panel strong { color: var(--ink-1); }
+  .changes-panel ul { padding-left: 20px; margin-top: 6px; }
+
+  /* SECTION */
+  .sect { margin-top: 40px; }
+  .sect-h {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+  }
+  .sect-h h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 700; font-size: 26px;
+    font-variation-settings: "opsz" 96;
+    letter-spacing: -0.015em; color: var(--ink-1);
+  }
+  .sect-h .ref {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 11px; color: var(--ink-3);
+  }
+
+  /* ============== CATEGORY PAGE — full Republik panel treatment ============== */
+  .cat-page {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(26,18,9,.06);
+    background: var(--bg);
+    box-shadow: 0 8px 32px rgba(26,18,9,.08);
+    --c: var(--coiffeur);
+    --c-deep: var(--coiffeur-deep);
+    --panel-bg: var(--c);
+    --panel-text: var(--ink-1);
+    --panel-sub: var(--c-deep);
+    --panel-meta: rgba(26,18,9,.7);
+  }
+  /* DARK panel variants — use deep color, light text */
+  .cat-page.dark-spa {
+    --c: var(--spa); --c-deep: var(--spa-deep);
+    --panel-bg: var(--spa-deep);
+    --panel-text: #F5F0E8;
+    --panel-sub: rgba(245,240,232,.85);
+    --panel-meta: rgba(245,240,232,.6);
+  }
+  .cat-page.dark-wellness {
+    --c: var(--wellness); --c-deep: var(--wellness-deep);
+    --panel-bg: var(--wellness-deep);
+    --panel-text: #F5F0E8;
+    --panel-sub: rgba(245,240,232,.85);
+    --panel-meta: rgba(245,240,232,.6);
+  }
+  /* BRIGHT panel variants — saturated color, dark text */
+  .cat-page.bright-coiffeur { --c: var(--coiffeur); --c-deep: var(--coiffeur-deep); --panel-bg: var(--coiffeur); }
+  .cat-page.bright-barber {
+    --c: var(--barber); --c-deep: var(--barber-deep);
+    --panel-bg: var(--barber);
+  }
+  .cat-page.bright-nails { --c: var(--nails); --c-deep: var(--nails-deep); --panel-bg: var(--nails); }
+  .cat-page.bright-makeup {
+    --c: var(--makeup); --c-deep: var(--makeup-deep);
+    --panel-bg: var(--makeup);
+    --panel-text: #FFFFFF;
+    --panel-sub: rgba(255,255,255,.92);
+    --panel-meta: rgba(255,255,255,.7);
+  }
+
+  .panel {
+    background: var(--panel-bg);
+    padding: 32px 28px 28px;
+    color: var(--panel-text);
+    position: relative;
+  }
+  .panel-meta-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 18px;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 11px;
+    color: var(--panel-meta);
+  }
+  .panel-crumbs strong { color: var(--panel-text); font-weight: 600; }
+  .panel-crumbs .sep { opacity: .5; margin: 0 4px; }
+  .panel-h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 700; font-size: 38px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+    color: var(--panel-text);
+    margin-bottom: 12px;
+  }
+  .panel-h1 em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+    font-weight: 500;
+  }
+  .panel-sub {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 13px; line-height: 1.45;
+    color: var(--panel-sub);
+    max-width: 460px;
+  }
+  .panel-sub strong {
+    color: var(--panel-text); font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .panel-cta-row {
+    display: flex; gap: 10px; align-items: center;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+  .pill-cream {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(245,240,232,.18);
+    border: 1px solid rgba(245,240,232,.28);
+    color: var(--panel-text);
+    padding: 5px 11px;
+    border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 11px; font-weight: 600;
+    backdrop-filter: blur(8px);
+  }
+  .pill-cream .pulse {
+    width: 5px; height: 5px; background: var(--success);
+    border-radius: 99px;
+    box-shadow: 0 0 0 3px rgba(22,163,74,.3);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .55; transform: scale(1.3); }
+  }
+  /* For BRIGHT panels — pill is darker glass */
+  .bright-coiffeur .pill-cream, .bright-barber .pill-cream, .bright-nails .pill-cream {
+    background: rgba(26,18,9,.12);
+    border-color: rgba(26,18,9,.18);
+    color: var(--panel-text);
+  }
+  /* For makeup (bright + already-white-text) — keep cream pill */
+
+  /* Body of category page below the panel */
+  .body {
+    padding: 22px 24px 24px;
+    background: var(--bg);
+  }
+  .body-filters {
+    display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .pill-filter {
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 600; font-size: 11px;
+    background: linear-gradient(180deg, #fff, #FAF7F3);
+    border: 1px solid rgba(26,18,9,.06);
+    color: var(--ink-1);
+    padding: 6px 11px;
+    border-radius: 99px;
+  }
+  .pill-filter.active {
+    background: var(--c);
+    color: #fff;
+    border-color: var(--c);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 1px 2px rgba(26,18,9,.1);
+  }
+  /* For dark-panel pages, active uses deep variant for stronger contrast on white substrate */
+  .dark-spa .pill-filter.active, .dark-wellness .pill-filter.active {
+    background: var(--c-deep);
+    border-color: var(--c-deep);
+  }
+
+  .salon-card {
+    display: flex; gap: 12px;
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.04);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
+  }
+  .photo {
+    width: 56px; height: 56px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background: var(--c);
+    background-image:
+      linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 35%, transparent 70%, rgba(0,0,0,.05) 100%),
+      radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.25), transparent 60%);
+    position: relative;
+  }
+  .badge {
+    position: absolute; top: 4px; left: 4px;
+    display: inline-flex; align-items: center; gap: 3px;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(12px);
+    color: var(--ink-1);
+    font-family: "Inter Tight", sans-serif;
+    font-size: 8px; font-weight: 700;
+    padding: 2px 5px; border-radius: 99px;
+  }
+  .badge::before { content: ""; width: 3px; height: 3px; background: var(--success); border-radius: 99px; }
+  .salon-meta { flex: 1; min-width: 0; }
+  .salon-row1 { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; }
+  .salon-name {
+    font-family: "Fraunces", serif;
+    font-weight: 700; font-size: 14px;
+    font-variation-settings: "opsz" 36;
+    letter-spacing: -0.005em; color: var(--ink-1);
+    line-height: 1.1;
+  }
+  .salon-rating {
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 600; font-size: 10px;
+    font-variant-numeric: tabular-nums; color: var(--ink-1);
+  }
+  .salon-row2 {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 10px; color: var(--ink-3);
+    margin-top: 3px;
+  }
+  .salon-row2 strong { color: var(--ink-1); font-weight: 600; }
+
+  .body-cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--c-deep) 80%, white) 0%, var(--c-deep) 100%);
+    color: #fff;
+    padding: 11px 18px;
+    border: 0; border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 700; font-size: 12px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 4px 12px rgba(26,18,9,.18);
+    margin-top: 12px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 880px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* Type comparison */
+  .type-row {
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 14px;
+  }
+  .type-tag {
+    font-family: "Inter Tight", sans-serif;
+    font-size: 10px; color: var(--ink-3);
+    margin-bottom: 6px;
+  }
+  .t-display {
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    color: var(--ink-1);
+  }
+  .t-display em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+    color: var(--brand);
+  }
+  .t-body {
+    font-family: "Inter Tight", sans-serif;
+    color: var(--ink-1);
+  }
+
+  /* HERO surface (homepage) */
+  .hero {
+    background: #fff;
+    border: 1px solid rgba(26,18,9,.06);
+    border-radius: 16px;
+    padding: 28px 24px;
+  }
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.65); backdrop-filter: blur(12px) saturate(1.4);
+    border: 1px solid rgba(232,116,42,.18);
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-1);
+    margin-bottom: 14px;
+  }
+  .hero-pulse {
+    width: 6px; height: 6px; background: var(--brand); border-radius: 99px;
+    box-shadow: 0 0 0 4px rgba(232,116,42,.18); animation: pulse 1.6s infinite;
+  }
+  .hero-h {
+    font-family: "Fraunces", serif;
+    font-weight: 700; font-size: 40px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    line-height: 1; letter-spacing: -0.02em;
+    color: var(--ink-1);
+    margin-bottom: 16px;
+  }
+  .hero-h em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+    color: var(--brand);
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: linear-gradient(180deg, #F0834D 0%, #E8742A 100%);
+    color: #fff;
+    padding: 13px 24px;
+    border: 0; border-radius: 99px;
+    font-family: "Inter Tight", sans-serif;
+    font-weight: 700; font-size: 13px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(232,116,42,.32);
+  }
+
+  .ask {
+    margin-top: 32px;
+    padding: 16px 20px;
+    background: #FFE4D2;
+    border: 1px solid rgba(232,116,42,.18);
+    border-radius: 12px;
+    font-family: "Inter Tight", sans-serif;
+    font-size: 13px; color: #5C2308;
+    line-height: 1.55;
+  }
+  .ask strong { color: var(--ink-1); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header>
+    <div class="eye">Q1=1 · FULL FRAUNCES PIVOT · BRICOLAGE RETIRED · MIXED PANELS</div>
+    <h1 class="doc-h">Solen, in <em>Republik</em> energy.</h1>
+    <p class="sub">Fraunces (variable serif) replaces Bricolage entirely for display. Inter Tight stays as body. Each category page = full saturated colored panel, serif h1 sits on it. Mix of bright + dark panels per category, contrast adjusts. <strong>This is what Republik actually does, ported.</strong></p>
+    <div class="changes-panel">
+      <strong>Type system shifts (Q1 = 1):</strong>
+      <ul>
+        <li>Display: Bricolage Grotesque 700 → <strong>Fraunces 700</strong> (variable serif, OFL, opsz 9-144, italic axis available — closest free analog to RepublikSerif)</li>
+        <li>Body / UI: Inter Tight stays (Inter Tight is Solen's GT-America-equivalent — sans humanist body)</li>
+        <li>Italic accent comeback: Fraunces has italic. "Sulo" can return as italic moment INSIDE a serif headline (different from the retired Instrument Serif accent — Fraunces italic IS the same family as the headline, no font-stack mismatch)</li>
+        <li>Numerics: Inter Tight tabular-nums (kept)</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ============== HOMEPAGE HERO + GREETING ============== -->
+  <section class="sect">
+    <div class="sect-h">
+      <h2>1 · Homepage hero · Fraunces serif greeting</h2>
+      <span class="ref">brand orange CTA stays — homepage is global territory</span>
+    </div>
+    <div class="hero">
+      <span class="hero-pill"><span class="hero-pulse"></span>47 Salons in Basel haben heute frei</span>
+      <h3 class="hero-h">Guten Morgen, <em>Sulo</em>.</h3>
+      <button class="hero-cta">Solen durchsuchen →</button>
+    </div>
+  </section>
+
+  <!-- ============== CATEGORY PAGES — FULL REPUBLIK PANELS ============== -->
+  <section class="sect">
+    <div class="sect-h">
+      <h2>2 · Category pages · full Republik saturated panels</h2>
+      <span class="ref">mixed bright + dark · serif h1 on saturated bg · contrast logic per panel</span>
+    </div>
+
+    <!-- COIFFEUR — bright pink/rose panel, dark text -->
+    <article class="cat-page bright-coiffeur" style="margin-bottom: 18px;">
+      <div class="panel">
+        <div class="panel-meta-row">
+          <span class="panel-crumbs">solen <span class="sep">/</span> Basel <span class="sep">/</span> <strong>Coiffeur</strong></span>
+        </div>
+        <h3 class="panel-h1">Coiffeur in <em>Basel</em></h3>
+        <p class="panel-sub"><strong>23 Salons</strong> in der Stadt. <strong>8</strong> davon haben heute noch freie Termine — schau rein, buche direkt.</p>
+        <div class="panel-cta-row">
+          <span class="pill-cream"><span class="pulse"></span>Heute frei</span>
+          <span class="pill-cream">Last-Minute</span>
+          <span class="pill-cream">In der Nähe</span>
+        </div>
+      </div>
+      <div class="body">
+        <div class="body-filters">
+          <span class="pill-filter active">Alle</span>
+          <span class="pill-filter">Heute frei</span>
+          <span class="pill-filter">Sortieren ▾</span>
+          <span class="pill-filter">Filter</span>
+        </div>
+        <div class="salon-card">
+          <div class="photo"><span class="badge">Heute frei</span></div>
+          <div class="salon-meta">
+            <div class="salon-row1"><span class="salon-name">Salon Crémant</span><span class="salon-rating">⭐ 4.9</span></div>
+            <div class="salon-row2">In <strong>25 Min</strong> · CHF <strong>85</strong></div>
+          </div>
+        </div>
+        <button class="body-cta">Buchen →</button>
+      </div>
+    </article>
+
+    <div class="grid-2" style="margin-bottom: 18px;">
+
+      <!-- SPA — DARK panel, cream text -->
+      <article class="cat-page dark-spa">
+        <div class="panel">
+          <div class="panel-meta-row">
+            <span class="panel-crumbs">solen <span class="sep">/</span> Zürich <span class="sep">/</span> <strong>Spa</strong></span>
+          </div>
+          <h3 class="panel-h1">Spa in <em>Zürich</em></h3>
+          <p class="panel-sub"><strong>14 Salons</strong> · 5 heute frei. Massage, Gesichtsbehandlung, Sauna.</p>
+          <div class="panel-cta-row">
+            <span class="pill-cream"><span class="pulse"></span>Heute frei</span>
+            <span class="pill-cream">Wochenende</span>
+          </div>
+        </div>
+        <div class="body">
+          <div class="body-filters">
+            <span class="pill-filter active">Alle</span>
+            <span class="pill-filter">Heute frei</span>
+            <span class="pill-filter">Filter</span>
+          </div>
+          <div class="salon-card">
+            <div class="photo"><span class="badge">Heute frei</span></div>
+            <div class="salon-meta">
+              <div class="salon-row1"><span class="salon-name">Pure Wellness</span><span class="salon-rating">⭐ 4.7</span></div>
+              <div class="salon-row2">Massage · CHF <strong>120</strong></div>
+            </div>
+          </div>
+          <button class="body-cta">Buchen →</button>
+        </div>
+      </article>
+
+      <!-- BARBER — bright sunny panel, dark text -->
+      <article class="cat-page bright-barber">
+        <div class="panel">
+          <div class="panel-meta-row">
+            <span class="panel-crumbs">solen <span class="sep">/</span> Bern <span class="sep">/</span> <strong>Barber</strong></span>
+          </div>
+          <h3 class="panel-h1">Barber in <em>Bern</em></h3>
+          <p class="panel-sub"><strong>11 Salons</strong> · 3 heute frei. Bart, Schnitt, Walk-in.</p>
+          <div class="panel-cta-row">
+            <span class="pill-cream"><span class="pulse"></span>Heute frei</span>
+            <span class="pill-cream">Walk-in</span>
+          </div>
+        </div>
+        <div class="body">
+          <div class="body-filters">
+            <span class="pill-filter active">Alle</span>
+            <span class="pill-filter">Heute frei</span>
+            <span class="pill-filter">Filter</span>
+          </div>
+          <div class="salon-card">
+            <div class="photo"><span class="badge">Heute frei</span></div>
+            <div class="salon-meta">
+              <div class="salon-row1"><span class="salon-name">Klipp Tisi</span><span class="salon-rating">⭐ 4.8</span></div>
+              <div class="salon-row2">Schnitt + Bart · CHF <strong>55</strong></div>
+            </div>
+          </div>
+          <button class="body-cta">Buchen →</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="grid-2" style="margin-bottom: 18px;">
+
+      <!-- WELLNESS — DARK camel panel, cream text -->
+      <article class="cat-page dark-wellness">
+        <div class="panel">
+          <div class="panel-meta-row">
+            <span class="panel-crumbs">solen <span class="sep">/</span> Zürich <span class="sep">/</span> <strong>Wellness</strong></span>
+          </div>
+          <h3 class="panel-h1">Wellness in <em>Zürich</em></h3>
+          <p class="panel-sub"><strong>9 Salons</strong> · 4 heute frei. Yoga, Meditation, Akupunktur.</p>
+        </div>
+        <div class="body">
+          <div class="body-filters">
+            <span class="pill-filter active">Alle</span>
+            <span class="pill-filter">Heute frei</span>
+            <span class="pill-filter">Filter</span>
+          </div>
+          <div class="salon-card">
+            <div class="photo"><span class="badge">Heute frei</span></div>
+            <div class="salon-meta">
+              <div class="salon-row1"><span class="salon-name">Yoga Studio Sihl</span><span class="salon-rating">⭐ 4.6</span></div>
+              <div class="salon-row2">Hatha · CHF <strong>35</strong></div>
+            </div>
+          </div>
+          <button class="body-cta">Buchen →</button>
+        </div>
+      </article>
+
+      <!-- MAKEUP — saturated coral, white text -->
+      <article class="cat-page bright-makeup">
+        <div class="panel">
+          <div class="panel-meta-row">
+            <span class="panel-crumbs">solen <span class="sep">/</span> Basel <span class="sep">/</span> <strong>Makeup</strong></span>
+          </div>
+          <h3 class="panel-h1">Makeup in <em>Basel</em></h3>
+          <p class="panel-sub"><strong>7 Salons</strong> · Tages-Look, Abend-Look, Braut.</p>
+        </div>
+        <div class="body">
+          <div class="body-filters">
+            <span class="pill-filter active">Alle</span>
+            <span class="pill-filter">Braut</span>
+            <span class="pill-filter">Filter</span>
+          </div>
+          <div class="salon-card">
+            <div class="photo"><span class="badge">Heute frei</span></div>
+            <div class="salon-meta">
+              <div class="salon-row1"><span class="salon-name">Studio Lume</span><span class="salon-rating">⭐ 4.9</span></div>
+              <div class="salon-row2">Abend-Look · CHF <strong>140</strong></div>
+            </div>
+          </div>
+          <button class="body-cta">Buchen →</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="grid-2">
+
+      <!-- NAILS — bright clay panel, dark text -->
+      <article class="cat-page bright-nails">
+        <div class="panel">
+          <div class="panel-meta-row">
+            <span class="panel-crumbs">solen <span class="sep">/</span> Basel <span class="sep">/</span> <strong>Nails</strong></span>
+          </div>
+          <h3 class="panel-h1">Nails in <em>Basel</em></h3>
+          <p class="panel-sub"><strong>16 Salons</strong> · 6 heute frei. Gel, Acryl, French, Nail Art.</p>
+        </div>
+        <div class="body">
+          <div class="body-filters">
+            <span class="pill-filter active">Alle</span>
+            <span class="pill-filter">Gel</span>
+            <span class="pill-filter">Filter</span>
+          </div>
+          <div class="salon-card">
+            <div class="photo"><span class="badge">Heute frei</span></div>
+            <div class="salon-meta">
+              <div class="salon-row1"><span class="salon-name">Nail Atelier</span><span class="salon-rating">⭐ 4.8</span></div>
+              <div class="salon-row2">Gel-Nägel · CHF <strong>65</strong></div>
+            </div>
+          </div>
+          <button class="body-cta">Buchen →</button>
+        </div>
+      </article>
+
+      <!-- info -->
+      <div style="background: #fff; border: 1px solid rgba(26,18,9,.06); border-radius: 14px; padding: 22px; align-self: stretch;">
+        <h4 style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px; font-variation-settings: 'opsz' 96; letter-spacing: -0.01em; color: var(--ink-1); margin-bottom: 10px;">Why mixed dark + bright?</h4>
+        <p style="font-family: 'Inter Tight', sans-serif; font-size: 13px; line-height: 1.6; color: var(--ink-2); margin-bottom: 12px;">Republik does both. Some articles bright (hot pink, red, sunny). Some dark (forest green, navy teal). The MIX is the system. Solen's mapping:</p>
+        <ul style="font-family: 'Inter Tight', sans-serif; font-size: 12px; line-height: 1.7; color: var(--ink-2); padding-left: 20px;">
+          <li><strong>Coiffeur</strong> · bright rose (`#B5588A`) · dark ink text</li>
+          <li><strong>Barber</strong> · bright sunny (`#E8A957`) · dark ink text</li>
+          <li><strong>Nails</strong> · bright clay (`#C77A5C`) · dark ink text</li>
+          <li><strong>Spa</strong> · DARK sage-deep (`#3F6F55`) · cream text</li>
+          <li><strong>Makeup</strong> · saturated coral (`#D66547`) · white text</li>
+          <li><strong>Wellness</strong> · DARK camel-deep (`#5C3D22`) · cream text</li>
+        </ul>
+        <p style="font-family: 'Inter Tight', sans-serif; font-size: 11px; line-height: 1.6; color: var(--ink-3); margin-top: 12px; font-style: italic;">If you want ALL bright (no dark) or ALL dark (no bright) — say so and I render that variant.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============== TYPE comparison ============== -->
+  <section class="sect">
+    <div class="sect-h">
+      <h2>3 · Type system · Fraunces + Inter Tight</h2>
+      <span class="ref">Bricolage retired · 2-typeface system mirrors Republik exactly</span>
+    </div>
+    <div class="type-row">
+      <p class="type-tag">HERO H1 · Fraunces 700 · 44px · opsz 144</p>
+      <p class="t-display" style="font-size: 44px; line-height: 1;">Guten Morgen, <em>Sulo</em>.</p>
+    </div>
+    <div class="type-row">
+      <p class="type-tag">SECTION H2 · Fraunces 700 · 28px · opsz 96</p>
+      <p class="t-display" style="font-size: 28px;">Coiffeur in Basel</p>
+    </div>
+    <div class="type-row">
+      <p class="type-tag">CARD TITLE H3 · Fraunces 700 · 16px · opsz 36</p>
+      <p class="t-display" style="font-size: 16px; font-variation-settings: 'opsz' 36;">Salon Crémant</p>
+    </div>
+    <div class="type-row">
+      <p class="type-tag">BODY · Inter Tight 400 · 14px</p>
+      <p class="t-body" style="font-size: 14px;">Buche Coiffeur Termine in Basel online — 23 Salons, ab CHF 65. Heute frei: 8.</p>
+    </div>
+    <div class="type-row">
+      <p class="type-tag">META · Inter Tight 400 ink-3 · 11px · tabular-nums</p>
+      <p class="t-body" style="font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums;">Heute frei ab 14:30 · ab CHF 85 · Kleinbasel · ⭐ 4.9</p>
+    </div>
+    <div class="type-row">
+      <p class="type-tag">EYEBROW · Inter Tight 700 uppercase · brand-text · 9px</p>
+      <p class="t-body" style="font-size: 9px; font-weight: 700; letter-spacing: 0.22em; color: var(--brand-text); text-transform: uppercase;">FÜR SALONS</p>
+    </div>
+    <div class="type-row">
+      <p class="type-tag">ITALIC ACCENT · Fraunces italic (same family — no font-stack mismatch)</p>
+      <p class="t-display" style="font-size: 24px;">Hi Lisa, was brauchst du <em>heute</em>?</p>
+    </div>
+  </section>
+
+  <div class="ask">
+    <strong>Pick:</strong>
+    <ul style="margin-top: 6px; padding-left: 20px;">
+      <li><strong>Lock this</strong> — patch §5 Typography to Fraunces (display) + Inter Tight (body). Drop Bricolage. Apply category-page hero panels (mixed bright+dark) to §25.4. Update mockups. Update V2-D15-3 in log.</li>
+      <li><strong>Different panel mix</strong> — name the variant: ALL bright / ALL dark / different category-to-light-or-dark assignments.</li>
+      <li><strong>Dial back</strong> — keep Fraunces for category-page panels only, Bricolage for homepage / non-category surfaces (hybrid type system).</li>
+      <li><strong>Wrong direction</strong> — call out specifically what's not matching the Republik feel and I revise.</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

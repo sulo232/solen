@@ -1,0 +1,10 @@
+ed0b08a9774282c529132d830bd49eded7aa72ae 2026-04-04 11:34:16 +0200 fix(R5): salon section nav — improved observer margins + token fix
+aee893eeede2bf096039930ca5c5c7ce4a249374 2026-04-04 11:34:36 +0200 fix: smooth 200ms page crossfade transitions with EASE_SOLEN
+024b00478905a793b23f834a7ffab3160b4c621e 2026-04-04 11:35:10 +0200 docs: append R5 lessons learned (IDE auto-revert, nav dedup patterns)
+4808d5d010f7049c83d6bbbe3f2f173d5c2a233b 2026-04-04 11:37:19 +0200 refactor: condense booking wizard from 6 steps to 4 (R6 Phase 6.1)
+02b88c6413c34cc1596eeb875437e731217e78c0 2026-04-04 11:37:55 +0200 feat: grid stagger reveal animations (Zone 1-2)
+db0783641965c445f33853db2a70c8e00d98c788 2026-04-04 11:40:43 +0200 fix: booking wizard visual polish — progress bar, step dots, back button (R6 Phase 6.2)
+ab7a5af38e5ce92273e441eb34ead796dc8ffc16 2026-04-04 11:45:54 +0200 refactor: coral color rebalance — reserve for CTAs and key accents only (R6 Phase 6.3)
+ae8be8377b8466e868b9fb9b6feea32ba6d905eb 2026-04-04 11:49:12 +0200 fix: booking success page polish + remaining coral rebalance (R6 Phase 6.4)
+5f5b2a92318b354f4a1dcef4eea40777c0b990e9 2026-04-04 11:49:41 +0200 fix: standardize modal/sheet timing to 200ms/300ms
+7a625d1bcbab84fb002efdcdfeeb4547bf1ed565 2026-04-04 11:50:13 +0200 refactor: standardize hover/active interaction patterns (R6 Phase 6.3 follow-up)

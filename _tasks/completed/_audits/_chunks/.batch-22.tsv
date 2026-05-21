@@ -1,0 +1,10 @@
+3f5e66130828d401f999689d3afb4da5d605c317 2026-03-27 18:20:12 +0100 feat: wire up profile payment methods with Stripe SetupIntents
+0a6d3b836812e39139b7b5d2461a455ba87d9fea 2026-03-27 18:25:08 +0100 fix: squared search UI & raggedy tutorial popovers
+b1f170e52f89e45fae70bdbe6544d8bb854fa2f9 2026-03-27 18:45:23 +0100  phase 3: complete backend connectivity remediation phase 1-5
+68587b75990587aec2ef3db7e1df9966a09316d6 2026-03-27 19:15:36 +0100 feat(onboarding): finalize onboarding wizard fixes and AI integrations
+fbe6f968658265059226b2263c44f7eb181227b0 2026-03-27 21:11:31 +0100 fix: add Italian locale to all email templates, fix validation schemas for API route alignment
+d41527805583a1d6e2d2e68ac53478244c88d809 2026-03-27 21:17:21 +0100 feat: STORE-P3 rating badge on staff avatars + StaffAvailability wired into profile page
+204d74b610398c1a885bc2e4de22dc4c81261054 2026-03-27 21:23:52 +0100 feat: STORE-P5-S2 green/grey dots on every day in opening hours grid
+e4dc27de227e40fc06e820ab21994b4403720b8c 2026-03-27 21:28:51 +0100 feat: service management — sort_order DnD reordering + CSV import modal/API
+851dc436bdd0b17d81b88d5eab5a2c7453313014 2026-03-27 21:39:47 +0100 feat: CRM/RFM segmentation — materialized view, API join, segment filter tabs + badges
+e825e9be23e951b6cdbb7dd095376548301a14fd 2026-03-27 22:08:03 +0100 feat: staff commissions — commission_rate field, earnings API, payout table + CRM segment tabs

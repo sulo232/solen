@@ -1,0 +1,10 @@
+77a7f40bb0f682510f27d9d5d3a6427ca57ee74a 2026-03-30 19:32:37 +0200 fix: add isolate to main — prevents Framer Motion stacking context overlapping sticky header (N.2)
+c68f4c41bb4a807001148d3abc0d599083672f30 2026-03-30 19:34:15 +0200 fix(footer): Instagram icon inline with legal links, bg updated to #2C2825 per spec 3.3/N.3
+78aaf9aff3f91542c8be728aa307464fa81fea34 2026-03-30 19:35:41 +0200 fix(tab-bar): icons 24px, border-top rgba(0,0,0,.06) per spec 3.4
+5efb9a1459ce6e2f2efe17b163da2396ca861911 2026-03-30 20:01:23 +0200 feat(homepage): spec addendum A.1-A.5 — skeleton cards, search sheet, z-index fixes
+38acc381563b96d647d11f4b6c889fbf70a3f667 2026-03-30 20:08:00 +0200 fix(homepage): complete spec A.4/A.6 gaps — scroll order + search row redesign
+ca0d65a6473217d23e3b83058396cd8d49102f5f 2026-03-30 20:16:46 +0200 fix(homepage): A.6 scroll order cleanup + A.3/A.4 spec fixes
+4431e0839006c8ae6faf0de36b220e273de9d2a7 2026-03-30 20:49:39 +0200 fix+polish(homepage): bugs B.1-B.9 + polish P.1,P.3,P.4,P.9,P.10,P.11
+1609d82f2da087b659f5924db1bed472e1427f73 2026-03-30 20:59:23 +0200 feat(nav): home tab replaces saved in tab bar, saved bookmark in header, fix mobile search scroll glitch
+67523b1da0459af67a1f0556931fd5c519db0d42 2026-03-30 21:07:28 +0200 fix(header): show S monogram on mobile instead of full logo
+ff70b2d941c9fc0af77fc009cdc28e121eff874d 2026-03-30 21:47:03 +0200 feat(homepage): Airbnb-style redesign — search bar, icon category row, per-city carousels, sticky text tabs

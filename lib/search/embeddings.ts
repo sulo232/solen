@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getServerEnv } from "@/lib/env";
 
 const EMBEDDING_MODEL = "text-embedding-004";
 
@@ -6,7 +7,7 @@ const EMBEDDING_MODEL = "text-embedding-004";
  * Generate a 768-dim embedding for a text string using Gemini.
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getServerEnv().GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY not configured");
 
   const genAI = new GoogleGenerativeAI(apiKey);

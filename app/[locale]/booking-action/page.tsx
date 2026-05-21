@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { Check, X, AlertTriangle } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 export default function BookingActionPage() {
   const searchParams = useSearchParams();
@@ -56,11 +56,11 @@ export default function BookingActionPage() {
   const l = labels[locale as "de" | "en"] ?? labels.de;
 
   return (
-    <div className="min-h-screen bg-s-bg-surface dark:bg-s-dm-bg flex items-center justify-center p-4">
+    <div className="min-h-screen bg-s-bg-surface flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md max-w-sm w-full p-6 text-center"
+        className="bg-white rounded-[12px] shadow-warm-md max-w-sm w-full p-6 text-center"
       >
         {loading ? (
           <div className="py-12"><Spinner size="lg" /></div>
@@ -69,24 +69,24 @@ export default function BookingActionPage() {
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-amber-subtle">
               <AlertTriangle size={24} className="text-s-amber" />
             </div>
-            <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text mb-2">{l.error}</h2>
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">{error}</p>
+            <h2 className="font-heading text-lg text-s-ink mb-2">{l.error}</h2>
+            <p className="text-sm text-s-ink/50">{error}</p>
           </>
         ) : result === "confirmed" ? (
           <>
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-coral/10">
               <Check size={24} className="text-s-coral" />
             </div>
-            <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text mb-2">{l.confirmed}</h2>
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">{l.confirmedDesc}</p>
+            <h2 className="font-heading text-lg text-s-ink mb-2">{l.confirmed}</h2>
+            <p className="text-sm text-s-ink/50">{l.confirmedDesc}</p>
           </>
         ) : (
           <>
-            <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-ink/5 dark:bg-s-dm-text/5">
-              <X size={24} className="text-s-ink/40 dark:text-s-dm-text/40" />
+            <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-ink/5">
+              <X size={24} className="text-s-ink/40" />
             </div>
-            <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text mb-2">{l.cancelled}</h2>
-            <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">{l.cancelledDesc}</p>
+            <h2 className="font-heading text-lg text-s-ink mb-2">{l.cancelled}</h2>
+            <p className="text-sm text-s-ink/50">{l.cancelledDesc}</p>
           </>
         )}
       </motion.div>

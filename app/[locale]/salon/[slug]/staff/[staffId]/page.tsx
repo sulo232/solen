@@ -1,4 +1,4 @@
-import StaffProfilePage from "@/components/staff/StaffProfilePage";
+import StaffProfilePage from "@/components-legacy/staff/StaffProfilePage";
 
 export default async function StaffProfileRoute({
   params,

@@ -1,0 +1,10 @@
+559a6a97e986280d24884ba31a46d6a3edd86cdc 2026-04-02 10:40:08 +0200 feat: scroll-direction-aware header hide/show (saves 64px mobile)
+4799d68c7c40cc73a484e457fab513f7f513ad5d 2026-04-02 10:40:34 +0200 feat: bottom sheet multi-detent snapping (peek/half/full)
+72bb1c5a32d660c55eef78ff834cb9105074b713 2026-04-02 10:41:16 +0200 a11y: enforce 44px minimum touch target on SalonCard heart button
+9551e1e254491b3abd4ca8c1c6fe123c897abf2f 2026-04-02 10:41:39 +0200 feat: add branded PWA offline fallback page
+573b11e0855e3df87706a4e9b9c30672c4cdef37 2026-04-02 10:59:23 +0200 fix: add missing German translations to salonDetail namespace and fix translation namespace issues
+5823bedc3e8f13a18f29b81f84a93c2383ba3600 2026-04-02 11:01:10 +0200 phase 7: add page transition crossfade with AnimatePresence
+5481e54c34f2bc1381bbe2f8c3255de6a57ce602 2026-04-02 11:05:05 +0200 phase 8: implement account deletion API and GDPR-compliant UI
+06b3d51140915b1565d9d0dd320ba403f17e0f3e 2026-04-02 14:46:36 +0200 feat: add next-available quick-book API and UI button
+edd94f037c93dfc2973ef7c357bb9a89ace7abe8 2026-04-02 14:51:47 +0200 feat: enable Apple Pay and Google Pay in booking checkout
+5bdaa76575450850f2bf0cda4adf9687c7fd38f5 2026-04-02 14:58:28 +0200 feat: booking reschedule API endpoint (atomic transaction)

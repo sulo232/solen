@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solen — without vs with Emil's design engineering polish</title>
+
+  <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #fff; }
+    body {
+      font-family: "Open Sauce One", Inter, system-ui, sans-serif;
+      color: #1A1209;
+      min-height: 100vh;
+      padding: 40px 16px 100px;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(193, 240, 241, 0.4) 0%, transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(255, 233, 217, 0.3) 0%, transparent 50%),
+        #FFFFFF;
+    }
+    .stack { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 56px; }
+    @media (min-width: 1000px) { .stack { grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; } }
+
+    .col-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; padding: 6px 12px; border-radius: 999px; display: inline-block; margin-bottom: 16px; }
+    .col-label small { display: block; font-weight: 500; font-size: 10px; letter-spacing: 0.05em; text-transform: none; opacity: 0.6; margin-top: 2px; }
+    .col-current .col-label { background: #FFE9D9; color: #5C2308; }
+    .col-emil   .col-label { background: #C2F0F1; color: #043338; }
+
+    .interaction-hint {
+      max-width: 1080px;
+      margin: 0 auto 24px;
+      padding: 16px 20px;
+      background: #fffaf0;
+      border: 1px dashed rgba(4, 51, 56, 0.25);
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(26, 18, 9, 0.75);
+    }
+    .interaction-hint b { color: #1A1209; }
+
+    .phone {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(4, 51, 56, 0.12);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(193, 240, 241, 0.65) 0%, transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(255, 233, 217, 0.50) 0%, transparent 50%),
+        #FFFFFF;
+    }
+    .nav { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.65); backdrop-filter: blur(12px); }
+    .logo { font-family: "Peace Sans", Impact, sans-serif; font-size: 22px; font-weight: 900; color: #1A1209; }
+    .logo .dot { display: inline-block; width: 6px; height: 6px; background: #043338; border-radius: 50%; margin-left: 2px; vertical-align: 2px; }
+
+    .hero { padding: 32px 22px 24px; }
+    .eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: rgba(26,18,9,0.55); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .eyebrow::before { content: ""; display: block; width: 6px; height: 6px; border-radius: 50%; background: #043338; }
+    h1 { font-family: "Peace Sans", Impact, sans-serif; font-weight: 900; font-size: 26px; line-height: 1.15; }
+    h1 .brand { color: #043338; }
+
+    .feed-zone {
+      margin-top: 16px;
+      border-radius: 28px 28px 0 0;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(24px) saturate(1.3);
+      border-top: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 -12px 32px rgba(4, 51, 56, 0.06);
+      padding: 16px 14px 24px;
+    }
+    .section-h2 { font-family: "Open Sauce One", sans-serif; font-weight: 900; font-size: 24px; line-height: 1.0; color: #1A1209; margin-bottom: 12px; }
+
+    .cards { display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 8px; }
+    .card { flex: 0 0 130px; cursor: pointer; }
+    .card .photo { aspect-ratio: 1; border-radius: 14px; box-shadow: 0 1px 2px rgba(26,18,9,0.04), 0 4px 10px rgba(26,18,9,0.05); position: relative; display: grid; place-items: center; font-family: "Open Sauce One", sans-serif; font-weight: 900; font-size: 28px; }
+    .card .heart { position: absolute; top: 8px; right: 8px; font-size: 18px; color: rgba(0,0,0,0.4); cursor: pointer; user-select: none; }
+    .card .pill { margin-top: 8px; background: rgba(255,255,255,0.7); backdrop-filter: blur(14px) saturate(1.2); border: 1px solid rgba(255,255,255,0.6); border-radius: 12px; padding: 7px 10px; box-shadow: 0 1px 3px rgba(26,18,9,0.04); font-size: 11px; line-height: 1.3; }
+    .card .pill .name { font-weight: 700; color: #1A1209; font-size: 13px; }
+    .card .pill .meta { color: rgba(26,18,9,0.6); margin-top: 2px; }
+    .submit-btn { margin-top: 16px; width: 100%; background: #043338; color: #fff; border: 0; padding: 14px; border-radius: 999px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+
+    /* ─────────────────────────────────────────────────────────────────────
+       LEFT/TOP — WITHOUT Emil (= what's currently live in Solen V3)
+       Current motion choices:
+        • card transition: 300ms ease-snap (custom but generic)
+        • hover: -3px translate + 1.015 scale
+        • active: scale(0.94) — quite aggressive
+        • heart toggle: instant CSS swap, no animation
+        • cards entrance: instant render, no stagger
+        • submit button: bg color change on hover, no press feedback
+    ───────────────────────────────────────────────────────────────────── */
+    .col-current .card .photo {
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .col-current .card:hover .photo {
+      transform: translateY(-3px) scale(1.015);
+      box-shadow: 0 1px 2px rgba(26,18,9,0.05), 0 6px 14px rgba(26,18,9,0.06), 0 12px 24px rgba(26,18,9,0.05);
+    }
+    .col-current .card:active .photo {
+      transform: scale(0.94);
+      transition-duration: 100ms;
+    }
+    .col-current .card .heart {
+      transition: color 200ms ease;
+    }
+    .col-current .card.saved .heart {
+      color: #FF4A6B;
+    }
+    .col-current .submit-btn {
+      transition: background-color 200ms ease;
+    }
+    .col-current .submit-btn:hover { background: #0a4a4f; }
+
+    /* ─────────────────────────────────────────────────────────────────────
+       RIGHT/BOTTOM — WITH Emil's design engineering polish
+       Motion choices applied:
+        • Custom strong ease-out curve: cubic-bezier(0.23, 1, 0.32, 1)
+        • Card hover: 200ms (was 300) — Emil says ≤250 for dropdowns/selects, hovers ≤200
+        • Card press: scale(0.97) — Emil's recommended subtle range (0.95-0.98), not 0.94
+        • Heart toggle: scale-in spring-feeling animation (scale 0.5 → 1.15 → 1 + opacity)
+        • Cards stagger entrance: 50ms delay between items, fade+rise from translateY(8px)
+        • Submit button: scale(0.97) on press + subtle filter blur on press
+        • Asymmetric: enter 200ms, exit 100ms
+        • All transforms only (no layout properties animated)
+    ───────────────────────────────────────────────────────────────────── */
+    :root {
+      --emil-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      --emil-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    .col-emil .card { opacity: 0; transform: translateY(8px); animation: emilCardIn 350ms var(--emil-ease-out) forwards; }
+    .col-emil .card:nth-child(1) { animation-delay: 0ms; }
+    .col-emil .card:nth-child(2) { animation-delay: 50ms; }
+    .col-emil .card:nth-child(3) { animation-delay: 100ms; }
+    .col-emil .card:nth-child(4) { animation-delay: 150ms; }
+    @keyframes emilCardIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .col-emil .card .photo {
+      transition: transform 200ms var(--emil-ease-out), box-shadow 200ms var(--emil-ease-out);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .col-emil .card:hover .photo {
+        transform: translateY(-2px) scale(1.012);
+        box-shadow: 0 1px 2px rgba(26,18,9,0.05), 0 6px 14px rgba(26,18,9,0.06), 0 12px 24px rgba(26,18,9,0.05);
+      }
+    }
+    .col-emil .card:active .photo {
+      transform: scale(0.97);
+      transition: transform 100ms var(--emil-ease-out);
+    }
+    .col-emil .card .heart {
+      transition: color 200ms var(--emil-ease-out), transform 200ms var(--emil-ease-out);
+      transform-origin: center;
+    }
+    .col-emil .card.saved .heart {
+      color: #FF4A6B;
+      animation: heartPop 350ms var(--emil-ease-out);
+    }
+    @keyframes heartPop {
+      0%   { transform: scale(0.5); opacity: 0; }
+      50%  { transform: scale(1.20); opacity: 1; }
+      100% { transform: scale(1.00); }
+    }
+    .col-emil .submit-btn {
+      transition: transform 160ms var(--emil-ease-out), background-color 200ms var(--emil-ease-out);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .col-emil .submit-btn:hover { background: #0a4a4f; }
+    }
+    .col-emil .submit-btn:active {
+      transform: scale(0.97);
+      transition-duration: 80ms;
+    }
+    /* Press feedback also on the cards' inner pill (button-like sub-element) */
+    .col-emil .card .pill {
+      transition: transform 200ms var(--emil-ease-out);
+    }
+
+    .diff-list { max-width: 1080px; margin: 64px auto 0; padding: 24px 28px; background: rgba(255,255,255,0.6); backdrop-filter: blur(8px); border-radius: 16px; border: 1px solid rgba(4, 51, 56, 0.08); }
+    .diff-list h3 { font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: #1A1209; margin-bottom: 16px; }
+    .diff-list table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .diff-list th { text-align: left; font-weight: 700; padding: 10px 12px; background: rgba(4, 51, 56, 0.04); }
+    .diff-list td { padding: 10px 12px; border-top: 1px solid rgba(4, 51, 56, 0.06); vertical-align: top; line-height: 1.5; }
+    .diff-list code { font-family: ui-monospace, monospace; font-size: 11.5px; background: rgba(4, 51, 56, 0.06); padding: 1px 5px; border-radius: 3px; white-space: nowrap; }
+    .diff-list .why { color: rgba(26, 18, 9, 0.7); }
+  </style>
+</head>
+<body>
+
+  <div class="interaction-hint">
+    <b>Interact to see the difference.</b> Both panels look identical at rest — Emil's polish lives in motion. Hover the cards, click the hearts, press the buttons. Watch how the right column's cards stagger in on load (refresh the page to see again), how presses feel snappier, how the heart pops with a spring-feel scale instead of just changing color.
+  </div>
+
+  <div class="stack">
+
+    <!-- ───────── WITHOUT Emil (Solen V3 current) ───────── -->
+    <div class="col-current">
+      <span class="col-label">WITHOUT EMIL <small>Solen V3 current motion</small></span>
+      <div class="phone">
+        <div class="nav"><span class="logo">Solen<span class="dot"></span></span><span style="font-size:24px;">☰</span></div>
+        <div class="hero">
+          <span class="eyebrow">Beauty in der Schweiz</span>
+          <h1>Schöner aussehen, schneller <span class="brand">buchen</span>.</h1>
+        </div>
+        <div class="feed-zone">
+          <div class="section-h2">Zuletzt angesehen</div>
+          <div class="cards">
+            <div class="card" onclick="toggleHeart(this)">
+              <div class="photo" style="background: #FFF1DD; color: #B5345A;">
+                <span class="heart">♡</span>A
+              </div>
+              <div class="pill"><div class="name">Atelier Coiffure</div><div class="meta">14:30, 15:00, 16:30</div></div>
+            </div>
+            <div class="card" onclick="toggleHeart(this)">
+              <div class="photo" style="background: #D8D6CB; color: #1A1209;">
+                <span class="heart">♡</span>S
+              </div>
+              <div class="pill"><div class="name">Studio Nord</div><div class="meta">In 25 Min frei</div></div>
+            </div>
+            <div class="card" onclick="toggleHeart(this)">
+              <div class="photo" style="background: #CAE8FF; color: #B5345A;">
+                <span class="heart">♡</span>N
+              </div>
+              <div class="pill"><div class="name">Nail Lab</div><div class="meta">Heute 17:30</div></div>
+            </div>
+          </div>
+          <button class="submit-btn">Solen durchsuchen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── WITH Emil's polish ───────── -->
+    <div class="col-emil">
+      <span class="col-label">WITH EMIL <small>Custom easing + stagger + spring-feel feedback</small></span>
+      <div class="phone">
+        <div class="nav"><span class="logo">Solen<span class="dot"></span></span><span style="font-size:24px;">☰</span></div>
+        <div class="hero">
+          <span class="eyebrow">Beauty in der Schweiz</span>
+          <h1>Schöner aussehen, schneller <span class="brand">buchen</span>.</h1>
+        </div>
+        <div class="feed-zone">
+          <div class="section-h2">Zuletzt angesehen</div>
+          <div class="cards">
+            <div class="card" onclick="toggleHeart(this)">
+              <div class="photo" style="background: #FFF1DD; color: #B5345A;">
+                <span class="heart">♡</span>A
+              </div>
+              <div class="pill"><div class="name">Atelier Coiffure</div><div class="meta">14:30, 15:00, 16:30</div></div>
+            </div>
+            <div class="card" onclick="toggleHeart(this)">
+              <div class="photo" style="background: #D8D6CB; color: #1A1209;">
+                <span class="heart">♡</span>S
+              </div>
+              <div class="pill"><div class="name">Studio Nord</div><div class="meta">In 25 Min frei</div></div>
+            </div>
+            <div class="card" onclick="toggleHeart(this)">
+              <div class="photo" style="background: #CAE8FF; color: #B5345A;">
+                <span class="heart">♡</span>N
+              </div>
+              <div class="pill"><div class="name">Nail Lab</div><div class="meta">Heute 17:30</div></div>
+            </div>
+          </div>
+          <button class="submit-btn">Solen durchsuchen</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="diff-list">
+    <h3>What Emil's skill changes (motion-only — same V3 visuals)</h3>
+    <table>
+      <thead><tr><th>Element</th><th>Without</th><th>With Emil</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Card hover</td><td><code>300ms cubic-bezier(0.4, 0, 0.2, 1)</code></td><td><code>200ms cubic-bezier(0.23, 1, 0.32, 1)</code></td><td class="why">Hovers should be ≤200ms. Emil's strong ease-out curve has more "snap" than the generic Material curve.</td></tr>
+        <tr><td>Card active scale</td><td><code>scale(0.94)</code></td><td><code>scale(0.97)</code></td><td class="why">Emil's subtle press range is 0.95-0.98. 0.94 is too aggressive for content cards (feels jumpy).</td></tr>
+        <tr><td>Card entrance</td><td>Instant render</td><td>Stagger fade+rise, 50ms between items, ease-out 350ms</td><td class="why">Stagger creates rhythm on first load. Each card "follows" the previous, never blocks interaction.</td></tr>
+        <tr><td>Heart save</td><td>Color change only (200ms)</td><td>Spring-feel scale: 0.5 → 1.15 → 1.0 + color, 350ms</td><td class="why">Saving is occasional + emotional. Worth the delight beat. The 1.15 overshoot mimics Apple's spring feel.</td></tr>
+        <tr><td>Submit press</td><td>No press feedback</td><td><code>scale(0.97)</code> on :active, 80ms exit</td><td class="why">Buttons must feel responsive. Without scale-on-press, the button looks like it didn't register the click.</td></tr>
+        <tr><td>Hover gating</td><td>Always-on hover</td><td><code>@media (hover: hover) and (pointer: fine)</code></td><td class="why">Touch devices fire false hover on tap. Without the gate, mobile users see hover states stuck after tap-and-release.</td></tr>
+        <tr><td>Easing variable</td><td>Inline curves</td><td><code>--emil-ease-out</code> CSS var</td><td class="why">One curve, used everywhere → cohesion. Emil: "the whole experience is cohesive — easing fits the vibe."</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function toggleHeart(card) {
+      card.classList.toggle('saved');
+      const h = card.querySelector('.heart');
+      // For the without-Emil version: just CSS-class toggle (no JS animation)
+      // For with-Emil version: trigger the @keyframes by re-applying the saved class
+      if (card.parentElement.parentElement.parentElement.parentElement.classList.contains('col-emil')) {
+        // Restart the animation on every save toggle
+        h.style.animation = 'none';
+        // Force reflow
+        void h.offsetWidth;
+        h.style.animation = '';
+      }
+      h.textContent = card.classList.contains('saved') ? '♥' : '♡';
+    }
+  </script>
+
+</body>
+</html>

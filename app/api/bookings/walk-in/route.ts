@@ -5,10 +5,11 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, walkInSchema } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 import crypto from "crypto";
 
 function createHmacToken(bookingId: string, expiry: number): string {
-  const secret = process.env.BOOKING_HMAC_SECRET;
+  const secret = getServerEnv().BOOKING_HMAC_SECRET;
   if (!secret) throw new Error("BOOKING_HMAC_SECRET not set");
   const payload = `${bookingId}:${expiry}`;
   const hmac = crypto.createHmac("sha256", secret).update(payload).digest("hex");
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest) {
   const paymentUrl = `https://www.solen.ch/walk-in-pay?token=${token}`;
 
   // Send SMS via seven.io
-  const sevenApiKey = process.env.SEVEN_IO_API_KEY;
+  const sevenApiKey = getServerEnv().SEVEN_IO_API_KEY;
   const timeStr = now.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
   const smsText = `Dein Termin bei ${salon.name}: ${service.name_de} um ${timeStr}. Bezahle hier: ${paymentUrl}`;
 

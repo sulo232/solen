@@ -1,6 +1,8 @@
 // lib/stock-photos.ts — Unified Unsplash + Pexels + Pixabay client
 // Server-side only. Never call from browser.
 
+import { getServerEnv } from "@/lib/env";
+
 interface StockPhoto {
   id: string;
   url: string;
@@ -22,7 +24,7 @@ interface StockSearchResult {
 
 // ─── Unsplash ───
 async function searchUnsplash(query: string, page: number): Promise<StockPhoto[]> {
-  const key = process.env.UNSPLASH_ACCESS_KEY;
+  const key = getServerEnv().UNSPLASH_ACCESS_KEY;
   if (!key) return [];
   try {
     const res = await fetch(
@@ -51,7 +53,7 @@ async function searchUnsplash(query: string, page: number): Promise<StockPhoto[]
 
 // ─── Pexels ───
 async function searchPexels(query: string, page: number): Promise<StockPhoto[]> {
-  const key = process.env.PEXELS_API_KEY;
+  const key = getServerEnv().PEXELS_API_KEY;
   if (!key) return [];
   try {
     const res = await fetch(
@@ -80,7 +82,7 @@ async function searchPexels(query: string, page: number): Promise<StockPhoto[]> 
 
 // ─── Pixabay ───
 async function searchPixabay(query: string, page: number): Promise<StockPhoto[]> {
-  const key = process.env.PIXABAY_API_KEY;
+  const key = getServerEnv().PIXABAY_API_KEY;
   if (!key) return [];
   try {
     const res = await fetch(

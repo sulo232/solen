@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
+import { getServerEnv, getPublicEnv } from "@/lib/env";
 
 const leadSchema = z.object({
   email: z.string().email(),
@@ -9,11 +10,13 @@ const leadSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    
-    // We shouldn't fail if env vars are missing during build/audit phase, but log it
-    if (!supabaseUrl || !supabaseKey) {
+    let supabaseUrl: string;
+    let supabaseKey: string;
+    try {
+      // SUPABASE_SERVICE_ROLE_KEY is required by getServerEnv schema — throws if missing
+      supabaseUrl = getPublicEnv().NEXT_PUBLIC_SUPABASE_URL;
+      supabaseKey = getServerEnv().SUPABASE_SERVICE_ROLE_KEY;
+    } catch {
       console.warn("Missing Supabase credentials, skipping actual DB insert for lead capture");
       return NextResponse.json({ success: true, warning: 'mocked' }, { status: 200 });
     }

@@ -3,8 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { FileEdit, Save, Check } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { containerVariants, itemVariants } from "@/lib/animations";
 
 /* ─── Types ─── */
@@ -145,7 +145,7 @@ export default function ContentEditorPage() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">Inhalte bearbeiten</h1>
+        <h1 className="font-heading text-2xl text-s-ink">Inhalte bearbeiten</h1>
         <p className="text-sm text-s-ink/40 mt-0.5">Website-Texte und Inhalte verwalten</p>
       </div>
 

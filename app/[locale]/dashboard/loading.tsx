@@ -1,4 +1,4 @@
-import Skeleton from "@/components/ui/Skeleton";
+import Skeleton from "@/components-legacy/ui/Skeleton";
 
 export default function Loading() {
   return (
@@ -6,7 +6,7 @@ export default function Loading() {
       {/* Stat cards row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-white dark:bg-s-dm-surface rounded-[12px] p-4 space-y-3">
+          <div key={i} className="bg-white rounded-[12px] p-4 space-y-3">
             <Skeleton className="h-3 w-1/2" />
             <Skeleton className="h-8 w-2/3" />
             <Skeleton className="h-2 w-full" />

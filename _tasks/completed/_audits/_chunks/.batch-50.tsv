@@ -1,0 +1,10 @@
+8dc2753dc99e8729afba9a290f51173fcb7ac8fc 2026-04-04 10:55:05 +0200 feat: branded empty states for SalonServices, SalonReviews, CategoryPage (R7 Phase 7.3)
+a3d4104b438b6d81042b959eaa2eda245a8851be 2026-04-04 10:59:31 +0200 feat: inline error states with retry for CategoryPage and SalonReviews flag (R7 Phase 7.4)
+eb867e0a120162e3409474d80ebbe714e6d8d07b 2026-04-04 11:02:15 +0200 fix: component polish — Toast sizing/radius, Footer tracking/hover (R7 Phase 7.6)
+6d84f4b7ce8f5080bea6a90290f3789e992fe3dc 2026-04-04 11:05:10 +0200 refactor: remove 'as any' from useTranslations("common") in 4 components (R7 Phase 7.7)
+90c52beebdb1bab88da3293b0f1ec4966e5335c3 2026-04-04 11:05:59 +0200 docs: add lessons learned from R7 — linter reverts, as any patterns
+e0280ed86e1fe1ce9c78d1eba5eca951f8eda0e4 2026-04-04 11:20:53 +0200 fix: enforce 44px minimum touch targets sitewide + fix pre-existing TypeScript errors
+8980f5e72377fc1625559def6660c108a86b9b0f 2026-04-04 11:24:31 +0200 fix: mobile layout — no overflow, safe areas, responsive grids
+dab1e2a0fa660549c8e132fea7cec5e03547480a 2026-04-04 11:31:59 +0200 fix: scroll containers — snap points, momentum, fade indicators
+f8188f6c94488eb861b2f69a652c5e9c930f769b 2026-04-04 11:32:22 +0200 refactor: centralize animation system in lib/animations.ts
+cd593562b5d1c2724fc1074639c548dd47cca265 2026-04-04 11:32:45 +0200 refactor(R5): navigation overhaul & salon detail improvements

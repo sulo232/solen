@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solen — Full editorial mockup (V3-adapted)</title>
+
+  <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.cdnfonts.com/css/peace-sans" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Tokens (V3 brand) ────────────────────────────────────── */
+    :root {
+      --s-brand: #043338;
+      --s-brand-mid: #0A6873;
+      --s-brand-pale: #C2F0F1;
+      --s-brand-subtle: #E1F4F4;
+      --s-ink: #1A1209;
+      --s-ink-2: #4A3F31;
+      --s-ink-3: #7A6957;
+      --s-bg: #FBF9F4;
+      --combo-z-bg: #FFF1DD;
+      --combo-z-letter: #B5345A;
+      --combo-g-bg: #D8D6CB;
+      --combo-a-bg: #CAE8FF;
+      --combo-i-bg: #193120;
+      --combo-i-letter: #D9C9A8;
+      --ease-glide: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #fff; scroll-behavior: smooth; }
+    body {
+      font-family: "Open Sauce One", Inter, system-ui, sans-serif;
+      color: var(--s-ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+      /* V3 atmosphere wash */
+      background:
+        radial-gradient(ellipse 75% 55% at 80% 12%, rgba(202, 232, 255, 0.55) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 55% at 15% 22%, rgba(194, 240, 241, 0.50) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 45% at 92% 48%, rgba(217, 201, 168, 0.30) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 8% 72%, rgba(194, 240, 241, 0.45) 0%, transparent 65%),
+        #fdfcfb;
+    }
+
+    /* ── Atmosphere blobs (fixed bg, V3 palette only) ─────────── */
+    .blobs { position: fixed; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; isolation: isolate; }
+    .blobs > div { position: absolute; filter: blur(80px); mix-blend-mode: multiply; }
+    .blob-1 { top: -8%; left: -15%; width: 50%; height: 35%; background: var(--s-brand-pale); border-radius: 60% 40% 50% 50% / 60% 60% 40% 40%; opacity: 1.0; }
+    .blob-2 { top: 5%; right: -20%; width: 50%; height: 30%; background: var(--combo-a-bg); border-radius: 50% 60% 40% 60% / 60% 40% 60% 40%; opacity: 0.9; }
+    .blob-3 { top: 30%; left: -10%; width: 60%; height: 25%; background: #D9C9A8; border-radius: 60% 40% 50% 60% / 50% 40% 60% 50%; opacity: 0.6; }
+    .blob-4 { top: 50%; right: -15%; width: 50%; height: 25%; background: var(--combo-z-bg); border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; opacity: 0.7; }
+    .blob-5 { bottom: 5%; left: -20%; width: 55%; height: 30%; background: #7DC8C9; border-radius: 50% 50% 50% 50%; opacity: 0.55; }
+
+    /* Grain overlay */
+    .grain { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.10; mix-blend-mode: soft-light; width: 100%; height: 100%; }
+
+    /* ── Navbar (sticky, frost on scroll) ─────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      transition: background-color 300ms var(--ease-glide), padding 300ms var(--ease-glide), box-shadow 300ms var(--ease-glide), backdrop-filter 300ms var(--ease-glide);
+      padding: 22px 0;
+      background: transparent;
+    }
+    .nav.scrolled {
+      background: rgba(253, 252, 251, 0.78);
+      backdrop-filter: blur(14px) saturate(1.4);
+      -webkit-backdrop-filter: blur(14px) saturate(1.4);
+      padding: 14px 0;
+      box-shadow: 0 1px 12px rgba(4, 51, 56, 0.06);
+    }
+    .nav-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: inline-flex; align-items: baseline; font-family: "Peace Sans", Impact, sans-serif; font-size: 22px; font-weight: 900; color: var(--s-ink); text-decoration: none; }
+    .logo .dot { display: inline-block; width: 6px; height: 6px; background: var(--s-brand); border-radius: 50%; margin-left: 3px; transform: translateY(-2px); }
+    .nav-links { display: none; gap: 32px; align-items: center; }
+    @media (min-width: 768px) { .nav-links { display: flex; } }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--s-ink-2); text-decoration: none; transition: color 200ms var(--ease-glide); }
+    .nav-links a:hover { color: var(--s-ink); }
+    .nav-cta {
+      background: var(--s-brand); color: #fff; border: 0;
+      padding: 10px 20px; border-radius: 999px; font: inherit;
+      font-size: 14px; font-weight: 600;
+      box-shadow: 0 4px 12px rgba(4, 51, 56, 0.18);
+      transition: transform 160ms var(--ease-glide), box-shadow 200ms var(--ease-glide), background 200ms var(--ease-glide);
+      cursor: pointer;
+    }
+    .nav-cta:hover { background: var(--s-brand-mid); box-shadow: 0 6px 16px rgba(4, 51, 56, 0.24); }
+    .nav-cta:active { transform: scale(0.97); transition-duration: 80ms; }
+    .nav-hamburger { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 8px; background: transparent; border: 0; cursor: pointer; color: var(--s-ink); }
+    @media (min-width: 768px) { .nav-hamburger { display: none; } }
+
+    /* ── Section base ─────────────────────────────────────────── */
+    section { position: relative; z-index: 2; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Hero ─────────────────────────────────────────────────── */
+    .hero { padding: 130px 0 60px; }
+    .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: var(--s-ink-3); margin-bottom: 18px; }
+    .hero-eyebrow::before { content: ""; display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--s-brand); }
+    .hero h1 {
+      font-family: "Peace Sans", Impact, sans-serif;
+      font-weight: 900;
+      font-size: clamp(36px, 6vw, 84px);
+      line-height: 1.1;
+      letter-spacing: normal;
+      max-width: 900px;
+    }
+    .hero h1 .brand { color: var(--s-brand); }
+    .hero-lede { margin-top: 24px; font-size: clamp(15px, 1.4vw, 18px); color: var(--s-ink-2); line-height: 1.6; max-width: 540px; }
+
+    /* Search card — Solen style */
+    .search-card { margin-top: 40px; max-width: 540px; background: #fff; border-radius: 16px; padding: 6px; box-shadow: 0 8px 24px rgba(4,51,56,0.10); border: 1px solid rgba(4,51,56,0.06); }
+    .search-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 15px; color: var(--s-ink-3); border-bottom: 1px solid rgba(4,51,56,0.06); cursor: pointer; transition: background 150ms var(--ease-glide); border-radius: 10px; }
+    .search-row:last-of-type { border-bottom: 0; }
+    .search-row:hover { background: rgba(225, 244, 244, 0.4); }
+    .search-row .sep { width: 1px; height: 14px; background: rgba(4,51,56,0.18); }
+    .search-submit { margin-top: 6px; width: 100%; background: var(--s-brand); color: #fff; border: 0; padding: 14px; border-radius: 999px; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; transition: transform 160ms var(--ease-glide), background 200ms var(--ease-glide); }
+    .search-submit:hover { background: var(--s-brand-mid); }
+    .search-submit:active { transform: scale(0.97); transition-duration: 80ms; }
+
+    /* Hero stats (avatar stack + reviews) */
+    .hero-stats { margin-top: 48px; display: flex; align-items: center; gap: 32px; }
+    .avatar-stack { display: flex; }
+    .avatar-stack > div { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; margin-left: -10px; box-shadow: 0 2px 8px rgba(4,51,56,0.15); display: grid; place-items: center; font-family: "Peace Sans", Impact, sans-serif; font-size: 14px; font-weight: 900; }
+    .avatar-stack > div:first-child { margin-left: 0; }
+    .avatar-stack .more { background: var(--s-brand); color: #fff; font-family: inherit; font-weight: 700; font-size: 11px; }
+    .hero-stats .label { font-size: 13px; font-weight: 700; color: var(--s-ink); }
+    .hero-stats .stars { display: flex; gap: 2px; align-items: center; margin-top: 3px; color: #F3A864; font-size: 13px; }
+    .hero-stats .stars span { color: var(--s-ink-3); font-size: 12px; margin-left: 6px; font-weight: 500; }
+
+    /* ── Section header ───────────────────────────────────────── */
+    .sec-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+    .sec-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: var(--s-ink-3); margin-bottom: 12px; display: inline-block; }
+    .sec-h2 {
+      font-family: "Open Sauce One", Inter, sans-serif;
+      font-weight: 900;
+      font-size: clamp(28px, 3.4vw, 44px);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--s-ink);
+      max-width: 700px;
+    }
+    .sec-link { font-size: 14px; font-weight: 600; color: var(--s-brand); text-decoration: none; }
+
+    /* ── Stylists row ─────────────────────────────────────────── */
+    .stylists { padding: 60px 0; }
+    .stylists-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 32px; max-width: 1080px; margin: 0 auto; }
+    .stylist-card { text-align: center; }
+    .portrait-wrap { position: relative; display: inline-block; }
+    .portrait { width: 180px; height: 180px; border-radius: 50%; background: var(--combo-z-bg); display: grid; place-items: center; box-shadow: 0 4px 14px rgba(4,51,56,0.10); border: 4px solid #fff; transition: transform 250ms var(--ease-glide), box-shadow 250ms var(--ease-glide), border-color 250ms var(--ease-glide); }
+    .portrait span { font-family: "Peace Sans", Impact, sans-serif; font-size: 64px; font-weight: 900; color: var(--combo-z-letter); }
+    .stylist-card:hover .portrait { transform: translateY(-4px) scale(1.04); box-shadow: 0 12px 28px rgba(4,51,56,0.15); border-color: var(--s-brand-pale); }
+    .rating-badge {
+      position: absolute; bottom: 6px; right: 8px;
+      background: #fff; padding: 4px 8px; border-radius: 999px;
+      box-shadow: 0 2px 10px rgba(4,51,56,0.15);
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700; color: var(--s-ink);
+      transform: scale(0); opacity: 0;
+      transition: transform 350ms var(--ease-out-strong), opacity 200ms ease;
+      transition-delay: 200ms;
+    }
+    .in-view .rating-badge { transform: scale(1); opacity: 1; }
+    .rating-badge .star { color: #F3A864; }
+    .stylist-name { margin-top: 18px; font-size: 18px; font-weight: 700; color: var(--s-ink); }
+    .stylist-spec { margin-top: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--s-ink-3); }
+
+    /* ── Salon card row (existing Solen pattern) ─────────────── */
+    .salons { padding: 60px 0; }
+    .scroll-row { display: flex; gap: 16px; overflow-x: auto; padding: 8px 0 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+    .scroll-row::-webkit-scrollbar { display: none; }
+    .salon-card { flex: 0 0 230px; scroll-snap-align: start; cursor: pointer; transition: transform 200ms var(--ease-glide); }
+    .salon-card:active { transform: scale(0.97); transition-duration: 80ms; }
+    .salon-photo { aspect-ratio: 1; border-radius: 14px; box-shadow: 0 1px 2px rgba(26,18,9,0.04), 0 4px 10px rgba(26,18,9,0.05); position: relative; display: grid; place-items: center; overflow: hidden; transition: transform 200ms var(--ease-glide), box-shadow 200ms var(--ease-glide); }
+    .salon-card:hover .salon-photo { transform: translateY(-3px) scale(1.012); box-shadow: 0 1px 2px rgba(26,18,9,0.05), 0 6px 14px rgba(26,18,9,0.06), 0 12px 24px rgba(26,18,9,0.05); }
+    .salon-photo .letter { font-family: "Open Sauce One", sans-serif; font-weight: 900; font-size: 64px; }
+    .salon-pill { margin-top: 10px; background: rgba(255,255,255,0.7); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.55); border-radius: 12px; padding: 10px 12px; box-shadow: 0 1px 3px rgba(26,18,9,0.04); }
+    .salon-pill .name { font-weight: 700; font-size: 14px; color: var(--s-ink); }
+    .salon-pill .meta { font-size: 12px; color: var(--s-ink-2); margin-top: 4px; }
+    .heart-btn { position: absolute; top: 10px; right: 10px; cursor: pointer; transition: transform 200ms var(--ease-glide); }
+    .heart-btn:active { transform: scale(0.97); }
+    .heart-btn svg { width: 24px; height: 24px; stroke: var(--s-ink); fill: none; stroke-width: 2; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.18)); transition: stroke 200ms ease, fill 200ms ease; }
+    .heart-btn.saved svg { stroke: #FF4A6B; fill: rgba(255, 74, 107, 0.65); animation: heart-pop 350ms var(--ease-out-strong); }
+    @keyframes heart-pop { 0% { transform: scale(0.5); } 50% { transform: scale(1.15); } 100% { transform: scale(1.0); } }
+
+    /* ── Dark feature section ─────────────────────────────────── */
+    .feature { padding: 60px 0; }
+    .feature-card {
+      background: var(--s-ink);
+      border-radius: clamp(28px, 4vw, 56px);
+      color: #fff;
+      padding: clamp(40px, 5vw, 80px);
+      box-shadow: 0 24px 60px rgba(4,51,56,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-grid { display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
+    @media (min-width: 900px) { .feature-grid { grid-template-columns: 1fr 1fr; gap: 64px; } }
+    .feature-image-wrap { position: relative; }
+    .feature-image {
+      aspect-ratio: 1; border-radius: 24px;
+      background: linear-gradient(135deg, var(--combo-z-bg) 0%, #D9C9A8 60%, var(--combo-z-letter) 130%);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.30);
+    }
+    .feature-stat-card {
+      position: absolute; bottom: -16px; right: -8px;
+      background: #fff; padding: 24px; border-radius: 24px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.20);
+      max-width: 200px;
+      transform: translateX(60px); opacity: 0;
+      transition: transform 700ms var(--ease-glide), opacity 500ms ease;
+    }
+    @media (max-width: 899px) { .feature-stat-card { display: none; } }
+    .in-view .feature-stat-card { transform: translateX(0); opacity: 1; }
+    .feature-stat-card .icon-box { width: 44px; height: 44px; background: var(--s-ink); border-radius: 12px; display: grid; place-items: center; color: #fff; }
+    .feature-stat-card .num { font-family: "Peace Sans", Impact, sans-serif; font-size: 26px; font-weight: 900; color: var(--s-ink); line-height: 1; }
+    .feature-stat-card .lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--s-ink-3); margin-top: 4px; }
+    .feature-stat-card .row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .feature-stat-card .blurb { font-size: 12px; color: var(--s-ink-2); line-height: 1.4; }
+    .feature h2 {
+      font-family: "Peace Sans", Impact, sans-serif;
+      font-weight: 900;
+      font-size: clamp(28px, 3.6vw, 48px);
+      line-height: 1.1;
+      letter-spacing: normal;
+    }
+    .feature h2 .accent { color: var(--s-brand-subtle); }
+    .feature .lede { margin-top: 18px; font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.65; max-width: 440px; }
+    .feature-bullets { margin-top: 36px; display: flex; flex-direction: column; gap: 20px; }
+    .feature-bullet { display: flex; gap: 14px; align-items: flex-start; }
+    .feature-bullet .check { flex-shrink: 0; width: 24px; height: 24px; background: #fff; color: var(--s-ink); border-radius: 50%; display: grid; place-items: center; font-weight: 900; font-size: 13px; }
+    .feature-bullet .b-title { font-size: 15px; font-weight: 700; color: #fff; }
+    .feature-bullet .b-body { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5; margin-top: 4px; }
+    .feature-cta { margin-top: 40px; display: inline-flex; align-items: center; gap: 14px; cursor: pointer; }
+    .feature-cta span { font-size: 15px; font-weight: 700; color: #fff; border-bottom: 1.5px solid rgba(255,255,255,0.3); padding-bottom: 4px; transition: border-color 200ms var(--ease-glide); }
+    .feature-cta:hover span { border-bottom-color: #fff; }
+    .feature-cta .arrow { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.10); color: #fff; display: grid; place-items: center; transition: background 200ms var(--ease-glide), color 200ms var(--ease-glide); }
+    .feature-cta:hover .arrow { background: #fff; color: var(--s-ink); }
+
+    /* ── Lookbook (infinite scroll gallery) ───────────────────── */
+    .gallery { padding: 60px 0; overflow: hidden; }
+    .gallery-strip { display: flex; gap: 24px; padding: 8px 24px; animation: scroll-left 50s linear infinite; will-change: transform; }
+    .gallery-strip:hover { animation-play-state: paused; }
+    .gallery-tile { flex-shrink: 0; width: 280px; aspect-ratio: 3/4; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 24px rgba(4,51,56,0.12); transition: transform 300ms var(--ease-glide), box-shadow 300ms var(--ease-glide); cursor: pointer; }
+    .gallery-tile:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 16px 40px rgba(4,51,56,0.18); }
+    .gallery-tile .inner { width: 100%; height: 100%; display: grid; place-items: center; font-family: "Peace Sans", Impact, sans-serif; font-size: 80px; font-weight: 900; }
+    @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    footer { background: #fff; border-top: 1px solid rgba(4,51,56,0.08); padding: 80px 0 32px; margin-top: 80px; position: relative; z-index: 2; }
+    .footer-grid { display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 56px; }
+    @media (min-width: 768px) { .footer-grid { grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; } }
+    .footer-col h4 { font-size: 14px; font-weight: 700; color: var(--s-ink); margin-bottom: 20px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-col li { font-size: 13px; color: var(--s-ink-2); cursor: pointer; transition: color 150ms ease; }
+    .footer-col li:hover { color: var(--s-ink); }
+    .footer-brand p { font-size: 13px; color: var(--s-ink-2); line-height: 1.6; margin: 16px 0 24px; max-width: 280px; }
+    .footer-social { display: flex; gap: 10px; }
+    .footer-social a { width: 36px; height: 36px; background: rgba(4,51,56,0.06); border-radius: 10px; display: grid; place-items: center; color: var(--s-ink-3); cursor: pointer; transition: background 150ms ease, color 150ms ease; text-decoration: none; }
+    .footer-social a:hover { background: var(--s-ink); color: #fff; }
+    .footer-newsletter input { width: 100%; padding: 14px 50px 14px 14px; border-radius: 12px; background: rgba(4,51,56,0.05); border: 0; font: inherit; font-size: 14px; outline: none; transition: box-shadow 200ms ease; }
+    .footer-newsletter input:focus { box-shadow: 0 0 0 2px var(--s-brand); }
+    .footer-newsletter .input-wrap { position: relative; }
+    .footer-newsletter button { position: absolute; right: 6px; top: 6px; width: 36px; height: 36px; background: var(--s-brand); color: #fff; border: 0; border-radius: 9px; cursor: pointer; display: grid; place-items: center; transition: transform 160ms var(--ease-glide); }
+    .footer-newsletter button:active { transform: scale(0.95); }
+    .footer-bottom { padding-top: 32px; border-top: 1px solid rgba(4,51,56,0.08); display: flex; flex-direction: column; gap: 12px; align-items: center; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--s-ink-3); }
+    @media (min-width: 768px) { .footer-bottom { flex-direction: row; justify-content: space-between; gap: 32px; } }
+    .footer-bottom .links { display: flex; gap: 28px; }
+
+    /* ── Entry animations (IntersectionObserver toggles .in-view) ─ */
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 700ms var(--ease-glide), transform 700ms var(--ease-glide); }
+    .reveal.in-view { opacity: 1; transform: translateY(0); }
+    .stagger > * { opacity: 0; transform: translateY(20px); transition: opacity 600ms var(--ease-glide), transform 600ms var(--ease-glide); }
+    .stagger.in-view > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0ms; }
+    .stagger.in-view > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 80ms; }
+    .stagger.in-view > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 160ms; }
+    .stagger.in-view > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 240ms; }
+    .stagger.in-view > *:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 320ms; }
+    .stagger.in-view > *:nth-child(6) { opacity: 1; transform: translateY(0); transition-delay: 400ms; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .stagger > * { opacity: 1; transform: none; transition: none; }
+      .gallery-strip { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Atmosphere blobs (fixed bg) -->
+  <div class="blobs">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+    <div class="blob-3"></div>
+    <div class="blob-4"></div>
+    <div class="blob-5"></div>
+  </div>
+
+  <!-- Grain overlay -->
+  <svg class="grain" aria-hidden>
+    <filter id="g"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.6 0"/></filter>
+    <rect width="100%" height="100%" filter="url(#g)"/>
+  </svg>
+
+  <!-- Navbar (frost on scroll) -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="logo" href="#">Solen<span class="dot"></span></a>
+      <div class="nav-links">
+        <a href="#salons">Salons</a>
+        <a href="#stylists">Stilist:innen</a>
+        <a href="#entdecken">Entdecken</a>
+        <a href="#about">Über uns</a>
+      </div>
+      <button class="nav-cta">Anmelden</button>
+      <button class="nav-hamburger" aria-label="Menü">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <span class="hero-eyebrow reveal">Beauty in der Schweiz</span>
+      <h1 class="reveal" style="transition-delay: 100ms;">Schöner aussehen,<br />schneller <span class="brand">buchen.</span></h1>
+      <p class="hero-lede reveal" style="transition-delay: 200ms;">Über 1'200 Salons in Basel, Zürich und Bern. Sofort online buchen, instant bestätigt. Echte Bewertungen, echte Termine.</p>
+
+      <div class="search-card reveal" style="transition-delay: 300ms;">
+        <div class="search-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <span class="sep"></span>Service auswählen
+        </div>
+        <div class="search-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="sep"></span>Stadt
+        </div>
+        <div class="search-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="sep"></span>Zeit wählen
+        </div>
+        <button class="search-submit">Solen durchsuchen</button>
+      </div>
+
+      <div class="hero-stats reveal" style="transition-delay: 500ms;">
+        <div class="avatar-stack">
+          <div style="background:#FFF1DD;color:#B5345A;">A</div>
+          <div style="background:#D8D6CB;color:#1A1209;">M</div>
+          <div style="background:#CAE8FF;color:#B5345A;">S</div>
+          <div style="background:#193120;color:#D9C9A8;">L</div>
+          <div class="more">+1k</div>
+        </div>
+        <div>
+          <p class="label">Glückliche Kund:innen</p>
+          <p class="stars">★★★★★ <span>(4.9 / 5)</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Stylists -->
+  <section class="stylists" id="stylists">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div>
+          <span class="sec-eyebrow">Meister:innen</span>
+          <h2 class="sec-h2">Die Köpfe hinter den Scheren.</h2>
+        </div>
+        <a href="#" class="sec-link">Alle Stilist:innen →</a>
+      </div>
+      <div class="stylists-grid stagger">
+        <div class="stylist-card">
+          <div class="portrait-wrap">
+            <div class="portrait" style="background:#FFF1DD;"><span style="color:#B5345A;">E</span></div>
+            <span class="rating-badge"><span class="star">★</span>4.9</span>
+          </div>
+          <h3 class="stylist-name">Elena Rossi</h3>
+          <p class="stylist-spec">Coiffeur · Basel</p>
+        </div>
+        <div class="stylist-card">
+          <div class="portrait-wrap">
+            <div class="portrait" style="background:#D8D6CB;"><span style="color:#1A1209;">M</span></div>
+            <span class="rating-badge"><span class="star">★</span>5.0</span>
+          </div>
+          <h3 class="stylist-name">Marcus Chen</h3>
+          <p class="stylist-spec">Barbershop · Zürich</p>
+        </div>
+        <div class="stylist-card">
+          <div class="portrait-wrap">
+            <div class="portrait" style="background:#CAE8FF;"><span style="color:#B5345A;">S</span></div>
+            <span class="rating-badge"><span class="star">★</span>4.8</span>
+          </div>
+          <h3 class="stylist-name">Sophie Dubois</h3>
+          <p class="stylist-spec">Nails · Bern</p>
+        </div>
+        <div class="stylist-card">
+          <div class="portrait-wrap">
+            <div class="portrait" style="background:#193120;"><span style="color:#D9C9A8;">L</span></div>
+            <span class="rating-badge"><span class="star">★</span>4.9</span>
+          </div>
+          <h3 class="stylist-name">Luca Bernasco</h3>
+          <p class="stylist-spec">Spa · Lugano</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recently Viewed salons (cards) -->
+  <section class="salons" id="salons">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div>
+          <span class="sec-eyebrow">Bei dir zuletzt</span>
+          <h2 class="sec-h2">Zuletzt angesehen.</h2>
+        </div>
+        <a href="#" class="sec-link">Im Profil →</a>
+      </div>
+      <div class="scroll-row stagger">
+        <div class="salon-card">
+          <div class="salon-photo" style="background:#FFF1DD;">
+            <div class="heart-btn" onclick="this.classList.toggle('saved'); event.stopPropagation();">
+              <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <span class="letter" style="color:#B5345A;">A</span>
+          </div>
+          <div class="salon-pill"><div class="name">Atelier Coiffure</div><div class="meta">14:30, 15:00 · ★ 4.9</div></div>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo" style="background:#D8D6CB;">
+            <div class="heart-btn" onclick="this.classList.toggle('saved'); event.stopPropagation();">
+              <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <span class="letter" style="color:#1A1209;">S</span>
+          </div>
+          <div class="salon-pill"><div class="name">Studio Nord</div><div class="meta">In 25 Min · ★ 4.7</div></div>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo" style="background:#CAE8FF;">
+            <div class="heart-btn" onclick="this.classList.toggle('saved'); event.stopPropagation();">
+              <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <span class="letter" style="color:#B5345A;">N</span>
+          </div>
+          <div class="salon-pill"><div class="name">Nail Lab</div><div class="meta">Heute 17:30 · ★ 4.8</div></div>
+        </div>
+        <div class="salon-card">
+          <div class="salon-photo" style="background:#193120;">
+            <div class="heart-btn" onclick="this.classList.toggle('saved'); event.stopPropagation();">
+              <svg viewBox="0 0 24 24" style="stroke:rgba(255,255,255,0.85)"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <span class="letter" style="color:#D9C9A8;">R</span>
+          </div>
+          <div class="salon-pill"><div class="name">Rhein Spa</div><div class="meta">Mo. 09:00 · ★ 5.0</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dark feature section ("Das Erlebnis") -->
+  <section class="feature reveal" id="about">
+    <div class="container">
+      <div class="feature-card">
+        <div class="feature-grid">
+          <div class="feature-image-wrap">
+            <div class="feature-image"></div>
+            <div class="feature-stat-card">
+              <div class="row">
+                <div class="icon-box">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </div>
+                <div>
+                  <p class="num">100%</p>
+                  <p class="lbl">Verifiziert</p>
+                </div>
+              </div>
+              <p class="blurb">Über 1'200 Salons. Jede Bewertung echt.</p>
+            </div>
+          </div>
+          <div>
+            <span class="sec-eyebrow" style="color:rgba(255,255,255,0.5);">Das Erlebnis</span>
+            <h2>Mehr als Buchen.<br /><span class="accent">Vertrauen.</span></h2>
+            <p class="lede">Wir glauben, jeder Salonbesuch sollte ein Moment für dich sein. Vom ersten Klick bis zur letzten Sitzung — alles transparent, alles auf deine Zeit.</p>
+            <div class="feature-bullets">
+              <div class="feature-bullet">
+                <div class="check">✓</div>
+                <div>
+                  <h3 class="b-title">Verifizierte Bewertungen</h3>
+                  <p class="b-body">Nur echte Kund:innen, die wirklich gebucht haben.</p>
+                </div>
+              </div>
+              <div class="feature-bullet">
+                <div class="check">✓</div>
+                <div>
+                  <h3 class="b-title">Sofortige Bestätigung</h3>
+                  <p class="b-body">Online buchen, sofort bestätigt. Keine Anrufe, kein Warten.</p>
+                </div>
+              </div>
+              <div class="feature-bullet">
+                <div class="check">✓</div>
+                <div>
+                  <h3 class="b-title">Kostenlos stornieren</h3>
+                  <p class="b-body">Pläne ändern sich. Stornieren bis 24 Stunden vorher gratis.</p>
+                </div>
+              </div>
+            </div>
+            <div class="feature-cta">
+              <span>Über Solen erfahren</span>
+              <div class="arrow">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lookbook (infinite scroll) -->
+  <section class="gallery" id="entdecken">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div>
+          <span class="sec-eyebrow">Inspiration</span>
+          <h2 class="sec-h2">Looks. Inspiration. Echt.</h2>
+        </div>
+        <a href="#" class="sec-link">Alle Looks →</a>
+      </div>
+    </div>
+    <div class="gallery-strip">
+      <div class="gallery-tile"><div class="inner" style="background:linear-gradient(135deg,#FFF1DD,#B5345A);color:#fff;">A</div></div>
+      <div class="gallery-tile"><div class="inner" style="background:linear-gradient(135deg,#D8D6CB,#1A1209);color:#fff;">B</div></div>
+      <div class="gallery-tile"><div class="inner" style="background:linear-gradient(135deg,#CAE8FF,#0A6873);color:#fff;">C</div></div>
+      <div class="gallery-tile"><div class="inner" style="background:linear-gradient(135deg,#193120,#D9C9A8);color:#fff;">D</div></div>
+      <div class="gallery-tile"><div class="inner" style="background:linear-gradient(135deg,#FFF1DD,#D9C9A8);color:#1A1209;">E</div></div>
+      <div class="gallery-tile"><div class="inner" style="background:linear-gradient(135deg,#C2F0F1,#043338);color:#fff;">F</div></div>
+      <!-- Duplicated for seamless infinite scroll -->
+      <div class="gallery-tile"><div class="inner" style="background:linear-gradient(135deg,#FFF1DD,#B5345A);color:#fff;">A</div></div>
+      <div class="gallery-tile"><div class="inner" style="background:linear-gradient(135deg,#D8D6CB,#1A1209);color:#fff;">B</div></div>
+      <div class="gallery-tile"><div class="inner" style="background:linear-gradient(135deg,#CAE8FF,#0A6873);color:#fff;">C</div></div>
+      <div class="gallery-tile"><div class="inner" style="background:linear-gradient(135deg,#193120,#D9C9A8);color:#fff;">D</div></div>
+      <div class="gallery-tile"><div class="inner" style="background:linear-gradient(135deg,#FFF1DD,#D9C9A8);color:#1A1209;">E</div></div>
+      <div class="gallery-tile"><div class="inner" style="background:linear-gradient(135deg,#C2F0F1,#043338);color:#fff;">F</div></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <a class="logo" href="#">Solen<span class="dot"></span></a>
+          <p>Beauty &amp; Wellness Booking für die ganze Schweiz. Salons finden. Sofort buchen. Komfort genießen.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+            <a href="#" aria-label="TikTok"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21 7.5v3a7 7 0 0 1-7-7h-3v12.5a3.5 3.5 0 1 1-3.5-3.5h.5v-3h-.5a6.5 6.5 0 1 0 6.5 6.5V10.5a10 10 0 0 0 7 2.5z"/></svg></a>
+            <a href="#" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Solen</h4>
+          <ul>
+            <li>Über uns</li>
+            <li>Karriere</li>
+            <li>Presse</li>
+            <li>Blog</li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Hilfe</h4>
+          <ul>
+            <li>Kund:innen-Hilfe</li>
+            <li>Salon-Hilfe</li>
+            <li>Sicherheit</li>
+            <li>Kontakt</li>
+          </ul>
+        </div>
+        <div class="footer-col footer-newsletter">
+          <h4>Newsletter</h4>
+          <p style="font-size: 13px; color: var(--s-ink-2); margin-bottom: 14px;">Tipps, neue Salons und Angebote, einmal pro Monat.</p>
+          <div class="input-wrap">
+            <input type="email" placeholder="deine@email.ch" />
+            <button aria-label="Abonnieren"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Solen.ch — Alle Rechte vorbehalten</span>
+        <div class="links">
+          <span>Datenschutz</span>
+          <span>AGB</span>
+          <span>Impressum</span>
+          <span>Cookies</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Navbar frost-on-scroll
+    const nav = document.getElementById('nav');
+    const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 30);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // IntersectionObserver — adds .in-view to .reveal and .stagger when entering viewport
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in-view');
+          io.unobserve(e.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
+
+    document.querySelectorAll('.reveal, .stagger, .feature, .stylist-card').forEach(el => io.observe(el));
+  </script>
+
+</body>
+</html>

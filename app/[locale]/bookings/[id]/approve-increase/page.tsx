@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { Check, X, AlertTriangle, ArrowLeft, Receipt } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 interface DisputeData {
   id: string;
@@ -69,7 +69,7 @@ export default function ApproveIncreasePage() {
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md max-w-md w-full p-6"
+        className="bg-white rounded-[12px] shadow-warm-md max-w-md w-full p-6"
       >
         {loading ? (
           <div className="flex justify-center py-12"><Spinner size="lg" /></div>
@@ -80,7 +80,7 @@ export default function ApproveIncreasePage() {
                 ? <Check size={24} className="text-s-coral" />
                 : <X size={24} className="text-s-coral" />}
             </div>
-            <h2 className="font-heading font-bold text-lg text-s-ink mb-2">
+            <h2 className="font-heading text-lg text-s-ink mb-2">
               {result === "approved" ? "Preisanpassung genehmigt" : "Einspruch eingereicht"}
             </h2>
             <p className="text-sm text-s-ink/50 mb-6">
@@ -109,7 +109,7 @@ export default function ApproveIncreasePage() {
                 <AlertTriangle size={18} className="text-s-amber" />
               </div>
               <div>
-                <h1 className="font-heading font-bold text-lg text-s-ink">Preisanpassung</h1>
+                <h1 className="font-heading text-lg text-s-ink">Preisanpassung</h1>
                 <p className="text-xs text-s-ink/40">
                   {dispute.salon_name && `${dispute.salon_name} · `}
                   {dispute.service_name ?? "Service"}

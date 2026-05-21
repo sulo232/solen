@@ -1,0 +1,10 @@
+b3619209a085dff53961b94b1950dafd3b82026c 2026-03-31 17:10:49 +0200 feat: show demo discover items when feed is empty
+8c7ac35028fb4c38adeb7149e6d1d86df3834d7d 2026-03-31 17:23:28 +0200 fix: DiscoverCarousel demo fallback — relative positioning, next/image, aria-hidden, CTA index
+62d80c875b185876ca797fc08841ada079a92ecf 2026-03-31 17:25:08 +0200 feat: 180px compact carousel cards with demo fallback
+ea980b047c1060ab07f4848a22b022d122143bfc 2026-03-31 17:27:02 +0200 design: white header bg, larger emoji icons, strip separator border
+389e9e533ae910e045f46162abbda00f28784108 2026-03-31 17:29:29 +0200 design: homepage Phase 1 — demo carousels, 180px cards, CTA polish (P0+P1)
+48c549c76344ea9d680ef15ec0f35a73e7106246 2026-03-31 17:32:31 +0200 design: footer multi-column layout with platform/salons/legal columns
+8efdb9bc28595fba0c994b0ccafea35afd6bb936 2026-03-31 17:35:18 +0200 design: Phase 2 polish — language switcher text-only, filled moon dark toggle
+0644bef2437c14444b1cb9407528e9b288dab937 2026-04-01 16:37:28 +0200 design: roadmap 07 — design system & global polish
+c851be173a555388fce6a96aa9b767a900c20661 2026-04-01 16:38:39 +0200 seo: roadmap 09 — meta tags, JSON-LD, hreflang across all pages
+ecdee1b7cfd65f4f03574d5ee2e4c32d90ce10a3 2026-04-01 17:04:47 +0200 feat: roadmap 02 — salon cards (carousel, badges, metadata, grid)

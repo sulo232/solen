@@ -1,0 +1,10 @@
+007cdb1e8c0b7f21b2be4ca36d97b91bbf3dafc3 2026-03-24 23:41:31 +0100 R22 phase 3: dashboard dark mode sweep — DashboardLayout root + skeleton
+c3a237f72bf2cdca2468abc0775193554c233978 2026-03-24 23:42:10 +0100 feat(ui): R21 animation polish — entry animations, micro-interactions, sliding tab indicators
+32f8d03370500ebfaaabefc3b2f4658618807063 2026-03-24 23:45:45 +0100 feat(ui): R23 loading & empty state standardization + AnimatePresence transitions
+522d6b4d7ebd8269d6e3057a417eda60210aaf9a 2026-03-24 23:54:18 +0100 R29 phase 1: Footer i18n — all strings moved to translation files
+ffbf64c479974ec836f298b180224e162781b6d6 2026-03-24 23:56:57 +0100 R30 phase 1: delete 7 duplicate 'page 2' files, merge enriched content into primaries
+1558af8f7a5bc0efbfd9d238235bbf382300846c 2026-03-24 23:58:46 +0100 R26 phase 1: create ErrorFallback component with V3 styling
+725c0a4bcfdec4d79c6b3b811cbf3420131bd923 2026-03-24 23:59:14 +0100 R26 phase 2: add error.tsx to 11 route groups
+9655c38ef735c2d439c79c1e28d8ebbdf8ff5567 2026-03-24 23:59:19 +0100 R26 phase 3: add loading.tsx with V3 skeletons to 5 critical routes
+bf5914e931a1c7e8bbf5adc34735a1e411b27b51 2026-03-24 23:59:27 +0100 R26 phase 4: custom V3-styled 404 not-found page
+d3b7f6e575ee7e773236ae8cfcc97b8b8d9c2466 2026-03-25 00:00:24 +0100 R30 phase 2: add priority to hero images, sizes to all responsive Images

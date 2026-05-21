@@ -6,6 +6,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { validateBody, loyaltyStampSchema } from "@/lib/validations";
 import { verifyLoyaltyQRToken } from "@/lib/barber/loyalty-qr";
+import { getServerEnv } from "@/lib/env";
 
 // POST /api/loyalty/stamp — Verify HMAC token and award stamp
 export async function POST(req: NextRequest) {
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
   const { data: validated, error: valError } = validateBody(loyaltyStampSchema, body);
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  const secret = process.env.LOYALTY_HMAC_SECRET;
+  const secret = getServerEnv().LOYALTY_HMAC_SECRET;
   if (!secret) return NextResponse.json({ error: "Server misconfiguration" }, { status: 500 });
 
   // Verify HMAC token

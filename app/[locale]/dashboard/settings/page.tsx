@@ -10,11 +10,11 @@ import type { SalonCategory } from "@/lib/types";
 // ─────────────────────────────────────────
 
 import { CATEGORY_OPTIONS } from "@/lib/constants/categories";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import OffPeakManager from "@/components/dashboard/OffPeakManager";
-import ExpandableTabs from "@/components/ui/ExpandableTabs";
-import SalonCard from "@/components/SalonCard";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import OffPeakManager from "@/components-legacy/dashboard/OffPeakManager";
+import ExpandableTabs from "@/components-legacy/ui/ExpandableTabs";
+import SalonCard from "@/components-legacy/SalonCard";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { useLocale } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
 import type { Salon } from "@/lib/types";
@@ -129,12 +129,12 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
                 type="button"
                 onClick={() => toggleCategory(opt.value)}
                 className={[
-                  "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
+                  "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
                   active
                     ? "bg-s-coral text-white border-s-coral"
-                    : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/50",
+                    : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/50",
                 ].join(" ")}
-                style={active ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
+                style={active ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
               >
                 <span className="text-[13px] leading-none">{opt.emoji}</span>
                 {opt.label}
@@ -391,7 +391,7 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
   return (
     <div className="p-5 space-y-5">
-      <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+      <p className="text-xs text-s-ink/50">
         SMS-Erinnerungen werden automatisch an Kunden gesendet, um No-Shows zu reduzieren.
       </p>
 
@@ -399,8 +399,8 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
         <input type="checkbox" checked={reminder24h} onChange={(e) => setReminder24h(e.target.checked)}
           className="w-4 h-4 rounded border-s-ink/20 text-s-coral focus:ring-s-coral" />
         <div>
-          <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">24 Stunden vorher</span>
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Kunden erhalten eine SMS 24h vor dem Termin</p>
+          <span className="text-sm font-medium text-s-ink">24 Stunden vorher</span>
+          <p className="text-xs text-s-ink/40">Kunden erhalten eine SMS 24h vor dem Termin</p>
         </div>
       </label>
 
@@ -408,8 +408,8 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
         <input type="checkbox" checked={reminder1h} onChange={(e) => setReminder1h(e.target.checked)}
           className="w-4 h-4 rounded border-s-ink/20 text-s-coral focus:ring-s-coral" />
         <div>
-          <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">1 Stunde vorher</span>
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Kunden erhalten eine SMS 1h vor dem Termin</p>
+          <span className="text-sm font-medium text-s-ink">1 Stunde vorher</span>
+          <p className="text-xs text-s-ink/40">Kunden erhalten eine SMS 1h vor dem Termin</p>
         </div>
       </label>
 
@@ -741,11 +741,11 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CreditCard className="w-4 h-4 text-s-ink/40" />
-            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Bankkonto verknüpfen</p>
+            <p className="text-sm font-medium text-s-ink">Bankkonto verknüpfen</p>
           </div>
           {statusPill}
         </div>
-        <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+        <p className="text-xs text-s-ink/50">
           Stripe Connect überweist Zahlungen direkt auf dein Konto. Benötigt einmalige Verifizierung.
         </p>
         {connectStatus !== "connected" && (
@@ -759,7 +759,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
           </button>
         )}
         {connectStatus === "connected" && (
-          <p className="text-xs text-[#4CAF6F] font-medium flex items-center gap-1">
+          <p className="text-xs text-[#16A34A] font-medium flex items-center gap-1">
             ✓ Dein Bankkonto ist verknüpft — Auszahlungen erfolgen automatisch.
           </p>
         )}
@@ -1135,7 +1135,7 @@ export default function SettingsPage() {
         <div className="fixed inset-0 z-40 bg-s-error-bg/90 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-white border border-s-error/20 rounded-[12px] p-8 text-center max-w-sm shadow-warm-lg">
             <AlertTriangle size={32} className="text-s-error mx-auto mb-3" />
-            <h2 className="font-heading font-bold text-lg text-s-ink mb-2">Salon eingefroren</h2>
+            <h2 className="font-heading text-lg text-s-ink mb-2">Salon eingefroren</h2>
             {(salon as any).frozen_reason && (
               <p className="text-sm text-s-ink/80 mb-2 bg-s-error-bg rounded-btn px-3 py-2">{(salon as any).frozen_reason}</p>
             )}
@@ -1154,7 +1154,7 @@ export default function SettingsPage() {
       )}
 
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">Einstellungen</h1>
+        <h1 className="font-heading text-2xl text-s-ink">Einstellungen</h1>
       </div>
 
       {loading ? (

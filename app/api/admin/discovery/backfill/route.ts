@@ -6,6 +6,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { analyzeDiscoveryImage, analyzeDiscoveryTikTok } from "@/lib/ai-vision";
 import { validateBody, adminDiscoveryBackfillSchema } from "@/lib/validations";
+import { getServerEnv } from "@/lib/env";
 
 /**
  * POST /api/admin/discovery/backfill
@@ -33,9 +34,9 @@ export async function POST(req: NextRequest) {
   if (rateLimited) return rateLimited;
 
   // Check for Gemini API key early
-  if (!process.env.GEMINI_API_KEY) {
+  if (!getServerEnv().GEMINI_API_KEY) {
     return NextResponse.json(
-      { error: "GEMINI_API_KEY not configured. Add it to Vercel Environment Variables." },
+      { error: "GEMINI_API_KEY not configured. Add it to Netlify Environment Variables." },
       { status: 500 }
     );
   }

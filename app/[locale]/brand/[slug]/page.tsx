@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { MapPin, Star, ExternalLink } from "lucide-react";
-import SalonCard from "@/components/SalonCard";
-import Spinner from "@/components/ui/Spinner";
+import SalonCard from "@/components-legacy/SalonCard";
+import Spinner from "@/components-legacy/ui/Spinner";
 import type { SalonCard as SalonCardType } from "@/lib/types";
 
 interface SalonGroup {
@@ -54,32 +54,32 @@ export default function BrandPage() {
   if (!group) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-s-ink/50 dark:text-s-dm-text/50">Marke nicht gefunden</p>
+        <p className="text-s-ink/50">Marke nicht gefunden</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-s-bg-surface dark:bg-s-dm-bg">
+    <div className="min-h-screen bg-s-bg-surface">
       {/* Hero */}
-      <div className="bg-white dark:bg-s-dm-surface border-b border-s-ink/5 dark:border-white/5">
+      <div className="bg-white border-b border-s-ink/5">
         <div className="max-w-5xl mx-auto px-4 py-10 flex flex-col sm:flex-row items-center gap-6">
           {group.logo_url ? (
-            <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-s-bg-sunken shrink-0">
+            <div className="relative w-20 h-20 rounded-[12px] overflow-hidden bg-s-bg-sunken shrink-0">
               <Image src={group.logo_url} alt={group.name} fill className="object-contain" />
             </div>
           ) : (
-            <div className="w-20 h-20 rounded-xl bg-s-coral/10 flex items-center justify-center text-s-coral text-2xl font-heading font-bold shrink-0">
+            <div className="w-20 h-20 rounded-[12px] bg-s-coral/10 flex items-center justify-center text-s-coral text-2xl font-heading shrink-0">
               {group.name[0]}
             </div>
           )}
           <div>
-            <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">{group.name}</h1>
+            <h1 className="font-heading text-2xl text-s-ink">{group.name}</h1>
             {group.description && (
-              <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-1 max-w-lg">{group.description}</p>
+              <p className="text-sm text-s-ink/60 mt-1 max-w-lg">{group.description}</p>
             )}
             <div className="flex items-center gap-4 mt-2">
-              <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
+              <span className="text-xs text-s-ink/40">
                 {salons.length} {salons.length === 1 ? "Standort" : "Standorte"}
               </span>
               {group.website && (
@@ -100,11 +100,11 @@ export default function BrandPage() {
 
       {/* Locations grid */}
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <h2 className="font-heading font-semibold text-lg text-s-ink dark:text-s-dm-text mb-4">
+        <h2 className="font-heading text-lg text-s-ink mb-4">
           Alle Standorte
         </h2>
         {salons.length === 0 ? (
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Noch keine Standorte verfügbar.</p>
+          <p className="text-sm text-s-ink/40">Noch keine Standorte verfügbar.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {salons.map((salon) => (

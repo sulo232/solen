@@ -5,6 +5,7 @@ import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, offPeakSlotSchema, offPeakDeleteSchema } from "@/lib/validations";
 import { sendEmail } from "@/lib/email";
 import { offPeakAlert } from "@/lib/email-templates/off-peak";
+import { getAppUrl } from "@/lib/env";
 
 /**
  * GET /api/off-peak?salon_id=...
@@ -129,7 +130,12 @@ export async function POST(req: NextRequest) {
         // Wait, auth.users is NOT exposed to public by default.
         // For V1, we will just use the `auth.admin.getUserById` or query a public view if available.
         // Actually, Supabase has admin.auth.admin.getUserById(). Instead, let's do a loop over usersInfo.
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://solen.ch";
+        let baseUrl: string;
+        try {
+          baseUrl = getAppUrl();
+        } catch {
+          baseUrl = "https://solen.ch";
+        }
         
         usersInfo.forEach(async (profile) => {
           try {

@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendSMS } from "@/lib/sms";
+import { getServerEnv } from "@/lib/env";
 
 /**
  * Cron handler: send SMS reminders for upcoming bookings.
@@ -12,12 +13,14 @@ import { sendSMS } from "@/lib/sms";
  * 1h reminder:  bookings starting in 0.5h–1.5h
  */
 export async function GET(req: NextRequest) {
+  const env = getServerEnv();
+  if (!env.CRON_SECRET) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!process.env.SEVEN_IO_API_KEY) {
+  if (!env.SEVEN_IO_API_KEY) {
     console.warn("[sms-reminders] SEVEN_IO_API_KEY not set — skipping");
     return NextResponse.json({ skipped: true, reason: "no_api_key" });
   }

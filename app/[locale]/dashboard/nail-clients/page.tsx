@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import NailClientTab from "@/components/dashboard/nail/NailClientTab";
-import InfillReminderConfig from "@/components/dashboard/nail/InfillReminderConfig";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import NailClientTab from "@/components-legacy/dashboard/nail/NailClientTab";
+import InfillReminderConfig from "@/components-legacy/dashboard/nail/InfillReminderConfig";
 
 export default function NailClientsPage() {
   const [salonId, setSalonId] = useState<string | undefined>();
@@ -26,16 +26,16 @@ export default function NailClientsPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-8">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">Nails</p>
-        <h1 className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/30 mb-1">Nails</p>
+        <h1 className="font-heading text-[28px] text-s-ink leading-none">
           Nagel Kunden
         </h1>
       </div>
 
       {loading ? (
         <div className="space-y-6 animate-pulse">
-          <div className="h-96 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
-          <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
+          <div className="h-96 bg-s-bg-sunken rounded-[12px]" />
+          <div className="h-64 bg-s-bg-sunken rounded-[12px]" />
         </div>
       ) : (
         <div className="space-y-6">

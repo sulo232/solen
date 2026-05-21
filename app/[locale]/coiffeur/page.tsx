@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import CategoryPage from "@/components/CategoryPage";
-import { CoiffeurAboveGrid, CoiffeurBelowGrid } from "@/components/coiffeur/CoiffeurSections";
+import CategoryPage from "@/components-legacy/CategoryPage";
+import { CoiffeurAboveGrid, CoiffeurBelowGrid } from "@/components-legacy/coiffeur/CoiffeurSections";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
 

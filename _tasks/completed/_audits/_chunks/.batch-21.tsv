@@ -1,0 +1,10 @@
+12ad675d3a778df2546f7d3b03f2898bd365c706 2026-03-27 14:56:52 +0100 feat: full platform overhaul - auth redirect, settings tab, inline prefs, quartier cleanup, search UX
+6d059b3050b23485e7ac6cd8d4445cec1946ed25 2026-03-27 15:13:52 +0100 chore: platform-wide border radius design token sweep
+63b13606b812ba55c94bf7be0d7a0d83e0514cc0 2026-03-27 15:17:22 +0100 fix: mobile subsite responsiveness + angebote rename in mobile menu
+dac76f4189c18fdb874799577984fdffd8e04d46 2026-03-27 15:20:56 +0100 fix: tab bar transparency - add missing --raised CSS var + solid category pills
+632ebb02a7a647c2694f867830c557ef61a72872 2026-03-27 15:32:06 +0100 fix: dashboard access - check salon ownership fallback + auto-fix stale role
+a6a12075fd688f9842bc48356737335f7843ef28 2026-03-27 15:35:07 +0100 feat: mobile map optimization - inline mini-map preview, responsive heights, touch-friendly
+a5ee8940177e469901c909dcaef7c50c1a5435c3 2026-03-27 15:41:03 +0100 fix: rename last-minute route to angebote - create new route + update all nav links
+ae7c266262ab6793ae0a4cdac59d9de0fb7de276 2026-03-27 15:48:50 +0100 feat: payment methods section in profile settings + angebote route creation
+17370b6a1347375082f52eade424ced4a4dedc6d 2026-03-27 18:10:36 +0100 feat: AI suggestion pills on discover page - category-specific trending terms
+6051425a89485693418323b5e01e96b78861577c 2026-03-27 18:16:37 +0100 feat: Stripe Connect onboarding - create status API + always-visible bank linking in dashboard

@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
+import { getPublicEnv } from "@/lib/env";
 
 export async function GET(request: NextRequest) {
   const rateLimited = await applyRateLimit(authLimiter, { ip: getClientIp(request) });
@@ -19,9 +20,10 @@ export async function GET(request: NextRequest) {
     const redirectUrl = new URL(redirect, origin);
     const response = NextResponse.redirect(redirectUrl);
 
+    const publicEnv = getPublicEnv();
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      publicEnv.NEXT_PUBLIC_SUPABASE_URL,
+      publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       {
         cookies: {
           getAll() {

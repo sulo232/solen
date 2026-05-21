@@ -3812,7 +3812,10 @@
     "shareProfile": "Condividi profilo",
     "linkCopied": "Link copiato!",
     "nextAvailable": "Prossimo slot disponibile",
-    "shareError": "Impossibile condividere"
+    "shareError": "Impossibile condividere",
+    "backToList": "Torna alla lista",
+    "addToFavorites": "Aggiungi ai preferiti",
+    "removeFromFavorites": "Rimuovi dai preferiti"
   },
   "compare": {
     "back": "Indietro",

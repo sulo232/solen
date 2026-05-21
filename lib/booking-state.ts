@@ -4,9 +4,13 @@
  * Defines the shape of data flowing through the multi-step booking context
  */
 
-// Active 4-step flow uses: 'services-staff' | 'datetime' | 'confirm' | 'payment'
-// Legacy step names retained for backwards compatibility with old step components
-export type BookingStep = 'services-staff' | 'datetime' | 'confirm' | 'payment' | 'services' | 'staff' | 'date' | 'time';
+// Q55 (locked 2026-05-02): collapsed to 3-step flow:
+//   'services-staff' | 'datetime' | 'pay-confirm'
+// Legacy step names ('confirm' + 'payment' from V5 4-step) retained for backwards
+// compatibility with in-progress sessions; BookingWizard normalizes them to 'pay-confirm'.
+// Even older step names ('services'|'staff'|'date'|'time') kept for any legacy state
+// that might still exist in browser storage.
+export type BookingStep = 'services-staff' | 'datetime' | 'pay-confirm' | 'confirm' | 'payment' | 'services' | 'staff' | 'date' | 'time';
 
 export interface SelectedService {
   id: string;

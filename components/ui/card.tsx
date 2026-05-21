@@ -1,5 +1,21 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cn } from "@/lib/utils";
+
+/**
+ * Card — V3-D75-rule (2026-05-18).
+ *
+ * Canonical card primitive (shadcn-ui pattern, adapted to Solen V3 tokens:
+ * border-radius `card` (16px), V3-D72 unified shadow `0 6px 24px rgba(0,0,0,0.06)`,
+ * s-bg.surface white background, Hanken Grotesk body text, Bricolage Grotesque
+ * headings via the `h3` cascade).
+ *
+ * Composition: Card > CardHeader (CardTitle + CardDescription) > CardContent >
+ * CardFooter. All parts optional. Used as a generic content wrapper anywhere
+ * SalonCard is too domain-specific — e.g. breadcrumb wrapper, info panels,
+ * inline forms.
+ *
+ * See _rules/UTILITIES_INDEX.md "Card" entry.
+ */
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -8,13 +24,14 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-card border border-s-ink/[0.06] bg-[--raised] text-s-ink shadow-elevation-1 dark:border-s-dm-text/[0.08] dark:bg-s-dm-raised dark:text-s-dm-text",
+      "rounded-card bg-s-bg-surface text-s-ink",
+      "shadow-[0_6px_24px_rgba(0,0,0,0.06)]",
       className,
     )}
     {...props}
   />
-))
-Card.displayName = "Card"
+));
+Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<
   HTMLDivElement,
@@ -22,26 +39,26 @@ const CardHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex flex-col space-y-1.5 p-6", className)}
+    className={cn("flex flex-col gap-1.5 p-6", className)}
     {...props}
   />
-))
-CardHeader.displayName = "CardHeader"
+));
+CardHeader.displayName = "CardHeader";
 
 const CardTitle = React.forwardRef<
-  HTMLParagraphElement,
+  HTMLHeadingElement,
   React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
     className={cn(
-      "font-heading text-lg font-semibold leading-none tracking-tight text-s-ink dark:text-s-dm-text",
+      "font-display text-[20px] font-bold leading-tight tracking-[-0.02em] text-s-ink",
       className,
     )}
     {...props}
   />
-))
-CardTitle.displayName = "CardTitle"
+));
+CardTitle.displayName = "CardTitle";
 
 const CardDescription = React.forwardRef<
   HTMLParagraphElement,
@@ -49,19 +66,19 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-s-ink/55 dark:text-s-dm-text/55", className)}
+    className={cn("font-body text-[14px] text-s-ink-2", className)}
     {...props}
   />
-))
-CardDescription.displayName = "CardDescription"
+));
+CardDescription.displayName = "CardDescription";
 
 const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
   <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
-))
-CardContent.displayName = "CardContent"
+));
+CardContent.displayName = "CardContent";
 
 const CardFooter = React.forwardRef<
   HTMLDivElement,
@@ -72,7 +89,14 @@ const CardFooter = React.forwardRef<
     className={cn("flex items-center p-6 pt-0", className)}
     {...props}
   />
-))
-CardFooter.displayName = "CardFooter"
+));
+CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+  CardContent,
+};

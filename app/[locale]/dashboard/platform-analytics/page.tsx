@@ -4,8 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Store, UsersRound, Calendar, DollarSign, Star, BarChart3 } from "lucide-react";
 import { useLocale } from "next-intl";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 import { containerVariants, itemVariants } from "@/lib/animations";
 
@@ -64,7 +64,7 @@ function StatCard({
       variants={itemVariants}
       className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-5 flex items-start gap-4"
     >
-      <div className={`p-2.5 rounded-xl ${bg} shrink-0`}>
+      <div className={`p-2.5 rounded-[12px] ${bg} shrink-0`}>
         <Icon size={20} className={color} />
       </div>
       <div>
@@ -97,7 +97,7 @@ export default function PlatformAnalyticsPage() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-s-ink">Plattform Statistiken</h1>
+        <h1 className="font-heading text-2xl text-s-ink">Plattform Statistiken</h1>
         <p className="text-sm text-s-ink/40 mt-0.5">Gesamtübersicht der Plattform</p>
       </div>
 

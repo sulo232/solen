@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { BookOpen, Plus, Pencil, Trash2, Eye, EyeOff } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 
 interface HelpArticle {
   id: string;
@@ -112,11 +112,11 @@ export default function HelpEditorPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-s-coral/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
               <BookOpen size={20} className="text-s-coral" />
             </div>
             <div>
-              <h1 className="font-heading font-bold text-xl text-s-ink">Hilfe-Artikel</h1>
+              <h1 className="font-heading text-xl text-s-ink">Hilfe-Artikel</h1>
               <p className="text-xs text-s-ink/40 font-body">{articles.length} Artikel</p>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function HelpEditorPage() {
         {/* Form modal */}
         {showForm && (
           <div className="bg-white border border-s-ink/10 rounded-[12px] p-5 space-y-4 shadow-warm-md">
-            <h2 className="font-heading font-semibold text-base text-s-ink">
+            <h2 className="font-heading text-base text-s-ink">
               {editing ? "Artikel bearbeiten" : "Neuer Artikel"}
             </h2>
             <div className="grid grid-cols-2 gap-3">

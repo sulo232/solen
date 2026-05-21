@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useLocale } from "next-intl";
 import { MessageCircle, ChevronDown } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import Spinner from "@/components/ui/Spinner";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import Spinner from "@/components-legacy/ui/Spinner";
 
-const ChatWindow = dynamic(() => import("@/components/ChatWindow"), {
+const ChatWindow = dynamic(() => import("@/components-legacy/ChatWindow"), {
   loading: () => <div className="flex justify-center py-12"><Spinner /></div>,
 });
 
@@ -62,7 +62,7 @@ export default function MessagesPage() {
         {/* Conversation list */}
         <div className="w-72 shrink-0 flex flex-col bg-white rounded-[12px] border border-s-ink/5 overflow-hidden">
           <div className="px-4 py-3 border-b border-s-ink/5">
-            <h2 className="font-heading font-bold text-base text-s-ink">Nachrichten</h2>
+            <h2 className="font-heading text-base text-s-ink">Nachrichten</h2>
           </div>
           {loading ? (
             <div className="flex justify-center py-10"><Spinner size="sm" /></div>
@@ -72,7 +72,7 @@ export default function MessagesPage() {
               <p className="text-sm">Keine Nachrichten</p>
             </div>
           ) : (
-            <div className="flex-1 overflow-y-auto divide-y divide-gray-50">
+            <div className="flex-1 overflow-y-auto divide-y divide-s-border">
               {convos.map((c) => (
                 <button
                   key={c.id}

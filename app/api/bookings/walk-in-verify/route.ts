@@ -3,10 +3,11 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { getServerEnv } from "@/lib/env";
 import crypto from "crypto";
 
 function verifyHmacToken(token: string): { bookingId: string; valid: boolean } {
-  const secret = process.env.BOOKING_HMAC_SECRET;
+  const secret = getServerEnv().BOOKING_HMAC_SECRET;
   if (!secret) return { bookingId: "", valid: false };
 
   try {
@@ -62,6 +63,8 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     booking: {
       id: booking.id,
+      salon_id: booking.salon_id,
+      service_id: booking.service_id,
       salon_name: (booking.salons as any)?.name,
       service_name: (booking.services as any)?.name_de,
       amount: booking.price_paid,

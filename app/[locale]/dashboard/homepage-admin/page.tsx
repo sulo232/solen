@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Loader2, Check, LayoutGrid } from "lucide-react";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 
 const SECTION_LABELS: Record<string, string> = {
   quartier: "Entdecke dein Quartier",
@@ -74,10 +74,10 @@ export default function HomepageAdminPage() {
   return (
     <DashboardLayout>
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
+        <h1 className="font-heading text-2xl text-s-ink">
           Homepage Sektionen
         </h1>
-        <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
+        <p className="text-sm text-s-ink/50 font-body mt-1">
           Steuere welche Sektionen auf der Homepage sichtbar sind.
         </p>
       </div>
@@ -87,15 +87,15 @@ export default function HomepageAdminPage() {
           <Loader2 size={24} className="animate-spin text-s-coral" />
         </div>
       ) : (
-        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md p-6 max-w-xl space-y-1">
+        <div className="bg-white rounded-[12px] shadow-warm-md p-6 max-w-xl space-y-1">
           {SECTION_ORDER.map((key) => (
             <div
               key={key}
-              className="flex items-center justify-between py-3 border-b border-s-ink/5 dark:border-white/5 last:border-0"
+              className="flex items-center justify-between py-3 border-b border-s-ink/5 last:border-0"
             >
               <div className="flex items-center gap-3">
-                <LayoutGrid size={16} className="text-s-ink/30 dark:text-s-dm-text/30" />
-                <span className="text-sm font-medium text-s-ink dark:text-s-dm-text font-body">
+                <LayoutGrid size={16} className="text-s-ink/30" />
+                <span className="text-sm font-medium text-s-ink font-body">
                   {SECTION_LABELS[key] ?? key}
                 </span>
               </div>
@@ -108,7 +108,7 @@ export default function HomepageAdminPage() {
                   "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-pill border-2 border-transparent transition-colors duration-200",
                   sections[key]
                     ? "bg-s-coral"
-                    : "bg-s-ink/10 dark:bg-white/10",
+                    : "bg-s-ink/10",
                 ].join(" ")}
               >
                 <span

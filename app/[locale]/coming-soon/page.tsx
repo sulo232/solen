@@ -8,8 +8,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 const FEATURE_MAP: Record<string, { icon: string; color: string }> = {
-  vouchers: { icon: "🎁", color: "rgba(232,98,74,.12)" },
-  loyalty: { icon: "⭐", color: "rgba(212,135,10,.12)" },
+  vouchers: { icon: "🎁", color: "rgba(27, 77, 27,.12)" },
+  loyalty: { icon: "⭐", color: "rgba(243,168,100,.12)" },
   referral: { icon: "💌", color: "rgba(123,166,136,.15)" },
   behandlungen: { icon: "💆", color: "rgba(107,163,200,.15)" },
 };
@@ -19,7 +19,7 @@ export default function ComingSoonPage() {
   const t = useTranslations("comingSoon");
   const params = useSearchParams();
   const feature = params.get("feature") ?? "default";
-  const meta = FEATURE_MAP[feature] ?? { icon: "✨", color: "rgba(232,98,74,.08)" };
+  const meta = FEATURE_MAP[feature] ?? { icon: "✨", color: "rgba(27, 77, 27,.08)" };
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
@@ -50,7 +50,7 @@ export default function ComingSoonPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[--base] dark:bg-s-dm-bg flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen bg-[--base] flex flex-col items-center justify-center px-6">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -64,10 +64,10 @@ export default function ComingSoonPage() {
           {meta.icon}
         </div>
 
-        <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-2">
+        <h1 className="font-heading text-2xl text-s-ink mb-2">
           {t("title")}
         </h1>
-        <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-8 leading-relaxed">
+        <p className="text-sm text-s-ink/50 mb-8 leading-relaxed">
           {description}
         </p>
 
@@ -79,12 +79,12 @@ export default function ComingSoonPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("emailPlaceholder")}
               aria-label={t("emailPlaceholder")}
-              className="flex-1 px-4 py-3 rounded-btn bg-[--raised] dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral/40 focus:ring-2 focus:ring-s-coral/10"
+              className="flex-1 px-4 py-3 rounded-btn bg-[--raised] border border-s-ink/10 text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral/40 focus:ring-2 focus:ring-s-coral/10"
             />
             <button
               onClick={handleNotify}
               aria-label={t("notify")}
-              className="px-5 py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-bold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 flex items-center gap-2"
+              className="px-5 py-3 rounded-btn bg-s-coral text-white text-sm font-heading hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 flex items-center gap-2"
             >
               <Bell size={14} />
               {t("notify")}
@@ -99,7 +99,7 @@ export default function ComingSoonPage() {
 
         <Link
           href={`/${locale}`}
-          className="inline-flex items-center gap-1.5 text-sm text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-coral transition-colors duration-150"
+          className="inline-flex items-center gap-1.5 text-sm text-s-ink/40 hover:text-s-coral transition-colors duration-150"
         >
           <ArrowLeft size={14} />
           {t("backHome")}

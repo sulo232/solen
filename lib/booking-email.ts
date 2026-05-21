@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { getServerEnv, getAppUrl } from "@/lib/env";
 
 interface BookingEmailData {
   to: string;
@@ -65,15 +66,22 @@ function generateICS(data: BookingEmailData): string {
  * If RESEND_API_KEY is not set, silently returns false.
  */
 export async function sendBookingConfirmationEmail(data: BookingEmailData): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
+  const env = getServerEnv();
+  const apiKey = env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn("[booking-email] RESEND_API_KEY not set, skipping email");
     return false;
   }
 
   const resend = new Resend(apiKey);
-  const fromEmail = process.env.RESEND_FROM_EMAIL ?? "noreply@solen.ch";
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.solen.ch";
+  const fromEmail = env.RESEND_FROM_EMAIL ?? "noreply@solen.ch";
+  let baseUrl: string;
+  try {
+    baseUrl = getAppUrl();
+  } catch {
+    console.warn("[booking-email] NEXT_PUBLIC_APP_URL not set, falling back to www.solen.ch");
+    baseUrl = "https://www.solen.ch";
+  }
   const cancelUrl = data.cancelUrl ?? `${baseUrl}/de/profile`;
   const mapsUrl = data.mapsUrl ?? (data.salonAddress
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.salonAddress)}`
