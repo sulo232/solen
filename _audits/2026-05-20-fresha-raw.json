@@ -1,0 +1,586 @@
+{
+  "typography": [
+    {
+      "ff": "RoobertPRO",
+      "sz": "14px",
+      "wt": "400",
+      "lh": "20px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(118, 118, 118)",
+      "count": 125,
+      "samples": [
+        "Via Alessandro Volta, Corsico",
+        "Hair Salon  •  1538 reviews",
+        "Via Giuseppe Giusti, Nichelino"
+      ],
+      "tags": [
+        "p"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "22px",
+      "wt": "600",
+      "lh": "22px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 121,
+      "samples": [
+        "0",
+        "1",
+        "2"
+      ],
+      "tags": [
+        "span"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "13px",
+      "wt": "600",
+      "lh": "16px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 78,
+      "samples": [
+        "5.0",
+        "Featured",
+        "4.9"
+      ],
+      "tags": [
+        "span"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "16px",
+      "wt": "400",
+      "lh": "18.4px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 77,
+      "samples": [
+        "5 rating"
+      ],
+      "tags": [
+        "p"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "16px",
+      "wt": "600",
+      "lh": "22px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 72,
+      "samples": [
+        "Log in",
+        "List your business",
+        "Menu"
+      ],
+      "tags": [
+        "span",
+        "p",
+        "h3"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "14px",
+      "wt": "400",
+      "lh": "20px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 57,
+      "samples": [
+        "Over 1250 reviews on",
+        "‎Hair Salons in Sydney",
+        "‎Nail Salons in Sydney"
+      ],
+      "tags": [
+        "a",
+        "p"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "16px",
+      "wt": "500",
+      "lh": "22px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 55,
+      "samples": [
+        "Lucy",
+        "Dan",
+        "Dale"
+      ],
+      "tags": [
+        "p",
+        "label"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "19px",
+      "wt": "600",
+      "lh": "24px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 28,
+      "samples": [
+        "The best booking system",
+        "Easy to use & explore",
+        "Great for finding barbers"
+      ],
+      "tags": [
+        "h3"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "16px",
+      "wt": "400",
+      "lh": "22px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 28,
+      "samples": [
+        "Great experience, easy to book. Paying for treatments is so convenient",
+        "Fresha's reminders make life so much easier. I also found a few good b",
+        "I've been using Fresha for two years and it's by far the best booking "
+      ],
+      "tags": [
+        "p"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "22px",
+      "wt": "600",
+      "lh": "22px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgba(0, 0, 0, 0)",
+      "count": 6,
+      "samples": [
+        "4",
+        "9",
+        "3"
+      ],
+      "tags": [
+        "span"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "28px",
+      "wt": "600",
+      "lh": "36px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 6,
+      "samples": [
+        "Recommended",
+        "New to Fresha",
+        "Trending"
+      ],
+      "tags": [
+        "h2",
+        "p"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "24px",
+      "wt": "500",
+      "lh": "32px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 5,
+      "samples": [
+        "One solution, one software. Trusted by the best in the selfcare indust",
+        "appointments booked on Fresha",
+        "partner businesses"
+      ],
+      "tags": [
+        "p",
+        "div"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "40px",
+      "wt": "700",
+      "lh": "44px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 4,
+      "samples": [
+        "The top-rated destination for selfcare",
+        "130,000+",
+        "120+ countries"
+      ],
+      "tags": [
+        "h2",
+        "p"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "22px",
+      "wt": "400",
+      "lh": "28px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 2,
+      "samples": [
+        "Discover top-rated salons, barbers, medspas, wellness studios and beau",
+        "appointments booked today"
+      ],
+      "tags": [
+        "p",
+        "span"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "16px",
+      "wt": "600",
+      "lh": "22px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(255, 255, 255)",
+      "count": 2,
+      "samples": [
+        "Search",
+        "Find out more"
+      ],
+      "tags": [
+        "span"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "14px",
+      "wt": "600",
+      "lh": "20px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 2,
+      "samples": [
+        "Scan to download",
+        "Available on"
+      ],
+      "tags": [
+        "p"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "24px",
+      "wt": "400",
+      "lh": "32px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 2,
+      "samples": [
+        "Book unforgettable beauty and wellness experiences with the Fresha mob",
+        "Supercharge your business with the world's top booking platform for sa"
+      ],
+      "tags": [
+        "p"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "64px",
+      "wt": "700",
+      "lh": "68px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 1,
+      "samples": [
+        "Book local selfcare services"
+      ],
+      "tags": [
+        "h1"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "68px",
+      "wt": "700",
+      "lh": "72px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 1,
+      "samples": [
+        "Download the Fresha app"
+      ],
+      "tags": [
+        "h2"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "96px",
+      "wt": "700",
+      "lh": "112px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 1,
+      "samples": [
+        "1 billion+"
+      ],
+      "tags": [
+        "p"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "68px",
+      "wt": "700",
+      "lh": "normal",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(13, 13, 13)",
+      "count": 1,
+      "samples": [
+        "Fresha for business"
+      ],
+      "tags": [
+        "h2"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "16px",
+      "wt": "500",
+      "lh": "22px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(255, 255, 255)",
+      "count": 1,
+      "samples": [
+        "Australia"
+      ],
+      "tags": [
+        "label"
+      ]
+    },
+    {
+      "ff": "RoobertPRO",
+      "sz": "14px",
+      "wt": "500",
+      "lh": "20px",
+      "ls": "normal",
+      "tt": "none",
+      "color": "rgb(105, 80, 243)",
+      "count": 1,
+      "samples": [
+        "English (US)"
+      ],
+      "tags": [
+        "span"
+      ]
+    }
+  ],
+  "textColors": [
+    [
+      "rgb(13, 13, 13)",
+      1767
+    ],
+    [
+      "rgb(255, 192, 10)",
+      656
+    ],
+    [
+      "rgb(118, 118, 118)",
+      125
+    ],
+    [
+      "rgb(255, 255, 255)",
+      10
+    ],
+    [
+      "rgb(105, 80, 243)",
+      5
+    ],
+    [
+      "rgb(0, 0, 0)",
+      3
+    ]
+  ],
+  "bgColors": [
+    [
+      "rgb(242, 242, 242)",
+      59
+    ],
+    [
+      "rgba(19, 19, 19, 0.33)",
+      48
+    ],
+    [
+      "rgba(255, 255, 255, 0.7)",
+      30
+    ],
+    [
+      "rgb(255, 255, 255)",
+      19
+    ],
+    [
+      "rgb(13, 13, 13)",
+      3
+    ],
+    [
+      "rgba(19, 19, 19, 0)",
+      1
+    ]
+  ],
+  "ctas": [],
+  "radii": [
+    [
+      "999px",
+      92
+    ],
+    [
+      "16px",
+      77
+    ],
+    [
+      "100%",
+      56
+    ],
+    [
+      "50%",
+      48
+    ],
+    [
+      "100px",
+      5
+    ],
+    [
+      "12px",
+      1
+    ],
+    [
+      "24px",
+      1
+    ]
+  ],
+  "shadows": [
+    [
+      "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      1
+    ],
+    [
+      "rgba(156, 156, 156, 0.08) 0px 0px 0px 6px inset",
+      1
+    ],
+    [
+      "rgba(19, 19, 19, 0.08) 0px 2px 8px 0px, rgba(19, 19, 19, 0.12) 0px 4px 20px 0px",
+      1
+    ]
+  ],
+  "imgCount": 81,
+  "svgCount": 395,
+  "imgSamples": [
+    {
+      "src": "https://www.fresha.com/assets/_next/static/media/app-store-redirect.d1500a44.png",
+      "w": 256,
+      "h": 256
+    },
+    {
+      "src": "https://images.fresha.com/locations/location-profile-images/179579/2710323/d8db5f80-6915-43a8-97db-0bb1b5f6679e.jpg?f_wi",
+      "w": 326,
+      "h": 183
+    },
+    {
+      "src": "https://images.fresha.com/locations/location-profile-images/1030170/5034339/4b7359ea-d98b-44dc-be51-a1191095d6a3-MaisonM",
+      "w": 326,
+      "h": 183
+    },
+    {
+      "src": "https://images.fresha.com/locations/location-profile-images/615156/5874391/65559102-81d4-422f-9ff2-36588811d82b-Joliz-CH",
+      "w": 326,
+      "h": 183
+    },
+    {
+      "src": "https://images.fresha.com/locations/location-profile-images/119463/2076743/f7671eeb-977a-4959-b3ae-35d1ceae8bd8-Thiene-I",
+      "w": 326,
+      "h": 183
+    },
+    {
+      "src": "https://images.fresha.com/locations/location-profile-images/544865/5741270/626f3e56-1f52-4462-841c-f378214abc55.jpg?f_wi",
+      "w": 326,
+      "h": 183
+    },
+    {
+      "src": "https://images.fresha.com/locations/location-profile-images/2666014/5924963/d1990f51-190a-46e0-a001-9787ba181cf0-GRAVITI",
+      "w": 326,
+      "h": 183
+    },
+    {
+      "src": "https://images.fresha.com/locations/location-profile-images/119463/1734766/fe2822db-ffc0-4173-bfe6-de62bf795602.jpg?f_wi",
+      "w": 326,
+      "h": 183
+    }
+  ],
+  "pageHeight": 5720,
+  "bodyBg": "rgb(255, 255, 255)",
+  "htmlBg": "rgb(255, 255, 255)",
+  "widths": [
+    [
+      1440,
+      47
+    ],
+    [
+      1376,
+      6
+    ],
+    [
+      576,
+      5
+    ],
+    [
+      600,
+      4
+    ],
+    [
+      1408,
+      3
+    ],
+    [
+      448,
+      2
+    ],
+    [
+      794,
+      1
+    ],
+    [
+      1200,
+      1
+    ]
+  ]
+}

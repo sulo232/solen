@@ -1,0 +1,244 @@
+{
+  "poster": {
+    "dims": [
+      814,
+      456
+    ],
+    "dominant_blobs": [
+      {
+        "hex": "#D2CCC6",
+        "rgb": [
+          210,
+          204,
+          198
+        ],
+        "area_pct": 43.4,
+        "idx": 0,
+        "centroid_pct": [
+          48.0,
+          64.4
+        ],
+        "spread_pct": [
+          27.2,
+          26.8
+        ]
+      },
+      {
+        "hex": "#9CAAB6",
+        "rgb": [
+          156,
+          170,
+          182
+        ],
+        "area_pct": 13.7,
+        "idx": 1,
+        "centroid_pct": [
+          49.7,
+          50.0
+        ],
+        "spread_pct": [
+          28.9,
+          29.4
+        ]
+      },
+      {
+        "hex": "#3265A8",
+        "rgb": [
+          50,
+          101,
+          168
+        ],
+        "area_pct": 13.3,
+        "idx": 2,
+        "centroid_pct": [
+          48.0,
+          26.2
+        ],
+        "spread_pct": [
+          31.0,
+          15.7
+        ]
+      },
+      {
+        "hex": "#5A92A1",
+        "rgb": [
+          90,
+          146,
+          161
+        ],
+        "area_pct": 11.7,
+        "idx": 3,
+        "centroid_pct": [
+          43.1,
+          32.4
+        ],
+        "spread_pct": [
+          28.4,
+          19.7
+        ]
+      },
+      {
+        "hex": "#CECEBA",
+        "rgb": [
+          206,
+          206,
+          186
+        ],
+        "area_pct": 9.4,
+        "idx": 4,
+        "centroid_pct": [
+          60.5,
+          60.5
+        ],
+        "spread_pct": [
+          29.0,
+          17.7
+        ]
+      },
+      {
+        "hex": "#536EAA",
+        "rgb": [
+          83,
+          110,
+          170
+        ],
+        "area_pct": 8.5,
+        "idx": 5,
+        "centroid_pct": [
+          60.2,
+          23.2
+        ],
+        "spread_pct": [
+          28.4,
+          15.8
+        ]
+      }
+    ],
+    "grid_samples": [
+      {
+        "pos": "top-left",
+        "x": 122,
+        "y": 68,
+        "hex": "#3779A8"
+      },
+      {
+        "pos": "top-center",
+        "x": 407,
+        "y": 68,
+        "hex": "#418E9F"
+      },
+      {
+        "pos": "top-right",
+        "x": 691,
+        "y": 68,
+        "hex": "#4E69A9"
+      },
+      {
+        "pos": "mid-left",
+        "x": 122,
+        "y": 228,
+        "hex": "#B2B1BB"
+      },
+      {
+        "pos": "mid-center",
+        "x": 407,
+        "y": 228,
+        "hex": "#AEBFB4"
+      },
+      {
+        "pos": "mid-right",
+        "x": 691,
+        "y": 228,
+        "hex": "#275C9C"
+      },
+      {
+        "pos": "bot-left",
+        "x": 122,
+        "y": 387,
+        "hex": "#8D9ABA"
+      },
+      {
+        "pos": "bot-center",
+        "x": 407,
+        "y": 387,
+        "hex": "#D3CCC5"
+      },
+      {
+        "pos": "bot-right",
+        "x": 691,
+        "y": 387,
+        "hex": "#B8D8CE"
+      }
+    ],
+    "grain": {
+      "raw_std": 5.76,
+      "interpretation": "film-grain visible"
+    }
+  },
+  "flower": {
+    "dims": [
+      2000,
+      1161
+    ],
+    "palette": [
+      {
+        "hex": "#E0E0D9",
+        "rgb": [
+          224,
+          224,
+          217
+        ],
+        "area_pct": 84.0,
+        "idx": 0
+      },
+      {
+        "hex": "#DED0AB",
+        "rgb": [
+          222,
+          208,
+          171
+        ],
+        "area_pct": 10.0,
+        "idx": 1
+      },
+      {
+        "hex": "#D6AE5D",
+        "rgb": [
+          214,
+          174,
+          93
+        ],
+        "area_pct": 2.7,
+        "idx": 2
+      },
+      {
+        "hex": "#CCB994",
+        "rgb": [
+          204,
+          185,
+          148
+        ],
+        "area_pct": 2.1,
+        "idx": 3
+      },
+      {
+        "hex": "#E8C570",
+        "rgb": [
+          232,
+          197,
+          112
+        ],
+        "area_pct": 1.1,
+        "idx": 4
+      }
+    ],
+    "grain": {
+      "raw_std": 2.25,
+      "interpretation": "subtle grain"
+    }
+  },
+  "rebuild_target": {
+    "grain_std": 2.25,
+    "interpretation": "subtle grain"
+  }
+}

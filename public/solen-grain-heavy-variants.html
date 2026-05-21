@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen — heavy grain variants (flower-reference level + visible warm blobs)</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-page: #FAF8F2;
+    --bg-card: #FFFFFF;
+    --ink: #2C2522;
+    --ink-2: #6B5F58;
+    --ink-3: #8A7E76;
+    --border: #E8E0D6;
+
+    --brand: #C45C38;
+    --brand-hover: #A04A29;
+    --amber: #D4A373;
+    --amber-deep: #B58659;
+    --deep-brown: #3F2A22;
+    --sage: #5E6B4E;
+    --badge-clay: #D96B45;
+
+    --cat-coiffeur: #F5DBC9;
+    --cat-coiffeur-text: #8E3D2B;
+    --cat-barbershop: #D9C5BA;
+    --cat-barbershop-text: #3F2A22;
+    --cat-nails: #F0E0CC;
+    --cat-nails-text: #8E5F2E;
+    --cat-spa: #D5DBCD;
+    --cat-spa-text: #3D4A2F;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: #D6D0C4;
+    -webkit-font-smoothing: antialiased;
+  }
+  body { padding: 28px 20px 60px; }
+
+  .doc-header {
+    max-width: 1400px;
+    margin: 0 auto 28px;
+    text-align: center;
+  }
+  .doc-header h1 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 28px;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+    margin-bottom: 8px;
+    font-weight: 800;
+  }
+  .doc-header p {
+    font-size: 13px;
+    color: #5A5248;
+    max-width: 760px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  .doc-header strong { color: var(--ink); }
+
+  .grid {
+    display: grid;
+    gap: 28px;
+    grid-template-columns: 1fr;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  @media (min-width: 1100px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .col { display: flex; flex-direction: column; gap: 14px; }
+  .col-label {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #5A5248;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .col-label strong { color: var(--ink); font-size: 13px; }
+
+  .page {
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+    height: 820px;
+    overflow-y: auto;
+    position: relative;
+    background: var(--bg-page);
+  }
+
+  /* ──────────── BLOB LAYER — visible warm zones (poster-direction) ────────────
+     Higher opacity than previous B (0.30-0.35). These are the "color zones"
+     you saw on the poster — visible but tuned to solen's warm palette. */
+  .page-bg-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 65% 50% at 82% 12%, rgba(255, 220, 195, 0.65) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 50% at 12% 22%, rgba(213, 219, 205, 0.55) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 92% 55%, rgba(196, 92, 56, 0.20) 0%, transparent 65%),
+      radial-gradient(ellipse 55% 45% at 8% 75%, rgba(212, 163, 115, 0.45) 0%, transparent 65%);
+  }
+  .page > *:not(.page-bg-layer):not(.grain) { position: relative; z-index: 1; }
+
+  /* ──────────── GRAIN LAYER — flower-reference intensity ────────────
+     baseFrequency 0.65 = slightly larger grain than the subtle variant.
+     Use mix-blend-mode 'soft-light' instead of 'multiply' so high opacity
+     doesn't aggressively darken the warm substrate. */
+  .grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    mix-blend-mode: soft-light;
+  }
+  .vE1 .grain { opacity: 0.65; }   /* "less than reference" — ~18% perceived */
+  .vE2 .grain { opacity: 0.90; }   /* "flower-reference match" — ~25% perceived */
+  .vE3 .grain { opacity: 1.20; }   /* "heavier than reference" — ~32% perceived */
+  /* Note: soft-light is gentler than multiply, so opacity values look high
+     here but perceived intensity is lower. Tested at phone width. */
+
+  /* ──────────────── shared page content ──────────────── */
+  .promo {
+    background: var(--deep-brown);
+    color: #FFFBF5;
+    padding: 11px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    position: relative;
+    z-index: 3;
+  }
+  .promo .cta {
+    background: var(--badge-clay);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .promo .cta svg { width: 10px; height: 10px; }
+
+  .hdr {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .logo .dot { color: var(--brand); }
+  .hdr-actions { display: flex; gap: 10px; }
+  .hdr-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    background: rgba(44, 37, 34, 0.06);
+    display: grid;
+    place-items: center;
+    color: var(--ink);
+  }
+  .hdr-icon svg { width: 17px; height: 17px; }
+
+  .hero { padding: 14px 18px 22px; }
+  .hero h1 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 38px;
+    line-height: 1.04;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    margin-bottom: 10px;
+    font-weight: 800;
+  }
+  .hero h1 em {
+    color: var(--brand);
+    font-style: normal;
+  }
+  .hero .sub {
+    font-size: 13px;
+    color: var(--ink-2);
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+
+  .sbar {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid rgba(44, 37, 34, 0.05);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+  }
+  .sbar-row {
+    border: 1px solid #DDD3C6;
+    border-radius: 999px;
+    height: 46px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .sbar-row svg { width: 15px; height: 15px; color: var(--ink); flex-shrink: 0; }
+  .sbar-submit {
+    height: 46px;
+    background: var(--brand);
+    color: white;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  .sect { padding: 22px 18px 8px; }
+  .sect-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .sect h2 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 19px;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+    font-weight: 800;
+  }
+  .sect .see-all {
+    font-size: 12px;
+    color: var(--amber-deep);
+    font-weight: 700;
+  }
+  .scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .scroll::-webkit-scrollbar { display: none; }
+
+  .cat-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid transparent;
+  }
+  .cat-chip.coiffeur { background: var(--cat-coiffeur); color: var(--cat-coiffeur-text); }
+  .cat-chip.barbershop { background: var(--cat-barbershop); color: var(--cat-barbershop-text); }
+  .cat-chip.nails { background: var(--cat-nails); color: var(--cat-nails-text); }
+  .cat-chip.spa { background: var(--cat-spa); color: var(--cat-spa-text); }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    flex: 0 0 158px;
+    overflow: hidden;
+  }
+  .card-photo {
+    aspect-ratio: 4/3;
+    width: 100%;
+    background: linear-gradient(135deg, #D9C8B5, #A89580);
+    position: relative;
+  }
+  .card-photo.p2 { background: linear-gradient(135deg, #C8B5A4, #8E7B66); }
+  .card-photo.p3 { background: linear-gradient(135deg, #DCC7A8, #B59E78); }
+  .card-photo.p4 { background: linear-gradient(135deg, #E5D3BD, #C2A580); }
+  .card-photo.p5 { background: linear-gradient(135deg, #D2BDA5, #A38872); }
+  .card-photo.p6 { background: linear-gradient(135deg, #E8D8C0, #B89A75); }
+
+  .heart {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: rgba(255, 251, 245, 0.85);
+    backdrop-filter: blur(4px);
+    display: grid;
+    place-items: center;
+    color: var(--ink);
+  }
+  .heart svg { width: 14px; height: 14px; }
+
+  .card-body { padding: 10px 12px 12px; }
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-meta {
+    font-size: 11px;
+    color: var(--ink-3);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .card-meta .star { color: var(--amber-deep); }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .badge.frei { background: var(--badge-clay); color: white; }
+  .badge.sale { background: var(--badge-clay); color: white; }
+  .badge.spa {
+    background: var(--cat-spa);
+    color: var(--cat-spa-text);
+    border: 1px solid var(--sage);
+  }
+
+  .verdict {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink);
+    padding: 12px 14px;
+    background: white;
+    border-radius: 10px;
+    border-left: 3px solid var(--brand);
+  }
+  .verdict strong { color: var(--ink); font-weight: 700; }
+  .verdict em { font-style: italic; color: var(--ink-2); }
+
+  /* settings table at bottom */
+  .settings {
+    max-width: 1400px;
+    margin: 36px auto 0;
+    background: white;
+    border-radius: 16px;
+    padding: 24px 28px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+  }
+  .settings h3 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 16px;
+    margin-bottom: 14px;
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .settings table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .settings th, .settings td {
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid #EAE4D8;
+  }
+  .settings th {
+    font-weight: 700;
+    color: var(--ink);
+    background: #FAF6EE;
+    font-size: 11px;
+  }
+  .settings code {
+    font-family: 'Hanken Grotesk', monospace, sans-serif;
+    font-size: 11px;
+    background: #FAF6EE;
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="doc-header">
+    <h1>Heavy grain — flower-reference level + visible warm blobs</h1>
+    <p>Same D2 palette + same gradient blob setup (peach top-right + sage left + clay mid-right + amber bottom-left, all in solen warm palette, NOT cool blue/green of the poster). Only the grain intensity changes. Blend mode: <code>soft-light</code> so high opacity doesn't darken the substrate (multiply would).</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- E1: less than flower reference -->
+    <div class="col vE1">
+      <div class="col-label"><strong>E1 — Subtle grain</strong> · &lt; flower reference · still visible but quieter</div>
+      <div class="page">
+        <div class="page-bg-layer"></div>
+        <div class="grain"></div>
+
+        <div class="promo">
+          <span>Sofort verfügbar — 320 Buchungen heute</span>
+          <a class="cta">Salons finden
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="hdr">
+          <span class="logo">solen<span class="dot">.</span></span>
+          <div class="hdr-actions">
+            <div class="hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3.09 13H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1A1.65 1.65 0 0 0 4.27 6.18l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V2a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+            <div class="hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          </div>
+        </div>
+
+        <div class="hero">
+          <h1>Buche deinen <em>Glow</em>.</h1>
+          <p class="sub">Coiffeur, Nails und Spa — sofort buchbar in deiner Nähe.</p>
+
+          <div class="sbar">
+            <div class="sbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>Behandlung oder Salon</span></div>
+            <div class="sbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>Ort</span></div>
+            <div class="sbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Datum & Uhrzeit</span></div>
+            <div class="sbar-submit">Salons finden</div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head"><h2>Kategorien</h2></div>
+          <div class="cat-row">
+            <span class="cat-chip coiffeur">Coiffeur</span>
+            <span class="cat-chip barbershop">Barbershop</span>
+            <span class="cat-chip nails">Nails</span>
+            <span class="cat-chip spa">Spa & Wellness</span>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head"><h2>Zuletzt angesehen</h2><span class="see-all">Alle →</span></div>
+          <div class="scroll">
+            <div class="card"><div class="card-photo"><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div><div class="card-body"><span class="badge frei">Heute frei</span><div class="card-title">Salon Lumière</div><div class="card-meta"><span class="star">★</span> 4.9 · Zürich</div></div></div>
+            <div class="card"><div class="card-photo p2"></div><div class="card-body"><span class="badge sale">-15%</span><div class="card-title">Studio Marbre</div><div class="card-meta"><span class="star">★</span> 4.8 · Basel</div></div></div>
+            <div class="card"><div class="card-photo p3"></div><div class="card-body"><span class="badge spa">Spa-Day</span><div class="card-title">Atelier Noir</div><div class="card-meta"><span class="star">★</span> 4.7 · Bern</div></div></div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head"><h2>Coiffeur</h2><span class="see-all">Alle →</span></div>
+          <div class="scroll">
+            <div class="card"><div class="card-photo p4"></div><div class="card-body"><div class="card-title">Cut & Co</div><div class="card-meta"><span class="star">★</span> 4.9 · Genf</div></div></div>
+            <div class="card"><div class="card-photo p5"></div><div class="card-body"><div class="card-title">Haus Coiffure</div><div class="card-meta"><span class="star">★</span> 4.8 · Lugano</div></div></div>
+            <div class="card"><div class="card-photo p6"></div><div class="card-body"><div class="card-title">Studio Blanche</div><div class="card-meta"><span class="star">★</span> 4.7 · St. Gallen</div></div></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="verdict">
+        <strong>Quieter than the flower reference.</strong> Grain visible on large warm surfaces (top of hero, between sections) but doesn't dominate. Blobs feel more present than the grain. <em>Pick this if "I want a hint of texture, not a heavy film stock."</em>
+      </div>
+    </div>
+
+    <!-- E2: flower-reference match -->
+    <div class="col vE2">
+      <div class="col-label"><strong>E2 — Flower-reference match</strong> · the look you pointed at · my pick</div>
+      <div class="page">
+        <div class="page-bg-layer"></div>
+        <div class="grain"></div>
+
+        <div class="promo">
+          <span>Sofort verfügbar — 320 Buchungen heute</span>
+          <a class="cta">Salons finden
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="hdr">
+          <span class="logo">solen<span class="dot">.</span></span>
+          <div class="hdr-actions">
+            <div class="hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3.09 13H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1A1.65 1.65 0 0 0 4.27 6.18l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V2a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+            <div class="hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          </div>
+        </div>
+
+        <div class="hero">
+          <h1>Buche deinen <em>Glow</em>.</h1>
+          <p class="sub">Coiffeur, Nails und Spa — sofort buchbar in deiner Nähe.</p>
+
+          <div class="sbar">
+            <div class="sbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>Behandlung oder Salon</span></div>
+            <div class="sbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>Ort</span></div>
+            <div class="sbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Datum & Uhrzeit</span></div>
+            <div class="sbar-submit">Salons finden</div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head"><h2>Kategorien</h2></div>
+          <div class="cat-row">
+            <span class="cat-chip coiffeur">Coiffeur</span>
+            <span class="cat-chip barbershop">Barbershop</span>
+            <span class="cat-chip nails">Nails</span>
+            <span class="cat-chip spa">Spa & Wellness</span>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head"><h2>Zuletzt angesehen</h2><span class="see-all">Alle →</span></div>
+          <div class="scroll">
+            <div class="card"><div class="card-photo"><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div><div class="card-body"><span class="badge frei">Heute frei</span><div class="card-title">Salon Lumière</div><div class="card-meta"><span class="star">★</span> 4.9 · Zürich</div></div></div>
+            <div class="card"><div class="card-photo p2"></div><div class="card-body"><span class="badge sale">-15%</span><div class="card-title">Studio Marbre</div><div class="card-meta"><span class="star">★</span> 4.8 · Basel</div></div></div>
+            <div class="card"><div class="card-photo p3"></div><div class="card-body"><span class="badge spa">Spa-Day</span><div class="card-title">Atelier Noir</div><div class="card-meta"><span class="star">★</span> 4.7 · Bern</div></div></div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head"><h2>Coiffeur</h2><span class="see-all">Alle →</span></div>
+          <div class="scroll">
+            <div class="card"><div class="card-photo p4"></div><div class="card-body"><div class="card-title">Cut & Co</div><div class="card-meta"><span class="star">★</span> 4.9 · Genf</div></div></div>
+            <div class="card"><div class="card-photo p5"></div><div class="card-body"><div class="card-title">Haus Coiffure</div><div class="card-meta"><span class="star">★</span> 4.8 · Lugano</div></div></div>
+            <div class="card"><div class="card-photo p6"></div><div class="card-body"><div class="card-title">Studio Blanche</div><div class="card-meta"><span class="star">★</span> 4.7 · St. Gallen</div></div></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="verdict">
+        <strong>Matches the flower image.</strong> Grain clearly visible across all warm surfaces — substrate feels like film/paper/canvas. Blobs and grain feel like they're part of the same material. This is the analog/tactile look the references pointed at. <em>"Real material" not "noise on plastic."</em> My pick — what you said you wanted.
+      </div>
+    </div>
+
+    <!-- E3: heavier than reference -->
+    <div class="col vE3">
+      <div class="col-label"><strong>E3 — Heavier grain</strong> · &gt; flower reference · 70s poster territory</div>
+      <div class="page">
+        <div class="page-bg-layer"></div>
+        <div class="grain"></div>
+
+        <div class="promo">
+          <span>Sofort verfügbar — 320 Buchungen heute</span>
+          <a class="cta">Salons finden
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="hdr">
+          <span class="logo">solen<span class="dot">.</span></span>
+          <div class="hdr-actions">
+            <div class="hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3.09 13H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1A1.65 1.65 0 0 0 4.27 6.18l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V2a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+            <div class="hdr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          </div>
+        </div>
+
+        <div class="hero">
+          <h1>Buche deinen <em>Glow</em>.</h1>
+          <p class="sub">Coiffeur, Nails und Spa — sofort buchbar in deiner Nähe.</p>
+
+          <div class="sbar">
+            <div class="sbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>Behandlung oder Salon</span></div>
+            <div class="sbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>Ort</span></div>
+            <div class="sbar-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Datum & Uhrzeit</span></div>
+            <div class="sbar-submit">Salons finden</div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head"><h2>Kategorien</h2></div>
+          <div class="cat-row">
+            <span class="cat-chip coiffeur">Coiffeur</span>
+            <span class="cat-chip barbershop">Barbershop</span>
+            <span class="cat-chip nails">Nails</span>
+            <span class="cat-chip spa">Spa & Wellness</span>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head"><h2>Zuletzt angesehen</h2><span class="see-all">Alle →</span></div>
+          <div class="scroll">
+            <div class="card"><div class="card-photo"><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div></div><div class="card-body"><span class="badge frei">Heute frei</span><div class="card-title">Salon Lumière</div><div class="card-meta"><span class="star">★</span> 4.9 · Zürich</div></div></div>
+            <div class="card"><div class="card-photo p2"></div><div class="card-body"><span class="badge sale">-15%</span><div class="card-title">Studio Marbre</div><div class="card-meta"><span class="star">★</span> 4.8 · Basel</div></div></div>
+            <div class="card"><div class="card-photo p3"></div><div class="card-body"><span class="badge spa">Spa-Day</span><div class="card-title">Atelier Noir</div><div class="card-meta"><span class="star">★</span> 4.7 · Bern</div></div></div>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head"><h2>Coiffeur</h2><span class="see-all">Alle →</span></div>
+          <div class="scroll">
+            <div class="card"><div class="card-photo p4"></div><div class="card-body"><div class="card-title">Cut & Co</div><div class="card-meta"><span class="star">★</span> 4.9 · Genf</div></div></div>
+            <div class="card"><div class="card-photo p5"></div><div class="card-body"><div class="card-title">Haus Coiffure</div><div class="card-meta"><span class="star">★</span> 4.8 · Lugano</div></div></div>
+            <div class="card"><div class="card-photo p6"></div><div class="card-body"><div class="card-title">Studio Blanche</div><div class="card-meta"><span class="star">★</span> 4.7 · St. Gallen</div></div></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="verdict">
+        <strong>Pushed harder.</strong> Closer to the poster reference. Texture clearly dominates. Risk: at this opacity, small text (subtitle, card meta, sbar-row placeholders) starts to feel slightly grimy on phone. <em>If E2 feels "almost right but not quite enough texture" → pick this. If E2 feels right or strong enough → skip.</em>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="settings">
+    <h3>Settings (CSS recipe per variant)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Variant</th>
+          <th>Grain opacity</th>
+          <th>Blend mode</th>
+          <th>Gradient blob opacity</th>
+          <th>Perceived intensity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>E1 — Subtle</strong></td>
+          <td><code>0.65</code></td>
+          <td><code>soft-light</code></td>
+          <td>0.45 / 0.45 / 0.20 / 0.35</td>
+          <td>~ 18% (hint of texture)</td>
+        </tr>
+        <tr>
+          <td><strong>E2 — Flower-match</strong></td>
+          <td><code>0.90</code></td>
+          <td><code>soft-light</code></td>
+          <td>0.65 / 0.55 / 0.20 / 0.45</td>
+          <td>~ 25% (matches the flower)</td>
+        </tr>
+        <tr>
+          <td><strong>E3 — Heavy</strong></td>
+          <td><code>1.20</code></td>
+          <td><code>soft-light</code></td>
+          <td>0.65 / 0.55 / 0.20 / 0.45</td>
+          <td>~ 32% (poster territory)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top: 14px; font-size: 12px; color: #5A5248;"><strong>Why soft-light, not multiply:</strong> at 25%+ grain opacity, multiply darkens the substrate noticeably (cream → khaki). Soft-light blends grain WITHOUT shifting overall brightness — substrate stays warm cream, grain just adds the texture layer. This is the difference between "film grain on warm paper" (good) and "dirt on a window" (bad).</p>
+  </div>
+
+</body>
+</html>

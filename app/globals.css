@@ -62,6 +62,10 @@
 
     /* Base / raised surface tokens — white page (Q15 lock 2026-04-22) */
     --bg: #FFFFFF;
+    /* V3-D94 (2026-05-21): reverted V3-D93 — substrate flipped #FAF8F2 → #FFFFFF
+       per user "revert back to comp white". V3-D93's warm cream felt off once
+       paired with the cool-poster blob mockup; user picked pure white as the
+       base substrate. Brand/atmosphere exploration continues on top of pure white. */
     --base: #FFFFFF;
 
     /* Glass CSS custom properties */
@@ -840,7 +844,20 @@ html {
      — gives white cards crisper contrast for the Aurex floating effect.
      V3-D72 (2026-05-18): #F8F7F5 warm grey → #F4F4F6 cool grey per user
      "Try #F4F4F6 or #F7F7F8" — slight cool shift makes pure-white cards pop
-     more decisively (warmer substrates blended into white at certain angles). */
+     more decisively (warmer substrates blended into white at certain angles).
+     V3-D86 (2026-05-19): #F4F4F6 → #FFFFFF pure white per user "atmosphere
+     wash removed → pure white (Airbnb pattern)." Trade-off: white cards on
+     white page → depth flat, wrap/halo effects fight to be visible.
+     V3-D93 (2026-05-21): #FFFFFF → #FAF8F2 subtle warm. Variant B picked from
+     public/solen-substrate-variants.html. Cards (#FFFFFF) now visibly float
+     on a barely-warmer substrate. Yellow-cream cast (vs V3-D72's cool grey)
+     so salon photos harmonize. 1.5% warmer + 1.5% darker than pure white —
+     below the threshold of "looks beige", above the threshold of "white
+     cards float." V2-D60 cards-stay-white fix preserved.
+     V3-D94 (2026-05-21): REVERTED V3-D93 — #FAF8F2 → #FFFFFF per user
+     "revert back to comp white". Atmosphere/blob exploration continues on
+     pure white substrate; the warm cream experiment did not survive contact
+     with the cool-poster blob mockup. */
   background-color: #FFFFFF;
 }
 

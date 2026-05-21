@@ -191,7 +191,7 @@ export default function Header({ locale }: { locale: string }) {
     <>
     <header
       className={cn(
-        "fixed left-0 right-0 top-0 z-50 transition-all duration-300 ease-glide",
+        "sticky top-0 left-0 right-0 z-50 transition-all duration-300 ease-glide",
         scrolled
           ? "bg-white/65 backdrop-blur-[28px] backdrop-saturate-[1.7] py-3 shadow-[0_1px_24px_rgba(4,51,56,0.04)]"
           : "bg-transparent py-5",

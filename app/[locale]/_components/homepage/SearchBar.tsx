@@ -65,10 +65,17 @@ const instantTransition: Transition = { duration: 0 };
 // p-[12px_18px] → p-[16px_22px] (each row ~62px tall now) and gap-2 → gap-3.
 // Math: 3 rows × ~62px + 3 gaps × 12px + button ~56px + container 28px ≈ 304.
 // V2-D70 (2026-05-18): mobile collapsed bumped 246 → 280 for the warm-minimal
-// architecture: rows are now flush-stacked (no gap, just hairline ::before
-// divider), each row 60px (18px padding × 2 + 24px icon/text), button at
-// bottom 56px (16px padding × 2 + 24px text), 6px button-margin-top, container
-// 8px × 2 = 240 + 24 = 264, round to 280 for safety.
+// architecture: rows flush-stacked w hairline divider.
+// V3-D89 (2026-05-20): mobile collapsed bumped 280 → 320 for Fresha-exact
+// row STRUCTURE: outlined pills with gap-3 between, taller button.
+// V3-D90 (2026-05-21): exact pixel-measured Fresha spec applied.
+// V3-D91-fu (2026-05-21): HEIGHT bumped 260 → 280 to give the submit
+// button proper bottom padding inside the card. Math: pt-4 (16) +
+// 3×h-12 (48×3=144) + 2×gap-3 (12×2=24) + mt-4 above button (16) +
+// h-12 button (48) + pb-4 (16) = 264. Round up to 280 for safety
+// margin (overflow-hidden clips at exact 260, leaving the button
+// pressed against the card bottom — that's the overlap user kept
+// flagging).
 const HEIGHT = {
   mobile:  { collapsed: 280, expanded: 600 },
   desktop: { collapsed: 60,  expanded: 600 },
@@ -212,7 +219,7 @@ export function SearchBar() {
         initial={false}
         animate={{
           height: isExpanded ? sizes.expanded : sizes.collapsed,
-          borderRadius: !isExpanded && isDesktop ? 999 : 24,
+          borderRadius: !isExpanded && isDesktop ? 999 : 11,
         }}
         transition={transition}
         className={cn(
@@ -239,11 +246,10 @@ export function SearchBar() {
           }}
           transition={prefersReducedMotion ? instantTransition : { ...islandTransition, delay: isExpanded ? 0 : 0.1 }}
           className={cn(
-            // V2-D70 (2026-05-18) — Aurex/Fresha warm-minimal layout:
-            // padding 8px (was 12), NO gap (rows stack flush, divider via
-            // ::before on each row), button at bottom full-width.
-            // Desktop unchanged (horizontal pill segments + right-side CTA).
-            "absolute inset-0 flex flex-col p-2 md:gap-0 md:p-[5px_5px_5px_7px] md:flex-row md:items-stretch",
+            // V3-D90-fu (2026-05-21): pixel-spec-auto measurements applied —
+            // padding 16 CSS all sides (p-4), gap-3 (12 CSS) between rows.
+            // Desktop unchanged.
+            "absolute inset-0 flex flex-col p-4 gap-3 md:gap-0 md:p-[5px_5px_5px_7px] md:flex-row md:items-stretch",
             isExpanded && "pointer-events-none",
           )}
         >
@@ -272,11 +278,9 @@ export function SearchBar() {
           <button
             type="button"
             onClick={handleSubmit}
-            // V2-D70 (2026-05-18) — Aurex/Fresha CTA: mobile full-width
-            // 16px radius (was rounded-full pill), weight 700, mt-1 to lift
-            // off the last row's divider. Desktop unchanged (rounded pill
-            // on right). Brand green s-brand #3B7A57 still V2-D49j action color.
-            className="font-body shrink-0 rounded-[16px] border-0 bg-s-brand py-4 px-5 text-base font-bold text-white transition-[colors,transform] duration-200 ease-glide hover:bg-s-brand-mid active:scale-[0.97] active:duration-[80ms] md:mt-0 md:rounded-full md:py-[10px] md:px-6 mt-1 tracking-[-0.01em]"
+            // V3-D90 (2026-05-21): Fresha-exact submit — h-12 (48 CSS ≈ row height),
+            // mt-4 (16 CSS gap above per measurement), rounded-full pill, #0D0D0D bg.
+            className="font-body shrink-0 mt-4 rounded-full border-0 bg-[#0D0D0D] h-12 px-6 text-base font-bold text-white transition-[colors,transform] duration-200 ease-glide hover:bg-[#2A2A2A] active:scale-[0.97] active:duration-[80ms] md:mt-0 md:h-auto md:py-[10px] md:px-6 tracking-[-0.01em]"
           >
             Solen durchsuchen
           </button>
@@ -550,29 +554,22 @@ function CollapsedRow({
       onClick={onClick}
       className={cn(
         "group relative flex shrink-0 cursor-pointer items-center text-left",
-        // V2-D70 (2026-05-18) — Aurex/Fresha warm-minimal rows: NO individual
-        // border / bg / radius on mobile. All rows share the same card surface;
-        // hairline divider via `before:` pseudo-element between sibling rows
-        // (positioned at top of each non-first row). Row padding 18px to match
-        // mockup's "tactile but refined" feel. Desktop unchanged.
-        "rounded-[16px] p-[18px_18px]",
-        "transition-[background] duration-150 ease-glide",
-        "hover:bg-s-ink/[0.025]",
-        !isFirst && "max-md:before:content-[''] max-md:before:absolute max-md:before:top-0 max-md:before:left-[50px] max-md:before:right-[18px] max-md:before:h-px max-md:before:bg-s-ink/[0.06]",
-        "md:flex-1 md:rounded-full md:p-[11px_22px] md:hover:bg-s-bg-sunken",
+        // V3-D90 (2026-05-21): Fresha pixel-exact — h-12 (48 CSS ≈ Fresha 46.6),
+        // 1px hairline border #D3D3D3 (exact RGB sampled), px-4 horizontal,
+        // fully-rounded pill. Vertical centering via h-12 + items-center.
+        "rounded-full border border-[#D3D3D3] h-12 px-4",
+        "transition-[background,border-color] duration-150 ease-glide",
+        "hover:border-s-ink/[0.20]",
+        "md:flex-1 md:rounded-full md:border-0 md:p-[11px_22px] md:hover:bg-s-bg-sunken",
       )}
     >
-      {/* V2-D70: icon column — drop right-border divider on mobile (clutters
-          row, divider lives on the row itself now). Desktop keeps it for the
-          horizontal segmented pill. */}
+      {/* V3-D90 (2026-05-21): icon-to-text gap pr-3 (12 CSS) per Fresha spec.
+          Desktop keeps inline divider for the horizontal segmented pill. */}
       <span className="flex shrink-0 items-center justify-center pr-3 text-s-ink-2 md:border-r md:border-black/10">
         {icon}
       </span>
       <span
         className={cn(
-          // V2-D70: text-base + ink-2 secondary grey (was ink-2 warm; ink-2
-          // now redefined to #6B7068 cool grey per spec). Weight 500 for
-          // placeholder, 600 for picked value.
           "font-body min-w-0 flex-1 truncate text-[15px] text-s-ink-2 tracking-[-0.005em] md:pl-4",
           isPlaceholder ? "font-medium" : "font-semibold",
         )}

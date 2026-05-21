@@ -59,16 +59,20 @@ module.exports = {
         "s-atm-sage":   "#D4DDC8",  // wellness whisper (unchanged)
         "s-atm-bone":   "#EAE0D0",  // V2-D60: matches new sunken
         "s-atm-butter": "#F2D77B",  // bright accent (unchanged)
-        // ── Ink (text) — V2-D70 cool-grey scale + V3-D73 contrast fix ──
+        // ── Ink (text) — V2-D70 cool-grey scale + V3-D73 contrast fix + V3-D87 white-substrate retune ──
         // Per spec: never use pure black (#000000) — causes eye strain. Primary
         // is dark rich charcoal #1A1C19, secondary is medium cool grey #6B7068.
-        // V3-D73 (2026-05-18): tertiary darkened #9BA09A → #7A7F78 per advanced-UI
-        // doc audit — old value contrast vs new substrate #F4F4F6 was ~2.24
-        // (FAILS WCAG AA at 4.5 AND AA Large at 3.0). New #7A7F78 = ~4.5:1 against
-        // pearl substrate, passes AA Normal (4.5:1) and AA Large easily.
-        "s-ink": { DEFAULT: "#1A1C19", secondary: "#6B7068", tertiary: "#7A7F78", disabled: "#C5C8C4" },
+        // V3-D73 (2026-05-18): tertiary darkened #9BA09A → #7A7F78 — calculated
+        // against pearl substrate #F4F4F6 (passed AA Normal at that bg).
+        // V3-D87 (2026-05-20): tertiary darkened AGAIN #7A7F78 → #5F635D after
+        // V3-D86 substrate flip to pure #FFFFFF. Old #7A7F78 against white = 3.86:1
+        // (FAILS WCAG AA Normal 4.5:1). New #5F635D = ~5.0:1 against white. Fixes
+        // washed-out reading of section eyebrows + salon-card category meta +
+        // Reviews meta lines (the "feels muted" complaint root-caused by uiux-audit
+        // skill, 2026-05-20).
+        "s-ink": { DEFAULT: "#1A1C19", secondary: "#6B7068", tertiary: "#5F635D", disabled: "#C5C8C4" },
         "s-ink-2": "#6B7068",  // V2-D70: medium cool grey per spec (was warm #5C4A3A)
-        "s-ink-3": "#7A7F78",  // V3-D73 contrast fix — was #9BA09A, failed WCAG vs new substrate
+        "s-ink-3": "#5F635D",  // V3-D87: darkened from #7A7F78 (failed WCAG vs white substrate after V3-D86 atmosphere kill)
         "s-border": "#E8E6E0",  // V2-D70: cool-warm neutral hairline for pearl bg (was warm bone #EAE0D0)
         // V2-D70 (2026-05-18): substrate fine-tuned #F8F7F2 → #F9F8F6 (warm pearl /
         // alabaster per Aurex/Fresha spec). Slightly warmer + softer than V2-D68.

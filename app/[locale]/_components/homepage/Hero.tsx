@@ -105,26 +105,40 @@ export default async function Hero() {
             </p>
           )}
           <h1
-            // V2-D70 (2026-05-18) — warm minimal h1: Plus Jakarta Sans 800,
-            // larger size clamp(40, 8.5vw, 60), tighter tracking -0.035em.
-            // Extreme weight contrast vs body 500 (single-family system).
-            // V3-D85-semantic (2026-05-19): brand-blue accent moved from
-            // "buchen" (transactional verb) → "Schöner" (the wellness promise).
-            // Per council pushback — highlighting the booking verb signaled
-            // "this is a utility"; highlighting the beauty-promise word signals
-            // "this is a wellness brand." Same color, same hex, same span —
-            // only the placement changes.
-            // V3-D86 (2026-05-19): h1 size bumped per variant-B mockup user
-            // approved — clamp(46→56, 11→13vw, 60→76), leading 1.02→0.98,
-            // tracking -0.038→-0.042. Mobile floor +10px gives the headline
-            // confident presence on small screens (was reading "compact").
-            className="mb-7 font-display text-[clamp(56px,13vw,76px)] font-extrabold leading-[0.98] tracking-[-0.042em] text-s-ink"
+            // V3-D88 (2026-05-20): h1 size MATCHED to Fresha mobile measurements
+            // (Playwright getComputedStyle at 375×812). Fresha runs 40px/700,
+            // line-height 44px, letter-spacing normal. Scales up smoothly to
+            // 64px at desktop (Fresha's desktop size). Was clamp(56,13vw,76)
+            // tracking -0.042 — now clamp(40,10vw,64) tracking normal,
+            // leading 1.1× per source.
+            className="mb-7 font-display text-[clamp(40px,10vw,64px)] font-bold leading-[1.1] tracking-normal text-s-ink"
           >
             <span className="text-s-brand">Schöner</span> aussehen, schneller buchen.
           </h1>
         </div>
 
-        <SearchBar />
+        {/* V3-D91-fu3 (2026-05-21): PURE WHITE liquid-glass rim — no colors.
+            Visible because page bg is now #F4F4F6 (cool grey substrate from
+            V3-D72). The white rim shows as a lighter zone against the grey bg,
+            exactly the way Fresha's white wrapping shows against its lavender bg.
+            Four layers:
+              1. 1px hard white outline — sharp glass edge
+              2. 8px tight white bloom — close glow
+              3. 18px softer white wash — outer falloff
+              4. depth drop-shadow — subtle elevation
+            Max extent 18px (within 28px gap to FeedZone). NO LAVENDER, NO PINK. */}
+        <div
+          className="relative rounded-[11px]"
+          style={{
+            boxShadow:
+              "0 0 0 1px rgba(255, 255, 255, 1), " +
+              "0 0 6px 2px rgba(255, 255, 255, 0.95), " +
+              "0 0 14px 4px rgba(255, 255, 255, 0.65), " +
+              "0 6px 16px rgba(0, 0, 0, 0.06)",
+          }}
+        >
+          <SearchBar />
+        </div>
       </div>
     </section>
   );

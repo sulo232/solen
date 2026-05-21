@@ -240,16 +240,12 @@ export function FeedZone({
         "rounded-t-[28px] md:rounded-t-[40px]",
         // V2-D67-fu17 (2026-05-17): reverted V2-D67-fu15 tint per user "ditch ts".
         // Back to V2-D65 transparent FeedZone — atmosphere reads at full chroma
-        // below the cards. Shadow RGB kept as ink (not the retired V2-D15-3 teal
-        // that was there before V2-D67-fu15) — that's a separate drift fix worth
-        // keeping even though the tint is reverted.
+        // below the cards. Shadow RGB kept as ink.
         "border-t border-white/40",
         "shadow-[0_-12px_32px_rgba(26,18,9,0.04)] md:shadow-[0_-16px_40px_rgba(26,18,9,0.05)]",
         // V2-D49n-fu7 (2026-05-10): bottom padding cut from pb-12/20 → pb-4/6
         // so the FeedZone's glass panel flows right into the footer instead
-        // of leaving a 96px cream gap. The rounded-top of the footer's
-        // emerald panel now shows the FeedZone's white-glass behind its
-        // corners, not the page's cream bg — cleaner transition.
+        // of leaving a 96px cream gap.
         "pt-2 pb-4 md:pt-4 md:pb-6",
         className,
       )}

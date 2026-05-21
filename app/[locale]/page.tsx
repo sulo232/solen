@@ -91,12 +91,14 @@ export const revalidate = 300;
 export default async function Page() {
   return (
     <div className="relative overflow-hidden bg-white">
-      {/* V3-D86 (2026-05-19): atmosphere wash REMOVED per user direction —
-          pure white + (selectively) very-soft off-white sections (Airbnb
-          pattern). Decorative gradients fail the "earned by function" test;
-          they don't help users scan, trust, or act. Background returns to
-          plain white; off-white feature-section bgs added per-section as
-          needed (TBD which sections — user picks). */}
+      {/* V3-D94 (2026-05-21): REVERTED V3-D93 — wrapper bg-white restored per
+          user "revert back to comp white". V3-D93 had removed bg-white to let
+          the body substrate (#FAF8F2) show through; V3-D94 puts pure white
+          back as the page substrate.
+          Prior V3-D93 (2026-05-21): substrate flipped pure white → subtle warm
+          #FAF8F2. Did not survive contact with the cool-poster blob mockup.
+          Prior V3-D86 (2026-05-19): atmosphere wash REMOVED → pure white
+          (Airbnb pattern). Open card-depth-collapse problem returns at V3-D94. */}
       <Hero />
       {/* All feed sections sit inside a rising-panel FeedZone (V2-D41-fu
           rising-panel pattern locked 2026-05-09). Hero zone keeps the

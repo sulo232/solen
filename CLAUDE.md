@@ -22,6 +22,31 @@
 
 ---
 
+## ⚡ Binary triggers (fire on detection, no heuristics, no rationalizing)
+
+**Rule shape:** input X is detected → tool/command Y runs as FIRST action of the turn. No "let me think first." No "this case probably doesn't need it." No "I'll just look at the screenshot." Detection = fire. Same model as "consult the council" — you say it, I run it.
+
+The heuristic version of these rules (skill auto-trigger phrases, "use this when…") fails because heuristics let me rationalize my way out. Binary triggers don't have an evasion path: the input exists or it doesn't, and the command fires or it doesn't.
+
+| Trigger (binary detection) | Fires (first action of turn) |
+|---|---|
+| **You attach ANY image to your message** | Invoke `pixel-spec-auto` skill on the attached image. NO eyeballing first. NO "let me describe what I see." Image attached → command runs. |
+| **You paste a `<launch-selected-element>` XML block** | Run `mcp__playwright__browser_evaluate` with `getBoundingClientRect()` on that exact element (and its parent + adjacent siblings). REPORT NUMBERS before editing. |
+| **You use ANY of these words about the running UI: `overlap` / `overlapped` / `clipped` / `cut off` / `bleeding` / `bleed` / `off` (about position) / `look at it` / `still wrong`** | Run `mcp__playwright__browser_evaluate` with `getBoundingClientRect()` on the suspect element. REPORT NUMBERS before editing. |
+| **You say "consult the council" / "ask the council" / "council says"** | Run `python3 /Users/sulo/.claude/skills/llm-council/scripts/query_llms.py "<the question>"`. (Already working — listed for parity.) |
+| **You say "compare bro" / "not 1:1" / "not exact" / "doesn't match"** | Re-run `pixel-spec-auto` on the most-recently-pasted reference image. Stop iterating until measurements are fresh. |
+| **You paste a reference and name a brand source ("from Fresha", "Airbnb", "this Hims screenshot", etc.)** | Invoke `pixel-ref-collect` skill (auto-captures Playwright + Mobbin references and batch-measures). |
+| **I just took a screenshot via `mcp__playwright__browser_take_screenshot` AND you had previously attached a reference image in this conversation** | Run `python3 ~/.claude/skills/gemini-visual-check/scripts/check.py --image <my-screenshot> --reference <user-reference> --context "<what I was matching>"`. Gemini 3 Pro multimodal review of my work vs the target. |
+| **You say "gemini check" / "what does gemini think" / "ask gemini" / "second eye" / "is this right" (after a visual)** | Run `gemini-visual-check` on the most recent screenshot. |
+
+**The discipline that makes this work:** binary triggers run BEFORE any other reasoning. The very first tool call of the turn IS the trigger fire. Not the second. Not "after I describe what I see." First. If you catch me describing/reasoning first instead of firing the trigger, that's a rule break — call it out with "binary trigger" and I'll restart.
+
+**Adding new triggers:** any time you say "you should auto-do X when I do Y" and I agree, the binary rule gets added to this table same session, so the next slip is mechanical to catch.
+
+**Not on this list (out of scope for binary triggers):** locked-slot enforcement (`bg-white`, `no-halo`, etc.) — those need persistent state across turns and don't fit the "input X → command Y" shape. Handled separately via `_rules/SOLEN_PATTERNS.md` no-touch slot discipline + the visual-work pre-flight rule #5.
+
+---
+
 ## 🎨 Design system — single source of truth
 
 - **READ FIRST (the principal — current locked state, V3-only after V2-D67-fu14 cleanup 2026-05-17):** `_tasks/SOLEN_LIVE_TRUTH.md` (944 lines, no V2 contamination)
@@ -55,6 +80,36 @@ Full V3 spec lives in `_tasks/SOLEN_LIVE_TRUTH.md` (944 lines, V3-only after V2-
 
 ---
 
+## 🧪 The 7 verification checkpoints (laziness = skipping any)
+
+Laziness = STOPPING at the first plausible-looking solution instead of taking one more step to verify. Catchable per task — every "lazy" failure has the same shape: a missing checkpoint.
+
+Before declaring any task done, the agent must apply (or explicitly skip-with-reason) each of:
+
+1. **Restate before producing** — "What I heard: X. What you want: Y. Confirm?" Skip OK when complaint is unambiguous.
+2. **Explore 3+ alternatives** — never first-plausible-solution. Skip OK on single-axis token swaps.
+3. **Respect ALL locked slots** — enumerate every lock, check if solution touches ANY. NEVER skip.
+4. **Use installed tools** — `pixel-spec-auto`, `screenshot-spec`, `site-teardown`, `uiux-audit`, `getBoundingClientRect`, council, sub-agents. Skip OK only when task is simpler than tool overhead.
+5. **Measure before editing** — for any UI-position complaint, run measurement + report numbers BEFORE editing. Skip OK on backend / data / typography-only changes.
+6. **Verify AFTER editing** — fresh measurement/screenshot post-edit. Skip OK for non-visual edits readable from diff alone.
+7. **Honest reporting** — "Made X change. Here's the evidence. Confirm match?" NEVER claim done before user confirms. NEVER skip.
+
+**Triggers when laziness fires hardest (= when MORE rigor is needed)**:
+
+| Feeling | Lazy response | Correct response |
+|---|---|---|
+| "This is taking too long" | Skip a checkpoint to ship faster | Trust rigor; ship slower-and-right |
+| "This is hard to figure out" | Take the easiest path even if it breaks a constraint | Re-examine; hard problems usually have a 4th path |
+| "User is frustrated" | Skip verification, just commit | MORE rigor — frustration means earlier mistakes need MORE verification |
+| "I already know the answer" | Skip restating + measuring, edit directly | The "obviousness" is often the bug — measure anyway |
+| "User said idc / make it happen" | Treat as permission to skip a lock | Treat as frustration — find another path that respects ALL locks |
+
+**Runtime test before claiming done**: for each of the 7 checkpoints, can I answer either "I applied it — here's how" or "I skipped it because [task-specific reason]"? If the answer is just "I skipped it because it was faster" — that's the lazy pattern. Apply the checkpoint.
+
+Full structure + counter-examples documented in `feedback_laziness_is_skipped_verification.md`.
+
+---
+
 ## 🧠 Visual-work pre-flight (run BEFORE skill / mockup / code edit)
 
 Fired by visual feedback ("looks off", "more depth", "redesign X", "feels flat", "the cards…"). Skipping these gates is the documented source of the "skeleton-blind / always wraps text / docs-as-verdict / jumps to fix" pattern (V2-D67-fu13, 2026-05-17 — user spent ~6 mockup rounds because pre-flight was skipped).
@@ -67,13 +122,42 @@ Fired by visual feedback ("looks off", "more depth", "redesign X", "feels flat",
 
 4. **Doc grep is a HINT, not a verdict.** When grep finds a spec, QUOTE it AND ask: "is this still locked or did the thinking shift?" Production code drift from spec = 50/50 the spec is stale. NEVER assert "the spec says X so X." If user rejects the cited spec, EDIT the spec in the same session — don't leave the stale paragraph behind for the next agent to grep-and-confidently-cite.
 
-5. **No-touch slots are permanent.** If user says "don't touch X" once, X is off-limits for the rest of the conversation. Re-verify before doing anything that even neighbors X. Example: user says "no surfaces around text" → I never reach for pill / wrapper / border / blur on text again that session, even if a depth complaint follows.
+5. **No-touch slots are permanent. Frustration ≠ permission to release.** If user says "don't touch X" once, X is off-limits for the rest of the conversation. Re-verify before doing anything that even neighbors X. Example: user says "no surfaces around text" → I never reach for pill / wrapper / border / blur on text again that session, even if a depth complaint follows.
+   - **"idc" / "whatever" / "just make it happen" / "stop explaining" = FRUSTRATION signal, NOT a permission slip.** When user dismissively responds to a constraint explanation, that means STOP EXPLAINING + find another path that respects ALL locked slots, NOT "go ahead and touch the lock."
+   - **Forced-choice menus where every option breaks a lock = wrong framing.** If presenting (a / b / c) where each option violates a no-touch slot, the agent's framing missed an alternative. There's almost always a 4th option that respects ALL locks (e.g. "neutral grey rim on white bg" instead of "white rim + change bg" / "colored rim + bleed").
+   - **To release a lock, ask BY NAME and wait for affirmative.** Not "should I also change something?" but "do you want me to also change the page bg from pure white to off-white?" — named + affirmative confirmation required.
+   - Root cause documented in `feedback_idc_is_frustration_not_permission.md` (2026-05-21 liquid-glass SearchBar incident: agent treated "idc ill chnage later make it fkn happen" as permission to change locked page bg, user immediately came back angry).
+
+6. **Pixel-exact requests REQUIRE the measuring tool.** When user pastes a reference image AND says "exact" / "1:1" / "match this" / "copy this" / "make it like this" / "make it the same" — **STOP eyeballing.** Use the three-tier measurement stack:
+   - **TIER 0 (BRAND IDENTIFIED, optional pre-step)**: If user names the source brand ("from Fresha", "Airbnb screenshot", "this Duolingo widget"), auto-invoke `pixel-ref-collect` FIRST. It captures fresh Playwright references at mobile + desktop viewports AND queries Mobbin for curated screens AND batch-runs `pixel-spec-auto` on each. Outputs `COMPARISON.md` showing measurements across all sources — user picks which one to match against.
+   - **TIER 1 (FAST, automatic)**: Auto-invoke `pixel-spec-auto` skill (or it runs automatically inside `pixel-ref-collect`). Python PIL scanner (`~/.claude/skills/pixel-spec-auto/scripts/extract.py`) detects card edges, row hairlines, button geometry, corner radii WITHOUT user annotation. Outputs `spec.md` + `annotated.png` (visualization for verification). ~30 seconds.
+   - **TIER 2 (PRECISE, manual)**: Escalate to `screenshot-spec` if tier-1's `annotated.png` shows the detector missed elements (text-only sections, no card outline, heavily compressed JPEG). The user annotates exact dimensions in a browser tool. ~5 min.
+   - **HOOK ENFORCEMENT**: After `pixel-spec-auto` runs, `.claude/hooks/pre-component-edit-pixel-spec.sh` blocks ALL edits to UI component files until the agent reads the `annotated.png` AND removes the `.review-needed` flag. Cannot be bypassed by accident.
+   - Implement against the `spec.md` (whichever tier produced it), not against your eye.
+   - NEVER claim "done" / "exact" / "1:1" / "matches now" until user visually confirms — honest report is always "made X change, here's the screenshot, you confirm."
+   - **Hard cap: 2 iteration rounds without a measurement tool, then force tier-1 invocation.**
+   - Root cause documented in `feedback_exact_match_use_screenshot_spec.md` (2026-05-20 SearchBar incident: claimed "Fresha exact 20px" from live-site Playwright while user was matching a differently-scaled screenshot; 5+ failed rounds before rule was locked. `pixel-spec-auto` + `pixel-ref-collect` skills built 2026-05-21 to make measurement zero-friction.).
+
+7. **Running-UI feedback REQUIRES measurement, not screenshot interpretation.** When user reports "overlap" / "clipped" / "off" / "spacing is wrong" / "X is too close to Y" / "cut off" / "the [element] is bleeding" on the LIVE app (not a pasted reference):
+   - **STOP guessing from the rendered screenshot.** Small UI artifacts (2-3px overlaps, sub-pixel clips, edge-against-edge contact) are sub-pixel in downsampled JPEGs and the agent literally cannot see them.
+   - **Identify the specific element first.** If user provided `<launch-selected-element>` XML, use that — it has element + class + path verbatim. If not, ASK: "which element — the button, the card border, the gap between sections?" Don't proceed without certainty.
+   - **MEASURE via Playwright `mcp__playwright__browser_evaluate`** with `getBoundingClientRect()`:
+     - Suspect element coordinates (top, bottom, left, right, width, height)
+     - Parent container coordinates
+     - Adjacent / sibling element coordinates
+     - Compute deltas (e.g. `card_bottom - button_bottom`)
+   - **REPORT THE NUMBERS BEFORE CHANGING CODE.** Honest report: "Submit button bottom y=X. Card interior bottom y=Y. Delta = Z px. So [the button bottom is clipped against the card by Z px]." User confirms the diagnosis matches their complaint THEN you edit.
+   - **`overflow-hidden` silently clips content.** Layout overflow is invisible in rendered output — only measurement reveals it.
+   - **Do NOT pattern-match on recently changed elements.** The bug may be pre-existing and have nothing to do with what you just edited. Resist confirmation bias.
+   - **Root cause documented in `feedback_running_ui_measure_not_eyeball.md`** (2026-05-21 SearchBar submit button incident: user circled an "overlap" 6 rounds in a row; I assumed it was the halo I'd just added; actual issue was HEIGHT=260 forcing content overflow that clipped the submit button against the card bottom — invisible to me in JPEG screenshots, obvious in `getBoundingClientRect()`).
 
 **User trigger phrases to call out slips** (any of these = STOP, run the relevant gate):
 - "you're skeleton-blind" → list structural alternatives instead of surface treatments
 - "stop wrapping" → text region is off-limits for the rest of this conversation
 - "doc isn't verdict" → stop asserting from grep, ask user if spec is still current
 - "restate first" → stop producing, restate the complaint + desired outcome before continuing
+- "not 1 to 1" / "not exact" / "compare bro" → STOP iterating, force `screenshot-spec` invocation, no more eyeball changes
+- "still overlap" / "you're not seeing it" / "look at the screenshot" → STOP guessing, demand selected-element XML OR run `getBoundingClientRect()` measurements + report numbers BEFORE next edit
 
 ---
 

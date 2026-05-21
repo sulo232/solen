@@ -47,6 +47,30 @@ export default async function LocaleLayout({
           >
             Zum Inhalt springen
           </a>
+          {/* V3-D92 (2026-05-21): Hims-style top promo banner — dimensions
+              measured from live hims.com mobile @ 393 viewport via Playwright
+              getBoundingClientRect:
+                - banner total height: 44px
+                - padding: 12px vertical, 16px horizontal
+                - text: 12px / weight 600 (semibold)
+              Solen uses royal blue bg + white text (vs Hims peach bg + ink text).
+              Copy is PLACEHOLDER — swap with real promo / feature copy when ready. */}
+          <div className="w-full bg-s-brand text-white">
+            <div className="mx-auto flex max-w-[1280px] items-center justify-center gap-2 px-4 py-3">
+              <span className="font-body text-[12px] font-semibold">
+                Sofort verfügbar — 320 Buchungen heute
+              </span>
+              <a
+                href="/de/search"
+                className="font-body inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-[12px] font-semibold text-s-ink transition-colors hover:bg-s-bg-sunken"
+              >
+                Salons finden
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
+                  <path d="M5 12h14M13 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+          </div>
           <Header locale={locale} />
           <PageTransitionWrapper>
             <CompareProvider>
