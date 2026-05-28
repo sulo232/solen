@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · teal as MAIN — 3 interpretations</title>
+<link rel="preconnect" href="https://rsms.me/" />
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #0F0F10; color: #fff; font-family: "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .container { max-width: 820px; margin: 0 auto; padding: 36px 28px 96px; }
+  .page-head { padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.10); margin-bottom: 24px; }
+  .page-head h1 { margin: 0 0 6px; font-size: 26px; font-weight: 700; letter-spacing: -0.025em; }
+  .page-head .sub { font-size: 13px; color: rgba(255,255,255,0.55); }
+
+  .reco {
+    background: linear-gradient(135deg, rgba(26,107,115,0.20), rgba(229,136,64,0.15));
+    border: 1px solid rgba(26,107,115,0.35);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 36px;
+    font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.55;
+  }
+  .reco h2 { margin: 0 0 6px; font-size: 14px; color: #fff; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  .reco strong { color: #88E3D8; }
+
+  /* Variant block */
+  .variant { margin: 0 0 40px; border-radius: 22px; overflow: hidden; background: #fff; color: #1A1C19; box-shadow: 0 18px 50px rgba(0,0,0,0.4); }
+  .variant-label { padding: 16px 22px; background: #0A0A0B; color: #fff; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .variant-name { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+  .variant-vibe { font-family: ui-monospace, monospace; font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 4px; }
+  .palette { display: flex; gap: 5px; }
+  .swatch { width: 22px; height: 22px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.10); }
+
+  /* Mini homepage */
+  .mini > * { padding: 14px 22px; }
+  .banner { background: #1A1C19; color: #fff; padding: 10px 22px !important; display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 600; }
+  .banner .pill { background: #fff; color: #1A1C19; padding: 3px 9px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+  .header { display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 14px 22px !important; border-bottom: 1px solid #ECEFF4; }
+  .header .logo { font-family: ui-serif, serif; font-size: 19px; font-weight: 700; display: inline-flex; align-items: baseline; gap: 3px; }
+  .header .logo-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .header .nav { font-size: 12px; color: #5F635D; }
+  .header .nav-cta { padding: 7px 14px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+
+  .hero { text-align: center; padding: 36px 22px 32px !important; }
+  .hero h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.0; margin: 0 0 10px; }
+  .hero p { font-size: 13px; margin: 0 0 18px; }
+  .hero .cta { display: inline-block; padding: 11px 22px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+  .hero .cta-secondary { display: inline-block; padding: 11px 22px; border-radius: 999px; font-size: 13px; font-weight: 700; margin-left: 8px; }
+
+  .section { padding: 22px !important; }
+  .section h2 { margin: 0 0 8px; font-size: 16px; font-weight: 700; letter-spacing: -0.015em; display: inline-flex; align-items: center; gap: 10px; }
+  .arrow-btn { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-size: 13px; }
+  .hex { font-family: ui-monospace, monospace; font-size: 10px; margin-top: 4px; }
+  .section-link {
+    display: inline-block; margin-top: 10px;
+    padding: 8px 16px; border-radius: 999px; font-size: 12px; font-weight: 700;
+  }
+  .cards { display: flex; gap: 10px; overflow: hidden; margin-top: 10px; }
+  .card-item { flex: 0 0 180px; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .card-item .img { aspect-ratio: 4/3; background: linear-gradient(135deg, #E8DCC4, #C8BFA4); }
+  .card-item .body { padding: 9px 11px; }
+  .card-item .name { font-size: 12px; font-weight: 700; }
+  .card-item .meta { font-size: 10px; color: #5F635D; }
+  .anchor { padding: 26px 22px !important; color: #fff; }
+  .anchor h2 { margin: 0 0 6px; font-size: 18px; font-weight: 700; }
+  .anchor p { margin: 0 0 12px; font-size: 12px; color: rgba(255,255,255,0.75); }
+  .anchor .cta { display: inline-block; padding: 8px 16px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+
+  /* ────────────────────────────────────────────── */
+  /* A · CURRENT — orange CTA, teal anchor only      */
+  /* ────────────────────────────────────────────── */
+  .v-current .header .logo-dot { background: #E58840; }
+  .v-current .nav-cta { background: #E58840; color: #fff; }
+  .v-current .hero { color: #1A1C19; }
+  .v-current .hero p { color: #5F635D; }
+  .v-current .hero .cta { background: #E58840; color: #fff; }
+  .v-current .section { background: #fff; color: #1A1C19; }
+  .v-current .hex { color: #8A8F88; }
+  .v-current .arrow-btn { background: rgba(26,107,115,0.10); color: #1A6B73; }
+  .v-current .section-link { background: #1A1C19; color: #fff; }
+  .v-current .anchor { background: #1A6B73; }
+  .v-current .anchor .cta { background: #E58840; color: #fff; }
+
+  /* ────────────────────────────────────────────── */
+  /* B · DUAL-PRIMARY equal — orange = high intent / */
+  /*                           teal = info / explore  */
+  /* ────────────────────────────────────────────── */
+  .v-dual .header .logo-dot { background: #1A6B73; }
+  .v-dual .nav-cta { background: #E58840; color: #fff; }
+  .v-dual .hero { color: #1A1C19; }
+  .v-dual .hero p { color: #5F635D; }
+  .v-dual .hero .cta { background: #E58840; color: #fff; }
+  .v-dual .hero .cta-secondary { background: transparent; color: #1A6B73; border: 2px solid #1A6B73; }
+  .v-dual .section { background: #fff; color: #1A1C19; }
+  .v-dual .hex { color: #8A8F88; }
+  .v-dual .arrow-btn { background: rgba(26,107,115,0.12); color: #1A6B73; }
+  .v-dual .section-link { background: #1A6B73; color: #fff; }  /* TEAL secondary CTAs */
+  .v-dual .anchor { background: #1A6B73; }
+  .v-dual .anchor .cta { background: #E58840; color: #fff; }
+
+  /* ────────────────────────────────────────────── */
+  /* C · TEAL SUBSTRATE — page bg = teal, orange pops */
+  /* ────────────────────────────────────────────── */
+  .v-teal-bg .banner { background: #0D4B52; color: #fff; }   /* deeper teal banner */
+  .v-teal-bg .banner .pill { background: #E58840; color: #fff; }  /* orange pill in dark banner */
+  .v-teal-bg .header { background: #1A6B73; color: #fff; border-bottom-color: rgba(255,255,255,0.08); }
+  .v-teal-bg .header .logo { color: #fff; }
+  .v-teal-bg .header .logo-dot { background: #E58840; }
+  .v-teal-bg .header .nav { color: rgba(255,255,255,0.70); }
+  .v-teal-bg .nav-cta { background: #E58840; color: #fff; }
+  .v-teal-bg .hero { background: #1A6B73; color: #fff; }
+  .v-teal-bg .hero p { color: rgba(255,255,255,0.70); }
+  .v-teal-bg .hero .cta { background: #E58840; color: #fff; }
+  .v-teal-bg .section { background: #1A6B73; color: #fff; }
+  .v-teal-bg .section h2 { color: #fff; }
+  .v-teal-bg .arrow-btn { background: rgba(255,255,255,0.12); color: #fff; }
+  .v-teal-bg .hex { color: rgba(255,255,255,0.50); }
+  .v-teal-bg .card-item { background: #fff; }
+  .v-teal-bg .card-item .name { color: #1A1C19; }
+  .v-teal-bg .section-link { background: #E58840; color: #fff; }
+  .v-teal-bg .anchor { background: #0D4B52; }  /* even deeper teal as the "anchor moment" */
+  .v-teal-bg .anchor .cta { background: #E58840; color: #fff; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-head">
+    <h1>"Teal as MAIN" — 3 interpretations</h1>
+    <div class="sub">A = current · B = dual-primary equal (teal earns secondary-CTA role) · C = teal substrate (whole page IS teal, orange pops)</div>
+  </div>
+
+  <div class="reco">
+    <h2>My pick</h2>
+    <strong>B (dual-primary equal)</strong> — keeps orange as the high-intent click signal (search, book, register) but promotes teal from "anchor section only" to its own brand role: secondary CTAs, links, info chips, "explore more" buttons. Orange + teal start sharing the visible brand work everywhere. Lower risk than C, much more "teal-coded" than A. <strong>C is bolder</strong> — page substrate becomes teal, white cards float on it like Spotify or Charlotte Tilbury hero pages. Beautiful but a complete identity reset.
+  </div>
+
+  <!-- ═══════════════ A — CURRENT ═══════════════ -->
+  <div class="variant v-current">
+    <div class="variant-label">
+      <div>
+        <div class="variant-name">A · CURRENT — orange CTA + teal anchor</div>
+        <div class="variant-vibe">teal appears 1 big moment + 8 small arrows · orange = brand identity</div>
+      </div>
+      <div class="palette">
+        <span class="swatch" style="background:#fff;border-color:#ddd"></span>
+        <span class="swatch" style="background:#E58840"></span>
+        <span class="swatch" style="background:#1A6B73"></span>
+      </div>
+    </div>
+    <div class="mini">
+      <div class="banner"><span>Sofort verfügbar · 320 Buchungen heute</span><span class="pill">Salons finden →</span></div>
+      <div class="header">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="nav">Services · Über uns</span>
+        <span class="nav-cta">Anmelden</span>
+      </div>
+      <div class="hero">
+        <h1>Cmon, book it<br/>already.</h1>
+        <p>Beauty &amp; Wellness in der Schweiz.</p>
+        <span class="cta">Solen durchsuchen</span>
+      </div>
+      <div class="section">
+        <h2>In der Nähe <span class="arrow-btn">↗</span></h2>
+        <div class="cards">
+          <div class="card-item"><div class="img"></div><div class="body"><div class="name">Studio Mira</div><div class="meta">200m · Heute frei</div></div></div>
+          <div class="card-item"><div class="img"></div><div class="body"><div class="name">Atelier Nine</div><div class="meta">450m · 14:30</div></div></div>
+        </div>
+        <a class="section-link">Mehr erfahren</a>
+        <div class="hex">section-link → ink fill (no teal in secondary CTAs yet)</div>
+      </div>
+      <div class="anchor">
+        <h2>Solen für dein Geschäft.</h2>
+        <p>Mehr Buchungen, weniger Aufwand.</p>
+        <span class="cta">Werde Solen-Partner →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ B — DUAL-PRIMARY EQUAL ═══════════════ -->
+  <div class="variant v-dual">
+    <div class="variant-label">
+      <div>
+        <div class="variant-name">B · DUAL-PRIMARY — orange (high-intent) + teal (info/secondary) ★ RECOMMENDED</div>
+        <div class="variant-vibe">teal earns 2nd-CTA role · logo dot teal · both colors share brand work</div>
+      </div>
+      <div class="palette">
+        <span class="swatch" style="background:#fff;border-color:#ddd"></span>
+        <span class="swatch" style="background:#E58840"></span>
+        <span class="swatch" style="background:#1A6B73"></span>
+      </div>
+    </div>
+    <div class="mini">
+      <div class="banner"><span>Sofort verfügbar · 320 Buchungen heute</span><span class="pill">Salons finden →</span></div>
+      <div class="header">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="nav">Services · Über uns</span>
+        <span class="nav-cta">Anmelden</span>
+      </div>
+      <div class="hero">
+        <h1>Cmon, book it<br/>already.</h1>
+        <p>Beauty &amp; Wellness in der Schweiz.</p>
+        <span class="cta">Solen durchsuchen</span>
+        <span class="cta-secondary">Mehr erfahren</span>
+      </div>
+      <div class="section">
+        <h2>In der Nähe <span class="arrow-btn">↗</span></h2>
+        <div class="cards">
+          <div class="card-item"><div class="img"></div><div class="body"><div class="name">Studio Mira</div><div class="meta">200m · Heute frei</div></div></div>
+          <div class="card-item"><div class="img"></div><div class="body"><div class="name">Atelier Nine</div><div class="meta">450m · 14:30</div></div></div>
+        </div>
+        <a class="section-link">Alle entdecken →</a>
+        <div class="hex">section-link → teal fill (secondary "explore" CTA in teal)</div>
+      </div>
+      <div class="anchor">
+        <h2>Solen für dein Geschäft.</h2>
+        <p>Mehr Buchungen, weniger Aufwand.</p>
+        <span class="cta">Werde Solen-Partner →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ C — TEAL SUBSTRATE ═══════════════ -->
+  <div class="variant v-teal-bg">
+    <div class="variant-label">
+      <div>
+        <div class="variant-name">C · TEAL SUBSTRATE — whole page bg = teal, orange pops</div>
+        <div class="variant-vibe">complete identity reset · cards float on teal · dramatic premium dark mode</div>
+      </div>
+      <div class="palette">
+        <span class="swatch" style="background:#1A6B73"></span>
+        <span class="swatch" style="background:#0D4B52"></span>
+        <span class="swatch" style="background:#E58840"></span>
+        <span class="swatch" style="background:#fff;border-color:#ddd"></span>
+      </div>
+    </div>
+    <div class="mini">
+      <div class="banner"><span>Sofort verfügbar · 320 Buchungen heute</span><span class="pill">Salons finden →</span></div>
+      <div class="header">
+        <span class="logo">Solen<span class="logo-dot"></span></span>
+        <span class="nav">Services · Über uns</span>
+        <span class="nav-cta">Anmelden</span>
+      </div>
+      <div class="hero">
+        <h1>Cmon, book it<br/>already.</h1>
+        <p>Beauty &amp; Wellness in der Schweiz.</p>
+        <span class="cta">Solen durchsuchen</span>
+      </div>
+      <div class="section">
+        <h2>In der Nähe <span class="arrow-btn">↗</span></h2>
+        <div class="cards">
+          <div class="card-item"><div class="img"></div><div class="body"><div class="name">Studio Mira</div><div class="meta">200m · Heute frei</div></div></div>
+          <div class="card-item"><div class="img"></div><div class="body"><div class="name">Atelier Nine</div><div class="meta">450m · 14:30</div></div></div>
+        </div>
+        <a class="section-link">Alle entdecken →</a>
+        <div class="hex">whole page = #1A6B73 teal · cards float white · orange pops everywhere</div>
+      </div>
+      <div class="anchor">
+        <h2>Solen für dein Geschäft.</h2>
+        <p>Mehr Buchungen, weniger Aufwand.</p>
+        <span class="cta">Werde Solen-Partner →</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

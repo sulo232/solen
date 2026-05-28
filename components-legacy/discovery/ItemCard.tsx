@@ -19,10 +19,10 @@ interface ItemCardProps {
 // ── Color-coded category badges ────────────────────────────────────
 const CATEGORY_COLORS: Record<string, string> = {
   hair: "bg-s-amber/70",
-  beard: "bg-s-coral/70",
+  beard: "bg-s-ink/70",
   nails: "bg-s-plum/70",
   makeup: "bg-s-plum/70",
-  waxing: "bg-s-sage/70",
+  waxing: "bg-s-success/70",
 };
 
 const CONTENT_TYPE_LABELS: Record<string, string> = {

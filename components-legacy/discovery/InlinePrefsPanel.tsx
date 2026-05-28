@@ -65,8 +65,8 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
   const pillClass = (active: boolean) =>
     `px-3.5 py-2 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[background-color,color,box-shadow] duration-150 cursor-pointer ${
       active
-        ? "border-s-coral bg-s-coral/[0.08] text-s-coral"
-        : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/40"
+        ? "border-s-accent bg-s-ink/[0.08] text-s-accent"
+        : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-accent/40"
     }`;
 
   const handleSave = () => {
@@ -88,24 +88,24 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
         transition={{ duration: 0.4, delay: 0.3 }}
         className="overflow-hidden"
       >
-        <div className="rounded-input border border-s-sage/20 p-4 flex items-center gap-3 bg-s-sage/[0.06]">
-          <Check size={16} className="text-s-sage" />
-          <p className="text-sm font-heading text-s-sage">Gespeichert!</p>
+        <div className="rounded-input border border-s-success/20 p-4 flex items-center gap-3 bg-s-success/[0.06]">
+          <Check size={16} className="text-s-success" />
+          <p className="text-sm font-heading text-s-success">Gespeichert!</p>
         </div>
       </motion.div>
     );
   }
 
   return (
-    <div className="rounded-[12px] border border-s-coral/15 overflow-hidden bg-s-coral/[0.03]">
+    <div className="rounded-[12px] border border-s-accent/15 overflow-hidden bg-s-ink/[0.03]">
       {/* Collapsed banner */}
       <button
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
         className="w-full flex items-center gap-3 px-4 py-3.5 text-left"
       >
-        <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 bg-s-coral/10">
-          <Sparkles size={14} className="text-s-coral" />
+        <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 bg-s-ink/10">
+          <Sparkles size={14} className="text-s-accent" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-heading text-s-ink">{t.banner}</p>
@@ -113,7 +113,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {!expanded && (
-            <span className="text-[10px] font-heading uppercase tracking-[.06em] text-s-coral">
+            <span className="text-[10px] font-heading uppercase tracking-[.06em] text-s-accent">
               {t.expand}
             </span>
           )}
@@ -194,7 +194,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
                 </button>
                 <button
                   onClick={handleSave}
-                  className="flex-1 py-2.5 rounded-pill text-white text-[10px] font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-coral shadow-elevation-2"
+                  className="flex-1 py-2.5 rounded-pill text-white text-[10px] font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-ink shadow-elevation-2"
                 >
                   {t.save}
                 </button>

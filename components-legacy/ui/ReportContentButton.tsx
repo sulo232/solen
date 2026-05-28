@@ -70,7 +70,7 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
             </p>
 
             {success ? (
-              <div className="bg-s-sage-bg border border-s-sage/20 text-s-sage px-4 py-8 text-center rounded-btn">
+              <div className="bg-s-success-bg border border-s-success/20 text-s-success px-4 py-8 text-center rounded-btn">
                 <Flag className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p className="font-medium">Vielen Dank für Ihre Meldung.</p>
                 <p className="text-xs mt-1 opacity-80">Unser Team wird dies überprüfen.</p>
@@ -83,7 +83,7 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
                   <label className="block text-xs font-medium text-s-ink/60 mb-1">Grund</label>
                   <select 
                     value={reason} onChange={e => setReason(e.target.value)}
-                    className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-s-ink text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+                    className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-s-ink text-sm focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20"
                   >
                     <option value="inappropriate">Unangemessener Inhalt</option>
                     <option value="spam">Spam oder Werbung</option>
@@ -98,14 +98,14 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
                   <textarea 
                     value={details} onChange={e => setDetails(e.target.value)}
                     rows={4}
-                    className="w-full px-3 py-2 rounded-input border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
+                    className="w-full px-3 py-2 rounded-input border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 resize-none"
                     placeholder="Bitte beschreiben Sie das Problem genauer..."
                   />
                 </div>
 
                 <button 
                   type="submit" disabled={loading}
-                  className="w-full flex justify-center items-center gap-2 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white font-medium text-sm disabled:opacity-50 transition-[transform,filter] duration-150"
+                  className="w-full flex justify-center items-center gap-2 py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white font-medium text-sm disabled:opacity-50 transition-[transform,filter] duration-150"
                 >
                   {loading ? <Loader2 size={16} className="animate-spin" /> : "Meldung absenden"}
                 </button>

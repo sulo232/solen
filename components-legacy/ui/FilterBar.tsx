@@ -94,12 +94,12 @@ export default function FilterBar({
               className={[
                 'snap-start flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading whitespace-nowrap shrink-0 cursor-pointer',
                 'transition-colors duration-150 active:scale-[0.97]',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2',
                 motionClass,
                 hoverLift,
                 active
-                  ? 'bg-s-coral text-white border border-s-coral'
-                  : 'bg-white/70 border border-s-ink/[0.08] text-s-ink/65 hover:border-s-coral/40 hover:text-s-coral:text-s-coral',
+                  ? 'bg-s-ink text-white border border-s-accent'
+                  : 'bg-white/70 border border-s-ink/[0.08] text-s-ink/65 hover:border-s-accent/40 hover:text-s-accent:text-s-accent',
               ].join(' ')}
               aria-pressed={active}
               aria-label={`${t('filter')}: ${pill.label}`}
@@ -127,7 +127,7 @@ export default function FilterBar({
               hoverLift,
               drawerOpen
                 ? 'bg-s-plum-subtle border-s-plum/30 text-s-plum-text'
-                : 'text-s-ink/65 hover:border-s-coral/40 hover:text-s-coral',
+                : 'text-s-ink/65 hover:border-s-accent/40 hover:text-s-accent',
             ].join(' ')}
             aria-expanded={drawerOpen}
             aria-label={t('moreFilters', { count: overflowNonSortCount })}
@@ -144,7 +144,7 @@ export default function FilterBar({
               value={activeSortFilter?.subId ?? ''}
               onChange={(e) => handleSortChange(e.target.value)}
               aria-label={sortPill.label}
-              className="text-[13px] font-body font-medium text-s-ink/60 bg-transparent border border-s-ink/[0.08] rounded-pill px-3 py-1.5 focus:outline-none focus:border-s-coral/40 cursor-pointer appearance-none"
+              className="text-[13px] font-body font-medium text-s-ink/60 bg-transparent border border-s-ink/[0.08] rounded-pill px-3 py-1.5 focus:outline-none focus:border-s-accent/40 cursor-pointer appearance-none"
             >
               <option value="">{sortPill.label} ▾</option>
               {sortPill.subFilters?.map((sf) => (
@@ -166,7 +166,7 @@ export default function FilterBar({
               {f.label}
               <button
                 onClick={() => removeFilter(f)}
-                className="ml-0.5 p-2 hover:text-s-coral"
+                className="ml-0.5 p-2 hover:text-s-accent"
                 aria-label={t('removeFilter', { name: f.label })}
               >
                 <X size={11} aria-hidden />
@@ -175,7 +175,7 @@ export default function FilterBar({
           ))}
           <button
             onClick={clearAll}
-            className="text-xs text-s-ink/50 hover:text-s-coral underline underline-offset-2 font-body"
+            className="text-xs text-s-ink/50 hover:text-s-accent underline underline-offset-2 font-body"
           >
             {t('clearAll')}
           </button>

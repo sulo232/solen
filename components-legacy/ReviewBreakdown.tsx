@@ -64,7 +64,7 @@ export default function ReviewBreakdown({
           </span>
           <button
             onClick={onReviewCountClick}
-            className="text-xs text-s-ink/40 mt-1 hover:text-s-coral transition-colors"
+            className="text-xs text-s-ink/40 mt-1 hover:text-s-accent transition-colors"
           >
             {reviewCount > 0 ? t("reviewCount", { count: reviewCount }) : t("noReviews")}
           </button>
@@ -77,7 +77,7 @@ export default function ReviewBreakdown({
                 <span className="text-s-ink/40 w-2">{r}</span>
                 <div className="flex-1 h-1.5 bg-s-bg-sunken rounded-full overflow-hidden">
                   <motion.div
-                    className="h-full bg-s-coral rounded-full"
+                    className="h-full bg-s-ink rounded-full"
                     initial={{ width: 0 }}
                     animate={isInView ? { width: `${pct}%` } : { width: 0 }}
                     transition={{
@@ -104,7 +104,7 @@ export default function ReviewBreakdown({
               <span className="text-s-ink/50 w-24 shrink-0">{label}</span>
               <div className="flex-1 h-1.5 bg-s-bg-sunken rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-s-coral rounded-full"
+                  className="h-full bg-s-ink rounded-full"
                   initial={{ width: 0 }}
                   animate={isInView ? { width: `${(avg / 5) * 100}%` } : { width: 0 }}
                   transition={{

@@ -58,7 +58,7 @@ export default function NailTechProfilePage() {
     return (
       <main className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
         <p className="text-s-ink/50 mb-4">Nail Tech nicht gefunden</p>
-        <Link href={`/${locale}`} className="text-s-coral text-sm hover:underline">
+        <Link href={`/${locale}`} className="text-s-accent text-sm hover:underline">
           Zurück zur Startseite
         </Link>
       </main>
@@ -68,7 +68,7 @@ export default function NailTechProfilePage() {
   const TIER_COLORS: Record<string, string> = {
     junior: "bg-s-sand/20 text-s-sand-text",
     senior: "bg-s-blue/20 text-s-blue",
-    master: "bg-s-coral/20 text-s-coral",
+    master: "bg-s-ink/20 text-s-accent",
     specialist: "bg-s-plum/20 text-s-plum",
   };
 
@@ -79,7 +79,7 @@ export default function NailTechProfilePage() {
         <div className="max-w-5xl mx-auto px-4 py-6">
           <Link
             href={tech.salon_slug ? `/${locale}/salon/${tech.salon_slug}` : `/${locale}`}
-            className="inline-flex items-center gap-1 text-sm text-s-ink/50 hover:text-s-coral mb-4"
+            className="inline-flex items-center gap-1 text-sm text-s-ink/50 hover:text-s-accent mb-4"
           >
             <ArrowLeft size={14} />
             {tech.salon_name ?? "Zurück"}
@@ -106,7 +106,7 @@ export default function NailTechProfilePage() {
             {/* Info */}
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-heading text-xl font-bold text-s-ink">
+                <h1 className="font-heading text-xl font-semibold text-s-ink">
                   {tech.name}
                 </h1>
                 {tech.tier_label && (
@@ -125,7 +125,7 @@ export default function NailTechProfilePage() {
               <div className="flex items-center gap-3 mt-1.5">
                 {tech.avg_rating != null && (
                   <span className="flex items-center gap-1 text-sm text-s-ink/70">
-                    <Star size={14} className="fill-s-amber text-s-amber" />
+                    <Star size={14} className="fill-s-star text-s-star" />
                     {tech.avg_rating.toFixed(1)}
                     {tech.review_count != null && (
                       <span className="text-s-ink/30">({tech.review_count})</span>
@@ -146,7 +146,7 @@ export default function NailTechProfilePage() {
           {tech.salon_slug && (
             <Link
               href={`/${locale}/salon/${tech.salon_slug}?staffId=${tech.id}`}
-              className="mt-4 inline-flex items-center gap-2 px-6 py-2.5 rounded-btn bg-s-coral text-white font-medium text-sm hover:brightness-[1.06] transition-colors"
+              className="mt-4 inline-flex items-center gap-2 px-6 py-2.5 rounded-btn bg-s-ink text-white font-medium text-sm hover:brightness-[1.06] transition-colors"
             >
               <Sparkles size={16} />
               Bei {tech.name} buchen

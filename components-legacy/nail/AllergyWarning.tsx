@@ -37,19 +37,19 @@ export default function AllergyWarning({ customerId }: AllergyWarningProps) {
     <div
       className={`flex items-start gap-2.5 p-3 rounded-[16px] border ${
         isSevere
-          ? "border-s-coral/30 bg-s-coral/5"
+          ? "border-s-accent/30 bg-s-ink/5"
           : "border-s-amber/30 bg-s-amber-subtle"
       }`}
     >
       <AlertTriangle
         size={18}
-        className={`shrink-0 mt-0.5 ${isSevere ? "text-s-coral" : "text-s-amber"}`}
+        className={`shrink-0 mt-0.5 ${isSevere ? "text-s-accent" : "text-s-amber"}`}
       />
       <div>
-        <p className={`text-sm font-medium ${isSevere ? "text-s-coral" : "text-s-amber-text"}`}>
+        <p className={`text-sm font-medium ${isSevere ? "text-s-accent" : "text-s-amber-text"}`}>
           {isSevere ? t("allergy_severe") : t("allergy_notice")}
         </p>
-        <p className={`text-xs mt-0.5 ${isSevere ? "text-s-coral/80" : "text-s-ink/60"}`}>
+        <p className={`text-xs mt-0.5 ${isSevere ? "text-s-accent/80" : "text-s-ink/60"}`}>
           {t("allergy_against", { allergens: data.allergies.join(", ") })}
         </p>
         {data.notes && (

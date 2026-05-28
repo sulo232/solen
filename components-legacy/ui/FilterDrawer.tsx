@@ -118,8 +118,8 @@ export default function FilterDrawer({
                   className={[
                     'px-3 py-1.5 rounded-pill text-xs font-body border transition-colors duration-150',
                     active
-                      ? 'bg-s-coral text-white border-s-coral'
-                      : 'bg-[--surface] text-s-ink border-s-ink/8 hover:border-s-coral/40',
+                      ? 'bg-s-ink text-white border-s-accent'
+                      : 'bg-[--surface] text-s-ink border-s-ink/8 hover:border-s-accent/40',
                   ].join(' ')}
                   aria-pressed={active}
                 >

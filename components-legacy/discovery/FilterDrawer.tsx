@@ -33,12 +33,12 @@ export default function FilterDrawer(props: FilterDrawerProps) {
         aria-label={t("open_filters")}
         className={`md:hidden flex items-center gap-1.5 px-3 py-2.5 rounded-pill border text-[10px] font-heading uppercase tracking-[.08em] transition-colors duration-150 ${
           hasFilters
-            ? "border-s-coral/40 text-s-coral bg-s-coral/[0.06]"
+            ? "border-s-accent/40 text-s-accent bg-s-ink/[0.06]"
             : "border-s-ink/[0.08] text-s-ink/60"
         }`}
       >
         <SlidersHorizontal size={13} />
-        {t("filter_label")} {hasFilters && <span className="ml-0.5 text-s-coral">·</span>}
+        {t("filter_label")} {hasFilters && <span className="ml-0.5 text-s-accent">·</span>}
       </button>
 
       {/* Drawer overlay */}
@@ -95,7 +95,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
               <button
                 onClick={() => setOpen(false)}
                 aria-label={t("apply")}
-                className="flex-1 py-3 rounded-pill text-white text-xs font-heading active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-coral shadow-elevation-2"
+                className="flex-1 py-3 rounded-pill text-white text-xs font-heading active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-ink shadow-elevation-2"
               >
                 {t("apply")}
               </button>

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, ChevronRight, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CITY_SLUGS, getCityName, type CitySlug } from "@/lib/cities";
+import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
 
 /**
  * MobileMenu — V3-D77 (2026-05-19).
@@ -47,7 +49,35 @@ const CATEGORIES: { label: string; href: string }[] = [
   { label: "Entdecken",      href: "/entdecken"  },
 ];
 
+// V3-D168 (2026-05-26): Swiss flag rendered via CSS only — same recipe
+// as CityTopBar's bottom-bar chip. Red bg with two intersecting white
+// rectangles forming the cross. Cheap, sharp at any size.
+const swissFlagStyle: React.CSSProperties = {
+  backgroundColor: "#DA291C",
+  backgroundImage:
+    "linear-gradient(white, white), linear-gradient(white, white)",
+  backgroundSize: "50% 14%, 14% 50%",
+  backgroundPosition: "center, center",
+  backgroundRepeat: "no-repeat",
+};
+
 export default function MobileMenu({ open, onClose, locale }: MobileMenuProps) {
+  // V3-D157 (2026-05-25): city selector state. Reads persisted city when the
+  // menu opens (not on first mount — the menu may render before the user has
+  // any cookie). Reload on change matches CityTopBar's existing behavior so
+  // SSR'd city-aware sections (Nearby, etc.) pick up the new value.
+  const [currentCity, setCurrentCity] = React.useState<CitySlug>("basel");
+  // V3-D168 (2026-05-26): expand-on-tap dropdown state for the city
+  // selector. Replaces the always-visible 3-pill row.
+  const [cityDropdownOpen, setCityDropdownOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!open) return;
+    const persisted = getPersistedCity();
+    if (persisted) setCurrentCity(persisted);
+    // reset dropdown when menu re-opens
+    setCityDropdownOpen(false);
+  }, [open]);
+
   // Body scroll lock + Esc handler. Mirrors MorphingDialog's escape behavior.
   React.useEffect(() => {
     if (!open) return;
@@ -61,6 +91,16 @@ export default function MobileMenu({ open, onClose, locale }: MobileMenuProps) {
       document.removeEventListener("keydown", onKey);
     };
   }, [open, onClose]);
+
+  const handleCityPick = (slug: CitySlug) => {
+    if (slug === currentCity) {
+      onClose();
+      return;
+    }
+    setPersistedCity(slug);
+    onClose();
+    window.location.reload();
+  };
 
   return (
     <AnimatePresence>
@@ -77,15 +117,73 @@ export default function MobileMenu({ open, onClose, locale }: MobileMenuProps) {
           className={cn(
             "fixed inset-0 z-40 md:hidden",
             "bg-s-bg-base overflow-y-auto",
-            "pt-[88px] pb-16 px-5",
+            // V3-D171 (2026-05-26): pt-32 → pt-20. Header now fades out
+            // its Solen logo + Bell icon when menu opens (only the X
+            // close stays visible), so we only need to clear that single
+            // 44px button + ~36px margin. Content sits closer to the
+            // top edge → tighter, less wasted vertical space.
+            "pt-20 pb-16 px-5",
             "[-webkit-overflow-scrolling:touch]",
           )}
         >
           <div className="mx-auto w-full max-w-[480px]">
-            {/* ─── Für Kund:innen ─── */}
-            <h2 className="font-display text-[clamp(28px,7.5vw,36px)] font-extrabold tracking-[-0.025em] text-s-ink mb-3.5">
-              Für Kund:innen
-            </h2>
+            {/* ─── City selector (V3-D168) — h2 "Stadt" removed V3-D171
+                per user "remove the stadt thing no need". The flag-chip
+                button is self-evident; the label was noise. */}
+            <div className="mb-5">
+              <button
+                type="button"
+                onClick={() => setCityDropdownOpen((v) => !v)}
+                aria-expanded={cityDropdownOpen}
+                aria-haspopup="listbox"
+                className={cn(
+                  "inline-flex items-center gap-2 rounded-full",
+                  "border border-s-ink/[0.06] bg-s-bg-surface",
+                  "py-1.5 pl-1.5 pr-4 font-body text-[14px] font-semibold text-s-ink",
+                  "shadow-[0_1px_2px_rgba(0,0,0,0.03)]",
+                  "transition-colors duration-150 ease-glide",
+                  "active:bg-s-ink/[0.04]",
+                )}
+              >
+                <span
+                  aria-hidden
+                  className="block h-6 w-6 shrink-0 rounded-full"
+                  style={swissFlagStyle}
+                />
+                <span>{getCityName(currentCity, locale)}</span>
+              </button>
+
+              {cityDropdownOpen && (
+                <div
+                  role="listbox"
+                  aria-label="Stadt wählen"
+                  className="mt-2 overflow-hidden rounded-[14px] border border-s-ink/[0.06] bg-s-bg-surface shadow-[0_4px_14px_rgba(26,18,9,0.06)]"
+                >
+                  {CITY_SLUGS.map((slug) => {
+                    const isActive = slug === currentCity;
+                    return (
+                      <button
+                        key={slug}
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
+                        onClick={() => handleCityPick(slug)}
+                        className={cn(
+                          "block w-full px-4 py-3 text-left font-body text-[14px]",
+                          "transition-colors active:bg-s-ink/[0.03]",
+                          isActive ? "font-bold text-s-ink" : "font-medium text-s-ink",
+                        )}
+                      >
+                        {getCityName(slug, locale)}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* ─── Für Kund:innen (V3-D171: h2 removed per user, rows
+                are self-explanatory — Anmelden, Hilfe, Sprache) ─── */}
             <div className="overflow-hidden rounded-[18px] bg-s-bg-surface shadow-[0_1px_3px_rgba(26,18,9,0.04)]">
               <MenuRow
                 href={`/${locale}/auth/login`}
@@ -108,7 +206,7 @@ export default function MobileMenu({ open, onClose, locale }: MobileMenuProps) {
             </div>
 
             {/* ─── Stöbern (categories) ─── */}
-            <h2 className="font-display text-[clamp(28px,7.5vw,36px)] font-extrabold tracking-[-0.025em] text-s-ink mt-7 mb-3.5">
+            <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold tracking-[-0.02em] text-s-ink mt-5 mb-2">
               Stöbern
             </h2>
             <div
@@ -137,15 +235,16 @@ export default function MobileMenu({ open, onClose, locale }: MobileMenuProps) {
             </div>
 
             {/* ─── Für Salons ─── */}
-            <h2 className="font-display text-[clamp(28px,7.5vw,36px)] font-extrabold tracking-[-0.025em] text-s-ink mt-7 mb-3.5">
+            <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold tracking-[-0.02em] text-s-ink mt-5 mb-2">
               Für Salons
             </h2>
             <Link
-              href={`/${locale}/business/signup`}
+              href={`/${locale}/business#anmelden`}
               onClick={onClose}
               className={cn(
                 "flex items-center justify-between gap-4",
-                "rounded-[18px] bg-s-bg-surface p-5",
+                // V3-D168: padding p-5 → p-4 (tighter Fresha-style row)
+                "rounded-[16px] bg-s-bg-surface p-4",
                 "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
                 "transition-shadow duration-200 ease-glide",
                 "hover:shadow-[0_4px_14px_rgba(26,18,9,0.08)]",
@@ -153,15 +252,15 @@ export default function MobileMenu({ open, onClose, locale }: MobileMenuProps) {
               )}
             >
               <span className="min-w-0 flex-1">
-                <span className="block font-body text-[17px] font-bold text-s-ink">
+                <span className="block font-body text-[15px] font-bold text-s-ink">
                   Werde Solen-Partner
                 </span>
-                <span className="mt-1 block font-body text-[13px] font-medium text-s-ink-3">
+                <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-3">
                   In 60 Sekunden eintragen — kostenlos starten
                 </span>
               </span>
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-brand text-white">
-                <ArrowRight size={18} strokeWidth={2.4} aria-hidden />
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-s-ink text-white">
+                <ArrowRight size={16} strokeWidth={2.4} aria-hidden />
               </span>
             </Link>
           </div>
@@ -191,11 +290,14 @@ function MenuRow({
       href={href}
       onClick={onClick}
       className={cn(
-        "flex w-full items-center justify-between gap-3 px-5 py-[18px]",
+        // V3-D168: compactness — px-5 py-[18px] → px-4 py-3.5
+        // (~14px vertical), text-[16px] → text-[15px]. Matches Fresha
+        // row density. Border kept for separator clarity.
+        "flex w-full items-center justify-between gap-3 px-4 py-3.5",
         !isLast && "border-b border-s-ink/[0.06]",
         "transition-colors duration-150 ease-glide active:bg-s-ink/[0.03]",
-        "font-body text-[16px]",
-        primary ? "font-bold text-s-brand" : "font-semibold text-s-ink",
+        "font-body text-[15px]",
+        primary ? "font-bold text-s-ink" : "font-semibold text-s-ink",
       )}
     >
       <span className="flex min-w-0 items-center gap-3">
@@ -205,7 +307,7 @@ function MenuRow({
       <ChevronRight
         size={18}
         strokeWidth={2}
-        className={primary ? "text-s-brand" : "text-s-ink-3"}
+        className={primary ? "text-s-ink" : "text-s-ink-3"}
         aria-hidden
       />
     </Link>

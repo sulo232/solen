@@ -80,12 +80,22 @@ export default function StampCard({
                 key={i}
                 className={[
                   "w-9 h-9 rounded-full flex items-center justify-center",
+                  // V3-D328 (Section A): bg-s-ink (retired alias → old brand green) → bg-s-success
+                  // (LOCKFILE §1 universal-color: success/done = #16A34A). Filled stamp = completed
+                  // step, that's a universal-color success signal, NOT a primary CTA.
                   isFilled
-                    ? "bg-s-coral text-white"
-                    : "border-2 border-dashed border-s-ink/10",
+                    ? "bg-s-success text-white"
+                    : "border-2 border-dashed border-s-border",
                 ].join(" ")}
+                // V3-D333 (overnight T1): framer-motion error "Only two keyframes
+                // supported with spring/inertia. Trying to animate 0.7,1.15,1."
+                // Old: 3-keyframe scale array with type:"spring" (incompatible).
+                // New: switched to type:"tween" with cubic-bezier easeOutBack curve
+                // [0.34, 1.56, 0.64, 1] — preserves the satisfying 1.15 overshoot
+                // bounce on stamp add. Equivalent visual to original 3-keyframe spring
+                // but uses an ease curve which IS multi-keyframe compatible.
                 animate={isNewest ? { scale: [0.7, 1.15, 1] } : {}}
-                transition={isNewest ? { type: "spring", stiffness: 400, damping: 20, duration: 0.5 } : {}}
+                transition={isNewest ? { duration: 0.5, ease: [0.34, 1.56, 0.64, 1] } : {}}
               >
                 {isFilled && <Check className="w-4 h-4" />}
               </motion.div>
@@ -94,24 +104,21 @@ export default function StampCard({
         </div>
       </div>
 
-      {/* Bottom: reward + progress */}
+      {/* Bottom: reward + progress — V3-D328 (Section A): retired s-amber → s-warning */}
       <div className="px-4 pb-4 flex items-center justify-between gap-2">
-        <p className="text-xs font-heading text-s-amber">
+        <p className="text-xs font-heading text-s-warning">
           {rewardText}
         </p>
-        <span className="text-[10px] font-heading text-s-ink/35 whitespace-nowrap uppercase tracking-[.08em]">
+        <span className="text-[10px] font-heading text-s-ink-2 whitespace-nowrap uppercase tracking-[.08em]">
           {stampsCollected}/{stampsTotal}
         </span>
       </div>
 
-      {/* Complete overlay */}
+      {/* Complete overlay — V3-D328: retired s-coral border + green rgba bg + s-coral text → s-success tokens */}
       {isComplete && (
-        <div
-          className="absolute bottom-0 left-0 right-0 border-t border-s-coral/20 px-4 py-2.5 text-center"
-          style={{ background: "rgba(27, 77, 27,.08)" }}
-        >
-          <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-coral">
-            Belohnung freigeschaltet!
+        <div className="absolute bottom-0 left-0 right-0 border-t border-s-success/20 bg-s-success-bg px-4 py-2.5 text-center">
+          <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-success">
+            Belohnung freigeschaltet.
           </p>
         </div>
       )}

@@ -115,7 +115,7 @@ export default function TestimonialCarousel() {
           {reviews.slice(0, 3).map((review, idx) => (
             <article
               key={review.id}
-              className="flex flex-col transition-[border-color,transform] duration-[250ms] ease-out hover:border-s-coral/40 hover:-translate-y-0.5"
+              className="flex flex-col transition-[border-color,transform] duration-[250ms] ease-out hover:border-s-accent/40 hover:-translate-y-0.5"
               style={{
                 background: "#FFFFFF",
                 border: "1px solid rgba(26,18,9,0.08)",

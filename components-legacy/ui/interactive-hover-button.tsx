@@ -19,7 +19,11 @@ export default function InteractiveHoverButton({
         "flex items-center justify-center gap-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] disabled:opacity-60",
         className
       )}
-      style={{ background: "s-coral", boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 6px 20px rgba(27, 77, 27,.18)" }}
+      // V3-D328 (Section A): "s-coral" string literal was always invalid CSS (Tailwind tokens
+      // can't resolve at runtime). Renders as transparent → button was probably ALWAYS broken
+      // visually. Fixed to bg-s-ink (LOCKFILE §0.2 primary CTA token) via inline hex + dropped
+      // the rgba(27,77,27,*) old-green shadows for a clean ink elevation.
+      style={{ background: "#0A0A0A", boxShadow: "0 2px 4px rgba(10,10,10,0.16), 0 6px 20px rgba(10,10,10,0.12)" }}
       {...props}
     >
       {text}

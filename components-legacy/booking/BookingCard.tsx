@@ -90,9 +90,9 @@ export default function BookingCard({
   const statusConfig = {
     confirmed: {
       label: t('status.confirmed'),
-      bgColor: 'bg-s-sage/10',
-      textColor: 'text-s-sage',
-      borderColor: 'border-s-sage/30',
+      bgColor: 'bg-s-success/10',
+      textColor: 'text-s-success',
+      borderColor: 'border-s-success/30',
     },
     pending: {
       label: t('status.pending'),
@@ -189,7 +189,7 @@ export default function BookingCard({
       <div className="px-4 py-3 border-t border-s-ink/[0.06] flex items-center justify-between">
         <button
           onClick={() => onRebook?.(booking)}
-          className="px-4 py-2 rounded-pill bg-s-coral text-white text-sm font-semibold hover:brightness-[1.08] active:scale-[0.97] transition-[transform,filter] duration-150"
+          className="px-4 py-2 rounded-pill bg-s-ink text-white text-sm font-semibold hover:brightness-[1.08] active:scale-[0.97] transition-[transform,filter] duration-150"
         >
           {t('rebook')}
         </button>

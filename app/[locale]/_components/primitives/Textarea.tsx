@@ -17,13 +17,13 @@ const textareaVariants = cva(
     "bg-s-bg-base border border-s-ink/10 rounded-[12px]",
     "px-4 py-3 text-[16px]",
     "placeholder:text-s-ink-3",
-    "selection:bg-s-brand/20",
+    "selection:bg-s-ink/20",
     "transition-[border-color,background-color,box-shadow,color] duration-150 ease-snap",
     "caret-s-brand",
     "resize-y min-h-[88px] max-h-[280px]",
     // focus-visible
-    "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
-    "focus-visible:border-s-brand",
+    "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+    "focus-visible:border-s-ink",
     // disabled
     "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-s-bg-sunken disabled:text-s-ink-3",
   ),
@@ -41,7 +41,7 @@ const textareaVariants = cva(
           "border-s-success ring-1 ring-inset ring-s-success " +
           "focus-visible:outline-s-success focus-visible:border-s-success",
         active:
-          "border-s-brand ring-1 ring-inset ring-s-brand bg-s-bg-active",
+          "border-s-ink ring-1 ring-inset ring-s-ink bg-s-bg-active",
       },
     },
     defaultVariants: {
@@ -103,7 +103,7 @@ export function TextareaCounter({ current, max, className }: TextareaCounterProp
       aria-live="polite"
       className={cn(
         "font-body font-normal text-[12px] tabular-nums text-right mt-[6px]",
-        isWarn ? "text-s-brand font-medium" : "text-s-ink-3",
+        isWarn ? "text-s-ink font-medium" : "text-s-ink-3",
         className,
       )}
     >

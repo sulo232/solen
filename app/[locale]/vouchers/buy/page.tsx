@@ -2,10 +2,11 @@
 
 /**
  * Voucher Purchase Page
- * Zone 3: Clean Functional (No glass, coral CTAs, structured inputs)
+ * V3-D277 (W6, 2026-05-27): full retired-token sweep per LOCKFILE §1 — coral
+ * gradients dropped, primary CTAs → bg-s-ink (§0.2), cream surface → bg-s-bg-sunken,
+ * raw bg-red-50 → s-error-bg, focus rings → s-accent.
  *
- * Allows users to buy Gutscheine (platform or salon-specific)
- * Uses Stripe Elements for secure payment processing
+ * Allows users to buy Gutscheine (platform or salon-specific) — Stripe Elements for payment.
  */
 
 import { useState, useEffect } from "react";
@@ -65,18 +66,16 @@ function CheckoutForm({ clientSecret, voucherCode }: CheckoutFormProps) {
       <PaymentElement />
 
       {errorMessage && (
-        <div className="rounded-[12px] bg-red-50 px-4 py-3 text-sm text-red-800 border border-red-200">
+        <div className="rounded-[12px] bg-s-error-bg px-4 py-3 text-sm text-s-error border border-s-error/20">
           {errorMessage}
         </div>
       )}
 
+      {/* V3-D277 (W6): primary CTA — drop coral linear-gradient + rounded-pill, use bg-s-ink + rounded-btn per LOCKFILE §0 rule 2 + §3 */}
       <button
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.97] px-8 py-4 font-heading uppercase text-xs tracking-[.04em] text-white shadow-elevation-2 transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
-        style={{
-          background: "linear-gradient(135deg, #C05038 0%, #F3A864 100%)",
-        }}
+        className="w-full rounded-btn bg-s-ink hover:brightness-[1.06] active:scale-[0.97] px-8 py-4 font-heading uppercase text-xs tracking-[.04em] text-white shadow-elevation-2 transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isProcessing ? "Wird verarbeitet..." : "Gutschein kaufen"}
       </button>
@@ -148,24 +147,27 @@ export default function VoucherBuyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-s-cream px-4 py-16">
+    // V3-D277 (W6): retired s-cream → s-bg-sunken; H1 → LOCKFILE Page H2 spec
+    <div className="min-h-screen bg-s-bg-sunken px-4 py-16">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="font-heading text-4xl text-s-ink mb-2">
+          <h1 className="font-heading text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-s-ink mb-2">
             Gutschein kaufen
           </h1>
-          <p className="text-s-ink/70">
+          <p className="text-s-ink-2">
             Verschenke Schönheit — perfekt für jeden Anlass
           </p>
         </div>
 
         {!clientSecret ? (
-          /* Step 1: Configure Voucher */
-          <div className="rounded-card bg-white p-8 shadow-v5-float">
+          /* Step 1: Configure Voucher.
+             V3-D277 (W6): retired coral selected → s-accent pale; icons coral → ink;
+             cream input bg → sunken; form focus → s-accent. */
+          <div className="rounded-card bg-white p-8 border border-s-border">
             {/* Discount Type Selector */}
             <div className="mb-6">
-              <label className="block font-heading uppercase text-[9px] tracking-[.20em] text-s-ink/60 mb-3">
+              <label className="block font-body text-[12px] font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-3">
                 Art des Gutscheins
               </label>
               <div className="grid grid-cols-2 gap-4">
@@ -174,15 +176,15 @@ export default function VoucherBuyPage() {
                   onClick={() => setDiscountType("fixed")}
                   className={`rounded-[12px] px-6 py-4 border-2 transition-[background-color,border-color,box-shadow] ${
                     discountType === "fixed"
-                      ? "border-s-coral bg-s-coral/5 shadow-elevation-2"
-                      : "border-s-ink/[0.08] hover:border-s-ink/20"
+                      ? "border-s-accent bg-s-accent-pale"
+                      : "border-s-border hover:border-s-ink"
                   }`}
                 >
-                  <CreditCard className="h-6 w-6 mx-auto mb-2 text-s-coral" />
+                  <CreditCard className="h-6 w-6 mx-auto mb-2 text-s-ink" />
                   <div className="font-heading text-xs uppercase tracking-[.04em] text-s-ink">
                     Fester Betrag
                   </div>
-                  <div className="text-[10px] text-s-ink/60 mt-1">
+                  <div className="text-[10px] text-s-ink-2 mt-1">
                     z.B. CHF 50
                   </div>
                 </button>
@@ -192,15 +194,15 @@ export default function VoucherBuyPage() {
                   onClick={() => setDiscountType("percent")}
                   className={`rounded-[12px] px-6 py-4 border-2 transition-[background-color,border-color,box-shadow] ${
                     discountType === "percent"
-                      ? "border-s-coral bg-s-coral/5 shadow-elevation-2"
-                      : "border-s-ink/[0.08] hover:border-s-ink/20"
+                      ? "border-s-accent bg-s-accent-pale"
+                      : "border-s-border hover:border-s-ink"
                   }`}
                 >
-                  <Gift className="h-6 w-6 mx-auto mb-2 text-s-coral" />
+                  <Gift className="h-6 w-6 mx-auto mb-2 text-s-ink" />
                   <div className="font-heading text-xs uppercase tracking-[.04em] text-s-ink">
                     Prozent
                   </div>
-                  <div className="text-[10px] text-s-ink/60 mt-1">
+                  <div className="text-[10px] text-s-ink-2 mt-1">
                     z.B. 20%
                   </div>
                 </button>
@@ -209,7 +211,7 @@ export default function VoucherBuyPage() {
 
             {/* Value Input */}
             <div className="mb-6">
-              <label className="block font-heading uppercase text-[9px] tracking-[.20em] text-s-ink/60 mb-3">
+              <label className="block font-body text-[12px] font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-3">
                 {discountType === "fixed" ? "Betrag in CHF" : "Prozent"}
               </label>
               <div className="relative">
@@ -224,7 +226,7 @@ export default function VoucherBuyPage() {
                   onChange={(e) => setDiscountValue(Number(e.target.value))}
                   min={1}
                   max={discountType === "percent" ? 100 : 1000}
-                  className={`w-full rounded-[10px] bg-s-cream border border-s-ink/[0.08] px-4 py-3 font-heading text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/15 ${
+                  className={`w-full rounded-input bg-s-bg-sunken border border-s-border px-4 py-3 font-heading text-sm text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent ${
                     discountType === "fixed" ? "pl-16" : ""
                   }`}
                 />
@@ -243,7 +245,7 @@ export default function VoucherBuyPage() {
                   type="checkbox"
                   checked={isGift}
                   onChange={(e) => setIsGift(e.target.checked)}
-                  className="w-5 h-5 rounded border-s-ink/20 text-s-coral focus:ring-s-coral/15"
+                  className="w-5 h-5 rounded border-s-border text-s-accent focus:ring-s-accent/15"
                 />
                 <span className="font-heading uppercase text-[10px] tracking-[.06em] text-s-ink">
                   Als Geschenk versenden
@@ -254,7 +256,7 @@ export default function VoucherBuyPage() {
             {/* Recipient Email (if gift) */}
             {isGift && (
               <div className="mb-6">
-                <label className="block font-heading uppercase text-[9px] tracking-[.20em] text-s-ink/60 mb-3">
+                <label className="block font-body text-[12px] font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-3">
                   <Mail className="inline h-3 w-3 mr-1" />
                   Empfänger E-Mail
                 </label>
@@ -263,39 +265,36 @@ export default function VoucherBuyPage() {
                   value={recipientEmail}
                   onChange={(e) => setRecipientEmail(e.target.value)}
                   placeholder="beispiel@email.com"
-                  className="w-full rounded-[10px] bg-s-cream border border-s-ink/[0.08] px-4 py-3 font-heading text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-coral/15"
+                  className="w-full rounded-input bg-s-bg-sunken border border-s-border px-4 py-3 font-heading text-sm text-s-ink placeholder:text-s-ink-2 focus:outline-none focus:ring-2 focus:ring-s-accent/15 focus:border-s-accent"
                 />
               </div>
             )}
 
             {/* Error */}
             {error && (
-              <div className="mb-6 rounded-[12px] bg-red-50 px-4 py-3 text-sm text-red-800 border border-red-200">
+              <div className="mb-6 rounded-[12px] bg-s-error-bg px-4 py-3 text-sm text-s-error border border-s-error/20">
                 {error}
               </div>
             )}
 
-            {/* CTA */}
+            {/* Primary CTA — V3-D277: drop coral gradient + rounded-pill, use bg-s-ink per LOCKFILE §0.2 */}
             <button
               onClick={handleCreateVoucher}
               disabled={loading || (isGift && !recipientEmail)}
-              className="w-full rounded-pill bg-s-coral hover:brightness-[1.06] active:scale-[0.97] px-8 py-4 font-heading uppercase text-xs tracking-[.04em] text-white shadow-elevation-2 transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                background: "linear-gradient(135deg, #C05038 0%, #F3A864 100%)",
-              }}
+              className="w-full rounded-btn bg-s-ink hover:brightness-[1.06] active:scale-[0.97] px-8 py-4 font-heading uppercase text-xs tracking-[.04em] text-white shadow-elevation-2 transition-[transform,filter] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Wird erstellt..." : "Weiter zur Zahlung"}
             </button>
           </div>
         ) : (
-          /* Step 2: Payment */
-          <div className="rounded-card bg-white p-8 shadow-v5-float">
+          /* Step 2: Payment — h2 to Section H2 spec; voucher code = data (ink, not accent) */
+          <div className="rounded-card bg-white p-8 border border-s-border">
             <div className="mb-6">
-              <h2 className="font-heading text-xl text-s-ink mb-2">
+              <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-2">
                 Zahlung
               </h2>
-              <p className="text-sm text-s-ink/70">
-                Dein Gutschein-Code: <span className="font-heading text-s-coral">{voucherCode}</span>
+              <p className="text-sm text-s-ink-2">
+                Dein Gutschein-Code: <span className="font-heading text-s-ink">{voucherCode}</span>
               </p>
             </div>
 

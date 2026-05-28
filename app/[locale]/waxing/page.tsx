@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
+import CategoryHero from "@/app/[locale]/_components/landings/CategoryHero";
 import { WaxingBelowGrid } from "@/components-legacy/waxing/WaxingSections";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
@@ -68,9 +70,21 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
       />
-      <div className="min-h-screen pt-24 pb-16 flex flex-col items-center justify-center">
-        <WaxingBelowGrid />
-      </div>
+      {/* V3-D340 (W11, 2026-05-28): editorial split-hero ABOVE SearchTemplate. See CategoryHero docs for axis sources. */}
+      <CategoryHero category="waxing" locale={loc} />
+      {/* V3-D241 (W2, 2026-05-27): /waxing was broken FAQ-stub only (same
+          pattern as /spa pre-V3-D230). Wired to SearchTemplate so the route
+          actually shows waxing salons. */}
+      <SearchTemplate
+        locale={loc}
+        serviceFilter="waxing"
+        breadcrumb={[
+          { label: "Solen", href: `/${loc}` },
+          { label: "Waxing" },
+        ]}
+        hero={{ title: "Waxing & Hair Removal in Basel" }}
+        belowSlot={<WaxingBelowGrid />}
+      />
     </>
   );
 }

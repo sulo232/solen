@@ -54,7 +54,8 @@ export function SalonHero({
             />
           ) : (
             <div className="grid h-full w-full place-items-center">
-              <span className="font-display text-[120px] font-black text-s-ink-3/30">
+              {/* V3-D202 (A2): retired `text-s-ink-3/30` ad-hoc opacity → `text-s-ink-disabled` token. */}
+              <span className="font-display text-[120px] font-black text-s-ink-disabled">
                 {salon.name.charAt(0)}
               </span>
             </div>
@@ -116,7 +117,10 @@ export function SalonHero({
           <button
             type="button"
             onClick={() => onOpenLightbox(0)}
-            className="font-body absolute bottom-4 right-4 rounded-full bg-white/95 px-3.5 py-2 text-[12px] font-semibold text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.12)] backdrop-blur-md transition-transform hover:scale-105 active:scale-95"
+            // V3-D202 (A2): drop `backdrop-blur-md` (§13 mobile perf — backdrop-filter
+            // inside scrolling pages costs compositor layers). Flip pill from white-glass
+            // to ink-on-photo for stronger overlay legibility.
+            className="font-body absolute bottom-4 right-4 rounded-full bg-s-ink/85 px-3.5 py-2 text-[12px] font-semibold text-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-transform hover:scale-105 active:scale-95"
           >
             Alle Fotos ansehen ({photos.length})
           </button>
@@ -141,9 +145,11 @@ function DesktopGallery({
   onOpenLightbox: (i: number) => void;
 }) {
   if (photos.length === 0) {
+    // V3-D202 (A2): rounded-none → rounded-card-lg token; opacity → s-ink-disabled.
+    // V3-D336 (T4 conservative): rounded-card-lg → rounded-none on hero placeholder per LOCKFILE §11 non-negotiable "all images use border-radius 0 (flush rectangles)".
     return (
-      <div className="grid aspect-[16/7] w-full place-items-center rounded-3xl bg-s-bg-sunken">
-        <span className="font-display text-[140px] font-black text-s-ink-3/25">
+      <div className="grid aspect-[16/7] w-full place-items-center bg-s-bg-sunken">
+        <span className="font-display text-[140px] font-black text-s-ink-disabled">
           {salonName.charAt(0)}
         </span>
       </div>
@@ -155,7 +161,7 @@ function DesktopGallery({
       <button
         type="button"
         onClick={() => onOpenLightbox(0)}
-        className="block aspect-[16/7] w-full overflow-hidden rounded-3xl bg-s-bg-sunken"
+        className="block aspect-[16/7] w-full overflow-hidden rounded-none bg-s-bg-sunken"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={photos[0]} alt={salonName} className="h-full w-full object-cover" loading="eager" />
@@ -165,7 +171,7 @@ function DesktopGallery({
 
   if (photos.length === 2) {
     return (
-      <div className="grid aspect-[16/7] w-full grid-cols-2 gap-2 overflow-hidden rounded-3xl">
+      <div className="grid aspect-[16/7] w-full grid-cols-2 gap-2 overflow-hidden rounded-none">
         {photos.map((u, i) => (
           <button
             key={u}
@@ -183,7 +189,7 @@ function DesktopGallery({
 
   // 3+ photos — Fresha pattern: 1 large left (col-span-2 row-span-2) + 2 small right
   return (
-    <div className="relative grid aspect-[16/7] w-full grid-cols-3 grid-rows-2 gap-2 overflow-hidden rounded-3xl">
+    <div className="relative grid aspect-[16/7] w-full grid-cols-3 grid-rows-2 gap-2 overflow-hidden rounded-none">
       <button
         type="button"
         onClick={() => onOpenLightbox(0)}

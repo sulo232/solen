@@ -64,7 +64,7 @@ export default function EmptyStateFTU({
     >
       <motion.div {...enter} className="max-w-[280px] flex flex-col items-center">
         <div className="mb-4">{illustration}</div>
-        <span className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.22em] text-s-coral-text">
+        <span className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.22em] text-s-accent">
           {eyebrow}
         </span>
         <h2 className="mt-1 font-heading text-[22px] sm:text-[28px] md:text-[32px] leading-[0.95] text-s-ink uppercase">
@@ -75,7 +75,7 @@ export default function EmptyStateFTU({
         </p>
         <Link
           href={ctaHref}
-          className="mt-5 inline-flex items-center justify-center h-11 min-w-[180px] px-5 rounded-full bg-s-coral text-white font-body text-[12px] font-bold tracking-[.04em] uppercase transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+          className="mt-5 inline-flex items-center justify-center h-11 min-w-[180px] px-5 rounded-full bg-s-ink text-white font-body text-[12px] font-bold tracking-[.04em] uppercase transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
         >
           {ctaLabel}
         </Link>

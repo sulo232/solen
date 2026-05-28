@@ -88,28 +88,28 @@ export default function StaffInvitePage() {
       >
         {success ? (
           <div className="text-center">
-            <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-coral/10">
-              <Check size={24} className="text-s-coral" />
+            <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-ink/10">
+              <Check size={24} className="text-s-accent" />
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">{l.success}</h2>
             {salonName && <p className="text-sm text-s-ink/50 mb-1">{salonName}</p>}
             <p className="text-sm text-s-ink/50 mb-6">{l.successDesc}</p>
-            <Link href={`/${locale}/dashboard`} className="inline-block px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors">
+            <Link href={`/${locale}/dashboard`} className="inline-block px-6 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] transition-colors">
               {l.goToDashboard}
             </Link>
           </div>
         ) : error ? (
           <div className="text-center">
-            <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-amber-subtle">
-              <AlertTriangle size={24} className="text-s-amber" />
+            <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-warning-bg">
+              <AlertTriangle size={24} className="text-s-warning" />
             </div>
             <p className="text-sm text-s-ink/70">{error === "Kein Token angegeben" ? l.noToken : error}</p>
           </div>
         ) : (
           <>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-s-coral/10 flex items-center justify-center">
-                <Users size={22} className="text-s-coral" />
+              <div className="w-12 h-12 rounded-full bg-s-ink/10 flex items-center justify-center">
+                <Users size={22} className="text-s-accent" />
               </div>
               <div>
                 <h1 className="font-heading text-lg text-s-ink">{l.title}</h1>
@@ -122,7 +122,7 @@ export default function StaffInvitePage() {
             <button
               onClick={handleAccept}
               disabled={loading || !token}
-              className="w-full py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-btn bg-s-ink text-white font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading && <Spinner size="sm" invert />}
               {l.accept}

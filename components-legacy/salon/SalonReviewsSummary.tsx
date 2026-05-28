@@ -148,7 +148,7 @@ export default function SalonReviewsSummary({
                 {r.reply_text && (
                   <Link
                     href={`/${locale}/salon/${salonSlug}/reviews#review-${r.id}`}
-                    className="mt-2 inline-flex items-center gap-1 font-body text-[10px] font-bold uppercase tracking-[.14em] text-s-coral-text hover:text-s-coral transition-colors duration-150"
+                    className="mt-2 inline-flex items-center gap-1 font-body text-[10px] font-bold uppercase tracking-[.14em] text-s-accent hover:text-s-accent transition-colors duration-150"
                   >
                     <MessageSquare size={11} aria-hidden />
                     Antwort vom Salon
@@ -166,7 +166,7 @@ export default function SalonReviewsSummary({
         <div className="mt-6 text-center">
           <Link
             href={`/${locale}/salon/${salonSlug}/reviews`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-s-ink/15 hover:border-s-coral/40 transition-colors duration-150 font-body text-[13px] font-semibold text-s-ink min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-s-ink/15 hover:border-s-accent/40 transition-colors duration-150 font-body text-[13px] font-semibold text-s-ink min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
           >
             Alle {reviewCount.toLocaleString("de-CH")} Bewertungen
             <ArrowRight size={14} aria-hidden />

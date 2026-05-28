@@ -141,7 +141,7 @@ export default function ImageUploader({
           <button
             type="button"
             onClick={clearImage}
-            className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-s-ink/60 hover:text-s-coral transition-colors shadow-warm-sm"
+            className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-s-ink/60 hover:text-s-accent transition-colors shadow-warm-sm"
             aria-label="Bild entfernen"
           >
             <X size={14} />
@@ -149,7 +149,7 @@ export default function ImageUploader({
           {uploading && (
             <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-s-sand">
               <div
-                className="h-full bg-s-coral rounded-full transition-[width] duration-300"
+                className="h-full bg-s-ink rounded-full transition-[width] duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -162,17 +162,17 @@ export default function ImageUploader({
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
           disabled={uploading}
-          className="w-full h-48 rounded-[12px] border-2 border-dashed border-s-ink/10 hover:border-s-coral transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          className="w-full h-48 rounded-[12px] border-2 border-dashed border-s-ink/10 hover:border-s-accent transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
         >
           {uploading ? (
             <>
-              <Loader2 size={24} className="text-s-coral animate-spin" />
+              <Loader2 size={24} className="text-s-accent animate-spin" />
               <span className="text-xs text-s-ink/40">Wird hochgeladen…</span>
             </>
           ) : (
             <>
-              <div className="w-12 h-12 rounded-full bg-s-coral/10 flex items-center justify-center">
-                <Camera size={20} className="text-s-coral" />
+              <div className="w-12 h-12 rounded-full bg-s-ink/10 flex items-center justify-center">
+                <Camera size={20} className="text-s-accent" />
               </div>
               <span className="text-sm font-medium text-s-ink/60">{label}</span>
               <span className="text-xs text-s-ink/30">
@@ -186,12 +186,12 @@ export default function ImageUploader({
 
       {error && (
         <div className="flex items-center gap-2 mt-1.5">
-          <p className="text-xs text-s-coral flex-1">{error}</p>
+          <p className="text-xs text-s-accent flex-1">{error}</p>
           {lastFileRef.current && (
             <button
               type="button"
               onClick={() => { if (lastFileRef.current) handleFile(lastFileRef.current); }}
-              className="text-xs text-s-coral hover:underline flex items-center gap-1 shrink-0"
+              className="text-xs text-s-accent hover:underline flex items-center gap-1 shrink-0"
             >
               <RotateCcw size={10} /> Nochmal versuchen
             </button>

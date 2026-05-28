@@ -82,9 +82,9 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
                     className={[
                       "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300",
                       i === currentStep
-                        ? "bg-s-coral text-white scale-110 shadow-warm-sm"
+                        ? "bg-s-ink text-white scale-110 shadow-warm-sm"
                         : step.complete
-                          ? "bg-s-coral/10 text-s-coral"
+                          ? "bg-s-ink/10 text-s-accent"
                           : "bg-s-bg-sunken text-s-ink/30",
                     ].join(" ")}
                   >
@@ -97,7 +97,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
                   <span
                     className={[
                       "text-[10px] mt-1 whitespace-nowrap hidden sm:block transition-colors",
-                      i === currentStep ? "text-s-coral font-medium" : "text-s-ink/30",
+                      i === currentStep ? "text-s-accent font-medium" : "text-s-ink/30",
                     ].join(" ")}
                   >
                     {t(`setup.steps.${step.key}` as any)}
@@ -108,7 +108,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
             {/* Connecting line */}
             <div className="absolute top-4 left-4 right-4 h-0.5 bg-s-bg-sunken -z-0" />
             <motion.div
-              className="absolute top-4 left-4 h-0.5 bg-s-coral -z-0"
+              className="absolute top-4 left-4 h-0.5 bg-s-ink -z-0"
               initial={false}
               animate={{ width: `${(currentStep / (totalSteps - 1)) * 100}%` }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -156,7 +156,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
             )}
             <button
               onClick={goNext}
-              className="flex items-center gap-1.5 px-6 py-2.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
+              className="flex items-center gap-1.5 px-6 py-2.5 rounded-btn active:scale-[0.97] bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
             >
               {isLast ? t("setup.goLive") : t("setup.next")}
               {!isLast && <ChevronRight size={16} />}

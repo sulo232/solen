@@ -88,11 +88,11 @@ export default function SolenDatePicker({
                   className={({ isSelected, isDisabled, isUnavailable, isFocusVisible }) =>
                     cn(
                       "w-11 h-11 flex items-center justify-center rounded-btn text-sm data-text transition-colors cursor-pointer outline-none",
-                      isSelected && "bg-s-coral text-white font-semibold",
-                      !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-coral/10 text-s-ink",
+                      isSelected && "bg-s-ink text-white font-semibold",
+                      !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-ink/10 text-s-ink",
                       isUnavailable && "text-s-ink/20 bg-s-bg-sunken cursor-default line-through",
                       isDisabled && !isUnavailable && "text-s-ink/20 cursor-default",
-                      isFocusVisible && "ring-2 ring-s-coral ring-offset-1"
+                      isFocusVisible && "ring-2 ring-s-accent ring-offset-1"
                     )
                   }
                 />
@@ -115,12 +115,12 @@ export default function SolenDatePicker({
       className={cn("flex flex-col gap-1", className)}
     >
       <Label className="text-xs font-medium text-s-ink/60 font-body">{label}</Label>
-      <Group className="flex items-center rounded-btn border border-s-ink/10 bg-white px-3 py-2 text-sm focus-within:border-s-coral focus-within:ring-2 focus-within:ring-s-coral/20 transition-[border-color,box-shadow]">
+      <Group className="flex items-center rounded-btn border border-s-ink/10 bg-white px-3 py-2 text-sm focus-within:border-s-accent focus-within:ring-2 focus-within:ring-s-accent/20 transition-[border-color,box-shadow]">
         <DateInput className="flex flex-1 items-center">
           {(segment) => (
             <DateSegment
               segment={segment}
-              className="rounded px-0.5 tabular-nums data-text text-s-ink outline-none focus:bg-s-coral/10 focus:text-s-coral placeholder-shown:text-s-ink/40"
+              className="rounded px-0.5 tabular-nums data-text text-s-ink outline-none focus:bg-s-ink/10 focus:text-s-accent placeholder-shown:text-s-ink/40"
             />
           )}
         </DateInput>
@@ -163,11 +163,11 @@ export default function SolenDatePicker({
                     className={({ isSelected, isDisabled, isUnavailable, isFocusVisible }) =>
                       cn(
                         "w-11 h-11 flex items-center justify-center rounded-btn text-sm data-text transition-colors cursor-pointer outline-none",
-                        isSelected && "bg-s-coral text-white font-semibold",
-                        !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-coral/10 text-s-ink",
+                        isSelected && "bg-s-ink text-white font-semibold",
+                        !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-ink/10 text-s-ink",
                         isUnavailable && "text-s-ink/20 bg-s-bg-sunken cursor-default line-through",
                         isDisabled && !isUnavailable && "text-s-ink/20 cursor-default",
-                        isFocusVisible && "ring-2 ring-s-coral ring-offset-1"
+                        isFocusVisible && "ring-2 ring-s-accent ring-offset-1"
                       )
                     }
                   />

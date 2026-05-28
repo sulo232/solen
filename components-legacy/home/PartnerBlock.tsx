@@ -115,7 +115,7 @@ export default function PartnerBlock() {
               <div className="flex gap-3 flex-wrap">
                 <Link
                   href={`/${locale}/onboarding/salon`}
-                  className="inline-flex items-center justify-center font-body font-bold uppercase transition-all duration-150 hover:brightness-[1.06] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 focus-visible:ring-offset-[#4A1E3C]"
+                  className="inline-flex items-center justify-center font-body font-bold uppercase transition-all duration-150 hover:brightness-[1.06] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[#4A1E3C]"
                   style={{
                     background: "rgba(255,255,255,0.15)",
                     border: "1px solid rgba(255,255,255,0.3)",
@@ -130,7 +130,7 @@ export default function PartnerBlock() {
                 </Link>
                 <Link
                   href={`/${locale}/partner`}
-                  className="inline-flex items-center justify-center font-body font-bold uppercase transition-all duration-150 hover:bg-white/[0.08] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 focus-visible:ring-offset-[#4A1E3C]"
+                  className="inline-flex items-center justify-center font-body font-bold uppercase transition-all duration-150 hover:bg-white/[0.08] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[#4A1E3C]"
                   style={{
                     background: "transparent",
                     border: "1px solid rgba(255,255,255,0.3)",

@@ -70,7 +70,7 @@ export default function SearchCriteriaChips({ locale }: SearchCriteriaChipsProps
             const params = new URLSearchParams();
             router.replace(`${pathname}?${params.toString()}`, { scroll: false });
           }}
-          className="text-[11px] font-body text-s-ink/45 hover:text-s-coral underline underline-offset-2 transition-colors"
+          className="text-[11px] font-body text-s-ink/45 hover:text-s-accent underline underline-offset-2 transition-colors"
         >
           {t("clearAll")}
         </button>

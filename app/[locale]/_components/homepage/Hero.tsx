@@ -1,4 +1,9 @@
 import { SearchBar } from "./SearchBar";
+// V3-D139 (2026-05-25): HeroHeadline removed per "Fix 1 + Fix 2" spec —
+// rotating slogans (incl. unapproved "Auch broke? Dw, wir haben Coupons." +
+// "Check it out →" CTA) replaced with the locked static H1 + sub-line below.
+// Component file kept at ./_components/homepage/HeroHeadline.tsx for revert.
+// import HeroHeadline from "./HeroHeadline";
 import { getSessionUser } from "@/lib/supabase";
 
 /**
@@ -14,7 +19,7 @@ import { getSessionUser } from "@/lib/supabase";
  *
  * Async server component. Reads session for the V2-D66 friendly greeting
  * (Hayden move #14). Anon users see h1 + SearchBar; authed users see a
- * "Hallo, {name} 👋" line above the h1.
+ * "Hallo, {name}" line above the h1 (waving-hand emoji removed V3-D311).
  *
  * TODO:
  *   - i18n via next-intl `useTranslations("home.hero")` once de/en/fr/it
@@ -46,6 +51,11 @@ export default async function Hero() {
 
   return (
     <section className="relative overflow-hidden">
+      {/* V3-D137 (2026-05-25): sunset halo bg MOVED OUT of Hero → page.tsx
+          wrapper so it extends behind the sticky header. See page.tsx top
+          for the gradient layer.
+          Hero is back to its original transparent state. */}
+
       {/* Local hero wash REMOVED 2026-05-09 — was creating intensity
           discontinuity between the hero zone and sections below. The
           page-wide body::before / body::after wash (globals.css) now
@@ -95,7 +105,45 @@ export default async function Hero() {
           floating bottom address bar collision. dvh dynamically recalculates as
           Safari's bar expands/contracts, preventing the hero from getting
           partially hidden beneath the bar when it appears. */}
-      <div className="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-5 pt-[100px] pb-12 md:px-8 md:pt-32 md:pb-16 min-h-[70dvh] md:min-h-[92dvh]">
+      {/* V3-D127 (2026-05-24): removed min-h-[70dvh] on mobile per Fresha
+          hierarchy analysis. The 70dvh + justify-center was floating the
+          headline + search card to the vertical center of the viewport,
+          adding ~48px of dead whitespace above the headline. Removing it
+          lets content flow naturally from the top (Fresha pattern).
+          Desktop keeps md:min-h-[92dvh] — different viewport rhythm. */}
+      {/* V3-D128 (2026-05-24): px-5 → px-7 (20→28 CSS px each side) per
+          MEASURED Fresha comparison. At 402 CSS viewport: Solen card was
+          388 CSS wide (6/7 margin), Fresha was 346 CSS wide (27/28 margin).
+          Bumping outer container padding pulls search card width in to
+          ~346 CSS, matching Fresha's ~86% viewport ratio. Headline shifts
+          ~8px right too — kept aligned with the card edge. */}
+      {/* V3-D132 (2026-05-25): pb-12 → pb-2 (48→8) per Airbnb gap match —
+          biggest offender of the hero→Für dich gap (was ~49 CSS). */}
+      {/* V3-D151 (2026-05-25): mobile pt 100px → 32px per user "out ths abit
+          more up". Measured: 100px gap between Header bottom and H1 top was
+          too generous given the CityTopBar (53) + Header (84) already take
+          137px of fixed space at viewport top. 32px keeps breathing without
+          dead-zone. Desktop pt-32 kept for the min-h-[92dvh] vertical-center
+          rhythm — not flagged by user. */}
+      {/* V3-D228 (2026-05-27, desktop placement fix — md: scoped only, mobile
+          untouched). MEASURED Fresha desktop homepage at 1280 viewport:
+            - H1 sits at y=184 (top, after header). NOT vertical-centered.
+            - Hero content margins ~92px each side (1096px content width).
+            - Search row has fixed-width 91px button at right, not stretched.
+          Our problem before fix: md:min-h-[92dvh] + flex justify-center pushed
+          the hero block to viewport middle, creating a 400px white void above
+          the H1. md:pt-32 added another 128px of top padding inside that.
+          Fix: drop md:min-h-[92dvh], pt-32 → pt-12. Hero now hugs the top
+          like Fresha. Mobile (max-w + pt-8) unchanged. */}
+      {/* V3-D327 (2026-05-27): Fresha-aligned hero per council pick (Grok 2×
+          consistent answer + user "exact to fresha"). Bumps header→H1 gap to
+          match Fresha's measured 64-72px (pt-16 = 64px mobile; pt-20 = 80px
+          desktop). Hero H1 grew 26→40 mobile / 30→64 desktop in the H1
+          element below; sub bumped 14-16 → 16-22; sub→card gap from 24px
+          → 64px (mt-16). Search-card 4-layer white-rim shadow REMOVED per
+          user "ths shadow sh makes it weird" (Fresha has zero shadow on
+          this surface) — replaced with hairline border-s-border. */}
+      <div className="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-7 pt-16 pb-2 md:px-8 md:pt-20 md:pb-16">
         <div className="w-full">
           {displayName && (
             // V2-D70 (2026-05-18): greeting weight bumped 500 medium → still 500
@@ -104,41 +152,65 @@ export default async function Hero() {
               Hallo, {displayName}
             </p>
           )}
-          <h1
-            // V3-D88 (2026-05-20): h1 size MATCHED to Fresha mobile measurements
-            // (Playwright getComputedStyle at 375×812). Fresha runs 40px/700,
-            // line-height 44px, letter-spacing normal. Scales up smoothly to
-            // 64px at desktop (Fresha's desktop size). Was clamp(56,13vw,76)
-            // tracking -0.042 — now clamp(40,10vw,64) tracking normal,
-            // leading 1.1× per source.
-            className="mb-7 font-display text-[clamp(40px,10vw,64px)] font-bold leading-[1.1] tracking-normal text-s-ink"
-          >
-            <span className="text-s-brand">Schöner</span> aussehen, schneller buchen.
+          {/* V3-D139 (2026-05-25): rotating slogans REMOVED per Fix 1+2 spec.
+              H1 + sub-line are now locked, fixed strings — no rotation, no
+              coupon CTA. Sub-line sits one tight gap below H1 (mb-3) and
+              one full gap above SearchBar (sub p has mb-7) to preserve the
+              prior heading-block → search gap. */}
+          {/* V3-D176 (2026-05-26, council-informed): tracking + spacing
+              tweaks per Hero variant B mock —
+                - H1 tracking-normal → tracking-[-0.025em] (matches every
+                  SectionTitle h2 + the Für dich h2)
+                - Sub adds tracking-[-0.025em] (same)
+                - Sub margin mb-7 (28px) → mb-3 (12px) — the previous
+                  comment justified mb-7 as preserving "heading-block →
+                  search gap", but matched against the rest of the page's
+                  12-16px h2-to-content rhythm, 28px was an outlier that
+                  made the Hero feel oversized. Tightening also pulls
+                  more of the SearchCard above the fold. */}
+          {/* V3-D177 (2026-05-26, council item #4): H1 max 64 → 52px.
+              Mobile unchanged (clamp picks 10vw = ~40-50px there). Only
+              affects ≥520px viewports where 10vw exceeds the cap. New
+              52px cap gives a clean 2x typographic ladder to the first
+              h2 (was 2.46x — H1 was bullying the rest of the page). */}
+          {/* V3-D193 (2026-05-26): H1 weight 900 → 800 per user "too bold" sweep.
+              Tracking widened slightly (-0.035 → -0.03em) to compensate for slightly
+              less weight density. V3-D190 size kept.
+              V3-D225 REVERTED 2026-05-27: user said "jst revrt monile n fix
+              placements of stuff in pc dont touch mobile". Restoring original
+              mobile size + weight. Desktop placement fix scoped via md: prefix
+              elsewhere — H1 itself stays at original clamp. */}
+          {/* V3-D327 (2026-05-27): Fresha-aligned hero. Council picked Fresha
+              spec over Uber-aligned spec since Solen's actual category peer is
+              Fresha. Measured Fresha values: H1 40px mobile / 64px desktop,
+              weight 700, lh 1.1, RoobertPRO (we use Geist as closest free).
+              Will wrap to 2 lines mobile (editorial weight, intended). */}
+          <h1 className="mb-3 font-display text-[clamp(40px,10vw,64px)] font-bold leading-[1.1] tracking-[-0.02em] text-s-ink">
+            Termin in 30 Sekunden.
           </h1>
+          {/* V3-D327: Fresha sub 16px mobile / 22px desktop, weight 400, lh 1.3-1.4 */}
+          {/* V3-D330: Hero sub tracking -0.015em → -0.005em per LOCKFILE §2.5 canonical Hero sub recipe. */}
+          <p className="font-body text-[clamp(16px,4.5vw,22px)] font-normal leading-[1.35] tracking-[-0.005em] text-s-ink-2">
+            Beauty &amp; Wellness in der ganzen Schweiz.
+          </p>
         </div>
 
-        {/* V3-D91-fu3 (2026-05-21): PURE WHITE liquid-glass rim — no colors.
-            Visible because page bg is now #F4F4F6 (cool grey substrate from
-            V3-D72). The white rim shows as a lighter zone against the grey bg,
-            exactly the way Fresha's white wrapping shows against its lavender bg.
-            Four layers:
-              1. 1px hard white outline — sharp glass edge
-              2. 8px tight white bloom — close glow
-              3. 18px softer white wash — outer falloff
-              4. depth drop-shadow — subtle elevation
-            Max extent 18px (within 28px gap to FeedZone). NO LAVENDER, NO PINK. */}
-        <div
-          className="relative rounded-[11px]"
-          style={{
-            boxShadow:
-              "0 0 0 1px rgba(255, 255, 255, 1), " +
-              "0 0 6px 2px rgba(255, 255, 255, 0.95), " +
-              "0 0 14px 4px rgba(255, 255, 255, 0.65), " +
-              "0 6px 16px rgba(0, 0, 0, 0.06)",
-          }}
-        >
+        {/* V3-D327 (2026-05-27): Fresha hero alignment — user "ths shadow sh
+            makes it weird" + council picked "drop all shadow + hairline border."
+            REMOVED the 4-layer white liquid-glass rim (V3-D91-fu3 archeology
+            kept in git). On the current bg-s-bg-sunken (#F5F5F4) page bg, the
+            white-on-grey card has natural separation; the shadow was noise.
+            Sub→card gap bumped 12→64px (mt-16) to match Fresha's measured
+            breathing room. Inner SearchBar provides its own border + radius. */}
+        <div className="relative rounded-[11px] mt-16 md:mt-16">
           <SearchBar />
         </div>
+
+        {/* V3-D139-fix (2026-05-25): trust strip removed per user reversal —
+            initially specced into hero, immediately retracted via selected-
+            element "remove ths." Markup deleted (not commented) since the
+            spec line itself was withdrawn. Conversion-lever concern voiced
+            in chat; user proceeded with removal. */}
       </div>
     </section>
   );
@@ -201,18 +273,18 @@ function _DeprecatedSearchBar() {
       />
 
       {/* Submit — brand-teal bg, hover lighter brand-mid. Full-width on mobile,
-          pill on right desktop. (Was bg-s-ink default → hover bg-s-brand;
+          pill on right desktop. (Was bg-s-ink default → hover bg-s-ink;
           flipped 2026-05-09 per user feedback — black felt out of place
           when the rest of the page already pulls toward brand-teal.) */}
       <button
         type="button"
         className="
-          font-body shrink-0 rounded-full border-0 bg-s-brand p-4 font-semibold text-white transition-colors
-          hover:bg-s-brand-mid
+          font-body shrink-0 rounded-full border-0 bg-s-ink p-4 font-semibold text-white transition-colors
+          hover:bg-black
           md:px-7
         "
       >
-        Solen durchsuchen
+        Termine finden
       </button>
     </div>
   );
@@ -249,7 +321,7 @@ function SearchRow({
         group flex shrink-0 cursor-pointer items-center text-left
         rounded-[10px] p-[14px_16px]
         transition-colors hover:bg-s-bg-sunken
-        ${isActive ? "bg-s-brand/[0.05]" : ""}
+        ${isActive ? "bg-s-ink/[0.05]" : ""}
         ${!isFirst ? "border-t border-black/5 max-md:border-t md:border-t-0" : ""}
         md:flex-1 md:rounded-full md:border-t-0 md:p-[14px_22px]
       `}

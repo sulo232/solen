@@ -125,11 +125,11 @@ export default function SortDropdown({ locale }: SortDropdownProps) {
                   aria-label={getLabel(opt)}
                   className={cn(
                     "flex items-center gap-2.5 w-full px-4 py-2.5 text-left text-[13px] font-body font-medium transition-colors duration-100",
-                    isActive ? "text-s-coral font-semibold" : "text-s-ink/70",
+                    isActive ? "text-s-accent font-semibold" : "text-s-ink/70",
                     isDisabled ? "opacity-40 cursor-not-allowed" : "hover:bg-s-ink/[0.04]"
                   )}
                 >
-                  <span className={cn("w-2 h-2 rounded-full shrink-0", isActive ? "bg-s-coral" : "bg-transparent")} />
+                  <span className={cn("w-2 h-2 rounded-full shrink-0", isActive ? "bg-s-ink" : "bg-transparent")} />
                   {getLabel(opt)}
                   {opt.key === "distance" && !hasGPS && (
                     <span className="ml-auto text-[10px] text-s-ink/40">GPS</span>

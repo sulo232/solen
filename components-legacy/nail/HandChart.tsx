@@ -79,7 +79,7 @@ export default function HandChart({ customerId }: HandChartProps) {
   if (loading) {
     return (
       <div className="flex justify-center p-8">
-        <Loader2 className="animate-spin text-s-coral/50" />
+        <Loader2 className="animate-spin text-s-accent/50" />
       </div>
     );
   }
@@ -95,7 +95,7 @@ export default function HandChart({ customerId }: HandChartProps) {
         </p>
       </div>
 
-      <div className="max-w-md mx-auto aspect-[16/9] relative bg-s-coral/[0.03] rounded-[24px] border border-s-coral/10 p-4 flex justify-between items-end pb-8">
+      <div className="max-w-md mx-auto aspect-[16/9] relative bg-s-ink/[0.03] rounded-[24px] border border-s-accent/10 p-4 flex justify-between items-end pb-8">
 
         {/* Left Hand */}
         <div className="flex gap-1.5 items-end h-[140px]">
@@ -109,9 +109,9 @@ export default function HandChart({ customerId }: HandChartProps) {
                 aria-pressed={selectedFinger === finger.id}
                 className={`relative w-[28px] rounded-full transition-[border-color,background-color,box-shadow,transform] duration-150 border ${
                   selectedFinger === finger.id
-                    ? "border-s-coral bg-s-coral shadow-elevation-2 scale-105"
+                    ? "border-s-accent bg-s-ink shadow-elevation-2 scale-105"
                     : hasNote
-                      ? "border-s-coral/40 bg-s-coral/10 hover:border-s-coral/60"
+                      ? "border-s-accent/40 bg-s-ink/10 hover:border-s-accent/60"
                       : "border-s-ink/10 bg-[--raised] hover:bg-s-ink/5:bg-white/5"
                 }`}
                 style={{
@@ -121,7 +121,7 @@ export default function HandChart({ customerId }: HandChartProps) {
                 }}
               >
                 {hasNote && selectedFinger !== finger.id && (
-                  <div className="absolute -top-2 -right-2 w-3.5 h-3.5 rounded-full bg-s-coral border-2 border-[--raised]" />
+                  <div className="absolute -top-2 -right-2 w-3.5 h-3.5 rounded-full bg-s-ink border-2 border-[--raised]" />
                 )}
               </button>
             );
@@ -140,9 +140,9 @@ export default function HandChart({ customerId }: HandChartProps) {
                 aria-pressed={selectedFinger === finger.id}
                 className={`relative w-[28px] rounded-full transition-[border-color,background-color,box-shadow,transform] duration-150 border ${
                   selectedFinger === finger.id
-                    ? "border-s-coral bg-s-coral shadow-elevation-2 scale-105"
+                    ? "border-s-accent bg-s-ink shadow-elevation-2 scale-105"
                     : hasNote
-                      ? "border-s-coral/40 bg-s-coral/10 hover:border-s-coral/60"
+                      ? "border-s-accent/40 bg-s-ink/10 hover:border-s-accent/60"
                       : "border-s-ink/10 bg-[--raised] hover:bg-s-ink/5:bg-white/5"
                 }`}
                 style={{
@@ -152,7 +152,7 @@ export default function HandChart({ customerId }: HandChartProps) {
                 }}
               >
                 {hasNote && selectedFinger !== finger.id && (
-                  <div className="absolute -top-2 -right-2 w-3.5 h-3.5 rounded-full bg-s-coral border-2 border-[--raised]" />
+                  <div className="absolute -top-2 -right-2 w-3.5 h-3.5 rounded-full bg-s-ink border-2 border-[--raised]" />
                 )}
               </button>
             );
@@ -182,7 +182,7 @@ export default function HandChart({ customerId }: HandChartProps) {
             </div>
             <textarea
               autoFocus
-              className="w-full text-sm rounded-input border border-s-ink/10 p-3 bg-s-bg-sunken focus:outline-none focus:border-s-coral focus:ring-1 focus:ring-s-coral resize-none"
+              className="w-full text-sm rounded-input border border-s-ink/10 p-3 bg-s-bg-sunken focus:outline-none focus:border-s-accent focus:ring-1 focus:ring-s-accent resize-none"
               rows={2}
               placeholder={t("hand_chart_placeholder")}
               value={notes[selectedFinger] || ""}
@@ -193,7 +193,7 @@ export default function HandChart({ customerId }: HandChartProps) {
               <span className="text-[10px] text-s-ink/40">
                 {t("hand_chart_autosave")}
               </span>
-              {saving && <Loader2 size={12} className="animate-spin text-s-coral" />}
+              {saving && <Loader2 size={12} className="animate-spin text-s-accent" />}
             </div>
           </motion.div>
         )}

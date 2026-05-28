@@ -44,7 +44,8 @@ const STORAGE_KEY = "solen.recently-viewed";
 const DEMO_SALONS: RecentEntry[] = [
   { slug: "atelier-coiffure", name: "Atelier Coiffure", rating: 4.9, category: "coiffeur", availabilityRow: "14:30, 15:00, 16:30",
     photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" },
-  { slug: "studio-nord", name: "Studio Nord", rating: 4.7, category: "barbershop", availabilityRow: "In 25 Min frei",
+  // V3-D128 (2026-05-24): "In 25 Min frei" → "Heute 16:00" per user — Solen books by TIME.
+  { slug: "studio-nord", name: "Studio Nord", rating: 4.7, category: "barbershop", availabilityRow: "Heute 16:00",
     photoUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=450&fit=crop&q=80" },
   { slug: "nail-loft", name: "Nail Loft", rating: 4.8, category: "nails", availabilityRow: "Heute 17:00, 18:30",
     photoUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" },
@@ -129,25 +130,28 @@ export default function RecentlyViewed() {
     setEntries(readStorage());
   }, []);
 
-  // Pre-mount: render nothing (avoids hydration mismatch + avoids flash for
-  // first-time visitors who'll never see this section)
-  if (entries === null) return null;
-
-  // Post-mount, empty storage: in dev mode only, fall back to demo data so
-  // the section renders. Production = hide the section when empty.
-  const list: RecentEntry[] =
-    entries.length === 0 && process.env.NODE_ENV !== "production"
-      ? DEMO_SALONS
-      : entries;
-
-  if (list.length === 0) return null;
+  // V3-D106 (2026-05-23): pre-mount renders the FALLBACK so first-time
+  // visitors always see something (per user "if not put same as in der
+  // nahe but [renamed] cz how will we acc like yk find"). Title flips
+  // to "Top auf Solen" with curated top-rated salons.
+  // Pre-mount: render fallback (no flash, no hydration mismatch)
+  const hasHistory = entries !== null && entries.length > 0;
+  const list: RecentEntry[] = hasHistory ? entries : DEMO_SALONS;
+  const title = hasHistory ? "Zuletzt angesehen" : "Top auf Solen";
+  const linkLabel = hasHistory ? "Im Profil →" : "Alle entdecken →";
+  const linkHref = hasHistory ? "/profile/recently-viewed" : "/search?sort=top-rated";
 
   return (
+    // V3-D112 (2026-05-23): bg-s-peach REMOVED per user "remove ths color like
+    // cream everywhere" — selected the peach RecentlyViewed section. Reverted
+    // to default white substrate. Token `s-peach` kept in tailwind for back-
+    // compat / future use; only the usage on this section is removed.
+    // Prior V3-D107: bg-s-peach was the warm welcome at top of feed.
     <Section>
       <SectionFrame>
         <SectionTitle
-          title="Zuletzt angesehen"
-          link={{ label: "Im Profil →", href: "/profile/recently-viewed" }}
+          title={title}
+          link={{ label: linkLabel, href: linkHref }}
           scrollRef={scrollRef}
         />
         <ScrollRow ref={scrollRef}>

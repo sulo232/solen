@@ -79,7 +79,7 @@ export default function SearchResultGrid({
           {/* Reset filters */}
           <button
             onClick={() => router.push(pathname, { scroll: false })}
-            className="text-sm text-s-coral hover:underline"
+            className="text-sm text-s-accent hover:underline"
             aria-label={t("searchTryRemoveFilters")}
           >
             {t("searchTryRemoveFilters")}
@@ -108,7 +108,7 @@ export default function SearchResultGrid({
             onClick={() => onSelect?.(salon.id)}
             className={`cursor-pointer rounded-[12px] transition-[background-color,border-color] ${
               selectedId === salon.id
-                ? "ring-2 ring-s-coral ring-offset-2"
+                ? "ring-2 ring-s-accent ring-offset-2"
                 : ""
             }`}
           >
@@ -122,7 +122,7 @@ export default function SearchResultGrid({
           <button
             onClick={onLoadMore}
             disabled={loadingMore}
-            className="px-6 py-2.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm font-medium shadow-warm-sm hover:shadow-elevation-2 transition-[transform,filter] disabled:opacity-50"
+            className="px-6 py-2.5 rounded-btn active:scale-[0.97] bg-s-ink text-white text-sm font-medium shadow-warm-sm hover:shadow-elevation-2 transition-[transform,filter] disabled:opacity-50"
           >
             {loadingMore ? <Spinner /> : "Mehr laden"}
           </button>

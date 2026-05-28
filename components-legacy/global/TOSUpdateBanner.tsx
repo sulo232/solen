@@ -57,7 +57,7 @@ export default function TOSUpdateBanner() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[100] bg-s-coral text-white px-4 py-3 shadow-warm-md print:hidden">
+    <div className="fixed top-0 left-0 right-0 z-[100] bg-s-ink text-white px-4 py-3 shadow-warm-md print:hidden">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative pr-8 sm:pr-0">
         <div className="flex items-center gap-3 text-sm font-medium">
           <AlertCircle className="w-5 h-5 shrink-0" />
@@ -77,7 +77,7 @@ export default function TOSUpdateBanner() {
           <button
             onClick={handleAccept}
             disabled={isAccepting}
-            className="bg-white text-s-coral px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-white/90 transition-colors disabled:opacity-50"
+            className="bg-white text-s-accent px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-white/90 transition-colors disabled:opacity-50"
           >
             {isAccepting ? "Wird akzeptiert..." : "Akzeptieren / Accept"}
           </button>

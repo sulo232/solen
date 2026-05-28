@@ -1,0 +1,1341 @@
+# Solen Design System — SOURCE.md (V3-D183, 2026-05-26)
+
+> **The canonical source of truth for Solen's V3 design system.**
+> Read this first. Every UI decision routes through here. When this doc conflicts with code, fix the doc OR ask — never silently desync.
+>
+> **Companion files** (in priority order):
+> 1. `_design-system/components/<Name>.md` — per-component specifics (props, edge cases, motion details). Less broad than this, more specific.
+> 2. `_rules/SOLEN_UI.md` — universal UI/UX thinking principles (the "think before you output" checklist). Stays orthogonal to tokens.
+> 3. `_design-system/QUESTIONS.md` — open decisions still pending user input. Add to this; don't ask in chat.
+
+---
+
+## §0 · Source-of-truth reconciliation
+
+This file consolidates four predecessor docs. To avoid ambiguity, here's exactly what happened to each, when, and what wins on conflict.
+
+### Predecessor docs — fate
+
+| File | Era | Decision | Where the content went |
+|---|---|---|---|
+| `_tasks/SOLEN_LIVE_TRUTH.md` (976 lines, last touched 2026-05-18 / V2-D70) | Pre-B&W pivot (Aurex/Fresha warm-minimal era with forest `#3B7A57`, terracotta `#D87352`, warm pearl `#F9F8F6`, Plus Jakarta Sans) | **ARCHIVED** → `_tasks/archive/SOLEN_LIVE_TRUTH_pre-V3-D183.archived.md` | Almost everything in it contradicts current state. Section refs like §F.1 / §5b / §16 are kept alive here under refreshed token values. |
+| `_tasks/SOLEN_DESIGN.md` (85 lines, 2026-05-25 / V3-D139) | Current B&W truth — `#16A34A` forest emerald + `#0A0A0A` ink + 80/17/3 rule | **EXTRACTED + ARCHIVED** → `_tasks/archive/SOLEN_DESIGN_pre-V3-D183.archived.md` | 100% of token content lives in §2 (Colors) of this file. §1 (Brand positioning) keeps its 80/17/3 rule. |
+| `_rules/SOLEN_PATTERNS.md` (314 lines, 2026-05-10) | V2-D49 era — emerald `#1F5C42`, cream substrate, Peace Sans, atmosphere wash, 4 cat colorways | **PARTIAL EXTRACT + ARCHIVED** → `_tasks/archive/SOLEN_PATTERNS_pre-V3-D183.archived.md` | Parts 4-5-8 (Fresha translation playbook + workflow + open questions) extracted into §21. Part 2 structural skeletons go into per-component `.md` files as "Anatomy" sections. Token specs all retired. |
+| `_rules/SOLEN_UI.md` (398 lines, 2026-05-10) | Universal principles + V2-D49 token examples | **KEPT IN PLACE, NEEDS REFRESH** | The 10 principles + tactical heuristics + anti-patterns are universal and stay. Specific token mentions (Peace Sans, `#1F5C42` emerald, `#C97A57` terracotta, cream substrate, "60/30/10 split") MUST be updated to point at this file. Pending edit listed in QUESTIONS.md. |
+
+### Precedence rule (what wins on conflict)
+
+When two docs disagree on a value:
+
+1. **Code wins over docs** (the running app is the ground truth — fix the doc).
+2. **Among docs, this SOURCE.md wins.** It's the most recent, the most complete, the only one designed to be the canonical reference.
+3. **`_rules/SOLEN_UI.md` is orthogonal** — it covers principles, not tokens. If it mentions a specific hex value, prefer this file's value.
+4. **Per-component `.md` files override SOURCE.md only for their own component's specifics** (e.g. SaveHeart's 28px hit-area is documented in `components/SaveHeart.md`, not here). They never override systemic rules (tokens / type / motion / a11y).
+5. **Archived files** (`_tasks/archive/*`) are read-only history. Do NOT use as a reference for current state — they describe retired eras.
+
+### Drift between this doc and code
+
+**Q1-Q20 all RESOLVED 2026-05-26.** See [QUESTIONS.md](QUESTIONS.md) for the full decision log. Material resolutions baked into this doc:
+
+- **Q1 (yellow stars)**: `s-star` is `#FFC32B` (yellow, universal signal). Supersedes V3-D95 "never yellow." `tailwind.config.js` `s-star` token to be updated from `#1A1A1A` → `#FFC32B` (Q1 follow-up).
+- **Q4 (input font)**: Plus Jakarta Sans → Hanken Grotesk in `app/globals.css` — **shipped V3-D189**.
+- **Q5 (focus ring)**: Teal `#043338` → `s-ink #0A0A0A` in `app/globals.css` — **shipped V3-D189**.
+- **MAJOR (Q1 secondary, V3-D189)**: `s-brand` family (green) **retired as brand color**. Solen is B&W; CTAs/logo/chrome use `s-ink`. See §2.2.
+- **Q2 / Q3 / Q15**: retired easings + retired color tokens stay defined for back-compat. Hard deletion backstop: **2026-08-26**.
+- **Q19 (B&W photos)**: brand chrome stays B&W; user-uploaded photos stay color. Locked.
+- **Q20 (IA references)**: Mobbin first; **Chrome (Playwright) live capture from Fresha when Mobbin lacks the screen.** See §21.
+
+---
+
+## §1 · Brand positioning
+
+### The one-liner
+
+> **Solen — Termin in 30 Sekunden. Beauty & Wellness in der ganzen Schweiz.**
+
+Swiss-first beauty & wellness booking marketplace. The "30 Sekunden" claim is the entire competitive position — every UI decision should preserve or enhance that promise. If a flow takes longer than 30 seconds in user time, audit and shorten.
+
+### Audience + market
+
+- **Primary**: customers in Basel / Zürich / Bern (launch cities), expanding to French + Italian Switzerland
+- **Secondary**: salon owners (`/business` / `/dashboard/*`)
+- **Locale priority**: German first, then English, then French, then Italian (UI defaults `de`)
+- **Devices**: Mobile-first design (≥75% of expected traffic). Desktop is a secondary surface — every feature must work on mobile before desktop work begins.
+
+### The color law — three-layer system (V3-D197, 2026-05-26)
+
+**Supersedes the V3-D192 "80/17/3 + signals" framing.** That model was correct for chrome but didn't account for **semantic UI** — surfaces where color IS the meaning. This caused a recurring bug (Toast V3-D196 patch, would have hit StatusPill / AlertBanner / FormFieldError next). V3-D197 introduces a third layer that codifies the entire class.
+
+Every color use on Solen belongs to **one of three layers**:
+
+| Layer | Budget | What it is | Where it appears |
+|---|---|---|---|
+| **1 · Chrome** | ~97% (80% white surfaces + 17% ink) | Color is NOT the message. Pure B&W: white/sunken bg, ink text, ink hairlines, ink icons | Page bg, cards, modals, h1-h6, body, default buttons, dividers, footer, layout, photos |
+| **2 · Brand accent** | ~3% | Color says "this is Solen." Single saturated hue, Apple-style usage (small highlight moments only — NOT primary CTAs) | Section eyebrows + bullets, link color, "NEW" pills, selected tab text, focus moments where brand identity matters |
+| **3 · Semantic UI** | Variable (each instance is small but unbudgeted) | **Color IS the message.** Universal-convention hues users recognize at-a-glance. | Toast tones, StatusPill, AlertBanner, FormFieldError, ProgressBar step state, urgency badges, rating, save-fill, validation states |
+
+**The 80/17/3 numbers still describe chrome + brand-accent budget.** They're a budget, not a ceiling — semantic UI is unbudgeted because each instance is small and its presence is justified by meaning, not aesthetic.
+
+### Decision tree — every new component component must answer in this order
+
+```
+1. Does this surface CONVEY semantic meaning by color?
+   (success/error/warning/info/open/closed/active/inactive/urgent/rating/save/…)
+
+   → YES → Layer 3 semantic UI (see §2.5 universal color conventions)
+   → NO  → continue
+
+2. Does this surface represent the BRAND identity moment?
+   (eyebrow, "NEW" pill, link, selected tab, brand bullet)
+
+   → YES → Layer 2 brand accent (royal blue, small footprint, see §2.1)
+   → NO  → continue
+
+3. Default: Layer 1 chrome (B&W, see §2.1 ink table)
+```
+
+This decision tree is the **canonical onboarding for every new component** (CLAUDE.md rule). Sub-agents building components must include this answer in their `_design-system/components/<Name>.md` Purpose section.
+
+### Universal colors — we don't invent semantic hues
+
+Solen uses **the colors humans already recognize** from a lifetime of UI exposure. We do not invent custom semantic colors. If a meaning has a universal hue, we adopt the universal hue and map to our token.
+
+| Universal semantic | Standard hue | Solen token | Hex | Where it shows up |
+|---|---|---|---|---|
+| Success / Go / Open | Green | `s-success` | `#16A34A` | Toast success, StatusPill "Geöffnet", booking confirmed states |
+| Error / Danger / Closed | Red | `s-error` | `#D32F2F` | Toast error, FormFieldError border + text, "Geschlossen", critical alerts |
+| Warning / Caution | Amber | `s-warning` | `#F59E0B` | Toast warning, "Letzte Plätze" notices, validation that's not-blocking |
+| Info / Brand identity | Blue | `s-accent` | `#1638C4` | Toast info, link color, eyebrows, "NEW" pills, brand moments (also Layer 2) |
+| Rating | Yellow | `s-star` | `#FFC32B` | Stars only, universal across review surfaces |
+| Save / Love | Hot pink | `--heart-active` | `#FF3366` | Saved-favorite heart fill only |
+| Urgency / Hot | Burnt amber | (inline) | `#9A3412` text on `#FFF1E6` bg | "Nur X heute" Flame badge only |
+| Disabled / Inactive | Muted grey | `s-ink-3` / `s-ink-disabled` | `#6B6B6B` / `#C5C8C4` | Disabled buttons, inactive tabs, low-importance text |
+
+**Rule:** if a UI element conveys one of the meanings above, use the listed token. Don't invent a "Solen-specific" success green or warning amber. The universal hue is the whole point — users recognize it without thinking.
+
+### The saturation contract (V3-D199, 2026-05-26)
+
+Every semantic color in our system MUST exist in two forms with matched H but predictable L/S ranges:
+
+| Form | Used for | HSL target |
+|---|---|---|
+| **`.DEFAULT`** — saturated signal | Icons, text-on-white, borders, fills, filled buttons | **L 36-60%**, **S 65-92%** (Tailwind-500/600 range) — V3-D204 widened from L 36-51% to accommodate brighter brand blues like `s-accent #276EF1` HSL(215°, 88%, 55%) |
+| **`.bg`** / **`.pale`** — pastel surface | Layer 3 toast/alert/banner backgrounds, soft tints | **L 93-96%**, **S 25-100%** (Tailwind-50 range) |
+
+When adding a new color token to `tailwind.config.js`, both forms MUST be defined together. **Recipe for the `.bg` variant:** keep the hue, push L to ~93%, lower S to ~25-65% (or higher for warm hues that naturally need more saturation to appear tinted).
+
+**Anti-patterns:**
+- ❌ Defining only `.DEFAULT` (forces future Layer 3 surfaces to invent on the fly)
+- ❌ Defining a pastel that's L < 92% — reads as a "card bg color" not a "tinted air" surface
+- ❌ Defining a saturated that's L < 36% — too dark, reads as ink-with-hue not as signal
+- ❌ Mixing hues (defining `.bg` with a different H than `.DEFAULT` — drift)
+
+**Already-in-system examples** (use as reference when adding new tokens):
+- `s-success.DEFAULT #16A34A` (HSL 142, 76%, 36%) + `.bg #E8F5E9` (HSL 122, 28%, 93%)
+- `s-error.DEFAULT #D32F2F` (HSL 0, 65%, 51%) + `.bg #FFEBEE` (HSL 354, 100%, 96%)
+- `s-warning.DEFAULT #F59E0B` (HSL 38, 92%, 50%) + `.bg #FFF3E0` (HSL 36, 100%, 94%)
+- `s-accent.DEFAULT #276EF1` (HSL 215, 88%, 55%) + `.pale #EAEFFE` (HSL 226, 92%, 96%) — V3-D204
+
+**What WE DON'T do:**
+- ❌ Invent a custom "Solen success" that's slightly off-standard
+- ❌ Use brand-accent royal blue for error/success/warning (it isn't those things)
+- ❌ Default to ink chrome for components whose color IS their meaning (the recurring Agent D mistake — Toast got patched, but the rule now PREVENTS this for the next 10 components)
+- ❌ Stack semantics: don't use 4 different greens for "success" depending on context. One green per role.
+
+### Voice register (full rules in §18)
+
+Direct, conversational, action-oriented. German `du` not `Sie`. Speed-anchored copy ("Nur 1 heute", "Termin in 30 Sek."). Avoid sales-y exclamation marks. Never invent claims.
+
+---
+
+## §2 · Color tokens
+
+All tokens come from `tailwind.config.js` `theme.extend.colors`. Always reference tokens via Tailwind classes (`bg-s-bg-sunken`, `text-s-ink`) — never inline hex.
+
+### §2.1 · Live tokens (use freely)
+
+#### Accent — Royal Blue (V3-D192-fix, 2026-05-26)
+
+The 3% accent band. **Small highlight moments only — NOT primary CTAs.** Apple-style usage, not Uber-CTA usage.
+
+| Token | Hex | Tailwind class | Use |
+|---|---|---|---|
+| `s-accent.DEFAULT` | `#1638C4` | `bg-s-accent` / `text-s-accent` / `border-s-accent` | Section eyebrow text + bullet ●, link color, "NEW"/status pill bg, active/selected tab text, data-emphasis (sparingly) |
+| `s-accent.deep` | `#0F2A99` | `bg-s-accent-deep` / `text-s-accent-deep` | Link `:hover`, accent-on-bg `:hover` |
+| `s-accent.pale` | `#EBEFFA` | `bg-s-accent-pale` | "Selected" row bg, focus-glow tint, NEW pill bg-light variant |
+
+**Contrast vs white** (`text-s-accent #1638C4` on white) ≈ **9.6 : 1 → AAA**. Safe at any text size including 11px metadata.
+
+**Where to use:** Section eyebrow + bullet (Bei dir zuletzt ●), link colors (Mehr lesen →), "NEW" / status pills, tab active state, the chevron→arrow next to section titles (it IS a secondary affordance).
+
+**Where NOT to use (V3-D192-fix lock):**
+- ❌ Primary CTAs (Termine finden, Suchen, Booking) — stay `bg-s-ink`. Blue on the main button defeats the "accent" semantic; the eye has nowhere to land as a highlight if blue IS the dominant surface.
+- ❌ Body text / headings / chrome that isn't a deliberate highlight
+- ❌ Borders / hairlines / dividers
+- ❌ Focus-visible ring (Q5 locked to `s-ink` for WCAG contrast and consistency)
+
+#### Chrome (ink — used for all NON-accent UI)
+
+`s-ink` is still the workhorse for all non-accent chrome: body text, headings, icons, secondary buttons, focus-visible outline (per §16.2), hairlines.
+
+| Token | Hex | Tailwind class | Use |
+|---|---|---|---|
+| `s-ink` | `#0A0A0A` | `bg-s-ink` / `text-s-ink` / `border-s-ink` | Default body, h1-h6, secondary buttons, focus-visible outline (Q5 ruled) |
+
+**Contrast vs white**:
+- `text-s-ink #0A0A0A` on white = ~19.6 : 1 → **AAA** (passes all text sizes).
+- `text-white` on `bg-s-ink` = ~19.6 : 1 → **AAA**. Used for secondary CTAs / dark sections.
+
+#### Ink (the 17% band)
+
+| Token | Hex | Tailwind | Use |
+|---|---|---|---|
+| `s-ink` | `#0A0A0A` | `text-s-ink` | Default body, h1, h2, primary text |
+| `s-ink-2` / `s-ink.secondary` | `#6B6B6B` | `text-s-ink-2` | Secondary text, metadata, captions |
+| `s-ink-3` | `#6B6B6B` (collapsed) | `text-s-ink-3` | Same as ink-2 in V3-D138. Tertiary text role. Still distinct semantically for future un-collapse. |
+| `s-ink.disabled` | `#C5C8C4` | `text-s-ink-disabled` | Disabled state text |
+
+**Never use** pure black `#000000` — causes eye strain on warm-ish surfaces. Always `s-ink #0A0A0A`.
+
+#### Surfaces (the 80% band)
+
+| Token | Hex | Tailwind | Use |
+|---|---|---|---|
+| `s-bg.base` | `#FFFFFF` | `bg-s-bg-base` | Page substrate |
+| `s-bg.surface` | `#FFFFFF` | `bg-s-bg-surface` | Card / modal bg |
+| `s-bg.raised` | `#FFFFFF` | `bg-s-bg-raised` | Tooltip / popover bg (same hex; semantic distinction reserved) |
+| `s-bg.sunken` | `#F5F5F4` | `bg-s-bg-sunken` | Hover bg, input-active bg, inert recessed surfaces |
+| `s-bg.active` | `#F5F5F4` | `bg-s-bg-active` | Input typing state (same hex as sunken) |
+| `s-border` | `#E7E5E4` | `border-s-border` | Hairlines, dividers, card outlines |
+
+#### Semantic colors (off-budget — they're signals, not branding)
+
+| Token | Hex | Use |
+|---|---|---|
+| `s-love` DEFAULT | `#CC4A60` | Heart-saved fill, sale/discount chips (dual duty per Airbnb pattern) |
+| `s-love.soft` | `#FAD2DA` | Light warm-red bg for sale chips |
+| `s-love.deep` | `#A23548` | Dark warm-red text on `.soft` bg |
+| `s-success` DEFAULT | `#16A34A` | Success state (same hue as brand — distinguish by context) |
+| `s-success.bg` | `#E8F5E9` | Success surface tint |
+| `s-warning` DEFAULT | `#F59E0B` | Warnings |
+| `s-warning.bg` | `#FFF3E0` | Warning surface tint |
+| `s-error` DEFAULT | `#D32F2F` | Errors |
+| `s-error.bg` | `#FFEBEE` | Error surface tint |
+| `s-closed` | `#DC2626` | "Geschlossen" / closure states — distinct from error |
+| **`s-star`** | **`#FFC32B`** | **Rating stars — universal yellow signal. V3-D189 (2026-05-26, Q1 resolved): yellow is the locked color. Supersedes V3-D95 "never yellow." Update tailwind.config.js `s-star: "#FFC32B"`.** |
+| **`--heart-active`** | **`#FF3366`** | **Saved-favorite heart fill (signal exception). V3-D103.** |
+
+#### Inline urgency (currently only used in one place — Flame badge "Nur X heute")
+
+The "Nur X heute" badge uses inline hex `#9A3412` (burnt sienna text on `#FFF1E6` peach bg with `rgba(154, 52, 18, 0.22)` border). This is the **single sanctioned warm exception** in the locked B&W palette — urgency reads warm by physiological convention. It does NOT spend the 3% accent budget.
+
+### §2.2 · Retired but still defined (drift-checker target)
+
+These tokens exist in `tailwind.config.js` for backwards compat with un-rebuilt routes. **Any usage in new code is drift.** Drift-checker flags. They will be deleted from config once usage drops to zero across the codebase.
+
+| Token | Hex | Retired in | Reason |
+|---|---|---|---|
+| **`s-brand` family** | **`#16A34A` etc.** | **V3-D189 (2026-05-26)** | **Q1 decision: forest emerald is no longer a brand color. Solen is B&W; chrome is `s-ink`. All `s-brand` callsites must migrate to `s-ink` (CTAs) or be removed (logo dots already dropped). Hard backstop: 2026-08-26 (Q15).** |
+| `s-brand-mid` `s-brand-deep` `s-brand-pale` `s-brand-subtle` | `#15803D` `#14532D` `#DCFCE7` `#F0FDF4` | V3-D189 | Same — brand-green family retired together. |
+| `s-coral` family | `#3B7A57` etc. | V3-D139 | Pre-B&W pivot brand (V2-D70 Aurex era). Token name lies — value is forest emerald, not coral. |
+| `s-cool` | `#89B4CA` | V3-D138 | Dusty blue — pre-B&W. Reserved for future use per memory `project_palette_b_w_pivot.md`. |
+| `s-pop` | `#C03001` | V3-D138 | Vermilion — pre-B&W |
+| `s-wasabi` | `#F6EDE3` | V3-D138 | Cream section tint — pre-B&W |
+| `s-droplet` | `#E8F0F4` | V3-D138 | Pale dusty blue — pre-B&W |
+| `s-cream` | `#E9DFC8` | V3-D138 | Cream substrate — pre-B&W |
+| `s-accent.*` | `#FFC32B` family | V3-D138 | Legacy golden amber accent — accent role retired entirely V3-D189 (no more accent band). |
+| `s-butter` | `#F2D77B` | V3-D138 | Bright yellow stat-card highlight — pre-B&W |
+| `s-sage` family | `#A8B89A` etc. | V2-D49j | Sage CTA color — too low contrast on cream (which is itself retired) |
+| `s-cat-coiffeur*` `s-cat-barbershop*` `s-cat-nails*` `s-cat-spa*` | various | V3-D138 | Earthen Wellness category colorways — replaced by neutral grey tiles in MobileCategoriesRow |
+| `s-atm-cream` `s-atm-terra` `s-atm-sage` `s-atm-bone` `s-atm-butter` | various | V2-D68 | Atmosphere wash colors — wash entirely retired |
+| `--shadow-warm-*` aliases | various | (warm tint legacy) | Use `elevation-1/2/3` |
+| `--ease-out-strong` `--ease-out-warm` `--ease-in-subtle` `--spring-bounce` `--ease-drawer` | various | V2-D16+ | Use canonical 4: `snap` / `spring` / `glide` / `thud` |
+
+**Reserved**: Royal blue `#1638C4` per memory `project_palette_b_w_pivot.md` — held for future use, NOT introduced now. If introduced, document here.
+
+### §2.3 · Color anti-patterns
+
+- ❌ Hardcoded hex anywhere except inline urgency band (§2.1 Flame badge) and the universal-color signal tokens. Use Tailwind tokens.
+- ❌ Reintroducing Peace Sans, terracotta, cream substrate, atmosphere wash. All retired.
+- ❌ Using `s-brand` ANYWHERE in new code (V3-D189 — still retired). Token kept for back-compat only.
+- ❌ Using `s-accent` (royal blue) on primary CTAs — accent ≠ primary action surface (V3-D192-fix). Primary CTAs stay `bg-s-ink`.
+- ❌ Defaulting to chrome ink for a component whose color carries semantic meaning (V3-D197). If success/error/warning/info/open/closed/active is being communicated, the surface belongs to Layer 3 semantic UI — use the universal-color token. The recurring Agent-D-style mistake.
+- ❌ Inventing custom semantic hues. There's only ONE green for success (`s-success #16A34A`), ONE red for error (`s-error #D32F2F`), ONE amber for warning (`s-warning #F59E0B`). Don't shift them ±10° for "brand feel" — the universal hue IS the brand feel.
+- ❌ Stacking semantics: do not use the brand-accent royal blue to mean "info" in one place and "selected tab" in another in the same module. Pick one role per surface.
+- ❌ Tinted shadows (`rgba(R, G, B, ...)` where RGB matches a retired brand color). Shadows are warm-ink only.
+
+### §2.5 · Semantic UI surfaces catalog (V3-D197, 2026-05-26)
+
+Surfaces that obey **Layer 3 semantic UI** (color IS the meaning). Each entry maps a surface → universal hue → token → typical class string. **Adding a new component? Check this catalog first.** If the surface conveys a meaning listed here, use the listed token. If the meaning is new, propose it via QUESTIONS.md before inventing.
+
+| Surface | Meaning | Hue / token | Typical class |
+|---|---|---|---|
+| `<Toast tone="success">` | Confirmation, action completed | green pastel + saturated icon | `bg-s-success-bg text-s-ink border-s-success/15` + `<CheckCircle2 text-s-success>` |
+| `<Toast tone="error">` | Failure, blocked action | red pastel + saturated icon | `bg-s-error-bg text-s-ink border-s-error/15` + `<AlertCircle text-s-error>` |
+| `<Toast tone="warning">` | Caution, non-blocking advisory | amber pastel + saturated icon | `bg-s-warning-bg text-s-ink border-s-warning/20` + `<AlertTriangle text-s-warning>` |
+| `<Toast tone="info">` | Neutral information, FYI | blue pastel + saturated icon | `bg-s-accent-pale text-s-ink border-s-accent/15` + `<Info text-s-accent>` |
+| `<StatusPill state="open">` | "Geöffnet" (open now) | green / `s-success` | `text-s-success font-semibold` (text-only — color carries it) |
+| `<StatusPill state="closed">` | "Geschlossen" | muted / `s-ink-3` | `text-s-ink-3 font-medium` |
+| `<StatusPill state="urgent">` | "Schnell weg / Nur X heute" | amber / inline | `text-[#9A3412] bg-[#FFF1E6] border-[rgba(154,52,18,0.22)]` + `<Flame>` |
+| `<FormFieldError>` | Validation failure | red / `s-error` | `border-s-error text-s-error` + helper text |
+| `<FormFieldSuccess>` (rare) | Confirmed valid (e.g. unique email check passed) | green / `s-success` | `border-s-success text-s-success` |
+| `<AlertBanner tone="X">` | Cross-page warnings (cookie banner, maintenance) | per-tone | mirror Toast tones; full-width strip |
+| `<ProgressStep state="complete">` | Booking wizard step done | green / `s-success` | filled circle bg, white checkmark |
+| `<ProgressStep state="current">` | Active step | blue / `s-accent` | filled circle bg, white number |
+| `<ProgressStep state="pending">` | Future step | muted / `s-ink-3` | hollow circle, ink-3 border |
+| Rating star (filled) | "This salon scored X" | yellow / `s-star` | `fill="#FFC32B"` (universal star convention) |
+| Rating star (empty) | Score remainder | grey / `s-border` | `fill="#E7E5E4"` |
+| Heart (saved) | "You saved this" | pink / `--heart-active` | `fill="#FF3366"` |
+| Heart (unsaved) | Default | ink-stroke / `s-ink` | `stroke="var(--color-heading)" fill="none"` |
+| "NEW" badge (brand) | Brand identity moment, not semantic | blue / `s-accent` | `bg-s-accent text-white` (Layer 2, NOT Layer 3 — listed here for the decision boundary) |
+| Disabled / inactive surface | Affordance-off | muted / `s-ink-disabled` | `opacity-50 cursor-not-allowed` + neutral colors |
+
+**When adding to this catalog:**
+1. Identify the meaning (success / warning / open / closed / etc.)
+2. Check universal-color table in §1 — does a standard hue exist for this meaning? Use it.
+3. Add the row here with token + class
+4. Add the per-component .md file referencing this row
+5. NEVER skip step 2 and invent a new hue
+
+---
+
+## §3 · Typography — V3-D191 (2026-05-26)
+
+### Fonts (locked)
+
+| Family | Tailwind | Files using it |
+|---|---|---|
+| **Inter Tight** | `font-display`, `font-heading` (alias) | Page H1s ("Termin in 30 Sek."), Section H2s, MobileCategoriesRow H2 — all display headings. V3-D190 swap (supersedes Bricolage Grotesque). |
+| **Hanken Grotesk** | `font-body` (default) | Everything else: body, labels, buttons, captions, metadata, numerics. **V3-D191: weight range expanded to 300-800** for Uber-modern body-light contrast. |
+
+Both loaded via `app/globals.css` Google Fonts `@import` with `display=swap`. Inter Tight weights 500/600/700/800/900. Hanken weights **300/400/500/600/700/800**.
+
+**The contrast formula (V3-D191):** display Inter Tight **900** ↔ body Hanken **300** = **3.0× weight ratio**. The thin body is what makes the heavy display feel intentional rather than uniformly chunky. Without this contrast (the V3-D190 version), the whole page read "loud" — no place for the eye to rest. With Hanken 300 body, the H1 dominates by *weight contrast* the way Uber's display does.
+
+**Why both families (not single-family like Uber Move):** Inter Tight at thin weights (300) doesn't have the slightly warmer letter aperture Hanken Grotesk does. Hanken at 300 reads as a "calmer" body than Inter Tight 300 — better for German compound words. We get the Uber weight-contrast principle without losing body legibility.
+
+### Type role table — Scale B (V3-D190, -10% from V3-D75 baseline)
+
+The canonical roles. Pick a role; use its exact spec. Don't invent new sizes.
+
+| Role | Class | Size (px / clamp) | Weight | Tracking | Line-height | Case | Use |
+|---|---|---|---|---|---|---|---|
+| Hero H1 | `font-display text-[clamp(36px,9vw,46px)] font-extrabold leading-[1.0] tracking-[-0.03em]` | clamp(36, 9vw, 46) | **800** | -0.03em | 1.0 | sentence | Page hero only (`Termin in 30 Sekunden.`) — V3-D193 weight 900→800 |
+| Page H2 | `font-display text-[clamp(25px,4vw,40px)] font-extrabold leading-[1.0] tracking-[-0.03em]` | clamp(25, 4vw, 40) | **800** | -0.03em | 1.0 | sentence | BusinessTeaser-style h2 — V3-D193 weight 900→800 |
+| Section H2 | `font-display text-[clamp(18px,2vw,23px)] font-bold leading-[1.2] tracking-[-0.03em] text-s-ink` | clamp(18, 2vw, 23) | **700** | -0.03em | 1.2 | sentence | "Top auf Solen", "In der Nähe", "Profis in deiner Nähe", "Finde deine Inspiration.", "Bewertungen" — V3-D193 weight 800→700 |
+| MobileCategoriesRow H2 | `font-display text-[clamp(18px,5vw,20px)] font-bold leading-[1.2] tracking-[-0.03em]` | clamp(18, 5vw, 20) | **700** | -0.03em | 1.2 | sentence | "Für dich" only — V3-D193 weight 800→700 |
+| Logo wordmark | `font-display font-extrabold leading-none tracking-normal` | per size variant | **800** | normal | 1 | sentence | "Solen" header logo — V3-D193 weight 900→800 |
+| Card name (h3) | `font-body text-[14px] font-medium leading-[1.25] tracking-[-0.01em] text-s-ink` | 14 | **500** | -0.01em | 1.25 | sentence | SalonCard name (V3-D191: 600→500) |
+| Card name (stylist) | `font-body text-[15px] font-medium leading-[1.2] tracking-[-0.01em] text-s-ink` | 15 | **500** | -0.01em | 1.2 | sentence | FeaturedStylists name (V3-D191: 700→500) |
+| Hero sub | `font-body text-[clamp(14px,3.5vw,16px)] font-light leading-[1.4] tracking-[-0.025em] text-s-ink-2` | clamp(14, 3.5vw, 16) | **300** | -0.025em | 1.4 | sentence | "Beauty & Wellness in der ganzen Schweiz." (V3-D191: 500→300) |
+| Body primary | `font-body text-[14px] font-light leading-[1.55] text-s-ink` | 14 | **300** | normal | 1.55 | sentence | Most paragraphs (V3-D191: 400→300) |
+| Body secondary | `font-body text-[12px] font-light leading-[1.35] text-s-ink-2` | 12 | **300** | normal | 1.35 | sentence | Address rows, metadata, next-slot (V3-D191: 400→300) |
+| Caption / Metadata | `font-body text-[11px] font-medium text-s-ink-3 tabular-nums` | 11 | 500 | normal | 1.4 | sentence | "vor 2 Wochen", review counts, distance |
+| Pill text | `font-body text-[11px] font-semibold leading-[1.2] tracking-[0.01em]` | 11 | 600 | +0.01em | 1.2 | sentence | "Nur 1 heute" — sentence case per V2-D67-fu7 |
+| Author/handle | `font-body text-[11px] font-semibold text-s-ink` | 11 | 600 | normal | 1.2 | sentence | EntdeckenCard `@rissa` pill |
+| Button CTA | `font-body text-[15px] font-bold tracking-[-0.01em]` | 15 | 700 | -0.01em | 1 | sentence | "Termine finden", "Solen durchsuchen" |
+| Marquee text | `font-body text-[11px] font-normal text-white` | 11 | 400 | normal | 1 | sentence | EntdeckenCard "TikTok · TikTok ·" attribution |
+| Eyebrow | `font-body text-[12px] font-bold uppercase tracking-[0.16em] text-s-ink-3` | 12 | 700 | +0.16em | 1 | UPPERCASE | BusinessTeaser "Für Salons" only |
+
+### Numerics
+
+Use `tabular-nums` on prices, ratings, counts, dates, times so digits don't jitter when values change. Always.
+
+### Inline emphasis
+
+Don't use `<em>` (italic banned per V2-D15) or `<u>` (underline banned). To emphasize a word inside a sentence, ALL legal options:
+- Wrap in `<strong className="font-semibold text-s-ink">` (bold + ink — extra visual weight)
+- Color it `text-s-ink` against `text-s-ink-2` parent (contrast emphasis)
+- Don't swap to brand color (reads as "this is clickable")
+
+### Anti-patterns
+
+- ❌ Inline `style={{ fontFamily: '...' }}` — use Tailwind `font-display` / `font-body` classes
+- ❌ Plus Jakarta Sans (V2-D70 era — retired V3-D75)
+- ❌ Peace Sans / Open Sauce One (V2-D42 era — retired V3-D75)
+- ❌ Italic (`<em>`, `italic` class, font-style:italic)
+- ❌ Underline outside `<a>` links
+- ❌ Inventing new sizes outside the role table
+- ❌ `<h1>` more than once per page (semantic)
+
+---
+
+## §4 · Spatial rhythm
+
+Everything is on a 4-point scale. Tailwind's defaults (`p-1` = 4px / `p-2` = 8px / `p-3` = 12px / etc.) ARE the scale. Use them.
+
+### Section vertical rhythm
+
+| Spacing role | Value | Tailwind | Use |
+|---|---|---|---|
+| Hero → FeedZone top edge | `mt-10 md:mt-8` (40/32px) | — | V3-D170b: the FeedZone container's `margin-top`. Creates visible breathing room between SearchCard and "Für dich". |
+| FeedZone top padding | `pt-2 md:pt-4` (8/16px) | — | Internal padding before first content. Combined with `mt-X` above. |
+| Section → Section gap | `mb-2 md:mb-3` (8/12px) | per Section component | Between adjacent feed sections inside FeedZone |
+| Section title → carousel | `mt-3` (12px) | per ScrollRow | Tight by design. Section title is part of the surface, not a separator. |
+| BusinessTeaser top padding | `py-12 md:py-20` (48/80px) | — | Page-level CTA section. More breathing room because it's a transition out of the feed. |
+| Hero top padding | `pt-8` (32px) | — | V3-D151 — was `pt-[100px]`, pulled up per user. |
+
+### Card padding by surface type
+
+| Card type | Padding | Reason |
+|---|---|---|
+| SalonCard (photo-first) | `p-0` outer, photo fills, text below at `mt-[10px] px-[2px]` | Photo is the hero; text breathes via mt, not card padding |
+| ReviewCard (text-first) | `p-4` (16px all sides) | Text-card needs interior breathing room |
+| FeaturedStylists ProCard (list row) | `p-3` (12px) + `gap-4` photo-to-content | List row pattern — tight horizontal, vertical varies |
+| EntdeckenCard (media-first) | `p-0` (image fills) | Pills positioned absolute over media |
+| BusinessTeaser inner | `p-0` (no inner padding; section has its own `py-12`) | Image+text grid sits directly in page |
+
+### Icon-to-text gaps
+
+| Pattern | Gap | Tailwind |
+|---|---|---|
+| Tight inline (rating star + number) | 3px | `gap-[3px]` |
+| Standard inline (icon + label) | 4-6px | `gap-1` or `gap-1.5` |
+| Pill/badge interior (icon + text inside pill) | 4px | `gap-1` |
+| Toolbar (icon + label, header) | 8px | `gap-2` |
+| Floating button (icon + label) | 8-12px | `gap-2` to `gap-3` |
+
+### Gutter math
+
+Page-level horizontal padding (the "gutter" around all content):
+
+| Viewport | Container padding | Max width |
+|---|---|---|
+| Mobile (< md) | `px-4` (16px) for most sections, `px-6` (24px) for MobileCategoriesRow | — |
+| md (≥768px) | `px-8` (32px) | `max-w-[1280px] mx-auto` |
+| lg+ | `px-8` | `max-w-[1280px] mx-auto` |
+
+ScrollRow children use **negative-margin bleed**: card carousel children get `-mx-3 px-3 md:-mx-4 md:px-4` so card edges reach the section's rounded edge. Scroll-padding-left/right match the visual padding so snap targets align.
+
+---
+
+## §5 · Radius / shadow / elevation
+
+### Radius scale (from `tailwind.config.js`)
+
+| Token | Value | Use |
+|---|---|---|
+| `rounded-card` | 16px | Salon cards, listing cards, content blocks |
+| `rounded-card-lg` | 20px | Hero cards, feature cards, modals |
+| `rounded-panel` | 16px | Inner panels within a card, review cards |
+| `rounded-search` | 99px | Search bar outer container (fully rounded pill) |
+| `rounded-pill` | 9999px | Availability pills, tags |
+| `rounded-btn` | 99px | CTA buttons, action pills |
+| `rounded-input` | 16px | Form inputs (stable, NOT pill) |
+| `rounded-sheet` | 28px | Bottom sheets |
+
+Tailwind defaults (`rounded-xl` = 12, `rounded-2xl` = 16, `rounded-3xl` = 24) are also acceptable when they match these values. Prefer `rounded-card` etc. for semantic clarity in new code; `rounded-2xl` is fine in existing code.
+
+### Shadow / elevation system
+
+Three-level system. Warm-tinted RGB `(50, 47, 44)` — not pure black (clinical), not pure ink (heavy-handed).
+
+| Token | Value | Use |
+|---|---|---|
+| `shadow-elevation-1` | `0 1px 3px rgba(50,47,44,0.04), 0 1px 2px rgba(50,47,44,0.03)` | Card at rest (default) |
+| `shadow-elevation-2` | `0 4px 12px rgba(50,47,44,0.08), 0 2px 4px rgba(50,47,44,0.04)` | Card on hover, surface emphasis |
+| `shadow-elevation-3` | `0 8px 28px rgba(50,47,44,0.12), 0 4px 10px rgba(50,47,44,0.06)` | Floating: modals, sheets, dropdowns, popovers |
+
+**Legacy aliases** (mapped to the 3-level system, OK to use): `shadow-card` → elevation-1, `shadow-card-hover` → elevation-2, `shadow-surface` / `surface-hover` → elevation-2/3, `shadow-warm-xs/sm/md/lg/xl/float` → elevation-1/2/3, `shadow-v5-card` etc. → elevation-1/2.
+
+### Shadow rules
+
+- Cards default to elevation-1, lift to elevation-2 on hover
+- Floating elements (modals, sheets, dropdowns) start at elevation-3
+- Never use `shadow-2xl` Tailwind defaults — too harsh
+- Never use colored shadows (`rgba(brand, ...)`) — clinical / off-brand
+- Always pair shadow change with motion (`transition-shadow duration-200`)
+
+---
+
+## §6 · Motion vocabulary
+
+Motion is a first-class citizen in Solen. Every interactive element earns a state. This section is the LAW for motion choices.
+
+### §6.1 · Duration ladder
+
+| Token | Value | Use |
+|---|---|---|
+| `duration-75` | 75ms | (rare) Instant state flips. Avoid; usually feels too fast. |
+| `duration-100` | 100ms | (rare) Almost-instant. Use for state-only toggles (radio fill, checkbox check). |
+| `duration-150` | 150ms | Secondary feedback (icon hover color, link color, small chevron rotation) |
+| `duration-200` | 200ms | **THE STANDARD.** Card hover lift, button press, color fade, all common transitions. |
+| `duration-250` | 250ms | Slightly slower variants — EntdeckenCard transforms, larger surface shifts |
+| `duration-300` | 300ms | Reveals and larger motions — CategoryPromos zoom, BentoBusiness shadow bloom |
+| `duration-500` | 500ms | Image zoom hover, page-entrance animations. Use sparingly. |
+| `duration-[80ms]` (arbitrary) | 80ms | **Active press feedback** — always paired with `active:` modifier. Allowed because it's a deliberate spec, not drift. |
+| `duration-[700ms]` (arbitrary) | 700ms | BellIcon ring swing animation. Allowed: deliberate one-off. |
+| `duration-[12000ms]` etc. | 12s | Marquee scroll cycle. Allowed: motion artifact. |
+
+**Anti-pattern**: `duration-[123ms]` or `duration-[400ms]` — random values not on the ladder. Drift-checker flags.
+
+### §6.2 · Easings (canonical 4)
+
+| Token | Curve | Use |
+|---|---|---|
+| `ease-snap` | `cubic-bezier(0.4, 0, 0.2, 1)` | Fast UI feedback (button press, toggle, focus). 100-200ms duration. |
+| `ease-spring` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Bouncy entry (modal scale-in, dropdown reveal, heart-pop). 250-400ms. Overshoots target slightly. |
+| `ease-glide` | `cubic-bezier(0.16, 1, 0.3, 1)` | **THE DEFAULT.** Long-distance smooth (hover lift, scroll-in, sheet open). 200-300ms. |
+| `ease-thud` | `cubic-bezier(0.7, 0, 0.84, 0)` | Decisive press-down feel (button press scale). 200ms. |
+
+**Legacy / retired aliases (drift-checker flags)**: `ease-out-strong`, `ease-out-warm`, `ease-out-back`, `ease-in-subtle`, `spring-bounce`, `ease-drawer`, `ease-in-out-strong`. Most are duplicates or near-duplicates of the canonical 4. Use canonical names.
+
+**Anti-pattern**: `ease-out` / `ease-in` / `ease-in-out` (browser defaults) — generic, no character. Always use named easing.
+
+### §6.3 · Named keyframes (catalog)
+
+Defined in `app/globals.css`. Use via Tailwind animation classes or CSS class.
+
+| Keyframe | Class | Duration | Use |
+|---|---|---|---|
+| `marquee` | `animate-marquee` | 12s linear infinite | EntdeckenCard "TikTok · TikTok" attribution scroll. GPU-composited via `translate3d` + `will-change`. |
+| `heart-pop` | `animate-heart-pop` | 350ms ease-out-strong | HeartButton scale 0.5 → 1.15 → 1.0 on save toggle. Re-mounted on each toggle via React `key` change. |
+| `fade-in` | `animate-fade-in` | 0.3s | Generic entrance |
+| `slide-in-up` | `animate-slide-in-up` | 0.4s | Drawer-style entry |
+| `shimmer` | `animate-shimmer` | 1.5s infinite | Skeleton loader bg-position loop |
+| `v4-reveal` | `animate-v4-reveal` | 0.5s | Scroll-triggered reveal (opacity + translateY) |
+| `v4-scale-in` | `animate-v4-scale-in` | 0.4s | Alternative scale-based reveal |
+| `card-stagger-in` | (used via `.salon-card-stagger > *` CSS) | 350ms each | Cascading reveal — 40ms between siblings |
+| `heart-bounce` | `.heart-bounce` class | 0.5s | Elastic bounce feedback on like |
+| `stamp-new` | `.stamp-new` class | 0.4s | Loyalty stamp earn animation |
+| `confetti` | `.confetti` class | 1.5s | Celebratory falling confetti (special moments only) |
+| `count-up` | `animate-count-up` | 0.6s | Numeric counter ease-up |
+
+### §6.4 · Interaction patterns (THE LOCKED RULES)
+
+These are non-negotiable across the system. Drift-checker can flag deviations.
+
+| Element type | Rest state | Hover state | Active state |
+|---|---|---|---|
+| **Card (photo-first)** | scale-1, shadow-elevation-1 | `hover:-translate-y-[2px] hover:shadow-elevation-2` over 200ms ease-glide | `active:scale-[0.97] active:duration-[80ms]` |
+| **Card (list-row, e.g. ProCard)** | scale-1, shadow-elevation-1 | `hover:-translate-y-[1px] hover:shadow-elevation-2` over 150ms ease-glide | `active:scale-[0.98] active:duration-[80ms]` |
+| **Primary CTA button** | bg-s-ink | `hover:bg-black` over 200ms ease-glide | `active:scale-[0.97] active:duration-[80ms]` |
+| **Heart button** | scale-1, outline icon | `hover:scale-110` over 200ms ease-glide; outline → fill on save with spring-pop | `active:scale-[0.97] active:duration-[80ms]` |
+| **Section chevron arrow** | chevron only (stem invisible via `stroke-dashoffset:14`) | `group-hover:` draws stem in over 200ms ease-glide + chevron translates `+0.5px` right | (no active state) |
+| **Bell icon** | upright | `whileHover` swings via rotate keyframes `[0, -15, 13, -9, 6, -3, 0]` over 700ms ease-out | — |
+| **Icon-only button (hamburger, X)** | scale-1 | (none typically) | `active:scale-[0.94] active:duration-[200ms]` |
+| **Tile (MobileCategoriesRow)** | scale-1, bg-[#F3F3F3] | `hover:-translate-y-[2px] hover:bg-[#EFEFEF]` 200ms ease-glide | `active:scale-[0.97] active:duration-[80ms]` |
+| **Pill / badge** | static | (none — they're labels, not buttons) | — |
+| **Link (text)** | text-s-ink-2 | `hover:text-s-ink` 150ms | — |
+
+### §6.5 · Anti-patterns (where NOT to use motion)
+
+- ❌ Body text or table cells — text isn't interactive, animation distracts from reading
+- ❌ Long-form copy (paragraphs) — same
+- ❌ Static labels (pills that aren't tappable) — they're informational, motion implies interaction
+- ❌ Decorative elements (separator lines, background gradients) — they're not earning attention
+- ❌ Every CTA — pick the primary, let the rest stay calm. If everything pops, nothing pops.
+- ❌ Auto-playing motion (carousel auto-advance, hero zoom) without user input — users hate hijacked attention
+- ❌ Hover lift on touch-only devices — covered by `@media (hover: hover)` if needed (most Tailwind hover utilities handle this automatically)
+
+### §6.6 · GPU-compositing rules (mobile perf)
+
+Required hints for smooth motion:
+
+```css
+/* On any element doing transform animation: */
+.animate-marquee {
+  animation: marquee 12s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* And use translate3d in keyframes, not translateX: */
+@keyframes marquee {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+```
+
+Without these hints, browsers re-paint text per frame on the CPU → visible jitter. With them, the entire layer is composited on the GPU → smooth.
+
+---
+
+## §7 · Iconography
+
+**Lucide React** (`lucide-react` package) is the canonical icon library. No Phosphor, no Heroicons, no Feather, no custom SVGs without a documented reason.
+
+**ZERO EMOJI in ANY file, EVER.** No emojis in UI text, code, comments, mockups, demo pages, .md docs, JSX strings, anywhere. Even "harmless" decorative ones (`⭐` `🎉` `✨`). Reasons: (1) emoji rendering varies by OS/browser, breaks visual consistency; (2) emoji ≠ iconography — for icons use lucide; (3) emoji presence undermines the disciplined chrome register Solen targets. **Unicode geometric shapes are NOT emoji and ARE allowed** when used as typography: `·` (middot, MetaDot), `→` (arrow), `●` (filled circle as dot indicator), `★` (text star — though prefer lucide `Star` for consistency). If unsure whether a glyph is emoji, use lucide instead. **Drift checker will flag emoji-block Unicode going forward** (V3-D203, 2026-05-26).
+
+### Size scale
+
+| Context | `size` prop | Common pairings |
+|---|---|---|
+| Inline-with-text badge (Flame in "Nur 1 heute") | 10-11 | Pill text |
+| Inline-with-text rating (Star next to "4.9") | 11-12 | Card name row |
+| Action triangles (ChevronRight after a link) | 11-14 | Inside small buttons |
+| Primary icon glyph (Heart, Bell, Menu, X) | 18-22 | Inside h-11 w-11 button |
+| Nav icon (header logo wordmark adjacency) | 22 | Header |
+| Hero illustration (no example in current homepage but reserved) | 24+ | Marketing surfaces |
+
+### Stroke width
+
+Lucide defaults to `strokeWidth={2}`. Solen overrides:
+- `strokeWidth={2.2}` — hamburger Menu, X close — slightly heavier for "system control" feel
+- `strokeWidth={2.25}` — HeartButton — gives the outline its presence on photo backgrounds
+- `strokeWidth={2.5}` — ChevronDown / ChevronRight / X dismiss — small icons need more weight
+- `strokeWidth={2}` — default everywhere else
+
+### Color
+
+Lucide icons inherit `color` from CSS — set via parent's `text-s-ink-X` class. Floating-on-photo icons use `text-white` + `filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6))` for legibility.
+
+### Fill rules
+
+- Heart icon: `fill="none"` rest, `fill="#FF3366"` on save (saved state)
+- Star icon (rating): `fill="#FFC32B"` + `stroke="none"` (legacy yellow per Q1)
+- Clapperboard, Bell, etc.: `fill="none"` always (outline only)
+
+### When 3D PNGs are appropriate
+
+ONLY for branded category illustrations (MobileCategoriesRow icons: scissors, clippers, nails bottle, walking person, rainbow map pin, spa stones, leaf). Stored at `public/icons/categories/<name>.png`. Background must be transparent (PIL-stripped). Sizes ~64-84px wide, max 80px.
+
+For ALL UI affordances (buttons, controls, labels), use lucide. No mixing.
+
+### Anti-patterns
+
+- ❌ Mixing icon libraries on the same surface
+- ❌ Unicode emoji in UI
+- ❌ Inventing SVGs that duplicate a lucide icon
+- ❌ Inline SVG without a documented reason (one is the SectionTitle stem-draw chevron — V3-D156, deliberate split-path SVG for the draw animation)
+- ❌ Lucide icons + 3D PNGs in the same row/component (visual language clash)
+
+---
+
+## §8 · Card grammar
+
+### Card invariants (shared across SalonCard / ReviewCard / ProCard / EntdeckenCard)
+
+| Property | Invariant |
+|---|---|
+| Border radius | 16-22px (use `rounded-card` 16 or `rounded-2xl` 16) |
+| Background | white (`bg-s-bg-surface`) — never coloured |
+| Shadow rest | `shadow-elevation-1` |
+| Shadow hover | `shadow-elevation-2` |
+| Hover transform | `-translate-y-[1px]` to `-translate-y-[3px]` depending on density (smaller cards lift more) |
+| Hover duration | 150-200ms ease-glide |
+| Active feedback | scale 0.97-0.98 over 80ms ease-glide |
+| Border | `border border-s-border` (1px hairline) for text-first cards; photo-first cards usually no border |
+| Focus ring | `focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2` (or `-offset-4` for cards with rounded interior) |
+
+### Per-card divergences
+
+| Card | Surface | Padding | Hover lift | Photo aspect | Notable |
+|---|---|---|---|---|---|
+| SalonCard | photo-first | text mt-[10px] px-[2px] | -2 to -3px | 1:1 square | Heart top-right, rating row 1 right (Airbnb pattern), 3-row text |
+| ReviewCard | text-first | p-4 | -2px | (no photo) | Stars+date row, quote (line-clamp-3), avatar + name + salon link |
+| ProCard (FeaturedStylists) | list-row | p-3 + gap-4 | -1px | 72px circle | Photo left, text col right, Save heart on photo corner, availability pill row 3 |
+| EntdeckenCard | media-first | (no padding) | none on mobile / scale on desktop hover | 9:16 portrait | Marquee top-left, Heart top-right, @author pill bottom-left, Clapperboard bottom-right |
+
+### When to break the grammar
+
+- Photo-first cards on light-content (white-walled salon photos) need MORE shadow contrast than dark-content (barbershop interiors). Acceptable to bump from elevation-1 to a slightly stronger custom shadow for photo legibility.
+- Media-first cards (EntdeckenCard) skip hover-lift on mobile because there's no hover; replace with appropriate active feedback if needed.
+- Card-in-card patterns (e.g. SalonCard inside a CategoryPromos card) should NOT both have shadows — outer card carries the depth, inner is flat.
+
+### Card anti-patterns
+
+- ❌ Coloured card backgrounds outside the soft-grey tiles in MobileCategoriesRow
+- ❌ Multiple shadows on the same card (drop + inset). One shadow, one depth.
+- ❌ Different hover behaviors on adjacent cards in the same row
+- ❌ Rounded corners that don't match the family (e.g. `rounded-3xl` 24px on a SalonCard alongside `rounded-2xl` 16px Reviews — discord)
+
+---
+
+## §9 · Photography & user content under B&W lock
+
+**The B&W palette is locked for CHROME, not for CONTENT.** User-uploaded salon photos, stylist headshots, Entdecken TikTok thumbnails are inherently color content — they appear within a B&W frame.
+
+### The rule
+
+- **Brand chrome stays B&W** — headers, footers, buttons, links, text, icons, badges, hairlines
+- **User content stays color** — salon photos, stylist headshots, look thumbnails, salon hero galleries
+- **The transition between them** is handled by:
+  - Generous white space around photo cards (the photo is "framed" by the white card)
+  - Subtle shadow (elevation-1) anchors photos to the white surface
+  - 1px hairline border (`border-s-border`) on text cards prevents content-color from bleeding into the chrome
+
+### Specific cases
+
+| Surface | Color treatment |
+|---|---|
+| SalonCard photo | Full color, no filter applied. Photo is content; card chrome around it is B&W. |
+| EntdeckenCard background | Full color (TikTok thumbnail via `/api/discovery/thumb/[id]`). Layered gradient (color image + brand-grey gradient fallback) so failed image still shows something. |
+| FeaturedStylists photo | Full color (Unsplash placeholder; real `staff_portfolio_images` later). Save Heart on top is white-frosted (chrome). |
+| BusinessTeaser hero | Currently a grey placeholder (`<ImageIcon>` in `bg-s-bg-sunken` square). When a real illustration ships, it stays color but in a controlled palette. |
+| MobileCategoriesRow icons | 3D-rendered PNGs with their own colors (scissors orange handles, nail polish peach, rainbow map pin, spa stone grey-green). Each is content; their tiles are `bg-[#F3F3F3]` neutral grey. |
+
+### Anti-patterns
+
+- ❌ `filter: grayscale(100%)` on user photos — strips the content's purpose (showing what the salon looks like)
+- ❌ Tinting photos with brand color overlay (`mix-blend-color`) — manipulates the content
+- ❌ Allowing chrome elements to take ON user-content colors (e.g. CTA button matching a salon's brand color)
+
+---
+
+## §10 · Loading / empty / error / async state grammar
+
+**Every Supabase-backed surface must define all four states.** Card grammar only covers the populated case.
+
+### §10.1 · Loading state
+
+Skeletons mirror the eventual layout. Use `bg-s-bg-sunken` (#F5F5F4) with `animate-shimmer` for a subtle background-position loop.
+
+**Patterns:**
+
+| Element being loaded | Skeleton pattern |
+|---|---|
+| Salon card (in carousel) | Full card with `bg-s-bg-sunken aspect-square rounded-card`, name row `h-4 w-3/4 rounded`, meta row `h-3 w-1/2 rounded` |
+| Stylist row | 72px circle + 3 stacked text bars |
+| Review card | Stars row (5 small circles), 3 text bars, avatar+name row |
+| Hero search dropdown | 4-6 list rows with icon-square + text-line |
+
+**Skeleton component** (to-be-built):
+```tsx
+<div className="bg-s-bg-sunken rounded-card animate-shimmer" />
+```
+
+Shimmer should be **calm** (1.5s cycle, 200% bg-position range), not strobe-fast.
+
+**Anti-pattern**: full-page spinner for content loads. Reserve spinner for inline button-state (network call confirming user's tap).
+
+### §10.2 · Empty state
+
+Each list/grid section needs a designed empty state. Pattern:
+
+```
+[ICON / illustration]
+"No salons in {city} yet."        ← clear status (1 line)
+"Try a different city, or be the first to bring beauty here." ← helpful next action (1-2 lines)
+[ Button: "Andere Stadt wählen" ]  ← CTA, primary action
+```
+
+Empty states are FRIENDLY (German `du` voice), NEVER apologetic ("Sorry, no results"). Always actionable.
+
+### §10.3 · Error state
+
+Pattern:
+
+```
+[ Error icon (AlertCircle from lucide, s-error color) ]
+"Etwas ist schiefgelaufen."         ← honest, no blame
+"Wir konnten die Salons nicht laden." ← what specifically failed
+[ Button: "Erneut versuchen" ]      ← retry action
+```
+
+If the error is recoverable (network), include retry. If unrecoverable (404, permission denied), provide an alternative path ("Zur Startseite").
+
+### §10.4 · Optimistic UI / async patterns
+
+For mutations (save heart, post review):
+1. **Update local state immediately** — UI reflects "saved" before backend confirms
+2. **Send the mutation in background**
+3. **On success**: do nothing (UI already shows success)
+4. **On failure**: rollback local state + show toast "Konnte nicht gespeichert werden. Erneut versuchen?"
+
+**Never lock the UI** while waiting for a mutation. Never show a spinner over a save-heart. Optimism is the default.
+
+---
+
+## §11 · Clickable Surface Contract
+
+**Every interactive surface MUST satisfy ONE of the following.** Empty `onClick={() => {}}` is forbidden. Drift-checker enforces.
+
+| Pattern | What it means | Example |
+|---|---|---|
+| **A. Working destination** | The `href` routes to a real page that renders content | `<Link href="/salon/atelier-coiffure">` IF that slug exists in DB |
+| **B. Working handler** | The `onClick` produces an observable, intentional effect | `setMenuOpen(true)` that visibly opens MobileMenu |
+| **C. Optimistic local + backend-gap toast** | Local state changes + user sees a "Wird gespeichert..." or "Notification: feature coming" toast | HeartButton (currently local-only + visible save state) |
+| **D. Explicit "Coming Soon" affordance** | Visibly disabled OR has a "kommt bald" badge + toast on tap | Bell icon currently — fire toast "Benachrichtigungen kommen bald 🔔" |
+
+### Enforcement rules
+
+- `onClick={() => {}}` → **forbidden**. Either remove the handler (make it non-interactive) or add real behavior.
+- `href=""` or `href="#"` → **forbidden**. Remove or fix.
+- `<Link href="/x">` where `/x` has no `app/[locale]/x/page.tsx` → **drift-flagged**. Either create the route, redirect, or change the destination.
+- `<button>` with no `onClick`, no `type`, not inside `<form>` → **drift-flagged**. Either it's decorative (make it `<div>` or `<span>`) or it needs a handler.
+- Save controls (HeartButton, SaveHeart) without a real `itemId`/`salonId` → currently OK in dev (Q1.6 pending — backend wiring).
+
+### Limits of static checking
+
+The drift-checker catches LITERAL patterns. It cannot catch:
+- `salonId={salon?.id}` that's syntactically present but `salon` is null at runtime (false negative — passes static, fails real)
+- `onClick={handleClick}` where `handleClick` is defined but is a no-op function
+
+Runtime probes via Playwright catch these. The static checker is one layer; visual/functional verification is another.
+
+---
+
+## §12 · z-index / overlay layering scale
+
+| Tier | Token | Value | Use |
+|---|---|---|---|
+| Surface chrome | (none / implicit) | 0-10 | Card hover lift, search dropdown |
+| Sticky header | `z-50` | 50 | Header (sticky) |
+| CityTopBar | `z-[60]` | 60 | Above header so its dropdown clears header content |
+| Toolbar (in-page) | `z-[70]` | 70 | Reserved |
+| **Sheet backdrop** | `z-sheet-bg` | 400 | MobileMenu / BookingSheet backdrop dim |
+| **Sheet content** | `z-sheet` | 410 | Sheet itself |
+| **Modal backdrop** | `z-modal-bg` | 500 | Higher than sheets — modals override sheets |
+| **Modal content** | `z-modal` | 510 | Modal itself |
+| **Toast** | `z-toast` | 600 | Above everything except tooltips |
+| **Tooltip** | `z-tooltip` | 700 | Highest UI tier |
+
+### Stacking rules
+
+- Sticky Header (`z-50`) is below CityTopBar (`z-60`) so the city dropdown can extend below the bar without being clipped by header
+- MobileMenu is a sheet — uses `z-[40]` in its current implementation (predates token; should migrate to `z-sheet` 410). Tracked Q in QUESTIONS.md.
+- Toasts always render above sheets and modals
+- Tooltips are highest — fine on mobile because tooltips are rare on touch
+
+### Anti-patterns
+
+- ❌ `z-[9999]` to "fix" a stacking issue — that's a patch, not a fix. Use the scale.
+- ❌ Mixing arbitrary z-values (`z-[55]`, `z-[123]`) in new code. Stick to the scale.
+
+---
+
+## §13 · Mobile perf rules
+
+iOS Safari is the strictest perf budget. Optimize for it.
+
+### Rules
+
+1. **`backdrop-filter` is expensive.** Inside scrolling containers (carousels, lists), gate with `md:` so it's desktop-only. Mobile uses solid bg or skips the blur. Example: `bg-white/95 md:backdrop-blur-panel md:bg-white/85`.
+2. **Use `will-change: transform` only DURING animation.** Setting `will-change` at rest causes blurry text on Safari. Add via class only when the animation is active, remove after.
+3. **`translate3d(x, 0, 0)` over `translateX(x)`** for animated transforms. Forces GPU layer promotion.
+4. **`backface-visibility: hidden`** on animated elements — iOS Safari sometimes won't promote without it.
+5. **Don't animate `width`/`height`/`left`/`top`** — these trigger layout. Animate `transform` and `opacity` only.
+6. **`animation: ... infinite`** elements (marquee, shimmer) MUST be GPU-composited or they tank scroll FPS.
+7. **`scroll-snap-type: x mandatory`** — keeps horizontal carousels snappy. Avoid `mandatory` on long lists.
+8. **Lazy-load below-fold images** — `loading="lazy"` on `<img>` / `<Image>`. Already default for next/image but worth confirming.
+
+### Anti-patterns
+
+- ❌ `backdrop-filter` on every card in a scrolling carousel (~11 compositor layers per scroll frame on iOS, kills FPS)
+- ❌ Setting `will-change` permanently in CSS
+- ❌ Animating `top` / `left` instead of `transform`
+- ❌ `position: fixed` elements inside scroll containers (iOS Safari positioning bug)
+
+---
+
+## §14 · Component authoring contract
+
+Every shared component (anything imported by 2+ files) MUST follow this:
+
+### §14.0 · The color-layer decision tree (FIRST QUESTION before writing any class)
+
+V3-D197 lock. Before picking ANY color class, answer in order:
+
+```
+1. Does this surface CONVEY semantic meaning by color?
+   (success/error/warning/info/open/closed/active/inactive/urgent/rating/save/…)
+
+   → YES → Layer 3 semantic UI. Look up the surface in §2.5 catalog.
+            If listed: use the listed token. If not listed: propose a new
+            row in §2.5 via QUESTIONS.md before inventing.
+            Universal colors only — never invent custom semantic hues.
+   → NO  → continue
+
+2. Does this surface represent the BRAND identity moment?
+   (eyebrow, "NEW" pill, link, selected tab, brand bullet)
+
+   → YES → Layer 2 brand accent. Use `s-accent` (royal blue).
+            Small footprint only — NEVER primary CTAs.
+   → NO  → continue
+
+3. Default: Layer 1 chrome. Use `s-ink` / `s-ink-2` / `s-ink-3` for text,
+   `bg-s-bg-base` / `bg-s-bg-sunken` for surfaces, `border-s-border` for
+   hairlines.
+```
+
+**This must be answered in the component's `_design-system/components/<Name>.md` Purpose section.** Drift checker will eventually enforce: every new component .md file must include a line `Layer: 1 / 2 / 3` so the classification is grep-able.
+
+### §14.1 · File location + naming
+
+- Shared components live under `app/[locale]/_components/` organized by purpose:
+  - `_components/homepage/` — homepage-specific
+  - `_components/layout/` — Header / Footer / Menu / CityTopBar
+  - `_components/primitives/` — Toast / Modal / Sheet / inputs
+- File name = PascalCase component name (`SalonCard.tsx`, `HeartButton.tsx`)
+- One component per file (subcomponents OK inline, but the primary exported component is the file name)
+
+### §14.2 · TypeScript
+
+- Public props always have an `interface ComponentNameProps { ... }`
+- No `any`. Where the type is genuinely unknown, use `unknown` + narrow
+- Optional props have defaults; required props throw at runtime if missing
+
+### §14.3 · Variants via cva
+
+Components with 2+ visual variants MUST use `class-variance-authority` (cva), not naked ternaries.
+
+```ts
+const badgeVariants = cva(
+  "inline-flex items-center gap-1 rounded-[10px] px-3 py-1.5",  // base
+  {
+    variants: {
+      tone: {
+        urgent: "bg-[#FFF1E6] text-[#9A3412]",
+        info: "bg-s-bg-sunken text-s-ink-2",
+      },
+    },
+    defaultVariants: { tone: "info" },
+  },
+);
+```
+
+Use `cn()` (from `lib/utils.ts`) for ALL class composition — never template strings. `cn()` handles conditional classes and Tailwind class-merging (`clsx` + `tailwind-merge`).
+
+### §14.4 · Server vs Client
+
+Default to server components. Mark `"use client"` ONLY when the component:
+- Uses `useState`, `useEffect`, `useRef`, or other hooks
+- Has `onClick` / `onChange` / event handlers
+- Uses browser-only APIs (`window`, `document`)
+- Uses `motion/react` (Framer Motion)
+
+Server components are cheaper at runtime (no JS shipped). Use them by default.
+
+### §14.5 · Provenance comments
+
+Every locked decision earns a `V3-D{n}` provenance comment in the code:
+
+```tsx
+{/* V3-D177 (2026-05-26, council item #4): H1 max 64 → 52px.
+    Mobile unchanged (clamp picks 10vw ~40-50px there). */}
+<h1 className="text-[clamp(40px,10vw,52px)] ...">
+```
+
+Comments are LOAD-BEARING. Never strip. Each is an audit trail entry.
+
+### §14.6 · Required exports
+
+The default export is the component. Named exports for subcomponents (e.g. `Section / SectionFrame / SectionTitle / ScrollRow / FeedZone` from `SectionHeader.tsx`).
+
+### §14.7 · Component .md docs
+
+When you create a new shared component, you MUST ALSO write `_design-system/components/<Name>.md` in the same turn. This is enforced via CLAUDE.md rule. No new components without docs.
+
+### Anti-patterns
+
+- ❌ Nested ternary classNames (`className={a ? (b ? "X" : "Y") : "Z"}`) — use cva
+- ❌ `style={{ ... }}` inline overrides for token-shaped values (color, padding) — use Tailwind class. Inline style OK for measured one-offs (background gradient layers, drop-shadow with specific RGBA).
+- ❌ `"use client"` on components that don't need it
+- ❌ Default props via `props.x || defaultValue` instead of destructuring defaults `({ x = defaultValue })`
+
+---
+
+## §15 · Provenance & changelog rules
+
+V3-D{n} provenance comments in code files are the per-file changelog. They tell the next reader:
+- When the line was last decided
+- What rule motivated it
+- What was the previous state
+
+### Format
+
+```tsx
+// V3-D{number} ({date}): {what changed} per {who/why}.
+// {Optional follow-up — reason this matters, alternative considered, link to spec}.
+```
+
+### Numbering
+
+Increment globally — the highest V3-D{n} in the codebase is the latest. Get current max:
+```bash
+grep -rho "V3-D[0-9]\+" app/ | sort -u | sort -V | tail -5
+```
+
+Don't skip numbers. Don't backdate. Don't reuse.
+
+### What earns a V3-D entry
+
+- A locked decision (color, size, spacing, copy)
+- A retirement (removed feature, deprecated token)
+- A user-explicit choice ("user said X")
+- A fix to a real bug
+
+What does NOT earn an entry: trivial refactors, formatting, lint fixes. They go in commit messages instead.
+
+### What SOURCE.md tracks
+
+Same numbering scheme. When a decision changes the design system itself (not just one component), it gets a V3-D entry here AND in the affected file.
+
+### Anti-patterns
+
+- ❌ Removing V3-D comments to "clean up" — they're a load-bearing changelog
+- ❌ Creating a V3-D entry for a typo fix or formatting change
+- ❌ Skipping numbers (V3-D180 → V3-D182 with no V3-D181)
+- ❌ Reusing a number for a different decision
+
+---
+
+## §16 · Accessibility rules
+
+WCAG 2.1 AA is the floor.
+
+### §16.1 · Landmarks
+
+Every page MUST have:
+- `<main>` element wrapping the primary content (already in `app/[locale]/layout.tsx`)
+- `<header>` element for the Header component (already present)
+- `<footer>` element for the Footer (already present)
+- `<nav>` element for the MobileMenu and any other nav (currently missing — Q in QUESTIONS)
+
+### §16.2 · Focus management
+
+- Every interactive element MUST have `focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2` (or `-offset-4` for rounded corners)
+- Focus ring color: **`s-ink` `#0A0A0A`** (~5.8:1 on white — AA Normal). Resolved Q5 2026-05-26. Migrated from legacy teal `#043338` in `app/globals.css` V3-D189.
+- Tab order matches visual order (top-to-bottom, left-to-right)
+- Focus is RETURNED after closing modals/sheets to the element that opened them (use `useEffect` + `ref.current.focus()` cleanup)
+- `Escape` closes overlays (already in MobileMenu)
+
+### §16.3 · aria
+
+- Icon-only buttons MUST have `aria-label`:
+  ```tsx
+  <button aria-label="Benachrichtigungen"> <BellIcon /> </button>
+  ```
+- State buttons use `aria-pressed`:
+  ```tsx
+  <button aria-pressed={isSaved} aria-label={isSaved ? "Gespeichert" : "Speichern"}>
+  ```
+- Multi-select uses `aria-pressed` on each option (NOT `aria-selected` which is for listbox patterns)
+- Live regions for dynamic content updates: `<span aria-live="polite">` for save toggles
+- `aria-hidden` on purely decorative SVGs
+
+### §16.4 · Color contrast
+
+| Combination | Ratio | Pass |
+|---|---|---|
+| `text-s-ink #0A0A0A` on `bg-s-bg-base #FFFFFF` | 19.6:1 | AAA |
+| `text-s-ink-2 #6B6B6B` on white | 5.2:1 | AA Normal |
+| `text-white` on `bg-s-ink #0A0A0A` | 19.6:1 | AAA — **canonical CTA combo (V3-D189)** |
+| `outline-s-ink` on white (focus ring) | ~5.8:1 | AA — Q5 resolved |
+| ~~`text-white` on `bg-s-brand #16A34A`~~ | 3.6:1 | **Retired V3-D189** — CTAs use `bg-s-ink` |
+| Pill borders (`rgba(154, 52, 18, 0.22)`) | n/a | Decorative — don't rely on for content |
+
+Test all new color pairings before shipping. Tools: WebAIM Contrast Checker.
+
+### §16.5 · Touch targets
+
+- Minimum 44×44 px hit area per WCAG 2.1 (some platforms 48). Some Solen components use 44; the HeartButton's pattern (44 outer hit area, 32 visible glass) is the canonical solution.
+- For very small avatars (FeaturedStylists SaveHeart 28×28), acceptable to break the 44px floor because the parent card is the primary tap target and the heart is secondary.
+
+### §16.6 · Keyboard nav
+
+- `Tab` cycles through interactive elements in source order
+- `Space` / `Enter` activates buttons and links
+- `Escape` closes overlays (consistent across MobileMenu, modals, sheets)
+- `Arrow keys` navigate within composite widgets (when applicable — e.g. radio groups, tab lists)
+- Avoid `tabindex={X}` with positive integers — disrupts natural flow
+
+### Anti-patterns
+
+- ❌ Using `outline: none` without a replacement focus indicator
+- ❌ Color as the ONLY signal of state (e.g. "selected = green border" with no other indicator)
+- ❌ Tooltips required for understanding (use visible labels)
+- ❌ `aria-label` that duplicates visible text
+- ❌ Focus trap that doesn't release on Escape
+
+---
+
+## §17 · i18n rules
+
+Solen ships in `de` (primary), `en`, `fr`, `it`. All locales use the same UI; only strings change.
+
+### §17.1 · Strings live in `messages/{locale}.json`
+
+Components import via `useTranslations` (from `next-intl`):
+
+```tsx
+"use client";
+import { useTranslations } from "next-intl";
+
+export default function MyComponent() {
+  const t = useTranslations("homepage");
+  return <h2>{t("section.title")}</h2>;
+}
+```
+
+### §17.2 · No hardcoded German in components
+
+Many existing components have hardcoded German strings (`"Nur 1 heute"`, `"Profis in deiner Nähe"`, `"Bewertungen"`, etc.). New code MUST extract these to message files. Migration of existing components is JIT — when we touch a component, we extract its strings.
+
+### §17.3 · German text expands ~30% vs English
+
+Design layouts to accommodate longer German strings:
+- Button labels: "Sign in" → "Anmelden" (similar), but "Sign up" → "Registrieren" (longer)
+- Section titles: "Reviews" → "Bewertungen" (3 chars → 11 chars)
+- Always allow text to wrap; never force single-line
+
+### §17.4 · Plural forms
+
+German has plural forms different from English. Use `next-intl` plural handling:
+```tsx
+t("results", { count: salons.length })
+// messages/de.json: "results": "{count, plural, one {# Salon} other {# Salons}}"
+```
+
+### §17.5 · Date / time / currency
+
+Use Swiss formats:
+- Currency: `CHF 80` (CHF prefix, no decimals for whole amounts, decimal-point for fractions)
+- Time: 24-hour `14:30`
+- Date: `21. Mai 2026` or `21.05.2026`
+- Relative time: `vor 2 Wochen`, `gestern`, `heute`
+
+### Anti-patterns
+
+- ❌ Hardcoded German in new components
+- ❌ Using English in `de` locale strings
+- ❌ Assuming text fits in a fixed pixel width
+- ❌ Imperial units (use metric: km, m)
+
+---
+
+## §18 · Brand voice / copy
+
+### Voice register
+
+- **Direct** — say what the user can do, not how they should feel
+- **Conversational** — German `du` not `Sie` (per audience research)
+- **Action-oriented** — verbs over nouns where possible ("Termine finden" > "Termin-Suche")
+- **Confident but not boastful** — "Über 1'200 Salons sind dabei" not "Wir haben den besten Service"
+- **Speed-anchored** — references "30 Sekunden" promise where relevant
+
+### Sentence-case everywhere
+
+- Page titles: "Termin in 30 Sekunden." (period at end)
+- Section h2s: "Profis in deiner Nähe" (no period)
+- Pills / chips: "Nur 1 heute", "Heute frei" (sentence case, NOT UPPERCASE)
+- Buttons: "Termine finden", "Anmelden"
+- Eyebrows: "FÜR SALONS" — the ONE place UPPERCASE is allowed (BusinessTeaser eyebrow)
+
+### Specific patterns
+
+| Surface | Pattern | Example |
+|---|---|---|
+| Urgency pill | "Nur X {timeword}" | "Nur 1 heute", "Nur 3 freie diese Woche" |
+| Availability pill | Status word | "Heute frei", "Morgens frei", "Vollgebucht" |
+| Empty state | Friendly + action | "Keine Salons in Bern. Andere Stadt wählen →" |
+| Error state | Honest + retry | "Etwas ist schiefgelaufen. Erneut versuchen?" |
+| CTA primary | Verb-first | "Termine finden" not "Suche starten" |
+| Save action | "Speichern" (toggle) | Aria says "Gespeichert" when saved |
+| Confirmation | Brief, no exclamation | "Gebucht." not "Gebucht!" |
+
+### Anti-patterns
+
+- ❌ Exclamation marks (sales-y, undermines confidence)
+- ❌ ALL CAPS outside the one eyebrow exception
+- ❌ Em-dashes in user-facing prose (use comma, colon, or `·` middle-dot)
+- ❌ Italics (banned per V2-D15)
+- ❌ "Click here" or generic CTAs (always say what tapping does)
+- ❌ Invented claims ("the fastest", "the best") — quantify or omit
+- ❌ Inviting language ("Please") — direct is friendlier in German voice
+- ❌ Apologetic empty states ("Sorry, no results found")
+
+---
+
+## §19 · Supabase async patterns
+
+Supabase backs every persistent operation (auth, bookings, reviews, favorites). Each operation has failure modes; the UI must handle each.
+
+### §19.1 · RLS denial
+
+If Row-Level Security denies an operation, Supabase returns an error. Pattern:
+
+```tsx
+try {
+  const { error } = await supabase.from("favorites").insert({ ... });
+  if (error) {
+    if (error.code === "42501") {  // RLS denial
+      toast("Bitte melde dich an, um zu speichern.");
+      router.push("/auth/login");
+      return;
+    }
+    throw error;
+  }
+} catch (err) {
+  console.error("[Favorites] save failed:", err);
+  toast("Konnte nicht gespeichert werden.");
+}
+```
+
+### §19.2 · Rate limiting
+
+If Supabase returns 429 (rate limit), show a toast asking the user to wait. Don't auto-retry — user might be in a loop.
+
+### §19.3 · Realtime sync
+
+For real-time subscriptions (bookings list, availability), the optimistic update + on-success-confirm pattern from §10.4 applies:
+1. Update local state immediately on user action
+2. Supabase realtime channel will eventually fire and reflect server state
+3. If diverged (user offline, network drop), reconcile on next focus
+
+### §19.4 · Auth-required pages
+
+Server components check session; redirect to `/auth/login` with `?from=<current-path>` query param if missing. After login, return to `?from` path.
+
+Client components use a `useSession` hook (TBD — currently checks done in server components only).
+
+### Anti-patterns
+
+- ❌ Blocking UI on Supabase calls (always optimistic, see §10.4)
+- ❌ Generic "Network error" toast for everything — distinguish RLS / 4xx / 5xx / network
+- ❌ Silent failure (no console.error, no toast)
+- ❌ Auto-retry without exponential backoff
+
+---
+
+## §20 · Locked decisions
+
+The running list of "we already decided this, don't re-litigate." If you find yourself wanting to change one, raise as a new QUESTIONS.md entry.
+
+| Decision | Locked at | Where the lock lives |
+|---|---|---|
+| B&W chrome palette, no green/no color in chrome | V3-D138 | This doc §2 + memory project_palette_b_w_pivot |
+| Forest emerald `#16A34A` for 3% accent | V3-D139 | This doc §2 |
+| Bricolage Grotesque + Hanken Grotesk fonts | V3-D75 | This doc §3 |
+| 80 / 17 / 3 color rule | V3-D138 | This doc §1 |
+| Royal blue `#1638C4` reserved (not used yet) | V3-D138 | memory project_palette_b_w_pivot |
+| "Termin in 30 Sekunden" is THE positioning | V3-D86 | This doc §1 |
+| German `du` not `Sie` | (since launch) | This doc §18 |
+| `card` radius = 16px | V4 era | This doc §5 |
+| `ease-glide` is the default easing | V2-D16 | This doc §6 |
+| 4 categories on homepage: Coiffeur / Barber / Nails / Karte / Walk-in / Spa | V3-D154 | MobileCategoriesRow.tsx + this doc §21 |
+| "Stadt" h2 in MobileMenu removed | V3-D171 | MobileMenu.tsx |
+| AvailabilityPill on SalonCard removed | V3-D181 | SalonCard.tsx |
+| Centered play orb on EntdeckenCard removed | V3-D162 | Entdecken.tsx |
+| Heart-save pattern: HeartButton (44 hit, 32 visible glass) | V3-D72 | components/HeartButton.md |
+| Rating star location on cards: Row 1 right (Airbnb pattern) | V3-D174 | SalonCard.tsx |
+| TikTok marquee on EntdeckenCard top-left, 12s loop | V3-D165 + V3-D179 | Entdecken.tsx |
+| Reviews card structure: stars+date row, line-clamp-3, no divider | V3-D180 (council variant B) | components/ReviewCard.md (JIT) |
+| `/entdecken` is a thin re-export of `/discover` | V3-D159 | app/[locale]/entdecken/*.tsx |
+| HeartButton heart color when saved: `#FF3366` | V3-D103 | HeartButton.tsx |
+| Photography under B&W lock: brand-chrome-B&W + content-color two-tier | V3-D183 (this doc) | This doc §9 |
+| Atmosphere wash retired | V2-D68 | (and never reintroduced) |
+| AI-generated icons retired (lucide canonical + 3D category PNGs only) | V3-D183 (this doc) | This doc §7 |
+
+---
+
+## §21 · Fresha translation playbook (extracted from SOLEN_PATTERNS Parts 4-5-8)
+
+### §21.1 · The translation principle
+
+**Fresha = costume. Solen V3 = anchor.**
+
+For each Fresha element on a screen we're rebuilding:
+1. Identify what it COMMUNICATES (info / action / photo / decoration)
+2. Strip the Fresha visual treatment (colors, type, shadows, icons, copy voice)
+3. Re-deliver the same communication using Solen's tokens + components + voice
+
+Fresha is reference for **information architecture** (what content, in what order). Solen is the visual + voice.
+
+### §21.2 · Per-route-class IA reference index
+
+Mobbin **first**; Chrome live capture **fallback** when Mobbin lacks the screen. Both are valid — choose by availability.
+
+**Mobbin:** Pull fresh via `mcp__mobbin__search_screens`. Curated + measurement-tagged.
+
+| Solen route class | Mobbin query | Reference for |
+|---|---|---|
+| Homepage / discovery feed | `"Fresha landing"` or `"Fresha marketplace search"` | Hero + search + curated lists IA |
+| Salon detail page (`/salon/[slug]`) | `"Fresha salon detail"` | Hero gallery, services list, staff, reviews, booking entry |
+| Booking flow (`/salon/[slug]/booking` → `/checkout` → `/confirmation`) | `"Fresha booking flow"` | Service select, time select, professional select, review+confirm, deposit |
+| Profile / saved (`/profile/*`) | `"Fresha customer profile"` | Past bookings, saved salons, gift cards |
+| Search results (`/search`, `/coiffeur`, `/barbershop` etc.) | `"Fresha search results"` | Filterable result lists |
+
+**Chrome live capture (Q20 fallback):** When Mobbin doesn't have a needed screen, capture Fresha live via Playwright or the `pixel-ref-collect` skill at standard viewports — 375 (iPhone SE), 768 (iPad), 1440 (desktop). Save to `public/_pixel-refs/fresha/<route>/<viewport>.png` and run `pixel-spec-auto` for measurement extraction. The captures live in the repo; we re-capture as Fresha updates so we always have a current reference.
+
+Example: Fresha's "stylist availability" view (per-staff calendar) — not curated on Mobbin as of 2026-05-26. Capture live in Chrome → `public/_pixel-refs/fresha/stylist-availability/375.png` → run pixel-spec-auto → extract measurements. **The Chrome capture IS the reference** when Mobbin doesn't have one.
+
+### §21.3 · Fresha→Solen element mappings (general)
+
+| Fresha element | Solen pattern |
+|---|---|
+| Photo gallery hero | SalonCard or full-bleed gallery + section title |
+| Sticky tab bar | New `<TabBar>` primitive (TBD); s-ink active underline, no color flood |
+| Service list with prices | List row pattern (similar to FeaturedStylists ProCard) with service name + price right-aligned |
+| Staff section | FeaturedStylists ProCard pattern |
+| Reviews | ReviewCard horizontal carousel (extracted from homepage Reviews) |
+| Photo carousel | ScrollRow + circle scroll arrows (desktop) |
+| Sticky bottom booking CTA | **`s-ink` pill** at `fixed bottom-4 inset-x-3` mobile (V3-D189: s-brand retired) |
+| Opening hours table | Custom table; status pills for "Heute frei" |
+| Map | Mapbox embed; SolenMap component (TBD) — V2-D10 locked OUT for v1 |
+
+### §21.4 · What to KEEP from Fresha (IA)
+
+- Page IA — what content appears, in what order
+- Tab structure (services / about / reviews / location / staff)
+- Booking CTA wiring (CTA → booking wizard)
+- Per-service "Buchen" buttons
+- Photo gallery order (hero → all photos)
+- Empty-state messaging structure
+
+### §21.5 · What to DROP from Fresha (visual)
+
+- All Fresha colors → Solen B&W (no accent — V3-D189; signals only: `s-star`, `--heart-active`, urgency amber)
+- All Fresha typography → Bricolage + Hanken
+- All Fresha button styles → `bg-s-ink text-white` primary CTA
+- All Fresha card shadows → elevation-1/2/3
+- All Fresha icons → lucide
+- Fresha pill styles → §6.4 interaction patterns
+
+### §21.6 · What to ADAPT (voice)
+
+- Section h2s → Section Title pattern with chevron-stem-draw on hover
+- Vertical rhythm → `mb-2 md:mb-3` between sections
+- Highlight words → no terracotta heartbeat (retired); use bold weight + ink color for emphasis
+- All copy in German `du` voice per §18
+
+### §21.7 · Open IA questions
+
+When tackling a new route class, raise these (extracted from SOLEN_PATTERNS Part 8):
+
+1. Booking flow integration — wizard route or modal?
+2. Photo gallery interaction — lightbox or scroll?
+3. Sticky CTA on mobile — single button or expanded with date+time?
+4. Per-service quick-book or only page-level CTA?
+5. Auth gate before booking — required or guest-checkout?
+6. Hero treatment — Bricolage display headline or other?
+
+---
+
+## §22 · How to use this doc
+
+### Reading order for a new session
+
+1. **First read**: §0 (reconciliation), §1 (positioning), §2 (color tokens), §3 (type), §6 (motion). This is the foundation.
+2. **When building a component**: §8 (card grammar), §14 (authoring contract), §15 (provenance), plus the relevant `components/<Name>.md` JIT.
+3. **When building a route**: §21 (Fresha translation), pull Mobbin refs, then §10 (states), §11 (clickable contract), §16 (a11y), §17 (i18n).
+4. **When debugging visual issues**: §13 (mobile perf), §6.6 (GPU compositing).
+5. **When unsure if a decision is settled**: §20 (locked decisions). If not there, raise in QUESTIONS.md.
+
+### When to update this doc
+
+- A new locked decision → §20 + the relevant section
+- A new component → its `components/<Name>.md` AND a one-line entry under §20 if it locks new behavior
+- A new token in `tailwind.config.js` → §2 (or retired-but-defined table if removed)
+- A new keyframe in globals.css → §6.3
+- A new route class to rebuild → §21.2 with its Mobbin query
+
+### When to RESIST updating this doc
+
+- Style tweaks that don't lock behavior
+- One-off measurements (those live in component .md files)
+- Bug fixes (those go in code + V3-D provenance comments)
+- Anything that's not "the system" (those go in `_rules/SOLEN_UI.md` or stay in code)
+
+### Pairings
+
+- **QUESTIONS.md** — open decisions accumulating during builds
+- **components/<Name>.md** — per-component specifics
+- **`_rules/SOLEN_UI.md`** — universal UI/UX principles (orthogonal — tokens here, thinking there)
+- **`.claude/skills/solen-drift-check/`** — automated checker for token drift + dead clicks
+
+---
+
+*End of SOURCE.md. Last updated 2026-05-26 / V3-D183.*

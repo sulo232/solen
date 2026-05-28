@@ -181,7 +181,7 @@ export default function EditorPage() {
             value={urlPath}
             onChange={(e) => setUrlPath(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleNavigate()}
-            className="flex-1 bg-s-bg-sunken rounded-btn border border-s-ink/10 px-3 py-1.5 text-xs font-mono text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="flex-1 bg-s-bg-sunken rounded-btn border border-s-ink/10 px-3 py-1.5 text-xs font-mono text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/30"
             placeholder="/de/..."
           />
         </div>
@@ -198,7 +198,7 @@ export default function EditorPage() {
               onClick={() => setDevice(key)}
               className={`p-1.5 rounded-btn transition-colors ${
                 device === key
-                  ? "bg-white shadow-warm-sm text-s-coral"
+                  ? "bg-white shadow-warm-sm text-s-accent"
                   : "text-s-ink/40 hover:text-s-ink"
               }`}
               title={label}
@@ -222,7 +222,7 @@ export default function EditorPage() {
           onClick={() => setEditMode(!editMode)}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-btn text-xs font-medium transition-colors ${
             editMode
-              ? "bg-s-coral text-white"
+              ? "bg-s-ink text-white"
               : "bg-s-bg-sunken text-s-ink/60"
           }`}
         >

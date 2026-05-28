@@ -54,7 +54,8 @@ export function SalonLoyalty() {
 
   return (
     <section id="section-loyalty">
-      <h2 className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink md:text-[22px]">
+      {/* V3-D202 (A16): font-body → font-display + Scale B. */}
+      <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Treueprogramm
       </h2>
 
@@ -68,10 +69,10 @@ export function SalonLoyalty() {
                 type="button"
                 onClick={() => setOpenIdx(isOpen ? null : i)}
                 aria-expanded={isOpen}
-                className="font-body group flex w-full items-center gap-4 rounded-2xl border border-s-border bg-white p-4 text-left transition-shadow hover:shadow-[0_2px_12px_rgba(0,0,0,0.04)] md:p-5"
+                className="font-body group flex w-full items-center gap-4 rounded-2xl border border-s-border bg-white p-4 text-left transition-shadow hover:shadow-elevation-2 md:p-5"
               >
-                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-s-brand-subtle md:h-12 md:w-12">
-                  <Icon size={20} strokeWidth={2} className="text-s-brand" />
+                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white md:h-12 md:w-12">
+                  <Icon size={20} strokeWidth={2} className="text-s-ink" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[14px] font-semibold text-s-ink md:text-[15px]">

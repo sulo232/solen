@@ -85,7 +85,8 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
       });
       onCreated();
       onClose();
-    } catch { /* ignore */ } finally {
+      // V3-D334 (overnight T2): error handling per CLAUDE.md (was silent catch).
+    } catch (err) { console.error("[Calendar] single slot create failed:", err); } finally {
       setLoading(false);
     }
   };
@@ -161,7 +162,8 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
       });
       onCreated();
       onClose();
-    } catch { /* ignore */ } finally {
+      // V3-D334 (overnight T2): error handling per CLAUDE.md (was silent catch).
+    } catch (err) { console.error("[Calendar] bulk slot create failed:", err); } finally {
       setLoading(false);
     }
   };
@@ -381,7 +383,8 @@ export default function CalendarPage() {
     try {
       const data = await fetch(`/api/slots?salon_id=${salonId}&week=${weekStr}`).then((r) => r.json());
       setSlots(data.slots ?? []);
-    } catch { /* ignore */ } finally {
+      // V3-D334 (overnight T2): error handling per CLAUDE.md.
+    } catch (err) { console.error("[Calendar] loadSlots fetch failed:", err); } finally {
       setLoading(false);
     }
   }, [salonId, weekStr]);

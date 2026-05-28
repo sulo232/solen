@@ -115,6 +115,9 @@ const STYLISTS: Testimonial[] = [
 ];
 
 export default function ArtistOfTheMonth() {
+  // V3-D104 (2026-05-23): brand-subtle bg wrapper reverted per user "ditch
+  // the whole thing abt these card box color thing." Back to plain white
+  // substrate matching the rest of the feed.
   return (
     <Section>
       <SectionFrame>

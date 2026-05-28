@@ -82,32 +82,32 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
 
   return (
     <main className="min-h-screen bg-white">
-      {/* City header */}
+      {/* City header — V3-D263 (W4, 2026-05-27): s-amber → s-ink-2 (eyebrow per LOCKFILE §2); s-coral chip → TabPill ink-fill pattern */}
       <section className="max-w-5xl mx-auto px-4 pt-12 pb-8">
         <div className="flex items-center gap-2 mb-2">
-          <MapPin size={16} className="text-s-ink/60" />
-          <span className="font-heading text-[11px] uppercase tracking-[.20em] text-s-amber">
+          <MapPin size={16} className="text-s-ink-2" />
+          <span className="font-body text-[11px] font-bold uppercase tracking-[0.16em] text-s-ink-2">
             {cityName}
           </span>
         </div>
-        <h1 className="font-heading text-s-ink"
-          style={{ fontSize: "clamp(26px, 4vw, 48px)", letterSpacing: "-0.02em" }}>
+        <h1 className="font-heading text-s-ink font-semibold"
+          style={{ fontSize: "clamp(25px, 4vw, 40px)", letterSpacing: "-0.03em", lineHeight: 1 }}>
           {tCityPage("title", { cityName })}
         </h1>
-        <p className="text-sm text-s-ink/50 font-body mt-1">
+        <p className="text-sm text-s-ink-2 font-body mt-1">
           {tCityPage("subtitle")}
         </p>
       </section>
 
-      {/* Category filter chips */}
+      {/* Category filter chips — V3-D263: TabPill pattern (LOCKFILE §5): active = ink-fill + white, inactive = white + hairline */}
       <section className="max-w-5xl mx-auto px-4 pb-6">
         <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
           <Link
             href={`/${locale}/${city}`}
             className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
               activeCategory === null
-                ? "bg-s-coral text-white shadow-elevation-2"
-                : "bg-[--raised] border border-s-ink/10 text-s-ink/70 hover:border-s-ink/20"
+                ? "bg-s-ink text-white"
+                : "bg-white border border-s-border text-s-ink-2 hover:border-s-ink"
             }`}
           >
             {tCityPage("all_categories")}
@@ -118,8 +118,8 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
               href={`/${locale}/${city}/${key}`}
               className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
                 activeCategory === key
-                  ? "bg-s-coral text-white shadow-elevation-2"
-                  : "bg-[--raised] border border-s-ink/10 text-s-ink/70 hover:border-s-ink/20"
+                  ? "bg-s-ink text-white"
+                  : "bg-white border border-s-border text-s-ink-2 hover:border-s-ink"
               }`}
             >
               {tNav(key)}

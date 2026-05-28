@@ -120,7 +120,9 @@ function DiscoverPageContent() {
         setItems(data.items ?? []);
       }
       setHasMore(data.has_more ?? false);
-    } catch {
+    } catch (err) {
+      // V3-D343 (W17, 2026-05-28): informative log added per CLAUDE.md error-handling rule.
+      console.error("[Discover] feed fetch failed:", err);
       setError(true);
     } finally {
       setLoading(false);
@@ -224,10 +226,11 @@ function DiscoverPageContent() {
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <h1 className="font-heading text-[clamp(28px,4vw,44px)] leading-[1.05] tracking-[0.01em] text-s-ink">
+            {/* V3-D341 (W13, 2026-05-28): tracking snap — h1 [0.01em] (positive, non-canonical) → [-0.01em] (H2 recipe §2.5); subtitle [.12em] → [.08em] (canonical max). */}
+            <h1 className="font-heading text-[clamp(22px,2.8vw,26px)] leading-[1.05] tracking-[-0.01em] text-s-ink">
               {t("title")}
             </h1>
-            <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 mt-1.5">
+            <p className="text-xs font-heading uppercase tracking-[.08em] text-s-ink/40 mt-1.5">
               {t("subtitle")}
             </p>
           </div>
@@ -349,7 +352,7 @@ function DiscoverPageContent() {
         {loading && items.length > 0 && (
           <div className="flex items-center justify-center gap-1.5 py-10">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="w-1.5 h-1.5 rounded-full bg-s-coral/50 animate-pulse"
+              <div key={i} className="w-1.5 h-1.5 rounded-full bg-s-ink/50 animate-pulse"
                 style={{ animationDelay: `${i * 0.2}s` }} />
             ))}
           </div>

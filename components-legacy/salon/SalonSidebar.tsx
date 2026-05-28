@@ -124,7 +124,7 @@ export default function SalonSidebar({
               <Link
                 href={bookingHref}
                 aria-label={t("bookAppointment", { salonName })}
-                className="block w-full h-12 rounded-full bg-s-coral text-white font-body font-bold text-[14px] uppercase tracking-[.04em] hover:brightness-[1.06] transition-[transform,filter] duration-150 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+                className="block w-full h-12 rounded-full bg-s-ink text-white font-body font-bold text-[14px] uppercase tracking-[.04em] hover:brightness-[1.06] transition-[transform,filter] duration-150 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
               >
                 {t("bookNow")}
               </Link>
@@ -135,9 +135,9 @@ export default function SalonSidebar({
               <button
                 type="button"
                 onClick={() => onQuickBook?.(nextSlot)}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-[12px] border border-s-ink/10 font-body text-[13px] text-s-ink hover:border-s-coral/40 hover:text-s-coral-text transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-[12px] border border-s-ink/10 font-body text-[13px] text-s-ink hover:border-s-accent/40 hover:text-s-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
               >
-                <Zap size={14} className="text-s-coral" aria-hidden />
+                <Zap size={14} className="text-s-accent" aria-hidden />
                 {t("nextAvailable")}: {formatDate(nextSlot.starts_at)}
               </button>
             )}

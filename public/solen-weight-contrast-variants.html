@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Solen — Weight Contrast Variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Loading FULL Hanken range 100-900 to test thin variants -->
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&family=Hanken+Grotesk:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #4A4A4A;
+    --ink-3: #6B6B6B;
+    --border: #E7E5E4;
+    --sunken: #F5F5F4;
+    --star: #FFC32B;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #FFFFFF; color: var(--ink); }
+  body { font-family: "Hanken Grotesk", system-ui, sans-serif; -webkit-font-smoothing: antialiased; padding-bottom: 60px; }
+
+  .toolbar {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    font: 600 13px/1.4 "Hanken Grotesk";
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .toolbar strong { font-weight: 800; }
+  .toolbar small { color: var(--ink-3); font-weight: 500; }
+  .legend { font-size: 12px; color: var(--ink-3); padding: 8px 20px 16px; }
+  .legend strong { color: var(--ink); }
+  .legend code { background: var(--sunken); padding: 1px 6px; border-radius: 4px; font: 500 11px ui-monospace; }
+
+  .row-title {
+    margin: 32px 20px 12px;
+    font: 700 18px/1.2 "Hanken Grotesk";
+    letter-spacing: -0.01em;
+  }
+
+  /* Variant card */
+  .variant {
+    margin: 0 12px 20px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    background: #FFFFFF;
+  }
+  .variant > .meta {
+    padding: 12px 16px;
+    background: var(--sunken);
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .variant > .meta .title { font: 700 14px/1.3 "Hanken Grotesk"; letter-spacing: -0.01em; }
+  .variant > .meta .spec { font: 500 11px/1.4 ui-monospace, monospace; color: var(--ink-3); }
+  .variant > .meta .ratio { font: 600 11px/1 "Hanken Grotesk"; color: var(--ink-3); margin-top: 4px; }
+  .variant > .meta .ratio strong { color: var(--ink); }
+  .variant > .body { padding: 28px 20px 24px; }
+
+  /* Hero block — display weight 900 in all variants (constant) */
+  .hero-eyebrow {
+    font: 700 14px/1.2 "Inter Tight";
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    color: var(--ink-3);
+  }
+  .hero-h1 {
+    font-family: "Inter Tight";
+    font-weight: 900;
+    font-size: clamp(36px, 9vw, 46px);
+    line-height: 1.0;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    margin: 0 0 16px;
+  }
+  /* Hero sub — VARIABLE per variant */
+  .hero-sub {
+    color: var(--ink-2);
+    font-size: clamp(14px, 3.5vw, 16px);
+    line-height: 1.4;
+    margin: 0 0 24px;
+    max-width: 340px;
+    font-family: "Hanken Grotesk";
+    /* weight set per variant */
+  }
+  .hero-ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+  .cta-primary {
+    background: var(--ink); color: #FFFFFF;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 12px 22px;
+    font: 700 15px/1 "Hanken Grotesk";
+    letter-spacing: -0.01em;
+    cursor: pointer;
+  }
+  .cta-outlined {
+    background: transparent; color: var(--ink);
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 12px 22px;
+    font: 700 15px/1 "Hanken Grotesk";
+    letter-spacing: -0.01em;
+    cursor: pointer;
+  }
+
+  .section-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--ink-3);
+    font: 700 12px/1.2 "Hanken Grotesk";
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin: 32px 0 8px;
+  }
+  .section-eyebrow::before {
+    content: ""; display: inline-block; width: 5px; height: 5px;
+    background: var(--ink-3); border-radius: 50%;
+  }
+  .section-h2 {
+    color: var(--ink); margin: 0 0 16px;
+    font-family: "Inter Tight";
+    font-weight: 800;
+    font-size: clamp(18px, 2vw, 23px);
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+  }
+
+  /* Card — name weight + meta weight VARIABLE per variant */
+  .card-row { display: flex; gap: 12px; padding: 0; margin: 0 0 8px; }
+  .card-row .card { flex: 1 1 0; min-width: 0; }
+  .card .photo {
+    aspect-ratio: 1; border-radius: 22px;
+    background: linear-gradient(135deg, #E9DFC8 0%, #D4DDC8 100%);
+    margin-bottom: 10px;
+  }
+  .card .row1 {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  }
+  .card .name {
+    color: var(--ink); margin: 0; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 14px; line-height: 1.25; letter-spacing: -0.01em;
+    font-family: "Hanken Grotesk";
+    /* weight per variant */
+  }
+  .card .rating {
+    display: inline-flex; align-items: center; gap: 3px;
+    color: var(--ink);
+    font-size: 13px; line-height: 1;
+    flex-shrink: 0; white-space: nowrap;
+    font-family: "Hanken Grotesk";
+  }
+  .card .star { color: var(--star); font-size: 11px; }
+  .card .meta {
+    color: var(--ink-3); margin: 2px 0 0;
+    font-size: 12px; line-height: 1.35;
+    font-family: "Hanken Grotesk";
+  }
+  .card .nextslot {
+    color: var(--ink-2); margin: 2px 0 0;
+    font-size: 12px; line-height: 1.35;
+    font-family: "Hanken Grotesk";
+  }
+  .card .nextslot strong {
+    color: var(--ink);
+    /* strong weight per variant */
+  }
+
+  /* —— PER-VARIANT WEIGHT OVERRIDES —— */
+
+  /* V1 — Current shipped (baseline) */
+  .v-current .hero-sub      { font-weight: 500; }
+  .v-current .card .name    { font-weight: 600; }
+  .v-current .card .rating  { font-weight: 600; }
+  .v-current .card .meta    { font-weight: 400; }
+  .v-current .card .nextslot          { font-weight: 400; }
+  .v-current .card .nextslot strong   { font-weight: 600; }
+
+  /* V2 — Light body (Hanken 300 sub + 300 body, name stays 500) */
+  .v-light .hero-sub        { font-weight: 300; }
+  .v-light .card .name      { font-weight: 500; }
+  .v-light .card .rating    { font-weight: 500; }
+  .v-light .card .meta      { font-weight: 300; }
+  .v-light .card .nextslot          { font-weight: 300; }
+  .v-light .card .nextslot strong   { font-weight: 600; }
+
+  /* V3 — Ultra-thin (Uber-extreme: Hanken 200 sub + 300 body, name 500) */
+  .v-thin .hero-sub         { font-weight: 200; }
+  .v-thin .card .name       { font-weight: 500; }
+  .v-thin .card .rating     { font-weight: 500; }
+  .v-thin .card .meta       { font-weight: 200; }
+  .v-thin .card .nextslot           { font-weight: 200; }
+  .v-thin .card .nextslot strong    { font-weight: 700; }
+
+  /* V4 — Single-family (Inter Tight for EVERYTHING — display 900 + body 300) */
+  .v-single .hero-sub,
+  .v-single .card .name,
+  .v-single .card .rating,
+  .v-single .card .meta,
+  .v-single .card .nextslot,
+  .v-single .cta-primary,
+  .v-single .cta-outlined,
+  .v-single .hero-eyebrow,
+  .v-single .section-eyebrow {
+    font-family: "Inter Tight";
+  }
+  .v-single .hero-sub        { font-weight: 300; }
+  .v-single .card .name      { font-weight: 600; }
+  .v-single .card .rating    { font-weight: 600; }
+  .v-single .card .meta      { font-weight: 300; }
+  .v-single .card .nextslot          { font-weight: 300; }
+  .v-single .card .nextslot strong   { font-weight: 700; }
+
+  /* V5 — Hybrid: thin body + heavy strong (max thin↔fat contrast within body) */
+  .v-hybrid .hero-sub         { font-weight: 300; }
+  .v-hybrid .card .name       { font-weight: 600; }
+  .v-hybrid .card .rating     { font-weight: 700; }
+  .v-hybrid .card .meta       { font-weight: 300; }
+  .v-hybrid .card .nextslot           { font-weight: 300; }
+  .v-hybrid .card .nextslot strong    { font-weight: 800; }
+
+  .recommended {
+    display: inline-block;
+    background: var(--ink); color: #FFFFFF;
+    font: 700 10px/1 "Hanken Grotesk";
+    letter-spacing: 0.05em;
+    padding: 4px 7px; border-radius: 4px; margin-left: 6px; vertical-align: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <strong>Weight contrast — display 900 vs body N</strong>
+  </div>
+  <small>2026-05-26</small>
+</div>
+
+<div class="legend">
+  <strong>The fix:</strong> Display stays Inter Tight <strong>900</strong> everywhere. Variable = body weight (Hanken).
+  Currently body is <strong>400-600</strong> — too heavy → "all chunky." Uber-modern is <strong>200-300 body</strong>.
+  <br><br>
+  Pick the BODY weight first; we keep display constant.
+</div>
+
+<!-- V1 — Current shipped -->
+<div class="row-title">V1 · Current shipped (baseline) <span style="color:var(--ink-3); font: 500 12px 'Hanken Grotesk'; letter-spacing: 0;">— this is the "too chunky" version</span></div>
+<div class="variant v-current">
+  <div class="meta">
+    <span class="title">V1 · Current — Hanken 400-600 body</span>
+    <span class="spec">display Inter Tight 900 · sub Hanken 500 · body Hanken 400 · card name 600 · strong 600</span>
+    <span class="ratio">Display/body weight ratio: <strong>900 / 500 = 1.8×</strong> (mild contrast)</span>
+  </div>
+  <div class="body">
+    <div class="hero-eyebrow">SOLEN SCHWEIZ</div>
+    <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+    <p class="hero-sub">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+    <div class="hero-ctas">
+      <button class="cta-primary">Termine finden</button>
+      <button class="cta-outlined">Wie es funktioniert</button>
+    </div>
+    <div class="section-eyebrow">Bei dir zuletzt</div>
+    <h2 class="section-h2">Top auf Solen</h2>
+    <div class="card-row">
+      <div class="card">
+        <div class="photo"></div>
+        <div class="row1"><h3 class="name">Salon Bella</h3><span class="rating"><span class="star">★</span> 4.8</span></div>
+        <p class="meta">Steinenvorstadt 12 · Basel</p>
+        <p class="nextslot"><strong>Heute 14:30</strong> · CHF 85</p>
+      </div>
+      <div class="card">
+        <div class="photo"></div>
+        <div class="row1"><h3 class="name">Nail Loft</h3><span class="rating"><span class="star">★</span> 4.9</span></div>
+        <p class="meta">Aeschenvorstadt 7 · Basel</p>
+        <p class="nextslot"><strong>Morgen 09:00</strong> · CHF 55</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- V2 — Light body -->
+<div class="row-title">V2 · Light body — Hanken 300 <span class="recommended">PICK</span></div>
+<div class="variant v-light">
+  <div class="meta">
+    <span class="title">V2 · Light — Hanken 300 sub + 300 body</span>
+    <span class="spec">display Inter Tight 900 · sub Hanken 300 · body Hanken 300 · card name 500 · strong 600</span>
+    <span class="ratio">Display/body weight ratio: <strong>900 / 300 = 3.0×</strong> (clear contrast, German still readable)</span>
+  </div>
+  <div class="body">
+    <div class="hero-eyebrow">SOLEN SCHWEIZ</div>
+    <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+    <p class="hero-sub">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+    <div class="hero-ctas">
+      <button class="cta-primary">Termine finden</button>
+      <button class="cta-outlined">Wie es funktioniert</button>
+    </div>
+    <div class="section-eyebrow">Bei dir zuletzt</div>
+    <h2 class="section-h2">Top auf Solen</h2>
+    <div class="card-row">
+      <div class="card">
+        <div class="photo"></div>
+        <div class="row1"><h3 class="name">Salon Bella</h3><span class="rating"><span class="star">★</span> 4.8</span></div>
+        <p class="meta">Steinenvorstadt 12 · Basel</p>
+        <p class="nextslot"><strong>Heute 14:30</strong> · CHF 85</p>
+      </div>
+      <div class="card">
+        <div class="photo"></div>
+        <div class="row1"><h3 class="name">Nail Loft</h3><span class="rating"><span class="star">★</span> 4.9</span></div>
+        <p class="meta">Aeschenvorstadt 7 · Basel</p>
+        <p class="nextslot"><strong>Morgen 09:00</strong> · CHF 55</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- V3 — Ultra-thin (Uber-extreme) -->
+<div class="row-title">V3 · Ultra-thin body — Hanken 200 <span style="color:var(--ink-3); font: 500 12px 'Hanken Grotesk'; letter-spacing: 0;">— max Uber-extreme</span></div>
+<div class="variant v-thin">
+  <div class="meta">
+    <span class="title">V3 · Ultra-thin — Hanken 200 sub + 200 body</span>
+    <span class="spec">display Inter Tight 900 · sub Hanken 200 · body Hanken 200 · meta 200 · strong jumps to 700</span>
+    <span class="ratio">Display/body weight ratio: <strong>900 / 200 = 4.5×</strong> (extreme contrast — risk: German hairlines on small viewports)</span>
+  </div>
+  <div class="body">
+    <div class="hero-eyebrow">SOLEN SCHWEIZ</div>
+    <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+    <p class="hero-sub">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+    <div class="hero-ctas">
+      <button class="cta-primary">Termine finden</button>
+      <button class="cta-outlined">Wie es funktioniert</button>
+    </div>
+    <div class="section-eyebrow">Bei dir zuletzt</div>
+    <h2 class="section-h2">Top auf Solen</h2>
+    <div class="card-row">
+      <div class="card">
+        <div class="photo"></div>
+        <div class="row1"><h3 class="name">Salon Bella</h3><span class="rating"><span class="star">★</span> 4.8</span></div>
+        <p class="meta">Steinenvorstadt 12 · Basel</p>
+        <p class="nextslot"><strong>Heute 14:30</strong> · CHF 85</p>
+      </div>
+      <div class="card">
+        <div class="photo"></div>
+        <div class="row1"><h3 class="name">Nail Loft</h3><span class="rating"><span class="star">★</span> 4.9</span></div>
+        <p class="meta">Aeschenvorstadt 7 · Basel</p>
+        <p class="nextslot"><strong>Morgen 09:00</strong> · CHF 55</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- V4 — Single family Inter Tight everywhere -->
+<div class="row-title">V4 · Single family — Inter Tight only (display 900 + body 300)</div>
+<div class="variant v-single">
+  <div class="meta">
+    <span class="title">V4 · One family — Inter Tight everywhere</span>
+    <span class="spec">Inter Tight ALL · display 900 · sub 300 · body 300 · card name 600 · strong 700</span>
+    <span class="ratio">Display/body weight ratio: <strong>900 / 300 = 3.0×</strong> + family unity (Uber Move pattern)</span>
+  </div>
+  <div class="body">
+    <div class="hero-eyebrow">SOLEN SCHWEIZ</div>
+    <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+    <p class="hero-sub">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+    <div class="hero-ctas">
+      <button class="cta-primary">Termine finden</button>
+      <button class="cta-outlined">Wie es funktioniert</button>
+    </div>
+    <div class="section-eyebrow">Bei dir zuletzt</div>
+    <h2 class="section-h2">Top auf Solen</h2>
+    <div class="card-row">
+      <div class="card">
+        <div class="photo"></div>
+        <div class="row1"><h3 class="name">Salon Bella</h3><span class="rating"><span class="star">★</span> 4.8</span></div>
+        <p class="meta">Steinenvorstadt 12 · Basel</p>
+        <p class="nextslot"><strong>Heute 14:30</strong> · CHF 85</p>
+      </div>
+      <div class="card">
+        <div class="photo"></div>
+        <div class="row1"><h3 class="name">Nail Loft</h3><span class="rating"><span class="star">★</span> 4.9</span></div>
+        <p class="meta">Aeschenvorstadt 7 · Basel</p>
+        <p class="nextslot"><strong>Morgen 09:00</strong> · CHF 55</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- V5 — Hybrid: thin body + heavy data emphasis -->
+<div class="row-title">V5 · Hybrid — thin body + heavy data emphasis <span style="color:var(--ink-3); font: 500 12px 'Hanken Grotesk'; letter-spacing: 0;">— max within-body contrast</span></div>
+<div class="variant v-hybrid">
+  <div class="meta">
+    <span class="title">V5 · Hybrid — body 300 + data 800</span>
+    <span class="spec">display Inter Tight 900 · sub Hanken 300 · body Hanken 300 · card name 600 · "Heute 14:30" 800</span>
+    <span class="ratio">Triple-tier weight: <strong>display 900 / body 300 / data emphasis 800</strong> (mimics newspaper data tables)</span>
+  </div>
+  <div class="body">
+    <div class="hero-eyebrow">SOLEN SCHWEIZ</div>
+    <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+    <p class="hero-sub">Beauty &amp; Wellness in der ganzen Schweiz.</p>
+    <div class="hero-ctas">
+      <button class="cta-primary">Termine finden</button>
+      <button class="cta-outlined">Wie es funktioniert</button>
+    </div>
+    <div class="section-eyebrow">Bei dir zuletzt</div>
+    <h2 class="section-h2">Top auf Solen</h2>
+    <div class="card-row">
+      <div class="card">
+        <div class="photo"></div>
+        <div class="row1"><h3 class="name">Salon Bella</h3><span class="rating"><span class="star">★</span> 4.8</span></div>
+        <p class="meta">Steinenvorstadt 12 · Basel</p>
+        <p class="nextslot"><strong>Heute 14:30</strong> · CHF 85</p>
+      </div>
+      <div class="card">
+        <div class="photo"></div>
+        <div class="row1"><h3 class="name">Nail Loft</h3><span class="rating"><span class="star">★</span> 4.9</span></div>
+        <p class="meta">Aeschenvorstadt 7 · Basel</p>
+        <p class="nextslot"><strong>Morgen 09:00</strong> · CHF 55</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recommendation -->
+<div class="row-title">My recommendation</div>
+<div style="margin: 0 12px 24px; padding: 20px 22px; border: 1px solid var(--border); border-radius: 16px; background: var(--sunken);">
+  <p style="margin: 0 0 12px; font: 700 16px/1.35 'Hanken Grotesk';">
+    <strong>V2 · Light body (Hanken 300) — start here</strong>
+  </p>
+  <p style="margin: 0 0 10px; font: 300 14px/1.5 'Hanken Grotesk'; color: var(--ink-2);">
+    Hanken 300 gives the Uber-modern contrast you described (display 900 ↔ body 300 = 3× weight ratio) while staying readable for German compound words on small viewports. V3 (Hanken 200) goes further but risks letter strokes thinning out on mobile retina; we can step up to it later if V2 feels too safe.
+  </p>
+  <p style="margin: 0 0 10px; font: 300 13px/1.5 'Hanken Grotesk'; color: var(--ink-2);">
+    V4 (single family Inter Tight everywhere) is the closest match to Uber Move's actual brand. Trade-off: loses Hanken's slightly warmer body character. Considered if you want "Tap2/Linear maxxed."
+  </p>
+  <p style="margin: 0; font: 300 13px/1.5 'Hanken Grotesk'; color: var(--ink-2);">
+    V5 (heavy data emphasis) is a smaller tweak — addresses "where is the eye supposed to go" by making the booking time visually carry the most weight on each card. Could be additive on top of V2 once weight is right.
+  </p>
+  <p style="margin: 16px 0 0; font: 700 13px/1.5 'Hanken Grotesk'; color: var(--ink);">
+    Implementation cost of V2: 5 lines changed (globals.css font-weight loader + Hero sub + SectionHeader + SalonCard + FeaturedStylists). ~3 minutes.
+  </p>
+</div>
+
+</body>
+</html>

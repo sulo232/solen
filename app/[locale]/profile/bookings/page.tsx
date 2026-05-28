@@ -43,7 +43,8 @@ export default async function BookingsPage({
           <div className="flex items-center gap-4">
             <Link
               href={`/${locale}/profile`}
-              className="p-2 hover:bg-s-ink/[0.05]:bg-white/[0.08] rounded-pill transition-colors"
+              // V3-D283: fix corrupted concatenated dark-mode class (was `hover:bg-s-ink/[0.05]:bg-white/[0.08]` — invalid Tailwind)
+              className="p-2 hover:bg-s-bg-sunken rounded-pill transition-colors"
               aria-label="Back"
             >
               <ChevronLeft size={24} className="text-s-ink" />

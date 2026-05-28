@@ -54,7 +54,7 @@ export default function ProfileDiscoverySections({ userId, profile }: ProfileDis
       {/* My Looks */}
       <div>
         <div className="flex items-center gap-2 mb-3">
-          <Grid3X3 size={16} className="text-s-coral" />
+          <Grid3X3 size={16} className="text-s-accent" />
           <h3 className="text-base font-heading text-s-ink">{t("myLooks")}</h3>
         </div>
         <UserPostsSection userId={userId} />
@@ -69,7 +69,7 @@ export default function ProfileDiscoverySections({ userId, profile }: ProfileDis
           </div>
           <button
             onClick={() => editing ? handleSave() : setEditing(true)}
-            className="text-xs text-s-coral hover:underline"
+            className="text-xs text-s-accent hover:underline"
           >
             {saving ? tc("saving") : editing ? tc("save") : tc("edit")}
           </button>
@@ -81,7 +81,7 @@ export default function ProfileDiscoverySections({ userId, profile }: ProfileDis
               <label className="text-xs text-s-ink/60 mb-1 block">{t("gender.label")}</label>
               <div className="flex gap-1.5">
                 {GENDER_OPTIONS.map((g) => (
-                  <button key={g} onClick={() => setForm({ ...form, disc_gender: g })} className={`px-3 py-1.5 rounded-pill text-xs font-medium ${form.disc_gender === g ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
+                  <button key={g} onClick={() => setForm({ ...form, disc_gender: g })} className={`px-3 py-1.5 rounded-pill text-xs font-medium ${form.disc_gender === g ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
                     {g === "female" ? t("gender.women") : t("gender.men")}
                   </button>
                 ))}
@@ -91,7 +91,7 @@ export default function ProfileDiscoverySections({ userId, profile }: ProfileDis
               <label className="text-xs text-s-ink/60 mb-1 block">{t("texture")}</label>
               <div className="flex flex-wrap gap-1.5">
                 {TEXTURE_OPTIONS.map((t) => (
-                  <button key={t} onClick={() => setForm({ ...form, disc_hair_texture: t })} className={`px-3 py-1.5 rounded-pill text-xs font-medium capitalize ${form.disc_hair_texture === t ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
+                  <button key={t} onClick={() => setForm({ ...form, disc_hair_texture: t })} className={`px-3 py-1.5 rounded-pill text-xs font-medium capitalize ${form.disc_hair_texture === t ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
                     {t}
                   </button>
                 ))}
@@ -101,7 +101,7 @@ export default function ProfileDiscoverySections({ userId, profile }: ProfileDis
               <label className="text-xs text-s-ink/60 mb-1 block">{t("length") ?? "Hair Length"}</label>
               <div className="flex gap-1.5">
                 {LENGTH_OPTIONS.map((l) => (
-                  <button key={l} onClick={() => setForm({ ...form, disc_hair_length: l })} className={`px-3 py-1.5 rounded-pill text-xs font-medium capitalize ${form.disc_hair_length === l ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
+                  <button key={l} onClick={() => setForm({ ...form, disc_hair_length: l })} className={`px-3 py-1.5 rounded-pill text-xs font-medium capitalize ${form.disc_hair_length === l ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
                     {l}
                   </button>
                 ))}
@@ -111,7 +111,7 @@ export default function ProfileDiscoverySections({ userId, profile }: ProfileDis
               <label className="text-xs text-s-ink/60 mb-1 block">{t("faceShape") ?? "Face Shape"}</label>
               <div className="flex flex-wrap gap-1.5">
                 {FACE_SHAPE_OPTIONS.map((f) => (
-                  <button key={f} onClick={() => setForm({ ...form, disc_face_shape: f })} className={`px-3 py-1.5 rounded-pill text-xs font-medium capitalize ${form.disc_face_shape === f ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
+                  <button key={f} onClick={() => setForm({ ...form, disc_face_shape: f })} className={`px-3 py-1.5 rounded-pill text-xs font-medium capitalize ${form.disc_face_shape === f ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
                     {f}
                   </button>
                 ))}

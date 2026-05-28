@@ -55,15 +55,15 @@ export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
             "relative inline-flex items-center justify-center shrink-0",
             "w-[18px] h-[18px] border-2 border-s-ink/25 bg-transparent rounded-full",
             "transition-colors duration-150 ease-snap",
-            "peer-checked:border-s-brand",
-            "peer-focus-visible:outline-2 peer-focus-visible:outline-s-brand peer-focus-visible:outline-offset-2",
+            "peer-checked:border-s-ink",
+            "peer-focus-visible:outline-2 peer-focus-visible:outline-s-ink peer-focus-visible:outline-offset-2",
             "group-active:scale-[0.94] [&]:transition-transform",
           )}
         >
           {/* Inner dot — 8px brand-teal, fades in 150ms */}
           <span
             className={cn(
-              "block w-2 h-2 rounded-full bg-s-brand",
+              "block w-2 h-2 rounded-full bg-s-ink",
               "transition-transform duration-150 ease-snap",
               checked ? "scale-100" : "scale-0",
             )}

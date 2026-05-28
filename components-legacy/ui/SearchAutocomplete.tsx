@@ -223,7 +223,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                   key={service.id}
                   onClick={() => handleServiceClick(service)}
                   className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors duration-150 ${
-                    activeIndex === i ? "bg-s-coral/[0.06] text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
+                    activeIndex === i ? "bg-s-ink/[0.06] text-s-accent" : "text-s-ink/80 hover:bg-s-bg-surface"
                   }`}
                 >
                   <span className="font-medium truncate">{service.name_de}</span>
@@ -248,7 +248,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                     key={salon.id}
                     onClick={() => handleSalonClick(salon)}
                     className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors duration-150 ${
-                      activeIndex === idx ? "bg-s-coral/[0.06] text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
+                      activeIndex === idx ? "bg-s-ink/[0.06] text-s-accent" : "text-s-ink/80 hover:bg-s-bg-surface"
                     }`}
                   >
                     <div className="w-8 h-8 rounded-full bg-s-bg-sunken overflow-hidden shrink-0">
@@ -278,7 +278,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
             <div>
               {(services.length > 0 || salons.length > 0) && <div className="border-t border-s-ink/5" />}
               <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1 flex items-center gap-1">
-                <Sparkles size={10} className="text-s-coral" />
+                <Sparkles size={10} className="text-s-accent" />
                 {t("aiSuggestions")}
               </p>
               {smartResults.map((result, i) => {
@@ -299,7 +299,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                       }
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors duration-150 ${
-                      activeIndex === idx ? "bg-s-coral/[0.06] text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
+                      activeIndex === idx ? "bg-s-ink/[0.06] text-s-accent" : "text-s-ink/80 hover:bg-s-bg-surface"
                     }`}
                   >
                     <span className="font-medium truncate">{result.name}</span>
@@ -314,14 +314,14 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
 
           {/* Cross-category suggestion */}
           {suggestedCategory && suggestedCategory !== category && (
-            <div className="px-3 py-2.5 flex items-center gap-2 bg-s-coral/5 border-t border-s-ink/5">
-              <Search size={14} className="text-s-coral shrink-0" />
+            <div className="px-3 py-2.5 flex items-center gap-2 bg-s-ink/5 border-t border-s-ink/5">
+              <Search size={14} className="text-s-accent shrink-0" />
               <span className="text-xs text-s-ink/60 font-body">
                 {t("didYouMean")} <strong>{categoryLabels[suggestedCategory]}</strong>?
               </span>
               <Link
                 href={`/${locale}/${suggestedCategory}?q=${encodeURIComponent(query)}`}
-                className="ml-auto px-3 py-1 rounded-pill bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] transition-colors shrink-0"
+                className="ml-auto px-3 py-1 rounded-pill bg-s-ink text-white text-xs font-medium hover:brightness-[1.06] transition-colors shrink-0"
                 onClick={() => setOpen(false)}
               >
                 {t("switch")}

@@ -57,7 +57,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder={t("descPlaceholder")}
-            className="w-full px-3 py-2 text-sm border border-s-ink/10 rounded-input bg-white focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+            className="w-full px-3 py-2 text-sm border border-s-ink/10 rounded-input bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20"
             autoFocus
           />
         </div>
@@ -77,13 +77,13 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full pl-8 pr-3 py-2 text-sm border border-s-ink/10 rounded-input bg-white focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+              className="w-full pl-8 pr-3 py-2 text-sm border border-s-ink/10 rounded-input bg-white focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20"
             />
           </div>
         </div>
 
         {/* Error */}
-        {error && <p className="text-xs text-s-coral">{error}</p>}
+        {error && <p className="text-xs text-s-accent">{error}</p>}
 
         {/* Buttons */}
         <div className="flex gap-3 justify-end pt-2">
@@ -95,7 +95,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 text-sm rounded-pill active:scale-[0.97] bg-s-coral text-white hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
+            className="px-4 py-2 text-sm rounded-pill active:scale-[0.97] bg-s-ink text-white hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
           >
             {t("send")}
           </button>

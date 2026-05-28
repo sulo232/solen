@@ -64,7 +64,7 @@ export function NailsBelowGrid() {
   const locale = useLocale();
 
   const INSPO_PLACEHOLDERS = [
-    { color: "from-s-coral/20 to-s-coral-subtle", label: t("style_nail_art") },
+    { color: "from-s-ink/20 to-s-accent-pale", label: t("style_nail_art") },
     { color: "from-s-blue/20 to-s-blue-subtle", label: t("style_french") },
     { color: "from-s-amber/20 to-s-amber-subtle", label: t("style_ombre") },
     { color: "from-s-plum/15 to-s-plum-subtle", label: t("style_minimal") },
@@ -78,7 +78,7 @@ export function NailsBelowGrid() {
       <section>
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h2 className="font-heading text-[clamp(26px,3.5vw,44px)] tracking-[0.01em] text-s-ink">
+            <h2 className="font-heading text-[clamp(22px,2.8vw,26px)] tracking-[0.01em] text-s-ink">
               {t("inspo_heading")}
             </h2>
             <p className="text-sm text-s-ink/50 font-body mt-1">
@@ -87,7 +87,7 @@ export function NailsBelowGrid() {
           </div>
           <Link
             href={`/${locale}/discover?category=nails`}
-            className="flex items-center gap-1 text-sm text-s-coral hover:text-s-coral transition-colors duration-150 font-body shrink-0"
+            className="flex items-center gap-1 text-sm text-s-accent hover:text-s-accent transition-colors duration-150 font-body shrink-0"
           >
             {t("inspo_see_all")} <ChevronRight size={14} />
           </Link>
@@ -109,9 +109,9 @@ export function NailsBelowGrid() {
       </section>
 
       {/* AI Nail Art Inspo teaser */}
-      <section className="rounded-[20px] bg-gradient-to-r from-s-coral/5 to-s-plum/5 border border-s-coral/15 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
-        <div className="w-12 h-12 rounded-pill bg-s-coral/10 flex items-center justify-center shrink-0">
-          <Sparkles size={22} className="text-s-coral" />
+      <section className="rounded-[20px] bg-gradient-to-r from-s-ink/5 to-s-plum/5 border border-s-accent/15 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+        <div className="w-12 h-12 rounded-pill bg-s-ink/10 flex items-center justify-center shrink-0">
+          <Sparkles size={22} className="text-s-accent" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-heading text-s-ink">
@@ -123,7 +123,7 @@ export function NailsBelowGrid() {
         </div>
         <Link
           href={`/${locale}/discover?category=nails`}
-          className="shrink-0 px-4 py-2 rounded-pill bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
+          className="shrink-0 px-4 py-2 rounded-pill bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
         >
           {t("ai_teaser_cta")}
         </Link>

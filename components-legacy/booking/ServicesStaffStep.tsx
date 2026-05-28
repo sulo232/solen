@@ -115,15 +115,15 @@ export default function ServicesStaffStep({
                       onClick={() => handleSelectService(service)}
                       className={`w-full flex items-start gap-3 p-4 rounded-input border-2 transition-[border-color,background-color] duration-200 ${
                         isSelected
-                          ? 'border-s-coral bg-s-coral/[0.12]'
-                          : 'border-s-ink/[0.08] hover:border-s-coral/30 bg-[--raised]'
+                          ? 'border-s-accent bg-s-ink/[0.12]'
+                          : 'border-s-ink/[0.08] hover:border-s-accent/30 bg-[--raised]'
                       }`}
                     >
                       {/* Checkbox */}
                       <div
                         className={`shrink-0 w-5 h-5 rounded-[6px] border-2 flex items-center justify-center transition-[border-color,background-color] mt-0.5 ${
                           isSelected
-                            ? 'bg-s-coral border-s-coral'
+                            ? 'bg-s-ink border-s-accent'
                             : 'border-s-ink/20'
                         }`}
                       >
@@ -190,7 +190,7 @@ export default function ServicesStaffStep({
 
       {/* Inline error */}
       {error && (
-        <p className="text-sm text-s-coral text-center">{error}</p>
+        <p className="text-sm text-s-accent text-center">{error}</p>
       )}
 
       {/* Bottom bar */}
@@ -207,7 +207,7 @@ export default function ServicesStaffStep({
           <button
             onClick={handleContinue}
             disabled={formData.services.length === 0 || isChecking}
-            className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center gap-2"
+            className="px-6 py-3 rounded-btn bg-s-ink text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center gap-2"
           >
             {isChecking && <Spinner size="sm" invert />}
             {t('continue')}

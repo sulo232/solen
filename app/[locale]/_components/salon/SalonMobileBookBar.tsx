@@ -25,10 +25,11 @@ export function SalonMobileBookBar({
   slug: string;
 }) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-s-border bg-white/95 px-4 py-3 backdrop-blur-md lg:hidden">
+    // V3-D202 (A20): drop bg-white/95 backdrop-blur-md → bg-white per drift-detox.
+    <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-s-border bg-white px-4 py-3 lg:hidden">
       <Link
         href={`/${locale}/salon/${slug}/booking`}
-        className="font-body flex w-full items-center justify-center gap-2 rounded-full bg-s-brand py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-s-brand-mid active:bg-s-brand-deep"
+        className="font-body flex w-full items-center justify-center gap-2 rounded-full bg-s-ink py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-black active:bg-black"
       >
         Termin buchen
         <ChevronRight size={16} strokeWidth={2.5} />

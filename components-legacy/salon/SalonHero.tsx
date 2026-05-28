@@ -96,7 +96,7 @@ export default function SalonHero({
             <button
               type="button"
               onClick={() => openLightbox(0)}
-              className="absolute inset-0 w-full h-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+              className="absolute inset-0 w-full h-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
               aria-label={`${salonName} — Foto öffnen`}
             >
               <Image
@@ -158,7 +158,7 @@ export default function SalonHero({
                       type="button"
                       onClick={onBack}
                       aria-label={t("backToList") || "Zurück"}
-                      className="flex items-center justify-center rounded-full transition-transform duration-150 active:scale-[0.92] hover:scale-[1.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+                      className="flex items-center justify-center rounded-full transition-transform duration-150 active:scale-[0.92] hover:scale-[1.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
                       style={{
                         width: 36,
                         height: 36,
@@ -194,7 +194,7 @@ export default function SalonHero({
                       type="button"
                       onClick={onShare}
                       aria-label={t("shareProfile") || "Teilen"}
-                      className="flex items-center justify-center rounded-full transition-transform duration-150 active:scale-[0.92] hover:scale-[1.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+                      className="flex items-center justify-center rounded-full transition-transform duration-150 active:scale-[0.92] hover:scale-[1.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
                       style={{
                         width: 36,
                         height: 36,
@@ -211,7 +211,7 @@ export default function SalonHero({
                       onClick={onFavoriteToggle}
                       aria-pressed={isFavorited}
                       aria-label={isFavorited ? (t("removeFromFavorites") || "Aus Favoriten entfernen") : (t("addToFavorites") || "Zu Favoriten")}
-                      className="flex items-center justify-center rounded-full transition-transform duration-150 active:scale-[0.92] hover:scale-[1.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+                      className="flex items-center justify-center rounded-full transition-transform duration-150 active:scale-[0.92] hover:scale-[1.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
                       style={{
                         width: 36,
                         height: 36,
@@ -241,7 +241,7 @@ export default function SalonHero({
                 key={i}
                 type="button"
                 onClick={() => openLightbox(i + 1)}
-                className="relative shrink-0 w-[88px] h-[64px] sm:w-[110px] sm:h-[80px] rounded-[10px] overflow-hidden border border-s-ink/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 transition-transform duration-150 hover:scale-[1.03]"
+                className="relative shrink-0 w-[88px] h-[64px] sm:w-[110px] sm:h-[80px] rounded-[10px] overflow-hidden border border-s-ink/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 transition-transform duration-150 hover:scale-[1.03]"
                 aria-label={`Foto ${i + 2} öffnen`}
               >
                 <Image
@@ -257,7 +257,7 @@ export default function SalonHero({
               <button
                 type="button"
                 onClick={() => openLightbox(1 + thumbnailCount)}
-                className="relative shrink-0 w-[88px] h-[64px] sm:w-[110px] sm:h-[80px] rounded-[10px] overflow-hidden border border-s-ink/[0.06] bg-s-bg-sunken flex items-center justify-center font-heading text-[14px] uppercase text-s-ink/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 transition-transform duration-150 hover:scale-[1.03]"
+                className="relative shrink-0 w-[88px] h-[64px] sm:w-[110px] sm:h-[80px] rounded-[10px] overflow-hidden border border-s-ink/[0.06] bg-s-bg-sunken flex items-center justify-center font-heading text-[14px] uppercase text-s-ink/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 transition-transform duration-150 hover:scale-[1.03]"
                 aria-label={t("showAllPhotos", { count: photos.length })}
               >
                 +{overflowCount}

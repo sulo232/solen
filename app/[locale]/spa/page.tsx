@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
+import CategoryHero from "@/app/[locale]/_components/landings/CategoryHero";
 import { SpaBelowGrid } from "@/components-legacy/spa/SpaSections";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
@@ -68,9 +70,21 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
       />
-      <div className="min-h-screen pt-24 pb-16 flex flex-col items-center justify-center">
-        <SpaBelowGrid />
-      </div>
+      {/* V3-D340 (W11, 2026-05-28): editorial split-hero ABOVE SearchTemplate. See CategoryHero docs for axis sources. */}
+      <CategoryHero category="spa" locale={loc} />
+      {/* V3-D230 (2026-05-26): /spa was previously broken (no salon list, just
+          SpaBelowGrid stub). Wiring SearchTemplate gives the route a real
+          filterable salon list for the first time. */}
+      <SearchTemplate
+        locale={loc}
+        serviceFilter="spa"
+        breadcrumb={[
+          { label: "Solen", href: `/${loc}` },
+          { label: "Spa" },
+        ]}
+        hero={{ title: "Spa & Wellness in Basel" }}
+        belowSlot={<SpaBelowGrid />}
+      />
     </>
   );
 }

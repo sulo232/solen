@@ -85,10 +85,10 @@ export default function SignIn() {
       <div className="text-center py-6 flex flex-col items-center gap-4">
         <div className="w-14 h-14 rounded-[14px] flex items-center justify-center"
           style={{ background: "rgba(27, 77, 27,.10)" }}>
-          <Mail size={24} className="text-s-coral" />
+          <Mail size={24} className="text-s-accent" />
         </div>
         <div>
-          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-coral mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-accent mb-2">
             E-Mail gesendet
           </p>
           <p className="font-heading text-lg text-s-ink">Link gesendet</p>
@@ -98,7 +98,7 @@ export default function SignIn() {
         </div>
         <button
           onClick={() => { setResetMode(false); setResetSent(false); }}
-          className="text-[11px] font-heading uppercase tracking-[.06em] text-s-coral/60 hover:text-s-coral transition-colors mt-2">
+          className="text-[11px] font-heading uppercase tracking-[.06em] text-s-accent/60 hover:text-s-accent transition-colors mt-2">
           Zurück zur Anmeldung
         </button>
       </div>
@@ -125,12 +125,12 @@ export default function SignIn() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("email_placeholder")}
             required
-            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
           />
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full py-4 rounded-btn bg-s-coral shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+            className="w-full py-4 rounded-btn bg-s-ink shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
             {loading ? <Spinner size="sm" invert /> : <Mail size={15} />}
             Reset-Link senden
           </button>
@@ -179,7 +179,7 @@ export default function SignIn() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("email_placeholder")}
           required
-          className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+          className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
         />
         <div className="relative">
           <input
@@ -188,7 +188,7 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Passwort"
             required
-            className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
           />
           <button
             type="button"
@@ -202,7 +202,7 @@ export default function SignIn() {
         <button
           type="submit"
           disabled={loading || !email || !password}
-          className="w-full py-4 rounded-btn bg-s-coral shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+          className="w-full py-4 rounded-btn bg-s-ink shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
           {loading ? <Spinner size="sm" invert /> : null}
           Anmelden
         </button>
@@ -210,7 +210,7 @@ export default function SignIn() {
 
       <button
         onClick={() => setResetMode(true)}
-        className="text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/45 hover:text-s-coral transition-colors text-center">
+        className="text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/45 hover:text-s-accent transition-colors text-center">
         Passwort vergessen?
       </button>
 

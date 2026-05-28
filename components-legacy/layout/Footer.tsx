@@ -51,7 +51,7 @@ export default function Footer() {
           {/* PLATTFORM */}
           <div>
             <h3
-              className="font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-4"
+              className="font-heading text-[11px] font-semibold uppercase tracking-[.1em] mb-4"
               style={{ color: "#9F8A7E" }}
             >
               {t("platform") || "Plattform"}
@@ -79,7 +79,7 @@ export default function Footer() {
           {/* FÜR SALONS */}
           <div>
             <h3
-              className="font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-4"
+              className="font-heading text-[11px] font-semibold uppercase tracking-[.1em] mb-4"
               style={{ color: "#9F8A7E" }}
             >
               {t("forSalonsTitle") || "Für Salons"}
@@ -106,7 +106,7 @@ export default function Footer() {
         {/* ── RECHTLICHES ── */}
         <div className="mb-6" style={{ marginTop: 24 }}>
           <h3
-            className="font-heading text-[11px] font-bold uppercase tracking-[.1em] mb-3"
+            className="font-heading text-[11px] font-semibold uppercase tracking-[.1em] mb-3"
             style={{ color: "#9F8A7E" }}
           >
             {t("legalTitle") || "Rechtliches"}

@@ -49,14 +49,14 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
               onClick={() => onShapeChange(v)}
               className={`flex flex-col items-center gap-1 p-2 rounded-[12px] border transition-[border-color,background-color,box-shadow] duration-150 ${
                 shape === v
-                  ? "border-s-coral bg-s-coral/5 shadow-elevation-2"
-                  : "border-s-ink/10 bg-[--raised] hover:border-s-coral/20"
+                  ? "border-s-accent bg-s-ink/5 shadow-elevation-2"
+                  : "border-s-ink/10 bg-[--raised] hover:border-s-accent/20"
               }`}
             >
-              <svg viewBox="0 0 20 14" className={`w-8 h-6 ${shape === v ? "fill-s-coral/20 stroke-s-coral" : "fill-s-ink/5 stroke-s-ink/30"}`} strokeWidth="1">
+              <svg viewBox="0 0 20 14" className={`w-8 h-6 ${shape === v ? "fill-s-accent/20 stroke-s-accent" : "fill-s-ink/5 stroke-s-ink/30"}`} strokeWidth="1">
                 <path d={svg} />
               </svg>
-              <span className={`text-[9px] leading-tight ${shape === v ? "text-s-coral font-medium" : "text-s-ink/50"}`}>
+              <span className={`text-[9px] leading-tight ${shape === v ? "text-s-accent font-medium" : "text-s-ink/50"}`}>
                 {t(key)}
               </span>
             </button>
@@ -79,11 +79,11 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
               <div
                 className={`w-full ${barHeight} rounded-t-sm transition-colors duration-150 ${
                   length === v
-                    ? "bg-s-coral"
-                    : "bg-s-ink/10 hover:bg-s-coral/20"
+                    ? "bg-s-ink"
+                    : "bg-s-ink/10 hover:bg-s-ink/20"
                 }`}
               />
-              <span className={`text-[9px] ${length === v ? "text-s-coral font-medium" : "text-s-ink/40"}`}>
+              <span className={`text-[9px] ${length === v ? "text-s-accent font-medium" : "text-s-ink/40"}`}>
                 {t(key)}
               </span>
             </button>

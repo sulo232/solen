@@ -88,7 +88,7 @@ export default function CardFilterRow({
         aria-pressed={isActive}
         className={[
           "inline-flex items-center justify-center font-body font-bold uppercase transition-all duration-150",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2",
           "active:scale-[0.97]",
           isActive
             ? "text-white shadow-elevation-1 hover:brightness-[1.06]"

@@ -67,21 +67,21 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
               {slot.salon.name}
             </p>
             {isUrgent && (
-              <Zap size={14} className="text-s-coral shrink-0 mt-0.5 fill-s-coral" />
+              <Zap size={14} className="text-s-accent shrink-0 mt-0.5 fill-s-accent" />
             )}
           </div>
           <p className="text-xs text-s-ink/50 mt-0.5 font-body">{serviceName}</p>
 
           {/* Time */}
           <div className="mt-3 flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-s-coral animate-pulse" />
-            <span className="data-text font-semibold text-s-coral text-base">{timeStr}</span>
+            <div className="w-2 h-2 rounded-full bg-s-ink animate-pulse" />
+            <span className="data-text font-semibold text-s-accent text-base">{timeStr}</span>
           </div>
 
           {/* Countdown */}
           <div className="flex items-center gap-1 mt-1 text-s-ink/40">
             <Clock className="w-3 h-3" />
-            <span className={cn("text-xs font-body", isUrgent && "text-s-coral font-semibold")}>
+            <span className={cn("text-xs font-body", isUrgent && "text-s-accent font-semibold")}>
               {t("in")} {timeLeft.label}
             </span>
           </div>

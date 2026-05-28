@@ -55,7 +55,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
           <Calendar size={22} className="text-s-ink/60" />
         </div>
         <div>
@@ -74,10 +74,10 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
         </p>
 
         {applied ? (
-          <div className="bg-s-coral/5 border border-s-coral/20 rounded-[12px] px-4 py-3 flex items-center gap-2">
-            <Check size={14} className="text-s-coral shrink-0" />
+          <div className="bg-s-ink/5 border border-s-accent/20 rounded-[12px] px-4 py-3 flex items-center gap-2">
+            <Check size={14} className="text-s-accent shrink-0" />
             <div>
-              <p className="text-xs text-s-coral font-medium">
+              <p className="text-xs text-s-accent font-medium">
                 {t("schedule.autoConfigured")}
               </p>
               <p className="text-[10px] text-s-ink/40 mt-0.5">
@@ -89,7 +89,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
           <button
             onClick={handleApply}
             disabled={applying}
-            className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+            className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
           >
             {applying && <Loader2 size={14} className="animate-spin" />}
             {t("schedule.applyHours")}
@@ -99,7 +99,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
         {applied && (
           <button
             onClick={() => onSaved()}
-            className="w-full py-3 mt-6 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+            className="w-full py-3 mt-6 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
           >
             {t("setup.saveAndContinue")}
           </button>

@@ -28,63 +28,38 @@ interface CategoryPromo {
   slug: string;
   headline: string;
   cta: string;
-  bg: string;
-  textColor: string;
-  pillBg: string;
-  pillText: string;
+  /** User-supplied oil-painting illustration under public/illustrations/categories/ */
   photo: string;
 }
 
-// V3 Earthen Wellness Light cat tokens (CLAUDE.md §design system, V2-D60).
-//   Coiffeur → peach + warm terracotta.
-//   Barbershop → contrast cat (dark bg + bone pill) — gives the carousel
-//     a visual breath between three light cards.
-//   Nails → sage-pale + terra-deep.
-//   Spa → emerald-subtle + emerald-mid.
+// V3-D116-fu1 (2026-05-23): user correction "no make ful pic n jst text and
+// button on top and i made illustrations bro." New design:
+//   - FULL-BG illustration (absolute inset-0 fill)
+//   - Text + button OVERLAID on bottom of tile (no split, no peek-from-right)
+//   - Dark-to-transparent gradient at bottom for text legibility
+//   - White headline + white-bg-ink-text pill CTA
+// Illustrations: user-supplied oil-painting renderings at
+// public/illustrations/categories/ (coiffeur.png / barber.png / nails.png).
+// Launch scope (per user 2026-05-23): coiffeur / barber / nails only. Spa
+// entry removed; re-add when launch scope expands.
 const CATEGORIES: CategoryPromo[] = [
   {
     slug: "coiffeur",
     headline: "Schneiden, färben, stylen",
     cta: "Coiffeur entdecken",
-    bg: "#FFE8D8",
-    textColor: "#1A1C19",
-    pillBg: "#1A1C19",
-    pillText: "#FFFFFF",
-    photo:
-      "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=600&fit=crop&q=80",
+    photo: "/illustrations/categories/coiffeur.png",
   },
   {
     slug: "barbershop",
     headline: "Fade, Bart, klassische Schere",
     cta: "Barber finden",
-    bg: "#1A1C19",
-    textColor: "#EAE0D0",
-    pillBg: "#EAE0D0",
-    pillText: "#1A1C19",
-    photo:
-      "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=600&fit=crop&q=80",
+    photo: "/illustrations/categories/barber.png",
   },
   {
     slug: "nails",
     headline: "Gel, Nail-Art, Pflege",
     cta: "Nail-Studio buchen",
-    bg: "#D4DDC8",
-    textColor: "#1A1C19",
-    pillBg: "#1A1C19",
-    pillText: "#FFFFFF",
-    photo:
-      "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=600&fit=crop&q=80",
-  },
-  {
-    slug: "spa",
-    headline: "Massage, Sauna, Pause",
-    cta: "Wellness entdecken",
-    bg: "#D4F2E0",
-    textColor: "#1A1C19",
-    pillBg: "#1A1C19",
-    pillText: "#FFFFFF",
-    photo:
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=600&fit=crop&q=80",
+    photo: "/illustrations/categories/nails.png",
   },
 ];
 
@@ -100,49 +75,37 @@ export default function CategoryPromos() {
             <Link
               key={c.slug}
               href={`/${c.slug}`}
-              className="group relative aspect-[2/1] w-[88vw] max-w-[440px] shrink-0 snap-start overflow-hidden rounded-[20px] transition-all duration-300 ease-out hover:-translate-y-[2px] active:scale-[0.98]"
-              style={{
-                background: c.bg,
-                boxShadow: "0 6px 24px rgba(0, 0, 0, 0.06)",
-              }}
+              className="group relative aspect-[2/1] w-[88vw] max-w-[440px] shrink-0 snap-start overflow-hidden rounded-[24px] bg-s-bg-sunken transition-all duration-300 ease-out hover:-translate-y-[2px] active:scale-[0.98]"
               aria-label={`${c.cta} — ${c.headline}`}
             >
-              <div className="absolute inset-0 grid grid-cols-[1.15fr_1fr] gap-3 p-5 md:p-6">
-                {/* ── Left: headline + CTA pill ── */}
-                <div
-                  className="flex flex-col justify-between"
-                  style={{ color: c.textColor }}
+              {/* Full-bleed illustration */}
+              <Image
+                src={c.photo}
+                alt=""
+                fill
+                sizes="(max-width: 768px) 88vw, 440px"
+                className="object-cover object-center transition-transform duration-500 ease-glide group-hover:scale-[1.04]"
+                priority={c.slug === "coiffeur"}
+              />
+              {/* V3-D118 (2026-05-24): dark gradient overlay REMOVED per user
+                  "remove ths shadow thing inside of the card." Text legibility
+                  now handled purely by stronger text-shadow on the headline
+                  (no full-card darkening). Headline shrunk + width-constrained
+                  to force a clean 2-line wrap. Pill scaled down to match. */}
+              <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 p-4 md:p-5">
+                <h3
+                  className="font-display font-semibold leading-[1.05] text-white max-w-[60%]"
+                  style={{
+                    fontSize: "clamp(15px, 3.5vw, 18px)",
+                    letterSpacing: "-0.015em",
+                    textShadow: "0 1px 4px rgba(0,0,0,0.7), 0 2px 10px rgba(0,0,0,0.55)",
+                  }}
                 >
-                  <h3
-                    className="font-display font-extrabold leading-[1.08]"
-                    style={{
-                      fontSize: "clamp(20px, 4.8vw, 24px)",
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
-                    {c.headline}
-                  </h3>
-                  <span
-                    className="inline-flex w-fit items-center rounded-full px-4 py-2 font-body text-[13px] font-bold transition-transform duration-200 ease-glide group-hover:translate-x-1"
-                    style={{
-                      background: c.pillBg,
-                      color: c.pillText,
-                    }}
-                  >
-                    {c.cta}
-                  </span>
-                </div>
-
-                {/* ── Right: photo ── */}
-                <div className="relative overflow-hidden rounded-[14px]">
-                  <Image
-                    src={c.photo}
-                    alt=""
-                    fill
-                    sizes="(max-width: 768px) 44vw, 220px"
-                    className="object-cover object-center transition-transform duration-500 ease-glide group-hover:scale-[1.06]"
-                  />
-                </div>
+                  {c.headline}
+                </h3>
+                <span className="inline-flex w-fit items-center rounded-full bg-white px-3 py-1.5 font-body text-[11px] font-bold text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.18)] transition-transform duration-200 ease-glide group-hover:translate-x-1">
+                  {c.cta}
+                </span>
               </div>
             </Link>
           ))}

@@ -192,7 +192,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
 
             {success ? (
               <div className="text-center py-8">
-                <p className="text-s-coral font-medium">{t.created}</p>
+                <p className="text-s-accent font-medium">{t.created}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -201,14 +201,14 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                   <button
                     aria-pressed={mode === "photo"}
                     onClick={() => setMode("photo")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "photo" ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}
                   >
                     <Upload size={14} /> {t.photo}
                   </button>
                   <button
                     aria-pressed={mode === "tiktok"}
                     onClick={() => setMode("tiktok")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors duration-150 ${mode === "tiktok" ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}
                   >
                     <LinkIcon size={14} /> {t.tiktok}
                   </button>
@@ -229,7 +229,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                     <input ref={fileRef} type="file" accept="image/*" className="hidden" aria-label={t.uploadPhoto} />
                     <button
                       onClick={() => fileRef.current?.click()}
-                      className="w-full py-8 rounded-btn border-2 border-dashed border-s-ink/10 text-sm text-s-ink/40 hover:border-s-coral/30 transition-colors"
+                      className="w-full py-8 rounded-btn border-2 border-dashed border-s-ink/10 text-sm text-s-ink/40 hover:border-s-accent/30 transition-colors"
                     >
                       {t.uploadPhoto}
                     </button>
@@ -244,7 +244,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                       <button
                         key={key}
                         onClick={() => setCategory(key)}
-                        className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}
+                        className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}
                       >
                         {label}
                       </button>
@@ -260,7 +260,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                       <button
                         key={key}
                         onClick={() => setGender(key)}
-                        className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}
+                        className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-ink text-white" : "bg-s-ink/5 text-s-ink/60"}`}
                       >
                         {label}
                       </button>
@@ -299,7 +299,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                 <button
                   onClick={handlePost}
                   disabled={posting || !tosAccepted}
-                  className="w-full py-3 rounded-pill bg-s-coral hover:brightness-[1.06] text-white font-medium text-sm disabled:opacity-40 transition-[transform,filter] duration-150 shadow-elevation-2 flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-pill bg-s-ink hover:brightness-[1.06] text-white font-medium text-sm disabled:opacity-40 transition-[transform,filter] duration-150 shadow-elevation-2 flex items-center justify-center gap-2"
                 >
                   {posting && <Loader2 size={14} className="animate-spin" />}
                   {t.post}

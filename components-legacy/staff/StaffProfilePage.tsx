@@ -92,10 +92,11 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
   if (!staff) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <p className="text-s-ink/50">Mitarbeiter nicht gefunden</p>
+        <p className="text-s-ink-2">Mitarbeiter nicht gefunden</p>
+        {/* V3-D254 (W3): retired s-coral → s-accent (link role) per LOCKFILE §1 */}
         <Link
           href={`/${locale}/salon/${salonSlug}`}
-          className="text-s-coral hover:underline text-sm"
+          className="text-s-accent hover:text-s-accent-deep hover:underline text-sm transition-colors"
         >
           Zurück zum Salon
         </Link>
@@ -107,17 +108,17 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      {/* Back link */}
+      {/* Back link — V3-D254 (W3): s-coral → s-accent per LOCKFILE §1 */}
       <Link
         href={`/${locale}/salon/${salonSlug}`}
-        className="inline-flex items-center gap-1.5 text-sm text-s-ink/60 hover:text-s-coral transition-colors mb-6"
+        className="inline-flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-accent transition-colors mb-6"
       >
         <ArrowLeft size={16} />
         Zurück zum Salon
       </Link>
 
       {/* Hero card */}
-      <div className="rounded-[12px] border border-s-ink/5 p-6 bg-white shadow-warm-md mb-8">
+      <div className="rounded-[12px] border border-s-border p-6 bg-white mb-8">
         <div className="flex items-start gap-4">
           {/* Avatar */}
           <div className="w-24 h-24 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center">
@@ -132,24 +133,25 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                 className="object-cover w-full h-full"
               />
             ) : (
-              <span className="data-text text-3xl font-bold text-s-ink/20">
+              <span className="data-text text-3xl font-bold text-s-ink-2">
                 {staff.name[0]}
               </span>
             )}
           </div>
 
           <div className="flex-1 min-w-0">
-            <h1 className="font-heading text-2xl text-s-ink">
+            {/* V3-D254 (W3): bumped to LOCKFILE Salon-PDP H1 (40/48px, weight 700) */}
+            <h1 className="font-heading text-[clamp(22px,2.8vw,26px)] md:text-[48px] font-semibold text-s-ink leading-[1.05] tracking-[-0.03em]">
               {staff.name}
             </h1>
 
-            {/* Specialties pills */}
+            {/* Specialties pills — V3-D254: retired s-coral-subtle/text → s-accent-pale + s-accent */}
             {staff.specialties?.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {staff.specialties.map((s) => (
                   <span
                     key={s}
-                    className="px-2 py-0.5 rounded-pill bg-s-coral-subtle text-s-coral-text text-xs font-medium"
+                    className="px-2 py-0.5 rounded-pill bg-s-accent-pale text-s-accent text-xs font-medium"
                   >
                     {s}
                   </span>
@@ -157,21 +159,21 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
               </div>
             )}
 
-            {/* Rating + experience */}
+            {/* Rating + experience — V3-D254: s-amber → s-star (yellow #FFC32B, LOCKFILE rating token) */}
             <div className="flex items-center gap-4 mt-2">
               {staff.average_rating > 0 && (
-                <span className="flex items-center gap-1 text-sm text-s-ink/70">
-                  <Star size={14} className="fill-s-amber text-s-amber" />
+                <span className="flex items-center gap-1 text-sm text-s-ink-2">
+                  <Star size={14} className="fill-s-star text-s-star" />
                   <span className="data-text">{staff.average_rating.toFixed(1)}</span>
                   {staff.review_count > 0 && (
-                    <span className="text-s-ink/40">
+                    <span className="text-s-ink-2">
                       ({staff.review_count})
                     </span>
                   )}
                 </span>
               )}
               {staff.years_experience != null && (
-                <span className="text-sm text-s-ink/60">
+                <span className="text-sm text-s-ink-2">
                   {staff.years_experience} {staff.years_experience === 1 ? "Jahr" : "Jahre"} Erfahrung
                 </span>
               )}
@@ -183,7 +185,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                 href={staff.instagram_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm text-s-ink/50 hover:text-s-coral transition-colors mt-1"
+                className="inline-flex items-center gap-1 text-sm text-s-ink-2 hover:text-s-accent transition-colors mt-1"
               >
                 <Instagram size={14} />
                 Instagram
@@ -194,16 +196,16 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
 
         {/* Bio */}
         {staff.bio && (
-          <p className="mt-4 text-[15px] text-s-ink/70 leading-relaxed">
+          <p className="mt-4 text-[15px] text-s-ink-2 leading-relaxed">
             {staff.bio}
           </p>
         )}
       </div>
 
-      {/* Portfolio gallery */}
+      {/* Portfolio gallery — V3-D254 (W3): h2 to LOCKFILE Section spec (20-24/600/-0.02em) */}
       {portfolio.length > 0 && (
         <section className="mb-8">
-          <h2 className="font-heading text-xl text-s-ink mb-4">
+          <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-4">
             Portfolio
           </h2>
           <div className="grid grid-cols-3 gap-1.5 rounded-[12px] overflow-hidden">
@@ -233,27 +235,28 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
       {/* Services */}
       {services.length > 0 && (
         <section className="mb-8">
-          <h2 className="font-heading text-xl text-s-ink mb-4">
+          <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-4">
             Services
           </h2>
           <div className="space-y-2">
             {services.map((s) => (
               <div
                 key={s.id}
-                className="rounded-[12px] border border-s-ink/5 p-4 bg-white flex items-center justify-between"
+                className="rounded-[12px] border border-s-border p-4 bg-white flex items-center justify-between"
               >
                 <div>
                   <p className="font-heading text-s-ink">
                     {serviceName(s)}
                   </p>
-                  <p className="text-sm text-s-ink/50 flex items-center gap-1 mt-0.5">
+                  <p className="text-sm text-s-ink-2 flex items-center gap-1 mt-0.5">
                     <Clock size={12} />
                     {s.duration_minutes} Min. · {formatCurrency(s.price, locale)}
                   </p>
                 </div>
+                {/* V3-D254 (W3): service-row CTA "Buchen" per LOCKFILE §6; coral → ink per §0.2 */}
                 <Link
                   href={`/${locale}/salon/${salonSlug}?staffId=${staff.id}&serviceId=${s.id}`}
-                  className="px-4 py-2 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
+                  className="px-4 py-2 rounded-btn active:scale-[0.97] bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter]"
                 >
                   Buchen
                 </Link>
@@ -263,17 +266,17 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
         </section>
       )}
 
-      {/* Reviews */}
+      {/* Reviews — V3-D254 (W3): h2 to LOCKFILE Section spec; s-amber → s-star */}
       {reviews.length > 0 && (
         <section className="mb-8">
-          <h2 className="font-heading text-xl text-s-ink mb-4">
+          <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-4">
             Bewertungen
           </h2>
           <div className="space-y-4">
             {reviews.map((r) => (
               <div
                 key={r.id}
-                className="rounded-[12px] border border-s-ink/5 p-4 bg-white"
+                className="rounded-[12px] border border-s-border p-4 bg-white"
               >
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center">
@@ -286,7 +289,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                         className="object-cover w-full h-full"
                       />
                     ) : (
-                      <span className="text-xs font-bold text-s-ink/20">
+                      <span className="text-xs font-bold text-s-ink-2">
                         {r.profiles?.display_name?.[0] ?? "?"}
                       </span>
                     )}
@@ -300,17 +303,17 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                         <Star
                           key={i}
                           size={10}
-                          className={i < r.rating ? "fill-s-amber text-s-amber" : "text-s-ink/15"}
+                          className={i < r.rating ? "fill-s-star text-s-star" : "text-s-ink-disabled"}
                         />
                       ))}
-                      <span className="text-xs text-s-ink/40 ml-1">
+                      <span className="text-xs text-s-ink-2 ml-1">
                         {new Date(r.created_at).toLocaleDateString(locale)}
                       </span>
                     </div>
                   </div>
                 </div>
                 {r.comment && (
-                  <p className="text-sm text-s-ink/70 leading-relaxed">
+                  <p className="text-sm text-s-ink-2 leading-relaxed">
                     {r.comment}
                   </p>
                 )}

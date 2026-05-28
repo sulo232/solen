@@ -140,11 +140,11 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                     {salons.map((salon, i) => (
                       <th key={salon.id} className="p-3 text-center relative min-w-[140px]">
                         {i === bestIdx && salons.length > 1 && (
-                          <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-b-lg bg-s-coral text-white text-[10px] font-bold whitespace-nowrap">
+                          <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-b-lg bg-s-ink text-white text-[10px] font-bold whitespace-nowrap">
                             Empfehlung
                           </div>
                         )}
-                        <div className={`mt-3 ${i === bestIdx && salons.length > 1 ? "ring-2 ring-s-coral/20 rounded-[12px] p-2" : "p-2"}`}>
+                        <div className={`mt-3 ${i === bestIdx && salons.length > 1 ? "ring-2 ring-s-accent/20 rounded-[12px] p-2" : "p-2"}`}>
                           <h3 className="font-heading text-sm text-s-ink truncate">{salon.name}</h3>
                           <p className="text-[10px] text-s-ink/40 capitalize mt-0.5 truncate">{(salon as any).quartier}</p>
                         </div>
@@ -157,12 +157,12 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                     <tr key={row.label} className="border-t border-s-ink/5">
                       <td className="sticky left-0 bg-white/95 backdrop-blur-sm px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <row.Icon size={13} className="text-s-coral shrink-0" />
+                          <row.Icon size={13} className="text-s-accent shrink-0" />
                           <span className="text-xs text-s-ink/50 whitespace-nowrap">{row.label}</span>
                         </div>
                       </td>
                       {salons.map((salon, i) => (
-                        <td key={salon.id} className={`px-4 py-3 text-center text-sm ${i === bestIdx && salons.length > 1 ? "bg-s-coral/5" : ""}`}>
+                        <td key={salon.id} className={`px-4 py-3 text-center text-sm ${i === bestIdx && salons.length > 1 ? "bg-s-ink/5" : ""}`}>
                           {row.render(salon, i)}
                         </td>
                       ))}
@@ -175,7 +175,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                       <td key={salon.id} className="px-4 py-4 text-center">
                         <a
                           href={`/${locale}/salon/${salon.slug}`}
-                          className="inline-block px-4 py-2 rounded-btn active:scale-[0.97] bg-s-coral text-white text-xs font-semibold hover:brightness-[1.06] transition-[transform,filter] duration-150"
+                          className="inline-block px-4 py-2 rounded-btn active:scale-[0.97] bg-s-ink text-white text-xs font-semibold hover:brightness-[1.06] transition-[transform,filter] duration-150"
                         >
                           Jetzt buchen
                         </a>

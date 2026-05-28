@@ -24,7 +24,8 @@ export function SalonOpeningTimes({
 
   return (
     <section>
-      <h2 className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink md:text-[20px]">
+      {/* V3-D202 (A13): font-body → font-display + Scale B. */}
+      <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Öffnungszeiten
       </h2>
 
@@ -45,7 +46,7 @@ export function SalonOpeningTimes({
                 <span
                   className={cn(
                     "h-2 w-2 shrink-0 rounded-full",
-                    isOpen ? "bg-emerald-500" : "bg-s-ink-3/40"
+                    isOpen ? "bg-s-success" : "bg-s-ink-3/40"
                   )}
                   aria-hidden
                 />

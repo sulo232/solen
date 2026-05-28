@@ -23,7 +23,8 @@ export function SalonContact({ salon }: { salon: SalonDetail }) {
 
   return (
     <section className="lg:hidden">
-      <h2 className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink">
+      {/* V3-D202 (A15): font-body → font-display + Scale B. */}
+      <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Kontakt
       </h2>
 
@@ -32,7 +33,7 @@ export function SalonContact({ salon }: { salon: SalonDetail }) {
           <li>
             <a
               href={`tel:${salon.phone}`}
-              className="font-body flex items-center gap-3 text-[14px] text-s-ink transition-colors hover:text-s-brand"
+              className="font-body flex items-center gap-3 text-[14px] text-s-ink transition-colors hover:text-s-ink"
             >
               <Phone size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" />
               <span>{salon.phone}</span>
@@ -45,7 +46,7 @@ export function SalonContact({ salon }: { salon: SalonDetail }) {
               href={salon.website_url}
               target="_blank"
               rel="noreferrer noopener"
-              className="font-body flex items-center gap-3 text-[14px] text-s-ink transition-colors hover:text-s-brand"
+              className="font-body flex items-center gap-3 text-[14px] text-s-ink transition-colors hover:text-s-ink"
             >
               <Globe size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" />
               <span className="flex-1 truncate">
@@ -61,7 +62,7 @@ export function SalonContact({ salon }: { salon: SalonDetail }) {
               href={salon.instagram_url}
               target="_blank"
               rel="noreferrer noopener"
-              className="font-body flex items-center gap-3 text-[14px] text-s-ink transition-colors hover:text-s-brand"
+              className="font-body flex items-center gap-3 text-[14px] text-s-ink transition-colors hover:text-s-ink"
             >
               <Instagram size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" />
               <span className="flex-1 truncate">

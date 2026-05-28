@@ -110,7 +110,7 @@ export default function LiveActivityCard({ state, loading, className }: LiveActi
           className={[
             "block rounded-[16px] p-4 sm:p-5 min-h-[120px]",
             "transition-[transform] duration-150 active:scale-[0.99]",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2",
             className ?? "",
           ].join(" ")}
           style={{
@@ -225,7 +225,7 @@ function EmptyContent({
         </h3>
         <p className="mt-1 font-body text-[12px] text-s-ink/60">Wo · Was · Wann</p>
       </div>
-      <ArrowRight size={20} className="shrink-0 text-s-coral" aria-hidden />
+      <ArrowRight size={20} className="shrink-0 text-s-accent" aria-hidden />
     </div>
   );
 }

@@ -88,7 +88,7 @@ export default function DescriptionCard({ item, locale }: DescriptionCardProps) 
             <p className="text-[10px] text-s-ink/40 font-medium mb-1.5">Best for hair types</p>
             <div className="flex flex-wrap gap-1">
               {item.hair_type_match.map((type) => (
-                <span key={type} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-coral/5 text-s-coral/70 capitalize">
+                <span key={type} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-accent/70 capitalize">
                   {type}
                 </span>
               ))}

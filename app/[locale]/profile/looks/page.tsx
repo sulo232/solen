@@ -15,17 +15,19 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import SignatureLockup from "@/components-legacy/ui/SignatureLockup";
 import EmptyStateFTU from "@/components-legacy/ui/EmptyStateFTU";
 
+// V3-D287: empty-state illustration stroke — was hardcoded #1B4D1B (legacy green) → currentColor + ink text class
 const SparkleIllustration = () => (
   <svg
     width="80"
     height="80"
     viewBox="0 0 100 100"
     fill="none"
-    stroke="#1B4D1B"
+    stroke="currentColor"
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
     aria-hidden
+    className="text-s-ink"
   >
     {/* Stylized polaroid + spark */}
     <rect x="22" y="22" width="48" height="56" rx="3" />

@@ -51,7 +51,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale, onEdi
 
         {/* Edit button - bottom right */}
         <button
-          className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-s-coral text-white flex items-center justify-center shadow-warm-sm hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+          className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-s-ink text-white flex items-center justify-center shadow-warm-sm hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
           aria-label={t("editAvatar")}
         >
           <Settings size={14} strokeWidth={2.5} />
@@ -88,7 +88,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale, onEdi
         </button>
 
         <button
-          className="w-9 h-9 rounded-full bg-s-ink/[0.05] text-s-coral flex items-center justify-center hover:bg-s-ink/[0.09]:bg-white/[0.12] active:scale-[0.97] transition-[background-color,transform] duration-150"
+          className="w-9 h-9 rounded-full bg-s-ink/[0.05] text-s-accent flex items-center justify-center hover:bg-s-ink/[0.09]:bg-white/[0.12] active:scale-[0.97] transition-[background-color,transform] duration-150"
           aria-label={t("addMore")}
         >
           <Heart size={16} strokeWidth={2} />

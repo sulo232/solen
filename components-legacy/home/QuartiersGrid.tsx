@@ -104,7 +104,7 @@ export default function QuartiersGrid() {
             <Link
               key={q.slug}
               href={`/${locale}/quartier/${q.slug}`}
-              className="qrt-tile relative overflow-hidden rounded-[20px] cursor-pointer transition-all duration-200 ease-out hover:-translate-y-[3px] hover:shadow-elevation-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 focus-visible:ring-offset-[#1A1209]"
+              className="qrt-tile relative overflow-hidden rounded-[20px] cursor-pointer transition-all duration-200 ease-out hover:-translate-y-[3px] hover:shadow-elevation-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[#1A1209]"
               style={{
                 background: "rgba(255,255,255,0.06)",
                 border: "1px solid rgba(255,255,255,0.10)",

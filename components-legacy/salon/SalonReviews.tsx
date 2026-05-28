@@ -179,7 +179,7 @@ export default function SalonReviews({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setShowReviewForm(true)}
-                  className="w-full sm:w-auto py-2.5 px-6 rounded-btn bg-s-coral text-white font-medium text-sm transition-colors duration-150"
+                  className="w-full sm:w-auto py-2.5 px-6 rounded-btn bg-s-ink text-white font-medium text-sm transition-colors duration-150"
                   style={{ boxShadow: "0 1px 3px rgba(27, 77, 27,.25), 0 2px 8px rgba(27, 77, 27,.15)" }}
                 >
                   {t("writeReview")}
@@ -199,8 +199,8 @@ export default function SalonReviews({
                   }}
                   className={`px-3 py-1.5 rounded-btn text-xs font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[background-color,color,border-color,transform] duration-150 ${
                     reviewSort === s
-                      ? "bg-s-coral text-white"
-                      : "bg-s-bg-surface border border-s-ink/[0.08] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral"
+                      ? "bg-s-ink text-white"
+                      : "bg-s-bg-surface border border-s-ink/[0.08] text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent"
                   }`}
                 >
                   {s === "newest" ? t("sortNewest") : s === "highest" ? t("sortHighest") : t("sortLowest")}
@@ -230,14 +230,14 @@ export default function SalonReviews({
                           {rev.profiles?.display_name ?? "Anonym"}
                         </span>
                         {(rev as any).booking_id && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-s-sage/10 text-s-sage text-xs font-medium">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-s-success/10 text-s-success text-xs font-medium">
                             <ShieldCheck size={12} />
                             {t("verifiedBooking")}
                           </span>
                         )}
                         {/* Reply badge — signals "salon has replied" at-a-glance before scrolling to read the reply */}
                         {rev.review_replies && rev.review_replies.length > 0 && rev.review_replies[0].is_public && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-s-coral/10 text-s-coral text-xs font-medium" aria-label={t("salonReplied")}>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-s-ink/10 text-s-accent text-xs font-medium" aria-label={t("salonReplied")}>
                             <MessageSquare size={12} />
                             {t("salonReplied")}
                           </span>
@@ -271,7 +271,7 @@ export default function SalonReviews({
                           }}
                         >
                           {flagSuccess ? (
-                            <p className="text-xs text-s-sage font-heading py-1">
+                            <p className="text-xs text-s-success font-heading py-1">
                               ✓ {t("flagSuccess")}
                             </p>
                           ) : (
@@ -284,7 +284,7 @@ export default function SalonReviews({
                                 onChange={(e) => setFlagReason(e.target.value)}
                                 placeholder={t("flagReasonPlaceholder")}
                                 rows={2}
-                                className="w-full text-xs font-body text-s-ink bg-transparent border border-s-ink/10 rounded-[8px] px-2.5 py-2 resize-none outline-none focus:border-s-coral/40 placeholder:text-s-ink/30 transition-colors duration-150"
+                                className="w-full text-xs font-body text-s-ink bg-transparent border border-s-ink/10 rounded-[8px] px-2.5 py-2 resize-none outline-none focus:border-s-accent/40 placeholder:text-s-ink/30 transition-colors duration-150"
                               />
                               <div className="flex gap-2 mt-2 justify-end">
                                 <button
@@ -296,7 +296,7 @@ export default function SalonReviews({
                                 <button
                                   onClick={submitFlag}
                                   disabled={flagLoading || flagReason.trim().length < 5}
-                                  className="text-xs text-white font-body font-semibold uppercase tracking-[.08em] px-4 py-1.5 rounded-btn bg-s-coral hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 transition-[transform,filter] duration-150"
+                                  className="text-xs text-white font-body font-semibold uppercase tracking-[.08em] px-4 py-1.5 rounded-btn bg-s-ink hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 transition-[transform,filter] duration-150"
                                   style={{ boxShadow: "0 2px 8px rgba(27, 77, 27,.25)" }}
                                 >
                                   {flagLoading ? "…" : t("flagSubmit")}
@@ -342,8 +342,8 @@ export default function SalonReviews({
                           : (rev as any).salon_response ?? null;
                       if (!reply) return null;
                       return (
-                        <div className="mt-3 pl-4 border-l-2 border-s-sage/30">
-                          <p className="text-xs text-s-sage font-medium flex items-center gap-1 mb-1">
+                        <div className="mt-3 pl-4 border-l-2 border-s-success/30">
+                          <p className="text-xs text-s-success font-medium flex items-center gap-1 mb-1">
                             <ShieldCheck className="w-3 h-3" />
                             {t("salonReplied")}
                           </p>

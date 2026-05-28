@@ -8,42 +8,45 @@ export const metadata: Metadata = {
 
 export default function ImpressumPage() {
   return (
-    <main className="min-h-screen bg-[--base] pb-24">
+    <main className="min-h-screen bg-white pb-24">
       <div className="max-w-2xl mx-auto px-4 pt-8">
+        {/* V3-D296: bg-[--base] → bg-white; hover:text-s-accent → hover:text-s-accent (retired token swap, LOCKFILE §1) */}
         <Link
           href="/"
-          className="inline-flex items-center gap-1 text-s-ink/50 hover:text-s-coral text-sm font-heading transition-colors mb-8"
+          className="inline-flex items-center gap-1 text-s-ink-2 hover:text-s-accent text-sm font-body transition-colors mb-8"
         >
           <ChevronLeft className="w-4 h-4" />
           Zurück
         </Link>
 
-        <h1 className="font-display text-5xl tracking-wider text-s-ink mb-2">
-          IMPRESSUM
+        {/* V3-D296: tracking-wider (too loose for LOCKFILE -0.03em); ALL-CAPS dropped; weight 700 per LOCKFILE §2 Page H2 role */}
+        <h1 className="font-display text-4xl md:text-5xl font-semibold tracking-tight text-s-ink mb-2">
+          Impressum
         </h1>
-        <p className="text-sm text-s-ink/50 mb-10">
+        <p className="text-sm text-s-ink-2 mb-10">
           Angaben gemäss Art. 3 UWG (Bundesgesetz gegen unlauteren Wettbewerb)
         </p>
 
+        {/* V3-D296: arbitrary opacity (s-ink/50, s-ink/40, s-ink/70) collapsed to canonical s-ink-2 muted ink; hover:text-s-accent → hover:text-s-accent */}
         <div className="space-y-8">
 
           <section>
-            <h2 className="font-heading text-s-ink text-base mb-3 pb-2 border-b border-s-ink/10">
+            <h2 className="font-display text-s-ink text-lg font-semibold mb-3 pb-2 border-b border-s-border">
               Betreiberin der Website
             </h2>
             <dl className="space-y-2 text-sm">
               <div className="flex gap-4">
-                <dt className="w-40 shrink-0 text-s-ink/50">Name</dt>
+                <dt className="w-40 shrink-0 text-s-ink-2">Name</dt>
                 <dd className="text-s-ink">solen.ch (Einzelunternehmen)</dd>
               </div>
               <div className="flex gap-4">
-                <dt className="w-40 shrink-0 text-s-ink/50">Adresse</dt>
+                <dt className="w-40 shrink-0 text-s-ink-2">Adresse</dt>
                 <dd className="text-s-ink">Basel-Stadt, 4000 Basel, Schweiz</dd>
               </div>
               <div className="flex gap-4">
-                <dt className="w-40 shrink-0 text-s-ink/50">E-Mail</dt>
+                <dt className="w-40 shrink-0 text-s-ink-2">E-Mail</dt>
                 <dd className="text-s-ink">
-                  <a href="mailto:info@solen.ch" className="hover:text-s-coral transition-colors">
+                  <a href="mailto:info@solen.ch" className="hover:text-s-accent transition-colors">
                     info@solen.ch
                   </a>
                 </dd>
@@ -52,30 +55,30 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="font-heading text-s-ink text-base mb-3 pb-2 border-b border-s-ink/10">
+            <h2 className="font-display text-s-ink text-lg font-semibold mb-3 pb-2 border-b border-s-border">
               Handelsregister & Steuer
             </h2>
             <dl className="space-y-2 text-sm">
               <div className="flex gap-4">
-                <dt className="w-40 shrink-0 text-s-ink/50">Rechtsform</dt>
+                <dt className="w-40 shrink-0 text-s-ink-2">Rechtsform</dt>
                 <dd className="text-s-ink">Einzelunternehmen</dd>
               </div>
               <div className="flex gap-4">
-                <dt className="w-40 shrink-0 text-s-ink/50">CHE-Nummer</dt>
-                  <dd className="text-s-ink/40 italic">Anmeldung in Bearbeitung</dd>
+                <dt className="w-40 shrink-0 text-s-ink-2">CHE-Nummer</dt>
+                  <dd className="text-s-ink-2 italic">Anmeldung in Bearbeitung</dd>
               </div>
               <div className="flex gap-4">
-                <dt className="w-40 shrink-0 text-s-ink/50">MWST</dt>
-                <dd className="text-s-ink/40 italic">Nicht MWST-pflichtig (Umsatz unter CHF 100&apos;000)</dd>
+                <dt className="w-40 shrink-0 text-s-ink-2">MWST</dt>
+                <dd className="text-s-ink-2 italic">Nicht MWST-pflichtig (Umsatz unter CHF 100&apos;000)</dd>
               </div>
             </dl>
           </section>
 
           <section>
-            <h2 className="font-heading text-s-ink text-base mb-3 pb-2 border-b border-s-ink/10">
+            <h2 className="font-display text-s-ink text-lg font-semibold mb-3 pb-2 border-b border-s-border">
               Haftungsausschluss
             </h2>
-            <div className="space-y-3 text-sm text-s-ink/70 leading-relaxed">
+            <div className="space-y-3 text-sm text-s-ink-2 leading-relaxed">
               <p>
                 Die Inhalte dieser Website wurden mit grösster Sorgfalt erstellt. Für die Richtigkeit,
                 Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden.
@@ -96,7 +99,7 @@ export default function ImpressumPage() {
 
         </div>
 
-        <p className="mt-12 text-xs text-s-ink/30">
+        <p className="mt-12 text-xs text-s-ink-2">
           Stand: März 2026
         </p>
       </div>

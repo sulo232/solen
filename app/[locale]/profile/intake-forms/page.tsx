@@ -69,13 +69,13 @@ export default function MyIntakeFormsPage() {
   return (
     <div className="min-h-screen bg-s-bg-surface">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-24">
-        {/* Header */}
+        {/* Header — V3-D286: fix corrupted dark-mode hover + swap undefined s-amber → s-warning (defined token per LOCKFILE §1) */}
         <div className="flex items-center gap-3 mb-8">
-          <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-ink/5:bg-white/5 transition-colors">
+          <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-bg-sunken transition-colors">
             <ChevronLeft size={20} className="text-s-ink/60" />
           </Link>
           <h1 className="font-heading text-xl text-s-ink flex items-center gap-2">
-            <ClipboardList size={20} className="text-s-amber" />
+            <ClipboardList size={20} className="text-s-ink" />
             Meine Konsultationsformulare
           </h1>
         </div>
@@ -103,7 +103,8 @@ export default function MyIntakeFormsPage() {
                       <div key={form.id} className="bg-white rounded-[12px] border border-s-ink/5 overflow-hidden">
                         <button
                           onClick={() => setExpanded(isExpanded ? null : form.id)}
-                          className="w-full text-left p-4 flex justify-between items-center hover:bg-s-bg-surface:bg-white/5 transition-colors"
+                          // V3-D286: fix corrupted dark-mode concatenated hover (was `hover:bg-s-bg-surface:bg-white/5`)
+                          className="w-full text-left p-4 flex justify-between items-center hover:bg-s-bg-sunken transition-colors"
                         >
                           <div>
                             <p className="font-medium text-sm text-s-ink">
@@ -122,8 +123,9 @@ export default function MyIntakeFormsPage() {
                         {isExpanded && (
                           <div className="p-4 pt-0 border-t border-s-ink/5">
                             {form.ai_recommendation && (
-                              <div className="mt-4 mb-5 p-3 rounded-[12px] bg-s-amber/10 border border-s-amber/20">
-                                <p className="text-xs font-bold text-s-amber flex items-center gap-1 mb-1.5 uppercase tracking-wide">
+                              // V3-D286: AI recommendation block — undefined s-amber → s-accent pale (Layer 2 info wash, refined pastel pattern per CLAUDE.md V3-D199)
+                              <div className="mt-4 mb-5 p-3 rounded-[12px] bg-s-accent-pale border border-s-accent/20">
+                                <p className="text-xs font-bold text-s-accent flex items-center gap-1 mb-1.5 uppercase tracking-wide">
                                   <Sparkles size={12} /> AI Analyse
                                 </p>
                                 <p className="text-sm text-s-ink/80 leading-relaxed">

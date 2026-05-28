@@ -63,8 +63,8 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
-          <CreditCard size={22} className="text-s-coral" />
+        <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
+          <CreditCard size={22} className="text-s-accent" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">
@@ -88,18 +88,18 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
             className={[
               "w-full rounded-[12px] border p-4 text-left transition-[background-color,border-color,box-shadow] flex items-center gap-3",
               paymentMode === opt.id
-                ? "border-s-coral bg-s-coral/5 shadow-warm-sm"
+                ? "border-s-accent bg-s-ink/5 shadow-warm-sm"
                 : "border-s-ink/10 hover:border-s-ink/20:border-white/20",
             ].join(" ")}
           >
             <div className={[
               "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0",
-              paymentMode === opt.id ? "border-s-coral" : "border-s-ink/20",
+              paymentMode === opt.id ? "border-s-accent" : "border-s-ink/20",
             ].join(" ")}>
-              {paymentMode === opt.id && <div className="w-2.5 h-2.5 rounded-full bg-s-coral" />}
+              {paymentMode === opt.id && <div className="w-2.5 h-2.5 rounded-full bg-s-ink" />}
             </div>
             <div>
-              <p className={["text-sm font-medium", paymentMode === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>
+              <p className={["text-sm font-medium", paymentMode === opt.id ? "text-s-accent" : "text-s-ink"].join(" ")}>
                 {t(opt.labelKey)}
               </p>
               <p className="text-[11px] text-s-ink/40 mt-0.5">{t(opt.descKey)}</p>
@@ -118,7 +118,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
               </p>
             </div>
             {connectStatus === "connected" && (
-              <span className="px-2 py-0.5 rounded-pill text-xs bg-s-coral/10 text-s-coral font-medium flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded-pill text-xs bg-s-ink/10 text-s-accent font-medium flex items-center gap-1">
                 <Check size={10} /> {t("payments.connected")}
               </span>
             )}
@@ -131,13 +131,13 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
               <button
                 onClick={handleConnect}
                 disabled={connectLoading || connectStatus === "loading"}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/10 text-sm font-medium text-s-ink hover:border-s-coral hover:text-s-coral transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/10 text-sm font-medium text-s-ink hover:border-s-accent hover:text-s-accent transition-colors disabled:opacity-50"
               >
                 {connectLoading ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
                 {t("payments.connectBank")}
               </button>
               {connectError && (
-                <p className="text-xs text-s-coral font-medium mt-2 bg-s-coral/10 py-1.5 px-3 rounded-md">
+                <p className="text-xs text-s-accent font-medium mt-2 bg-s-ink/10 py-1.5 px-3 rounded-md">
                   {connectError}
                 </p>
               )}
@@ -148,7 +148,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
       >
         {saving && <Loader2 size={14} className="animate-spin" />}
         {t("setup.saveAndContinue")}

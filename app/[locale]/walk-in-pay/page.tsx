@@ -154,7 +154,7 @@ export default function WalkInPayPage() {
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="w-1.5 h-1.5 rounded-full bg-s-coral/50 animate-pulse"
+                className="w-1.5 h-1.5 rounded-full bg-s-ink/50 animate-pulse"
                 style={{ animationDelay: `${i * 0.2}s` }}
               />
             ))}
@@ -165,9 +165,9 @@ export default function WalkInPayPage() {
               className="w-16 h-16 rounded-[18px] mx-auto mb-5 flex items-center justify-center"
               style={{ background: "rgba(27, 77, 27,.10)" }}
             >
-              <Check size={26} className="text-s-coral" />
+              <Check size={26} className="text-s-accent" />
             </div>
-            <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-coral mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-accent mb-2">
               Zahlung
             </p>
             <h2 className="font-heading text-lg text-s-ink mb-2">{l.paid}</h2>
@@ -179,9 +179,9 @@ export default function WalkInPayPage() {
               className="w-16 h-16 rounded-[18px] mx-auto mb-5 flex items-center justify-center"
               style={{ background: "rgba(243,168,100,.10)" }}
             >
-              <AlertTriangle size={26} className="text-s-amber" />
+              <AlertTriangle size={26} className="text-s-warning" />
             </div>
-            <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-amber mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-warning mb-2">
               Fehler
             </p>
             <p className="text-sm font-body text-s-ink/60">
@@ -195,7 +195,7 @@ export default function WalkInPayPage() {
                 className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
                 style={{ background: "rgba(27, 77, 27,.10)" }}
               >
-                <CreditCard size={17} className="text-s-coral" />
+                <CreditCard size={17} className="text-s-accent" />
               </div>
               <div>
                 <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/50 mb-0.5">
@@ -227,14 +227,14 @@ export default function WalkInPayPage() {
               {/* Amount row */}
               <div className="border-t border-s-ink/[0.07] pt-3 flex justify-between items-center">
                 <span className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/50">{l.amount}</span>
-                <span className="font-heading text-lg text-s-coral">{formatCurrency(booking.amount, locale)}</span>
+                <span className="font-heading text-lg text-s-accent">{formatCurrency(booking.amount, locale)}</span>
               </div>
             </div>
 
             <button
               onClick={handlePay}
               disabled={paying}
-              className="w-full px-4 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2 transition-[transform,filter] shadow-elevation-2"
+              className="w-full px-4 py-3.5 rounded-btn bg-s-ink text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2 transition-[transform,filter] shadow-elevation-2"
             >
               {paying ? <Spinner size="sm" invert /> : <CreditCard size={15} />}
               {l.pay}

@@ -81,7 +81,7 @@ export default async function ConfirmationPage({
       <main className="max-w-2xl mx-auto px-4 py-8">
         {/* Success animation */}
         <div className="flex justify-center mb-8">
-          <div className="animate-[scale_.3s_ease-out_forwards] w-20 h-20 rounded-full bg-s-coral flex items-center justify-center">
+          <div className="animate-[scale_.3s_ease-out_forwards] w-20 h-20 rounded-full bg-s-ink flex items-center justify-center">
             <CheckCircle size={40} className="text-white" />
           </div>
         </div>
@@ -146,7 +146,7 @@ export default async function ConfirmationPage({
         <div className="space-y-3 mb-8">
           {/* Add to Calendar */}
           <button
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill bg-s-coral text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill bg-s-ink text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
             aria-label={t('addToCalendar')}
           >
             <Calendar size={16} />
@@ -155,7 +155,7 @@ export default async function ConfirmationPage({
 
           {/* Share Booking */}
           <button
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02]:bg-white/[0.02] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading text-xs uppercase tracking-[.06em] hover:bg-s-bg-sunken active:scale-[0.97] transition-[transform,filter] duration-150"
             aria-label={t('shareBooking')}
           >
             <Share2 size={16} />
@@ -165,7 +165,7 @@ export default async function ConfirmationPage({
           {/* Rebook */}
           <Link
             href={`/${locale}/salon/${(Array.isArray(booking.salons) ? (booking.salons[0] as any)?.slug : (booking.salons as any)?.slug) || ''}`}
-            className="block text-center py-4 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02]:bg-white/[0.02] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="block text-center py-4 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading text-xs uppercase tracking-[.06em] hover:bg-s-bg-sunken active:scale-[0.97] transition-[transform,filter] duration-150"
             aria-label={t('rebook')}
           >
             {t('rebook')}
@@ -176,7 +176,7 @@ export default async function ConfirmationPage({
         <div className="text-center">
           <Link
             href={`/${locale}`}
-            className="inline text-s-coral hover:text-s-coral/80 transition-colors text-sm font-heading"
+            className="inline text-s-accent hover:text-s-accent/80 transition-colors text-sm font-heading"
           >
             {t('continueExploring')}
           </Link>

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { TAB_SECTIONS, type TabKey } from "./_shared";
 import { cn } from "@/lib/utils";
 
@@ -47,19 +48,35 @@ export function SalonStickyTabNav({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Track which section is in view
+  // Track which section is in view.
+  // V3-D217 (verifier #9): swap "biggest visible section" ratio-sort for
+  // "first section currently above the nav line." The ratio-sort biased the
+  // active tab to whichever section was tallest, so deep-scroll into a short
+  // section (Treueprogramm) still highlighted the previous large section
+  // (Portfolio). New rule: among visible entries, pick the one whose top
+  // edge is closest to (but not past) the nav line — that's the section the
+  // user is actively reading.
   React.useEffect(() => {
+    const NAV_LINE = 120; // matches the rootMargin top offset below
     const observer = new IntersectionObserver(
       (entries) => {
-        const visibleEntries = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visibleEntries.length > 0) {
-          const id = visibleEntries[0].target.id.replace("section-", "") as TabKey;
-          if (TAB_SECTIONS.some((t) => t.key === id)) {
-            setActiveTab(id);
-          }
+        // Read live positions instead of relying on cached entry.boundingClientRect —
+        // the entry's rect is captured at observation time, not at callback time,
+        // so during fast scroll it can be stale.
+        const candidates: { key: TabKey; top: number }[] = [];
+        for (const t of TAB_SECTIONS) {
+          const el = document.getElementById(`section-${t.key}`);
+          if (!el) continue;
+          const rect = el.getBoundingClientRect();
+          candidates.push({ key: t.key, top: rect.top });
         }
+        // Pick the section whose top is closest to NAV_LINE WITHOUT going past it.
+        // If every section is below NAV_LINE (top of page), pick the first.
+        const above = candidates
+          .filter((c) => c.top <= NAV_LINE)
+          .sort((a, b) => b.top - a.top); // closest to nav line first
+        const pick = above[0] ?? candidates[0];
+        if (pick) setActiveTab(pick.key);
       },
       { rootMargin: "-120px 0px -55% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
     );
@@ -87,9 +104,19 @@ export function SalonStickyTabNav({
   };
 
   const tabs = TAB_SECTIONS.filter((t) => availableSections.has(t.key));
-  if (tabs.length === 0) return null;
 
-  return (
+  // V3-D206 (2026-05-26, salon-detail audit): mounted state for portal render.
+  // The page wrapper has `isolation: isolate` on its outer <main>, which scopes
+  // ALL z-indexes inside it — even our z-[60] couldn't escape above the site
+  // header (z-50, mounted at the root layout). Portal-mounting to document.body
+  // breaks out of the isolation scope so z-[60] truly wins.
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => { setMounted(true); }, []);
+
+  if (tabs.length === 0) return null;
+  if (!mounted) return null;
+
+  const nav = (
     <nav
       ref={navRef}
       aria-label="Salon-Abschnitte"
@@ -102,9 +129,14 @@ export function SalonStickyTabNav({
         // being stuck at top. User reported "sometimes at top, sometimes
         // not — inconsistent." `fixed` removes that whole class of bug:
         // element is out of flow, opacity is the only visibility lever.
-        // Site header slides away on the same scroll threshold (Header.tsx
-        // farScrolled) so they never collide.
-        "fixed left-0 right-0 top-0 z-30 border-b border-s-border bg-white transition-opacity duration-200",
+        // V3-D206 (2026-05-26, salon-detail audit): bump z-30 → z-[60] so the
+        // salon tab nav sits ABOVE the site header (z-50) when scrolled past
+        // the hero. The previous comment claimed Header.tsx hid on scroll, but
+        // it doesn't — it only changes tone/blur. With z-30 the tab nav was
+        // fully eclipsed by the 68px site header. On salon detail the tab nav
+        // IS the chrome the user wants (Fresha-style deep-link page chrome),
+        // so it should win the stacking contest.
+        "fixed left-0 right-0 top-0 z-[60] border-b border-s-border bg-white transition-opacity duration-200",
         visible ? "opacity-100" : "pointer-events-none opacity-0"
       )}
     >
@@ -132,4 +164,6 @@ export function SalonStickyTabNav({
       </div>
     </nav>
   );
+
+  return createPortal(nav, document.body);
 }

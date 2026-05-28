@@ -61,7 +61,7 @@ export default function StaffAvailability({ staffId, locale }: StaffAvailability
               key={date.toISOString()}
               className={`shrink-0 min-w-[110px] p-3 rounded-[12px] border transition-[background-color,border-color,box-shadow] ${
                 daySchedule
-                  ? "border-s-coral/30 bg-s-coral/5"
+                  ? "border-s-accent/30 bg-s-ink/5"
                   : "border-s-ink/5 bg-s-bg-sunken opacity-60"
               }`}
             >

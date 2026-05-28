@@ -73,10 +73,10 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             "relative inline-flex items-center justify-center shrink-0",
             "w-5 h-5 border-2 border-s-ink/25 bg-s-bg-base rounded-[6px]",
             "transition-colors duration-150 ease-snap",
-            "peer-checked:bg-s-brand peer-checked:border-s-brand",
-            "peer-focus-visible:outline-2 peer-focus-visible:outline-s-brand peer-focus-visible:outline-offset-2",
+            "peer-checked:bg-s-ink peer-checked:border-s-ink",
+            "peer-focus-visible:outline-2 peer-focus-visible:outline-s-ink peer-focus-visible:outline-offset-2",
             "group-active:scale-[0.92] [&]:transition-transform",
-            indeterminate && "!bg-s-brand !border-s-brand",
+            indeterminate && "!bg-s-ink !border-s-ink",
           )}
         >
           {indeterminate ? (

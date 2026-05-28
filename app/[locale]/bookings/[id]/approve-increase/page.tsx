@@ -75,10 +75,10 @@ export default function ApproveIncreasePage() {
           <div className="flex justify-center py-12"><Spinner size="lg" /></div>
         ) : result ? (
           <div className="text-center py-8">
-            <div className={`w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center ${result === "approved" ? "bg-s-coral/10" : "bg-s-coral/10"}`}>
+            <div className={`w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center ${result === "approved" ? "bg-s-ink/10" : "bg-s-ink/10"}`}>
               {result === "approved"
-                ? <Check size={24} className="text-s-coral" />
-                : <X size={24} className="text-s-coral" />}
+                ? <Check size={24} className="text-s-accent" />
+                : <X size={24} className="text-s-accent" />}
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">
               {result === "approved" ? "Preisanpassung genehmigt" : "Einspruch eingereicht"}
@@ -89,7 +89,7 @@ export default function ApproveIncreasePage() {
                 : "Dein Einspruch wird von unserem Support-Team geprüft."}
             </p>
             <button onClick={() => router.push(`/${locale}/dashboard`)}
-              className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium">
+              className="px-5 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium">
               Zurück zum Dashboard
             </button>
           </div>
@@ -98,15 +98,15 @@ export default function ApproveIncreasePage() {
             <Receipt size={28} className="mx-auto mb-3 text-s-ink/20" />
             <p className="text-sm text-s-ink/50">Keine offene Preisanpassung gefunden.</p>
             <button onClick={() => router.back()}
-              className="mt-4 text-sm text-s-coral flex items-center gap-1 mx-auto">
+              className="mt-4 text-sm text-s-accent flex items-center gap-1 mx-auto">
               <ArrowLeft size={14} /> Zurück
             </button>
           </div>
         ) : (
           <>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-[12px] bg-s-amber-subtle flex items-center justify-center">
-                <AlertTriangle size={18} className="text-s-amber" />
+              <div className="w-10 h-10 rounded-[12px] bg-s-warning-bg flex items-center justify-center">
+                <AlertTriangle size={18} className="text-s-warning" />
               </div>
               <div>
                 <h1 className="font-heading text-lg text-s-ink">Preisanpassung</h1>
@@ -124,11 +124,11 @@ export default function ApproveIncreasePage() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-s-ink/50">Neuer Preis</span>
-                <span className="data-text font-bold text-s-coral">{formatCurrency(dispute.requested_amount, locale)}</span>
+                <span className="data-text font-bold text-s-accent">{formatCurrency(dispute.requested_amount, locale)}</span>
               </div>
               <div className="border-t border-s-ink/10 pt-2 flex justify-between text-sm">
                 <span className="text-s-ink/50">Differenz</span>
-                <span className="data-text font-bold text-s-coral">+{formatCurrency(diff, locale)} (+{diffPercent}%)</span>
+                <span className="data-text font-bold text-s-accent">+{formatCurrency(diff, locale)} (+{diffPercent}%)</span>
               </div>
             </div>
 
@@ -145,12 +145,12 @@ export default function ApproveIncreasePage() {
 
             <div className="flex gap-3">
               <button onClick={() => handleAction("approve")} disabled={submitting}
-                className="flex-1 px-4 py-3 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+                className="flex-1 px-4 py-3 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
                 {submitting ? <Spinner size="sm" invert /> : <Check size={16} />}
                 Genehmigen
               </button>
               <button onClick={() => handleAction("dispute")} disabled={submitting}
-                className="flex-1 px-4 py-3 rounded-btn border border-s-coral text-s-coral text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/5 transition-colors">
+                className="flex-1 px-4 py-3 rounded-btn border border-s-accent text-s-accent text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-ink/5 transition-colors">
                 {submitting ? <Spinner size="sm" /> : <X size={16} />}
                 Einspruch
               </button>

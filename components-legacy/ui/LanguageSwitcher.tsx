@@ -98,7 +98,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
               }}
               className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${
                 key === locale
-                  ? "text-s-coral font-medium bg-s-coral/5"
+                  ? "text-s-accent font-medium bg-s-ink/5"
                   : "text-s-ink/70 hover:bg-s-bg-surface:bg-white/5"
               }`}
             >

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen — Dark-section variants (Revolut-inspired)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --s-ink:        #1A1408;
+    --s-ink-warm:   #1A1408;     /* Solen existing dark — warm */
+    --s-ink-black:  #101010;     /* Revolut-exact black */
+    --s-ink-2:      #4A4A4A;
+    --s-ink-3:      #888888;
+    --s-bg:         #FFFFFF;
+    --s-bg-sub:     #F5F5F4;
+    --s-brand:      #16A34A;
+    --s-star:       #FFC32B;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: #E8E8EA;
+    color: var(--s-ink);
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+  }
+  .font-display { font-family: "Bricolage Grotesque", system-ui, sans-serif; }
+
+  .page-header {
+    text-align: center;
+    padding: 32px 20px 8px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .page-header h1 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+  }
+  .page-header p {
+    font-size: 14px;
+    color: var(--s-ink-2);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .layer {
+    padding: 40px 20px;
+    border-bottom: 2px dashed rgba(0,0,0,0.10);
+  }
+  .layer-head {
+    max-width: 1200px;
+    margin: 0 auto 24px;
+    text-align: center;
+  }
+  .layer-head .badge {
+    display: inline-block;
+    background: var(--s-ink);
+    color: white;
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .layer-head h2 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    letter-spacing: -0.015em;
+  }
+  .layer-head p { font-size: 13px; color: var(--s-ink-2); margin: 0; }
+
+  /* ─── Layer A: card-level comparison (4 variants of Profis section) ─── */
+  .layer-a-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+  @media (max-width: 1100px) { .layer-a-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px)  { .layer-a-grid { grid-template-columns: 1fr; } }
+
+  .frame {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+  }
+  .frame-label {
+    padding: 10px 14px;
+    background: white;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    text-align: center;
+  }
+  .frame-label .tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--s-ink-3);
+    text-transform: uppercase;
+  }
+  .frame-label .name { font-size: 13px; font-weight: 700; color: var(--s-ink); margin-top: 2px; }
+  .frame-label .meta { font-size: 11px; color: var(--s-ink-3); margin-top: 1px; }
+
+  /* Each variant's section bg */
+  .profis-section { padding: 22px 18px; min-height: 480px; }
+  .profis-section.bg-white   { background: #FFFFFF; }
+  .profis-section.bg-warm    { background: #1A1408; }
+  .profis-section.bg-black   { background: #101010; }
+  .profis-section.text-light h2,
+  .profis-section.text-light .pname { color: #FFFFFF; }
+  .profis-section.text-light .pmeta { color: rgba(255,255,255,0.65); }
+  .profis-section.text-light .pcount { color: rgba(255,255,255,0.85); }
+  .profis-section.text-light .pcount .num { color: #FFFFFF; }
+
+  .ph2 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 14px;
+    letter-spacing: -0.015em;
+    color: var(--s-ink);
+  }
+
+  /* Stylist cards — variants: white card on white/dark, OR dark card inverted */
+  .pcard {
+    border-radius: 18px;
+    padding: 12px;
+    margin-bottom: 8px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .pcard.card-white     { background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .pcard.card-dark      { background: #1A1408; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+  .pcard.card-dark .pname { color: white; }
+  .pcard.card-dark .pmeta { color: rgba(255,255,255,0.65); }
+  .pcard.card-dark .pcount { color: rgba(255,255,255,0.85); }
+  .pcard.card-dark .pcount .num { color: white; }
+
+  .pphoto {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: linear-gradient(135deg, #E0703D, #2A1F18);
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  }
+  .pbody { flex: 1; min-width: 0; }
+  .prow1 { display: flex; justify-content: space-between; gap: 6px; align-items: baseline; }
+  .pname { font-size: 15px; font-weight: 700; color: var(--s-ink); margin: 0; }
+  .prating { font-size: 13px; font-weight: 700; color: var(--s-ink); white-space: nowrap; }
+  .prating .star { color: var(--s-star); }
+  .pmeta { font-size: 12px; color: var(--s-ink-2); margin: 2px 0 0; }
+  .pmeta .pdist { font-weight: 700; color: var(--s-ink); }
+  .pcount { font-size: 11px; color: var(--s-ink-2); margin: 2px 0 0; }
+  .pcount .num { font-weight: 700; color: var(--s-ink); }
+  /* Override pname/prating colors when inside .text-light section */
+  .text-light .pcard.card-white .pname,
+  .text-light .pcard.card-white .prating,
+  .text-light .pcard.card-white .pmeta,
+  .text-light .pcard.card-white .pmeta .pdist,
+  .text-light .pcard.card-white .pcount,
+  .text-light .pcard.card-white .pcount .num {
+    /* white card keeps dark text */
+  }
+  .text-light .pcard.card-white .pname,
+  .text-light .pcard.card-white .prating,
+  .text-light .pcard.card-white .pmeta .pdist,
+  .text-light .pcard.card-white .pcount .num { color: var(--s-ink); }
+  .text-light .pcard.card-white .pmeta,
+  .text-light .pcard.card-white .pcount { color: var(--s-ink-2); }
+
+  /* ─── Layer B: page-rhythm preview (3 mini full-pages) ─── */
+  .layer-b-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(280px, 320px));
+    gap: 24px;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  @media (max-width: 1000px) { .layer-b-grid { grid-template-columns: 1fr; } }
+
+  .mini-page {
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.10);
+    background: white;
+    display: flex;
+    flex-direction: column;
+  }
+  .mini-page-head {
+    padding: 12px 16px;
+    background: white;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    text-align: center;
+  }
+  .mini-page-head .tag { font-size: 10px; font-weight: 700; color: var(--s-ink-3); letter-spacing: 0.1em; text-transform: uppercase; }
+  .mini-page-head .name { font-size: 14px; font-weight: 700; margin-top: 2px; }
+
+  .scroll-stack { display: flex; flex-direction: column; }
+  .block {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 80px;
+    justify-content: center;
+  }
+  .block.light { background: #FFFFFF; color: var(--s-ink); }
+  .block.dark-warm { background: #1A1408; color: #FFFFFF; }
+  .block.dark-black { background: #101010; color: #FFFFFF; }
+  .block.photo { background: linear-gradient(135deg, #6090C0, #405070); color: white; }
+  .block-title { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+  .block-meta { font-size: 10px; opacity: 0.65; }
+
+  .footer-bar {
+    padding: 20px;
+    background: #1A1408;
+    color: white;
+    text-align: center;
+    font-size: 11px;
+  }
+
+  /* Footer notes */
+  .notes {
+    max-width: 800px;
+    margin: 32px auto;
+    padding: 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--s-ink-2);
+  }
+  .notes h3 { font-family: "Bricolage Grotesque", sans-serif; font-size: 16px; color: var(--s-ink); margin: 0 0 8px; }
+  .notes ul { margin: 0; padding-left: 20px; }
+  .notes li { margin-bottom: 4px; }
+  .notes strong { color: var(--s-ink); }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <h1>Solen × Revolut color separation — variants</h1>
+  <p>
+    Layer A compares the SAME "Profis in deiner Nähe" section rendered 4 different ways (card-level).
+    Layer B compares 3 full-page rhythms showing how MUCH of the page goes dark (page-level).
+    Once you pick a card style + page rhythm, I'll wire it into real components.
+  </p>
+</header>
+
+<!-- ═══════════════ LAYER A — CARD-LEVEL (4 variants of Profis section) ═══════════════ -->
+<section class="layer">
+  <div class="layer-head">
+    <span class="badge">Layer A · Card-level</span>
+    <h2>"Profis in deiner Nähe" — 4 treatments</h2>
+    <p>Same section. Different background tone + card treatment. Pick which one feels right.</p>
+  </div>
+  <div class="layer-a-grid">
+
+    <!-- A1: Current (control) -->
+    <div class="frame">
+      <div class="frame-label">
+        <div class="tag">A1 · Control</div>
+        <div class="name">Current (all white)</div>
+        <div class="meta">No change — baseline</div>
+      </div>
+      <div class="profis-section bg-white">
+        <h2 class="ph2">Profis in deiner Nähe</h2>
+        <div class="pcard card-white">
+          <div class="pphoto"></div>
+          <div class="pbody">
+            <div class="prow1"><p class="pname">Elena Rossi</p><span class="prating"><span class="star">★</span>4.9</span></div>
+            <p class="pmeta"><span class="pdist">410 m</span> · Coiffeur · Basel</p>
+            <p class="pcount"><span class="num">693</span> Bewertungen</p>
+          </div>
+        </div>
+        <div class="pcard card-white">
+          <div class="pphoto" style="background: linear-gradient(135deg, #4A6B8C, #2A1F18)"></div>
+          <div class="pbody">
+            <div class="prow1"><p class="pname">Marcus Chen</p><span class="prating"><span class="star">★</span>5.0</span></div>
+            <p class="pmeta"><span class="pdist">1.2 km</span> · Barbershop · Basel</p>
+            <p class="pcount"><span class="num">792</span> Bewertungen</p>
+          </div>
+        </div>
+        <div class="pcard card-white">
+          <div class="pphoto" style="background: linear-gradient(135deg, #C49A6C, #8B5A2B)"></div>
+          <div class="pbody">
+            <div class="prow1"><p class="pname">Sophie Dubois</p><span class="prating"><span class="star">★</span>4.8</span></div>
+            <p class="pmeta"><span class="pdist">1.8 km</span> · Nails · Bern</p>
+            <p class="pcount"><span class="num">248</span> Bewertungen</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- A2: Warm charcoal bg + white cards -->
+    <div class="frame">
+      <div class="frame-label">
+        <div class="tag">A2 · Warm</div>
+        <div class="name">Warm charcoal + white cards</div>
+        <div class="meta">bg #1A1408 (Solen s-ink) · cards stay white</div>
+      </div>
+      <div class="profis-section bg-warm text-light">
+        <h2 class="ph2">Profis in deiner Nähe</h2>
+        <div class="pcard card-white">
+          <div class="pphoto"></div>
+          <div class="pbody">
+            <div class="prow1"><p class="pname">Elena Rossi</p><span class="prating"><span class="star">★</span>4.9</span></div>
+            <p class="pmeta"><span class="pdist">410 m</span> · Coiffeur · Basel</p>
+            <p class="pcount"><span class="num">693</span> Bewertungen</p>
+          </div>
+        </div>
+        <div class="pcard card-white">
+          <div class="pphoto" style="background: linear-gradient(135deg, #4A6B8C, #2A1F18)"></div>
+          <div class="pbody">
+            <div class="prow1"><p class="pname">Marcus Chen</p><span class="prating"><span class="star">★</span>5.0</span></div>
+            <p class="pmeta"><span class="pdist">1.2 km</span> · Barbershop · Basel</p>
+            <p class="pcount"><span class="num">792</span> Bewertungen</p>
+          </div>
+        </div>
+        <div class="pcard card-white">
+          <div class="pphoto" style="background: linear-gradient(135deg, #C49A6C, #8B5A2B)"></div>
+          <div class="pbody">
+            <div class="prow1"><p class="pname">Sophie Dubois</p><span class="prating"><span class="star">★</span>4.8</span></div>
+            <p class="pmeta"><span class="pdist">1.8 km</span> · Nails · Bern</p>
+            <p class="pcount"><span class="num">248</span> Bewertungen</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- A3: Pure black bg + white cards (Revolut-exact) -->
+    <div class="frame">
+      <div class="frame-label">
+        <div class="tag">A3 · Revolut</div>
+        <div class="name">Pure black + white cards</div>
+        <div class="meta">bg #101010 · cards stay white (Revolut-exact)</div>
+      </div>
+      <div class="profis-section bg-black text-light">
+        <h2 class="ph2">Profis in deiner Nähe</h2>
+        <div class="pcard card-white">
+          <div class="pphoto"></div>
+          <div class="pbody">
+            <div class="prow1"><p class="pname">Elena Rossi</p><span class="prating"><span class="star">★</span>4.9</span></div>
+            <p class="pmeta"><span class="pdist">410 m</span> · Coiffeur · Basel</p>
+            <p class="pcount"><span class="num">693</span> Bewertungen</p>
+          </div>
+        </div>
+        <div class="pcard card-white">
+          <div class="pphoto" style="background: linear-gradient(135deg, #4A6B8C, #2A1F18)"></div>
+          <div class="pbody">
+            <div class="prow1"><p class="pname">Marcus Chen</p><span class="prating"><span class="star">★</span>5.0</span></div>
+            <p class="pmeta"><span class="pdist">1.2 km</span> · Barbershop · Basel</p>
+            <p class="pcount"><span class="num">792</span> Bewertungen</p>
+          </div>
+        </div>
+        <div class="pcard card-white">
+          <div class="pphoto" style="background: linear-gradient(135deg, #C49A6C, #8B5A2B)"></div>
+          <div class="pbody">
+            <div class="prow1"><p class="pname">Sophie Dubois</p><span class="prating"><span class="star">★</span>4.8</span></div>
+            <p class="pmeta"><span class="pdist">1.8 km</span> · Nails · Bern</p>
+            <p class="pcount"><span class="num">248</span> Bewertungen</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- A4: Dark bg + DARK CARDS inverted -->
+    <div class="frame">
+      <div class="frame-label">
+        <div class="tag">A4 · Inverted</div>
+        <div class="name">Dark bg + dark cards (inverted)</div>
+        <div class="meta">bg #101010 · cards #1A1408 + white text</div>
+      </div>
+      <div class="profis-section bg-black text-light">
+        <h2 class="ph2">Profis in deiner Nähe</h2>
+        <div class="pcard card-dark">
+          <div class="pphoto"></div>
+          <div class="pbody">
+            <div class="prow1"><p class="pname">Elena Rossi</p><span class="prating"><span class="star">★</span>4.9</span></div>
+            <p class="pmeta"><span class="pdist">410 m</span> · Coiffeur · Basel</p>
+            <p class="pcount"><span class="num">693</span> Bewertungen</p>
+          </div>
+        </div>
+        <div class="pcard card-dark">
+          <div class="pphoto" style="background: linear-gradient(135deg, #4A6B8C, #2A1F18)"></div>
+          <div class="pbody">
+            <div class="prow1"><p class="pname">Marcus Chen</p><span class="prating"><span class="star">★</span>5.0</span></div>
+            <p class="pmeta"><span class="pdist">1.2 km</span> · Barbershop · Basel</p>
+            <p class="pcount"><span class="num">792</span> Bewertungen</p>
+          </div>
+        </div>
+        <div class="pcard card-dark">
+          <div class="pphoto" style="background: linear-gradient(135deg, #C49A6C, #8B5A2B)"></div>
+          <div class="pbody">
+            <div class="prow1"><p class="pname">Sophie Dubois</p><span class="prating"><span class="star">★</span>4.8</span></div>
+            <p class="pmeta"><span class="pdist">1.8 km</span> · Nails · Bern</p>
+            <p class="pcount"><span class="num">248</span> Bewertungen</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ LAYER B — PAGE-RHYTHM (3 full-page mini-mocks) ═══════════════ -->
+<section class="layer">
+  <div class="layer-head">
+    <span class="badge">Layer B · Page rhythm</span>
+    <h2>How MUCH of the page goes dark?</h2>
+    <p>Each mini-page is the same homepage scroll. The colored blocks show the bg color of each section.</p>
+  </div>
+  <div class="layer-b-grid">
+
+    <!-- B1: Current (all light) -->
+    <div class="mini-page">
+      <div class="mini-page-head">
+        <div class="tag">B1 · None</div>
+        <div class="name">Current — all light</div>
+      </div>
+      <div class="scroll-stack">
+        <div class="block light"><div class="block-title">Hero · Termin in 30 Sek.</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Für dich</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Top auf Solen</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">In der Nähe</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Profis in deiner Nähe</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Stöber nach Kategorie</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Finde deine Inspiration</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Bewertungen</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Solen für dein Geschäft</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Werde Solen-Partner</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Footer</div><div class="block-meta">light</div></div>
+      </div>
+    </div>
+
+    <!-- B2: Moderate — 1 dark section -->
+    <div class="mini-page">
+      <div class="mini-page-head">
+        <div class="tag">B2 · Light</div>
+        <div class="name">Moderate — 1 dark section</div>
+      </div>
+      <div class="scroll-stack">
+        <div class="block light"><div class="block-title">Hero · Termin in 30 Sek.</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Für dich</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Top auf Solen</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">In der Nähe</div><div class="block-meta">light</div></div>
+        <div class="block dark-warm"><div class="block-title">Profis in deiner Nähe</div><div class="block-meta">DARK (warm)</div></div>
+        <div class="block light"><div class="block-title">Stöber nach Kategorie</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Finde deine Inspiration</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Bewertungen</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Solen für dein Geschäft</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Werde Solen-Partner</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Footer</div><div class="block-meta">light</div></div>
+      </div>
+    </div>
+
+    <!-- B3: Heavy — Revolut-rhythm (3 dark sections + dark footer) -->
+    <div class="mini-page">
+      <div class="mini-page-head">
+        <div class="tag">B3 · Heavy</div>
+        <div class="name">Revolut-rhythm — 3 dark + dark footer</div>
+      </div>
+      <div class="scroll-stack">
+        <div class="block light"><div class="block-title">Hero · Termin in 30 Sek.</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Für dich</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">Top auf Solen</div><div class="block-meta">light</div></div>
+        <div class="block light"><div class="block-title">In der Nähe</div><div class="block-meta">light</div></div>
+        <div class="block dark-warm"><div class="block-title">Profis in deiner Nähe</div><div class="block-meta">DARK</div></div>
+        <div class="block light"><div class="block-title">Stöber nach Kategorie</div><div class="block-meta">light</div></div>
+        <div class="block dark-warm"><div class="block-title">Finde deine Inspiration</div><div class="block-meta">DARK</div></div>
+        <div class="block light"><div class="block-title">Bewertungen</div><div class="block-meta">light</div></div>
+        <div class="block dark-warm"><div class="block-title">Solen für dein Geschäft</div><div class="block-meta">DARK</div></div>
+        <div class="block dark-warm"><div class="block-title">Werde Solen-Partner</div><div class="block-meta">DARK (continues)</div></div>
+        <div class="block dark-warm"><div class="block-title">Footer</div><div class="block-meta">DARK</div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ NOTES ═══════════════ -->
+<div class="notes">
+  <h3>What to pick</h3>
+  <ul>
+    <li><strong>Card style (Layer A):</strong> A1 (control), A2 (warm + white cards), A3 (pure black + white cards), or A4 (dark cards inverted). My rec: <strong>A2</strong> — warm s-ink stays on brand, white cards keep photo legibility.</li>
+    <li><strong>Page rhythm (Layer B):</strong> B1 (no change), B2 (1 dark zone for emphasis), or B3 (Revolut-pattern). My rec: <strong>B2</strong> for first try — small commitment, see if dark feels right, expand later.</li>
+    <li><strong>About 80/17/3 rule:</strong> B3 would push ink usage past 30% of page area — violates the locked color rule. B2 keeps you ~closer to the rule. If you want B3 anyway, we need to revise the rule explicitly.</li>
+    <li><strong>What happens to brand-green CTAs on dark bg:</strong> green stays green (still readable) but loses contrast pop. May need a brighter green token (`#16A34A` → `#22C55E` ≈ Tailwind green-500) for dark sections.</li>
+  </ul>
+  <h3>Tell me</h3>
+  <p>Just say "A2 + B2" (or whichever combo) and I'll wire it into the real components. If none feel right, tell me what's wrong + I'll add more variants.</p>
+</div>
+
+</body>
+</html>

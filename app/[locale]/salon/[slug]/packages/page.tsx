@@ -56,10 +56,11 @@ function PackagePaymentForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <PaymentElement />
+      {/* Primary CTA — V3-D253 (W3): coral → ink per LOCKFILE §0 rule 2 */}
       <button
         type="submit"
         disabled={submitting || !stripe}
-        className="w-full py-3 rounded-btn bg-s-coral text-white text-sm font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2"
+        className="w-full py-3 rounded-btn bg-s-ink text-white text-sm font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2"
       >
         {submitting && <Spinner size="sm" invert />}
         Jetzt bezahlen
@@ -123,37 +124,40 @@ function PurchaseModal({
           <X size={18} />
         </button>
 
-        <h2 className="font-heading text-lg text-s-ink mb-1">{pkg.name}</h2>
-        {name && <p className="text-xs text-s-ink/40 mb-4">{name}</p>}
+        {/* V3-D253 (W3): modal h2 + retired s-coral → ink/accent per LOCKFILE */}
+        <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-1">{pkg.name}</h2>
+        {name && <p className="text-xs text-s-ink-2 mb-4">{name}</p>}
 
-        <div className="flex items-center justify-between mb-6 p-3 bg-s-ink/[0.03] rounded-input">
-          <span className="text-sm text-s-ink/60">
+        <div className="flex items-center justify-between mb-6 p-3 bg-s-bg-sunken rounded-input">
+          <span className="text-sm text-s-ink-2">
             {totalSessions} {locale === "en" ? "sessions" : "Sitzungen"}
             {pkg.bonus_sessions > 0 && (
-              <span className="text-s-coral ml-1">
+              // V3-D337 (T5): bonus accent → s-success per universal-color (bonus = positive completion signal, semantic).
+              <span className="text-s-success ml-1">
                 (+{pkg.bonus_sessions} {locale === "en" ? "bonus" : "Bonus"})
               </span>
             )}
           </span>
-          <span className="data-text font-bold text-s-coral">{formatCurrency(pkg.price, locale)}</span>
+          <span className="data-text font-bold text-s-ink">{formatCurrency(pkg.price, locale)}</span>
         </div>
 
         {success ? (
           <div className="text-center py-4 space-y-2">
-            <div className="w-12 h-12 rounded-full mx-auto flex items-center justify-center bg-green-50">
-              <Package size={22} className="text-green-500" />
+            {/* V3-D253 (W3): raw green-50/500 → s-success tokens (LOCKFILE §1 universal-color) */}
+            <div className="w-12 h-12 rounded-full mx-auto flex items-center justify-center bg-s-success-bg">
+              <Package size={22} className="text-s-success" />
             </div>
             <p className="font-heading text-s-ink">
               {locale === "en" ? "Purchase successful!" : "Kauf erfolgreich!"}
             </p>
-            <p className="text-xs text-s-ink/50">
+            <p className="text-xs text-s-ink-2">
               {locale === "en"
                 ? "Your package is now available in your profile."
                 : "Dein Paket ist jetzt in deinem Profil verfügbar."}
             </p>
             <button
               onClick={onClose}
-              className="mt-4 w-full py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60 hover:border-s-coral hover:text-s-coral transition-colors"
+              className="mt-4 w-full py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-ink hover:text-s-ink transition-colors"
             >
               {locale === "en" ? "Close" : "Schliessen"}
             </button>
@@ -161,14 +165,15 @@ function PurchaseModal({
         ) : loadingIntent ? (
           <div className="flex justify-center py-8"><Spinner size="lg" /></div>
         ) : intentError ? (
-          <div className="flex items-start gap-2 p-3 bg-red-50 rounded-input text-red-600 text-sm">
+          <div className="flex items-start gap-2 p-3 bg-s-error-bg rounded-input text-s-error text-sm">
             <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
             <span>{intentError}</span>
           </div>
         ) : clientSecret && stripePromise ? (
-          <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#C05038" } } }}>
+          // V3-D253 (W3): Stripe colorPrimary aligned to s-ink (LOCKFILE §1 primary CTA token)
+          <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#0A0A0A" } } }}>
             {payError && (
-              <div className="flex items-start gap-2 p-3 mb-4 bg-red-50 rounded-input text-red-600 text-sm">
+              <div className="flex items-start gap-2 p-3 mb-4 bg-s-error-bg rounded-input text-s-error text-sm">
                 <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
                 <span>{payError}</span>
               </div>
@@ -179,7 +184,7 @@ function PurchaseModal({
             />
           </Elements>
         ) : (
-          <div className="flex items-start gap-2 p-3 bg-red-50 rounded-input text-red-600 text-sm">
+          <div className="flex items-start gap-2 p-3 bg-s-error-bg rounded-input text-s-error text-sm">
             <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
             <span>
               {locale === "en"
@@ -236,19 +241,21 @@ export default function SalonPackagesPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <Link href={`/${locale}/salon/${slug}`} className="text-sm text-s-coral flex items-center gap-1 mb-6">
+        {/* V3-D253 (W3): retired s-coral → s-accent for link, s-ink for data/CTA per LOCKFILE */}
+        {/* V3-D337 (T5): decorative accent link → ink underline per §1.5; H1 tracking -0.03em → -0.02em canonical. */}
+        <Link href={`/${locale}/salon/${slug}`} className="text-sm text-s-ink underline underline-offset-2 flex items-center gap-1 mb-6 hover:no-underline transition-colors">
           <ArrowLeft size={14} /> {l.back}
         </Link>
 
-        <h1 className="font-heading text-2xl text-s-ink mb-1">{l.title}</h1>
-        {salonName && <p className="text-sm text-s-ink/50 mb-6">{salonName}</p>}
+        <h1 className="font-heading text-[clamp(25px,4vw,40)] font-semibold text-s-ink mb-1 tracking-[-0.02em]">{l.title}</h1>
+        {salonName && <p className="text-sm text-s-ink-2 mb-6">{salonName}</p>}
 
         {loading ? (
           <div className="flex justify-center py-12"><Spinner size="lg" /></div>
         ) : packages.length === 0 ? (
           <div className="text-center py-12">
-            <Package size={32} className="mx-auto mb-3 text-s-ink/20" />
-            <p className="text-sm text-s-ink/50">{l.empty}</p>
+            <Package size={32} className="mx-auto mb-3 text-s-ink-2" />
+            <p className="text-sm text-s-ink-2">{l.empty}</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -262,35 +269,37 @@ export default function SalonPackagesPage() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="bg-white rounded-[16px] shadow-warm-md p-5"
+                  className="bg-white rounded-[16px] border border-s-border p-5"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <h3 className="font-heading text-s-ink">{pkg.name}</h3>
-                      <p className="text-xs text-s-ink/40">{serviceName(pkg)}</p>
+                      <p className="text-xs text-s-ink-2">{serviceName(pkg)}</p>
                     </div>
-                    <span className="data-text text-xl font-bold text-s-coral">
+                    <span className="data-text text-xl font-bold text-s-ink">
                       {formatCurrency(pkg.price, locale)}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-4 text-sm mb-4">
-                    <span className="text-s-ink/60">
+                    <span className="text-s-ink-2">
                       {pkg.total_sessions} {l.sessions}
                     </span>
                     {pkg.bonus_sessions > 0 && (
-                      <span className="text-s-coral flex items-center gap-1">
+                      // V3-D337 (T5): bonus accent → s-success (semantic positive signal per universal-color).
+                      <span className="text-s-success flex items-center gap-1">
                         <Gift size={12} /> +{pkg.bonus_sessions} {l.bonus}
                       </span>
                     )}
-                    <span className="text-s-ink/40 ml-auto">
+                    <span className="text-s-ink-2 ml-auto">
                       {l.perSession}: {formatCurrency(perSession, locale)}
                     </span>
                   </div>
 
+                  {/* Primary CTA — V3-D253: coral → ink per LOCKFILE §0 rule 2 */}
                   <button
                     onClick={() => setPurchasing(pkg)}
-                    className="w-full py-2.5 rounded-btn bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter]"
+                    className="w-full py-2.5 rounded-btn bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter]"
                   >
                     {l.buy}
                   </button>

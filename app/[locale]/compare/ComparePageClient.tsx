@@ -78,7 +78,7 @@ function buildRows(locale: string, labels: RowLabels): Row[] {
       Icon: Star,
       render: (s) => (
         <div className="flex items-center justify-center gap-1.5">
-          <Star size={13} className="fill-s-amber text-s-amber shrink-0" />
+          <Star size={13} className="fill-s-star text-s-star shrink-0" />
           <span className="font-semibold tabular-nums text-s-ink">
             {s.average_rating?.toFixed(1) ?? "–"}
           </span>
@@ -146,8 +146,8 @@ function SalonPhoto({ salon }: { salon: CompareSalon }) {
 
   // Placeholder with initial letter
   return (
-    <div className="w-full h-full flex items-center justify-center bg-s-coral/10">
-      <span className="font-display text-3xl text-s-coral">
+    <div className="w-full h-full flex items-center justify-center bg-s-ink/10">
+      <span className="font-display text-3xl text-s-accent">
         {salon.name.charAt(0).toUpperCase()}
       </span>
     </div>
@@ -208,7 +208,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
           <Link
             href={`/${locale}`}
             aria-label={t("back")}
-            className="flex items-center gap-1.5 text-s-ink/60 hover:text-s-coral:text-s-coral transition-colors duration-150 text-sm"
+            className="flex items-center gap-1.5 text-s-ink/60 hover:text-s-accent:text-s-accent transition-colors duration-150 text-sm"
           >
             <ArrowLeft size={16} />
             <span>{t("back")}</span>
@@ -230,7 +230,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
         {loading && (
           <div className="flex flex-col items-center justify-center py-24 gap-3">
             <div
-              className="w-8 h-8 rounded-full border-2 border-s-coral/30 border-t-s-coral animate-spin"
+              className="w-8 h-8 rounded-full border-2 border-s-accent/30 border-t-s-accent animate-spin"
               role="status"
               aria-label={t("loading")}
             />
@@ -247,7 +247,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
             action={
               <Link
                 href={`/${locale}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-ink text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
               >
                 {t("discover")}
               </Link>
@@ -264,7 +264,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
             action={
               <Link
                 href={`/${locale}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-ink text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
               >
                 {t("discover")}
               </Link>
@@ -281,7 +281,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
             action={
               <Link
                 href={`/${locale}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-ink text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
               >
                 {t("discover")}
               </Link>
@@ -312,12 +312,12 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
                     key={salon.id}
                     className={cn(
                       "relative rounded-card bg-[--raised] shadow-elevation-1 overflow-hidden",
-                      i === bestIdx && "ring-2 ring-s-coral/30"
+                      i === bestIdx && "ring-2 ring-s-accent/30"
                     )}
                   >
                     {/* Best value ribbon */}
                     {i === bestIdx && (
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10 px-3 py-0.5 rounded-b-lg bg-s-coral text-white text-[10px] font-bold whitespace-nowrap shadow-sm">
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10 px-3 py-0.5 rounded-b-lg bg-s-ink text-white text-[10px] font-bold whitespace-nowrap shadow-sm">
                         {t("recommendation")}
                       </div>
                     )}
@@ -356,7 +356,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
                   >
                     {/* Row label */}
                     <div className="flex items-center gap-2 px-4 py-3.5">
-                      <row.Icon size={13} className="text-s-coral shrink-0" />
+                      <row.Icon size={13} className="text-s-accent shrink-0" />
                       <span className="text-xs text-s-ink/50 whitespace-nowrap">
                         {row.label}
                       </span>
@@ -368,7 +368,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
                         key={salon.id}
                         className={cn(
                           "px-4 py-3.5 text-center text-sm",
-                          colIdx === bestIdx && "bg-s-coral/[0.04]"
+                          colIdx === bestIdx && "bg-s-ink/[0.04]"
                         )}
                       >
                         {row.render(salon, colIdx === bestIdx)}
@@ -395,7 +395,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
                       <Link
                         href={`/${locale}/salon/${salon.slug}`}
                         aria-label={`${t("bookNow")} ${salon.name}`}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-coral text-white text-xs font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 whitespace-nowrap"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-ink text-white text-xs font-semibold hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 whitespace-nowrap"
                       >
                         {t("bookNow")}
                         <ExternalLink size={11} />

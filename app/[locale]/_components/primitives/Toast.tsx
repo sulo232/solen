@@ -1,372 +1,480 @@
 "use client";
 
+// V3-D195 (2026-05-26): rebuilt as module-singleton + Toaster portal.
+// V3-D196 (2026-05-26): tone-specific bg colors + icons per user "error
+// universally recognized as red." Toast tones now use semantic-color bg
+// (signal-as-bg, sanctioned per §10 update) instead of all-ink with a dot.
 import * as React from "react";
-import { CheckCircle2, Info, AlertTriangle, AlertCircle, X } from "lucide-react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { createPortal } from "react-dom";
+import { cva } from "class-variance-authority";
+import { CheckCircle2, AlertCircle, AlertTriangle, Info, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * V3 Toast primitive — LIVE_TRUTH §F.4.
+ * V3-D195 Toast primitive — SOURCE.md §10 (async state grammar) + §11 (Coming Soon affordance).
  *
- * Hand-rolled queue + Context per §F.4.7 — `react-aria-components` exports only
- * `UNSTABLE_Toast*` at v1.16.0, locking ourselves in is risky. Hand-roll achieves
- * the same UX with stable API + zero new dependencies.
+ * Rebuilt 2026-05-26 from the V3-F.4 rich-context primitive into a module-level
+ * singleton + `<Toaster />` portal. Motivations:
  *
- * Architecture:
- *   <ToastProvider> in app root layout
- *   ↓
- *   useToast() hook in any client component → returns { success, info, warning, error, custom }
- *   ↓
- *   queue manager: max 3 visible, FIFO beyond, per-toast setTimeout for auto-dismiss
- *   ↓
- *   ToastRegion renders fixed bottom-right (desktop) / bottom-center (mobile)
+ * 1. **String-first API.** Most callers want `toast.success("Gespeichert")` not
+ *    `toast.success({ title: "Gespeichert" })`. New API accepts string OR options.
+ * 2. **Top-of-viewport slide-down.** Brand register: notifications appear ABOVE the
+ *    content, slide in from y:-20, instead of "bottom toast" which competes with
+ *    sticky CTAs and the iOS home-indicator zone.
+ * 3. **Module-level store.** `toast.success()` works from anywhere (event handlers,
+ *    server-action callbacks, future server-action useFormState handlers) without
+ *    needing a `useToast()` hook + Provider. The `<Toaster />` portal subscribes
+ *    via React.useSyncExternalStore.
+ * 4. **Signal-as-data dot per §1.** Variant communicates state via a SMALL colored
+ *    dot (10px) — body stays ink. Honours the locked B&W chrome rule: green/blue/red
+ *    are signal moments, not surface tints.
  *
- * @example
- * // In app/[locale]/layout.tsx:
- * <ToastProvider>{children}</ToastProvider>
+ * **Back-compat:** `ToastProvider` + `useToast()` still exported as thin wrappers that
+ * delegate to the singleton. `dev/primitives/page.tsx` keeps working without edits.
  *
- * // In any component:
- * const toast = useToast();
- * toast.success({ title: "Look gespeichert", action: "Anzeigen", onAction: navigateToSaved });
- * toast.error({ title: "Buchung fehlgeschlagen", action: "Erneut versuchen", onAction: retry });
+ * @example new singleton API (preferred)
+ *   import { toast, Toaster } from "@/app/[locale]/_components/primitives/Toast";
+ *   // mount once at root layout:
+ *   <Toaster />
+ *   // fire from anywhere:
+ *   toast.success("Look gespeichert");
+ *   toast.error("Buchung fehlgeschlagen");
+ *   toast.info("Diese Funktion kommt bald", { action: { label: "Mehr", onClick: showDetails } });
+ *
+ * @example back-compat (existing callers)
+ *   const t = useToast();
+ *   t.success({ title: "Foo", description: "Bar", action: "Undo", onAction: undo });
  */
 
-export type ToastTone = "success" | "info" | "warning" | "error";
+// ─────────────────────────────────────────────────────────────────────────────
+// Public types
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type ToastTone = "default" | "success" | "error" | "info" | "warning";
+
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
 
 export interface ToastOptions {
-  title: React.ReactNode;
+  /** Optional structured action button. Renders as small underlined ink text. */
+  action?: ToastAction;
+  /** Optional rich description below the title. */
   description?: React.ReactNode;
-  /** Optional action button label (right-aligned text-only button). */
-  action?: React.ReactNode;
-  /** Fires when action button is clicked. Toast dismisses after. */
-  onAction?: () => void;
-  /**
-   * Auto-dismiss timer in ms. Defaults per tone:
-   * success/info = 3000, warning = 6000, error = Infinity (sticky).
-   * Pass `Infinity` to make non-error toasts sticky.
-   */
+  /** Override auto-dismiss in ms. Default 4000. Pass `Infinity` for sticky. */
   duration?: number;
-  /** ARIA: override auto-derived live region. Defaults: error="assertive", others="polite". */
+  /** Override aria-live. Default `polite` for default/info/success/warning, `assertive` for error. */
   ariaLive?: "polite" | "assertive";
 }
 
 interface InternalToast extends ToastOptions {
   id: string;
   tone: ToastTone;
+  title: React.ReactNode;
   createdAt: number;
 }
 
-interface ToastContextValue {
-  success: (opts: ToastOptions) => string;
-  info: (opts: ToastOptions) => string;
-  warning: (opts: ToastOptions) => string;
-  error: (opts: ToastOptions) => string;
-  custom: (tone: ToastTone, opts: ToastOptions) => string;
-  dismiss: (id: string) => void;
-  dismissAll: () => void;
-}
-
-const ToastContext = React.createContext<ToastContextValue | null>(null);
+// ─────────────────────────────────────────────────────────────────────────────
+// Constants
+// ─────────────────────────────────────────────────────────────────────────────
 
 const MAX_VISIBLE = 3;
-const DEFAULT_DURATIONS: Record<ToastTone, number> = {
-  success: 3000,
-  info: 3000,
-  warning: 6000,
-  error: Infinity,
+const DEFAULT_DURATION = 4000;
+
+// V3-D196: icon per tone. Universal recognition pattern (Apple/iOS/sonner/etc).
+const toneIcon: Record<Exclude<ToastTone, "default">, LucideIcon> = {
+  success: CheckCircle2,
+  error: AlertCircle,
+  warning: AlertTriangle,
+  info: Info,
 };
 
-let idCounter = 0;
-const nextId = () => `toast-${Date.now()}-${++idCounter}`;
+// ─────────────────────────────────────────────────────────────────────────────
+// Module-level store (singleton)
+// ─────────────────────────────────────────────────────────────────────────────
 
-/* ================================================================================
-   ToastProvider — render once at app root, manages queue + portal
-   ================================================================================ */
+type Listener = () => void;
 
-export function ToastProvider({ children }: { children: React.ReactNode }) {
-  const [toasts, setToasts] = React.useState<InternalToast[]>([]);
-  const [queue, setQueue] = React.useState<InternalToast[]>([]);
+class ToastStore {
+  private toasts: InternalToast[] = [];
+  private listeners = new Set<Listener>();
+  private counter = 0;
 
-  const dismiss = React.useCallback((id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }, []);
+  getSnapshot = (): readonly InternalToast[] => this.toasts;
 
-  const dismissAll = React.useCallback(() => {
-    setToasts([]);
-    setQueue([]);
-  }, []);
+  subscribe = (listener: Listener) => {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  };
 
-  // When a visible slot opens, pull from queue
-  React.useEffect(() => {
-    if (toasts.length < MAX_VISIBLE && queue.length > 0) {
-      const [next, ...rest] = queue;
-      setQueue(rest);
-      setToasts((prev) => [...prev, next]);
-    }
-  }, [toasts.length, queue]);
+  private notify() {
+    this.listeners.forEach((l) => l());
+  }
 
-  const enqueue = React.useCallback((tone: ToastTone, opts: ToastOptions) => {
-    const id = nextId();
-    const toast: InternalToast = {
-      ...opts,
+  private nextId() {
+    this.counter += 1;
+    return `toast-${Date.now()}-${this.counter}`;
+  }
+
+  push(tone: ToastTone, title: React.ReactNode, options: ToastOptions = {}): string {
+    const id = this.nextId();
+    const next: InternalToast = {
       id,
       tone,
+      title,
       createdAt: Date.now(),
+      duration: options.duration ?? DEFAULT_DURATION,
+      action: options.action,
+      description: options.description,
+      ariaLive: options.ariaLive,
     };
-    setToasts((prev) => {
-      // Error tone priority: replace oldest non-error if queue full
-      if (prev.length >= MAX_VISIBLE) {
-        if (tone === "error") {
-          const oldestNonErrorIdx = prev.findIndex((t) => t.tone !== "error");
-          if (oldestNonErrorIdx >= 0) {
-            return [...prev.slice(0, oldestNonErrorIdx), ...prev.slice(oldestNonErrorIdx + 1), toast];
-          }
-        }
-        // Otherwise queue it
-        setQueue((q) => [...q, toast]);
-        return prev;
-      }
-      return [...prev, toast];
-    });
+
+    // Stack: keep newest at the TOP, drop oldest when over MAX_VISIBLE.
+    this.toasts = [next, ...this.toasts].slice(0, MAX_VISIBLE);
+    this.notify();
     return id;
-  }, []);
-
-  const value = React.useMemo<ToastContextValue>(
-    () => ({
-      success: (opts) => enqueue("success", opts),
-      info: (opts) => enqueue("info", opts),
-      warning: (opts) => enqueue("warning", opts),
-      error: (opts) => enqueue("error", opts),
-      custom: (tone, opts) => enqueue(tone, opts),
-      dismiss,
-      dismissAll,
-    }),
-    [enqueue, dismiss, dismissAll],
-  );
-
-  return (
-    <ToastContext.Provider value={value}>
-      {children}
-      <ToastRegion toasts={toasts} onDismiss={dismiss} />
-    </ToastContext.Provider>
-  );
-}
-
-/* ================================================================================
-   useToast — hook for triggering toasts from any client component
-   ================================================================================ */
-
-export function useToast(): ToastContextValue {
-  const ctx = React.useContext(ToastContext);
-  if (!ctx) {
-    throw new Error("useToast() must be called inside <ToastProvider>");
   }
-  return ctx;
+
+  dismiss(id?: string) {
+    if (id === undefined) {
+      this.toasts = [];
+    } else {
+      this.toasts = this.toasts.filter((t) => t.id !== id);
+    }
+    this.notify();
+  }
 }
 
-/* ================================================================================
-   ToastRegion — fixed-position container, rendered by ToastProvider
-   ================================================================================ */
+const store = new ToastStore();
 
-function ToastRegion({
-  toasts,
-  onDismiss,
-}: {
-  toasts: InternalToast[];
-  onDismiss: (id: string) => void;
-}) {
-  return (
+// ─────────────────────────────────────────────────────────────────────────────
+// Public singleton API: `toast.success(msg)` / `toast.error(msg)` / etc.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function buildToast(tone: ToastTone) {
+  return (message: React.ReactNode, options?: ToastOptions): string =>
+    store.push(tone, message, options);
+}
+
+export const toast = {
+  /** Default ink-on-white. No dot. Generic neutral notice. */
+  show: buildToast("default"),
+  /** Green dot — operation succeeded. */
+  success: buildToast("success"),
+  /** Red dot — operation failed. Defaults to `aria-live="assertive"`. */
+  error: buildToast("error"),
+  /** Royal blue dot (s-accent) — informational / Coming Soon affordance. */
+  info: buildToast("info"),
+  /** Amber dot — non-blocking warning. */
+  warning: buildToast("warning"),
+  /** Dismiss a single toast by id, or all if id omitted. */
+  dismiss: (id?: string) => store.dismiss(id),
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// <Toaster /> — single portal component, mounted once at root
+// ─────────────────────────────────────────────────────────────────────────────
+
+// V3-D198 (2026-05-26): Tailwind UI / Stripe pastel pattern — saturated solids
+// (V3-D196) read as Material-2014, too deep for the Uber/Revolut refined vibe.
+// Now: pastel `.bg` token + ink text + colored icon. Universal recognition via
+// icon shape + bg tint, not screamy saturated solid.
+const toastItemVariants = cva(
+  cn(
+    "pointer-events-auto",
+    "flex items-start gap-3",
+    "rounded-[14px]",
+    "shadow-elevation-3",
+    "px-4 py-3",
+    "w-full md:max-w-[420px] md:min-w-[280px]",
+    "border", // hairline border picks up bg-derived tone via per-variant class
+  ),
+  {
+    variants: {
+      tone: {
+        // Default toast is still ink (catch-all / generic) — chrome-grade
+        default: "bg-s-ink text-white border-transparent",
+        // Pastel tints + ink text + bordered. Refined modern fintech pattern.
+        success: "bg-s-success-bg text-s-ink border-s-success/15",
+        error:   "bg-s-error-bg text-s-ink border-s-error/15",
+        warning: "bg-s-warning-bg text-s-ink border-s-warning/20",
+        info:    "bg-s-accent-pale text-s-ink border-s-accent/15",
+      },
+    },
+    defaultVariants: { tone: "default" },
+  },
+);
+
+// V3-D198: icon color per tone (saturated tokens — they're the "look here" signal).
+const toneIconColor: Record<Exclude<ToastTone, "default">, string> = {
+  success: "text-s-success",
+  error: "text-s-error",
+  warning: "text-s-warning",
+  info: "text-s-accent",
+};
+
+export function Toaster() {
+  const toasts = React.useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot,
+    store.getSnapshot,
+  );
+
+  // Only mount the portal on the client.
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
+
+  return createPortal(
     <ol
       role="region"
       aria-label="Benachrichtigungen"
       className={cn(
         "fixed z-toast pointer-events-none",
-        // mobile: bottom-center, full-width minus 16px each side, safe-area-aware
-        "bottom-[max(1rem,calc(env(safe-area-inset-bottom)+1rem))] left-4 right-4",
-        "flex flex-col gap-2",
-        // desktop: bottom-right, max 480px
-        "md:bottom-6 md:right-6 md:left-auto md:items-end",
-        "md:max-w-[480px]",
+        // Top-of-viewport, safe-area aware. Center on mobile, slight right-bias on desktop.
+        "top-[max(1rem,calc(env(safe-area-inset-top)+1rem))]",
+        "left-4 right-4",
+        "flex flex-col gap-2 items-center",
+        "md:top-6 md:left-auto md:right-6 md:items-end",
+        "md:max-w-[420px]",
       )}
     >
-      {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onDismiss={onDismiss} />
+      {toasts.map((t) => (
+        <ToastItem key={t.id} toast={t} />
       ))}
-    </ol>
+    </ol>,
+    document.body,
   );
 }
 
-/* ================================================================================
-   ToastItem — single toast with auto-dismiss timer + hover-pause
-   ================================================================================ */
+// ─────────────────────────────────────────────────────────────────────────────
+// ToastItem — renders one toast with auto-dismiss + CSS-driven entrance/exit
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// We use a simple 3-state machine (entering → open → exiting) with CSS transitions
+// on transform + opacity. Why not motion/react: the AnimatePresence+portal+
+// useSyncExternalStore combo had presence-detection issues in this environment.
+// CSS transitions are equally smooth, render-cheaper, and pair with the global
+// `prefers-reduced-motion` override at globals.css:681 without library quirks.
+//
+// Motion vocabulary (SOURCE.md §6.1 + §6.2):
+//   enter: y:-20 → 0, opacity 0 → 1 over 200ms ease-snap (cubic-bezier(0.4,0,0.2,1))
+//   exit:  opacity 1 → 0 over 150ms ease-glide (cubic-bezier(0.16,1,0.3,1))
 
-const toastVariants = cva(
-  cn(
-    "relative pointer-events-auto",
-    "flex items-start gap-3",
-    "bg-s-bg-base rounded-[12px]",
-    "shadow-elevation-3",
-    "py-3.5 pr-4 pl-5",
-    "w-full md:max-w-[480px] md:min-w-[280px]",
-    "overflow-hidden",
-    // entry/exit motion
-    "transition-all duration-200 ease-snap",
-    "data-[state=opening]:opacity-0 data-[state=opening]:translate-y-5",
-    "data-[state=open]:opacity-100 data-[state=open]:translate-y-0",
-    "data-[state=dismissing]:opacity-0 data-[state=dismissing]:-translate-y-2.5 data-[state=dismissing]:duration-150",
-    "motion-reduce:transition-opacity motion-reduce:duration-100",
-    "motion-reduce:data-[state=opening]:translate-y-0",
-    "motion-reduce:data-[state=dismissing]:translate-y-0",
-    // tone-bar (left edge)
-    "before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-0 before:w-1",
-  ),
-  {
-    variants: {
-      tone: {
-        success: "before:bg-s-success",
-        info: "before:bg-s-brand",
-        warning: "before:bg-s-warning",
-        error: "before:bg-s-error",
-      },
-    },
-  },
-);
+type AnimState = "entering" | "open" | "exiting";
 
-const iconColorMap: Record<ToastTone, string> = {
-  success: "text-s-success",
-  info: "text-s-brand",
-  warning: "text-s-warning",
-  error: "text-s-error",
-};
+function ToastItem({ toast: t }: { toast: InternalToast }) {
+  const [state, setState] = React.useState<AnimState>("entering");
+  const duration = t.duration ?? DEFAULT_DURATION;
 
-const IconMap: Record<ToastTone, React.ComponentType<{ className?: string; strokeWidth?: number; "aria-hidden"?: boolean }>> = {
-  success: CheckCircle2,
-  info: Info,
-  warning: AlertTriangle,
-  error: AlertCircle,
-};
-
-function ToastItem({
-  toast,
-  onDismiss,
-}: {
-  toast: InternalToast;
-  onDismiss: (id: string) => void;
-}) {
-  const [state, setState] = React.useState<"opening" | "open" | "dismissing">("opening");
-  const [isPaused, setIsPaused] = React.useState(false);
-  const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const remainingRef = React.useRef<number>(
-    toast.duration ?? DEFAULT_DURATIONS[toast.tone],
-  );
-  const startTimeRef = React.useRef<number>(0);
-
-  // Trigger opening → open transition on mount
+  // entering → open after one frame (gives the browser one frame to paint the
+  // initial state before transitioning).
   React.useEffect(() => {
-    const t = setTimeout(() => setState("open"), 16);
-    return () => clearTimeout(t);
+    const raf = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setState("open"));
+    });
+    return () => cancelAnimationFrame(raf);
   }, []);
 
-  // Auto-dismiss timer
-  const startTimer = React.useCallback(() => {
-    if (remainingRef.current === Infinity) return;
-    startTimeRef.current = Date.now();
-    timerRef.current = setTimeout(() => {
-      setState("dismissing");
-      setTimeout(() => onDismiss(toast.id), 150);
-    }, remainingRef.current);
-  }, [onDismiss, toast.id]);
-
-  const pauseTimer = React.useCallback(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-      const elapsed = Date.now() - startTimeRef.current;
-      remainingRef.current = Math.max(0, remainingRef.current - elapsed);
-    }
-  }, []);
+  // Auto-dismiss timer fires `exiting`, then unmount via store.dismiss after the
+  // exit-transition duration (150ms).
+  React.useEffect(() => {
+    if (state !== "open") return;
+    if (duration === Infinity) return;
+    const exitTimer = window.setTimeout(() => setState("exiting"), duration);
+    return () => window.clearTimeout(exitTimer);
+  }, [state, duration]);
 
   React.useEffect(() => {
-    if (state === "open" && !isPaused) startTimer();
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, [state, isPaused, startTimer]);
+    if (state !== "exiting") return;
+    const unmount = window.setTimeout(() => store.dismiss(t.id), 150);
+    return () => window.clearTimeout(unmount);
+  }, [state, t.id]);
 
-  const handleDismiss = React.useCallback(() => {
-    setState("dismissing");
-    setTimeout(() => onDismiss(toast.id), 150);
-  }, [onDismiss, toast.id]);
+  const ariaLive: "polite" | "assertive" =
+    t.ariaLive ?? (t.tone === "error" ? "assertive" : "polite");
+  const role = t.tone === "error" ? "alert" : "status";
 
-  const handleAction = React.useCallback(() => {
-    toast.onAction?.();
-    handleDismiss();
-  }, [toast, handleDismiss]);
+  const handleClick = () => {
+    setState("exiting");
+  };
 
-  const Icon = IconMap[toast.tone];
-
-  const ariaLive: "polite" | "assertive" = toast.ariaLive
-    ?? (toast.tone === "error" ? "assertive" : "polite");
-
-  const role = toast.tone === "error" ? "alert" : "status";
+  const handleActionClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    t.action?.onClick();
+    setState("exiting");
+  };
 
   return (
     <li
       role={role}
       aria-live={ariaLive}
+      onClick={handleClick}
       data-state={state}
-      onMouseEnter={() => {
-        pauseTimer();
-        setIsPaused(true);
+      style={{
+        // Inline styles give the most reliable transition (no CSS-class-purge risk).
+        opacity: state === "open" ? 1 : 0,
+        transform: state === "open" ? "translateY(0)" : "translateY(-20px)",
+        transition:
+          state === "exiting"
+            ? "opacity 150ms cubic-bezier(0.16, 1, 0.3, 1)"
+            : "opacity 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1)",
+        willChange: "transform, opacity",
       }}
-      onMouseLeave={() => {
-        setIsPaused(false);
-      }}
-      className={toastVariants({ tone: toast.tone })}
+      className={cn(
+        toastItemVariants({ tone: t.tone }),
+        "cursor-pointer select-none",
+        // V3-D198: pastel toasts (success/error/warning/info) all use ink-tone focus ring.
+        // Only `default` (ink bg) needs white ring.
+        t.tone === "default"
+          ? "focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+          : "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+      )}
     >
-      <span className={cn("flex-shrink-0 pt-px", iconColorMap[toast.tone])}>
-        <Icon className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden />
-      </span>
+      {/* V3-D198: lucide icon — saturated tone color provides the "look here" signal
+          while text/bg stay refined. */}
+      {t.tone !== "default" && (() => {
+        const Icon = toneIcon[t.tone];
+        return (
+          <Icon
+            size={20}
+            strokeWidth={2.25}
+            aria-hidden
+            className={cn("mt-[1px] flex-shrink-0", toneIconColor[t.tone])}
+          />
+        );
+      })()}
       <div className="flex-1 min-w-0">
-        <div className="font-body font-semibold text-[15px] leading-[1.3] text-s-ink">
-          {toast.title}
+        {/* V3-D198: title + description always ink on pastel; white on ink default. */}
+        <div className={cn(
+          "font-body font-medium text-[14px] leading-[1.35]",
+          t.tone === "default" ? "text-white" : "text-s-ink",
+        )}>
+          {t.title}
         </div>
-        {toast.description && (
-          <div className="font-body font-normal text-[13px] leading-[1.4] text-s-ink-3 mt-0.5">
-            {toast.description}
+        {t.description && (
+          <div className={cn(
+            "mt-0.5 font-body font-normal text-[13px] leading-[1.4]",
+            t.tone === "default" ? "text-white/70" : "text-s-ink-2",
+          )}>
+            {t.description}
           </div>
         )}
       </div>
-      {toast.action && (
+      {t.action && (
         <button
           type="button"
-          onClick={handleAction}
+          onClick={handleActionClick}
           className={cn(
-            "flex-shrink-0 bg-transparent border-0 cursor-pointer",
-            "font-body font-semibold text-[14px] text-s-brand",
-            "hover:text-s-ink transition-colors duration-150 ease-snap",
+            "flex-shrink-0 self-start",
+            "font-body font-semibold text-[13px]",
+            "underline underline-offset-[3px]",
+            // Default (ink bg) → white text + white underline. Pastel → ink text + ink underline.
+            t.tone === "default"
+              ? "text-white decoration-white/60 hover:decoration-white"
+              : "text-s-ink decoration-s-ink/40 hover:decoration-s-ink",
+            "bg-transparent border-0 cursor-pointer",
             "px-1 py-0.5 rounded-sm",
-            "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+            t.tone === "default"
+              ? "focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+              : "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+            "transition-[text-decoration-color] duration-150",
           )}
         >
-          {toast.action}
+          {t.action.label}
         </button>
       )}
-      <button
-        type="button"
-        onClick={handleDismiss}
-        aria-label="Schließen"
-        className={cn(
-          "flex-shrink-0 flex items-center justify-center",
-          "w-8 h-8 -my-2 -mr-2.5 bg-transparent border-0 cursor-pointer",
-          "text-s-ink-3 hover:text-s-ink",
-          "transition-colors duration-150 ease-snap",
-          "rounded-md",
-          "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
-        )}
-      >
-        <X className="w-4 h-4" strokeWidth={2} aria-hidden />
-      </button>
     </li>
   );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Back-compat: ToastProvider + useToast() — preserve the rich-options form used
+// by dev/primitives/page.tsx. These delegate to the singleton; the Provider
+// just renders `<Toaster />` once and exposes the same context shape.
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface LegacyToastOptions {
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  action?: React.ReactNode;
+  onAction?: () => void;
+  duration?: number;
+  ariaLive?: "polite" | "assertive";
+}
+
+interface ToastContextValue {
+  success: (opts: LegacyToastOptions) => string;
+  info: (opts: LegacyToastOptions) => string;
+  warning: (opts: LegacyToastOptions) => string;
+  error: (opts: LegacyToastOptions) => string;
+  custom: (tone: ToastTone, opts: LegacyToastOptions) => string;
+  dismiss: (id: string) => void;
+  dismissAll: () => void;
+}
+
+function adaptLegacy(tone: ToastTone, opts: LegacyToastOptions): string {
+  // Convert the rich legacy `action` ReactNode + `onAction` callback to the new
+  // structured ToastAction shape. Only fire the action handler if it's a string label.
+  const actionLabel =
+    typeof opts.action === "string"
+      ? opts.action
+      : opts.action != null
+        ? String(opts.action)
+        : undefined;
+  return store.push(tone, opts.title, {
+    description: opts.description,
+    duration: opts.duration,
+    ariaLive: opts.ariaLive,
+    action:
+      actionLabel && opts.onAction
+        ? { label: actionLabel, onClick: opts.onAction }
+        : undefined,
+  });
+}
+
+const ToastContext = React.createContext<ToastContextValue | null>(null);
+
+export function ToastProvider({ children }: { children: React.ReactNode }) {
+  const value = React.useMemo<ToastContextValue>(
+    () => ({
+      success: (opts) => adaptLegacy("success", opts),
+      info: (opts) => adaptLegacy("info", opts),
+      warning: (opts) => adaptLegacy("warning", opts),
+      error: (opts) => adaptLegacy("error", opts),
+      custom: (tone, opts) => adaptLegacy(tone, opts),
+      dismiss: (id) => store.dismiss(id),
+      dismissAll: () => store.dismiss(),
+    }),
+    [],
+  );
+
+  return (
+    <ToastContext.Provider value={value}>
+      {children}
+      <Toaster />
+    </ToastContext.Provider>
+  );
+}
+
+export function useToast(): ToastContextValue {
+  const ctx = React.useContext(ToastContext);
+  if (ctx) return ctx;
+  // If used outside <ToastProvider>, return a singleton-backed implementation so
+  // callers never crash. The new pattern doesn't require the Provider — only the
+  // legacy callers do, and they all mount it.
+  return {
+    success: (opts) => adaptLegacy("success", opts),
+    info: (opts) => adaptLegacy("info", opts),
+    warning: (opts) => adaptLegacy("warning", opts),
+    error: (opts) => adaptLegacy("error", opts),
+    custom: (tone, opts) => adaptLegacy(tone, opts),
+    dismiss: (id) => store.dismiss(id),
+    dismissAll: () => store.dismiss(),
+  };
 }

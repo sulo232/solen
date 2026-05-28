@@ -82,7 +82,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
           <Clock size={22} className="text-s-ink/60" />
         </div>
         <div>
@@ -104,7 +104,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                 onClick={() => toggle(key)}
                 className={[
                   "w-20 text-center text-xs font-medium py-2 rounded-btn transition-colors",
-                  h ? "bg-s-coral text-white shadow-warm-sm" : "bg-s-bg-sunken text-s-ink/30 hover:text-s-ink/50",
+                  h ? "bg-s-ink text-white shadow-warm-sm" : "bg-s-bg-sunken text-s-ink/30 hover:text-s-ink/50",
                 ].join(" ")}
               >
                 {DAYS_SHORT[i]}
@@ -117,17 +117,17 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                       type="time"
                       value={h.open}
                       onChange={(e) => update(key, "open", e.target.value)}
-                      className="px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
+                      className="px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 w-24 transition-colors"
                     />
                     <span className="text-s-ink/20">–</span>
                     <input
                       type="time"
                       value={h.close}
                       onChange={(e) => update(key, "close", e.target.value)}
-                      className="px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
+                      className="px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 w-24 transition-colors"
                     />
                     {!h.break_start && (
-                      <button onClick={() => toggleBreak(key)} className="ml-2 text-xs font-medium text-s-coral hover:text-s-coral/80">
+                      <button onClick={() => toggleBreak(key)} className="ml-2 text-xs font-medium text-s-accent hover:text-s-accent/80">
                         {t("hours.addBreak")}
                       </button>
                     )}
@@ -139,16 +139,16 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                         type="time"
                         value={h.break_start}
                         onChange={(e) => update(key, "break_start", e.target.value)}
-                        className="px-3 py-2 rounded-input border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
+                        className="px-3 py-2 rounded-input border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 w-24 transition-colors"
                       />
                       <span className="text-s-ink/20">–</span>
                       <input
                         type="time"
                         value={h.break_end}
                         onChange={(e) => update(key, "break_end", e.target.value)}
-                        className="px-3 py-2 rounded-input border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
+                        className="px-3 py-2 rounded-input border border-s-ink/10 bg-s-bg-surface text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 w-24 transition-colors"
                       />
-                      <button onClick={() => toggleBreak(key)} className="ml-2 text-xs text-s-ink/30 hover:text-s-coral">
+                      <button onClick={() => toggleBreak(key)} className="ml-2 text-xs text-s-ink/30 hover:text-s-accent">
                         {t("hours.removeBreak")}
                       </button>
                     </div>
@@ -167,7 +167,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
       <button
         onClick={handleSave}
         disabled={!hasAnyOpen || saving}
-        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
       >
         {saving && <Spinner size="sm" invert />}
         {tc("save")}

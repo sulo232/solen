@@ -33,16 +33,16 @@ export default function MaterialSelector({ value, onChange }: MaterialSelectorPr
             onClick={() => onChange(v)}
             className={`flex items-start gap-2.5 p-3 rounded-[16px] border text-left transition-[border-color,background-color] duration-150 ${
               value === v
-                ? "border-s-coral bg-s-coral/5 ring-1 ring-s-coral/30"
-                : "border-s-ink/10 bg-[--raised] hover:border-s-coral/20"
+                ? "border-s-accent bg-s-ink/5 ring-1 ring-s-accent/30"
+                : "border-s-ink/10 bg-[--raised] hover:border-s-accent/20"
             }`}
           >
             <Icon
               size={18}
-              className={value === v ? "text-s-coral shrink-0 mt-0.5" : "text-s-ink/30 shrink-0 mt-0.5"}
+              className={value === v ? "text-s-accent shrink-0 mt-0.5" : "text-s-ink/30 shrink-0 mt-0.5"}
             />
             <div>
-              <span className={`text-sm font-medium block ${value === v ? "text-s-coral" : "text-s-ink"}`}>
+              <span className={`text-sm font-medium block ${value === v ? "text-s-accent" : "text-s-ink"}`}>
                 {t(labelKey)}
               </span>
               <span className="text-[11px] text-s-ink/40">{t(descKey)}</span>

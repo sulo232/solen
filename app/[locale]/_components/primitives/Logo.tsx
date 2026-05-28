@@ -29,7 +29,8 @@ import { cn } from "@/lib/utils";
 const logoVariants = cva(
   cn(
     "inline-flex items-baseline shrink-0 select-none",
-    "font-display font-black leading-none",
+    // V3-D193 (2026-05-26): Logo weight 900 → 800 per user "too bold" sweep.
+    "font-display font-semibold leading-none",
     // V2-D42: Peace Sans natural tracking. Negative tracking crashed Peace
     // Sans's chunky letters together (logo + hero h1 looked like one blob).
     "tracking-normal",
@@ -67,9 +68,9 @@ const dotVariants = cva(
         xl: "w-3 h-3 ml-[6px] mb-[6px]",
       },
       tone: {
-        light: "bg-s-brand",
+        light: "bg-s-ink",
         // On dark backgrounds, brand-teal would disappear — use brand-pale instead
-        dark: "bg-s-brand-pale",
+        dark: "bg-s-bg-sunken",
       },
     },
     defaultVariants: {
@@ -93,7 +94,10 @@ export interface LogoProps extends React.HTMLAttributes<HTMLSpanElement> {
 export function Logo({
   size = "md",
   tone = "light",
-  noDot = false,
+  // V3-D146 (2026-05-25): `noDot` prop kept for back-compat but now ignored —
+  // dot rendering removed entirely per user "drop the dot entirely — just 'Solen'"
+  // (B&W palette pivot). Restore by adding back the {!noDot && ...} render below.
+  noDot: _noDot = true,
   className,
   ...props
 }: LogoProps) {
@@ -105,7 +109,6 @@ export function Logo({
       {...props}
     >
       <span aria-hidden="true">Solen</span>
-      {!noDot && <span aria-hidden="true" className={dotVariants({ size, tone })} />}
     </span>
   );
 }

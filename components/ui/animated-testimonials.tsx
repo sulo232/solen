@@ -166,6 +166,7 @@ function CarouselInner({
                       className="absolute inset-0 origin-bottom overflow-hidden bg-s-bg-sunken"
                       style={{ borderRadius: "28px" }}
                     >
+                      {/* V3-D101 (2026-05-22): stock photo restored per user. */}
                       <Image
                         src={testimonial.src}
                         alt={`Portrait von ${testimonial.name}`}
@@ -246,7 +247,7 @@ function CarouselInner({
                 type="button"
                 onClick={handlePrev}
                 aria-label="Vorheriger Artist"
-                className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken text-s-ink transition-colors duration-200 ease-glide hover:bg-s-brand-subtle hover:text-s-brand active:scale-[0.95] focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2"
+                className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken text-s-ink transition-colors duration-200 ease-glide hover:bg-white hover:text-s-ink active:scale-[0.95] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
               >
                 <ChevronLeft size={18} strokeWidth={2.25} aria-hidden />
               </button>
@@ -254,7 +255,7 @@ function CarouselInner({
                 type="button"
                 onClick={handleNext}
                 aria-label="Nächster Artist"
-                className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken text-s-ink transition-colors duration-200 ease-glide hover:bg-s-brand-subtle hover:text-s-brand active:scale-[0.95] focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2"
+                className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken text-s-ink transition-colors duration-200 ease-glide hover:bg-white hover:text-s-ink active:scale-[0.95] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
               >
                 <ChevronRight size={18} strokeWidth={2.25} aria-hidden />
               </button>
@@ -298,7 +299,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
 
         {/* Scrollable inner — close button stays put while user scrolls this */}
         <div className="flex-1 overflow-y-auto">
-          {/* Hero photo */}
+          {/* Hero photo — V3-D101: stock photo restored. */}
           <div className="relative h-[55vh] max-h-[460px] w-full overflow-hidden">
             <Image
               src={testimonial.src}
@@ -389,6 +390,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
                         key={i}
                         className="relative aspect-[3/4] w-[160px] shrink-0 overflow-hidden rounded-[16px] bg-s-bg-sunken"
                       >
+                        {/* V3-D101: portfolio thumbs restored to stock photos. */}
                         <Image
                           src={p.src}
                           alt={p.caption}
@@ -426,7 +428,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
 
               <Link
                 href={testimonial.slug ? `/salon/${testimonial.slug}/book` : "#"}
-                className="mt-8 inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-s-brand px-6 py-4 font-body text-[15px] font-bold text-white transition-all duration-200 ease-out hover:-translate-y-[1px] hover:bg-s-brand-mid active:scale-[0.97]"
+                className="mt-8 inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-s-ink px-6 py-4 font-body text-[15px] font-bold text-white transition-all duration-200 ease-out hover:-translate-y-[1px] hover:bg-black active:scale-[0.97]"
                 style={{ boxShadow: "0 4px 14px rgba(31,92,66,0.25)" }}
               >
                 Termin bei {firstName} buchen

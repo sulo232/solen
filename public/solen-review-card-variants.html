@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen Review Card — 3 Variants (Council-informed)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" />
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #4B4B4B;
+    --ink-3: #8C8C8C;
+    --bg-base: #FFFFFF;
+    --bg-sunken: #F5F5F4;
+    --bg-surface: #FAFAFA;
+    --border: rgba(10, 10, 10, 0.08);
+    --ease-glide: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #1A1A1A;
+    color: #E5E5E5;
+    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+  }
+  .page-head {
+    padding: 32px 40px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: #111;
+  }
+  .page-head h1 {
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    margin: 0 0 4px;
+    color: #fff;
+  }
+  .page-head p {
+    margin: 0;
+    font-size: 13px;
+    color: #999;
+    max-width: 760px;
+    line-height: 1.5;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    padding: 40px;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  @media (max-width: 1000px) {
+    .grid { grid-template-columns: 1fr; max-width: 360px; }
+  }
+  .variant {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .label {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: #fff;
+    text-align: center;
+  }
+  .label .tag {
+    display: inline-block;
+    margin-left: 8px;
+    font-family: "Hanken Grotesk", sans-serif;
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    color: #999;
+    vertical-align: middle;
+  }
+  .label .tag.must  { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .label .tag.maybe { background: rgba(234,179,8,0.15); color: #facc15; }
+
+  .changes {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-size: 12px;
+    line-height: 1.55;
+    color: #999;
+    max-width: 320px;
+    text-align: left;
+    min-height: 110px;
+  }
+  .changes b { color: #ddd; font-weight: 600; }
+  .changes ul { margin: 4px 0 0; padding-left: 18px; }
+  .changes li { margin-bottom: 3px; }
+  .changes .ann { color: rgba(34,197,94,0.85); font-size: 11px; }
+
+  /* ── Card scaffolding ── */
+  .stage {
+    background: var(--bg-sunken);
+    padding: 28px;
+    border-radius: 18px;
+    width: 320px;
+    display: grid;
+    place-items: center;
+  }
+  .review-card {
+    position: relative;
+    width: 260px;
+    min-height: 220px;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(31,23,9,0.04);
+    transition: transform 0.2s var(--ease-glide), box-shadow 0.2s var(--ease-glide);
+    display: flex;
+    flex-direction: column;
+    font-family: "Hanken Grotesk", sans-serif;
+    cursor: pointer;
+  }
+  .review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(31,23,9,0.08);
+  }
+
+  .top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stars { display: inline-flex; align-items: center; gap: 6px; }
+  .star-cluster { display: inline-flex; align-items: center; gap: 2px; }
+  .star-cluster.tight { gap: 1px; }
+  .star { display: inline-block; width: 13px; height: 13px; }
+  .star.small { width: 12px; height: 12px; }
+  .star svg { display: block; }
+  .rating-text {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .date {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .body {
+    flex: 1;
+    margin-bottom: 12px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 4;
+  }
+  .body.lc3  { -webkit-line-clamp: 3; }
+  .body.tight { line-height: 1.5; }
+
+  .footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+  }
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 999px;
+    background: var(--bg-sunken);
+    color: var(--ink-2);
+    display: grid;
+    place-items: center;
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 800;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+  .avatar.med   { width: 28px; height: 28px; }
+  .footer-text { min-width: 0; flex: 1; }
+  .reviewer-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .salon-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 2px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-2);
+    transition: color 0.15s var(--ease-glide);
+    cursor: pointer;
+  }
+  .salon-link:hover { color: var(--ink); }
+  .salon-link.discoverable:hover { text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+</style>
+</head>
+<body>
+
+<header class="page-head">
+  <h1>Solen Review Card — Council-informed variants</h1>
+  <p>Three states from the same card. <b style="color:#ddd;">A</b> is the current live state. <b style="color:#4ade80;">B</b> applies the 4 unanimous council picks (consistency fixes only). <b style="color:#facc15;">C</b> is my recommended pick: B + the split items decided per Opus's recommendations + the one-off polish (German curly quotes, tightened min-h, micro-spacing).</p>
+</header>
+
+<div class="grid">
+
+  <!-- ─────────── A: BASELINE ─────────── -->
+  <div class="variant">
+    <div class="label">A — Current <span class="tag">baseline</span></div>
+    <div class="stage">
+      <div class="review-card">
+        <div class="top-row">
+          <div class="stars">
+            <div class="star-cluster">
+              <!-- 5 stars at 13px -->
+              <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              <span class="star"><svg width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+            </div>
+            <span class="rating-text">(5/5)</span>
+          </div>
+          <span class="date">vor 2 Wochen</span>
+        </div>
+        <p class="body">&ldquo;Termin in 30 Sekunden, keine Anrufe, keine Vorab-Zahlung. Salon Maria war wie immer top, aber die Buchung über Solen war diesmal einfach besser.&rdquo;</p>
+        <div class="footer">
+          <div class="avatar">LK</div>
+          <div class="footer-text">
+            <div class="reviewer-name">Lara K.</div>
+            <a class="salon-link">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18l-2 5H5l-2-5zm0 0V5h18v2M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"/></svg>
+              <span>Salon Maria</span>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="changes">
+      Current live state. 13px stars, "(5/5)" parenthetical, line-clamp-4, leading-1.55, 32px avatar, no hover affordance on salon link, English curlies. Baseline reference.
+    </div>
+  </div>
+
+  <!-- ─────────── B: UNANIMOUS ─────────── -->
+  <div class="variant">
+    <div class="label">B — Unanimous picks <span class="tag must">4 changes</span></div>
+    <div class="stage">
+      <div class="review-card">
+        <div class="top-row">
+          <div class="stars">
+            <div class="star-cluster">
+              <span class="star small"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              <span class="star small"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              <span class="star small"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              <span class="star small"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              <span class="star small"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+            </div>
+          </div>
+          <span class="date">vor 2 Wochen</span>
+        </div>
+        <p class="body lc3 tight">&ldquo;Termin in 30 Sekunden, keine Anrufe, keine Vorab-Zahlung. Salon Maria war wie immer top, aber die Buchung über Solen war diesmal einfach besser.&rdquo;</p>
+        <div class="footer">
+          <div class="avatar">LK</div>
+          <div class="footer-text">
+            <div class="reviewer-name">Lara K.</div>
+            <a class="salon-link">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18l-2 5H5l-2-5zm0 0V5h18v2M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"/></svg>
+              <span>Salon Maria</span>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="changes">
+      <b>4 unanimous council picks:</b>
+      <ul>
+        <li><b>1.</b> Stars 13px → 12px (match SalonCard exactly)</li>
+        <li><b>2.</b> Drop "(5/5)" (5 gold stars already say it)</li>
+        <li><b>3.</b> line-clamp-4 → line-clamp-3</li>
+        <li><b>4.</b> leading-[1.55] → leading-[1.5]</li>
+      </ul>
+      <span class="ann">→ Pure consistency wins. Zero opinionated calls.</span>
+    </div>
+  </div>
+
+  <!-- ─────────── C: ALL ─────────── -->
+  <div class="variant">
+    <div class="label">C — Full council pick <span class="tag maybe">9 changes</span></div>
+    <div class="stage">
+      <div class="review-card" style="min-height: 190px;">
+        <div class="top-row" style="gap: 4px;">
+          <div class="stars" style="gap: 4px;">
+            <div class="star-cluster tight">
+              <span class="star small"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              <span class="star small"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              <span class="star small"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              <span class="star small"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              <span class="star small"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+            </div>
+          </div>
+          <span class="date" style="margin-top: -1px;">vor 2 Wochen</span>
+        </div>
+        <p class="body lc3 tight">„Termin in 30 Sekunden, keine Anrufe, keine Vorab-Zahlung. Salon Maria war wie immer top, aber die Buchung über Solen war diesmal einfach besser."</p>
+        <div class="footer">
+          <div class="avatar med">LK</div>
+          <div class="footer-text">
+            <div class="reviewer-name">Lara K.</div>
+            <a class="salon-link discoverable">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18l-2 5H5l-2-5zm0 0V5h18v2M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"/></svg>
+              <span>Salon Maria</span>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="changes">
+      <b>B + 5 more:</b>
+      <ul>
+        <li><b>5.</b> Avatar 32→28px (less competition w/ save-heart)</li>
+        <li><b>6.</b> Hover-underline on salon link (hover the link!)</li>
+        <li><b>7.</b> "…" → „…" (proper German curlies)</li>
+        <li><b>8.</b> min-h 220→190px (lock the compactness gain)</li>
+        <li><b>9.</b> gap-1 stars + -mt-px date (micro-polish)</li>
+      </ul>
+      <span class="ann">→ My recommended pick. Hover the salon link.</span>
+    </div>
+  </div>
+
+</div>
+
+<footer style="padding: 24px 40px 40px; max-width: 1180px; margin: 0 auto; color: #666; font-size: 12px; font-family: 'Hanken Grotesk', sans-serif; line-height: 1.6;">
+  <p style="margin: 0 0 8px;"><strong style="color:#999;">Picking guide:</strong></p>
+  <ul style="margin: 0; padding-left: 18px;">
+    <li><strong style="color:#4ade80;">B</strong> — safest, 4 unanimous changes, ships in ~5 lines of code.</li>
+    <li><strong style="color:#facc15;">C</strong> — my recommended. Includes the split decisions per Opus + free polish (curly quotes, micro-spacing, min-h).</li>
+    <li>Custom — tell me which subset of 1–9.</li>
+  </ul>
+  <p style="margin: 16px 0 0; color: #777;"><strong>Deferred</strong> (waiting on schema): verified-booking checkmark, salon review-count integer. Both require new DB columns — flagged separately so we don't fake-seed them in the UI.</p>
+</footer>
+
+</body>
+</html>

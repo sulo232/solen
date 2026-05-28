@@ -92,10 +92,10 @@ export default async function SalonReviewsPage({
 
   return (
     <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
-      {/* Back link */}
+      {/* Back link — V3-D251 (W3, 2026-05-27): retired s-coral → s-accent (LOCKFILE §1) */}
       <Link
         href={`/${locale}/salon/${slug}`}
-        className="inline-flex items-center gap-1.5 font-body text-[13px] text-s-ink/60 hover:text-s-coral transition-colors duration-150 mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 rounded-md"
+        className="inline-flex items-center gap-1.5 font-body text-[13px] text-s-ink-2 hover:text-s-accent transition-colors duration-150 mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 rounded-md"
       >
         <ChevronLeft size={16} aria-hidden />
         {salon.name}

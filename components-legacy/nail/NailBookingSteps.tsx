@@ -137,9 +137,9 @@ export default function NailBookingSteps({
         <button
           type="button"
           onClick={handleRepeatLast}
-          className="flex items-center gap-2 w-full p-3 rounded-[16px] border border-s-ink/10 bg-[--raised] text-left hover:border-s-coral/20 transition-colors duration-150"
+          className="flex items-center gap-2 w-full p-3 rounded-[16px] border border-s-ink/10 bg-[--raised] text-left hover:border-s-accent/20 transition-colors duration-150"
         >
-          <RefreshCw size={16} className="text-s-coral shrink-0" />
+          <RefreshCw size={16} className="text-s-accent shrink-0" />
           <div>
             <p className="text-sm font-medium text-s-ink">{t("nail_repeat_last")}</p>
             <p className="text-xs text-s-ink/50">

@@ -76,6 +76,19 @@ const instantTransition: Transition = { duration: 0 };
 // margin (overflow-hidden clips at exact 260, leaving the button
 // pressed against the card bottom — that's the overlap user kept
 // flagging).
+// V3-D125 (2026-05-24): HEIGHT bumped 280 → 308 after h-12 → h-14 input
+// shape change (Fresha rounded-square inputs).
+// V3-D131 (2026-05-24): button shrunk h-14 → h-12 per user "too big",
+// container shrunk 284 → 264 = Fresha-exact card height (measured).
+// New math: pt-4 (16) + 3×h-12 (144) + 3×gap-3 (36, flex applies gap
+// between input3 and button too) + mt-4 (16) + h-12 button (48) +
+// pb-4 (16) = 276 content needed.
+// V3-D144 (2026-05-25): mobile collapsed 264 → 280 per user "ths button is
+// too low or idfk but its not correct". Measured: at 264 the CTA bottom
+// sat only 3px above the card's rounded-3xl corner — visually jammed
+// against the bottom. At 280, CTA gets ~19px breathing room below,
+// symmetric with the 16px pt-4 above. Sacrifices Fresha-exact card height
+// for breathing room — visual hierarchy wins over reference-matching.
 const HEIGHT = {
   mobile:  { collapsed: 280, expanded: 600 },
   desktop: { collapsed: 60,  expanded: 600 },
@@ -232,7 +245,16 @@ export function SearchBar() {
           "shadow-[0_20px_40px_rgba(0,0,0,0.04)]",
           "max-md:mx-auto",
           isExpanded && "z-[70] md:max-w-[640px]",
-          !isExpanded && "md:max-w-none",
+          // V3-D228 (2026-05-27, desktop placement fix): cap collapsed-state
+          // width at 820px and FORCE collapsed height + radius via Tailwind
+          // !important. Framer's animate prop computes from React state
+          // (isDesktop), but on initial render state=false and motion's
+          // initial={false} captures the mobile values (h=280, br=11) into
+          // inline style — even after isDesktop flips, the inline style
+          // sticks. `md:!h-[60px] md:!rounded-full` beats inline style and
+          // gives the proper desktop horizontal pill. Mobile max-w-[540px]
+          // above unchanged.
+          !isExpanded && "md:max-w-[820px] md:mx-auto md:!h-[60px] md:!rounded-full",
         )}
       >
         {/* COLLAPSED LAYER — 3 segments + submit button.
@@ -249,6 +271,9 @@ export function SearchBar() {
             // V3-D90-fu (2026-05-21): pixel-spec-auto measurements applied —
             // padding 16 CSS all sides (p-4), gap-3 (12 CSS) between rows.
             // Desktop unchanged.
+            // V3-D130 (2026-05-24): REVERTED p-3 → p-4 (12 → 16 CSS). The
+            // p-3 was over-shrink; Fresha's actual internal padding is 16 CSS.
+            // Inputs were too tight against card edge.
             "absolute inset-0 flex flex-col p-4 gap-3 md:gap-0 md:p-[5px_5px_5px_7px] md:flex-row md:items-stretch",
             isExpanded && "pointer-events-none",
           )}
@@ -278,11 +303,38 @@ export function SearchBar() {
           <button
             type="button"
             onClick={handleSubmit}
-            // V3-D90 (2026-05-21): Fresha-exact submit — h-12 (48 CSS ≈ row height),
-            // mt-4 (16 CSS gap above per measurement), rounded-full pill, #0D0D0D bg.
-            className="font-body shrink-0 mt-4 rounded-full border-0 bg-[#0D0D0D] h-12 px-6 text-base font-bold text-white transition-[colors,transform] duration-200 ease-glide hover:bg-[#2A2A2A] active:scale-[0.97] active:duration-[80ms] md:mt-0 md:h-auto md:py-[10px] md:px-6 tracking-[-0.01em]"
+            // V3-D111 (2026-05-23): swapped bg-black → bg-s-ink so the
+            // hero CTA matches the top banner exactly (both #054F31 Fruitful
+            // green-900). User flagged that the CTA read darker than the banner
+            // strip → root cause was V3-D110 using `s-brand-deep` which after the
+            // V3-D107 Fruitful swap maps to green-1200 #173E26 (darkest forest)
+            // instead of the brand's primary green-900. Hover now bumps to
+            // bg-black (green-800 #0B7443), one step deeper in family —
+            // replacing a stale hardcoded navy hex left over from when
+            // `s-brand-deep` was the old #142F4A navy (pre-V3-D107).
+            // V3-D131 (2026-05-24): button h-14 → h-12 (56 → 48 CSS — match
+            // input height, per user "button too big makes card height too
+            // big"). mt-5 → mt-4 (20 → 16 CSS — tighter button gap). Keep
+            // text-[15px] for input-button consistency.
+            // V3-D146 (2026-05-25): bg-s-ink (green) → bg-s-ink (black/ink)
+            // per Phase 1 of B&W palette pivot. Hover deeper-than-default ink.
+            // Phase 2 sweep will catch all other s-brand CTAs across the app.
+            // V3-D192-fix (2026-05-26): primary CTA REVERTED to bg-s-ink per user
+            // "no accent color not primary bro." Royal blue is the ACCENT (small
+            // highlight moments — eyebrows, bullets, badges), NOT the primary
+            // action surface. Primary CTAs stay ink for chrome neutrality.
+            // V3-D228 (2026-05-27, desktop placement fix): md:h-auto was
+            // making the CTA inherit parent height, growing into a tall
+            // ellipse on wide search bars. Fixed at md:h-12 (matches mobile
+            // 48px). Removes the "giant oval" symptom.
+            className="font-body shrink-0 mt-4 rounded-full border-0 bg-s-ink h-12 px-6 text-[15px] font-bold text-white transition-[colors,transform] duration-200 ease-glide hover:bg-black active:scale-[0.97] active:duration-[80ms] md:mt-0 md:h-12 md:py-0 md:px-6 tracking-[-0.01em]"
           >
-            Solen durchsuchen
+            {/* V3-D178 (2026-05-26, council item #5): "Solen durchsuchen" →
+                "Termine finden". Rhetorical echo with the H1 ("Termin in
+                30 Sekunden") + "finden" implies the result is waiting
+                vs. "suchen" implying effort. Drops the redundant brand
+                mention (user is already ON Solen). */}
+            Termine finden
           </button>
         </motion.div>
 
@@ -348,7 +400,7 @@ export function SearchBar() {
                     placeholder="Was suchst du?"
                     value={service}
                     onChange={(e) => setService(e.target.value)}
-                    className="w-full border-b border-black/5 bg-transparent pb-3 font-display text-[24px] font-black text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:border-s-brand"
+                    className="w-full border-b border-black/5 bg-transparent pb-3 font-display text-[24px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:border-s-ink"
                   />
                   <div className="mt-5 flex flex-wrap gap-2">
                     {SERVICES.map((s) => {
@@ -365,14 +417,14 @@ export function SearchBar() {
                           className={cn(
                             "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 font-body text-[14px] font-medium transition-colors",
                             isPicked
-                              ? "border-s-brand bg-s-brand text-white"
-                              : "border-s-ink/10 bg-white text-s-ink-2 hover:border-s-brand hover:text-s-brand",
+                              ? "border-s-ink bg-s-ink text-white"
+                              : "border-s-ink/10 bg-white text-s-ink-2 hover:border-s-ink hover:text-s-ink",
                           )}
                         >
                           <Icon
                             size={14}
                             strokeWidth={2.25}
-                            className={cn("shrink-0", !isPicked && "text-s-brand")}
+                            className={cn("shrink-0", !isPicked && "text-s-ink")}
                           />
                           {s.label}
                         </button>
@@ -396,7 +448,7 @@ export function SearchBar() {
                     placeholder="Wo?"
                     value={stadt}
                     onChange={(e) => setStadt(e.target.value)}
-                    className="w-full border-b border-black/5 bg-transparent pb-3 font-display text-[24px] font-black text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:border-s-brand"
+                    className="w-full border-b border-black/5 bg-transparent pb-3 font-display text-[24px] font-bold text-s-ink placeholder:text-s-ink-3 focus:outline-none focus:border-s-ink"
                   />
 
                   {/* V2-D49: primary "current location" row at the top of the
@@ -409,9 +461,9 @@ export function SearchBar() {
                       setStadt("Aktueller Standort");
                       setActive("zeit");
                     }}
-                    className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-s-brand/15 bg-s-brand-subtle px-4 py-3 transition-colors hover:bg-s-brand/[0.10]"
+                    className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-s-ink/15 bg-white px-4 py-3 transition-colors hover:bg-s-ink/[0.10]"
                   >
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-brand text-white">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-ink text-white">
                       <Navigation size={16} strokeWidth={2.5} />
                     </span>
                     <span className="font-body font-semibold text-s-ink">
@@ -428,7 +480,7 @@ export function SearchBar() {
                           setStadt(c);
                           setActive("zeit");
                         }}
-                        className="rounded-full border border-s-ink/10 bg-white px-4 py-2 font-body text-[14px] font-medium text-s-ink-2 transition-colors hover:border-s-brand hover:text-s-brand"
+                        className="rounded-full border border-s-ink/10 bg-white px-4 py-2 font-body text-[14px] font-medium text-s-ink-2 transition-colors hover:border-s-ink hover:text-s-ink"
                       >
                         {c}
                       </button>
@@ -445,7 +497,7 @@ export function SearchBar() {
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <div className="font-display text-[24px] font-black text-s-ink mb-5">
+                  <div className="font-display text-[24px] font-bold text-s-ink mb-5">
                     Wann?
                   </div>
 
@@ -480,14 +532,14 @@ export function SearchBar() {
                             className={cn(
                               "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 font-body text-[14px] font-medium transition-colors",
                               isPicked
-                                ? "border-s-brand bg-s-brand text-white"
-                                : "border-s-ink/10 bg-white text-s-ink-2 hover:border-s-brand hover:text-s-brand",
+                                ? "border-s-ink bg-s-ink text-white"
+                                : "border-s-ink/10 bg-white text-s-ink-2 hover:border-s-ink hover:text-s-ink",
                             )}
                           >
                             <Icon
                               size={14}
                               strokeWidth={2.25}
-                              className={cn("shrink-0", !isPicked && "text-s-brand")}
+                              className={cn("shrink-0", !isPicked && "text-s-ink")}
                             />
                             {p.label}
                           </button>
@@ -517,7 +569,9 @@ export function SearchBar() {
             <button
               type="button"
               onClick={handleSubmit}
-              className="font-body shrink-0 rounded-full border-0 bg-s-brand px-6 py-3 font-semibold text-white transition-colors hover:bg-s-brand-mid"
+              // V3-D192-fix: expanded picker CTA also reverted to ink (same logic
+              // as primary CTA — accent ≠ primary action surface).
+              className="font-body shrink-0 rounded-full border-0 bg-s-ink px-6 py-3 font-semibold text-white transition-colors hover:bg-black"
             >
               Suchen
             </button>
@@ -554,10 +608,14 @@ function CollapsedRow({
       onClick={onClick}
       className={cn(
         "group relative flex shrink-0 cursor-pointer items-center text-left",
-        // V3-D90 (2026-05-21): Fresha pixel-exact — h-12 (48 CSS ≈ Fresha 46.6),
-        // 1px hairline border #D3D3D3 (exact RGB sampled), px-4 horizontal,
-        // fully-rounded pill. Vertical centering via h-12 + items-center.
-        "rounded-full border border-[#D3D3D3] h-12 px-4",
+        // V3-D90 (2026-05-21): Fresha pixel-exact — 1px hairline border
+        // #D3D3D3 (exact RGB sampled).
+        // V3-D125 (2026-05-24): pill → rounded-square per user reference.
+        // V3-D129 (2026-05-24): h-14 (56) → h-12 (48) — measured Fresha
+        // input height is 47 CSS px, not 56. My h-14 bump over-shot Fresha
+        // by 9px. Reverted to h-12 (~Fresha-exact 48px). px-5 + rounded-2xl
+        // stay (those measurements were correct).
+        "rounded-2xl border border-[#D3D3D3] h-12 px-5",
         "transition-[background,border-color] duration-150 ease-glide",
         "hover:border-s-ink/[0.20]",
         "md:flex-1 md:rounded-full md:border-0 md:p-[11px_22px] md:hover:bg-s-bg-sunken",
@@ -600,7 +658,7 @@ function SegmentTab({
       onClick={onClick}
       className={cn(
         "rounded-full px-3 py-1.5 font-body text-[13px] font-semibold transition-colors",
-        active && "bg-s-brand text-white",
+        active && "bg-s-ink text-white",
         !active && isPlaceholder && "text-s-ink-3 hover:text-s-ink",
         !active && !isPlaceholder && "text-s-ink hover:bg-s-bg-sunken",
       )}

@@ -70,7 +70,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
         {designs.map((d) => (
           <div key={d.id} className="relative pl-12">
             {/* Dot */}
-            <div className="absolute left-3.5 top-2 w-3 h-3 rounded-full bg-s-coral border-2 border-[--raised]" />
+            <div className="absolute left-3.5 top-2 w-3 h-3 rounded-full bg-s-ink border-2 border-[--raised]" />
 
             {/* Card */}
             <div className="rounded-[16px] border border-s-ink/5 bg-[--raised] p-3">
@@ -92,7 +92,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
                   {/* Badges */}
                   <div className="flex flex-wrap gap-1 mb-2">
                     {[d.style_category, d.shape, d.material].filter(Boolean).map((b) => (
-                      <span key={b} className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral">
+                      <span key={b} className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/10 text-s-accent">
                         {BADGE_LABELS[b as string] || b}
                       </span>
                     ))}
@@ -121,7 +121,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
 
               {/* Actions */}
               <div className="flex gap-2 mt-2 pt-2 border-t border-s-ink/5">
-                <button className="flex items-center gap-1 text-xs text-s-coral hover:underline" aria-label={t("timeline_repeat")}>
+                <button className="flex items-center gap-1 text-xs text-s-accent hover:underline" aria-label={t("timeline_repeat")}>
                   <RefreshCw size={10} />
                   {t("timeline_repeat")}
                 </button>

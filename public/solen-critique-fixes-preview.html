@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Critique → Fix preview</title>
+<link rel="preconnect" href="https://rsms.me/" />
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+<style>
+  :root {
+    /* Solen palette (locked) */
+    --ink: #1A1C19;
+    --ink-2: #5F635D;
+    --ink-3: #8A8F88;
+    --green-50:   #F2F9EB;
+    --green-100:  #D1FADF;
+    --green-200:  #B5EBC8;
+    --green-800:  #0B7443;
+    --green-900:  #054F31;
+    --green-1200: #173E26;
+    --wasabi-300: #D5ECBD;
+    --wasabi-900: #334222;
+    --droplet-200:#DFF0FF;
+    --droplet-900:#0D4B85;
+    --love:       #CC4A60;
+    --success:    #16A34A;
+    /* Retired (shown for BEFORE rendering only — DO NOT USE in production) */
+    --r-orange:   #E58840;
+    --r-cream:    #FFE8D8;
+    --r-navy:     #142F4A;
+    --r-yellow:   #F0C25A;
+    --r-blue:     #1638C4;
+    --r-blue-pale:#B8C4F0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #FFFFFF; color: var(--ink); font-family: "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  /* Layout shell */
+  .page { max-width: 1280px; margin: 0 auto; padding: 32px 24px 96px; }
+  .head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 24px;
+    border-bottom: 1px solid #ECEFF4; padding-bottom: 20px; margin-bottom: 28px;
+  }
+  .head h1 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.025em; }
+  .head .sub { font-size: 13px; color: var(--ink-2); }
+
+  /* Each fix block */
+  .fix {
+    margin: 0 0 56px;
+    border: 1px solid #ECEFF4;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .fix-head {
+    background: #F9FAFB;
+    padding: 14px 20px;
+    display: flex; align-items: baseline; gap: 12px;
+    border-bottom: 1px solid #ECEFF4;
+  }
+  .fix-head .num {
+    width: 28px; height: 28px;
+    background: var(--green-900); color: #fff; border-radius: 50%;
+    display: inline-grid; place-items: center;
+    font-size: 13px; font-weight: 700;
+  }
+  .fix-head .title { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+  .fix-head .file { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: var(--ink-2); }
+  .fix-body { display: grid; grid-template-columns: 1fr 1fr; min-height: 220px; }
+  @media (max-width: 720px) { .fix-body { grid-template-columns: 1fr; } }
+  .side {
+    padding: 28px 24px;
+    display: flex; flex-direction: column; gap: 16px;
+    border-right: 1px solid #ECEFF4;
+    min-height: 220px;
+  }
+  @media (max-width: 720px) { .side { border-right: 0; border-bottom: 1px solid #ECEFF4; } }
+  .side:last-child { border-right: 0; border-bottom: 0; }
+  .side-label {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .side-label.before { color: #B91C1C; }
+  .side-label.after  { color: var(--green-900); }
+  .side-render {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px dashed #ECEFF4;
+    padding: 24px 20px;
+  }
+  .side-notes {
+    font-size: 12px; color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .side-notes code { background: #F5F5F7; padding: 1px 5px; border-radius: 4px; font-size: 11px; }
+  .swatch-row { display: inline-flex; gap: 4px; align-items: center; }
+  .swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid rgba(0,0,0,0.06); vertical-align: middle; }
+  .hex { font-family: ui-monospace, monospace; font-size: 11px; color: var(--ink-2); }
+
+  /* ── Component samples ── */
+
+  /* Hero headline */
+  .hero-mini h1 {
+    font-size: 38px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.0; margin: 0;
+  }
+
+  /* Coiffeur card */
+  .salon-card {
+    width: 240px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #FFFFFF;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .salon-card .img-placeholder {
+    aspect-ratio: 4/3;
+    display: grid; place-items: center;
+    color: rgba(0,0,0,0.20);
+    font-weight: 700; font-size: 36px;
+  }
+  .salon-card .body { padding: 14px 16px; }
+  .salon-card .name { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .salon-card .meta { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+
+  /* Entdecken tile (mini) */
+  .entdecken-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; max-width: 360px;
+  }
+  .entdecken-tile {
+    aspect-ratio: 9/16;
+    border-radius: 12px;
+    position: relative; overflow: hidden;
+  }
+  .entdecken-tile::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 50% 60%, rgba(255,255,255,0.4) 0, rgba(255,255,255,0) 8%);
+  }
+
+  /* BentoBusiness bar chart */
+  .chart-card {
+    width: 320px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .chart-card .lbl {
+    font-family: ui-monospace, monospace; font-size: 10px;
+    color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .chart-card .val { font-size: 24px; font-weight: 800; color: var(--ink); }
+  .chart-card .bars {
+    display: flex; align-items: flex-end; gap: 4px; height: 100px; margin-top: 14px;
+  }
+  .chart-card .bar { flex: 1; border-radius: 6px 6px 2px 2px; }
+
+  /* CTA pill family */
+  .pill-row {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  }
+  .pill {
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 700;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+  }
+  .pill-primary    { background: var(--green-900); color: #fff;       border-color: var(--green-900); }
+  .pill-secondary  { background: #fff;             color: var(--ink); border-color: rgba(0,0,0,0.10); }
+  .pill-r-darkink  { background: var(--ink);       color: #fff; }
+  .pill-r-whiteink { background: #fff;             color: var(--ink); border-color: rgba(0,0,0,0.08); }
+  .pill-r-outline  { background: transparent;      color: var(--ink); border-color: var(--ink); }
+  .pill-tag {
+    font-family: ui-monospace, monospace; font-size: 9px;
+    color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* For/dich vs CategoryPromos comparison */
+  .vs-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+  @media (max-width: 720px) { .vs-row { grid-template-columns: 1fr; } }
+  .fdich-tile {
+    aspect-ratio: 1.15/1;
+    background: #F3F3F3;
+    border-radius: 18px;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    padding: 12px;
+  }
+  .fdich-icon { font-size: 28px; }
+  .fdich-label { font-size: 12px; font-weight: 700; color: var(--ink); }
+  .promo-tile {
+    aspect-ratio: 2/1;
+    border-radius: 18px;
+    overflow: hidden; position: relative;
+    background: linear-gradient(135deg, var(--ink), #2A1F18);
+  }
+  .promo-tile .overlay {
+    position: absolute; inset: auto 0 0 0;
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 6px;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.75) 100%);
+    color: #fff;
+  }
+  .promo-tile h4 { font-size: 16px; font-weight: 700; margin: 0; }
+  .promo-tile .small-pill {
+    align-self: flex-start;
+    background: #fff; color: var(--ink);
+    padding: 6px 12px; border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+  }
+  .vs-kill {
+    margin-top: 8px;
+    text-align: center;
+    font-family: ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .vs-kill.bad { color: #B91C1C; }
+  .vs-kill.good { color: var(--green-900); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="head">
+    <h1>Solen · Critique → Fix preview</h1>
+    <div class="sub">5 Tier-1 fixes &middot; before / after &middot; measured hex shown</div>
+  </div>
+
+  <!-- ============================ -->
+  <!-- FIX 1 — Hero word-highlight  -->
+  <!-- ============================ -->
+  <div class="fix">
+    <div class="fix-head">
+      <span class="num">1</span>
+      <span class="title">Hero headline word-highlight</span>
+      <span class="file">HeroHeadline.tsx · SLOGANS array · `text-s-brand` spans</span>
+    </div>
+    <div class="fix-body">
+      <div class="side">
+        <span class="side-label before">BEFORE — violates Rule 1</span>
+        <div class="side-render">
+          <div class="hero-mini">
+            <h1>Cmon, <span style="color: var(--green-900);">book</span> it<br/>already.</h1>
+          </div>
+        </div>
+        <div class="side-notes">
+          Green word-highlight = CTA budget squandered. Rule 1: "Green is reserved for click-me affordances. <strong>Not on headline word-highlights.</strong>"
+        </div>
+      </div>
+      <div class="side">
+        <span class="side-label after">AFTER — green stays reserved</span>
+        <div class="side-render">
+          <div class="hero-mini">
+            <h1>Cmon, book it<br/>already.</h1>
+          </div>
+        </div>
+        <div class="side-notes">
+          All ink <span class="swatch" style="background:var(--ink);"></span> <span class="hex">#1A1C19</span>. The green CTA below now owns the entire green allocation on the screen.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ -->
+  <!-- FIX 2 — Coiffeur peach cards -->
+  <!-- ============================ -->
+  <div class="fix">
+    <div class="fix-head">
+      <span class="num">2</span>
+      <span class="title">Coiffeur card placeholders use retired peach/cream</span>
+      <span class="file">FeaturedStylists.tsx:39-44 · CATEGORY_TOKENS.photoColor</span>
+    </div>
+    <div class="fix-body">
+      <div class="side">
+        <span class="side-label before">BEFORE — warm cream leak</span>
+        <div class="side-render">
+          <div class="salon-card">
+            <div class="img-placeholder" style="background: var(--r-cream);">A</div>
+            <div class="body">
+              <div class="name">Atelier Coiffure</div>
+              <div class="meta">Spalenberg 5 · Basel</div>
+            </div>
+          </div>
+        </div>
+        <div class="side-notes">
+          Peach placeholder <span class="swatch" style="background:var(--r-cream);"></span> <span class="hex">#FFE8D8</span>. Rule: cool-only system, no cream / peach.
+        </div>
+      </div>
+      <div class="side">
+        <span class="side-label after">AFTER — neutral grey</span>
+        <div class="side-render">
+          <div class="salon-card">
+            <div class="img-placeholder" style="background: #F3F3F3; color: rgba(0,0,0,0.25);">A</div>
+            <div class="body">
+              <div class="name">Atelier Coiffure</div>
+              <div class="meta">Spalenberg 5 · Basel</div>
+            </div>
+          </div>
+        </div>
+        <div class="side-notes">
+          Neutral grey <span class="swatch" style="background:#F3F3F3;"></span> <span class="hex">#F3F3F3</span> (matches Für dich icon tiles + Uber spec). No warm bleed.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ -->
+  <!-- FIX 3 — Entdecken gradients  -->
+  <!-- ============================ -->
+  <div class="fix">
+    <div class="fix-head">
+      <span class="num">3</span>
+      <span class="title">Entdecken tiles still on retired Orange palette</span>
+      <span class="file">Entdecken.tsx:46-54 · DEMO[].bgGradient</span>
+    </div>
+    <div class="fix-body">
+      <div class="side">
+        <span class="side-label before">BEFORE — 5-stripe Orange</span>
+        <div class="side-render">
+          <div class="entdecken-row">
+            <div class="entdecken-tile" style="background: linear-gradient(135deg, var(--r-cream) 0%, var(--r-orange) 100%);"></div>
+            <div class="entdecken-tile" style="background: linear-gradient(160deg, var(--r-yellow) 0%, var(--r-navy) 100%);"></div>
+            <div class="entdecken-tile" style="background: linear-gradient(135deg, var(--r-orange) 0%, #BC6F34 100%);"></div>
+            <div class="entdecken-tile" style="background: linear-gradient(150deg, var(--r-cream) 0%, var(--r-navy) 100%);"></div>
+          </div>
+        </div>
+        <div class="side-notes">
+          Orange <span class="swatch" style="background:var(--r-orange);"></span>, cream <span class="swatch" style="background:var(--r-cream);"></span>, navy <span class="swatch" style="background:var(--r-navy);"></span>, yellow <span class="swatch" style="background:var(--r-yellow);"></span> &mdash; the whole retired vocabulary, still here.
+        </div>
+      </div>
+      <div class="side">
+        <span class="side-label after">AFTER — Fruitful palette</span>
+        <div class="side-render">
+          <div class="entdecken-row">
+            <div class="entdecken-tile" style="background: linear-gradient(135deg, var(--green-100) 0%, var(--green-900) 100%);"></div>
+            <div class="entdecken-tile" style="background: linear-gradient(160deg, var(--wasabi-300) 0%, var(--wasabi-900) 100%);"></div>
+            <div class="entdecken-tile" style="background: linear-gradient(135deg, var(--droplet-200) 0%, var(--droplet-900) 100%);"></div>
+            <div class="entdecken-tile" style="background: linear-gradient(150deg, var(--green-200) 0%, var(--ink) 100%);"></div>
+          </div>
+        </div>
+        <div class="side-notes">
+          Green-100 <span class="swatch" style="background:var(--green-100);"></span> &rarr; green-900 <span class="swatch" style="background:var(--green-900);"></span>, wasabi <span class="swatch" style="background:var(--wasabi-300);"></span>&rarr;<span class="swatch" style="background:var(--wasabi-900);"></span>, droplet <span class="swatch" style="background:var(--droplet-200);"></span>&rarr;<span class="swatch" style="background:var(--droplet-900);"></span>. All in-vocabulary.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ -->
+  <!-- FIX 4 — Bento bar chart      -->
+  <!-- ============================ -->
+  <div class="fix">
+    <div class="fix-head">
+      <span class="num">4</span>
+      <span class="title">BentoBusiness Analytics bar chart uses foreign blue</span>
+      <span class="file">BentoBusiness.tsx · bar gradient</span>
+    </div>
+    <div class="fix-body">
+      <div class="side" style="background:#173E26;">
+        <span class="side-label before" style="color: #FEC9C5;">BEFORE — vibrant cobalt</span>
+        <div class="side-render" style="background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1);">
+          <div class="chart-card">
+            <div class="lbl">Buchungen</div>
+            <div class="val">47 &nbsp; CHF 4'280</div>
+            <div class="bars">
+              <div class="bar" style="height: 30%; background: linear-gradient(180deg, var(--r-blue) 0%, var(--r-blue-pale) 100%);"></div>
+              <div class="bar" style="height: 55%; background: linear-gradient(180deg, var(--r-blue) 0%, var(--r-blue-pale) 100%);"></div>
+              <div class="bar" style="height: 78%; background: linear-gradient(180deg, var(--r-blue) 0%, var(--r-blue-pale) 100%);"></div>
+              <div class="bar" style="height: 92%; background: linear-gradient(180deg, var(--r-blue) 0%, var(--r-blue-pale) 100%);"></div>
+              <div class="bar" style="height: 88%; background: linear-gradient(180deg, var(--r-blue) 0%, var(--r-blue-pale) 100%);"></div>
+              <div class="bar" style="height: 70%; background: linear-gradient(180deg, var(--r-blue) 0%, var(--r-blue-pale) 100%);"></div>
+              <div class="bar" style="height: 60%; background: linear-gradient(180deg, var(--r-blue) 0%, var(--r-blue-pale) 100%);"></div>
+            </div>
+          </div>
+        </div>
+        <div class="side-notes" style="color: #FEC9C5;">
+          Cobalt <span class="swatch" style="background:var(--r-blue);"></span> #1638C4 &rarr; pale <span class="swatch" style="background:var(--r-blue-pale);"></span> #B8C4F0. Blue is NOT in the Fruitful palette &mdash; foreign color sits inside the dark anchor section.
+        </div>
+      </div>
+      <div class="side" style="background:#173E26;">
+        <span class="side-label after" style="color: var(--green-200);">AFTER — green family</span>
+        <div class="side-render" style="background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1);">
+          <div class="chart-card">
+            <div class="lbl">Buchungen</div>
+            <div class="val">47 &nbsp; CHF 4'280</div>
+            <div class="bars">
+              <div class="bar" style="height: 30%; background: linear-gradient(180deg, var(--green-900) 0%, var(--green-200) 100%);"></div>
+              <div class="bar" style="height: 55%; background: linear-gradient(180deg, var(--green-900) 0%, var(--green-200) 100%);"></div>
+              <div class="bar" style="height: 78%; background: linear-gradient(180deg, var(--green-900) 0%, var(--green-200) 100%);"></div>
+              <div class="bar" style="height: 92%; background: linear-gradient(180deg, var(--green-900) 0%, var(--green-200) 100%);"></div>
+              <div class="bar" style="height: 88%; background: linear-gradient(180deg, var(--green-900) 0%, var(--green-200) 100%);"></div>
+              <div class="bar" style="height: 70%; background: linear-gradient(180deg, var(--green-900) 0%, var(--green-200) 100%);"></div>
+              <div class="bar" style="height: 60%; background: linear-gradient(180deg, var(--green-900) 0%, var(--green-200) 100%);"></div>
+            </div>
+          </div>
+        </div>
+        <div class="side-notes" style="color: var(--green-200);">
+          Green-900 <span class="swatch" style="background:var(--green-900);"></span> &rarr; green-200 <span class="swatch" style="background:var(--green-200);"></span>. Same depth contrast as before, but stays in vocabulary. Reads as brand-native.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ -->
+  <!-- FIX 5 — CTA family lockdown  -->
+  <!-- ============================ -->
+  <div class="fix">
+    <div class="fix-head">
+      <span class="num">5</span>
+      <span class="title">CTA pill style consolidation — 4 styles &rarr; 2 styles</span>
+      <span class="file">SearchBar.tsx · CategoryPromos.tsx · layout.tsx · SolenStory.tsx · all CTAs</span>
+    </div>
+    <div class="fix-body">
+      <div class="side">
+        <span class="side-label before">BEFORE — 4 competing styles</span>
+        <div class="side-render">
+          <div class="pill-row">
+            <div>
+              <span class="pill pill-primary">Solen durchsuchen</span>
+              <div class="pill-tag">Hero CTA · green</div>
+            </div>
+            <div>
+              <span class="pill pill-r-darkink">Book Solen Now</span>
+              <div class="pill-tag">SolenStory · dark-ink</div>
+            </div>
+            <div>
+              <span class="pill pill-r-whiteink">Coiffeur entdecken</span>
+              <div class="pill-tag">CategoryPromos · white-on-photo</div>
+            </div>
+            <div>
+              <span class="pill pill-r-outline">Salons finden</span>
+              <div class="pill-tag">Banner / secondary · outline</div>
+            </div>
+          </div>
+        </div>
+        <div class="side-notes">
+          4 different "click me" treatments train users that nothing has a consistent action signal. CTAs compete instead of compounding.
+        </div>
+      </div>
+      <div class="side">
+        <span class="side-label after">AFTER — 2 locked variants</span>
+        <div class="side-render">
+          <div class="pill-row" style="flex-direction: column; align-items: flex-start; gap: 16px;">
+            <div>
+              <span class="pill pill-primary">Solen durchsuchen</span>
+              <div class="pill-tag">PRIMARY · bg-s-brand #054F31, text-white</div>
+            </div>
+            <div>
+              <span class="pill pill-secondary">Mehr erfahren</span>
+              <div class="pill-tag">SECONDARY · bg-white, text-ink, border-ink/10</div>
+            </div>
+          </div>
+        </div>
+        <div class="side-notes">
+          Two variants only. Primary = brand-green pill (high-intent moments only: hero search, book-now, register). Secondary = white-on-ink-border for everything else. Encoded as Rule 8 in the principle doc.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ -->
+  <!-- FIX 6 — Categories rendered 2x  -->
+  <!-- ============================ -->
+  <div class="fix">
+    <div class="fix-head">
+      <span class="num">6</span>
+      <span class="title">Categories rendered twice in two clashing art directions</span>
+      <span class="file">MobileCategoriesRow.tsx (Für dich) + CategoryPromos.tsx (Stöber)</span>
+    </div>
+    <div class="fix-body">
+      <div class="side">
+        <span class="side-label before">BEFORE — both render same 3 cats</span>
+        <div class="side-render" style="flex-direction: column; gap: 14px; align-items: stretch;">
+          <div class="vs-row">
+            <div class="fdich-tile">
+              <div class="fdich-icon">✂️</div>
+              <div class="fdich-label">Coiffeur</div>
+            </div>
+            <div class="fdich-tile">
+              <div class="fdich-icon">💅</div>
+              <div class="fdich-label">Nails</div>
+            </div>
+          </div>
+          <div class="vs-kill bad">↑ Für dich · cartoon 3D-emoji vocabulary</div>
+          <div class="promo-tile">
+            <div class="overlay">
+              <h4>Schneiden, färben, stylen</h4>
+              <span class="small-pill">Coiffeur entdecken</span>
+            </div>
+          </div>
+          <div class="vs-kill bad">↑ Stöber · classical oil-painting vocabulary</div>
+        </div>
+        <div class="side-notes">
+          Same 3 categories, 2 art directions, 2 visual treatments. Users see "Coiffeur tile" twice and wonder if they're different things.
+        </div>
+      </div>
+      <div class="side">
+        <span class="side-label after">AFTER — drop Für dich, keep Stöber</span>
+        <div class="side-render">
+          <div class="promo-tile">
+            <div class="overlay">
+              <h4>Schneiden, färben, stylen</h4>
+              <span class="small-pill">Coiffeur entdecken</span>
+            </div>
+          </div>
+        </div>
+        <div class="side-notes">
+          One category showcase. Oil-paintings do more brand work than emoji icons. Mobile users still get category access via the header's services dropdown (kept).
+        </div>
+        <div class="vs-kill good">↑ One vocabulary · one moment</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

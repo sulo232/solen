@@ -20,7 +20,7 @@ const BADGE_CONFIG: Record<DiscoveryContentType, { label: string; bg: string; ic
   },
   salon: {
     label: "Salon",
-    bg: "bg-s-coral/80 text-white",
+    bg: "bg-s-ink/80 text-white",
     icon: <Scissors size={10} />,
   },
   curated: {

@@ -53,3 +53,14 @@
 - **Frontend**: Notify Me button added to `app/[locale]/angebote/page.tsx` (empty state). The button uses `prompt()` to collect email and posts to `/api/waitlist`, but the API will return 400 (validation error) because the schema doesn't match. The error is caught silently.
 - **Missing**: A proper `/api/notify-me` or `/api/last-minute-waitlist` endpoint that accepts `{ email, feature }` and stores email subscriptions. Alternatively, extend the existing waitlist schema to support feature-based subscriptions.
 - **Priority**: LOW — fails silently, does not crash the page.
+
+---
+
+## Homepage Entdecken → Real TikTok Previews — RESOLVED (V3-D160, 2026-05-26)
+
+- **What was missing**: live wire to `/api/discovery/feed`, fresh-signed thumbnails (the stored `tiktok_thumbnail_url` values are TikTok signed URLs that expire), and a working Supabase service-role key for the API to query the DB.
+- **Resolution**:
+  1. `SUPABASE_SERVICE_ROLE_KEY` rotated to new-format `sb_secret_*` in `.env.local`.
+  2. `Entdecken.tsx` now fetches `/api/discovery/feed?category=hair&limit=8` on mount, falls back to DEMO if 0 items or error. IntersectionObserver re-attaches when looks swap in.
+  3. New `app/api/discovery/thumb/[id]/route.ts` proxy — DB lookup → TikTok oEmbed → image fetch → pipe back with `Cache-Control: public, max-age=3600, stale-while-revalidate=86400`. Solves the signed-URL expiry for every consumer (homepage + any future caller).
+- **Known follow-ups**: the `/discover` detail page (`/de/entdecken/[id]`) still reads raw `tiktok_thumbnail_url` via `VideoCard` — same expiry bug applies there. If detail-page thumbnails go dead, point `VideoCard` at the new `/api/discovery/thumb/[id]` proxy too.

@@ -75,31 +75,12 @@ export default function Footer({ locale }: { locale: string }) {
             fu7 — top margin removed, FeedZone pb shrunk to flow into footer
             fu8 — outer wrapper gets glass-bg so rounded corners reveal
                   FeedZone-matching glass, not cream page bg */}
-      <div className="relative h-[140px] md:h-[260px] bg-s-brand overflow-hidden rounded-t-[28px] md:rounded-t-[40px] shadow-[0_-8px_24px_rgba(4,51,56,0.06)] md:shadow-[0_-12px_32px_rgba(4,51,56,0.08)]">
-        <span
-          aria-hidden
-          className="font-display absolute left-0 right-0 text-center text-white font-black leading-none tracking-[-0.03em] select-none"
-          style={{
-            // V2-D49n-fu6 (2026-05-10): final dial. Iteration: 240 too
-            // short → 460 too big → 380 still too tall → 300 / 300 (panel /
-            // max font) — wordmark fills panel cleanly with the right
-            // amount of cropping at the bottom, no excess green above.
-            fontSize: "clamp(140px, 24vw, 260px)",
-            // Negative bottom pulls the wordmark down so the bowl of `o`
-            // and descender of `s` get clipped at the panel's bottom edge.
-            // The `overflow-hidden` parent does the actual cropping.
-            bottom: "-18%",
-          }}
-        >
-          solen
-        </span>
-        {/* Subtle radial highlight for depth — pointer-events-none so it
-            doesn't interfere with hover/focus on the body below. */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_80%_at_50%_0%,rgba(255,255,255,0.10)_0%,transparent_70%)]"
-        />
-      </div>
+      {/* V3-D148 (2026-05-25): negative-footer panel + giant cropped "solen"
+          wordmark REMOVED per user "remove ths sole black thing we got we
+          dont need it." The V2-D49n Brün-style pattern (oversized cropped
+          wordmark on dark panel above body) is dropped entirely. Footer
+          now goes straight to the body content. Restore by uncommenting
+          the bg-s-ink wrapper div + the span "solen" + radial highlight. */}
 
       {/* ───────────── Body (white, full-bleed bg, content max-width inside) ─────────────
           V2-D49n-fu9 (2026-05-10): mobile padding tightened (py-10→py-8) and
@@ -121,11 +102,7 @@ export default function Footer({ locale }: { locale: string }) {
                 className="font-display inline-flex items-baseline text-[22px] font-black leading-none tracking-normal text-s-ink"
               >
                 Solen
-                <span
-                  aria-hidden
-                  className="ml-[2px] inline-block h-2 w-2 rounded-full bg-s-accent"
-                  style={{ transform: "translateY(-2px)" }}
-                />
+                {/* V3-D146 (2026-05-25): dot removed per B&W palette pivot. */}
               </Link>
               <p className="mt-4 max-w-[280px] font-body text-[13px] leading-relaxed text-s-ink-2">
                 Beauty &amp; Wellness Booking für die ganze Schweiz. Salons
@@ -158,7 +135,7 @@ export default function Footer({ locale }: { locale: string }) {
                 <button
                   type="submit"
                   aria-label="Abonnieren"
-                  className="absolute right-[6px] top-[6px] grid h-9 w-9 place-items-center rounded-[9px] bg-s-brand text-white transition-transform duration-200 ease-glide active:scale-95"
+                  className="absolute right-[6px] top-[6px] grid h-9 w-9 place-items-center rounded-[9px] bg-s-ink text-white transition-transform duration-200 ease-glide active:scale-95"
                 >
                   <ChevronRight size={18} aria-hidden />
                 </button>
@@ -258,7 +235,7 @@ export default function Footer({ locale }: { locale: string }) {
 function SolenStamp() {
   return (
     <div className="relative grid h-24 w-24 place-items-center" aria-hidden>
-      <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full text-s-brand">
+      <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full text-s-ink">
         <defs>
           <path
             id="solen-stamp-circle"

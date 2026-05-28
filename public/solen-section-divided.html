@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Solen — section-divided color · 3 directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Bricolage+Grotesque:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --s-brand: #133EEB;
+    --s-brand-deep: #08185E;
+    --s-ink: #1A1A1A;
+    --s-ink-soft: #4B4B4B;
+    --s-ink-muted: #8A8A8A;
+    --s-border: #E5E5E5;
+    --s-border-soft: #EFEFEF;
+    --hanken: "Hanken Grotesk", system-ui, sans-serif;
+    --display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: var(--hanken); color: var(--s-ink); background: #F0F0F2; }
+  body { padding: 32px 24px 80px; min-height: 100vh; }
+
+  .pageHead { max-width: 920px; margin: 0 auto 40px; text-align: center; }
+  .pageHead h1 { font-family: var(--display); font-size: 30px; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 10px; }
+  .pageHead p { font-size: 14px; line-height: 1.55; color: var(--s-ink-soft); }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: start; max-width: 1500px; margin: 0 auto; }
+  @media (max-width: 1280px) { .grid { grid-template-columns: 1fr; max-width: 460px; } }
+
+  .col { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.05); }
+  .colHead { padding: 4px 4px 14px; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; background: #F2F2F2; color: var(--s-ink-soft); margin-bottom: 8px; }
+  .colHead h2 { font-family: var(--display); font-size: 18px; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .colHead .lead { font-size: 12px; line-height: 1.5; color: var(--s-ink-soft); }
+
+  .swatchRow { display: flex; gap: 4px; margin-top: 10px; }
+  .swatch { width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); }
+
+  /* Phone frame */
+  .phone { width: 100%; border: 1px solid var(--s-border); border-radius: 14px; overflow: hidden; position: relative; max-height: 1100px; overflow-y: auto; }
+  .phone::-webkit-scrollbar { width: 4px; }
+  .phone::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+
+  /* Each section in the phone */
+  .sec { padding: 24px 18px; position: relative; }
+  .sec.tight { padding: 18px 18px; }
+
+  /* Locked banner (always cobalt) */
+  .banner { position: relative; width: 100%; background: var(--s-brand); color: white; }
+  .bannerInner { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px 22px; }
+  .bannerText { font-size: 11px; font-weight: 600; }
+  .bannerPill { display: inline-flex; align-items: center; gap: 4px; background: white; color: var(--s-ink); padding: 4px 11px; border-radius: 9999px; font-size: 11px; font-weight: 600; }
+  .bannerScoop { position: absolute; inset: auto 0 0 0; height: 12px; border-top-left-radius: 12px; border-top-right-radius: 12px; }
+
+  /* Header */
+  .topNav { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; }
+  .logo { font-family: var(--display); font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+  .logoDot { color: var(--s-brand); }
+  .menuBtn { width: 32px; height: 32px; border-radius: 9999px; border: 1px solid var(--s-border); background: white; display: flex; align-items: center; justify-content: center; }
+  .menuBtn span { display: block; width: 12px; height: 1.4px; background: var(--s-ink); position: relative; }
+  .menuBtn span::before, .menuBtn span::after { content: ""; position: absolute; left: 0; width: 12px; height: 1.4px; background: var(--s-ink); }
+  .menuBtn span::before { top: -4px; }
+  .menuBtn span::after { top: 4px; }
+
+  /* Hero */
+  .heroTitle { font-family: var(--display); font-size: 30px; line-height: 0.96; letter-spacing: -0.025em; margin-bottom: 14px; }
+  .heroTitle .brand { color: var(--s-brand); display: block; }
+  .heroTitle .next { display: block; }
+  .heroSub { font-size: 13px; line-height: 1.5; color: var(--s-ink-soft); margin-bottom: 16px; }
+
+  /* Search card */
+  .searchCard { border-radius: 14px; padding: 12px; }
+  .searchRow { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--s-border-soft); border-radius: 9999px; font-size: 12px; color: var(--s-ink-muted); background: white; }
+  .searchRow + .searchRow { margin-top: 6px; }
+  .searchBtn { width: 100%; padding: 11px; background: var(--s-ink); color: white; border: 0; border-radius: 9999px; font-family: var(--hanken); font-size: 12px; font-weight: 600; margin-top: 8px; }
+
+  /* Section title */
+  .secTitle { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .secTitleText { font-family: var(--display); font-size: 15px; font-weight: 700; }
+  .secChip { width: 22px; height: 22px; border-radius: 9999px; border: 1px solid var(--s-border); background: white; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; }
+
+  /* Card lists */
+  .cards2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cards3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .card { background: white; border: 1px solid var(--s-border-soft); border-radius: 10px; padding: 8px; }
+  .cardImg { aspect-ratio: 1 / 1; border-radius: 6px; background: linear-gradient(135deg, #DCDCDC, #EFEFEF); margin-bottom: 6px; }
+  .cardTitle { font-size: 10px; font-weight: 600; line-height: 1.2; margin-bottom: 1px; }
+  .cardMeta { font-size: 9px; color: var(--s-ink-muted); }
+
+  /* Categories pills */
+  .pillRow { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { font-size: 11px; padding: 6px 12px; border-radius: 9999px; background: white; border: 1px solid var(--s-border-soft); font-weight: 500; }
+
+  /* Trust section (dark) */
+  .trustGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .trustItem .num { font-family: var(--display); font-size: 22px; font-weight: 700; }
+  .trustItem .label { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+
+  /* Quote section */
+  .quote { font-family: var(--display); font-size: 17px; line-height: 1.3; letter-spacing: -0.01em; }
+  .quoteAuth { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+  .quoteAvatar { width: 32px; height: 32px; border-radius: 9999px; background: linear-gradient(135deg, #C4C4C4, #E8E8E8); }
+  .quoteName { font-size: 11px; font-weight: 600; }
+  .quoteRole { font-size: 10px; color: var(--s-ink-muted); }
+
+  /* CTA Block */
+  .ctaBig { font-family: var(--display); font-size: 22px; line-height: 1.1; letter-spacing: -0.015em; margin-bottom: 10px; }
+  .ctaSub { font-size: 12px; line-height: 1.5; opacity: 0.85; margin-bottom: 14px; }
+  .ctaBtn { display: inline-block; padding: 11px 22px; background: var(--s-brand); color: white; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+
+  /* Footer */
+  .foot { padding: 18px; text-align: center; font-size: 10px; }
+
+  .swatchLabel { font-size: 9px; color: var(--s-ink-muted); font-family: monospace; }
+
+  /* Notes */
+  .colNotes { padding: 14px 4px 0; font-size: 11.5px; line-height: 1.55; color: var(--s-ink-soft); }
+  .colNotes b { color: var(--s-ink); }
+  .pro { color: #1E7A4A; font-weight: 600; }
+  .con { color: #B33D2C; font-weight: 600; }
+
+  /* Recommendation banner */
+  .recommend { max-width: 920px; margin: 56px auto 0; background: white; border-radius: 16px; padding: 28px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.05); }
+  .recommend h2 { font-family: var(--display); font-size: 22px; margin: 8px 0 12px; letter-spacing: -0.01em; }
+  .recommend p { font-size: 13.5px; line-height: 1.6; color: var(--s-ink-soft); margin-bottom: 10px; }
+  .recommend ul { font-size: 13px; line-height: 1.6; color: var(--s-ink-soft); padding-left: 18px; margin-bottom: 10px; }
+  .recommend ul b { color: var(--s-ink); }
+</style>
+</head>
+<body>
+
+<header class="pageHead">
+  <h1>Divide color by section — 3 directions for Solen</h1>
+  <p>Same homepage structure, same Solen banner + logo. Only the section backgrounds differ. Measured from Hims's actual palette (IMG_4287-4294, sampled via canvas pixel-spec), then translated 3 ways for cobalt brand.</p>
+</header>
+
+<div class="grid">
+
+  <!-- ============================================================ -->
+  <!-- 1. WARM (Hims direct port)                                    -->
+  <!-- ============================================================ -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge">1 · Warm port</span>
+      <h2>Cream / peach cascade</h2>
+      <p class="lead">Hims's palette transplanted directly. Wellness/self-care warmth. Cobalt brand stays as accent only.</p>
+      <div class="swatchRow" title="Section bg palette">
+        <span class="swatch" style="background:#FFFFFF" title="#FFFFFF"></span>
+        <span class="swatch" style="background:#FFF8F0" title="#FFF8F0"></span>
+        <span class="swatch" style="background:#F7E9AF" title="#F7E9AF"></span>
+        <span class="swatch" style="background:#E8C5B1" title="#E8C5B1"></span>
+        <span class="swatch" style="background:#D7AD94" title="#D7AD94"></span>
+        <span class="swatch" style="background:#453421" title="#453421"></span>
+      </div>
+    </header>
+    <div class="phone">
+      <!-- Banner -->
+      <div class="banner">
+        <div class="bannerInner">
+          <span class="bannerText">Sofort verfügbar — 320 heute</span>
+          <span class="bannerPill">Salons finden →</span>
+        </div>
+        <div class="bannerScoop" style="background:#FFF8F0"></div>
+      </div>
+      <!-- Header on cream -->
+      <div class="topNav" style="background:#FFF8F0;">
+        <div class="logo">Solen<span class="logoDot">.</span></div>
+        <button class="menuBtn"><span></span></button>
+      </div>
+      <!-- Hero on cream -->
+      <div class="sec" style="background:#FFF8F0;">
+        <h1 class="heroTitle"><span class="brand">Schöner</span><span class="next">aussehen,</span><span class="next">schneller buchen.</span></h1>
+        <p class="heroSub">Über 1'200 Salons in der Schweiz. Sofort buchbar, transparente Preise.</p>
+        <div class="swatchLabel">bg: #FFF8F0 — soft cream, sets the warmth signal</div>
+      </div>
+      <!-- Search on white -->
+      <div class="sec" style="background:#FFFFFF; border-top: 1px solid #F0E4D0;">
+        <div class="searchCard" style="background:#FFFFFF; border:1px solid var(--s-border);">
+          <div class="searchRow">○ Service</div>
+          <div class="searchRow">○ Stadt</div>
+          <div class="searchRow">○ Zeit</div>
+          <button class="searchBtn">Solen durchsuchen</button>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #FFFFFF — search stays clinical/clean</div>
+      </div>
+      <!-- Recently viewed on pale yellow -->
+      <div class="sec" style="background:#F7E9AF;">
+        <div class="secTitle">
+          <span class="secTitleText">Zuletzt angesehen</span>
+          <span class="secChip">→</span>
+        </div>
+        <div class="cards2">
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Salon Mara</div><div class="cardMeta">Zürich · 4.9</div></div>
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Studio Nord</div><div class="cardMeta">Basel · 4.8</div></div>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #F7E9AF — pale yellow, scientific/optimistic</div>
+      </div>
+      <!-- Popular categories on peach -->
+      <div class="sec" style="background:#E8C5B1;">
+        <div class="secTitle"><span class="secTitleText">Beliebt diese Woche</span></div>
+        <div class="pillRow">
+          <span class="pill">Haare</span><span class="pill">Nägel</span><span class="pill">Massage</span><span class="pill">Beauty</span><span class="pill">Wellness</span><span class="pill">Spa</span>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #E8C5B1 — warm peach, "browse" energy</div>
+      </div>
+      <!-- Salons near you on white -->
+      <div class="sec" style="background:#FFFFFF; border-top: 1px solid #F0E4D0;">
+        <div class="secTitle"><span class="secTitleText">Salons in deiner Nähe</span></div>
+        <div class="cards3">
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Le Studio</div><div class="cardMeta">5 min · 4.9</div></div>
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Aura Beauty</div><div class="cardMeta">8 min · 4.8</div></div>
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Hair Lab</div><div class="cardMeta">12 min · 4.7</div></div>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #FFFFFF — listings stay neutral</div>
+      </div>
+      <!-- Quote on medium peach -->
+      <div class="sec" style="background:#D7AD94;">
+        <p class="quote">"Endlich keine 5 Browser-Tabs mehr — alles an einem Ort."</p>
+        <div class="quoteAuth">
+          <div class="quoteAvatar"></div>
+          <div><div class="quoteName">Lea Müller</div><div class="quoteRole">Stammkundin, Zürich</div></div>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #D7AD94 — medium peach, "personal" warmth</div>
+      </div>
+      <!-- Trust on deep brown -->
+      <div class="sec" style="background:#453421; color:white;">
+        <div class="secTitle"><span class="secTitleText" style="color:white;">Warum 50'000+ Schweizer Solen vertrauen</span></div>
+        <div class="trustGrid">
+          <div class="trustItem"><div class="num">1'200+</div><div class="label">Verifizierte Salons</div></div>
+          <div class="trustItem"><div class="num">4.8★</div><div class="label">Durchschnittsbewertung</div></div>
+          <div class="trustItem"><div class="num">24/7</div><div class="label">Buchung & Support</div></div>
+          <div class="trustItem"><div class="num">CH</div><div class="label">Daten in der Schweiz</div></div>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px; color:rgba(255,255,255,0.5);">bg: #453421 — sepia/dark, credibility signal</div>
+      </div>
+      <!-- App CTA on cream -->
+      <div class="sec" style="background:#FFF8F0;">
+        <div class="ctaBig">Solen-App holen.<br/>Buchen in 30 Sekunden.</div>
+        <p class="ctaSub">iOS & Android. Kostenlos. Keine versteckten Gebühren.</p>
+        <a href="#" class="ctaBtn">App laden</a>
+      </div>
+      <!-- Footer -->
+      <div class="foot" style="background:#FFFFFF; border-top:1px solid var(--s-border-soft);">© Solen — Made in Switzerland</div>
+    </div>
+    <div class="colNotes">
+      <p><b>What you get:</b> instant wellness/beauty signal. Feels personal, "self-care ritual." Long pages have rich rhythm.</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> warm = wellness category fit; rhythm reduces fatigue on long scroll; trust section pops harder against warm context</p>
+      <p><b class="con">CON:</b> warm cream + cobalt blue is the strongest tension pairing — cool brand against warm canvas can feel disjointed; risk of looking "Hims-cloned"</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 2. COOL (cobalt-coherent translation)                         -->
+  <!-- ============================================================ -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge">2 · Cool translation</span>
+      <h2>Ice / sky / cobalt cascade</h2>
+      <p class="lead">Hims's pattern with cool tones. Brand-coherent with cobalt. Less "wellness", more "Swiss precision".</p>
+      <div class="swatchRow">
+        <span class="swatch" style="background:#FFFFFF"></span>
+        <span class="swatch" style="background:#F5F7FF"></span>
+        <span class="swatch" style="background:#E2E8FA"></span>
+        <span class="swatch" style="background:#C9CFE3"></span>
+        <span class="swatch" style="background:#7C8DD0"></span>
+        <span class="swatch" style="background:#0B1430"></span>
+      </div>
+    </header>
+    <div class="phone">
+      <div class="banner">
+        <div class="bannerInner">
+          <span class="bannerText">Sofort verfügbar — 320 heute</span>
+          <span class="bannerPill">Salons finden →</span>
+        </div>
+        <div class="bannerScoop" style="background:#F5F7FF"></div>
+      </div>
+      <div class="topNav" style="background:#F5F7FF;">
+        <div class="logo">Solen<span class="logoDot">.</span></div>
+        <button class="menuBtn"><span></span></button>
+      </div>
+      <div class="sec" style="background:#F5F7FF;">
+        <h1 class="heroTitle"><span class="brand">Schöner</span><span class="next">aussehen,</span><span class="next">schneller buchen.</span></h1>
+        <p class="heroSub">Über 1'200 Salons in der Schweiz. Sofort buchbar, transparente Preise.</p>
+        <div class="swatchLabel">bg: #F5F7FF — 5% cobalt tint, brand whisper</div>
+      </div>
+      <div class="sec" style="background:#FFFFFF; border-top: 1px solid #E5EAF5;">
+        <div class="searchCard" style="background:#FFFFFF; border:1px solid var(--s-border);">
+          <div class="searchRow">○ Service</div>
+          <div class="searchRow">○ Stadt</div>
+          <div class="searchRow">○ Zeit</div>
+          <button class="searchBtn">Solen durchsuchen</button>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #FFFFFF — search clarity</div>
+      </div>
+      <div class="sec" style="background:#E2E8FA;">
+        <div class="secTitle"><span class="secTitleText">Zuletzt angesehen</span><span class="secChip">→</span></div>
+        <div class="cards2">
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Salon Mara</div><div class="cardMeta">Zürich · 4.9</div></div>
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Studio Nord</div><div class="cardMeta">Basel · 4.8</div></div>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #E2E8FA — 12% cobalt tint (existing s-brand-subtle)</div>
+      </div>
+      <div class="sec" style="background:#F5F7FF;">
+        <div class="secTitle"><span class="secTitleText">Beliebt diese Woche</span></div>
+        <div class="pillRow">
+          <span class="pill">Haare</span><span class="pill">Nägel</span><span class="pill">Massage</span><span class="pill">Beauty</span><span class="pill">Wellness</span><span class="pill">Spa</span>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #F5F7FF — back to soft tint</div>
+      </div>
+      <div class="sec" style="background:#FFFFFF; border-top: 1px solid #E5EAF5;">
+        <div class="secTitle"><span class="secTitleText">Salons in deiner Nähe</span></div>
+        <div class="cards3">
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Le Studio</div><div class="cardMeta">5 min · 4.9</div></div>
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Aura Beauty</div><div class="cardMeta">8 min · 4.8</div></div>
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Hair Lab</div><div class="cardMeta">12 min · 4.7</div></div>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #FFFFFF — listings clean</div>
+      </div>
+      <div class="sec" style="background:#C9CFE3;">
+        <p class="quote">"Endlich keine 5 Browser-Tabs mehr — alles an einem Ort."</p>
+        <div class="quoteAuth">
+          <div class="quoteAvatar"></div>
+          <div><div class="quoteName">Lea Müller</div><div class="quoteRole">Stammkundin, Zürich</div></div>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #C9CFE3 — mid blue-grey, quote weight</div>
+      </div>
+      <div class="sec" style="background:#0B1430; color:white;">
+        <div class="secTitle"><span class="secTitleText" style="color:white;">Warum 50'000+ Schweizer Solen vertrauen</span></div>
+        <div class="trustGrid">
+          <div class="trustItem"><div class="num">1'200+</div><div class="label">Verifizierte Salons</div></div>
+          <div class="trustItem"><div class="num">4.8★</div><div class="label">Durchschnittsbewertung</div></div>
+          <div class="trustItem"><div class="num">24/7</div><div class="label">Buchung & Support</div></div>
+          <div class="trustItem"><div class="num">CH</div><div class="label">Daten in der Schweiz</div></div>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px; color:rgba(255,255,255,0.5);">bg: #0B1430 — deep navy = credibility</div>
+      </div>
+      <div class="sec" style="background:#E2E8FA;">
+        <div class="ctaBig">Solen-App holen.<br/>Buchen in 30 Sekunden.</div>
+        <p class="ctaSub">iOS & Android. Kostenlos. Keine versteckten Gebühren.</p>
+        <a href="#" class="ctaBtn">App laden</a>
+      </div>
+      <div class="foot" style="background:#FFFFFF; border-top:1px solid var(--s-border-soft);">© Solen — Made in Switzerland</div>
+    </div>
+    <div class="colNotes">
+      <p><b>What you get:</b> brand-coherent. Every section says "Solen-family". Feels Swiss/precise/modern.</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> no warm/cool clash; cobalt accents always feel "of the page"; navy trust section is unmistakably premium; matches existing s-brand-subtle token</p>
+      <p><b class="con">CON:</b> can feel clinical, sterile, "tech-y"; wellness consumers may read it as fintech; risk of "every modern SaaS in 2026" look</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 3. HYBRID (recommended)                                       -->
+  <!-- ============================================================ -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge" style="background:#E2E8FA; color:var(--s-brand);">3 · Hybrid (recommended)</span>
+      <h2>Cream warmth + cobalt brand</h2>
+      <p class="lead">Cream for emotional/personal sections, cobalt-tint for brand moments, white for transactional, dark navy for trust. Best of both.</p>
+      <div class="swatchRow">
+        <span class="swatch" style="background:#FFFFFF"></span>
+        <span class="swatch" style="background:#FFF8F0"></span>
+        <span class="swatch" style="background:#E2E8FA"></span>
+        <span class="swatch" style="background:#FAF4E8"></span>
+        <span class="swatch" style="background:#0B1430"></span>
+        <span class="swatch" style="background:#133EEB"></span>
+      </div>
+    </header>
+    <div class="phone">
+      <div class="banner">
+        <div class="bannerInner">
+          <span class="bannerText">Sofort verfügbar — 320 heute</span>
+          <span class="bannerPill">Salons finden →</span>
+        </div>
+        <div class="bannerScoop" style="background:#FFF8F0"></div>
+      </div>
+      <div class="topNav" style="background:#FFF8F0;">
+        <div class="logo">Solen<span class="logoDot">.</span></div>
+        <button class="menuBtn"><span></span></button>
+      </div>
+      <div class="sec" style="background:#FFF8F0;">
+        <h1 class="heroTitle"><span class="brand">Schöner</span><span class="next">aussehen,</span><span class="next">schneller buchen.</span></h1>
+        <p class="heroSub">Über 1'200 Salons in der Schweiz. Sofort buchbar, transparente Preise.</p>
+        <div class="swatchLabel">bg: #FFF8F0 — emotional hero, warmth signal</div>
+      </div>
+      <div class="sec" style="background:#FFFFFF; border-top: 1px solid #F0E4D0;">
+        <div class="searchCard" style="background:#FFFFFF; border:1px solid var(--s-border);">
+          <div class="searchRow">○ Service</div>
+          <div class="searchRow">○ Stadt</div>
+          <div class="searchRow">○ Zeit</div>
+          <button class="searchBtn">Solen durchsuchen</button>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #FFFFFF — transactional section, clean</div>
+      </div>
+      <div class="sec" style="background:#E2E8FA;">
+        <div class="secTitle"><span class="secTitleText">Zuletzt angesehen</span><span class="secChip">→</span></div>
+        <div class="cards2">
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Salon Mara</div><div class="cardMeta">Zürich · 4.9</div></div>
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Studio Nord</div><div class="cardMeta">Basel · 4.8</div></div>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #E2E8FA — brand moment (your stuff)</div>
+      </div>
+      <div class="sec" style="background:#FFF8F0;">
+        <div class="secTitle"><span class="secTitleText">Beliebt diese Woche</span></div>
+        <div class="pillRow">
+          <span class="pill">Haare</span><span class="pill">Nägel</span><span class="pill">Massage</span><span class="pill">Beauty</span><span class="pill">Wellness</span><span class="pill">Spa</span>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #FFF8F0 — browsing = personal warmth</div>
+      </div>
+      <div class="sec" style="background:#FFFFFF; border-top: 1px solid #F0E4D0;">
+        <div class="secTitle"><span class="secTitleText">Salons in deiner Nähe</span></div>
+        <div class="cards3">
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Le Studio</div><div class="cardMeta">5 min · 4.9</div></div>
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Aura Beauty</div><div class="cardMeta">8 min · 4.8</div></div>
+          <div class="card"><div class="cardImg"></div><div class="cardTitle">Hair Lab</div><div class="cardMeta">12 min · 4.7</div></div>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #FFFFFF — listings neutral</div>
+      </div>
+      <div class="sec" style="background:#FAF4E8;">
+        <p class="quote">"Endlich keine 5 Browser-Tabs mehr — alles an einem Ort."</p>
+        <div class="quoteAuth">
+          <div class="quoteAvatar"></div>
+          <div><div class="quoteName">Lea Müller</div><div class="quoteRole">Stammkundin, Zürich</div></div>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px;">bg: #FAF4E8 — second warm tone, testimonial weight</div>
+      </div>
+      <div class="sec" style="background:#0B1430; color:white;">
+        <div class="secTitle"><span class="secTitleText" style="color:white;">Warum 50'000+ Schweizer Solen vertrauen</span></div>
+        <div class="trustGrid">
+          <div class="trustItem"><div class="num">1'200+</div><div class="label">Verifizierte Salons</div></div>
+          <div class="trustItem"><div class="num">4.8★</div><div class="label">Durchschnittsbewertung</div></div>
+          <div class="trustItem"><div class="num">24/7</div><div class="label">Buchung & Support</div></div>
+          <div class="trustItem"><div class="num">CH</div><div class="label">Daten in der Schweiz</div></div>
+        </div>
+        <div class="swatchLabel" style="margin-top:10px; color:rgba(255,255,255,0.5);">bg: #0B1430 — credibility, same as cool variant</div>
+      </div>
+      <div class="sec" style="background:var(--s-brand); color:white;">
+        <div class="ctaBig" style="color:white;">Solen-App holen.<br/>Buchen in 30 Sekunden.</div>
+        <p class="ctaSub">iOS & Android. Kostenlos. Keine versteckten Gebühren.</p>
+        <a href="#" class="ctaBtn" style="background:white; color:var(--s-brand);">App laden</a>
+        <div class="swatchLabel" style="margin-top:10px; color:rgba(255,255,255,0.5);">bg: #133EEB — full brand moment at end</div>
+      </div>
+      <div class="foot" style="background:#FFFFFF; border-top:1px solid var(--s-border-soft);">© Solen — Made in Switzerland</div>
+    </div>
+    <div class="colNotes">
+      <p><b>What you get:</b> warmth for browsing/emotion, brand for "your stuff", white for transactions, navy/cobalt for credibility/conversion. Each tone DOES A JOB.</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> right tool per job; warm sections soften wellness category; cobalt sections own brand moments; no monotone fatigue; navy trust is the punctuation</p>
+      <p><b class="con">CON:</b> 4-6 distinct bgs is more design discipline to maintain; need clear rules ("which sections get which color") or it gets messy</p>
+    </div>
+  </section>
+
+</div>
+
+<section class="recommend">
+  <span class="badge" style="background:#E2E8FA; color:var(--s-brand);">Recommendation</span>
+  <h2>Option 3 (Hybrid). Section bg follows section JOB, not aesthetic.</h2>
+  <p>The Hims pattern works because each warm shade does a job — pale yellow = "scientific," peach = "personal," brown = "premium," dark = "trust." It's not random rhythm. For Solen, the same logic works with a mixed palette IF each color has a job:</p>
+  <ul>
+    <li><b>Cream (#FFF8F0) →</b> emotional/browsing sections (hero, categories, "explore"). Warmth = "this is self-care."</li>
+    <li><b>White (#FFFFFF) →</b> transactional sections (search, listings, checkout flow). Clean = "decision time."</li>
+    <li><b>Cobalt-tint (#E2E8FA) →</b> "your stuff" / brand-owned content (recently viewed, favorites, account). Says "Solen-family."</li>
+    <li><b>Cream-2 (#FAF4E8) →</b> testimonials, social proof, community. Different warm to break monotone.</li>
+    <li><b>Dark navy (#0B1430) →</b> trust signals (stats, guarantees, security). Punctuation, used sparingly.</li>
+    <li><b>Cobalt (#133EEB) →</b> conversion moments (final CTA, app download). Full brand assertion.</li>
+  </ul>
+  <p style="background:#F8F8F8; padding:12px 14px; border-radius:8px; margin-top:14px;"><b style="color:var(--s-ink);">The thinking from first principles:</b> if a section's background is the SAME as the section above it, you're saying "this is the same kind of thing." If it differs, you're saying "this is a different kind of thing." Hims got rhythm by treating bg-color as INFORMATION — match the bg to the section's purpose, and the page reads like a well-paced argument instead of a wall of text. Pure-warm (Hims-clone) loses the cobalt brand. Pure-cool loses the wellness warmth. Hybrid keeps both — at the cost of needing real design rules about what color goes where.</p>
+  <p style="margin-top:14px; padding:10px 14px; background:#FFFBF0; border-radius:8px; border-left:3px solid #E0B250;"><b style="color:#5A4310;">If you ONLY want one tone (simpler to maintain):</b> pick option 1 (warm) — wellness category bias is strong enough that warm + cobalt accents is the easier sell than cool + cobalt. Cool/option 2 only wins if Solen wants to compete on "Swiss tech utility" instead of "Swiss wellness."</p>
+</section>
+
+</body>
+</html>

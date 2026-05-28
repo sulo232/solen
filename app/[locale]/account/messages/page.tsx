@@ -71,11 +71,11 @@ export default function MessagesPage() {
   }
 
   if (conversations.length === 0) {
+    // V3-D281: empty-state retired-token swap (s-coral → s-ink primary CTA per LOCKFILE §0 rule 2)
     return (
       <div className="min-h-screen bg-s-bg-surface flex flex-col items-center justify-center gap-3 text-center px-4">
-        <div className="w-16 h-16 rounded-[18px] flex items-center justify-center mb-2"
-          style={{ background: "rgba(27, 77, 27,.08)" }}>
-          <MessageCircle size={28} className="text-s-coral/70" />
+        <div className="w-16 h-16 rounded-[18px] flex items-center justify-center mb-2 bg-s-bg-sunken">
+          <MessageCircle size={28} className="text-s-ink-2" />
         </div>
         <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-ink/50">
           Nachrichten
@@ -85,7 +85,7 @@ export default function MessagesPage() {
           Wenn du einen Salon kontaktierst, erscheinen deine Unterhaltungen hier.
         </p>
         <Link href={`/${locale}/coiffeur`}
-          className="mt-2 px-6 py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2">
+          className="mt-2 px-6 py-3.5 rounded-btn bg-s-ink text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2">
           Salons entdecken
         </Link>
       </div>
@@ -112,16 +112,15 @@ export default function MessagesPage() {
                   key={conv.id}
                   onClick={() => setSelected(conv.id)}
                   className={[
+                    // V3-D281: conversation row — retired s-coral + hardcoded green rgba swapped to ink/sunken tokens
                     "flex items-start gap-3 p-3 rounded-[12px] text-left w-full transition-[transform,filter] duration-150",
                     selected === conv.id
-                      ? "border border-s-coral/20"
-                      : "bg-white border border-s-ink/[0.07] hover:border-s-coral/25",
+                      ? "border border-s-border bg-s-bg-sunken"
+                      : "bg-white border border-s-ink/[0.07] hover:border-s-border",
                   ].join(" ")}
-                  style={selected === conv.id ? { background: "rgba(27, 77, 27,.04)" } : undefined}
                 >
-                  {/* Avatar */}
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-s-coral text-xs font-heading shrink-0"
-                    style={{ background: "rgba(27, 77, 27,.15)" }}>
+                  {/* Avatar — V3-D281: was rgba(27,77,27,.15) green wash → sunken neutral */}
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-s-ink text-xs font-heading shrink-0 bg-s-bg-sunken">
                     {conv.other_party_name?.[0] ?? "?"}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -130,7 +129,8 @@ export default function MessagesPage() {
                         {conv.other_party_name}
                       </p>
                       {unread > 0 && (
-                        <span className="w-5 h-5 rounded-full bg-s-coral text-white text-[10px] flex items-center justify-center font-heading shrink-0">
+                        // V3-D281: unread badge — s-coral → s-accent (info signal, small footprint OK per LOCKFILE §1 Layer 2)
+                        <span className="w-5 h-5 rounded-full bg-s-accent text-white text-[10px] flex items-center justify-center font-heading shrink-0">
                           {unread}
                         </span>
                       )}
@@ -159,8 +159,8 @@ export default function MessagesPage() {
             {selected && currentUserId ? (
               <div className="h-full">
                 <div className="mb-3 pb-3 border-b border-s-ink/[0.06] flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-s-coral text-[10px] font-heading shrink-0"
-                    style={{ background: "rgba(27, 77, 27,.12)" }}>
+                  {/* V3-D281: header avatar — was rgba(27,77,27,.12) green wash + s-coral text → sunken neutral */}
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-s-ink text-[10px] font-heading shrink-0 bg-s-bg-sunken">
                     {selectedConv?.other_party_name?.[0] ?? "?"}
                   </div>
                   <div>

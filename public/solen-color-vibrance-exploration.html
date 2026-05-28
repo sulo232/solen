@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · vibrance-matched color exploration</title>
+<link rel="preconnect" href="https://rsms.me/" />
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #0F0F10; color: #fff; font-family: "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  .page { max-width: 1280px; margin: 0 auto; padding: 40px 28px 96px; }
+  h1 { margin: 0 0 6px; font-size: 28px; font-weight: 700; letter-spacing: -0.025em; }
+  .sub { font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 8px; }
+  .baseline-note {
+    margin-top: 14px; padding: 12px 16px;
+    background: rgba(229,136,64,0.10);
+    border: 1px solid rgba(229,136,64,0.30);
+    border-radius: 10px;
+    font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.5;
+  }
+  .baseline-note strong { color: #E58840; }
+
+  .grid {
+    margin-top: 32px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  }
+  @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: #FFFFFF;
+    border-radius: 18px;
+    overflow: hidden;
+    color: #1A1C19;
+  }
+  .card-head {
+    height: 90px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    font-size: 16px;
+  }
+  .card-body { padding: 14px 16px 16px; }
+  .card-name { font-size: 14px; font-weight: 700; margin: 0 0 2px; color: #1A1C19; }
+  .card-hex {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px; color: #5F635D;
+  }
+  .card-vibe { font-size: 11px; color: #8A8F88; margin-top: 4px; font-style: italic; }
+
+  /* CTA pill rendered in the candidate color */
+  .pill-row {
+    display: flex; align-items: center; gap: 8px;
+    margin: 12px 0 10px;
+  }
+  .pill {
+    padding: 8px 16px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+    color: #fff;
+  }
+
+  /* Section tint sample row */
+  .tint-row {
+    display: flex; gap: 4px; height: 28px; border-radius: 6px; overflow: hidden;
+    border: 1px solid #ECEFF4;
+  }
+  .tint { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 9px; font-family: ui-monospace, monospace; color: rgba(0,0,0,0.4); }
+
+  /* Verdict block */
+  .verdict-section {
+    margin-top: 48px;
+    padding: 24px 28px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    color: rgba(255,255,255,0.85);
+    font-size: 13px; line-height: 1.6;
+  }
+  .verdict-section h2 { margin: 0 0 10px; font-size: 16px; color: #fff; font-weight: 700; }
+  .verdict-section .num { color: #E58840; font-weight: 700; margin-right: 6px; }
+
+  /* Stagger by category */
+  .category-label {
+    margin: 30px 0 -8px; padding: 0 4px;
+    font-family: ui-monospace, monospace; font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Vibrance-matched color exploration</h1>
+  <div class="sub">12 candidate primary colors · all at roughly H/<strong>75%S / 55%L</strong> · matched to the saturation/brightness of the Solen sunset orange you liked</div>
+
+  <div class="baseline-note">
+    <strong>Baseline:</strong> #E58840 (Solen sunset orange — your reference vibrance level).
+    Every color below sits at approximately the same HSL saturation (75%) and lightness (55%) — only the HUE changes. So each candidate has the same energy + lift as the orange, just in a different temperature/family.
+  </div>
+
+  <!-- WARM HUES -->
+  <div class="category-label">WARM HUES (RED → YELLOW)</div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-head" style="background: #E54040;">Crimson</div>
+      <div class="card-body">
+        <div class="card-name">Crimson</div>
+        <div class="card-hex">#E54040 · hsl(0° 75% 57%)</div>
+        <div class="card-vibe">Bold, romantic, urgent</div>
+        <div class="pill-row"><span class="pill" style="background:#E54040">Solen durchsuchen</span></div>
+        <div class="tint-row"><div class="tint" style="background:#FFF0F0">F0</div><div class="tint" style="background:#FDD8D8">D8</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head" style="background: #E56F40;">Tangerine</div>
+      <div class="card-body">
+        <div class="card-name">Tangerine</div>
+        <div class="card-hex">#E56F40 · hsl(15° 75% 57%)</div>
+        <div class="card-vibe">Hotter than #E58840, more punch</div>
+        <div class="pill-row"><span class="pill" style="background:#E56F40">Solen durchsuchen</span></div>
+        <div class="tint-row"><div class="tint" style="background:#FFF1EA">EA</div><div class="tint" style="background:#FDD8C5">C5</div></div>
+      </div>
+    </div>
+
+    <div class="card" style="outline: 3px solid #E58840;">
+      <div class="card-head" style="background: #E58840;">★ Solen Orange</div>
+      <div class="card-body">
+        <div class="card-name">Solen Sunset (baseline)</div>
+        <div class="card-hex">#E58840 · hsl(27° 76% 57%)</div>
+        <div class="card-vibe">Warm, friendly, established (V3-D100)</div>
+        <div class="pill-row"><span class="pill" style="background:#E58840">Solen durchsuchen</span></div>
+        <div class="tint-row"><div class="tint" style="background:#FFF4E8">E8</div><div class="tint" style="background:#FBE8D3">D3</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head" style="background: #E5B440;">Honey</div>
+      <div class="card-body">
+        <div class="card-name">Honey amber</div>
+        <div class="card-hex">#E5B440 · hsl(40° 75% 57%)</div>
+        <div class="card-vibe">Golden, premium, opulent</div>
+        <div class="pill-row"><span class="pill" style="background:#E5B440">Solen durchsuchen</span></div>
+        <div class="tint-row"><div class="tint" style="background:#FFF9E8">E8</div><div class="tint" style="background:#FDEFC8">C8</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head" style="background: #E5D640;">Marigold</div>
+      <div class="card-body">
+        <div class="card-name">Marigold yellow</div>
+        <div class="card-hex">#E5D640 · hsl(54° 75% 57%)</div>
+        <div class="card-vibe">Sunny, optimistic, alive</div>
+        <div class="pill-row"><span class="pill" style="background:#E5D640">Solen durchsuchen</span></div>
+        <div class="tint-row"><div class="tint" style="background:#FFFEE8">E8</div><div class="tint" style="background:#FBF7C5">C5</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head" style="background: #E54088;">Hot Pink</div>
+      <div class="card-body">
+        <div class="card-name">Hot pink</div>
+        <div class="card-hex">#E54088 · hsl(335° 75% 57%)</div>
+        <div class="card-vibe">Modern, feminine, Glossier-tier</div>
+        <div class="pill-row"><span class="pill" style="background:#E54088">Solen durchsuchen</span></div>
+        <div class="tint-row"><div class="tint" style="background:#FFEFF6">F6</div><div class="tint" style="background:#FCD3E1">E1</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COOL HUES -->
+  <div class="category-label">COOL HUES (GREEN → PURPLE)</div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-head" style="background: #88E540;">Spring Green</div>
+      <div class="card-body">
+        <div class="card-name">Spring lime</div>
+        <div class="card-hex">#88E540 · hsl(95° 75% 57%)</div>
+        <div class="card-vibe">Fresh, energetic — but conflicts w/ availability #16A34A semantic</div>
+        <div class="pill-row"><span class="pill" style="background:#88E540">Solen durchsuchen</span></div>
+        <div class="tint-row"><div class="tint" style="background:#F0FBE8">E8</div><div class="tint" style="background:#DAF4C0">C0</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head" style="background: #40E5B4;">Mint Teal</div>
+      <div class="card-body">
+        <div class="card-name">Mint teal</div>
+        <div class="card-hex">#40E5B4 · hsl(160° 75% 57%)</div>
+        <div class="card-vibe">Calm, modern wellness, clean</div>
+        <div class="pill-row"><span class="pill" style="background:#40E5B4">Solen durchsuchen</span></div>
+        <div class="tint-row"><div class="tint" style="background:#E8FBF4">F4</div><div class="tint" style="background:#C8F4E4">E4</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head" style="background: #40C8E5;">Sky</div>
+      <div class="card-body">
+        <div class="card-name">Sky blue</div>
+        <div class="card-hex">#40C8E5 · hsl(192° 75% 57%)</div>
+        <div class="card-vibe">Trustworthy, clean, tech-leaning</div>
+        <div class="pill-row"><span class="pill" style="background:#40C8E5">Solen durchsuchen</span></div>
+        <div class="tint-row"><div class="tint" style="background:#E8F8FD">FD</div><div class="tint" style="background:#C5EBFA">FA</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head" style="background: #4080E5;">Cobalt</div>
+      <div class="card-body">
+        <div class="card-name">Cobalt blue</div>
+        <div class="card-hex">#4080E5 · hsl(216° 75% 57%)</div>
+        <div class="card-vibe">Confident, premium, Linear-tier</div>
+        <div class="pill-row"><span class="pill" style="background:#4080E5">Solen durchsuchen</span></div>
+        <div class="tint-row"><div class="tint" style="background:#EBF1FD">FD</div><div class="tint" style="background:#C8D8F8">F8</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head" style="background: #7040E5;">Violet</div>
+      <div class="card-body">
+        <div class="card-name">Indigo violet</div>
+        <div class="card-hex">#7040E5 · hsl(258° 75% 57%)</div>
+        <div class="card-vibe">Tech, AI-coded, slight risk of "Stripe" cliché</div>
+        <div class="pill-row"><span class="pill" style="background:#7040E5">Solen durchsuchen</span></div>
+        <div class="tint-row"><div class="tint" style="background:#F2EDFD">FD</div><div class="tint" style="background:#DACDF8">F8</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head" style="background: #C540E5;">Magenta</div>
+      <div class="card-body">
+        <div class="card-name">Magenta orchid</div>
+        <div class="card-hex">#C540E5 · hsl(290° 75% 57%)</div>
+        <div class="card-vibe">Bold, beauty-coded, distinctive</div>
+        <div class="pill-row"><span class="pill" style="background:#C540E5">Solen durchsuchen</span></div>
+        <div class="tint-row"><div class="tint" style="background:#F9EBFD">FD</div><div class="tint" style="background:#EDCDF8">F8</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Verdict / shortlist -->
+  <div class="verdict-section">
+    <h2>My narrow shortlist (4 of 12)</h2>
+    <p><span class="num">1.</span><strong>Solen Sunset #E58840</strong> — the established equity. Familiar, warm, salon-coded. Lowest risk.</p>
+    <p><span class="num">2.</span><strong>Hot Pink #E54088</strong> — beauty-coded, modern, Glossier-tier energy. Highest brand differentiation. The salmon-pink heart semantic (#CC4A60) already lives in the system — this would extend that warmth into the primary.</p>
+    <p><span class="num">3.</span><strong>Honey Amber #E5B440</strong> — premium golden register. Pairs well with the warm illustrations. Slightly closer to "wellness/spa" register than orange.</p>
+    <p><span class="num">4.</span><strong>Mint Teal #40E5B4</strong> — if you want to stay in the green family but escape the deep forest. Bright, modern, wellness-coded. Risk: closer to medical brand than beauty brand.</p>
+    <p style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.55); font-size: 12px;">
+      <strong>Don't pick from:</strong> Crimson (semantic-error overlap), Spring lime (availability-green overlap), Sky blue (too tech-y for beauty), Cobalt (Linear-coded), Violet (Stripe-coded).
+    </p>
+  </div>
+
+</div>
+</body>
+</html>

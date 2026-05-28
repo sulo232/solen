@@ -28,8 +28,8 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
           aria-label={t("any")}
           className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-[14px] border transition-[border-color,background-color,box-shadow,transform] duration-150 ${
             selectedStaff === "any"
-              ? "border-s-coral ring-2 ring-s-coral/30 bg-s-coral/[0.06]"
-              : "border-s-ink/[0.08] bg-[--raised] hover:-translate-y-[5px] hover:shadow-v5-card-hover hover:border-s-coral/40 transition-[transform,box-shadow,border-color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+              ? "border-s-accent ring-2 ring-s-accent/30 bg-s-ink/[0.06]"
+              : "border-s-ink/[0.08] bg-[--raised] hover:-translate-y-[5px] hover:shadow-v5-card-hover hover:border-s-accent/40 transition-[transform,box-shadow,border-color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
           }`}
           style={{ minWidth: "90px" }}
         >
@@ -46,8 +46,8 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
             onClick={() => onSelect(s.id)}
             className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-[14px] border transition-[border-color,background-color,box-shadow,transform] duration-150 ${
               selectedStaff === s.id
-                ? "border-s-coral ring-2 ring-s-coral/30 bg-s-coral/[0.06]"
-                : "border-s-ink/[0.08] bg-[--raised] hover:-translate-y-[5px] hover:shadow-v5-card-hover hover:border-s-coral/40 transition-[transform,box-shadow,border-color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+                ? "border-s-accent ring-2 ring-s-accent/30 bg-s-ink/[0.06]"
+                : "border-s-ink/[0.08] bg-[--raised] hover:-translate-y-[5px] hover:shadow-v5-card-hover hover:border-s-accent/40 transition-[transform,box-shadow,border-color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
             }`}
             style={{ minWidth: "90px" }}
           >

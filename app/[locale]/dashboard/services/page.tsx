@@ -75,7 +75,8 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
         });
       }
       onSaved(); onClose();
-    } catch { /* ignore */ } finally { setLoading(false); }
+      // V3-D334 (overnight T2): error handling per CLAUDE.md.
+    } catch (err) { console.error("[Services] save (create or edit) failed:", err); } finally { setLoading(false); }
   };
 
   return (
@@ -262,7 +263,8 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
         }),
       });
       onAdded();
-    } catch { /* ignore */ }
+      // V3-D334 (overnight T2): error handling per CLAUDE.md.
+    } catch (err) { console.error("[Services] add-template failed:", err); }
     setAdding(null);
   };
 
@@ -354,7 +356,8 @@ export default function ServicesPage() {
       await fetch(`/api/services/${deleteTarget.id}`, { method: "DELETE" });
       setServices((p) => p.filter((s) => s.id !== deleteTarget.id));
       setDeleteTarget(null);
-    } catch { /* ignore */ } finally { setDeleteLoading(false); }
+      // V3-D334 (overnight T2): error handling per CLAUDE.md.
+    } catch (err) { console.error("[Services] delete failed:", err); } finally { setDeleteLoading(false); }
   };
 
   const onDragEnd = useCallback(async (result: DropResult) => {

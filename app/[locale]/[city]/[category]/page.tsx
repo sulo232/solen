@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
 import { unstable_setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
-import { createAdminSupabaseClient } from "@/lib/supabase";
+import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
+import type { SalonCategory } from "@/lib/types";
+import type { CitySlug } from "@/lib/cities";
 
 export const dynamic = "force-dynamic";
 
@@ -12,12 +13,12 @@ type Params = {
   category: string;
 };
 
-const CITIES = ["basel", "zurich", "bern"];
-const CATEGORIES = ["coiffeur", "nails", "barbershop", "spa", "makeup", "waxing"];
+const CITIES = ["basel", "zuerich", "bern"] as const;
+const CATEGORIES = ["coiffeur", "nails", "barbershop", "spa", "makeup", "waxing"] as const;
 
 const CITY_NAMES: Record<string, Record<string, string>> = {
   basel: { de: "Basel", en: "Basel", fr: "Bâle", it: "Basilea" },
-  zurich: { de: "Zürich", en: "Zurich", fr: "Zurich", it: "Zurigo" },
+  zuerich: { de: "Zürich", en: "Zurich", fr: "Zurich", it: "Zurigo" },
   bern: { de: "Bern", en: "Bern", fr: "Berne", it: "Berna" },
 };
 
@@ -49,7 +50,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, city, category } = await params;
 
-  if (!CITIES.includes(city) || !CATEGORIES.includes(category)) {
+  if (!(CITIES as readonly string[]).includes(city) || !(CATEGORIES as readonly string[]).includes(category)) {
     return {};
   }
 
@@ -71,9 +72,48 @@ export async function generateMetadata({
   };
 
   return {
-    title: titles[locale] || titles["de"],
-    description: descriptions[locale] || descriptions["de"],
+    title: titles[locale] || titles.de,
+    description: descriptions[locale] || descriptions.de,
   };
+}
+
+function CityCategoryFaq({ cityName, categoryName }: { cityName: string; categoryName: string }) {
+  return (
+    <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-border max-w-[800px] mx-auto">
+      {/* V3-D262 (W4, 2026-05-27): FAQ h2 to LOCKFILE Section spec (20-24px / 600 / -0.02em) */}
+      <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-6">
+        Häufig gestellte Fragen
+      </h2>
+      <div className="space-y-3">
+        <details className="border border-s-border rounded-input p-4 cursor-pointer">
+          <summary className="font-body font-semibold text-base text-s-ink">
+            Wie viel kostet ein Besuch bei einem {categoryName} in {cityName}?
+          </summary>
+          <p className="font-body text-sm text-s-ink-2 mt-3">
+            Die Preise variieren je nach Salon und Service. Nutze unsere Filterfunktion um Salons nach Preisbereich zu vergleichen.
+          </p>
+        </details>
+
+        <details className="border border-s-border rounded-input p-4 cursor-pointer">
+          <summary className="font-body font-semibold text-base text-s-ink">
+            Wie finde ich den besten {categoryName} in {cityName}?
+          </summary>
+          <p className="font-body text-sm text-s-ink-2 mt-3">
+            Schau dir die Bewertungen an, vergleiche die Preise und lese die Erfahrungen anderer Kunden.
+          </p>
+        </details>
+
+        <details className="border border-s-border rounded-input p-4 cursor-pointer">
+          <summary className="font-body font-semibold text-base text-s-ink">
+            Kann ich online einen Termin buchen?
+          </summary>
+          <p className="font-body text-sm text-s-ink-2 mt-3">
+            Ja. Alle Salons auf Solen ermöglichen Online-Buchungen.
+          </p>
+        </details>
+      </div>
+    </section>
+  );
 }
 
 export default async function Page({
@@ -84,94 +124,31 @@ export default async function Page({
   const { locale, city, category } = await params;
   unstable_setRequestLocale(locale);
 
-
-  if (!CITIES.includes(city) || !CATEGORIES.includes(category)) {
+  if (!(CITIES as readonly string[]).includes(city) || !(CATEGORIES as readonly string[]).includes(category)) {
     notFound();
   }
 
-  const t = await getTranslations("home");
   const cityName = CITY_NAMES[city]?.[locale] || city;
   const categoryName = CATEGORY_NAMES[category]?.[locale] || category;
 
-  const admin = createAdminSupabaseClient();
-  const { data: salons = [] } = await admin
-    .from("salons")
-    .select("*")
-    .eq("is_active", true)
-    .eq("is_test", false)
-    .ilike("city", city);
-
-  const filteredSalons = (salons || []).filter(
-    (salon) => salon.categories?.includes(category) ?? false
-  );
-
   return (
-    <div className="min-h-screen bg-white">
-      <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-b border-s-ink/[0.08]">
-        <h1 className="font-heading text-3xl md:text-4xl text-s-ink mb-3">
-          {categoryName} in {cityName}
-        </h1>
-        <p className="font-body text-base text-s-ink/60 max-w-[600px] leading-relaxed">
-          Entdecke die besten {categoryName} in {cityName}. Vergleiche Bewertungen, Preise und Verfügbarkeit von {filteredSalons.length} {categoryName}-Salons.
-        </p>
-      </section>
-
-      <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12">
-        {filteredSalons.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSalons.map((salon) => (
-              <div key={salon.id} className="border border-s-ink/[0.08] rounded-card p-4">
-                <h3 className="font-heading text-base text-s-ink">
-                  {salon.name}
-                </h3>
-                <p className="font-body text-sm text-s-ink/60 mt-1">
-                  ★ {salon.average_rating || 0} ({salon.review_count || 0} reviews)
-                </p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <p className="font-body text-base text-s-ink/60">
-              Noch keine Salons in dieser Kategorie
-            </p>
-          </div>
-        )}
-      </section>
-
-      <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-ink/[0.08] max-w-[800px] mx-auto">
-        <h2 className="font-heading text-xl text-s-ink mb-6">
-          Häufig gestellte Fragen
-        </h2>
-        <div className="space-y-6">
-          <details className="border border-s-ink/[0.08] rounded-input p-4 cursor-pointer">
-            <summary className="font-body font-semibold text-base text-s-ink">
-              Wie viel kostet ein Besuch bei einem {categoryName} in {cityName}?
-            </summary>
-            <p className="font-body text-sm text-s-ink/60 mt-3">
-              Die Preise variieren je nach Salon und Service. Nutze unsere Filterfunktion um Salons nach Preisbereich zu vergleichen.
-            </p>
-          </details>
-
-          <details className="border border-s-ink/[0.08] rounded-input p-4 cursor-pointer">
-            <summary className="font-body font-semibold text-base text-s-ink">
-              Wie finde ich den besten {categoryName} in {cityName}?
-            </summary>
-            <p className="font-body text-sm text-s-ink/60 mt-3">
-              Schau dir die Bewertungen an, vergleiche die Preise und lese die Erfahrungen anderer Kunden.
-            </p>
-          </details>
-
-          <details className="border border-s-ink/[0.08] rounded-input p-4 cursor-pointer">
-            <summary className="font-body font-semibold text-base text-s-ink">
-              Kann ich online einen Termin buchen?
-            </summary>
-            <p className="font-body text-sm text-s-ink/60 mt-3">
-              Ja! Alle Salons auf Solen ermöglichen Online-Buchungen.
-            </p>
-          </details>
-        </div>
-      </section>
-    </div>
+    // V3-D262 (W4, 2026-05-27): rewired from broken handcrafted page (raw bare salon
+    // divs + no filters) to SearchTemplate — same pattern as /makeup + /waxing fix
+    // (V3-D241 in W2). City + service filter inherited via SearchTemplate props.
+    <SearchTemplate
+      locale={locale}
+      serviceFilter={category as SalonCategory}
+      cityFilter={city as CitySlug}
+      breadcrumb={[
+        { label: "Solen", href: `/${locale}` },
+        { label: cityName, href: `/${locale}/${city}` },
+        { label: categoryName },
+      ]}
+      hero={{
+        title: `${categoryName} in ${cityName}`,
+        subtitle: `Entdecke die besten ${categoryName} in ${cityName}. Vergleiche Bewertungen, Preise und Verfügbarkeit.`,
+      }}
+      belowSlot={<CityCategoryFaq cityName={cityName} categoryName={categoryName} />}
+    />
   );
 }

@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solen · 3 color directions (council synthesis)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --emerald: #10B981;
+      --emerald-soft: #D1FAE5;
+      --red-urgent: #DC2626;
+      --red-urgent-soft: #FEE2E2;
+      --gold-feat: #F59E0B;
+      --blue-verify: #3B82F6;
+      --blue-verify-soft: #DBEAFE;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Geist', system-ui, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      padding: 32px;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-family: 'Outfit', sans-serif; font-weight: 900; letter-spacing: -0.03em; font-size: 28px; margin: 0 0 8px; }
+    .sub { font-size: 13px; color: #888; margin: 0 0 28px; max-width: 880px; line-height: 1.5; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .col { background: #141414; border-radius: 16px; padding: 16px; }
+    .col-label {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .col-label .name { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; color: #fff; letter-spacing: -0.02em; }
+    .col-label .pick { font-size: 10px; padding: 3px 7px; border-radius: 9999px; background: rgba(16,185,129,.15); color: #34d399; font-weight: 600; }
+    .col-attrib { font-size: 11px; color: #999; margin-bottom: 14px; line-height: 1.5; }
+    .swatches { display: flex; gap: 6px; margin-bottom: 16px; }
+    .swatch {
+      flex: 1;
+      height: 56px;
+      border-radius: 10px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 8px;
+      font-size: 9px;
+      color: rgba(255,255,255,.9);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .swatch.dark { color: rgba(255,255,255,.95); }
+    .swatch.light { color: rgba(0,0,0,.7); }
+
+    /* mini app preview */
+    .preview {
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,.5);
+      font-family: 'Geist', sans-serif;
+    }
+    .ph-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+      background: #fff;
+      border-bottom: 1px solid rgba(0,0,0,.06);
+    }
+    .ph-logo { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 17px; letter-spacing: -0.03em; }
+    .ph-cta {
+      padding: 6px 14px; border-radius: 9999px;
+      font-size: 11px; font-weight: 700;
+      cursor: pointer; border: 0;
+    }
+    .ph-hero {
+      padding: 32px 16px 24px;
+      text-align: center;
+    }
+    .ph-hero h2 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 28px;
+      letter-spacing: -0.03em;
+      line-height: 1.0;
+      margin: 0 0 6px;
+    }
+    .ph-hero p { font-size: 11px; margin: 0 0 18px; }
+    .ph-hero-cta {
+      display: inline-block;
+      padding: 11px 22px; border-radius: 9999px;
+      font-size: 12px; font-weight: 700;
+    }
+    .ph-section-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 14px 16px 8px;
+    }
+    .ph-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 16px 16px; }
+    .ph-card { border-radius: 12px; overflow: hidden; background: rgba(0,0,0,.03); }
+    .ph-card-img {
+      height: 64px;
+      background: linear-gradient(135deg, #e5e1da 0%, #d9d2c5 100%);
+      position: relative;
+    }
+    .ph-card-badge {
+      position: absolute;
+      top: 5px; left: 5px;
+      background: var(--emerald);
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 9999px;
+      letter-spacing: 0.03em;
+    }
+    .ph-card-badge.urgent { background: var(--red-urgent); }
+    .ph-card-badge.featured { background: var(--gold-feat); color: #1a1a1a; }
+    .ph-card-info { padding: 7px 9px; }
+    .ph-card-name { font-size: 10px; font-weight: 700; letter-spacing: -0.01em; }
+    .ph-card-meta { font-size: 9px; margin-top: 2px; opacity: .65; }
+
+    .ph-bento {
+      padding: 0 16px 16px;
+    }
+    .ph-bento-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.04);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .ph-bento-num { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.03em; }
+    .ph-bento-label { font-size: 9px; opacity: .65; margin-top: -2px; }
+    .ph-bento-chip {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      background: var(--emerald-soft);
+      color: var(--emerald);
+    }
+
+    .ph-footer {
+      padding: 14px 16px;
+      background: #fff;
+      border-top: 1px solid rgba(0,0,0,.06);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .ph-footer-text { font-size: 10px; opacity: .55; }
+    .ph-footer-logo { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 14px; letter-spacing: -0.03em; }
+
+    .meta {
+      font-size: 11px;
+      color: #888;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      line-height: 1.55;
+    }
+    .meta .label { color: #ccc; font-weight: 600; }
+    .meta .risk { color: #f97316; }
+
+    /* ───── DIRECTION 1 — PERSIMMON CORAL ───── */
+    .d1 .preview { background: #FFFAF6; }
+    .d1 .ph-header { background: #FFFAF6; }
+    .d1 .ph-logo { color: #2A211C; }
+    .d1 .ph-logo .dot { color: #D8482A; }
+    .d1 .ph-cta { background: #D8482A; color: #fff; }
+    .d1 .ph-hero { background: #FFFAF6; }
+    .d1 .ph-hero h2 { color: #2A211C; }
+    .d1 .ph-hero p { color: #6B5F58; }
+    .d1 .ph-hero-cta { background: #D8482A; color: #fff; }
+    .d1 .ph-section-label { color: #6B5F58; }
+    .d1 .ph-cards { background: #FFFAF6; }
+    .d1 .ph-card { background: #fff; }
+    .d1 .ph-card-name { color: #2A211C; }
+    .d1 .ph-card-meta { color: #6B5F58; }
+    .d1 .ph-bento { background: #FFFAF6; }
+    .d1 .ph-bento-num { color: #2A211C; }
+    .d1 .ph-bento-label { color: #6B5F58; }
+    .d1 .ph-footer { background: #F3E8DD; }
+    .d1 .ph-footer-text { color: #6B5F58; }
+    .d1 .ph-footer-logo { color: #D8482A; }
+
+    /* ───── DIRECTION 2 — APRICOT SUN ───── */
+    .d2 .preview { background: #FBF8F4; }
+    .d2 .ph-header { background: #FBF8F4; }
+    .d2 .ph-logo { color: #2F2926; }
+    .d2 .ph-cta { background: #E86A3C; color: #fff; }
+    .d2 .ph-hero { background: #FBF8F4; }
+    .d2 .ph-hero h2 { color: #2F2926; }
+    .d2 .ph-hero p { color: #756C66; }
+    .d2 .ph-hero-cta { background: #E86A3C; color: #fff; }
+    .d2 .ph-section-label { color: #756C66; }
+    .d2 .ph-cards { background: #FBF8F4; }
+    .d2 .ph-card { background: #fff; }
+    .d2 .ph-card-name { color: #2F2926; }
+    .d2 .ph-card-meta { color: #756C66; }
+    .d2 .ph-bento { background: #FBF8F4; }
+    .d2 .ph-bento-num { color: #2F2926; }
+    .d2 .ph-bento-label { color: #756C66; }
+    .d2 .ph-footer { background: #F3EDE6; }
+    .d2 .ph-footer-text { color: #756C66; }
+    .d2 .ph-footer-logo { color: #E86A3C; }
+
+    /* ───── DIRECTION 3 — BRONZE MODERN ───── */
+    .d3 .preview { background: #F9F6F2; }
+    .d3 .ph-header { background: #F9F6F2; }
+    .d3 .ph-logo { color: #292522; }
+    .d3 .ph-cta { background: #B45A2F; color: #fff; }
+    .d3 .ph-hero { background: #F9F6F2; }
+    .d3 .ph-hero h2 { color: #292522; }
+    .d3 .ph-hero p { color: #6E6660; }
+    .d3 .ph-hero-cta { background: #B45A2F; color: #fff; }
+    .d3 .ph-section-label { color: #6E6660; }
+    .d3 .ph-cards { background: #F9F6F2; }
+    .d3 .ph-card { background: #fff; }
+    .d3 .ph-card-name { color: #292522; }
+    .d3 .ph-card-meta { color: #6E6660; }
+    .d3 .ph-bento { background: #F9F6F2; }
+    .d3 .ph-bento-num { color: #292522; }
+    .d3 .ph-bento-label { color: #6E6660; }
+    .d3 .ph-footer { background: #EDE6DF; }
+    .d3 .ph-footer-text { color: #6E6660; }
+    .d3 .ph-footer-logo { color: #B45A2F; }
+  </style>
+</head>
+<body>
+  <h1>Solen · 3 color directions (council synthesis)</h1>
+  <p class="sub">
+    Built from LLM council convergence + research agent. All 4 past directions killed (forest green / pure yellow / current amber / teal anchor). All directions live on the WARM ARC (10°-25° hue), since the kill-list + avoid-list eliminate the rest of the wheel. Each preview: header → hero CTA → 2 salon cards w/ status badges → 1 dashboard chip → footer. Status colors (emerald/red/gold/blue) are LOCKED across all three — only the primary CTA + ink + canvas + soft surface change.
+  </p>
+
+  <div class="grid">
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <!-- DIRECTION 1 — PERSIMMON CORAL                                       -->
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <div class="col d1">
+      <div class="col-label">
+        <div class="name">A · Persimmon Coral</div>
+        <div class="pick">Council pick</div>
+      </div>
+      <div class="col-attrib">
+        Claude Opus pick. Warm coral, earthier than Airbnb's pink-tinted Rausch.<br/>
+        H: 13° · S: 69% · L: 51% · WCAG <strong>5.4:1</strong> on white
+      </div>
+      <div class="swatches">
+        <div class="swatch dark" style="background:#D8482A">#D8482A</div>
+        <div class="swatch dark" style="background:#2A211C">#2A211C</div>
+        <div class="swatch light" style="background:#FFFAF6">#FFFAF6</div>
+        <div class="swatch light" style="background:#F3E8DD">#F3E8DD</div>
+      </div>
+
+      <div class="preview">
+        <div class="ph-header">
+          <div class="ph-logo">Solen<span class="dot">.</span></div>
+          <button class="ph-cta">Anmelden</button>
+        </div>
+        <div class="ph-hero">
+          <h2>Cmon, book<br/>it already.</h2>
+          <p>Beauty &amp; Wellness in der Schweiz.</p>
+          <span class="ph-hero-cta">Solen durchsuchen</span>
+        </div>
+        <div class="ph-section-label">In der Nähe</div>
+        <div class="ph-cards">
+          <div class="ph-card">
+            <div class="ph-card-img"><span class="ph-card-badge">Jetzt frei</span></div>
+            <div class="ph-card-info">
+              <div class="ph-card-name">Studio Mira</div>
+              <div class="ph-card-meta">200m · Heute frei</div>
+            </div>
+          </div>
+          <div class="ph-card">
+            <div class="ph-card-img"><span class="ph-card-badge urgent">1 frei</span></div>
+            <div class="ph-card-info">
+              <div class="ph-card-name">Atelier Nine</div>
+              <div class="ph-card-meta">450m · 14:30</div>
+            </div>
+          </div>
+        </div>
+        <div class="ph-bento">
+          <div class="ph-bento-card">
+            <div>
+              <div class="ph-bento-num">47</div>
+              <div class="ph-bento-label">Buchungen heute</div>
+            </div>
+            <div class="ph-bento-chip">↑ 12%</div>
+          </div>
+        </div>
+        <div class="ph-footer">
+          <div class="ph-footer-text">© Solen AG</div>
+          <div class="ph-footer-logo">Solen</div>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span class="label">vs Airbnb:</span> earthier + Swiss-pastry warmth where Rausch is pink-tinted lipstick.<br/>
+        <span class="label">Why bright/friendly/warm/modern:</span> red-orange = pure warmth; mid-sat = friendly not aggressive; warm neutrals = inviting; ink+content discipline = modern.<br/>
+        <span class="risk"><strong>Risk:</strong> "Airbnb for salons" comparison on first glance. Great for comprehension, mediocre for differentiation.</span><br/>
+        <span class="label">Confidence:</span> HIGH (coral has 10+ years marketplace legs)
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <!-- DIRECTION 2 — APRICOT SUN                                           -->
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <div class="col d2">
+      <div class="col-label">
+        <div class="name">B · Apricot Sun</div>
+        <div class="pick" style="background:rgba(245,158,11,.15);color:#fbbf24">Brightest</div>
+      </div>
+      <div class="col-attrib">
+        Grok variant. Brighter, more citrus-leaning. Lightest of the 3.<br/>
+        H: 16° · S: 80% · L: 57% · WCAG <strong>4.6:1</strong> on white
+      </div>
+      <div class="swatches">
+        <div class="swatch dark" style="background:#E86A3C">#E86A3C</div>
+        <div class="swatch dark" style="background:#2F2926">#2F2926</div>
+        <div class="swatch light" style="background:#FBF8F4">#FBF8F4</div>
+        <div class="swatch light" style="background:#F3EDE6">#F3EDE6</div>
+      </div>
+
+      <div class="preview">
+        <div class="ph-header">
+          <div class="ph-logo">Solen<span style="color:#E86A3C">.</span></div>
+          <button class="ph-cta">Anmelden</button>
+        </div>
+        <div class="ph-hero">
+          <h2>Cmon, book<br/>it already.</h2>
+          <p>Beauty &amp; Wellness in der Schweiz.</p>
+          <span class="ph-hero-cta">Solen durchsuchen</span>
+        </div>
+        <div class="ph-section-label">In der Nähe</div>
+        <div class="ph-cards">
+          <div class="ph-card">
+            <div class="ph-card-img"><span class="ph-card-badge">Jetzt frei</span></div>
+            <div class="ph-card-info">
+              <div class="ph-card-name">Studio Mira</div>
+              <div class="ph-card-meta">200m · Heute frei</div>
+            </div>
+          </div>
+          <div class="ph-card">
+            <div class="ph-card-img"><span class="ph-card-badge urgent">1 frei</span></div>
+            <div class="ph-card-info">
+              <div class="ph-card-name">Atelier Nine</div>
+              <div class="ph-card-meta">450m · 14:30</div>
+            </div>
+          </div>
+        </div>
+        <div class="ph-bento">
+          <div class="ph-bento-card">
+            <div>
+              <div class="ph-bento-num">47</div>
+              <div class="ph-bento-label">Buchungen heute</div>
+            </div>
+            <div class="ph-bento-chip">↑ 12%</div>
+          </div>
+        </div>
+        <div class="ph-footer">
+          <div class="ph-footer-text">© Solen AG</div>
+          <div class="ph-footer-logo">Solen</div>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span class="label">vs Airbnb:</span> brighter and more citrus-leaning — Swiss-summer over global-travel.<br/>
+        <span class="label">Why bright/friendly/warm/modern:</span> highest lightness = literally feels bright; high sat = friendliest single accent; warm neutrals carry the warmth; ink + content discipline = modern.<br/>
+        <span class="risk"><strong>Risk:</strong> sits adjacent to killed amber (#E8A93D) — only 15° hue separation. On cheap screens orange can skew neon. Needs strict photo grading.</span><br/>
+        <span class="label">Confidence:</span> MEDIUM
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <!-- DIRECTION 3 — BRONZE MODERN                                         -->
+    <!-- ─────────────────────────────────────────────────────────────────── -->
+    <div class="col d3">
+      <div class="col-label">
+        <div class="name">C · Bronze Modern</div>
+        <div class="pick" style="background:rgba(180,90,47,.18);color:#d97706">Most distinct</div>
+      </div>
+      <div class="col-attrib">
+        Grok variant. Cooler, more muted bronze-brown. Swiss-craft, not global-travel.<br/>
+        H: 18° · S: 58% · L: 44% · WCAG <strong>5.2:1</strong> on white
+      </div>
+      <div class="swatches">
+        <div class="swatch dark" style="background:#B45A2F">#B45A2F</div>
+        <div class="swatch dark" style="background:#292522">#292522</div>
+        <div class="swatch light" style="background:#F9F6F2">#F9F6F2</div>
+        <div class="swatch light" style="background:#EDE6DF">#EDE6DF</div>
+      </div>
+
+      <div class="preview">
+        <div class="ph-header">
+          <div class="ph-logo">Solen<span style="color:#B45A2F">.</span></div>
+          <button class="ph-cta">Anmelden</button>
+        </div>
+        <div class="ph-hero">
+          <h2>Cmon, book<br/>it already.</h2>
+          <p>Beauty &amp; Wellness in der Schweiz.</p>
+          <span class="ph-hero-cta">Solen durchsuchen</span>
+        </div>
+        <div class="ph-section-label">In der Nähe</div>
+        <div class="ph-cards">
+          <div class="ph-card">
+            <div class="ph-card-img"><span class="ph-card-badge">Jetzt frei</span></div>
+            <div class="ph-card-info">
+              <div class="ph-card-name">Studio Mira</div>
+              <div class="ph-card-meta">200m · Heute frei</div>
+            </div>
+          </div>
+          <div class="ph-card">
+            <div class="ph-card-img"><span class="ph-card-badge urgent">1 frei</span></div>
+            <div class="ph-card-info">
+              <div class="ph-card-name">Atelier Nine</div>
+              <div class="ph-card-meta">450m · 14:30</div>
+            </div>
+          </div>
+        </div>
+        <div class="ph-bento">
+          <div class="ph-bento-card">
+            <div>
+              <div class="ph-bento-num">47</div>
+              <div class="ph-bento-label">Buchungen heute</div>
+            </div>
+            <div class="ph-bento-chip">↑ 12%</div>
+          </div>
+        </div>
+        <div class="ph-footer">
+          <div class="ph-footer-text">© Solen AG</div>
+          <div class="ph-footer-logo">Solen</div>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span class="label">vs Airbnb:</span> Cooler, more muted, more "Swiss-craft" than "global-marketplace."<br/>
+        <span class="label">Why bright/friendly/warm/modern:</span> bronze is still warm; high-key neutrals keep it bright; restraint via deep CTA + neutrals = modern; mid-tone = approachable friendly.<br/>
+        <span class="risk"><strong>Risk:</strong> reads "premium spa" or "luxury goods" if photography isn't kept everyday and colorful. Less bright than A or B.</span><br/>
+        <span class="label">Confidence:</span> HIGH (most distinct from the kill list; lowest drift risk)
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:32px;padding:24px;background:#141414;border-radius:16px;font-size:13px;color:#ccc;line-height:1.6;">
+    <strong style="color:#fff;font-family:'Outfit',sans-serif;font-size:16px;display:block;margin-bottom:10px;">Council ship-pick</strong>
+    <strong style="color:#34d399;">Claude Opus → A (Persimmon Coral).</strong> Reason: survives the kill-list cleanly (10°+ away from every banned neighbor), Airbnb pattern is proven at marketplace scale, no cultural friction across DE/FR/IT/EN.<br/><br/>
+    <strong style="color:#34d399;">Grok → A (Warm Terracotta = same family, #D3543A).</strong> Reason: balances 4-way vibe most reliably, lowest drift risk, passes WCAG cleanly.<br/><br/>
+    <strong style="color:#fbbf24;">Gemini → (response truncated mid-text)</strong> hinted at a contrarian cool "Iris" direction — explicitly off-table per kill-list (no blue primary per user research).<br/><br/>
+    <strong style="color:#fff;">My read:</strong> both council voices that gave full responses converged on the COR­AL/TERRACOTTA arc. Real choice is between <strong>A (safer + proven)</strong>, <strong>B (brightest + most "friendly" feel)</strong>, or <strong>C (most distinct from anything Solen has tried)</strong>. None of these has been tried before — all kill the past 4 cleanly.
+  </div>
+</body>
+</html>

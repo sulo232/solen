@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solen — type-swap variants (Uber-Move direction)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&family=Inter+Tight:wght@500;600;700;800&family=Geist:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Mona+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body {
+    margin: 0;
+    padding: 32px 16px;
+    background: #F5F5F4;
+    color: #0A0A0A;
+    line-height: 1.4;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+  .header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #E7E5E4;
+  }
+  .header h1 {
+    margin: 0 0 8px 0;
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .header p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 300;
+    color: #6B6B6B;
+    max-width: 820px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; } }
+  .variant {
+    background: white;
+    border: 1px solid #E7E5E4;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .variant-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid #E7E5E4;
+    background: #FAFAFA;
+  }
+  .variant-label {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6B6B6B;
+    margin-bottom: 4px;
+  }
+  .variant-name {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .variant-spec {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 400;
+    color: #6B6B6B;
+    line-height: 1.4;
+  }
+  .specimen { padding: 20px; }
+  .specimen + .specimen { border-top: 1px solid #F5F5F4; }
+  .specimen-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #6B6B6B;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  /* Variant A: Current Solen (Inter Tight + Hanken) */
+  .v-current { font-family: 'Hanken Grotesk', system-ui, sans-serif; }
+  .v-current .hero-h1,
+  .v-current .section-h2,
+  .v-current .salon-name,
+  .v-current .pdp-h1,
+  .v-current .price { font-family: 'Inter Tight', system-ui, sans-serif; }
+  .v-current .hero-h1 { font-weight: 800; }
+  .v-current .pdp-h1 { font-weight: 700; }
+  .v-current .section-h2 { font-weight: 600; }
+  .v-current .salon-name { font-weight: 600; }
+  .v-current .body { font-weight: 300; }
+  .v-current .cta { font-weight: 600; }
+
+  /* Variant B: Geist Sans (Vercel-issued, closest free analog to Uber Move) */
+  .v-geist { font-family: 'Geist', system-ui, sans-serif; }
+  .v-geist .hero-h1 { font-weight: 700; }
+  .v-geist .pdp-h1 { font-weight: 600; }
+  .v-geist .section-h2 { font-weight: 600; }
+  .v-geist .salon-name { font-weight: 500; }
+  .v-geist .body { font-weight: 400; }
+  .v-geist .cta { font-weight: 500; }
+
+  /* Variant C: Manrope (Uber-Move-style geometric) */
+  .v-manrope { font-family: 'Manrope', system-ui, sans-serif; }
+  .v-manrope .hero-h1 { font-weight: 700; }
+  .v-manrope .pdp-h1 { font-weight: 700; }
+  .v-manrope .section-h2 { font-weight: 600; }
+  .v-manrope .salon-name { font-weight: 500; }
+  .v-manrope .body { font-weight: 400; }
+  .v-manrope .cta { font-weight: 600; }
+
+  /* Per-role sizes (same across all variants for fair compare) */
+  .hero-h1 {
+    font-size: 38px;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin: 0;
+    color: #0A0A0A;
+  }
+  .hero-sub {
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: #6B6B6B;
+  }
+  .pdp-h1 {
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin: 0;
+    color: #0A0A0A;
+  }
+  .pdp-meta {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 13px;
+    color: #6B6B6B;
+  }
+  .pdp-meta strong { color: #0A0A0A; font-weight: 600; }
+  .pdp-meta .open { color: #16A34A; font-weight: 600; }
+  .pdp-meta .link { color: #276EF1; font-weight: 500; }
+  .section-h2 {
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px 0;
+    color: #0A0A0A;
+  }
+  .salon-card {
+    border: 1px solid #E7E5E4;
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .salon-thumb {
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #d4d4d4, #a3a3a3);
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  .salon-name {
+    font-size: 15px;
+    line-height: 1.25;
+    color: #0A0A0A;
+    margin: 0 0 4px 0;
+  }
+  .salon-rating {
+    font-size: 13px;
+    color: #6B6B6B;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .salon-rating .star { color: #FFC32B; }
+  .salon-rating .num { color: #0A0A0A; font-weight: 600; }
+  .body {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #0A0A0A;
+    margin: 0;
+  }
+  .price {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0A0A0A;
+  }
+  .duration { color: #6B6B6B; }
+  .service-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #F5F5F4;
+  }
+  .service-row .name { font-weight: 600; font-size: 15px; }
+  .service-row .meta { font-size: 13px; color: #6B6B6B; }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: #0A0A0A;
+    color: white;
+    border-radius: 99px;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .verdict {
+    margin-top: 32px;
+    padding: 24px 28px;
+    background: white;
+    border: 1px solid #E7E5E4;
+    border-radius: 16px;
+  }
+  .verdict h2 {
+    margin: 0 0 12px 0;
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .verdict h3 {
+    margin: 20px 0 8px 0;
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #0A0A0A;
+  }
+  .verdict p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 300;
+    color: #0A0A0A;
+    line-height: 1.55;
+  }
+  .verdict strong { font-weight: 600; }
+  .verdict ul { margin: 8px 0 0 0; padding-left: 20px; font-size: 13px; color: #6B6B6B; font-weight: 300; }
+  .verdict li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>Type-swap mockup: current vs Geist vs Manrope</h1>
+    <p>You said "the font should be like the Uber screenshot — text is too heavy everywhere right now." Same Solen content rendered in 3 type stacks. Same sizes, same line-heights — only family + weight changes. Pick one, then I tear through LOCKFILE + every clamp() in the codebase.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- VARIANT A: CURRENT -->
+    <div class="variant v-current">
+      <div class="variant-head">
+        <div class="variant-label">A · Current</div>
+        <div class="variant-name">Inter Tight + Hanken Grotesk</div>
+        <div class="variant-spec">Display 800 / body 300. Heavy display, lighter body. The "too heavy" you flagged comes from the 800 extrabold display weight on big headings.</div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">Hero (homepage)</div>
+        <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+        <p class="hero-sub">Such jeden Salon. Vergleich Preise. Buch direkt.</p>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">Salon PDP hero</div>
+        <h1 class="pdp-h1">Atelier Haarwerk</h1>
+        <div class="pdp-meta">
+          <span class="star" style="color:#FFC32B">★</span> <strong>4.8</strong> (4) · <span class="open">Geöffnet bis 18:00</span> · <span class="link">Wegbeschreibung</span>
+        </div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">Section + service row</div>
+        <h2 class="section-h2">Services</h2>
+        <div class="service-row">
+          <div>
+            <div class="name">Damen-Haarschnitt</div>
+            <div class="meta"><span class="duration">1 Std.</span></div>
+          </div>
+          <div class="price">ab&nbsp;85&nbsp;CHF</div>
+        </div>
+        <div class="service-row" style="border:none">
+          <div>
+            <div class="name">Coloration</div>
+            <div class="meta"><span class="duration">2 Std., 30 Min.</span></div>
+          </div>
+          <div class="price">ab&nbsp;180&nbsp;CHF</div>
+        </div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">Salon card + CTA</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end">
+          <div class="salon-card">
+            <div class="salon-thumb"></div>
+            <p class="salon-name">Le Coiffeur Paris Basel</p>
+            <div class="salon-rating"><span class="star">★</span> <span class="num">4.9</span> · 124</div>
+          </div>
+          <a href="#" class="cta">Jetzt buchen →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- VARIANT B: GEIST SANS -->
+    <div class="variant v-geist">
+      <div class="variant-head">
+        <div class="variant-label">B · Recommended</div>
+        <div class="variant-name">Geist Sans (single family)</div>
+        <div class="variant-spec">Display 700 / body 400. Vercel-issued. Geometric sans designed in the Helvetica + Uber-Move lineage. Variable weights, free on Google Fonts. Drops 2-font stack to 1.</div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">Hero (homepage)</div>
+        <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+        <p class="hero-sub">Such jeden Salon. Vergleich Preise. Buch direkt.</p>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">Salon PDP hero</div>
+        <h1 class="pdp-h1">Atelier Haarwerk</h1>
+        <div class="pdp-meta">
+          <span class="star" style="color:#FFC32B">★</span> <strong>4.8</strong> (4) · <span class="open">Geöffnet bis 18:00</span> · <span class="link">Wegbeschreibung</span>
+        </div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">Section + service row</div>
+        <h2 class="section-h2">Services</h2>
+        <div class="service-row">
+          <div>
+            <div class="name">Damen-Haarschnitt</div>
+            <div class="meta"><span class="duration">1 Std.</span></div>
+          </div>
+          <div class="price">ab&nbsp;85&nbsp;CHF</div>
+        </div>
+        <div class="service-row" style="border:none">
+          <div>
+            <div class="name">Coloration</div>
+            <div class="meta"><span class="duration">2 Std., 30 Min.</span></div>
+          </div>
+          <div class="price">ab&nbsp;180&nbsp;CHF</div>
+        </div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">Salon card + CTA</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end">
+          <div class="salon-card">
+            <div class="salon-thumb"></div>
+            <p class="salon-name">Le Coiffeur Paris Basel</p>
+            <div class="salon-rating"><span class="star">★</span> <span class="num">4.9</span> · 124</div>
+          </div>
+          <a href="#" class="cta">Jetzt buchen →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- VARIANT C: MANROPE -->
+    <div class="variant v-manrope">
+      <div class="variant-head">
+        <div class="variant-label">C</div>
+        <div class="variant-name">Manrope (single family)</div>
+        <div class="variant-spec">Display 700 / body 400. Open-source. Closer to Uber Move's softness — slightly rounder terminals, friendlier feel. Slightly less stark than Geist.</div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">Hero (homepage)</div>
+        <h1 class="hero-h1">Termin in 30 Sekunden.</h1>
+        <p class="hero-sub">Such jeden Salon. Vergleich Preise. Buch direkt.</p>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">Salon PDP hero</div>
+        <h1 class="pdp-h1">Atelier Haarwerk</h1>
+        <div class="pdp-meta">
+          <span class="star" style="color:#FFC32B">★</span> <strong>4.8</strong> (4) · <span class="open">Geöffnet bis 18:00</span> · <span class="link">Wegbeschreibung</span>
+        </div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">Section + service row</div>
+        <h2 class="section-h2">Services</h2>
+        <div class="service-row">
+          <div>
+            <div class="name">Damen-Haarschnitt</div>
+            <div class="meta"><span class="duration">1 Std.</span></div>
+          </div>
+          <div class="price">ab&nbsp;85&nbsp;CHF</div>
+        </div>
+        <div class="service-row" style="border:none">
+          <div>
+            <div class="name">Coloration</div>
+            <div class="meta"><span class="duration">2 Std., 30 Min.</span></div>
+          </div>
+          <div class="price">ab&nbsp;180&nbsp;CHF</div>
+        </div>
+      </div>
+      <div class="specimen">
+        <div class="specimen-label">Salon card + CTA</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end">
+          <div class="salon-card">
+            <div class="salon-thumb"></div>
+            <p class="salon-name">Le Coiffeur Paris Basel</p>
+            <div class="salon-rating"><span class="star">★</span> <span class="num">4.9</span> · 124</div>
+          </div>
+          <a href="#" class="cta">Jetzt buchen →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict">
+    <h2>My recommendation: B (Geist Sans)</h2>
+    <p>Closest free analog to Uber Move + already on the Vercel platform → no font-loading drama. <strong>Single family</strong> for the whole site (drops the 2-stack overhead — Inter Tight + Hanken Grotesk → just Geist). Headings sit at 700 instead of 800 = solves "too heavy" without dropping below readable. Body sits at 400 instead of 300 = restores natural-feeling reading weight (the 300 was a Hanken-specific compensation that read thin on lots of surfaces).</p>
+
+    <h3>What changes in the codebase if you pick B:</h3>
+    <ul>
+      <li><strong>1 file</strong>: `tailwind.config.js` — swap font families: display + heading + body all → `['Geist', ...]`</li>
+      <li><strong>1 file</strong>: `app/[locale]/layout.tsx` (or root) — add Geist font import via `next/font/google`</li>
+      <li><strong>~30 files</strong>: every `font-extrabold` (800) → `font-bold` (700); every `font-light` (300) → `font-normal` (400). Mechanical sed sweep.</li>
+      <li><strong>1 file</strong>: `_design-system/LOCKFILE.md` §2 — update the type table.</li>
+      <li><strong>Risk</strong>: low. Geist Sans renders cleanly on all Latin scripts (German umlauts, French accents, Italian).</li>
+    </ul>
+
+    <h3>If you pick C (Manrope) instead:</h3>
+    <p>Same scope of changes. Manrope is softer, more humanist — closer to current Hanken in attitude. Good for "warm + welcoming" brand voice. Geist is sharper + more product-tech.</p>
+
+    <h3>If you pick A (keep current):</h3>
+    <p>Just lighten weights across the board: 800 → 600, 700 → 500. ~30-file mechanical sed sweep, no font changes. Cheapest. Solves "too heavy" without identity shift.</p>
+
+    <p style="margin-top: 16px; font-size: 13px; color: #6B6B6B;"><strong>Look at the 3 panels side-by-side, pick the one that feels closest to your Uber reference, then I execute.</strong></p>
+  </div>
+
+</div>
+</body>
+</html>

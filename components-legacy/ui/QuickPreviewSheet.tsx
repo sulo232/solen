@@ -179,14 +179,14 @@ function SheetContent({
         <Link
           href={`/${locale}/salon/${salon.slug}`}
           onClick={onClose}
-          className="flex-1 py-3 rounded-pill border border-s-ink/10 text-sm font-medium text-s-ink text-center hover:border-s-coral/50 transition-colors"
+          className="flex-1 py-3 rounded-pill border border-s-ink/10 text-sm font-medium text-s-ink text-center hover:border-s-accent/50 transition-colors"
         >
           {t("showMore")}
         </Link>
         <Link
           href={`/${locale}/salon/${salon.slug}?book=true`}
           onClick={onClose}
-          className="flex-1 py-3 rounded-pill active:scale-[0.97] bg-s-coral text-white text-sm font-medium text-center shadow-elevation-2 hover:brightness-[1.06] transition-[transform,filter] duration-150"
+          className="flex-1 py-3 rounded-pill active:scale-[0.97] bg-s-ink text-white text-sm font-medium text-center shadow-elevation-2 hover:brightness-[1.06] transition-[transform,filter] duration-150"
         >
           {t("book")}
         </Link>

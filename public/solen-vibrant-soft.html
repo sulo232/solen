@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Solen — vibrant + soft · 4 button candidates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand:  #E58840;
+    --navy:   #142F4A;
+    --ink:    #1A1A1A;
+    --ink-2:  #4B4B4B;
+    --ink-3:  #8A8A8A;
+    --border-soft: rgba(0,0,0,0.06);
+    --hanken: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    --display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: var(--hanken); color: var(--ink); background: #ECECE7; -webkit-font-smoothing: antialiased; }
+  body { padding: 32px 16px 80px; min-height: 100vh; }
+
+  .pageHead { max-width: 920px; margin: 0 auto 32px; text-align: center; }
+  .pageHead h1 { font-family: var(--display); font-size: 28px; line-height: 1.12; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .pageHead p { font-size: 13px; line-height: 1.55; color: var(--ink-2); max-width: 64ch; margin: 0 auto; }
+
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; align-items: start; max-width: 1380px; margin: 0 auto; }
+  @media (max-width: 1100px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; max-width: 460px; } }
+
+  .col { background: white; border-radius: 14px; padding: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.04); }
+  .colHead { padding: 4px 4px 10px; }
+  .chip { display: inline-block; padding: 4px 9px; border-radius: 999px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+  .colHead h2 { font-family: var(--display); font-size: 14px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 2px; }
+  .colHead .hex { font-family: ui-monospace, "SF Mono", monospace; font-size: 10.5px; color: var(--ink-3); }
+  .colHead .note { font-size: 10px; color: var(--ink-3); margin-top: 4px; line-height: 1.4; }
+  .palette { display: flex; gap: 4px; margin-top: 6px; }
+  .palette .sw { width: 16px; height: 16px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); }
+
+  .phone { width: 100%; border-radius: 14px; overflow: hidden; background: white; border: 1px solid rgba(0,0,0,0.06); }
+  .banner { position: relative; width: 100%; background: var(--brand); color: white; }
+  .bannerInner { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 7px 12px 16px; }
+  .bannerText { font-size: 9px; font-weight: 600; }
+  .bannerPill { display: inline-flex; gap: 3px; background: white; color: var(--ink); padding: 2px 7px; border-radius: 999px; font-size: 9px; font-weight: 700; }
+  .bannerScoop { position: absolute; inset: auto 0 0 0; height: 9px; background: white; border-top-left-radius: 10px; border-top-right-radius: 10px; }
+  .topNav { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px 4px; background: white; }
+  .logo { font-family: var(--display); font-size: 14px; font-weight: 800; letter-spacing: -0.015em; }
+  .logo .dot { color: var(--brand); }
+  .heroSec { padding: 8px 12px 12px; background: white; }
+  .heroTitle { font-family: var(--display); font-size: 17px; line-height: 0.96; letter-spacing: -0.025em; font-weight: 700; margin-bottom: 8px; }
+  .heroTitle .accent { color: var(--brand); }
+  .searchCard { background: white; border-radius: 10px; padding: 5px; border: 1px solid var(--border-soft); box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .searchRow { padding: 6px 8px; font-size: 9px; color: var(--ink-3); border: 1px solid var(--border-soft); border-radius: 999px; }
+  .searchRow + .searchRow { margin-top: 3px; }
+  .searchBtn { width: 100%; padding: 9px; border: 0; border-radius: 999px; font-family: var(--hanken); font-size: 10.5px; font-weight: 700; margin-top: 5px; }
+
+  .listSec { padding: 10px 12px 14px; background: white; border-top: 1px solid var(--border-soft); }
+  .miniCard { display: flex; gap: 7px; align-items: center; }
+  .miniImg { width: 32px; height: 32px; border-radius: 6px; background: linear-gradient(135deg,#CCC,#EAEAEA); flex-shrink: 0; }
+  .miniBody { flex: 1; }
+  .miniName { font-size: 9px; font-weight: 700; }
+  .miniMeta { font-size: 8px; color: var(--ink-3); }
+  .miniAvail { font-size: 8px; font-weight: 600; padding: 1px 5px; border-radius: 999px; background: rgba(0,168,107,0.10); color: #1E7A4A; }
+
+  .notes { padding: 10px 4px 0; font-size: 10.5px; line-height: 1.5; color: var(--ink-2); }
+  .notes b { color: var(--ink); }
+  .pro { color: #1E7A4A; font-weight: 700; }
+  .con { color: #B33D2C; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header class="pageHead">
+  <h1>Vibrant + soft — 4 candidates</h1>
+  <p>Same orange banner, same search card. Just the "Solen durchsuchen" button color changes. Each candidate fits the vibrant-soft brief from a different hue family — soft yellow, soft peach, soft mint, soft sky.</p>
+</header>
+
+<div class="grid">
+
+  <!-- 1 · Honey butter (warm yellow) -->
+  <section class="col">
+    <header class="colHead">
+      <span class="chip" style="background:#F5C84D; color:#1A1A1A;">1 · Honey butter</span>
+      <h2>Vibrant yellow, warm</h2>
+      <div class="hex">#F5C84D</div>
+      <p class="note">Soft sunny yellow. Same warm family as orange so no temperature clash.</p>
+      <div class="palette"><span class="sw" style="background:#E58840"></span><span class="sw" style="background:#F5C84D"></span></div>
+    </header>
+    <div class="phone">
+      <div class="banner"><div class="bannerInner"><span class="bannerText">320 Buchungen heute</span><span class="bannerPill">Salons finden →</span></div><div class="bannerScoop"></div></div>
+      <div class="topNav"><div class="logo">Solen<span class="dot">.</span></div></div>
+      <div class="heroSec">
+        <h1 class="heroTitle"><span class="accent">Schöner</span> aussehen.</h1>
+        <div class="searchCard">
+          <div class="searchRow">Service</div>
+          <div class="searchRow">Stadt</div>
+          <button class="searchBtn" style="background:#F5C84D; color:#1A1A1A;">Solen durchsuchen</button>
+        </div>
+      </div>
+      <div class="listSec"><div class="miniCard"><div class="miniImg"></div><div class="miniBody"><div class="miniName">Le Studio</div><div class="miniMeta">★ 4.9 · Basel</div></div><span class="miniAvail">Heute frei</span></div></div>
+    </div>
+    <div class="notes">
+      <p><b class="pro">PRO:</b> warm-family with orange = harmony not clash; sunny + approachable</p>
+      <p><b class="con">CON:</b> yellow blends slightly into the orange band; button doesn't pop hard</p>
+    </div>
+  </section>
+
+  <!-- 2 · Soft peach -->
+  <section class="col">
+    <header class="colHead">
+      <span class="chip" style="background:#FFC089; color:#1A1A1A;">2 · Soft peach</span>
+      <h2>Pale warm, baby-soft</h2>
+      <div class="hex">#FFC089</div>
+      <p class="note">Lighter version of the brand orange. Friendly, hospitality-coded.</p>
+      <div class="palette"><span class="sw" style="background:#E58840"></span><span class="sw" style="background:#FFC089"></span></div>
+    </header>
+    <div class="phone">
+      <div class="banner"><div class="bannerInner"><span class="bannerText">320 Buchungen heute</span><span class="bannerPill">Salons finden →</span></div><div class="bannerScoop"></div></div>
+      <div class="topNav"><div class="logo">Solen<span class="dot">.</span></div></div>
+      <div class="heroSec">
+        <h1 class="heroTitle"><span class="accent">Schöner</span> aussehen.</h1>
+        <div class="searchCard">
+          <div class="searchRow">Service</div>
+          <div class="searchRow">Stadt</div>
+          <button class="searchBtn" style="background:#FFC089; color:#1A1A1A;">Solen durchsuchen</button>
+        </div>
+      </div>
+      <div class="listSec"><div class="miniCard"><div class="miniImg"></div><div class="miniBody"><div class="miniName">Le Studio</div><div class="miniMeta">★ 4.9 · Basel</div></div><span class="miniAvail">Heute frei</span></div></div>
+    </div>
+    <div class="notes">
+      <p><b class="pro">PRO:</b> same hue family as brand = ultra-cohesive; ultra-soft</p>
+      <p><b class="con">CON:</b> visually merges with orange banner; button vanishes (low affordance)</p>
+    </div>
+  </section>
+
+  <!-- 3 · Soft mint -->
+  <section class="col">
+    <header class="colHead">
+      <span class="chip" style="background:#A8DCC8; color:#1A1A1A;">3 · Soft mint</span>
+      <h2>Vibrant cool, calming</h2>
+      <div class="hex">#A8DCC8</div>
+      <p class="note">Pastel mint-jade. Complementary to orange. Spa/wellness register.</p>
+      <div class="palette"><span class="sw" style="background:#E58840"></span><span class="sw" style="background:#A8DCC8"></span></div>
+    </header>
+    <div class="phone">
+      <div class="banner"><div class="bannerInner"><span class="bannerText">320 Buchungen heute</span><span class="bannerPill">Salons finden →</span></div><div class="bannerScoop"></div></div>
+      <div class="topNav"><div class="logo">Solen<span class="dot">.</span></div></div>
+      <div class="heroSec">
+        <h1 class="heroTitle"><span class="accent">Schöner</span> aussehen.</h1>
+        <div class="searchCard">
+          <div class="searchRow">Service</div>
+          <div class="searchRow">Stadt</div>
+          <button class="searchBtn" style="background:#A8DCC8; color:#1A1A1A;">Solen durchsuchen</button>
+        </div>
+      </div>
+      <div class="listSec"><div class="miniCard"><div class="miniImg"></div><div class="miniBody"><div class="miniName">Le Studio</div><div class="miniMeta">★ 4.9 · Basel</div></div><span class="miniAvail">Heute frei</span></div></div>
+    </div>
+    <div class="notes">
+      <p><b class="pro">PRO:</b> pops against orange (complementary); spa/calm; distinctive</p>
+      <p><b class="con">CON:</b> pale mint visually adjacent to available-green pill = two greens on one card</p>
+    </div>
+  </section>
+
+  <!-- 4 · Soft sky -->
+  <section class="col">
+    <header class="colHead">
+      <span class="chip" style="background:#A8D5E5; color:#1A1A1A;">4 · Soft sky</span>
+      <h2>Vibrant cool, airy</h2>
+      <div class="hex">#A8D5E5</div>
+      <p class="note">Pastel sky blue. Different cool than ocean — softer, lighter, friendly.</p>
+      <div class="palette"><span class="sw" style="background:#E58840"></span><span class="sw" style="background:#A8D5E5"></span></div>
+    </header>
+    <div class="phone">
+      <div class="banner"><div class="bannerInner"><span class="bannerText">320 Buchungen heute</span><span class="bannerPill">Salons finden →</span></div><div class="bannerScoop"></div></div>
+      <div class="topNav"><div class="logo">Solen<span class="dot">.</span></div></div>
+      <div class="heroSec">
+        <h1 class="heroTitle"><span class="accent">Schöner</span> aussehen.</h1>
+        <div class="searchCard">
+          <div class="searchRow">Service</div>
+          <div class="searchRow">Stadt</div>
+          <button class="searchBtn" style="background:#A8D5E5; color:#1A1A1A;">Solen durchsuchen</button>
+        </div>
+      </div>
+      <div class="listSec"><div class="miniCard"><div class="miniImg"></div><div class="miniBody"><div class="miniName">Le Studio</div><div class="miniMeta">★ 4.9 · Basel</div></div><span class="miniAvail">Heute frei</span></div></div>
+    </div>
+    <div class="notes">
+      <p><b class="pro">PRO:</b> orange + sky-blue is the literal sunrise pairing; clear separation; calm</p>
+      <p><b class="con">CON:</b> cool family — you said no cool earlier, though this pastel sky is much softer than ocean blue. Worth flagging.</p>
+    </div>
+  </section>
+
+</div>
+
+<aside style="max-width: 920px; margin: 32px auto 0; background: white; border-radius: 16px; padding: 20px 22px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.05);">
+  <p style="font-family: var(--display); font-size: 14px; font-weight: 800; margin-bottom: 8px;">Tradeoff cheat sheet:</p>
+  <p style="font-size: 12px; line-height: 1.5; color: var(--ink-2);">
+    <b style="color:#1A1A1A;">Most vibrant + most distinct:</b> Soft mint #3 — pops against orange (complementary). Only collision = pale mint vs available-green pill.<br/>
+    <b style="color:#1A1A1A;">Most cohesive:</b> Honey butter #1 — same warm family, soft sunny.<br/>
+    <b style="color:#1A1A1A;">Strongest visual separation from banner:</b> Soft sky #4 — but introduces cool you may not want.<br/>
+    <b style="color:#1A1A1A;">Avoid:</b> Soft peach #2 — vanishes into the orange band, no button affordance.
+  </p>
+</aside>
+
+</body>
+</html>

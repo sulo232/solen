@@ -70,8 +70,8 @@ export default function ReportProblemModal({
                 onClick={() => setIssueType(type.id)}
                 className={`px-3 py-1.5 rounded-btn text-xs font-medium transition-colors border ${
                   isSelected
-                    ? "bg-s-coral text-white border-s-coral"
-                    : "bg-s-bg-surface text-s-ink border-s-ink/10 hover:border-s-coral/50"
+                    ? "bg-s-ink text-white border-s-accent"
+                    : "bg-s-bg-surface text-s-ink border-s-ink/10 hover:border-s-accent/50"
                 }`}
               >
                 {type.labelDe}
@@ -89,9 +89,9 @@ export default function ReportProblemModal({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Bitte beschreiben Sie detailliert, was vorgefallen ist..."
-          className="w-full min-h-[100px] bg-s-bg-sunken rounded-btn p-4 text-sm text-s-ink border border-s-ink/5 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
+          className="w-full min-h-[100px] bg-s-bg-sunken rounded-btn p-4 text-sm text-s-ink border border-s-ink/5 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 resize-none"
         />
-        {error && <p className="text-s-coral text-xs mt-2">{error}</p>}
+        {error && <p className="text-s-accent text-xs mt-2">{error}</p>}
       </div>
 
       <div className="flex justify-end gap-3 mt-4">
@@ -104,7 +104,7 @@ export default function ReportProblemModal({
         <div onClick={(!loading) ? handleSubmit : undefined}>
           <InteractiveHoverButton
             text={loading ? "Wird gemeldet..." : "Melden"}
-            className="bg-s-coral border-none text-white hover:brightness-[1.06]"
+            className="bg-s-ink border-none text-white hover:brightness-[1.06]"
           />
         </div>
       </div>

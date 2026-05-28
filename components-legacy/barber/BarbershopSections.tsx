@@ -77,8 +77,8 @@ export function BarbershopAboveGrid() {
             <p className="font-heading text-s-ink text-sm flex items-center gap-2">
               {t("walkin_teaser")}
               <span className="relative flex h-2.5 w-2.5 shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-pill bg-s-sage opacity-75" />
-                <span className="relative inline-flex rounded-pill h-2.5 w-2.5 bg-s-sage" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-pill bg-s-success opacity-75" />
+                <span className="relative inline-flex rounded-pill h-2.5 w-2.5 bg-s-success" />
               </span>
             </p>
             <p className="text-xs text-s-ink/50 font-body">
@@ -143,7 +143,7 @@ export function BarbershopBelowGrid() {
     <section className="pt-12 pb-4">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="font-heading text-[clamp(26px,3.5vw,44px)] tracking-[0.01em] text-s-ink">
+          <h2 className="font-heading text-[clamp(22px,2.8vw,26px)] tracking-[0.01em] text-s-ink">
             {t("roster_title")}
           </h2>
           <p className="text-sm text-s-ink/50 font-body mt-1">

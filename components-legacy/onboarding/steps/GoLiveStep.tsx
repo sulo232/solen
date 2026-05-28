@@ -36,8 +36,8 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
-          <Rocket size={22} className="text-s-coral" />
+        <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
+          <Rocket size={22} className="text-s-accent" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">
@@ -64,10 +64,10 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
             <div className="flex items-center gap-3">
               <div className={[
                 "w-6 h-6 rounded-full flex items-center justify-center transition-colors",
-                step.complete ? "bg-s-coral/10" : "bg-s-bg-sunken group-hover:bg-s-ink/5",
+                step.complete ? "bg-s-ink/10" : "bg-s-bg-sunken group-hover:bg-s-ink/5",
               ].join(" ")}>
                 {step.complete
-                  ? <Check size={12} className="text-s-coral" strokeWidth={3} />
+                  ? <Check size={12} className="text-s-accent" strokeWidth={3} />
                   : <X size={12} className="text-s-ink/20" />}
               </div>
               <p className={["text-sm", step.complete ? "text-s-ink" : "text-s-ink/40"].join(" ")}>
@@ -104,7 +104,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
               transition={{ duration: 0.8 }}
               className="flex justify-center mb-4"
             >
-              <PartyPopper size={48} className="text-s-coral" />
+              <PartyPopper size={48} className="text-s-accent" />
             </motion.div>
             <h2 className="font-heading text-2xl text-s-ink mb-2">
               {t("goLive.live")}
@@ -119,7 +119,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
       <button
         onClick={handleGoLive}
         disabled={!isCoreReady || going}
-        className="w-full py-4 rounded-btn active:scale-[0.97] bg-s-coral text-white text-base font-bold disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
+        className="w-full py-4 rounded-btn active:scale-[0.97] bg-s-ink text-white text-base font-bold disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
       >
         {going ? <Spinner size="sm" invert /> : <PartyPopper size={18} />}
         {t("goLive.activate")}

@@ -48,30 +48,30 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
 
       {/* Customer choice */}
       <button onClick={onCustomer}
-        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-[border-color,background-color,box-shadow] duration-150 text-left">
+        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] hover:border-s-accent/40 hover:bg-s-ink/[0.03] transition-[border-color,background-color,box-shadow] duration-150 text-left">
         <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0"
           style={{ background: "rgba(27, 77, 27,.10)" }}>
-          <User size={20} className="text-s-coral" />
+          <User size={20} className="text-s-accent" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-heading text-sm text-s-ink">Ich bin ein Kunde</p>
           <p className="text-[10px] font-body text-s-ink/45 mt-0.5">Salons entdecken und Termine buchen</p>
         </div>
-        <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors shrink-0" />
+        <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-accent transition-colors shrink-0" />
       </button>
 
       {/* Salon choice */}
       <button onClick={onSalon}
-        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-[border-color,background-color,box-shadow] duration-150 text-left">
+        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] hover:border-s-accent/40 hover:bg-s-ink/[0.03] transition-[border-color,background-color,box-shadow] duration-150 text-left">
         <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0"
           style={{ background: "rgba(243,168,100,.10)" }}>
-          <Building2 size={20} className="text-s-amber" />
+          <Building2 size={20} className="text-s-warning" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-heading text-sm text-s-ink">Ich bin Salon-Inhaber</p>
           <p className="text-[10px] font-body text-s-ink/45 mt-0.5">Meinen Salon registrieren und verwalten</p>
         </div>
-        <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors shrink-0" />
+        <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-accent transition-colors shrink-0" />
       </button>
     </div>
   );
@@ -141,10 +141,10 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       <div className="text-center py-6 flex flex-col items-center gap-4">
         <div className="w-14 h-14 rounded-[14px] flex items-center justify-center"
           style={{ background: "rgba(27, 77, 27,.10)" }}>
-          <Mail size={24} className="text-s-coral" />
+          <Mail size={24} className="text-s-accent" />
         </div>
         <div>
-          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-coral mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-accent mb-2">
             E-Mail gesendet
           </p>
           <p className="font-heading text-lg text-s-ink">Fast fertig!</p>
@@ -153,7 +153,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
           </p>
         </div>
         <button onClick={onNext}
-          className="text-[11px] font-heading uppercase tracking-[.06em] text-s-coral/60 hover:text-s-coral transition-colors mt-2">
+          className="text-[11px] font-heading uppercase tracking-[.06em] text-s-accent/60 hover:text-s-accent transition-colors mt-2">
           Weiter →
         </button>
       </div>
@@ -170,7 +170,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+        className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
       />
       <input
         type="password"
@@ -178,7 +178,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+        className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
       />
       
       {isSalon ? (
@@ -192,7 +192,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
             placeholder="z.B. Studio 54"
             value={salonName}
             onChange={(e) => setSalonName(e.target.value)}
-            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
           />
         </div>
       ) : (
@@ -205,7 +205,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
             required
             value={birthday}
             onChange={(e) => setBirthday(e.target.value)}
-            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
           />
         </div>
       )}
@@ -213,14 +213,14 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       <button
         type="submit"
         disabled={!email || !password || (isSalon ? !salonName : !birthday) || saving}
-        className="w-full py-4 rounded-pill bg-s-coral shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+        className="w-full py-4 rounded-pill bg-s-ink shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
         {saving && <Spinner size="sm" invert />}
         Registrieren
       </button>
 
       <p className="text-center text-xs text-s-ink/50 font-body mt-2">
         Du hast bereits ein Konto?{" "}
-        <a href="/auth/login" className="text-s-coral hover:underline">
+        <a href="/auth/login" className="text-s-accent hover:underline">
           Anmelden
         </a>
       </p>
@@ -279,7 +279,7 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
           placeholder="Avatar-URL (optional)"
           value={avatarUrl}
           onChange={(e) => setAvatarUrl(e.target.value)}
-          className="flex-1 px-3 py-2 rounded-input border border-s-ink/10 text-sm font-body text-s-ink bg-white outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] duration-150"
+          className="flex-1 px-3 py-2 rounded-input border border-s-ink/10 text-sm font-body text-s-ink bg-white outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] duration-150"
         />
       </div>
 
@@ -289,20 +289,20 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
         required
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="px-4 py-2.5 rounded-input border border-s-ink/10 text-sm font-body text-s-ink bg-white outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] duration-150"
+        className="px-4 py-2.5 rounded-input border border-s-ink/10 text-sm font-body text-s-ink bg-white outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] duration-150"
       />
       <textarea
         placeholder="Kurze Bio (optional)"
         value={bio}
         onChange={(e) => setBio(e.target.value)}
         rows={3}
-        className="px-4 py-2.5 rounded-input border border-s-ink/10 text-sm font-body text-s-ink bg-white outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] duration-150 resize-none"
+        className="px-4 py-2.5 rounded-input border border-s-ink/10 text-sm font-body text-s-ink bg-white outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] duration-150 resize-none"
       />
 
       <button
         type="submit"
         disabled={!name || saving}
-        className="w-full py-3 rounded-pill bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
+        className="w-full py-3 rounded-pill bg-s-ink text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
       >
         {saving && <Spinner size="sm" invert />}
         {tc("next")}
@@ -353,8 +353,8 @@ function SelectPill<T extends string>({
           className={[
             "flex items-center gap-2 px-3.5 py-2.5 rounded-pill border text-xs font-heading transition-[background-color,color,border-color] duration-150",
             value === o.value
-              ? "border-s-coral bg-s-coral/[0.08] text-s-coral font-bold"
-              : "border-s-ink/[0.08] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral",
+              ? "border-s-accent bg-s-ink/[0.08] text-s-accent font-bold"
+              : "border-s-ink/[0.08] text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent",
           ].join(" ")}
         >
           {o.icon}
@@ -412,14 +412,14 @@ function Step2({ onNext }: { onNext: () => void }) {
         <button
           type="button"
           onClick={onNext}
-          className="flex-1 py-3 rounded-pill border border-s-ink/10 text-sm font-body text-s-ink/60 hover:border-s-coral transition-[background-color,color,border-color] duration-150"
+          className="flex-1 py-3 rounded-pill border border-s-ink/10 text-sm font-body text-s-ink/60 hover:border-s-accent transition-[background-color,color,border-color] duration-150"
         >
           {tc("skip")}
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 py-3 rounded-pill bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
+          className="flex-1 py-3 rounded-pill bg-s-ink text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
         >
           {saving && <Spinner size="sm" invert />}
           {tc("next")}
@@ -493,15 +493,15 @@ function Step3({ onComplete }: { onComplete: () => void }) {
               onClick={() => toggle(o.value)}
               className={`relative flex flex-col items-center justify-center gap-2.5 p-4 rounded-input border transition-[transform,filter,border-color,background-color] duration-150 ${
                 active
-                  ? "border-s-coral bg-s-coral/[0.08]"
-                  : "border-s-ink/[0.07] hover:border-s-coral/40"
+                  ? "border-s-accent bg-s-ink/[0.08]"
+                  : "border-s-ink/[0.07] hover:border-s-accent/40"
               }`}>
               {active && (
-                <span className="absolute top-2 right-2 w-4 h-4 rounded-full bg-s-coral flex items-center justify-center">
+                <span className="absolute top-2 right-2 w-4 h-4 rounded-full bg-s-ink flex items-center justify-center">
                   <Check className="w-2.5 h-2.5 text-white" />
                 </span>
               )}
-              <span className={active ? "text-s-coral" : "text-s-ink/50"}>{o.icon}</span>
+              <span className={active ? "text-s-accent" : "text-s-ink/50"}>{o.icon}</span>
               <span className="text-[11px] font-heading text-s-ink">{o.label}</span>
             </button>
           );
@@ -512,14 +512,14 @@ function Step3({ onComplete }: { onComplete: () => void }) {
         <button
           type="button"
           onClick={onComplete}
-          className="flex-1 py-3 rounded-pill border border-s-ink/10 text-sm font-body text-s-ink/60 hover:border-s-coral transition-[background-color,color,border-color] duration-150"
+          className="flex-1 py-3 rounded-pill border border-s-ink/10 text-sm font-body text-s-ink/60 hover:border-s-accent transition-[background-color,color,border-color] duration-150"
         >
           {tc("skip")}
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 py-3 rounded-pill bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
+          className="flex-1 py-3 rounded-pill bg-s-ink text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
         >
           {saving && <Spinner size="sm" invert />}
           {tc("done")}
@@ -542,12 +542,12 @@ function DoneScreen() {
         transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
         className="w-16 h-16 rounded-[20px] flex items-center justify-center"
         style={{ background: "rgba(22,163,74,.12)" }}>
-        <PartyPopper size={28} className="text-s-sage" />
+        <PartyPopper size={28} className="text-s-success" />
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.15 }}>
-        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-sage mb-2">
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-success mb-2">
           Konto erstellt
         </p>
         <p className="font-heading text-xl text-s-ink">Willkommen bei solen.ch!</p>
@@ -557,7 +557,7 @@ function DoneScreen() {
       {/* Loading dots — opacity animation only */}
       <div className="flex gap-1.5 mt-1">
         {[0, 1, 2].map((i) => (
-          <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-s-coral"
+          <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-s-ink"
             animate={{ opacity: [0.3, 1, 0.3] }}
             transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.25 }} />
         ))}
@@ -624,12 +624,12 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         {/* Logo lockup */}
         <div className="text-center mb-6">
-          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-amber mb-3">
+          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-warning mb-3">
             solen.ch
           </p>
           <Link href={`/${locale}`}
             className="inline-block font-heading text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity">
-            solen<span className="text-s-coral">.</span>ch
+            solen<span className="text-s-accent">.</span>ch
           </Link>
         </div>
 
@@ -638,7 +638,7 @@ export default function RegisterPage() {
           <div className="mb-5 px-1">
             <div className="flex gap-1">
               {[1, 2, 3].map((s) => (
-                <div key={s} className={`flex-1 h-1 rounded-full transition-[width] duration-[350ms] ${(s as number) <= (step as number) ? "bg-s-coral" : "bg-s-ink/[0.08]"}`} />
+                <div key={s} className={`flex-1 h-1 rounded-full transition-[width] duration-[350ms] ${(s as number) <= (step as number) ? "bg-s-ink" : "bg-s-ink/[0.08]"}`} />
               ))}
             </div>
             <p className="text-right text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/50 mt-1.5">
@@ -692,7 +692,7 @@ export default function RegisterPage() {
               Bereits registriert?{" "}
             </span>
             <Link href={`/${locale}/auth/login`}
-              className="text-[11px] font-heading uppercase tracking-[.08em] text-s-coral hover:underline">
+              className="text-[11px] font-heading uppercase tracking-[.08em] text-s-accent hover:underline">
               Anmelden
             </Link>
           </p>

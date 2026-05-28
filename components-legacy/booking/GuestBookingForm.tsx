@@ -60,9 +60,9 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
           placeholder={t("namePlaceholder")}
           aria-invalid={!!errors.name}
           aria-describedby={errors.name ? "guest-name-error" : undefined}
-          className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+          className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
         />
-        {errors.name && <p id="guest-name-error" role="alert" className="text-xs text-s-coral mt-0.5">{errors.name}</p>}
+        {errors.name && <p id="guest-name-error" role="alert" className="text-xs text-s-accent mt-0.5">{errors.name}</p>}
       </div>
 
       <div>
@@ -76,9 +76,9 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
           placeholder={t("phonePlaceholder")}
           aria-invalid={!!errors.phone}
           aria-describedby={errors.phone ? "guest-phone-error" : undefined}
-          className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+          className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
         />
-        {errors.phone && <p id="guest-phone-error" role="alert" className="text-xs text-s-coral mt-0.5">{errors.phone}</p>}
+        {errors.phone && <p id="guest-phone-error" role="alert" className="text-xs text-s-accent mt-0.5">{errors.phone}</p>}
       </div>
 
       <div>
@@ -92,9 +92,9 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
           placeholder={t("emailPlaceholder")}
           aria-invalid={!!errors.email}
           aria-describedby={errors.email ? "guest-email-error" : undefined}
-          className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+          className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
         />
-        {errors.email && <p id="guest-email-error" role="alert" className="text-xs text-s-coral mt-0.5">{errors.email}</p>}
+        {errors.email && <p id="guest-email-error" role="alert" className="text-xs text-s-accent mt-0.5">{errors.email}</p>}
       </div>
 
       <p className="text-[10px] text-s-ink/60 text-center px-2 mt-4 mb-2">
@@ -104,7 +104,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
       <button
         onClick={handleSubmit}
         disabled={submitting}
-        className="w-full py-4 rounded-pill bg-s-coral shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50"
+        className="w-full py-4 rounded-pill bg-s-ink shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50"
       >
         {t("submit")}
       </button>

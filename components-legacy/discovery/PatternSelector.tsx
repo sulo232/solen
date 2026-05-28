@@ -48,8 +48,8 @@ export default function PatternSelector({ category, selected, onSelect }: Patter
             className={cn(
               "px-3 py-2 rounded-pill text-[10px] font-heading uppercase tracking-[.06em] whitespace-nowrap transition-[background-color,color,box-shadow] duration-150 border",
               selected === opt.value
-                ? "border-s-coral bg-s-coral/[0.08] text-s-coral"
-                : "border-s-ink/[0.07] text-s-ink/50 hover:border-s-coral/40"
+                ? "border-s-accent bg-s-ink/[0.08] text-s-accent"
+                : "border-s-ink/[0.07] text-s-ink/50 hover:border-s-accent/40"
             )}
           >
             {opt.label}

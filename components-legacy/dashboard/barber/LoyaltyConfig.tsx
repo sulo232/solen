@@ -77,7 +77,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
     <div className="rounded-[16px] bg-white border border-s-ink/5 p-4">
       <div className="flex items-center gap-2 mb-4">
         <Award size={18} className="text-s-coral" />
-        <h3 className="font-heading text-sm font-bold text-s-ink">{t("title")}</h3>
+        <h3 className="font-heading text-sm font-semibold text-s-ink">{t("title")}</h3>
       </div>
 
       <div className="space-y-3">

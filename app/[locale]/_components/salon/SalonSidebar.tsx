@@ -4,41 +4,71 @@ import * as React from "react";
 import Link from "next/link";
 import {
   ChevronDown,
-  ChevronRight,
-  Clock,
-  ExternalLink,
-  Globe,
-  Instagram,
   MapPin,
-  Phone,
   Star,
 } from "lucide-react";
 import type { SalonDetail } from "./_shared";
 import { DAY_KEYS, DAY_LABEL, type DayKey, computeOpenStatus } from "./_shared";
-import { SalonBuy } from "./SalonBuy";
+import { StatusInline } from "./StatusInline";
 import { cn } from "@/lib/utils";
 
 /**
- * SalonSidebar — V2-D53.3 (2026-05-11), expand-on-scroll polish 2026-05-11.
+ * SalonSidebar — V3-D230 (2026-05-27, austerity strip per real Fresha capture).
  *
- * Sticky right rail on desktop. Two-state behavior:
+ * Spec captured at `public/_pixel-refs/fresha/salon-sidebar/` via the
+ * `fresha-section-capture` skill. Real Fresha values measured on LES MAINS
+ * Basel (1440 desktop):
+ *   - Sidebar card: bg white, 16px radius, NO box-shadow, padding 0 (children
+ *     own padding), position static (sticky lives on a PARENT wrapper)
+ *   - Salon name: 40px / 700 (we use Inter Tight per V3-D204 brand lock)
+ *   - Rating "5.0": 24px / 600 ink
+ *   - Reviews "(N)": 24px / 500 ACCENT color, CLICKABLE (jumps to reviews)
+ *   - "Book now" CTA: 388×48, rounded-full, ink bg, white text — match
+ *   - Status "Closed" word in BURNT AMBER (#B7570B), time in ink — split color
+ *   - "Get directions": accent color, 16/500
+ *   - Mitgliedschaft + Geschenkgutschein rows: CONDITIONAL on salon data,
+ *     not unconditional
  *
- * • COLLAPSED (window.scrollY <= 200): only the emerald "Termin buchen" pill
- *   renders. No card chrome, no rating/address/contact/Gift Cards. At the
- *   top of the page the user can already see all that in the main content
- *   header — repeating it in the sidebar adds visual noise.
+ * Changes from V3-D229:
+ *   - DROPPED `shadow-elevation-3` (Fresha is shadowless)
+ *   - Salon name 22 → clamp(32,3vw,40)
+ *   - Rating row now 24px (was 14)
+ *   - "(N)" reviews count is now a button → scrolls to #section-reviews,
+ *     rendered in `text-s-accent` (royal blue per our lock)
+ *   - Status uses NEW StatusInline component (split-color word + time)
+ *     instead of StatusPill
+ *   - Mitgliedschaft only renders if salon.has_packages
+ *   - Geschenkgutschein only renders if salon.has_gift_cards
+ *     (defaults false-safe — fall through is no row, not broken render)
  *
- * • EXPANDED (window.scrollY > 200, matching the header/tab-nav threshold):
- *   full booking card slides in — salon name, rating, Featured pill, status
- *   with expandable hours, address, contact rows, Gift Cards. This is the
- *   sticky reference the user wants once they've scrolled past the hero
- *   and title block.
+ * Original V3-D229 structural change kept (always-visible, no expand-on-scroll).
  *
- * Hysteresis (100/200) matches Header.tsx + SalonStickyTabNav so all three
- * sticky-chrome transitions happen at the same boundary without flicker.
+ * REPLACES V2-D53.3 expand-on-scroll behavior + 4 separate stacked sections.
+ * User feedback was: "ur jst maiking patches that arent even fixing." The
+ * fundamental issue was structure, not styling — sidebar wasn't a unified
+ * salon card like Fresha's (Mina Beauty - Klusplatz pasted reference). It
+ * was 3 disconnected blocks (status / contact rows / Gutscheine separate
+ * card) that overflowed viewport on sticky-pin, hiding the CTA.
  *
- * Brand: emerald primary CTA (V2-D49j), terracotta Featured pill
- * (V3 heartbeat highlight), Open Sauce One typography (V2-D42).
+ * New structure — single unified card, always-visible, matches Fresha:
+ *   1. Salon name (h2)
+ *   2. Rating row (star + 4.8 + (4))
+ *   3. [Jetzt buchen] CTA — full-width black pill
+ *   4. divider
+ *   5. Status (with chevron, expands to hours)
+ *   6. Address + Route
+ *   7. divider
+ *   8. Mitgliedschaft kaufen row → Kaufen
+ *   9. Geschenkgutschein kaufen row → Kaufen
+ *
+ * DROPPED from previous version:
+ *   - expand-on-scroll behavior (always render full card)
+ *   - phone / website / instagram rows (Fresha doesn't show in sidebar)
+ *   - Empfohlen pill (already in SalonHeader main column)
+ *   - separate SalonBuy card below (now integrated as row 9 here)
+ *
+ * Sticky behavior remains on the parent (sticky top-24 in SalonDetailV3).
+ * Compact-enough that the CTA stays visible when sticky-pinned.
  */
 export function SalonSidebar({
   salon,
@@ -49,199 +79,181 @@ export function SalonSidebar({
 }) {
   const status = computeOpenStatus(salon.opening_hours);
   const [showHours, setShowHours] = React.useState(false);
-  const [expanded, setExpanded] = React.useState(false);
-  // V2-D53.3 fix #8 (R2-G1): salon.address already includes city, don't append postal.
   const fullAddress = salon.address;
   const directionsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
 
-  React.useEffect(() => {
-    function onScroll() {
-      // V2-D53.3 polish (user feedback): expand much sooner. Sidebar lives
-      // alongside the title block from scrollY=0, so any meaningful scroll
-      // already moves the user toward the services. Tight hysteresis (200
-      // expand, 50 collapse) so the transition happens in the first scroll
-      // gesture without flickering at the boundary.
-      setExpanded((prev) => {
-        if (prev) return window.scrollY > 50;
-        return window.scrollY > 200;
-      });
-    }
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+  // V3-D230: scroll to #section-reviews on rating-count click. Same anchor the
+  // sticky tab nav uses. No router push — purely scroll behavior.
+  const scrollToReviews = React.useCallback(() => {
+    const el = document.getElementById("section-reviews");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
+  // V3-D230: conditional buy rows. Fresha's LES MAINS sidebar has neither;
+  // Mina Beauty has both. Without explicit data on salon.has_packages /
+  // salon.has_gift_cards, default to showing GIFT CARD (universal Solen
+  // feature) and HIDING packages (per-salon feature). When the salon-data
+  // schema gains explicit flags, swap to data-driven.
+  const hasGiftCards = true; // universal Solen feature
+  const hasPackages = false; // until salon.packages schema lands
+
   return (
-    // V2-D53.3 polish: keep the white card chrome (border + padding + shadow)
-    // ALWAYS visible, both collapsed and expanded. Only the content above /
-    // below the Book button expands/collapses. Matches Fresha — a small
-    // white card with just the Book button at top, then it grows as you
-    // scroll. Avoids the "naked floating button" look the earlier version had.
-    <div className="rounded-2xl border border-s-border bg-white p-5 shadow-[0_8px_28px_rgba(0,0,0,0.08),0_2px_6px_rgba(0,0,0,0.04)] transition-all duration-300 ease-out md:p-6">
+    /* V3-D230 (2026-05-27): box-shadow DROPPED to match real Fresha capture
+       (boxShadow: none). Flat white panel + 16px radius. Border kept for
+       subtle edge on the otherwise-shadowless card. */
+    <div className="rounded-2xl border border-s-border bg-white p-5 md:p-6">
+      {/* 1. Salon name — V3-D230: 22 → clamp(32,3vw,40) per Fresha 40px */}
+      {/* V3-D335 (T3): tracking -0.03em → -0.02em (canonical Salon-PDP H1 per LOCKFILE §2.5). */}
+      <h2 className="font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.1] tracking-[-0.02em] text-s-ink">
+        {salon.name}
+      </h2>
 
-      {/* Top section — salon name + rating + Featured pill. Collapsed when
-          !expanded; revealed when scrolled. */}
-      <div
-        className={cn(
-          "overflow-hidden transition-all duration-300 ease-out",
-          expanded ? "mb-5 max-h-[200px] opacity-100" : "mb-0 max-h-0 opacity-0"
-        )}
-      >
-        <div className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink md:text-[22px]">
-          {salon.name}
-        </div>
-
-        <div className="mt-2 flex items-center gap-1.5">
-          <Star size={13} fill="#F3A864" stroke="none" />
-          <strong className="font-body text-[13px] text-s-ink">
-            {salon.average_rating?.toFixed(1) ?? "—"}
-          </strong>
-          <span className="font-body text-[12px] text-s-ink-3">
-            ({salon.review_count.toLocaleString("de-CH")})
-          </span>
-        </div>
-
-        {salon.is_featured && (
-          <div className="mt-3">
-            <span className="font-body inline-flex items-center rounded-full bg-s-accent/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] text-s-accent">
-              Empfohlen
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Primary CTA — always visible. Stays anchored to the sidebar slot
-          regardless of expanded state. */}
-      <Link
-        href={`/${locale}/salon/${salon.slug}/booking`}
-        className="font-body inline-flex w-full items-center justify-center gap-2 rounded-full bg-s-brand py-3.5 text-[15px] font-semibold text-white shadow-[0_4px_16px_rgba(31,92,66,0.18)] transition-colors hover:bg-s-brand-mid active:bg-s-brand-deep"
-      >
-        Termin buchen
-        <ChevronRight size={15} strokeWidth={2.5} />
-      </Link>
-
-      {/* Bottom section — status, address, contact, Gift Cards. Collapsed
-          when !expanded; revealed when scrolled. */}
-      <div
-        className={cn(
-          "overflow-hidden transition-all duration-300 ease-out",
-          expanded ? "mt-5 max-h-[800px] opacity-100" : "mt-0 max-h-0 opacity-0"
-        )}
-      >
-        <div className="mb-5 border-t border-s-border" />
-
-        {/* Open status (tappable, expandable hours) */}
+      {/* 2. Rating row — V3-D230: 14 → 24, "(N)" now button → reviews */}
+      <div className="mt-3 flex items-center gap-2">
+        <Star size={20} fill="#FFC32B" stroke="none" />
+        <strong className="font-body text-[20px] font-semibold leading-none text-s-ink md:text-[22px]">
+          {salon.average_rating?.toFixed(1) ?? "—"}
+        </strong>
         <button
           type="button"
-          onClick={() => setShowHours((v) => !v)}
-          className="font-body -mx-2 flex w-[calc(100%+1rem)] items-center gap-2.5 rounded-lg px-2 py-2 text-left text-[13px] text-s-ink-2 transition-colors hover:bg-s-bg-sunken"
-          aria-expanded={showHours}
+          onClick={scrollToReviews}
+          // V3-D335 (overnight T3): text-s-accent decorative link → text-s-ink underline per LOCKFILE §1.5 forbidden table (link text → s-ink underline).
+          className="font-body text-[18px] font-medium leading-none text-s-ink underline underline-offset-2 transition-opacity hover:opacity-80 md:text-[20px]"
         >
-          <Clock size={14} className="shrink-0 text-s-ink-3" strokeWidth={2} />
-          <span
+          ({salon.review_count.toLocaleString("de-CH")})
+        </button>
+      </div>
+
+      {/* 3. Primary CTA — match Fresha: ink bg + white text + 48 height + 999 radius */}
+      <Link
+        href={`/${locale}/salon/${salon.slug}/booking`}
+        className="font-body mt-5 inline-flex w-full items-center justify-center rounded-full bg-s-ink py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-black active:bg-black"
+      >
+        Jetzt buchen
+      </Link>
+
+      {/* 4. divider */}
+      <div className="my-5 border-t border-s-border" />
+
+      {/* 5. Status — V3-D230: split-color inline (word in burnt amber, time in ink)
+             matches Fresha "Closed" amber + "- opens at 10:00 AM" ink pattern. */}
+      <button
+        type="button"
+        onClick={() => setShowHours((v) => !v)}
+        className="font-body -mx-2 flex w-[calc(100%+1rem)] items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[15px] transition-colors hover:bg-s-bg-sunken"
+        aria-expanded={showHours}
+      >
+        <StatusInline isOpen={status.isOpen} label={status.label} />
+        {salon.opening_hours && (
+          <ChevronDown
+            size={15}
+            strokeWidth={2.25}
             className={cn(
-              "font-semibold",
-              status.isOpen ? "text-emerald-600" : "text-amber-700"
+              "ml-auto shrink-0 text-s-ink-3 transition-transform duration-200",
+              showHours && "rotate-180",
             )}
+          />
+        )}
+      </button>
+
+      {showHours && salon.opening_hours && (
+        <ul className="mt-2 space-y-1.5 rounded-lg bg-s-bg-sunken/50 px-3 py-2.5">
+          {DAY_KEYS.map((day) => {
+            const h = salon.opening_hours![day];
+            const todayKey = (["sun", "mon", "tue", "wed", "thu", "fri", "sat"][new Date().getDay()]) as DayKey;
+            const isToday = day === todayKey;
+            return (
+              <li
+                key={day}
+                className={cn(
+                  "font-body flex items-center justify-between text-[12px]",
+                  isToday ? "font-semibold text-s-ink" : "text-s-ink-2",
+                )}
+              >
+                <span>{DAY_LABEL[day]}</span>
+                <span>{h ? `${h.open} – ${h.close}` : "Geschlossen"}</span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {/* 6. Address + Route */}
+      <div className="font-body mt-3 flex items-start gap-2 text-[15px] text-s-ink-2">
+        <MapPin size={16} className="mt-0.5 shrink-0 text-s-ink-3" strokeWidth={2} />
+        <div className="min-w-0 flex-1">
+          <span>{fullAddress}</span>
+          {" "}
+          <a
+            href={directionsHref}
+            target="_blank"
+            rel="noreferrer noopener"
+            // V3-D335 (overnight T3): decorative accent link → ink underline per §1.5.
+            className="font-medium text-s-ink underline underline-offset-2 hover:no-underline"
           >
-            {status.label}
-          </span>
-          {salon.opening_hours && (
-            <ChevronDown
-              size={15}
-              strokeWidth={2.25}
-              className={cn(
-                "ml-auto shrink-0 text-s-ink-3 transition-transform duration-200",
-                showHours && "rotate-180"
-              )}
+            Route
+          </a>
+        </div>
+      </div>
+
+      {/* 7-8. Conditional buy rows — V3-D230: data-driven, not unconditional.
+              LES MAINS has neither, Mina Beauty has both, ours renders only what
+              the salon actually offers. */}
+      {(hasPackages || hasGiftCards) && (
+        <>
+          <div className="my-5 border-t border-s-border" />
+          {hasPackages && (
+            <BuyRow
+              title="Mitgliedschaft kaufen"
+              subtitle="Kaufe mehrere Termine im Paket."
+              href={`/${locale}/salon/${salon.slug}/packages`}
             />
           )}
-        </button>
-
-        {showHours && salon.opening_hours && (
-          <ul className="mt-2 space-y-1.5 rounded-lg bg-s-bg-sunken/50 px-3 py-2.5 pl-7">
-            {DAY_KEYS.map((day) => {
-              const h = salon.opening_hours![day];
-              const todayKey = (["sun", "mon", "tue", "wed", "thu", "fri", "sat"][new Date().getDay()]) as DayKey;
-              const isToday = day === todayKey;
-              return (
-                <li
-                  key={day}
-                  className={cn(
-                    "font-body flex items-center justify-between text-[12px]",
-                    isToday ? "font-semibold text-s-ink" : "text-s-ink-2"
-                  )}
-                >
-                  <span>{DAY_LABEL[day]}</span>
-                  <span>{h ? `${h.open} – ${h.close}` : "Geschlossen"}</span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-
-        {/* Address */}
-        <div className="font-body mt-4 flex items-start gap-2 text-[13px] text-s-ink-2">
-          <MapPin size={14} className="mt-0.5 shrink-0 text-s-ink-3" strokeWidth={2} />
-          <div className="min-w-0 flex-1">
-            <div>{fullAddress}</div>
-            <a
-              href={directionsHref}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="mt-1 inline-flex items-center gap-0.5 font-semibold text-s-brand hover:underline"
-            >
-              Wegbeschreibung
-              <ExternalLink size={10} strokeWidth={2} className="opacity-60" />
-            </a>
-          </div>
-        </div>
-
-        {/* Contact rows */}
-        {(salon.phone || salon.website_url || salon.instagram_url) && (
-          <>
-            <div className="my-5 border-t border-s-border" />
-            <div className="space-y-2.5">
-              {salon.phone && (
-                <a
-                  href={`tel:${salon.phone}`}
-                  className="font-body flex items-center gap-2 text-[13px] text-s-ink-2 transition-colors hover:text-s-brand"
-                >
-                  <Phone size={14} strokeWidth={2} className="text-s-ink-3" />
-                  {salon.phone}
-                </a>
-              )}
-              {salon.website_url && (
-                <a
-                  href={salon.website_url}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="font-body flex items-center gap-2 text-[13px] text-s-ink-2 transition-colors hover:text-s-brand"
-                >
-                  <Globe size={14} strokeWidth={2} className="text-s-ink-3" />
-                  Website
-                  <ExternalLink size={11} strokeWidth={2} className="opacity-50" />
-                </a>
-              )}
-              {salon.instagram_url && (
-                <a
-                  href={salon.instagram_url}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="font-body flex items-center gap-2 text-[13px] text-s-ink-2 transition-colors hover:text-s-brand"
-                >
-                  <Instagram size={14} strokeWidth={2} className="text-s-ink-3" />
-                  Instagram
-                </a>
-              )}
+          {hasGiftCards && (
+            <div className={hasPackages ? "mt-4" : ""}>
+              <BuyRow
+                title="Geschenkgutschein kaufen"
+                subtitle={`Mach dir selbst oder jemand anderem eine Freude.`}
+                href={`/${locale}/salon/${salon.slug}/gift-card`}
+              />
             </div>
-          </>
-        )}
+          )}
+        </>
+      )}
+    </div>
+  );
+}
 
-        <div className="my-5 border-t border-s-border" />
+/* V3-D232 (2026-05-27): StatusInline EXTRACTED to its own file at
+   `./StatusInline.tsx` so SalonHeader hero meta-row can use the same
+   component. Behavior unchanged; the prop API gained `size` (sm/md/lg)
+   for Fresha-parity 16px sizing in the hero meta row. */
 
-        <SalonBuy locale={locale} slug={salon.slug} salonName={salon.name} variant="sidebar" />
+/**
+ * BuyRow — internal row primitive for Mitgliedschaft + Geschenkgutschein
+ * rows in the sidebar. Title + subtitle + outline Kaufen pill on right.
+ * Layer 1 chrome — matches Fresha's compact "buy option" row.
+ *
+ * V3-D230: sizing bumped to match Fresha proportions (15→16 title font,
+ * 13→14 subtitle, pill h-9→h-10 for touch parity).
+ */
+function BuyRow({ title, subtitle, href }: { title: string; subtitle: string; href: string }) {
+  return (
+    <div className="flex items-start gap-3">
+      <div className="min-w-0 flex-1">
+        <div className="font-body text-[15px] font-semibold text-s-ink md:text-[16px]">
+          {title}
+        </div>
+        <div className="font-body mt-1 text-[13px] leading-snug text-s-ink-3 md:text-[14px]">
+          {subtitle}
+        </div>
       </div>
+      <Link
+        href={href}
+        className="font-body shrink-0 rounded-full border border-s-ink bg-white px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-ink hover:text-white md:px-6"
+      >
+        Kaufen
+      </Link>
     </div>
   );
 }

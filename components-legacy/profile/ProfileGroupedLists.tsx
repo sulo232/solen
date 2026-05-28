@@ -65,7 +65,7 @@ export default function ProfileGroupedLists({ groups, className }: ProfileGroupe
                   "flex items-center justify-between gap-3 px-4 py-3.5 min-h-[48px]",
                   ri < group.rows.length - 1 ? "border-b border-s-ink/[0.06]" : "",
                   "transition-colors duration-150 hover:bg-s-bg-sunken/60",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 focus-visible:rounded-[8px]",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 focus-visible:rounded-[8px]",
                 ].join(" ")}
               >
                 <span className="flex items-center gap-3 min-w-0">

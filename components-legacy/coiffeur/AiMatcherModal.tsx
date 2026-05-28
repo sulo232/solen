@@ -127,7 +127,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
         {/* Progress bar */}
         <div className="h-1 bg-s-ink/5">
           <div
-            className="h-full bg-s-coral transition-[width] duration-[350ms] ease-out"
+            className="h-full bg-s-ink transition-[width] duration-[350ms] ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -135,7 +135,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-5 pb-4">
           <div className="flex items-center gap-2">
-            <Sparkles size={18} className="text-s-coral" />
+            <Sparkles size={18} className="text-s-accent" />
             <span className="font-heading text-s-ink text-sm tracking-[0.1em] uppercase">
               {t("ai_badge")}
             </span>
@@ -181,8 +181,8 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
                     aria-label={opt.value}
                     className={`px-4 py-2 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[background-color,border-color,color,box-shadow] duration-150 ${
                       selected === opt.value
-                        ? "bg-s-coral text-white border-s-coral shadow-warm-sm"
-                        : "bg-s-bg-surface text-s-ink/70 border-s-ink/10 hover:border-s-coral"
+                        ? "bg-s-ink text-white border-s-accent shadow-warm-sm"
+                        : "bg-s-bg-surface text-s-ink/70 border-s-ink/10 hover:border-s-accent"
                     }`}
                   >
                     {opt.value}
@@ -195,7 +195,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
                 onClick={handleNext}
                 disabled={!selected}
                 aria-label={step < STEPS.length - 1 ? t("next") : t("show_result")}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-pill active:scale-[0.97] bg-s-coral text-white font-heading uppercase tracking-[.04em] text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-pill active:scale-[0.97] bg-s-ink text-white font-heading uppercase tracking-[.04em] text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
               >
                 {step < STEPS.length - 1 ? t("next") : t("show_result")}
                 <ChevronRight size={16} />
@@ -207,8 +207,8 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               className="text-center py-4"
               style={{ animation: "fadeSlideIn 0.4s var(--ease, ease) both" }}
             >
-              <div className="w-14 h-14 rounded-pill bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
-                <Sparkles size={26} className="text-s-coral" />
+              <div className="w-14 h-14 rounded-pill bg-s-ink/10 flex items-center justify-center mx-auto mb-4">
+                <Sparkles size={26} className="text-s-accent" />
               </div>
               <h2 className="font-heading text-xl text-s-ink mb-2">
                 {t("result_heading")}
@@ -219,7 +219,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               <Link
                 href={`/${locale}/coiffeur?q=${encodeURIComponent(searchQuery.trim())}`}
                 onClick={onClose}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-pill active:scale-[0.97] bg-s-coral text-white font-heading uppercase tracking-[.04em] text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-pill active:scale-[0.97] bg-s-ink text-white font-heading uppercase tracking-[.04em] text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
               >
                 {t("result_cta")} <ChevronRight size={16} />
               </Link>

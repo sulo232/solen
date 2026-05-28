@@ -83,7 +83,8 @@ export function SalonVenuesNearby({
   if (loading) {
     return (
       <section>
-        <h2 className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink md:text-[22px]">
+        {/* V3-D202 (A18): font-body → font-display + Scale B. */}
+        <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
           In der Nähe
         </h2>
         <div className="mt-5 flex gap-4 overflow-hidden">
@@ -100,7 +101,8 @@ export function SalonVenuesNearby({
   return (
     <section>
       <div className="flex items-center justify-between">
-        <h2 className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink md:text-[22px]">
+        {/* V3-D202 (A18): font-body → font-display + Scale B. */}
+        <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
           In der Nähe
         </h2>
         {/* Desktop arrow buttons */}
@@ -152,12 +154,13 @@ export function SalonVenuesNearby({
                 {s.name}
               </div>
               <div className="mt-1 flex items-center gap-1 text-[12px] text-s-ink-3">
-                <Star size={11} fill="#F3A864" stroke="none" />
+                <Star size={11} fill="#FFC32B" stroke="none" />
                 <span>{s.average_rating?.toFixed(1) ?? "—"}</span>
                 {s.review_count !== undefined && <span>({s.review_count})</span>}
               </div>
               {s.categories?.[0] && (
-                <div className="mt-1 text-[11px] uppercase tracking-[0.04em] text-s-ink-3">
+                /* V3-D335 (T3): tracking 0.04em → 0.08em (canonical Tag/Status per §2.5). */
+                <div className="mt-1 text-[11px] uppercase tracking-[0.08em] text-s-ink-3">
                   {capitalize(s.categories[0])}
                 </div>
               )}

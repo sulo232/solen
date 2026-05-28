@@ -106,21 +106,21 @@ const CancelModal = memo(function CancelModal({
             onChange={(e) => setReason(e.target.value)}
             rows={2}
             placeholder={t("reasonPlaceholder")}
-            className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors resize-none"
+            className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors resize-none"
           />
         </div>
 
         <div className="flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
           >
             {t("cancel")}
           </button>
           <button
             onClick={handleCancel}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-elevation-2"
+            className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-elevation-2"
           >
             {loading && <Spinner size="sm" invert />}
             {t("confirmCancel")}
@@ -184,7 +184,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
       {/* Referral invite banner */}
       <div className="flex items-center gap-3 p-3 rounded-[10px]"
         style={{ background: "rgba(27, 77, 27,.06)", border: "1px solid rgba(27, 77, 27,.15)" }}>
-        <Gift className="w-5 h-5 text-s-coral shrink-0" />
+        <Gift className="w-5 h-5 text-s-accent shrink-0" />
         <div>
           <p className="text-sm font-heading text-s-ink">{t("inviteFriends")}</p>
           <p className="text-xs text-s-ink/50">{t("bothGetCredit")}</p>
@@ -204,7 +204,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
             className={`w-10 h-10 rounded-[10px] border flex items-center justify-center transition-[border-color,background-color] duration-150 ${
               copied
                 ? "border-[#16A34A] bg-[#16A34A]/10"
-                : "border-s-ink/[0.08] hover:border-s-coral/40"
+                : "border-s-ink/[0.08] hover:border-s-accent/40"
             }`}
           >
             {copied
@@ -232,7 +232,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
         </button>
         <button
           onClick={copyCode}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-ink/[0.08] text-[10px] font-heading uppercase tracking-[.04em] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.97] transition-[transform,border-color,color] duration-150"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-ink/[0.08] text-[10px] font-heading uppercase tracking-[.04em] text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent active:scale-[0.97] transition-[transform,border-color,color] duration-150"
         >
           <Copy size={12} /> {t("copyCode")}
         </button>
@@ -251,7 +251,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
         </div>
         <div className="text-right">
           <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/35">Verdient</p>
-          <p className="font-heading text-sm text-s-coral">
+          <p className="font-heading text-sm text-s-accent">
             {formatCurrency(stats.total_earned / 100, locale)}
           </p>
         </div>
@@ -329,7 +329,7 @@ const BookingCard = memo(function BookingCard({
           {b.salon_slug && (
             <Link
               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-ink/[0.08] text-[10px] font-heading uppercase tracking-[.06em] text-s-ink/50 hover:text-s-coral hover:border-s-coral/40 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-ink/[0.08] text-[10px] font-heading uppercase tracking-[.06em] text-s-ink/50 hover:text-s-accent hover:border-s-accent/40 transition-colors"
             >
               <RotateCcw size={12} />
               {t("rebookAction")}
@@ -339,7 +339,7 @@ const BookingCard = memo(function BookingCard({
           {canCancel && (
             <button
               onClick={() => onCancel(b)}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-coral/25 text-[10px] font-heading uppercase tracking-[.06em] text-s-coral hover:bg-s-coral/[0.05] transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-accent/25 text-[10px] font-heading uppercase tracking-[.06em] text-s-accent hover:bg-s-ink/[0.05] transition-colors"
             >
               <X size={12} />
               {t("cancelAction")}
@@ -375,7 +375,7 @@ const BookingCard = memo(function BookingCard({
 // Settings section
 // ─────────────────────────────────────────
 
-const INPUT_CLS = "w-full px-3 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20";
+const INPUT_CLS = "w-full px-3 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20";
 
 const SettingsSection = memo(function SettingsSection({
   profile,
@@ -441,7 +441,7 @@ const SettingsSection = memo(function SettingsSection({
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Avatar + name */}
       <div className="flex items-center gap-4">
-        <div className="w-14 h-14 rounded-full bg-s-coral/10 overflow-hidden shrink-0 flex items-center justify-center text-xl font-heading text-s-coral">
+        <div className="w-14 h-14 rounded-full bg-s-ink/10 overflow-hidden shrink-0 flex items-center justify-center text-xl font-heading text-s-accent">
           {avatar ? (
             <Image src={avatar} alt="" width={56} height={56} className="object-cover w-full h-full" loading="lazy" />
           ) : (
@@ -453,7 +453,7 @@ const SettingsSection = memo(function SettingsSection({
           value={avatar}
           onChange={(e) => setAvatar(e.target.value)}
           placeholder={t("avatarUrl")}
-          className={`flex-1 px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20`}
+          className={`flex-1 px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20`}
         />
       </div>
 
@@ -485,7 +485,7 @@ const SettingsSection = memo(function SettingsSection({
             role="switch"
             aria-checked={emailOn}
             aria-label={t("notifBookings")}
-            className={["relative w-11 h-6 rounded-pill transition-colors shrink-0", emailOn ? "bg-s-coral" : "bg-s-sand"].join(" ")}>
+            className={["relative w-11 h-6 rounded-pill transition-colors shrink-0", emailOn ? "bg-s-ink" : "bg-s-sand"].join(" ")}>
             <span className={["absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform", emailOn ? "translate-x-5" : "translate-x-0"].join(" ")} />
           </button>
         </div>
@@ -529,8 +529,8 @@ const SettingsSection = memo(function SettingsSection({
               className={[
                 "px-4 py-2 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[background-color,border-color,color] duration-150",
                 lang === l
-                  ? "bg-s-coral text-white border-s-coral"
-                  : "border-s-ink/10 text-s-ink/60 hover:border-s-coral hover:text-s-coral",
+                  ? "bg-s-ink text-white border-s-accent"
+                  : "border-s-ink/10 text-s-ink/60 hover:border-s-accent hover:text-s-accent",
               ].join(" ")}
             >
               {l === "de" ? "Deutsch" : l === "en" ? "English" : l === "fr" ? "Français" : "Italiano"}
@@ -581,8 +581,8 @@ const SettingsSection = memo(function SettingsSection({
                 onClick={() => setStylistGender(option)}
                 className={`flex-1 px-4 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-[background-color,border-color,color] duration-150 ${
                   stylistGender === option
-                    ? "border-s-coral bg-s-coral text-white"
-                    : "border-s-ink/10 text-s-ink/60 hover:border-s-coral hover:text-s-coral"
+                    ? "border-s-accent bg-s-ink text-white"
+                    : "border-s-ink/10 text-s-ink/60 hover:border-s-accent hover:text-s-accent"
                 }`}
               >
                 {tPrefs(`stylist_gender_${option}`)}
@@ -632,12 +632,12 @@ const SettingsSection = memo(function SettingsSection({
         <button
           type="submit"
           disabled={!name || saving}
-          className="px-5 py-2.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-elevation-2"
+          className="px-5 py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-elevation-2"
         >
           {saving && <Spinner size="sm" invert />}
           {t("save")}
         </button>
-        {saved && <span className="text-sm text-s-coral font-medium">{t("saved")}</span>}
+        {saved && <span className="text-sm text-s-accent font-medium">{t("saved")}</span>}
       </div>
 
       {/* Danger zone: Delete account */}
@@ -1023,7 +1023,7 @@ export default function ProfilePage() {
                   else alert("Bestätigungsmail gesendet — bitte prüfe dein Postfach.");
                 }
               }}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-white hover:border-s-coral/30 transition-colors group min-h-[48px]"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-white hover:border-s-accent/30 transition-colors group min-h-[48px]"
             >
               <span className="text-sm font-body font-medium text-s-ink">E-Mail ändern</span>
               <ChevronRight size={16} className="text-s-ink/35" />
@@ -1043,7 +1043,7 @@ export default function ProfilePage() {
                   alert("Passwort muss mindestens 8 Zeichen lang sein.");
                 }
               }}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-white hover:border-s-coral/30 transition-colors group min-h-[48px]"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] bg-white hover:border-s-accent/30 transition-colors group min-h-[48px]"
             >
               <span className="text-sm font-body font-medium text-s-ink">Passwort ändern</span>
               <ChevronRight size={16} className="text-s-ink/35" />

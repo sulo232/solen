@@ -68,8 +68,8 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
-          <Store size={22} className="text-s-coral" />
+        <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
+          <Store size={22} className="text-s-accent" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">
@@ -90,7 +90,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder={t("profile.namePlaceholder")}
-            className="w-full px-4 py-3 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
           />
         </div>
 
@@ -104,7 +104,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             rows={3}
             maxLength={500}
             placeholder={t("profile.descPlaceholder")}
-            className="w-full px-4 py-3 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 resize-none transition-colors"
           />
           <p className="text-[10px] text-s-ink/30 mt-0.5 text-right">{form.description_de.length}/500</p>
         </div>
@@ -124,8 +124,8 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
                   className={[
                     "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
                     active
-                      ? "bg-s-coral text-white border-s-coral shadow-elevation-2"
-                      : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/50",
+                      ? "bg-s-ink text-white border-s-accent shadow-elevation-2"
+                      : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-accent/50",
                   ].join(" ")}
                 >
                   <span className="text-[13px] leading-none">{opt.emoji}</span>
@@ -136,7 +136,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             })}
           </div>
           {categories.length === 0 && (
-            <p className="text-xs text-s-coral mt-1">{t("profile.atLeastOneCategory")}</p>
+            <p className="text-xs text-s-accent mt-1">{t("profile.atLeastOneCategory")}</p>
           )}
         </div>
         <div>
@@ -148,7 +148,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             placeholder="+41 61 ..."
-            className="w-full px-4 py-3 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
           />
         </div>
 
@@ -168,7 +168,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
       <button
         onClick={handleSave}
         disabled={!form.name || !form.description_de || saving || categories.length === 0}
-        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+        className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
       >
         {saving && <Spinner size="sm" invert />}
         {tc("save")}

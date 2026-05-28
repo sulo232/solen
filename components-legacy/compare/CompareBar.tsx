@@ -27,9 +27,9 @@ export default function CompareBar({ salons, onRemove, onCompare }: CompareBarPr
       >
         <div className="flex items-center gap-2">
           {salons.map((s) => (
-            <span key={s.id} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-pill bg-s-coral/10 text-s-coral text-xs font-medium">
+            <span key={s.id} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-pill bg-s-ink/10 text-s-accent text-xs font-medium">
               {s.name}
-              <button onClick={() => onRemove(s.id)} className="text-s-coral/50 hover:text-s-coral">
+              <button onClick={() => onRemove(s.id)} className="text-s-accent/50 hover:text-s-accent">
                 <X size={12} />
               </button>
             </span>
@@ -38,7 +38,7 @@ export default function CompareBar({ salons, onRemove, onCompare }: CompareBarPr
         <button
           onClick={onCompare}
           disabled={salons.length < 2}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-pill bg-s-coral text-white text-xs font-semibold disabled:opacity-40 hover:brightness-[1.06] transition-colors"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-pill bg-s-ink text-white text-xs font-semibold disabled:opacity-40 hover:brightness-[1.06] transition-colors"
         >
           {t("compare")}
           <ArrowRight size={12} />

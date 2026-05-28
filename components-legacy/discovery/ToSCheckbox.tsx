@@ -31,11 +31,11 @@ export default function ToSCheckbox({ checked, onChange }: ToSCheckboxProps) {
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="mt-0.5 rounded accent-s-coral"
+        className="mt-0.5 rounded accent-s-ink"
       />
       <span>
         {LABELS[locale] ?? LABELS.de}{" "}
-        <Link href={`/${locale}/terms/discovery`} className="underline hover:text-s-coral" target="_blank">
+        <Link href={`/${locale}/terms/discovery`} className="underline hover:text-s-accent" target="_blank">
           {TOS_LABELS[locale] ?? TOS_LABELS.de}
         </Link>
       </span>

@@ -60,13 +60,13 @@ export default function MyGiftCardsPage() {
   return (
     <div className="min-h-screen bg-s-bg-surface">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-24">
-        {/* Header */}
+        {/* Header — V3-D285: fix corrupted dark-mode hover + swap retired s-coral icon → ink */}
         <div className="flex items-center gap-3 mb-8">
-          <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-ink/5:bg-white/5 transition-colors">
+          <Link href={`/${locale}/profile`} className="p-2 -ml-2 rounded-full hover:bg-s-bg-sunken transition-colors">
             <ChevronLeft size={20} className="text-s-ink/60" />
           </Link>
           <h1 className="font-heading text-xl text-s-ink flex items-center gap-2">
-            <Gift size={20} className="text-s-coral" />
+            <Gift size={20} className="text-s-ink" />
             Meine Geschenkkarten
           </h1>
         </div>
@@ -86,12 +86,8 @@ export default function MyGiftCardsPage() {
               const isInactive = isUsedUp || isExpired || !card.is_active;
 
               return (
-                <div key={card.id} className={`bg-white rounded-[12px] border ${isInactive ? "border-s-ink/5 opacity-60" : "border-s-coral/30 shadow-warm-sm bg-gradient-to-br from-white to-s-coral/5"} p-5 relative overflow-hidden`}>
-                  {/* Decorative corner */}
-                  {!isInactive && (
-                    <div className="absolute -top-6 -right-6 w-16 h-16 bg-s-coral/10 rounded-full blur-xl pointer-events-none" />
-                  )}
-
+                // V3-D285: card chrome — retired s-coral wash + gradient stripped, active-state uses s-accent (Layer 2) pale wash
+                <div key={card.id} className={`bg-white rounded-[12px] border ${isInactive ? "border-s-border opacity-60" : "border-s-accent/30 shadow-elevation-1"} p-5 relative overflow-hidden`}>
                   <div className="flex justify-between items-start mb-6 align-top">
                     <div>
                       <p className="text-xs font-semibold text-s-ink/40 uppercase tracking-widest mb-1">GIFT CARD</p>
@@ -100,11 +96,12 @@ export default function MyGiftCardsPage() {
                       </h3>
                     </div>
                     {isInactive ? (
-                      <span className="text-xs font-medium text-s-ink/40 px-2.5 py-1 bg-s-ink/5 rounded-btn">
+                      <span className="text-xs font-medium text-s-ink/40 px-2.5 py-1 bg-s-bg-sunken rounded-btn">
                         {isExpired ? "Abgelaufen" : "Eingelöst"}
                       </span>
                     ) : (
-                      <span className="text-xs font-medium text-s-coral px-2.5 py-1 bg-s-coral/10 rounded-btn">
+                      // V3-D285: "Aktiv" = success semantic per LOCKFILE §1 universal-color (open/active = green)
+                      <span className="text-xs font-medium text-s-success px-2.5 py-1 bg-s-success/10 rounded-btn">
                         Aktiv
                       </span>
                     )}
@@ -118,7 +115,8 @@ export default function MyGiftCardsPage() {
                       </div>
                       <button
                         onClick={() => copyCode(card.code)}
-                        className="p-2.5 rounded-btn bg-s-ink/5 hover:bg-s-ink/10:bg-white/10 transition-colors"
+                        // V3-D285: fix corrupted dark-mode concatenated hover
+                        className="p-2.5 rounded-btn bg-s-bg-sunken hover:bg-s-border transition-colors"
                         title="Code kopieren"
                       >
                         {copiedCode === card.code ? <Check size={16} className="text-s-success" /> : <Copy size={16} className="text-s-ink/60" />}

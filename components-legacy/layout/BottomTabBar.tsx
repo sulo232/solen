@@ -121,7 +121,7 @@ export default function BottomTabBar() {
                   <Icon
                     className={cn(
                       "w-[22px] h-[22px] transition-colors duration-150",
-                      isActive ? "text-s-coral" : "text-s-ink/40"
+                      isActive ? "text-s-accent" : "text-s-ink/40"
                     )}
                     strokeWidth={isActive ? 2.2 : 1.7}
                   />
@@ -130,7 +130,7 @@ export default function BottomTabBar() {
                 {/* Label */}
                 <span className={cn(
                   "text-[10px] font-heading tracking-[.03em] leading-none transition-colors duration-150",
-                  isActive ? "text-s-coral" : "text-s-ink/40"
+                  isActive ? "text-s-accent" : "text-s-ink/40"
                 )}>
                   {t(key as any)}
                 </span>
@@ -144,7 +144,7 @@ export default function BottomTabBar() {
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0, opacity: 0 }}
                       transition={{ type: "spring", stiffness: 600, damping: 30 }}
-                      className="absolute bottom-[7px] left-1/2 -translate-x-1/2 w-[5px] h-[5px] rounded-full bg-s-coral"
+                      className="absolute bottom-[7px] left-1/2 -translate-x-1/2 w-[5px] h-[5px] rounded-full bg-s-ink"
                       aria-hidden="true"
                     />
                   )}
@@ -216,7 +216,7 @@ export default function BottomTabBar() {
               <Link
                 href={`/${locale}/auth/login`}
                 onClick={() => setLoginSheet(s => ({ ...s, open: false }))}
-                className="w-full flex items-center justify-center py-3.5 rounded-btn bg-s-coral text-white text-sm font-heading active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
+                className="w-full flex items-center justify-center py-3.5 rounded-btn bg-s-ink text-white text-sm font-heading active:scale-[0.97] transition-[transform,filter,border-color,background-color] duration-150"
                 style={{ boxShadow: "0 2px 12px rgba(27, 77, 27,.32)" }}
               >
                 {tAuth("continue_with_email")}

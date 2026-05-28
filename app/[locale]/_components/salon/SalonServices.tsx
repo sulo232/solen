@@ -2,11 +2,25 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Clock } from "lucide-react";
 import type { Service, SalonDetail } from "./_shared";
 import { capitalize } from "./_shared";
 import { SalonServicesSheet } from "./SalonServicesSheet";
+import { TabPill } from "../primitives/TabPill";
 import { cn } from "@/lib/utils";
+
+/**
+ * V3-D227 (2026-05-27, user-paste Fresha service-row spec): format duration
+ * in German units. Fresha shows "30 Min." / "1 Std." / "1 Std., 15 Min."
+ * No Clock icon — text-only second row.
+ */
+function formatDurationDE(mins: number): string {
+  if (mins < 60) return `${mins} Min.`;
+  const hours = Math.floor(mins / 60);
+  const rem = mins % 60;
+  const hPart = hours === 1 ? "1 Std." : `${hours} Std.`;
+  if (rem === 0) return hPart;
+  return `${hPart}, ${rem} Min.`;
+}
 
 /**
  * SalonServices — V2-D53.3 (2026-05-11).
@@ -19,7 +33,7 @@ import { cn } from "@/lib/utils";
  *   • Desktop: each service in its own bordered rounded card with hover lift
  *
  * Brand: per "use Solen brand" instruction —
- *   • Active filter chip: emerald `bg-s-brand text-white`
+ *   • Active filter chip: emerald `bg-s-ink text-s-ink`
  *   • Book button: emerald filled
  *   • Price color: dark `text-s-ink` (NOT colored — the price itself shouldn't compete with the CTA)
  *
@@ -84,20 +98,16 @@ export function SalonServices({
           "Alle" appears first; real categories follow. (V2-D53.3 fix #6) */}
       {categories.length > 0 && (
         <div className="mt-4 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {/* V3-D202 (A6): inline filter chips → <TabPill> primitive. */}
           {categories.map((c) => (
-            <button
+            <TabPill
               key={c}
-              type="button"
+              active={activeCat === c}
               onClick={() => setActiveCat(c)}
-              className={cn(
-                "font-body shrink-0 rounded-full border px-4 py-2 text-[13px] font-semibold transition-colors md:text-[14px]",
-                activeCat === c
-                  ? "border-s-brand bg-s-brand text-white"
-                  : "border-s-border bg-white text-s-ink-2 hover:border-s-brand hover:text-s-brand"
-              )}
+              size="sm"
             >
               {c === "alle" ? "Alle" : capitalize(c)}
-            </button>
+            </TabPill>
           ))}
         </div>
       )}
@@ -154,25 +164,24 @@ function ServiceRow({
   slug: string;
   variant: "mobile" | "desktop";
 }) {
+  // V3-D227 (2026-05-27, user-paste Fresha service-row spec):
+  //   - 3-row stack: name (16/700) / duration grey (14/400 "30 Min.") / price (15/700 "ab N CHF")
+  //   - NO description line in the list view (Fresha doesn't show it — keeps density)
+  //   - NO Clock icon next to duration (Fresha is text-only)
+  //   - Price format "ab {N} CHF" (German "ab" prefix, currency suffix)
+  //   - BOTH mobile AND desktop variants get the same bordered card treatment now
+  //     (previously mobile was a bare list with no border — off-spec)
   const inner = (
     <div className="flex items-start justify-between gap-4">
       <div className="min-w-0 flex-1">
         <div className="font-body text-[15px] font-semibold text-s-ink md:text-[16px]">
           {service.name_de}
         </div>
-        {/* V2-D53.3 fix #7: render service description (Fresha shows brief
-            copy under each service name). Two-line clamp keeps row density. */}
-        {service.description_de && (
-          <p className="font-body mt-1 text-[13px] leading-snug text-s-ink-3 line-clamp-2 md:text-[14px]">
-            {service.description_de}
-          </p>
-        )}
-        <div className="font-body mt-1.5 flex items-center gap-2 text-[12px] text-s-ink-3 md:text-[13px]">
-          <Clock size={12} strokeWidth={2} />
-          {service.duration_minutes} min
+        <div className="font-body mt-1 text-[13px] text-s-ink-3 md:text-[14px]">
+          {formatDurationDE(service.duration_minutes)}
         </div>
-        <div className="font-body mt-2 text-[14px] font-semibold text-s-ink md:text-[15px]">
-          CHF {service.price}
+        <div className="font-body mt-3 text-[14px] font-bold text-s-ink md:text-[15px]">
+          ab {service.price} CHF
         </div>
       </div>
       <Link
@@ -184,12 +193,13 @@ function ServiceRow({
     </div>
   );
 
-  if (variant === "mobile") {
-    return <li className="py-4">{inner}</li>;
-  }
-
+  // V3-D227: unify mobile + desktop into the same bordered card.
+  // Per-variant only changes padding density (mobile slightly tighter).
   return (
-    <li className="rounded-2xl border border-s-border bg-white p-6 transition-shadow hover:shadow-[0_2px_12px_rgba(0,0,0,0.04)] md:p-7">
+    <li className={cn(
+      "rounded-2xl border border-s-border bg-white transition-shadow hover:shadow-[0_2px_12px_rgba(0,0,0,0.04)]",
+      variant === "mobile" ? "p-5" : "p-6 md:p-7",
+    )}>
       {inner}
     </li>
   );
@@ -197,7 +207,8 @@ function ServiceRow({
 
 function SectionHeader({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink md:text-[22px]">
+    // V3-D202 (A6): font-body → font-display Inter Tight + Scale B clamp + tracking lock.
+    <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
       {children}
     </h2>
   );

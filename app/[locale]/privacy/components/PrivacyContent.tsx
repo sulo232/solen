@@ -42,16 +42,17 @@ export default function PrivacyContent() {
         <Article titleDe="4.1 Weitergabe an Dritte" titleEn="4.1 Sharing with Third Parties">
           <ParDe>Wir geben Ihre Daten nur an Dienstleister weiter, soweit dies für den Betrieb der Plattform erforderlich ist. Es werden keine Daten verkauft.</ParDe>
           <ParEn>We only share your data with service providers to the extent necessary to operate the platform. No data is sold.</ParEn>
+          {/* V3-D304: border-s-ink/10 → border-s-border; bg-s-ink/5 → bg-s-bg-sunken (canonical neutrals per LOCKFILE §1) */}
           <div className="overflow-x-auto mt-4">
-            <table className="min-w-full text-sm text-left border border-s-ink/10 rounded-[12px] overflow-hidden block md:table">
-              <thead className="bg-s-ink/5 border-b border-s-ink/10">
+            <table className="min-w-full text-sm text-left border border-s-border rounded-[12px] overflow-hidden block md:table">
+              <thead className="bg-s-bg-sunken border-b border-s-border">
                 <tr>
                   <th className="px-4 py-2 font-semibold">Dienstleister / Provider</th>
                   <th className="px-4 py-2 font-semibold">Zweck / Purpose</th>
                   <th className="px-4 py-2 font-semibold">Region / Region</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-s-ink/10">
+              <tbody className="divide-y divide-s-border">
                 <tr>
                   <td className="px-4 py-2"><strong>Stripe</strong></td>
                   <td className="px-4 py-2">Zahlungsabwicklung / Payment processing</td>
@@ -139,13 +140,14 @@ export default function PrivacyContent() {
 
 // Helper components for consistent layout
 
+// V3-D304: border-s-ink/10 → border-s-border (canonical hairline per LOCKFILE §1); muted ink opacities → s-ink-2
 function Section({ id, titleDe, titleEn, children }: { id: string, titleDe: string, titleEn: string, children: React.ReactNode }) {
   return (
-    <section id={id} className="scroll-mt-32 pb-8 border-b border-s-ink/10 last:border-0 relative">
-      <h2 className="font-heading text-xl md:text-2xl text-s-ink mb-1">
+    <section id={id} className="scroll-mt-32 pb-8 border-b border-s-border last:border-0 relative">
+      <h2 className="font-display text-xl md:text-2xl font-semibold tracking-tight text-s-ink mb-1">
         {titleDe}
       </h2>
-      <h3 className="font-heading text-lg text-s-ink/60 mb-6 italic">
+      <h3 className="font-display text-lg text-s-ink-2 mb-6 italic">
         {titleEn}
       </h3>
       <div className="space-y-8">
@@ -160,9 +162,9 @@ function Article({ titleDe, titleEn, children }: { titleDe: string, titleEn: str
     <div className="space-y-3">
       {(titleDe || titleEn) && (
         <div className="mb-4">
-          <h3 className="font-heading text-lg text-s-ink">
-            {titleDe} 
-            {titleEn && <span className="text-s-ink/50 font-normal ml-2">/ {titleEn}</span>}
+          <h3 className="font-display text-lg font-semibold text-s-ink">
+            {titleDe}
+            {titleEn && <span className="text-s-ink-2 font-normal ml-2">/ {titleEn}</span>}
           </h3>
         </div>
       )}
@@ -183,8 +185,8 @@ function ParDe({ children, className = "" }: { children: React.ReactNode, classN
 
 function ParEn({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-3 pl-4 border-l-2 border-s-ink/10 mt-2 mb-4">
-      <p className="text-xs md:text-sm text-s-ink/70 italic leading-relaxed">
+    <div className="flex items-start gap-3 pl-4 border-l-2 border-s-border mt-2 mb-4">
+      <p className="text-xs md:text-sm text-s-ink-2 italic leading-relaxed">
         {children}
       </p>
     </div>

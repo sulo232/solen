@@ -34,7 +34,13 @@ export async function GET(
   // Fetch related data in parallel
   const [servicesRes, staffRes, reviewsRes] = await Promise.all([
     supabase.from("services").select("*").eq("salon_id", salon.id).eq("is_active", true),
-    supabase.from("staff_members").select("*, staff_portfolio_images(id, image_url, sort_order)").eq("salon_id", salon.id).eq("is_active", true),
+    // V3-D233 (2026-05-27, staff-section-empty bug): JOIN to staff_portfolio_images
+    // was poisoning the whole query — that table doesn't exist in the schema
+    // (planned never migrated, or dropped). PostgREST silently returns [] on a
+    // missing relation. Dropped the join so the 4 active staff rows actually
+    // come back. Restore the join only when the staff_portfolio_images table
+    // is added (migration 032 was referenced in old session notes but never landed).
+    supabase.from("staff_members").select("*").eq("salon_id", salon.id).eq("is_active", true),
     supabase
       .from("reviews")
       .select("*, profiles(display_name, avatar_url), review_replies(id, reply_text, is_public), review_photos(id, photo_url, sort_order)")

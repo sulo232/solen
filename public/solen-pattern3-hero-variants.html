@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Salon PDP Pattern 3 hero variants — pick AM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0A0A0A; --ink-2: #6B6B6B; --ink-3: #6B6B6B; --line: #E7E5E4;
+    --bg: #F5F5F4; --card: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; line-height: 1.5; }
+  body { padding: 24px 16px 80px; max-width: 1100px; margin: 0 auto; }
+
+  .doc-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin-bottom: 10px; }
+  .doc-h1 { font-family: 'Inter Tight'; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .doc-intro { font-size: 14px; color: var(--ink-2); line-height: 1.55; margin-bottom: 32px; }
+  .doc-intro strong { color: var(--ink); font-weight: 600; }
+  .doc-intro code { background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+  .variant { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 0; margin-bottom: 28px; overflow: hidden; }
+  .variant header { padding: 14px 18px 10px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: baseline; }
+  .variant header .name { font-family: 'Inter Tight'; font-size: 16px; font-weight: 700; }
+  .variant header .tag { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: .06em; background: var(--ink); color: #fff; }
+  .variant header .tag.rec { background: #16A34A; }
+  .variant .desc { padding: 12px 18px 16px; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+  .variant .preview { position: relative; background: #FAFAF9; border-top: 1px solid var(--line); }
+
+  /* Photo (placeholder gradient salon-tone) */
+  .photo { aspect-ratio: 16 / 7; width: 100%;
+    background: linear-gradient(135deg, #5C6E5C 0%, #8B9A78 35%, #C9B89E 70%, #E8D9C0 100%);
+    position: relative;
+  }
+  .photo::after { content: 'AI placeholder · salon scene'; position: absolute; bottom: 8px; right: 12px; font-size: 9px; color: rgba(255,255,255,0.7); letter-spacing: 0.04em; text-transform: uppercase; }
+
+  /* Floating booking card */
+  .card-base {
+    background: #FFFFFF; padding: 16px 18px; border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+    max-width: 280px;
+  }
+  .card-base h3 { font-family: 'Inter Tight'; font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .card-base .meta { font-size: 12px; color: var(--ink-2); margin-bottom: 12px; }
+  .card-base .cta { display: inline-flex; padding: 10px 18px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 500; letter-spacing: -0.005em; }
+
+  /* Variant-specific positioning */
+  .v-bottom-left .card-base { position: absolute; bottom: 24px; left: 24px; }
+  .v-bottom-center .card-base { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); }
+  .v-right-side .card-base { position: absolute; bottom: 50%; transform: translateY(50%); right: 24px; max-width: 320px; }
+  .v-overlay-none .photo { aspect-ratio: 16 / 7; }
+  .v-overlay-none .below { padding: 24px; }
+
+  /* Current (3-photo grid) */
+  .current-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 6px; padding: 0; aspect-ratio: 16 / 7; }
+  .current-grid .p1 { grid-column: 1; grid-row: 1 / 3; background: linear-gradient(135deg, #5C6E5C, #8B9A78); }
+  .current-grid .p2 { grid-column: 2 / 4; grid-row: 1; background: linear-gradient(135deg, #C9B89E, #E8D9C0); }
+  .current-grid .p3 { grid-column: 2; grid-row: 2; background: linear-gradient(135deg, #B5A48A, #D4C4AC); }
+  .current-grid .p4 { grid-column: 3; grid-row: 2; background: linear-gradient(135deg, #8B7E6F, #B5A48A); position: relative; }
+  .current-grid .p4 .pill { position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.95); padding: 6px 10px; border-radius: 999px; font-size: 11px; font-weight: 500; color: var(--ink); }
+
+  .change-list { background: rgba(0,0,0,0.03); border-left: 3px solid var(--ink); padding: 10px 14px; margin: 0 18px 18px; border-radius: 4px; font-size: 12px; line-height: 1.55; color: var(--ink-2); }
+  .change-list strong { color: var(--ink); }
+  .change-list ul { padding-left: 18px; }
+
+  .pick-bar { background: var(--ink); color: #fff; border-radius: 12px; padding: 20px; margin-top: 24px; }
+  .pick-bar h3 { font-family: 'Inter Tight'; font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .pick-bar p { font-size: 13px; opacity: .9; line-height: 1.55; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div class="doc-eyebrow">T4 · pattern 3 hero variants · AM pick</div>
+<h1 class="doc-h1">Salon PDP hero — Pattern 3 conservative variants</h1>
+<p class="doc-intro">
+  Per LOCKFILE §11 Pattern 3: <strong>solid white search-card/booking-card floats over full-bleed photo. No rgba scrim — art-direct the photo so the card sits over a calm zone.</strong>
+  <br><br>
+  <strong>Discovery on opening SalonHero.tsx:</strong> the current implementation is NOT a "static grey band" as my plan assumed. It's already a 3-photo gallery (Fresha-aligned). The booking card lives in a separate component (<code>SalonSidebar</code>), not in the hero. True Pattern 3 = restructure the page IA so SalonSidebar's booking content FLOATS over the hero photo — that's a 3+ component change.
+  <br><br>
+  Per F9 Ambiguity Ladder + F15 Quality Gate: this is a <strong>BIG thing</strong> without explicit user preference. Leave IA restructure for user pick AM. <strong>Conservative T4 deliverable applied autonomously:</strong> dropped <code>rounded-3xl</code> / <code>rounded-card-lg</code> on hero photos → <code>rounded-none</code> per §11 non-negotiable. Layout structure untouched.
+  <br><br>
+  Pick a variant below + I apply in next session.
+</p>
+
+<!-- ─────────────────────────────────────────────── -->
+<section class="variant">
+  <header>
+    <span class="name">A · Current (after T4 conservative sweep)</span>
+    <span class="tag">live now</span>
+  </header>
+  <p class="desc">3-photo gallery layout (Fresha pattern). Now with <code>rounded-none</code> on all photos per §11. Booking card stays in SalonSidebar — not overlapping the hero. This is what your phone shows right now.</p>
+  <div class="preview">
+    <div class="current-grid">
+      <div class="p1"></div>
+      <div class="p2"></div>
+      <div class="p3"></div>
+      <div class="p4"><span class="pill">Alle Fotos ansehen</span></div>
+    </div>
+  </div>
+  <div class="change-list">
+    <strong>Changes from yesterday:</strong>
+    <ul>
+      <li><code>rounded-3xl</code> → <code>rounded-none</code> on all photo containers (§11 non-negotiable)</li>
+      <li>Empty-state placeholder <code>rounded-card-lg</code> → <code>rounded-none</code></li>
+    </ul>
+    <strong>Drawback:</strong> doesn't actually implement Pattern 3 (booking card not floating). Pattern 3 spirit-only.
+  </div>
+</section>
+
+<section class="variant v-bottom-left">
+  <header>
+    <span class="name">B · Full-bleed photo + booking card bottom-left</span>
+    <span class="tag rec">closest to §11 Pattern 3</span>
+  </header>
+  <p class="desc">One full-bleed cover photo (no grid). Solid white booking card floats bottom-left over the photo. SalonSidebar gets relocated INTO SalonHero on desktop, OR overlapping it. Mobile: card goes below photo, full-width, no overlay.</p>
+  <div class="preview" style="position: relative; height: 380px;">
+    <div class="photo"></div>
+    <div class="card-base">
+      <h3>Atelier Haarwerk</h3>
+      <div class="meta">4.8 ★ · Coiffeur · Basel</div>
+      <a class="cta">Termin buchen</a>
+    </div>
+  </div>
+  <div class="change-list">
+    <strong>Required code changes:</strong>
+    <ul>
+      <li>SalonHero: switch from 3-photo grid → single full-bleed photo (1 photo only, others go to lightbox)</li>
+      <li>SalonDetailV3: hero zone gets relative positioning, SalonSidebar gets absolute overlay on desktop</li>
+      <li>SalonSidebar: render mode = "overlay" (compact) for hero-overlap, "stacked" (current) for below-fold</li>
+      <li>Mobile: keep current behavior (card below photo)</li>
+    </ul>
+    <strong>Effort:</strong> 2-3 hours including responsive testing.
+  </div>
+</section>
+
+<section class="variant v-bottom-center">
+  <header>
+    <span class="name">C · Full-bleed photo + booking card bottom-center</span>
+    <span class="tag">alternative</span>
+  </header>
+  <p class="desc">Same as B but card centered horizontally at the bottom. Closer to Uber Eats hero pattern (search card centered over food photo).</p>
+  <div class="preview" style="position: relative; height: 380px;">
+    <div class="photo"></div>
+    <div class="card-base">
+      <h3>Atelier Haarwerk</h3>
+      <div class="meta">4.8 ★ · Coiffeur · Basel</div>
+      <a class="cta">Termin buchen</a>
+    </div>
+  </div>
+  <div class="change-list">
+    <strong>Same code changes as B</strong>, just card positioning differs. Card centered = stronger CTA emphasis but loses the asymmetry that gives B a more editorial feel.
+  </div>
+</section>
+
+<section class="variant v-right-side">
+  <header>
+    <span class="name">D · Full-bleed photo + larger booking card right-side</span>
+    <span class="tag">alternative — Fresha pattern</span>
+  </header>
+  <p class="desc">Card on the right side, vertically centered, larger (320px max-width). Photo art-directed to keep left half clear. This is closer to Fresha's actual PDP hero pattern.</p>
+  <div class="preview" style="position: relative; height: 380px;">
+    <div class="photo"></div>
+    <div class="card-base">
+      <h3>Atelier Haarwerk</h3>
+      <div class="meta">4.8 ★ · 247 Bewertungen · Coiffeur in Basel</div>
+      <a class="cta">Termin buchen</a>
+    </div>
+  </div>
+  <div class="change-list">
+    <strong>Same code changes as B + D differences:</strong>
+    <ul>
+      <li>Card max-width 320px (larger; fits more meta info)</li>
+      <li>Card right-side vertically-centered (not bottom-anchored)</li>
+      <li>Best for desktop; on mobile reverts to card-below-photo behavior</li>
+    </ul>
+  </div>
+</section>
+
+<section class="variant v-overlay-none">
+  <header>
+    <span class="name">E · Full-bleed photo + card BELOW (no overlay)</span>
+    <span class="tag">most conservative</span>
+  </header>
+  <p class="desc">Photo full-bleed but card sits BELOW it, not overlapping. Loses the "Pattern 3 floating" effect but is the smallest code change + lowest risk. Closer to /about/ Uber pattern (photo hero, content below).</p>
+  <div class="preview">
+    <div class="photo"></div>
+    <div class="below">
+      <div class="card-base" style="box-shadow: none; padding: 0; border: 0; max-width: 100%;">
+        <h3>Atelier Haarwerk</h3>
+        <div class="meta">4.8 ★ · Coiffeur · Basel</div>
+        <a class="cta" style="margin-top: 10px;">Termin buchen</a>
+      </div>
+    </div>
+  </div>
+  <div class="change-list">
+    <strong>Required code changes:</strong>
+    <ul>
+      <li>SalonHero: switch from 3-photo grid → single full-bleed cover</li>
+      <li>SalonDetailV3: keep current sidebar position (no overlay)</li>
+      <li>Lightbox CTA moves to bottom-right of photo (like current behavior)</li>
+    </ul>
+    <strong>Effort:</strong> 30 min. Lowest risk.
+  </div>
+</section>
+
+<div class="pick-bar">
+  <h3>My recommendation: B (closest to §11 Pattern 3)</h3>
+  <p>Pattern 3 in LOCKFILE explicitly says "booking-card floats over full-bleed photo." B implements that most literally. Bottom-left feels editorial (less marketing-y than centered C). Mobile collapses to card-below-photo, keeping current behavior.</p>
+  <p style="margin-top: 10px;">Alternative if minimal-change: <strong>E</strong>. Single photo full-bleed, card below. Loses the floating effect but is 6× faster to ship.</p>
+  <p style="margin-top: 10px;"><strong>Currently live:</strong> A (3-photo grid with rounded-none) — autonomous conservative call. Drift A11 (aspect ratio) on SalonHero = 0 after the rounded-* sweep.</p>
+</div>
+
+</body>
+</html>

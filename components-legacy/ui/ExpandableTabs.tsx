@@ -30,7 +30,7 @@ export default function ExpandableTabs({ tabs, defaultTab }: ExpandableTabsProps
             className={[
               "flex items-center gap-1.5 px-4 py-3 text-sm font-medium whitespace-nowrap transition-[background-color,color,border-color] duration-200 border-b-2 -mb-px",
               active === tab.id
-                ? "border-s-coral text-s-coral"
+                ? "border-s-accent text-s-accent"
                 : "border-transparent text-s-ink/50 hover:text-s-ink",
             ].join(" ")}
           >

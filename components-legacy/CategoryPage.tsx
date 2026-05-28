@@ -96,13 +96,13 @@ function DirectoryCard({ entry, t }: { entry: SalonDirectoryEntry; t: (key: stri
         <div className="flex gap-2">
           {entry.phone && (
             <a href={`tel:${entry.phone}`}
-              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-[border-color,color] duration-150">
+              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent transition-[border-color,color] duration-150">
               <Phone className="w-3 h-3 inline mr-1" />{t("call")}
             </a>
           )}
           {entry.website && (
             <a href={entry.website} target="_blank" rel="noopener noreferrer"
-              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-[border-color,color] duration-150">
+              className="flex-1 text-center text-[10px] font-heading uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent transition-[border-color,color] duration-150">
               <Globe className="w-3 h-3 inline mr-1" />{t("website")}
             </a>
           )}
@@ -368,7 +368,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           </nav>
 
           {/* Coral eyebrow */}
-          <span className="block font-heading text-[11px] uppercase tracking-[.22em] text-s-coral mb-3">
+          <span className="block font-heading text-[11px] uppercase tracking-[.22em] text-s-accent mb-3">
             {city ? cityName : allCitiesLabel} · {categoryLabel}
           </span>
 
@@ -376,9 +376,9 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           <h1 className="font-display text-4xl md:text-6xl text-s-ink"
             style={{ lineHeight: "0.92", letterSpacing: "0.01em" }}>
             {city ? (
-              <>{categoryLabel.toUpperCase()} IN{" "}<span className="text-s-coral">{cityName.toUpperCase()}</span></>
+              <>{categoryLabel.toUpperCase()} IN{" "}<span className="text-s-accent">{cityName.toUpperCase()}</span></>
             ) : (
-              <>{categoryLabel.toUpperCase()} <span className="text-s-coral">{tCategory("everywhere")}</span></>
+              <>{categoryLabel.toUpperCase()} <span className="text-s-accent">{tCategory("everywhere")}</span></>
             )}
           </h1>
 
@@ -538,7 +538,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
             {/* Overlay tap prompt */}
             <div className="absolute inset-0 bg-gradient-to-t from-s-ink/40 to-transparent pointer-events-none" />
             <span className="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-pill bg-white/95 text-s-ink text-xs font-heading uppercase tracking-[.06em] shadow-warm-md pointer-events-none flex items-center gap-1.5">
-              <MapIcon size={13} className="text-s-coral" />
+              <MapIcon size={13} className="text-s-accent" />
               {tCategory("mapExpand")}
             </span>
           </button>

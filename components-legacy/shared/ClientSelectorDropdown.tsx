@@ -62,7 +62,7 @@ export default function ClientSelectorDropdown({ salonId, value, onChange, place
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between px-3 py-2 rounded-[6px] border bg-white transition-[border-color,box-shadow] ${isOpen ? 'border-s-coral ring-2 ring-s-coral/10' : 'border-s-ink/[0.10]'}`}
+        className={`w-full flex items-center justify-between px-3 py-2 rounded-[6px] border bg-white transition-[border-color,box-shadow] ${isOpen ? 'border-s-accent ring-2 ring-s-accent/10' : 'border-s-ink/[0.10]'}`}
       >
         <div className="flex items-center gap-2 overflow-hidden">
           <User size={14} className="text-s-ink/40 shrink-0" />
@@ -99,7 +99,7 @@ export default function ClientSelectorDropdown({ salonId, value, onChange, place
                   setIsOpen(false);
                   setSearch("");
                 }}
-                className={`w-full text-left px-3 py-2 rounded-[8px] text-xs transition-colors flex justify-between items-center ${value === c.user_id ? 'bg-s-coral/10 text-s-coral font-bold' : 'hover:bg-s-ink/5:bg-white/5 text-s-ink'}`}
+                className={`w-full text-left px-3 py-2 rounded-[8px] text-xs transition-colors flex justify-between items-center ${value === c.user_id ? 'bg-s-ink/10 text-s-accent font-bold' : 'hover:bg-s-ink/5:bg-white/5 text-s-ink'}`}
               >
                 <span className="truncate pr-2">{c.display_name}</span>
                 <span className="text-[10px] text-s-ink/30 font-mono shrink-0">

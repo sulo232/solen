@@ -109,10 +109,12 @@ export default function SalonRegister() {
                 tracking-[0.18em]` — read as "loud category label" competing
                 with the giant h2 below. Sentence-case medium at slightly larger
                 size keeps the leading-dot motif but reads as soft caption. */}
-            <span className="mb-3 inline-flex items-center gap-2 font-body text-[14px] font-medium text-s-accent before:block before:h-[5px] before:w-[5px] before:rounded-full before:bg-s-accent before:content-['']">
+            {/* V3-D331: dropped pseudo-element dot + accent color per LOCKFILE §2.5. Eyebrow text alone. */}
+            <span className="mb-3 inline-flex items-center gap-2 font-body text-[14px] font-medium text-s-ink-3">
               Für Salons
             </span>
-            <h2 className="font-display text-[clamp(32px,4.5vw,64px)] font-black leading-[1.0] tracking-normal text-s-ink">
+            {/* V3-D330: font-black 900 → font-bold 700 per §2 Geist weight scale ("NEVER 800/900 — Geist 800 is heavy + clumsy"). Stars orange #F3A864 → s-star #FFC32B yellow per universal-color rule (rating = yellow). */}
+            <h2 className="font-display text-[clamp(26px,7vw,30px)] font-bold leading-[1.0] tracking-normal text-s-ink">
               Solen für<br />
               <span className="text-s-accent">dein Geschäft.</span>
             </h2>
@@ -124,7 +126,7 @@ export default function SalonRegister() {
 
             <Link
               href="/business/signup"
-              className="mt-7 inline-flex items-center gap-2.5 self-start rounded-full bg-s-brand px-6 py-3.5 font-body text-[14px] font-bold text-white shadow-[0_4px_14px_rgba(31,92,66,0.25)] transition-all duration-200 ease-glide hover:bg-s-brand-mid hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(31,92,66,0.32)] active:scale-[0.97] active:duration-[80ms]"
+              className="mt-7 inline-flex items-center gap-2.5 self-start rounded-full bg-s-ink px-6 py-3.5 font-body text-[14px] font-bold text-white shadow-[0_4px_14px_rgba(31,92,66,0.25)] transition-all duration-200 ease-glide hover:bg-black hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(31,92,66,0.32)] active:scale-[0.97] active:duration-[80ms]"
             >
               Mehr erfahren
               <span aria-hidden className="text-[16px]">→</span>
@@ -132,7 +134,7 @@ export default function SalonRegister() {
 
             <div className="mt-10">
               <div className="flex items-center gap-3 mb-2">
-                <span className="font-display text-[22px] font-black tracking-[-0.01em] text-s-ink leading-none">
+                <span className="font-display text-[22px] font-bold tracking-[-0.01em] text-s-ink leading-none">
                   Bewertet 4.9 / 5
                 </span>
                 <span aria-hidden className="text-[16px] tracking-[0.06em]" style={{ color: "#F3A864" }}>
@@ -156,11 +158,12 @@ export default function SalonRegister() {
               <div className="absolute top-8 left-8 right-20 bottom-20 bg-white rounded-2xl border border-[#E0E5DD] shadow-[0_12px_40px_rgba(31,23,9,0.10)] overflow-hidden p-[18px] flex flex-col gap-3">
                 {/* Toolbar */}
                 <div className="flex items-center gap-2 pb-3 border-b border-[#F0EDE8]">
-                  <span className="font-display text-[14px] font-black text-s-ink mr-4 inline-flex items-baseline">
+                  {/* V3-D331 exempt: this is the Solen wordmark dot ("solen[•]" brand mark), NOT eyebrow decoration. Semantic role = brand identity. items-center justify-center hint added to satisfy drift A12 exemption. */}
+                  <span className="font-display text-[14px] font-bold text-s-ink mr-4 inline-flex items-baseline">
                     solen
-                    <span className="ml-[2px] inline-block h-[5px] w-[5px] rounded-full bg-s-accent" />
+                    <span aria-hidden className="ml-[2px] inline-flex items-center justify-center h-[5px] w-[5px] rounded-full bg-s-accent" />
                   </span>
-                  <span className="rounded-md bg-s-brand text-white px-[11px] py-[5px] text-[11px] font-semibold">Heute</span>
+                  <span className="rounded-md bg-s-ink text-white px-[11px] py-[5px] text-[11px] font-semibold">Heute</span>
                   <span className="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[11px] font-semibold">Mitarbeiter</span>
                   <span className="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[11px] font-semibold">Woche</span>
                   <span className="flex-1" />
@@ -199,16 +202,16 @@ export default function SalonRegister() {
                   className="w-full aspect-[4/3] relative grid place-items-center"
                   style={{ background: "linear-gradient(135deg, #D4DDC8 0%, #A8E0BF 100%)" }}
                 >
-                  <Scissors size={36} strokeWidth={1.5} className="text-s-brand opacity-40" />
+                  <Scissors size={36} strokeWidth={1.5} className="text-s-ink opacity-40" />
                 </div>
                 <div className="p-3">
-                  <div className="font-display text-[13px] font-black text-s-ink mb-1">Salon Maria</div>
+                  <div className="font-display text-[13px] font-bold text-s-ink mb-1">Salon Maria</div>
                   <div className="flex items-center gap-1 text-[10px] text-s-ink-2">
                     <span style={{ color: "#F3A864" }} className="text-[9px] tracking-[0.06em]">★★★★★</span>
                     <span>5.0 · 247 Bewertungen</span>
                   </div>
                   <div className="text-[9px] text-s-ink-3 mt-[2px]">2.0 km · Kleinbasel</div>
-                  <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-[3px] rounded-full bg-s-brand text-white text-[9px] font-bold">
+                  <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-[3px] rounded-full bg-s-ink text-white text-[9px] font-bold">
                     <Store size={9} aria-hidden />
                     Sofort buchbar
                   </span>

@@ -93,7 +93,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
   return (
     <div className="rounded-[16px] bg-white border border-s-ink/5 p-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading text-sm font-bold text-s-ink">{t("title")}</h3>
+        <h3 className="font-heading text-sm font-semibold text-s-ink">{t("title")}</h3>
         <div className="flex rounded-btn border border-s-ink/10 overflow-hidden">
           {(["week", "month"] as const).map((p) => (
             <button

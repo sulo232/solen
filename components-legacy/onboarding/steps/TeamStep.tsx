@@ -45,8 +45,8 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
-          <Users size={22} className="text-s-coral" />
+        <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
+          <Users size={22} className="text-s-accent" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">
@@ -70,7 +70,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="mitarbeiter@email.ch"
-              className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+              className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
             />
           </div>
           <div>
@@ -82,17 +82,17 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={t("team.firstName")}
-              className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+              className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 transition-colors"
             />
           </div>
         </div>
 
-        {error && <p className="text-xs text-s-coral">{error}</p>}
+        {error && <p className="text-xs text-s-accent">{error}</p>}
 
         <button
           onClick={sendInvite}
           disabled={!email || sending}
-          className="w-full py-2.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+          className="w-full py-2.5 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
         >
           {sending && <Spinner size="sm" invert />}
           {t("team.sendInvite")}
@@ -103,13 +103,13 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
         <div className="bg-white rounded-[12px] border border-s-ink/5 overflow-hidden">
           {invites.map((inv, i) => (
             <div key={i} className={["flex items-center gap-3 px-5 py-3", i > 0 ? "border-t border-s-ink/5" : ""].join(" ")}>
-              <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center">
-                <UserPlus size={14} className="text-s-coral" />
+              <div className="w-8 h-8 rounded-full bg-s-ink/10 flex items-center justify-center">
+                <UserPlus size={14} className="text-s-accent" />
               </div>
               <div>
                 <p className="text-sm text-s-ink">{inv.name || inv.email}</p>
                 <p className="text-xs text-s-ink/40 flex items-center gap-1">
-                  {t("team.inviteSent")} <Check size={10} className="text-s-coral" />
+                  {t("team.inviteSent")} <Check size={10} className="text-s-accent" />
                 </p>
               </div>
             </div>
@@ -126,7 +126,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
 
       <button
         onClick={() => onSaved()}
-        className="w-full py-3 mt-6 rounded-btn active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
+        className="w-full py-3 mt-6 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
       >
         {t("setup.saveAndContinue")}
       </button>

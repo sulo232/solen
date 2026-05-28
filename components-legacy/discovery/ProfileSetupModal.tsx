@@ -110,7 +110,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
   };
 
   const pillClass = (active: boolean) =>
-    `px-4 py-2.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[color,background-color,border-color] duration-150 ${active ? "border-s-coral bg-s-coral/[0.08] text-s-coral" : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/40"}`;
+    `px-4 py-2.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[color,background-color,border-color] duration-150 ${active ? "border-s-accent bg-s-ink/[0.08] text-s-accent" : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-accent/40"}`;
 
   return (
     <AnimatePresence>
@@ -136,7 +136,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
         {/* Header */}
         <div className="px-6 pt-6 pb-4 border-b border-s-ink/[0.06] flex items-start justify-between">
           <div>
-            <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-coral mb-1">
+            <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-accent mb-1">
               Profil einrichten
             </p>
             <h2 className="font-heading text-lg text-s-ink">{t.title}</h2>
@@ -201,7 +201,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
             {t.skip}
           </button>
           <button onClick={handleSave}
-            className="flex-1 py-4 rounded-pill bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2">
+            className="flex-1 py-4 rounded-pill bg-s-ink text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2">
             {t.save}
           </button>
         </div>

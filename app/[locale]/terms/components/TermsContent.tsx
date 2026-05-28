@@ -130,8 +130,8 @@ export default function TermsContent() {
         </Article>
 
         <Article titleDe="5.2 Zahlungsabwicklung" titleEn="5.2 Payment Processing">
-          <ParDe>Die Zahlungsabwicklung erfolgt über Stripe. Mit der Nutzung von solen.ch akzeptieren Sie die geltenden Nutzungsbedingungen von Stripe (<a href="https://stripe.com/legal" target="_blank" rel="noopener noreferrer" className="text-s-coral underline hover:no-underline">https://stripe.com/legal</a>).</ParDe>
-          <ParEn>Payment processing is handled by Stripe. By using solen.ch, you accept the applicable Stripe terms of service (<a href="https://stripe.com/legal" target="_blank" rel="noopener noreferrer" className="text-s-coral underline hover:no-underline">https://stripe.com/legal</a>).</ParEn>
+          <ParDe>Die Zahlungsabwicklung erfolgt über Stripe. Mit der Nutzung von solen.ch akzeptieren Sie die geltenden Nutzungsbedingungen von Stripe (<a href="https://stripe.com/legal" target="_blank" rel="noopener noreferrer" className="text-s-accent underline hover:no-underline">https://stripe.com/legal</a>).</ParDe>
+          <ParEn>Payment processing is handled by Stripe. By using solen.ch, you accept the applicable Stripe terms of service (<a href="https://stripe.com/legal" target="_blank" rel="noopener noreferrer" className="text-s-accent underline hover:no-underline">https://stripe.com/legal</a>).</ParEn>
         </Article>
 
         <Article titleDe="5.3 Plattformgebühr" titleEn="5.3 Platform Commission">
@@ -259,8 +259,8 @@ export default function TermsContent() {
 
       <Section id="section-9" titleDe="9. Datenschutz" titleEn="9. Privacy">
         <Article titleDe="9.1 Datenschutzerklärung" titleEn="9.1 Privacy Policy">
-          <ParDe>solen.ch verfügt über eine separate Datenschutzerklärung, die unter <a href="/privacy" className="text-s-coral underline hover:no-underline">solen.ch/privacy</a> abrufbar ist. Die Datenschutzerklärung ist Bestandteil dieser AGB.</ParDe>
-          <ParEn>solen.ch maintains a separate Privacy Policy available at <a href="/privacy" className="text-s-coral underline hover:no-underline">solen.ch/privacy</a>. The Privacy Policy forms an integral part of these Terms.</ParEn>
+          <ParDe>solen.ch verfügt über eine separate Datenschutzerklärung, die unter <a href="/privacy" className="text-s-accent underline hover:no-underline">solen.ch/privacy</a> abrufbar ist. Die Datenschutzerklärung ist Bestandteil dieser AGB.</ParDe>
+          <ParEn>solen.ch maintains a separate Privacy Policy available at <a href="/privacy" className="text-s-accent underline hover:no-underline">solen.ch/privacy</a>. The Privacy Policy forms an integral part of these Terms.</ParEn>
         </Article>
 
         <Article titleDe="9.2 Datenverarbeiter" titleEn="9.2 Data Processors">
@@ -421,11 +421,11 @@ export default function TermsContent() {
         </Article>
 
         <Article titleDe="15.3 Impressum" titleEn="15.3 Legal Notice">
-          <div className="bg-s-ink/5 p-4 rounded-[12px] text-sm md:text-base text-s-ink">
+          <div className="bg-s-bg-sunken p-4 rounded-[12px] text-sm md:text-base text-s-ink">
             <p className="font-semibold mb-2">solen.ch</p>
             <p>Einzelunternehmen</p>
             <p>Basel-Stadt, Schweiz</p>
-            <p>E-Mail / Email: <a href="mailto:support@solen.ch" className="text-s-coral hover:underline">support@solen.ch</a></p>
+            <p>E-Mail / Email: <a href="mailto:support@solen.ch" className="text-s-accent hover:underline">support@solen.ch</a></p>
           </div>
         </Article>
       </Section>
@@ -435,13 +435,14 @@ export default function TermsContent() {
 
 // Helper components for consistent layout
 
+// V3-D303: border-s-ink/10 → border-s-border (canonical hairline per LOCKFILE §1); muted ink opacities → s-ink-2
 function Section({ id, titleDe, titleEn, children }: { id: string, titleDe: string, titleEn: string, children: React.ReactNode }) {
   return (
-    <section id={id} className="scroll-mt-32 pb-8 border-b border-s-ink/10 last:border-0 relative">
-      <h2 className="font-heading text-xl md:text-2xl text-s-ink mb-1">
+    <section id={id} className="scroll-mt-32 pb-8 border-b border-s-border last:border-0 relative">
+      <h2 className="font-display text-xl md:text-2xl font-semibold tracking-tight text-s-ink mb-1">
         {titleDe}
       </h2>
-      <h3 className="font-heading text-lg text-s-ink/60 mb-6 italic">
+      <h3 className="font-display text-lg text-s-ink-2 mb-6 italic">
         {titleEn}
       </h3>
       <div className="space-y-8">
@@ -456,9 +457,9 @@ function Article({ titleDe, titleEn, children }: { titleDe: string, titleEn: str
     <div className="space-y-3">
       {(titleDe || titleEn) && (
         <div className="mb-4">
-          <h3 className="font-heading text-lg text-s-ink">
-            {titleDe} 
-            {titleEn && <span className="text-s-ink/50 font-normal ml-2">/ {titleEn}</span>}
+          <h3 className="font-display text-lg font-semibold text-s-ink">
+            {titleDe}
+            {titleEn && <span className="text-s-ink-2 font-normal ml-2">/ {titleEn}</span>}
           </h3>
         </div>
       )}
@@ -479,8 +480,8 @@ function ParDe({ children }: { children: React.ReactNode }) {
 
 function ParEn({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-3 pl-4 border-l-2 border-s-ink/10 mt-2 mb-4">
-      <p className="text-xs md:text-sm text-s-ink/70 italic leading-relaxed">
+    <div className="flex items-start gap-3 pl-4 border-l-2 border-s-border mt-2 mb-4">
+      <p className="text-xs md:text-sm text-s-ink-2 italic leading-relaxed">
         {children}
       </p>
     </div>

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import SplitView from "@/components-legacy/search/SplitView";
+import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import { buildAlternates } from "@/lib/seo";
 
 interface Props {
@@ -31,14 +31,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function SearchPage({ params, searchParams }: Props) {
+export default async function SearchPage({ params }: Props) {
+  // V3-D230 (2026-05-26): swapped legacy SplitView → unified SearchTemplate.
+  // Server consumes `params` only; searchParams are read client-side via
+  // useSearchParams inside SearchTemplate so URL filter chips stay live.
   const { locale } = await params;
-  const sp = await searchParams;
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-s-bg-base">
       <Suspense>
-        <SplitView locale={locale} initialFilters={sp} />
+        <SearchTemplate
+          locale={locale}
+          serviceFilter={null}
+          breadcrumb={[
+            { label: "Solen", href: `/${locale}` },
+            { label: "Suche" },
+          ]}
+        />
       </Suspense>
     </main>
   );

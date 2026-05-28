@@ -105,7 +105,7 @@ export default function RecentlyViewed() {
               <div className="relative w-[180px] h-[120px] rounded-[12px] overflow-hidden mb-2">
                 <ImageFallback salonName={salon.name} className="absolute inset-0" />
               </div>
-              <p className="text-sm font-medium text-s-ink truncate group-hover:text-s-coral transition-colors">
+              <p className="text-sm font-medium text-s-ink truncate group-hover:text-s-accent transition-colors">
                 {salon.name}
               </p>
               {salon.average_rating > 0 && (

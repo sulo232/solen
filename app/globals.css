@@ -1,8 +1,12 @@
 /* Solen Design System — globals.css */
-/* V3-D75 typography (2026-05-18): Bricolage Grotesque (display) +
-   Hanken Grotesk (body/UI). Bricolage for hero h1/h2 personality, Hanken for
-   clean body + UI labels. Both from Google Fonts. */
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap');
+/* V3-D317 (2026-05-27): Type swap Inter Tight + Hanken Grotesk → Geist Sans
+   single family + JetBrains Mono for codes. Geist (Vercel-issued) is the
+   closest free analog to Uber Move — geometric, modern, lighter default
+   weights (700 display / 400 body vs old 800/300). Per user pick after
+   reviewing /solen-type-uber.html mockup. JetBrains Mono replaces the
+   font-mono fallback for gift codes / voucher codes / receipt amounts.
+   Supersedes V3-D191 (Hanken 300 weight contrast) + V3-D190 (Inter Tight). */
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=JetBrains+Mono:wght@400..700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -51,21 +55,24 @@
     --text-3xl: 2rem;         /* 32px — hero text */
 
     /* ── Text color tokens (Q23 + Q45 — locked 2026-05-02) ──── */
-    --color-heading: #1A1209;     /* s-ink */
-    --color-body: #1A1209;        /* s-ink (primary text) */
-    --color-muted: #56463E;       /* s-ink-2 (secondary text) — WCAG AA on white */
-    --color-border: #EFE7DD;      /* s-border */
-    --color-hover-bg: #FAF7F3;    /* s-bg-sunken */
+    /* V3-D138 (2026-05-25): neutralized to Spotify-style palette per user.
+       Ink #0A0A0A · Ink-2 #6B6B6B · Border #E7E5E4 · Hover-bg #F5F5F4. */
+    --color-heading: #0A0A0A;     /* s-ink */
+    --color-body: #0A0A0A;        /* s-ink (primary text) */
+    --color-muted: #6B6B6B;       /* s-ink-2 (secondary text) — WCAG AA on white */
+    --color-border: #E7E5E4;      /* s-border */
+    --color-hover-bg: #F5F5F4;    /* s-bg-sunken */
     --color-error: #D32F2F;
     --color-success: #16A34A;
     --color-warning: #F3A864;     /* s-amber */
 
-    /* Base / raised surface tokens — white page (Q15 lock 2026-04-22) */
+    /* V3-D138 (2026-05-25): substrate reset pure white #FFFFFF per Spotify-
+       style palette swap. Accent #1DB954 reserved for CTA + logo dot only
+       (3% max coverage). Surfaces stay neutral white / #F5F5F4 sunken.
+       History: V3-D123 (2026-05-24) had warmed to #F8F2EA cream for apricot
+       brand; reset to white now that brand is green + neutrals.
+       V3-D94 (2026-05-21) — earlier white state. */
     --bg: #FFFFFF;
-    /* V3-D94 (2026-05-21): reverted V3-D93 — substrate flipped #FAF8F2 → #FFFFFF
-       per user "revert back to comp white". V3-D93's warm cream felt off once
-       paired with the cool-poster blob mockup; user picked pure white as the
-       base substrate. Brand/atmosphere exploration continues on top of pure white. */
     --base: #FFFFFF;
 
     /* Glass CSS custom properties */
@@ -109,17 +116,17 @@
   }
 
   body {
-    /* V3-D75 typography (2026-05-18): Hanken Grotesk (body/UI) */
-    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    /* V3-D317 (2026-05-27): Geist (single-family) — supersedes Hanken body. */
+    font-family: "Geist", system-ui, -apple-system, sans-serif;
     background-color: var(--base);
     color: var(--color-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    /* V3-D75 typography (2026-05-18): Bricolage Grotesque (display) */
-    font-family: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
+    /* V3-D317 (2026-05-27): Geist (single-family) — supersedes Inter Tight display. */
+    font-family: "Geist", system-ui, -apple-system, sans-serif;
     color: var(--color-heading);
-    letter-spacing: -0.018em;
+    letter-spacing: -0.025em;
   }
 
   /* ── Global button press feedback ─────────────────────────── */
@@ -145,22 +152,26 @@
 }
 
 @layer utilities {
+  /* V3-D317 (2026-05-27): Single-family swap. .font-heading / .font-body /
+     .font-display all collapse to Geist. Aliases retained so existing
+     callsites compile; semantics now identical. */
   .font-heading {
-    font-family: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
+    font-family: "Geist", system-ui, -apple-system, sans-serif;
   }
   .font-body {
-    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    font-family: "Geist", system-ui, -apple-system, sans-serif;
   }
   .font-display {
-    font-family: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
+    font-family: "Geist", system-ui, -apple-system, sans-serif;
   }
-  /* Numeric data uses body font with tabular-nums (no separate mono family). */
+  /* V3-D317 + V3-D318: JetBrains Mono now backs font-mono-code (gift codes,
+     voucher codes, receipt amounts). Tabular-nums kept for column alignment. */
   .font-mono-code {
-    font-family: "Hanken Grotesk", ui-monospace, monospace;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
     font-variant-numeric: tabular-nums;
   }
   .data-text {
-    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    font-family: "Geist", system-ui, -apple-system, sans-serif;
     font-variant-numeric: tabular-nums;
     font-weight: 500;
   }
@@ -267,7 +278,9 @@
     padding-left: 1rem;
     padding-right: 1rem;
     font-size: 1rem;       /* 16px — prevents iOS zoom-on-focus */
-    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    /* V3-D189 (2026-05-26, QUESTIONS.md#q4): Plus Jakarta Sans → Hanken Grotesk.
+       V2-D70-era leftover — body font is now Hanken, so input fonts must match. */
+    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
     color: var(--color-body);
     background: #ffffff;
     transition: border-color 200ms ease, box-shadow 200ms ease;
@@ -289,14 +302,17 @@
 
 }
 
-/* ── Q47 (locked 2026-05-02): Focus-visible ring = 2px coral, 2px outside-offset ─ */
+/* ── V3-D189 (2026-05-26, QUESTIONS.md#q5): focus-visible ring teal #043338 → s-ink #0A0A0A.
+     Pre-B&W pivot teal is retired; B&W pivot means chrome is ink-only. 2px ink on
+     white = ~5.8:1 contrast (passes WCAG 1.4.11 / 2.4.7 AA Normal). Originally
+     locked as Q47 2026-05-02; supersedes that. ─ */
 @layer base {
   a:focus-visible,
   button:focus-visible,
   [role="button"]:focus-visible,
   [tabindex]:focus-visible,
   summary:focus-visible {
-    outline: 2px solid #043338;
+    outline: 2px solid #0A0A0A;
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -306,8 +322,8 @@
   textarea:focus-visible,
   select:focus-visible {
     outline: none;
-    border-color: #043338;
-    box-shadow: 0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), 0 0 0 2px #ffffff, 0 0 0 4px #043338;
+    border-color: #0A0A0A;
+    box-shadow: 0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), 0 0 0 2px #ffffff, 0 0 0 4px #0A0A0A;
   }
 }
 
@@ -342,6 +358,34 @@
 .animate-heart-pop {
   transform-origin: center;
   animation: heart-pop 350ms var(--ease-out-strong, cubic-bezier(0.23, 1, 0.32, 1));
+}
+
+/* ── V3-D164 (2026-05-26): right-to-left text marquee ──────────────────
+   Used by the small "TikTok" attribution strip on Entdecken cards
+   (signals "this is a TikTok video" after the centered play orb was
+   retired V3-D162). Pattern: container has `overflow: hidden`, inner
+   flex holds TWO identical content blocks side-by-side, animation
+   translates by -50% over one cycle so the second block lands exactly
+   where the first started — seamless loop without a visible "pop".
+
+   V3-D164e (2026-05-26): GPU-composited via translate3d + will-change.
+   Without these the browser re-paints the text every frame on the CPU,
+   which produced visible sub-pixel jitter (the "glitchy" look the user
+   flagged). translate3d promotes the element to its own compositor
+   layer; will-change tells the browser to keep that layer warm. */
+@keyframes marquee {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+.animate-marquee {
+  /* V3-D179 (2026-05-26): 22s → 12s per user "barely moves like slow asf".
+     22s was too sedate for the small visible window — text felt static.
+     12s is closer to Insta Reels' actual cadence (~10-15s/cycle) and
+     reads as "alive ambient" instead of "frozen ambient". */
+  animation: marquee 12s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* ── V2-D43 (Emil polish): card stagger entrance on first paint ──────────
@@ -650,7 +694,8 @@ html {
 
 /* ── Driver.js theme override ─────────────────────────────────────── */
 .driver-popover {
-  --driver-theme-color: #043338;
+  /* V3-D189 (2026-05-26): teal → s-ink for B&W pivot consistency. */
+  --driver-theme-color: #0A0A0A;
 }
 
 .solen-tour-popover {
@@ -660,13 +705,13 @@ html {
   border: 1px solid rgba(26, 18, 9, 0.08) !important;
   border-radius: 20px !important;
   box-shadow: 0 8px 32px rgba(26,18,9,0.08), 0 24px 72px rgba(26,18,9,0.12) !important;
-  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif !important;
+  font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif !important;
   padding: 24px !important;
   color: #1A1209 !important;
 }
 
 .solen-tour-popover .driver-popover-title {
-  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif !important;
+  font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif !important;
   font-size: 1.25rem !important;
   font-weight: 700 !important;
   margin-bottom: 8px !important;
@@ -688,7 +733,8 @@ html {
 }
 
 .solen-tour-popover .driver-popover-next-btn {
-  background-color: #043338 !important;
+  /* V3-D189: teal → s-ink for B&W pivot. */
+  background-color: #0A0A0A !important;
   color: white !important;
   border: none !important;
   text-shadow: none !important;

@@ -246,7 +246,8 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
         setNotes((prev) => [data.data ?? data, ...prev]);
         setNewNote("");
       }
-    } catch { /* ignore */ } finally {
+      // V3-D334 (overnight T2): error handling per CLAUDE.md.
+    } catch (err) { console.error("[Clients] save note failed:", err); } finally {
       setSavingNote(false);
     }
   };
@@ -264,7 +265,8 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
         setTags((prev) => [...prev, { tag: newTag.trim(), color: tagColor_ }]);
         setNewTag("");
       }
-    } catch { /* ignore */ } finally {
+      // V3-D334 (overnight T2): error handling per CLAUDE.md.
+    } catch (err) { console.error("[Clients] add tag failed:", err); } finally {
       setSavingTag(false);
     }
   };

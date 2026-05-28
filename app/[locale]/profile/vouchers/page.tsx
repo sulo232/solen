@@ -57,13 +57,14 @@ export default function VouchersPage() {
   }
 
   if (error) {
+    // V3-D290: error state — retired s-coral → s-error per LOCKFILE §1 universal-color (error=red)
     return (
       <div className="min-h-screen bg-s-bg-surface flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="w-12 h-12 rounded-full bg-s-coral/10 flex items-center justify-center mx-auto mb-3">
-            <AlertCircle className="w-6 h-6 text-s-coral" />
+          <div className="w-12 h-12 rounded-full bg-s-error/10 flex items-center justify-center mx-auto mb-3">
+            <AlertCircle className="w-6 h-6 text-s-error" />
           </div>
-          <p className="text-s-coral text-sm font-heading mb-1">FEHLER</p>
+          <p className="text-s-error text-sm font-heading mb-1">FEHLER</p>
           <p className="text-s-ink/60 text-sm">{error}</p>
         </div>
       </div>
@@ -72,9 +73,9 @@ export default function VouchersPage() {
 
   return (
     <div className="min-h-screen bg-s-bg-surface py-8 px-4">
-      {/* Breadcrumb */}
+      {/* Breadcrumb — V3-D290: hover color s-coral → s-ink */}
       <div className="max-w-lg mx-auto mb-4 text-xs text-s-ink/40 flex items-center gap-1">
-        <Link href={`/${locale}/profile`} className="hover:text-s-coral transition-colors">
+        <Link href={`/${locale}/profile`} className="hover:text-s-ink transition-colors">
           Profil
         </Link>
         <ChevronRight className="w-3 h-3" />
@@ -82,10 +83,10 @@ export default function VouchersPage() {
       </div>
 
       <div className="max-w-lg mx-auto space-y-6">
-        {/* Hero card */}
-        <div className="bg-gradient-to-br from-s-coral/10 to-s-coral/5 rounded-[12px] border border-s-coral/20 p-6 text-center">
-          <div className="w-14 h-14 rounded-full bg-s-coral/15 flex items-center justify-center mx-auto mb-3">
-            <Gift className="w-7 h-7 text-s-coral" />
+        {/* Hero card — V3-D290: retired s-coral gradient/border → neutral sunken wash + s-border (Layer 1 chrome) */}
+        <div className="bg-s-bg-sunken rounded-[12px] border border-s-border p-6 text-center">
+          <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center mx-auto mb-3 border border-s-border">
+            <Gift className="w-7 h-7 text-s-ink" />
           </div>
           <h1 className="font-heading text-xl text-s-ink mb-1">
             Meine Gutscheine
@@ -144,19 +145,20 @@ export default function VouchersPage() {
             </p>
             <Link
               href={`/${locale}/vouchers`}
-              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-btn bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+              // V3-D290: empty-state CTA — s-coral → s-ink primary (LOCKFILE §0 rule 2)
+              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-btn bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
             >
               Gutschein kaufen
             </Link>
           </div>
         )}
 
-        {/* Action section */}
+        {/* Action section — V3-D290: secondary CTA — retired s-coral + corrupted dark-mode hover → s-ink outline */}
         {(data?.active || data?.used || data?.expired) && (
           <div className="mt-8 pt-6 border-t border-s-ink/5">
             <Link
               href={`/${locale}/vouchers`}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-btn border border-s-coral/20 bg-s-coral/5 text-[11px] font-heading uppercase tracking-[.06em] text-s-coral hover:border-s-coral/40:border-s-coral/60 hover:bg-s-coral/10:bg-s-coral/20 transition-[transform,filter] duration-150"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-btn border border-s-border bg-white text-[11px] font-heading uppercase tracking-[.06em] text-s-ink hover:bg-s-bg-sunken transition-[transform,filter] duration-150"
             >
               Neuen Gutschein schenken
             </Link>
@@ -186,9 +188,10 @@ function VoucherCard({
   let statusColor = "";
   let statusLabel = "";
 
+  // V3-D290: status colors — undefined s-amber → s-warning (LOCKFILE §1: warning=#F59E0B amber)
   if (status === "active") {
     statusIcon = <Clock className="w-4 h-4" />;
-    statusColor = "border-s-amber/20 bg-s-amber/5";
+    statusColor = "border-s-warning/20 bg-s-warning/5";
     statusLabel = daysUntilExpiry ? `${daysUntilExpiry} Tage` : "Gültig";
   } else if (status === "used") {
     statusIcon = <CheckCircle className="w-4 h-4" />;
@@ -228,23 +231,21 @@ function VoucherCard({
             </span>
           </div>
 
-          {/* Status badge */}
-          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-[6px]"
-            style={{
-              background: status === "active" ? "rgba(243,168,100,.15)" : status === "used" ? "rgba(46,125,50,.15)" : "rgba(26,18,9,.08)",
-            }}>
+          {/* Status badge — V3-D290: hardcoded rgba + s-amber → tokens (LOCKFILE §1 warning=#F59E0B, success=#16A34A, disabled=ink-2) */}
+          <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-[6px] ${
+            status === "active" ? "bg-s-warning/15" : status === "used" ? "bg-s-success/15" : "bg-s-bg-sunken"
+          }`}>
             {statusIcon && (
               <>
-                {status === "active" && <Clock className="w-3 h-3 text-s-amber" />}
+                {status === "active" && <Clock className="w-3 h-3 text-s-warning" />}
                 {status === "used" && <CheckCircle className="w-3 h-3 text-s-success" />}
                 {status === "expired" && <X className="w-3 h-3 text-s-ink/40" />}
               </>
             )}
             <span
-              className="text-[9px] font-heading uppercase tracking-[.08em]"
-              style={{
-                color: status === "active" ? "#F3A864" : status === "used" ? "#16A34A" : "rgba(26,18,9,.4)",
-              }}
+              className={`text-[9px] font-heading uppercase tracking-[.08em] ${
+                status === "active" ? "text-s-warning" : status === "used" ? "text-s-success" : "text-s-ink-2"
+              }`}
             >
               {statusLabel}
             </span>

@@ -3,15 +3,17 @@
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Sparkles, ArrowLeft, Bell } from "lucide-react";
+import { Sparkles, ArrowLeft, Bell, Gift, Star, Send, Heart } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-const FEATURE_MAP: Record<string, { icon: string; color: string }> = {
-  vouchers: { icon: "🎁", color: "rgba(27, 77, 27,.12)" },
-  loyalty: { icon: "⭐", color: "rgba(243,168,100,.12)" },
-  referral: { icon: "💌", color: "rgba(123,166,136,.15)" },
-  behandlungen: { icon: "💆", color: "rgba(107,163,200,.15)" },
+// V3-D307: emojis (LOCKFILE §0 hard rule 1 — "No emoji. Anywhere in code/files/UI/commits") → lucide-react icons; inline rgba background tints → neutral s-bg-sunken (Layer 1 chrome per LOCKFILE §1)
+const FEATURE_MAP: Record<string, { Icon: LucideIcon }> = {
+  vouchers: { Icon: Gift },
+  loyalty: { Icon: Star },
+  referral: { Icon: Send },
+  behandlungen: { Icon: Heart },
 };
 
 export default function ComingSoonPage() {
@@ -19,7 +21,8 @@ export default function ComingSoonPage() {
   const t = useTranslations("comingSoon");
   const params = useSearchParams();
   const feature = params.get("feature") ?? "default";
-  const meta = FEATURE_MAP[feature] ?? { icon: "✨", color: "rgba(27, 77, 27,.08)" };
+  const meta = FEATURE_MAP[feature] ?? { Icon: Sparkles };
+  const FeatureIcon = meta.Icon;
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
@@ -50,24 +53,22 @@ export default function ComingSoonPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[--base] flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6">
+      {/* V3-D307: bg-[--base]/bg-[--raised] CSS vars → bg-white/bg-white; retired s-coral CTA → bg-s-ink primary (LOCKFILE §0 rule 2); retired s-sage success → s-success (universal-color convention LOCKFILE §1); arbitrary s-ink/X opacities → canonical s-ink-2; H1 normalized to Salon-PDP H1 spec (LOCKFILE §2) */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="max-w-md w-full text-center"
       >
-        <div
-          className="w-20 h-20 rounded-[24px] mx-auto mb-6 flex items-center justify-center text-4xl"
-          style={{ background: meta.color }}
-        >
-          {meta.icon}
+        <div className="w-20 h-20 rounded-[24px] mx-auto mb-6 flex items-center justify-center bg-s-bg-sunken">
+          <FeatureIcon size={32} className="text-s-ink" aria-hidden />
         </div>
 
-        <h1 className="font-heading text-2xl text-s-ink mb-2">
+        <h1 className="font-display text-3xl md:text-[40px] font-semibold tracking-tight text-s-ink leading-[1.05] mb-2">
           {t("title")}
         </h1>
-        <p className="text-sm text-s-ink/50 mb-8 leading-relaxed">
+        <p className="text-sm text-s-ink-2 mb-8 leading-relaxed">
           {description}
         </p>
 
@@ -79,19 +80,19 @@ export default function ComingSoonPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("emailPlaceholder")}
               aria-label={t("emailPlaceholder")}
-              className="flex-1 px-4 py-3 rounded-btn bg-[--raised] border border-s-ink/10 text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral/40 focus:ring-2 focus:ring-s-coral/10"
+              className="flex-1 px-4 py-3 rounded-btn bg-white border border-s-border text-sm font-body text-s-ink placeholder:text-s-ink-2 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20"
             />
             <button
               onClick={handleNotify}
               aria-label={t("notify")}
-              className="px-5 py-3 rounded-btn bg-s-coral text-white text-sm font-heading hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 flex items-center gap-2"
+              className="px-5 py-3 rounded-btn bg-s-ink text-white text-sm font-body font-semibold hover:brightness-110 active:scale-[0.97] transition-[transform,filter] duration-200 flex items-center gap-2"
             >
               <Bell size={14} />
               {t("notify")}
             </button>
           </div>
         ) : (
-          <div className="flex items-center justify-center gap-2 text-s-sage text-sm font-medium mb-6">
+          <div className="flex items-center justify-center gap-2 text-s-success text-sm font-medium mb-6">
             <Sparkles size={16} />
             {t("notifySuccess")}
           </div>
@@ -99,7 +100,7 @@ export default function ComingSoonPage() {
 
         <Link
           href={`/${locale}`}
-          className="inline-flex items-center gap-1.5 text-sm text-s-ink/40 hover:text-s-coral transition-colors duration-150"
+          className="inline-flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-accent transition-colors duration-200"
         >
           <ArrowLeft size={14} />
           {t("backHome")}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import CategoryPage from "@/components-legacy/CategoryPage";
+import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
+import CategoryHero from "@/app/[locale]/_components/landings/CategoryHero";
 import { BarbershopAboveGrid, BarbershopBelowGrid } from "@/components-legacy/barber/BarbershopSections";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
@@ -91,14 +92,23 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <CategoryPage
-        category="barbershop"
-        aboveGrid={
+      {/* V3-D340 (W11, 2026-05-28): editorial split-hero ABOVE SearchTemplate. See CategoryHero docs for axis sources. */}
+      <CategoryHero category="barbershop" locale={loc} />
+      {/* V3-D230 (2026-05-26): swapped legacy CategoryPage → unified SearchTemplate. */}
+      <SearchTemplate
+        locale={loc}
+        serviceFilter="barbershop"
+        breadcrumb={[
+          { label: "Solen", href: `/${loc}` },
+          { label: "Barbershop" },
+        ]}
+        hero={{ title: "Barbershops in Basel" }}
+        aboveSlot={
           <Suspense fallback={null}>
             <BarbershopAboveGrid />
           </Suspense>
         }
-        belowGrid={<BarbershopBelowGrid />}
+        belowSlot={<BarbershopBelowGrid />}
       />
     </>
   );

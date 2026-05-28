@@ -60,26 +60,28 @@ export default function BrandPage() {
   }
 
   return (
-    <div className="min-h-screen bg-s-bg-surface">
+    // V3-D264 (W4, 2026-05-27): retired s-bg-surface → s-bg-sunken; s-coral → s-accent + s-ink per LOCKFILE
+    <div className="min-h-screen bg-s-bg-sunken">
       {/* Hero */}
-      <div className="bg-white border-b border-s-ink/5">
+      <div className="bg-white border-b border-s-border">
         <div className="max-w-5xl mx-auto px-4 py-10 flex flex-col sm:flex-row items-center gap-6">
           {group.logo_url ? (
             <div className="relative w-20 h-20 rounded-[12px] overflow-hidden bg-s-bg-sunken shrink-0">
               <Image src={group.logo_url} alt={group.name} fill className="object-contain" />
             </div>
           ) : (
-            <div className="w-20 h-20 rounded-[12px] bg-s-coral/10 flex items-center justify-center text-s-coral text-2xl font-heading shrink-0">
+            <div className="w-20 h-20 rounded-[12px] bg-s-bg-sunken flex items-center justify-center text-s-ink text-2xl font-heading shrink-0">
               {group.name[0]}
             </div>
           )}
           <div>
-            <h1 className="font-heading text-2xl text-s-ink">{group.name}</h1>
+            {/* V3-D264: H1 bumped to LOCKFILE Salon-PDP H1 (40/48px, 700, -0.03em) */}
+            <h1 className="font-heading text-[clamp(22px,2.8vw,26px)] md:text-[48px] font-semibold text-s-ink leading-[1.05] tracking-[-0.03em]">{group.name}</h1>
             {group.description && (
-              <p className="text-sm text-s-ink/60 mt-1 max-w-lg">{group.description}</p>
+              <p className="text-sm text-s-ink-2 mt-1 max-w-lg">{group.description}</p>
             )}
             <div className="flex items-center gap-4 mt-2">
-              <span className="text-xs text-s-ink/40">
+              <span className="text-xs text-s-ink-2">
                 {salons.length} {salons.length === 1 ? "Standort" : "Standorte"}
               </span>
               {group.website && (
@@ -87,7 +89,7 @@ export default function BrandPage() {
                   href={group.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-s-coral hover:underline"
+                  className="inline-flex items-center gap-1 text-xs text-s-accent hover:text-s-accent-deep hover:underline transition-colors"
                 >
                   <ExternalLink className="w-3 h-3" />
                   Website
@@ -98,13 +100,13 @@ export default function BrandPage() {
         </div>
       </div>
 
-      {/* Locations grid */}
+      {/* Locations grid — V3-D264: h2 to LOCKFILE Section spec */}
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <h2 className="font-heading text-lg text-s-ink mb-4">
+        <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-4">
           Alle Standorte
         </h2>
         {salons.length === 0 ? (
-          <p className="text-sm text-s-ink/40">Noch keine Standorte verfügbar.</p>
+          <p className="text-sm text-s-ink-2">Noch keine Standorte verfügbar.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {salons.map((salon) => (

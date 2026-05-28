@@ -52,6 +52,7 @@ export default function HelpArticlePage() {
   if (notFound || !article) {
     return (
       <div className="min-h-screen bg-white pt-8 px-4">
+        {/* V3-D306: retired s-coral CTA → bg-s-ink primary CTA (LOCKFILE §0 rule 2 — primary CTA stays ink) */}
         <div className="max-w-3xl mx-auto">
           <EmptyState
             icon={BookOpen}
@@ -60,7 +61,7 @@ export default function HelpArticlePage() {
             action={
               <Link
                 href={`/${locale}/help`}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-body font-medium hover:brightness-[1.06] transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-btn bg-s-ink text-white text-sm font-body font-medium hover:brightness-110 transition-[filter] duration-200"
               >
                 Zurück zur Hilfe
               </Link>
@@ -73,32 +74,33 @@ export default function HelpArticlePage() {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* V3-D306: arbitrary s-ink/X opacities → canonical s-ink-2; H1 normalized to Page H2 spec; H2/H3 weighted per LOCKFILE §2 */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 pb-12">
         {/* Back link */}
         <Link
           href={`/${locale}/help`}
-          className="inline-flex items-center gap-1.5 text-sm font-body text-s-ink/40 hover:text-s-ink/70 transition-colors mb-6"
+          className="inline-flex items-center gap-1.5 text-sm font-body text-s-ink-2 hover:text-s-accent transition-colors mb-6"
         >
           <ArrowLeft size={16} />
           Zurück zur Hilfe
         </Link>
 
         {/* Article */}
-        <h1 className="font-heading text-2xl sm:text-3xl text-s-ink mb-2">
+        <h1 className="font-display text-2xl sm:text-[40px] font-semibold tracking-tight text-s-ink leading-[1.05] mb-2">
           {article.title}
         </h1>
-        <p className="text-xs font-body text-s-ink/30 mb-8">
+        <p className="text-xs font-body text-s-ink-2 mb-8">
           Aktualisiert: {new Date(article.updated_at).toLocaleDateString("de-CH")}
         </p>
 
         {/* Markdown-like content rendering */}
-        <div className="prose prose-sm max-w-none font-body text-s-ink/80 leading-relaxed">
+        <div className="prose prose-sm max-w-none font-body text-s-ink leading-relaxed">
           {article.content.split("\n").map((line, i) => {
             if (line.startsWith("## ")) {
-              return <h2 key={i} className="font-heading text-lg text-s-ink mt-6 mb-2">{line.slice(3)}</h2>;
+              return <h2 key={i} className="font-display text-xl font-semibold tracking-tight text-s-ink mt-6 mb-2">{line.slice(3)}</h2>;
             }
             if (line.startsWith("### ")) {
-              return <h3 key={i} className="font-heading text-base text-s-ink mt-4 mb-1">{line.slice(4)}</h3>;
+              return <h3 key={i} className="font-display text-lg font-semibold text-s-ink mt-4 mb-1">{line.slice(4)}</h3>;
             }
             if (line.startsWith("- ")) {
               return <li key={i} className="ml-4 list-disc">{line.slice(2)}</li>;

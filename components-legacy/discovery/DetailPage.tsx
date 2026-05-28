@@ -131,7 +131,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
         {item.author_name && (
           <span className="text-xs text-s-ink/50">
             {item.author_url ? (
-              <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="hover:text-s-coral transition-colors">@{item.author_name}</a>
+              <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="hover:text-s-accent transition-colors">@{item.author_name}</a>
             ) : `@${item.author_name}`}
           </span>
         )}

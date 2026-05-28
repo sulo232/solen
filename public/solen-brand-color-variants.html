@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solen · brand color variants vs illustration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Hanken Grotesk', system-ui, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      padding: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; letter-spacing: -0.03em; font-size: 24px; margin: 0 0 6px; }
+    .sub { font-size: 12px; color: #888; margin: 0 0 24px; max-width: 920px; line-height: 1.5; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .col {
+      background: #141414;
+      border-radius: 14px;
+      padding: 14px;
+      display: flex; flex-direction: column;
+    }
+    .col-name {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800; font-size: 15px; color: #fff;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .col-hex {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 11px; color: #888; margin-bottom: 12px;
+    }
+    .col-attribution {
+      font-size: 10px; color: #666; margin-bottom: 12px;
+      padding: 4px 8px; background: rgba(255,255,255,0.04);
+      border-radius: 6px;
+      align-self: flex-start;
+    }
+    .preview {
+      border-radius: 12px;
+      overflow: hidden;
+      flex: 1;
+      display: flex; flex-direction: column;
+    }
+    /* SECTION 1: Illustration BG with wordmark + CTA over it */
+    .preview-illo {
+      position: relative;
+      height: 200px;
+      background: url('/illustrations/categories/coiffeur.png') center/cover no-repeat;
+      padding: 14px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .wordmark {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800; font-size: 22px;
+      letter-spacing: -0.03em;
+      color: #1A1C19;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 1px;
+      background: rgba(255,255,255,0.85);
+      padding: 4px 10px;
+      border-radius: 8px;
+      align-self: flex-start;
+    }
+    .wordmark .dot { font-size: 26px; line-height: 0; transform: translateY(-2px); }
+    .cta {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 18px;
+      border-radius: 9999px;
+      font-size: 13px; font-weight: 700;
+      color: #fff;
+      align-self: flex-start;
+    }
+    .cta-ink { color: #1A1C19; }
+
+    /* SECTION 2: Clean white card with same wordmark + CTA */
+    .preview-white {
+      background: #FBF8F4;
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+    .wordmark-white {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800; font-size: 22px;
+      letter-spacing: -0.03em;
+      color: #1A1C19;
+      display: inline-flex; align-items: baseline; gap: 1px;
+    }
+    .wordmark-white .dot { font-size: 26px; line-height: 0; transform: translateY(-2px); }
+    .cta-block {
+      display: flex; gap: 8px; align-items: center;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: white;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .cta-icon {
+      width: 28px; height: 28px;
+      display: inline-grid; place-items: center;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .cta-icon-ink { color: #1A1C19; }
+    .cta-label { font-size: 12px; font-weight: 600; color: #1A1C19; }
+
+    /* Color variants */
+    .v0 .cta { background: #E86A3C; }
+    .v0 .wordmark .dot { color: #E86A3C; }
+    .v0 .wordmark-white .dot { color: #E86A3C; }
+    .v0 .cta-icon { background: #E86A3C; }
+
+    .v1 .cta { background: #B85A3A; }
+    .v1 .wordmark .dot { color: #B85A3A; }
+    .v1 .wordmark-white .dot { color: #B85A3A; }
+    .v1 .cta-icon { background: #B85A3A; }
+
+    .v2 .cta { background: #B84C2D; }
+    .v2 .wordmark .dot { color: #B84C2D; }
+    .v2 .wordmark-white .dot { color: #B84C2D; }
+    .v2 .cta-icon { background: #B84C2D; }
+
+    .v3 .cta { background: #4A3D5A; }
+    .v3 .wordmark .dot { color: #4A3D5A; }
+    .v3 .wordmark-white .dot { color: #4A3D5A; }
+    .v3 .cta-icon { background: #4A3D5A; }
+
+    .meta {
+      margin-top: 12px;
+      font-size: 11px;
+      color: #aaa;
+      line-height: 1.5;
+    }
+    .meta strong { color: #fff; }
+
+    .verdict-strip {
+      margin-top: 24px;
+      padding: 18px;
+      background: #141414;
+      border-radius: 14px;
+      font-size: 12px;
+      color: #ccc;
+      line-height: 1.6;
+    }
+    .verdict-strip h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800; font-size: 14px;
+      color: #fff; margin: 0 0 8px;
+    }
+    .verdict-strip .pick { color: #fbbf24; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>Solen brand color · 3 council picks vs current apricot</h1>
+  <p class="sub">
+    Each column: CTA + wordmark dot at top over the actual coiffeur.png illustration (worst-case integration test — see if CTA "pops" or "melts in"), then again on cream substrate (typical homepage state).
+  </p>
+
+  <div class="grid">
+
+    <!-- BASELINE: Current Apricot -->
+    <div class="col v0">
+      <div class="col-name">Current · Apricot</div>
+      <div class="col-hex">#E86A3C</div>
+      <div class="col-attribution">baseline (what's live now)</div>
+      <div class="preview">
+        <div class="preview-illo">
+          <div class="wordmark">Solen<span class="dot">.</span></div>
+          <span class="cta">Solen durchsuchen</span>
+        </div>
+        <div class="preview-white">
+          <div class="wordmark-white">Solen<span class="dot">.</span></div>
+          <div class="cta-block">
+            <span class="cta-icon">✓</span>
+            <span class="cta-label">Termin buchen</span>
+          </div>
+        </div>
+      </div>
+      <div class="meta">
+        <strong>Read:</strong> CTA fights with the brick wall. Same hue family = visual mush.
+      </div>
+    </div>
+
+    <!-- GROK PICK: Warm Rust -->
+    <div class="col v1">
+      <div class="col-name">Grok · Warm Rust</div>
+      <div class="col-hex">#B85A3A</div>
+      <div class="col-attribution">already in feature illos</div>
+      <div class="preview">
+        <div class="preview-illo">
+          <div class="wordmark">Solen<span class="dot">.</span></div>
+          <span class="cta">Solen durchsuchen</span>
+        </div>
+        <div class="preview-white">
+          <div class="wordmark-white">Solen<span class="dot">.</span></div>
+          <div class="cta-block">
+            <span class="cta-icon">✓</span>
+            <span class="cta-label">Termin buchen</span>
+          </div>
+        </div>
+      </div>
+      <div class="meta">
+        <strong>Read:</strong> Darker + redder than apricot. Sits ON TOP of brick. Still warm family.
+      </div>
+    </div>
+
+    <!-- GEMINI PICK: Spiced Terracotta -->
+    <div class="col v2">
+      <div class="col-name">Gemini · Spiced Terracotta</div>
+      <div class="col-hex">#B84C2D</div>
+      <div class="col-attribution">midpoint of scissors red + brick</div>
+      <div class="preview">
+        <div class="preview-illo">
+          <div class="wordmark">Solen<span class="dot">.</span></div>
+          <span class="cta">Solen durchsuchen</span>
+        </div>
+        <div class="preview-white">
+          <div class="wordmark-white">Solen<span class="dot">.</span></div>
+          <div class="cta-block">
+            <span class="cta-icon">✓</span>
+            <span class="cta-label">Termin buchen</span>
+          </div>
+        </div>
+      </div>
+      <div class="meta">
+        <strong>Read:</strong> Most saturated of the warms. Editorial, confident, anti-startup.
+      </div>
+    </div>
+
+    <!-- OPUS PICK: Slate Plum -->
+    <div class="col v3">
+      <div class="col-name">Opus · Slate Plum</div>
+      <div class="col-hex">#4A3D5A</div>
+      <div class="col-attribution">already in illos (shadow underline)</div>
+      <div class="preview">
+        <div class="preview-illo">
+          <div class="wordmark">Solen<span class="dot">.</span></div>
+          <span class="cta">Solen durchsuchen</span>
+        </div>
+        <div class="preview-white">
+          <div class="wordmark-white">Solen<span class="dot">.</span></div>
+          <div class="cta-block">
+            <span class="cta-icon">✓</span>
+            <span class="cta-label">Termin buchen</span>
+          </div>
+        </div>
+      </div>
+      <div class="meta">
+        <strong>Read:</strong> COOL counterpoint. CTA pops hardest against the brick. Notion/Linear pattern.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict-strip">
+    <h3>Council ship-picks</h3>
+    <strong style="color:#fbbf24;">Grok → Warm Rust #B85A3A</strong> — already in feature illustrations. Guaranteed harmony.<br/>
+    <strong style="color:#fbbf24;">Gemini → Spiced Terracotta #B84C2D</strong> — most saturated warm, editorial<br/>
+    <strong style="color:#fbbf24;">Opus → Slate Plum #4A3D5A</strong> — cool 10% against warm 90%. Solves "CTA gets lost" most directly.<br/><br/>
+    <strong>Honest read:</strong> Look at the brick-bg row (top of each column). Apricot + Warm Rust + Spiced Terracotta all blend INTO the wall to some degree. Only Slate Plum (Opus) pops as a separate layer. If your gut rejection of orange is "the CTA disappears against illustrations" — that's Opus's pick. If it's "I want a warm CTA but not THIS warm" — go Grok or Gemini.
+  </div>
+</body>
+</html>

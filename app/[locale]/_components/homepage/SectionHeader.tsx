@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -52,8 +52,19 @@ export function SectionHeader({
  */
 export function SectionMeta({ eyebrow }: { eyebrow: string }) {
   return (
-    <div className="mb-2 px-2 font-body text-[13px] font-bold uppercase tracking-[0.18em]">
-      <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-ink-3 before:block before:h-[5px] before:w-[5px] before:rounded-full before:bg-s-ink-3 before:content-['']">
+    // V3-D192 (2026-05-26): SectionMeta bullet + text → s-accent (royal blue).
+    //   (historical: was text-s-ink-3 + before:bg-s-ink-3 ink-grey before that.)
+    // V3-D330: Eyebrow recipe normalized — tracking 0.18em → 0.08em canonical,
+    //   weight font-bold → font-semibold.
+    // V3-D331 (2026-05-28): dropped the pseudo-element accent-dot prefix
+    //   (before-pseudo + rounded-full + accent bg) per LOCKFILE §2.5 Eyebrow decoration policy
+    //   (no leading dot, no leading icon). Color dropped from s-accent → s-ink-3
+    //   per §1.5 forbidden (decorative accent eyebrow). The eyebrow text label
+    //   stays because this primitive renders the "FÜR SALONS" homepage divider —
+    //   a magazine-style identity label that earns its eyebrow per §2.5
+    //   "max 1 per surface, IF section needs identity label" carve-out.
+    <div className="mb-2 px-2 font-body text-[13px] font-semibold uppercase tracking-[0.08em]">
+      <span className="inline-flex items-center gap-2 whitespace-nowrap text-s-ink-3">
         {eyebrow}
       </span>
     </div>
@@ -124,9 +135,12 @@ export function SectionTitle({
         // V2-D70 (2026-05-18): Plus Jakarta Sans is now the locked font (no
         // longer drift). Section h2 stays `font-body` (which IS Plus Jakarta
         // after V2-D70 single-family pivot) bold 700, slightly tighter
-        // tracking -0.025em to match the hero h1's tight tracking discipline.
+        // tracking -0.025em to match the hero h1's tight tracking discipline. (V3-D330 stale ref — actual current value is -0.01em per §2.5 Section H2 recipe.)
         // Size kept clamp(20, 2.2vw, 26) — section h2 is one tier below hero.
-        className="font-body text-[clamp(20px,2.2vw,26px)] font-bold leading-[1.2] tracking-[-0.025em] text-s-ink"
+        // V3-D193 (2026-05-26): Section H2 weight 800 → 700 per "too bold" sweep.
+        // V3-D326 (2026-05-27): bump back to Section H2 spec (18-20) — V3-D325
+        // sweep wrongly classified this as Subsection H3 (16-18).
+        className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink"
       >
         {title}
         {link ? (
@@ -134,14 +148,43 @@ export function SectionTitle({
             href={link.href}
             aria-label={link.label}
             className={cn(
-              "group ml-3 inline-grid h-9 w-9 shrink-0 place-items-center align-middle rounded-full",
-              "bg-s-ink/[0.06] text-s-ink transition-all duration-200 ease-glide",
-              "hover:bg-s-ink/[0.12] hover:scale-[1.08]",
-              "active:scale-[0.95] active:duration-[80ms]",
-              "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+              // V3-D140 (2026-05-25): stripped dusty-blue circle bg + colored
+              // glyph per user "make them jst normal black arrow." Section
+              // title arrows are NOT in the 3% accent band per 80/17/3 rule
+              // (_tasks/SOLEN_DESIGN.md) — they're nav affordances, ink only.
+              // Killed (V3-D140 commit): s-cool/0.20 bg, dusty-blue glyph, circle h-9 w-9,
+              // hover:scale, active:scale. Kept: ml-3 spacing, group-hover
+              // translate-x on the glyph, focus-visible outline for a11y.
+              "group ml-3 inline-flex shrink-0 items-center align-middle",
+              "text-s-ink transition-colors duration-150 ease-glide",
+              "focus-visible:rounded focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
             )}
           >
-            <ArrowRight size={20} strokeWidth={2.25} aria-hidden className="transition-transform duration-200 ease-glide group-hover:translate-x-0.5" />
+            {/* V3-D156 (2026-05-25): chevron-only at rest, stem draws in on
+                hover per user "if not hovered its jst [a chevron], once u hover
+                theres an line so it becomes arrow." Implemented via stroke
+                dasharray trick — stem path length is 14 (M5 12h14), initial
+                dashoffset 14 hides it, hover transitions dashoffset → 0 to
+                "draw" the stem left-to-right. Compounds with the existing
+                translate-x nudge for a layered hover effect. */}
+            <svg
+              width={20}
+              height={20}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+              className="transition-transform duration-200 ease-glide group-hover:translate-x-0.5"
+            >
+              <path
+                d="M5 12h14"
+                className="[stroke-dasharray:14] [stroke-dashoffset:14] transition-[stroke-dashoffset] duration-200 ease-glide group-hover:[stroke-dashoffset:0]"
+              />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
           </Link>
         ) : null}
       </h2>
@@ -168,7 +211,7 @@ export function SectionTitle({
       ) : link ? (
         <Link
           href={link.href}
-          className="shrink-0 font-body text-[13px] font-semibold text-s-brand transition-colors hover:text-s-brand-mid"
+          className="shrink-0 font-body text-[13px] font-semibold text-s-ink transition-colors hover:text-s-ink"
         >
           {link.label}
         </Link>
@@ -203,9 +246,9 @@ function ScrollCircleButton({
         "grid h-9 w-9 place-items-center rounded-full",
         "border border-s-ink/10 bg-white text-s-ink",
         "transition-[colors,transform,opacity] duration-200 ease-glide",
-        "hover:bg-s-brand-subtle hover:border-s-brand/30 hover:text-s-brand",
+        "hover:bg-white hover:border-s-ink/30 hover:text-s-ink",
         "active:scale-[0.94] active:duration-[80ms]",
-        "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+        "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         "disabled:opacity-30 disabled:pointer-events-none",
       )}
     >
@@ -236,7 +279,29 @@ export function FeedZone({
     <div
       className={cn(
         "relative z-[2]",
-        "-mt-6 md:-mt-8",
+        // V3-D145 (2026-05-25): negative margin REMOVED per user "can u jst
+        // put ths whole section abit lower". Was `-mt-6 md:-mt-8`. The
+        // rising-panel-overlap intent was for a colored Hero; now Hero ends
+        // with a WHITE SearchBar card so the rounded-t edge was rendering
+        // INVISIBLY inside the card (geometry collision). Measured: search
+        // card bottom was 16px below FeedZone top — panel's rounded corners
+        // hidden. mt-0 makes the rounded top + shadow visible delineators.
+        // V3-D170b (2026-05-26): first attempt added pt-10 (padded the
+        // content inside the panel) — user: "u jst lowered the text instead
+        // of the acc box". The PANEL itself (rounded top edge) needs to
+        // sit lower, not just the children. Switched to mt-10 mobile /
+        // md:mt-8 so the whole rising-panel drops 32-40px below the
+        // SearchCard, with the rounded-t edge VISIBLE in the new gap.
+        // V3-D322 (2026-05-27): user "the tabs underneath the search bar
+        // why s it so high up put it lower" — bump 40→64 mobile / 32→48
+        // desktop so the "Für dich" panel sits further from the SearchCard.
+        // More breathing room above the tile grid.
+        // V3-D323 (2026-05-27): user "make the underneath thing lower too" —
+        // second bump per follow-up. 64→80 mobile / 48→64 desktop.
+        // V3-D326 (2026-05-27): "unbalanced" after Uber type-scale B sweep —
+        // 80px above an 18-20px section h2 = 4× ratio, dominates the title.
+        // Drop to mt-12 mobile / mt-8 desktop (48/32px) — ratio settles ~2.5×.
+        "mt-12 md:mt-8",
         "rounded-t-[28px] md:rounded-t-[40px]",
         // V2-D67-fu17 (2026-05-17): reverted V2-D67-fu15 tint per user "ditch ts".
         // Back to V2-D65 transparent FeedZone — atmosphere reads at full chroma
@@ -293,8 +358,11 @@ export function SectionFrame({
         // Padding preserved for ScrollRow's -mx-3/md:-mx-5 negative-margin
         // bleed trick (cards align to section edge, then clip at parent).
         // V2-D48-7: pt shaved further per user "abit more". 8→4 (mobile) / 12→8 (desktop).
-        // Title now hugs the section's top edge. pb stays 16 for card breathing room.
-        "px-3 pt-1 pb-4 md:px-4 md:pt-2 md:pb-4",
+        // V3-D132 (2026-05-25): pb-4 → pb-2 (16→8) per user "gap too big vs
+        // Airbnb". The pb was the biggest section-internal contributor to
+        // the inter-section gap. Combined with Section component mb/py shrink
+        // → total mobile gap drops from ~50-108 toward Airbnb's ~27.
+        "px-3 pt-1 pb-2 md:px-4 md:pt-2 md:pb-3",
         "overflow-hidden",
         className,
       )}
@@ -324,7 +392,8 @@ export const ScrollRow = React.forwardRef<HTMLDivElement, {
     <div
       ref={ref}
       className={cn(
-        "mt-3 flex gap-3 overflow-x-auto py-1 [scrollbar-width:none]",
+        // V3-D132 (2026-05-25): mt-3 → mt-1 — title-to-cards gap shrink
+        "mt-1 flex gap-3 overflow-x-auto py-1 [scrollbar-width:none]",
         // V2-D43 (Emil polish): stagger card entrance on first paint.
         // Each card fades+rises 50ms after the previous (defined in globals.css).
         // Reduced-motion users see static (no animation).
@@ -341,12 +410,12 @@ export const ScrollRow = React.forwardRef<HTMLDivElement, {
         // Right-trailing margin on the last card so it has rest space at the
         // end of the scroll without its right corner clipped.
         "[&>*:last-child]:mr-2",
-        // V2-D66 (2026-05-16, Hayden move #10): right-edge mask fade so cards
-        // taper out instead of hard-cutting at the frame edge. Same affordance
-        // as the header nav. Mobile only — desktop carousels rarely truncate
-        // since the visible row width usually fits multiple cards comfortably.
-        "[mask-image:linear-gradient(to_right,black_calc(100%-32px),transparent)]",
-        "md:[mask-image:none]",
+        // V3-D138 (2026-05-25): mask-image fade REMOVED per user "the corner
+        // like fade this is not good at all." Problem: 32px fade zone fully
+        // consumed the visible peek of the next card (Nail Loft visible width
+        // 29px < fade width 32px), so the peek-card looked broken/faded. Now
+        // hard-cuts at frame edge — matches Airbnb/Booking horizontal-scroll
+        // marketplaces. Prior V2-D66 mask line kept in git history for revert.
         className,
       )}
     >
@@ -357,6 +426,13 @@ export const ScrollRow = React.forwardRef<HTMLDivElement, {
 
 /**
  * Standard homepage section wrapper — gives consistent max-width + padding.
+ *
+ * V3-D107 (2026-05-23): outer/inner split so `className` (bg color) can go
+ * FULL-BLEED across the viewport while the content stays max-w-[1280px]
+ * centered. Required for the Fruitful 60-30-10 section sequencing — see
+ * `_rules/solen-color-60-30-10.md`. Layout-neutral when no bg is passed
+ * (outer is transparent + zero own padding); only matters when a tint
+ * class like s-peach / s-wasabi / s-droplet (legacy tint tokens) is supplied.
  */
 export function Section({
   children,
@@ -365,19 +441,20 @@ export function Section({
   children: React.ReactNode;
   className?: string;
 }) {
-  // Outer Section — minimal padding so the SectionFrame inside reaches
-  // near-edge of viewport. Pushed to px-1 mobile (4px) for max card peek.
-  // V2-D41-rising-panel-3: vertical compacted (py-3→py-2, mb-2→mb-1) so
-  // sections sit closer together per user "more near to each other" feedback.
   return (
     <section
       className={cn(
-        "relative z-[1] mx-auto max-w-[1280px] px-1 py-3 md:px-3 md:py-4",
-        "mb-4 md:mb-6",
+        // V3-D132 (2026-05-24): mb-4 md:mb-6 → mb-2 md:mb-4 + py-3 md:py-4
+        // → py-2 md:py-3. Measured: Solen section gaps were 49-108 CSS vs
+        // Airbnb 27 CSS. Combined shrink: bottom-of-A (py-2 + mb-2 = 16)
+        // + top-of-B (py-2 = 8) → ~24 CSS visible gap, matching Airbnb.
+        "relative z-[1] mb-2 md:mb-4",
         className,
       )}
     >
-      {children}
+      <div className="mx-auto max-w-[1280px] px-1 py-2 md:px-3 md:py-3">
+        {children}
+      </div>
     </section>
   );
 }

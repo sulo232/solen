@@ -113,7 +113,7 @@ export default function RequestList({
             onClick={() => setActiveTab(tab)}
             className={`px-3 py-1.5 text-xs font-medium rounded-pill whitespace-nowrap transition-colors ${
               activeTab === tab
-                ? "bg-s-coral text-white"
+                ? "bg-s-ink text-white"
                 : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-bg-surface"
             }`}
           >
@@ -126,7 +126,7 @@ export default function RequestList({
       {requests.length > 0 && (
         <div className="border border-s-ink/10 rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50">
           <div className="flex items-center gap-1.5">
-            <ClipboardList size={14} className="text-s-coral" />
+            <ClipboardList size={14} className="text-s-accent" />
             <p className="text-xs font-medium text-s-ink">
               Copy for Claude Code
             </p>
@@ -141,7 +141,7 @@ export default function RequestList({
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                   copiedAll
                     ? "bg-s-success text-white"
-                    : "bg-s-coral text-white hover:brightness-[1.06]"
+                    : "bg-s-ink text-white hover:brightness-[1.06]"
                 }`}
               >
                 {copiedAll ? <Check size={12} /> : <Copy size={12} />}
@@ -184,7 +184,7 @@ export default function RequestList({
                     type="checkbox"
                     checked={selectedIds.has(r.id)}
                     onChange={() => toggleSelection(r.id)}
-                    className="mt-1 rounded border-s-ink/20 text-s-coral focus:ring-s-coral/30 w-3.5 h-3.5 flex-shrink-0"
+                    className="mt-1 rounded border-s-ink/20 text-s-accent focus:ring-s-accent/30 w-3.5 h-3.5 flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-mono text-s-ink/50 truncate">
@@ -257,7 +257,7 @@ export default function RequestList({
                     className={`text-[10px] px-2 py-0.5 rounded-btn flex items-center gap-1 transition-colors ${
                       copiedId === r.id
                         ? "bg-s-success-bg text-s-success"
-                        : "bg-s-coral/10 text-s-coral hover:bg-s-coral/20"
+                        : "bg-s-ink/10 text-s-accent hover:bg-s-ink/20"
                     }`}
                   >
                     {copiedId === r.id ? <Check size={9} /> : <Copy size={9} />}

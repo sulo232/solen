@@ -69,7 +69,7 @@ export default function TipPage() {
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="flex gap-1.5">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="w-1.5 h-1.5 rounded-full bg-s-coral/50 animate-pulse"
+          <div key={i} className="w-1.5 h-1.5 rounded-full bg-s-ink/50 animate-pulse"
             style={{ animationDelay: `${i * 0.2}s` }} />
         ))}
       </div>
@@ -82,9 +82,9 @@ export default function TipPage() {
         <div className="text-center">
           <div className="w-16 h-16 rounded-[18px] flex items-center justify-center mx-auto mb-5 animate-bounce"
             style={{ background: "rgba(27, 77, 27,.10)" }}>
-            <Check size={28} className="text-s-coral" />
+            <Check size={28} className="text-s-accent" />
           </div>
-          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-coral mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-accent mb-2">
             Trinkgeld gesendet
           </p>
           <h1 className="font-heading text-xl text-s-ink mb-2">
@@ -106,11 +106,11 @@ export default function TipPage() {
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-6">
-          <div className="w-20 h-20 rounded-full bg-s-coral/10 flex items-center justify-center mx-auto mb-3 overflow-hidden relative">
+          <div className="w-20 h-20 rounded-full bg-s-ink/10 flex items-center justify-center mx-auto mb-3 overflow-hidden relative">
             {staffAvatar ? (
               <Image src={staffAvatar} alt="" fill className="object-cover" unoptimized />
             ) : (
-              <Heart size={28} className="text-s-coral" />
+              <Heart size={28} className="text-s-accent" />
             )}
           </div>
           <h1 className="font-heading text-xl text-s-ink">{staffName}</h1>
@@ -129,8 +129,8 @@ export default function TipPage() {
                 onClick={() => { setSelectedAmount(amount); setUseCustom(false); }}
                 className={`py-3 rounded-btn text-xs font-heading transition-colors ${
                   !useCustom && selectedAmount === amount
-                    ? "bg-s-coral text-white shadow-elevation-2"
-                    : "border border-s-ink/[0.08] text-s-ink/65 hover:border-s-coral/50"
+                    ? "bg-s-ink text-white shadow-elevation-2"
+                    : "border border-s-ink/[0.08] text-s-ink/65 hover:border-s-accent/50"
                 }`}>
                 {formatCurrency(amount / 100, locale)}
               </button>
@@ -141,7 +141,7 @@ export default function TipPage() {
           <button onClick={() => setUseCustom(true)}
             className={`w-full py-2.5 rounded-btn text-[10px] font-heading uppercase tracking-[.06em] mb-3 transition-colors ${
               useCustom
-                ? "border border-s-coral/25 text-s-coral"
+                ? "border border-s-accent/25 text-s-accent"
                 : "border border-s-ink/[0.08] text-s-ink/45"
             }`}
             style={useCustom ? { background: "rgba(27, 77, 27,.06)" } : undefined}>
@@ -156,21 +156,21 @@ export default function TipPage() {
                 value={customAmount}
                 onChange={(e) => setCustomAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full pl-12 pr-3 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+                className="w-full pl-12 pr-3 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
                 autoFocus />
             </div>
           )}
 
           {error && (
             <div className="flex items-center gap-1.5 mb-3">
-              <AlertCircle size={12} className="text-s-coral shrink-0" />
-              <p className="text-[10px] font-heading text-s-coral">{error}</p>
+              <AlertCircle size={12} className="text-s-accent shrink-0" />
+              <p className="text-[10px] font-heading text-s-accent">{error}</p>
             </div>
           )}
 
           <button onClick={handlePay}
             disabled={paying || tipAmount < 100}
-            className="w-full py-3.5 rounded-btn bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2 shadow-elevation-2">
+            className="w-full py-3.5 rounded-btn bg-s-ink text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2 shadow-elevation-2">
             {paying ? <Spinner size="sm" invert /> : <Heart size={13} />}
             {formatCurrency(tipAmount / 100, locale)} — {l.send}
           </button>

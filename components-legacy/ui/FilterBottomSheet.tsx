@@ -107,8 +107,8 @@ export default function FilterBottomSheet({
                   'flex items-center gap-2 px-3 py-2.5 rounded-input text-sm font-body border text-left',
                   'transition-colors duration-150',
                   active
-                    ? 'bg-s-coral text-white border-s-coral'
-                    : 'bg-[--surface] text-s-ink border-s-ink/8 hover:border-s-coral/40',
+                    ? 'bg-s-ink text-white border-s-accent'
+                    : 'bg-[--surface] text-s-ink border-s-ink/8 hover:border-s-accent/40',
                 ].join(' ')}
                 aria-pressed={active}
               >
@@ -133,7 +133,7 @@ export default function FilterBottomSheet({
           </button>
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-pill bg-s-coral text-white text-sm font-heading shadow-elevation-2 hover:brightness-[1.06]"
+            className="flex-1 py-2.5 rounded-pill bg-s-ink text-white text-sm font-heading shadow-elevation-2 hover:brightness-[1.06]"
           >
             {t('apply')}
           </button>

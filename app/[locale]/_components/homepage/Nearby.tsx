@@ -38,7 +38,9 @@ interface NearbyEntry {
 
 // V2-D60-photos: Unsplash imagery — same slug reuses same photo across sections.
 const DEMO: NearbyEntry[] = [
-  { slug: "salon-maria", name: "Salon Maria", rating: 4.8, category: "coiffeur", distance: "200 m", nextSlot: { prefix: "In ", bold: "15 Min", suffix: " frei" }, freeToday: true, isSaved: true,
+  // V3-D128 (2026-05-24): "15 Min" → "Heute 15:30" per user "we book by
+  // TIME not by Min". Solen's data model is TIME-slot based, not duration.
+  { slug: "salon-maria", name: "Salon Maria", rating: 4.8, category: "coiffeur", distance: "200 m", nextSlot: { prefix: "Heute ", bold: "15:30" }, freeToday: true, isSaved: true,
     photoUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=450&fit=crop&q=80" },
   { slug: "atelier-coiffure", name: "Atelier Coiffure", rating: 4.9, category: "coiffeur", distance: "450 m", nextSlot: { bold: "14:30, 16:00" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=450&fit=crop&q=80" },
@@ -46,7 +48,8 @@ const DEMO: NearbyEntry[] = [
     photoUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=450&fit=crop&q=80" },
   { slug: "spa-rheinufer", name: "Spa Rheinufer", rating: 4.8, category: "spa", distance: "1.2 km", nextSlot: { prefix: "Nächster ", bold: "Do. 11:00" },
     photoUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=450&fit=crop&q=80" },
-  { slug: "boheme", name: "Bohème", rating: 4.9, category: "barbershop", distance: "1.5 km", nextSlot: { prefix: "In ", bold: "30 Min", suffix: " frei" }, freeToday: true,
+  // V3-D128 (2026-05-24): "30 Min" → "Heute 17:15" — same fix as above.
+  { slug: "boheme", name: "Bohème", rating: 4.9, category: "barbershop", distance: "1.5 km", nextSlot: { prefix: "Heute ", bold: "17:15" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&h=450&fit=crop&q=80" },
   { slug: "studio-nord", name: "Studio Nord", rating: 4.7, category: "barbershop", distance: "1.8 km", nextSlot: { prefix: "Heute ", bold: "18:00" }, freeToday: true,
     photoUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&h=450&fit=crop&q=80" },
@@ -102,18 +105,24 @@ function formatNextSlot(e: NearbyEntry): string {
 // not heuristics on demo copy.
 function resolveAvailability(
   e: NearbyEntry,
-  _idx: number,
+  idx: number,
 ): { state: "now" | "urgent" | "limited"; label: string } | null {
   if (!e.freeToday) return null;
-  const isMinutesAway = /\bMin\b/i.test(e.nextSlot.bold);
-  if (isMinutesAway) {
-    return { state: "limited", label: e.nextSlot.bold };
-  }
+  // V3-D173 (2026-05-26): "Heute frei" badge retired per user — the
+  // multi-slot branch now returns null (no pill). Single-slot cards
+  // still show the urgency pill but with a count-based label.
   const hasMultipleSlots = e.nextSlot.bold.includes(",");
-  if (hasMultipleSlots) {
-    return { state: "now", label: "Heute frei" };
-  }
-  return { state: "urgent", label: "Schnell weg" };
+  if (hasMultipleSlots) return null;
+  // V3-D173: "Schnell weg" → "Nur X heute" — explicit count is far more
+  // actionable than vague urgency. V3-D175 (2026-05-26): shortened from
+  // "Nur noch X heute" → "Nur X heute" so the badge can't overrun the
+  // heart icon on the narrow 163px mobile carousel card. Demo cycles
+  // 1/2/3 by idx; Phase 2 derives from real booking density.
+  const slotsLeft = (idx % 3) + 1;
+  return {
+    state: "urgent",
+    label: `Nur ${slotsLeft} heute`,
+  };
 }
 
 export default function Nearby() {
@@ -121,6 +130,9 @@ export default function Nearby() {
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   return (
+    // V3-D120 (2026-05-24): section bg tint REMOVED per user "remove these
+    // color dividing things." Future-state homepage = all-white substrate,
+    // teal section-arrow buttons + typography rhythm carry section breaks.
     <Section>
       <SectionFrame>
         <SectionTitle

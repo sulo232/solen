@@ -14,8 +14,21 @@ export default function Breadcrumb() {
   // Strip locale prefix to get meaningful segments
   const withoutLocale = pathname.replace(`/${locale}`, "") || "/";
 
-  // Don't show on homepage, dashboard, auth, booking, checkout, onboarding
-  const EXCLUDED = ["/dashboard", "/auth", "/booking", "/checkout", "/onboarding", "/walk-in-pay", "/tip"];
+  // Don't show on homepage, dashboard, auth, booking, checkout, onboarding.
+  // V3-D207 (2026-05-26, salon-detail Fresha-parity): exclude `/salon` too.
+  // V3-D224 (2026-05-26, wave 3 verifier): exclude /search + 4 category routes
+  // for the same reason — SearchTemplate now renders its OWN breadcrumb
+  // (SOLEN › Coiffeur eyebrow). Without this, all 5 routes render TWO
+  // breadcrumbs stacked (legacy global on top + SearchTemplate's). The legacy
+  // one also uses retired `text-s-accent` hover. Removing it leaves SearchTemplate
+  // as the single source.
+  // Fresha mobile PDP has NO chrome between site header and hero photo — back
+  // arrow lives ON the photo (which SalonHero already renders). The global
+  // breadcrumb was wedging 64px of "Zurück" button + retired text-s-accent
+  // hover above the V3 hero, breaking the Fresha-parity goal. Legacy salon
+  // page (no `?v3=1`) already renders its OWN in-page breadcrumb, so removing
+  // the global one drops duplicate chrome on both V3 and legacy.
+  const EXCLUDED = ["/dashboard", "/auth", "/booking", "/checkout", "/onboarding", "/walk-in-pay", "/tip", "/salon", "/search", "/coiffeur", "/barbershop", "/nails", "/spa"];
   // More robust homepage detection
   const normalizedPath = pathname.replace(/\/$/, ""); // strip trailing slash
   const isHomepage =
@@ -36,7 +49,7 @@ export default function Breadcrumb() {
       {/* Mobile back button */}
       <button
         onClick={() => router.back()}
-        className="md:hidden flex items-center gap-1.5 text-sm text-s-ink/50 hover:text-s-coral transition-colors min-h-12"
+        className="md:hidden flex items-center gap-1.5 text-sm text-s-ink/50 hover:text-s-accent transition-colors min-h-12"
       >
         <ArrowLeft size={16} />
         {t("back")}
@@ -46,7 +59,7 @@ export default function Breadcrumb() {
       <nav className="hidden md:flex items-center gap-1.5 text-sm" aria-label="Breadcrumb">
         <Link
           href={`/${locale}`}
-          className="text-s-ink/40 hover:text-s-coral transition-colors"
+          className="text-s-ink/40 hover:text-s-accent transition-colors"
         >
           Home
         </Link>
@@ -63,7 +76,7 @@ export default function Breadcrumb() {
               ) : (
                 <Link
                   href={href}
-                  className="text-s-ink/40 hover:text-s-coral transition-colors"
+                  className="text-s-ink/40 hover:text-s-accent transition-colors"
                 >
                   {label}
                 </Link>

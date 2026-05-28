@@ -84,7 +84,7 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
   return (
     <div className="relative scroll-fade-right">
       <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1">
-        <span className="shrink-0 flex items-center gap-1 text-[9px] font-heading uppercase tracking-[.14em] text-s-coral/70">
+        <span className="shrink-0 flex items-center gap-1 text-[9px] font-heading uppercase tracking-[.14em] text-s-accent/70">
           <Sparkles size={11} />
           {t("trending")}
         </span>
@@ -99,8 +99,8 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
             className={[
               "shrink-0 px-3 py-1.5 rounded-pill text-[11px] font-heading whitespace-nowrap transition-[background-color,color,border-color,box-shadow] duration-150",
               selected === label
-                ? "bg-s-coral text-white border border-s-coral shadow-elevation-2"
-                : "border border-s-ink/[0.08] text-s-ink/65 bg-white/70 hover:border-s-coral/40 hover:text-s-coral",
+                ? "bg-s-ink text-white border border-s-accent shadow-elevation-2"
+                : "border border-s-ink/[0.08] text-s-ink/65 bg-white/70 hover:border-s-accent/40 hover:text-s-accent",
             ].join(" ")}
           >
             {label}

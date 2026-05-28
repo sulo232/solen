@@ -1,10 +1,25 @@
+import Image from "next/image";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { locales } from "@/i18n";
 import { PostHogProvider } from "@/components-legacy/PostHogProvider";
 import { ToastProvider } from "@/components-legacy/ui/Toast";
+// V3-D195 (2026-05-26): new primitives Toast mounted SIDE-BY-SIDE with legacy. Legacy
+// ToastProvider stays because ~50 callers (CompareDrawer, auth pages, etc.) import
+// `useToast` from `components-legacy/ui/Toast` (separate React Context). Replacing
+// the provider would break them. Instead, the new `<Toaster />` portal mounts as a
+// sibling — new callers can now `import { toast } from "@/app/[locale]/_components/primitives/Toast"`
+// and call `toast.success("…")` from anywhere (module-level singleton, no provider needed).
+// Legacy callers keep using `useToast()` against the legacy provider; new callers use the
+// module API. Migration to a single provider is a follow-up sweep.
+import { Toaster } from "./_components/primitives/Toast";
 import Header from "./_components/layout/Header";
 import Footer from "./_components/layout/Footer";
+// V3-D142 (2026-05-25): Revolut-style city-selector top bar. Sits above
+// the Header site-wide. Hides itself when user has dismissed (30-day cookie)
+// or when no city change is needed. Variant B from
+// public/solen-city-top-bar-variants.html.
+import CityTopBar from "./_components/layout/CityTopBar";
 // BottomTabBar import removed 2026-05-03 per Q58 (deprecated for web rendering).
 // Keep file at components/layout/BottomTabBar.tsx for future PWA mount.
 // import BottomTabBar from "@/components-legacy/layout/BottomTabBar";
@@ -40,10 +55,11 @@ export default async function LocaleLayout({
       <PostHogProvider>
         <ToastProvider>
           <CookieConsentProvider>
-          {/* Skip-to-content: first focusable element for keyboard users */}
+          {/* Skip-to-content: first focusable element for keyboard users.
+              V3-D312 (W9 follow-up): retired focus:bg-s-ink → focus:bg-s-ink per LOCKFILE §0 rule 2 (primary CTA = ink). */}
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-s-coral focus:text-white focus:rounded-btn focus:shadow-warm-md focus:text-sm focus:font-medium"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-s-ink focus:text-white focus:rounded-btn focus:shadow-elevation-2 focus:text-sm focus:font-medium"
           >
             Zum Inhalt springen
           </a>
@@ -55,22 +71,31 @@ export default async function LocaleLayout({
                 - text: 12px / weight 600 (semibold)
               Solen uses royal blue bg + white text (vs Hims peach bg + ink text).
               Copy is PLACEHOLDER — swap with real promo / feature copy when ready. */}
-          <div className="w-full bg-s-brand text-white">
-            <div className="mx-auto flex max-w-[1280px] items-center justify-center gap-2 px-4 py-3">
-              <span className="font-body text-[12px] font-semibold">
-                Sofort verfügbar — 320 Buchungen heute
-              </span>
-              <a
-                href="/de/search"
-                className="font-body inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-[12px] font-semibold text-s-ink transition-colors hover:bg-s-bg-sunken"
-              >
-                Salons finden
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
-                  <path d="M5 12h14M13 5l7 7-7 7" />
-                </svg>
-              </a>
-            </div>
-          </div>
+          {/* V3-D97 (2026-05-22): banner uses Hims-style concave-bottom pattern.
+              Reference IMG_4306.jpeg measured via screenshot-spec canvas pixel sampling
+              (spec: _audits/screenshots/hims-banner-ref/spec.md):
+                - Banner total height at corners: ~63 CSS px (190 image px / 3× DPR)
+                - Banner flat-bottom height at center: ~52 CSS px (156 image px / 3×)
+                - Curve depth: ~12 CSS px → matches `rounded-xl` (12px)
+              Shape is NOT `rounded-b-X` — that chops corners INWARD. The correct
+              pattern: peach is a square-cornered rectangle, and a white absolute-
+              positioned strip with `rounded-t-xl` overlaps the bottom, creating the
+              concave "tucked tab" effect where the white page scoops UP into the
+              banner's center while corners hang lower. Two prior attempts (floating
+              pill, then rounded-b-2xl) were eyeballed and went the wrong way; this
+              fix uses measured pixel data from the reference. */}
+          {/* V3-D125 (2026-05-24): top promo banner ("Sofort verfügbar · 320
+              Buchungen heute" + "Salons finden" pill on bg-s-ink strip with
+              concave scoop) REMOVED per user. Full history:
+                V3-D111 — was bg-s-ink orange strip
+                V3-D119 — flipped to bg-s-ink dark strip
+                V3-D125 — fully removed.
+              To revive: pull the deleted block from git history (last seen
+              in layout.tsx at HEAD~1, lines 85-109). */}
+          {/* V3-D142 (2026-05-25): city-selector top bar sits above Header.
+              Hidden once user dismisses (30-day cookie) — no-flash via
+              client-side mount guard inside the component. */}
+          <CityTopBar locale={locale} />
           <Header locale={locale} />
           <PageTransitionWrapper>
             <CompareProvider>
@@ -98,6 +123,11 @@ export default async function LocaleLayout({
           <TosPrompt />
           <TOSUpdateBanner />
           </CookieConsentProvider>
+          {/* V3-D195: new primitives Toaster portal — mounts the new toast.success()/
+              toast.error() API anywhere via module-singleton. Legacy useToast() still
+              works above through ToastProvider. Eventually migrate ~50 callers + delete
+              legacy provider. */}
+          <Toaster />
         </ToastProvider>
       </PostHogProvider>
     </NextIntlClientProvider>

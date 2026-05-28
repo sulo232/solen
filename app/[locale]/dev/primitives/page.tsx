@@ -112,7 +112,7 @@ function PrimitivesDevPageInner() {
           <div className="h-px bg-s-ink mb-3.5" />
           <div className="flex items-baseline justify-between gap-4 mb-4 font-body font-bold text-[13px] uppercase tracking-[0.18em] tabular-nums">
             <span className="text-s-ink inline-flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-s-brand" />
+              <span className="w-1.5 h-1.5 rounded-full bg-s-ink" />
               Solen V3 · Phase 0 · React
             </span>
             <span className="text-s-ink-3">§F.1 · 2026-05-08 · /dev/primitives</span>
@@ -185,7 +185,7 @@ function PrimitivesDevPageInner() {
             </Card>
           </Grid>
 
-          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-brand tabular-nums mt-9 mb-3.5">
+          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-ink tabular-nums mt-9 mb-3.5">
             §F.1.1 · Variants by type
           </h3>
           <Grid cols={3}>
@@ -350,7 +350,7 @@ function PrimitivesDevPageInner() {
 
         {/* §F.1.4 CHECKBOX */}
         <Section eyebrow="Checkbox" meta="§F.1.4 · 2 variants" title="Checkbox">
-          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-brand tabular-nums mb-3.5">
+          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-ink tabular-nums mb-3.5">
             Variant A · boxed (forms)
           </h3>
           <Grid cols={3}>
@@ -391,7 +391,7 @@ function PrimitivesDevPageInner() {
             </Card>
           </Grid>
 
-          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-brand tabular-nums mt-9 mb-3.5">
+          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-ink tabular-nums mt-9 mb-3.5">
             Variant B · pill (filter sheets) — multi-select (live)
           </h3>
           <Card tag={`Service-Typ · ${activeServiceTypes.size} of 8 active`}>
@@ -421,7 +421,7 @@ function PrimitivesDevPageInner() {
 
         {/* §F.1.5 RADIO */}
         <Section eyebrow="Radio" meta="§F.1.5 · 2 variants" title="Radio">
-          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-brand tabular-nums mb-3.5">
+          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-ink tabular-nums mb-3.5">
             Variant A · radio row (sort sheets, forms)
           </h3>
           <Grid cols={2}>
@@ -499,7 +499,7 @@ function PrimitivesDevPageInner() {
             </Card>
           </Grid>
 
-          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-brand tabular-nums mt-9 mb-3.5">
+          <h3 className="font-body font-bold text-[13px] tracking-[0.16em] uppercase text-s-ink tabular-nums mt-9 mb-3.5">
             Variant B · pill (compact single-select) — live
           </h3>
           <Card tag={`Bedienung · "${serviceMode}"`}>
@@ -588,7 +588,7 @@ function PrimitivesDevPageInner() {
               <button
                 type="button"
                 onClick={() => setConfirmOpen(true)}
-                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors duration-150 ease-snap"
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-ink text-white hover:bg-black transition-colors duration-150 ease-snap"
               >
                 Termin bestätigen öffnen
               </button>
@@ -611,7 +611,7 @@ function PrimitivesDevPageInner() {
                   <button
                     type="button"
                     onClick={() => setConfirmOpen(false)}
-                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors"
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-ink text-white hover:bg-black transition-colors"
                   >
                     Bestätigen
                   </button>
@@ -623,7 +623,7 @@ function PrimitivesDevPageInner() {
               <button
                 type="button"
                 onClick={() => setLoginOpen(true)}
-                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors duration-150 ease-snap"
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-ink text-white hover:bg-black transition-colors duration-150 ease-snap"
               >
                 Login öffnen
               </button>
@@ -655,7 +655,7 @@ function PrimitivesDevPageInner() {
                   <button
                     type="button"
                     onClick={() => setLoginOpen(false)}
-                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors"
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-ink text-white hover:bg-black transition-colors"
                   >
                     Anmelden
                   </button>
@@ -667,7 +667,7 @@ function PrimitivesDevPageInner() {
               <button
                 type="button"
                 onClick={() => setReportOpen(true)}
-                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors duration-150 ease-snap"
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-ink text-white hover:bg-black transition-colors duration-150 ease-snap"
               >
                 Report-Modal öffnen
               </button>
@@ -699,7 +699,7 @@ function PrimitivesDevPageInner() {
                   <button
                     type="button"
                     onClick={() => setReportOpen(false)}
-                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors"
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-ink text-white hover:bg-black transition-colors"
                   >
                     Meldung senden
                   </button>
@@ -762,7 +762,7 @@ function PrimitivesDevPageInner() {
               <button
                 type="button"
                 onClick={() => setSortSheetOpen(true)}
-                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors duration-150 ease-snap"
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-ink text-white hover:bg-black transition-colors duration-150 ease-snap"
               >
                 Sort sheet öffnen
               </button>
@@ -811,7 +811,7 @@ function PrimitivesDevPageInner() {
               <button
                 type="button"
                 onClick={() => setFilterSheetOpen(true)}
-                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors duration-150 ease-snap"
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-ink text-white hover:bg-black transition-colors duration-150 ease-snap"
               >
                 Filter sheet öffnen
               </button>
@@ -867,7 +867,7 @@ function PrimitivesDevPageInner() {
                   <button
                     type="button"
                     onClick={() => setFilterSheetOpen(false)}
-                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors"
+                    className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-ink text-white hover:bg-black transition-colors"
                   >
                     47 Salons anzeigen
                   </button>
@@ -879,7 +879,7 @@ function PrimitivesDevPageInner() {
               <button
                 type="button"
                 onClick={() => setShareSheetOpen(true)}
-                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors duration-150 ease-snap"
+                className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-ink text-white hover:bg-black transition-colors duration-150 ease-snap"
               >
                 Share sheet öffnen
               </button>
@@ -956,7 +956,7 @@ function PrimitivesDevPageInner() {
                 <div className="flex items-center gap-4 text-[14px] text-s-ink-2 font-medium">
                   <span>Entdecken</span>
                   <span>Städte</span>
-                  <button className="bg-s-brand text-white px-4 py-2 rounded-full font-semibold text-[14px]">Anmelden</button>
+                  <button className="bg-s-ink text-white px-4 py-2 rounded-full font-semibold text-[14px]">Anmelden</button>
                 </div>
               </div>
             </Card>
@@ -1007,7 +1007,7 @@ function PrimitivesDevPageInner() {
               </p>
               <a
                 href="/solen-v2-cookie-banner.html"
-                className="font-body font-semibold text-[14px] text-s-brand hover:text-s-ink transition-colors mt-3 inline-block"
+                className="font-body font-semibold text-[14px] text-s-ink hover:text-s-ink transition-colors mt-3 inline-block"
               >
                 View locked mockup →
               </a>
@@ -1015,14 +1015,14 @@ function PrimitivesDevPageInner() {
 
             <Card tag="Mockup index">
               <ul className="font-body text-[14px] text-s-ink-2 space-y-2 leading-[1.55]">
-                <li><a href="/solen-v2-primitives.html" className="text-s-brand hover:text-s-ink">§F.1 form primitives →</a></li>
-                <li><a href="/solen-v2-modal.html" className="text-s-brand hover:text-s-ink">§F.2 modal →</a></li>
-                <li><a href="/solen-v2-sheet.html" className="text-s-brand hover:text-s-ink">§F.3 bottom sheet →</a></li>
-                <li><a href="/solen-v2-toast.html" className="text-s-brand hover:text-s-ink">§F.4 toast →</a></li>
-                <li><a href="/solen-v2-datetime.html" className="text-s-brand hover:text-s-ink">§F.5 date / time picker →</a></li>
-                <li><a href="/solen-v2-cookie-banner.html" className="text-s-brand hover:text-s-ink">§F.8 cookie consent →</a></li>
-                <li><a href="/solen-v2-logo-options.html" className="text-s-brand hover:text-s-ink">V2-D27 logo options →</a></li>
-                <li><a href="/solen-v2-republik-teal.html" className="text-s-brand hover:text-s-ink">V3 homepage (locked V2-D15-3) →</a></li>
+                <li><a href="/solen-v2-primitives.html" className="text-s-ink hover:text-s-ink">§F.1 form primitives →</a></li>
+                <li><a href="/solen-v2-modal.html" className="text-s-ink hover:text-s-ink">§F.2 modal →</a></li>
+                <li><a href="/solen-v2-sheet.html" className="text-s-ink hover:text-s-ink">§F.3 bottom sheet →</a></li>
+                <li><a href="/solen-v2-toast.html" className="text-s-ink hover:text-s-ink">§F.4 toast →</a></li>
+                <li><a href="/solen-v2-datetime.html" className="text-s-ink hover:text-s-ink">§F.5 date / time picker →</a></li>
+                <li><a href="/solen-v2-cookie-banner.html" className="text-s-ink hover:text-s-ink">§F.8 cookie consent →</a></li>
+                <li><a href="/solen-v2-logo-options.html" className="text-s-ink hover:text-s-ink">V2-D27 logo options →</a></li>
+                <li><a href="/solen-v2-republik-teal.html" className="text-s-ink hover:text-s-ink">V3 homepage (locked V2-D15-3) →</a></li>
               </ul>
             </Card>
           </Grid>
@@ -1056,7 +1056,7 @@ function Section({
       <div className="h-px bg-s-ink mb-3.5" />
       <div className="flex items-baseline justify-between gap-4 mb-3 font-body font-bold text-[13px] uppercase tracking-[0.18em] tabular-nums">
         <span className="text-s-ink inline-flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-s-brand" />
+          <span className="w-1.5 h-1.5 rounded-full bg-s-ink" />
           {eyebrow}
         </span>
         <span className="text-s-ink-3">{meta}</span>
@@ -1195,7 +1195,7 @@ function ToastDemo() {
                 description: "Schau sie dir in deinem Feed an.",
               })
             }
-            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-brand text-white hover:bg-s-brand-mid transition-colors"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-ink text-white hover:bg-black transition-colors"
           >
             Info
           </button>

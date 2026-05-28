@@ -3,32 +3,43 @@
 import * as React from "react";
 import { MapPin } from "lucide-react";
 import type { SalonDetail } from "./_shared";
-import { cn } from "@/lib/utils";
 
 /**
- * SalonAbout — V2-D53.3 (2026-05-11).
+ * SalonAbout — V2-D53.3 (2026-05-11) · V3-D209 locale-pick (2026-05-26).
  *
- * About paragraph (bilingual EN + DE concatenated) followed by the
- * location section. Map is rendered as a placeholder block for now —
- * real Mapbox integration is gated on `NEXT_PUBLIC_MAPBOX_TOKEN` (deferred
- * per user "all full except the map").
+ * About paragraph followed by the location section. Map is rendered as a
+ * placeholder block for now — real Mapbox integration is gated on
+ * `NEXT_PUBLIC_MAPBOX_TOKEN` (deferred per user "all full except the map").
+ *
+ * V3-D209 (verifier punch-list item #4): previously rendered EN + DE
+ * paragraphs concatenated on every locale — user on /de/ saw English text
+ * first, then German. Fresha shows one paragraph in the active locale.
+ * Now picks `about_text_${locale}` with a sensible fallback chain ending in
+ * any available text.
  *
  * Placeholder design:
  *   • Light gray block sized to match a real map (~aspect-[16/9])
  *   • Compass icon + "Karte folgt" caption in the center
- *   • Below: address + Get directions purple link
+ *   • Below: address + Get directions link
  *
  * When the env var lands, swap the placeholder div for a `<Map />`
  * component using react-map-gl. Marker = black pill with salon rating.
  */
-export function SalonAbout({ salon }: { salon: SalonDetail }) {
-  const deText = salon.about_text_de ?? salon.description_de;
-  const enText = salon.about_text_en ?? salon.description_en;
+export function SalonAbout({ salon, locale }: { salon: SalonDetail; locale: string }) {
+  // V3-D209: pick one text in the active locale; fall back through de → en if missing.
+  // Type cast is needed because SalonDetail only types `_de` / `_en` keys today —
+  // additional locales (fr/it) gracefully read undefined and skip.
+  const localized = (key: string) => (salon as unknown as Record<string, string | undefined>)[key];
+  const text =
+    localized(`about_text_${locale}`) ??
+    localized(`description_${locale}`) ??
+    salon.about_text_de ??
+    salon.description_de ??
+    salon.about_text_en ??
+    salon.description_en ??
+    null;
 
-  // Render both if available AND distinct; otherwise just one
-  const showBoth = Boolean(deText && enText && deText !== enText);
-
-  if (!deText && !enText && !salon.address) return null;
+  if (!text && !salon.address) return null;
 
   // V2-D53.3 fix #8 (R2-G1): salon.address already includes city, don't append postal.
   const fullAddress = salon.address;
@@ -36,20 +47,16 @@ export function SalonAbout({ salon }: { salon: SalonDetail }) {
 
   return (
     <section id="section-about">
-      <h2 className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink md:text-[22px]">
+      {/* V3-D202 (A12): font-body → font-display + Scale B. */}
+      <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Über uns
       </h2>
 
-      <div className="mt-4 max-w-3xl space-y-4 text-[14px] leading-relaxed text-s-ink-2 md:text-[15px]">
-        {enText && (
-          <p className="whitespace-pre-line">{enText}</p>
-        )}
-        {deText && (!enText || showBoth) && (
-          <p className={cn("whitespace-pre-line", enText && "text-s-ink-3")}>
-            {deText}
-          </p>
-        )}
-      </div>
+      {text && (
+        <div className="mt-4 max-w-3xl space-y-4 text-[14px] leading-relaxed text-s-ink-2 md:text-[15px]">
+          <p className="whitespace-pre-line">{text}</p>
+        </div>
+      )}
 
       {/* Map placeholder + location */}
       <MapPlaceholder
@@ -64,7 +71,7 @@ export function SalonAbout({ salon }: { salon: SalonDetail }) {
           href={directionsHref}
           target="_blank"
           rel="noreferrer noopener"
-          className="font-body font-semibold text-s-brand hover:underline"
+          className="font-body font-semibold text-s-ink hover:underline"
         >
           Wegbeschreibung
         </a>
@@ -95,7 +102,7 @@ function MapPlaceholder({
         >
           <defs>
             <pattern id="map-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#A8B89A" strokeWidth="0.5" />
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#E7E5E4" strokeWidth="0.5" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#map-grid)" />

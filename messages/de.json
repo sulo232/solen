@@ -3562,33 +3562,39 @@
   "categoryHero": {
     "coiffeur": {
       "label": "Coiffeur",
-      "subtitle": "Die besten Coiffeure in Basel",
-      "titleSuffix": "in Basel"
+      "subtitle": "Finde die besten Coiffeure in deiner Nähe. Online buchen, sofort bestätigt.",
+      "titleSuffix": "in Basel",
+      "title": "Coiffeur in der Schweiz"
     },
     "barbershop": {
       "label": "Barbershop",
-      "subtitle": "Klassische Barbershops in Basel",
-      "titleSuffix": "in Basel"
+      "subtitle": "Klassische Barbershops und moderne Cuts in deiner Stadt.",
+      "titleSuffix": "in Basel",
+      "title": "Barber in der Schweiz"
     },
     "nails": {
       "label": "Nails",
-      "subtitle": "Nagelstudios und Maniküre in Basel",
-      "titleSuffix": "in Basel"
+      "subtitle": "Maniküre, Pediküre und Nail Art. Online buchen, ohne Warten.",
+      "titleSuffix": "in Basel",
+      "title": "Nagelstudios in der Schweiz"
     },
     "spa": {
       "label": "Spa & Massage",
-      "subtitle": "Wellness und Entspannung in Basel",
-      "titleSuffix": "in Basel"
+      "subtitle": "Wellness, Massage und Entspannung in deiner Nähe.",
+      "titleSuffix": "in Basel",
+      "title": "Spa und Massage in der Schweiz"
     },
     "makeup": {
       "label": "Makeup",
-      "subtitle": "Professionelles Makeup in Basel",
-      "titleSuffix": "in Basel"
+      "subtitle": "Professionelles Makeup für jeden Anlass. Online buchen.",
+      "titleSuffix": "in Basel",
+      "title": "Makeup in der Schweiz"
     },
     "waxing": {
       "label": "Waxing",
-      "subtitle": "Waxing Studios in Basel",
-      "titleSuffix": "in Basel"
+      "subtitle": "Waxing Studios und Body Care in deiner Stadt.",
+      "titleSuffix": "in Basel",
+      "title": "Waxing in der Schweiz"
     },
     "salonsAvailable": "{count, plural, =1 {1 Salon} other {# Salons}} verfügbar"
   },
@@ -3881,9 +3887,9 @@
   "comingSoon": {
     "title": "Kommt bald",
     "descriptionDefault": "Wir arbeiten an etwas Tollem. Lass dich benachrichtigen, wenn es soweit ist!",
-    "description_vouchers": "Gutscheine & Geschenkkarten sind bald verfügbar. Verschenke Beauty-Erlebnisse!",
-    "description_loyalty": "Unser Treueprogramm mit Stempelkarten kommt bald. Sammle Punkte bei jedem Besuch!",
-    "description_referral": "Empfiehl Solen an Freunde und erhalte Guthaben. Das Empfehlungsprogramm startet bald!",
+    "description_vouchers": "Gutscheine & Geschenkkarten sind bald verfügbar. Verschenke Beauty-Erlebnisse.",
+    "description_loyalty": "Unser Treueprogramm mit Stempelkarten kommt bald. Sammle Punkte bei jedem Besuch.",
+    "description_referral": "Empfiehl Solen an Freunde und erhalte Guthaben. Das Empfehlungsprogramm startet bald.",
     "description_behandlungen": "Entdecke bald alle Behandlungen und finde den perfekten Salon dafür.",
     "emailPlaceholder": "deine@email.ch",
     "notify": "Benachrichtigen",

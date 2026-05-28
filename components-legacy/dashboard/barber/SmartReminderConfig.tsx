@@ -81,7 +81,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Bell size={18} className="text-s-amber" />
-          <h3 className="font-heading text-sm font-bold text-s-ink">{t("smartReminders")}</h3>
+          <h3 className="font-heading text-sm font-semibold text-s-ink">{t("smartReminders")}</h3>
         </div>
         <span className="flex items-center gap-1 text-xs text-s-ink/50">
           <Users size={14} />

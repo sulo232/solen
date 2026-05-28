@@ -17,14 +17,14 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <div className="w-full max-w-sm">
         {/* Logo lockup */}
         <div className="text-center mb-8">
-          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-amber mb-3">
+          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-warning mb-3">
             solen.ch
           </p>
           <Link
             href={`/${locale}`}
             className="inline-block font-heading text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity"
           >
-            solen<span className="text-s-coral">.</span>ch
+            solen<span className="text-s-accent">.</span>ch
           </Link>
           <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 mt-3">
             Willkommen zurück
@@ -43,7 +43,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             Noch kein Konto?{" "}
           </span>
           <Link href={`/${locale}/auth/register`}
-            className="text-[11px] font-heading uppercase tracking-[.08em] text-s-coral hover:underline">
+            className="text-[11px] font-heading uppercase tracking-[.08em] text-s-accent hover:underline">
             Registrieren
           </Link>
         </p>

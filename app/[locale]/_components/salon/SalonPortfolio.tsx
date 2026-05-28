@@ -33,7 +33,8 @@ export function SalonPortfolio({
 
   return (
     <section id="section-portfolio">
-      <h2 className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink md:text-[22px]">
+      {/* V3-D202 (A10): font-body → font-display + Scale B. */}
+      <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Portfolio
         <span className="ml-2 text-[14px] font-normal text-s-ink-3 md:text-[15px]">
           {total}
@@ -74,7 +75,7 @@ function UniformGrid({ urls, onOpen }: { urls: string[]; onOpen: (i: number) => 
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={u} alt="" className="h-full w-full object-cover" loading="lazy" />
             {showOverlay && (
-              <div className="absolute inset-0 grid place-items-center bg-black/55 font-display text-[24px] font-black text-white md:text-[32px]">
+              <div className="absolute inset-0 grid place-items-center bg-black/55 font-display text-[24px] font-semibold text-white md:text-[32px]">
                 +{overflow}
               </div>
             )}

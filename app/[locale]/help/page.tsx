@@ -17,10 +17,11 @@ type HelpArticle = {
   sort_order: number;
 };
 
+// V3-D305: retired s-coral icon-chip colors → neutral s-bg-sunken + s-ink-2 (Layer 1 chrome per LOCKFILE §1 — icon-chips don't need accent)
 const CATEGORIES = [
-  { key: "customers", label: "Für Kunden", Icon: Users, color: "bg-s-coral/10 text-s-coral" },
-  { key: "salons", label: "Für Salons", Icon: Store, color: "bg-s-coral/10 text-s-coral" },
-  { key: "contact", label: "Kontakt", Icon: Mail, color: "bg-s-ink/5 text-s-ink/70" },
+  { key: "customers", label: "Für Kunden", Icon: Users, color: "bg-s-bg-sunken text-s-ink" },
+  { key: "salons", label: "Für Salons", Icon: Store, color: "bg-s-bg-sunken text-s-ink" },
+  { key: "contact", label: "Kontakt", Icon: Mail, color: "bg-s-bg-sunken text-s-ink" },
 ];
 
 export default function HelpPage() {
@@ -52,28 +53,29 @@ export default function HelpPage() {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* V3-D305: retired s-coral (gradient, ring, fill) → neutral chrome; s-sand undefined → s-bg-sunken; active tab uses ink-fill per LOCKFILE TabPill pattern; arbitrary s-ink/X → canonical s-ink-2; H1 normalized to Page H2 spec (LOCKFILE §2) */}
       {/* Hero */}
-      <div className="bg-gradient-to-b from-s-coral/5 via-white to-transparent pt-8 pb-8">
+      <div className="pt-8 pb-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <div className="w-14 h-14 rounded-[12px] bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
-            <BookOpen size={28} className="text-s-coral" />
+          <div className="w-14 h-14 rounded-[12px] bg-s-bg-sunken flex items-center justify-center mx-auto mb-4">
+            <BookOpen size={28} className="text-s-ink" />
           </div>
-          <h1 className="font-heading text-2xl sm:text-4xl text-s-ink">
+          <h1 className="font-display text-3xl sm:text-4xl font-semibold tracking-tight text-s-ink leading-[1.05]">
             Hilfe & Support
           </h1>
-          <p className="text-s-ink/50 font-body mt-2 text-sm sm:text-base">
+          <p className="text-s-ink-2 font-body mt-2 text-sm sm:text-base">
             Finde Antworten auf häufige Fragen oder kontaktiere uns direkt.
           </p>
 
           {/* Search */}
           <div className="relative max-w-md mx-auto mt-6">
-            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-s-ink/30" />
+            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-s-ink-2" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Suche nach Themen..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-pill border border-s-ink/10 bg-white text-sm font-body text-s-ink focus:outline-none focus:ring-2 focus:ring-s-coral/30 focus:border-s-coral transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 rounded-pill border border-s-border bg-white text-sm font-body text-s-ink focus:outline-none focus:ring-2 focus:ring-s-accent/30 focus:border-s-accent transition-colors"
             />
           </div>
         </div>
@@ -87,8 +89,8 @@ export default function HelpPage() {
             className={[
               "px-3 py-1.5 rounded-pill text-xs font-medium font-body transition-colors",
               activeCategory === null
-                ? "bg-s-coral text-white"
-                : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-sand",
+                ? "bg-s-ink text-white"
+                : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-border",
             ].join(" ")}
           >
             Alle
@@ -100,8 +102,8 @@ export default function HelpPage() {
               className={[
                 "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium font-body transition-colors",
                 activeCategory === key
-                  ? "bg-s-coral text-white"
-                  : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-sand",
+                  ? "bg-s-ink text-white"
+                  : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-border",
               ].join(" ")}
             >
               <Icon size={12} />
@@ -137,7 +139,7 @@ export default function HelpPage() {
                     <div className={`w-8 h-8 rounded-btn ${group.color} flex items-center justify-center`}>
                       <group.Icon size={16} />
                     </div>
-                    <h2 className="font-heading text-lg text-s-ink">{group.label}</h2>
+                    <h2 className="font-display text-lg font-semibold text-s-ink">{group.label}</h2>
                   </div>
                   <div className="space-y-1">
                     {group.articles.map((article) => (
@@ -146,10 +148,10 @@ export default function HelpPage() {
                         href={`/${locale}/help/${article.slug}`}
                         className="flex items-center justify-between px-4 py-3 rounded-[12px] bg-s-bg-surface hover:bg-s-bg-sunken transition-colors group"
                       >
-                        <span className="font-body text-sm text-s-ink/80 group-hover:text-s-ink transition-colors">
+                        <span className="font-body text-sm text-s-ink group-hover:text-s-accent transition-colors">
                           {article.title}
                         </span>
-                        <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-ink/40 transition-colors shrink-0" />
+                        <ChevronRight size={16} className="text-s-ink-2 group-hover:text-s-accent transition-colors shrink-0" />
                       </Link>
                     ))}
                   </div>

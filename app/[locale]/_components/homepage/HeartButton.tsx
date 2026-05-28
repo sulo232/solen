@@ -74,7 +74,7 @@ export function HeartButton({
         aria-pressed={isSaved}
         className={cn(
           "group absolute right-[2px] top-[2px] grid h-11 w-11 place-items-center bg-transparent p-0",
-          "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+          "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
           "focus-visible:rounded-full",
           className,
         )}
@@ -102,10 +102,12 @@ export function HeartButton({
             key={popKey}
             size={18}
             strokeWidth={2.25}
-            // V2-D60-heart: SAVED = solid red fill, no stroke. UNSAVED = ink stroke.
-            // V3-D85-semantic (2026-05-19): hex aligned with new s-love value
-            // (#FF4A6B → #CC4A60) per council muted-warm reduction.
-            fill={isSaved ? "#CC4A60" : "none"}
+            // V3-D103 (2026-05-23): heart fill aligned with universal semantic
+            // --heart-active #FF3366 per brand spec. Was held over at V2 muted
+            // #CC4A60 from the old warm-reduction era — should have swapped at
+            // the V3-D88 universal-semantics lock. SAVED = solid pink fill, no
+            // stroke. UNSAVED = ink stroke.
+            fill={isSaved ? "#FF3366" : "none"}
             stroke={isSaved ? "none" : "var(--color-heading)"}
             className={isSaved && popKey > 0 ? "animate-heart-pop" : undefined}
             aria-hidden

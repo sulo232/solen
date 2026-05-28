@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Section header — dot+eyebrow variants vs Fresha/Uber</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Inter+Tight:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #0A0A0A;
+    --ink-2:      #262626;
+    --ink-3:      #525252;
+    --ink-4:      #737373;
+    --line:       #E7E5E4;
+    --line-soft:  #F5F5F4;
+    --bg:         #F5F5F4;
+    --card:       #FFFFFF;
+    --bad-bg:     #FEF2F2;
+    --good-bg:    #F0FDF4;
+    --mid-bg:     #FFF7ED;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; line-height: 1.5; }
+  body { padding: 20px 14px 100px; max-width: 1000px; margin: 0 auto; }
+
+  .doc-eyebrow { font-family: 'Geist'; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-4); margin-bottom: 12px; }
+  .doc-h1 { font-family: 'Inter Tight'; font-size: 28px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 12px; }
+  .doc-intro { font-size: 14px; color: var(--ink-3); line-height: 1.55; margin-bottom: 28px; }
+  .doc-intro strong { color: var(--ink); font-weight: 600; }
+  .doc-intro code { background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+  .ref-section { margin: 32px 0; padding-top: 20px; border-top: 1px solid var(--line); }
+  .ref-title { font-family: 'Inter Tight'; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .ref-sub { font-size: 13px; color: var(--ink-3); margin-bottom: 16px; line-height: 1.5; }
+
+  .ref-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  @media (min-width: 760px) { .ref-grid { grid-template-columns: 1fr 1fr; gap: 14px; } }
+  .ref-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .ref-card img { width: 100%; height: auto; display: block; max-height: 280px; object-fit: cover; object-position: center top; }
+  .ref-card .caption { padding: 12px 14px 16px; font-size: 12px; color: var(--ink-3); line-height: 1.55; }
+  .ref-card .caption strong { display: block; font-size: 13px; color: var(--ink); margin-bottom: 4px; font-weight: 600; }
+
+  /* Variant panel */
+  .vrow { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 18px; }
+  @media (min-width: 820px) { .vrow { grid-template-columns: repeat(3, 1fr); } }
+  .v { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 36px 22px 28px; position: relative; min-height: 220px; }
+  .v.bad { background: var(--bad-bg); border-color: #FECACA; }
+  .v.mid { background: var(--mid-bg); border-color: #FED7AA; }
+  .v.good { background: var(--good-bg); border-color: #BBF7D0; }
+  .v .tag { position: absolute; top: 10px; left: 14px; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: .06em; }
+  .v.bad .tag { background: #DC2626; color: #fff; }
+  .v.mid .tag { background: #EA580C; color: #fff; }
+  .v.good .tag { background: #16A34A; color: #fff; }
+  .v .label { position: absolute; top: 12px; right: 14px; font-size: 10px; font-weight: 600; color: var(--ink-4); }
+
+  /* Eyebrow renderings */
+  .eb-A { display: inline-flex; align-items: center; gap: 8px; font-family: 'Geist'; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); margin-bottom: 12px; }
+  .eb-A .dot { display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--ink-3); }
+  .eb-B { font-family: 'Geist'; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); margin-bottom: 12px; }
+  .h2-line { font-family: 'Inter Tight'; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; color: var(--ink); margin-bottom: 8px; }
+  .sub-line { font-size: 13px; color: var(--ink-3); line-height: 1.55; max-width: 360px; }
+  .step-row { display: flex; gap: 8px; margin-top: 14px; }
+  .step { background: rgba(0,0,0,0.04); border-radius: 6px; padding: 8px 10px; font-size: 11px; font-weight: 600; color: var(--ink-2); flex: 1; text-align: center; }
+
+  .summary { background: var(--ink); color: #fff; border-radius: 14px; padding: 18px 20px; margin-top: 30px; }
+  .summary h3 { font-family: 'Inter Tight'; font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .summary p { font-size: 13px; opacity: .9; line-height: 1.55; margin-bottom: 6px; }
+  .summary strong { color: #fff; font-weight: 600; }
+
+  .verdict-note { background: var(--card); border-left: 3px solid var(--ink); padding: 12px 14px; margin-top: 14px; border-radius: 4px; font-size: 12px; color: var(--ink-3); line-height: 1.55; }
+  .verdict-note strong { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="doc-eyebrow">Decision · 2026-05-28</div>
+<h1 class="doc-h1">Section header dot+eyebrow — Solen vs Fresha vs Uber</h1>
+<p class="doc-intro">
+  Your call: I've been shipping a <strong>"5px coloured dot → uppercase eyebrow → H2"</strong> pattern across /fuer-salons (just today) and homepage's "FÜR SALONS" divider. Audit confirms: <strong>neither Fresha nor Uber do this anywhere on their B2B pages</strong>. They go straight from section break to H2. Choose which variant lands.
+</p>
+
+<!-- ─────────────────────────────────────────────── -->
+<section class="ref-section">
+  <h2 class="ref-title">Reference proof (matched-surface B2B peers)</h2>
+  <p class="ref-sub">Fresha business page (matched-category — salon-booking marketplace) + Uber business page (matched-pattern — single-CTA B2B). Both screenshots scrolled past hero to show how they handle EVERY section header.</p>
+
+  <div class="ref-grid">
+    <div class="ref-card">
+      <img src="/_pixel-refs/fresha/business/full-page-1440.png" alt="Fresha business full page" />
+      <div class="caption">
+        <strong>Fresha business — every section</strong>
+        "Everything you need to run your business" · "All-in-one platform" · "The most popular features" · "Power your business" · "Top rated by the industry" · "Grow your business" · "Committed to your success" · "Frequently asked questions" — ALL are H2-only. Zero eyebrow. Zero dot. The section break (white-space + bg-color change) IS the divider.
+      </div>
+    </div>
+    <div class="ref-card">
+      <img src="/_pixel-refs/uber/imagery/business/desktop.png" alt="Uber business full page" />
+      <div class="caption">
+        <strong>Uber business — every section</strong>
+        "A global platform built on the world's largest mobility network" · "How companies leverage Uber for Business" · "Get started with no upfront costs" · "Interested in learning more?" — ALL H2-only. No eyebrow, no dot, no decoration before any heading.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section class="ref-section">
+  <h2 class="ref-title">Three variants — pick one</h2>
+  <p class="ref-sub">Each renders the "How it works" section as it would appear with the three options. Solen-current pattern on left, Fresha/Uber pattern on right.</p>
+
+  <div class="vrow">
+    <!-- A: current Solen pattern -->
+    <div class="v bad">
+      <span class="tag">A · current</span>
+      <span class="label">what's shipping</span>
+      <div class="eb-A">
+        <span class="dot"></span>
+        So funktioniert's
+      </div>
+      <div class="h2-line">In 3 Schritten Solen-Partner.</div>
+      <p class="sub-line">Anmelden in 60 Sekunden — Onboarding in 7 Tagen.</p>
+      <div class="step-row">
+        <div class="step">01 Anmelden</div>
+        <div class="step">02 Verbinden</div>
+        <div class="step">03 Empfangen</div>
+      </div>
+    </div>
+
+    <!-- B: drop dot, keep eyebrow -->
+    <div class="v mid">
+      <span class="tag">B · no dot</span>
+      <span class="label">middle ground</span>
+      <div class="eb-B">So funktioniert's</div>
+      <div class="h2-line">In 3 Schritten Solen-Partner.</div>
+      <p class="sub-line">Anmelden in 60 Sekunden — Onboarding in 7 Tagen.</p>
+      <div class="step-row">
+        <div class="step">01 Anmelden</div>
+        <div class="step">02 Verbinden</div>
+        <div class="step">03 Empfangen</div>
+      </div>
+    </div>
+
+    <!-- C: drop both — Fresha/Uber pattern -->
+    <div class="v good">
+      <span class="tag">C · H2 only</span>
+      <span class="label">Fresha/Uber pattern</span>
+      <div class="h2-line" style="margin-top: 22px;">In 3 Schritten Solen-Partner.</div>
+      <p class="sub-line">Anmelden in 60 Sekunden — Onboarding in 7 Tagen.</p>
+      <div class="step-row">
+        <div class="step">01 Anmelden</div>
+        <div class="step">02 Verbinden</div>
+        <div class="step">03 Empfangen</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict-note">
+    <strong>Why C aligns with the evidence:</strong> Both Fresha + Uber omit eyebrows entirely on B2B section headers. The H2 itself IS the label. Eyebrows + dots are a 2018-2022 "marketing site template" trope (Webflow, Notion, Linear early-days). Both Fresha + Uber moved past it. Variant B is a middle ground that still reads as "template" because the uppercase tracked eyebrow alone signals that pattern.
+  </div>
+  <div class="verdict-note">
+    <strong>What variant C costs:</strong> You lose the "scannability cue" that the eyebrow provided (a quick read of "category" before the heading). For a B2B marketing page with 6-8 sections, this is fine — the H2s themselves are scannable. For a long-form magazine article it might matter, but /fuer-salons isn't that.
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section class="ref-section">
+  <h2 class="ref-title">Where it appears in Solen today (count)</h2>
+  <p class="ref-sub">If you pick variant C, here's the sweep target list. Sorted by visibility.</p>
+
+  <div class="verdict-note">
+    <strong>/fuer-salons (I just shipped these today):</strong><br>
+    Line 260: <code>• So funktioniert's</code> eyebrow + dot above "In 3 Schritten Solen-Partner"<br>
+    Line 284: <code>• Marktplatz</code> eyebrow + dot above "Kund:innen finden dich."
+  </div>
+  <div class="verdict-note">
+    <strong>/business (pre-existing, will be 301'd to /fuer-salons later):</strong><br>
+    Same 2 spots — currently still using accent-blue dot (older drift)
+  </div>
+  <div class="verdict-note">
+    <strong>SectionHeader.tsx SectionMeta primitive:</strong><br>
+    Used by homepage "FÜR SALONS" divider zone. Dot is hardcoded into the primitive. If C is picked, the primitive becomes a plain uppercase label — or we drop the SectionMeta call entirely and let the section bg-color be the divider.
+  </div>
+  <div class="verdict-note">
+    <strong>WhySolen.tsx + /dev/new-primitives:</strong><br>
+    Unused (WhySolen) and dev-only. Sweep policy applies but not visible to users.
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section class="ref-section">
+  <h2 class="ref-title">Separator dots ≠ decoration dots</h2>
+  <p class="ref-sub">Worth distinguishing because they're different roles.</p>
+  <div class="verdict-note">
+    <strong>Separator dots (keep) — e.g. trust strip "1200+ Salons · Basel · Zürich · 4.9★":</strong> The dot is between facts — semantic role = "list separator." Uber + Fresha both use this in trust strips. Plain <code>·</code> middle-dot character or small 4px grey circle works.
+  </div>
+  <div class="verdict-note">
+    <strong>Decoration dots (drop) — e.g. "• So funktioniert's" before a heading:</strong> No semantic role. Pure decoration. This is the template trope.
+  </div>
+</section>
+
+<div class="summary">
+  <h3>Recommend variant C — drop eyebrow + dot, sections go straight to H2</h3>
+  <p>The evidence is uniform across both matched-surface peers. The pattern Solen has been shipping is the kind of "templated landing page" tell that makes a site feel AI-generated rather than human-designed. The fix is small (~15 min) and the registry rule (no eyebrow decoration) prevents future regressions via drift rule A12.</p>
+  <p style="margin-top: 10px;"><strong>What changes:</strong> LOCKFILE §2.5 Eyebrow recipe gets an explicit "no leading dot, no leading icon" line. Drift rule A12 flags any <code>rounded-full bg-s-*</code> immediately before an eyebrow text node. /fuer-salons sweeps 2 callsites. SectionMeta primitive simplifies (drop dot, keep just uppercase label).</p>
+</div>
+
+</body>
+</html>

@@ -25,7 +25,7 @@ function HairIcon({ d }: { d: string }) {
 // ── Trending styles (labels are style names, not translatable UI copy) ───
 
 const TRENDING_STYLES = [
-  { label: "Curtain Bang", tag: "trending", color: "from-s-coral/20 to-s-coral/5", q: "Curtain Bang" },
+  { label: "Curtain Bang", tag: "trending", color: "from-s-ink/20 to-s-ink/5", q: "Curtain Bang" },
   { label: "Wolf Cut", tag: "popular", color: "from-s-blue/20 to-s-blue/5", q: "Wolf Cut" },
   { label: "Shag Haircut", tag: "new", color: "from-s-amber/20 to-s-amber/5", q: "Shag Haircut" },
   { label: "Blunt Bob", tag: "classic", color: "from-s-sage/20 to-s-sage/5", q: "Blunt Bob" },
@@ -150,8 +150,8 @@ export function CoiffeurBelowGrid() {
           <div className="mb-6 flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <TrendingUp size={18} className="text-s-coral" />
-                <h2 className="font-heading text-[clamp(26px,3.5vw,44px)] tracking-[0.01em] text-s-ink">
+                <TrendingUp size={18} className="text-s-accent" />
+                <h2 className="font-heading text-[clamp(22px,2.8vw,26px)] tracking-[0.01em] text-s-ink">
                   {t("trending_title")}
                 </h2>
               </div>
@@ -161,7 +161,7 @@ export function CoiffeurBelowGrid() {
             </div>
             <Link
               href={`/${locale}/discover`}
-              className="flex items-center gap-1 text-sm text-s-coral hover:underline font-body shrink-0"
+              className="flex items-center gap-1 text-sm text-s-accent hover:underline font-body shrink-0"
             >
               {t("trending_cta")} <ChevronRight size={14} />
             </Link>
@@ -185,9 +185,9 @@ export function CoiffeurBelowGrid() {
         </section>
 
         {/* AI matching CTA */}
-        <section className="rounded-[16px] bg-gradient-to-r from-s-coral/5 to-s-coral/10 border border-s-coral/15 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
-          <div className="w-12 h-12 rounded-pill bg-s-coral/10 flex items-center justify-center shrink-0">
-            <Brain size={22} className="text-s-coral" />
+        <section className="rounded-[16px] bg-gradient-to-r from-s-ink/5 to-s-ink/10 border border-s-accent/15 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <div className="w-12 h-12 rounded-pill bg-s-ink/10 flex items-center justify-center shrink-0">
+            <Brain size={22} className="text-s-accent" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-heading text-s-ink">
@@ -200,7 +200,7 @@ export function CoiffeurBelowGrid() {
           <button
             onClick={() => setAiModalOpen(true)}
             aria-label={tAi("ai_badge")}
-            className="shrink-0 px-4 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] duration-150"
+            className="shrink-0 px-4 py-2 rounded-pill active:scale-[0.97] bg-s-ink text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] duration-150"
           >
             {t("ai_cta")}
           </button>

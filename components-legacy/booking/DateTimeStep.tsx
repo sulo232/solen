@@ -203,7 +203,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
                     className={({ isSelected, isUnavailable, isOutsideMonth }) =>
                       `w-10 h-10 rounded-input flex items-center justify-center font-body text-sm font-semibold cursor-pointer transition-[border-color,background-color] duration-150 ${
                         isSelected
-                          ? 'bg-s-coral text-white ring-2 ring-s-coral/30'
+                          ? 'bg-s-ink text-white ring-2 ring-s-accent/30'
                           : isUnavailable
                           ? 'text-s-ink/20 cursor-not-allowed line-through'
                           : isOutsideMonth
@@ -263,9 +263,9 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
                             disabled={!slot.isAvailable}
                             className={`px-4 py-2 rounded-pill border text-sm font-heading transition-[border-color,background-color] duration-150 ${
                               formData.selectedTime === slot.time
-                                ? 'bg-s-coral border-s-coral text-white'
+                                ? 'bg-s-ink border-s-accent text-white'
                                 : slot.isAvailable
-                                ? 'border-s-ink/[0.08] text-s-ink hover:border-s-coral/40 bg-[--raised]'
+                                ? 'border-s-ink/[0.08] text-s-ink hover:border-s-accent/40 bg-[--raised]'
                                 : 'bg-s-ink/[0.03] border-transparent text-s-ink/30 cursor-not-allowed'
                             }`}
                           >
@@ -284,7 +284,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
 
       {/* Inline error */}
       {error && (
-        <p className="text-sm text-s-coral text-center">{error}</p>
+        <p className="text-sm text-s-accent text-center">{error}</p>
       )}
 
       {/* Bottom CTA */}
@@ -293,7 +293,7 @@ export default function DateTimeStep({ salonId }: DateTimeStepProps) {
           <button
             onClick={handleContinue}
             disabled={!formData.selectedDate || !formData.selectedTime || isChecking}
-            className="w-full py-3 rounded-btn bg-s-coral text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-btn bg-s-ink text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
           >
             {isChecking && <Spinner size="sm" invert />}
             {tDate('continue')}

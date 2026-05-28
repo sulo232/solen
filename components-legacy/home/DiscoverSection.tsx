@@ -62,7 +62,7 @@ export default function DiscoverSection() {
           <Link
             key={item.id}
             href={href}
-            className="snap-start shrink-0 w-[42vw] sm:w-[28vw] md:w-[22vw] lg:w-[19vw] max-w-[260px] group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 rounded-[14px]"
+            className="snap-start shrink-0 w-[42vw] sm:w-[28vw] md:w-[22vw] lg:w-[19vw] max-w-[260px] group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 rounded-[14px]"
           >
             {/* Square photo per Q26 */}
             <div className="relative aspect-square rounded-[14px] overflow-hidden bg-s-bg-sunken">
@@ -80,7 +80,7 @@ export default function DiscoverSection() {
                 </div>
               )}
               {item.category && (
-                <span className="absolute top-2 left-2 inline-flex items-center px-2 py-[3px] rounded-full bg-white/90 backdrop-blur-sm font-body text-[9px] font-bold uppercase tracking-[.14em] text-s-coral-text">
+                <span className="absolute top-2 left-2 inline-flex items-center px-2 py-[3px] rounded-full bg-white/90 backdrop-blur-sm font-body text-[9px] font-bold uppercase tracking-[.14em] text-s-accent">
                   {item.category}
                 </span>
               )}

@@ -110,7 +110,7 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
             <button
               onClick={handlePost}
               disabled={!text.trim() || posting}
-              className="p-2 rounded-full bg-s-coral text-white disabled:opacity-40 transition-opacity"
+              className="p-2 rounded-full bg-s-ink text-white disabled:opacity-40 transition-opacity"
               aria-label="Post comment"
             >
               <Send size={14} />

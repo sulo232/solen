@@ -3552,33 +3552,39 @@
   "categoryHero": {
     "coiffeur": {
       "label": "Hair Salon",
-      "subtitle": "The best hair salons in Basel",
-      "titleSuffix": "in Basel"
+      "subtitle": "Find the best hair salons near you. Book online, confirmed instantly.",
+      "titleSuffix": "in Basel",
+      "title": "Hair salons in Switzerland"
     },
     "barbershop": {
       "label": "Barbershop",
-      "subtitle": "Classic barbershops in Basel",
-      "titleSuffix": "in Basel"
+      "subtitle": "Classic barbershops and modern cuts in your city.",
+      "titleSuffix": "in Basel",
+      "title": "Barbershops in Switzerland"
     },
     "nails": {
       "label": "Nails",
-      "subtitle": "Nail salons and manicure in Basel",
-      "titleSuffix": "in Basel"
+      "subtitle": "Manicure, pedicure and nail art. Book online, no waiting.",
+      "titleSuffix": "in Basel",
+      "title": "Nail salons in Switzerland"
     },
     "spa": {
       "label": "Spa & Massage",
-      "subtitle": "Wellness and relaxation in Basel",
-      "titleSuffix": "in Basel"
+      "subtitle": "Wellness, massage and relaxation near you.",
+      "titleSuffix": "in Basel",
+      "title": "Spa and massage in Switzerland"
     },
     "makeup": {
       "label": "Makeup",
-      "subtitle": "Professional makeup in Basel",
-      "titleSuffix": "in Basel"
+      "subtitle": "Professional makeup for every occasion. Book online.",
+      "titleSuffix": "in Basel",
+      "title": "Makeup in Switzerland"
     },
     "waxing": {
       "label": "Waxing",
-      "subtitle": "Waxing studios in Basel",
-      "titleSuffix": "in Basel"
+      "subtitle": "Waxing studios and body care in your city.",
+      "titleSuffix": "in Basel",
+      "title": "Waxing in Switzerland"
     },
     "salonsAvailable": "{count, plural, =1 {1 salon} other {# salons}} available"
   },
@@ -3871,10 +3877,10 @@
   "comingSoon": {
     "title": "Coming Soon",
     "descriptionDefault": "We're working on something great. Get notified when it's ready!",
-    "description_vouchers": "Gift vouchers are coming soon. Give the gift of beauty!",
-    "description_loyalty": "Our stamp card loyalty program is launching soon. Earn rewards with every visit!",
-    "description_referral": "Refer friends and earn credit. Our referral program is starting soon!",
-    "description_behandlungen": "Discover all treatments and find the perfect salon. Coming soon!",
+    "description_vouchers": "Gift vouchers are coming soon. Give the gift of beauty.",
+    "description_loyalty": "Our stamp card loyalty program is launching soon. Earn rewards with every visit.",
+    "description_referral": "Refer friends and earn credit. Our referral program is starting soon.",
+    "description_behandlungen": "Discover all treatments and find the perfect salon. Coming soon.",
     "emailPlaceholder": "your@email.ch",
     "notify": "Notify Me",
     "notifySuccess": "We'll notify you when it's ready!",

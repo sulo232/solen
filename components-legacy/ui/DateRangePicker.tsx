@@ -66,7 +66,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
     <div ref={ref} className={`relative ${className}`}>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 px-3 py-2 rounded-pill border border-s-ink/[0.10] bg-white text-[11px] font-heading text-s-ink/70 hover:border-s-coral/40 transition-colors duration-150"
+        className="flex items-center gap-2 px-3 py-2 rounded-pill border border-s-ink/[0.10] bg-white text-[11px] font-heading text-s-ink/70 hover:border-s-accent/40 transition-colors duration-150"
         aria-label={displayLabel}
       >
         <Calendar size={12} className="text-s-ink/40" />
@@ -85,7 +85,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
               <button
                 key={p.days}
                 onClick={() => applyPreset(p.days)}
-                className="px-2.5 py-1 rounded-pill text-[10px] font-heading bg-s-ink/[0.05] text-s-ink/60 hover:bg-s-coral/10 hover:text-s-coral transition-colors"
+                className="px-2.5 py-1 rounded-pill text-[10px] font-heading bg-s-ink/[0.05] text-s-ink/60 hover:bg-s-ink/10 hover:text-s-accent transition-colors"
               >
                 {p.label}
               </button>
@@ -104,7 +104,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
                 value={from}
                 max={to}
                 onChange={(e) => setFrom(e.target.value)}
-                className="w-full px-2.5 py-1.5 rounded-input border border-s-ink/[0.10] bg-transparent text-[11px] text-s-ink focus:outline-none focus:border-s-coral"
+                className="w-full px-2.5 py-1.5 rounded-input border border-s-ink/[0.10] bg-transparent text-[11px] text-s-ink focus:outline-none focus:border-s-accent"
               />
             </div>
             <div>
@@ -114,13 +114,13 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
                 value={to}
                 min={from}
                 onChange={(e) => setTo(e.target.value)}
-                className="w-full px-2.5 py-1.5 rounded-input border border-s-ink/[0.10] bg-transparent text-[11px] text-s-ink focus:outline-none focus:border-s-coral"
+                className="w-full px-2.5 py-1.5 rounded-input border border-s-ink/[0.10] bg-transparent text-[11px] text-s-ink focus:outline-none focus:border-s-accent"
               />
             </div>
           </div>
           <button
             onClick={applyCustom}
-            className="w-full py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="w-full py-1.5 rounded-pill bg-s-ink text-white text-[11px] font-heading hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
           >
             {t("applyRange")}
           </button>

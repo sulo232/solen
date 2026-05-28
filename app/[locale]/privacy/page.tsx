@@ -16,31 +16,32 @@ export const metadata: Metadata = {
 export default async function PrivacyPage() {
   return (
     <div className="min-h-screen bg-white">
-      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-s-ink/10 print:hidden">
+      {/* V3-D299: retired s-coral → s-accent (Layer 2 link accent per LOCKFILE §1); s-yellow-subtle/s-yellow undefined → s-warning-bg + s-warning/20 (universal-color warning per LOCKFILE §1 + §0.4); arbitrary s-ink/X opacities → canonical s-ink-2; font-mono → font-body (LOCKFILE §2 — only Inter Tight + Hanken Grotesk) */}
+      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-s-border print:hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-          <Link href="/" className="text-sm font-medium text-s-coral hover:underline flex items-center gap-1 group">
+          <Link href="/" className="text-sm font-medium text-s-accent hover:underline flex items-center gap-1 group">
             <span className="transition-transform group-hover:-translate-x-1">←</span> Zurück zur Startseite / Back to Home
           </Link>
-          <div className="text-xs font-mono text-s-ink/60 bg-s-ink/5 py-1 px-3 rounded-full">
+          <div className="text-xs font-body text-s-ink-2 bg-s-bg-sunken py-1 px-3 rounded-full">
             Letzte Aktualisierung / Last Updated: 23. März 2026
           </div>
         </div>
       </div>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
-        
+
         <div className="mb-8 md:mb-16">
-          <h1 className="font-heading text-3xl md:text-5xl text-s-ink mb-4">
+          <h1 className="font-display text-3xl md:text-5xl font-semibold tracking-tight text-s-ink leading-[1.05] mb-4">
             Datenschutzerklärung
           </h1>
-          <h2 className="font-heading text-xl md:text-3xl text-s-ink/60">
+          <h2 className="font-display text-xl md:text-3xl font-semibold tracking-tight text-s-ink-2">
             Privacy Policy
           </h2>
-          
-          <div className="mt-8 p-4 bg-s-yellow-subtle border border-s-yellow/20 rounded-[12px] text-s-ink text-sm">
+
+          <div className="mt-8 p-4 bg-s-warning-bg border border-s-warning/20 rounded-[12px] text-s-ink text-sm">
             <p className="font-semibold mb-1">Hinweis: Die deutsche Fassung dieser Datenschutzerklärung ist massgebend.</p>
             <p>Die englische Übersetzung dient ausschliesslich der Information. Bei Widersprüchen zwischen den beiden Fassungen gilt die deutsche Version.</p>
-            <div className="h-px w-full border-t border-s-yellow/20 my-3" />
+            <div className="h-px w-full border-t border-s-warning/20 my-3" />
             <p className="font-semibold mb-1 italic">Note: The German version of this Privacy Policy is authoritative.</p>
             <p className="italic">The English translation is provided for information purposes only. In case of any discrepancy between the two versions, the German version shall prevail.</p>
           </div>
@@ -48,20 +49,20 @@ export default async function PrivacyPage() {
 
         <div className="flex flex-col md:flex-row gap-8 lg:gap-16 items-start relative">
           <PrivacySidebar />
-          
+
           <div className="flex-1 min-w-0 max-w-3xl pb-24">
             <PrivacyContent />
-            
-            <div className="mt-16 pt-8 border-t border-s-ink/10">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-sm text-s-ink/70">
+
+            <div className="mt-16 pt-8 border-t border-s-border">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-sm text-s-ink-2">
                 <div>
                   © 2026 solen.ch. Alle Rechte vorbehalten.
                 </div>
                 <div className="flex gap-4">
-                  <Link href="/terms" className="hover:text-s-coral transition-colors underline underline-offset-4">
+                  <Link href="/terms" className="hover:text-s-accent transition-colors underline underline-offset-4">
                     AGB / Terms of Service
                   </Link>
-                  <a href="mailto:support@solen.ch" className="hover:text-s-coral transition-colors underline underline-offset-4">
+                  <a href="mailto:support@solen.ch" className="hover:text-s-accent transition-colors underline underline-offset-4">
                     Kontakt / Contact
                   </a>
                 </div>

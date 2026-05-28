@@ -55,7 +55,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
           <span className="flex items-center gap-2 text-s-ink/70">
             <span
               className={`w-1.5 h-1.5 rounded-full ${
-                isOpen ? "bg-s-sage shadow-[0_0_4px_rgba(46,204,113,0.4)]" : "bg-s-ink/30"
+                isOpen ? "bg-s-success shadow-[0_0_4px_rgba(46,204,113,0.4)]" : "bg-s-ink/30"
               }`}
             />
             {t("todayPrefix")}: {todayHours ? `${todayHours.open}–${todayHours.close}` : t("closed")}
@@ -74,12 +74,12 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
                 <div
                   key={key}
                   className={`flex justify-between items-center text-sm py-1.5 px-2 rounded-[8px] ${
-                    isToday ? "bg-s-coral/[0.08]" : ""
+                    isToday ? "bg-s-ink/[0.08]" : ""
                   }`}
                 >
                   <div className="flex items-center gap-2">
                     <span
-                      className={`w-1.5 h-1.5 rounded-full ${h ? "bg-s-sage" : "bg-s-ink/15"} ${
+                      className={`w-1.5 h-1.5 rounded-full ${h ? "bg-s-success" : "bg-s-ink/15"} ${
                         isToday && h ? "shadow-[0_0_4px_rgba(46,204,113,0.4)]" : ""
                       }`}
                     />
@@ -89,7 +89,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
                   </div>
                   <span
                     className={`data-text ${
-                      h ? (isToday ? "font-bold text-s-coral" : "text-s-ink") : "text-s-ink/20"
+                      h ? (isToday ? "font-bold text-s-accent" : "text-s-ink") : "text-s-ink/20"
                     }`}
                   >
                     {h ? `${h.open}–${h.close}` : t("closed")}
@@ -111,12 +111,12 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
             <div
               key={key}
               className={`flex justify-between items-center text-sm py-1.5 px-2 rounded-[8px] ${
-                isToday ? "bg-s-coral/[0.08]" : ""
+                isToday ? "bg-s-ink/[0.08]" : ""
               }`}
             >
               <div className="flex items-center gap-2">
                 <span
-                  className={`w-1.5 h-1.5 rounded-full ${h ? "bg-s-sage" : "bg-s-ink/15"} ${
+                  className={`w-1.5 h-1.5 rounded-full ${h ? "bg-s-success" : "bg-s-ink/15"} ${
                     isToday && h ? "shadow-[0_0_4px_rgba(46,204,113,0.4)]" : ""
                   }`}
                 />
@@ -126,7 +126,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
               </div>
               <span
                 className={`data-text ${
-                  h ? (isToday ? "font-bold text-s-coral" : "text-s-ink") : "text-s-ink/20"
+                  h ? (isToday ? "font-bold text-s-accent" : "text-s-ink") : "text-s-ink/20"
                 }`}
               >
                 {h ? `${h.open}–${h.close}` : t("closed")}

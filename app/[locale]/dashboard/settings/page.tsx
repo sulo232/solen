@@ -550,7 +550,8 @@ function VerificationTab({ salon }: { salon: Salon }) {
   const handleVerify = async () => {
     setConfirming(true);
     try { await fetch(`/api/salons/verify?salon_id=${salon.id}`, { method: "POST" }); }
-    catch { /* ignore */ } finally { setConfirming(false); }
+    // V3-D334 (overnight T2): error handling per CLAUDE.md.
+    catch (err) { console.error("[Settings] verification request failed:", err); } finally { setConfirming(false); }
   };
 
   const warnings = salon.verification_warnings ?? 0;

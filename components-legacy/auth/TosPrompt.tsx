@@ -80,8 +80,8 @@ export default function TosPrompt() {
         className="w-full max-w-md bg-[--raised] rounded-[12px] shadow-warm-lg overflow-hidden flex flex-col"
       >
         <div className="p-6 text-center border-b border-s-ink/5">
-          <div className="w-12 h-12 rounded-full bg-s-coral/10 mx-auto flex items-center justify-center mb-4">
-            <FileText size={24} className="text-s-coral" />
+          <div className="w-12 h-12 rounded-full bg-s-ink/10 mx-auto flex items-center justify-center mb-4">
+            <FileText size={24} className="text-s-accent" />
           </div>
           <h2 className="font-heading text-xl text-s-ink mb-2">{t("title")}</h2>
           <p className="text-sm text-s-ink/60 font-body">
@@ -91,13 +91,13 @@ export default function TosPrompt() {
 
         <div className="p-6 bg-s-bg-sunken">
           <div className="flex flex-col gap-3">
-            <Link href={`/${locale}/legal/terms`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] border border-s-ink/10 hover:border-s-coral transition-colors group">
+            <Link href={`/${locale}/legal/terms`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] border border-s-ink/10 hover:border-s-accent transition-colors group">
               <span className="text-sm font-medium text-s-ink">{t("termsLink")}</span>
-              <span className="text-xs text-s-coral group-hover:underline">{t("readCta")}</span>
+              <span className="text-xs text-s-accent group-hover:underline">{t("readCta")}</span>
             </Link>
-            <Link href={`/${locale}/legal/privacy`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] border border-s-ink/10 hover:border-s-coral transition-colors group">
+            <Link href={`/${locale}/legal/privacy`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] border border-s-ink/10 hover:border-s-accent transition-colors group">
               <span className="text-sm font-medium text-s-ink">{t("privacyLink")}</span>
-              <span className="text-xs text-s-coral group-hover:underline">{t("readCta")}</span>
+              <span className="text-xs text-s-accent group-hover:underline">{t("readCta")}</span>
             </Link>
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function TosPrompt() {
           <button
             onClick={handleAccept}
             disabled={saving}
-            className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-coral text-white font-medium text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white font-medium text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
           >
             {saving ? <Spinner size="sm" invert /> : <Check size={18} />}
             {t("acceptButton")}

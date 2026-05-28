@@ -24,10 +24,11 @@ import type { SalonDetail } from "./_shared";
  * Vertical checklist (NOT pills). Each amenity = lucide icon + label.
  * Replaces the V2-D53.0 pill-chips treatment per Fresha audit.
  *
- * Icon mapping intentionally mimics Fresha:
- *   ✓ Instant Confirmation, 💳 Pay by app, 🐕 Pet-friendly, 👶 Kid-friendly,
- *   ♿ Wheelchair, 🚌 Near public transport, ❤️ LGBTQ+, ⭐ Woman-owned,
- *   🏠 Family-owned, 🎓 Student discount, ♻ Cancellable
+ * Icon mapping intentionally mimics Fresha (lucide swap per V3-D203):
+ *   ShieldCheck = Instant Confirmation, CreditCard = Pay by app,
+ *   Dog = Pet-friendly, Baby = Kid-friendly, Accessibility = Wheelchair,
+ *   Bus = Near public transport, Heart = LGBTQ+, Star = Woman-owned,
+ *   Home = Family-owned, GraduationCap = Student discount, Recycle = Cancellable
  *
  * Renders nothing if no flags are true.
  */
@@ -66,7 +67,8 @@ export function SalonAdditionalInfo({ salon }: { salon: SalonDetail }) {
 
   return (
     <section>
-      <h2 className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink md:text-[20px]">
+      {/* V3-D202 (A14): font-body → font-display + Scale B. */}
+      <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Zusatzinformationen
       </h2>
 

@@ -1,8 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+// V3-D202 Phase B (2026-05-26): SalonDetailV3 swap gated by `?v3=1` query param.
+// SAFE rollout — legacy page.tsx stays default to preserve booking flow side-
+// effects (owner check, unreviewed-booking callout, next-slot fetch, posthog
+// events). V3 renders ONLY on opt-in URL. After V3 is verified end-to-end
+// (booking flow handoff confirmed working), flip default + delete legacy in
+// Phase D. Test URL: /de/salon/{slug}?v3=1
+import { SalonDetailV3 } from "@/app/[locale]/_components/salon/SalonDetailV3";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -93,7 +100,7 @@ function Stars({ rating, size = "md" }: { rating: number; size?: "sm" | "md" }) 
   return (
     <span className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} className={[sz, i <= rounded ? "fill-s-amber text-s-amber" : "text-s-ink/20"].join(" ")} />
+        <Star key={i} className={[sz, i <= rounded ? "fill-s-star text-s-star" : "text-s-ink/20"].join(" ")} />
       ))}
     </span>
   );
@@ -157,7 +164,7 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
       <div className="relative shrink-0">
         <div className="w-10 h-10 rounded-full flex items-center justify-center"
           style={{ background: "rgba(27, 77, 27,.15)" }}>
-          <Clock size={18} className="text-s-coral" />
+          <Clock size={18} className="text-s-accent" />
         </div>
         <div className="absolute inset-0 rounded-full animate-pulse shadow-elevation-2" />
       </div>
@@ -170,7 +177,7 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
         </p>
       </div>
       <div className="shrink-0 text-right">
-        <div className="font-display text-[32px] leading-none text-s-coral">{remaining}</div>
+        <div className="font-display text-[32px] leading-none text-s-accent">{remaining}</div>
         <div className="text-[10px] font-heading uppercase tracking-[.14em] text-s-ink/45 mt-0.5">{t("remaining")}</div>
       </div>
     </div>
@@ -222,13 +229,13 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
       <div className="flex gap-2">
         <Link
           href={`/${locale}/nail-tech/${member.id}`}
-          className="flex-1 text-center text-xs py-1.5 rounded-btn border border-s-ink/10 text-s-ink/70 hover:border-s-coral/30 transition-colors duration-150"
+          className="flex-1 text-center text-xs py-1.5 rounded-btn border border-s-ink/10 text-s-ink/70 hover:border-s-accent/30 transition-colors duration-150"
         >
           {t("viewAllDesigns")}
         </Link>
         <button
           onClick={() => onBook(member.id)}
-          className="flex-1 text-center text-xs py-1.5 rounded-btn bg-s-coral text-white hover:brightness-[1.06] transition-colors duration-150"
+          className="flex-1 text-center text-xs py-1.5 rounded-btn bg-s-ink text-white hover:brightness-[1.06] transition-colors duration-150"
         >
           {t("book")}
         </button>
@@ -242,6 +249,19 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
 // ─────────────────────────────────────────────────
 
 export default function SalonProfilePage() {
+  // V3-D344 (2026-05-28): V3 PROMOTED TO DEFAULT. Analytics (track-view POST +
+  // posthog + trackSalonView recently-viewed) + JSON-LD structured data are now
+  // wired directly into SalonDetailV3 — full parity with the legacy stack — so
+  // the legacy render path is retired as the default. `?v3=0` is the escape hatch
+  // back to legacy for emergency comparison. Early-return stays BEFORE legacy
+  // hooks fire (the legacy hook stack assumes the legacy layout).
+  // History: V3-D202 Phase B introduced the opt-in `?v3=1` gate; the caveat it
+  // named (analytics + JSON-LD only in legacy stack) is now resolved.
+  const searchParams = useSearchParams();
+  if (searchParams?.get("v3") !== "0") {
+    return <SalonDetailV3 />;
+  }
+
   const { slug } = useParams<{ slug: string }>();
   const router = useRouter();
   const locale = useLocale();
@@ -329,7 +349,7 @@ export default function SalonProfilePage() {
         <p className="font-heading text-s-ink text-2xl">{t("notFound")}</p>
         <p className="font-body text-s-ink/50 text-sm text-center max-w-xs">{t("notFoundMessage")}</p>
         <Link href={`/${locale}/coiffeur`}
-          className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading text-sm uppercase tracking-[.04em] shadow-elevation-2">
+          className="px-6 py-3 rounded-btn bg-s-ink text-white font-heading text-sm uppercase tracking-[.04em] shadow-elevation-2">
           {t("viewAllSalons")}
         </Link>
       </div>
@@ -387,12 +407,12 @@ export default function SalonProfilePage() {
           {/* Breadcrumb */}
           <nav aria-label="Breadcrumb" className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-3">
             <ol className="flex items-center gap-1.5 text-[11px] font-heading uppercase tracking-[.12em]">
-              <li><Link href={`/${locale}`} className="text-s-ink/45 hover:text-s-coral transition-colors duration-150">Home</Link></li>
+              <li><Link href={`/${locale}`} className="text-s-ink/45 hover:text-s-accent transition-colors duration-150">Home</Link></li>
               <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
               {salon.categories[0] && (
                 <>
                   <li><Link href={`/${locale}/${salon.categories[0]}`}
-                    className="text-s-ink/45 hover:text-s-coral capitalize transition-colors duration-150">{salon.categories[0]}</Link></li>
+                    className="text-s-ink/45 hover:text-s-accent capitalize transition-colors duration-150">{salon.categories[0]}</Link></li>
                   <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
                 </>
               )}
@@ -452,7 +472,7 @@ export default function SalonProfilePage() {
                     <div className="flex items-center gap-1.5">
                       <Stars rating={salon.average_rating} />
                       <span className="data-text font-semibold text-s-ink text-sm">{salon.average_rating.toFixed(1)}</span>
-                      <button onClick={() => handleTabClick("bewertungen")} className="text-s-ink/40 text-xs hover:text-s-coral transition-colors duration-150">({salon.review_count})</button>
+                      <button onClick={() => handleTabClick("bewertungen")} className="text-s-ink/40 text-xs hover:text-s-accent transition-colors duration-150">({salon.review_count})</button>
                     </div>
                     <span className="flex items-center gap-1 text-s-ink/50 text-sm">
                       <MapPin className="w-3.5 h-3.5" />
@@ -463,37 +483,37 @@ export default function SalonProfilePage() {
                     {salon.address && (
                       <a href={`https://maps.google.com/?q=${encodeURIComponent(salon.address + " Basel")}`}
                         target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]">
                         <MapPin className="w-4 h-4" />{salon.address}
                       </a>
                     )}
                     {salon.phone && (
-                      <a href={`tel:${salon.phone}`} className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]">
+                      <a href={`tel:${salon.phone}`} className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]">
                         <Phone className="w-4 h-4" />{salon.phone}
                       </a>
                     )}
                     {salon.instagram_url && (
                       <a href={salon.instagram_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]">
                         <Instagram className="w-4 h-4" />Instagram
                       </a>
                     )}
                     {(salon as any).facebook_url && (
                       <a href={(salon as any).facebook_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]">
                         <Facebook className="w-4 h-4" />Facebook
                       </a>
                     )}
                     {(salon as any).tiktok_url && (
                       <a href={(salon as any).tiktok_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]">
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.88-2.88 2.89 2.89 0 012.88-2.88c.28 0 .56.04.82.11v-3.5a6.37 6.37 0 00-.82-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.78a8.18 8.18 0 003.76.92V6.25a4.82 4.82 0 01-.01.44z"/></svg>
                         TikTok
                       </a>
                     )}
                     {(salon as any).website_url && (
                       <a href={(salon as any).website_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]">
+                        className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]">
                         <Globe className="w-4 h-4" />Website
                       </a>
                     )}
@@ -502,7 +522,7 @@ export default function SalonProfilePage() {
                     {/* Share button */}
                     <button
                       onClick={handleShare}
-                      className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-coral/[0.06]"
+                      className="flex items-center gap-1.5 text-sm text-s-ink/55 hover:text-s-accent transition-colors duration-150 px-2 py-1 rounded-input hover:bg-s-ink/[0.06]"
                     >
                       <Share2 className="w-4 h-4" />{t("shareProfile")}
                     </button>
@@ -537,7 +557,7 @@ export default function SalonProfilePage() {
                 {((salon as any).atmosphere || (salon as any).expertise || (salon as any).products || (salon as any).nearest_transport) && (
                   <div>
                     <h2 className="font-heading text-base text-s-ink mb-3 flex items-center gap-2">
-                      <Info className="w-4 h-4 text-s-coral" />{t("salonInfo")}
+                      <Info className="w-4 h-4 text-s-accent" />{t("salonInfo")}
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {(salon as any).atmosphere && (
@@ -546,7 +566,7 @@ export default function SalonProfilePage() {
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
                           <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(27, 77, 27,.10)" }}>
-                            <Sparkles className="w-4 h-4 text-s-coral" />
+                            <Sparkles className="w-4 h-4 text-s-accent" />
                           </div>
                           <div>
                             <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("atmosphere")}</p>
@@ -560,7 +580,7 @@ export default function SalonProfilePage() {
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
                           <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(27, 77, 27,.10)" }}>
-                            <Award className="w-4 h-4 text-s-coral" />
+                            <Award className="w-4 h-4 text-s-accent" />
                           </div>
                           <div>
                             <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("expertise")}</p>
@@ -574,7 +594,7 @@ export default function SalonProfilePage() {
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
                           <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(27, 77, 27,.10)" }}>
-                            <Droplets className="w-4 h-4 text-s-coral" />
+                            <Droplets className="w-4 h-4 text-s-accent" />
                           </div>
                           <div>
                             <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("products")}</p>
@@ -588,7 +608,7 @@ export default function SalonProfilePage() {
                                    WebkitBackdropFilter: "blur(16px) saturate(1.2)", border: "1px solid rgba(255,255,255,.55)",
                                    boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.70)" }}>
                           <div className="w-8 h-8 rounded-input flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(27, 77, 27,.10)" }}>
-                            <Bus className="w-4 h-4 text-s-coral" />
+                            <Bus className="w-4 h-4 text-s-accent" />
                           </div>
                           <div>
                             <p className="text-[9px] font-heading uppercase tracking-[.16em] text-s-ink/45 mb-1">{t("publicTransport")}</p>
@@ -650,7 +670,7 @@ export default function SalonProfilePage() {
                       {salon.staff.map((m) => (
                         <Link key={m.id} href={`/${locale}/salon/${slug}/barber/${(m as any).slug ?? m.id}`}
                           className="group glass-frost rounded-card-lg p-4 text-center hover:-translate-y-[5px] hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]">
-                          <div className="w-14 h-14 rounded-full bg-s-bg-surface mx-auto mb-3 overflow-hidden ring-2 ring-transparent group-hover:ring-s-coral/40 transition-[box-shadow,transform]">
+                          <div className="w-14 h-14 rounded-full bg-s-bg-surface mx-auto mb-3 overflow-hidden ring-2 ring-transparent group-hover:ring-s-accent/40 transition-[box-shadow,transform]">
                             {m.avatar_url ? (
                               <Image src={m.avatar_url} alt={m.name} width={56} height={56} className="object-cover w-full h-full" />
                             ) : (
@@ -696,8 +716,8 @@ export default function SalonProfilePage() {
                 {/* Packages & Gift Cards */}
                 <div className="flex gap-3 my-4">
                   <Link href={`/${locale}/salon/${slug}/gift-card`}
-                    className="flex-1 flex items-center gap-3 p-3 rounded-card border border-s-coral/15 bg-s-coral/5 hover:bg-s-coral/10 transition-colors duration-150">
-                    <Gift size={18} className="text-s-coral shrink-0" />
+                    className="flex-1 flex items-center gap-3 p-3 rounded-card border border-s-accent/15 bg-s-ink/5 hover:bg-s-ink/10 transition-colors duration-150">
+                    <Gift size={18} className="text-s-accent shrink-0" />
                     <div>
                       <p className="text-sm font-medium text-s-ink">{t("giftCard")}</p>
                       <p className="text-xs text-s-ink/40">{t("book")}</p>
@@ -744,7 +764,7 @@ export default function SalonProfilePage() {
                     <a
                       href={`https://maps.google.com/?q=${salon.latitude},${salon.longitude}`}
                       target="_blank" rel="noopener noreferrer"
-                      className="block w-full aspect-[2/1] rounded-card overflow-hidden bg-s-bg-surface border border-s-ink/[0.08] hover:border-s-coral/30 transition-colors duration-150 relative group"
+                      className="block w-full aspect-[2/1] rounded-card overflow-hidden bg-s-bg-surface border border-s-ink/[0.08] hover:border-s-accent/30 transition-colors duration-150 relative group"
                     >
                       <img
                         src={`https://api.mapbox.com/styles/v1/mapbox/light-v11/static/pin-s+E8624A(${salon.longitude},${salon.latitude})/${salon.longitude},${salon.latitude},14,0/600x300@2x?access_token=${getPublicEnv().NEXT_PUBLIC_MAPBOX_TOKEN ?? ''}`}

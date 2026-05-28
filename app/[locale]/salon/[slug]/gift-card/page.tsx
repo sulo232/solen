@@ -78,9 +78,9 @@ export default function GiftCardPage() {
           <p className="text-sm text-s-ink/50 mb-4">
             {formatCurrency(amount / 100)} für {recipientName}
           </p>
-          <div className="bg-white rounded-[16px] p-4 border border-s-ink/5">
-            <p className="text-xs text-s-ink/40 mb-1">Code</p>
-            <p className="font-mono text-lg font-bold text-s-coral">{giftCode}</p>
+          <div className="bg-white rounded-[16px] p-4 border border-s-border">
+            <p className="text-xs text-s-ink-2 mb-1">Code</p>
+            <p className="font-mono text-lg font-bold text-s-ink">{giftCode}</p>
           </div>
         </div>
       </div>
@@ -90,10 +90,11 @@ export default function GiftCardPage() {
   return (
     <div className="min-h-screen bg-white py-8 px-4">
       <div className="max-w-md mx-auto">
+        {/* V3-D337 (T5): Gift icon decorative accent → ink-3 per §1.5 forbidden. */}
         <div className="text-center mb-6">
-          <Gift size={32} className="text-s-coral mx-auto mb-2" />
-          <h1 className="font-heading text-xl text-s-ink">Geschenkkarte</h1>
-          <p className="text-sm text-s-ink/40">{salon.name}</p>
+          <Gift size={32} className="text-s-ink-3 mx-auto mb-2" />
+          <h1 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">Geschenkkarte</h1>
+          <p className="text-sm text-s-ink-2">{salon.name}</p>
         </div>
 
         <div className="bg-white rounded-[16px] shadow-warm-md p-5 space-y-4">
@@ -103,55 +104,57 @@ export default function GiftCardPage() {
             <div className="grid grid-cols-4 gap-2 mb-2">
               {AMOUNT_PRESETS.map((a) => (
                 <button key={a} onClick={() => { setSelectedAmount(a); setUseCustom(false); }}
-                  className={`py-2.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors ${!useCustom && selectedAmount === a ? "bg-s-coral text-white" : "border border-s-ink/10 text-s-ink hover:border-s-coral"}`}>
+                  className={`py-2.5 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors ${!useCustom && selectedAmount === a ? "bg-s-ink text-white" : "border border-s-border text-s-ink hover:border-s-ink"}`}>
                   {(a / 100).toFixed(0)}
                 </button>
               ))}
             </div>
             <button onClick={() => setUseCustom(true)}
-              className={`w-full py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors ${useCustom ? "bg-s-coral/10 text-s-coral border border-s-coral/20" : "border border-s-ink/10 text-s-ink/50"}`}>
+              className={`w-full py-2 rounded-btn text-[11px] font-heading uppercase tracking-[.06em] transition-colors ${useCustom ? "bg-s-accent-pale text-s-accent border border-s-accent/20" : "border border-s-border text-s-ink-2"}`}>
               Eigener Betrag
             </button>
             {useCustom && (
               <div className="relative mt-2">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-s-ink/30">CHF</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-s-ink-2">CHF</span>
                 <input type="number" min="5" step="5" value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)} placeholder="0"
-                  className="w-full pl-12 pr-3 py-2.5 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral data-text" />
+                  className="w-full pl-12 pr-3 py-2.5 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent data-text" />
               </div>
             )}
           </div>
 
           {/* Recipient */}
           <div>
-            <label className="text-xs font-medium text-s-ink/50 mb-1 block">Empfänger *</label>
+            <label className="text-xs font-medium text-s-ink-2 mb-1 block">Empfänger *</label>
             <input value={recipientName} onChange={(e) => setRecipientName(e.target.value)} placeholder="Name"
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral mb-2" />
+              className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent mb-2" />
             <input type="email" value={recipientEmail} onChange={(e) => setRecipientEmail(e.target.value)} placeholder="E-Mail"
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent" />
           </div>
 
           {/* Message */}
           <div>
-            <label className="text-xs font-medium text-s-ink/50 mb-1 block">Persönliche Nachricht</label>
+            <label className="text-xs font-medium text-s-ink-2 mb-1 block">Persönliche Nachricht</label>
             <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={2} placeholder="Optional…"
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral resize-none" />
+              className="w-full px-3 py-2 rounded-input border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-accent resize-none" />
           </div>
 
-          {/* Preview */}
-          <div className="rounded-[16px] border border-s-coral/20 bg-s-coral/5 p-4 text-center">
-            <p className="text-[10px] text-s-ink/30 uppercase tracking-wider mb-2">Vorschau</p>
-            <Gift size={20} className="text-s-coral mx-auto mb-1" />
-            <p className="font-heading text-lg text-s-coral data-text">{formatCurrency(amount / 100)}</p>
-            <p className="text-xs text-s-ink/50">{salon.name}</p>
-            {recipientName && <p className="text-xs text-s-ink/40 mt-1">Für {recipientName}</p>}
-            {message && <p className="text-xs text-s-ink/30 mt-1 italic">&quot;{message}&quot;</p>}
+          {/* Preview — V3-D252 (W3): accent moment for the gift card preview, LOCKFILE §1 */}
+          {/* V3-D337 (T5): bg-s-accent-pale + text-s-accent is FORBIDDEN pairing per §1.5. Sweep to bg-s-bg-sunken + ink (pale-bg + ink text, Uber pattern). Icon → ink-3. */}
+          <div className="rounded-[16px] border border-s-border bg-s-bg-sunken p-4 text-center">
+            <p className="text-[10px] text-s-ink-2 uppercase tracking-[0.08em] mb-2">Vorschau</p>
+            <Gift size={20} className="text-s-ink-3 mx-auto mb-1" />
+            <p className="font-heading text-lg text-s-ink data-text">{formatCurrency(amount / 100)}</p>
+            <p className="text-xs text-s-ink-2">{salon.name}</p>
+            {recipientName && <p className="text-xs text-s-ink-2 mt-1">Für {recipientName}</p>}
+            {message && <p className="text-xs text-s-ink-2 mt-1 italic">&quot;{message}&quot;</p>}
           </div>
 
-          {error && <p className="text-xs text-s-coral">{error}</p>}
+          {error && <p className="text-xs text-s-error">{error}</p>}
 
+          {/* Primary CTA — V3-D252 (W3): coral → ink per LOCKFILE §0 rule 2 (primary CTAs stay bg-s-ink) */}
           <button onClick={handlePurchase} disabled={paying || amount < 500 || !recipientName.trim() || !recipientEmail.trim()}
-            className="w-full py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+            className="w-full py-3 rounded-btn bg-s-ink text-white font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
             {paying ? <Spinner size="sm" invert /> : <Send size={14} />}
             Geschenkkarte kaufen · {formatCurrency(amount / 100)}
           </button>

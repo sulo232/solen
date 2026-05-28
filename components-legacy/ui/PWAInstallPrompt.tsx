@@ -66,8 +66,8 @@ export default function PWAInstallPrompt() {
       <div className="bg-white rounded-[12px] shadow-warm-lg border border-s-ink/5 p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-[12px] bg-s-coral/10 flex items-center justify-center shrink-0">
-              <Download className="w-5 h-5 text-s-coral" />
+            <div className="w-10 h-10 rounded-[12px] bg-s-ink/10 flex items-center justify-center shrink-0">
+              <Download className="w-5 h-5 text-s-accent" />
             </div>
             <div>
               <p className="font-heading text-sm text-s-ink">
@@ -85,13 +85,13 @@ export default function PWAInstallPrompt() {
 
         {isIOS ? (
           <div className="mt-3 flex items-center gap-2 text-xs text-s-ink/60 bg-s-bg-surface rounded-input p-2.5">
-            <Share className="w-4 h-4 shrink-0 text-s-coral" />
+            <Share className="w-4 h-4 shrink-0 text-s-accent" />
             <span>{t("iosInstructions")}</span>
           </div>
         ) : (
           <button
             onClick={handleInstall}
-            className="mt-3 w-full py-2 bg-s-coral text-white text-sm font-medium rounded-pill hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+            className="mt-3 w-full py-2 bg-s-ink text-white text-sm font-medium rounded-pill hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
           >
             {t("installButton")}
           </button>

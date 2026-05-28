@@ -14,8 +14,10 @@ import { Gift, ChevronRight } from "lucide-react";
  *
  * Both link to the existing /[locale]/salon/[slug]/gift-card page.
  *
- * Brand: neutral cream background (NOT emerald) so it doesn't fight the
+ * Brand: bg-white background (NOT emerald) so it doesn't fight the
  * book CTA. The icon is brand emerald to keep the link affordance recognizable.
+ *
+ * V3-D193: substrate is pure white per atmosphere-revert.
  */
 export function SalonBuy({
   locale,
@@ -57,8 +59,8 @@ export function SalonBuy({
         href={href}
         className="font-body group flex items-center gap-4 rounded-2xl border border-s-border bg-white p-4 transition-colors hover:bg-s-bg-sunken md:p-5"
       >
-        <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-s-brand-subtle md:h-16 md:w-16">
-          <Gift size={24} strokeWidth={2} className="text-s-brand md:h-7 md:w-7" />
+        <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white md:h-16 md:w-16">
+          <Gift size={24} strokeWidth={2} className="text-s-ink md:h-7 md:w-7" />
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="font-body text-[15px] font-bold tracking-tight text-s-ink md:text-[16px]">

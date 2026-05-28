@@ -84,14 +84,14 @@ export function SidebarLink({ link, active, onClick, badge, className }: Sidebar
       aria-current={active ? "page" : undefined}
       className={cn(
         "flex items-center gap-3 px-3 py-2.5 rounded-input text-sm font-medium transition-colors mb-0.5 relative group",
-        active ? "text-s-coral" : "text-s-ink/60 hover:bg-s-bg-surface hover:text-s-ink",
+        active ? "text-s-accent" : "text-s-ink/60 hover:bg-s-bg-surface hover:text-s-ink",
         className
       )}
     >
       {active && (
         <motion.div
           layoutId="sidebar-indicator"
-          className="absolute inset-0 rounded-input bg-s-coral/10"
+          className="absolute inset-0 rounded-input bg-s-ink/10"
           transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
         />
       )}

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen homepage — before / after detailed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Inter+Tight:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #0A0A0A;
+    --ink-2:      #6B6B6B;
+    --ink-3:      #6B6B6B;
+    --ink-4:      #737373;
+    --ink-5:      #A3A3A3;
+    --line:       #E7E5E4;
+    --line-soft:  #F5F5F4;
+    --bg:         #F5F5F4;
+    --card:       #FFFFFF;
+    --accent:     #185CE0;
+    --star:       #FFC32B;
+    --success:    #16A34A;
+    --error:      #D32F2F;
+    --orange-old: #F3A864;
+    --bad-bg:     #FEF2F2;
+    --good-bg:    #F0FDF4;
+    --neutral-bg: #FAFAF9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; line-height: 1.5; }
+  body { padding: 20px 14px 100px; max-width: 1100px; margin: 0 auto; }
+
+  /* Doc chrome */
+  .doc-eyebrow { font-family: 'Geist'; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-4); margin-bottom: 12px; }
+  .doc-h1 { font-family: 'Inter Tight'; font-size: 30px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 12px; }
+  .doc-intro { font-size: 14px; color: var(--ink-3); line-height: 1.55; margin-bottom: 32px; }
+  .doc-intro strong { color: var(--ink); font-weight: 600; }
+  .doc-intro code { font-family: 'Geist'; background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+  .section { margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--line); }
+  .section-num { font-family: 'Geist'; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-5); margin-bottom: 4px; }
+  .section-title { font-family: 'Inter Tight'; font-size: 19px; font-weight: 700; letter-spacing: -0.018em; line-height: 1.2; margin-bottom: 8px; }
+  .section-verdict { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle; text-transform: uppercase; letter-spacing: .04em; }
+  .verdict-keep { background: var(--good-bg); color: var(--success); }
+  .verdict-change { background: var(--bad-bg); color: var(--error); }
+  .verdict-minor { background: #FEF3C7; color: #92400E; }
+  .section-sub { font-size: 13px; color: var(--ink-3); margin-bottom: 18px; line-height: 1.55; }
+
+  /* Pair layout */
+  .pair { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 8px; }
+  @media (min-width: 820px) { .pair { grid-template-columns: 1fr 1fr; gap: 16px; } }
+  .pane { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 0; overflow: hidden; position: relative; min-height: 120px; }
+  .pane.bad { border-color: #FECACA; }
+  .pane.good { border-color: #BBF7D0; }
+  .pane.neutral { border-color: var(--line); }
+  .pane-tag { position: absolute; top: 12px; left: 12px; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: .06em; z-index: 2; }
+  .pane.bad .pane-tag { background: var(--error); color: #fff; }
+  .pane.good .pane-tag { background: var(--success); color: #fff; }
+  .pane.neutral .pane-tag { background: var(--ink); color: #fff; }
+  .pane-content { padding: 36px 18px 22px; }
+
+  /* Hero pane */
+  .hero-eyebrow-bad { font-family: 'Geist'; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: var(--accent); margin-bottom: 14px; }
+  .hero-h1 { font-family: 'Inter Tight'; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 8px; }
+  .hero-sub { font-size: 14px; color: var(--ink-3); margin-bottom: 18px; line-height: 1.45; }
+  .search-card-mock { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 13px; color: var(--ink-4); margin-bottom: 12px; }
+  .hero-cta { display: inline-flex; align-items: center; padding: 13px 26px; border-radius: 999px; background: var(--ink); color: #fff; font-family: 'Geist'; font-size: 15px; font-weight: 500; letter-spacing: -0.005em; border: 0; }
+
+  /* Section header pane */
+  .sh-h2 { font-family: 'Inter Tight'; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+  .sh-h2-bad { font-family: 'Inter Tight'; font-size: 18px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.25; }
+  .sh-arrow { display: inline-flex; margin-left: 6px; vertical-align: middle; font-size: 16px; color: var(--ink); }
+
+  /* "Für Salons" divider pane */
+  .divider-eyebrow-bad { font-family: 'Geist'; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; color: var(--ink-3); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+  .divider-eyebrow-good { font-family: 'Geist'; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+  .divider-eyebrow-bad::before, .divider-eyebrow-good::before { content: "·"; font-size: 18px; line-height: 0; transform: translateY(2px); }
+  .divider-h2 { font-family: 'Inter Tight'; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 8px; }
+  .divider-sub { font-size: 14px; color: var(--ink-3); margin-bottom: 16px; line-height: 1.45; }
+  .divider-cta { display: inline-flex; align-items: center; padding: 12px 22px; border-radius: 999px; background: var(--ink); color: #fff; font-family: 'Geist'; font-size: 14px; font-weight: 500; letter-spacing: -0.005em; }
+
+  /* Bewertungen pane */
+  .review-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+  .stars-bad { color: var(--orange-old); font-size: 13px; letter-spacing: 0.04em; }
+  .stars-good { color: var(--star); font-size: 13px; letter-spacing: 0.04em; }
+  .review-quote { font-family: 'Inter Tight'; font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.4; margin: 8px 0 12px; }
+  .review-author { font-size: 12px; color: var(--ink-3); }
+
+  /* Change-list inside section */
+  .change-list { background: var(--neutral-bg); border-left: 3px solid var(--ink); padding: 10px 14px; margin-top: 14px; border-radius: 4px; }
+  .change-list h4 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin-bottom: 8px; }
+  .change-list ul { list-style: none; padding: 0; margin: 0; }
+  .change-list li { font-size: 12px; color: var(--ink-2); padding: 4px 0; line-height: 1.5; display: flex; gap: 8px; align-items: flex-start; }
+  .change-list li::before { content: "→"; color: var(--ink); font-weight: 600; flex-shrink: 0; }
+  .change-list li code { font-family: 'Geist'; background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+  .change-list li.keep::before { content: "✓"; color: var(--success); }
+  .change-list li.kill::before { content: "✗"; color: var(--error); }
+
+  /* Embedded screenshot reference */
+  .screenshot-row { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 20px 0; display: flex; gap: 14px; align-items: flex-start; }
+  .screenshot-row img { width: 140px; height: auto; border: 1px solid var(--line); border-radius: 8px; flex-shrink: 0; }
+  .screenshot-row .caption { font-size: 12px; color: var(--ink-3); line-height: 1.55; }
+  .screenshot-row .caption strong { display: block; font-size: 13px; color: var(--ink); margin-bottom: 4px; font-weight: 600; }
+
+  /* Summary bar */
+  .summary { background: var(--ink); color: #fff; border-radius: 14px; padding: 20px 22px; margin-top: 36px; }
+  .summary h3 { font-family: 'Inter Tight'; font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+  .summary p { font-size: 13px; line-height: 1.55; opacity: .9; margin-bottom: 8px; }
+  .summary .stat { font-family: 'Inter Tight'; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin-right: 14px; }
+  .summary .stats { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.15); }
+  .summary .stat-block { display: flex; flex-direction: column; gap: 2px; }
+  .summary .stat-label { font-size: 11px; opacity: .7; text-transform: uppercase; letter-spacing: .06em; }
+</style>
+</head>
+<body>
+
+<div class="doc-eyebrow">Phase 2 preview · 2026-05-28</div>
+<h1 class="doc-h1">Homepage — before / after, section by section</h1>
+<p class="doc-intro">
+  Survey of every visible section on <code>/de</code>. The homepage is <strong>structurally cleaner</strong> than <code>/warum-solen</code> was — most of it already matches the LOCKFILE §2.5 Type Role Registry. The list below names what KEEPS, what CHANGES (per phase 2 sweep), and what stays for later. Net visual delta: <strong>small but coherent</strong>. Live preview after sweep will look almost identical except for ~5-6 surgical refinements.
+</p>
+
+<div class="screenshot-row">
+  <img src="/_audits/screenshots/homepage-before-mobile.png" alt="Homepage current state (mobile 375)" />
+  <div class="caption">
+    <strong>Current homepage at 375 mobile</strong>
+    Captured 2026-05-28 from <code>localhost:3000/de</code>. Reference for everything below. Header + footer untouched (already in §2.5 compliance). All visible sections audited against role registry — most are already correct.
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">Section 1 of 7</div>
+  <h2 class="section-title">Hero <span class="section-verdict verdict-keep">KEEP — already compliant</span></h2>
+  <p class="section-sub">
+    H1 "Termin in 30 Sekunden." already uses Hero H1 recipe verbatim (<code>clamp(40px,10vw,64px)/700/-0.02em/1.1</code>). Sub at <code>clamp(16px,4.5vw,22px)/400/-0.015em</code> — tracking is slightly off canonical (<code>-0.015</code> vs Hero sub recipe <code>-0.005</code>) but within the acceptable range. SearchCard is its own primitive. No eyebrow above H1 (already dropped per V2-D67). CTA "Termine finden" is sentence case Primary CTA already.
+  </p>
+
+  <div class="pair">
+    <div class="pane neutral">
+      <span class="pane-tag">current = after</span>
+      <div class="pane-content">
+        <h1 class="hero-h1" style="font-size:30px;">Termin in 30 Sekunden.</h1>
+        <p class="hero-sub">Beauty & Wellness in der ganzen Schweiz.</p>
+        <div class="search-card-mock">Service</div>
+        <div class="search-card-mock">Stadt</div>
+        <div class="search-card-mock">Datum</div>
+        <button class="hero-cta">Termine finden</button>
+      </div>
+    </div>
+    <div class="change-list" style="align-self:start; margin-top:0;">
+      <h4>Per-element verdict</h4>
+      <ul>
+        <li class="keep">H1 recipe matches Hero H1 (<code>clamp(40,10vw,64)/700/-0.02em</code>) exactly</li>
+        <li class="keep">No eyebrow above H1 — already Uber-aligned</li>
+        <li class="keep">SearchCard primitive untouched (Layer 1 chrome)</li>
+        <li class="keep">"Termine finden" CTA already sentence-case Primary CTA recipe</li>
+        <li>Sub tracking <code>-0.015em</code> → <code>-0.005em</code> per canonical Hero sub (subtle)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">Section 2 of 7</div>
+  <h2 class="section-title">"Für dich" tile grid <span class="section-verdict verdict-keep">KEEP</span></h2>
+  <p class="section-sub">
+    6 category tiles (Coiffeur / Barber / Nails / Spa / Walk-in / Karte). Each tile is a uniform card with icon + label below. No uppercase decoration, no decorative accent. Layer 1 chrome — already compliant.
+  </p>
+
+  <div class="change-list">
+    <h4>Per-element verdict</h4>
+    <ul>
+      <li class="keep">Tile labels (Coiffeur, Barber, etc.) — Body role, sentence case</li>
+      <li class="keep">Tile icons — lucide, ink color (no accent decoration)</li>
+      <li class="keep">"Für dich" eyebrow above grid — sentence case, semibold, NOT uppercase (already V2-D66 dropped uppercase per Hayden move #7)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">Section 3 of 7</div>
+  <h2 class="section-title">Section headers (5 instances) <span class="section-verdict verdict-minor">MINOR — chevron arrow</span></h2>
+  <p class="section-sub">
+    "Top auf Solen", "In der Nähe", "Profis in deiner Nähe", "Finde deine Inspiration", "Bewertungen". All use <code>SectionTitle</code> primitive. Already sentence case at Section H2 recipe (<code>clamp(18,2vw,20)/600/-0.01em</code>). The arrow icon is already plain ink (per V3-D140). One micro-tune: <code>tracking-[-0.025em]</code> in the comments was the old spec, current is <code>-0.01em</code> which IS canonical. So already correct.
+  </p>
+
+  <div class="pair">
+    <div class="pane neutral">
+      <span class="pane-tag">current = after</span>
+      <div class="pane-content">
+        <div class="sh-h2" style="font-size:18px;">Top auf Solen <span class="sh-arrow">→</span></div>
+        <div style="height:8px"></div>
+        <div class="sh-h2" style="font-size:18px;">In der Nähe <span class="sh-arrow">→</span></div>
+        <div style="height:8px"></div>
+        <div class="sh-h2" style="font-size:18px;">Profis in deiner Nähe <span class="sh-arrow">→</span></div>
+        <div style="height:8px"></div>
+        <div class="sh-h2" style="font-size:18px;">Finde deine Inspiration <span class="sh-arrow">→</span></div>
+      </div>
+    </div>
+    <div class="change-list" style="align-self:start; margin-top:0;">
+      <h4>Per-element verdict</h4>
+      <ul>
+        <li class="keep">Section H2 recipe matches canonical (<code>18-20/600/-0.01em</code>)</li>
+        <li class="keep">Chevron arrow is plain ink (no decorative accent)</li>
+        <li class="keep">Sentence case, no uppercase, no tracking gimmick</li>
+        <li>Single SectionHeader.tsx comment cleanup: comment ref to "<code>tracking-[-0.025em]</code>" is stale — the actual code uses correct <code>-0.01em</code>. Comment cleanup, no visual change.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">Section 4 of 7</div>
+  <h2 class="section-title">Bewertungen (Reviews) <span class="section-verdict verdict-change">CHANGE — star color</span></h2>
+  <p class="section-sub">
+    Review cards display 5-star ratings using <code>#F3A864</code> orange — a SaveHeart category-color hex (from Coiffeur category palette), NOT the universal-color <code>s-star #FFC32B</code> yellow per LOCKFILE §1 + universal-color rule. The orange reads like a category accent, not a rating signal. Universal-color says: rating = yellow, always. Sweep to <code>s-star</code>.
+  </p>
+
+  <div class="pair">
+    <div class="pane bad">
+      <span class="pane-tag">before</span>
+      <div class="pane-content">
+        <div class="review-card">
+          <div class="stars-bad">★★★★★</div>
+          <div class="review-quote">"Termin in 30 Sekunden, kein Hin und Her — alles digital ohne Stress."</div>
+          <div class="review-author">Lena R., Stammkundin</div>
+        </div>
+      </div>
+    </div>
+    <div class="pane good">
+      <span class="pane-tag">after</span>
+      <div class="pane-content">
+        <div class="review-card">
+          <div class="stars-good">★★★★★</div>
+          <div class="review-quote">"Termin in 30 Sekunden, kein Hin und Her — alles digital ohne Stress."</div>
+          <div class="review-author">Lena R., Stammkundin</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="change-list">
+    <h4>Changes</h4>
+    <ul>
+      <li class="kill">Star color <code>#F3A864</code> orange (Coiffeur category hex)</li>
+      <li>→ <code>s-star #FFC32B</code> yellow (universal-color rule: rating = yellow always)</li>
+      <li class="keep">Card structure / typography / layout — unchanged</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">Section 5 of 7</div>
+  <h2 class="section-title">"Für Salons" divider zone <span class="section-verdict verdict-change">CHANGE — eyebrow + tracking</span></h2>
+  <p class="section-sub">
+    Hand-off zone between consumer feed and B2B teaser. Currently uses <code>tracking-[0.18em]</code> on the "FÜR SALONS" eyebrow (non-canonical — should be <code>0.08em</code>) + the dot prefix is hardcoded. Per registry: max 1 eyebrow per surface. Homepage already has 0 elsewhere — this one can stay, but normalize tracking.
+  </p>
+
+  <div class="pair">
+    <div class="pane bad">
+      <span class="pane-tag">before</span>
+      <div class="pane-content">
+        <div class="divider-eyebrow-bad">FÜR SALONS</div>
+        <h2 class="divider-h2">Solen für dein Geschäft.</h2>
+        <p class="divider-sub">Mehr Buchungen, weniger Aufwand. Schon 1200+ Schweizer Salons drauf.</p>
+        <button class="divider-cta">Mehr erfahren →</button>
+      </div>
+    </div>
+    <div class="pane good">
+      <span class="pane-tag">after</span>
+      <div class="pane-content">
+        <div class="divider-eyebrow-good">FÜR SALONS</div>
+        <h2 class="divider-h2">Solen für dein Geschäft.</h2>
+        <p class="divider-sub">Mehr Buchungen, weniger Aufwand. Schon 1200+ Schweizer Salons drauf.</p>
+        <button class="divider-cta">Mehr erfahren →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="change-list">
+    <h4>Changes</h4>
+    <ul>
+      <li class="kill">Eyebrow tracking <code>0.18em</code> (non-canonical, A8 violation)</li>
+      <li>→ <code>0.08em</code> canonical (subtle but eliminates the "screamy" feel)</li>
+      <li>→ font-weight <code>700</code> → <code>600</code> per Eyebrow recipe (subtle)</li>
+      <li class="keep">Dot prefix kept (semantic = "section transition")</li>
+      <li class="keep">H2 size + CTA recipe — unchanged</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">Section 6 of 7</div>
+  <h2 class="section-title">SearchBar primitive (34 INFO findings) <span class="section-verdict verdict-keep">KEEP — Layer 1 chrome</span></h2>
+  <p class="section-sub">
+    SearchBar has 34 informational findings — but ~30 are A2 "arbitrary Tailwind value" for the autocomplete dropdown panels' inline sizing (px-3.5, py-1.5, max-h-[420px], etc.). These are intentional spec values for the Fresha-aligned search behavior, not drift. No uppercase abuse, no decorative accent. Layer 1 chrome — registry doesn't apply the same way.
+  </p>
+
+  <div class="change-list">
+    <h4>Verdict</h4>
+    <ul>
+      <li class="keep">SearchBar input + autocomplete = Layer 1 chrome</li>
+      <li class="keep">Sentence-case placeholders, no uppercase</li>
+      <li class="keep">Focus state already uses <code>:focus-visible</code> rings (matches §1.5 allowed)</li>
+      <li>34 A2 findings = informational noise for Fresha-spec inline px values</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">Section 7 of 7</div>
+  <h2 class="section-title">Other components (WhySolen, FeatureBento, etc.) <span class="section-verdict verdict-minor">MINOR — not currently visible</span></h2>
+  <p class="section-sub">
+    The drift report lists 63 findings on <code>WhySolen.tsx</code> and 13 on <code>FeatureBento.tsx</code> — but these components are NOT rendered on the current homepage (they're legacy slot candidates from an older layout). They show up in the drift scan because they're in the file tree, not because they render. Sweep them lazily when they get reused or remove from <code>strict_globs</code>.
+  </p>
+
+  <div class="change-list">
+    <h4>Verdict</h4>
+    <ul>
+      <li class="keep">WhySolen / FeatureBento — not rendered on /de homepage today</li>
+      <li>Defer sweep until they get reused OR remove from strict_globs as unused</li>
+      <li>If you decide to use the magazine-grid pattern for /entdecken (Imagery Pattern 5), one of these may become a candidate primitive</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────── -->
+<div class="summary">
+  <h3>Homepage sweep — scope summary</h3>
+  <p>
+    The homepage was already swept hard during earlier waves (V2-D66 dropped Hero eyebrow + uppercase compensation; V3-D140 made section arrows plain ink; V3-D325/D326 normalized type scale; V3-D327 hero spacing). What remains is small:
+  </p>
+  <div class="stats">
+    <div class="stat-block">
+      <div class="stat">2</div>
+      <div class="stat-label">real visible changes</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat">~5</div>
+      <div class="stat-label">subtle refinements</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat">0</div>
+      <div class="stat-label">dropped eyebrows (homepage already had 1)</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat">0</div>
+      <div class="stat-label">cheap CTAs to fix</div>
+    </div>
+  </div>
+  <p style="margin-top:18px;">
+    <strong>The 2 visible changes:</strong> (1) Bewertungen star color orange #F3A864 → yellow #FFC32B (universal rating color); (2) "FÜR SALONS" eyebrow tracking 0.18em → 0.08em + weight 700 → 600 (canonical Eyebrow recipe).
+  </p>
+  <p>
+    <strong>The 5 subtle refinements:</strong> Hero sub tracking -0.015 → -0.005, SectionHeader comment cleanup (stale ref to -0.025em), Reviews bg-white may swap to bg-card if needed, SectionTitle's stem-draw hover stays (V3-D156 — that's animation, not type), font-black 900 weight on one "22px" element may drop to 800 to match the "no 900, no 800" rule from §2 Geist weight scale.
+  </p>
+  <p style="margin-top:18px; opacity:0.7;">
+    Compare this to <code>/warum-solen</code> which had <strong>7 eyebrows to drop</strong>, <strong>3 cheap CTAs to recipe-swap</strong>, <strong>15+ accent-blue check icons</strong> to neutralize, and <strong>5 pale-blue pills</strong> to neutralize. Homepage just isn't a drift target — it was already maintained.
+  </p>
+</div>
+
+</body>
+</html>

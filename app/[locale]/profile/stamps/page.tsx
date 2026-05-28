@@ -14,6 +14,7 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { Check } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import StampCard from "@/components-legacy/loyalty/StampCard";
 import HeroStampCard from "@/components-legacy/loyalty/HeroStampCard";
@@ -41,17 +42,19 @@ interface LoyaltyCardRow {
   loyalty_stamps: { id: string }[];
 }
 
+// V3-D289: empty-state illustration stroke — was hardcoded #1B4D1B (legacy green) → currentColor + ink text class
 const StampIllustration = () => (
   <svg
     width="80"
     height="80"
     viewBox="0 0 100 100"
     fill="none"
-    stroke="#1B4D1B"
+    stroke="currentColor"
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
     aria-hidden
+    className="text-s-ink"
   >
     <circle cx="50" cy="50" r="32" />
     <path d="M38 50l8 8 16-16" />
@@ -192,10 +195,11 @@ export default async function ProfileStampsPage({
                     rewardText={c.reward_text}
                   />
                   <span
-                    className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-[2px] rounded-full text-[9px] font-body font-bold tabular-nums uppercase tracking-[.08em]"
-                    style={{ background: "rgba(22,163,74,0.10)", color: "#16A34A" }}
+                    // V3-D289: was hardcoded rgba(22,163,74,0.10) + #16A34A → s-success token (matches the literal hex but via LOCKFILE §1 token)
+                    // V3-D330 (Section E lock): retired check-mark (U+2713) emoji per V3-D203 → lucide Check icon
+                    className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-[2px] rounded-full text-[9px] font-body font-bold tabular-nums uppercase tracking-[.08em] bg-s-success/10 text-s-success"
                   >
-                    ✓ Belohnung verfügbar
+                    <Check size={9} strokeWidth={2.5} aria-hidden /> Belohnung verfügbar
                   </span>
                 </div>
               ) : null

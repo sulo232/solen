@@ -177,7 +177,7 @@ export default function PayConfirmStep({ salon, staff }: PayConfirmStepProps) {
 
       {/* (d) Payment method selector — radio chips */}
       <div>
-        <p className="font-body text-[10px] font-bold uppercase tracking-[.22em] text-s-coral-text mb-2">
+        <p className="font-body text-[10px] font-bold uppercase tracking-[.22em] text-s-accent mb-2">
           Zahlung
         </p>
         <div className="space-y-2">
@@ -191,9 +191,9 @@ export default function PayConfirmStep({ salon, staff }: PayConfirmStepProps) {
             className={[
               'w-full flex items-center gap-3 px-4 py-3 rounded-[10px] border-2 min-h-[56px] text-left transition-[border-color,background-color] duration-150',
               paymentMethod === 'online'
-                ? 'border-s-coral bg-s-coral/[0.04]'
-                : 'border-s-ink/10 hover:border-s-coral/30 bg-white',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2',
+                ? 'border-s-accent bg-s-ink/[0.04]'
+                : 'border-s-ink/10 hover:border-s-accent/30 bg-white',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2',
             ].join(' ')}
           >
             <CreditCard size={20} className="text-s-ink/70 shrink-0" aria-hidden />
@@ -204,7 +204,7 @@ export default function PayConfirmStep({ salon, staff }: PayConfirmStepProps) {
             <span
               className={[
                 'w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-[border-color,background-color] duration-150',
-                paymentMethod === 'online' ? 'bg-s-coral border-s-coral' : 'border-s-ink/25',
+                paymentMethod === 'online' ? 'bg-s-ink border-s-accent' : 'border-s-ink/25',
               ].join(' ')}
               aria-hidden
             >
@@ -221,9 +221,9 @@ export default function PayConfirmStep({ salon, staff }: PayConfirmStepProps) {
             className={[
               'w-full flex items-center gap-3 px-4 py-3 rounded-[10px] border-2 min-h-[56px] text-left transition-[border-color,background-color] duration-150',
               paymentMethod === 'in_person'
-                ? 'border-s-coral bg-s-coral/[0.04]'
-                : 'border-s-ink/10 hover:border-s-coral/30 bg-white',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2',
+                ? 'border-s-accent bg-s-ink/[0.04]'
+                : 'border-s-ink/10 hover:border-s-accent/30 bg-white',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2',
             ].join(' ')}
           >
             <Wallet size={20} className="text-s-amber shrink-0" aria-hidden />
@@ -234,7 +234,7 @@ export default function PayConfirmStep({ salon, staff }: PayConfirmStepProps) {
             <span
               className={[
                 'w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-[border-color,background-color] duration-150',
-                paymentMethod === 'in_person' ? 'bg-s-coral border-s-coral' : 'border-s-ink/25',
+                paymentMethod === 'in_person' ? 'bg-s-ink border-s-accent' : 'border-s-ink/25',
               ].join(' ')}
               aria-hidden
             >
@@ -259,7 +259,7 @@ export default function PayConfirmStep({ salon, staff }: PayConfirmStepProps) {
             type="button"
             onClick={handleConfirm}
             disabled={!paymentMethod || isSubmitting}
-            className="w-full inline-flex items-center justify-center gap-2 min-h-[52px] px-5 rounded-full bg-s-coral text-white font-body text-[14px] font-bold uppercase tracking-[.04em] transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+            className="w-full inline-flex items-center justify-center gap-2 min-h-[52px] px-5 rounded-full bg-s-ink text-white font-body text-[14px] font-bold uppercase tracking-[.04em] transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
           >
             {isSubmitting && <Spinner size="sm" invert />}
             Buchen · {formatPrice(totalPrice, localeCode)}

@@ -59,10 +59,10 @@ export default function PackageRedeemBanner({
         style={{ background: "rgba(243,168,100,.08)", border: "1px solid rgba(243,168,100,.20)" }}>
         <div className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0"
           style={{ background: "rgba(22,163,74,.14)" }}>
-          <Check size={15} className="text-s-sage" />
+          <Check size={15} className="text-s-success" />
         </div>
         <div>
-          <p className="text-xs font-heading text-s-sage">{t("redeemed")}</p>
+          <p className="text-xs font-heading text-s-success">{t("redeemed")}</p>
           <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/40 mt-0.5">{t("noAdditionalCharge")}</p>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default function PackageRedeemBanner({
             />
           ))}
         </div>
-        {error && <p className="text-xs text-s-coral mt-1">{error}</p>}
+        {error && <p className="text-xs text-s-accent mt-1">{error}</p>}
       </div>
       <button
         onClick={handleRedeem}

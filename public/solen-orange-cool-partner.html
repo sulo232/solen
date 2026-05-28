@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · orange + cool-partner exploration</title>
+<link rel="preconnect" href="https://rsms.me/" />
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #0F0F10; color: #fff; font-family: "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .container { max-width: 800px; margin: 0 auto; padding: 36px 28px 96px; }
+  .page-head { padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.10); margin-bottom: 28px; }
+  .page-head h1 { margin: 0 0 6px; font-size: 26px; font-weight: 700; letter-spacing: -0.025em; }
+  .page-head .sub { font-size: 13px; color: rgba(255,255,255,0.55); }
+
+  /* Recommendation banner */
+  .reco {
+    background: linear-gradient(135deg, rgba(229,136,64,0.18), rgba(46,70,99,0.18));
+    border: 1px solid rgba(229,136,64,0.35);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 36px;
+    font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.6;
+  }
+  .reco h2 { margin: 0 0 6px; font-size: 14px; color: #fff; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  .reco strong { color: #E58840; }
+
+  /* Variant block */
+  .variant {
+    margin: 0 0 40px;
+    border-radius: 22px;
+    overflow: hidden;
+    background: #fff;
+    color: #1A1C19;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.4);
+  }
+  .variant-label {
+    padding: 16px 22px;
+    background: #0A0A0B;
+    color: #fff;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px;
+  }
+  .variant-name {
+    font-size: 16px; font-weight: 700; letter-spacing: -0.01em;
+  }
+  .variant-vibe { font-family: ui-monospace, monospace; font-size: 11px; color: rgba(255,255,255,0.55); }
+  .palette {
+    display: flex; gap: 5px;
+  }
+  .swatch {
+    width: 22px; height: 22px; border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.10);
+  }
+
+  /* Mini homepage layout */
+  .mini > * { padding: 14px 22px; }
+  .banner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 22px !important;
+    font-size: 11px; font-weight: 600; color: #fff;
+  }
+  .banner .pill { background: #fff; color: #1A1C19; padding: 3px 9px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #fff; padding: 14px 22px !important;
+    border-bottom: 1px solid #ECEFF4;
+  }
+  .header .logo { font-family: ui-serif, serif; font-size: 19px; font-weight: 700; }
+  .header .nav { font-size: 12px; color: #5F635D; }
+  .hero {
+    text-align: center; padding: 36px 22px 32px !important;
+  }
+  .hero h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.0; margin: 0 0 10px; }
+  .hero p { font-size: 13px; color: #5F635D; margin: 0 0 18px; }
+  .hero .cta { display: inline-block; padding: 11px 22px; border-radius: 999px; font-size: 13px; font-weight: 700; color: #fff; }
+  .section {
+    padding: 22px !important;
+  }
+  .section h2 { margin: 0 0 8px; font-size: 16px; font-weight: 700; letter-spacing: -0.015em; }
+  .hex { font-family: ui-monospace, monospace; font-size: 10px; color: #8A8F88; }
+  .cards { display: flex; gap: 10px; overflow: hidden; margin-top: 10px; }
+  .card-item {
+    flex: 0 0 180px;
+    background: #fff; border-radius: 10px; overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .card-item .img { aspect-ratio: 4/3; background: linear-gradient(135deg, #E8DCC4, #C8BFA4); }
+  .card-item .body { padding: 9px 11px; }
+  .card-item .name { font-size: 12px; font-weight: 700; }
+  .card-item .meta { font-size: 10px; color: #5F635D; }
+  .anchor {
+    padding: 26px 22px !important;
+    color: #fff;
+  }
+  .anchor h2 { margin: 0 0 6px; font-size: 18px; font-weight: 700; }
+  .anchor p { margin: 0 0 12px; font-size: 12px; color: rgba(255,255,255,0.75); }
+  .anchor .cta { display: inline-block; padding: 8px 16px; border-radius: 999px; font-size: 11px; font-weight: 700; background: #fff; color: #1A1C19; }
+  .anchor .hex { color: rgba(255,255,255,0.45); margin-top: 10px; display: block; }
+
+  /* ── ORANGE PRIMARY (constant across all variants) ── */
+  .orange-banner { background: #E58840; }
+  .orange-cta { background: #E58840 !important; }
+
+  /* ── VARIANT 1 — D-Navy (Hermès / Diptyque) ── */
+  .v-navy .section-1 { background: #F5F2EE; }   /* warm ivory */
+  .v-navy .section-2 { background: #E8EAEF; }   /* cool ivory */
+  .v-navy .anchor    { background: #2E4663; }   /* dusty warm navy */
+
+  /* ── VARIANT 2 — D-Teal (wellness / retro) ── */
+  .v-teal .section-1 { background: #F5F2EE; }   /* warm ivory */
+  .v-teal .section-2 { background: #E0EEEC; }   /* sea-glass pale */
+  .v-teal .anchor    { background: #1A6B73; }   /* deep teal */
+
+  /* ── VARIANT 3 — D-Forest (Solen current green stays as anchor) ── */
+  .v-forest .section-1 { background: #F5F2EE; }   /* warm ivory */
+  .v-forest .section-2 { background: #E5EFE7; }   /* mint pale */
+  .v-forest .anchor    { background: #054F31; }   /* Fruitful forest */
+
+  /* ── VARIANT 4 — D-Sage (organic / wellness) ── */
+  .v-sage .section-1 { background: #F5F2EE; }   /* warm ivory */
+  .v-sage .section-2 { background: #E8EFE5; }   /* sage pale */
+  .v-sage .anchor    { background: #4A5C42; }   /* deep eucalyptus */
+
+  /* ── VARIANT 5 — D-Charcoal (modern editorial) ── */
+  .v-coal .section-1 { background: #F5F2EE; }   /* warm ivory */
+  .v-coal .section-2 { background: #F0F0F2; }   /* cool grey */
+  .v-coal .anchor    { background: #2A2A2C; }   /* near-black */
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-head">
+    <h1>Orange + cool-partner exploration</h1>
+    <div class="sub">Orange CTA (#E58840) constant · 5 different cool counterweights · same homepage skeleton</div>
+  </div>
+
+  <div class="reco">
+    <h2>My pick</h2>
+    My read: <strong>D-Teal</strong> (orange + deep teal). The orange/teal pairing is iconic for beauty (vintage Schwarzkopf, modern Charlotte Tilbury accents, retro Pan Am posters), it's distinctive without being kitsch, and the sea-glass section tint gives the warm illustrations a calm cool stage to land against. <strong>D-Navy</strong> is the runner-up — more conservative editorial (Hermès / Diptyque vibe). Pick D-Forest if you want to preserve the most existing brand equity. Skip D-Sage (too granola) and D-Charcoal (too clinical for beauty).
+  </div>
+
+  <!-- ── 1. NAVY ── -->
+  <div class="variant v-navy">
+    <div class="variant-label">
+      <div>
+        <div class="variant-name">D-Navy · Orange + dusty warm navy</div>
+        <div class="variant-vibe">Hermès / Diptyque editorial · classic sophisticated</div>
+      </div>
+      <div class="palette">
+        <span class="swatch" style="background:#E58840" title="#E58840"></span>
+        <span class="swatch" style="background:#F5F2EE" title="#F5F2EE"></span>
+        <span class="swatch" style="background:#E8EAEF" title="#E8EAEF"></span>
+        <span class="swatch" style="background:#2E4663" title="#2E4663"></span>
+      </div>
+    </div>
+    <div class="mini">
+      <div class="banner orange-banner">
+        <span>Sofort verfügbar · 320 Buchungen heute</span>
+        <span class="pill">Salons finden →</span>
+      </div>
+      <div class="header"><span class="logo">Solen.</span><span class="nav">Services · Über uns</span></div>
+      <div class="hero"><h1>Cmon, book it<br/>already.</h1><p>Beauty &amp; Wellness in der Schweiz.</p><span class="cta orange-cta">Solen durchsuchen</span></div>
+      <div class="section section-1"><h2>In der Nähe</h2><span class="hex">#F5F2EE warm ivory</span>
+        <div class="cards"><div class="card-item"><div class="img"></div><div class="body"><div class="name">Studio Mira</div><div class="meta">200m · Heute frei</div></div></div><div class="card-item"><div class="img"></div><div class="body"><div class="name">Atelier Nine</div><div class="meta">450m · 14:30</div></div></div></div>
+      </div>
+      <div class="section section-2"><h2>Lass dich verwöhnen</h2><span class="hex">#E8EAEF cool ivory</span>
+        <div class="cards"><div class="card-item"><div class="img"></div><div class="body"><div class="name">Elena Rossi</div><div class="meta">Coiffeur · Basel</div></div></div><div class="card-item"><div class="img"></div><div class="body"><div class="name">Marcus Chen</div><div class="meta">Barber · Zürich</div></div></div></div>
+      </div>
+      <div class="section anchor"><h2>Solen für dein Geschäft.</h2><p>Mehr Buchungen, weniger Aufwand.</p><span class="cta">Werde Solen-Partner →</span><span class="hex">#2E4663 dusty warm navy anchor</span></div>
+    </div>
+  </div>
+
+  <!-- ── 2. TEAL ── -->
+  <div class="variant v-teal">
+    <div class="variant-label">
+      <div>
+        <div class="variant-name">D-Teal · Orange + deep teal ★ RECOMMENDED</div>
+        <div class="variant-vibe">Wellness / vintage / iconic beauty pairing</div>
+      </div>
+      <div class="palette">
+        <span class="swatch" style="background:#E58840" title="#E58840"></span>
+        <span class="swatch" style="background:#F5F2EE" title="#F5F2EE"></span>
+        <span class="swatch" style="background:#E0EEEC" title="#E0EEEC"></span>
+        <span class="swatch" style="background:#1A6B73" title="#1A6B73"></span>
+      </div>
+    </div>
+    <div class="mini">
+      <div class="banner orange-banner">
+        <span>Sofort verfügbar · 320 Buchungen heute</span>
+        <span class="pill">Salons finden →</span>
+      </div>
+      <div class="header"><span class="logo">Solen.</span><span class="nav">Services · Über uns</span></div>
+      <div class="hero"><h1>Cmon, book it<br/>already.</h1><p>Beauty &amp; Wellness in der Schweiz.</p><span class="cta orange-cta">Solen durchsuchen</span></div>
+      <div class="section section-1"><h2>In der Nähe</h2><span class="hex">#F5F2EE warm ivory</span>
+        <div class="cards"><div class="card-item"><div class="img"></div><div class="body"><div class="name">Studio Mira</div><div class="meta">200m · Heute frei</div></div></div><div class="card-item"><div class="img"></div><div class="body"><div class="name">Atelier Nine</div><div class="meta">450m · 14:30</div></div></div></div>
+      </div>
+      <div class="section section-2"><h2>Lass dich verwöhnen</h2><span class="hex">#E0EEEC sea-glass pale</span>
+        <div class="cards"><div class="card-item"><div class="img"></div><div class="body"><div class="name">Elena Rossi</div><div class="meta">Coiffeur · Basel</div></div></div><div class="card-item"><div class="img"></div><div class="body"><div class="name">Marcus Chen</div><div class="meta">Barber · Zürich</div></div></div></div>
+      </div>
+      <div class="section anchor"><h2>Solen für dein Geschäft.</h2><p>Mehr Buchungen, weniger Aufwand.</p><span class="cta">Werde Solen-Partner →</span><span class="hex">#1A6B73 deep teal anchor</span></div>
+    </div>
+  </div>
+
+  <!-- ── 3. FOREST ── -->
+  <div class="variant v-forest">
+    <div class="variant-label">
+      <div>
+        <div class="variant-name">D-Forest · Orange + Fruitful forest green</div>
+        <div class="variant-vibe">Preserves current dark anchor equity · safest evolution</div>
+      </div>
+      <div class="palette">
+        <span class="swatch" style="background:#E58840" title="#E58840"></span>
+        <span class="swatch" style="background:#F5F2EE" title="#F5F2EE"></span>
+        <span class="swatch" style="background:#E5EFE7" title="#E5EFE7"></span>
+        <span class="swatch" style="background:#054F31" title="#054F31"></span>
+      </div>
+    </div>
+    <div class="mini">
+      <div class="banner orange-banner">
+        <span>Sofort verfügbar · 320 Buchungen heute</span>
+        <span class="pill">Salons finden →</span>
+      </div>
+      <div class="header"><span class="logo">Solen.</span><span class="nav">Services · Über uns</span></div>
+      <div class="hero"><h1>Cmon, book it<br/>already.</h1><p>Beauty &amp; Wellness in der Schweiz.</p><span class="cta orange-cta">Solen durchsuchen</span></div>
+      <div class="section section-1"><h2>In der Nähe</h2><span class="hex">#F5F2EE warm ivory</span>
+        <div class="cards"><div class="card-item"><div class="img"></div><div class="body"><div class="name">Studio Mira</div><div class="meta">200m · Heute frei</div></div></div><div class="card-item"><div class="img"></div><div class="body"><div class="name">Atelier Nine</div><div class="meta">450m · 14:30</div></div></div></div>
+      </div>
+      <div class="section section-2"><h2>Lass dich verwöhnen</h2><span class="hex">#E5EFE7 mint pale</span>
+        <div class="cards"><div class="card-item"><div class="img"></div><div class="body"><div class="name">Elena Rossi</div><div class="meta">Coiffeur · Basel</div></div></div><div class="card-item"><div class="img"></div><div class="body"><div class="name">Marcus Chen</div><div class="meta">Barber · Zürich</div></div></div></div>
+      </div>
+      <div class="section anchor"><h2>Solen für dein Geschäft.</h2><p>Mehr Buchungen, weniger Aufwand.</p><span class="cta">Werde Solen-Partner →</span><span class="hex">#054F31 Fruitful forest anchor</span></div>
+    </div>
+  </div>
+
+  <!-- ── 4. SAGE ── -->
+  <div class="variant v-sage">
+    <div class="variant-label">
+      <div>
+        <div class="variant-name">D-Sage · Orange + deep eucalyptus</div>
+        <div class="variant-vibe">Organic / wellness / earthier (risk: too granola)</div>
+      </div>
+      <div class="palette">
+        <span class="swatch" style="background:#E58840" title="#E58840"></span>
+        <span class="swatch" style="background:#F5F2EE" title="#F5F2EE"></span>
+        <span class="swatch" style="background:#E8EFE5" title="#E8EFE5"></span>
+        <span class="swatch" style="background:#4A5C42" title="#4A5C42"></span>
+      </div>
+    </div>
+    <div class="mini">
+      <div class="banner orange-banner">
+        <span>Sofort verfügbar · 320 Buchungen heute</span>
+        <span class="pill">Salons finden →</span>
+      </div>
+      <div class="header"><span class="logo">Solen.</span><span class="nav">Services · Über uns</span></div>
+      <div class="hero"><h1>Cmon, book it<br/>already.</h1><p>Beauty &amp; Wellness in der Schweiz.</p><span class="cta orange-cta">Solen durchsuchen</span></div>
+      <div class="section section-1"><h2>In der Nähe</h2><span class="hex">#F5F2EE warm ivory</span>
+        <div class="cards"><div class="card-item"><div class="img"></div><div class="body"><div class="name">Studio Mira</div><div class="meta">200m · Heute frei</div></div></div><div class="card-item"><div class="img"></div><div class="body"><div class="name">Atelier Nine</div><div class="meta">450m · 14:30</div></div></div></div>
+      </div>
+      <div class="section section-2"><h2>Lass dich verwöhnen</h2><span class="hex">#E8EFE5 sage pale</span>
+        <div class="cards"><div class="card-item"><div class="img"></div><div class="body"><div class="name">Elena Rossi</div><div class="meta">Coiffeur · Basel</div></div></div><div class="card-item"><div class="img"></div><div class="body"><div class="name">Marcus Chen</div><div class="meta">Barber · Zürich</div></div></div></div>
+      </div>
+      <div class="section anchor"><h2>Solen für dein Geschäft.</h2><p>Mehr Buchungen, weniger Aufwand.</p><span class="cta">Werde Solen-Partner →</span><span class="hex">#4A5C42 deep eucalyptus anchor</span></div>
+    </div>
+  </div>
+
+  <!-- ── 5. CHARCOAL ── -->
+  <div class="variant v-coal">
+    <div class="variant-label">
+      <div>
+        <div class="variant-name">D-Charcoal · Orange + near-black</div>
+        <div class="variant-vibe">Modern editorial (risk: too clinical for beauty)</div>
+      </div>
+      <div class="palette">
+        <span class="swatch" style="background:#E58840" title="#E58840"></span>
+        <span class="swatch" style="background:#F5F2EE" title="#F5F2EE"></span>
+        <span class="swatch" style="background:#F0F0F2" title="#F0F0F2"></span>
+        <span class="swatch" style="background:#2A2A2C" title="#2A2A2C"></span>
+      </div>
+    </div>
+    <div class="mini">
+      <div class="banner orange-banner">
+        <span>Sofort verfügbar · 320 Buchungen heute</span>
+        <span class="pill">Salons finden →</span>
+      </div>
+      <div class="header"><span class="logo">Solen.</span><span class="nav">Services · Über uns</span></div>
+      <div class="hero"><h1>Cmon, book it<br/>already.</h1><p>Beauty &amp; Wellness in der Schweiz.</p><span class="cta orange-cta">Solen durchsuchen</span></div>
+      <div class="section section-1"><h2>In der Nähe</h2><span class="hex">#F5F2EE warm ivory</span>
+        <div class="cards"><div class="card-item"><div class="img"></div><div class="body"><div class="name">Studio Mira</div><div class="meta">200m · Heute frei</div></div></div><div class="card-item"><div class="img"></div><div class="body"><div class="name">Atelier Nine</div><div class="meta">450m · 14:30</div></div></div></div>
+      </div>
+      <div class="section section-2"><h2>Lass dich verwöhnen</h2><span class="hex">#F0F0F2 cool grey</span>
+        <div class="cards"><div class="card-item"><div class="img"></div><div class="body"><div class="name">Elena Rossi</div><div class="meta">Coiffeur · Basel</div></div></div><div class="card-item"><div class="img"></div><div class="body"><div class="name">Marcus Chen</div><div class="meta">Barber · Zürich</div></div></div></div>
+      </div>
+      <div class="section anchor"><h2>Solen für dein Geschäft.</h2><p>Mehr Buchungen, weniger Aufwand.</p><span class="cta">Werde Solen-Partner →</span><span class="hex">#2A2A2C near-black anchor</span></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -92,12 +92,12 @@ export const BeautyProfileCard: React.FC<BeautyProfileCardProps> = ({ profile, o
     <div className="bg-[--raised] rounded-[18px] p-4 shadow-warm-md">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-heading text-[16px] font-bold text-s-ink">
+        <h2 className="font-heading text-[16px] font-semibold text-s-ink">
           {t('sectionTitle')}
         </h2>
         <button
           onClick={onEdit}
-          className="text-[13px] font-body text-s-coral hover:brightness-[1.1] transition-[filter] duration-150"
+          className="text-[13px] font-body text-s-accent hover:brightness-[1.1] transition-[filter] duration-150"
           aria-label={t('edit')}
         >
           {t('edit')}

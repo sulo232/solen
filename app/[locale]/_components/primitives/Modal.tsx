@@ -217,7 +217,7 @@ export function ModalHeader({
             "w-11 h-11 -m-2.5 rounded-md",
             "text-s-ink-2 hover:text-s-ink",
             "transition-colors duration-150 ease-snap",
-            "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+            "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
             "cursor-pointer",
           )}
         >

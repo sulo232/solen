@@ -64,7 +64,7 @@ function AddCardForm({ clientSecret, onSuccess, onCancel }: { clientSecret: stri
         <button
           type="submit"
           disabled={!stripe || processing}
-          className="px-5 py-2 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50"
+          className="px-5 py-2 rounded-btn bg-s-ink text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50"
         >
           {processing ? <Loader2 size={16} className="animate-spin" /> : t("save")}
         </button>
@@ -131,7 +131,7 @@ export function PaymentMethodsSection() {
         </p>
         <button
           onClick={handleAddClick}
-          className="text-xs font-heading text-s-coral uppercase tracking-[.04em] flex items-center gap-1"
+          className="text-xs font-heading text-s-accent uppercase tracking-[.04em] flex items-center gap-1"
           aria-label={t("add")}
         >
           <Plus size={12} /> {t("add")}

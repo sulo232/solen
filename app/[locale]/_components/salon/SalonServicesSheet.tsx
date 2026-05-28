@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Check, ChevronRight, Clock, Plus, Star, X } from "lucide-react";
 import type { SalonDetail, Service } from "./_shared";
 import { capitalize } from "./_shared";
+import { TabPill } from "../primitives/TabPill";
 import { cn } from "@/lib/utils";
 
 /**
@@ -223,7 +224,9 @@ export function SalonServicesSheet({
             <BreadcrumbStep label="Bestätigen" />
           </nav>
 
-          <h1 className="font-body mt-3 text-[28px] font-bold leading-tight tracking-tight text-s-ink md:mt-4 md:text-[40px]">
+          {/* V3-D202 (A21): font-body → font-display + Scale A.
+              V3-D335 (T3): tracking -0.03em → -0.02em (canonical Salon-PDP H1 per §2.5). */}
+          <h1 className="font-display mt-3 text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.02em] text-s-ink md:mt-4">
             Services
           </h1>
 
@@ -231,22 +234,17 @@ export function SalonServicesSheet({
               Active chip slides as user scrolls through sections (IntersectionObserver). */}
           {categories.length > 1 && (
             <div className="sticky top-[60px] z-[5] -mx-4 mt-6 border-b border-s-border bg-white px-4 py-3 md:top-[72px] md:-mx-8 md:px-8 lg:-mx-2 lg:px-2">
+              {/* V3-D202 (A21): inline filter chips → TabPill primitive (active shadow → shadow-elevation-1). */}
               <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {categories.map((c) => (
-                  <button
+                  <TabPill
                     key={c}
-                    type="button"
+                    active={activeCat === c}
                     onClick={() => scrollToCategory(c)}
-                    className={cn(
-                      "font-body shrink-0 rounded-full border px-5 py-2 text-[14px] font-semibold transition-all duration-200",
-                      activeCat === c
-                        ? "border-s-brand bg-s-brand text-white shadow-[0_2px_8px_rgba(31,92,66,0.18)]"
-                        : "border-s-border bg-white text-s-ink-2 hover:border-s-brand hover:text-s-brand"
-                    )}
-                    aria-current={activeCat === c ? "true" : undefined}
+                    size="sm"
                   >
                     {capitalize(c)}
-                  </button>
+                  </TabPill>
                 ))}
               </div>
             </div>
@@ -262,7 +260,9 @@ export function SalonServicesSheet({
                 aria-label={`${capitalize(cat)} Services`}
                 className="scroll-mt-32"
               >
-                <h2 className="font-body text-[22px] font-bold leading-tight tracking-tight text-s-ink md:text-[26px]">
+                {/* V3-D202 (A21): font-body → font-display + Scale B (cat h2).
+                    V3-D335 (T3): tracking -0.03em → -0.01em (canonical Section H2 per §2.5). */}
+                <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold tracking-[-0.01em] text-s-ink">
                   {capitalize(cat)}
                 </h2>
                 <ul className="mt-5 space-y-3">
@@ -274,7 +274,8 @@ export function SalonServicesSheet({
                         className={cn(
                           "rounded-2xl border-2 bg-white p-5 transition-all md:p-6",
                           isSelected
-                            ? "border-s-brand shadow-[0_4px_16px_rgba(31,92,66,0.10)]"
+                            // V3-D202 (A21): tinted emerald shadow → shadow-elevation-2.
+                            ? "border-s-ink shadow-elevation-2"
                             : "border-s-border hover:shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
                         )}
                       >
@@ -306,8 +307,8 @@ export function SalonServicesSheet({
                             className={cn(
                               "grid h-10 w-10 shrink-0 place-items-center rounded-full border-2 transition-colors",
                               isSelected
-                                ? "border-s-brand bg-s-brand text-white"
-                                : "border-s-border bg-white text-s-ink hover:border-s-brand hover:text-s-brand"
+                                ? "border-s-ink bg-s-ink text-white"
+                                : "border-s-border bg-white text-s-ink hover:border-s-ink hover:text-s-ink"
                             )}
                           >
                             {isSelected ? (
@@ -362,7 +363,7 @@ export function SalonServicesSheet({
               "font-body inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[14px] font-semibold transition-colors",
               selectedIds.size === 0
                 ? "pointer-events-none bg-s-bg-sunken text-s-ink-3"
-                : "bg-s-brand text-white hover:bg-s-brand-mid active:bg-s-brand-deep"
+                : "bg-s-ink text-white hover:bg-black active:bg-black"
             )}
           >
             Weiter
@@ -393,7 +394,8 @@ function CartCard({
   continueHref: string;
 }) {
   return (
-    <div className="flex min-h-[calc(100vh-180px)] flex-col rounded-2xl border border-s-border bg-white p-6 shadow-[0_8px_28px_rgba(0,0,0,0.08),0_2px_6px_rgba(0,0,0,0.04)] md:p-7">
+    // V3-D202 (A21): cart card shadow → shadow-elevation-3.
+    <div className="flex min-h-[calc(100vh-180px)] flex-col rounded-2xl border border-s-border bg-white p-6 shadow-elevation-3 md:p-7">
       {/* Salon header — vertical stack, larger image, full 5-star row */}
       <div className="flex items-start gap-4">
         <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-s-bg-sunken">
@@ -425,8 +427,8 @@ function CartCard({
                   size={12}
                   fill={
                     salon.average_rating !== null && i < Math.floor(salon.average_rating)
-                      ? "#F3A864"
-                      : "#E8DFD2"
+                      ? "#FFC32B"
+                      : "#E7E5E4"
                   }
                   stroke="none"
                 />
@@ -502,7 +504,8 @@ function CartCard({
           "font-body mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full py-4 text-[16px] font-semibold transition-colors",
           selectedServices.length === 0
             ? "pointer-events-none bg-s-bg-sunken text-s-ink-3"
-            : "bg-s-brand text-white shadow-[0_4px_16px_rgba(31,92,66,0.20)] hover:bg-s-brand-mid active:bg-s-brand-deep"
+            // V3-D202 (A21): Continue CTA shadow → shadow-elevation-2.
+            : "bg-s-ink text-white shadow-elevation-2 hover:bg-black active:bg-black"
         )}
       >
         Weiter

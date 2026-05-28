@@ -47,7 +47,9 @@ export default function LoyaltyStampPage() {
         setStatus("error");
         setResult({ error: data.error ?? "Unbekannter Fehler" });
       }
-    } catch {
+    } catch (err) {
+      // V3-D343 (W17, 2026-05-28): informative log added per CLAUDE.md error-handling rule.
+      console.error("[LoyaltyStamp] stamp POST failed:", err);
       setStatus("error");
       setResult({ error: "Netzwerkfehler" });
     }
@@ -61,7 +63,7 @@ export default function LoyaltyStampPage() {
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="w-1.5 h-1.5 rounded-full bg-s-coral/50 animate-pulse"
+                className="w-1.5 h-1.5 rounded-full bg-s-ink/50 animate-pulse"
                 style={{ animationDelay: `${i * 0.2}s` }}
               />
             ))}
@@ -73,14 +75,11 @@ export default function LoyaltyStampPage() {
             className="rounded-card bg-white p-8 text-center"
             style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 28px rgba(26,18,9,.08)" }}
           >
-            {/* Icon box */}
-            <div
-              className="w-16 h-16 rounded-[18px] flex items-center justify-center mx-auto mb-5"
-              style={{ background: "rgba(27, 77, 27,.10)" }}
-            >
-              <Award size={30} className="text-s-coral" />
+            {/* Icon box — V3-D341 (W13): stale green rgba (#1B4D1B pre-V3-D329) snapped to bg-s-accent-pale (semantic blue post-shift). */}
+            <div className="w-16 h-16 rounded-[18px] bg-s-accent-pale flex items-center justify-center mx-auto mb-5">
+              <Award size={30} className="text-s-accent" />
             </div>
-            <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-ink/50 mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/50 mb-2">
               Stempelkarte
             </p>
             <h1 className="font-heading text-xl text-s-ink mb-2">
@@ -91,7 +90,7 @@ export default function LoyaltyStampPage() {
             </p>
             <button
               onClick={handleStamp}
-              className="w-full rounded-pill bg-s-coral text-white text-xs font-heading uppercase tracking-[.04em] py-3.5 hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] shadow-elevation-2"
+              className="w-full rounded-pill bg-s-ink text-white text-xs font-heading uppercase tracking-[.04em] py-3.5 hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] shadow-elevation-2"
             >
               Stempel vergeben
             </button>
@@ -111,9 +110,9 @@ export default function LoyaltyStampPage() {
                 animation: "fade-in-up 0.35s cubic-bezier(0.25,1,0.5,1) both",
               }}
             >
-              <Check size={28} className="text-s-sage" />
+              <Check size={28} className="text-s-success" />
             </div>
-            <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-sage mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-success mb-2">
               Gestempelt
             </p>
             <h1 className="font-heading text-xl text-s-ink mb-3">
@@ -123,12 +122,10 @@ export default function LoyaltyStampPage() {
               {result.stamps_collected}/{result.stamps_required} Stempel
             </p>
             {result.is_complete && (
-              <div
-                className="mt-4 px-4 py-2.5 rounded-[10px] inline-block"
-                style={{ background: "rgba(27, 77, 27,.08)" }}
-              >
-                <p className="text-xs font-heading uppercase tracking-[.08em] text-s-coral">
-                  Belohnung freigeschaltet! 🎉
+              /* V3-D341 (W13): stale green rgba snapped to bg-s-accent-pale; emoji removed per V3-D203 no-emoji-in-code. */
+              <div className="mt-4 px-4 py-2.5 rounded-[10px] inline-block bg-s-accent-pale">
+                <p className="text-xs font-heading uppercase tracking-[.08em] text-s-accent">
+                  Belohnung freigeschaltet
                 </p>
               </div>
             )}
@@ -140,13 +137,11 @@ export default function LoyaltyStampPage() {
             className="rounded-card bg-white p-8 text-center"
             style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 28px rgba(26,18,9,.08)" }}
           >
-            <div
-              className="w-16 h-16 rounded-[18px] flex items-center justify-center mx-auto mb-5"
-              style={{ background: "rgba(27, 77, 27,.10)" }}
-            >
-              <AlertCircle size={28} className="text-s-coral" />
+            {/* V3-D341 (W13): stale green rgba snapped to bg-s-accent-pale. */}
+            <div className="w-16 h-16 rounded-[18px] bg-s-accent-pale flex items-center justify-center mx-auto mb-5">
+              <AlertCircle size={28} className="text-s-accent" />
             </div>
-            <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-coral mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-accent mb-2">
               Fehler
             </p>
             <h1 className="font-heading text-xl text-s-ink mb-2">

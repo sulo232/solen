@@ -71,9 +71,9 @@ export default function ResetPasswordPage() {
         <div className="w-full max-w-sm text-center">
           <div className="mx-auto w-16 h-16 rounded-[20px] flex items-center justify-center mb-4"
             style={{ background: "rgba(22,163,74,.12)" }}>
-            <Check size={28} className="text-s-sage" />
+            <Check size={28} className="text-s-success" />
           </div>
-          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-sage mb-2">
+          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-success mb-2">
             Erfolgreich
           </p>
           <p className="font-heading text-xl text-s-ink">Passwort geändert</p>
@@ -96,12 +96,12 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-sm">
         {/* Logo lockup */}
         <div className="text-center mb-8">
-          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-amber mb-3">
+          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-warning mb-3">
             solen.ch
           </p>
           <Link href={`/${locale}`}
             className="inline-block font-heading text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity">
-            solen<span className="text-s-coral">.</span>ch
+            solen<span className="text-s-accent">.</span>ch
           </Link>
         </div>
 
@@ -113,7 +113,7 @@ export default function ResetPasswordPage() {
           <div className="text-center mb-6">
             <div className="mx-auto w-14 h-14 rounded-[14px] flex items-center justify-center mb-3"
               style={{ background: "rgba(27, 77, 27,.10)" }}>
-              <Lock size={24} className="text-s-coral" />
+              <Lock size={24} className="text-s-accent" />
             </div>
             <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/45 mb-2">
               Konto-Wiederherstellung
@@ -138,7 +138,7 @@ export default function ResetPasswordPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Neues Passwort"
                   required
-                  className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+                  className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
                 />
                 <button
                   type="button"
@@ -165,20 +165,20 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setConfirm(e.target.value)}
                 placeholder="Passwort bestätigen"
                 required
-                className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+                className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
               />
 
               {confirm.length > 0 && !passwordsMatch && (
-                <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
+                <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-accent/20"
                   style={{ background: "rgba(27, 77, 27,.06)" }}>
-                  <p className="text-xs font-body text-s-coral">Passwörter stimmen nicht überein</p>
+                  <p className="text-xs font-body text-s-accent">Passwörter stimmen nicht überein</p>
                 </div>
               )}
 
               <button
                 type="submit"
                 disabled={loading || !passwordValid || !passwordsMatch}
-                className="w-full py-4 rounded-pill bg-s-coral shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+                className="w-full py-4 rounded-pill bg-s-ink shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
                 {loading ? <Spinner size="sm" invert /> : null}
                 Passwort ändern
               </button>
@@ -188,7 +188,7 @@ export default function ResetPasswordPage() {
 
         <p className="text-center mt-6">
           <Link href={`/${locale}/auth/login`}
-            className="text-[11px] font-heading uppercase tracking-[.08em] text-s-coral hover:underline">
+            className="text-[11px] font-heading uppercase tracking-[.08em] text-s-accent hover:underline">
             Zurück zur Anmeldung
           </Link>
         </p>
@@ -199,8 +199,8 @@ export default function ResetPasswordPage() {
 
 function Requirement({ met, text }: { met: boolean; text: string }) {
   return (
-    <span className={`flex items-center gap-1.5 ${met ? "text-s-sage" : "text-s-ink/40"}`}>
-      <Check size={12} className={met ? "text-s-sage" : "text-s-ink/20"} />
+    <span className={`flex items-center gap-1.5 ${met ? "text-s-success" : "text-s-ink/40"}`}>
+      <Check size={12} className={met ? "text-s-success" : "text-s-ink/20"} />
       {text}
     </span>
   );

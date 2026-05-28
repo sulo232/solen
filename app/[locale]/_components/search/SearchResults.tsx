@@ -208,7 +208,7 @@ export function SearchResults({ locale }: { locale: string }) {
             <span className="block h-1.5 w-1.5 rounded-full bg-s-accent" />
             Suchergebnisse
           </div>
-          <h1 className="font-display text-[clamp(28px,3.5vw,44px)] font-black leading-none tracking-normal text-s-ink">
+          <h1 className="font-display text-[clamp(22px,2.8vw,26px)] font-black leading-none tracking-normal text-s-ink">
             {loading ? (
               <span className="inline-block h-8 w-48 animate-pulse rounded bg-s-bg-sunken" />
             ) : total === 0 ? (
@@ -233,9 +233,9 @@ export function SearchResults({ locale }: { locale: string }) {
                 onClick={f.onRemove}
                 className={cn(
                   "font-body inline-flex items-center gap-1.5 rounded-full",
-                  "border border-s-brand bg-s-brand-subtle px-3 py-1.5",
-                  "text-[13px] font-medium text-s-brand-deep",
-                  "transition-colors hover:bg-s-brand/10",
+                  "border border-s-ink bg-white px-3 py-1.5",
+                  "text-[13px] font-medium text-black",
+                  "transition-colors hover:bg-s-ink/10",
                 )}
               >
                 {f.label}
@@ -335,7 +335,7 @@ function SortDropdown({
           "font-body inline-flex items-center gap-2 rounded-full",
           "border border-s-border bg-white px-3.5 py-2",
           "text-[13px] font-medium text-s-ink",
-          "transition-colors hover:border-s-brand hover:text-s-brand",
+          "transition-colors hover:border-s-ink hover:text-s-ink",
         )}
       >
         <ArrowUpDown size={14} strokeWidth={2} />
@@ -354,7 +354,7 @@ function SortDropdown({
               className={cn(
                 "font-body block w-full rounded-xl px-3 py-2 text-left text-[14px] transition-colors",
                 s.value === value
-                  ? "bg-s-brand-subtle font-semibold text-s-brand-deep"
+                  ? "bg-white font-semibold text-black"
                   : "text-s-ink hover:bg-s-bg-sunken",
               )}
             >
@@ -382,10 +382,10 @@ function SalonCardSkeleton() {
 function EmptyState({ locale }: { locale: string }) {
   return (
     <div className="mt-12 flex flex-col items-center justify-center px-6 py-16 text-center">
-      <div className="grid h-20 w-20 place-items-center rounded-full bg-s-brand-subtle text-s-brand">
+      <div className="grid h-20 w-20 place-items-center rounded-full bg-white text-s-ink">
         <Star size={32} strokeWidth={1.5} />
       </div>
-      <h2 className="font-display mt-6 text-[clamp(22px,2.5vw,32px)] font-black tracking-normal text-s-ink">
+      <h2 className="font-display mt-6 text-[clamp(18px,2vw,20px)] font-black tracking-normal text-s-ink">
         Noch keine <span className="text-s-accent">Treffer</span>.
       </h2>
       <p className="font-body mt-3 max-w-md text-[15px] leading-relaxed text-s-ink-2">
@@ -393,7 +393,7 @@ function EmptyState({ locale }: { locale: string }) {
       </p>
       <Link
         href={`/${locale}`}
-        className="font-body mt-6 inline-flex items-center gap-2 rounded-full bg-s-brand px-5 py-3 text-[14px] font-semibold text-white transition-colors hover:bg-s-brand-mid"
+        className="font-body mt-6 inline-flex items-center gap-2 rounded-full bg-s-ink px-5 py-3 text-[14px] font-semibold text-white transition-colors hover:bg-black"
       >
         Zur Startseite
       </Link>

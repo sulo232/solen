@@ -203,7 +203,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
               placeholder={t("comment_placeholder")}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full px-4 py-3 rounded-[12px] border border-s-ink/10 bg-white text-s-ink text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
+              className="w-full px-4 py-3 rounded-[12px] border border-s-ink/10 bg-white text-s-ink text-sm focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 resize-none"
               rows={4}
               maxLength={500}
             />
@@ -238,7 +238,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
                 </label>
               )}
             </div>
-            {uploadProgress && <div className="text-xs font-medium text-s-coral">{uploadProgress}</div>}
+            {uploadProgress && <div className="text-xs font-medium text-s-accent">{uploadProgress}</div>}
           </div>
 
           {error && (
@@ -259,7 +259,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
             <button
               type="submit"
               disabled={loading || rating === 0}
-              className="flex-1 py-3 flex justify-center items-center gap-2 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm font-medium disabled:opacity-50 transition-[transform,filter]"
+              className="flex-1 py-3 flex justify-center items-center gap-2 rounded-btn active:scale-[0.97] bg-s-ink text-white text-sm font-medium disabled:opacity-50 transition-[transform,filter]"
             >
               {loading && <Spinner size="sm" invert />}
               {t("submit")}

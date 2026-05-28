@@ -332,7 +332,10 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
   // ── Step dot animation values ──────────────────────────────────────────────
   const stepDot = (s: Step) => ({
     width:      s === step ? 20 : 6,
-    background: s === step ? "s-coral" : s < step ? "s-ink" : "s-ink/[0.08]",
+    // V3-D328 (Section A): "s-coral" / "s-ink" string literals were INVALID CSS
+    // (Tailwind tokens don't resolve at runtime). Step dot now uses real hex —
+    // active = ink, completed = success green (universal-color), pending = grey.
+    background: s === step ? "#0A0A0A" : s < step ? "#16A34A" : "rgba(10,10,10,0.08)",
   });
 
   // ── JSX ───────────────────────────────────────────────────────────────────
@@ -412,7 +415,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
             <button
               onClick={() => category ? navigate() : open(1)}
               aria-label={t("showResults" as Parameters<typeof t>[0])}
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-s-coral hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 mx-2 shrink-0"
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-s-ink hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 mx-2 shrink-0"
               style={{ boxShadow: "0 2px 8px rgba(27, 77, 27,.30)" }}
             >
               <Search size={16} className="text-white" aria-hidden="true" />
@@ -492,8 +495,9 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         className="rounded-pill font-body font-medium text-[12px] transition-[transform,filter,border-color,background-color] duration-150"
                         style={{
                           padding: "4px 12px",
-                          background: isActive ? "s-ink" : isCompleted ? "s-coral" : "s-bg-sunken",
-                          color: isActive ? "#FFFFFF" : isCompleted ? "#FFFFFF" : "s-ink/60",
+                          // V3-D328 (Section A): same invalid-CSS string-literal fix as line ~335
+                          background: isActive ? "#0A0A0A" : isCompleted ? "#16A34A" : "#F5F5F4",
+                          color: isActive ? "#FFFFFF" : isCompleted ? "#FFFFFF" : "#6B6B6B",
                         }}
                         aria-current={isActive ? "step" : undefined}
                       >
@@ -656,7 +660,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                 className={cn(
                                   "w-full flex items-center gap-4 py-4 text-left transition-colors",
                                   !category
-                                    ? "text-s-coral"
+                                    ? "text-s-accent"
                                     : "text-s-ink/70 hover:bg-s-ink/[0.02]:bg-white/[0.02]"
                                 )}
                               >
@@ -671,7 +675,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                     {t("steps.was.skipSub" as Parameters<typeof t>[0])}
                                   </p>
                                 </div>
-                                {!category && <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />}
+                                {!category && <Check size={16} className="text-s-accent shrink-0" aria-hidden="true" />}
                               </button>
 
                               {CATEGORY_LIST.map((cat) => {
@@ -696,7 +700,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                       className="shrink-0 flex items-center justify-center"
                                       style={{ width: 40, height: 40, borderRadius: 12, background: "s-bg-base" }}
                                     >
-                                      <cat.Icon width={20} height={20} className="text-s-coral" />
+                                      <cat.Icon width={20} height={20} className="text-s-accent" />
                                     </div>
                                     {/* Text */}
                                     <div className="flex-1 min-w-0">
@@ -766,7 +770,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           <div className="pb-2">
                             <button
                               onClick={() => { setQuery(""); setShowServices(false); }}
-                              className="flex items-center gap-1.5 text-[12px] font-heading text-s-ink/50 hover:text-s-coral:text-s-coral transition-colors mb-3"
+                              className="flex items-center gap-1.5 text-[12px] font-heading text-s-ink/50 hover:text-s-accent:text-s-accent transition-colors mb-3"
                             >
                               <ChevronLeft size={14} aria-hidden="true" />
                               {t("steps.was.backToCategories" as Parameters<typeof t>[0])}
@@ -778,7 +782,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                               <div className="flex-1 font-body text-[14px] text-s-ink/50 italic">
                                 {t("steps.service.skip")}
                               </div>
-                              {service === null && <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />}
+                              {service === null && <Check size={16} className="text-s-accent shrink-0" aria-hidden="true" />}
                             </button>
                             {services.map((svc) => {
                               const label = getLocalizedLabel(svc, locale);
@@ -789,13 +793,13 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                   aria-label={label}
                                   className={`w-full flex items-center gap-3 py-3.5 border-t border-s-bg-surface text-left transition-colors ${
                                     service === svc.key
-                                      ? "bg-s-coral/[0.04]"
+                                      ? "bg-s-ink/[0.04]"
                                       : "hover:bg-s-ink/[0.02]:bg-white/[0.02]"
                                   }`}
                                 >
                                   <div className="flex-1 font-body font-medium text-[14px] text-s-ink">{label}</div>
                                   {service === svc.key && (
-                                    <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />
+                                    <Check size={16} className="text-s-accent shrink-0" aria-hidden="true" />
                                   )}
                                 </button>
                               );
@@ -808,7 +812,8 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           <button
                             onClick={() => { close(); router.push(`/${locale}/search`); }}
                             className="font-body font-medium text-[14px] hover:brightness-[1.06] transition-[filter] duration-150"
-                            style={{ color: "s-coral" }}
+                            // V3-D328 (Section A): "s-coral" was invalid CSS. Link role → s-accent royal blue.
+                            style={{ color: "#276EF1" }}
                           >
                             {t("allCategories" as Parameters<typeof t>[0])} →
                           </button>
@@ -837,7 +842,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           onClick={() => selectCity(null)}
                           className={`w-full flex items-center gap-3 px-4 py-3 rounded-card border mb-3 transition-[transform,filter,border-color,background-color] duration-200 ${
                             city === null
-                              ? "border-s-coral bg-s-coral/[0.05]"
+                              ? "border-s-accent bg-s-ink/[0.05]"
                               : "border-s-ink/[0.08] hover:border-s-ink/20:border-white/20"
                           }`}
                         >
@@ -848,7 +853,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           <span className="text-[11px] font-body text-s-ink/40">
                             {t("steps.where.allSub" as Parameters<typeof t>[0])}
                           </span>
-                          {city === null && <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />}
+                          {city === null && <Check size={16} className="text-s-accent shrink-0" aria-hidden="true" />}
                         </button>
 
                         {/* City cards */}
@@ -860,21 +865,21 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                               aria-label={getCityLabel(slug)}
                               className={`flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-card border transition-[transform,filter,border-color,background-color] duration-200 ${
                                 city === slug
-                                  ? "border-s-coral bg-s-coral/[0.05]"
+                                  ? "border-s-accent bg-s-ink/[0.05]"
                                   : "border-s-ink/[0.08] hover:border-s-ink/20:border-white/20"
                               }`}
                               style={{ minHeight: "80px" }}
                             >
                               <MapPin
                                 size={20}
-                                className={city === slug ? "text-s-coral" : "text-s-ink/40"}
+                                className={city === slug ? "text-s-accent" : "text-s-ink/40"}
                                 aria-hidden="true"
                               />
                               <span className="text-[13px] font-body font-medium text-s-ink">
                                 {getCityLabel(slug)}
                               </span>
                               {city === slug && (
-                                <div className="w-1.5 h-1.5 rounded-full bg-s-coral" aria-hidden="true" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-s-ink" aria-hidden="true" />
                               )}
                             </button>
                           ))}
@@ -929,7 +934,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         {/* Specific date toggle */}
                         <button
                           onClick={() => setShowCalendar(!showCalendar)}
-                          className="flex items-center gap-2 text-[13px] font-heading text-s-ink/60 hover:text-s-coral transition-colors mb-3 mt-1"
+                          className="flex items-center gap-2 text-[13px] font-heading text-s-ink/60 hover:text-s-accent transition-colors mb-3 mt-1"
                         >
                           <CalendarIcon size={14} aria-hidden="true" />
                           {t("steps.wann.specificDate" as Parameters<typeof t>[0])}
@@ -1005,7 +1010,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                     }
                   }}
                   aria-label={t("showResults")}
-                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-btn bg-s-coral text-white font-heading text-[13px] uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
+                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-btn bg-s-ink text-white font-heading text-[13px] uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
                   style={{ boxShadow: "0 2px 6px rgba(27, 77, 27,.30), 0 4px 14px rgba(27, 77, 27,.18)" }}
                 >
                   <Search size={14} aria-hidden="true" />

@@ -238,7 +238,7 @@ export default function EditPanel({
               <div key={el.selector} className="bg-s-bg-sunken rounded-[12px] p-2 flex items-start gap-2">
                 <div className="flex-1 min-w-0 space-y-0.5">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/10 text-s-accent font-medium">
                       {guessPageArea(el)}
                     </span>
                     <span className="text-[10px] text-s-ink/40 font-mono">
@@ -290,7 +290,7 @@ export default function EditPanel({
             onChange={(e) => setDescription(e.target.value)}
             placeholder={selectedElements.length > 0 ? "Describe the change you want for these elements..." : "Describe what you want changed on this page..."}
             rows={4}
-            className="w-full bg-s-bg-sunken rounded-btn border border-s-ink/10 p-3 text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none"
+            className="w-full bg-s-bg-sunken rounded-btn border border-s-ink/10 p-3 text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-accent/30 resize-none"
           />
         </div>
 
@@ -306,7 +306,7 @@ export default function EditPanel({
                 onClick={() => setPriority(p)}
                 className={`flex-1 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                   priority === p
-                    ? "bg-s-coral text-white"
+                    ? "bg-s-ink text-white"
                     : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-bg-surface"
                 }`}
               >
@@ -330,7 +330,7 @@ export default function EditPanel({
           className={`w-full rounded-btn px-4 py-2 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
             justSaved
               ? "bg-s-success text-white"
-              : "bg-s-coral text-white hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed"
+              : "bg-s-ink text-white hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed"
           }`}
         >
           {saving ? <Spinner size="sm" invert /> : justSaved ? <Check size={16} /> : null}
@@ -341,7 +341,7 @@ export default function EditPanel({
         {requests.length > 0 && (
           <div className="border border-s-ink/10 rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50">
             <div className="flex items-center gap-1.5">
-              <ClipboardList size={14} className="text-s-coral" />
+              <ClipboardList size={14} className="text-s-accent" />
               <p className="text-xs font-medium text-s-ink">
                 Copy for Claude Code
               </p>
@@ -357,7 +357,7 @@ export default function EditPanel({
                   className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                     copiedAll
                       ? "bg-s-success text-white"
-                      : "bg-s-coral text-white hover:brightness-[1.06]"
+                      : "bg-s-ink text-white hover:brightness-[1.06]"
                   }`}
                 >
                   {copiedAll ? <Check size={12} /> : <Copy size={12} />}
@@ -400,7 +400,7 @@ export default function EditPanel({
                       type="checkbox"
                       checked={selectedRequestIds.has(r.id)}
                       onChange={() => toggleRequestSelection(r.id)}
-                      className="rounded border-s-ink/20 text-s-coral focus:ring-s-coral/30 w-3.5 h-3.5"
+                      className="rounded border-s-ink/20 text-s-accent focus:ring-s-accent/30 w-3.5 h-3.5"
                     />
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.status === "done" ? "bg-s-success-bg text-s-success" :
@@ -440,7 +440,7 @@ export default function EditPanel({
                       className={`flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-btn transition-colors ${
                         copiedId === r.id
                           ? "bg-s-success-bg text-s-success"
-                          : "bg-s-coral/10 text-s-coral hover:bg-s-coral/20"
+                          : "bg-s-ink/10 text-s-accent hover:bg-s-ink/20"
                       }`}
                       title="Copy this request formatted for Claude Code"
                     >

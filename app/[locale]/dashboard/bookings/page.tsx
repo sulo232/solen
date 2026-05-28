@@ -65,7 +65,10 @@ function SalonCancelModal({
       });
       onDone(bookingId);
       onClose();
-    } catch { /* ignore */ } finally {
+      // V3-D334 (overnight T2): error handling per CLAUDE.md (was silent catch).
+      // NOTE: Stripe confirm-price catch on line ~174 deliberately NOT swept here —
+      // needs user-visible Toast for payment failure, deferred to user-decision wave.
+    } catch (err) { console.error("[Bookings] cancellation POST failed:", err); } finally {
       setLoading(false);
     }
   };

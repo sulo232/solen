@@ -83,7 +83,7 @@ export default function SalonMobileCTA({
           <Link
             href={bookingHref}
             aria-label={t("bookAppointment", { salonName })}
-            className="inline-flex items-center justify-center min-h-[48px] px-6 rounded-full bg-s-coral text-white font-body font-bold text-[14px] tracking-[.02em] uppercase transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+            className="inline-flex items-center justify-center min-h-[48px] px-6 rounded-full bg-s-ink text-white font-body font-bold text-[14px] tracking-[.02em] uppercase transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
           >
             {t("bookNow")}
           </Link>

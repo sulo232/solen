@@ -93,6 +93,9 @@ export default function Coiffeur() {
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   return (
+    // V3-D112 (2026-05-23): bg-s-peach REMOVED per user "remove ths color like
+    // cream everywhere." Reverted to default white substrate. Token kept;
+    // only usage on this section is removed. Prior V3-D107: warm return mid-feed.
     <Section>
       <SectionFrame>
         <SectionTitle

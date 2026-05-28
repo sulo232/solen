@@ -1,13 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-} from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, Check, ChevronRight, Star } from "lucide-react";
 import {
   MorphingDialog,
@@ -21,97 +15,41 @@ import {
 } from "@/components/core/morphing-dialog";
 import { Typewriter } from "@/components/ui/typewriter";
 import { cn } from "@/lib/utils";
+import { BentoCard } from "../business/BentoCard";
 
 /**
- * BentoBusiness — V3-D75-bento (2026-05-18).
+ * BentoBusiness — V3-D219 (2026-05-26, /business rebuild).
  *
- * SUPERSEDES the V2-D70 SalonRegister "Solen für dein Geschäft" section
- * (`WhySolen.tsx`). New format: Apple-style 4-card bento grid. Asymmetric
- * 3-column layout — 2 large cards (col-span-2) + 2 small cards, arranged
- * diagonally for editorial rhythm.
+ * Originally V3-D75-bento (2026-05-18). Rebuilt against SOURCE.md V3-D183
+ * + V3-D193 type-weight relock + V3-D204 accent activation.
  *
- * Each card has THREE layers of interaction:
+ * Changes from V3-D147 base (per _tasks/rebuild-specs/business.md):
+ *   - BentoCard EXTRACTED to ../business/BentoCard.tsx (shared primitive).
+ *   - Retired butter yellow #F2D77B swapped → s-accent royal blue dot.
+ *   - Star line: unicode "★★★★★" replaced with lucide Star icons fill #FFC32B (s-star).
+ *   - Inline display sizes (clamp 28→48, clamp 32→56) normalized to Page H2 spec
+ *     clamp(25,4vw,40) and Section H2 spec clamp(18,2vw,23).
+ *   - Tracking normalized to -0.03em on all display roles (was a mix of -0.025 /
+ *     -0.015 / -0.02 / -0.025).
+ *   - JoinUsCard form input radius 12px literal → rounded-input (16px) token.
+ *   - JoinUsCard eyebrow tracking 0.18em → 0.16em (SOURCE.md §3 Eyebrow role).
+ *   - VisualCalendar pastel category bgs (#E5F2EA / #FFE8D8 / #D4DDC8 / etc.)
+ *     flattened to grey-scale s-ink/[0.04 | 0.06 | 0.08] — calendar is chrome
+ *     here (Solen UI mockup), not user content, so B&W per §9.
+ *   - VisualAnalyticsTabbed selected-tab state swapped to s-accent (active tab =
+ *     §2.1 "selected tab" accent use case).
+ *   - VisualBooking glow halo radial-gradient bound to s-accent var
+ *     (single-source revert via the token, not 2 hardcoded hex).
+ *   - Section header h2: font-bold + tracking-[-0.03em] kept, size clamped
+ *     to Page H2 spec.
+ *
+ * Each card has THREE layers of interaction (unchanged):
  *   1. Scroll-triggered fade-up entry (whileInView, once: true)
  *   2. Desktop cursor-following 3D tilt (max ±6°, springs back on leave)
  *   3. Internal animated visual (pulse dot / growing bars / etc.)
  *
  * Backend wiring deferred — visuals are illustrative, copy is final.
- *
- * Audience: B2B salon owners. Replaces the dashboard-mockup-right-side layout
- * with a more confident "here are the 4 things we do for you" pitch.
  */
-
-interface BentoCardProps {
-  title: string;
-  description: string;
-  visual: React.ReactNode;
-  className?: string;
-}
-
-function BentoCard({ title, description, visual, className }: BentoCardProps) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useSpring(useTransform(y, [-100, 100], [6, -6]), {
-    damping: 30,
-    stiffness: 200,
-  });
-  const rotateY = useSpring(useTransform(x, [-100, 100], [-6, 6]), {
-    damping: 30,
-    stiffness: 200,
-  });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    x.set(e.clientX - rect.left - rect.width / 2);
-    y.set(e.clientY - rect.top - rect.height / 2);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      style={{
-        rotateX,
-        rotateY,
-        transformStyle: "preserve-3d",
-        transformPerspective: 1200,
-      }}
-      className={cn(
-        "group relative overflow-hidden rounded-[24px] bg-white",
-        "shadow-[0_20px_40px_rgba(0,0,0,0.04)]",
-        "transition-shadow duration-300 ease-out",
-        "hover:shadow-[0_30px_60px_rgba(0,0,0,0.06)]",
-        "min-h-[280px] md:min-h-[320px]",
-        className,
-      )}
-    >
-      <div
-        className="relative z-[1] flex h-full flex-col p-6 md:p-7"
-        style={{ transform: "translateZ(20px)" }}
-      >
-        {/* Visual area — flex-1 so the card height drives the visual */}
-        <div className="relative mb-6 flex-1">{visual}</div>
-        {/* Copy area */}
-        <div>
-          <h3 className="font-display text-[20px] font-bold leading-tight tracking-[-0.02em] text-s-ink md:text-[22px]">
-            {title}
-          </h3>
-          <p className="mt-2 font-body text-[14px] leading-[1.5] text-s-ink-2">
-            {description}
-          </p>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
 
 /* ─── Card visuals ─── */
 
@@ -119,13 +57,18 @@ function VisualBooking() {
   return (
     <div className="relative grid h-full w-full place-items-center">
       {/* V3-D78 glow halo behind popup — gives glassmorphism something
-          to blur (without it, white-on-white card looks the same as solid). */}
+          to blur (without it, white-on-white card looks the same as solid).
+          V3-D219 (2026-05-26): glow re-pointed to s-accent (royal blue #276EF1)
+          + s-star (warm yellow #FFC32B) — same two universal-color tokens used
+          elsewhere on this page. Inline rgba is signal layering (drift-checker
+          §B-soft exception per spec line 45: "yellow stars on a glow halo are
+          signal/visual — OK off-budget star yellow"). */}
       <div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-1/2 h-36 w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"
         style={{
           background:
-            "radial-gradient(55% 50% at 50% 50%, rgba(22,56,196,0.22) 0%, rgba(255,195,43,0.18) 55%, transparent 85%)",
+            "radial-gradient(55% 50% at 50% 50%, rgba(39,110,241,0.22) 0%, rgba(255,195,43,0.18) 55%, transparent 85%)",
         }}
       />
       <div
@@ -133,7 +76,7 @@ function VisualBooking() {
         style={{ boxShadow: "0 12px 32px rgba(0,0,0,0.10)" }}
       >
         <div className="mb-3 flex items-center gap-3">
-          <div className="grid h-9 w-9 place-items-center rounded-full bg-s-brand text-white">
+          <div className="grid h-9 w-9 place-items-center rounded-full bg-s-ink text-white">
             <Check size={16} strokeWidth={2.5} aria-hidden />
           </div>
           <div className="flex-1">
@@ -145,13 +88,13 @@ function VisualBooking() {
             </div>
           </div>
         </div>
-        <div className="rounded-full bg-s-brand py-1.5 text-center font-body text-[11px] font-bold text-white">
+        <div className="rounded-full bg-s-ink py-1.5 text-center font-body text-[11px] font-bold text-white">
           Bestätigt · 23 Sek.
         </div>
         {/* Animated ping dot */}
         <span className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center">
-          <span className="absolute inset-0 animate-ping rounded-full bg-s-brand/40" />
-          <span className="relative h-3 w-3 rounded-full bg-s-brand" />
+          <span className="absolute inset-0 animate-ping rounded-full bg-s-ink/40" />
+          <span className="relative h-3 w-3 rounded-full bg-s-ink" />
         </span>
       </div>
     </div>
@@ -169,11 +112,14 @@ function VisualBooking() {
  * Communicates the upcoming Phase-2 DM feature (`/api/messages/...`)
  * without needing a real chat backend.
  */
+// V3-D222 (2026-05-26, /business verifier #2): stripped check (U+2713) and
+// folded-hands (U+1F64F) emojis per V3-D203 no-emoji rule. Visual treatment
+// loses nothing — salon-reply tone is "fast + confident" without decoration.
 const SALON_REPLIES = [
-  "Klar — 14:00 ist frei ✓",
+  "Klar — 14:00 ist frei",
   "Heute 17:30 noch offen",
   "Komm gern vorbei!",
-  "Sicher — bestätigt 🙏",
+  "Sicher — bestätigt",
 ];
 
 function VisualCustomerDM() {
@@ -231,22 +177,26 @@ function VisualCustomerDM() {
 }
 
 function VisualCalendar() {
+  // V3-D219 (2026-05-26): pastel category bgs flattened to 3-tier grey-scale.
+  // Calendar is chrome here (Solen UI mockup), not user content — per §9
+  // it should be B&W. Three weights of s-ink alpha give visual rhythm
+  // without competing with the page's single saturated accent moments.
   const slots = [
-    { name: "Lara", color: "#E5F2EA" },
-    { name: "Marc", color: "#FFE8D8" },
+    { name: "Lara", color: "rgba(10,10,10,0.06)" },
+    { name: "Marc", color: "rgba(10,10,10,0.04)" },
     { name: null, color: "transparent" },
-    { name: "Anna", color: "#D4DDC8" },
-    { name: "Sara", color: "#FFE8D8" },
+    { name: "Anna", color: "rgba(10,10,10,0.08)" },
+    { name: "Sara", color: "rgba(10,10,10,0.04)" },
     { name: null, color: "transparent" },
-    { name: "Eva", color: "#EAE0D0" },
-    { name: "Niklas", color: "#FFE8D8" },
-    { name: "Sophie", color: "#D4DDC8" },
+    { name: "Eva", color: "rgba(10,10,10,0.06)" },
+    { name: "Niklas", color: "rgba(10,10,10,0.04)" },
+    { name: "Sophie", color: "rgba(10,10,10,0.08)" },
     { name: null, color: "transparent" },
-    { name: "David", color: "#E5F2EA" },
+    { name: "David", color: "rgba(10,10,10,0.06)" },
     { name: null, color: "transparent" },
-    { name: "Lena", color: "#FFF1C2" },
-    { name: "Anna", color: "#EAE0D0" },
-    { name: "Mira", color: "#E5F2EA" },
+    { name: "Lena", color: "rgba(10,10,10,0.04)" },
+    { name: "Anna", color: "rgba(10,10,10,0.08)" },
+    { name: "Mira", color: "rgba(10,10,10,0.06)" },
   ];
   return (
     <div className="relative grid h-full w-full place-items-center">
@@ -358,7 +308,10 @@ const ANALYTICS_PERIODS: AnalyticsPeriod[] = [
 /** V3-D78 (2026-05-19): iOS-Wallet-style bar gradient.
  *  Vivid purple top → coral middle → orange-amber bottom. Each bar shows
  *  the same color story — consistent identity across the row, height alone
- *  signals the peak. Rounded tops give the soft-popsicle silhouette. */
+ *  signals the peak. Rounded tops give the soft-popsicle silhouette.
+ *  V3-D110 attempt to change to navy was reverted per user "i like the
+ *  vibrancy but i think its not the right color lets iterate or change
+ *  it after." Vibrancy stays; exact color TBD later. */
 const BAR_GRADIENT =
   "linear-gradient(180deg, #1638C4 0%, #B8C4F0 100%)";
 
@@ -391,7 +344,7 @@ function VisualAnalyticsTabbed() {
       {/* ── Top: stats + tabs ── */}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="font-display text-[26px] font-extrabold leading-none tracking-[-0.02em] text-s-ink md:text-[28px]">
+          <div className="font-display text-[26px] font-semibold leading-none tracking-[-0.02em] text-s-ink md:text-[28px]">
             {active.count}
           </div>
           <div className="mt-1 font-body text-[9.5px] font-bold uppercase tracking-[0.12em] text-s-ink-3">
@@ -399,11 +352,11 @@ function VisualAnalyticsTabbed() {
           </div>
         </div>
         <div className="min-w-0 flex-1">
-          <div className="font-display text-[18px] font-bold leading-none tracking-[-0.01em] text-s-ink md:text-[19px]">
+          <div className="font-display text-[18px] font-semibold leading-none tracking-[-0.01em] text-s-ink md:text-[19px]">
             {active.revenue}
           </div>
           <div className="mt-1.5 flex items-center gap-1 font-body text-[9.5px] font-bold uppercase tracking-[0.12em] text-s-ink-3">
-            <span className="inline-flex items-center gap-0.5 text-s-brand">
+            <span className="inline-flex items-center gap-0.5 text-s-ink">
               <ArrowRight size={10} className="rotate-[-45deg]" aria-hidden />
               {active.trend}
             </span>
@@ -423,11 +376,13 @@ function VisualAnalyticsTabbed() {
                 }}
                 aria-pressed={isActive}
                 className={cn(
-                  "grid h-7 w-7 place-items-center rounded-full border font-body text-[10px] font-extrabold uppercase tracking-wider transition-colors duration-200 ease-glide",
+                  "grid h-7 w-7 place-items-center rounded-full border font-body text-[10px] font-bold uppercase tracking-wider transition-colors duration-200 ease-glide",
+                  // V3-D219 (2026-05-26): active tab swapped to s-accent (royal blue) —
+                  // §2.1 "selected tab state" is exactly the accent use case from V3-D192.
                   isActive
-                    ? "border-s-brand text-s-brand bg-s-brand/[0.06]"
+                    ? "border-s-accent text-s-accent bg-s-accent-pale"
                     : "border-s-ink/15 text-s-ink-3 hover:border-s-ink/30",
-                  "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+                  "focus-visible:outline-2 focus-visible:outline-s-accent focus-visible:outline-offset-2",
                 )}
               >
                 {p.label.charAt(0)}
@@ -488,7 +443,7 @@ function VisualAnalyticsTabbed() {
 
 /* ─── JoinUsCard — full-width 5th card with expand-to-form ─── */
 
-function JoinUsCard() {
+export function JoinUsCard() {
   // V3-D75-morph (2026-05-18): refactored from custom position-swap modal
   // to MorphingDialog primitive. Old version stuttered because
   // `position: relative` → `position: fixed` swap forced a layout-tree change
@@ -500,71 +455,52 @@ function JoinUsCard() {
       transition={{ type: "spring", bounce: 0.05, duration: 0.4 }}
     >
       {/* ── Trigger (collapsed state — sits in the bento grid) ── */}
+      {/* V3-D219 (2026-05-26): rounded-3xl Tailwind class replaces inline borderRadius 24px.
+          V3-D220: col-span-3 moved to parent wrapper (which carries the #anmelden id). */}
       <MorphingDialogTrigger
-        style={{ borderRadius: "24px" }}
-        className="md:col-span-3 overflow-hidden bg-s-brand text-white"
+        className="block w-full overflow-hidden rounded-3xl bg-s-ink text-white"
       >
         <div className="p-8 md:p-12">
           <div className="flex items-start justify-between gap-6">
             <div className="flex-1">
-              <span
-                className="inline-flex items-center gap-2 font-body text-[12px] font-bold uppercase text-white/80"
-                style={{ letterSpacing: "0.18em" }}
-              >
-                <span
-                  aria-hidden
-                  style={{
-                    display: "inline-block",
-                    width: "5px",
-                    height: "5px",
-                    borderRadius: "9999px",
-                    background: "#F2D77B",
-                  }}
-                />
+              {/* V3-D331 (2026-05-28): dropped accent-dot decoration per LOCKFILE §2.5
+                  Eyebrow decoration policy. "Bereit dazuzukommen?" kept as Tag/Status
+                  semantic role (max 1 per surface, signals "this is the CTA card"). */}
+              <span className="inline-flex items-center gap-2 font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-white/80">
                 Bereit dazuzukommen?
               </span>
-              <MorphingDialogTitle
-                className="mt-4 font-display font-extrabold text-white"
-                style={{
-                  fontSize: "clamp(28px, 4vw, 48px)",
-                  lineHeight: 1.05,
-                  letterSpacing: "-0.025em",
-                }}
-              >
+              {/* V3-D219: inline clamp(28,4vw,48) + tracking -0.025em → Page H2 spec
+                  clamp(25,4vw,40) + tracking -0.03em (V3-D193 + V3-D190). */}
+              <MorphingDialogTitle className="mt-4 font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-white">
                 Werde Solen-Partner.
               </MorphingDialogTitle>
-              <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[15px] leading-[1.55] text-white/85 md:text-[17px]">
+              {/* V3-D219: drop md:text-[17px] step (out-of-Scale-B). Use clamp(14,3.5vw,16). */}
+              <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-white/85">
                 Über 1&apos;200 Salons buchen schon mit Solen. Trag dich in 60
                 Sekunden ein — wir melden uns innerhalb von 24 Stunden.
               </MorphingDialogSubtitle>
             </div>
             <div
               aria-hidden
-              className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white text-s-brand"
-              style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.10)" }}
+              className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white text-s-ink shadow-elevation-2"
             >
               <ChevronRight size={22} strokeWidth={2.5} aria-hidden />
             </div>
           </div>
-          {/* Trust line — only in trigger */}
+          {/* Trust line — only in trigger.
+              V3-D219: unicode "★★★★★" replaced with lucide Star icons fill #FFC32B
+              (s-star token). Per SOURCE.md §7 fill rules, unicode stars are
+              forbidden — always use the icon. */}
           <div className="mt-8 flex items-center gap-3 text-white/85">
-            <span
-              className="font-display font-extrabold leading-none"
-              style={{ fontSize: "18px", letterSpacing: "-0.01em" }}
-            >
+            <span className="font-display text-[18px] font-semibold leading-none tracking-[-0.03em]">
               4.9 / 5
             </span>
-            <span
-              aria-hidden
-              style={{
-                color: "#F2D77B",
-                fontSize: "14px",
-                letterSpacing: "0.06em",
-              }}
-            >
-              ★★★★★
+            <span aria-hidden className="inline-flex items-center gap-0.5">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star key={i} size={12} fill="#FFC32B" stroke="none" aria-hidden />
+              ))}
             </span>
-            <span className="font-body text-[13px] text-white/70">
+            <span className="font-body text-[13px] font-normal text-white/70">
               · von 1&apos;200+ Salon-Partnern
             </span>
           </div>
@@ -574,40 +510,22 @@ function JoinUsCard() {
       {/* ── Container (portal + backdrop) ── */}
       <MorphingDialogContainer>
         {/* ── Content (expanded modal — morphs from trigger via shared layoutId) ── */}
+        {/* V3-D219 (2026-05-26): rounded-3xl Tailwind class replaces inline borderRadius 24px. */}
         <MorphingDialogContent
-          style={{ borderRadius: "24px" }}
-          className="relative max-h-[90vh] w-full max-w-[640px] overflow-y-auto bg-s-brand text-white"
+          className="relative max-h-[90vh] w-full max-w-[640px] overflow-y-auto rounded-3xl bg-s-ink text-white"
         >
           <div className="p-8 md:p-12">
             <div className="flex items-start justify-between gap-6 pr-12">
               <div className="flex-1">
-                <span
-                  className="inline-flex items-center gap-2 font-body text-[12px] font-bold uppercase text-white/80"
-                  style={{ letterSpacing: "0.18em" }}
-                >
-                  <span
-                    aria-hidden
-                    style={{
-                      display: "inline-block",
-                      width: "5px",
-                      height: "5px",
-                      borderRadius: "9999px",
-                      background: "#F2D77B",
-                    }}
-                  />
+                {/* V3-D331: dropped accent-dot decoration per §2.5. */}
+                <span className="inline-flex items-center gap-2 font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-white/80">
                   Bereit dazuzukommen?
                 </span>
-                <MorphingDialogTitle
-                  className="mt-4 font-display font-extrabold text-white"
-                  style={{
-                    fontSize: "clamp(28px, 4vw, 48px)",
-                    lineHeight: 1.05,
-                    letterSpacing: "-0.025em",
-                  }}
-                >
+                {/* V3-D219: same Page H2 normalization as trigger. */}
+                <MorphingDialogTitle className="mt-4 font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-white">
                   Werde Solen-Partner.
                 </MorphingDialogTitle>
-                <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[15px] leading-[1.55] text-white/85 md:text-[17px]">
+                <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-white/85">
                   Über 1&apos;200 Salons buchen schon mit Solen. Trag dich in
                   60 Sekunden ein — wir melden uns innerhalb von 24 Stunden.
                 </MorphingDialogSubtitle>
@@ -633,43 +551,44 @@ function JoinUsCard() {
                 }}
                 className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4"
               >
+                {/* V3-D219: input radius 12px literal → rounded-input (16px) token. Added h-11 (44px touch target — was missing). */}
                 <input
                   type="text"
                   name="name"
                   placeholder="Dein Name"
                   required
-                  className="rounded-[12px] bg-white px-4 font-body text-[15px] text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
+                  className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
                 />
                 <input
                   type="email"
                   name="email"
                   placeholder="E-Mail"
                   required
-                  className="rounded-[12px] bg-white px-4 font-body text-[15px] text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
+                  className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
                 />
                 <input
                   type="text"
                   name="salon"
                   placeholder="Salon-Name"
                   required
-                  className="rounded-[12px] bg-white px-4 font-body text-[15px] text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
+                  className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
                 />
                 <input
                   type="text"
                   name="city"
                   placeholder="Stadt"
                   required
-                  className="rounded-[12px] bg-white px-4 font-body text-[15px] text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
+                  className="h-11 rounded-input bg-white px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]"
                 />
                 <div className="mt-2 flex flex-col gap-4 md:col-span-2 md:flex-row md:items-center md:justify-between">
-                  <p className="max-w-[320px] font-body text-[12px] leading-[1.4] text-white/70">
+                  <p className="max-w-[320px] font-body text-[12px] font-normal leading-[1.4] text-white/70">
                     Mit Anmeldung akzeptierst du unsere AGB. Keine versteckten
                     Gebühren — Bezahlung erst ab erstem Termin.
                   </p>
+                  {/* V3-D219: shadow → shadow-elevation-2; duration-200 ease-glide per §6.4. */}
                   <button
                     type="submit"
-                    className="inline-flex items-center gap-2 self-start rounded-full bg-white px-7 py-3.5 font-body text-[15px] font-bold text-s-brand transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.97] md:self-auto"
-                    style={{ boxShadow: "0 6px 16px rgba(0,0,0,0.18)" }}
+                    className="inline-flex items-center gap-2 self-start rounded-full bg-white px-7 py-3.5 font-body text-[15px] font-bold text-s-ink shadow-elevation-2 transition-all duration-200 ease-glide hover:scale-[1.02] active:scale-[0.97] md:self-auto"
                   >
                     Jetzt anmelden
                     <ArrowRight size={16} aria-hidden />
@@ -687,40 +606,30 @@ function JoinUsCard() {
 }
 
 export default function BentoBusiness() {
-  // V3-D75-floating (2026-05-18): removed outer green-bordered card wrapper
-  // per user "remove ths like card in a card... cards floating". Cards now
-  // sit directly in the section with their own breathing room. Section padding
-  // bumped to py-12/16 to compensate for the removed inner padding.
+  // V3-D99 (2026-05-22): closing "trust / for salons" zone goes on
+  // brand-deep navy (#0C254E = Ocean Blue at 14% lightness — same hue family
+  // as --brand, not random dark color). Inner BentoCards keep their white bg
+  // so they pop on the navy. Outer section header text flips to white,
+  // "dein Geschäft" accent moves brand → brand-pale (#BBCEED) so it reads
+  // on the dark surface. Eyebrow dot stays accent yellow for now (legacy).
+  // V3-D122 (2026-05-24): stripped bg-black (dark coffee) wrapper.
+  // Per "mono chrome" direction — Solen-for-biz section joins the rest of
+  // the homepage's white substrate. Removed data-header-tone="dark" since
+  // the header no longer needs to flip dark over this band.
   return (
-    <section className="relative z-[1] mx-auto mb-1 max-w-[1280px] px-4 py-12 md:mb-3 md:px-6 md:py-16">
-      {/* ─── Header ─── */}
-      <div className="mx-auto mb-10 max-w-[640px] text-center md:mb-12">
-          <span className="mb-4 inline-flex items-center gap-2 font-body text-[14px] font-medium text-s-accent">
-            <span
-              aria-hidden
-              style={{
-                display: "inline-block",
-                width: "5px",
-                height: "5px",
-                borderRadius: "9999px",
-                background: "#FFC32B",
-              }}
-            />
-            Für Salons
-          </span>
-          <h2
-            className="font-display font-extrabold text-s-ink"
-            style={{
-              fontSize: "clamp(32px, 5vw, 56px)",
-              lineHeight: "1.05",
-              letterSpacing: "-0.025em",
-            }}
-          >
-            Solen für<br />
-            <span className="text-s-brand">dein Geschäft.</span>
+    <div className="w-full">
+      <section className="relative z-[1] mx-auto mb-1 max-w-[1280px] px-4 py-12 md:mb-3 md:px-6 md:py-16">
+        {/* ─── Header ───
+            V3-D331 (2026-05-28): dropped "Vier Werkzeuge" eyebrow + dot per
+            LOCKFILE §2.5 Eyebrow decoration policy. H2 itself ("Eine Plattform,
+            vier Werkzeuge.") already carries the section identity — eyebrow was
+            redundant. Fresha + Uber B2B precedent: section break + H2 only. */}
+        <div className="mx-auto mb-10 max-w-[640px] text-center md:mb-12">
+          <h2 className="font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-s-ink">
+            Eine Plattform, vier Werkzeuge.
           </h2>
-          <p className="mt-5 font-body text-[15px] leading-[1.55] text-s-ink-2 md:text-[17px]">
-            Mehr Buchungen, weniger Aufwand. Vier Werkzeuge, eine Plattform.
+          <p className="mt-5 font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-s-ink-2">
+            Sofortige Bestätigung, Direkt-Chat, voller Kalender, Analytics — alles im Solen-Dashboard.
           </p>
         </div>
 
@@ -756,9 +665,15 @@ export default function BentoBusiness() {
           {/* 5th card — full-width expandable Join Us card.
               Replaces the old bottom CTA + trust line. Collapsed = green
               card with title + lede + arrow indicator + small trust line.
-              Click → expands to reveal salon-registration form inline. */}
-          <JoinUsCard />
+              V3-D220 (2026-05-26): wrapped in <div id="anmelden" scroll-mt-24>.
+              V3-D222 (2026-05-26, /business verifier #1): JoinUsCard MOVED OUT
+              of BentoBusiness — was wedged between bento and marketplace, off-spec.
+              Spec IA places final CTA AFTER FAQ. Caller (business/page.tsx)
+              now renders JoinUsCard as the page's final band with the
+              #anmelden anchor on it. BentoBusiness now ends on Analytics
+              (the promised 4 cards, not 4+1). */}
         </div>
-    </section>
+      </section>
+    </div>
   );
 }

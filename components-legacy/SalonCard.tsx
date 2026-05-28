@@ -108,7 +108,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
     return (
       <Link
         href={href}
-        className="flex items-center gap-3 p-3 rounded-card bg-white border border-s-ink/[0.08] group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+        className="flex items-center gap-3 p-3 rounded-card bg-white border border-s-ink/[0.08] group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
       >
         {/* A3 LOCKED 2026-05-03: photos killed pre-launch — solid category color + Anton name only */}
         <div className="relative w-16 h-16 rounded-input overflow-hidden shrink-0">
@@ -151,12 +151,12 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         </div>
       )}
       {availability?.status === "available" && (
-        <span className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-pill bg-s-sage/90 text-white text-[10px] font-medium font-body">
+        <span className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-pill bg-s-success/90 text-white text-[10px] font-medium font-body">
           {t("availableToday")}
         </span>
       )}
 
-      <Link href={href} className="block w-full h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 rounded-[16px]">
+      <Link href={href} className="block w-full h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 rounded-[16px]">
         {/* Cover — A3 LOCKED 2026-05-03: photos killed pre-launch. Always render
             solid category color + Anton uppercase salon name (locked card pattern,
             ref public/solen-coral.html:225-245, 847-865). Photo carousel state
@@ -190,8 +190,8 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               className={[
                 "absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-[background-color,border-color] duration-200 z-10",
                 compareSelected
-                  ? "bg-s-coral border-s-coral text-white scale-100"
-                  : "bg-white/80 backdrop-blur-[6px] border-white/60 text-transparent hover:border-s-coral/50",
+                  ? "bg-s-ink border-s-accent text-white scale-100"
+                  : "bg-white/80 backdrop-blur-[6px] border-white/60 text-transparent hover:border-s-accent/50",
               ].join(" ")}
             >
               {compareSelected && (
@@ -263,7 +263,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               onClick={(e) => { e.preventDefault(); e.stopPropagation();
                 scrollContainerRef.current?.scrollTo({ left: (photoIndex - 1) * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
               }}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
               aria-label="Previous photo"
             >
               <ChevronLeft size={18} />
@@ -275,7 +275,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               onClick={(e) => { e.preventDefault(); e.stopPropagation();
                 scrollContainerRef.current?.scrollTo({ left: (photoIndex + 1) * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
               }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 focus-visible:opacity-100 transition-[opacity,transform,background-color] duration-150 z-[2] hover:bg-white active:scale-[0.92] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
               aria-label="Next photo"
             >
               <ChevronRight size={18} />
@@ -339,7 +339,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               label = t("nextAppointmentDate", { date: dateStr, time: timeStr });
             }
             return (
-              <p className="text-xs font-medium leading-5 text-s-sage">
+              <p className="text-xs font-medium leading-5 text-s-success">
                 {label}
               </p>
             );

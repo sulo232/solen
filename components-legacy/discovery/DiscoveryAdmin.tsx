@@ -28,7 +28,7 @@ export default function DiscoveryAdmin() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="mb-4 flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-colors"
+        className="mb-4 flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-colors"
       >
         <Download size={16} />
         {t("importButton")}
@@ -37,11 +37,11 @@ export default function DiscoveryAdmin() {
   }
 
   return (
-    <div className="mb-6 rounded-[16px] border border-s-coral/20 bg-white overflow-hidden">
+    <div className="mb-6 rounded-[16px] border border-s-accent/20 bg-white overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-s-coral/5 border-b border-s-coral/10">
+      <div className="flex items-center justify-between px-4 py-3 bg-s-ink/5 border-b border-s-accent/10">
         <div className="flex items-center gap-2">
-          <Sparkles size={16} className="text-s-coral" />
+          <Sparkles size={16} className="text-s-accent" />
           <span className="text-sm font-medium text-s-ink">{t("title")}</span>
         </div>
         <button onClick={() => setOpen(false)} className="text-s-ink/40 hover:text-s-ink">
@@ -61,7 +61,7 @@ export default function DiscoveryAdmin() {
             onClick={() => setTab(tb.id)}
             className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium transition-colors ${
               tab === tb.id
-                ? "text-s-coral border-b-2 border-s-coral"
+                ? "text-s-accent border-b-2 border-s-accent"
                 : "text-s-ink/40 hover:text-s-ink"
             }`}
           >
@@ -171,7 +171,7 @@ function SmartSearchTab() {
             onChange={(e) => setDescription(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder={t("descriptionPlaceholder")}
-            className="flex-1 px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 bg-white text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="flex-1 px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 bg-white text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-accent/30"
           />
           <select
             value={category}
@@ -186,7 +186,7 @@ function SmartSearchTab() {
         <button
           onClick={handleSearch}
           disabled={searching || !description.trim()}
-          className="flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {searching ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
           {searching ? t("searchingGemini") : t("smartSearchButton")}
@@ -213,14 +213,14 @@ function SmartSearchTab() {
               {t("resultsSelected", { count: results.length, selected: selected.size })}
             </span>
             <div className="flex items-center gap-2">
-              <button onClick={selectAll} className="text-[10px] text-s-coral hover:underline">
+              <button onClick={selectAll} className="text-[10px] text-s-accent hover:underline">
                 {selected.size === results.length ? t("deselectAll") : t("selectAll")}
               </button>
               {selected.size > 0 && (
                 <button
                   onClick={handleImport}
                   disabled={importing}
-                  className="flex items-center gap-1 px-3 py-1 rounded-[16px] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] disabled:opacity-50"
+                  className="flex items-center gap-1 px-3 py-1 rounded-[16px] bg-s-ink text-white text-xs font-medium hover:brightness-[1.06] disabled:opacity-50"
                 >
                   {importing ? <Loader2 size={12} className="animate-spin" /> : <Download size={12} />}
                   {t("import", { count: selected.size })}
@@ -236,7 +236,7 @@ function SmartSearchTab() {
                 onClick={() => toggleSelect(photo.id)}
                 className={`relative aspect-[3/4] rounded-[16px] overflow-hidden border-2 transition-[transform,box-shadow] duration-200 ${
                   selected.has(photo.id)
-                    ? "border-s-coral ring-2 ring-s-coral/30"
+                    ? "border-s-accent ring-2 ring-s-accent/30"
                     : "border-transparent hover:border-s-ink/10:border-white/10"
                 }`}
               >
@@ -247,7 +247,7 @@ function SmartSearchTab() {
                   className="w-full h-full object-cover"
                 />
                 {selected.has(photo.id) && (
-                  <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-s-coral flex items-center justify-center">
+                  <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-s-ink flex items-center justify-center">
                     <Check size={12} className="text-white" />
                   </div>
                 )}
@@ -313,14 +313,14 @@ function TikTokImportTab() {
           onChange={(e) => setUrls(e.target.value)}
           placeholder={"https://www.tiktok.com/@user/video/123456\nhttps://www.tiktok.com/@user/video/789012"}
           rows={4}
-          className="w-full px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 bg-white text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none font-mono"
+          className="w-full px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 bg-white text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:ring-2 focus:ring-s-accent/30 resize-none font-mono"
         />
       </div>
 
       <button
         onClick={handleImport}
         disabled={importing || !urls.trim()}
-        className="flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {importing ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
         {importing ? t("importing") : t("importTiktoks")}
@@ -394,8 +394,8 @@ function CategoryImportTab() {
             disabled={!!importing}
             className={`flex items-center justify-center gap-2 px-3 py-3 rounded-pill border text-sm font-medium transition-[transform,filter] duration-150 ${
               importing === cat
-                ? "border-s-coral bg-s-coral/10 text-s-coral"
-                : "border-s-ink/10 text-s-ink hover:border-s-coral hover:bg-s-coral/5"
+                ? "border-s-accent bg-s-ink/10 text-s-accent"
+                : "border-s-ink/10 text-s-ink hover:border-s-accent hover:bg-s-ink/5"
             } disabled:opacity-50`}
           >
             {importing === cat ? (

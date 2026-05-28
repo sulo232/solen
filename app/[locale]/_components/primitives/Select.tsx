@@ -22,8 +22,8 @@ const selectVariants = cva(
     // padding-right 40px to leave room for the custom chevron
     "pr-10",
     // focus-visible
-    "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
-    "focus-visible:border-s-brand",
+    "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+    "focus-visible:border-s-ink",
     // disabled
     "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-s-bg-sunken disabled:text-s-ink-3",
     // unstyle the placeholder option in some browsers

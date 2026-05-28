@@ -29,7 +29,8 @@ export function SalonOtherLocations({
 
   return (
     <section>
-      <h2 className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink md:text-[22px]">
+      {/* V3-D202 (A17): font-body → font-display + Scale B. */}
+      <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Andere Standorte
       </h2>
 
@@ -79,7 +80,7 @@ function SiblingCard({
       <div className="p-4">
         <div className="text-[14px] font-semibold text-s-ink md:text-[15px]">{sibling.name}</div>
         <div className="mt-1 flex items-center gap-1 text-[12px] text-s-ink-3">
-          <Star size={11} fill="#F3A864" stroke="none" />
+          <Star size={11} fill="#FFC32B" stroke="none" />
           <span>
             {sibling.average_rating?.toFixed(1) ?? "—"}
           </span>
@@ -87,7 +88,8 @@ function SiblingCard({
         </div>
         <div className="mt-1.5 text-[12px] text-s-ink-3">{sibling.address}</div>
         {category && (
-          <div className="mt-1.5 text-[11px] uppercase tracking-[0.04em] text-s-ink-3">
+          /* V3-D335 (T3): tracking 0.04em → 0.08em (canonical Tag/Status per §2.5). */
+          <div className="mt-1.5 text-[11px] uppercase tracking-[0.08em] text-s-ink-3">
             {capitalize(category)}
           </div>
         )}

@@ -66,16 +66,16 @@ export default function BookingActionPage() {
           <div className="py-12"><Spinner size="lg" /></div>
         ) : error ? (
           <>
-            <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-amber-subtle">
-              <AlertTriangle size={24} className="text-s-amber" />
+            <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-warning-bg">
+              <AlertTriangle size={24} className="text-s-warning" />
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">{l.error}</h2>
             <p className="text-sm text-s-ink/50">{error}</p>
           </>
         ) : result === "confirmed" ? (
           <>
-            <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-coral/10">
-              <Check size={24} className="text-s-coral" />
+            <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-ink/10">
+              <Check size={24} className="text-s-accent" />
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">{l.confirmed}</h2>
             <p className="text-sm text-s-ink/50">{l.confirmedDesc}</p>

@@ -146,14 +146,51 @@ export function postalToCity(postalCode: string | null | undefined): string {
   return CH_POSTAL_CITY_PREFIX[first] ?? "der Schweiz";
 }
 
+/**
+ * Walks `hours` forward from `startIdx` (Sun=0..Sat=6 ordering used by
+ * Date.getDay()) and returns the next day that has open hours. Caps at 7
+ * iterations to avoid infinite loops if the data is bad.
+ *
+ * V3-D210 (verifier #2): closed-state pill needs to surface "next time the
+ * salon opens" — matches Fresha PDP pattern "Geschlossen · Öffnet Mittwoch
+ * um 09:30". Previously `computeOpenStatus` returned `nextOpen: null` when
+ * closed-after-today's-close; now it looks ahead through the week.
+ */
+function findNextOpening(
+  hours: Record<string, { open: string; close: string }>,
+  startDayIdx: number,
+): { day: DayKey; open: string } | null {
+  const ORDER = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+  for (let i = 1; i <= 7; i++) {
+    const day = ORDER[(startDayIdx + i) % 7] as DayKey;
+    const slot = hours[day];
+    if (slot?.open) return { day, open: slot.open };
+  }
+  return null;
+}
+
 export function computeOpenStatus(
   hours: Record<string, { open: string; close: string }> | null
 ): { isOpen: boolean; label: string; nextOpen: string | null } {
   if (!hours) return { isOpen: false, label: "Öffnungszeiten unbekannt", nextOpen: null };
   const now = new Date();
-  const dayKey = (["sun", "mon", "tue", "wed", "thu", "fri", "sat"][now.getDay()]) as DayKey;
+  const dayIdx = now.getDay();
+  const dayKey = (["sun", "mon", "tue", "wed", "thu", "fri", "sat"][dayIdx]) as DayKey;
   const today = hours[dayKey];
-  if (!today) return { isOpen: false, label: "Heute geschlossen", nextOpen: null };
+
+  // V3-D210: "Heute geschlossen" path — look ahead to the next open weekday.
+  if (!today) {
+    const next = findNextOpening(hours, dayIdx);
+    if (next) {
+      return {
+        isOpen: false,
+        label: `Geschlossen · Öffnet ${DAY_LABEL[next.day]} um ${next.open}`,
+        nextOpen: next.open,
+      };
+    }
+    return { isOpen: false, label: "Heute geschlossen", nextOpen: null };
+  }
+
   const [openH, openM] = today.open.split(":").map(Number);
   const [closeH, closeM] = today.close.split(":").map(Number);
   const minsNow = now.getHours() * 60 + now.getMinutes();
@@ -163,6 +200,15 @@ export function computeOpenStatus(
     return { isOpen: false, label: `Geschlossen · Öffnet ${today.open}`, nextOpen: today.open };
   }
   if (minsNow > minsClose) {
+    // V3-D210: after today's close — look ahead instead of "Heute geschlossen".
+    const next = findNextOpening(hours, dayIdx);
+    if (next) {
+      return {
+        isOpen: false,
+        label: `Geschlossen · Öffnet ${DAY_LABEL[next.day]} um ${next.open}`,
+        nextOpen: next.open,
+      };
+    }
     return { isOpen: false, label: "Heute geschlossen", nextOpen: null };
   }
   return { isOpen: true, label: `Geöffnet bis ${today.close}`, nextOpen: null };
@@ -171,16 +217,18 @@ export function computeOpenStatus(
 /**
  * Initial-based avatar background color. Maps any character to a stable hue
  * so review avatars stay visually distinct without storing colors anywhere.
+ *
+ * V3-D202 (2026-05-26, salon Phase A · A1): retired the 8-tone warm/cream/sage
+ * palette. New 4-tone B&W-with-restraint palette per V3-D193 + V3-D197 chrome
+ * rule. Avatars are chrome (no semantic meaning per initial), so they live in
+ * Layer 1. Variants are ink-on-pale-grey at 4 lightness steps for visual
+ * variety without color invention.
  */
 const AVATAR_PALETTE = [
-  { bg: "#FDE2E4", fg: "#9C2B45" }, // soft rose
-  { bg: "#D4EBD9", fg: "#1F5C42" }, // emerald
-  { bg: "#FAF2E5", fg: "#C97A57" }, // cream + terracotta
-  { bg: "#E0E7FF", fg: "#3730A3" }, // soft indigo
-  { bg: "#FEF3C7", fg: "#92400E" }, // soft amber
-  { bg: "#D4DDC8", fg: "#3F6212" }, // soft olive
-  { bg: "#E0F2FE", fg: "#075985" }, // soft sky
-  { bg: "#FCE7F3", fg: "#9D174D" }, // soft pink
+  { bg: "#F5F5F4", fg: "#0A0A0A" }, // s-bg-sunken + s-ink
+  { bg: "#E7E5E4", fg: "#0A0A0A" }, // s-border + s-ink
+  { bg: "#D6D3D1", fg: "#0A0A0A" }, // stone-300 + s-ink
+  { bg: "#A8A29E", fg: "#FFFFFF" }, // stone-400 + white (inverse for variety)
 ];
 
 export function avatarColor(name: string | null | undefined): { bg: string; fg: string } {
@@ -218,15 +266,26 @@ export function formatReviewDate(iso: string): string {
  * Sections registered with the sticky tab nav. Order matches Fresha IA.
  * Each section component must render an element with `id="section-{key}"`
  * for IntersectionObserver scroll-tracking to work.
+ *
+ * V3-D202 (2026-05-26, salon Phase A · A1): labels migrated to German per
+ * §17 i18n rule. Future: wire to `useTranslations("salonDetail.tabs")` once
+ * the messages file has these keys.
  */
+// V3-D211 (verifier #5): Fresha IA puts "Über uns" SECOND (right after Fotos),
+// then services/team/reviews. V3-D237 (2026-05-27, golden-route capture): DROPPED
+// `portfolio` and `loyalty` tabs to match real Fresha 5-tab IA captured at
+// les-mains-basel (Photos · Services · Team · Reviews · About). Portfolio
+// folded into hero gallery + lightbox per Fresha; loyalty was Solen-only and
+// added page noise without changing user behavior. Section components stay
+// rendered below — only the sticky-nav surface drops them.
 export const TAB_SECTIONS = [
-  { key: "photos", label: "Photos" },
-  { key: "services", label: "Services" },
-  { key: "team", label: "Team" },
-  { key: "reviews", label: "Reviews" },
-  { key: "portfolio", label: "Portfolio" },
-  { key: "about", label: "About" },
-  { key: "loyalty", label: "Loyalty" },
+  { key: "photos", label: "Fotos" },
+  { key: "about", label: "Über uns" },
+  { key: "services", label: "Services" },     // identical in German
+  { key: "team", label: "Team" },             // identical in German
+  { key: "reviews", label: "Bewertungen" },
 ] as const;
 
 export type TabKey = typeof TAB_SECTIONS[number]["key"];
+
+// MetaDot lives in MetaDot.tsx (JSX requires .tsx, _shared.ts is types/data only).

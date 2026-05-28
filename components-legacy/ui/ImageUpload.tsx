@@ -266,7 +266,7 @@ export default function ImageUpload({
               {item.status === "uploading" && (
                 <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/30">
                   <div
-                    className="h-full bg-s-coral transition-[width] duration-300"
+                    className="h-full bg-s-ink transition-[width] duration-300"
                     style={{ width: `${item.progress}%` }}
                   />
                 </div>
@@ -329,16 +329,16 @@ export default function ImageUpload({
           className={[
             "w-full h-36 rounded-[16px] border-2 border-dashed flex flex-col items-center justify-center gap-2.5 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
             isDragOver
-              ? "border-s-coral bg-s-coral/5"
-              : "border-s-ink/10 hover:border-s-coral/40 hover:bg-s-coral/[0.02]",
+              ? "border-s-accent bg-s-ink/5"
+              : "border-s-ink/10 hover:border-s-accent/40 hover:bg-s-ink/[0.02]",
           ].join(" ")}
         >
           <div
             className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
-              isDragOver ? "bg-s-coral/20" : "bg-s-coral/10"
+              isDragOver ? "bg-s-ink/20" : "bg-s-ink/10"
             }`}
           >
-            <Camera size={20} className="text-s-coral" />
+            <Camera size={20} className="text-s-accent" />
           </div>
           <div className="text-center px-4">
             <p className="text-sm font-medium text-s-ink/60">

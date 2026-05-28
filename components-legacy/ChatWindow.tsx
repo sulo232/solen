@@ -309,24 +309,24 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         <button
           onClick={() => setActiveTab("chat")}
           className={["relative flex-1 py-2 text-sm font-medium transition-colors",
-            activeTab === "chat" ? "text-s-coral" : "text-s-ink/50"
+            activeTab === "chat" ? "text-s-accent" : "text-s-ink/50"
           ].join(" ")}
         >
           {t("tabs.chat")}
           {activeTab === "chat" && (
-            <motion.div layoutId="chat-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-coral" />
+            <motion.div layoutId="chat-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-ink" />
           )}
         </button>
         <button
           onClick={() => setActiveTab("photos")}
           className={["relative flex-1 py-2 text-sm font-medium transition-colors",
-            activeTab === "photos" ? "text-s-coral" : "text-s-ink/50"
+            activeTab === "photos" ? "text-s-accent" : "text-s-ink/50"
           ].join(" ")}
         >
           <Camera size={14} className="inline mr-1 -mt-0.5" />
           {t("tabs.photos")}
           {activeTab === "photos" && (
-            <motion.div layoutId="chat-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-coral" />
+            <motion.div layoutId="chat-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-ink" />
           )}
         </button>
       </div>
@@ -389,7 +389,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
             >
               <div className={[
                 "max-w-[85%] lg:max-w-[60%] px-3 py-2 rounded-[12px] text-sm leading-relaxed",
-                isOwn(msg) ? "bg-s-coral text-white rounded-tr-sm" : "bg-s-bg-sunken text-s-ink rounded-tl-sm",
+                isOwn(msg) ? "bg-s-ink text-white rounded-tr-sm" : "bg-s-bg-sunken text-s-ink rounded-tl-sm",
               ].join(" ")}>
                 {msg.message_type === "image" && msg.image_url ? (
                   <div>
@@ -399,7 +399,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                     {isSalonOwner && (
                       <button
                         onClick={() => handleCreatePhotoOffer(msg.image_url!)}
-                        className="mt-1 text-xs text-s-coral-200 hover:text-white hover:underline flex items-center gap-1"
+                        className="mt-1 text-xs  hover:text-white hover:underline flex items-center gap-1"
                         aria-label={t("createOffer")}
                       >
                         <Camera size={12} /> {t("createOffer")}
@@ -431,7 +431,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                   {/* Read receipts */}
                   {isOwn(msg) && !msg.id.startsWith("optimistic") && (
                     msg.read_at ? (
-                      <CheckCheck size={12} className="text-s-coral-200" />
+                      <CheckCheck size={12} className="" />
                     ) : (
                       <Check size={12} className="text-white/40" />
                     )
@@ -475,10 +475,10 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           <div className="px-4 pb-2 flex gap-2">
             <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
               placeholder={t("imageUrlPlaceholder")}
-              className="flex-1 px-3 py-2 text-sm border border-s-ink/10 rounded-btn focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 bg-white"
+              className="flex-1 px-3 py-2 text-sm border border-s-ink/10 rounded-btn focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 bg-white"
               autoFocus />
             <button onClick={() => sendMessage("image")} disabled={!imageUrl.trim() || sending}
-              className="px-3 py-2 rounded-btn active:scale-[0.97] bg-s-coral text-white text-sm disabled:opacity-50 transition-[transform,filter] duration-150">{t("send")}</button>
+              className="px-3 py-2 rounded-btn active:scale-[0.97] bg-s-ink text-white text-sm disabled:opacity-50 transition-[transform,filter] duration-150">{t("send")}</button>
             <button onClick={() => { setShowImageInput(false); setImageUrl(""); }}
               className="px-2 py-2 rounded-btn border border-s-ink/10 text-s-ink/40 hover:text-s-ink">
               <X size={14} />
@@ -520,21 +520,21 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="p-2 rounded-btn text-s-ink/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0 disabled:opacity-40"
+            className="p-2 rounded-btn text-s-ink/30 hover:text-s-accent hover:bg-s-ink/5 transition-colors shrink-0 disabled:opacity-40"
             title={t("attachFile")}
           >
             {uploading ? <Spinner size="sm" /> : <Paperclip size={18} />}
           </button>
           <button onClick={() => setShowImageInput((s) => !s)}
-            className="p-2 rounded-btn text-s-ink/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0"
+            className="p-2 rounded-btn text-s-ink/30 hover:text-s-accent hover:bg-s-ink/5 transition-colors shrink-0"
             title={t("sendImageUrl")}>
             <ImageIcon size={18} />
           </button>
           <textarea ref={inputRef} value={text} onChange={handleTextChange}
             onKeyDown={handleKeyDown} placeholder={t("messagePlaceholder")} rows={1}
-            className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 rounded-btn focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 max-h-32 overflow-y-auto bg-white min-h-[38px]" />
+            className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 rounded-btn focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 max-h-32 overflow-y-auto bg-white min-h-[38px]" />
           <button onClick={() => sendMessage("text")} disabled={!text.trim() || sending}
-            className="p-2 rounded-full bg-s-coral text-white disabled:opacity-40 hover:brightness-[1.06] transition-colors shrink-0">
+            className="p-2 rounded-full bg-s-ink text-white disabled:opacity-40 hover:brightness-[1.06] transition-colors shrink-0">
             {sending ? <Spinner size="sm" invert /> : <Send size={16} />}
           </button>
         </div>

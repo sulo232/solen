@@ -3524,33 +3524,39 @@
   "categoryHero": {
     "coiffeur": {
       "label": "Parrucchiere",
-      "subtitle": "I migliori parrucchieri a Basilea",
-      "titleSuffix": "a Basilea"
+      "subtitle": "Trova i migliori parrucchieri vicino a te. Prenota online, conferma immediata.",
+      "titleSuffix": "a Basilea",
+      "title": "Parrucchieri in Svizzera"
     },
     "barbershop": {
       "label": "Barbershop",
-      "subtitle": "Barbershop classici a Basilea",
-      "titleSuffix": "a Basilea"
+      "subtitle": "Barbieri classici e tagli moderni nella tua città.",
+      "titleSuffix": "a Basilea",
+      "title": "Barbieri in Svizzera"
     },
     "nails": {
       "label": "Unghie",
-      "subtitle": "Saloni per unghie e manicure a Basilea",
-      "titleSuffix": "a Basilea"
+      "subtitle": "Manicure, pedicure e nail art. Prenota online, senza attese.",
+      "titleSuffix": "a Basilea",
+      "title": "Saloni di unghie in Svizzera"
     },
     "spa": {
       "label": "Spa & Massaggi",
-      "subtitle": "Benessere e relax a Basilea",
-      "titleSuffix": "a Basilea"
+      "subtitle": "Benessere, massaggi e relax vicino a te.",
+      "titleSuffix": "a Basilea",
+      "title": "Spa e massaggi in Svizzera"
     },
     "makeup": {
       "label": "Trucco",
-      "subtitle": "Trucco professionale a Basilea",
-      "titleSuffix": "a Basilea"
+      "subtitle": "Trucco professionale per ogni occasione. Prenota online.",
+      "titleSuffix": "a Basilea",
+      "title": "Trucco in Svizzera"
     },
     "waxing": {
       "label": "Ceretta",
-      "subtitle": "Studi di ceretta a Basilea",
-      "titleSuffix": "a Basilea"
+      "subtitle": "Studi di ceretta e cura del corpo nella tua città.",
+      "titleSuffix": "a Basilea",
+      "title": "Ceretta in Svizzera"
     },
     "salonsAvailable": "{count, plural, =1 {1 salone} other {# saloni}} disponibile"
   },
@@ -3843,10 +3849,10 @@
   "comingSoon": {
     "title": "In arrivo",
     "descriptionDefault": "Stiamo lavorando a qualcosa di fantastico. Ricevi una notifica quando è pronto!",
-    "description_vouchers": "I buoni regalo sono in arrivo. Regala un'esperienza di bellezza!",
-    "description_loyalty": "Il nostro programma fedeltà con carte timbri arriva presto!",
-    "description_referral": "Invita amici e guadagna credito. Il programma referral parte presto!",
-    "description_behandlungen": "Scopri tutti i trattamenti e trova il salone perfetto. In arrivo!",
+    "description_vouchers": "I buoni regalo sono in arrivo. Regala un'esperienza di bellezza.",
+    "description_loyalty": "Il nostro programma fedeltà con carte timbri arriva presto.",
+    "description_referral": "Invita amici e guadagna credito. Il programma referral parte presto.",
+    "description_behandlungen": "Scopri tutti i trattamenti e trova il salone perfetto. In arrivo.",
     "emailPlaceholder": "tua@email.ch",
     "notify": "Avvisami",
     "notifySuccess": "Ti avviseremo quando sarà pronto!",

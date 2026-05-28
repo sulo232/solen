@@ -19,12 +19,12 @@ const inputVariants = cva(
     "block w-full font-body font-normal text-s-ink",
     "bg-s-bg-base border border-s-ink/10 rounded-[12px]",
     "placeholder:text-s-ink-3",
-    "selection:bg-s-brand/20",
+    "selection:bg-s-ink/20",
     "transition-[border-color,background-color,box-shadow,color] duration-150 ease-snap",
     "caret-s-brand",
     // focus-visible (kbd-only) — 2px brand outline + 2px offset per §1
-    "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
-    "focus-visible:border-s-brand",
+    "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+    "focus-visible:border-s-ink",
     // disabled — opacity .5, sunken bg, ink-3 text, not-allowed
     "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-s-bg-sunken disabled:text-s-ink-3",
   ),
@@ -48,7 +48,7 @@ const inputVariants = cva(
           "focus-visible:outline-s-success focus-visible:border-s-success",
         // Active = mouse-focused / typing — peach-tinted bg + brand border
         active:
-          "border-s-brand ring-1 ring-inset ring-s-brand bg-s-bg-active",
+          "border-s-ink ring-1 ring-inset ring-s-ink bg-s-bg-active",
       },
     },
     defaultVariants: {
@@ -143,7 +143,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
               <span
                 role="status"
                 aria-label="Wird geprüft"
-                className="w-[14px] h-[14px] rounded-full border-2 border-s-brand/20 border-t-s-brand animate-spin"
+                className="w-[14px] h-[14px] rounded-full border-2 border-s-ink/20 border-t-s-brand animate-spin"
               />
             )}
             {showSuccessCheck && (
@@ -161,7 +161,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
                   "w-[18px] h-[18px] flex items-center justify-center",
                   "text-s-ink-2 hover:text-s-ink",
                   "transition-colors duration-150 ease-snap",
-                  "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 rounded-sm",
+                  "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 rounded-sm",
                 )}
                 aria-label={revealed ? "Passwort verbergen" : "Passwort anzeigen"}
                 tabIndex={disabled ? -1 : 0}

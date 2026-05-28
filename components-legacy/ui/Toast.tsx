@@ -30,7 +30,7 @@ const ToastContext = createContext<ToastContextValue | null>(null);
 
 const icons: Record<ToastType, React.ReactNode> = {
   success: <CheckCircle size={16} className="flex-shrink-0" style={{ color: "#16A34A" }} />,
-  error: <XCircle size={16} className="text-s-coral flex-shrink-0" />,
+  error: <XCircle size={16} className="text-s-accent flex-shrink-0" />,
   info: <Info size={16} className="text-s-amber flex-shrink-0" />,
 };
 
@@ -56,8 +56,8 @@ function ToastItem({ item, onRemove }: { item: ToastItem; onRemove: (id: string)
         "flex items-center gap-3 min-w-[200px] max-w-[calc(100vw-32px)]",
         "bg-white border",
         "rounded-card px-4 py-3.5",
-        item.type === "error" && "border-s-coral/25",
-        item.type === "success" && "border-s-sage/25",
+        item.type === "error" && "border-s-accent/25",
+        item.type === "success" && "border-s-success/25",
         item.type === "info" && "border-s-ink/[0.08]"
       )}
       style={{ boxShadow: "0 4px 12px rgba(26,18,9,.10), 0 12px 28px rgba(26,18,9,.08)" }}

@@ -28,20 +28,75 @@ module.exports = {
         // RETIRED V2-D48: dark teal #043338, pale teal #C2F0F1, ice blue #CAE8FF, royal blue #005898,
         // navy #031E48, magenta #B5345A/#B50051, forest #193120, sandy beige #D9C9A8 (cat letter).
         //
-        // Backward-compat: `s-coral` token group still references the brand DEFAULT — same token name,
-        // new value. V2-D48-2: shifted from muted moss-soft #5C7765 → vibrant emerald-forest #1F5C42
-        // per user "more vibrant + dark green everywhere". Saturated, classic luxury-craft green.
-        // ── V2-D70 WARM MINIMAL PIVOT (2026-05-18) — Aurex/Fresha lane ──
-        // Brand: punchy emerald #1A8F5C → forest #3B7A57 (matches Solen logo green
-        // exactly per user spec). Lower saturation, more "premium minimal" feel.
-        // Accent: terracotta #E0703D → #D87352 (matches Solen logo dot exactly).
-        // Substrate: #FAF3E6 cream (V2-D60) → #F9F8F6 warm pearl/alabaster.
-        // Cards stay WHITE on the pearl bg — soft contrast lets cards float
-        // with shadow (Aurex lift). Plus Jakarta Sans replaces Peace Sans +
-        // Open Sauce One — single family at extreme weight contrast.
-        "s-coral": { DEFAULT: "#3B7A57", hover: "#2D5E43", subtle: "#E5F2EA", text: "#3B7A57", button: "#3B7A57", "button-hover": "#2D5E43" },
-        "s-brand": { DEFAULT: "#1638C4", pale: "#B8C4F0", subtle: "#E2E8FA", mid: "#0F2BA0", deep: "#08185E" },
-        "s-accent": { DEFAULT: "#FFC32B", soft: "#FFE19F", deep: "#C9941F" },
+        // V3-D328 (Section A, 2026-05-27): `s-coral` alias REMOVED. The token name
+        // "coral" had been an alias for the OLD brand green (#3B7A57) since the V2 →
+        // V3 B&W pivot. User saw a green checkmark on StampCard + green refs surviving
+        // post-sweep — root cause was this alias mapping bg-s-coral → still-rendering
+        // green. Killing the alias means any future `bg-s-coral` reference compiles to
+        // nothing (invisible bug = caught immediately, never silently renders as green).
+        //
+        // History of this alias:
+        //   V2-D48: Backward-compat alias to brand DEFAULT (emerald-forest #1F5C42)
+        //   V2-D70: Bumped to #3B7A57 (matches Solen logo green per spec)
+        //   V3-D328: KILLED — Solen palette is now B&W + royal blue + universal-color
+        //            (s-ink / s-accent / s-success / s-warning / s-error / s-star /
+        //            s-urgency / s-bg). "coral" naming is misleading — never coral, always
+        //            was green. To revert: re-add a token line + bulk rename callsites.
+        // V3-D121 (2026-05-24): brand pivoted Solen orange → Little Amps colorway.
+        // Source: littleampscoffee.com CSS extracted directly. Audit-clean
+        // version (white substrate kept, banner stays neutral ink to avoid
+        // double-anchor, only BentoBusiness anchors in deep coffee).
+        // V3-D122 (2026-05-24): hue muted #FFC000 → #E8A93D per user "ts too
+        // yellow." Pure golden yellow read as school-bus / construction. Amber
+        // is warmer, less aggressive, still a strong attention pop.
+        // V3-D139 (2026-05-25): forest emerald reset (Tailwind emerald-600/700/900
+        // family). Darker, more "premium-craft" than V3-D138 spotify green
+        // (#1DB954 → #16A34A, ~1 stop deeper). Reserved for PRIMARY CTA + LOGO
+        // DOT only (≤3% of any view per 80/17/3 rule — see _tasks/SOLEN_DESIGN.md).
+        //   DEFAULT  #16A34A  forest emerald       — primary CTA, logo dot ONLY
+        //   pale     #DCFCE7  pale emerald wash    — hover wash (rare)
+        //   subtle   #F0FDF4  ultra-pale emerald   — focus glow / ultra-subtle
+        //   mid      #15803D  emerald hover        — :hover state
+        //   deep     #14532D  emerald pressed      — :active / pressed (darker, near-forest)
+        // WCAG: text-white on #16A34A = ~3.6:1 PASSES AA Large (3:1) — good for
+        // bold/large CTAs. text-s-ink (#0A0A0A) on #16A34A = ~5.8:1 PASSES AA
+        // Normal — safer for small/regular text. Choose per element size.
+        "s-brand": { DEFAULT: "#16A34A", pale: "#DCFCE7", subtle: "#F0FDF4", mid: "#15803D", deep: "#14532D" },
+        // NEW V3-D121 tokens:
+        //   s-cool — dusty blue cool whisper (replaces teal in section arrows + secondary accents)
+        //   s-pop  — vermilion held in reserve for "urgency" badges only (NOT general accents)
+        "s-cool": "#89B4CA",   // dusty blue — section arrows, info chips, link color
+        "s-pop":  "#C03001",   // vermilion — urgency badges only, do not use for general accents
+        // ─── V3-D332 (2026-05-28) — W10.5a dashboard rescue: re-alias retired tokens ───
+        // Per /dashboard triage (_dashboard-triage.md): ~1043 references to retired
+        // tokens were producing ZERO CSS — invisible white CTAs on transparent buttons,
+        // identical-color calendar categories, unreadable status pills. The dashboard
+        // wasn't "ugly drift" — it was functionally broken in <10s of operator clicks.
+        // These aliases restore rendering site-wide WITHOUT touching 1043 callsites.
+        // Per LOCKFILE §10 conflict resolution + V3-D192 B&W pivot: each alias maps to
+        // the closest live semantic equivalent. File-by-file cleanup defers to W17+.
+        // Form: plain hex strings — Tailwind 3.x JIT computes opacity modifiers
+        // (`bg-s-coral/10`, `bg-s-coral/[0.06]`) correctly on plain-hex tokens.
+        // To revert: delete these 7 lines + accept dashboard returns to broken state.
+        "s-coral":        "#0A0A0A",  // was CTAs / active state / brand → alias to s-ink (B&W pivot)
+        "s-amber":        "#F59E0B",  // was warnings → alias to s-warning DEFAULT
+        "s-blue":         "#185CE0",  // was info chips / category-color → alias to s-accent DEFAULT
+        "s-plum":         "#6B6B6B",  // was secondary highlight → alias to s-ink-2
+        "s-sand":         "#F5F5F4",  // was muted bg surface → alias to s-bg.sunken
+        "s-amber-subtle": "#FFF3E0",  // was warning pastel bg → alias to s-warning.bg
+        "s-amber-text":   "#F59E0B",  // was warning text → alias to s-warning DEFAULT
+        // Section tints — values updated to fit Little Amps cream/dusty-blue palette
+        // (V3-D120 removed bg-tint usage from homepage; tokens kept for back-compat).
+        "s-wasabi":  "#F6EDE3",  // cream — was warm ivory (V3-D119), was green-yellow (V3-D107)
+        "s-droplet": "#E8F0F4",  // pale dusty blue — was sea-glass (V3-D119)
+        // Cream — kept for back-compat with non-homepage components that still reference it.
+        // NOT used in the new V3-D107 section rhythm; superseded by s-peach.
+        "s-cream": "#E9DFC8",
+        // V3-D329 (Section A+C+D): conflicting s-accent yellow definition REMOVED.
+        // This earlier object literal was being silently overridden by the s-accent
+        // royal-blue definition further down (Tailwind config evaluation order: last
+        // wins). Now explicit — the only s-accent is the royal blue below at line ~177.
+        // To revert to yellow accent: comment that line + uncomment this one.
         // ── Bright accent (butter) — sparingly, for stat-card highlights ──
         "s-butter": "#F2D77B",
         // ── Sage — wellness whisper, never loud ──
@@ -70,17 +125,34 @@ module.exports = {
         // washed-out reading of section eyebrows + salon-card category meta +
         // Reviews meta lines (the "feels muted" complaint root-caused by uiux-audit
         // skill, 2026-05-20).
-        "s-ink": { DEFAULT: "#1A1C19", secondary: "#6B7068", tertiary: "#5F635D", disabled: "#C5C8C4" },
-        "s-ink-2": "#6B7068",  // V2-D70: medium cool grey per spec (was warm #5C4A3A)
-        "s-ink-3": "#5F635D",  // V3-D87: darkened from #7A7F78 (failed WCAG vs white substrate after V3-D86 atmosphere kill)
-        "s-border": "#E8E6E0",  // V2-D70: cool-warm neutral hairline for pearl bg (was warm bone #EAE0D0)
+        // V3-D138 (2026-05-25): ink neutralized to pure greyscale per Spotify
+        // palette. DEFAULT #0A0A0A (near-black, not pure #000), secondary +
+        // tertiary collapse to #6B6B6B (single neutral grey-2). Border = #E7E5E4.
+        "s-ink": { DEFAULT: "#0A0A0A", secondary: "#6B6B6B", tertiary: "#6B6B6B", disabled: "#C5C8C4" },
+        "s-ink-2": "#6B6B6B",  // V3-D138: pure neutral grey (was warm #6B7068)
+        "s-ink-3": "#6B6B6B",  // V3-D138: collapsed onto ink-2 (was #5F635D)
+        "s-border": "#E7E5E4",  // V3-D138: neutral hairline (was warm #E8E6E0)
+        // V3-D315 (W9 follow-up, 2026-05-27): chart-grey 3-tier scale for data-vis
+        // (competitor bars, hierarchy charts). Replaces opacity-modifier-on-ink-2
+        // pattern (`bg-s-ink-2/40` / `bg-s-ink-2/30`) which surfaced as a recipe-smell
+        // in W5 /partner pricing comparison. Use these for any bar chart where you
+        // need ink (primary brand row) + 2 progressively-muted greys for context.
+        // chart-1 = primary data emphasis (use s-ink directly for THIS — included as alias for chart-row consistency)
+        // chart-2 = secondary contextual row (e.g. main competitor)
+        // chart-3 = tertiary contextual row (e.g. competitor range / "others")
+        "s-chart-1": "#0A0A0A",  // alias of s-ink — primary chart row
+        "s-chart-2": "#9CA3AF",  // medium grey — secondary chart row
+        "s-chart-3": "#D1D5DB",  // light grey — tertiary chart row
         // V2-D70 (2026-05-18): substrate fine-tuned #F8F7F2 → #F9F8F6 (warm pearl /
         // alabaster per Aurex/Fresha spec). Slightly warmer + softer than V2-D68.
         // Hero gets a peach radial gradient via .bg-s-bg-peach + custom CSS layer.
         // Sunken updated to a soft warm-neutral that pairs with the new pearl base.
         // V2-D68 history (kept for archeology): substrate F8F7F2 + atmosphere wash retired.
         // V2-D60 history: cream-on-cream → WHITE on cream (killed beige collapse).
-        "s-bg": { base: "#FFFFFF", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#F6F6F8", active: "#FFFAF1", peach: "#FFE8D8" },
+        // V3-D138 (2026-05-25): sunken aligned to user spec #F5F5F4 (cool stone
+        // grey). active + peach also neutralized — apricot peach (#FFE8D8) is
+        // dead. Use sunken for hover-bg / input-active / inert surfaces.
+        "s-bg": { base: "#FFFFFF", surface: "#FFFFFF", raised: "#FFFFFF", sunken: "#F5F5F4", active: "#F5F5F4", peach: "#F5F5F4" },
         // V2-D48: bg.base flipped white → cream #F5EBDD (Earthen Wellness page bg). Surface +
         // sunken updated. raised stays white for cards/modals. active = cream-warm input typing.
         // V2-D16 (2026-05-08) note: cream #FFF4E8 was wrongly retired in V2-D15 comment above.
@@ -98,16 +170,56 @@ module.exports = {
         "s-success": { DEFAULT: "#16A34A", bg: "#E8F5E9" },
         "s-warning": { DEFAULT: "#F59E0B", bg: "#FFF3E0" },  // V3: aligned to LIVE_TRUTH §3 hex
         "s-error":   { DEFAULT: "#D32F2F", bg: "#FFEBEE" },  // V3: aligned to LIVE_TRUTH §3 hex
+        // V3-D213 (2026-05-26, salon verifier fix #6): burnt-amber urgency for
+        // "Last-Minute" / "Nur noch X" / off-peak deal pills. Distinct from
+        // s-warning (system warning) and s-pop (vermilion urgency held in reserve).
+        // Matches Fresha + ClassPass urgency treatment — pastel bg + ink-on-warm.
+        // Per V3-D199 saturation contract: DEFAULT L=33% S=80% (deep burnt umber),
+        // bg L=95% S=88% (pale apricot). Replaces 3 hardcoded hex usages in
+        // SalonHeader's last-minute pill (was inline #FFF1E6 + #9A3412 + rgba).
+        "s-urgency": { DEFAULT: "#9A3412", bg: "#FFF1E6", border: "rgba(154,52,18,0.22)" },
         "s-closed":   "#DC2626",  // V3 added — distinct from error
-        "s-star":     "#F3A864",  // V3 added — rating stars only
+        // V3-D200 (2026-05-26): s-star Q1 resolution — ink #1A1A1A → yellow #FFC32B
+        // per universal-color convention (V3-D197). V3-D95 "never yellow" rule is
+        // SUPERSEDED — yellow stars are the universal rating signal (Airbnb/Google/
+        // Yelp/TripAdvisor) and shipping code already uses yellow inline. This
+        // unfucks the drift between token + reality.
+        "s-star":     "#FFC32B",  // V3-D200 — yellow rating signal (universal convention)
+
+        // V3-D192 (2026-05-26): Royal blue activated as THE Solen accent.
+        // Supersedes V3-D189 "no accent" lock. Reserved per palette-pivot memory
+        // 2026-05-25, now in production use. The Uber-formula "one saturated
+        // accent" — used on primary CTAs + section bullets + emphasis moments.
+        // To REVERT: comment out this token + change any `s-accent` callsites
+        // back to `s-ink`. Single deletion point.
+        // V3-D204 (2026-05-26): accent flipped #1638C4 (deep royal) → #276EF1
+        // (brighter, more saturated). User-supplied color. HSL(215°, 88%, 55%) —
+        // slightly above V3-D199 saturation contract L=51% cap; contract widened
+        // to L 36-60% to match modern semantic-color range (Tailwind 500 lives here).
+        // V3-D329 (2026-05-27, Section C+D combined): DEFAULT shifts #276EF1 →
+        // #185CE0 per user "blue text vibrates" + "green doesn't match blue
+        // vibrancy" (green-blue Pair 4 pick). Single token-level change:
+        //   - L drops 55 → 49 → text-on-pale-bg vibration calms
+        //   - Saturation matched with s-success #16A34A (similar muted vibrancy)
+        //   - Old #276EF1 preserved as `s-accent.bright` for places that
+        //     explicitly need the punchier hit (CTAs at large sizes, etc.)
+        // The "deep" hex is now the DEFAULT; "deep" alias kept as itself for
+        // backward compat with existing callsites that use s-accent-deep.
+        "s-accent":   { DEFAULT: "#185CE0", deep: "#185CE0", bright: "#276EF1", pale: "#EAEFFE" },
       },
       fontFamily: {
-        // V3-D75 typography (2026-05-18): Bricolage Grotesque (display) +
-        // Hanken Grotesk (body/UI). Bricolage = playful-geometric for h1/h2
-        // hero impact; Hanken = clean neutral workhorse for body + UI labels.
-        display: ["'Bricolage Grotesque'", "system-ui", "-apple-system", "sans-serif"],
-        heading: ["'Bricolage Grotesque'", "system-ui", "-apple-system", "sans-serif"],
-        body:    ["'Hanken Grotesk'", "system-ui", "-apple-system", "sans-serif"],
+        // V3-D190 (2026-05-26): Inter Tight (display) — supersedes V3-D75
+        // Bricolage Grotesque. Inter Tight at weight 900 reads as modern-
+        // confident (Tap2/Linear/Vercel pattern) where Bricolage read as
+        // humanist-warm. Body font Hanken Grotesk unchanged.
+        // V3-D317 (2026-05-27): single-family swap to Geist (Uber-Move-like
+        // geometric sans). Display/heading/body all collapse to one family —
+        // weight contrast carries the hierarchy instead of family contrast.
+        display: ["'Geist'", "system-ui", "-apple-system", "sans-serif"],
+        heading: ["'Geist'", "system-ui", "-apple-system", "sans-serif"],
+        body:    ["'Geist'", "system-ui", "-apple-system", "sans-serif"],
+        // V3-D318 (2026-05-27): JetBrains Mono for codes/receipts (font-mono-code class)
+        mono:    ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       borderRadius: {
         // Legacy Tailwind vars (keep for shadcn compat)

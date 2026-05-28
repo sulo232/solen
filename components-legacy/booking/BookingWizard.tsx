@@ -122,8 +122,8 @@ export default function BookingWizard({ services, staffList, salon }: BookingWiz
                 aria-label={`Zurück zu Schritt ${i + 1}: ${STEP_LABELS[step]}`}
                 className={[
                   'flex-1 h-[3px] rounded-full transition-colors duration-200',
-                  isFilled ? 'bg-s-coral' : 'bg-s-bg-sunken',
-                  isPast ? 'cursor-pointer hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-1' : 'cursor-default',
+                  isFilled ? 'bg-s-ink' : 'bg-s-bg-sunken',
+                  isPast ? 'cursor-pointer hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-1' : 'cursor-default',
                 ].join(' ')}
               />
             );
@@ -137,13 +137,13 @@ export default function BookingWizard({ services, staffList, salon }: BookingWiz
               type="button"
               onClick={handleBack}
               aria-label={t('back')}
-              className="w-9 h-9 -ml-2 rounded-full flex items-center justify-center hover:bg-s-ink/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-1"
+              className="w-9 h-9 -ml-2 rounded-full flex items-center justify-center hover:bg-s-ink/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-1"
             >
               <ChevronLeft size={18} className="text-s-ink" />
             </button>
           )}
           <div className="flex-1 min-w-0">
-            <p className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.22em] text-s-coral-text">
+            <p className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.22em] text-s-accent">
               Schritt {currentIndex + 1} / {STEPS.length}
             </p>
             <h3 className="font-heading text-[16px] sm:text-[20px] uppercase text-s-ink leading-[0.95]" style={{ letterSpacing: '0.01em' }}>

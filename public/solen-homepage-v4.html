@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Solen — Homepage v4 · Ocean Blue + section warmth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Brand — Ocean Blue ladder (matches tailwind.config.js V3-D98) */
+    --brand:        #1D5DC4;
+    --brand-pale:   #BBCEED;
+    --brand-subtle: #EDF2FA;
+    --brand-mid:    #184CA1;
+    --brand-deep:   #0C254E;
+
+    /* Ink */
+    --ink:        #1A1A1A;
+    --ink-2:      #4B4B4B;
+    --ink-3:      #8A8A8A;
+    --ink-muted:  #B5B5B5;
+
+    /* Borders */
+    --border-soft: rgba(0,0,0,0.06);
+    --border:      rgba(0,0,0,0.10);
+
+    /* Section bgs (warm-leaning neutral cascade) */
+    --sec-hero:        #F7F1E5;  /* warm cream */
+    --sec-white:       #FFFFFF;
+    --sec-sand:        #EFE7D2;  /* sand for "your stuff" */
+    --sec-cream-2:     #F2EAD8;  /* second warm for testimonials */
+    --sec-stone:       #E4DBC8;  /* deeper for editorial */
+    --sec-ink:         #0F0E0C;  /* warm-black for trust */
+
+    /* Type */
+    --hanken: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    --display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: var(--hanken); color: var(--ink); background: #E5E1D8; -webkit-font-smoothing: antialiased; }
+  body { padding: 32px 16px 80px; min-height: 100vh; }
+
+  .pageHead { max-width: 720px; margin: 0 auto 32px; text-align: center; }
+  .pageHead .eyebrow { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px; background: var(--brand-subtle); color: var(--brand); margin-bottom: 12px; }
+  .pageHead h1 { font-family: var(--display); font-size: 30px; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 8px; color: var(--ink); }
+  .pageHead p { font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+
+  .stage { max-width: 460px; margin: 0 auto; }
+
+  /* ============================================== */
+  /* PHONE FRAME                                    */
+  /* ============================================== */
+  .phone {
+    width: 100%;
+    border-radius: 28px;
+    overflow: hidden;
+    background: white;
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.04),
+      0 8px 24px rgba(0,0,0,0.08),
+      0 32px 72px -16px rgba(0,0,0,0.18);
+    border: 1px solid rgba(0,0,0,0.06);
+    position: relative;
+  }
+
+  /* ============================================== */
+  /* BANNER (locked)                                */
+  /* ============================================== */
+  .banner { position: relative; width: 100%; background: var(--brand); color: white; }
+  .bannerInner {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 11px 16px 22px;
+  }
+  .bannerText { font-size: 12px; font-weight: 600; letter-spacing: -0.005em; }
+  .bannerPill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: white; color: var(--ink);
+    padding: 4px 11px; border-radius: 999px;
+    font-size: 12px; font-weight: 600;
+    text-decoration: none;
+  }
+  .bannerPill svg { width: 10px; height: 10px; }
+  .bannerScoop { position: absolute; inset: auto 0 0 0; height: 12px; background: var(--sec-hero); border-top-left-radius: 12px; border-top-right-radius: 12px; }
+
+  /* ============================================== */
+  /* HEADER                                         */
+  /* ============================================== */
+  .topNav { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 8px; background: var(--sec-hero); }
+  .logo { font-family: var(--display); font-size: 22px; font-weight: 800; letter-spacing: -0.015em; color: var(--ink); display: inline-flex; align-items: baseline; }
+  .logoDot { color: var(--brand); margin-left: 1px; }
+  .menuBtn { width: 38px; height: 38px; border-radius: 999px; border: 1px solid var(--border); background: white; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 200ms; }
+  .menuBtn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+  .menuBtn span { display: block; width: 14px; height: 1.5px; background: var(--ink); position: relative; }
+  .menuBtn span::before, .menuBtn span::after { content: ""; position: absolute; left: 0; width: 14px; height: 1.5px; background: var(--ink); }
+  .menuBtn span::before { top: -5px; }
+  .menuBtn span::after { top: 5px; }
+
+  /* ============================================== */
+  /* HERO + SEARCH                                  */
+  /* ============================================== */
+  .heroSec { background: var(--sec-hero); padding: 24px 20px 36px; }
+  .heroTitle {
+    font-family: var(--display); font-size: 44px; line-height: 0.94; letter-spacing: -0.028em;
+    margin-bottom: 12px; font-weight: 700;
+  }
+  .heroTitle .accent { color: var(--brand); display: block; }
+  .heroTitle .next { display: block; color: var(--ink); }
+  .heroSub { font-size: 14px; line-height: 1.5; color: var(--ink-2); margin-bottom: 22px; max-width: 28ch; }
+
+  .searchCard {
+    background: white; border-radius: 18px; padding: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04), 0 16px 32px -16px rgba(0,0,0,0.12);
+    border: 1px solid var(--border-soft);
+  }
+  .searchRow {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 14px; border-radius: 999px;
+    font-size: 13px; color: var(--ink-3);
+    border: 1px solid var(--border-soft);
+    background: white;
+    transition: border-color 200ms;
+    cursor: text;
+  }
+  .searchRow:hover { border-color: var(--border); }
+  .searchRow + .searchRow { margin-top: 4px; }
+  .searchRow svg { width: 14px; height: 14px; color: var(--ink-3); flex-shrink: 0; }
+  .searchBtn {
+    width: 100%; padding: 13px; margin-top: 6px;
+    background: var(--ink); color: white; border: 0; border-radius: 999px;
+    font-family: var(--hanken); font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 200ms;
+  }
+  .searchBtn:hover { background: #2A2A2A; transform: translateY(-1px); }
+
+  /* ============================================== */
+  /* SHARED SECTION STRUCTURE                       */
+  /* ============================================== */
+  .sec { padding: 28px 20px 32px; }
+  .secHeader { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .secLabel { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 4px; }
+  .secTitle { font-family: var(--display); font-size: 22px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 700; color: var(--ink); }
+  .secLink { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: var(--brand); text-decoration: none; }
+  .secLink:hover { color: var(--brand-mid); }
+  .secLink svg { width: 12px; height: 12px; }
+
+  /* ============================================== */
+  /* RECENTLY VIEWED — sand                         */
+  /* ============================================== */
+  .recentSec { background: var(--sec-sand); }
+  .recentScroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; margin: 0 -20px; padding-left: 20px; padding-right: 20px; scrollbar-width: none; }
+  .recentScroll::-webkit-scrollbar { display: none; }
+  .recentCard {
+    flex-shrink: 0; width: 168px;
+    background: white; border-radius: 14px; overflow: hidden;
+    border: 1px solid var(--border-soft);
+    transition: all 200ms;
+  }
+  .recentCard:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -8px rgba(0,0,0,0.12); }
+  .recentImg { aspect-ratio: 4 / 3; background-size: cover; background-position: center; }
+  .recentBody { padding: 10px 12px 12px; }
+  .recentName { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 2px; letter-spacing: -0.01em; }
+  .recentMeta { font-size: 11px; color: var(--ink-3); display: flex; align-items: center; gap: 6px; }
+  .recentMeta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-3); }
+  .recentStar { color: var(--ink); font-weight: 600; }
+
+  /* ============================================== */
+  /* CATEGORIES — warm cream                        */
+  /* ============================================== */
+  .catSec { background: var(--sec-hero); }
+  .catGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .catCard {
+    aspect-ratio: 1; border-radius: 14px;
+    display: flex; flex-direction: column; justify-content: flex-end; padding: 10px;
+    background-size: cover; background-position: center;
+    position: relative; overflow: hidden;
+    transition: transform 200ms;
+  }
+  .catCard:hover { transform: translateY(-2px); }
+  .catCard::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.55) 100%);
+  }
+  .catName { position: relative; z-index: 2; color: white; font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+  .catCount { position: relative; z-index: 2; color: rgba(255,255,255,0.85); font-size: 10px; font-weight: 500; margin-top: 1px; }
+
+  /* ============================================== */
+  /* NEAR YOU — white                               */
+  /* ============================================== */
+  .nearSec { background: var(--sec-white); }
+  .nearList { display: flex; flex-direction: column; gap: 14px; }
+  .nearItem {
+    display: flex; gap: 12px;
+    padding: 8px; border-radius: 14px;
+    transition: background 200ms;
+    cursor: pointer;
+  }
+  .nearItem:hover { background: var(--sec-hero); }
+  .nearImg {
+    width: 96px; height: 96px; border-radius: 12px;
+    background-size: cover; background-position: center;
+    flex-shrink: 0;
+  }
+  .nearBody { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 0; }
+  .nearTop { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .nearName { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+  .nearAddr { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .nearTags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+  .nearTag { font-size: 9.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; background: var(--brand-subtle); color: var(--brand); }
+  .nearHeart {
+    width: 32px; height: 32px; border-radius: 999px;
+    background: white; border: 1px solid var(--border-soft);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .nearHeart svg { width: 14px; height: 14px; color: var(--ink-2); }
+  .nearBottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .nearRating { font-size: 12px; font-weight: 600; color: var(--ink); display: inline-flex; align-items: center; gap: 4px; }
+  .nearRating .star { color: var(--ink); }
+  .nearRating .reviews { color: var(--ink-3); font-weight: 500; }
+  .nearAvail { font-size: 11px; font-weight: 600; color: #1E7A4A; padding: 3px 9px; border-radius: 999px; background: rgba(0,168,107,0.10); }
+
+  /* ============================================== */
+  /* TESTIMONIAL — cream-2                          */
+  /* ============================================== */
+  .testSec { background: var(--sec-cream-2); padding: 36px 20px; }
+  .testQuote { font-family: var(--display); font-size: 22px; line-height: 1.25; letter-spacing: -0.015em; font-weight: 600; color: var(--ink); }
+  .testQuote::before { content: "\201C"; color: var(--brand); font-size: 30px; line-height: 0; vertical-align: -10px; margin-right: 4px; font-weight: 700; }
+  .testAuthor { display: flex; align-items: center; gap: 10px; margin-top: 18px; }
+  .testAvatar { width: 36px; height: 36px; border-radius: 999px; background-size: cover; background-position: center; }
+  .testName { font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: -0.005em; }
+  .testRole { font-size: 11px; color: var(--ink-3); margin-top: 1px; }
+
+  /* ============================================== */
+  /* TRUST — dark navy                              */
+  /* ============================================== */
+  .trustSec { background: var(--sec-ink); color: white; padding: 36px 20px 40px; }
+  .trustTitle { font-family: var(--display); font-size: 22px; line-height: 1.15; letter-spacing: -0.02em; font-weight: 700; color: white; margin-bottom: 24px; max-width: 26ch; }
+  .trustGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 18px; }
+  .trustItem .num { font-family: var(--display); font-size: 30px; line-height: 1; letter-spacing: -0.025em; font-weight: 700; color: white; }
+  .trustItem .accent { color: var(--brand-pale); }
+  .trustItem .label { font-size: 12px; line-height: 1.35; color: rgba(255,255,255,0.65); margin-top: 6px; }
+
+  /* ============================================== */
+  /* APP CTA — full Ocean Blue brand moment         */
+  /* ============================================== */
+  .ctaSec { background: var(--brand); color: white; padding: 40px 20px 44px; position: relative; overflow: hidden; }
+  .ctaSec::before {
+    content: ""; position: absolute; top: -40%; right: -20%; width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, var(--brand-mid) 0%, transparent 70%);
+    opacity: 0.5; pointer-events: none;
+  }
+  .ctaInner { position: relative; z-index: 2; }
+  .ctaLabel { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,0.18); color: white; margin-bottom: 16px; }
+  .ctaTitle { font-family: var(--display); font-size: 28px; line-height: 1.05; letter-spacing: -0.025em; font-weight: 700; color: white; margin-bottom: 12px; }
+  .ctaSub { font-size: 13.5px; line-height: 1.5; opacity: 0.85; margin-bottom: 22px; max-width: 30ch; }
+  .ctaBtns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ctaBtn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 11px 18px; border-radius: 999px;
+    font-size: 13px; font-weight: 700; text-decoration: none;
+    transition: transform 150ms;
+  }
+  .ctaBtn:hover { transform: translateY(-1px); }
+  .ctaBtnPrimary { background: white; color: var(--brand); }
+  .ctaBtnGhost { background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(255,255,255,0.25); }
+  .ctaBtn svg { width: 13px; height: 13px; }
+
+  /* ============================================== */
+  /* FOOTER                                         */
+  /* ============================================== */
+  .foot { background: white; padding: 22px 20px 28px; border-top: 1px solid var(--border-soft); }
+  .footTop { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+  .footLogo { font-family: var(--display); font-size: 18px; font-weight: 800; letter-spacing: -0.015em; }
+  .footLogo .footDot { color: var(--brand); }
+  .footTag { font-size: 11px; color: var(--ink-3); max-width: 18ch; text-align: right; }
+  .footLinks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; padding: 14px 0; border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); margin-bottom: 14px; }
+  .footLink { font-size: 12px; color: var(--ink-2); text-decoration: none; }
+  .footLink:hover { color: var(--brand); }
+  .footBottom { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--ink-muted); }
+  .footFlag { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; color: var(--ink-3); }
+
+  /* ============================================== */
+  /* Annotation overlay legend (hidden on phone)    */
+  /* ============================================== */
+  .legend {
+    max-width: 460px; margin: 28px auto 0; background: white; border-radius: 14px; padding: 18px 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -8px rgba(0,0,0,0.12);
+  }
+  .legend h3 { font-family: var(--display); font-size: 14px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 10px; color: var(--ink); }
+  .legend .row { display: flex; align-items: center; gap: 10px; font-size: 11.5px; line-height: 1.45; padding: 4px 0; color: var(--ink-2); }
+  .legend .row b { color: var(--ink); }
+  .legend .sw { width: 14px; height: 14px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); flex-shrink: 0; }
+  .legend code { font-family: ui-monospace, "SF Mono", monospace; font-size: 10.5px; background: #F4F4F2; padding: 1px 5px; border-radius: 3px; color: var(--ink); }
+</style>
+</head>
+<body>
+
+<header class="pageHead">
+  <span class="eyebrow">Homepage v4 · Ocean Blue</span>
+  <h1>Section-divided · brand punctuates, warmth carries</h1>
+  <p>Same banner geometry (concave-bottom, locked). Warm cream / sand / stone substrate rhythm. Ocean Blue used only on accent moments + trust band + final CTA. Dark navy section for credibility.</p>
+</header>
+
+<div class="stage">
+  <div class="phone">
+
+    <!-- ============ BANNER ============ -->
+    <div class="banner">
+      <div class="bannerInner">
+        <span class="bannerText">Sofort verfügbar — 320 heute</span>
+        <a href="#" class="bannerPill">Salons finden
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="bannerScoop"></div>
+    </div>
+
+    <!-- ============ HEADER ============ -->
+    <div class="topNav">
+      <div class="logo">Solen<span class="logoDot">.</span></div>
+      <button class="menuBtn" aria-label="Menü"><span></span></button>
+    </div>
+
+    <!-- ============ HERO ============ -->
+    <section class="heroSec">
+      <h1 class="heroTitle">
+        <span class="accent">Schöner</span>
+        <span class="next">aussehen,</span>
+        <span class="next">schneller buchen.</span>
+      </h1>
+      <p class="heroSub">Über 1'200 Salons in der Schweiz. Sofort buchbar, transparente Preise, keine versteckten Gebühren.</p>
+
+      <div class="searchCard">
+        <div class="searchRow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          Service · z.B. Haarschnitt, Maniküre
+        </div>
+        <div class="searchRow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          Stadt · Zürich
+        </div>
+        <div class="searchRow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Heute · Diese Woche
+        </div>
+        <button class="searchBtn">Salons durchsuchen</button>
+      </div>
+    </section>
+
+    <!-- ============ RECENTLY VIEWED ============ -->
+    <section class="sec recentSec">
+      <div class="secHeader">
+        <div>
+          <span class="secLabel">Für dich</span>
+          <h2 class="secTitle">Zuletzt angesehen</h2>
+        </div>
+        <a href="#" class="secLink">Alle
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+      <div class="recentScroll">
+        <div class="recentCard">
+          <div class="recentImg" style="background-image:url('https://picsum.photos/seed/solen-mara/400/300');"></div>
+          <div class="recentBody">
+            <div class="recentName">Salon Mara</div>
+            <div class="recentMeta">
+              <span class="recentStar">★ 4.9</span>
+              <span class="dot"></span>
+              <span>Zürich · 8 min</span>
+            </div>
+          </div>
+        </div>
+        <div class="recentCard">
+          <div class="recentImg" style="background-image:url('https://picsum.photos/seed/solen-nord/400/300');"></div>
+          <div class="recentBody">
+            <div class="recentName">Studio Nord</div>
+            <div class="recentMeta">
+              <span class="recentStar">★ 4.8</span>
+              <span class="dot"></span>
+              <span>Basel · 14 min</span>
+            </div>
+          </div>
+        </div>
+        <div class="recentCard">
+          <div class="recentImg" style="background-image:url('https://picsum.photos/seed/solen-lab/400/300');"></div>
+          <div class="recentBody">
+            <div class="recentName">Hair Lab</div>
+            <div class="recentMeta">
+              <span class="recentStar">★ 4.7</span>
+              <span class="dot"></span>
+              <span>Bern · 22 min</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CATEGORIES ============ -->
+    <section class="sec catSec">
+      <div class="secHeader">
+        <div>
+          <span class="secLabel">Diese Woche</span>
+          <h2 class="secTitle">Beliebt in deiner Stadt</h2>
+        </div>
+      </div>
+      <div class="catGrid">
+        <div class="catCard" style="background-image:url('https://picsum.photos/seed/cat-haare/300/300');">
+          <div class="catName">Haarschnitt</div>
+          <div class="catCount">412 Salons</div>
+        </div>
+        <div class="catCard" style="background-image:url('https://picsum.photos/seed/cat-nails/300/300');">
+          <div class="catName">Nägel</div>
+          <div class="catCount">287 Salons</div>
+        </div>
+        <div class="catCard" style="background-image:url('https://picsum.photos/seed/cat-massage/300/300');">
+          <div class="catName">Massage</div>
+          <div class="catCount">194 Salons</div>
+        </div>
+        <div class="catCard" style="background-image:url('https://picsum.photos/seed/cat-spa/300/300');">
+          <div class="catName">Spa</div>
+          <div class="catCount">128 Salons</div>
+        </div>
+        <div class="catCard" style="background-image:url('https://picsum.photos/seed/cat-beauty/300/300');">
+          <div class="catName">Beauty</div>
+          <div class="catCount">203 Salons</div>
+        </div>
+        <div class="catCard" style="background-image:url('https://picsum.photos/seed/cat-wellness/300/300');">
+          <div class="catName">Wellness</div>
+          <div class="catCount">156 Salons</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NEAR YOU ============ -->
+    <section class="sec nearSec">
+      <div class="secHeader">
+        <div>
+          <span class="secLabel">In deiner Nähe</span>
+          <h2 class="secTitle">Heute noch buchbar</h2>
+        </div>
+        <a href="#" class="secLink">Karte
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+      <div class="nearList">
+
+        <article class="nearItem">
+          <div class="nearImg" style="background-image:url('https://picsum.photos/seed/solen-studio1/300/300');"></div>
+          <div class="nearBody">
+            <div class="nearTop">
+              <div>
+                <div class="nearName">Le Studio Coiffure</div>
+                <div class="nearAddr">Limmatquai 12 · 5 Min Fussweg</div>
+                <div class="nearTags">
+                  <span class="nearTag">Haarschnitt</span>
+                  <span class="nearTag">Färben</span>
+                </div>
+              </div>
+              <button class="nearHeart" aria-label="Speichern">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.5 3-5.5A4.5 4.5 0 0 0 17.5 4 5.5 5.5 0 0 0 12 7 5.5 5.5 0 0 0 6.5 4 4.5 4.5 0 0 0 2 8.5c0 2 1.5 4 3 5.5l7 7Z"/></svg>
+              </button>
+            </div>
+            <div class="nearBottom">
+              <span class="nearRating"><span class="star">★</span>4.9 <span class="reviews">(284)</span></span>
+              <span class="nearAvail">Heute 14:30 frei</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="nearItem">
+          <div class="nearImg" style="background-image:url('https://picsum.photos/seed/solen-aura/300/300');"></div>
+          <div class="nearBody">
+            <div class="nearTop">
+              <div>
+                <div class="nearName">Aura Beauty Atelier</div>
+                <div class="nearAddr">Rämistrasse 34 · 8 Min Fussweg</div>
+                <div class="nearTags">
+                  <span class="nearTag">Maniküre</span>
+                  <span class="nearTag">Gesicht</span>
+                </div>
+              </div>
+              <button class="nearHeart" aria-label="Speichern">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.5 3-5.5A4.5 4.5 0 0 0 17.5 4 5.5 5.5 0 0 0 12 7 5.5 5.5 0 0 0 6.5 4 4.5 4.5 0 0 0 2 8.5c0 2 1.5 4 3 5.5l7 7Z"/></svg>
+              </button>
+            </div>
+            <div class="nearBottom">
+              <span class="nearRating"><span class="star">★</span>4.8 <span class="reviews">(192)</span></span>
+              <span class="nearAvail">Morgen 10:00</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="nearItem">
+          <div class="nearImg" style="background-image:url('https://picsum.photos/seed/solen-lab2/300/300');"></div>
+          <div class="nearBody">
+            <div class="nearTop">
+              <div>
+                <div class="nearName">Hair Lab Zürich</div>
+                <div class="nearAddr">Niederdorfstrasse 9 · 12 Min Fussweg</div>
+                <div class="nearTags">
+                  <span class="nearTag">Schnitt</span>
+                  <span class="nearTag">Bart</span>
+                </div>
+              </div>
+              <button class="nearHeart" aria-label="Speichern">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.5 3-5.5A4.5 4.5 0 0 0 17.5 4 5.5 5.5 0 0 0 12 7 5.5 5.5 0 0 0 6.5 4 4.5 4.5 0 0 0 2 8.5c0 2 1.5 4 3 5.5l7 7Z"/></svg>
+              </button>
+            </div>
+            <div class="nearBottom">
+              <span class="nearRating"><span class="star">★</span>4.7 <span class="reviews">(341)</span></span>
+              <span class="nearAvail">Heute 17:00 frei</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============ TESTIMONIAL ============ -->
+    <section class="sec testSec">
+      <p class="testQuote">Endlich keine 5 Browser-Tabs mehr — alles an einem Ort, klare Preise, sofort buchbar.</p>
+      <div class="testAuthor">
+        <div class="testAvatar" style="background-image:url('https://picsum.photos/seed/testimonial-lea/200/200');"></div>
+        <div>
+          <div class="testName">Lea Müller</div>
+          <div class="testRole">Stammkundin · Zürich</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TRUST ============ -->
+    <section class="sec trustSec">
+      <h2 class="trustTitle">Warum 50'000+ Schweizer auf Solen buchen.</h2>
+      <div class="trustGrid">
+        <div class="trustItem">
+          <div class="num">1'247<span class="accent">+</span></div>
+          <div class="label">Verifizierte Salons in der Schweiz</div>
+        </div>
+        <div class="trustItem">
+          <div class="num">4.8<span class="accent">★</span></div>
+          <div class="label">Durchschnittsbewertung aller Termine</div>
+        </div>
+        <div class="trustItem">
+          <div class="num">24/7</div>
+          <div class="label">Buchung &amp; mehrsprachiger Support</div>
+        </div>
+        <div class="trustItem">
+          <div class="num">CH<span class="accent">.</span></div>
+          <div class="label">Alle Daten auf Schweizer Servern gespeichert</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ APP CTA ============ -->
+    <section class="ctaSec">
+      <div class="ctaInner">
+        <span class="ctaLabel">Solen App</span>
+        <h2 class="ctaTitle">Buchen in 30 Sekunden.<br/>Direkt aus der Tasche.</h2>
+        <p class="ctaSub">Synchronisiert mit deinem Kalender. Erinnerungen. Treueprogramm. Komplett kostenlos.</p>
+        <div class="ctaBtns">
+          <a href="#" class="ctaBtn ctaBtnPrimary">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+            App Store
+          </a>
+          <a href="#" class="ctaBtn ctaBtnGhost">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 1.5C3.2 1.7 3 2 3 2.5v19c0 .5.2.8.6 1l11.4-9.5L3.6 1.5zM14 12 5.4 19.8 18.3 14 14 12zM5.4 4.2 14 12l4.3-2-12.9-5.8zM20.8 10.4l-3.3-1.9-3.1 3.5 3.1 3.5 3.3-1.9c1.1-.6 1.1-2.6 0-3.2z"/></svg>
+            Google Play
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="foot">
+      <div class="footTop">
+        <div class="footLogo">Solen<span class="footDot">.</span></div>
+        <div class="footTag">Die Schweizer Plattform für Beauty &amp; Wellness Buchungen.</div>
+      </div>
+      <div class="footLinks">
+        <a href="#" class="footLink">Über uns</a>
+        <a href="#" class="footLink">Für Salons</a>
+        <a href="#" class="footLink">Hilfe &amp; FAQ</a>
+        <a href="#" class="footLink">Karriere</a>
+        <a href="#" class="footLink">Impressum</a>
+        <a href="#" class="footLink">Datenschutz</a>
+      </div>
+      <div class="footBottom">
+        <span>© 2026 Solen AG</span>
+        <span class="footFlag">MADE IN SWITZERLAND</span>
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+<aside class="legend">
+  <h3>Section palette legend</h3>
+  <div class="row"><span class="sw" style="background:#1D5DC4"></span><b>#1D5DC4</b> · <code>--brand</code> · Ocean Blue (banner, "Schöner" accent, logo dot, CTA, tags, link color, final CTA bg)</div>
+  <div class="row"><span class="sw" style="background:#F7F1E5"></span><b>#F7F1E5</b> · hero + categories — warm cream (welcoming)</div>
+  <div class="row"><span class="sw" style="background:#EFE7D2"></span><b>#EFE7D2</b> · "your stuff" sand (recently viewed)</div>
+  <div class="row"><span class="sw" style="background:#FFFFFF"></span><b>#FFFFFF</b> · transactional (search card, salon listings, footer)</div>
+  <div class="row"><span class="sw" style="background:#F2EAD8"></span><b>#F2EAD8</b> · testimonial cream-2 (different warm, breaks monotone)</div>
+  <div class="row"><span class="sw" style="background:#0F0E0C"></span><b>#0F0E0C</b> · trust section warm-black (credibility)</div>
+  <div class="row" style="margin-top:6px; padding-top:8px; border-top:1px solid var(--border-soft); color:var(--ink-3); font-size:11px;">Ocean Blue appears 5 times in the scroll: banner bg, "Schöner" accent, logo dot, tag color, final CTA bg. That's the 10% in the 90/10 rule — punctuation, not paint.</div>
+</aside>
+
+</body>
+</html>

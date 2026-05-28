@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronRight, Store } from "lucide-react";
+import { ChevronRight, Star, Store } from "lucide-react";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { cn } from "@/lib/utils";
 
@@ -148,13 +148,22 @@ function ReviewCard({
   review: Review;
   onOpenReview: () => void;
 }) {
+  // V3-D169 (2026-05-26): split `meta` ("Basel · vor 2 Wochen") so the
+  // time-relative portion can sit top-right (Fresha/TexBazar pattern)
+  // while the city stays implicit via the salon name below.
+  const metaParts = review.meta.split(" · ");
+  const dateText = metaParts.length > 1 ? metaParts[metaParts.length - 1] : review.meta;
+
   return (
     <div
       className={cn(
-        "relative shrink-0 w-[280px] md:w-[300px]",
-        "flex flex-col min-h-[320px]",
+        // V3-D169: card shrunk. 280-300 → 260-280, p-6 → p-4, min-h
+        // 320 → 220. Density up = more cards visible per scroll =
+        // feels "alive" without any added motion.
+        "relative shrink-0 w-[260px] md:w-[280px]",
+        "flex flex-col min-h-[220px]",
         "snap-start scroll-snap-align-start",
-        "rounded-2xl border bg-s-bg-surface p-6",
+        "rounded-2xl border bg-s-bg-surface p-4",
         "border-s-border",
         "shadow-[0_1px_3px_rgba(31,23,9,0.04)]",
         "transition-[transform,box-shadow] duration-200 ease-glide",
@@ -170,38 +179,52 @@ function ReviewCard({
         className={cn(
           "absolute inset-0 z-0 rounded-2xl",
           "active:scale-[0.98] active:duration-[80ms] transition-transform",
-          "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+          "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         )}
       />
 
-      {/* Stars row */}
-      <div
-        className="relative pointer-events-none inline-flex gap-[2px] text-[14px] tracking-[0.05em] mb-4"
-        style={{ color: "#F3A864" }}
-        aria-hidden
-      >
-        {"★".repeat(review.stars)}
+      {/* Top row: filled lucide stars left, date right.
+          V3-D169: replaces the bare orange ★ row with lucide Star icons.
+          V3-D180 (2026-05-26, council unanimous): (1) star size 13→12
+          to match SalonCard exactly (1px parity break across page).
+          (2) Dropped "(5/5)" — 5 gold stars already say it. */}
+      <div className="relative pointer-events-none mb-3 flex items-center justify-between gap-2">
+        <div className="inline-flex items-center gap-[1px]">
+          {Array.from({ length: review.stars }).map((_, i) => (
+            <Star
+              key={i}
+              size={12}
+              fill="#FFC32B"
+              stroke="none"
+              aria-hidden
+            />
+          ))}
+        </div>
+        <span className="shrink-0 font-body text-[11px] font-medium text-s-ink-3 tabular-nums">
+          {dateText}
+        </span>
       </div>
 
-      {/* Quote body — flex-1 + line-clamp-5 keeps consistent card heights */}
-      <p className="relative pointer-events-none flex-1 font-body text-[14px] leading-[1.55] text-s-ink line-clamp-5 mb-4">
+      {/* Quote body — flex-1 + line-clamp-3 keeps consistent card heights.
+          V3-D180 (council unanimous): (3) line-clamp-4 → line-clamp-3
+          (3 lines reads as quote pull, 4 reads as paragraph). (4) leading
+          1.55 → 1.5 (card density not article density). */}
+      <p className="relative pointer-events-none flex-1 font-body text-[13px] leading-[1.5] text-s-ink line-clamp-3 mb-3">
         &ldquo;{review.text}&rdquo;
       </p>
 
-      {/* Footer: avatar + name + meta + salon link, divider above */}
-      <div className="relative mt-auto pt-4 border-t border-s-border flex items-start gap-3">
+      {/* Footer (no divider line per V3-D169 — content carries itself).
+          Avatar + name stacked with salon link. */}
+      <div className="relative mt-auto flex items-center gap-2.5">
         <div
-          className="pointer-events-none font-display grid h-9 w-9 shrink-0 place-items-center rounded-full text-[11px] font-black text-s-ink-2 bg-s-bg-sunken"
+          className="pointer-events-none font-display grid h-8 w-8 shrink-0 place-items-center rounded-full text-[10px] font-black text-s-ink-2 bg-s-bg-sunken"
           aria-hidden
         >
           {review.initials}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="pointer-events-none font-body text-[13px] font-bold text-s-ink truncate">
+          <div className="pointer-events-none font-body text-[13px] font-bold leading-[1.2] text-s-ink truncate">
             {review.name}
-          </div>
-          <div className="pointer-events-none font-body text-[11px] text-s-ink-3 truncate">
-            {review.meta}
           </div>
           {/* V2-D49l salon link — secondary tap target, z-10 above overlay */}
           <Link
@@ -209,15 +232,15 @@ function ReviewCard({
             onClick={(e) => e.stopPropagation()}
             aria-label={`Salon ${review.salonName} ansehen`}
             className={cn(
-              "relative z-10 mt-1 inline-flex items-center gap-1",
-              "font-body text-[12px] font-semibold text-s-brand",
-              "transition-colors duration-150 ease-glide hover:text-s-brand-mid",
-              "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-sm",
+              "relative z-10 mt-0.5 inline-flex items-center gap-1",
+              "font-body text-[11px] font-semibold text-s-ink-2",
+              "transition-colors duration-150 ease-glide hover:text-s-ink",
+              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
             )}
           >
-            <Store size={12} strokeWidth={2.25} aria-hidden />
+            <Store size={11} strokeWidth={2.25} aria-hidden />
             <span className="truncate max-w-[140px]">{review.salonName}</span>
-            <ChevronRight size={12} strokeWidth={2.5} aria-hidden />
+            <ChevronRight size={11} strokeWidth={2.5} aria-hidden />
           </Link>
         </div>
       </div>

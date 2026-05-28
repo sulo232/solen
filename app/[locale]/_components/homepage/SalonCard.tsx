@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Star } from "lucide-react";
+import { Flame, Star } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { HeartButton } from "./HeartButton";
@@ -18,7 +18,7 @@ import { HeartButton } from "./HeartButton";
  *   │      PHOTO 1:1        │
  *   │ [● availability pill] │  ← bottom-left pill (mutex w curation slot is top-left)
  *   └──────────────────────┘
- *   Salon Name      4.8 ⭐
+ *   Salon Name      4.8 [star]
  *   Service · ab CHF 85
  *
  * Universal color formula (§16.3.0): bg rgba(<hue>, 0.22) + border 0.32 +
@@ -34,15 +34,14 @@ import { HeartButton } from "./HeartButton";
  */
 
 const cardCategoryColors = {
-  // V2-D70 (2026-05-18): updated cat-text colors to align with the warm-minimal
-  // brand-green shift (#1A8F5C → #3B7A57). Spa's initial color uses the new
-  // brand-mid #2D5E43. Other cats also slightly adjusted to use the new
-  // terracotta family (V2-D60 #E0703D → V2-D70 #D87352). Cat bg stays the same
-  // tile palette — only the text colors track the brand+accent updates.
-  coiffeur:   { bg: "#FFE8D8", initial: "#D87352" }, // peach + V2-D70 terracotta
-  barbershop: { bg: "#EAE0D0", initial: "#1A1C19" }, // bone + V2-D70 ink
-  nails:      { bg: "#D4DDC8", initial: "#A04A22" }, // sage-pale + terra-deep (kept)
-  spa:        { bg: "#E5F2EA", initial: "#2D5E43" }, // V2-D70 brand-subtle + brand-mid
+  // V3-D100 (2026-05-22): tile palette migrated to 5-stripe Orange identity.
+  // Each category gets one tile pulling from {cream, navy, orange, yellow, ink}
+  // — paired-color identity instead of mono-hue ladder. Letters use the
+  // contrasting partner for max legibility on each tile.
+  coiffeur:   { bg: "#E9DFC8", initial: "#142F4A" }, // cream + navy
+  barbershop: { bg: "#142F4A", initial: "#E9DFC8" }, // navy + cream (inverse pair)
+  nails:      { bg: "#E58840", initial: "#FFFFFF" }, // orange + white
+  spa:        { bg: "#F0C25A", initial: "#142F4A" }, // yellow + navy
 } as const;
 
 /** V2-D60-cards-4 (2026-05-14): display labels for the category subtitle row. */
@@ -80,6 +79,13 @@ const badgeGeometry = cn(
   // unsets it under 768px). iOS Safari was creating ~11 compositor layers per
   // scroll frame from these chips alone, killing smoothness. Desktop unchanged.
   "max-md:![backdrop-filter:none] max-md:![-webkit-backdrop-filter:none]",
+  // V3-D175 (2026-05-26): cap width so the badge never overruns the heart
+  // (heart sits absolute right-[2px] with a 44px hit area = needs ~48px
+  // clearance). 100% - 56px keeps a small visual gap between badge and
+  // heart even on the narrow 163px mobile carousel card. Defensive — if a
+  // label gets longer later (e.g. "Nur 10 heute"), the truncate inside the
+  // span will kick in instead of pushing into the heart's zone.
+  "max-w-[calc(100%-56px)]",
 );
 
 /** Discount badge — V2-D67-fu10: light pink-red layered glass + red-900 text
@@ -107,10 +113,13 @@ const availVariants = cva(
         //   angebot   → solid terracotta #D87352 + white text
         //   urgent/limited → Dusty Slate #EEF2F6 + navy slate #3A5B7C text (V2-D71)
         //   pause     → ink glass + white text (kept)
-        now:     "text-s-ink-2",
-        week:    "text-s-ink-2",
-        urgent:  "text-[#3A5B7C]",    // V2-D71: deep muted navy on dusty slate
-        limited: "text-[#3A5B7C]",
+        // V3-D126 (2026-05-24): text-s-ink-2 (cool grey) → text-[#15803D] (deep green)
+        // per user "more vibrant" + matches the comment above (V2-D70 spec said
+        // green text but the code had grey). Text now hue-matches the bg family.
+        now:     "text-[#15803D]",
+        week:    "text-[#15803D]",
+        urgent:  "text-[#9A3412]",    // V3-D173: warm-amber burnt-sienna on cream
+        limited: "text-[#9A3412]",
         angebot: "text-s-ink",        // V3-D79: yellow solid → ink text (high contrast on yellow)
         pause:   "text-white",        // ink-2 muted glass (unchanged)
       },
@@ -192,13 +201,17 @@ function layeredGlass(rgb: string, bgAlpha = 0.22, borderAlpha = 0.32) {
 // pattern. Council-validated 5→4 color reduction.
 const amberStyle    = { background: "#FAD2DA", border: "1px solid rgba(204, 74, 96, 0.22)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
 const angebotStyle  = { background: "#FAD2DA", border: "1px solid rgba(204, 74, 96, 0.22)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
-// V2-D71 (2026-05-18): swapped from light-bright system-blue glass to "Dusty Slate"
-// per user spec — `#EEF2F6` bg + `#3A5B7C` text. Still registers as "blue/different"
-// vs the green Heute frei badge, but feels expensive (Fresha/Airbnb pattern) and
-// harmonizes with the warm-grey substrate instead of competing with it.
-const urgentStyle   = { background: "#EEF2F6", border: "1px solid rgba(58, 91, 124, 0.18)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
-const greenStyle    = { background: "#E5F2EA", border: "1px solid rgba(59, 122, 87, 0.18)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
-const tealStyle     = { background: "#E5F2EA", border: "1px solid rgba(59, 122, 87, 0.18)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
+// V2-D71 (2026-05-18): originally dusty-slate blue per Fresha pattern.
+// V3-D173 (2026-05-26): swapped to warm-amber per user "make it like
+// urgency". Blue read as informational, not urgent. Amber-cream bg +
+// burnt-sienna text universally signals "limited / going fast / heat"
+// — pairs with the lucide Flame icon for unmissable read.
+const urgentStyle   = { background: "#FFF1E6", border: "1px solid rgba(154, 52, 18, 0.22)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
+// V3-D126 (2026-05-24): bumped saturation per user "make it abit more vibrant".
+// bg #E5F2EA → #D1F0DC (sat ~22% → ~36%, mint reads as actual green now).
+// border alpha 0.18 → 0.28 (more visible green ring).
+const greenStyle    = { background: "#D1F0DC", border: "1px solid rgba(22, 163, 74, 0.28)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
+const tealStyle     = { background: "#D1F0DC", border: "1px solid rgba(22, 163, 74, 0.28)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
 // V2-D67-fu11 (2026-05-16): unified ALL badges on the layeredGlass formula
 // (was mixed — action badges layered, but favorit/pause/curation still on the
 // older single-layer glassStyle). Now every badge has consistent border + shadow.
@@ -268,66 +281,42 @@ interface AvailabilityProps {
   label: string;
 }
 
-/** Directional arrow per state — V2-D66 (2026-05-16, Hayden move #16).
- *  Encodes meaning faster than text alone. NOW gets ↗ (positive go-for-it),
- *  URGENT gets ↘ (filling fast, hurry direction), LIMITED gets ⚡ (time
- *  pressure, non-directional but high-energy). Other states render without
- *  an arrow — overuse would make the arrows lose meaning. */
-function ArrowGlyph({ state }: { state: AvailabilityProps["state"] }) {
-  const props = {
-    width: 10,
-    height: 10,
-    viewBox: "0 0 12 12",
-    fill: "none" as const,
-    stroke: "currentColor",
-    strokeWidth: 2.4,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    "aria-hidden": true,
-  };
-  if (state === "now") {
-    return (
-      <svg {...props}>
-        <path d="M3 9 L 9 3" />
-        <path d="M5 3 L 9 3 L 9 7" />
-      </svg>
-    );
-  }
-  if (state === "urgent") {
-    return (
-      <svg {...props}>
-        <path d="M3 3 L 9 9" />
-        <path d="M5 9 L 9 9 L 9 5" />
-      </svg>
-    );
-  }
-  if (state === "limited") {
-    return (
-      <svg {...props}>
-        <path d="M6 1 L 3 7 L 6 7 L 4 11 L 9 5 L 6 5 Z" />
-      </svg>
-    );
-  }
-  return null;
-}
+/** V3-D173 (2026-05-26): retired the hand-drawn corner-SVG arrows per
+ *  user "these sh makes no scence like arrows". `state="now"` no longer
+ *  renders a glyph (whole "Heute frei" badge is gone — see AvailabilityPill).
+ *  `state="urgent"` + `state="limited"` now show lucide Flame — universally
+ *  reads "going fast / hot" + harmonizes with the warm-amber pill color. */
 
 function AvailabilityPill({ state, label }: AvailabilityProps) {
+  // V3-D173: "now" / "Heute frei" badge entirely retired per user
+  // "for heute frei do we even need these badges acc nah remove em".
+  // The other state="now" callers (Coiffeur.tsx) also short-circuit on
+  // null here without code change at the call site.
+  if (state === "now") return null;
+
   const styleMap = {
-    now: greenStyle,
     week: tealStyle,
     pause: inkStyle,
     urgent: urgentStyle,
-    // V2-D67-fu7: limited NOW shares the light-blue urgentStyle (was dark ink
-    // yellowStyle pre-fu7). Both are time-pressure semantic → same color family.
+    // V2-D67-fu7: limited shares the urgentStyle. Both are time-pressure
+    // semantic → same warm-amber family (V3-D173).
     limited: urgentStyle,
   } as const;
   return (
     <span
       className={availVariants({ tone: state })}
-      style={styleMap[state]}
+      style={styleMap[state as keyof typeof styleMap]}
       aria-label={label}
     >
-      <ArrowGlyph state={state} />
+      {(state === "urgent" || state === "limited") && (
+        <Flame
+          size={11}
+          strokeWidth={2.25}
+          fill="currentColor"
+          fillOpacity={0.15}
+          aria-hidden
+        />
+      )}
       {label}
     </span>
   );
@@ -435,7 +424,7 @@ export function SalonCard({
         "md:w-[calc((100%-36px)/4)]",
         "lg:w-[calc((100%-48px)/5)]",
         "xl:w-[calc((100%-60px)/6)]",
-        "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-[14px]",
+        "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-[14px]",
         // V2-D43 (Emil polish): scale(0.94) → scale(0.97) per Emil's subtle range
         // (0.95-0.98). 0.94 felt too jumpy for content cards.
         "active:scale-[0.97] active:duration-[80ms] active:ease-glide",
@@ -469,7 +458,8 @@ export function SalonCard({
         )}
         style={{ backgroundColor: cat.bg }}
       >
-        {/* Photo or category-color initial fallback */}
+        {/* V3-D101 (2026-05-22): stock photos restored per user. Falls back to
+            monogram tile when photoUrl is absent. */}
         {photoUrl ? (
           <Image
             src={photoUrl}
@@ -480,7 +470,7 @@ export function SalonCard({
           />
         ) : (
           <span
-            className="absolute inset-0 grid place-items-center font-body text-[32px] font-black"
+            className="absolute inset-0 grid place-items-center font-display font-black leading-none text-[64px] tracking-[-0.03em] md:text-[80px]"
             style={{ color: cat.initial }}
             aria-hidden
           >
@@ -495,10 +485,16 @@ export function SalonCard({
           <CurationBadge type={curation} />
         ) : null}
 
-        {/* Bottom-left availability pill */}
-        {availability && (
-          <AvailabilityPill state={availability.state} label={availability.label} />
-        )}
+        {/* V3-D181 (2026-05-26): AvailabilityPill REMOVED per user
+            "remove the badge thing comp its fucking me up". The
+            "Nur 1 heute" / "Heute frei" badges were competing for
+            attention with the heart, and the urgency framing didn't
+            land — too noisy on a small 165px card. `availability` prop
+            still accepted by callers (Nearby/Coiffeur still pass it)
+            so we don't break the API, but it just doesn't render now.
+            If urgency needs to come back, the right place is INSIDE
+            Row 3 (next-slot text) as a `Flame` icon prefix on tight
+            availability, not as a competing absolute badge. */}
 
         {/* Top-right floating heart — color overridden in dark-photo variant */}
         <HeartButton
@@ -514,31 +510,36 @@ export function SalonCard({
           all cards render the same time-and-price format. Time format hint:
           "Heute 14:30" today · "Morgen 09:00" tomorrow · "Do. 14:00" weekday · "21. Mai 14:00" later. */}
       <div className="mt-[10px] px-[2px] flex flex-col gap-[2px]">
-        {/* Row 1 — Name only, full width, truncates */}
-        <h3 className="font-body text-[15px] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink truncate">
-          {name}
-        </h3>
-
-        {/* Row 2 — Address · city if available, else category label */}
-        <div className="font-body text-[13px] leading-[1.35] text-s-ink-3 truncate">
-          {address ? `${address} · ${city ?? "Basel"}` : CATEGORY_LABEL[category]}
-        </div>
-
-        {/* Row 3 — nextSlotLabel · CHF X (left) + rating (right-aligned) */}
-        <div className="flex items-baseline justify-between gap-2 font-body text-[13px] leading-[1.35] text-s-ink-2">
-          <div className="min-w-0 flex-1 truncate">
-            {nextSlotLabel && (
-              <span className="font-semibold text-s-ink">{nextSlotLabel}</span>
-            )}
-            {nextSlotLabel && priceFromCHF != null && <span className="text-s-ink-3">{" · "}</span>}
-            {priceFromCHF != null && (
-              <span>CHF {priceFromCHF}</span>
-            )}
-          </div>
-          <span className="flex shrink-0 items-center gap-[3px] font-semibold tabular-nums text-s-ink">
+        {/* V3-D174 (2026-05-26): Star + rating MOVED from Row 3 to Row 1
+            (Airbnb pattern). Row 1 is now Name | ★ Rating — the most
+            important social-proof signal sits where the eye lands first.
+            Frees Row 3 to be a clean time-and-price line. */}
+        {/* V3-D191 (2026-05-26): name 600→500, rating 600→500, meta/nextslot explicit font-normal,
+            nextslot strong stays 600 (max within-body contrast). V3-D190 sizes kept. */}
+        <div className="flex items-baseline gap-2">
+          <h3 className="font-body text-[14px] font-medium leading-[1.25] tracking-[-0.01em] text-s-ink truncate min-w-0 flex-1">
+            {name}
+          </h3>
+          <span className="flex shrink-0 items-center gap-[3px] font-body text-[13px] font-medium tabular-nums text-s-ink">
             <Star size={11} fill="#FFC32B" stroke="none" aria-hidden />
             {rating != null ? rating.toFixed(1) : "—"}
           </span>
+        </div>
+
+        {/* Row 2 — Address · city if available, else category label */}
+        <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-3 truncate">
+          {address ? `${address} · ${city ?? "Basel"}` : CATEGORY_LABEL[category]}
+        </div>
+
+        {/* Row 3 — nextSlotLabel · CHF X (rating moved to Row 1 V3-D174) */}
+        <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-2 truncate">
+          {nextSlotLabel && (
+            <span className="font-semibold text-s-ink">{nextSlotLabel}</span>
+          )}
+          {nextSlotLabel && priceFromCHF != null && <span className="text-s-ink-3">{" · "}</span>}
+          {priceFromCHF != null && (
+            <span>CHF {priceFromCHF}</span>
+          )}
         </div>
       </div>
     </Link>

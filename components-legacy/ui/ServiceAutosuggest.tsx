@@ -134,7 +134,7 @@ export default function ServiceAutosuggest({
         <div className="flex items-center gap-2 px-3 py-3">
           <Loader2
             size={14}
-            className="animate-spin text-s-coral shrink-0"
+            className="animate-spin text-s-accent shrink-0"
           />
           <span className="text-[12px] font-body text-s-ink/50">
             {locale === "de"
@@ -183,7 +183,7 @@ export default function ServiceAutosuggest({
                 <span className="text-[13px] font-body font-medium text-s-ink truncate flex-1">
                   {displayName}
                 </span>
-                <span className="text-[9px] font-heading uppercase tracking-[.06em] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral shrink-0">
+                <span className="text-[9px] font-heading uppercase tracking-[.06em] px-1.5 py-0.5 rounded-pill bg-s-ink/10 text-s-accent shrink-0">
                   {item.category}
                 </span>
                 {item.price != null && (() => {
@@ -225,7 +225,7 @@ export default function ServiceAutosuggest({
                   {item.average_rating.toFixed(1)}
                 </span>
               )}
-              <span className="text-[13px] text-s-ink/30 group-hover:text-s-coral transition-colors duration-100 shrink-0">
+              <span className="text-[13px] text-s-ink/30 group-hover:text-s-accent transition-colors duration-100 shrink-0">
                 →
               </span>
             </button>

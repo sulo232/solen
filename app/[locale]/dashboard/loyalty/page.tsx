@@ -69,7 +69,7 @@ export default function LoyaltyDashboardPage() {
   return (
     <DashboardLayout>
       <div className="max-w-3xl mx-auto">
-        <h1 className="font-heading text-xl font-bold text-s-ink mb-6">
+        <h1 className="font-heading text-xl font-semibold text-s-ink mb-6">
           Treueprogramm
         </h1>
 
@@ -81,7 +81,7 @@ export default function LoyaltyDashboardPage() {
           <div className="rounded-[12px] bg-white border border-s-ink/5 p-4">
             <div className="flex items-center gap-2 mb-4">
               <QrCode size={18} className="text-s-coral" />
-              <h3 className="font-heading text-sm font-bold text-s-ink">
+              <h3 className="font-heading text-sm font-semibold text-s-ink">
                 Stempel scannen
               </h3>
             </div>

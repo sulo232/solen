@@ -126,7 +126,8 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
       onSaved();
       onClose();
-    } catch { /* ignore */ } finally {
+      // V3-D334 (overnight T2): error handling per CLAUDE.md.
+    } catch (err) { console.error("[Staff] save (create or update) failed:", err); } finally {
       setLoading(false);
     }
   };
@@ -324,7 +325,8 @@ function DeleteModal({ member, onClose, onDeleted }: {
       await fetch(`/api/staff/${member.id}`, { method: "DELETE" });
       onDeleted(member.id);
       onClose();
-    } catch { /* ignore */ } finally {
+      // V3-D334 (overnight T2): error handling per CLAUDE.md.
+    } catch (err) { console.error("[Staff] delete failed:", err); } finally {
       setLoading(false);
     }
   };

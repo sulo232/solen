@@ -79,7 +79,7 @@ export default function BookingDisputePanel() {
   const statusColors: any = {
     open: "bg-s-amber-subtle text-s-amber-text",
     in_review: "bg-s-blue/10 text-s-blue",
-    escalated: "bg-s-coral/10 text-s-coral",
+    escalated: "bg-s-ink/10 text-s-accent",
     resolved: "bg-s-bg-sunken text-s-ink/50",
   };
 
@@ -112,14 +112,14 @@ export default function BookingDisputePanel() {
             </div>
 
             {d.salon_response && (
-              <div className="mb-3 p-3 bg-s-coral-subtle rounded-btn">
+              <div className="mb-3 p-3 bg-s-accent-pale rounded-btn">
                 <p className="text-xs text-s-ink/40 font-body mb-1">{t("salonResponse")}</p>
                 <p className="text-sm text-s-ink/80">{d.salon_response}</p>
               </div>
             )}
 
             {d.status === "escalated" && d.mediation_deadline_at && (
-              <p className="text-xs text-s-coral font-medium mb-3">
+              <p className="text-xs text-s-accent font-medium mb-3">
                 {t("mediationRunning")}: {new Date(d.mediation_deadline_at).toLocaleDateString("de-CH")}
               </p>
             )}
@@ -161,7 +161,7 @@ export default function BookingDisputePanel() {
                     <button
                       onClick={() => handleAction(d.id, "escalate")}
                       disabled={resolving === d.id}
-                      className="px-3 py-1.5 rounded-btn bg-s-coral/10 text-s-coral hover:bg-s-coral/20 text-xs font-medium flex items-center gap-1 transition-colors"
+                      className="px-3 py-1.5 rounded-btn bg-s-ink/10 text-s-accent hover:bg-s-ink/20 text-xs font-medium flex items-center gap-1 transition-colors"
                     >
                       <Scale size={14} /> {t("escalate")}
                     </button>
@@ -178,7 +178,7 @@ export default function BookingDisputePanel() {
                     <button
                       onClick={() => handleAction(d.id, "refund")}
                       disabled={resolving === d.id || !refundAmount[d.id]}
-                      className="px-3 py-1.5 rounded-btn active:scale-[0.97] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150"
+                      className="px-3 py-1.5 rounded-btn active:scale-[0.97] bg-s-ink text-white text-xs font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150"
                     >
                       {t("refund")}
                     </button>

@@ -43,7 +43,9 @@ export function SalonAppCta({
 
   return (
     <section className="pt-4">
-      <h2 className="font-body text-[20px] font-bold leading-tight tracking-tight text-s-ink md:text-[26px]">
+      {/* V3-D202 (A22): font-body → font-display + Scale B.
+          V3-D335 (T3): tracking -0.03em → -0.01em (canonical Section H2 per §2.5). */}
+      <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold tracking-[-0.01em] text-s-ink">
         Verwöhne dich jederzeit, überall
       </h2>
 
@@ -60,9 +62,10 @@ export function SalonAppCta({
       </div>
 
       <div className="mt-6 flex justify-center md:justify-start">
+        {/* V3-D202 (A22): tinted emerald shadow → shadow-elevation-2. */}
         <Link
           href={`/${locale}/salon/${slug}/booking`}
-          className="font-body inline-flex items-center gap-2 rounded-full bg-s-brand px-7 py-3.5 text-[14px] font-semibold text-white shadow-[0_4px_16px_rgba(31,92,66,0.20)] transition-colors hover:bg-s-brand-mid active:bg-s-brand-deep md:text-[15px]"
+          className="font-body inline-flex items-center gap-2 rounded-full bg-s-ink px-7 py-3.5 text-[14px] font-semibold text-white shadow-elevation-2 transition-colors hover:bg-black active:bg-black md:text-[15px]"
         >
           Termin buchen
           <ChevronRight size={16} strokeWidth={2.5} />

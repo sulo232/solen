@@ -80,8 +80,8 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         className={cn(
           "relative shrink-0 w-11 h-6 rounded-full",
           "transition-colors duration-200 ease-snap",
-          checked ? "bg-s-brand" : "bg-s-ink/15",
-          "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+          checked ? "bg-s-ink" : "bg-s-ink/15",
+          "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
           disabled && "opacity-40 cursor-not-allowed",
           !disabled && "cursor-pointer",
           className,

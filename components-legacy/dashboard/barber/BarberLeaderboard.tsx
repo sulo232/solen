@@ -85,7 +85,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Trophy size={18} className="text-s-amber" />
-          <h3 className="font-heading text-sm font-bold text-s-ink">{t("title")}</h3>
+          <h3 className="font-heading text-sm font-semibold text-s-ink">{t("title")}</h3>
         </div>
         <div className="flex items-center gap-2">
           {/* View mode toggle */}

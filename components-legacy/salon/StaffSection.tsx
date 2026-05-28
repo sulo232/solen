@@ -17,7 +17,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
 
   return (
     <div>
-      <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-s-coral-text mb-2">
+      <p className="text-[11px] font-heading uppercase tracking-[0.12em] text-s-accent mb-2">
         Team
       </p>
       <h2 className="font-heading text-[20px] text-s-ink mb-4">
@@ -108,7 +108,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
             {/* Book button */}
             <button
               onClick={(e) => { e.preventDefault(); onBook?.(m.id); }}
-              className="w-full mt-3 py-2 rounded-full active:scale-[0.97] bg-s-coral/10 text-s-coral-text hover:bg-s-coral hover:text-white text-[12px] font-semibold uppercase tracking-[.06em] transition-[background-color,color,transform] duration-150"
+              className="w-full mt-3 py-2 rounded-full active:scale-[0.97] bg-s-ink/10 text-s-accent hover:bg-s-ink hover:text-white text-[12px] font-semibold uppercase tracking-[.06em] transition-[background-color,color,transform] duration-150"
             >
               Wählen
             </button>

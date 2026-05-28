@@ -2,10 +2,13 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import MobileMenu from "./MobileMenu";
+import DesktopCitySelector from "./DesktopCitySelector";
+import { BellIcon } from "./BellIcon";
 
 /**
  * V3 Header — V2-D46 (2026-05-09).
@@ -45,14 +48,26 @@ const SERVICES_MENU: { label: string; href: string }[] = [
   { label: "Barbershop",       href: "/barbershop" },
   { label: "Nails",            href: "/nails"      },
   { label: "Spa & Wellness",   href: "/spa"        },
-  { label: "Alle Services →",  href: "/services"   },
+  // V3-D208 (2026-05-26, overnight ghost-404 sweep): /services route never
+  // existed. Closest live "all services" surface is /search (all salons across
+  // all categories). Swap.
+  { label: "Alle Services →",  href: "/search"     },
 ];
 
 const BUSINESS_MENU: { label: string; href: string }[] = [
-  { label: "Werde Solen-Partner",  href: "/business/signup" },
-  { label: "Wie es funktioniert",  href: "/business/how"    },
-  { label: "Demo buchen",          href: "/business/demo"   },
-  { label: "Preise",               href: "/business/pricing" },
+  // V3-D147 (2026-05-25): /business/signup was a 404 (no page existed).
+  // Now points to /business — the new B2B landing page with anchor #anmelden
+  // for the signup form scroll target.
+  // V3-D208 (2026-05-26, overnight ghost-404 sweep): /business/how, /business/demo,
+  // /business/pricing also 404 — no sub-routes ever existed. The /business page
+  // covers all three intents inline (how-it-works section #3, anmelden form
+  // section #9, pricing section #6). Swap to in-page anchors so nav doesn't
+  // dead-end. Anchors: #how, #anmelden, #pricing (added to /business page sections
+  // when Wave 2 rebuild lands; until then they scroll to nearest section).
+  { label: "Werde Solen-Partner",  href: "/business#anmelden" },
+  { label: "Wie es funktioniert",  href: "/business#how"      },
+  { label: "Demo buchen",          href: "/business#anmelden" },
+  { label: "Preise",               href: "/business#pricing"  },
 ];
 
 /**
@@ -124,7 +139,7 @@ function DropdownMenu({
           "rounded-full px-3 py-2 transition-colors duration-200 ease-glide",
           "hover:bg-s-ink/[0.05] hover:text-s-ink",
           open && "bg-s-ink/[0.05] text-s-ink",
-          "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+          "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         )}
       >
         {label}
@@ -162,8 +177,8 @@ function DropdownMenu({
                 className={cn(
                   "flex items-center rounded-[12px] px-4 py-3 font-body text-[14px] font-medium text-s-ink",
                   "transition-colors duration-150 ease-glide",
-                  "hover:bg-s-bg-sunken hover:text-s-brand",
-                  "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:bg-s-bg-sunken",
+                  "hover:bg-s-bg-sunken hover:text-s-ink",
+                  "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:bg-s-bg-sunken",
                 )}
               >
                 {item.label}
@@ -179,40 +194,108 @@ function DropdownMenu({
 export default function Header({ locale }: { locale: string }) {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
+  // V3-D215 (verifier #1): hide site header on salon-detail pages when scrolled
+  // past 200px. At that threshold SalonStickyTabNav takes over the top chrome
+  // role (Fresha PDP pattern). Previously both stacked: translucent header
+  // bg-white/65 + blur peeked 18-34px through the slim tabnav, producing a
+  // double-bar visual seam. With this state, header slides up (translateY
+  // -100%) so the tabnav is the only top fixture at PDP-deep-scroll.
+  const [hiddenForSalonNav, setHiddenForSalonNav] = React.useState(false);
+  // V3-D101 (2026-05-22): tone state for dynamic section-aware header color.
+  // Watches sections marked `data-header-tone="dark"` (e.g. the BentoBusiness
+  // navy band) — when any of them is currently passing under the header,
+  // header switches to dark navy with light text. Matches the Hims pattern
+  // the user pointed at in IMG_4285 ("header color changes too").
+  const [tone, setTone] = React.useState<"light" | "dark">("light");
+
+  // V3-D215 (verifier #1): pathname guard — only hide-on-scroll on salon-detail
+  // PDPs (path matches `/{locale}/salon/{slug}`). Computed once per render.
+  const pathname = usePathname();
+  const isSalonDetail = React.useMemo(() => {
+    if (!pathname) return false;
+    const m = pathname.match(/^\/[a-z]{2}\/salon\/[^/]+\/?$/);
+    return !!m;
+  }, [pathname]);
 
   React.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
+    const HEADER_H = 80; // approximate header height incl. padding
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 30);
+      // V3-D215: hysteresis matches SalonStickyTabNav.tsx (visible past 200,
+      // hide until back near top at 100) so the handoff is clean — no flicker.
+      setHiddenForSalonNav((prev) => (prev ? y > 100 : y > 200));
+      // Tone check: any dark section currently spanning the header band?
+      const darkSections = document.querySelectorAll<HTMLElement>(
+        '[data-header-tone="dark"]',
+      );
+      let isDark = false;
+      for (const s of Array.from(darkSections)) {
+        const r = s.getBoundingClientRect();
+        if (r.top < HEADER_H && r.bottom > 0) { isDark = true; break; }
+      }
+      setTone(isDark ? "dark" : "light");
+    };
     onScroll(); // initial
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // V3-D172 (2026-05-26): broadcast menu open/close state so the
+  // CityTopBar (mounted at layout level, no shared state with Header)
+  // can hide itself while the menu is open. Naturally mobile-only —
+  // the hamburger that toggles `menuOpen` is md:hidden, so on desktop
+  // `menuOpen` stays false and the event always carries open=false.
+  React.useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent("solen:menu-state", { detail: { open: menuOpen } }),
+    );
+  }, [menuOpen]);
+
+  const isDark = tone === "dark";
+
   return (
     <>
     <header
+      data-tone={tone}
       className={cn(
         "sticky top-0 left-0 right-0 z-50 transition-all duration-300 ease-glide",
-        scrolled
-          ? "bg-white/65 backdrop-blur-[28px] backdrop-saturate-[1.7] py-3 shadow-[0_1px_24px_rgba(4,51,56,0.04)]"
-          : "bg-transparent py-5",
+        // Dark tone wins over frosted-light. White text + navy bg over dark sections.
+        isDark
+          ? "bg-black/85 backdrop-blur-[28px] backdrop-saturate-[1.4] py-3 shadow-[0_1px_24px_rgba(0,0,0,0.15)] text-s-ink"
+          : scrolled
+            ? "bg-white/65 backdrop-blur-[28px] backdrop-saturate-[1.7] py-3 shadow-[0_1px_24px_rgba(4,51,56,0.04)]"
+            : "bg-transparent py-5",
+        // V3-D215: hide header when SalonStickyTabNav is taking over (PDP-deep-scroll).
+        isSalonDetail && hiddenForSalonNav && "-translate-y-full pointer-events-none",
       )}
       style={{
-        WebkitBackdropFilter: scrolled ? "blur(14px) saturate(1.4)" : undefined,
+        WebkitBackdropFilter: scrolled || isDark ? "blur(14px) saturate(1.4)" : undefined,
       }}
     >
       <div className="mx-auto flex max-w-[1280px] items-center gap-2.5 px-4 md:gap-6 md:px-8">
-        {/* Logo */}
+        {/* Logo — V3-D171 (2026-05-26): fades out when menu opens so the
+            mobile menu sheet has a clean top edge. opacity-0 +
+            pointer-events-none keeps the flex layout intact (hamburger
+            position doesn't shift) while making the wordmark invisible
+            and untappable while menu is open. */}
         <Link
           href={`/${locale}`}
           aria-label="Solen zur Startseite"
-          className="font-display relative inline-flex shrink-0 items-baseline text-[22px] font-black leading-none tracking-normal text-s-ink md:text-[24px] focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-sm"
+          className={cn(
+            // V3-D193 (2026-05-26): Solen wordmark weight 900 → 800 per "too bold" sweep.
+            "font-display relative inline-flex shrink-0 items-baseline text-[22px] font-semibold leading-none tracking-normal md:text-[24px] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
+            "transition-opacity duration-200 ease-glide",
+            menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
+            // V3-D101: invert logo color when header is over a dark section
+            isDark ? "text-white" : "text-s-ink",
+          )}
         >
           Solen
-          <span
-            aria-hidden
-            className="ml-[2px] inline-block h-2 w-2 rounded-full bg-s-accent"
-            style={{ transform: "translateY(-2px)" }}
-          />
+          {/* V3-D146 (2026-05-25): green dot removed per B&W palette pivot —
+              "drop the dot entirely — just 'Solen'". Wordmark is now pure
+              typographic. Restore by un-commenting the <span> below + the
+              bg-s-ink class. */}
         </Link>
 
         {/* Mobile: empty middle area (was scroll-x category strip, now in MobileMenu §Stöbern).
@@ -244,7 +327,7 @@ export default function Header({ locale }: { locale: string }) {
               "inline-flex items-center whitespace-nowrap rounded-full px-3 py-2 font-body text-[14px] font-medium text-s-ink-2",
               "transition-colors duration-200 ease-glide",
               "hover:bg-s-ink/[0.05] hover:text-s-ink",
-              "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
             )}
           >
             Entdecken
@@ -270,23 +353,61 @@ export default function Header({ locale }: { locale: string }) {
               "before:scale-[0.6] before:opacity-0 before:content-['']",
               "before:transition-[transform,opacity] before:duration-[280ms] before:ease-[cubic-bezier(0.4,1.4,0.4,1)]",
               "hover:before:scale-100 hover:before:opacity-100",
-              "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2 focus-visible:rounded-sm",
+              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
             )}
           >
             Über uns
           </Link>
+          {/* V3-D157 (2026-05-25): desktop city selector. Sits between
+              Über uns and Anmelden so it reads as a utility control (right
+              of nav, left of primary CTA). Mobile uses CityTopBar →
+              MobileMenu instead — desktop has no hamburger until login,
+              so the city control needs to live inline in the nav. */}
+          <DesktopCitySelector locale={locale} />
           <Link
             href={`/${locale}/auth/login`}
-            className="hidden md:inline-flex items-center rounded-full bg-s-brand px-5 py-[9px] font-body text-[14px] font-semibold text-white shadow-[0_4px_12px_rgba(4,51,56,0.18)] transition-all duration-200 ease-glide hover:bg-s-brand-mid hover:shadow-[0_6px_16px_rgba(4,51,56,0.24)] active:scale-[0.97] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2"
+            className="hidden md:inline-flex items-center rounded-full bg-s-ink px-5 py-[9px] font-body text-[14px] font-semibold text-white shadow-[0_4px_12px_rgba(4,51,56,0.18)] transition-all duration-200 ease-glide hover:bg-black hover:shadow-[0_6px_16px_rgba(4,51,56,0.24)] active:scale-[0.97] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
           >
             Anmelden
           </Link>
+          {/* V3-D167 (2026-05-26): notification Bell. Sits LEFT of the
+              hamburger so the visual rhythm reads: [Bell] [Menu] — both
+              utility, then primary nav. Same pill styling as the
+              hamburger (44px hit area, white bg, ink stroke); the only
+              difference is the icon swings on hover via BellIcon's
+              motion/react variants. Currently a no-op click — wire to
+              a notifications endpoint / panel once that surface ships.
+              Mobile-only for now (matches hamburger's visibility); add
+              `md:inline-flex` on the wrapper later to also show desktop. */}
+          {/* V3-D167b (2026-05-26): Bell rendered bare — no white pill,
+              no shadow. Visual hierarchy: hamburger = primary (boxed,
+              elevated), bell = secondary utility (just glyph). Tap target
+              kept at 44×44 for accessibility even though the box is gone.
+              V3-D171 (2026-05-26): also fades out when menu opens (same
+              pattern as Solen logo) — only the X close button remains
+              visible while the menu is open. */}
+          <button
+            type="button"
+            aria-label="Benachrichtigungen"
+            onClick={() => {
+              // TODO: open notifications panel when wired
+            }}
+            className={cn(
+              "md:hidden grid h-11 w-11 place-items-center text-s-ink transition-[transform,opacity] duration-200 ease-glide active:scale-[0.94] focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              menuOpen && "opacity-0 pointer-events-none",
+            )}
+          >
+            <BellIcon size={22} strokeWidth={2.2} />
+          </button>
+          {/* V3-D155 (2026-05-25): mobile map icon removed — the Karte tile
+              in MobileCategoriesRow ("Für dich" 3×2 grid, position 6) now
+              serves the same entry point, so the header icon was redundant. */}
           <button
             type="button"
             aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
-            className="md:hidden relative -m-2 grid h-11 w-11 place-items-center rounded-xl p-2 bg-white text-s-ink shadow-[0_6px_18px_rgba(26,18,9,0.10)] transition-transform duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2"
+            className="md:hidden relative -m-2 grid h-11 w-11 place-items-center rounded-xl p-2 bg-white text-s-ink shadow-[0_6px_18px_rgba(26,18,9,0.10)] transition-transform duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
           >
             <span
               className={cn(

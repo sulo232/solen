@@ -15,17 +15,19 @@ import SignatureLockup from "@/components-legacy/ui/SignatureLockup";
 import EmptyStateFTU from "@/components-legacy/ui/EmptyStateFTU";
 import SalonCard from "@/components-legacy/SalonCard";
 
+// V3-D284: empty-state illustration stroke — was hardcoded #1B4D1B (legacy green) → currentColor + ink text class
 const HeartIllustration = () => (
   <svg
     width="80"
     height="80"
     viewBox="0 0 100 100"
     fill="none"
-    stroke="#1B4D1B"
+    stroke="currentColor"
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
     aria-hidden
+    className="text-s-ink"
   >
     <path d="M50 80 L20 50 a14 14 0 0 1 22 -18 l8 8 8 -8 a14 14 0 0 1 22 18 z" />
   </svg>

@@ -26,7 +26,7 @@ export default function Spinner({ size = "md", invert = false, coral = false, cl
         invert
           ? "border-white/30 border-t-white"
           : coral
-          ? "border-s-coral/20 border-t-s-coral"
+          ? "border-s-accent/20 border-t-s-accent"
           : "border-s-ink/[0.10] border-t-s-ink/60",
         className
       )}

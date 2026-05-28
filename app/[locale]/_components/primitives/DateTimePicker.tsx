@@ -162,7 +162,7 @@ function SolenCalendar({ value, onChange, minValue, maxValue, isDateUnavailable 
               "bg-transparent border-0 text-s-ink-2 cursor-pointer",
               "rounded-md transition-colors duration-150 ease-snap",
               "hover:text-s-ink hover:bg-s-bg-sunken",
-              "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               "data-[disabled]:opacity-30 data-[disabled]:cursor-not-allowed",
             )}
           >
@@ -176,7 +176,7 @@ function SolenCalendar({ value, onChange, minValue, maxValue, isDateUnavailable 
               "bg-transparent border-0 text-s-ink-2 cursor-pointer",
               "rounded-md transition-colors duration-150 ease-snap",
               "hover:text-s-ink hover:bg-s-bg-sunken",
-              "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               "data-[disabled]:opacity-30 data-[disabled]:cursor-not-allowed",
             )}
           >
@@ -228,7 +228,7 @@ function SolenCalendar({ value, onChange, minValue, maxValue, isDateUnavailable 
                     // hover
                     !isDisabled && !isUnavailable && "hover:bg-s-ink/[0.04]",
                     // selected
-                    isSelected && "bg-s-brand text-white font-semibold hover:bg-s-brand",
+                    isSelected && "bg-s-ink text-white font-semibold hover:bg-s-ink",
                     // disabled / unavailable (past dates, salon closed)
                     (isDisabled || isUnavailable) &&
                       "opacity-30 cursor-not-allowed text-s-ink-3 hover:bg-transparent",
@@ -236,7 +236,7 @@ function SolenCalendar({ value, onChange, minValue, maxValue, isDateUnavailable 
                     isOutsideMonth && !isSelected && "opacity-40 text-s-ink-3",
                     // focus ring
                     isFocusVisible &&
-                      "outline-2 outline outline-s-brand outline-offset-2",
+                      "outline-2 outline outline-s-ink outline-offset-2",
                   )}
                 >
                   {formattedDate}
@@ -334,9 +334,9 @@ function TimeSlotList({ slots, value, onChange, isLoading, isDateSelected }: Tim
                   "font-body font-semibold text-[14px]",
                   "border transition-colors duration-150 ease-snap",
                   "tabular-nums cursor-pointer",
-                  "focus-visible:outline-2 focus-visible:outline-s-brand focus-visible:outline-offset-2",
+                  "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
                   value === slot.time
-                    ? "bg-s-brand text-white border-s-brand hover:bg-s-brand"
+                    ? "bg-s-ink text-white border-s-ink hover:bg-s-ink"
                     : slot.available
                       ? "bg-s-bg-base text-s-ink border-s-ink/10 hover:bg-s-bg-active hover:border-s-ink/25"
                       : "opacity-40 cursor-not-allowed bg-s-bg-base text-s-ink border-s-ink/10",

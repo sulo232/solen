@@ -6,21 +6,32 @@ import type { StaffMember } from "./_shared";
 import { cn } from "@/lib/utils";
 
 /**
- * SalonTeam — V2-D53.3 (2026-05-11).
+ * SalonTeam — V3-D234 (2026-05-27, austerity rebuild per real Fresha capture).
  *
- * Team grid with floating rating badges per staff (Fresha 1:1).
+ * Spec captured at `public/_pixel-refs/fresha/salon-team/` via the
+ * fresha-section-capture skill. Real Fresha values measured on LES MAINS
+ * Basel @ 1440 desktop:
+ *   - Section h2 "Team" 24/600 ink
+ *   - "See all" link top-right, 16/400 purple (we use s-accent)
+ *   - Card: 120×180, NO border, NO bg, padding 0, radius 8 (debug class)
+ *   - Avatar: circle, 88px (mobile/desktop similar), bg #F5F5F5 lighter
+ *     bg if no photo with initial letter centered in s-accent
+ *   - Rating BELOW avatar (★ + "5.0"), 14/600 ink, small inline
+ *   - Name 16/500 ink (matches s-ink)
+ *   - Role 14/400 muted grey (s-ink-2) — for us: first specialty
  *
- * Layout:
- *   • Mobile: 3-col grid
- *   • Desktop: 4-col grid
+ * REMOVED from V2-D53.3:
+ *   - The floating yellow rating BADGE overlay on the avatar bottom-left
+ *     (Fresha puts rating BELOW the avatar, not on it)
+ *   - The "DE / EN / FR" languages row (Fresha doesn't show languages on
+ *     the team grid — they live in the booking flow when picking a stylist)
+ *   - The ring-2 white + shadow-elevation-1 on the avatar (Fresha avatar
+ *     is just a flat circle, no chrome)
  *
- * Each member card:
- *   • Large circular avatar (96px mobile, 128px desktop)
- *   • Floating yellow rating badge bottom-left of avatar
- *     - Per-staff data from `staff_ratings_view` (V2-D53.3 migration 080)
- *     - Falls back to salon avg with `opacity-60` when staff has no reviews
- *   • Name below
- *   • Languages line "DE / EN / RU / UK" (defaults "DE / EN" if empty)
+ * ADDED:
+ *   - Rating row below avatar (small ★ + decimal)
+ *   - Role line below name (first specialty as the "title")
+ *   - "Alle ansehen" link top-right (Fresha "See all" parity)
  */
 export function SalonTeam({
   staff,
@@ -33,17 +44,25 @@ export function SalonTeam({
 
   return (
     <section id="section-team">
-      <h2 className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink md:text-[22px]">
-        Team
-      </h2>
+      {/* V3-D234: title row with "Alle ansehen" link top-right, h2 24/600 */}
+      <div className="flex items-baseline justify-between">
+        <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
+          Team
+        </h2>
+        {/* Link goes nowhere meaningful yet — placeholder href; wire when
+            full-team booking surface exists. */}
+        {/* V3-D335 (overnight T3): decorative accent link label → ink-2 per §1.5 (decorative accent forbidden). */}
+        <span className="font-body text-[14px] font-medium text-s-ink-2 md:text-[15px]">
+          Alle ansehen
+        </span>
+      </div>
 
-      {/* V2-D53.3 fix #4: horizontal carousel per Fresha spec.
-          Cards have fixed-width tiles so the next card peeks into view —
-          cues swipe affordance. Negative-margin pulls the carousel edge to
-          the page padding so cards align flush with section start. */}
-      <div className="-mx-4 mt-5 flex gap-5 overflow-x-auto px-4 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:gap-7 md:px-0">
+      {/* Horizontal carousel — fixed-width 120px cards, gap matches Fresha
+          (24px column-gap). Negative-margin keeps left edge flush with the
+          section padding. Snap-x for mobile thumb scroll. */}
+      <div className="-mx-4 mt-5 flex gap-6 overflow-x-auto px-4 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:px-0">
         {staff.map((s) => (
-          <div key={s.id} className="w-[112px] shrink-0 snap-start md:w-[136px]">
+          <div key={s.id} className="w-[112px] shrink-0 snap-start md:w-[120px]">
             <TeamMember member={s} salonAverageRating={salonAverageRating} />
           </div>
         ))}
@@ -60,54 +79,55 @@ function TeamMember({
   salonAverageRating: number | null;
 }) {
   const hasRating = (member.staff_review_count ?? 0) > 0;
-  const displayRating = hasRating
-    ? member.staff_average_rating
-    : salonAverageRating;
-  const showBadge = displayRating !== null && displayRating !== undefined && displayRating > 0;
+  const displayRating = hasRating ? member.staff_average_rating : salonAverageRating;
+  const showRating = displayRating !== null && displayRating !== undefined && displayRating > 0;
 
-  const langs = member.languages?.length
-    ? member.languages.map((l) => l.toUpperCase()).slice(0, 4).join(" / ")
-    : "DE / EN";
+  // V3-D234: role = first specialty (Fresha uses "Founder" / role text;
+  // we don't have a role field but specialties carry the same signal).
+  const role = member.specialties?.[0] ?? null;
 
   return (
     <div className="flex flex-col items-center text-center">
-      {/* Avatar with floating rating badge */}
-      <div className="relative h-[88px] w-[88px] md:h-[112px] md:w-[112px]">
-        <div className="grid h-full w-full place-items-center overflow-hidden rounded-full bg-s-brand-subtle ring-2 ring-white shadow-[0_4px_12px_rgba(31,92,66,0.10)]">
-          {member.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={member.avatar_url}
-              alt=""
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
-          ) : (
-            <span className="font-display text-[28px] font-black text-s-brand md:text-[36px]">
-              {member.name.charAt(0).toUpperCase()}
-            </span>
-          )}
-        </div>
-
-        {showBadge && (
-          <div
-            className={cn(
-              "font-body absolute bottom-0 left-0 inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[11px] font-bold shadow-[0_2px_6px_rgba(0,0,0,0.12)]",
-              !hasRating && "opacity-60"
-            )}
-          >
-            <Star size={10} fill="#F3A864" stroke="none" />
-            <span className="text-s-ink">{displayRating?.toFixed(1)}</span>
-          </div>
+      {/* Avatar — V3-D234: plain circle, no ring, no shadow. Bg s-bg-sunken
+          for the empty-state container so the initial letter has contrast. */}
+      <div className="grid h-[88px] w-[88px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken md:h-[88px] md:w-[88px]">
+        {member.avatar_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={member.avatar_url}
+            alt=""
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          // V3-D335 (overnight T3): avatar fallback initial accent → ink-2 (decorative accent forbidden §1.5).
+          <span className="font-display text-[32px] font-semibold text-s-ink-2">
+            {member.name.charAt(0).toUpperCase()}
+          </span>
         )}
       </div>
 
-      <h3 className="font-body mt-3 text-[13px] font-semibold leading-tight text-s-ink md:text-[14px]">
+      {/* Rating — V3-D234: BELOW avatar (was floating badge ON avatar) */}
+      {showRating && (
+        <div className="mt-2.5 inline-flex items-center gap-1">
+          <Star size={12} fill="#FFC32B" stroke="none" />
+          <span className={cn("font-body text-[13px] font-semibold text-s-ink", !hasRating && "opacity-70")}>
+            {displayRating?.toFixed(1)}
+          </span>
+        </div>
+      )}
+
+      {/* Name */}
+      <div className="font-body mt-2 text-[14px] font-medium leading-tight text-s-ink md:text-[15px]">
         {member.name}
-      </h3>
-      <p className="font-body mt-1 text-[11px] uppercase tracking-[0.04em] text-s-ink-3 md:text-[12px]">
-        {langs}
-      </p>
+      </div>
+
+      {/* Role (first specialty) — V3-D234: replaces the "DE / EN / FR" lang row */}
+      {role && (
+        <div className="font-body mt-1 text-[12px] leading-snug text-s-ink-2 md:text-[13px]">
+          {role}
+        </div>
+      )}
     </div>
   );
 }

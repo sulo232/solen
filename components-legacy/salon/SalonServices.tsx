@@ -79,7 +79,7 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
                   }}
                   className={`w-full flex items-center justify-between py-3.5 px-3 rounded-[12px] text-left transition-[background-color,border-color] duration-[200ms] ${
                     selectedServiceId === svc.id
-                      ? "bg-s-coral/[0.08] border border-s-coral/20"
+                      ? "bg-s-ink/[0.08] border border-s-accent/20"
                       : "hover:bg-s-bg-surface border border-transparent"
                   }`}
                 >
@@ -100,7 +100,7 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
                       {formatCurrency(svc.price, locale)}
                     </span>
                     <span
-                      className="text-[10px] font-heading uppercase tracking-[.08em] text-s-coral px-2.5 py-1 rounded-[12px]"
+                      className="text-[10px] font-heading uppercase tracking-[.08em] text-s-accent px-2.5 py-1 rounded-[12px]"
                       style={{ background: "rgba(27, 77, 27,.10)" }}
                     >
                       {t("book")}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import CategoryPage from "@/components-legacy/CategoryPage";
+import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
+import CategoryHero from "@/app/[locale]/_components/landings/CategoryHero";
 import { CoiffeurAboveGrid, CoiffeurBelowGrid } from "@/components-legacy/coiffeur/CoiffeurSections";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
@@ -91,14 +92,26 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <CategoryPage
-        category="coiffeur"
-        aboveGrid={
+      {/* V3-D340 (W11, 2026-05-28): editorial split-hero ABOVE SearchTemplate.
+          STRUCTURE = Solen precedent (no Fresha /coiffeur equivalent, per §10.5).
+          AESTHETIC = LOCKFILE §11 Pattern 1 (split-hero, no overlay, rounded-none).
+          Universal-components per V3-D205 — single primitive, props-driven. */}
+      <CategoryHero category="coiffeur" locale={loc} />
+      {/* V3-D230 (2026-05-26): swapped legacy CategoryPage → unified SearchTemplate. */}
+      <SearchTemplate
+        locale={loc}
+        serviceFilter="coiffeur"
+        breadcrumb={[
+          { label: "Solen", href: `/${loc}` },
+          { label: "Coiffeur" },
+        ]}
+        hero={{ title: "Coiffeur in Basel" }}
+        aboveSlot={
           <Suspense fallback={null}>
             <CoiffeurAboveGrid />
           </Suspense>
         }
-        belowGrid={<CoiffeurBelowGrid />}
+        belowSlot={<CoiffeurBelowGrid />}
       />
     </>
   );

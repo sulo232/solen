@@ -39,7 +39,8 @@ export function SalonReviews({
 
   return (
     <section id="section-reviews">
-      <h2 className="font-body text-[18px] font-bold leading-tight tracking-tight text-s-ink md:text-[22px]">
+      {/* V3-D202 (A9): font-body → font-display + Scale B. */}
+      <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Bewertungen
       </h2>
 
@@ -50,7 +51,7 @@ export function SalonReviews({
             <Star
               key={i}
               size={20}
-              fill={average !== null && i < Math.floor(average) ? "#F3A864" : "#E8DFD2"}
+              fill={average !== null && i < Math.floor(average) ? "#FFC32B" : "#E7E5E4"}
               stroke="none"
             />
           ))}
@@ -64,9 +65,21 @@ export function SalonReviews({
       </div>
 
       {reviews.length === 0 ? (
-        <p className="font-body mt-5 text-[14px] italic text-s-ink-3">
-          Noch keine Bewertungen.
-        </p>
+        // V3-D214 (verifier #7): contradiction guard. Don't say "Noch keine
+        // Bewertungen" when aggregate `count > 0` — that combo is incoherent
+        // ("4.8 from 4 reviews · no reviews"). When the seed/server returns an
+        // aggregate without review bodies, soften copy to "Bewertungstexte
+        // folgen." (rare data-only case). Empty-empty (count = 0) keeps the
+        // original copy.
+        count > 0 ? (
+          <p className="font-body mt-5 text-[14px] italic text-s-ink-3">
+            Bewertungstexte folgen.
+          </p>
+        ) : (
+          <p className="font-body mt-5 text-[14px] italic text-s-ink-3">
+            Noch keine Bewertungen.
+          </p>
+        )
       ) : (
         <>
           <div className="mt-6 grid gap-x-10 gap-y-7 md:grid-cols-2 md:gap-y-8">
@@ -137,7 +150,7 @@ function ReviewCard({ review }: { review: Review }) {
           <Star
             key={i}
             size={13}
-            fill={i < Math.floor(review.rating) ? "#F3A864" : "#E8DFD2"}
+            fill={i < Math.floor(review.rating) ? "#FFC32B" : "#E7E5E4"}
             stroke="none"
           />
         ))}
@@ -157,7 +170,7 @@ function ReviewCard({ review }: { review: Review }) {
             <button
               type="button"
               onClick={() => setShowFull(true)}
-              className="font-body mt-1 text-[13px] font-semibold text-s-brand hover:underline"
+              className="font-body mt-1 text-[13px] font-semibold text-s-ink hover:underline"
             >
               Mehr lesen
             </button>

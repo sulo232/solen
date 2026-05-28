@@ -181,7 +181,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
         <button
           type="button"
           onClick={handleCalendarDownload}
-          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-s-coral text-white font-body text-[13px] font-bold tracking-[.02em] transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-s-ink text-white font-body text-[13px] font-bold tracking-[.02em] transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
         >
           <Calendar size={16} aria-hidden />
           In Kalender
@@ -189,7 +189,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
         <button
           type="button"
           onClick={handleDirections}
-          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-white border border-s-ink/15 text-s-ink font-body text-[13px] font-semibold transition-[transform,border-color] duration-150 hover:border-s-coral/40 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-white border border-s-ink/15 text-s-ink font-body text-[13px] font-semibold transition-[transform,border-color] duration-150 hover:border-s-accent/40 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
         >
           <MapPin size={16} aria-hidden />
           Wegbeschreibung
@@ -197,7 +197,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
         <button
           type="button"
           onClick={handleShare}
-          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-white border border-s-ink/15 text-s-ink font-body text-[13px] font-semibold transition-[transform,border-color] duration-150 hover:border-s-coral/40 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-white border border-s-ink/15 text-s-ink font-body text-[13px] font-semibold transition-[transform,border-color] duration-150 hover:border-s-accent/40 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
         >
           <Share2 size={16} aria-hidden />
           Teilen
@@ -208,7 +208,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       <button
         type="button"
         onClick={() => router.push(`/${locale}/profile/bookings`)}
-        className="mt-4 w-full text-center py-3 font-body text-[13px] text-s-ink/60 hover:text-s-ink transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 rounded-md"
+        className="mt-4 w-full text-center py-3 font-body text-[13px] text-s-ink/60 hover:text-s-ink transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2 rounded-md"
       >
         Zur Buchung →
       </button>

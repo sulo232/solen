@@ -82,7 +82,7 @@ export default function CategoriesGrid({ categoryCounts = {} }: CategoriesGridPr
               <Link
                 key={tile.key}
                 href={`/${locale}/${tile.key}`}
-                className="group relative aspect-square overflow-hidden rounded-[20px] border border-s-ink/[0.08] cursor-pointer transition-[border-color,transform,filter] duration-[250ms] ease-out hover:border-s-coral/40 hover:scale-[1.04] hover:rotate-[-1deg] hover:saturate-[1.1] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2"
+                className="group relative aspect-square overflow-hidden rounded-[20px] border border-s-ink/[0.08] cursor-pointer transition-[border-color,transform,filter] duration-[250ms] ease-out hover:border-s-accent/40 hover:scale-[1.04] hover:rotate-[-1deg] hover:saturate-[1.1] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
                 aria-label={`${tile.name} — ${count > 0 ? tile.countLabel(count) : ""}`}
               >
                 {/* Solid color background — per-category, NOT brand. `group` on parent Link

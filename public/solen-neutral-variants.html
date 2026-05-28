@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Solen — neutral · 3 flavors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Bricolage+Grotesque:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --hanken: "Hanken Grotesk", system-ui, sans-serif;
+    --display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: var(--hanken); color: #1A1A1A; background: #ECECEE; }
+  body { padding: 32px 24px 80px; min-height: 100vh; }
+
+  .pageHead { max-width: 920px; margin: 0 auto 36px; text-align: center; }
+  .pageHead h1 { font-family: var(--display); font-size: 30px; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 10px; }
+  .pageHead p { font-size: 14px; line-height: 1.55; color: #4B4B4B; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: start; max-width: 1500px; margin: 0 auto; }
+  @media (max-width: 1280px) { .grid { grid-template-columns: 1fr; max-width: 460px; } }
+
+  .col { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.05); }
+  .colHead { padding: 4px 4px 14px; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; background: #F2F2F2; color: #4B4B4B; margin-bottom: 8px; }
+  .colHead h2 { font-family: var(--display); font-size: 18px; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .colHead .lead { font-size: 12px; line-height: 1.5; color: #4B4B4B; }
+  .colHead .brand-spec { font-size: 11px; font-family: monospace; color: #8A8A8A; margin-top: 6px; }
+
+  .swatchRow { display: flex; gap: 4px; margin-top: 10px; }
+  .swatch { width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); }
+
+  .phone { width: 100%; border: 1px solid #E5E5E5; border-radius: 14px; overflow: hidden; position: relative; max-height: 1100px; overflow-y: auto; }
+  .phone::-webkit-scrollbar { width: 4px; }
+  .phone::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+
+  .sec { padding: 24px 18px; }
+  .sec.tight { padding: 16px 18px; }
+
+  /* Banner — varies per variant */
+  .banner { position: relative; width: 100%; color: white; }
+  .bannerInner { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px 22px; }
+  .bannerText { font-size: 11px; font-weight: 600; }
+  .bannerPill { display: inline-flex; align-items: center; gap: 4px; padding: 4px 11px; border-radius: 9999px; font-size: 11px; font-weight: 600; }
+  .bannerScoop { position: absolute; inset: auto 0 0 0; height: 12px; border-top-left-radius: 12px; border-top-right-radius: 12px; }
+
+  .topNav { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; }
+  .logo { font-family: var(--display); font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+  .menuBtn { width: 32px; height: 32px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; }
+  .menuBtn span { display: block; width: 12px; height: 1.4px; position: relative; }
+  .menuBtn span::before, .menuBtn span::after { content: ""; position: absolute; left: 0; width: 12px; height: 1.4px; }
+  .menuBtn span::before { top: -4px; }
+  .menuBtn span::after { top: 4px; }
+
+  .heroTitle { font-family: var(--display); font-size: 30px; line-height: 0.96; letter-spacing: -0.025em; margin-bottom: 14px; }
+  .heroTitle .brand { display: block; }
+  .heroTitle .next { display: block; }
+  .heroSub { font-size: 13px; line-height: 1.5; margin-bottom: 16px; }
+
+  .searchCard { border-radius: 14px; padding: 12px; }
+  .searchRow { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 9999px; font-size: 12px; }
+  .searchRow + .searchRow { margin-top: 6px; }
+  .searchBtn { width: 100%; padding: 11px; border: 0; border-radius: 9999px; font-family: var(--hanken); font-size: 12px; font-weight: 600; margin-top: 8px; cursor: pointer; }
+
+  .secTitle { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .secTitleText { font-family: var(--display); font-size: 15px; font-weight: 700; }
+  .secChip { width: 22px; height: 22px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; }
+
+  .cards2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cards3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .card { border-radius: 10px; padding: 8px; }
+  .cardImg { aspect-ratio: 1 / 1; border-radius: 6px; background: linear-gradient(135deg, #DCDCDC, #EFEFEF); margin-bottom: 6px; }
+  .cardTitle { font-size: 10px; font-weight: 600; line-height: 1.2; margin-bottom: 1px; }
+  .cardMeta { font-size: 9px; }
+
+  .pillRow { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { font-size: 11px; padding: 6px 12px; border-radius: 9999px; font-weight: 500; }
+
+  .trustGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .trustItem .num { font-family: var(--display); font-size: 22px; font-weight: 700; }
+  .trustItem .label { font-size: 11px; margin-top: 2px; }
+
+  .quote { font-family: var(--display); font-size: 17px; line-height: 1.3; letter-spacing: -0.01em; }
+  .quoteAuth { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+  .quoteAvatar { width: 32px; height: 32px; border-radius: 9999px; }
+  .quoteName { font-size: 11px; font-weight: 600; }
+  .quoteRole { font-size: 10px; }
+
+  .ctaBig { font-family: var(--display); font-size: 22px; line-height: 1.1; letter-spacing: -0.015em; margin-bottom: 10px; }
+  .ctaSub { font-size: 12px; line-height: 1.5; margin-bottom: 14px; }
+  .ctaBtn { display: inline-block; padding: 11px 22px; border-radius: 9999px; font-size: 12px; font-weight: 600; text-decoration: none; }
+
+  .foot { padding: 18px; text-align: center; font-size: 10px; }
+
+  .swatchLabel { font-size: 9px; font-family: monospace; margin-top: 8px; opacity: 0.55; }
+
+  .colNotes { padding: 14px 4px 0; font-size: 11.5px; line-height: 1.55; color: #4B4B4B; }
+  .colNotes b { color: #1A1A1A; }
+  .pro { color: #1E7A4A; font-weight: 600; }
+  .con { color: #B33D2C; font-weight: 600; }
+
+  /* ============================================ */
+  /* VARIANT A — PURE INK (Linear/Vercel)         */
+  /* ============================================ */
+  .pa-banner { background: #0E0E0E; }
+  .pa-banner-pill { background: white; color: #0E0E0E; }
+  .pa-topnav { background: white; border-bottom: 1px solid #EEEEEE; }
+  .pa-logo { color: #0E0E0E; }
+  .pa-menubtn { background: white; border: 1px solid #E5E5E5; }
+  .pa-menubtn span, .pa-menubtn span::before, .pa-menubtn span::after { background: #0E0E0E; }
+  .pa-hero { background: white; }
+  .pa-hero .brand { color: #0E0E0E; font-weight: 700; }
+  .pa-hero .next { color: #0E0E0E; }
+  .pa-hero .heroSub { color: #6B6B6B; }
+  .pa-search-sec { background: #FAFAFA; border-top: 1px solid #EEEEEE; }
+  .pa-search-card { background: white; border: 1px solid #E5E5E5; }
+  .pa-search-row { background: white; border: 1px solid #EEEEEE; color: #8A8A8A; }
+  .pa-search-btn { background: #0E0E0E; color: white; }
+  .pa-recent-sec { background: white; }
+  .pa-recent-card { background: #FAFAFA; border: 1px solid #EEEEEE; }
+  .pa-recent-card .cardTitle { color: #0E0E0E; }
+  .pa-recent-card .cardMeta { color: #8A8A8A; }
+  .pa-popular-sec { background: #FAFAFA; }
+  .pa-pill { background: white; border: 1px solid #E5E5E5; color: #0E0E0E; }
+  .pa-near-sec { background: white; border-top: 1px solid #EEEEEE; }
+  .pa-quote-sec { background: #F2F2F2; }
+  .pa-quote { color: #0E0E0E; }
+  .pa-quote-name { color: #0E0E0E; }
+  .pa-quote-role { color: #6B6B6B; }
+  .pa-quote-avatar { background: linear-gradient(135deg, #C4C4C4, #E5E5E5); }
+  .pa-trust-sec { background: #0E0E0E; color: white; }
+  .pa-trust-sec .secTitleText { color: white; }
+  .pa-trust-label { color: rgba(255,255,255,0.65); }
+  .pa-cta-sec { background: #0E0E0E; color: white; }
+  .pa-cta-btn { background: white; color: #0E0E0E; }
+  .pa-foot { background: white; border-top: 1px solid #EEEEEE; color: #8A8A8A; }
+
+  /* ============================================ */
+  /* VARIANT B — WARM NEUTRAL (Aesop/Hermès)      */
+  /* ============================================ */
+  .pb-banner { background: #2C2622; }
+  .pb-banner-pill { background: #F7F2E9; color: #2C2622; }
+  .pb-topnav { background: #F7F2E9; }
+  .pb-logo { color: #2C2622; }
+  .pb-menubtn { background: #F7F2E9; border: 1px solid #D9D1C0; }
+  .pb-menubtn span, .pb-menubtn span::before, .pb-menubtn span::after { background: #2C2622; }
+  .pb-hero { background: #F7F2E9; }
+  .pb-hero .brand { color: #2C2622; }
+  .pb-hero .next { color: #2C2622; }
+  .pb-hero .heroSub { color: #5C544A; }
+  .pb-search-sec { background: white; border-top: 1px solid #E8E1D2; }
+  .pb-search-card { background: white; border: 1px solid #E0D8C5; }
+  .pb-search-row { background: white; border: 1px solid #E8E1D2; color: #8C8270; }
+  .pb-search-btn { background: #2C2622; color: #F7F2E9; }
+  .pb-recent-sec { background: #EDE5D2; }
+  .pb-recent-card { background: white; border: 1px solid #E0D8C5; }
+  .pb-recent-card .cardTitle { color: #2C2622; }
+  .pb-recent-card .cardMeta { color: #8C8270; }
+  .pb-popular-sec { background: #F7F2E9; }
+  .pb-pill { background: white; border: 1px solid #E0D8C5; color: #2C2622; }
+  .pb-near-sec { background: white; border-top: 1px solid #E8E1D2; }
+  .pb-quote-sec { background: #D9CDB4; }
+  .pb-quote { color: #2C2622; }
+  .pb-quote-name { color: #2C2622; }
+  .pb-quote-role { color: #5C544A; }
+  .pb-quote-avatar { background: linear-gradient(135deg, #B5A88E, #D9CDB4); }
+  .pb-trust-sec { background: #2C2622; color: #F7F2E9; }
+  .pb-trust-sec .secTitleText { color: #F7F2E9; }
+  .pb-trust-label { color: rgba(247,242,233,0.65); }
+  .pb-cta-sec { background: #2C2622; color: #F7F2E9; }
+  .pb-cta-btn { background: #F7F2E9; color: #2C2622; }
+  .pb-foot { background: #F7F2E9; color: #8C8270; }
+
+  /* ============================================ */
+  /* VARIANT C — TRUE MINIMAL (MUJI)              */
+  /* ============================================ */
+  .pc-banner { background: #4A453E; }
+  .pc-banner-pill { background: #F0EBE0; color: #4A453E; }
+  .pc-topnav { background: #F5F0E3; }
+  .pc-logo { color: #4A453E; }
+  .pc-menubtn { background: transparent; border: 1px solid #C9C1AE; }
+  .pc-menubtn span, .pc-menubtn span::before, .pc-menubtn span::after { background: #4A453E; }
+  .pc-hero { background: #F5F0E3; }
+  .pc-hero .brand { color: #4A453E; font-weight: 600; }
+  .pc-hero .next { color: #4A453E; font-weight: 500; }
+  .pc-hero .heroSub { color: #6E6655; }
+  .pc-search-sec { background: #F5F0E3; }
+  .pc-search-card { background: #FBF8F0; border: 1px solid #E5DFCC; }
+  .pc-search-row { background: transparent; border: 1px solid #C9C1AE; color: #8E8470; }
+  .pc-search-btn { background: #4A453E; color: #F5F0E3; }
+  .pc-recent-sec { background: #EBE3D0; }
+  .pc-recent-card { background: #F5F0E3; border: 1px solid #D9CFB7; }
+  .pc-recent-card .cardTitle { color: #4A453E; }
+  .pc-recent-card .cardMeta { color: #8E8470; }
+  .pc-popular-sec { background: #F5F0E3; }
+  .pc-pill { background: #FBF8F0; border: 1px solid #C9C1AE; color: #4A453E; }
+  .pc-near-sec { background: #FBF8F0; border-top: 1px solid #E5DFCC; }
+  .pc-quote-sec { background: #DDD2B5; }
+  .pc-quote { color: #4A453E; }
+  .pc-quote-name { color: #4A453E; }
+  .pc-quote-role { color: #6E6655; }
+  .pc-quote-avatar { background: linear-gradient(135deg, #B8AC8A, #DDD2B5); }
+  .pc-trust-sec { background: #4A453E; color: #F5F0E3; }
+  .pc-trust-sec .secTitleText { color: #F5F0E3; }
+  .pc-trust-label { color: rgba(245,240,227,0.7); }
+  .pc-cta-sec { background: #EBE3D0; color: #4A453E; }
+  .pc-cta-btn { background: #4A453E; color: #F5F0E3; }
+  .pc-foot { background: #F5F0E3; color: #8E8470; }
+
+  .recommend { max-width: 920px; margin: 56px auto 0; background: white; border-radius: 16px; padding: 28px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.05); }
+  .recommend h2 { font-family: var(--display); font-size: 22px; margin: 8px 0 12px; letter-spacing: -0.01em; }
+  .recommend p { font-size: 13.5px; line-height: 1.6; color: #4B4B4B; margin-bottom: 10px; }
+  .recommend ul { font-size: 13px; line-height: 1.6; color: #4B4B4B; padding-left: 18px; margin-bottom: 10px; }
+  .recommend ul b { color: #1A1A1A; }
+</style>
+</head>
+<body>
+
+<header class="pageHead">
+  <h1>Neutral — 3 flavors</h1>
+  <p>Dropping cobalt. Same Solen homepage shape. Each variant picks a different "neutral" — Pure ink (Linear), Warm neutral (Aesop), or True minimal (MUJI). Brand color, section bgs, hero accent all updated per variant.</p>
+</header>
+
+<div class="grid">
+
+  <!-- ============================================================ -->
+  <!-- A · PURE INK                                                  -->
+  <!-- ============================================================ -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge">A · Pure ink</span>
+      <h2>Black + grey + white</h2>
+      <p class="lead">Linear / Vercel / Stripe Docs school. Zero chromatic color. Brand = typography weight. Maximum modern, maximum sterile.</p>
+      <p class="brand-spec">brand: <b>#0E0E0E</b> · bg: #FFFFFF / #FAFAFA / #F2F2F2 · trust: #0E0E0E</p>
+      <div class="swatchRow">
+        <span class="swatch" style="background:#FFFFFF"></span>
+        <span class="swatch" style="background:#FAFAFA"></span>
+        <span class="swatch" style="background:#F2F2F2"></span>
+        <span class="swatch" style="background:#0E0E0E"></span>
+      </div>
+    </header>
+    <div class="phone">
+      <div class="banner pa-banner">
+        <div class="bannerInner">
+          <span class="bannerText">Sofort verfügbar — 320 heute</span>
+          <span class="bannerPill pa-banner-pill">Salons finden →</span>
+        </div>
+        <div class="bannerScoop" style="background:white"></div>
+      </div>
+      <div class="topNav pa-topnav">
+        <div class="logo pa-logo">Solen</div>
+        <button class="menuBtn pa-menubtn"><span></span></button>
+      </div>
+      <div class="sec pa-hero">
+        <h1 class="heroTitle"><span class="brand">Schöner</span><span class="next">aussehen,</span><span class="next">schneller buchen.</span></h1>
+        <p class="heroSub">Über 1'200 Salons in der Schweiz. Sofort buchbar, transparente Preise.</p>
+        <div class="swatchLabel">bg #FFFFFF · ink #0E0E0E · no chromatic accent</div>
+      </div>
+      <div class="sec pa-search-sec">
+        <div class="searchCard pa-search-card">
+          <div class="searchRow pa-search-row">○ Service</div>
+          <div class="searchRow pa-search-row">○ Stadt</div>
+          <div class="searchRow pa-search-row">○ Zeit</div>
+          <button class="searchBtn pa-search-btn">Solen durchsuchen</button>
+        </div>
+        <div class="swatchLabel">bg #FAFAFA — 2% off-white grey</div>
+      </div>
+      <div class="sec pa-recent-sec">
+        <div class="secTitle"><span class="secTitleText">Zuletzt angesehen</span><span class="secChip" style="background:#FAFAFA; border:1px solid #E5E5E5;">→</span></div>
+        <div class="cards2">
+          <div class="card pa-recent-card"><div class="cardImg"></div><div class="cardTitle">Salon Mara</div><div class="cardMeta">Zürich · 4.9</div></div>
+          <div class="card pa-recent-card"><div class="cardImg"></div><div class="cardTitle">Studio Nord</div><div class="cardMeta">Basel · 4.8</div></div>
+        </div>
+        <div class="swatchLabel">bg #FFFFFF</div>
+      </div>
+      <div class="sec pa-popular-sec">
+        <div class="secTitle"><span class="secTitleText">Beliebt diese Woche</span></div>
+        <div class="pillRow">
+          <span class="pill pa-pill">Haare</span><span class="pill pa-pill">Nägel</span><span class="pill pa-pill">Massage</span><span class="pill pa-pill">Beauty</span><span class="pill pa-pill">Wellness</span><span class="pill pa-pill">Spa</span>
+        </div>
+        <div class="swatchLabel">bg #FAFAFA</div>
+      </div>
+      <div class="sec pa-near-sec">
+        <div class="secTitle"><span class="secTitleText">Salons in deiner Nähe</span></div>
+        <div class="cards3">
+          <div class="card pa-recent-card"><div class="cardImg"></div><div class="cardTitle">Le Studio</div><div class="cardMeta">5 min · 4.9</div></div>
+          <div class="card pa-recent-card"><div class="cardImg"></div><div class="cardTitle">Aura Beauty</div><div class="cardMeta">8 min · 4.8</div></div>
+          <div class="card pa-recent-card"><div class="cardImg"></div><div class="cardTitle">Hair Lab</div><div class="cardMeta">12 min · 4.7</div></div>
+        </div>
+        <div class="swatchLabel">bg #FFFFFF</div>
+      </div>
+      <div class="sec pa-quote-sec">
+        <p class="quote pa-quote">"Endlich keine 5 Browser-Tabs mehr — alles an einem Ort."</p>
+        <div class="quoteAuth">
+          <div class="quoteAvatar pa-quote-avatar"></div>
+          <div><div class="quoteName pa-quote-name">Lea Müller</div><div class="quoteRole pa-quote-role">Stammkundin, Zürich</div></div>
+        </div>
+        <div class="swatchLabel">bg #F2F2F2 — quote weight via grey</div>
+      </div>
+      <div class="sec pa-trust-sec">
+        <div class="secTitle"><span class="secTitleText">Warum 50'000+ Schweizer Solen vertrauen</span></div>
+        <div class="trustGrid">
+          <div class="trustItem"><div class="num">1'200+</div><div class="label pa-trust-label">Verifizierte Salons</div></div>
+          <div class="trustItem"><div class="num">4.8★</div><div class="label pa-trust-label">Durchschnittsbewertung</div></div>
+          <div class="trustItem"><div class="num">24/7</div><div class="label pa-trust-label">Buchung & Support</div></div>
+          <div class="trustItem"><div class="num">CH</div><div class="label pa-trust-label">Daten in der Schweiz</div></div>
+        </div>
+        <div class="swatchLabel" style="color:rgba(255,255,255,0.4);">bg #0E0E0E — inverted ink for trust</div>
+      </div>
+      <div class="sec pa-cta-sec">
+        <div class="ctaBig">Solen-App holen.<br/>Buchen in 30 Sekunden.</div>
+        <p class="ctaSub" style="opacity:.85;">iOS &amp; Android. Kostenlos. Keine versteckten Gebühren.</p>
+        <a href="#" class="ctaBtn pa-cta-btn">App laden</a>
+      </div>
+      <div class="foot pa-foot">© Solen — Made in Switzerland</div>
+    </div>
+    <div class="colNotes">
+      <p><b>Vibe:</b> tech utility, Swiss precision, no-nonsense. Looks like a 2024 SaaS launch.</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> infinitely scalable; CTAs (black buttons) pop maximally; no chromatic coordination problem; works in any future direction</p>
+      <p><b class="con">CON:</b> indistinguishable from Linear/Vercel/Stripe Docs/Square Space; "wellness" reads zero; clinical for beauty/self-care category</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- B · WARM NEUTRAL                                              -->
+  <!-- ============================================================ -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge" style="background:#F7F2E9; color:#2C2622;">B · Warm neutral (my pick)</span>
+      <h2>Off-white + ink + stone</h2>
+      <p class="lead">Aesop / Hermès / Le Labo school. Desaturated warm neutrals. No chromatic brand, but warmth in the tone. Premium feel without warm-cool tension.</p>
+      <p class="brand-spec">brand: <b>#2C2622</b> · bg: #F7F2E9 / #EDE5D2 / #D9CDB4 · trust: #2C2622</p>
+      <div class="swatchRow">
+        <span class="swatch" style="background:#F7F2E9"></span>
+        <span class="swatch" style="background:#EDE5D2"></span>
+        <span class="swatch" style="background:#D9CDB4"></span>
+        <span class="swatch" style="background:#2C2622"></span>
+      </div>
+    </header>
+    <div class="phone">
+      <div class="banner pb-banner">
+        <div class="bannerInner">
+          <span class="bannerText">Sofort verfügbar — 320 heute</span>
+          <span class="bannerPill pb-banner-pill">Salons finden →</span>
+        </div>
+        <div class="bannerScoop" style="background:#F7F2E9"></div>
+      </div>
+      <div class="topNav pb-topnav">
+        <div class="logo pb-logo">Solen</div>
+        <button class="menuBtn pb-menubtn"><span></span></button>
+      </div>
+      <div class="sec pb-hero">
+        <h1 class="heroTitle"><span class="brand">Schöner</span><span class="next">aussehen,</span><span class="next">schneller buchen.</span></h1>
+        <p class="heroSub">Über 1'200 Salons in der Schweiz. Sofort buchbar, transparente Preise.</p>
+        <div class="swatchLabel">bg #F7F2E9 — warm off-white</div>
+      </div>
+      <div class="sec pb-search-sec">
+        <div class="searchCard pb-search-card">
+          <div class="searchRow pb-search-row">○ Service</div>
+          <div class="searchRow pb-search-row">○ Stadt</div>
+          <div class="searchRow pb-search-row">○ Zeit</div>
+          <button class="searchBtn pb-search-btn">Solen durchsuchen</button>
+        </div>
+        <div class="swatchLabel">bg #FFFFFF — search clarity</div>
+      </div>
+      <div class="sec pb-recent-sec">
+        <div class="secTitle"><span class="secTitleText">Zuletzt angesehen</span><span class="secChip" style="background:white; border:1px solid #E0D8C5;">→</span></div>
+        <div class="cards2">
+          <div class="card pb-recent-card"><div class="cardImg"></div><div class="cardTitle">Salon Mara</div><div class="cardMeta">Zürich · 4.9</div></div>
+          <div class="card pb-recent-card"><div class="cardImg"></div><div class="cardTitle">Studio Nord</div><div class="cardMeta">Basel · 4.8</div></div>
+        </div>
+        <div class="swatchLabel">bg #EDE5D2 — sand</div>
+      </div>
+      <div class="sec pb-popular-sec">
+        <div class="secTitle"><span class="secTitleText">Beliebt diese Woche</span></div>
+        <div class="pillRow">
+          <span class="pill pb-pill">Haare</span><span class="pill pb-pill">Nägel</span><span class="pill pb-pill">Massage</span><span class="pill pb-pill">Beauty</span><span class="pill pb-pill">Wellness</span><span class="pill pb-pill">Spa</span>
+        </div>
+        <div class="swatchLabel">bg #F7F2E9</div>
+      </div>
+      <div class="sec pb-near-sec">
+        <div class="secTitle"><span class="secTitleText">Salons in deiner Nähe</span></div>
+        <div class="cards3">
+          <div class="card pb-recent-card"><div class="cardImg"></div><div class="cardTitle">Le Studio</div><div class="cardMeta">5 min · 4.9</div></div>
+          <div class="card pb-recent-card"><div class="cardImg"></div><div class="cardTitle">Aura Beauty</div><div class="cardMeta">8 min · 4.8</div></div>
+          <div class="card pb-recent-card"><div class="cardImg"></div><div class="cardTitle">Hair Lab</div><div class="cardMeta">12 min · 4.7</div></div>
+        </div>
+        <div class="swatchLabel">bg #FFFFFF</div>
+      </div>
+      <div class="sec pb-quote-sec">
+        <p class="quote pb-quote">"Endlich keine 5 Browser-Tabs mehr — alles an einem Ort."</p>
+        <div class="quoteAuth">
+          <div class="quoteAvatar pb-quote-avatar"></div>
+          <div><div class="quoteName pb-quote-name">Lea Müller</div><div class="quoteRole pb-quote-role">Stammkundin, Zürich</div></div>
+        </div>
+        <div class="swatchLabel">bg #D9CDB4 — taupe weight</div>
+      </div>
+      <div class="sec pb-trust-sec">
+        <div class="secTitle"><span class="secTitleText">Warum 50'000+ Schweizer Solen vertrauen</span></div>
+        <div class="trustGrid">
+          <div class="trustItem"><div class="num">1'200+</div><div class="label pb-trust-label">Verifizierte Salons</div></div>
+          <div class="trustItem"><div class="num">4.8★</div><div class="label pb-trust-label">Durchschnittsbewertung</div></div>
+          <div class="trustItem"><div class="num">24/7</div><div class="label pb-trust-label">Buchung & Support</div></div>
+          <div class="trustItem"><div class="num">CH</div><div class="label pb-trust-label">Daten in der Schweiz</div></div>
+        </div>
+        <div class="swatchLabel" style="color:rgba(247,242,233,0.4);">bg #2C2622 — warm-black ink</div>
+      </div>
+      <div class="sec pb-cta-sec">
+        <div class="ctaBig">Solen-App holen.<br/>Buchen in 30 Sekunden.</div>
+        <p class="ctaSub" style="opacity:.85;">iOS &amp; Android. Kostenlos. Keine versteckten Gebühren.</p>
+        <a href="#" class="ctaBtn pb-cta-btn">App laden</a>
+      </div>
+      <div class="foot pb-foot">© Solen — Made in Switzerland</div>
+    </div>
+    <div class="colNotes">
+      <p><b>Vibe:</b> Aesop store. Premium. Editorial. "I'm worth this haircut." Reads as wellness without being floral.</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> warmth without warm-cool tension (cobalt is gone); category fit; ages well; can build a TYPOGRAPHIC brand (since color isn't doing the work)</p>
+      <p><b class="con">CON:</b> reads "premium"/"editorial" — might feel exclusionary to mass-market booking; trust section's warm-black is softer than pure-black for credibility punch</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- C · TRUE MINIMAL                                              -->
+  <!-- ============================================================ -->
+  <section class="col">
+    <header class="colHead">
+      <span class="badge">C · True minimal</span>
+      <h2>Stone + kraft + cream</h2>
+      <p class="lead">MUJI / Common Goods. Hyper-quiet. Everything is paper/stone/kraft. Brand = absence. Typography weight is the only hierarchy.</p>
+      <p class="brand-spec">brand: <b>#4A453E</b> · bg: #F5F0E3 / #EBE3D0 / #DDD2B5 · trust: #4A453E</p>
+      <div class="swatchRow">
+        <span class="swatch" style="background:#F5F0E3"></span>
+        <span class="swatch" style="background:#EBE3D0"></span>
+        <span class="swatch" style="background:#DDD2B5"></span>
+        <span class="swatch" style="background:#4A453E"></span>
+      </div>
+    </header>
+    <div class="phone">
+      <div class="banner pc-banner">
+        <div class="bannerInner">
+          <span class="bannerText">Sofort verfügbar — 320 heute</span>
+          <span class="bannerPill pc-banner-pill">Salons finden →</span>
+        </div>
+        <div class="bannerScoop" style="background:#F5F0E3"></div>
+      </div>
+      <div class="topNav pc-topnav">
+        <div class="logo pc-logo">Solen</div>
+        <button class="menuBtn pc-menubtn"><span></span></button>
+      </div>
+      <div class="sec pc-hero">
+        <h1 class="heroTitle"><span class="brand">Schöner</span><span class="next">aussehen,</span><span class="next">schneller buchen.</span></h1>
+        <p class="heroSub">Über 1'200 Salons in der Schweiz. Sofort buchbar, transparente Preise.</p>
+        <div class="swatchLabel">bg #F5F0E3 — paper</div>
+      </div>
+      <div class="sec pc-search-sec">
+        <div class="searchCard pc-search-card">
+          <div class="searchRow pc-search-row">○ Service</div>
+          <div class="searchRow pc-search-row">○ Stadt</div>
+          <div class="searchRow pc-search-row">○ Zeit</div>
+          <button class="searchBtn pc-search-btn">Solen durchsuchen</button>
+        </div>
+        <div class="swatchLabel">bg #F5F0E3 — same paper continues</div>
+      </div>
+      <div class="sec pc-recent-sec">
+        <div class="secTitle"><span class="secTitleText">Zuletzt angesehen</span><span class="secChip" style="background:transparent; border:1px solid #C9C1AE;">→</span></div>
+        <div class="cards2">
+          <div class="card pc-recent-card"><div class="cardImg"></div><div class="cardTitle">Salon Mara</div><div class="cardMeta">Zürich · 4.9</div></div>
+          <div class="card pc-recent-card"><div class="cardImg"></div><div class="cardTitle">Studio Nord</div><div class="cardMeta">Basel · 4.8</div></div>
+        </div>
+        <div class="swatchLabel">bg #EBE3D0 — kraft</div>
+      </div>
+      <div class="sec pc-popular-sec">
+        <div class="secTitle"><span class="secTitleText">Beliebt diese Woche</span></div>
+        <div class="pillRow">
+          <span class="pill pc-pill">Haare</span><span class="pill pc-pill">Nägel</span><span class="pill pc-pill">Massage</span><span class="pill pc-pill">Beauty</span><span class="pill pc-pill">Wellness</span><span class="pill pc-pill">Spa</span>
+        </div>
+        <div class="swatchLabel">bg #F5F0E3</div>
+      </div>
+      <div class="sec pc-near-sec">
+        <div class="secTitle"><span class="secTitleText">Salons in deiner Nähe</span></div>
+        <div class="cards3">
+          <div class="card pc-recent-card"><div class="cardImg"></div><div class="cardTitle">Le Studio</div><div class="cardMeta">5 min · 4.9</div></div>
+          <div class="card pc-recent-card"><div class="cardImg"></div><div class="cardTitle">Aura Beauty</div><div class="cardMeta">8 min · 4.8</div></div>
+          <div class="card pc-recent-card"><div class="cardImg"></div><div class="cardTitle">Hair Lab</div><div class="cardMeta">12 min · 4.7</div></div>
+        </div>
+        <div class="swatchLabel">bg #FBF8F0 — slightly brighter paper</div>
+      </div>
+      <div class="sec pc-quote-sec">
+        <p class="quote pc-quote">"Endlich keine 5 Browser-Tabs mehr — alles an einem Ort."</p>
+        <div class="quoteAuth">
+          <div class="quoteAvatar pc-quote-avatar"></div>
+          <div><div class="quoteName pc-quote-name">Lea Müller</div><div class="quoteRole pc-quote-role">Stammkundin, Zürich</div></div>
+        </div>
+        <div class="swatchLabel">bg #DDD2B5 — sand</div>
+      </div>
+      <div class="sec pc-trust-sec">
+        <div class="secTitle"><span class="secTitleText">Warum 50'000+ Schweizer Solen vertrauen</span></div>
+        <div class="trustGrid">
+          <div class="trustItem"><div class="num">1'200+</div><div class="label pc-trust-label">Verifizierte Salons</div></div>
+          <div class="trustItem"><div class="num">4.8★</div><div class="label pc-trust-label">Durchschnittsbewertung</div></div>
+          <div class="trustItem"><div class="num">24/7</div><div class="label pc-trust-label">Buchung & Support</div></div>
+          <div class="trustItem"><div class="num">CH</div><div class="label pc-trust-label">Daten in der Schweiz</div></div>
+        </div>
+        <div class="swatchLabel" style="color:rgba(245,240,227,0.4);">bg #4A453E — deepest sepia</div>
+      </div>
+      <div class="sec pc-cta-sec">
+        <div class="ctaBig">Solen-App holen.<br/>Buchen in 30 Sekunden.</div>
+        <p class="ctaSub" style="opacity:.85;">iOS &amp; Android. Kostenlos. Keine versteckten Gebühren.</p>
+        <a href="#" class="ctaBtn pc-cta-btn">App laden</a>
+      </div>
+      <div class="foot pc-foot">© Solen — Made in Switzerland</div>
+    </div>
+    <div class="colNotes">
+      <p><b>Vibe:</b> japanese stationary store. Library. Very quiet. Anti-modern. Could read "indie" or could read "design-school pretentious."</p>
+      <p style="margin-top:6px;"><b class="pro">PRO:</b> maximum differentiation (nobody in beauty booking looks like this); ages forever; reads sincere; tonal sections do their own rhythm</p>
+      <p><b class="con">CON:</b> may read pretentious or niche; harder for product photography (lots of salon images will need warm color grading to fit); harder for users who expect "tech app" feel</p>
+    </div>
+  </section>
+
+</div>
+
+<section class="recommend">
+  <span class="badge" style="background:#F7F2E9; color:#2C2622;">Recommendation</span>
+  <h2>B (Warm neutral). The middle path that solves the actual problem.</h2>
+  <p>You said "neutral, not cool" — that rules out A (pure ink is cool-leaning despite being "no color"). C (true minimal) is fully neutral but reads pretentious for mass-market booking. B is the only one that's both genuinely neutral AND fits a Swiss booking marketplace for beauty/wellness.</p>
+  <ul>
+    <li><b>The brand color becomes #2C2622</b> — a warm near-black. Logo, banner, CTAs, ink — all this color. Not pure black, has a touch of brown in it, reads "warm but ink."</li>
+    <li><b>Section bgs cycle through 3 off-whites:</b> #F7F2E9 (hero/general), #EDE5D2 (sand for "your stuff"), white (#FFFFFF) for transactional/search/listings, #D9CDB4 (taupe for testimonials), #2C2622 (warm ink for trust/CTA).</li>
+    <li><b>No chromatic brand color at all.</b> The logo dot can disappear (or become a #C8B998 stone color for a tiny detail). Hero "Schöner" is just ink-bold — no accent color.</li>
+  </ul>
+  <p style="background:#F8F8F8; padding:12px 14px; border-radius:8px; margin-top:14px;"><b style="color:#1A1A1A;">First-principles why this works:</b> "Neutral" doesn't mean "no warmth." It means "no chromatic tension." Pure ink (#000) on pure white (#FFF) is technically neutral but reads COLD because there's no humidity in it. Warm-ink on warm-off-white is NEUTRAL in chroma but has temperature. That temperature is what makes a booking-for-self-care site feel welcoming instead of clinical. Aesop figured this out 20 years ago for skincare; the same principle works for beauty/wellness booking.</p>
+  <p style="margin-top:14px; padding:10px 14px; background:#F0F0F2; border-radius:8px; border-left:3px solid #2C2622;"><b>Honest pushback:</b> if you take this direction, the cobalt brand identity is fully gone. The "Solen blue" hero accent, the brand-blue logo dot, the cobalt CTA — all swap to warm-ink. This isn't a tweak, it's a re-skin. Worth confirming you want that scope before I start changing tailwind tokens. (And you can always come back to cobalt later — none of this is permanent.)</p>
+</section>
+
+</body>
+</html>

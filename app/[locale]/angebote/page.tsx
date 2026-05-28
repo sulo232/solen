@@ -178,22 +178,23 @@ export default function LastMinutePage() {
   }, [pathname, router, searchParams]);
 
   return (
+    // V3-D313 (W9 follow-up, 2026-05-27): retired s-coral + raw rgba(27,77,27,*) sweep per LOCKFILE
     <div className="min-h-screen bg-white">
-      {/* Hero */}
-      <div className="pt-8 pb-6" style={{ background: "linear-gradient(180deg, rgba(27, 77, 27,.07) 0%, rgba(255,255,255,0) 100%)" }}>
+      {/* Hero — dropped green linear-gradient; eyebrow → LOCKFILE Eyebrow spec; live dot → s-urgency (the dot signals real-time activity per universal-color: urgency = burnt amber) */}
+      <div className="pt-8 pb-6 bg-s-bg-sunken">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <p className="text-[9px] font-heading uppercase tracking-[.24em] text-s-coral mb-2">
+          <p className="font-body text-[11px] md:text-[12px] font-bold uppercase tracking-[0.16em] text-s-ink-2 mb-2">
             letzte freie Termine
           </p>
           <div className="flex items-center gap-3">
-            <h1 className="font-heading text-[clamp(24px,4vw,40px)] leading-tight text-s-ink">
+            <h1 className="font-heading text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-s-ink">
               Last-Minute Angebote
             </h1>
-            {/* Live indicator dot — keep animate-pulse */}
-            <span className="w-2.5 h-2.5 rounded-full bg-s-coral animate-pulse shrink-0" aria-label="Live" />
+            {/* Live indicator dot — V3-D313: coral → s-urgency (universal-color: urgency burnt amber #9A3412 per LOCKFILE §1) */}
+            <span className="w-2.5 h-2.5 rounded-full bg-s-urgency animate-pulse shrink-0" aria-label="Live" />
           </div>
           {total > 0 && (
-            <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-ink/40 mt-2">
+            <p className="text-[10px] font-heading uppercase tracking-[.12em] text-s-ink-2 mt-2">
               {total} verfügbare Termine heute
             </p>
           )}
@@ -222,6 +223,7 @@ export default function LastMinutePage() {
           <span className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/40">
             Sortieren nach:
           </span>
+          {/* V3-D313: chips → TabPill pattern (ink active / white+hairline inactive); fix corrupted dark-mode hovers + retired green shadows */}
           {[
             { key: "discount", label: "Rabatt %" },
             { key: "price", label: "Preis" },
@@ -233,10 +235,9 @@ export default function LastMinutePage() {
               className={[
                 "px-3.5 py-2 rounded-pill text-[10px] font-heading transition-colors duration-150",
                 sortBy === key
-                  ? "bg-s-coral text-white"
-                  : "bg-s-bg-sunken text-s-ink/55 hover:bg-s-ink/[0.07]:bg-white/[0.10]",
+                  ? "bg-s-ink text-white"
+                  : "bg-white border border-s-border text-s-ink-2 hover:border-s-ink",
               ].join(" ")}
-              style={sortBy === key ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
             >
               {label}
             </button>
@@ -252,16 +253,15 @@ export default function LastMinutePage() {
               className={[
                 "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-pill text-[10px] font-heading uppercase tracking-[.06em] transition-colors duration-150",
                 selectedCategories.includes(key)
-                  ? "bg-s-coral text-white"
-                  : "bg-s-bg-sunken text-s-ink/55 hover:bg-s-ink/[0.07]:bg-white/[0.10]",
+                  ? "bg-s-ink text-white"
+                  : "bg-white border border-s-border text-s-ink-2 hover:border-s-ink",
               ].join(" ")}
-              style={selectedCategories.includes(key) ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
             >
               <Icon size={12} />
               {label}
             </button>
           ))}
-          <span className="w-px h-5 bg-s-sand mx-1" />
+          <span className="w-px h-5 bg-s-border mx-1" />
           {[30, 50, 80, 100].map((price) => (
             <button
               key={price}
@@ -269,10 +269,9 @@ export default function LastMinutePage() {
               className={[
                 "px-3.5 py-2 rounded-pill text-[10px] font-heading transition-colors duration-150",
                 maxPrice === price
-                  ? "bg-s-coral text-white"
-                  : "bg-s-bg-sunken text-s-ink/55 hover:bg-s-ink/[0.07]:bg-white/[0.10]",
+                  ? "bg-s-ink text-white"
+                  : "bg-white border border-s-border text-s-ink-2 hover:border-s-ink",
               ].join(" ")}
-              style={maxPrice === price ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
             >
               {"< CHF " + price}
             </button>
@@ -280,7 +279,7 @@ export default function LastMinutePage() {
           {(selectedCategories.length > 0 || maxPrice !== null) && (
             <button
               onClick={() => { setSelectedCategories([]); setMaxPrice(null); }}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-pill border border-s-ink/[0.08] text-[10px] font-heading uppercase tracking-[.06em] text-s-ink/45 hover:border-s-ink/20 hover:text-s-ink/65 transition-colors duration-150"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-pill border border-s-border text-[10px] font-heading uppercase tracking-[.06em] text-s-ink-2 hover:border-s-ink hover:text-s-ink transition-colors duration-150"
             >
               <X size={11} />
               Zurücksetzen
@@ -318,19 +317,20 @@ export default function LastMinutePage() {
               <h3 className="font-heading text-base text-s-ink mb-3">
                 {tEmpty("lastMinuteSuggestedTitle")}
               </h3>
+              {/* V3-D313: category chips + notify-me link → s-ink/s-accent per LOCKFILE */}
               <div className="flex flex-wrap gap-2">
                 {["coiffeur", "nails", "barbershop"].map((cat) => (
                   <Link
                     key={cat}
                     href={`/${locale}/${cat}`}
-                    className="px-4 py-2.5 rounded-pill bg-white border border-s-ink/10 text-sm text-s-ink/70 hover:border-s-coral/30 hover:text-s-coral transition-[transform,filter,border-color,background-color] duration-150"
+                    className="px-4 py-2.5 rounded-pill bg-white border border-s-border text-sm text-s-ink-2 hover:border-s-ink hover:text-s-ink transition-[transform,filter,border-color,background-color] duration-150"
                   >
                     {cat.charAt(0).toUpperCase() + cat.slice(1)}
                   </Link>
                 ))}
               </div>
 
-              {/* Notify me */}
+              {/* Notify me link — accent (link role per LOCKFILE §1) */}
               <button
                 onClick={async () => {
                   const email = prompt(tEmpty("lastMinuteNotifyMe"));
@@ -342,7 +342,7 @@ export default function LastMinutePage() {
                     }).catch((err) => console.error("[LastMinute] Waitlist error:", err));
                   }
                 }}
-                className="mt-4 text-sm text-s-coral hover:underline"
+                className="mt-4 text-sm text-s-accent hover:text-s-accent-deep hover:underline transition-colors"
                 aria-label={tEmpty("lastMinuteNotifyMe")}
               >
                 {tEmpty("lastMinuteNotifyMe")}
@@ -364,10 +364,11 @@ export default function LastMinutePage() {
 
             {hasMore && (
               <div className="flex justify-center mt-8">
+                {/* V3-D313: "Mehr laden" ghost CTA → ink hover (no accent CTA at the load-more position) */}
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="flex items-center gap-2 px-6 py-3 rounded-btn bg-white border border-s-ink/[0.08] text-xs font-heading uppercase tracking-[.06em] text-s-ink/55 hover:border-s-coral hover:text-s-coral transition-colors duration-150 disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-3 rounded-btn bg-white border border-s-border text-xs font-heading uppercase tracking-[.06em] text-s-ink-2 hover:border-s-ink hover:text-s-ink transition-colors duration-150 disabled:opacity-50"
                 >
                   {loadingMore ? <Spinner size="sm" /> : null}
                   {loadingMore ? "Lade mehr…" : "Mehr laden"}

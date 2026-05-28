@@ -25,10 +25,10 @@ const extractTiktokId = (url: string | null) => {
 // ── Color-coded category badges ────────────────────────────────────
 const CATEGORY_COLORS: Record<string, string> = {
   hair: "bg-s-amber/70",
-  beard: "bg-s-coral/70",
+  beard: "bg-s-ink/70",
   nails: "bg-s-plum/70",
   makeup: "bg-s-plum/70",
-  waxing: "bg-s-sage/70",
+  waxing: "bg-s-success/70",
 };
 
 /**
@@ -123,7 +123,7 @@ export default memo(function VideoCard({
         {/* Play button overlay — shown when not expanded or when iframe failed */}
         {(!isExpanded || iframeError) && (
           <div className="absolute inset-0 flex items-center justify-center bg-s-ink/20">
-            <div className="w-9 h-9 rounded-full bg-s-coral/90 backdrop-blur-[6px] flex items-center justify-center shadow-elevation-2">
+            <div className="w-9 h-9 rounded-full bg-s-ink/90 backdrop-blur-[6px] flex items-center justify-center shadow-elevation-2">
               <Play size={16} className="text-white ml-0.5" fill="white" />
             </div>
           </div>

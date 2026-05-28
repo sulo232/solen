@@ -26,9 +26,12 @@ import { SalonMobileBookBar } from "./SalonMobileBookBar";
 import { SalonLightbox } from "./SalonLightbox";
 import type { SalonDetail, TabKey } from "./_shared";
 import { postalToCity } from "./_shared";
+import { usePostHog } from "posthog-js/react";
+import { trackSalonView } from "@/components-legacy/RecentlyViewed";
+import { generateSalonSchema } from "@/lib/seo";
 
 /**
- * SalonDetailV3 — V2-D53.3 orchestrator (2026-05-11).
+ * SalonDetailV3 — V2-D53.3 orchestrator (2026-05-11) · V3-D202 detox (2026-05-26).
  *
  * The monolithic 1145-line file was split into 17 focused section components
  * (each <200 lines, colocated in `salon/`). This file now:
@@ -40,11 +43,15 @@ import { postalToCity } from "./_shared";
  *      - Mobile: single column stack with floating book bar
  *      - Desktop: 2-col grid with sticky right sidebar
  *
- * Brand discipline (V2-D49j + V2-D53.3):
- *   • White substrate (commerce surface, not cream)
- *   • Emerald action color (Book buttons, "See all" expand pills)
- *   • Terracotta `s-accent` for Featured pill (heartbeat highlight semantic)
- *   • Peace Sans display + Open Sauce body typography unchanged
+ * Brand discipline (V3-D193 + V3-D197 three-layer):
+ *   • PURE WHITE substrate. No ambient gradient washes (deleted in A23).
+ *   • Display = Inter Tight (V3-D190, supersedes Peace Sans). Body = Hanken
+ *     Grotesk 300-800 (V3-D191 weight contrast).
+ *   • Chrome = s-ink (V3-D192-fix). Brand accent = s-accent royal blue, used
+ *     on eyebrows + small highlights only (NOT primary CTAs).
+ *   • Semantic UI (StatusPill, etc.) uses universal-color tokens per V3-D197
+ *     §1 + §2.5 catalog.
+ *   • Stars are yellow (V3-D200 Q1 resolution). Save = pink. Urgency = amber.
  *
  * Section IDs match the sticky tab nav keys (TAB_SECTIONS in _shared.ts):
  *   photos, services, team, reviews, portfolio, about, loyalty
@@ -89,37 +96,53 @@ export function SalonDetailV3() {
     return () => ac.abort();
   }, [slug]);
 
-  // Track recently-viewed
+  // V3-D344 (2026-05-28): analytics + recently-viewed parity with the legacy
+  // salon render, enabling V3 to become the default (?v3 gate flipped in page.tsx).
+  // Was: an inline localStorage block that wrote plain slug STRINGS — incompatible
+  // with the RecentlyViewed reader (isValidEntry requires {slug,name,category}
+  // OBJECTS), so the feed silently dropped every V3-written entry. trackSalonView
+  // writes the correct rich-object shape, fixing the broken feed AND matching legacy.
+  const posthog = usePostHog();
   React.useEffect(() => {
-    if (!slug) return;
-    try {
-      const raw = window.localStorage.getItem("solen.recently-viewed");
-      const list: string[] = (raw ? JSON.parse(raw) : []).filter(
-        (s: unknown): s is string => typeof s === "string" && s !== slug
-      );
-      window.localStorage.setItem(
-        "solen.recently-viewed",
-        JSON.stringify([slug, ...list].slice(0, 5))
-      );
-    } catch {
-      // ignore
-    }
-  }, [slug]);
+    if (!salon?.id) return;
+
+    // Recently-viewed feed (rich object — fixes the broken slug-string format)
+    trackSalonView({
+      id: salon.id,
+      slug: salon.slug,
+      name: salon.name,
+      cover_photo_url: salon.cover_photo_url,
+      average_rating: salon.average_rating ?? undefined,
+      categories: salon.categories,
+    });
+
+    // Server-side view analytics
+    fetch("/api/analytics/track-view", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ salon_id: salon.id, source: "direct" }),
+    }).catch((err) => console.error("[SalonDetailV3] track-view failed:", err));
+
+    // Product analytics
+    posthog?.capture("salon_profile_viewed", { salon_id: salon.id, salon_name: salon.name });
+  }, [salon?.id, salon?.slug, salon?.name, salon?.cover_photo_url, salon?.average_rating, salon?.categories, posthog]);
 
   if (loading) return <LoadingSkeleton />;
   if (error || !salon) return <NotFound locale={locale} />;
 
   // Decide which sections have content → drives sticky tab nav visibility.
+  // V3-D237 (2026-05-27, golden-route): dropped `portfolio` + `loyalty` tab keys
+  // — Fresha PDP uses 5 tabs (Photos · Services · Team · Reviews · About);
+  // Portfolio folds into the hero gallery, Loyalty was Solen-only chrome.
+  // The Portfolio + Loyalty SECTIONS still render below — just no tab affordance.
   const availableSections = new Set<TabKey>();
   if ((salon.gallery_urls?.length ?? 0) > 0 || salon.cover_photo_url) availableSections.add("photos");
   if (salon.services.length > 0) availableSections.add("services");
   if (salon.staff.length > 0) availableSections.add("team");
   if (salon.review_count > 0 || (salon.average_rating ?? 0) > 0) availableSections.add("reviews");
-  if (salon.gallery_urls?.length > 0) availableSections.add("portfolio");
   if (salon.about_text_de || salon.description_de || salon.about_text_en || salon.description_en || salon.address) {
     availableSections.add("about");
   }
-  availableSections.add("loyalty"); // always shown
 
   const photos = salon.gallery_urls?.length
     ? salon.gallery_urls
@@ -134,34 +157,46 @@ export function SalonDetailV3() {
 
   const primaryCategory = (salon.categories[0] ?? "coiffeur").toLowerCase();
 
-  return (
-    // V2-D53.3 fix: pt-16 md:pt-20 pushes content below the fixed site header
-    // (~64-72px tall). bg-white substrate per §5h.3 (commerce surface). Subtle
-    // V3-tinted gradient washes mounted ABSOLUTELY inside as the first child
-    // sit between bg-white and content — produces the "light gradients on
-    // white" feel the user asked for without the full-intensity homepage
-    // atmosphere overpowering the dense commerce content.
-    <main className="relative min-h-screen overflow-hidden bg-white pt-16 pb-24 md:pt-20 md:pb-16">
-      {/* V2-D53.3 ambient gradient washes — V3 mid-tones distributed so
-          BOTH sides get a mix of warm + cool tones at each vertical band.
-          Avoids the "all green on left, all beige on right" segregation.
-          Opacity 0.16-0.22, blur 100px, saturate 1.2. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
-        {/* Top band — warm peach LEFT, cool emerald RIGHT */}
-        <div className="absolute" style={{ top: "2%", left: "-12%", width: "55%", height: "28%", background: "#F2C49B", borderRadius: "50%", opacity: 0.10, filter: "blur(110px) saturate(0.9)" }} />
-        <div className="absolute" style={{ top: "5%", right: "-15%", width: "50%", height: "28%", background: "#5BAE85", borderRadius: "50%", opacity: 0.11, filter: "blur(110px) saturate(0.9)" }} />
-        {/* Mid-upper band — terracotta LEFT, butter RIGHT */}
-        <div className="absolute" style={{ top: "28%", left: "-10%", width: "55%", height: "26%", background: "#D6754F", borderRadius: "50%", opacity: 0.09, filter: "blur(110px) saturate(0.9)" }} />
-        <div className="absolute" style={{ top: "32%", right: "-10%", width: "50%", height: "26%", background: "#F0C85A", borderRadius: "50%", opacity: 0.10, filter: "blur(110px) saturate(0.9)" }} />
-        {/* Mid-lower band — sage LEFT, rose RIGHT */}
-        <div className="absolute" style={{ top: "52%", left: "-12%", width: "55%", height: "28%", background: "#9CC0A4", borderRadius: "50%", opacity: 0.11, filter: "blur(110px) saturate(0.9)" }} />
-        <div className="absolute" style={{ top: "56%", right: "-10%", width: "50%", height: "26%", background: "#E89A88", borderRadius: "50%", opacity: 0.10, filter: "blur(110px) saturate(0.9)" }} />
-        {/* Bottom band — emerald LEFT, peach RIGHT (mirrors top for closure) */}
-        <div className="absolute" style={{ top: "76%", left: "-10%", width: "55%", height: "26%", background: "#5BAE85", borderRadius: "50%", opacity: 0.09, filter: "blur(110px) saturate(0.9)" }} />
-        <div className="absolute" style={{ top: "80%", right: "-12%", width: "55%", height: "28%", background: "#F2C49B", borderRadius: "50%", opacity: 0.10, filter: "blur(110px) saturate(0.9)" }} />
-      </div>
+  // V3-D344 (2026-05-28): JSON-LD structured data — parity with legacy salon
+  // render (generateSalonSchema). Required before V3 became the default so salon
+  // pages keep their SEO structured data. Hardened vs the legacy version: escape
+  // `<` to `<` so a salon name containing "</script>" can't break out of the
+  // script tag (XSS-safe; standard Next.js JSON-LD sanitization).
+  // SalonDetail is a structural superset of the fields generateSalonSchema reads
+  // (the schema only touches name/address/rating/photos). Cast matches legacy
+  // behavior — same runtime object the legacy JsonLd component passed.
+  const salonJsonLd = JSON.stringify(
+    generateSalonSchema(salon as unknown as Parameters<typeof generateSalonSchema>[0], locale)
+  ).replace(/</g, "\\u003c");
 
-      {/* Content layer — sits above the gradient washes via z-10 */}
+  return (
+    // V2-D53.3 fix: pt was meant to push content below the (then-believed-fixed)
+    // site header — but Header is `sticky top:0` so it occupies flow space, not
+    // viewport space; pt was just empty padding.
+    // V3-D216 (verifier #10): tighten to pt-2 / md:pt-3 (4-6px breathing). Combined
+    // with V3-D215 (Header hides on PDP-deep-scroll) this gives the Fresha
+    // "photo immediately under header" look without losing the small visual
+    // breathing room at initial paint.
+    // V3-D229 (2026-05-27, sidebar rebuild): DROPPED `overflow-hidden`. It was
+    // breaking `position: sticky` on the desktop SalonSidebar — sidebar
+    // wrapper had `sticky top-24` but couldn't pin because an ancestor with
+    // overflow-hidden creates a new "containing block" that scoped sticky
+    // to the wrong context. Result: sidebar scrolled away with the page
+    // instead of staying pinned, hiding Jetzt buchen CTA when reading
+    // services. Switched to overflow-x-clip which prevents horizontal
+    // bleed without breaking vertical sticky.
+    // bg-white substrate per §5h.3 (commerce surface).
+    <main className="relative min-h-screen overflow-x-clip bg-white pt-2 pb-24 md:pt-3 md:pb-16">
+      {/* V3-D202 (A23): ambient gradient washes block DELETED. Was 8 absolute
+          <div>s in retired warm/sage colors (peach #F2C49B, emerald #5BAE85,
+          terracotta #D6754F, butter #F0C85A, sage #9CC0A4, rose #E89A88).
+          Substrate is now pure white per V3-D193 atmosphere-revert. The
+          per-section components carry visual rhythm without ambient washes. */}
+
+      {/* V3-D344: JSON-LD structured data (escaped, parity with legacy render). */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: salonJsonLd }} />
+
+      {/* Content layer */}
       <div className="relative z-10">
 
       {/* Breadcrumb — desktop only */}
@@ -220,7 +255,7 @@ export function SalonDetailV3() {
               <SalonBuy locale={locale} slug={slug} salonName={salon.name} />
             </div>
 
-            <SalonAbout salon={salon} />
+            <SalonAbout salon={salon} locale={locale} />
 
             {/* Opening Times + Additional Info side-by-side on desktop */}
             <div className="grid gap-8 md:grid-cols-2 md:gap-10">
@@ -283,14 +318,18 @@ export function SalonDetailV3() {
 }
 
 function LoadingSkeleton() {
+  // V3-D202 (A24): swap `animate-pulse` for shimmer pattern per LoadingStates.md.
+  // Uses the same gradient + animate-shimmer pattern as <Skeleton> primitive.
+  const shimmer =
+    "bg-gradient-to-r from-s-bg-sunken via-white to-s-bg-sunken bg-[length:200%_100%] animate-shimmer";
   return (
     <main className="min-h-screen bg-white pt-20 md:pt-24">
       <div className="mx-auto w-full max-w-[1180px] md:px-6">
-        <div className="aspect-[4/3] w-full animate-pulse bg-s-bg-sunken md:aspect-[16/7] md:rounded-3xl" />
+        <div className={`aspect-[4/3] w-full ${shimmer} md:aspect-[16/7] md:rounded-card-lg`} />
       </div>
       <div className="mx-auto mt-5 w-full max-w-[1180px] px-4 md:mt-7 md:px-6">
-        <div className="h-9 w-2/3 animate-pulse rounded bg-s-bg-sunken md:h-12" />
-        <div className="mt-3 h-5 w-1/2 animate-pulse rounded bg-s-bg-sunken" />
+        <div className={`h-9 w-2/3 rounded ${shimmer} md:h-12`} />
+        <div className={`mt-3 h-5 w-1/2 rounded ${shimmer}`} />
       </div>
     </main>
   );
@@ -303,15 +342,16 @@ function NotFound({ locale }: { locale: string }) {
         <div className="font-display text-[80px] font-black leading-none text-s-ink-3/30">
           404
         </div>
-        <h1 className="font-display mt-2 text-[clamp(24px,3vw,36px)] font-bold tracking-normal text-s-ink">
-          Salon <span className="text-s-accent">nicht gefunden</span>.
+        {/* V3-D335 (overnight T3): decorative accent span on error-state heading → ink per §1.5 forbidden table (no hero accent spans). */}
+        <h1 className="font-display mt-2 text-[clamp(18px,2vw,20px)] font-semibold tracking-normal text-s-ink">
+          Salon <span className="text-s-ink">nicht gefunden</span>.
         </h1>
         <p className="font-body mt-3 text-[15px] leading-relaxed text-s-ink-2">
           Vielleicht wurde dieser Salon entfernt oder umbenannt.
         </p>
         <Link
           href={`/${locale}/search`}
-          className="font-body mt-6 inline-flex items-center gap-2 rounded-full bg-s-brand px-5 py-3 text-[14px] font-semibold text-white transition-colors hover:bg-s-brand-mid"
+          className="font-body mt-6 inline-flex items-center gap-2 rounded-full bg-s-ink px-5 py-3 text-[14px] font-semibold text-white transition-colors hover:bg-black"
         >
           Alle Salons ansehen
           <ChevronRight size={14} strokeWidth={2.5} />

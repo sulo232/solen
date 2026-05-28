@@ -57,12 +57,12 @@ export default function BookCTA({ item, locale }: BookCTAProps) {
 
   return (
     <div className="mt-6 px-1">
-      <div className="p-5 rounded-[16px] bg-gradient-to-br from-s-coral/5 to-s-amber/5 border border-s-coral/10">
+      <div className="p-5 rounded-[16px] bg-gradient-to-br from-s-ink/5 to-s-amber/5 border border-s-accent/10">
         {/* Style context */}
         {item.style_name && (
           <div className="flex items-center gap-1.5 mb-3">
-            <Sparkles size={12} className="text-s-coral" />
-            <p className="text-xs text-s-coral font-medium">{item.style_name}</p>
+            <Sparkles size={12} className="text-s-accent" />
+            <p className="text-xs text-s-accent font-medium">{item.style_name}</p>
           </div>
         )}
 
@@ -83,7 +83,7 @@ export default function BookCTA({ item, locale }: BookCTAProps) {
           </div>
           <Link
             href={href}
-            className="flex items-center gap-2 px-5 py-3 rounded-pill bg-s-coral hover:brightness-[1.06] text-white text-[11px] font-heading uppercase tracking-[.06em] transition-colors shrink-0 shadow-warm-sm"
+            className="flex items-center gap-2 px-5 py-3 rounded-pill bg-s-ink hover:brightness-[1.06] text-white text-[11px] font-heading uppercase tracking-[.06em] transition-colors shrink-0 shadow-warm-sm"
           >
             <Calendar size={14} />
             {CTA_LABELS[locale] ?? CTA_LABELS.de}

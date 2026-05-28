@@ -68,14 +68,14 @@ export default function StaffPortfolio({ staff, salonId, instagramUrl, onBookWit
         </div>
         <div className="flex items-center gap-1.5">
           {instagramUrl && (
-            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-full hover:bg-s-ink/5:bg-white/5 text-s-ink/30 hover:text-s-coral transition-colors">
+            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-full hover:bg-s-ink/5:bg-white/5 text-s-ink/30 hover:text-s-accent transition-colors">
               <Instagram size={14} />
             </a>
           )}
           {onBookWith && (
             <button
               onClick={() => onBookWith(staff.id)}
-              className="text-xs px-3 py-1.5 rounded-pill bg-s-coral text-white hover:brightness-[1.06] transition-colors"
+              className="text-xs px-3 py-1.5 rounded-pill bg-s-ink text-white hover:brightness-[1.06] transition-colors"
             >
               Book
             </button>

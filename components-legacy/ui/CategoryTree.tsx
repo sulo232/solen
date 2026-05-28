@@ -80,8 +80,8 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
           className={[
             "px-3 py-1.5 rounded-pill text-xs font-body font-medium whitespace-nowrap transition-colors duration-150 border flex items-center shrink-0",
             activeSlug === cat.slug
-              ? "bg-s-coral text-white border-s-coral"
-              : "bg-white/70 backdrop-blur-sm text-s-ink/70 border-white/60 hover:border-s-coral/50",
+              ? "bg-s-ink text-white border-s-accent"
+              : "bg-white/70 backdrop-blur-sm text-s-ink/70 border-white/60 hover:border-s-accent/50",
           ].join(" ")}
         >
           {getName(cat)}
@@ -102,7 +102,7 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
           className={[
             "flex items-center gap-1.5 py-1.5 px-2 rounded-btn text-sm font-body transition-colors cursor-pointer",
             isActive
-              ? "bg-s-coral/10 text-s-coral font-medium"
+              ? "bg-s-ink/10 text-s-accent font-medium"
               : "text-s-ink/70 hover:bg-s-bg-surface:bg-white/5",
           ].join(" ")}
           style={{ paddingLeft: `${depth * 16 + 8}px` }}

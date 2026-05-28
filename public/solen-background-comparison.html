@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Solen — background comparison · 4 patterns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Bricolage+Grotesque:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --s-brand: #133EEB;
+    --s-ink: #1A1A1A;
+    --s-ink-soft: #4B4B4B;
+    --s-ink-muted: #8A8A8A;
+    --s-border: #E5E5E5;
+    --s-border-soft: #EFEFEF;
+    --radius: 12px;
+    --hanken: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    --display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: var(--hanken); color: var(--s-ink); background: #F2F2F2; }
+  body { padding: 40px 24px 80px; min-height: 100vh; }
+  .page {
+    max-width: 1880px; margin: 0 auto;
+  }
+  .pageHead { max-width: 720px; margin: 0 auto 40px; text-align: center; }
+  .pageHead h1 { font-family: var(--display); font-size: 32px; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .pageHead p { font-size: 14px; line-height: 1.55; color: var(--s-ink-soft); }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; align-items: start; }
+  @media (max-width: 1400px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; gap: 40px; } }
+
+  .col { background: #fff; border-radius: 16px; padding: 16px 16px 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04); }
+  .colHead { padding: 4px 4px 12px; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; background: #F2F2F2; color: var(--s-ink-soft); margin-bottom: 8px; }
+  .colHead h2 { font-family: var(--display); font-size: 18px; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .colHead .lead { font-size: 12px; line-height: 1.5; color: var(--s-ink-soft); }
+  .colNotes { padding: 14px 8px 0; font-size: 11.5px; line-height: 1.5; color: var(--s-ink-soft); }
+  .colNotes b { color: var(--s-ink); }
+  .colNotes ul { padding-left: 14px; margin-top: 4px; }
+  .colNotes li { margin-bottom: 3px; }
+  .pro { color: #1E7A4A; }
+  .con { color: #B33D2C; }
+
+  /* Phone frame — 402×720 mockup */
+  .phone {
+    width: 100%; aspect-ratio: 402 / 720; border: 1px solid var(--s-border); border-radius: 16px;
+    overflow: hidden; position: relative; display: flex; flex-direction: column;
+  }
+
+  /* Banner (locked, all variants identical) */
+  .banner {
+    position: relative; width: 100%; background: var(--s-brand); color: white;
+    flex-shrink: 0;
+  }
+  .bannerInner {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 16px 24px;
+  }
+  .bannerText { font-size: 12px; font-weight: 600; }
+  .bannerPill { display: inline-flex; align-items: center; gap: 4px; background: white; color: var(--s-ink); padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+  .bannerScoop { position: absolute; inset: auto 0 0 0; height: 12px; background: var(--scoop, white); border-top-left-radius: 12px; border-top-right-radius: 12px; }
+
+  /* Header (locked) */
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px; background: var(--header-bg, white); flex-shrink: 0; }
+  .logo { font-family: var(--display); font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .logoDot { color: var(--s-brand); }
+  .menuBtn { width: 36px; height: 36px; border-radius: 9999px; border: 1px solid var(--s-border); background: white; display: flex; align-items: center; justify-content: center; }
+  .menuBtn span { display: block; width: 14px; height: 1.5px; background: var(--s-ink); position: relative; }
+  .menuBtn span:before, .menuBtn span:after { content: ""; position: absolute; left: 0; width: 14px; height: 1.5px; background: var(--s-ink); }
+  .menuBtn span:before { top: -5px; }
+  .menuBtn span:after { top: 5px; }
+
+  /* Hero (variants change BG) */
+  .hero { padding: 32px 20px 20px; background: var(--hero-bg, white); flex-shrink: 0; }
+  .heroTitle { font-family: var(--display); font-size: 32px; line-height: 0.95; letter-spacing: -0.025em; margin-bottom: 18px; }
+  .heroTitle .brand { color: var(--s-brand); display: block; }
+  .heroTitle .next { display: block; }
+
+  /* Search card (variants change CARD bg + container bg) */
+  .searchCard { background: var(--searchcard-bg, white); border: 1px solid var(--searchcard-border, var(--s-border)); border-radius: 14px; padding: 14px; box-shadow: var(--searchcard-shadow, none); margin: 0 16px 24px; }
+  .searchRow { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--s-border-soft); border-radius: 9999px; font-size: 12px; color: var(--s-ink-muted); }
+  .searchRow + .searchRow { margin-top: 6px; }
+  .searchRow svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .searchBtn { width: 100%; padding: 11px; background: var(--s-ink); color: white; border: 0; border-radius: 9999px; font-family: var(--hanken); font-size: 12px; font-weight: 600; margin-top: 8px; }
+
+  /* Recently viewed (variants change SECTION bg) */
+  .recent { padding: 16px 16px 24px; background: var(--recent-bg, white); flex-shrink: 0; }
+  .recentHead { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .recentTitle { font-family: var(--display); font-size: 14px; font-weight: 700; }
+  .recentChip { width: 24px; height: 24px; border-radius: 9999px; border: 1px solid var(--s-border); display: inline-flex; align-items: center; justify-content: center; }
+  .recentChip svg { width: 10px; height: 10px; }
+  .cards { display: flex; gap: 10px; }
+  .card { flex: 1; background: var(--card-bg, white); border: 1px solid var(--s-border-soft); border-radius: 10px; padding: 8px; }
+  .cardImg { aspect-ratio: 1 / 1; border-radius: 6px; background: linear-gradient(135deg, #DCDCDC, #EFEFEF); margin-bottom: 6px; }
+  .cardTitle { font-size: 10px; font-weight: 600; line-height: 1.2; margin-bottom: 2px; }
+  .cardMeta { font-size: 9px; color: var(--s-ink-muted); }
+
+  /* Footer */
+  .foot { margin-top: auto; padding: 16px; background: var(--foot-bg, white); border-top: 1px solid var(--s-border-soft); font-size: 10px; color: var(--s-ink-muted); text-align: center; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="pageHead">
+    <h1>How others handle the background</h1>
+    <p>Same banner, same logo, same hero — only the substrate changes. Four patterns, with the brand inspiration + tradeoff for each.</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- ============================================================ -->
+    <!-- VARIANT A: Pure white everywhere (current Solen)              -->
+    <!-- ============================================================ -->
+    <section class="col">
+      <header class="colHead">
+        <span class="badge">A · Current</span>
+        <h2>Pure white everywhere</h2>
+        <p class="lead"><b>Inspired by:</b> Linear, Vercel, Stripe Docs. The "design system everywhere" school — the canvas is infinite and disappears.</p>
+      </header>
+      <div class="phone" style="
+        --hero-bg: #FFFFFF;
+        --searchcard-bg: #FFFFFF;
+        --searchcard-border: var(--s-border);
+        --recent-bg: #FFFFFF;
+        --card-bg: #FFFFFF;
+        --foot-bg: #FFFFFF;
+        --scoop: #FFFFFF;
+        --header-bg: #FFFFFF;
+      ">
+        <div class="banner">
+          <div class="bannerInner">
+            <span class="bannerText">Sofort verfügbar — 320 Buchungen heute</span>
+            <span class="bannerPill">Salons finden →</span>
+          </div>
+          <div class="bannerScoop"></div>
+        </div>
+        <div class="header"><div class="logo">Solen<span class="logoDot">.</span></div><button class="menuBtn"><span></span></button></div>
+        <div class="hero">
+          <h1 class="heroTitle"><span class="brand">Schöner</span><span class="next">aussehen,</span><span class="next">schneller buchen.</span></h1>
+        </div>
+        <div class="searchCard">
+          <div class="searchRow">○ Service</div>
+          <div class="searchRow">○ Stadt</div>
+          <div class="searchRow">○ Zeit</div>
+          <button class="searchBtn">Solen durchsuchen</button>
+        </div>
+        <div class="recent">
+          <div class="recentHead">
+            <span class="recentTitle">Zuletzt angesehen</span>
+            <span class="recentChip">→</span>
+          </div>
+          <div class="cards">
+            <div class="card"><div class="cardImg"></div><div class="cardTitle">Salon Mara</div><div class="cardMeta">Zürich · 4.9</div></div>
+            <div class="card"><div class="cardImg"></div><div class="cardTitle">Studio Nord</div><div class="cardMeta">Basel · 4.8</div></div>
+          </div>
+        </div>
+        <div class="foot">© Solen</div>
+      </div>
+      <div class="colNotes">
+        <p><b>What it gives you:</b> infinite, clean, modern. Cobalt accents pop hard against the void. Feels "tech."</p>
+        <p style="margin-top:8px;"><b class="pro">PRO:</b> trustworthy, easy to scan, cheap to build, cards feel free-floating</p>
+        <p><b class="con">CON:</b> sterile, no visual rhythm, beauty/wellness consumers may feel it's too clinical, long pages tire the eye</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- VARIANT B: Hims-style tonal sections                          -->
+    <!-- ============================================================ -->
+    <section class="col">
+      <header class="colHead">
+        <span class="badge">B · Tonal sections</span>
+        <h2>Warm cream rhythm</h2>
+        <p class="lead"><b>Inspired by:</b> Hims, Glossier, Notion marketing. Alternating tonal bands create rhythm + warmth, especially for self-care/wellness commerce.</p>
+      </header>
+      <div class="phone" style="
+        --hero-bg: #FFF8F0;
+        --searchcard-bg: #FFFFFF;
+        --searchcard-border: #E8E0D2;
+        --searchcard-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        --recent-bg: #FFF8F0;
+        --card-bg: #FFFFFF;
+        --foot-bg: #FFFFFF;
+        --scoop: #FFF8F0;
+        --header-bg: #FFF8F0;
+      ">
+        <div class="banner">
+          <div class="bannerInner">
+            <span class="bannerText">Sofort verfügbar — 320 Buchungen heute</span>
+            <span class="bannerPill">Salons finden →</span>
+          </div>
+          <div class="bannerScoop"></div>
+        </div>
+        <div class="header"><div class="logo">Solen<span class="logoDot">.</span></div><button class="menuBtn"><span></span></button></div>
+        <div class="hero">
+          <h1 class="heroTitle"><span class="brand">Schöner</span><span class="next">aussehen,</span><span class="next">schneller buchen.</span></h1>
+        </div>
+        <div class="searchCard">
+          <div class="searchRow">○ Service</div>
+          <div class="searchRow">○ Stadt</div>
+          <div class="searchRow">○ Zeit</div>
+          <button class="searchBtn">Solen durchsuchen</button>
+        </div>
+        <div class="recent">
+          <div class="recentHead">
+            <span class="recentTitle">Zuletzt angesehen</span>
+            <span class="recentChip">→</span>
+          </div>
+          <div class="cards">
+            <div class="card"><div class="cardImg"></div><div class="cardTitle">Salon Mara</div><div class="cardMeta">Zürich · 4.9</div></div>
+            <div class="card"><div class="cardImg"></div><div class="cardTitle">Studio Nord</div><div class="cardMeta">Basel · 4.8</div></div>
+          </div>
+        </div>
+        <div class="foot">© Solen</div>
+      </div>
+      <div class="colNotes">
+        <p><b>What it gives you:</b> warm, "this is self-care" energy. Sections visually grouped. White cards float on cream, feeling premium.</p>
+        <p style="margin-top:8px;"><b class="pro">PRO:</b> matches wellness category instincts, rhythm helps long marketplace pages, white CARDS read as "actionable"</p>
+        <p><b class="con">CON:</b> warm cream + cobalt blue is a tension pairing (warm vs cool); could feel themed/dated if overused</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- VARIANT C: Subtle blue-tinted alternating                     -->
+    <!-- ============================================================ -->
+    <section class="col">
+      <header class="colHead">
+        <span class="badge">C · Brand whisper</span>
+        <h2>Cool tonal alternating</h2>
+        <p class="lead"><b>Inspired by:</b> Stripe marketing, Linear, Vercel landing. Sections alternate between pure white and a 2% brand tint — brand color whispers throughout.</p>
+      </header>
+      <div class="phone" style="
+        --hero-bg: #F5F7FF;
+        --searchcard-bg: #FFFFFF;
+        --searchcard-border: var(--s-border);
+        --searchcard-shadow: 0 2px 8px rgba(19,62,235,0.06);
+        --recent-bg: #FFFFFF;
+        --card-bg: #FFFFFF;
+        --foot-bg: #F5F7FF;
+        --scoop: #F5F7FF;
+        --header-bg: #F5F7FF;
+      ">
+        <div class="banner">
+          <div class="bannerInner">
+            <span class="bannerText">Sofort verfügbar — 320 Buchungen heute</span>
+            <span class="bannerPill">Salons finden →</span>
+          </div>
+          <div class="bannerScoop"></div>
+        </div>
+        <div class="header"><div class="logo">Solen<span class="logoDot">.</span></div><button class="menuBtn"><span></span></button></div>
+        <div class="hero">
+          <h1 class="heroTitle"><span class="brand">Schöner</span><span class="next">aussehen,</span><span class="next">schneller buchen.</span></h1>
+        </div>
+        <div class="searchCard">
+          <div class="searchRow">○ Service</div>
+          <div class="searchRow">○ Stadt</div>
+          <div class="searchRow">○ Zeit</div>
+          <button class="searchBtn">Solen durchsuchen</button>
+        </div>
+        <div class="recent">
+          <div class="recentHead">
+            <span class="recentTitle">Zuletzt angesehen</span>
+            <span class="recentChip">→</span>
+          </div>
+          <div class="cards">
+            <div class="card"><div class="cardImg"></div><div class="cardTitle">Salon Mara</div><div class="cardMeta">Zürich · 4.9</div></div>
+            <div class="card"><div class="cardImg"></div><div class="cardTitle">Studio Nord</div><div class="cardMeta">Basel · 4.8</div></div>
+          </div>
+        </div>
+        <div class="foot">© Solen</div>
+      </div>
+      <div class="colNotes">
+        <p><b>What it gives you:</b> cohesion with the brand color without being loud. Rhythm via cool tones. Still feels "tech" but with personality.</p>
+        <p style="margin-top:8px;"><b class="pro">PRO:</b> brand-coherent, rhythm without warmth-collision with cobalt, still scannable</p>
+        <p><b class="con">CON:</b> dilutes the "blue=action" semantic (90/10 rule); risks looking like every other modern SaaS</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- VARIANT D: Card-on-tinted-bg (depth via elevation)            -->
+    <!-- ============================================================ -->
+    <section class="col">
+      <header class="colHead">
+        <span class="badge">D · Cards float</span>
+        <h2>Tinted body, white cards</h2>
+        <p class="lead"><b>Inspired by:</b> Stripe Dashboard, Notion app, Booking.com. The body is a neutral off-white; every content block is a pure-white card floating on top.</p>
+      </header>
+      <div class="phone" style="
+        --hero-bg: #F6F6F6;
+        --searchcard-bg: #FFFFFF;
+        --searchcard-border: var(--s-border);
+        --searchcard-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        --recent-bg: #F6F6F6;
+        --card-bg: #FFFFFF;
+        --foot-bg: #F6F6F6;
+        --scoop: #F6F6F6;
+        --header-bg: #F6F6F6;
+      ">
+        <div class="banner">
+          <div class="bannerInner">
+            <span class="bannerText">Sofort verfügbar — 320 Buchungen heute</span>
+            <span class="bannerPill">Salons finden →</span>
+          </div>
+          <div class="bannerScoop"></div>
+        </div>
+        <div class="header"><div class="logo">Solen<span class="logoDot">.</span></div><button class="menuBtn"><span></span></button></div>
+        <div class="hero">
+          <h1 class="heroTitle"><span class="brand">Schöner</span><span class="next">aussehen,</span><span class="next">schneller buchen.</span></h1>
+        </div>
+        <div class="searchCard">
+          <div class="searchRow">○ Service</div>
+          <div class="searchRow">○ Stadt</div>
+          <div class="searchRow">○ Zeit</div>
+          <button class="searchBtn">Solen durchsuchen</button>
+        </div>
+        <div class="recent">
+          <div class="recentHead">
+            <span class="recentTitle">Zuletzt angesehen</span>
+            <span class="recentChip">→</span>
+          </div>
+          <div class="cards">
+            <div class="card"><div class="cardImg"></div><div class="cardTitle">Salon Mara</div><div class="cardMeta">Zürich · 4.9</div></div>
+            <div class="card"><div class="cardImg"></div><div class="cardTitle">Studio Nord</div><div class="cardMeta">Basel · 4.8</div></div>
+          </div>
+        </div>
+        <div class="foot">© Solen</div>
+      </div>
+      <div class="colNotes">
+        <p><b>What it gives you:</b> depth + hierarchy. Cards feel "interactive." Most utilitarian. Booking.com is the classic example.</p>
+        <p style="margin-top:8px;"><b class="pro">PRO:</b> very functional, every content block looks tappable, depth is built-in</p>
+        <p><b class="con">CON:</b> can feel grey/clinical (Booking.com criticism), needs EVERYTHING to be in cards or the page falls apart</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Recommendation panel -->
+  <section style="max-width: 880px; margin: 56px auto 0; background: white; border-radius: 16px; padding: 32px; box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04);">
+    <span class="badge" style="background:#F5F7FF; color:var(--s-brand);">Recommendation</span>
+    <h2 style="font-family: var(--display); font-size: 24px; margin: 8px 0 12px; letter-spacing: -0.01em;">B (Hims-style warm cream) if Solen leans <em>wellness</em>. C (cool blue tint) if Solen leans <em>tech utility</em>.</h2>
+    <p style="font-size: 14px; line-height: 1.6; color: var(--s-ink-soft); margin-bottom: 16px;">
+      The reason this isn't an obvious A or D pick: Solen is in the wellness/beauty marketplace category. <b>Pure white (A)</b> is what tech utilities use — it's hostile to "I'm spending money on self-care." <b>Card-on-grey (D)</b> is what Booking.com uses — works for hotels, feels clinical for facials. The interesting choice is between <b>warm (B)</b> and <b>cool-tinted (C)</b> tonal alternation.
+    </p>
+    <ul style="font-size: 13.5px; line-height: 1.6; color: var(--s-ink-soft); padding-left: 18px; margin-bottom: 16px;">
+      <li><b style="color:var(--s-ink);">Warm (B) wins if</b> you want Solen to feel personal, like Glossier-meets-Hims — the booking flow as a self-care ritual. Risk: warm+cobalt is a tension pairing; works in moderation but can clash if you push the cream too saturated.</li>
+      <li><b style="color:var(--s-ink);">Cool tint (C) wins if</b> you want Solen to feel modern + Swiss + utility-first — Booking-style ease but with brand cohesion. Risk: feels like every other 2025 SaaS landing page.</li>
+      <li><b style="color:var(--s-ink);">Pure white (A) only works if</b> you're committed to the "Linear of beauty booking" identity — minimal, fast, no decoration. Cards must do all the heavy lifting.</li>
+    </ul>
+    <p style="font-size: 13px; line-height: 1.55; color: var(--s-ink-muted); padding: 12px 14px; background: #FAFAFA; border-radius: 8px;">
+      <b style="color:var(--s-ink);">First-principles tradeoff:</b> tonal alternation buys you rhythm + emotional warmth, but costs you the brand-cobalt's "loud accent" energy (cobalt against pure white is its sharpest). It's a choice between BRAND PUNCH (A) and PAGE COMFORT (B/C).
+    </p>
+  </section>
+
+</div>
+
+</body>
+</html>

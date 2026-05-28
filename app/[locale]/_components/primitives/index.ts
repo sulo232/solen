@@ -81,11 +81,20 @@ export {
 } from "./Sheet";
 
 export {
+  // V3-D195 (2026-05-26): new singleton API + portal.
+  toast,
+  Toaster,
+  // Back-compat: ToastProvider + useToast remain for legacy callers.
   ToastProvider,
   useToast,
   type ToastTone,
   type ToastOptions,
+  type ToastAction,
 } from "./Toast";
+
+export { Skeleton, type SkeletonProps } from "./Skeleton";
+
+export { ComingSoon, type ComingSoonProps } from "./ComingSoon";
 
 export {
   Logo,
