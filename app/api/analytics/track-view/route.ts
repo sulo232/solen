@@ -34,8 +34,13 @@ export async function POST(request: NextRequest) {
   });
 
   if (error) {
-    console.error("[api/analytics/track-view]", error.message);
-    return NextResponse.json({ ok: false }, { status: 500 });
+    // V3-D345 (2026-05-28): analytics is fire-and-forget telemetry — it must NEVER
+    // 500 a salon page load. Previously a missing `salon_page_views` table
+    // (PGRST205) returned 500 on every PDP view, spamming the console. Degrade
+    // gracefully: log + return 200 ok:false so the client's tracking call is a
+    // silent no-op. To actually RECORD views, create the table (see migration note).
+    console.error("[api/analytics/track-view] view not recorded:", error.message);
+    return NextResponse.json({ ok: false, recorded: false }, { status: 200 });
   }
 
   // Set session cookie to prevent duplicate counts (expires with session)
