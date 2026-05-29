@@ -61,12 +61,13 @@ export function HeartButton({
   // second drop-shadow to mimic light catching on glass.
   return (
     <>
-      {/* V3-D73 (2026-05-18) — touch target expansion per advanced-UI doc:
-          button hit area is 44×44 (WCAG + ergonomic minimum), but the VISIBLE
-          glass circle stays 32×32 to preserve the small-deliberate-UI look.
-          Outer button is transparent + larger; inner div carries all the glass
-          styling. Hover/focus/active states scale the inner glass, not the
-          outer button (so the larger hit zone doesn't visually pulse). */}
+      {/* V3-D73 (2026-05-18): touch target expansion per advanced-UI doc.
+          Button hit area is 44×44 (WCAG + ergonomic minimum); the VISIBLE glass
+          circle is 28×28 (V3-D354: shrunk from 32 - on the narrow ~157px homepage
+          carousel cards the 32px disc read too big and landed on the subject's
+          face). Outer button is transparent + larger; inner div carries all the
+          glass styling. Hover/focus/active scale the inner glass, not the outer
+          button (so the larger hit zone doesn't visually pulse). */}
       <button
         type="button"
         onClick={toggle}
@@ -92,7 +93,7 @@ export function HeartButton({
               "0 1px 3px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.4)",
           }}
           className={cn(
-            "grid h-8 w-8 place-items-center rounded-full",
+            "grid h-7 w-7 place-items-center rounded-full",
             "transition-transform duration-200 ease-glide",
             "group-hover:scale-110 group-active:scale-[0.97] group-active:duration-[80ms]",
           )}
@@ -100,7 +101,7 @@ export function HeartButton({
           <Heart
             // V2-D43: key re-mounts SVG on each save → CSS animation restarts.
             key={popKey}
-            size={18}
+            size={16}
             strokeWidth={2.25}
             // V3-D103 (2026-05-23): heart fill aligned with universal semantic
             // --heart-active #FF3366 per brand spec. Was held over at V2 muted

@@ -3116,6 +3116,63 @@
       "mapView": "Map view",
       "gridView": "List view"
     },
+    "searchMapFab": {
+      "map": "Map",
+      "list": "List"
+    },
+    "searchChrome": {
+      "allServices": "All",
+      "popular": "Popular",
+      "walkIn": "Walk-in",
+      "openNow": "Open now",
+      "deals": "Deals",
+      "instant": "Instant book",
+      "top": "Top",
+      "topRated": "Top rated",
+      "categoriesLabel": "Categories",
+      "editSearch": "Edit search",
+      "openMap": "Open map",
+      "searchPlaceholder": "Search",
+      "fuerDich": "For you",
+      "fuerDich_deals": "Deals",
+      "fuerDich_popular": "Popular",
+      "fuerDich_new": "New",
+      "fuerDich_nearby": "Nearby",
+      "fuerDich_giftCards": "Gift cards",
+      "fuerDich_discover": "Inspo",
+      "fuerDich_loyalty": "Stamps",
+      "fuerDich_group": "Group",
+      "fuerDich_hairHistory": "History",
+      "fuerDich_walkin": "Walk-in",
+      "fuerDich_rebook": "Quick rebook",
+      "fuerDich_nailDesigner": "Stylist",
+      "fuerDich_nailDesigns": "Your designs",
+      "fuerDich_soon": "Soon"
+    },
+    "mobileMenu": {
+      "quickAccess": "Quick access",
+      "giftCards": "Gift cards",
+      "loyalty": "Loyalty card",
+      "invite": "Invite friends",
+      "help": "Help",
+      "signIn": "Sign in or register",
+      "whySolen": "Why Solen",
+      "language": "English"
+    },
+    "filterSheet": {
+      "title": "Filters",
+      "open": "Filters",
+      "openWithCount": "Filters, {count} active",
+      "close": "Close",
+      "reset": "Reset",
+      "sortHeading": "Sort",
+      "availabilityHeading": "Availability",
+      "ratingHeading": "Rating",
+      "rating45": "4.5+",
+      "rating40": "4.0+",
+      "ratingAny": "Any",
+      "apply": "Show {count} salons"
+    },
     "progress": {
       "step": "Step"
     },

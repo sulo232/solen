@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen — Features vs Filters (research + options)</title>
+<style>
+  /* ---- Locked Solen tokens (B&W chrome, Geist) ---- */
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#A8A29E;
+    --sunken:#F5F5F4; --border:#E7E5E4; --white:#fff;
+    --star:#FFC32B; --heart:#FF3366; --accent:#185CE0;
+    --r-card:16px; --r-pill:999px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+  body{
+    font-family:'Geist','Geist Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:#FAFAF9; color:var(--ink); line-height:1.4; padding:32px 20px 80px;
+  }
+  .page-head{max-width:1180px;margin:0 auto 8px;}
+  .page-head h1{font-size:22px;font-weight:600;letter-spacing:-0.015em;margin-bottom:6px;}
+  .page-head p{font-size:14px;color:var(--ink2);max-width:760px;}
+  .legend{max-width:1180px;margin:14px auto 28px;display:flex;flex-wrap:wrap;gap:8px;}
+  .legend span{font-size:11.5px;color:var(--ink2);background:var(--white);border:1px solid var(--border);
+    border-radius:var(--r-pill);padding:5px 11px;}
+  .legend b{color:var(--ink);font-weight:600;}
+
+  .grid{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:26px;align-items:flex-start;}
+
+  /* phone frame */
+  .phone{width:360px;background:var(--white);border:1px solid var(--border);border-radius:26px;
+    overflow:hidden;box-shadow:0 8px 30px rgba(50,47,44,.06);}
+  .phone .status{height:30px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 18px;font-size:11px;color:var(--ink2);font-weight:600;}
+  .phone .body{padding:10px 16px 18px;}
+
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;
+    letter-spacing:.02em;text-transform:uppercase;color:var(--ink2);margin:0 0 8px 2px;}
+  .tag.rec{color:var(--accent);}
+  .tag .dot{width:6px;height:6px;border-radius:999px;background:currentColor;}
+  .note{font-size:12px;color:var(--ink2);margin:12px 4px 0;line-height:1.45;}
+  .note b{color:var(--ink);font-weight:600;}
+
+  /* category switcher */
+  .switcher{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);
+    background:var(--sunken);border-radius:var(--r-pill);padding:7px 13px;font-size:13.5px;
+    font-weight:500;margin-bottom:10px;}
+
+  /* search bar */
+  .searchbar{display:flex;align-items:center;gap:10px;border:1px solid var(--border);
+    background:var(--white);border-radius:var(--r-pill);padding:10px 12px;
+    box-shadow:0 1px 3px rgba(50,47,44,.06);}
+  .searchbar .txt{flex:1;min-width:0;}
+  .searchbar .txt .l1{font-size:14px;font-weight:500;color:var(--ink);}
+  .searchbar .txt .l2{font-size:12.5px;color:var(--ink2);}
+  .searchbar .txt .l2 .city{color:var(--ink);font-weight:500;border-bottom:1.5px dotted var(--ink3);padding-bottom:1px;}
+  .icon-btn{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:999px;
+    border:1px solid var(--border);color:var(--ink);}
+  .icon-btn.filled{background:var(--ink);color:var(--white);border-color:var(--ink);}
+  .icon-btn.badge{position:relative;}
+  .icon-btn .cnt{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:999px;
+    background:var(--accent);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;
+    padding:0 4px;border:2px solid var(--white);}
+
+  /* feature icon row (round tiles) */
+  .feat-row{display:flex;gap:13px;overflow-x:auto;margin:14px -16px 0;padding:2px 16px 4px;
+    scrollbar-width:none;}
+  .feat-row::-webkit-scrollbar{display:none;}
+  .feat{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;width:60px;}
+  .feat .ic{width:56px;height:56px;border-radius:var(--r-card);background:var(--sunken);
+    display:grid;place-items:center;color:var(--ink);border:1px solid transparent;}
+  .feat .ic.on{background:var(--ink);color:var(--white);}
+  .feat .lb{font-size:11px;color:var(--ink2);text-align:center;line-height:1.15;}
+  .feat .ic.data{background:repeating-linear-gradient(45deg,#F5F5F4,#F5F5F4 6px,#EFEEEC 6px,#EFEEEC 12px);}
+
+  /* filter chip row */
+  .chip-row{display:flex;gap:8px;overflow-x:auto;margin:14px -16px 0;padding:2px 16px 4px;scrollbar-width:none;}
+  .chip-row::-webkit-scrollbar{display:none;}
+  .chip{flex:none;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);
+    background:var(--white);border-radius:var(--r-pill);padding:8px 13px;font-size:13px;font-weight:500;color:var(--ink);}
+  .chip.on{background:var(--ink);color:var(--white);border-color:var(--ink);}
+  .chip.lead{background:var(--sunken);}
+  .chip .cnt{background:var(--accent);color:#fff;font-size:10.5px;font-weight:700;border-radius:999px;
+    min-width:16px;height:16px;display:inline-grid;place-items:center;padding:0 4px;}
+  .chip.on .cnt{background:var(--white);color:var(--ink);}
+
+  /* full-width filter button */
+  .filter-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    border:1px solid var(--ink);background:var(--white);border-radius:var(--r-pill);
+    padding:11px;font-size:14px;font-weight:600;color:var(--ink);margin-top:14px;}
+  .filter-btn .cnt{background:var(--accent);color:#fff;font-size:11px;font-weight:700;border-radius:999px;
+    min-width:18px;height:18px;display:grid;place-items:center;padding:0 5px;}
+
+  /* result count row */
+  .count{display:flex;align-items:center;justify-content:space-between;margin-top:16px;}
+  .count .n{font-size:13px;color:var(--ink2);}
+  .count .sort{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--ink);}
+
+  /* mini result cards (2-col airbnb) */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:14px;}
+  .card .ph{aspect-ratio:1/1;border-radius:var(--r-card);background:linear-gradient(135deg,#ECEAE7,#F5F5F4);position:relative;}
+  .card .ph .h{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;}
+  .card .nm{font-size:13.5px;font-weight:500;margin-top:7px;display:flex;justify-content:space-between;gap:6px;}
+  .card .nm .rt{font-weight:400;color:var(--ink2);font-size:12.5px;white-space:nowrap;}
+  .card .mt{font-size:12px;color:var(--ink2);margin-top:1px;}
+  .card .pr{font-size:12.5px;color:var(--ink2);margin-top:3px;}
+
+  /* sheet (bottom) */
+  .sheet{border-top-left-radius:22px;border-top-right-radius:22px;background:var(--white);
+    border:1px solid var(--border);overflow:hidden;}
+  .sheet .grab{height:5px;width:38px;background:var(--border);border-radius:999px;margin:10px auto 4px;}
+  .sheet .sh-head{display:flex;align-items:center;justify-content:space-between;padding:8px 18px 14px;border-bottom:1px solid var(--border);}
+  .sheet .sh-head .t{font-size:16px;font-weight:600;}
+  .sheet .sh-head .x{width:30px;height:30px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;}
+  .sheet .sh-head .reset{font-size:13px;font-weight:500;color:var(--ink2);}
+  .sheet .sh-body{padding:6px 18px 4px;max-height:520px;overflow:auto;}
+  .grp{padding:16px 0;border-bottom:1px solid var(--border);}
+  .grp:last-child{border-bottom:none;}
+  .grp .gt{font-size:14px;font-weight:600;margin-bottom:11px;display:flex;align-items:center;gap:7px;}
+  .grp .gt .need{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;
+    color:#9A3412;background:#FEF3EC;border-radius:999px;padding:3px 7px;}
+  .grp .gt .live{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;
+    color:#166534;background:#ECFDF3;border-radius:999px;padding:3px 7px;}
+  .seg{display:flex;background:var(--sunken);border-radius:12px;padding:3px;}
+  .seg span{flex:1;text-align:center;font-size:12.5px;font-weight:500;color:var(--ink2);padding:7px 4px;border-radius:9px;}
+  .seg span.on{background:var(--white);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;}
+  .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--white);
+    border-radius:var(--r-pill);padding:8px 13px;font-size:13px;font-weight:500;color:var(--ink);}
+  .pill.on{background:var(--ink);color:var(--white);border-color:var(--ink);}
+  .range{height:34px;position:relative;margin:2px 4px 0;}
+  .range .track{position:absolute;top:15px;left:0;right:0;height:3px;background:var(--border);border-radius:9px;}
+  .range .fill{position:absolute;top:15px;left:22%;right:24%;height:3px;background:var(--ink);border-radius:9px;}
+  .range .knob{position:absolute;top:8px;width:18px;height:18px;border-radius:999px;background:var(--white);border:2px solid var(--ink);}
+  .range .k1{left:20%;} .range .k2{right:22%;}
+  .range-lbl{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink2);margin-top:2px;}
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;}
+  .toggle-row .lbl{font-size:13.5px;}
+  .sw{width:42px;height:24px;border-radius:999px;background:var(--border);position:relative;}
+  .sw.on{background:var(--ink);}
+  .sw::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:999px;background:#fff;transition:.15s;}
+  .sw.on::after{left:20px;}
+  .acc{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);font-size:14px;font-weight:500;}
+  .acc:last-child{border-bottom:none;}
+  .acc .l{display:flex;align-items:center;gap:9px;}
+  .sh-foot{display:flex;align-items:center;gap:14px;padding:13px 18px;border-top:1px solid var(--border);background:var(--white);}
+  .sh-foot .reset{font-size:14px;font-weight:600;color:var(--ink);}
+  .sh-foot .apply{flex:1;background:var(--ink);color:#fff;border-radius:var(--r-pill);padding:12px;text-align:center;font-size:14px;font-weight:600;}
+
+  /* city picker rows */
+  .city-row{display:flex;align-items:center;justify-content:space-between;padding:13px 2px;border-bottom:1px solid var(--border);}
+  .city-row:last-child{border-bottom:none;}
+  .city-row .l{display:flex;align-items:center;gap:11px;font-size:15px;}
+  .city-row .l .pin{width:34px;height:34px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;}
+  .city-row .l .sub{font-size:12px;color:var(--ink2);}
+  .city-row.locrow .l .pin{background:var(--ink);color:#fff;}
+
+  svg{display:block;}
+  .col-head{width:100%;max-width:1180px;margin:36px auto 2px;font-size:15px;font-weight:600;color:var(--ink);}
+  .col-head.sub{font-size:13px;font-weight:400;color:var(--ink2);margin-top:2px;}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>Features (icons) vs Filters — 4 layouts + the shared sheet</h1>
+  <p>You were right: round icons = <b>features the salon HAS</b> (walk-in, parking, card pay...) — browseable, like your homepage tiles. <b>Offen jetzt / Sofort / Top</b> are <b>filters</b> (toggle them to narrow results). Researched Airbnb, Uber Eats, Vivino, Beli, eBay on Mobbin — they all split it the same way. The only choice is how the two layers sit on the page. Pick one.</p>
+</div>
+<div class="legend">
+  <span><b>Airbnb</b>: icon row + sliders button to a sheet</span>
+  <span><b>Uber Eats</b>: icon row + inline filter chips</span>
+  <span><b>Vivino / Beli / eBay</b>: one Filter button to a full sheet</span>
+  <span style="background:#ECFDF3;border-color:#BBF7D0;color:#166534;"><b>LIVE</b> = works with today's data</span>
+  <span style="background:#FEF3EC;border-color:#FED7AA;color:#9A3412;"><b>NEEDS DATA</b> = new DB column first</span>
+</div>
+
+<div class="grid">
+
+  <!-- OPTION A — Airbnb -->
+  <div>
+    <span class="tag"><span class="dot"></span>Option A — Airbnb model</span>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>5G</span></div>
+      <div class="body">
+        <span class="switcher">Coiffeur
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg>
+        </span>
+        <div class="searchbar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          <div class="txt"><div class="l1">Coiffeur</div><div class="l2"><span class="city">Basel</span> · Heute</div></div>
+          <div class="icon-btn badge">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+            <span class="cnt">2</span>
+          </div>
+        </div>
+        <!-- feature icons -->
+        <div class="feat-row">
+          <div class="feat"><div class="ic on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="6" r="3"/><path d="M6 21v-2a6 6 0 0112 0v2"/></svg></div><div class="lb">Walk-in</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13l1.5-4.5A2 2 0 018.4 7h7.2a2 2 0 011.9 1.5L19 13v5h-2v-2H7v2H5z"/><circle cx="7.5" cy="16" r="1"/><circle cx="16.5" cy="16" r="1"/></svg></div><div class="lb">Parkplatz</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="4.5" r="1.8"/><path d="M9 8h6M12 8v6l3 4M12 14l-3 4M7 11h4"/></svg></div><div class="lb">Barrierefrei</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div><div class="lb">Kartenzahlung</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12.5a10 10 0 0114 0M8 15.5a6 6 0 018 0"/><circle cx="12" cy="18.5" r="1"/></svg></div><div class="lb">WLAN</div></div>
+        </div>
+        <div class="count"><span class="n">23 Salons</span><span class="sort">Empfohlen
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></span></div>
+        <div class="cards">
+          <div class="card"><div class="ph"><div class="h"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M12 20s-7-4.5-9.5-9A4.5 4.5 0 0112 5a4.5 4.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg></div></div>
+            <div class="nm"><span>Atelier Haarwerk</span><span class="rt">★ 4.9</span></div><div class="mt">Coiffeur · Basel</div><div class="pr">ab 45 CHF</div></div>
+          <div class="card"><div class="ph"></div><div class="nm"><span>Studio Lumi</span><span class="rt">★ 4.8</span></div><div class="mt">Coiffeur · Basel</div><div class="pr">ab 60 CHF</div></div>
+        </div>
+        <p class="note"><b>Icons = features.</b> The sliders button (top-right, badge 2) opens the full sheet, which holds Offen jetzt / Sofort / Top + price, distance, rating. Cleanest, most scalable, fewest things on screen.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION B — Uber Eats -->
+  <div>
+    <span class="tag"><span class="dot"></span>Option B — Uber Eats model</span>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>5G</span></div>
+      <div class="body">
+        <span class="switcher">Coiffeur
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></span>
+        <div class="searchbar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          <div class="txt"><div class="l1">Coiffeur</div><div class="l2"><span class="city">Basel</span> · Heute</div></div>
+          <div class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 20l-5.5-7h17L15 20z" /><circle cx="12" cy="6" r="3"/></svg></div>
+        </div>
+        <!-- feature icons -->
+        <div class="feat-row">
+          <div class="feat"><div class="ic on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="6" r="3"/><path d="M6 21v-2a6 6 0 0112 0v2"/></svg></div><div class="lb">Walk-in</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13l1.5-4.5A2 2 0 018.4 7h7.2a2 2 0 011.9 1.5L19 13v5h-2v-2H7v2H5z"/><circle cx="7.5" cy="16" r="1"/><circle cx="16.5" cy="16" r="1"/></svg></div><div class="lb">Parkplatz</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="4.5" r="1.8"/><path d="M9 8h6M12 8v6l3 4M12 14l-3 4M7 11h4"/></svg></div><div class="lb">Barrierefrei</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div><div class="lb">Kartenzahlung</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12.5a10 10 0 0114 0M8 15.5a6 6 0 018 0"/><circle cx="12" cy="18.5" r="1"/></svg></div><div class="lb">WLAN</div></div>
+        </div>
+        <!-- filter chips -->
+        <div class="chip-row">
+          <div class="chip lead"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filter<span class="cnt">2</span></div>
+          <div class="chip on">Offen jetzt</div>
+          <div class="chip">Sofort</div>
+          <div class="chip on">Top</div>
+          <div class="chip">Preis
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="count"><span class="n">23 Salons</span><span class="sort">Empfohlen
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></span></div>
+        <div class="cards">
+          <div class="card"><div class="ph"><div class="h"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M12 20s-7-4.5-9.5-9A4.5 4.5 0 0112 5a4.5 4.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg></div></div>
+            <div class="nm"><span>Atelier Haarwerk</span><span class="rt">★ 4.9</span></div><div class="mt">Coiffeur · Basel</div><div class="pr">ab 45 CHF</div></div>
+          <div class="card"><div class="ph"></div><div class="nm"><span>Studio Lumi</span><span class="rt">★ 4.8</span></div><div class="mt">Coiffeur · Basel</div><div class="pr">ab 60 CHF</div></div>
+        </div>
+        <p class="note"><b>Filters live on the page as chips</b> (Offen jetzt / Sofort / Top tap on/off; Preis opens a mini popover). "Filter" opens the sheet for the long tail. Most discoverable, but the busiest top.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION C — Beli one-sheet -->
+  <div>
+    <span class="tag"><span class="dot"></span>Option C — Beli (one sheet)</span>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>5G</span></div>
+      <div class="body">
+        <span class="switcher">Coiffeur
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></span>
+        <div class="searchbar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          <div class="txt"><div class="l1">Coiffeur</div><div class="l2"><span class="city">Basel</span> · Heute</div></div>
+          <div class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 20l-5.5-7h17L15 20z" /><circle cx="12" cy="6" r="3"/></svg></div>
+        </div>
+        <div class="feat-row">
+          <div class="feat"><div class="ic on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="6" r="3"/><path d="M6 21v-2a6 6 0 0112 0v2"/></svg></div><div class="lb">Walk-in</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13l1.5-4.5A2 2 0 018.4 7h7.2a2 2 0 011.9 1.5L19 13v5h-2v-2H7v2H5z"/><circle cx="7.5" cy="16" r="1"/><circle cx="16.5" cy="16" r="1"/></svg></div><div class="lb">Parkplatz</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="4.5" r="1.8"/><path d="M9 8h6M12 8v6l3 4M12 14l-3 4M7 11h4"/></svg></div><div class="lb">Barrierefrei</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div><div class="lb">Kartenzahlung</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12.5a10 10 0 0114 0M8 15.5a6 6 0 018 0"/><circle cx="12" cy="18.5" r="1"/></svg></div><div class="lb">WLAN</div></div>
+        </div>
+        <div class="filter-btn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+          Filter<span class="cnt">2</span></div>
+        <div class="count"><span class="n">23 Salons</span><span class="sort">Empfohlen
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></span></div>
+        <div class="cards">
+          <div class="card"><div class="ph"><div class="h"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M12 20s-7-4.5-9.5-9A4.5 4.5 0 0112 5a4.5 4.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg></div></div>
+            <div class="nm"><span>Atelier Haarwerk</span><span class="rt">★ 4.9</span></div><div class="mt">Coiffeur · Basel</div><div class="pr">ab 45 CHF</div></div>
+          <div class="card"><div class="ph"></div><div class="nm"><span>Studio Lumi</span><span class="rt">★ 4.8</span></div><div class="mt">Coiffeur · Basel</div><div class="pr">ab 60 CHF</div></div>
+        </div>
+        <p class="note"><b>One Filter button, everything inside the sheet</b> (Offen jetzt / Sofort / Top live there too). Minimal top chrome, but the common filters cost one extra tap.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION D — Hybrid recommended -->
+  <div>
+    <span class="tag rec"><span class="dot"></span>Option D — Hybrid (recommended)</span>
+    <div class="phone" style="border-color:var(--ink);box-shadow:0 10px 34px rgba(50,47,44,.12);">
+      <div class="status"><span>9:41</span><span>5G</span></div>
+      <div class="body">
+        <span class="switcher">Coiffeur
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></span>
+        <div class="searchbar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          <div class="txt"><div class="l1">Coiffeur</div><div class="l2"><span class="city">Basel</span> · Heute</div></div>
+          <div class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 20l-5.5-7h17L15 20z" /><circle cx="12" cy="6" r="3"/></svg></div>
+        </div>
+        <!-- feature icons -->
+        <div class="feat-row">
+          <div class="feat"><div class="ic on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="6" r="3"/><path d="M6 21v-2a6 6 0 0112 0v2"/></svg></div><div class="lb">Walk-in</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13l1.5-4.5A2 2 0 018.4 7h7.2a2 2 0 011.9 1.5L19 13v5h-2v-2H7v2H5z"/><circle cx="7.5" cy="16" r="1"/><circle cx="16.5" cy="16" r="1"/></svg></div><div class="lb">Parkplatz</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="4.5" r="1.8"/><path d="M9 8h6M12 8v6l3 4M12 14l-3 4M7 11h4"/></svg></div><div class="lb">Barrierefrei</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div><div class="lb">Kartenzahlung</div></div>
+          <div class="feat"><div class="ic data"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12.5a10 10 0 0114 0M8 15.5a6 6 0 018 0"/><circle cx="12" cy="18.5" r="1"/></svg></div><div class="lb">WLAN</div></div>
+        </div>
+        <!-- compact: Filter pill + the 3 common toggle chips -->
+        <div class="chip-row">
+          <div class="chip lead"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filter<span class="cnt">2</span></div>
+          <div class="chip on">Offen jetzt</div>
+          <div class="chip">Sofort</div>
+          <div class="chip">Top</div>
+        </div>
+        <div class="count"><span class="n">23 Salons</span><span class="sort">Empfohlen
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></span></div>
+        <div class="cards">
+          <div class="card"><div class="ph"><div class="h"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M12 20s-7-4.5-9.5-9A4.5 4.5 0 0112 5a4.5 4.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg></div></div>
+            <div class="nm"><span>Atelier Haarwerk</span><span class="rt">★ 4.9</span></div><div class="mt">Coiffeur · Basel</div><div class="pr">ab 45 CHF</div></div>
+          <div class="card"><div class="ph"></div><div class="nm"><span>Studio Lumi</span><span class="rt">★ 4.8</span></div><div class="mt">Coiffeur · Basel</div><div class="pr">ab 60 CHF</div></div>
+        </div>
+        <p class="note"><b>Best of both.</b> Features browse as icons. The 3 most-used filters (Offen jetzt / Sofort / Top) sit as quick toggle chips you tap right there. Everything else (price, distance, hair type, rating) is one tap into the Filter sheet. This reuses your existing toggle params, so it is the smallest code change too.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="col-head">The shared Filter sheet (opens from any "Filter" entry above)</div>
+<div class="col-head sub">Vivino / Beli structure: segmented sort, toggle chips, a price range, distance + rating + a category-specific group. Green = works today, orange = needs a new DB field first.</div>
+
+<div class="grid" style="margin-top:14px;">
+  <!-- FILTER SHEET -->
+  <div>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>5G</span></div>
+      <div class="sheet">
+        <div class="grab"></div>
+        <div class="sh-head"><span class="reset">Zurücksetzen</span><span class="t">Filter</span>
+          <span class="x"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M6 6l12 12M18 6L6 18"/></svg></span></div>
+        <div class="sh-body">
+          <div class="grp">
+            <div class="gt">Sortieren <span class="live">live</span></div>
+            <div class="seg"><span class="on">Empfohlen</span><span>Top bewertet</span><span>Nächste</span><span>Preis</span></div>
+          </div>
+          <div class="grp">
+            <div class="gt">Verfügbarkeit <span class="live">live</span></div>
+            <div class="pills">
+              <span class="pill on">Offen jetzt</span><span class="pill">Sofort buchbar</span>
+              <span class="pill on">Top bewertet</span><span class="pill">Walk-in</span><span class="pill">Angebot</span>
+            </div>
+          </div>
+          <div class="grp">
+            <div class="gt">Preis <span class="live">live</span></div>
+            <div class="range"><div class="track"></div><div class="fill"></div><div class="knob k1"></div><div class="knob k2"></div></div>
+            <div class="range-lbl"><span>ab 30 CHF</span><span>bis 120 CHF</span></div>
+          </div>
+          <div class="grp">
+            <div class="gt">In deiner Nähe <span class="live">live</span></div>
+            <div class="pills"><span class="pill">1 km</span><span class="pill on">2 km</span><span class="pill">5 km</span><span class="pill">10 km</span><span class="pill">Egal</span></div>
+          </div>
+          <div class="grp">
+            <div class="gt">Bewertung <span class="live">live</span></div>
+            <div class="pills"><span class="pill on">4.5+</span><span class="pill">4.0+</span><span class="pill">Egal</span></div>
+          </div>
+          <div class="grp">
+            <div class="gt">Haartyp <span class="need">needs data</span></div>
+            <div class="pills"><span class="pill">Glatt</span><span class="pill">Wellig</span><span class="pill">Lockig</span><span class="pill">Coily</span><span class="pill">Fein</span><span class="pill">Dick</span></div>
+          </div>
+          <div class="grp">
+            <div class="gt">Ausstattung <span class="need">needs data</span></div>
+            <div class="pills"><span class="pill">Parkplatz</span><span class="pill">Barrierefrei</span><span class="pill">Kartenzahlung</span><span class="pill">WLAN</span></div>
+          </div>
+        </div>
+        <div class="sh-foot"><span class="reset">Zurücksetzen</span><span class="apply">23 Salons anzeigen</span></div>
+      </div>
+    </div>
+    <p class="note"><b>Haartyp</b> is the category-specific group — it shows for Coiffeur, swaps to "Nageldesign" for Nails, etc., driven by a config map (no hardcoded category branches, per the universal-components rule).</p>
+  </div>
+
+  <!-- CITY PICKER -->
+  <div>
+    <span class="tag"><span class="dot"></span>City selection (tap "Basel" in the bar)</span>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>5G</span></div>
+      <div class="sheet">
+        <div class="grab"></div>
+        <div class="sh-head"><span style="width:60px;"></span><span class="t">Stadt</span>
+          <span class="x"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M6 6l12 12M18 6L6 18"/></svg></span></div>
+        <div class="sh-body" style="max-height:none;">
+          <div class="city-row locrow">
+            <span class="l"><span class="pin"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-6-5.3-6-10a6 6 0 1112 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></svg></span>
+              <span>In deiner Nähe<br><span class="sub">Standort verwenden</span></span></span>
+          </div>
+          <div class="city-row"><span class="l"><span class="pin"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2"/></svg></span>Basel</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.4"><path d="M5 12l4 4L19 7"/></svg></div>
+          <div class="city-row"><span class="l"><span class="pin"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2"/></svg></span>Zürich</span></div>
+          <div class="city-row"><span class="l"><span class="pin"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2"/></svg></span>Bern</span></div>
+          <div class="city-row"><span class="l"><span class="pin"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></span>Schweizweit</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="note"><b>Only 3 cities exist today</b> (Basel / Zürich / Bern) + Schweizweit, so the picker is tiny. "In deiner Nähe" uses the browser location (same data that powers the distance filter). Tapping the underlined city in the search bar opens this.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

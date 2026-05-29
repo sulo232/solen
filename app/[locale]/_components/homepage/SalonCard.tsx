@@ -4,6 +4,7 @@ import { Flame, Star } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { HeartButton } from "./HeartButton";
+import { CardName, CardMeta } from "../primitives";
 
 /**
  * SalonCard — V3 (LIVE_TRUTH §16, V2-D34 lock).
@@ -517,13 +518,17 @@ export function SalonCard({
         {/* V3-D191 (2026-05-26): name 600→500, rating 600→500, meta/nextslot explicit font-normal,
             nextslot strong stays 600 (max within-body contrast). V3-D190 sizes kept. */}
         <div className="flex items-baseline gap-2">
-          <h3 className="font-body text-[14px] font-medium leading-[1.25] tracking-[-0.01em] text-s-ink truncate min-w-0 flex-1">
+          {/* V3-D348: name anchor via <CardName> primitive (bakes text-s-ink font-medium). */}
+          <CardName as="h3" className="text-[14px] leading-[1.25] tracking-[-0.01em] truncate min-w-0 flex-1">
             {name}
-          </h3>
-          <span className="flex shrink-0 items-center gap-[3px] font-body text-[13px] font-medium tabular-nums text-s-ink">
+          </CardName>
+          {/* V3-D346 (2026-05-28): rating recedes to grey-regular — gold star carries
+              the signal; was 500/ink competing with the name. Matches the FeaturedStylists calm-down. */}
+          {/* V3-D348: rating meta via <CardMeta> primitive (bakes text-s-ink-2 font-normal). */}
+          <CardMeta className="flex shrink-0 items-center gap-[3px] text-[13px] tabular-nums">
             <Star size={11} fill="#FFC32B" stroke="none" aria-hidden />
             {rating != null ? rating.toFixed(1) : "—"}
-          </span>
+          </CardMeta>
         </div>
 
         {/* Row 2 — Address · city if available, else category label */}
@@ -533,8 +538,11 @@ export function SalonCard({
 
         {/* Row 3 — nextSlotLabel · CHF X (rating moved to Row 1 V3-D174) */}
         <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-2 truncate">
+          {/* V3-D346 (2026-05-28): nextSlot time was font-semibold text-s-ink (600/ink) —
+              bolder + darker than the salon name (500). The time was out-shouting the name.
+              Dropped to inherit grey-regular so the name is the one anchor. */}
           {nextSlotLabel && (
-            <span className="font-semibold text-s-ink">{nextSlotLabel}</span>
+            <span>{nextSlotLabel}</span>
           )}
           {nextSlotLabel && priceFromCHF != null && <span className="text-s-ink-3">{" · "}</span>}
           {priceFromCHF != null && (

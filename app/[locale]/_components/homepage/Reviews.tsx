@@ -200,7 +200,7 @@ function ReviewCard({
             />
           ))}
         </div>
-        <span className="shrink-0 font-body text-[11px] font-medium text-s-ink-3 tabular-nums">
+        <span className="shrink-0 font-body text-[11px] font-normal text-s-ink-3 tabular-nums">
           {dateText}
         </span>
       </div>
@@ -223,7 +223,7 @@ function ReviewCard({
           {review.initials}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="pointer-events-none font-body text-[13px] font-bold leading-[1.2] text-s-ink truncate">
+          <div className="pointer-events-none font-body text-[13px] font-medium leading-[1.2] text-s-ink truncate">
             {review.name}
           </div>
           {/* V2-D49l salon link — secondary tap target, z-10 above overlay */}
@@ -233,7 +233,7 @@ function ReviewCard({
             aria-label={`Salon ${review.salonName} ansehen`}
             className={cn(
               "relative z-10 mt-0.5 inline-flex items-center gap-1",
-              "font-body text-[11px] font-semibold text-s-ink-2",
+              "font-body text-[11px] font-normal text-s-ink-2",
               "transition-colors duration-150 ease-glide hover:text-s-ink",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
             )}

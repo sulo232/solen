@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen Search — Uber-style layout (Option B refined)</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#A8A29E;
+    --sunken:#F5F5F4; --border:#E7E5E4; --white:#fff;
+    --star:#FFC32B; --heart:#FF3366; --accent:#185CE0;
+    --r-card:16px; --r-pill:999px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+  body{font-family:'Geist','Geist Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:#FAFAF9;color:var(--ink);line-height:1.4;padding:30px 20px 90px;}
+  .head{max-width:1180px;margin:0 auto 6px;}
+  .head h1{font-size:21px;font-weight:600;letter-spacing:-0.015em;margin-bottom:6px;}
+  .head p{font-size:13.5px;color:var(--ink2);max-width:780px;}
+  .head p b{color:var(--ink);font-weight:600;}
+  .grid{max-width:1180px;margin:24px auto 0;display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start;}
+
+  .label{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);margin:0 0 9px 2px;display:flex;align-items:center;gap:7px;}
+  .label .dot{width:6px;height:6px;border-radius:999px;background:var(--ink);}
+  .note{font-size:12px;color:var(--ink2);margin:12px 4px 0;line-height:1.5;max-width:360px;}
+  .note b{color:var(--ink);font-weight:600;}
+  .num{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:999px;background:var(--ink);color:#fff;font-size:10px;font-weight:700;margin-right:5px;vertical-align:1px;}
+
+  .phone{width:360px;background:var(--white);border:1px solid var(--border);border-radius:26px;overflow:hidden;box-shadow:0 8px 30px rgba(50,47,44,.07);}
+  .phone .status{height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:11px;color:var(--ink2);font-weight:600;}
+  .body{padding:8px 0 18px;}
+  .pad{padding:0 16px;}
+
+  /* 1. category pills */
+  .pills{display:flex;gap:8px;overflow-x:auto;padding:4px 16px 6px;scrollbar-width:none;}
+  .pills::-webkit-scrollbar{display:none;}
+  .pill-cat{flex:none;display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:var(--r-pill);
+    border:1px solid var(--border);background:var(--white);font-size:14px;font-weight:500;color:var(--ink);}
+  .pill-cat.on{background:var(--sunken);border-color:var(--sunken);font-weight:600;}
+  .ph-ic{width:20px;height:20px;border-radius:5px;border:1.5px dashed var(--ink3);display:grid;place-items:center;color:var(--ink3);font-size:7px;font-weight:700;}
+  .pill-cat.on .ph-ic{border-color:var(--ink2);color:var(--ink2);}
+
+  /* 2. search bar */
+  .searchbar{display:flex;align-items:center;gap:11px;height:50px;margin:10px 16px 0;padding:0 8px 0 14px;
+    border:1px solid var(--border);background:var(--white);border-radius:var(--r-pill);box-shadow:0 1px 3px rgba(50,47,44,.06);}
+  .searchbar .q{flex:1;min-width:0;font-size:15px;color:var(--ink2);}
+  .map-btn{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:999px;border:1px solid var(--border);color:var(--ink);}
+
+  /* 3. filter chips */
+  .chips{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:14px 16px 4px;scrollbar-width:none;}
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{flex:none;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:var(--r-pill);
+    border:1px solid var(--border);background:var(--white);font-size:13.5px;font-weight:500;color:var(--ink);}
+  .chip.on{background:var(--ink);color:var(--white);border-color:var(--ink);}
+  .chip .ck{width:14px;height:14px;}
+  .chip .cv{opacity:.55;}
+  .chip-div{flex:none;width:1px;height:22px;background:var(--border);margin:0 2px;}
+
+  /* 4. count row */
+  .count{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0;}
+  .count .n{font-size:13px;color:var(--ink2);}
+  .count .reset{font-size:13px;font-weight:500;color:var(--ink);background:var(--sunken);border-radius:var(--r-pill);padding:7px 13px;}
+
+  /* 5. fuer dich */
+  .fd-head{display:flex;align-items:center;justify-content:space-between;padding:20px 16px 0;}
+  .fd-head .t{font-size:16px;font-weight:600;letter-spacing:-0.01em;}
+  .fd-head .arr{width:30px;height:30px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;}
+  .fd-row{display:flex;gap:14px;overflow-x:auto;padding:13px 16px 4px;scrollbar-width:none;}
+  .fd-row::-webkit-scrollbar{display:none;}
+  .fd{flex:none;display:flex;flex-direction:column;align-items:center;gap:7px;width:64px;}
+  .fd .c{width:64px;height:64px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;}
+  .fd .c .ph{width:40px;height:40px;border-radius:999px;border:1.5px dashed var(--ink3);display:grid;place-items:center;color:var(--ink3);font-size:8px;font-weight:700;text-align:center;line-height:1.1;}
+  .fd .lb{font-size:11px;color:var(--ink2);text-align:center;}
+  .fd .lb.tbd{color:var(--ink3);font-style:italic;}
+
+  /* 6. result cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:13px;padding:16px 16px 0;}
+  .card .ph{aspect-ratio:1/1;border-radius:var(--r-card);background:linear-gradient(135deg,#ECEAE7,#F5F5F4);position:relative;}
+  .card .ph .h{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;}
+  .card .nm{font-size:13.5px;font-weight:500;margin-top:7px;display:flex;justify-content:space-between;gap:6px;}
+  .card .nm .rt{font-weight:400;color:var(--ink2);font-size:12.5px;white-space:nowrap;}
+  .card .mt{font-size:12px;color:var(--ink2);margin-top:1px;}
+  .card .pr{font-size:12.5px;color:var(--ink2);margin-top:3px;}
+
+  /* annotated callout numbers down the side */
+  .stack{display:flex;flex-direction:column;gap:0;}
+  .anno{display:flex;gap:10px;align-items:flex-start;max-width:330px;margin-top:14px;}
+  .anno .n2{flex:none;display:grid;place-items:center;width:20px;height:20px;border-radius:999px;background:var(--ink);color:#fff;font-size:11px;font-weight:700;}
+  .anno .tx{font-size:12.5px;color:var(--ink2);line-height:1.5;}
+  .anno .tx b{color:var(--ink);font-weight:600;}
+
+  /* filter behaviour demo */
+  .demo{width:360px;}
+  .demo .step{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:13px;margin-bottom:11px;}
+  .demo .step .cap{font-size:11.5px;font-weight:600;color:var(--ink2);margin-bottom:9px;text-transform:uppercase;letter-spacing:.03em;}
+  .demo .minirow{display:flex;gap:7px;align-items:center;}
+  .arrow-down{display:flex;justify-content:center;color:var(--ink3);margin:-4px 0 7px;}
+
+  /* desktop note frame */
+  .deskframe{width:100%;max-width:760px;background:var(--white);border:1px solid var(--border);border-radius:18px;padding:16px 18px;}
+  .deskframe .topline{display:flex;align-items:center;gap:10px;}
+  .deskframe .searchbar{margin:12px 0 0;}
+  .alle-btn{flex:none;display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 16px;border-radius:var(--r-pill);border:1px solid var(--ink);background:var(--white);font-size:13.5px;font-weight:600;color:var(--ink);}
+
+  .col-head{width:100%;max-width:1180px;margin:38px auto 4px;font-size:15px;font-weight:600;}
+  .icons-callout{max-width:1180px;margin:14px auto 0;background:#FFFCF5;border:1px solid #FDE9C8;border-radius:14px;padding:14px 16px;font-size:13px;color:#7A5A12;}
+  .icons-callout b{color:#5A4209;}
+  svg{display:block;}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>Search page, Uber-style (your Option B, with your changes)</h1>
+  <p>Built to your notes: <b>category pills</b> on top (replacing the one "Coiffeur" dropdown), <b>search bar with a map icon inside</b>, the walk-in/parkplatz feature icons <b>removed</b>, <b>filter chips</b> where a selected one turns <b>black and floats to the left</b> (no "Filter" master pill on mobile), then a <b>Fuer dich</b> round-icon row. Dashed shapes = <b>placeholders for icons you will draw</b> (see the checklist file).</p>
+</div>
+
+<div class="grid">
+
+  <!-- MAIN MOBILE FRAME -->
+  <div class="stack">
+    <span class="label"><span class="dot"></span>Mobile — full layout</span>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>5G</span></div>
+      <div class="body">
+
+        <!-- 1 category pills -->
+        <div class="pills">
+          <div class="pill-cat"><span class="ph-ic">ICON</span>Alle</div>
+          <div class="pill-cat on"><span class="ph-ic">ICON</span>Coiffeur</div>
+          <div class="pill-cat"><span class="ph-ic">ICON</span>Barber</div>
+          <div class="pill-cat"><span class="ph-ic">ICON</span>Nails</div>
+          <div class="pill-cat"><span class="ph-ic">ICON</span>Spa</div>
+        </div>
+
+        <!-- 2 search bar -->
+        <div class="searchbar">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+          <span class="q">Suchen in Basel</span>
+          <span class="map-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>
+          </span>
+        </div>
+
+        <!-- 3 filter chips: selected = black, floated left -->
+        <div class="chips">
+          <div class="chip on">
+            <svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4L19 7"/></svg>Offen jetzt</div>
+          <div class="chip on">
+            <svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4L19 7"/></svg>Top</div>
+          <div class="chip-div"></div>
+          <div class="chip">Sofort</div>
+          <div class="chip">Preis <svg class="cv" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></div>
+          <div class="chip">Bewertung <svg class="cv" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></div>
+          <div class="chip">Sortieren <svg class="cv" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+
+        <!-- 4 count + reset -->
+        <div class="count"><span class="n">23 Salons</span>
+          <span class="reset">Zuruecksetzen</span></div>
+
+        <!-- 5 fuer dich -->
+        <div class="fd-head"><span class="t">Fuer dich</span>
+          <span class="arr"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+        <div class="fd-row">
+          <div class="fd"><div class="c"><div class="ph">ICON</div></div><div class="lb tbd">Slot 1</div></div>
+          <div class="fd"><div class="c"><div class="ph">ICON</div></div><div class="lb tbd">Slot 2</div></div>
+          <div class="fd"><div class="c"><div class="ph">ICON</div></div><div class="lb tbd">Slot 3</div></div>
+          <div class="fd"><div class="c"><div class="ph">ICON</div></div><div class="lb tbd">Slot 4</div></div>
+          <div class="fd"><div class="c"><div class="ph">ICON</div></div><div class="lb tbd">Slot 5</div></div>
+        </div>
+
+        <!-- 6 results -->
+        <div class="cards">
+          <div class="card"><div class="ph"><div class="h"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M12 20s-7-4.5-9.5-9A4.5 4.5 0 0112 5a4.5 4.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg></div></div>
+            <div class="nm"><span>Atelier Haarwerk</span><span class="rt">★ 4.9</span></div><div class="mt">Coiffeur · Basel</div><div class="pr">ab 45 CHF</div></div>
+          <div class="card"><div class="ph"></div><div class="nm"><span>Studio Lumi</span><span class="rt">★ 4.8</span></div><div class="mt">Coiffeur · Basel</div><div class="pr">ab 60 CHF</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANNOTATIONS + behaviour demo -->
+  <div style="display:flex;flex-direction:column;gap:0;max-width:360px;">
+    <span class="label"><span class="dot"></span>What changed vs Option B</span>
+    <div class="anno"><span class="n2">1</span><span class="tx"><b>Category pills</b> replace the single "Coiffeur" dropdown. Tap one to switch category (still navigates the 6 SEO routes). Active = grey fill, like Uber Eats "All".</span></div>
+    <div class="anno"><span class="n2">2</span><span class="tx"><b>Map icon lives inside the search bar</b> (right side) — replaced that share-looking icon you didn't recognise.</span></div>
+    <div class="anno"><span class="n2">3</span><span class="tx"><b>Walk-in / Parkplatz feature icons removed.</b> No feature row under the search.</span></div>
+    <div class="anno"><span class="n2">4</span><span class="tx"><b>Filter chips, no master "Filter" pill on mobile.</b> Tap a chip: it turns <b>black</b> and floats to the <b>left</b>. Dropdown chips (Preis, Bewertung, Sortieren) open their own small sheet.</span></div>
+    <div class="anno"><span class="n2">5</span><span class="tx"><b>Fuer dich</b> round-icon row after the filters (Uber home pattern). Content is your call — see the checklist.</span></div>
+
+    <span class="label" style="margin-top:24px;"><span class="dot"></span>Filter chip behaviour</span>
+    <div class="demo">
+      <div class="step"><div class="cap">Rest — not selected</div>
+        <div class="minirow"><div class="chip">Offen jetzt</div><div class="chip">Sofort</div><div class="chip">Top</div></div></div>
+      <div class="arrow-down"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+      <div class="step"><div class="cap">Tap "Top" — turns black, floats left</div>
+        <div class="minirow"><div class="chip on"><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4L19 7"/></svg>Top</div><div class="chip-div"></div><div class="chip">Offen jetzt</div><div class="chip">Sofort</div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="col-head">Desktop — keep an "Alle Filter" button (optional, your "maybe on pc keep it")</div>
+<div class="grid" style="margin-top:12px;">
+  <div class="deskframe">
+    <div class="pills" style="padding:0;">
+      <div class="pill-cat"><span class="ph-ic">ICON</span>Alle</div>
+      <div class="pill-cat on"><span class="ph-ic">ICON</span>Coiffeur</div>
+      <div class="pill-cat"><span class="ph-ic">ICON</span>Barber</div>
+      <div class="pill-cat"><span class="ph-ic">ICON</span>Nails</div>
+      <div class="pill-cat"><span class="ph-ic">ICON</span>Spa</div>
+      <div class="pill-cat"><span class="ph-ic">ICON</span>Makeup</div>
+      <div class="pill-cat"><span class="ph-ic">ICON</span>Waxing</div>
+    </div>
+    <div class="searchbar" style="max-width:460px;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <span class="q">Suchen in Basel</span>
+      <span class="map-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:13px;flex-wrap:wrap;">
+      <div class="alle-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Alle Filter</div>
+      <div class="chip on"><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4L19 7"/></svg>Offen jetzt</div>
+      <div class="chip on"><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4L19 7"/></svg>Top</div>
+      <div class="chip">Sofort</div>
+      <div class="chip">Preis <svg class="cv" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="chip">Bewertung <svg class="cv" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M6 9l6 6 6-6"/></svg></div>
+    </div>
+    <p class="note">On desktop there's room, so an <b>"Alle Filter"</b> button can sit at the left of the chip row and open the full sheet. On mobile it's dropped — the chips alone carry it.</p>
+  </div>
+</div>
+
+<div class="icons-callout">
+  <b>Icons you need to draw</b> (the dashed placeholders): full checklist + sizes in
+  <b>_design-system/_icons-to-make.md</b>. Two sets: 7 category-pill icons (~20px line, B&W) and 4-6 "Fuer dich" round icons (~40px, B&W). The "Fuer dich" content is still an open question for you (Angebote / Beliebt / Neu / In deiner Naehe / Geschenkkarten?).
+</div>
+
+</body>
+</html>

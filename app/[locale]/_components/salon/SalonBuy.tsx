@@ -36,7 +36,7 @@ export function SalonBuy({
     return (
       <div className="flex items-center gap-3">
         <div className="min-w-0 flex-1">
-          <div className="font-body text-[14px] font-semibold text-s-ink">
+          <div className="font-body text-[14px] font-medium text-s-ink">
             Gutscheine
           </div>
           <div className="font-body mt-0.5 text-[12px] leading-snug text-s-ink-3">
@@ -63,7 +63,7 @@ export function SalonBuy({
           <Gift size={24} strokeWidth={2} className="text-s-ink md:h-7 md:w-7" />
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="font-body text-[15px] font-bold tracking-tight text-s-ink md:text-[16px]">
+          <h3 className="font-body text-[15px] font-medium tracking-tight text-s-ink md:text-[16px]">
             Gutscheine
           </h3>
           <p className="mt-0.5 text-[13px] text-s-ink-3 md:text-[14px]">

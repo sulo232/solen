@@ -3099,6 +3099,63 @@
       "mapView": "Vue carte",
       "gridView": "Vue liste"
     },
+    "searchMapFab": {
+      "map": "Carte",
+      "list": "Liste"
+    },
+    "searchChrome": {
+      "allServices": "Tout",
+      "popular": "Populaire",
+      "walkIn": "Walk-in",
+      "openNow": "Ouvert",
+      "deals": "Offres",
+      "instant": "Reservation directe",
+      "top": "Top",
+      "topRated": "Mieux notes",
+      "categoriesLabel": "Categories",
+      "editSearch": "Modifier la recherche",
+      "openMap": "Ouvrir la carte",
+      "searchPlaceholder": "Rechercher",
+      "fuerDich": "Pour vous",
+      "fuerDich_deals": "Offres",
+      "fuerDich_popular": "Populaire",
+      "fuerDich_new": "Nouveau",
+      "fuerDich_nearby": "A proximite",
+      "fuerDich_giftCards": "Cartes cadeaux",
+      "fuerDich_discover": "Inspo",
+      "fuerDich_loyalty": "Fidelite",
+      "fuerDich_group": "Groupe",
+      "fuerDich_hairHistory": "Historique",
+      "fuerDich_walkin": "Sans RDV",
+      "fuerDich_rebook": "Re-reserver",
+      "fuerDich_nailDesigner": "Styliste",
+      "fuerDich_nailDesigns": "Tes designs",
+      "fuerDich_soon": "Bientot"
+    },
+    "mobileMenu": {
+      "quickAccess": "Acces rapide",
+      "giftCards": "Cartes cadeaux",
+      "loyalty": "Carte de fidelite",
+      "invite": "Inviter des amis",
+      "help": "Aide",
+      "signIn": "Se connecter ou s'inscrire",
+      "whySolen": "Pourquoi Solen",
+      "language": "Francais"
+    },
+    "filterSheet": {
+      "title": "Filtres",
+      "open": "Filtres",
+      "openWithCount": "Filtres, {count} actifs",
+      "close": "Fermer",
+      "reset": "Reinitialiser",
+      "sortHeading": "Trier",
+      "availabilityHeading": "Disponibilite",
+      "ratingHeading": "Note",
+      "rating45": "4.5+",
+      "rating40": "4.0+",
+      "ratingAny": "Peu importe",
+      "apply": "Afficher {count} salons"
+    },
     "progress": {
       "step": "Étape"
     },

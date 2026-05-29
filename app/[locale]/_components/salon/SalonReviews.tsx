@@ -56,7 +56,7 @@ export function SalonReviews({
             />
           ))}
         </div>
-        <span className="font-body text-[18px] font-bold tracking-tight text-s-ink md:text-[20px]">
+        <span className="font-body text-[18px] font-semibold tracking-tight text-s-ink md:text-[20px]">
           {average?.toFixed(1) ?? "—"}
         </span>
         <span className="font-body text-[13px] text-s-ink-3">
@@ -135,7 +135,7 @@ function ReviewCard({ review }: { review: Review }) {
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="font-body truncate text-[13px] font-semibold text-s-ink md:text-[14px]">
+          <div className="font-body truncate text-[13px] font-medium text-s-ink md:text-[14px]">
             {displayName}
           </div>
           <div className="font-body text-[11px] text-s-ink-3 md:text-[12px]">
@@ -170,7 +170,7 @@ function ReviewCard({ review }: { review: Review }) {
             <button
               type="button"
               onClick={() => setShowFull(true)}
-              className="font-body mt-1 text-[13px] font-semibold text-s-ink hover:underline"
+              className="font-body mt-1 text-[13px] font-medium text-s-ink hover:underline"
             >
               Mehr lesen
             </button>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — black header v2 (bigger category, search below, no bell)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap');
+  :root{ --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F5F5F4; --border:#E7E5E4; --star:#FFC32B; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Geist',system-ui,sans-serif;background:#E4E4E4;color:var(--ink);-webkit-font-smoothing:antialiased;padding:28px 16px 70px}
+  .wrap{max-width:980px;margin:0 auto}
+  h1{font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:6px}
+  .lede{font-size:13.5px;color:#555;max-width:820px;margin-bottom:22px;line-height:1.5}
+  .row2{display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap}
+  .colcap{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#666;margin-bottom:10px;text-align:center}
+
+  .phone{width:402px;background:#fff;border-radius:30px;overflow:hidden;box-shadow:0 20px 55px rgba(0,0,0,.18);border:1px solid #d2d2d2}
+
+  /* ===== BLACK HEADER PANEL (logo + category only; no bell, no search) ===== */
+  .blk{background:#0A0A0A;border-radius:0 0 26px 26px;padding:16px 18px 16px;color:#fff}
+  .top{display:flex;align-items:center;gap:12px}
+  .logo{font-size:22px;font-weight:700;letter-spacing:-0.02em;color:#fff}
+  .top .sp{flex:1}
+  .ham{width:26px;height:26px;color:#fff;flex:0 0 auto}
+  /* BIGGER category bar - sized to read alongside the logo + hamburger */
+  .cats{display:flex;gap:18px;margin-top:18px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 87%,transparent);mask-image:linear-gradient(90deg,#000 87%,transparent)}
+  .cat{font-size:17px;font-weight:500;color:rgba(255,255,255,.55);white-space:nowrap;padding-bottom:8px;position:relative;line-height:1}
+  .cat.on{color:#fff;font-weight:600}
+  .cat.on::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2.5px;background:#fff;border-radius:2px}
+
+  /* ===== WHITE CONTENT ===== */
+  .body{padding:16px 16px 20px}
+  /* search now lives here, underneath the black header */
+  .srch{border:1px solid var(--border);border-radius:16px;padding:13px 14px;display:flex;align-items:center;gap:11px;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+  .srch .mag{width:18px;height:18px;color:#6B6B6B;flex:0 0 auto}
+  .srch .ph{display:flex;flex-direction:column;line-height:1.15;flex:1}
+  .srch .ph b{font-size:14px;font-weight:600;color:#0A0A0A}
+  .srch .ph s{font-size:11.5px;color:#6B6B6B;text-decoration:none}
+  .srch .map{width:21px;height:21px;color:#0A0A0A;flex:0 0 auto}
+
+  .filters{display:flex;gap:8px;margin-top:14px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent)}
+  .fchip{white-space:nowrap;border:1px solid var(--border);border-radius:999px;padding:8px 13px;font-size:13px;color:#0A0A0A;background:#fff}
+
+  /* fuer dich (NO title) */
+  .fd{display:flex;gap:16px;margin-top:18px;overflow:hidden}
+  .tile{width:64px;display:flex;flex-direction:column;align-items:center;gap:6px}
+  .circ{width:60px;height:60px;border-radius:50%;background:var(--sunken);display:grid;place-items:center}
+  .circ img{width:44px;height:44px;object-fit:contain}
+  .tlab{font-size:12px;color:#6B6B6B;text-align:center;white-space:nowrap}
+
+  .rhead{display:flex;justify-content:space-between;align-items:center;margin:20px 0 13px}
+  .rhead b{font-size:16px;font-weight:600;letter-spacing:-0.01em}
+  .rhead s{font-size:13px;color:#6B6B6B;text-decoration:none;display:inline-flex;gap:4px;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 11px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+  .card .ph{aspect-ratio:1;border-radius:18px;background:#E8E8E8 center/cover no-repeat;position:relative;box-shadow:0 12px 26px rgba(0,0,0,.05)}
+  .card .heart{position:absolute;top:9px;right:9px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+  .card .heart svg{width:15px;height:15px;color:#0A0A0A}
+  .card .nm{display:flex;justify-content:space-between;gap:6px;margin-top:9px;align-items:baseline}
+  .card .nm b{font-size:14px;font-weight:600;letter-spacing:-0.01em}
+  .card .nm i{font-size:12.5px;color:#0A0A0A;font-style:normal;display:inline-flex;gap:3px;align-items:center}
+  .card .mt{font-size:12px;color:#6B6B6B;margin-top:3px}
+  .card .pr{font-size:12px;color:#6B6B6B;margin-top:2px}
+
+  /* homepage mini */
+  .mini{width:300px}
+  .citybar{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:9px 14px;font-size:13px;box-shadow:0 6px 16px rgba(0,0,0,.05);margin:0 14px}
+  .citybar .flag{width:18px;height:13px;border-radius:2px;background:#D52B1E;position:relative;flex:0 0 auto}
+  .citybar .flag::after{content:"+";position:absolute;inset:0;color:#fff;font-weight:800;font-size:11px;display:grid;place-items:center}
+  .citybar b{font-weight:600}.citybar s{color:#6B6B6B;text-decoration:none}
+  .mini .phone{width:300px}
+  .mini .hp-h{display:flex;align-items:center;padding:14px 14px 10px}
+  .mini .hp-h .sp{flex:1}
+  .mini .ti{width:23px;height:23px;color:#0A0A0A}
+  .mini .hero{margin:14px 14px 0;border-radius:18px;height:120px;background:linear-gradient(135deg,#1a1a1a,#3a3a3a);color:#fff;display:flex;align-items:flex-end;padding:14px;font-size:17px;font-weight:700}
+  .note{font-size:12px;color:#777;text-align:center;margin-top:8px;line-height:1.45}
+
+  .tradeoffs{margin-top:28px;background:#fff;border:1px solid #ddd;border-radius:16px;padding:18px 20px;font-size:13px;max-width:820px;line-height:1.5}
+  .tradeoffs h3{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#888;margin-bottom:10px}
+  .tradeoffs ul{margin:0 0 0 18px}.tradeoffs li{margin-bottom:7px}
+  .tradeoffs .g{color:#0A7D33;font-weight:600}.tradeoffs .r{color:#b42318;font-weight:600}
+  .delta{background:#0A0A0A;color:#fff;border-radius:12px;padding:12px 16px;font-size:12.5px;max-width:820px;margin-bottom:20px;line-height:1.5}
+  .delta b{color:#FFD27A}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Black header v2 &middot; category pages</h1>
+  <div class="delta"><b>Changes from v1:</b> bell removed &middot; category bar bigger (17px, sized to sit alongside the logo + hamburger) &middot; search bar moved DOWN onto the white area under the black header &middot; filters unchanged &middot; Fuer-dich title still removed.</div>
+  <p class="lede">So the black header is now a clean nav bar: <b>logo + hamburger + the bigger category bar</b>, rounded bottom corners. Everything else (search, filters, icons, results) lives on white below it.</p>
+
+  <div class="row2">
+
+    <!-- CATEGORY PAGE -->
+    <div>
+      <div class="colcap">Category page (/coiffeur)</div>
+      <div class="phone">
+        <!-- BLACK PANEL: logo + hamburger + bigger category bar -->
+        <div class="blk">
+          <div class="top">
+            <div class="logo">Solen</div>
+            <div class="sp"></div>
+            <svg class="ham" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </div>
+          <div class="cats">
+            <span class="cat on">Coiffeur</span>
+            <span class="cat">Barber</span>
+            <span class="cat">Nails</span>
+            <span class="cat">Spa</span>
+            <span class="cat">Makeup</span>
+            <span class="cat">Waxing</span>
+          </div>
+        </div>
+        <!-- WHITE BODY -->
+        <div class="body">
+          <!-- search underneath the black header -->
+          <div class="srch">
+            <svg class="mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <div class="ph"><b>Suchen</b><s>Schweizweit</s></div>
+            <svg class="map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+          </div>
+          <!-- filters as-is -->
+          <div class="filters">
+            <span class="fchip">Offen jetzt</span>
+            <span class="fchip">Sofort buchbar</span>
+            <span class="fchip">Top bewertet</span>
+          </div>
+          <!-- Fuer dich: NO title -->
+          <div class="fd">
+            <div class="tile"><div class="circ"><img src="/icons/fuer-dich/treueprogramm.png"></div><div class="tlab">Stempel</div></div>
+            <div class="tile"><div class="circ"><img src="/icons/fuer-dich/entdecken.png"></div><div class="tlab">Inspo</div></div>
+            <div class="tile"><div class="circ"><img src="/icons/fuer-dich/gruppe.png"></div><div class="tlab">Gruppe</div></div>
+            <div class="tile"><div class="circ"><img src="/icons/fuer-dich/haar-verlauf.png"></div><div class="tlab">Verlauf</div></div>
+          </div>
+          <div class="rhead"><b>4 Salons</b><s>Beliebteste &#9662;</s></div>
+          <div class="grid">
+            <div class="card"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=420&q=70')"><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div><div class="nm"><b>Atelier Haarwerk</b><i><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>4.8</i></div><div class="mt">Coiffeur &middot; Grossbasel</div><div class="pr">ab 80 CHF</div></div>
+            <div class="card"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=420&q=70')"><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div><div class="nm"><b>Salon Lumiere</b><i><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>4.9</i></div><div class="mt">Coiffeur &middot; Grossbasel</div><div class="pr">ab 95 CHF</div></div>
+            <div class="card"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=420&q=70')"><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div><div class="nm"><b>Coiffure Belle</b><i><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>4.7</i></div><div class="mt">Coiffeur &middot; Kleinbasel</div><div class="pr">ab 70 CHF</div></div>
+            <div class="card"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=420&q=70')"><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div><div class="nm"><b>Studio Kamm</b><i><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>4.8</i></div><div class="mt">Coiffeur &middot; Gundeldingen</div><div class="pr">ab 110 CHF</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOMEPAGE (keeps city selector) -->
+    <div class="mini">
+      <div class="colcap">Homepage (keeps city selector)</div>
+      <div class="phone">
+        <div class="hp-h">
+          <div class="logo" style="color:#0A0A0A;font-size:20px">Solen</div><div class="sp"></div>
+          <svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </div>
+        <div class="citybar"><span class="flag"></span><b>Basel</b> <s>&middot; Standort aendern</s><div style="flex:1"></div><span style="color:#6B6B6B">&#9662;</span></div>
+        <div class="hero">Buche deinen<br>Termin</div>
+        <div style="padding:14px;font-size:12px;color:#999">Top auf Solen &middot; In der Naehe &middot; ...</div>
+      </div>
+      <div class="note">City selector stays on the homepage only.<br>(bell lives in the hamburger menu now)</div>
+    </div>
+
+  </div>
+
+  <div class="tradeoffs">
+    <h3>My read</h3>
+    <ul>
+      <li><span class="g">Cleaner split:</span> black header = pure navigation (brand + categories + menu). White below = the search-and-browse task. That's a strong, legible hierarchy - clearer than v1 where search sat inside the black.</li>
+      <li><span class="g">Bigger category bar earns the black panel</span> - it's now the hero of the header, not a faint strip, so the dark slab has a real job.</li>
+      <li><span class="r">Bigger tabs = fewer visible:</span> at 17px only ~3-4 of the 6 categories show before scroll. Fine, but the active one should always start at the left so users know where they are.</li>
+      <li><span class="r">Notifications:</span> bell removed -> must surface inside the hamburger menu (with a dot when unread) so users don't lose it.</li>
+      <li><span class="r">Still a brand shift:</span> the black header changes the whole app's feel. Decide if it's category-pages-only or the new global language before building for real.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

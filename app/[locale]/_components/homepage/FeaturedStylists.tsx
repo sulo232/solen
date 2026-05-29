@@ -247,23 +247,31 @@ export default function FeaturedStylists() {
                       <h3 className="truncate font-body text-[15px] font-medium leading-[1.2] tracking-[-0.01em] text-s-ink">
                         {s.name}
                       </h3>
-                      <span className="inline-flex shrink-0 items-baseline gap-1 font-body text-[13px] font-medium text-s-ink tabular-nums">
+                      {/* V3-D346 (2026-05-28): rating recedes to grey-regular — the gold star
+                          carries the signal; the number competing at 500/ink was one of 4 dark
+                          elements fighting the name. Uber keeps rating light grey. */}
+                      <span className="inline-flex shrink-0 items-baseline gap-1 font-body text-[13px] font-normal text-s-ink-2 tabular-nums">
                         <Star size={11} fill="#FFC32B" stroke="none" aria-hidden className="translate-y-[1.5px]" />
                         {s.rating.toFixed(1)}
                         <span className="font-normal text-[11px] text-s-ink-3">({s.reviewCount})</span>
                       </span>
                     </div>
-                    {/* Row 2 — distance (bold) · specialty · city */}
+                    {/* Row 2 — distance · specialty · city, ALL one flat grey meta line.
+                        V3-D346 (2026-05-28): distance was font-semibold text-s-ink (600/ink) —
+                        BOLDER than the name (500). Dropped to inherit the grey-regular row so
+                        metadata stops out-shouting the anchor. */}
                     <div className="truncate font-body text-[12px] font-normal leading-[1.35] text-s-ink-2">
-                      <span className="font-semibold text-s-ink">{s.distance}</span>
+                      <span>{s.distance}</span>
                       <span> · {CATEGORY_LABELS[s.specialty]} · {s.city}</span>
                     </div>
                     {/* Row 3 — availability pill (open = ink text, full = muted) */}
                     <span
                       className={cn(
                         "mt-1 inline-flex items-center gap-1 rounded-full bg-s-bg-sunken px-2 py-0.5",
-                        "font-body text-[11px] font-semibold",
-                        s.availability.state === "open" ? "text-s-ink" : "text-s-ink-3",
+                        /* V3-D346: pill text 600→500; the bg already gives it presence, no need to
+                           add a 4th heavy ink element. */
+                        "font-body text-[11px] font-medium",
+                        s.availability.state === "open" ? "text-s-ink-2" : "text-s-ink-3",
                       )}
                     >
                       <Clock size={10} strokeWidth={2.5} aria-hidden />

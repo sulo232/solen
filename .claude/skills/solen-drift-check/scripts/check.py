@@ -256,6 +256,20 @@ DECORATION_DOT_EXEMPT_HINTS = (
     "items-center justify-center",  # likely counter/badge
 )
 
+# A13 — card text hierarchy (V3-D346, 2026-05-28).
+# Per LOCKFILE §2.5 rule A13: inside a card/list-item, exactly ONE ink anchor
+# (the name = font-medium); all meta recedes to font-normal text-s-ink-2.
+# font-bold (700) is reserved for Hero H1 ONLY (clamp(28,7vw,64)px).
+# Static proxy (a line-scanner can't count anchors-per-card structurally, so we
+# flag the reliable signal): `font-bold` paired with EITHER a small explicit
+# pixel size (<22px = not hero) OR a meta ink color (s-ink-2 / s-ink-3, which
+# should never be bold). Hero (font-bold + text-[clamp(...)] + text-s-ink) is
+# not matched. Full "one anchor per card" stays runtime-verified via the
+# getComputedStyle audit documented in the rule.
+FONT_BOLD_RE = re.compile(r"\bfont-bold\b")
+SMALL_TEXT_PX_RE = re.compile(r"\btext-\[(\d+)px\]")
+META_INK_RE = re.compile(r"\btext-s-ink-[23]\b")
+
 # B1 — Empty onClick handlers
 EMPTY_ONCLICK_RE = re.compile(r"onClick=\{\(\)\s*=>\s*\{\s*\}\}")
 
@@ -512,6 +526,20 @@ def scan_file(path: Path, root: Path | None = None) -> list[Finding]:
                     file=rel, line=ln_no, rule="INFO A12: eyebrow pseudo-dot",
                     snippet=line,
                     recommendation="Per LOCKFILE §2.5 Eyebrow decoration policy (V3-D331): drop the `before:rounded-full before:bg-s-*` pseudo-element decoration. Eyebrow is plain text only.",
+                ))
+
+        # A13 — card text hierarchy: font-bold outside Hero (V3-D346).
+        # font-bold on small (<22px) text OR on meta ink (s-ink-2/3) = over-bold
+        # card meta. Hero clamp sizes + text-s-ink anchors are not matched.
+        if FONT_BOLD_RE.search(line):
+            px = SMALL_TEXT_PX_RE.search(line)
+            small_bold = bool(px and int(px.group(1)) < 22)
+            meta_bold = bool(META_INK_RE.search(line))
+            if small_bold or meta_bold:
+                findings.append(Finding(
+                    file=rel, line=ln_no, rule="INFO A13: font-bold on non-hero/meta text",
+                    snippet=line,
+                    recommendation="Per LOCKFILE §2.5 rule A13 (card text hierarchy, V3-D346): font-bold (700) is reserved for Hero H1. Card/list-item names use font-medium (500) as the single ink anchor; meta uses font-normal text-s-ink-2. Drop font-bold -> font-medium (if this is the name) or font-normal text-s-ink-2 (if this is meta). Or use the <CardName>/<CardMeta> primitives.",
                 ))
 
     return findings

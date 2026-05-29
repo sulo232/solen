@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen — Menu: dry vs enriched</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#A8A29E;
+    --sunken:#F5F5F4; --border:#E7E5E4; --surface:#fff; --base:#FAFAF9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+  body{font-family:'Geist','Geist Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:#EEEDEB;color:var(--ink);line-height:1.4;padding:28px 16px 80px;}
+  h1{font-size:20px;font-weight:600;letter-spacing:-0.015em;margin-bottom:4px;}
+  .sub{font-size:13.5px;color:var(--ink2);max-width:720px;margin-bottom:8px;}
+  .note-top{font-size:12.5px;color:var(--ink2);max-width:720px;margin-bottom:26px;}
+  .note-top b{color:var(--ink);font-weight:600;}
+  .row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start;}
+  .col{flex:0 0 300px;}
+  .tag{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--ink2);margin:0 0 10px 4px;}
+  .tag.rec{color:#185CE0;}
+  .tag .dot{width:6px;height:6px;border-radius:999px;background:currentColor;}
+  /* phone frame */
+  .phone{background:var(--base);border:1px solid var(--border);border-radius:26px;overflow:hidden;
+    box-shadow:0 18px 40px rgba(0,0,0,.08);}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 6px;}
+  .logo{font-size:21px;font-weight:600;letter-spacing:-.01em;}
+  .x{width:24px;height:24px;color:var(--ink);}
+  .body{padding:6px 18px 22px;}
+  /* city chip */
+  .city{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(10,10,10,.06);
+    background:var(--surface);border-radius:999px;padding:6px 14px 6px 6px;font-size:14px;font-weight:600;
+    box-shadow:0 1px 2px rgba(0,0,0,.03);margin:8px 0 18px;}
+  .flag{width:22px;height:22px;border-radius:999px;background:#DA291C;flex:none;position:relative;}
+  .flag::before,.flag::after{content:"";position:absolute;background:#fff;}
+  .flag::before{width:11px;height:3px;top:9.5px;left:5.5px;}
+  .flag::after{width:3px;height:11px;top:5.5px;left:9.5px;}
+  /* card list */
+  .card{background:var(--surface);border-radius:18px;box-shadow:0 1px 3px rgba(26,18,9,.05);overflow:hidden;}
+  .seclabel{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);
+    margin:18px 4px 8px;}
+  .mrow{display:flex;align-items:center;gap:13px;padding:14px 16px;border-bottom:1px solid rgba(10,10,10,.06);
+    font-size:15px;}
+  .mrow:last-child{border-bottom:none;}
+  .mrow .ic{width:21px;height:21px;color:var(--ink2);flex:none;}
+  .mrow .lbl{flex:1;font-weight:500;}
+  .mrow.primary .lbl{font-weight:700;}
+  .mrow .chev{width:18px;height:18px;color:var(--ink3);flex:none;}
+  /* dry version rows (no icons) */
+  .dry .mrow{gap:0;}
+  .dry .mrow .lbl{font-weight:600;}
+  /* stoebern chips */
+  .h2{font-size:18px;font-weight:600;letter-spacing:-.02em;margin:20px 0 10px;}
+  .chips{display:flex;gap:8px;overflow:hidden;flex-wrap:wrap;}
+  .chip{border:1px solid rgba(10,10,10,.06);background:var(--surface);border-radius:999px;
+    padding:9px 15px;font-size:13px;font-weight:600;white-space:nowrap;}
+  /* partner card */
+  .partner{display:flex;align-items:center;justify-content:space-between;gap:14px;
+    background:var(--surface);border-radius:16px;padding:15px;margin-top:14px;box-shadow:0 1px 3px rgba(26,18,9,.05);}
+  .partner .pt{font-size:15px;font-weight:700;}
+  .partner .ps{font-size:12px;font-weight:500;color:var(--ink3);margin-top:2px;}
+  .partner .pa{width:32px;height:32px;border-radius:999px;background:var(--ink);color:#fff;display:grid;place-items:center;flex:none;}
+  .partner .pa svg{width:16px;height:16px;}
+  /* quick grid (variant B) */
+  .qgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .qtile{background:var(--surface);border:1px solid rgba(10,10,10,.05);border-radius:16px;padding:14px;
+    display:flex;flex-direction:column;gap:10px;box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  .qtile .ic{width:24px;height:24px;color:var(--ink);}
+  .qtile .lbl{font-size:13.5px;font-weight:600;}
+  .qtile .meta{font-size:11.5px;color:var(--ink3);margin-top:-4px;}
+  .note{font-size:12.5px;color:var(--ink2);margin:12px 4px 0;line-height:1.5;}
+  .note b{color:var(--ink);font-weight:600;}
+  .added{color:#185CE0;font-weight:600;}
+</style>
+</head>
+<body>
+  <h1>Hamburger menu — "dry" vs enriched (more options)</h1>
+  <p class="sub">You: <b>"add more options it looks really dry."</b> Today the menu has 3 plain text rows (Anmelden / Hilfe / Sprache) + category chips + the partner card. Below: the current state, then 2 ways to enrich it.</p>
+  <p class="note-top">Every <span class="added">blue</span> row links to a route I verified EXISTS (no 404s): Geschenkkarten -> <b>/vouchers</b>, Treuekarte -> <b>/loyalty/stamp</b>, Freunde einladen -> <b>/profile/referral</b>, Warum Solen -> <b>/warum-solen</b>. The big lever for "dry" is a leading icon on every row + a personal cluster.</p>
+
+  <div class="row">
+
+    <!-- CURRENT -->
+    <div class="col">
+      <div class="tag"><span class="dot"></span>Current (dry)</div>
+      <div class="phone">
+        <div class="nav"><span class="logo">Solen</span>
+          <svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </div>
+        <div class="body">
+          <div class="city"><span class="flag"></span>Basel</div>
+          <div class="card dry">
+            <div class="mrow primary"><span class="lbl">Anmelden oder Registrieren</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            <div class="mrow"><span class="lbl">Hilfe &amp; Support</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            <div class="mrow"><span class="lbl">Deutsch</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+          </div>
+          <div class="h2">Stoebern</div>
+          <div class="chips"><span class="chip">Coiffeur</span><span class="chip">Barber</span><span class="chip">Nails</span><span class="chip">Spa</span></div>
+          <div class="h2">Fuer Salons</div>
+          <div class="partner"><span><span class="pt">Werde Solen-Partner</span><span class="ps">In 60 Sekunden eintragen</span></span>
+            <span class="pa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+        </div>
+      </div>
+      <p class="note">3 plain rows, only the language row has an icon. No account/feature shortcuts. This is the "dry" you flagged.</p>
+    </div>
+
+    <!-- VARIANT A -->
+    <div class="col">
+      <div class="tag rec"><span class="dot"></span>A — enriched icon list (my pick)</div>
+      <div class="phone">
+        <div class="nav"><span class="logo">Solen</span>
+          <svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </div>
+        <div class="body">
+          <div class="city"><span class="flag"></span>Basel</div>
+          <div class="card">
+            <div class="mrow primary"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg><span class="lbl">Anmelden oder Registrieren</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            <div class="mrow"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8M16.5 8a2.5 2.5 0 0 0 0-5C13 3 12 8 12 8"/></svg><span class="lbl">Geschenkkarten</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            <div class="mrow"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg><span class="lbl">Treuekarte</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            <div class="mrow"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="lbl">Freunde einladen</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            <div class="mrow"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg><span class="lbl">Hilfe &amp; Support</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            <div class="mrow"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg><span class="lbl">Warum Solen</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            <div class="mrow"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg><span class="lbl">Deutsch</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+          </div>
+          <div class="h2">Stoebern</div>
+          <div class="chips"><span class="chip">Coiffeur</span><span class="chip">Barber</span><span class="chip">Nails</span><span class="chip">Spa</span></div>
+          <div class="h2">Fuer Salons</div>
+          <div class="partner"><span><span class="pt">Werde Solen-Partner</span><span class="ps">In 60 Sekunden eintragen</span></span>
+            <span class="pa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+        </div>
+      </div>
+      <p class="note"><b>Same single-card list</b>, but every row has a leading icon + 4 new real shortcuts (<span class="added">Geschenkkarten, Treuekarte, Freunde einladen, Warum Solen</span>). Closest to Fresha/Uber. Lowest blast radius.</p>
+    </div>
+
+    <!-- VARIANT B -->
+    <div class="col">
+      <div class="tag"><span class="dot"></span>B — quick-grid + list</div>
+      <div class="phone">
+        <div class="nav"><span class="logo">Solen</span>
+          <svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </div>
+        <div class="body">
+          <div class="city"><span class="flag"></span>Basel</div>
+          <div class="seclabel">Schnellzugriff</div>
+          <div class="qgrid">
+            <div class="qtile"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8M16.5 8a2.5 2.5 0 0 0 0-5C13 3 12 8 12 8"/></svg><span class="lbl">Geschenkkarten</span></div>
+            <div class="qtile"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg><span class="lbl">Treuekarte</span></div>
+            <div class="qtile"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="lbl">Freunde einladen</span></div>
+            <div class="qtile"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg><span class="lbl">Hilfe</span></div>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <div class="mrow primary"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg><span class="lbl">Anmelden oder Registrieren</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            <div class="mrow"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg><span class="lbl">Warum Solen</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+            <div class="mrow"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg><span class="lbl">Deutsch</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></div>
+          </div>
+          <div class="h2">Stoebern</div>
+          <div class="chips"><span class="chip">Coiffeur</span><span class="chip">Barber</span><span class="chip">Nails</span><span class="chip">Spa</span></div>
+          <div class="h2">Fuer Salons</div>
+          <div class="partner"><span><span class="pt">Werde Solen-Partner</span><span class="ps">In 60 Sekunden eintragen</span></span>
+            <span class="pa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+        </div>
+      </div>
+      <p class="note">Personal shortcuts become a <b>2x2 tile grid</b> (echoes the "Fuer dich" row), utility rows below. More visual, but two patterns competing in one short menu.</p>
+    </div>
+
+  </div>
+</body>
+</html>

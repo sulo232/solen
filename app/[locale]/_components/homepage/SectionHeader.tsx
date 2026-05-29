@@ -140,6 +140,9 @@ export function SectionTitle({
         // V3-D193 (2026-05-26): Section H2 weight 800 → 700 per "too bold" sweep.
         // V3-D326 (2026-05-27): bump back to Section H2 spec (18-20) — V3-D325
         // sweep wrongly classified this as Subsection H3 (16-18).
+        // V3-D346 REVERTED (2026-05-28): bumping to 24/700 was wrong — user wants
+        // every section title to match the calm "Für dich" treatment (18px/600), not
+        // Uber's big-bold headers. Restraint is the house style here. Back to 18/600.
         className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink"
       >
         {title}

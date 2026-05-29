@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — Airbnb category page concepts</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap');
+  :root{ --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F5F5F4; --border:#E7E5E4; --star:#FFC32B; --heart:#FF3366; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Geist',system-ui,sans-serif;background:#E4E4E4;color:var(--ink);-webkit-font-smoothing:antialiased;padding:28px 16px 80px;line-height:1.4}
+  .wrap{max-width:1320px;margin:0 auto}
+  h1{font-size:23px;font-weight:700;letter-spacing:-0.02em;margin-bottom:6px}
+  .lede{font-size:13.5px;color:#555;max-width:880px;margin-bottom:24px;line-height:1.55}
+  .frames{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+  .col{flex:0 0 402px}
+  .cap{font-size:12.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#666;margin-bottom:4px}
+  .sub{font-size:12px;color:#888;margin-bottom:10px;line-height:1.45;min-height:32px}
+  .col.rec .cap{color:#0A7D33}
+  .phone{width:402px;background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 16px 44px rgba(0,0,0,.13);border:1px solid #d2d2d2;position:relative}
+
+  /* header (shared) */
+  .hdr{display:flex;align-items:center;gap:11px;padding:14px 16px 8px}
+  .logo{font-size:22px;font-weight:700;letter-spacing:-0.02em}
+  .hdr .cats{flex:1;display:flex;gap:14px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-image:linear-gradient(90deg,#000 86%,transparent)}
+  .hdr .ct{font-size:14.5px;font-weight:500;color:var(--ink2);white-space:nowrap;display:flex;align-items:center;gap:5px}
+  .hdr .ct.on{color:#0A0A0A;font-weight:600}
+  .hdr .ham{width:24px;height:24px}
+  .ci{width:18px;height:18px;object-fit:contain}
+  /* search */
+  .search{margin:8px 16px 0;border:1px solid var(--border);border-radius:16px;padding:11px 14px;display:flex;align-items:center;gap:11px;box-shadow:0 1px 3px rgba(50,47,44,.06)}
+  .search .mag{width:18px;height:18px;color:#6B6B6B}
+  .search .ph b{display:block;font-size:14px;font-weight:600}
+  .search .ph s{display:block;font-size:11.5px;color:#6B6B6B;text-decoration:none}
+  .search .map{width:20px;height:20px;margin-left:auto;color:#0A0A0A}
+  /* filters */
+  .filters{display:flex;gap:8px;padding:12px 16px 0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent)}
+  .fchip{white-space:nowrap;border:1px solid var(--border);border-radius:999px;padding:7px 12px;font-size:12.5px;background:#fff}
+  .fchip.on{background:#0A0A0A;color:#fff;border-color:#0A0A0A}
+
+  /* rails */
+  .rail{margin-top:18px}
+  .rail-h{display:flex;align-items:baseline;justify-content:space-between;padding:0 16px;margin-bottom:10px}
+  .rail-h b{font-size:16px;font-weight:600;letter-spacing:-0.01em}
+  .rail-h s{font-size:12.5px;color:#6B6B6B;text-decoration:none}
+  .rail-row{display:flex;gap:12px;overflow:hidden;padding:0 16px}
+  .rcard{flex:0 0 156px}
+  .rcard .ph{width:156px;height:118px;border-radius:14px;background:#E8E8E8 center/cover no-repeat;position:relative}
+  .rcard .heart{position:absolute;top:7px;right:7px;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center}
+  .rcard .heart svg{width:13px;height:13px}
+  .rcard .nm{font-size:13.5px;font-weight:600;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rcard .mt{font-size:12px;color:#6B6B6B;margin-top:1px;display:flex;align-items:center;gap:4px}
+  .rcard .slot{display:inline-flex;align-items:center;gap:4px;margin-top:5px;font-size:11.5px;font-weight:600;color:#0A0A0A;background:#F5F5F4;border-radius:999px;padding:3px 8px}
+  .star{color:var(--star)}
+
+  /* grid (middle path + map list) */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px 16px 18px}
+  .gcard .ph{aspect-ratio:1;border-radius:16px;background:#E8E8E8 center/cover no-repeat;position:relative}
+  .gcard .heart{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center}
+  .gcard .heart svg{width:14px;height:14px}
+  .gcard .nm{display:flex;justify-content:space-between;gap:6px;margin-top:8px;font-size:14px;font-weight:600}
+  .gcard .nm i{font-style:normal;font-size:12.5px;color:#0A0A0A;display:inline-flex;gap:3px;align-items:center}
+  .gcard .mt{font-size:12px;color:#6B6B6B;margin-top:2px}
+
+  /* ===== B: Airbnb search overlay ===== */
+  .ov{position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;flex-direction:column}
+  .ov .top{display:flex;align-items:center;justify-content:center;position:relative;padding:16px;color:#fff}
+  .ov .top b{font-size:15px;font-weight:600}
+  .ov .top .x{position:absolute;left:14px;top:13px;width:32px;height:32px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:16px}
+  .sheet{margin-top:auto;background:#fff;border-radius:22px 22px 0 0;padding:18px 16px 22px}
+  .fld{border:1px solid var(--border);border-radius:16px;padding:14px 16px;margin-bottom:12px}
+  .fld.active{border:2px solid #0A0A0A;padding:16px}
+  .fld .lab{font-size:12px;color:#6B6B6B}
+  .fld .val{font-size:16px;font-weight:600;margin-top:2px}
+  .fld.coll{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;margin-bottom:10px}
+  .fld.coll .val{font-size:15px;margin-top:0}
+  .citychips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .citychips .cc{border:1px solid var(--border);border-radius:999px;padding:8px 14px;font-size:13.5px}
+  .citychips .cc.on{background:#0A0A0A;color:#fff;border-color:#0A0A0A}
+  .sbtn{width:100%;background:#0A0A0A;color:#fff;border-radius:14px;padding:15px;font-size:15px;font-weight:600;text-align:center;margin-top:4px}
+
+  /* ===== C: map ===== */
+  .map-top{height:340px;position:relative;background:
+     repeating-linear-gradient(0deg,#e9ece8 0 1px,transparent 1px 46px),
+     repeating-linear-gradient(90deg,#e9ece8 0 1px,transparent 1px 46px),
+     linear-gradient(135deg,#eef1ec,#e3e7e0);overflow:hidden}
+  .road{position:absolute;background:#dfe3dc}
+  .pin{position:absolute;transform:translate(-50%,-50%);background:#0A0A0A;color:#fff;font-size:12px;font-weight:700;padding:5px 9px;border-radius:999px;box-shadow:0 3px 8px rgba(0,0,0,.25);white-space:nowrap}
+  .pin.dot{padding:0;width:14px;height:14px;border-radius:50%;border:2px solid #fff}
+  .map-sheet{border-radius:18px 18px 0 0;margin-top:-22px;position:relative;background:#fff;box-shadow:0 -8px 24px rgba(0,0,0,.08);padding:10px 16px 18px}
+  .grab{width:36px;height:4px;border-radius:2px;background:#d8d8d8;margin:0 auto 12px}
+
+  .legend{margin-top:26px;background:#fff;border:1px solid #ddd;border-radius:16px;padding:18px 20px;font-size:13px;max-width:900px;line-height:1.55}
+  .legend h3{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#888;margin-bottom:10px}
+  .legend b.g{color:#0A7D33}.legend b.r{color:#b42318}
+  .legend ul{margin:6px 0 0 18px}.legend li{margin-bottom:5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Airbnb category-page concepts</h1>
+  <p class="lede">A-B-C = <b>your full two-mode idea</b> (browse rails by default &rarr; tap search &rarr; Airbnb full-search &rarr; map). D = the <b style="color:#0A7D33">middle path</b> the council + I landed on (clean filterable grid + one discovery rail; rails-browse lives on the homepage; map is a later phase). Real icons + photos.</p>
+
+  <div class="frames">
+
+    <!-- ===================== A: BROWSE RAILS (your State A) ===================== -->
+    <div class="col">
+      <div class="cap">A &middot; Browse rails (your default)</div>
+      <div class="sub">Category page = stacked curated rails. Filters refine them in place. This is "State A".</div>
+      <div class="phone">
+        <div class="hdr">
+          <div class="logo">Solen</div>
+          <div class="cats"><span class="ct on"><img class="ci" src="/icons/categories/scissors.png">Coiffeur</span><span class="ct"><img class="ci" src="/icons/categories/clippers.png">Barber</span><span class="ct">Nails</span></div>
+          <svg class="ham" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </div>
+        <div class="search"><svg class="mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div class="ph"><b>Suchen</b><s>Schweizweit</s></div><svg class="map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/></svg></div>
+        <div class="filters"><span class="fchip">Offen jetzt</span><span class="fchip">Sofort buchbar</span><span class="fchip">Top bewertet</span></div>
+
+        <div class="rail"><div class="rail-h"><b>Beliebt</b><s>Alle &rsaquo;</s></div><div class="rail-row">
+          <div class="rcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=320&q=70')"></div><div class="nm">Atelier Haarwerk</div><div class="mt"><span class="star">&#9733;</span>4.8 &middot; Grossbasel</div></div>
+          <div class="rcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=320&q=70')"></div><div class="nm">Salon Lumiere</div><div class="mt"><span class="star">&#9733;</span>4.9 &middot; Grossbasel</div></div>
+          <div class="rcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=320&q=70')"></div><div class="nm">Coiffure Belle</div></div>
+        </div></div>
+
+        <div class="rail"><div class="rail-h"><b>Empfohlen</b><s>Alle &rsaquo;</s></div><div class="rail-row">
+          <div class="rcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=320&q=70')"></div><div class="nm">Studio Kamm</div><div class="mt"><span class="star">&#9733;</span>4.8 &middot; Gundeli</div></div>
+          <div class="rcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=320&q=70')"></div><div class="nm">Haarsalon Margot</div></div>
+        </div></div>
+
+        <div class="rail"><div class="rail-h"><b>Bald frei</b><s>Alle &rsaquo;</s></div><div class="rail-row">
+          <div class="rcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=320&q=70')"></div><div class="nm">Salon Lumiere</div><span class="slot">&#128337; heute 15:30</span></div>
+          <div class="rcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=320&q=70')"></div><div class="nm">Atelier Haarwerk</div><span class="slot">&#128337; heute 16:00</span></div>
+        </div></div>
+
+        <div class="rail" style="margin-bottom:18px"><div class="rail-h"><b>In Basel</b><s>Alle &rsaquo;</s></div><div class="rail-row">
+          <div class="rcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=320&q=70')"></div><div class="nm">Coiffure Belle</div><div class="mt">Kleinbasel</div></div>
+          <div class="rcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=320&q=70')"></div><div class="nm">Studio Kamm</div><div class="mt">Gundeli</div></div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- ===================== B: AIRBNB SEARCH OVERLAY (your State B-1) ===================== -->
+    <div class="col">
+      <div class="cap">B &middot; Tap search &rarr; Airbnb panel</div>
+      <div class="sub">Tapping the search bar expands a full where/what/when search. This is "State B", step 1.</div>
+      <div class="phone">
+        <!-- dimmed page behind -->
+        <div class="hdr" style="opacity:.5"><div class="logo">Solen</div><div class="cats"><span class="ct on">Coiffeur</span></div></div>
+        <div class="ov">
+          <div class="top"><span class="x">&times;</span><b>Suche</b></div>
+          <div class="sheet">
+            <div class="fld active"><div class="lab">Wo?</div><div class="val">Stadt waehlen</div>
+              <div class="citychips"><span class="cc on">Basel</span><span class="cc">Zuerich</span><span class="cc">Bern</span><span class="cc">Genf</span><span class="cc">Luzern</span></div>
+            </div>
+            <div class="fld coll"><span class="lab">Was?</span><span class="val">Coiffeur</span></div>
+            <div class="fld coll"><span class="lab">Wann?</span><span class="val">Heute</span></div>
+            <div class="sbtn">&#128269;&nbsp; Suchen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== C: MAP RESULTS (your State B-2) ===================== -->
+    <div class="col">
+      <div class="cap">C &middot; Results &rarr; map view</div>
+      <div class="sub">After submitting the search: a map with pins + a draggable list sheet. "State B", step 2.</div>
+      <div class="phone">
+        <div class="hdr" style="padding-bottom:10px"><svg class="ham" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" style="width:22px"><path d="M15 18l-6-6 6-6"/></svg><div class="ph" style="flex:1"><b style="font-size:14px;font-weight:600">Coiffeur &middot; Basel</b><s style="display:block;font-size:11.5px;color:#6B6B6B">12 Salons</s></div><span style="font-size:13px;font-weight:600;border:1px solid var(--border);border-radius:999px;padding:6px 12px">Liste</span></div>
+        <div class="map-top">
+          <div class="road" style="left:0;right:0;top:120px;height:10px;transform:rotate(-8deg)"></div>
+          <div class="road" style="left:140px;top:0;bottom:0;width:9px;transform:rotate(6deg)"></div>
+          <div class="road" style="left:0;right:0;top:230px;height:7px;transform:rotate(4deg)"></div>
+          <div class="pin" style="left:90px;top:90px">ab 80</div>
+          <div class="pin" style="left:230px;top:140px">ab 95</div>
+          <div class="pin" style="left:150px;top:215px">ab 70</div>
+          <div class="pin dot" style="left:300px;top:95px"></div>
+          <div class="pin dot" style="left:70px;top:250px"></div>
+        </div>
+        <div class="map-sheet">
+          <div class="grab"></div>
+          <div class="grid" style="padding:0 0 4px;gap:14px">
+            <div class="gcard"><div class="ph" style="aspect-ratio:1.3;background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=320&q=70')"><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div><div class="nm">Atelier Haarwerk<i><span class="star">&#9733;</span>4.8</i></div><div class="mt">ab 80 CHF</div></div>
+            <div class="gcard"><div class="ph" style="aspect-ratio:1.3;background-image:url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=320&q=70')"><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div><div class="nm">Salon Lumiere<i><span class="star">&#9733;</span>4.9</i></div><div class="mt">ab 95 CHF</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== D: MIDDLE PATH (recommendation) ===================== -->
+    <div class="col rec">
+      <div class="cap">D &middot; Middle path (recommended)</div>
+      <div class="sub">Clean filterable grid + ONE discovery rail on top. Filters act on the grid. Full rails &rarr; homepage. Map = later phase.</div>
+      <div class="phone">
+        <div class="hdr">
+          <div class="logo">Solen</div>
+          <div class="cats"><span class="ct on"><img class="ci" src="/icons/categories/scissors.png">Coiffeur</span><span class="ct"><img class="ci" src="/icons/categories/clippers.png">Barber</span><span class="ct">Nails</span></div>
+          <svg class="ham" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </div>
+        <div class="search"><svg class="mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div class="ph"><b>Suchen</b><s>Schweizweit</s></div><svg class="map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/></svg></div>
+        <div class="filters"><span class="fchip on">Offen jetzt</span><span class="fchip">Sofort buchbar</span><span class="fchip">Top bewertet</span></div>
+        <!-- ONE rail -->
+        <div class="rail" style="margin-top:16px"><div class="rail-h"><b>Beliebt in Coiffeur</b><s>Alle &rsaquo;</s></div><div class="rail-row">
+          <div class="rcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=320&q=70')"></div><div class="nm">Atelier Haarwerk</div><div class="mt"><span class="star">&#9733;</span>4.8 &middot; Grossbasel</div></div>
+          <div class="rcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=320&q=70')"></div><div class="nm">Salon Lumiere</div><div class="mt"><span class="star">&#9733;</span>4.9 &middot; Grossbasel</div></div>
+        </div></div>
+        <!-- then the grid -->
+        <div style="font-size:16px;font-weight:600;padding:18px 16px 0;display:flex;justify-content:space-between"><span>Alle Coiffeure</span><span style="font-size:12.5px;color:#6B6B6B;font-weight:400">Beliebteste &#9662;</span></div>
+        <div class="grid">
+          <div class="gcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=320&q=70')"><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div><div class="nm">Coiffure Belle<i><span class="star">&#9733;</span>4.7</i></div><div class="mt">Kleinbasel &middot; ab 70</div></div>
+          <div class="gcard"><div class="ph" style="background-image:url('https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=320&q=70')"><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div><div class="nm">Studio Kamm<i><span class="star">&#9733;</span>4.8</i></div><div class="mt">Gundeli &middot; ab 110</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    <h3>Read this with the frames</h3>
+    <ul>
+      <li><b>A &rarr; B &rarr; C</b> is your full idea as one flow: browse curated rails, tap the search bar to open the Airbnb where/what/when panel, submit into a map view.</li>
+      <li><b class="r">The cost of A-B-C:</b> three result states to build + maintain (rails, panel, map), the map is a big unbuilt dependency, "Empfohlen/Favoriten/Bald frei" each need DB/auth/slot data, and the category page stops being a clean SEO results list.</li>
+      <li><b class="g">D (recommended):</b> keeps the category page a fast filterable grid (Fresha-faithful, SEO-safe), adds one "Beliebt in Coiffeur" rail for discovery flavor, filters act on the grid (no empty-rail confusion). The full rails experience moves to the homepage; the Airbnb panel + map become a later, separate phase once booking + map infra are solid.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

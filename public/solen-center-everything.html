@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — center everything vs left-aligned</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap');
+  :root{ --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F5F5F4; --border:#E7E5E4; --star:#FFC32B; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Geist',system-ui,sans-serif;background:#ECECEC;color:var(--ink);-webkit-font-smoothing:antialiased;padding:28px 16px 70px;line-height:1.4}
+  .wrap{max-width:900px;margin:0 auto}
+  h1{font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:6px}
+  .lede{font-size:13.5px;color:#555;max-width:760px;margin-bottom:22px}
+  .frames{display:flex;gap:26px;flex-wrap:wrap;justify-content:center}
+  .col{flex:0 0 390px}
+  .col > .tag{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#666;margin-bottom:8px;text-align:center}
+  .col.idea > .tag{color:#0A0A0A}
+  .phone{width:390px;background:#fff;border-radius:24px;border:1px solid #ccc;box-shadow:0 14px 40px rgba(0,0,0,.10);overflow:hidden}
+
+  /* ---- shared chrome bits ---- */
+  .hdr{display:flex;align-items:center;gap:10px;padding:14px 16px 10px}
+  .logo{font-size:19px;font-weight:700;letter-spacing:-0.02em}
+  .icn{width:24px;height:24px;color:#0A0A0A;flex:0 0 auto}
+  .spacer{flex:1}
+
+  /* header category scroll (idea) */
+  .hdrcats{flex:1;display:flex;gap:8px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-image:linear-gradient(90deg,#000 86%,transparent)}
+  .hdrcats .ct{font-size:13px;font-weight:500;color:#6B6B6B;white-space:nowrap;padding:3px 0}
+  .hdrcats .ct.active{color:#0A0A0A;font-weight:600;border-bottom:2px solid #0A0A0A}
+
+  /* category row (left version, below header) */
+  .catrow{display:flex;gap:9px;padding:4px 16px 12px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
+  .pill{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;border:1px solid var(--border);border-radius:999px;padding:7px 13px;font-size:13px;font-weight:500;color:#0A0A0A;background:#fff}
+  .pill .e{font-size:13px}
+  .pill.active{background:#0A0A0A;color:#fff;border-color:#0A0A0A}
+
+  /* search */
+  .search{margin:0 16px;border:1px solid var(--border);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+  .search .mag{width:18px;height:18px;color:#6B6B6B}
+  .search .ph{display:flex;flex-direction:column;line-height:1.2}
+  .search .ph b{font-size:14px;font-weight:600;color:#0A0A0A}
+  .search .ph s{font-size:11.5px;color:#6B6B6B;text-decoration:none}
+  .search.ctr{justify-content:center;text-align:center}
+  .search .map{width:20px;height:20px;color:#0A0A0A}
+
+  /* filter chips */
+  .filters{display:flex;gap:8px;padding:12px 16px 0;overflow:hidden}
+  .filters.left{justify-content:flex-start;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
+  .filters.ctr{justify-content:center}
+  .fchip{white-space:nowrap;border:1px solid var(--border);border-radius:999px;padding:7px 12px;font-size:12.5px;color:#0A0A0A;background:#fff}
+
+  /* fuer dich */
+  .fd{padding:18px 16px 6px}
+  .fd h2{font-size:16px;font-weight:600;letter-spacing:-0.01em;margin-bottom:12px}
+  .fd.left h2{text-align:left}
+  .fd.ctr h2{text-align:center}
+  .fdrow{display:flex;gap:14px}
+  .fdrow.left{justify-content:flex-start}
+  .fdrow.ctr{justify-content:center}
+  .tile{width:64px;display:flex;flex-direction:column;align-items:center;gap:6px}
+  .circ{width:60px;height:60px;border-radius:50%;background:var(--sunken);display:grid;place-items:center}
+  .circ img{width:44px;height:44px;object-fit:contain}
+  .tlab{font-size:12px;color:#6B6B6B;text-align:center}
+
+  /* results header + grid */
+  .rhead{display:flex;align-items:center;padding:16px 16px 12px}
+  .rhead.left{justify-content:space-between}
+  .rhead.ctr{justify-content:center;gap:8px}
+  .rhead b{font-size:15px;font-weight:600}
+  .rhead s{font-size:13px;color:#6B6B6B;text-decoration:none;display:inline-flex;align-items:center;gap:3px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 16px 18px}
+  .card .ph{aspect-ratio:1;border-radius:18px;background:#EDEDED;display:grid;place-items:center;color:#C9C9C9;font-size:40px;font-weight:800;position:relative}
+  .card .heart{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.85);display:grid;place-items:center}
+  .card .heart svg{width:14px;height:14px;color:#0A0A0A}
+  .card .nm{display:flex;justify-content:space-between;gap:6px;margin-top:8px;align-items:baseline}
+  .card .nm b{font-size:14px;font-weight:600;letter-spacing:-0.01em}
+  .card .nm i{font-size:12.5px;color:#6B6B6B;font-style:normal;display:inline-flex;gap:2px;align-items:center}
+  .card .mt{font-size:12px;color:#6B6B6B;margin-top:2px}
+
+  .seam{outline:2px dashed #E0322D;outline-offset:-2px;position:relative}
+  .seam::after{content:"seam: centered chrome meets a 2-col grid";position:absolute;left:8px;bottom:6px;font-size:9px;font-weight:700;color:#E0322D;background:#fff;padding:1px 5px;border-radius:4px}
+
+  .tradeoffs{margin-top:26px;background:#fff;border:1px solid #ddd;border-radius:16px;padding:18px 20px;font-size:13px;max-width:760px}
+  .tradeoffs h3{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#888;margin-bottom:10px}
+  .tradeoffs ul{margin:0 0 10px 18px}.tradeoffs li{margin-bottom:6px}
+  .tradeoffs .g{color:#0A7D33;font-weight:600}.tradeoffs .r{color:#b42318;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Center everything (your idea) &nbsp;vs&nbsp; left-aligned (current)</h1>
+  <p class="lede">Left frame = your idea: bell removed, category tabs moved into the header (logo &middot; scroll &middot; menu), search + filters + icons all centered. Right frame = what's live now. Real icons + tokens. The red dashed box marks where centering meets the salon grid.</p>
+
+  <div class="frames">
+
+    <!-- ============ IDEA: CENTER EVERYTHING ============ -->
+    <div class="col idea">
+      <div class="tag">Your idea — center everything</div>
+      <div class="phone">
+        <!-- header: logo | category scroll | hamburger  (no bell) -->
+        <div class="hdr">
+          <div class="logo">Solen</div>
+          <div class="hdrcats">
+            <span class="ct active">Coiffeur</span>
+            <span class="ct">Barber</span>
+            <span class="ct">Nails</span>
+            <span class="ct">Spa</span>
+            <span class="ct">Makeup</span>
+          </div>
+          <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </div>
+        <!-- centered search -->
+        <div class="search ctr" style="margin-top:6px">
+          <svg class="mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <div class="ph"><b>Suchen</b><s>Schweizweit</s></div>
+        </div>
+        <!-- centered filters -->
+        <div class="filters ctr">
+          <span class="fchip">Offen jetzt</span>
+          <span class="fchip">Sofort buchbar</span>
+          <span class="fchip">Top bewertet</span>
+        </div>
+        <!-- centered fuer dich -->
+        <div class="fd ctr">
+          <h2>Fuer dich</h2>
+          <div class="fdrow ctr">
+            <div class="tile"><div class="circ"><img src="/icons/fuer-dich/treueprogramm.png"></div><div class="tlab">Stempel</div></div>
+            <div class="tile"><div class="circ"><img src="/icons/fuer-dich/entdecken.png"></div><div class="tlab">Inspo</div></div>
+            <div class="tile"><div class="circ"><img src="/icons/fuer-dich/gruppe.png"></div><div class="tlab">Gruppe</div></div>
+            <div class="tile"><div class="circ"><img src="/icons/fuer-dich/haar-verlauf.png"></div><div class="tlab">Verlauf</div></div>
+          </div>
+        </div>
+        <!-- results: centered count, then grid -->
+        <div class="rhead ctr"><b>4 Salons</b> <s>Beliebteste &#9662;</s></div>
+        <div class="grid seam">
+          <div class="card"><div class="ph">A<div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div><div class="nm"><b>Atelier Haarwerk</b><i><svg width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>4.8</i></div><div class="mt">Coiffeur &middot; Grossbasel</div></div>
+          <div class="card"><div class="ph">S<div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div><div class="nm"><b>Salon Lumiere</b><i><svg width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>4.8</i></div><div class="mt">Coiffeur &middot; Grossbasel</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ CURRENT: LEFT-ALIGNED ============ -->
+    <div class="col">
+      <div class="tag">Current — left-aligned (live)</div>
+      <div class="phone">
+        <div class="hdr">
+          <div class="logo">Solen</div>
+          <div class="spacer"></div>
+          <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </div>
+        <div class="catrow">
+          <span class="pill active">Coiffeur</span>
+          <span class="pill">Barber</span>
+          <span class="pill">Nails</span>
+          <span class="pill">Spa</span>
+        </div>
+        <div class="search" style="margin-top:4px">
+          <svg class="mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <div class="ph"><b>Suchen</b><s>Schweizweit</s></div>
+          <div class="spacer"></div>
+          <svg class="map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/></svg>
+        </div>
+        <div class="filters left">
+          <span class="fchip">Offen jetzt</span>
+          <span class="fchip">Sofort buchbar</span>
+          <span class="fchip">Top bewertet</span>
+        </div>
+        <div class="fd left">
+          <h2>Fuer dich</h2>
+          <div class="fdrow left">
+            <div class="tile"><div class="circ"><img src="/icons/fuer-dich/treueprogramm.png"></div><div class="tlab">Stempel</div></div>
+            <div class="tile"><div class="circ"><img src="/icons/fuer-dich/entdecken.png"></div><div class="tlab">Inspo</div></div>
+            <div class="tile"><div class="circ"><img src="/icons/fuer-dich/gruppe.png"></div><div class="tlab">Gruppe</div></div>
+            <div class="tile"><div class="circ"><img src="/icons/fuer-dich/haar-verlauf.png"></div><div class="tlab">Verlauf</div></div>
+          </div>
+        </div>
+        <div class="rhead left"><b>4 Salons</b> <s>Beliebteste &#9662;</s></div>
+        <div class="grid">
+          <div class="card"><div class="ph">A<div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div><div class="nm"><b>Atelier Haarwerk</b><i><svg width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>4.8</i></div><div class="mt">Coiffeur &middot; Grossbasel</div></div>
+          <div class="card"><div class="ph">S<div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div></div><div class="nm"><b>Salon Lumiere</b><i><svg width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>4.8</i></div><div class="mt">Coiffeur &middot; Grossbasel</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tradeoffs">
+    <h3>The honest tradeoffs</h3>
+    <ul>
+      <li><span class="g">Wins:</span> the "Fuer dich" row is no longer the lone centered thing - everything is symmetric, so it stops clashing. Calm, premium, distinct.</li>
+      <li><span class="r">The seam (red box):</span> the salon grid + its "4 Salons / sort" row are a left/right structure - they don't center. So centered chrome sits on top of a left-aligned grid. The "weird" feeling can just move down here.</li>
+      <li><span class="r">Header nav:</span> category tabs in the header get ~248px of a 390px screen (~2 visible) and lose prominence vs a full row below. Bell has to move into the menu.</li>
+      <li><span class="r">Scroll origin:</span> centered filter/category scroll rows hide where the list "starts" - users expect scrollers to begin at the left edge.</li>
+      <li><span class="r">App consistency:</span> homepage + salon pages are left-aligned; this page would speak a different alignment language.</li>
+    </ul>
+    <p style="color:#555">My lean: centering everything trades one small misalignment for a bigger structural seam at the grid. If "Fuer dich" still feels weird left-aligned, I'd bet the issue is the <b>section itself</b> (what it is / where it sits), not the alignment - worth exploring before reflowing the whole page. But this is your call - the compare is right here.</p>
+  </div>
+</div>
+</body>
+</html>

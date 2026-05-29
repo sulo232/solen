@@ -191,7 +191,7 @@ export function SalonServicesSheet({
           >
             <ArrowLeft size={18} strokeWidth={2.25} className="text-s-ink" />
           </button>
-          <h2 className="font-body text-[16px] font-bold tracking-tight text-s-ink md:text-[18px]">
+          <h2 className="font-body text-[16px] font-semibold tracking-tight text-s-ink md:text-[18px]">
             Services
           </h2>
         </div>
@@ -293,7 +293,7 @@ export function SalonServicesSheet({
                                 {s.description_de}
                               </p>
                             )}
-                            <div className="font-body mt-3 text-[16px] font-bold text-s-ink">
+                            <div className="font-body mt-3 text-[16px] font-normal text-s-ink-2">
                               CHF {s.price}
                             </div>
                           </div>
@@ -351,7 +351,7 @@ export function SalonServicesSheet({
                 ? "Keine Services ausgewählt"
                 : `${selectedIds.size} Service${selectedIds.size > 1 ? "s" : ""} · ${totalDuration} min`}
             </div>
-            <div className="font-body text-[16px] font-bold text-s-ink">
+            <div className="font-body text-[16px] font-semibold text-s-ink">
               {total === 0 ? "Gratis" : `CHF ${total}`}
             </div>
           </div>
@@ -413,11 +413,11 @@ function CartCard({
           )}
         </div>
         <div className="min-w-0 flex-1 pt-0.5">
-          <div className="font-body truncate text-[16px] font-bold text-s-ink md:text-[17px]">
+          <div className="font-body truncate text-[16px] font-medium text-s-ink md:text-[17px]">
             {salon.name}
           </div>
           <div className="font-body mt-1.5 flex items-center gap-1.5 text-[13px]">
-            <span className="font-bold text-s-ink">
+            <span className="font-normal text-s-ink-2">
               {salon.average_rating?.toFixed(1) ?? "—"}
             </span>
             <div className="flex items-center gap-0.5">
@@ -489,7 +489,7 @@ function CartCard({
             </div>
           )}
         </div>
-        <div className="font-body text-[22px] font-bold text-s-ink">
+        <div className="font-body text-[22px] font-semibold text-s-ink">
           {total === 0 ? "Gratis" : `CHF ${total}`}
         </div>
       </div>

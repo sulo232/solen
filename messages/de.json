@@ -3126,6 +3126,63 @@
       "mapView": "Kartenansicht",
       "gridView": "Listenansicht"
     },
+    "searchMapFab": {
+      "map": "Karte",
+      "list": "Liste"
+    },
+    "searchChrome": {
+      "allServices": "Alle",
+      "popular": "Beliebt",
+      "walkIn": "Walk-in",
+      "openNow": "Offen jetzt",
+      "deals": "Angebot",
+      "instant": "Sofort buchbar",
+      "top": "Top",
+      "topRated": "Top bewertet",
+      "categoriesLabel": "Kategorien",
+      "editSearch": "Suche bearbeiten",
+      "openMap": "Karte öffnen",
+      "searchPlaceholder": "Suchen",
+      "fuerDich": "Fuer dich",
+      "fuerDich_deals": "Angebote",
+      "fuerDich_popular": "Beliebt",
+      "fuerDich_new": "Neu",
+      "fuerDich_nearby": "In der Naehe",
+      "fuerDich_giftCards": "Geschenkkarten",
+      "fuerDich_discover": "Inspo",
+      "fuerDich_loyalty": "Stempel",
+      "fuerDich_group": "Gruppe",
+      "fuerDich_hairHistory": "Verlauf",
+      "fuerDich_walkin": "Walk-in",
+      "fuerDich_rebook": "Express buchen",
+      "fuerDich_nailDesigner": "Stylist",
+      "fuerDich_nailDesigns": "Deine Designs",
+      "fuerDich_soon": "Bald"
+    },
+    "mobileMenu": {
+      "quickAccess": "Schnellzugriff",
+      "giftCards": "Geschenkkarten",
+      "loyalty": "Treuekarte",
+      "invite": "Freunde einladen",
+      "help": "Hilfe",
+      "signIn": "Anmelden oder Registrieren",
+      "whySolen": "Warum Solen",
+      "language": "Deutsch"
+    },
+    "filterSheet": {
+      "title": "Filter",
+      "open": "Filter",
+      "openWithCount": "Filter, {count} aktiv",
+      "close": "Schliessen",
+      "reset": "Zuruecksetzen",
+      "sortHeading": "Sortieren",
+      "availabilityHeading": "Verfuegbarkeit",
+      "ratingHeading": "Bewertung",
+      "rating45": "4.5+",
+      "rating40": "4.0+",
+      "ratingAny": "Egal",
+      "apply": "{count} Salons anzeigen"
+    },
     "progress": {
       "step": "Step"
     },

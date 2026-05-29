@@ -584,3 +584,119 @@ Checked: D (axis: both) · E (Q1-Q5, Q4 surfaced the recently-viewed bug + Q5 ca
 Skipped: A (no copy) · B (no new comp) · C (n/a) · F (V3 components already strict-locked) · H (no new color) · J (no new layout)
 
 **V3-D344 claimed.** Next available: V3-D345.
+
+---
+
+## V3-D345 — salon_page_views table + track-view graceful-degrade (backend bug)
+Date: 2026-05-28 (morning)
+Files: `app/api/analytics/track-view/route.ts`, `supabase/migrations/20260528_salon_page_views.sql` (NEW)
+V3-D marker: V3-D345
+Summary: The /api/analytics/track-view route 500'd on every salon page load (table missing, PGRST205). Created `salon_page_views` (RLS-locked, service-role only) via Supabase MCP on the live project + version-controlled the migration. Route now returns 200 `{ok:false, recorded:false}` on DB error instead of 500 (graceful degradation). Not a design edit — backend reliability. Axis: n/a (behavior). Verification: salon page loads with no 500 in console; insert path works via admin client.
+
+**V3-D345 claimed.** Next available: V3-D346.
+
+---
+
+## V3-D346 — Card / list-item text hierarchy rule + sweep ("patches not fixes" systemic fix)
+Date: 2026-05-28
+Files:
+- `_design-system/LOCKFILE.md` §2.5 (new rule A13 — the canonical spec)
+- `app/[locale]/_components/homepage/Reviews.tsx`
+- `app/[locale]/_components/homepage/Entdecken.tsx`
+- `app/[locale]/_components/salon/SalonServices.tsx`
+- `app/[locale]/_components/salon/SalonReviews.tsx`
+- `app/[locale]/_components/salon/SalonTeam.tsx`
+- `app/[locale]/_components/salon/SalonSidebar.tsx`
+- `app/[locale]/_components/salon/SalonVenuesNearby.tsx`
+- `app/[locale]/_components/salon/SalonOtherLocations.tsx`
+- (already done earlier this session: `SalonCard.tsx`, `FeaturedStylists.tsx`)
+V3-D marker: V3-D346
+
+### Q1: WHAT AXIS is this change on?
+AESTHETIC (Uber contrast model — one anchor per card, rest recedes to grey). No structure change: every card keeps the same elements + layout; only weight/color of secondary text changes.
+
+### Q2: WHERE'S THE SOURCE OF TRUTH?
+- AESTHETIC: LOCKFILE §2.5 — new rule A13 (Card / list-item text hierarchy), itself derived from `public/_pixel-refs/uber/` (Uber cards carry exactly one darker-weight name anchor, rating/eta/price in calm grey) + the user-approved SalonCard fix earlier this session (rating/time/price all pulled to `text-s-ink-2 font-normal`).
+- USER QUOTE driving it: "using too bold ... multiple times that destroys my eye" + "these are patches not fixes" (asked for the systemic rule + sweep, not per-card patches).
+
+### Q3: HAVE I READ THE SOURCE IN THE LAST HOUR?
+Y — re-read §2.5 type role registry + canonical tracking + eyebrow policy immediately before writing rule A13. Read each card component's render block before editing (Reviews, Entdecken, SalonServices, SalonReviews, SalonTeam, SalonSidebar, SalonVenuesNearby, SalonOtherLocations).
+
+### Q4: DOES MY PROPOSED EDIT MATCH IT?
+MATCH. Per-file:
+- Names (the one anchor): semibold/bold `text-s-ink` -> `font-medium text-s-ink`. (Reviews reviewer name, SalonReviews reviewer name, SalonServices service name, SalonSidebar BuyRow title, SalonVenuesNearby venue name, SalonOtherLocations sibling name, Entdecken @author pill.)
+- Meta: `text-s-ink` + bold/semibold -> `text-s-ink-2 font-normal`. (SalonServices price, SalonTeam rating, Reviews salon-link, Reviews date.)
+- Calm-down: SalonReviews "Mehr lesen" semibold->medium (was heavier than the name); Entdecken "Alle entdecken" h3 font-bold->font-semibold (15px bold is off the §2.5 scale — bold reserved for Hero H1).
+- KEEP (not flagged): all section h2s (18/600), all CTA buttons (Buchen/Kaufen/booking), sidebar price headline (single panel, one anchor), avatar fallback glyphs (decorative), already-grey meta (ink-3 rating/address/category rows), semantic star fill color.
+
+### Q5: POST-EDIT VERIFICATION
+PASS.
+- **TypeScript:** 0 errors in the codebase (the only 2 tsc errors are in `_backup/`, a gitignored old snapshot, not in the build).
+- **getComputedStyle audit (the A13 enforcement method) on /de/salon/atelier-haarwerk @ 390px:** before the sweep, a scan for "dark (≈s-ink) AND weight≥600" elements returned card meta as competing anchors (service price 700, team rating 600, review names 600/700, etc.). After: ZERO repeating-card meta appears in the dark+bold set. Service price + duration confirmed `w:400, grey`. The 10 remaining dark+600 elements are all legit: section h2s (600), CTA buttons (Buchen/Kaufen/Alle ansehen), the two single-panel rating stats (PDP header + booking sidebar — page-level trust signals, NOT repeating cards), the reviews summary stat (now 600, was off-scale 700), the opening-hours "today"-row emphasis, and the loyalty feature-card titles (H3 role = 600 per §2.5). None are the failure mode.
+- **Two off-scale 700s caught by the audit + fixed** (beyond the initial file list): SalonReviews summary "4.8" (700→600) and SalonBuy "Gutscheine" h3 (700→500, matching the card-title weight). §2.5 reserves 700 for Hero H1 only.
+- **Screenshots:** `_audits/screenshots/overnight-2026-05-28/V3-D346-pdp-services-mobile.png` (service row: "Damen-Haarschnitt" dark anchor, "1 Std." + "ab 85 CHF" grey, "Geöffnet bis 20:00" keeps semantic green) + `V3-D346-home-cards-mobile.png` (the user's original-complaint cards "Salon Maria" / "Atelier Coiffure" — name is the sole dark anchor, "14:30 · CHF 80" + rating + address all grey).
+- **Console:** 0 errors on both routes (1 unrelated warning).
+
+### Note: A13 drift-checker rule not yet in check.py
+The A13 rule is documented in LOCKFILE §2.5 with a getComputedStyle self-check (the method used above). Adding an automated A13 scan to the drift-checker `check.py` is a follow-up (would flag any card/list-item with >1 dark+bold body element). Until then, A13 is verified by the runtime getComputedStyle audit, not the static checker.
+
+### Sub-systems applied (actual)
+Checked: D (axis: AESTHETIC, Uber contrast) · E (Q1-Q5 this entry) · G (V3-D346 marker in LOCKFILE + SalonServices comment) · K (mobile screenshots ×2) · L (no commit) · M (surgical — class-string changes only, no structure) · N
+Skipped: A (no copy changed) · B (no new component) · C (n/a — not category-branching) · F (A13 not in check.py yet; runtime audit used instead) · H (no new color token; reused existing s-ink/s-ink-2) · I (no catch blocks) · J (no layout/box changes)
+
+**V3-D346 claimed.** Next available: V3-D347.
+
+---
+
+## V3-D347 — SearchBar mobile CTA gap fix (measured)
+Date: 2026-05-28
+Files: `app/[locale]/_components/homepage/SearchBar.tsx` (line 330: `mt-4` -> `mt-0`)
+V3-D marker: V3-D347
+Summary: User flagged the "Termine finden" button sat low/unbalanced on mobile. Measured via getBoundingClientRect: Service->Stadt and Stadt->Zeit were 12px (container `gap-3`), but Zeit->button was 28px because the button added `mt-4` (16px) ON TOP of the gap. Dropped `mt-4` -> `mt-0`; re-measured = uniform 12px. Desktop unchanged (`md:mt-0` already set). Axis: AESTHETIC (spacing rhythm). Surgical 1-token change. Screenshot: `_audits/screenshots/overnight-2026-05-28/V3-D347-searchbar-gap-fixed-mobile.png`.
+
+**V3-D347 claimed.** Next available: V3-D348.
+
+---
+
+## V3-D348 — CardName/CardMeta primitives + A13 drift-checker rule (the "bulletproof" follow-ups)
+Date: 2026-05-28
+Files:
+- NEW `app/[locale]/_components/primitives/CardText.tsx` (CardName + CardMeta)
+- NEW `_design-system/components/CardText.md` (component doc, Layer 1)
+- `app/[locale]/_components/primitives/index.ts` (barrel export)
+- `_design-system/COMPONENT_REGISTRY.md` (2 rows: CardName, CardMeta)
+- `.claude/skills/solen-drift-check/scripts/check.py` (A13 rule + regexes)
+- `app/[locale]/_components/homepage/SalonCard.tsx` (adopt primitives — proof)
+- `app/[locale]/_components/salon/SalonServicesSheet.tsx` (6 over-bold lines the A13 checker caught)
+V3-D marker: V3-D348
+
+### Q1: WHAT AXIS is this change on?
+AESTHETIC (enforcement tooling for the A13 card-hierarchy rule) + tooling. No structure/layout change.
+
+### Q2: WHERE'S THE SOURCE OF TRUTH?
+LOCKFILE §2.5 rule A13 (V3-D346). The primitives bake its recipe; the checker rule is its static proxy.
+
+### Q3: HAVE I READ THE SOURCE IN THE LAST HOUR?
+Y — A13 rule authored this session; re-read §2.5 + the check.py rule structure (A7-A12) before adding A13.
+
+### Q4: DOES MY PROPOSED EDIT MATCH IT?
+MATCH.
+- **Primitives:** `CardName` = `text-s-ink font-medium` (the one anchor); `CardMeta` = `text-s-ink-2 font-normal` (recessive). Weight+color baked; `className` = layout only (cn is clsx, no tailwind-merge — documented gotcha + checker backstop).
+- **Checker A13:** flags `font-bold` on `text-[<22px]` OR on `text-s-ink-2/3` (the over-bold signal). INFO-tagged -> routes to `_pending-migration.md`, does not break strict scope. Hero H1 (`text-[clamp(...)]`) exempt by design.
+- **SalonServicesSheet:** the checker CAUGHT 4 over-bold lines I'd missed in the manual sweep (header h2, per-service price, 2 totals, salon name, rating). Swept all 6: names->font-medium, price/rating->font-normal text-s-ink-2, totals->font-semibold (footer anchors), header h2->font-semibold.
+
+### Q5: POST-EDIT VERIFICATION
+PASS.
+- **tsc:** 0 errors (only `_backup/` noise).
+- **Checker re-run:** A13 findings 89 -> 85 (the 4 SalonServicesSheet hits resolved); SalonServicesSheet now 0 A13. Remaining 85 = backlog in unswept components (BentoBusiness etc.) for later sweeps.
+- **Primitive renders identically (getComputedStyle on live SalonCard):** name via `<CardName>` = weight 500 / rgb(10,10,10) ink / 14px; rating via `<CardMeta>` = weight 400 / rgb(107,107,107) ink-2 / 13px. Same as the hand-written classes -> zero visual change, primitive proven.
+- **Doc + registry:** CardText.md written; CardName + CardMeta rows added to COMPONENT_REGISTRY.md (per CLAUDE.md same-turn rule).
+
+### Sub-systems applied (actual)
+Checked: B (new component -> .md + registry, same turn) · D (axis AESTHETIC) · E (this entry) · F (drift-check re-run + delta logged) · G (V3-D348 markers) · L (no commit) · M (surgical) · N
+Skipped: A (no copy) · C (n/a) · H (no new color) · I (no catch) · J (no layout change) · K (getComputedStyle used instead of screenshot — render is class-identical)
+
+### Adoption note
+SalonCard adopted as the proof. Broader adoption is opportunistic: new cards use `<CardName>/<CardMeta>`; the 85 A13 backlog items adopt them as they're swept. The system is bulletproof via primitive (easy correct path) + checker (catches the bypass path).
+
+**V3-D348 claimed.** Next available: V3-D349.

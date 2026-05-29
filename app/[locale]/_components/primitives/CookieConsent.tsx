@@ -219,7 +219,7 @@ function CookieBanner() {
         <div className="flex items-start gap-3 flex-1 min-w-0">
           <span
             aria-hidden
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-s-accent/15 text-s-accent-deep"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#A1672F]/15 text-[#A1672F]"
           >
             <Cookie size={20} strokeWidth={2} />
           </span>
