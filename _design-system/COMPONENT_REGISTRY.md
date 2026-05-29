@@ -111,6 +111,21 @@
 
 ---
 
+## Dashboard (operator console — colocated to `_components/dashboard/`)
+
+Doc: `_design-system/components/DashboardUI.md`. Introduced V3-D346 (dashboard B&W redesign). Replaces retired-token legacy widgets in `components-legacy/dashboard/*`.
+
+| Component | File | Layer | API | Use for / Don't reuse for | Status |
+|---|---|---|---|---|---|
+| **DashPanel** | `dashboard/DashboardUI.tsx` | 1 (chrome) | `<DashPanel title? actionLabel? actionHref? className?>`. White rounded-2xl + hairline, optional header (title + "→" link). | **Use:** any titled dashboard content card. **Don't:** marketing/PDP sections. | locked V3-D346 |
+| **DashStatCard** | `dashboard/DashboardUI.tsx` | 1 (chrome) | `<DashStatCard label value prefix? suffix? delta?>`. Ink value + semantic delta arrow. | **Use:** KPI strips (overview/analytics/earnings/revenue). **Don't:** non-metric cards. | locked V3-D346 |
+| **DashStatusPill** | `dashboard/DashboardUI.tsx` | 3 (semantic UI) | `<DashStatusPill tone>{label}</DashStatusPill>` — `success\|warning\|error\|neutral`. Pale bg + **saturated semantic text** + dot (V3-D347 vibrant skin — never ink text). | **Use:** multi-state status across dashboard tables/calendar/lists. **Don't:** binary open/closed (use salon `StatusPill`). | locked V3-D347 |
+| **DashRow** | `dashboard/DashboardUI.tsx` | 1 (chrome) | `<DashRow href? className?>{children}</DashRow>`. Hairline-divided row, hover fill. | **Use:** list/table rows (bookings/clients/staff/services). **Don't:** marketing lists. | locked V3-D346 |
+| **DashQuickAction** | `dashboard/DashboardUI.tsx` | 1 (chrome) | `<DashQuickAction icon title subtitle? href>`. Icon chip + title + subtitle. | **Use:** dashboard action shortcut grids. **Don't:** primary CTAs (use DashButton). | locked V3-D346 |
+| **DashButton** | `dashboard/DashboardUI.tsx` | 2 (accent) | `<DashButton variant? size? icon? href? onClick?>` — `primary (accent-blue #276EF1) \| secondary \| ghost`. | **Use:** dashboard primary/secondary actions (vibrant skin §12). **Don't:** customer-facing CTAs (those stay `bg-s-ink`). | locked V3-D347 |
+
+---
+
 ## Proposed (claimed but not yet built)
 
 When you start building a NEW component, post here FIRST so parallel agents don't duplicate. Move to the appropriate section above when locked.

@@ -20,12 +20,12 @@ const HOURS = Array.from({ length: 25 }, (_, i) => i + 8); // 08:00–20:00 (24 
 const DAYS_LABEL = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 
 // Service category → left border color
+// V3-D347: vibrant service palette (LOCKFILE §12 calendar set), makeup removed.
 const SERVICE_CATEGORY_COLORS: Record<string, string> = {
-  hair: "border-l-4 border-l-s-coral",
-  nails: "border-l-4 border-l-s-blue",
-  spa: "border-l-4 border-l-s-sage",
-  makeup: "border-l-4 border-l-s-plum",
-  barber: "border-l-4 border-l-s-amber",
+  hair: "border-l-4 border-l-s-cal-hair",
+  nails: "border-l-4 border-l-s-cal-nails",
+  spa: "border-l-4 border-l-s-cal-spa",
+  barber: "border-l-4 border-l-s-cal-barber",
 };
 
 function startOfWeek(date: Date) {
@@ -103,7 +103,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
           <div>
             <label className="block text-xs font-medium text-s-ink/50 mb-1">Service *</label>
             <select value={serviceId} onChange={(e) => setServiceId(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-coral">
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-accent">
               <option value="">Wählen…</option>
               {services.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
@@ -111,7 +111,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
           <div>
             <label className="block text-xs font-medium text-s-ink/50 mb-1">Mitarbeiter</label>
             <select value={staffId} onChange={(e) => setStaffId(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-coral">
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-accent">
               <option value="">Egal (wer verfügbar ist)</option>
               {staff.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
@@ -120,7 +120,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Erstellen
           </button>
         </div>
@@ -183,7 +183,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
           <div>
             <label className="block text-xs font-medium text-s-ink/50 mb-1">Service *</label>
             <select value={serviceId} onChange={(e) => setServiceId(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-coral">
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-accent">
               <option value="">Wählen…</option>
               {services.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
@@ -191,7 +191,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
           <div>
             <label className="block text-xs font-medium text-s-ink/50 mb-1">Mitarbeiter</label>
             <select value={staffId} onChange={(e) => setStaffId(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-coral">
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-accent">
               <option value="">Egal</option>
               {staff.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
@@ -205,16 +205,16 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
                   <div key={key} className="flex items-center gap-3">
                     <button type="button" onClick={() => toggleDay(key)}
                       className={["w-9 text-center text-xs font-medium py-1.5 rounded-btn transition-colors",
-                        slot ? "bg-s-coral text-white" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
+                        slot ? "bg-s-accent-bright text-white" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
                       {DAY_LABELS[i]}
                     </button>
                     {slot ? (
                       <>
                         <input type="time" value={slot.start} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, start: e.target.value } }))}
-                          className="px-2 py-1 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
+                          className="px-2 py-1 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-accent" />
                         <span className="text-xs text-s-ink/30">–</span>
                         <input type="time" value={slot.end} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, end: e.target.value } }))}
-                          className="px-2 py-1 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
+                          className="px-2 py-1 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-accent" />
                       </>
                     ) : <span className="text-xs text-s-ink/30">Nicht verfügbar</span>}
                   </div>
@@ -228,7 +228,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
               {([1, 2, 4] as const).map((w) => (
                 <button key={w} type="button" onClick={() => setWeeks(w)}
                   className={["flex-1 py-2 rounded-btn border text-sm font-medium transition-colors",
-                    weeks === w ? "bg-s-coral text-white border-s-coral" : "border-s-ink/10 text-s-ink/60"].join(" ")}>
+                    weeks === w ? "bg-s-accent-bright text-white border-s-accent-bright" : "border-s-ink/10 text-s-ink/60"].join(" ")}>
                   {w} {w === 1 ? "Woche" : "Wochen"}
                 </button>
               ))}
@@ -238,7 +238,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Erstellen
           </button>
         </div>
@@ -294,18 +294,18 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
             <div>
               <label className="block text-xs font-medium text-s-ink/50 mb-1">Neues Datum</label>
               <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent" />
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink/50 mb-1">Neue Uhrzeit</label>
               <input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)}
-                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent" />
             </div>
             <div className="flex gap-2 mt-4">
               <button onClick={() => setRescheduleMode(false)}
                 className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Zurück</button>
               <button onClick={handleReschedule} disabled={loading}
-                className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-1">
+                className="flex-1 py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-1">
                 {loading && <Spinner size="sm" invert />}
                 <ArrowRight size={14} /> Verschieben
               </button>
@@ -322,12 +322,12 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
             <div className="flex gap-2">
               {slot.status !== "blocked" && (
                 <button onClick={() => setRescheduleMode(true)}
-                  className="flex-1 py-2.5 rounded-btn border border-s-coral text-s-coral text-sm font-medium flex items-center justify-center gap-1 hover:bg-s-coral/5 transition-colors">
+                  className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-coral text-sm font-medium flex items-center justify-center gap-1 hover:bg-s-coral/5 transition-colors">
                   <Clock size={14} /> Verschieben
                 </button>
               )}
               <button onClick={() => { onDelete(slot.id); onClose(); }}
-                className="flex-1 py-2.5 rounded-btn border border-s-coral text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors">
+                className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors">
                 Löschen
               </button>
             </div>
@@ -340,7 +340,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
 
 // Staff color palette
 const STAFF_COLORS = [
-  "bg-s-coral/15 border-s-coral/30 text-s-coral",
+  "bg-s-coral/15 border-s-accent-bright/30 text-s-coral",
   "bg-blue-100 border-blue-300 text-blue-700",
   "bg-s-plum/10 border-s-plum/30 text-s-plum",
   "bg-s-amber-subtle border-s-amber/30 text-s-amber-text",
@@ -507,12 +507,12 @@ export default function CalendarPage() {
 
     if (s.status === "blocked") return `bg-s-bg-sunken border border-dashed border-s-ink/20 ${catBorder}`;
     if (s.status === "booked") return `bg-s-ink text-white ${catBorder}`;
-    if (s.price_override !== null) return `bg-s-coral border-2 border-s-coral ${catBorder}`; // last-minute
+    if (s.price_override !== null) return `bg-s-coral border-2 border-s-accent-bright ${catBorder}`; // last-minute
     // Color by staff member
     if (s.staff_member_id && staffColorMap.has(s.staff_member_id)) {
       return staffColorMap.get(s.staff_member_id)! + ` border ${catBorder}`;
     }
-    return `bg-s-coral/15 border border-s-coral/30 text-s-coral ${catBorder}`;
+    return `bg-s-coral/15 border border-s-accent-bright/30 text-s-coral ${catBorder}`;
   };
 
   return (
@@ -565,18 +565,18 @@ export default function CalendarPage() {
             if (viewMode === "week") setWeekStart((w) => addDays(w, -7));
             else if (viewMode === "day") { setCurrentDate((d) => addDays(d, -1)); setWeekStart(startOfWeek(addDays(currentDate, -1))); }
             else { const d = new Date(currentDate); d.setMonth(d.getMonth() - 1); setCurrentDate(d); setWeekStart(startOfWeek(d)); }
-          }} className="p-2 rounded-btn border border-s-ink/10 hover:border-s-coral transition-colors">
+          }} className="p-2 rounded-btn border border-s-ink/10 hover:border-s-accent-bright transition-colors">
             <ChevronLeft size={16} className="text-s-ink" />
           </button>
           <button onClick={() => { const today = new Date(); setCurrentDate(today); setWeekStart(startOfWeek(today)); }}
-            className="px-3 py-1.5 rounded-btn border border-s-ink/10 text-sm text-s-ink hover:border-s-coral transition-colors">
+            className="px-3 py-1.5 rounded-btn border border-s-ink/10 text-sm text-s-ink hover:border-s-accent-bright transition-colors">
             Heute
           </button>
           <button onClick={() => {
             if (viewMode === "week") setWeekStart((w) => addDays(w, 7));
             else if (viewMode === "day") { setCurrentDate((d) => addDays(d, 1)); setWeekStart(startOfWeek(addDays(currentDate, 1))); }
             else { const d = new Date(currentDate); d.setMonth(d.getMonth() + 1); setCurrentDate(d); setWeekStart(startOfWeek(d)); }
-          }} className="p-2 rounded-btn border border-s-ink/10 hover:border-s-coral transition-colors">
+          }} className="p-2 rounded-btn border border-s-ink/10 hover:border-s-accent-bright transition-colors">
             <ChevronRight size={16} className="text-s-ink" />
           </button>
           <span className="text-sm font-medium text-s-ink ml-2">
@@ -593,21 +593,21 @@ export default function CalendarPage() {
           <div className="flex rounded-btn border border-s-ink/10 overflow-hidden">
             {(["day", "week", "month"] as ViewMode[]).map((mode) => (
               <button key={mode} onClick={() => setViewMode(mode)}
-                className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-coral text-white" : "text-s-ink/60 hover:bg-s-coral/5"}`}>
+                className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-accent-bright text-white" : "text-s-ink/60 hover:bg-s-coral/5"}`}>
                 {mode === "day" ? "Tag" : mode === "week" ? "Woche" : "Monat"}
               </button>
             ))}
           </div>
           <button onClick={() => setWalkInModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 text-sm text-s-ink/60 hover:border-s-coral hover:text-s-coral transition-colors">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 text-sm text-s-ink/60 hover:border-s-accent-bright hover:text-s-coral transition-colors">
             <UserPlus size={14} /> Walk-in
           </button>
           <button onClick={() => setBulkModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 text-sm text-s-ink/60 hover:border-s-coral hover:text-s-coral transition-colors">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 text-sm text-s-ink/60 hover:border-s-accent-bright hover:text-s-coral transition-colors">
             Wochenplan
           </button>
           <button onClick={() => setCreateModal({ date: new Date().toISOString().split("T")[0], time: "09:00" })}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-coral text-white text-sm font-medium">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-accent-bright text-white text-sm font-medium">
             <Plus size={14} /> Slot
           </button>
         </div>
@@ -827,7 +827,7 @@ export default function CalendarPage() {
                   <div key={i}
                     onClick={() => { setCurrentDate(d); setViewMode("day"); }}
                     className={`min-h-[80px] p-1.5 border-b border-r border-s-ink/5 cursor-pointer hover:bg-s-coral/5 transition-colors ${!isCurrentMonth ? "opacity-40" : ""}`}>
-                    <p className={`text-xs font-medium mb-1 ${isToday ? "w-5 h-5 rounded-full bg-s-coral text-white flex items-center justify-center" : "text-s-ink"}`}>
+                    <p className={`text-xs font-medium mb-1 ${isToday ? "w-5 h-5 rounded-full bg-s-accent-bright text-white flex items-center justify-center" : "text-s-ink"}`}>
                       {d.getDate()}
                     </p>
                     {daySlots.length > 0 && (
@@ -848,10 +848,10 @@ export default function CalendarPage() {
 
       {/* Legend */}
       <div className="flex flex-wrap gap-4 mt-3 text-xs text-s-ink/40">
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral/15 border border-s-coral/30" />Frei</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral/15 border border-s-accent-bright/30" />Frei</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-ink" />Gebucht</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-bg-sunken border border-dashed border-s-ink/20" />Blockiert</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral border-2 border-s-coral" />Last-Minute</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral border-2 border-s-accent-bright" />Last-Minute</span>
         {/* Service category colors */}
         <span className="w-px h-4 bg-s-sand" />
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-coral bg-s-coral/10" />Hair</span>

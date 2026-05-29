@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { Search, User, Tag, StickyNote, ChevronLeft, Calendar, Beaker, Camera, ClipboardList } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
 import FormulaTab from "@/components-legacy/dashboard/FormulaTab";
 import ClientPhotosTab from "@/components-legacy/dashboard/ClientPhotosTab";
@@ -54,11 +55,11 @@ export default function ClientsPage() {
   const [segmentFilter, setSegmentFilter] = useState<string>("Alle");
 
   const SEGMENTS = [
-    { key: "Alle", label: "Alle", color: "bg-s-ink/5 text-s-ink/60" },
-    { key: "VIP", label: "VIP", color: "bg-s-yellow/15 text-s-yellow-text" },
-    { key: "Gefährdet", label: "Gefährdet", color: "bg-s-error/10 text-s-error" },
-    { key: "Neu", label: "Neu", color: "bg-s-success/10 text-s-success" },
-    { key: "Regulär", label: "Regulär", color: "bg-s-ink/5 text-s-ink/60" },
+    { key: "Alle", label: "Alle", color: "bg-s-bg-sunken text-s-ink-2" },
+    { key: "VIP", label: "VIP", color: "bg-s-bg-sunken text-s-ink" },
+    { key: "Gefährdet", label: "Gefährdet", color: "bg-s-error-bg text-s-error" },
+    { key: "Neu", label: "Neu", color: "bg-s-success-bg text-s-success" },
+    { key: "Regulär", label: "Regulär", color: "bg-s-bg-sunken text-s-ink-2" },
   ];
 
   useEffect(() => {
@@ -99,7 +100,7 @@ export default function ClientsPage() {
   return (
     <DashboardLayout>
       <div className="mb-5">
-        <h2 className="font-heading text-lg text-s-ink">Kunden</h2>
+        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Kunden</h1>
         <p className="text-sm text-s-ink/40">Kundenkartei & CRM</p>
       </div>
 
@@ -109,8 +110,8 @@ export default function ClientsPage() {
           const count = s.key === "Alle" ? clients.length : clients.filter((c) => c.segment_tag === s.key).length;
           return (
             <button key={s.key} onClick={() => setSegmentFilter(s.key)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium whitespace-nowrap transition-colors ${
-                segmentFilter === s.key ? "bg-s-coral text-white" : s.color + " hover:opacity-80"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
+                segmentFilter === s.key ? "bg-s-ink text-white hover:bg-black" : s.color + " hover:opacity-80"
               }`}>
               {s.label}
               <span className={`data-text text-[10px] ${segmentFilter === s.key ? "text-white/70" : "opacity-50"}`}>{count}</span>
@@ -126,7 +127,7 @@ export default function ClientsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Name suchen…"
-          className="w-full pl-9 pr-3 py-2.5 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral"
+          className="w-full pl-9 pr-3 py-2.5 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink"
         />
       </div>
 
@@ -142,13 +143,13 @@ export default function ClientsPage() {
             <button
               key={c.user_id}
               onClick={() => setSelectedClient(c)}
-              className="w-full flex items-center gap-3 p-3 rounded-[12px] border border-s-ink/5 bg-white hover:border-s-coral/20 transition-colors text-left"
+              className="w-full flex items-center gap-3 p-3 rounded-2xl border border-s-border bg-white hover:border-s-ink transition-colors text-left"
             >
-              <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 overflow-hidden relative">
+              <div className="w-10 h-10 rounded-full bg-s-bg-sunken flex items-center justify-center shrink-0 overflow-hidden relative">
                 {c.avatar_url ? (
                   <Image src={c.avatar_url} alt="" fill className="object-cover" unoptimized />
                 ) : (
-                  <User size={16} className="text-s-coral" />
+                  <User size={16} className="text-s-ink" />
                 )}
               </div>
               <div className="flex-1 min-w-0">
@@ -159,11 +160,11 @@ export default function ClientsPage() {
                 </div>
               </div>
               {c.segment_tag && c.segment_tag !== "Regulär" && (
-                <span className={`px-1.5 py-0.5 rounded-pill text-[9px] font-medium shrink-0 ${
-                  c.segment_tag === "VIP" ? "bg-s-yellow/15 text-s-yellow-text" :
-                  c.segment_tag === "Gefährdet" ? "bg-s-error/10 text-s-error" :
-                  c.segment_tag === "Neu" ? "bg-s-success/10 text-s-success" :
-                  "bg-s-ink/5 text-s-ink/60"
+                <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-medium shrink-0 ${
+                  c.segment_tag === "VIP" ? "bg-s-bg-sunken text-s-ink" :
+                  c.segment_tag === "Gefährdet" ? "bg-s-error-bg text-s-error" :
+                  c.segment_tag === "Neu" ? "bg-s-success-bg text-s-success" :
+                  "bg-s-bg-sunken text-s-ink-2"
                 }`}>{c.segment_tag}</span>
               )}
               {c.tags?.length > 0 && (
@@ -190,11 +191,11 @@ export default function ClientsPage() {
 function tagColor(color: string): string {
   const map: Record<string, string> = {
     red: "bg-s-error-bg text-s-error",
-    orange: "bg-orange-100 text-orange-700",
-    teal: "bg-s-coral/10 text-s-coral",
-    blue: "bg-blue-100 text-blue-700",
-    purple: "bg-s-plum/10 text-s-plum",
-    gray: "bg-s-ink/5 text-s-ink/60",
+    orange: "bg-s-warning-bg text-s-warning",
+    teal: "bg-s-bg-sunken text-s-ink",
+    blue: "bg-s-bg-sunken text-s-ink-2",
+    purple: "bg-s-bg-sunken text-s-ink-2",
+    gray: "bg-s-bg-sunken text-s-ink-2",
   };
   return map[color] ?? map.gray;
 }
@@ -283,15 +284,15 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
   return (
     <div>
       {/* Header */}
-      <button onClick={onBack} className="flex items-center gap-1 text-sm text-s-coral hover:text-s-coral/80 transition-colors mb-4">
+      <button onClick={onBack} className="flex items-center gap-1 text-sm text-s-ink-2 hover:text-s-ink transition-colors mb-4">
         <ChevronLeft size={16} /> Zurück
       </button>
       <div className="flex items-center gap-3 mb-5">
-        <div className="w-12 h-12 rounded-full bg-s-coral/10 flex items-center justify-center overflow-hidden relative">
+        <div className="w-12 h-12 rounded-full bg-s-bg-sunken flex items-center justify-center overflow-hidden relative">
           {client.avatar_url ? (
             <img src={client.avatar_url} alt="" className="w-full h-full object-cover" />
           ) : (
-            <User size={20} className="text-s-coral" />
+            <User size={20} className="text-s-ink" />
           )}
         </div>
         <div>
@@ -304,7 +305,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-4">
           {tags.map((t) => (
-            <span key={t.tag} className={`px-2 py-0.5 rounded-pill text-[10px] font-medium ${tagColor(t.color)}`}>
+            <span key={t.tag} className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${tagColor(t.color)}`}>
               {t.tag}
             </span>
           ))}
@@ -315,7 +316,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
       <div className="flex gap-1 mb-5 overflow-x-auto pb-1">
         {TABS.map((t) => (
           <button key={t.key} onClick={() => setTab(t.key)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-btn text-xs font-medium whitespace-nowrap transition-colors ${tab === t.key ? "bg-s-coral text-white" : "text-s-ink/50 hover:bg-s-coral/5"}`}>
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${tab === t.key ? "bg-s-ink text-white hover:bg-black" : "bg-white border border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
             <t.icon size={12} /> {t.label}
           </button>
         ))}
@@ -329,17 +330,17 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
           ) : (
             <div className="space-y-2">
               {bookings.map((b) => (
-                <div key={b.id} className="bg-white rounded-[12px] border border-s-ink/5 p-3 flex items-center justify-between">
+                <div key={b.id} className="bg-white rounded-2xl border border-s-border p-3 flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-s-ink">{b.service_name || "Service"}</p>
                     <p className="text-xs text-s-ink/40">
                       {new Date(b.starts_at).toLocaleDateString("de-CH")} · {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-btn ${b.status === "confirmed" ? "bg-s-success-bg text-s-success" : b.status === "cancelled" ? "bg-s-error-bg text-s-error" : "bg-s-ink/5 text-s-ink/50"}`}>
+                  <div className="text-right flex flex-col items-end">
+                    <DashStatusPill tone={b.status === "confirmed" ? "success" : b.status === "cancelled" ? "error" : "neutral"}>
                       {b.status}
-                    </span>
+                    </DashStatusPill>
                     {b.price_paid != null && <p className="text-xs text-s-ink/40 mt-0.5 data-text">CHF {b.price_paid}</p>}
                   </div>
                 </div>
@@ -357,10 +358,10 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
         <div>
           <div className="flex gap-2 mb-4">
             <input value={newNote} onChange={(e) => setNewNote(e.target.value)} placeholder="Notiz hinzufügen…"
-              className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral"
+              className="flex-1 px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink"
               onKeyDown={(e) => { if (e.key === "Enter") handleAddNote(); }} />
             <button onClick={handleAddNote} disabled={!newNote.trim() || savingNote}
-              className="px-3 py-2 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50">
+              className="px-3 py-2 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-50 transition-colors">
               {savingNote ? <Spinner size="sm" invert /> : "Speichern"}
             </button>
           </div>
@@ -370,7 +371,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
             ) : (
               <div className="space-y-2">
                 {notes.map((n) => (
-                  <div key={n.id} className="bg-white rounded-[12px] border border-s-ink/5 p-3">
+                  <div key={n.id} className="bg-white rounded-2xl border border-s-border p-3">
                     <p className="text-sm text-s-ink">{n.note}</p>
                     <p className="text-[10px] text-s-ink/20 mt-1">{new Date(n.created_at).toLocaleDateString("de-CH")}</p>
                   </div>
@@ -385,21 +386,21 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
         <div>
           <div className="flex gap-2 mb-4">
             <input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder="Neues Tag…"
-              className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
+              className="flex-1 px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
             <select value={tagColor_} onChange={(e) => setTagColor_(e.target.value)}
-              className="px-2 py-2 rounded-btn border border-s-ink/10 bg-white text-xs text-s-ink focus:outline-none focus:border-s-coral">
+              className="px-2 py-2 rounded-btn border border-s-border bg-white text-xs text-s-ink focus:outline-none focus:border-s-ink">
               {["gray", "red", "orange", "blue", "purple", "teal"].map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
             <button onClick={handleAddTag} disabled={!newTag.trim() || savingTag}
-              className="px-3 py-2 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50">
+              className="px-3 py-2 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-50 transition-colors">
               {savingTag ? <Spinner size="sm" invert /> : "Hinzufügen"}
             </button>
           </div>
           <div className="flex flex-wrap gap-2">
             {tags.map((t) => (
-              <span key={t.tag} className={`px-2.5 py-1 rounded-pill text-xs font-medium ${tagColor(t.color)}`}>
+              <span key={t.tag} className={`px-2.5 py-1 rounded-full text-xs font-medium ${tagColor(t.color)}`}>
                 {t.tag}
               </span>
             ))}

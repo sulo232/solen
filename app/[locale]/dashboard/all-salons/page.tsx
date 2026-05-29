@@ -6,6 +6,7 @@ import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Store, Search, X, ExternalLink } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { containerVariants, itemVariants } from "@/lib/animations";
@@ -35,10 +36,10 @@ const TABS: { label: string; value: StatusFilter }[] = [
   { label: "Eingefroren", value: "frozen" },
 ];
 
-function getStatusPill(salon: AdminSalon) {
-  if (salon.is_active) return { label: "Aktiv", cls: "bg-s-coral/10 text-s-coral" };
-  if (!salon.approved_at) return { label: "Ausstehend", cls: "bg-s-amber-subtle text-s-amber-text" };
-  return { label: "Eingefroren", cls: "bg-s-coral/10 text-s-coral" };
+function getStatusPill(salon: AdminSalon): { label: string; tone: "success" | "warning" | "error" | "neutral" } {
+  if (salon.is_active) return { label: "Aktiv", tone: "success" };
+  if (!salon.approved_at) return { label: "Ausstehend", tone: "warning" };
+  return { label: "Eingefroren", tone: "error" };
 }
 
 /* ─── Confirmation Modal ─── */
@@ -68,7 +69,7 @@ function ConfirmModal({
         </div>
         <p className="text-sm text-s-ink/50 mb-5">{message}</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">
             Abbrechen
           </button>
           <button
@@ -100,7 +101,7 @@ export default function AllSalonsPage() {
     fetch(`/api/admin/salons?status=${status}`)
       .then((r) => r.json())
       .then((d) => setSalons(d.salons ?? []))
-      .catch(() => setSalons([]))
+      .catch((err) => { console.error("[DashboardAllSalons] failed to fetch salons:", err); setSalons([]); })
       .finally(() => setLoading(false));
   }, []);
 
@@ -125,8 +126,8 @@ export default function AllSalonsPage() {
       }
       setConfirmTarget(null);
       fetchSalons(tab);
-    } catch {
-      // silently fail
+    } catch (err) {
+      console.error("[DashboardAllSalons] salon activate/freeze failed:", err);
     } finally {
       setActionLoading(false);
     }
@@ -150,7 +151,7 @@ export default function AllSalonsPage() {
               : `Bist du sicher? Der Salon "${confirmTarget.salon.name}" wird für Kunden nicht mehr sichtbar.`
           }
           confirmLabel={confirmTarget.action === "activate" ? "Aktivieren" : "Einfrieren"}
-          confirmCls={confirmTarget.action === "activate" ? "bg-s-coral" : "bg-s-coral"}
+          confirmCls="bg-s-ink hover:bg-black"
           onConfirm={handleToggle}
           onClose={() => setConfirmTarget(null)}
           loading={actionLoading}
@@ -159,7 +160,7 @@ export default function AllSalonsPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading text-2xl text-s-ink">Alle Salons</h1>
+        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Alle Salons</h1>
         <p className="text-sm text-s-ink/40 mt-0.5">Alle registrierten Salons verwalten</p>
       </div>
 
@@ -170,10 +171,10 @@ export default function AllSalonsPage() {
             key={t.value}
             onClick={() => setTab(t.value)}
             className={[
-              "px-3 py-1.5 rounded-pill text-sm font-medium whitespace-nowrap transition-colors",
+              "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
               tab === t.value
-                ? "bg-s-coral text-white"
-                : "bg-white border border-s-ink/10 text-s-ink/60 hover:border-s-coral",
+                ? "bg-s-ink text-white hover:bg-black"
+                : "bg-white border border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink",
             ].join(" ")}
           >
             {t.label}
@@ -189,7 +190,7 @@ export default function AllSalonsPage() {
           placeholder="Salon suchen..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-ink/10 bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-border bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-ink transition-colors"
         />
       </div>
 
@@ -212,7 +213,7 @@ export default function AllSalonsPage() {
               <motion.div
                 key={salon.id}
                 variants={itemVariants}
-                className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-4"
+                className="bg-white rounded-2xl border border-s-border shadow-warm-md p-4"
               >
                 <div className="flex gap-3">
                   {/* Cover thumbnail */}
@@ -240,7 +241,7 @@ export default function AllSalonsPage() {
                         {salon.categories.slice(0, 3).map((c) => (
                           <span
                             key={c}
-                            className="px-2 py-0.5 bg-s-coral/10 text-s-coral text-[10px] rounded-pill font-medium"
+                            className="px-2 py-0.5 bg-s-bg-sunken text-s-ink text-[10px] rounded-full font-medium"
                           >
                             {c}
                           </span>
@@ -262,24 +263,22 @@ export default function AllSalonsPage() {
                 </div>
 
                 {/* Bottom row: status + actions */}
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-ink/5">
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded-pill text-[10px] font-bold ${status.cls}`}>
-                    {status.label}
-                  </span>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-border">
+                  <DashStatusPill tone={status.tone}>{status.label}</DashStatusPill>
 
                   <div className="flex items-center gap-2">
                     {/* Toggle active */}
                     {salon.is_active ? (
                       <button
                         onClick={() => setConfirmTarget({ salon, action: "deactivate" })}
-                        className="px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
+                        className="px-3 py-1.5 rounded-btn border border-s-ink text-s-ink text-xs font-medium hover:bg-s-bg-sunken transition-colors"
                       >
                         Einfrieren
                       </button>
                     ) : (
                       <button
                         onClick={() => setConfirmTarget({ salon, action: "activate" })}
-                        className="px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
+                        className="px-3 py-1.5 rounded-btn border border-s-ink text-s-ink text-xs font-medium hover:bg-s-bg-sunken transition-colors"
                       >
                         Aktivieren
                       </button>
@@ -288,7 +287,7 @@ export default function AllSalonsPage() {
                     {/* Edit link */}
                     <a
                       href={`/${locale}/dashboard/settings`}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn bg-s-bg-surface text-s-ink/50 text-xs font-medium hover:bg-s-bg-sunken transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn bg-s-bg-sunken text-s-ink-2 text-xs font-medium hover:bg-s-border transition-colors"
                     >
                       Bearbeiten <ExternalLink size={10} />
                     </a>

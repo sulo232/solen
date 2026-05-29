@@ -168,7 +168,9 @@ module.exports = {
         // hue-matched text on .soft backgrounds.
         "s-love":     { DEFAULT: "#CC4A60", soft: "#FAD2DA", deep: "#A23548" },
         "s-success": { DEFAULT: "#16A34A", bg: "#E8F5E9" },
-        "s-warning": { DEFAULT: "#F59E0B", bg: "#FFF3E0" },  // V3: aligned to LIVE_TRUTH §3 hex
+        "s-warning": { DEFAULT: "#F59E0B", bg: "#FFF3E0", text: "#B45309" },  // V3: aligned to LIVE_TRUTH §3 hex. `.text` = readable amber for text-on-pale (V3-D347 dashboard)
+        // V3-D347 — operator-dashboard CALENDAR service palette (vibrant, dashboard-only per LOCKFILE §12). Store-defined service types; NO makeup.
+        "s-cal": { hair: "#2563EB", color: "#EC4899", nails: "#8B5CF6", spa: "#10B981", barber: "#F97316" },
         "s-error":   { DEFAULT: "#D32F2F", bg: "#FFEBEE" },  // V3: aligned to LIVE_TRUTH §3 hex
         // V3-D213 (2026-05-26, salon verifier fix #6): burnt-amber urgency for
         // "Last-Minute" / "Nur noch X" / off-peak deal pills. Distinct from

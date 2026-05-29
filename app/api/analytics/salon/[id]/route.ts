@@ -156,6 +156,21 @@ export async function GET(
   }
   const acquisitionSources = [...sourceCounts.entries()].map(([source, count]) => ({ source, count }));
 
+  // Daily series for dashboard charts (V3-D347): per-day bookings + revenue + confirmed/cancelled split
+  const dailyMap = new Map<string, { bookings: number; revenue: number; confirmed: number; cancelled: number }>();
+  for (const b of allBookings) {
+    const day = new Date(b.starts_at).toISOString().split("T")[0];
+    const e = dailyMap.get(day) ?? { bookings: 0, revenue: 0, confirmed: 0, cancelled: 0 };
+    e.bookings += 1;
+    if (b.status === "completed") e.revenue += b.price_paid ?? 0;
+    if (b.status === "confirmed" || b.status === "completed") e.confirmed += 1;
+    if (b.status === "cancelled") e.cancelled += 1;
+    dailyMap.set(day, e);
+  }
+  const daily = [...dailyMap.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([date, v]) => ({ date, ...v }));
+
   // Reviews in period
   const { data: reviews } = await admin
     .from("reviews")
@@ -218,6 +233,7 @@ export async function GET(
     total_reviews: totalReviews,
     peak_hours_heatmap: heatmap,
     popular_services: popularServices,
+    daily,
     retention_rate: retentionRate,
     new_vs_returning: { new: firstVisits, returning: returningCount },
     acquisition_sources: acquisitionSources,
