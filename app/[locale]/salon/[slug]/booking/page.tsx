@@ -47,7 +47,7 @@ export default async function BookingSalonPage({
   const { data: services, error: servicesError } = await supabase
     .from('services')
     .select(
-      'id, name_de, name_en, category, duration_minutes, price, is_active'
+      'id, name_de, name_en, category, duration_minutes, price, is_active, description_de, description_en, suitable_gender'
     )
     .eq('salon_id', salon.id)
     .eq('is_active', true)

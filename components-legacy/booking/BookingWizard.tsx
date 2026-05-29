@@ -47,6 +47,9 @@ interface Service {
   duration_minutes: number;
   price: number;
   is_active: boolean;
+  description_de: string | null;
+  description_en: string | null;
+  suitable_gender: string[] | null;
 }
 
 interface BookingWizardProps {

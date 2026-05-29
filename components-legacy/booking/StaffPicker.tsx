@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Star, Users } from "lucide-react";
+import { Star, Shuffle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { StaffMember } from "@/lib/types";
 
@@ -33,10 +33,10 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
           }`}
           style={{ minWidth: "90px" }}
         >
-          <div className="w-12 h-12 rounded-full bg-s-bg-sunken flex items-center justify-center">
-            <Users size={20} className="text-s-ink/30" />
+          <div className="w-12 h-12 rounded-full bg-s-accent-pale flex items-center justify-center">
+            <Shuffle size={18} className="text-s-accent" />
           </div>
-          <span className="text-xs font-heading text-s-ink">{t("any")}</span>
+          <span className="text-xs font-heading text-s-ink text-center leading-tight max-w-[80px]">{t("any")}</span>
         </button>
 
         {/* Staff cards */}

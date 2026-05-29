@@ -925,6 +925,9 @@
       "subtitle": "Select one or more services. Costs are calculated automatically.",
       "minutes": "min",
       "selected": "service(s) selected",
+      "items": "item(s)",
+      "menOnly": "Men only",
+      "womenOnly": "Women only",
       "continue": "Continue",
       "selectAtLeastOne": "Please select at least one service."
     },
@@ -3547,7 +3550,7 @@
   },
   "staffPicker": {
     "title": "Choose staff member",
-    "any": "Any"
+    "any": "No preference"
   },
   "categoryHero": {
     "coiffeur": {

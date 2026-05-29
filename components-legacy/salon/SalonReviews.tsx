@@ -219,7 +219,7 @@ export default function SalonReviews({
                   <div key={rev.id} className="border border-s-ink/5 rounded-[16px] p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-s-bg-surface overflow-hidden flex items-center justify-center text-xs text-s-ink/40">
+                        <div className="w-7 h-7 rounded-full bg-s-accent-pale overflow-hidden flex items-center justify-center text-xs font-semibold text-s-accent">
                           {rev.profiles?.avatar_url ? (
                             <Image src={rev.profiles.avatar_url} alt="" width={28} height={28} className="object-cover" />
                           ) : (
