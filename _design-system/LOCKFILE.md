@@ -270,7 +270,27 @@ ALL other uppercase usage = drift violation. Sweep target: 733 → ~50-80 legit 
 - Notification count badges (circle around a number)
 - Icon container circles (bg circle around an actual icon)
 
-### Migration mapping (phase 2 sweep table)
+### Card / list-item text hierarchy (V3-D346, 2026-05-28) — rule A13
+
+**Rule:** Inside any repeating card or list item (salon card, stylist card, service row, review item, package card, venue-nearby card, search result), there is **exactly ONE ink anchor**: the entity NAME = `text-s-ink font-medium` (500). It is the only `text-s-ink` element in the item body. **Every other value recedes: all meta = `text-s-ink-2 font-normal`** (grey, 400). Meta = rating value + star, distance, next-slot time, price, duration, review count, address, open/closed text, category label, "ab CHF" amounts.
+
+**Rationale (user, 2026-05-28): "using too bold ... multiple times that destroys my eye."** The failure mode is over-emphasis: a card with the name bold-ink AND the time bold-ink AND the rating bold-ink AND the distance bold-ink has four competing anchors, so the eye has nowhere to rest and the card reads "busy / cheap / AI-generated." Uber's cards (measured `public/_pixel-refs/uber/`) carry exactly ONE darker anchor (the name) and let rating / eta / price sit in calm grey. **Restraint, not loudness.** AESTHETIC axis (Uber contrast model per §10) — it supersedes any per-component instinct to bold a value "so it stands out." Bolding everything bolds nothing.
+
+**FORBIDDEN inside a card / list-item body (drift rule A13 flags):**
+
+| Pattern | Sweep to |
+|---|---|
+| A 2nd `text-s-ink` + (`font-semibold`\|`font-bold`) element beside the name | `text-s-ink-2 font-normal` |
+| `font-semibold text-s-ink` on next-slot time / distance / rating / duration | `text-s-ink-2 font-normal` |
+| `font-medium text-s-ink` on a meta value (rating, count, eta, price) | `text-s-ink-2 font-normal` |
+
+**KEEP (not flagged):**
+- The single name anchor at `text-s-ink font-medium`.
+- Semantic Layer-3 color on status (`StatusPill` open=green, discount badge, urgency `s-urgency`) — color IS the message, not weight noise.
+- A commerce card's PRIMARY price (gift-card amount, package total) MAY stay `text-s-ink` for color anchoring but drops to `font-normal` — never bold.
+- The CTA button label inside the card (Primary/Secondary CTA recipe) — that's a button, not body meta.
+
+**Self-check before shipping any card:** count the elements in one item body that are BOTH `text-s-ink` AND (`font-semibold`\|`font-bold`\|`font-medium`). Excluding the name anchor and any CTA button, that count must be **0**. If >0, pull the extras to `text-s-ink-2 font-normal`.
 
 ### Migration mapping (phase 2 sweep table)
 
@@ -873,7 +893,7 @@ This single test catches 80% of axis-confusion mistakes.
 
 | Rule | Why |
 |---|---|
-| **`border-radius: 0` on all images** | Uber doesn't round photos. Rounding implies avatar/icon. Sole exception: avatar circles in `Avatar` primitive. |
+| **`border-radius: 0` on all images** | Uber doesn't round photos. Rounding implies avatar/icon. Exceptions: (1) avatar circles in `Avatar` primitive; (2) **V3-D350 (2026-05-28): search-result cards (`SalonResultCard`) use rounded photo corners (`rounded-card`), an explicit exception to the rounded-none imagery rule, per user direction 2026-05-28 — these are Airbnb-style result cards, not editorial/hero imagery. All other images stay flush.** |
 | **No `rgba(0,0,0,*)` overlay scrims** | Art-direct the photo so text falls on naturally-empty zone. Saves a layer + reads cleaner. |
 | **No `<video>` on marketing surfaces** | Uber's 8 surfaces use zero. Stills + Lottie illustrations only. (Carve-out: `/entdecken` TikTok-stream feature exempt — that's content, not chrome.) |
 | **Single image-CDN pipeline** | All images route through `next/image` + Supabase Storage. Mirror Uber's `cn-geo1.uber.com/image-proc` pattern. |

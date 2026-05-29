@@ -49,6 +49,10 @@ export {
   type SelectSize,
 } from "./Select";
 
+// Card text-hierarchy primitives — LOCKFILE §2.5 rule A13 (V3-D346 / V3-D348).
+// One ink anchor (CardName) + recessive grey meta (CardMeta) per card.
+export { CardName, CardMeta } from "./CardText";
+
 export { Checkbox, type CheckboxProps } from "./Checkbox";
 
 export { Radio, RadioGroup, type RadioProps } from "./Radio";

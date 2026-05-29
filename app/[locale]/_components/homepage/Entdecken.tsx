@@ -224,7 +224,7 @@ export default function Entdecken() {
                       className="inline-block max-w-[80%] rounded-full px-2.5 py-1"
                       style={solidLabelStyle}
                     >
-                      <p className="truncate font-body text-[11px] font-semibold text-s-ink">
+                      <p className="truncate font-body text-[11px] font-medium text-s-ink">
                         {look.authorName ? `@${look.authorName}` : look.styleName}
                       </p>
                     </div>
@@ -319,7 +319,7 @@ export default function Entdecken() {
               >
                 <ArrowRight size={20} strokeWidth={2.5} aria-hidden />
               </div>
-              <h3 className="font-body text-[15px] font-bold leading-tight text-s-ink">
+              <h3 className="font-body text-[15px] font-semibold leading-tight text-s-ink">
                 Alle entdecken
               </h3>
               <p className="mt-2 font-body text-[11px] text-s-ink-3">

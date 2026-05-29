@@ -37,24 +37,37 @@
 import * as React from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import Image from "next/image";
 import {
-  SlidersHorizontal,
   ChevronDown,
   Map as MapIcon,
   List as ListIcon,
   Search,
-  X,
   AlertCircle,
   Loader2,
   SearchX,
-  ChevronRight,
+  Check,
+  SlidersHorizontal,
+  // V3-D354: Fuer-dich surface-shortcut icons (PLACEHOLDER lucide glyphs - the
+  // user is drawing custom 3D icons to replace these, same family as the
+  // category PNGs in /public/icons/categories).
+  Compass,
+  Award,
+  Users,
+  History,
+  DoorOpen,
+  Brush,
 } from "lucide-react";
-import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { SalonCard, type SalonCardProps } from "../homepage/SalonCard";
+import { SalonResultCard } from "./SalonResultCard";
+import { CategoryBrowseRails } from "./CategoryBrowseRails";
+import { FilterSheet } from "./FilterSheet";
 import type { SalonCategory } from "@/lib/types";
-import { CITY_SLUGS, CITIES, getCityName, isValidCitySlug, type CitySlug } from "@/lib/cities";
+import { getCityName, isValidCitySlug, type CitySlug } from "@/lib/cities";
+
+type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
 
 // Lazy Mapbox — never blocks SSR, bundle only ships on toggle.
 const MapView = dynamic(() => import("@/components-legacy/MapView"), {
@@ -93,14 +106,27 @@ type Salon = {
   name: string;
   slug: string;
   average_rating: number | null;
+  review_count?: number | null;
   cover_photo_url: string | null;
   address?: string;
   city?: string;
   categories?: string[];
   last_minute_discount_percent?: number | null;
   avg_price?: number | null;
+  distance_meters?: number | null;
   latitude?: number | null;
   longitude?: number | null;
+  // V3-D357: re-enabled to fill the cards (location + next-slot). quartier =
+  // neighbourhood; services carry name/price/duration + available slots (ISO).
+  quartier?: string | null;
+  services?: {
+    id: string;
+    name_de?: string | null;
+    name_en?: string | null;
+    price?: number | null;
+    duration_minutes?: number | null;
+    slots?: string[] | null;
+  }[];
 };
 
 const V3_CATS = ["coiffeur", "barbershop", "nails", "spa"] as const;
@@ -113,6 +139,34 @@ function safeCategory(cats: string[] | undefined): V3Cat {
   return "coiffeur";
 }
 
+// V3-D357: earliest upcoming slot across a salon's services -> a short label
+// ("heute 15:30" / "morgen 09:00" / "Mi. 14:00"). Umlaut-free German; en/fr/it
+// relative words inline. The next-slot is the booking hook + the content that
+// stops the card reading empty.
+const SLOT_TODAY: Record<string, string> = { de: "heute", en: "today", fr: "auj.", it: "oggi" };
+const SLOT_TOMORROW: Record<string, string> = { de: "morgen", en: "tomorrow", fr: "demain", it: "domani" };
+const SLOT_WEEKDAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+function nextSlotLabel(services: Salon["services"], locale: string): string | null {
+  if (!services?.length) return null;
+  const now = Date.now();
+  let earliest: Date | null = null;
+  for (const svc of services) {
+    for (const iso of svc.slots ?? []) {
+      const t = new Date(iso);
+      if (t.getTime() > now && (!earliest || t < earliest)) earliest = t;
+    }
+  }
+  if (!earliest) return null;
+  const hhmm = earliest.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+  const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
+  if (sameDay(earliest, today)) return `${SLOT_TODAY[locale] ?? SLOT_TODAY.de} ${hhmm}`;
+  if (sameDay(earliest, tomorrow)) return `${SLOT_TOMORROW[locale] ?? SLOT_TOMORROW.de} ${hhmm}`;
+  return `${SLOT_WEEKDAYS[earliest.getDay()]}. ${hhmm}`;
+}
+
 const SORT_OPTIONS = [
   { value: "rating", label: "Beliebteste" },
   { value: "price", label: "Preis (tief)" },
@@ -120,114 +174,6 @@ const SORT_OPTIONS = [
   { value: "distance", label: "Entfernung" },
 ] as const;
 type SortValue = (typeof SORT_OPTIONS)[number]["value"];
-
-// ─────────────────────────────────────────────────────────────────────────────
-// FilterChip — local-only primitive (no external dep).
-//
-// Universal chip used by the strip + the service-pin badge. Active = ink fill,
-// rest = white + hairline. 44px parent hit area via wrapper padding.
-// Matches Mobbin Fresha filter chip register but in Solen B&W chrome.
-// ─────────────────────────────────────────────────────────────────────────────
-
-const filterChipVariants = cva(
-  cn(
-    "inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap",
-    "rounded-pill border px-3.5 py-1.5",
-    "font-body text-[13px] font-medium leading-none",
-    "transition-[background-color,color,border-color,transform] duration-150 ease-glide",
-    "active:scale-[0.97] active:duration-[80ms]",
-    "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-    "min-h-[34px]",
-  ),
-  {
-    variants: {
-      tone: {
-        rest: "bg-white border-s-border text-s-ink-2 hover:border-s-ink hover:text-s-ink",
-        active: "bg-s-ink border-s-ink text-white hover:bg-black",
-      },
-    },
-    defaultVariants: { tone: "rest" },
-  },
-);
-
-interface FilterChipProps extends VariantProps<typeof filterChipVariants> {
-  label: string;
-  icon?: React.ComponentType<{ size?: number; strokeWidth?: number }>;
-  count?: number;
-  hasDropdown?: boolean;
-  onClick?: () => void;
-  removable?: boolean;
-  onRemove?: () => void;
-  ariaLabel?: string;
-  className?: string;
-}
-
-function FilterChip({
-  label,
-  icon: Icon,
-  count,
-  hasDropdown,
-  onClick,
-  removable,
-  onRemove,
-  tone = "rest",
-  ariaLabel,
-  className,
-}: FilterChipProps) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={ariaLabel ?? label}
-      aria-pressed={tone === "active"}
-      className={cn(filterChipVariants({ tone }), className)}
-    >
-      {Icon && <Icon size={14} strokeWidth={2} />}
-      <span>{label}</span>
-      {typeof count === "number" && count > 0 && (
-        <span
-          className={cn(
-            "ml-0.5 grid h-4 min-w-[16px] place-items-center rounded-full px-1",
-            "font-body text-[10px] font-bold leading-none tabular-nums",
-            tone === "active"
-              ? "bg-white text-s-ink"
-              : "bg-s-ink text-white",
-          )}
-        >
-          {count}
-        </span>
-      )}
-      {hasDropdown && <ChevronDown size={12} strokeWidth={2.25} aria-hidden />}
-      {removable && (
-        <span
-          role="button"
-          tabIndex={0}
-          aria-label="Filter entfernen"
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemove?.();
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              e.stopPropagation();
-              onRemove?.();
-            }
-          }}
-          className={cn(
-            "-mr-1 ml-0.5 grid h-4 w-4 place-items-center rounded-full",
-            "transition-colors duration-150",
-            tone === "active"
-              ? "text-white/80 hover:text-white"
-              : "text-s-ink-3 hover:text-s-ink",
-          )}
-        >
-          <X size={10} strokeWidth={2.5} />
-        </span>
-      )}
-    </button>
-  );
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SalonCardSkeleton — matches V3 SalonCard footprint per LoadingStates.md
@@ -239,14 +185,15 @@ function SalonCardSkeleton() {
     <div className="flex w-full flex-col">
       <div
         className={cn(
-          "aspect-square w-full rounded-[22px]",
+          // V3-D350: rounded-card to match the Airbnb result card photo radius.
+          "aspect-square w-full rounded-card",
           "bg-gradient-to-r from-s-bg-sunken via-white to-s-bg-sunken",
           "skeleton-shimmer",
         )}
         aria-hidden
       />
-      <div className="mt-[10px] flex flex-col gap-1.5 px-[2px]">
-        <div className="h-4 w-3/4 rounded bg-s-bg-sunken skeleton-shimmer" aria-hidden />
+      <div className="mt-2 flex flex-col gap-1.5">
+        <div className="h-3.5 w-3/4 rounded bg-s-bg-sunken skeleton-shimmer" aria-hidden />
         <div className="h-3 w-1/2 rounded bg-s-bg-sunken skeleton-shimmer" aria-hidden />
         <div className="h-3 w-2/5 rounded bg-s-bg-sunken skeleton-shimmer" aria-hidden />
       </div>
@@ -258,13 +205,100 @@ function SalonCardSkeleton() {
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-const CATEGORY_LABEL: Record<SalonCategory, string> = {
-  coiffeur: "Coiffeur",
-  barbershop: "Barbershop",
-  nails: "Nails",
-  spa: "Spa & Wellness",
-  makeup: "Makeup",
-  waxing: "Waxing",
+// V3-D354 (2026-05-28): category-pill row config. The "Alle" pill was removed
+// per user "delete Alle entirely - no one clicks it, and the text pill distracts
+// among the icon pills". Pills = the 4 SEO categories only, each with the user's
+// custom 3D PNG icon (shared with the homepage MobileCategoriesRow,
+// /public/icons/categories). Active category floats first (Coiffeur is the
+// default on /coiffeur). Set = coiffeur / barbershop / nails / spa (makeup +
+// waxing dropped - not offered). Universal-components rule (V3-D205): config map.
+// V3-D366: "browse rails" (option D) flag. true = homepage-style curated rails
+// ABOVE the results grid on category routes (browse mode only); false = revert to
+// the grid-only category page. Single-switch revert.
+// V3-D369 (2026-05-29): reverted to FALSE per user ("i acc want to revert n make it
+// rather look like ths" — pointing at the clean results grid). Rails component +
+// seed script kept dormant for a later re-enable. Flip back to true to restore.
+const BROWSE_RAILS = false;
+
+const CATEGORY_PILLS: {
+  slug: SalonCategory;
+  route: string;
+  label: string;
+  icon?: LucideIcon; // optional lucide fallback - currently unused, kept for flexibility
+  iconSrc?: string; // user's custom PNG under /public
+}[] = [
+  { slug: "coiffeur", route: "coiffeur", label: "Coiffeur", iconSrc: "/icons/categories/scissors.png" },
+  { slug: "barbershop", route: "barbershop", label: "Barber", iconSrc: "/icons/categories/clippers.png" },
+  { slug: "nails", route: "nails", label: "Nails", iconSrc: "/icons/categories/nails.png" },
+  { slug: "spa", route: "spa", label: "Spa", iconSrc: "/icons/categories/spa.png" },
+];
+
+// V3-D354 (2026-05-28): "Fuer dich" = personalized shortcuts to OTHER surfaces,
+// NOT a re-run of the filter chips above. Content is now category-aware and
+// USER-LOCKED:
+//   universal (every category): Treueprogramm, Entdecken, Gruppe
+//   coiffeur:   + Haar-Verlauf
+//   barbershop: + Walk-in, Express buchen
+//   nails:      + Nageldesigner, Deine Designs
+//   spa:        universal only
+// Universal-components rule (V3-D205): the per-category set is DATA (a lookup map
+// keyed by category), NOT an `if category === 'X'` branch - the render stays ONE
+// path that composes [universal, ...byCategory[activeCategory]].
+// Icons are PLACEHOLDER lucide glyphs until the user's custom 3D icons land.
+// `route` present => real Link; `route` omitted => "Bald" (coming soon): per the
+// KEY_FEATURES audit, Gruppe / Haar-Verlauf / Walk-in / Express / Nageldesigner /
+// Deine Designs are backend-only or planned (no customer route yet), so the tile
+// renders as a dimmed preview with a "Bald" badge until its surface ships.
+type FuerDichLabelKey =
+  | "fuerDich_loyalty"
+  | "fuerDich_discover"
+  | "fuerDich_group"
+  | "fuerDich_hairHistory"
+  | "fuerDich_walkin"
+  | "fuerDich_nailDesigner";
+
+interface FuerDichTile {
+  key: string;
+  labelKey: FuerDichLabelKey;
+  icon?: LucideIcon; // lucide fallback (used only when no iconSrc)
+  iconSrc?: string; // V3-D358: custom 3D PNG under /public (preferred)
+  route?: string; // under /{locale}; omitted => coming-soon ("Bald")
+}
+
+const FUER_DICH_UNIVERSAL: FuerDichTile[] = [
+  { key: "loyalty", labelKey: "fuerDich_loyalty", iconSrc: "/icons/fuer-dich/treueprogramm.png", icon: Award, route: "loyalty/stamp" },
+  { key: "discover", labelKey: "fuerDich_discover", iconSrc: "/icons/fuer-dich/entdecken.png", icon: Compass, route: "entdecken" },
+  { key: "group", labelKey: "fuerDich_group", iconSrc: "/icons/fuer-dich/gruppe.png", icon: Users }, // coming soon (backend only)
+];
+
+const FUER_DICH_BY_CATEGORY: Partial<Record<SalonCategory, FuerDichTile[]>> = {
+  coiffeur: [
+    { key: "hairHistory", labelKey: "fuerDich_hairHistory", iconSrc: "/icons/fuer-dich/haar-verlauf.png", icon: History }, // coming soon
+  ],
+  barbershop: [
+    { key: "walkin", labelKey: "fuerDich_walkin", iconSrc: "/icons/fuer-dich/walkin.png", icon: DoorOpen }, // V3-D359: fuer-dich-normalized copy (82% live area), separate from the homepage category asset
+  ],
+  nails: [
+    { key: "nailDesigner", labelKey: "fuerDich_nailDesigner", iconSrc: "/icons/fuer-dich/nageldesigner.png", icon: Brush },
+  ],
+  // spa: universal only (no category-specific tiles)
+};
+
+// V3-D349 (2026-05-28): per-locale "Karte" / "Liste" labels for the floating
+// map pill. Mirrors SalonResultCard's inline locale-map pattern; also mirrored
+// in messages/{de,en,fr,it}.json under `ui.searchMapFab` so the strings live in
+// the i18n catalogue too. No em-dash / no ß per i18n rules.
+const MAP_FAB_LABEL: Record<string, string> = {
+  de: "Karte",
+  en: "Map",
+  fr: "Carte",
+  it: "Mappa",
+};
+const LIST_FAB_LABEL: Record<string, string> = {
+  de: "Liste",
+  en: "List",
+  fr: "Liste",
+  it: "Elenco",
 };
 
 function periodLabel(p: string): string {
@@ -309,6 +343,10 @@ export default function SearchTemplate({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  // V3-D351 (2026-05-28): all search-chrome + filter-sheet strings via next-intl.
+  // Keys live under ui.searchChrome / ui.filterSheet in messages/{de,en,fr,it}.json.
+  const tChrome = useTranslations("ui.searchChrome");
+  const tFilter = useTranslations("ui.filterSheet");
 
   // ── Read URL params (V3 SearchBar + legacy compat) ──────────────────────
   const q = (searchParams.get("q") ?? "").trim();
@@ -336,6 +374,13 @@ export default function SearchTemplate({
   const minRatingParam = searchParams.get("min_rating");
   const minRating = minRatingParam ? Number(minRatingParam) : null;
   const mapOpen = searchParams.get("map") === "1";
+  // V3-D372 (2026-05-29): the full-width 1-col CARD list ("C") is now the DEFAULT
+  // category/search layout - the results-page shape (photo-top, name + ★ + meta +
+  // price + next-slot pill). Per user: the 2-col square grid read too "browsey" for
+  // a category page. Escape hatches: ?layout=grid = the old 2-col square grid (B);
+  // ?layout=list = the photo-left rows used by the desktop map split.
+  const listLayout = searchParams.get("layout") === "list";
+  const gridLayout = searchParams.get("layout") === "grid";
 
   // ── Data state ────────────────────────────────────────────────────────────
   const [salons, setSalons] = React.useState<Salon[]>([]);
@@ -348,6 +393,35 @@ export default function SearchTemplate({
   const [mobileView, setMobileView] = React.useState<"list" | "map">("list");
   const [sortOpen, setSortOpen] = React.useState(false);
   const sortBtnRef = React.useRef<HTMLDivElement>(null);
+  // V3-D351 (2026-05-28): FilterSheet open state lives here (single source of
+  // truth) and is passed to <FilterSheet> as isOpen / onClose. The sheet itself
+  // holds NO filter state — every control writes the same URL params the chip
+  // row uses.
+  const [filterSheetOpen, setFilterSheetOpen] = React.useState(false);
+  // V3-D349 (2026-05-28): the floating "Karte" pill is hidden at the top and
+  // fades in once the big in-flow search pill scrolls out of view. Observed via
+  // IntersectionObserver on the big search pill so the threshold tracks the
+  // pill's real height (no magic-number scroll listener). Page scrolls on
+  // `window` (not a nested container) — same scroll axis the Header watches.
+  const [mapFabVisible, setMapFabVisible] = React.useState(false);
+  const bigSearchRef = React.useRef<HTMLAnchorElement | null>(null);
+
+  // V3-D376 (2026-05-29): Airbnb-style shrink-search. The search bar is a sticky
+  // band that PINS to the top + COLLAPSES (2-line -> 1-line, padding down, city
+  // slides inline) on scroll. `scrolled` drives the shrink; hysteresis (on past
+  // 60, release under 25) so jitter at the threshold can't thrash the transition.
+  // Replaces the old body-search -> header-pill handoff (the "flip" the user flagged).
+  const [scrolled, setScrolled] = React.useState(false);
+  React.useEffect(() => {
+    // V3-D377: collapse past 60 / release under 30 - the SAME hysteresis the Header's
+    // fold uses (categoryCollapsed), so the search shrink + the header fold fire on the
+    // same scroll frame and read as one motion (mock: solen-search-shrink.html).
+    const onScroll = () =>
+      setScrolled((prev) => (prev ? window.scrollY > 30 : window.scrollY > 60));
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // ── Build the API URL from current params ─────────────────────────────────
   const buildUrl = React.useCallback(
@@ -358,6 +432,11 @@ export default function SearchTemplate({
       if (date) sp.set("date", date);
       if (sort) sp.set("sort", sort);
       if (minRating) sp.set("min_rating", String(minRating));
+      // V3-D357 (2026-05-28): re-enabled `with_slots` - after the V3-D350 minimal
+      // pivot the cards read EMPTY (just name/rating/category/price). Services +
+      // next-available slots fill them back to a Fresha-grade density (user: "those
+      // look so empty"). The API extension was kept dormant exactly for this.
+      sp.set("with_slots", "1");
       sp.set("limit", String(PAGE_SIZE));
       sp.set("page", String(pageNum));
       const queryString = qOverride ?? q;
@@ -466,6 +545,22 @@ export default function SearchTemplate({
     return () => document.removeEventListener("pointerdown", onDown);
   }, [sortOpen]);
 
+  // ── Reveal the floating Karte pill once the big search scrolls away ─────────
+  // IntersectionObserver fires when the big search pill leaves the viewport
+  // (with a small negative top margin so the pill is hidden the instant the
+  // search clears the sticky toolbar, not only when fully off-screen). The big
+  // search is always rendered now (V3-D350 default), so the observer always runs.
+  React.useEffect(() => {
+    const el = bigSearchRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      ([entry]) => setMapFabVisible(!entry.isIntersecting),
+      { rootMargin: "-72px 0px 0px 0px", threshold: 0 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   // ── Computed ──────────────────────────────────────────────────────────────
   const hasMore = salons.length < total;
   const cityName = activeCity
@@ -480,7 +575,7 @@ export default function SearchTemplate({
   const sortLabel =
     SORT_OPTIONS.find((s) => s.value === sort)?.label ?? "Beliebteste";
 
-  // Active-filter count for the leading Filter chip badge.
+  // Active-filter count (drives the EmptyState "clear filters" affordance).
   const activeFilterCount =
     (openNow ? 1 : 0) +
     (instantBookable ? 1 : 0) +
@@ -488,6 +583,18 @@ export default function SearchTemplate({
     (walkIn ? 1 : 0) +
     (minRating ? 1 : 0) +
     (date ? 1 : 0);
+
+  // ── Map toggle — shared by the big-search map icon + the floating Karte FAB.
+  // Desktop = open/close the split panel via the `map` URL param. Mobile =
+  // enter/exit full-viewport map view via `mobileView` state. Single source of
+  // truth so the FAB reuses the exact existing behavior (no reinvention).
+  const handleMapToggle = React.useCallback(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setMobileView((vw) => (vw === "map" ? "list" : "map"));
+    } else {
+      updateParam("map", mapOpen ? null : "1");
+    }
+  }, [mapOpen, updateParam]);
 
   // ── Favorite toggle ───────────────────────────────────────────────────────
   const toggleFavorite = React.useCallback((salonId: string) => {
@@ -517,264 +624,291 @@ export default function SearchTemplate({
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-s-bg-base">
-      {/* Breadcrumb + hero (compact).
-          V3-D316 (gap fix, 2026-05-27): was pt-20 md:pt-24 (80/96px) which
-          stranded 80px of empty whitespace between the sticky header and the
-          breadcrumb on routes that omit `hero` (e.g. /search). Padding is
-          now conditional: hero-present → pt-6 md:pt-10 (breathing room for
-          big H1); breadcrumb-only → pt-3 md:pt-4 (tight to header). Header
-          itself provides the visual top margin via its own h-[79px]. */}
-      {(breadcrumb || hero) && (
-        <div className={cn(
-          "mx-auto w-full max-w-[1280px] px-4 md:px-6",
-          hero ? "pt-6 md:pt-10" : "pt-3 md:pt-4",
-        )}>
-          {breadcrumb && breadcrumb.length > 0 && (
-            <nav aria-label="Breadcrumb" className="mb-3">
-              <ol className="flex flex-wrap items-center gap-1.5">
-                {breadcrumb.map((item, i) => {
-                  const isLast = i === breadcrumb.length - 1;
-                  return (
-                    <React.Fragment key={`${item.label}-${i}`}>
-                      <li
-                        className={cn(
-                          "font-body text-[11px] font-bold uppercase tracking-[0.16em]",
-                          isLast ? "text-s-ink" : "text-s-ink-3",
-                        )}
-                      >
-                        {item.href && !isLast ? (
-                          <Link
-                            href={item.href}
-                            className="transition-colors duration-150 hover:text-s-ink"
-                          >
-                            {item.label}
-                          </Link>
-                        ) : (
-                          <span aria-current={isLast ? "page" : undefined}>
-                            {item.label}
-                          </span>
-                        )}
-                      </li>
-                      {!isLast && (
-                        <li aria-hidden>
-                          <ChevronRight size={12} className="text-s-ink-3/60" />
-                        </li>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </ol>
-            </nav>
-          )}
-          {hero && (
-            <div className="mb-4">
-              {/* V3-D240 (W2, 2026-05-27): match LOCKFILE §2 Page H2 spec —
-                  clamp(25,4vw,40)/800 instead of (28,3.5vw,40)/extrabold.
-                  Same visual range, just LOCKFILE-aligned tracking. */}
-              <h1 className="font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-s-ink">
-                {hero.title}
-              </h1>
-              {hero.subtitle && (
-                <p className="font-body mt-2 text-[14px] font-normal text-s-ink-2">
-                  {hero.subtitle}
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* SearchSummaryBar — sticky toolbar above the chip strip.
-          Echoes the SearchBar's collapsed state; tapping anywhere returns to /.
-          Map toggle on the right edge (desktop visible / mobile shown). */}
+      {/* V3-D364: category bar now lives in the global Header's mobile middle slot
+          (between logo + hamburger), so it's gone from this in-page chrome. */}
+      {/* V3-D351: Uber-style search chrome - search bar, filter
+          chips + round filter button, then a "Fuer dich" round-icon row. All
+          B&W Layer-1 chrome. STRUCTURE = solen-search-uber-style.html mockup;
+          AESTHETIC = LOCKFILE §1 tokens + §2.5 type roles. */}
+      {/* B. Search bar - the big-search Link + its trailing MapIcon. Category now
+          lives in the header pills, so the stacked summary is simplified: line 1 =
+          query or a generic "Suchen" label; line 2 = city. */}
+      {/* V3-D376: Airbnb shrink-search. This STICKY BAND is a DIRECT CHILD of the page
+          root, so its containing block spans the WHOLE results list - the search stays
+          pinned at top:0 for the entire scroll (mock: public/solen-search-shrink.html).
+          On scroll it COLLAPSES (line 2 folds, city slides inline next to "Suchen",
+          padding + map icon shrink) while the global Header folds away beneath it
+          (Header.tsx), so the search takes over the top - ONE element shrinking, no flip.
+          Mobile-only pin (max-md:sticky); desktop keeps the search in normal flow (the
+          floating Karte FAB is the desktop map affordance). Full-width frosted bg when
+          scrolled; the pill is centered + constrained by the inner max-w-[680px] wrapper. */}
       <div
         className={cn(
-          "sticky top-0 z-40 border-b border-s-border bg-s-bg-base/95",
-          "backdrop-blur-md md:backdrop-blur-[18px] md:backdrop-saturate-150",
+          "max-md:sticky max-md:top-0 max-md:z-[55] transition-all duration-300 ease-glide",
+          scrolled
+            ? "pt-2 pb-2 max-md:bg-s-bg-base/95 max-md:shadow-[0_1px_14px_rgba(0,0,0,0.05)] max-md:backdrop-blur-md"
+            : "bg-transparent pt-1 pb-0",
         )}
       >
-        <div className="mx-auto flex w-full max-w-[1280px] items-center gap-2 px-3 py-2.5 md:px-6 md:py-3">
+        <div className="mx-auto w-full max-w-[680px] px-4">
           <Link
+            ref={bigSearchRef}
             href={`/${locale}`}
+            aria-label={tChrome("editSearch")}
             className={cn(
-              "group flex min-w-0 flex-1 items-center gap-2 rounded-pill",
-              "border border-s-border bg-white px-3 py-2 md:px-4",
-              "shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_18px_rgba(0,0,0,0.05)]",
-              "transition-shadow duration-150 ease-glide",
+              "flex items-center gap-3 rounded-pill border border-s-border bg-white px-3.5",
+              "shadow-[0_1px_3px_rgba(50,47,44,0.06),0_1px_2px_rgba(50,47,44,0.04)]",
+              "transition-all duration-300 ease-glide hover:shadow-[0_6px_18px_rgba(0,0,0,0.05)]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              scrolled ? "py-1.5" : "py-2.5",
             )}
-            aria-label="Suche bearbeiten"
           >
-            <Search size={16} strokeWidth={2} className="shrink-0 text-s-ink-2" />
-            <span className="min-w-0 flex-1 truncate font-body text-[13px] font-medium text-s-ink md:text-[14px]">
-              {q ? (
-                <>„{q}"</>
-              ) : (
-                <>
-                  {activeCategory ? CATEGORY_LABEL[activeCategory] : "Alle Services"}
-                  <span className="text-s-ink-3"> · </span>
-                  {cityName}
-                  {date && (
-                    <>
-                      <span className="text-s-ink-3"> · </span>
-                      {formatDateLabel(date)}
-                      {period && (
-                        <>
-                          <span className="text-s-ink-3"> · </span>
-                          {periodLabel(period)}
-                        </>
-                      )}
-                    </>
+            <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+            <span className="min-w-0 flex-1">
+              <span className="block truncate font-body text-[14px] font-medium text-s-ink">
+                {q ? `„${q}"` : tChrome("searchPlaceholder")}
+                {/* city slides INLINE when collapsed so the info isn't lost */}
+                <span
+                  className={cn(
+                    "font-normal text-s-ink-2 transition-all duration-300 ease-glide",
+                    scrolled ? "ml-1.5 opacity-100" : "inline-block w-0 overflow-hidden opacity-0",
                   )}
-                </>
+                >
+                  · {cityName}
+                </span>
+              </span>
+              {/* line 2 collapses on scroll */}
+              <span
+                className={cn(
+                  "block truncate font-body text-[12.5px] text-s-ink-2 overflow-hidden transition-all duration-300 ease-glide",
+                  scrolled ? "max-h-0 opacity-0" : "max-h-5 opacity-100",
+                )}
+              >
+                {date ? formatDateLabel(date) : null}
+                {date ? <span className="text-s-ink-3"> · </span> : null}
+                {cityName}
+                {period && (
+                  <>
+                    <span className="text-s-ink-3"> · </span>
+                    {periodLabel(period)}
+                  </>
+                )}
+              </span>
+            </span>
+            <span
+              role="button"
+              tabIndex={0}
+              aria-label={tChrome("openMap")}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleMapToggle();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleMapToggle();
+                }
+              }}
+              className={cn(
+                "grid shrink-0 place-items-center rounded-full border border-s-border",
+                "text-s-ink transition-all duration-300 ease-glide hover:border-s-ink",
+                "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+                scrolled ? "h-8 w-8" : "h-9 w-9",
               )}
+            >
+              <MapIcon size={16} strokeWidth={2} aria-hidden />
             </span>
           </Link>
-          {/* Map toggle. Desktop = open/close split panel. Mobile = enter map view. */}
-          <button
-            type="button"
-            onClick={() => {
-              if (typeof window !== "undefined" && window.innerWidth < 768) {
-                setMobileView((v) => (v === "map" ? "list" : "map"));
-              } else {
-                updateParam("map", mapOpen ? null : "1");
-              }
-            }}
-            aria-pressed={mapOpen || mobileView === "map"}
-            aria-label={
-              mapOpen || mobileView === "map" ? "Karte schliessen" : "Karte öffnen"
-            }
-            className={cn(
-              "inline-flex shrink-0 items-center gap-1.5 rounded-pill px-3 py-2",
-              "font-body text-[13px] font-medium leading-none",
-              "border transition-[background-color,color,border-color,transform] duration-150 ease-glide",
-              "active:scale-[0.97] active:duration-[80ms]",
-              "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-              "min-h-[40px]",
-              mapOpen || mobileView === "map"
-                ? "border-s-ink bg-s-ink text-white hover:bg-black"
-                : "border-s-border bg-white text-s-ink hover:border-s-ink",
-            )}
+        </div>
+      </div>
+
+      {/* CHROME row: filter chips + Fuer-dich. The search band moved OUT (above) so it
+          can stay pinned over the full results list; this container holds the rest of
+          the in-page chrome, centered + constrained (max-w-[680px]). */}
+      <div className="mx-auto w-full max-w-[680px] px-4">
+        {/* D. Filter chips row + pinned round filter button. Selected chips turn
+            ink + show a check AND sort to the LEFT (active group, thin divider,
+            then inactive). The round SlidersHorizontal button is pinned right,
+            OUTSIDE the scrolling chips, and opens the FilterSheet. */}
+        <div className="mt-4 flex items-center gap-2">
+          <div
+            className="scrollbar-none flex min-w-0 flex-1 items-center gap-2 overflow-x-auto"
+            style={{ scrollbarWidth: "none" }}
           >
-            {mapOpen || mobileView === "map" ? (
-              <ListIcon size={14} strokeWidth={2} />
-            ) : (
-              <MapIcon size={14} strokeWidth={2} />
-            )}
-            <span className="hidden sm:inline">
-              {mapOpen || mobileView === "map" ? "Liste" : "Karte"}
-            </span>
-          </button>
+            {(() => {
+              // Single descriptor list; partition active-first. Each writes the
+              // SAME URL param the FilterSheet writes (single source of truth).
+              const chips = [
+                {
+                  key: "open_now",
+                  label: tChrome("openNow"),
+                  active: openNow,
+                  onClick: () => toggleBooleanParam("open_now", openNow),
+                },
+                {
+                  key: "instant_bookable",
+                  label: tChrome("instant"),
+                  active: instantBookable,
+                  onClick: () => toggleBooleanParam("instant_bookable", instantBookable),
+                },
+                {
+                  key: "min_rating",
+                  label: tChrome("topRated"),
+                  active: minRating === 4.5,
+                  onClick: () => updateParam("min_rating", minRating === 4.5 ? null : "4.5"),
+                },
+                {
+                  key: "walk_in",
+                  label: tChrome("walkIn"),
+                  active: walkIn,
+                  onClick: () => toggleBooleanParam("walk_in", walkIn),
+                },
+                {
+                  key: "deals",
+                  label: tChrome("deals"),
+                  active: deals,
+                  onClick: () => toggleBooleanParam("deals", deals),
+                },
+              ];
+              const activeChips = chips.filter((c) => c.active);
+              const inactiveChips = chips.filter((c) => !c.active);
+              const renderChip = (c: (typeof chips)[number]) => (
+                <button
+                  key={c.key}
+                  type="button"
+                  onClick={c.onClick}
+                  aria-pressed={c.active}
+                  className={cn(
+                    "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-pill px-3.5",
+                    "font-body text-[13.5px] font-medium leading-none",
+                    "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
+                    "active:scale-[0.97] active:duration-[80ms]",
+                    "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+                    c.active
+                      ? "border border-s-ink bg-s-ink text-white"
+                      : "border border-s-border bg-white text-s-ink hover:border-s-ink",
+                  )}
+                >
+                  {c.active && <Check size={14} strokeWidth={2.5} aria-hidden />}
+                  {c.label}
+                </button>
+              );
+              return (
+                <>
+                  {activeChips.map(renderChip)}
+                  {activeChips.length > 0 && inactiveChips.length > 0 && (
+                    <span
+                      className="h-5 w-px shrink-0 bg-s-border"
+                      aria-hidden
+                    />
+                  )}
+                  {inactiveChips.map(renderChip)}
+                </>
+              );
+            })()}
+            {/* V3-D352 (2026-05-28): filter button is the LAST item INSIDE the
+                scroll, so it sits at the very end of the chip row (reached by
+                scrolling to the end) rather than pinned to the right edge. */}
+            <button
+              type="button"
+              onClick={() => setFilterSheetOpen(true)}
+              aria-haspopup="dialog"
+              aria-label={
+                activeFilterCount > 0
+                  ? tFilter("openWithCount", { count: activeFilterCount })
+                  : tFilter("open")
+              }
+              className={cn(
+                "relative grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border bg-white",
+                "text-s-ink transition-[border-color,transform] duration-150 ease-glide",
+                "active:scale-[0.95] active:duration-[80ms] hover:border-s-ink",
+                "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              )}
+            >
+              <SlidersHorizontal size={16} strokeWidth={2} aria-hidden />
+              {activeFilterCount > 0 && (
+                <span
+                  className={cn(
+                    "absolute -right-1 -top-1 grid h-[17px] min-w-[17px] place-items-center rounded-full px-1",
+                    "bg-s-ink font-body text-[10px] font-semibold leading-none text-white",
+                    "ring-2 ring-white",
+                  )}
+                  aria-hidden
+                >
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
 
-        {/* FilterChipStrip — horizontal scroll on overflow, hidden scrollbar.
-            Pinned service chip on category routes is removable → routes to /search. */}
-        <div
-          className={cn(
-            "scrollbar-none mx-auto w-full max-w-[1280px] overflow-x-auto px-3 pb-2.5 md:px-6 md:pb-3",
-          )}
-          style={{ scrollbarWidth: "none" }}
-        >
-          <div className="flex items-center gap-2">
-            {/* V3-D230: leading "Filter" chip — FilterSheet primitive is deferred
-                (see OPEN QUESTIONS in return msg). For v1, the chip strip itself
-                carries all active toggles (Heute frei / Sort / 4.5+ / Angebot /
-                Walk-in / Sofort buchbar). When the count is positive, this chip
-                visibly indicates how many filters are active. A future commit
-                lands the sheet for the price-range + service-type pickers. */}
-            <FilterChip
-              label="Filter"
-              icon={SlidersHorizontal}
-              count={activeFilterCount}
-              tone={activeFilterCount > 0 ? "active" : "rest"}
-              ariaLabel="Filter (kommt bald)"
-            />
-            {/* Service pin — only on category routes. Tap × → /search */}
-            {activeCategory && (
-              <FilterChip
-                label={CATEGORY_LABEL[activeCategory]}
-                tone="active"
-                removable
-                onRemove={() => router.push(`/${locale}/search`)}
-                onClick={() => router.push(`/${locale}/search`)}
-                ariaLabel={`Service ${CATEGORY_LABEL[activeCategory]} – tap × für alle Services`}
-              />
-            )}
-            {/* Sort chip with inline popover */}
-            <div ref={sortBtnRef} className="relative">
-              <FilterChip
-                label={sortLabel}
-                hasDropdown
-                tone={sort !== "rating" ? "active" : "rest"}
-                onClick={() => setSortOpen((v) => !v)}
-                ariaLabel={`Sortierung: ${sortLabel}`}
-              />
-              {sortOpen && (
-                <div
-                  className={cn(
-                    "absolute left-0 top-full z-50 mt-1.5 w-[200px] rounded-card",
-                    "border border-s-border bg-white p-1.5",
-                    "shadow-[0_8px_24px_rgba(50,47,44,0.08),0_16px_48px_rgba(50,47,44,0.04)]",
-                  )}
-                  role="menu"
+        {/* E. "Fuer dich" - shortcuts to OTHER surfaces (gift cards / discover /
+            loyalty), NOT a re-run of the filter chips. Round tiles link out; lucide
+            placeholder icons until the user's custom icons land. No heading arrow. */}
+        <div className="mt-3">
+          {/* V3-D362: "Fuer dich" heading removed per user - the icon row stands alone
+              (each tile's label carries the meaning). Left-aligned (V3-D361): first tile
+              on the x=16 grid line, flush with the filters + results + cards. overflow-x-auto
+              = scroll safety on <360px (at 375+ the 3-4 tiles fit with no scroll). */}
+          <div
+            className="scrollbar-none -mx-4 flex gap-3.5 overflow-x-auto px-4"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {[
+              ...FUER_DICH_UNIVERSAL,
+              ...(activeCategory ? FUER_DICH_BY_CATEGORY[activeCategory] ?? [] : []),
+            ].map((f) => {
+              const Icon = f.icon;
+              const label = tChrome(f.labelKey);
+              // V3-D358: prefer the custom 3D PNG (iconSrc); lucide is the fallback.
+              const glyph = f.iconSrc ? (
+                <Image
+                  src={f.iconSrc}
+                  alt=""
+                  width={44}
+                  height={44}
+                  className="h-11 w-11 object-contain"
+                  aria-hidden
+                />
+              ) : Icon ? (
+                <Icon size={24} strokeWidth={1.8} aria-hidden />
+              ) : null;
+              // V3-D359: every tile renders full-color + available (no "Bald"
+              // dimming / badge). Tiles with a route are tappable Links; routeless
+              // tiles (destinations not wired yet) are plain divs with identical
+              // styling so the row reads as one consistent, available set.
+              const inner = (
+                <>
+                  <span className="grid h-[60px] w-[60px] place-items-center rounded-full bg-s-bg-sunken text-s-ink transition-colors duration-150 ease-glide group-hover:bg-s-border">
+                    {glyph}
+                  </span>
+                  <span className="text-center font-body text-[12px] leading-tight text-s-ink-2">
+                    {label}
+                  </span>
+                </>
+              );
+              if (!f.route) {
+                return (
+                  <div
+                    key={f.key}
+                    className="flex w-16 shrink-0 flex-col items-center gap-1.5"
+                  >
+                    {inner}
+                  </div>
+                );
+              }
+              return (
+                <Link
+                  key={f.key}
+                  href={`/${locale}/${f.route}`}
+                  className="group flex w-16 shrink-0 flex-col items-center gap-1.5 focus-visible:rounded-card focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
                 >
-                  {SORT_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      role="menuitem"
-                      onClick={() => {
-                        updateParam("sort", opt.value === "rating" ? null : opt.value);
-                        setSortOpen(false);
-                      }}
-                      className={cn(
-                        "block w-full rounded-[10px] px-3 py-2 text-left",
-                        "font-body text-[14px] transition-colors duration-150",
-                        opt.value === sort
-                          ? "bg-s-bg-sunken font-semibold text-s-ink"
-                          : "text-s-ink hover:bg-s-bg-sunken",
-                      )}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            <FilterChip
-              label="Heute frei"
-              tone={openNow ? "active" : "rest"}
-              onClick={() => toggleBooleanParam("open_now", openNow)}
-              ariaLabel="Heute geöffnete Salons"
-            />
-            <FilterChip
-              label="Sofort buchbar"
-              tone={instantBookable ? "active" : "rest"}
-              onClick={() =>
-                toggleBooleanParam("instant_bookable", instantBookable)
-              }
-              ariaLabel="Sofort buchbare Salons"
-            />
-            <FilterChip
-              label="4.5+"
-              tone={minRating === 4.5 ? "active" : "rest"}
-              onClick={() =>
-                updateParam("min_rating", minRating === 4.5 ? null : "4.5")
-              }
-              ariaLabel="Salons mit Bewertung 4.5 oder höher"
-            />
-            <FilterChip
-              label="Angebot"
-              tone={deals ? "active" : "rest"}
-              onClick={() => toggleBooleanParam("deals", deals)}
-              ariaLabel="Salons mit Angebot"
-            />
-            <FilterChip
-              label="Walk-in"
-              tone={walkIn ? "active" : "rest"}
-              onClick={() => toggleBooleanParam("walk_in", walkIn)}
-              ariaLabel="Walk-in-fähige Salons"
-            />
+                  {inner}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -786,25 +920,87 @@ export default function SearchTemplate({
         </div>
       )}
 
-      {/* Result count row */}
-      <div className="mx-auto w-full max-w-[1280px] px-3 pt-4 md:px-6">
+      {/* V3-D366: browse rails (option D) — homepage-style curated rails ABOVE the
+          full grid, ONLY on a category route in browse mode (no query + no active
+          filter). Reuses the homepage SalonCard. Revert: set BROWSE_RAILS = false. */}
+      {BROWSE_RAILS && activeCategory && activeFilterCount === 0 && q.length === 0 && (
+        <CategoryBrowseRails salons={salons} locale={locale} category={activeCategory} />
+      )}
+
+      {/* Result count row — count LEFT, sort dropdown RIGHT (Airbnb/Fresha
+          pattern). V3-D350: sort moved here from the (removed) chip strip so the
+          Uber icon row stays clean; sorting still fully works via the dropdown. */}
+      <div className="mx-auto flex w-full max-w-[1280px] items-center justify-between gap-3 px-4 pt-5 md:px-6">
         {loading ? (
           <div
-            className="h-3 w-40 rounded bg-s-bg-sunken skeleton-shimmer"
+            className="h-4 w-44 rounded bg-s-bg-sunken skeleton-shimmer"
             aria-hidden
           />
-        ) : error ? null : (
-          <p className="font-body text-[13px] font-normal text-s-ink-2">
-            {total > 0 ? (
-              <>
-                <span className="font-medium text-s-ink">{total}</span>{" "}
-                {pluralSalons(total)}
-                {activeCity ? <> in {cityName}</> : null}
-                <span className="text-s-ink-3">{" · "}</span>
-                Sortiert nach {sortLabel}
-              </>
-            ) : null}
+        ) : error ? (
+          <span />
+        ) : total > 0 ? (
+          <p className="font-display text-[16px] font-semibold tracking-[-0.01em] text-s-ink">
+            {total} {pluralSalons(total)}
+            {activeCity ? <> in {cityName}</> : null}
           </p>
+        ) : (
+          <span />
+        )}
+        {!loading && !error && total > 0 && (
+          <div ref={sortBtnRef} className="relative shrink-0">
+            <button
+              type="button"
+              onClick={() => setSortOpen((v) => !v)}
+              aria-haspopup="menu"
+              aria-expanded={sortOpen}
+              aria-label={`Sortierung: ${sortLabel}`}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-pill border px-3 py-1.5",
+                "font-body text-[13px] font-medium leading-none",
+                "transition-[border-color,transform] duration-150 ease-glide",
+                "active:scale-[0.97] active:duration-[80ms]",
+                "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+                "min-h-[36px]",
+                sort !== "rating"
+                  ? "border-s-ink bg-s-ink text-white hover:bg-black"
+                  : "border-s-border bg-white text-s-ink hover:border-s-ink",
+              )}
+            >
+              <span>{sortLabel}</span>
+              <ChevronDown size={13} strokeWidth={2.25} aria-hidden />
+            </button>
+            {sortOpen && (
+              <div
+                className={cn(
+                  "absolute right-0 top-full z-50 mt-1.5 w-[200px] rounded-card",
+                  "border border-s-border bg-white p-1.5",
+                  "shadow-[0_8px_24px_rgba(50,47,44,0.08),0_16px_48px_rgba(50,47,44,0.04)]",
+                )}
+                role="menu"
+              >
+                {SORT_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      updateParam("sort", opt.value === "rating" ? null : opt.value);
+                      setSortOpen(false);
+                    }}
+                    className={cn(
+                      "block w-full rounded-[10px] px-3 py-2 text-left",
+                      "font-body text-[14px] transition-colors duration-150",
+                      opt.value === sort
+                        ? "bg-s-bg-sunken font-semibold text-s-ink"
+                        : "text-s-ink hover:bg-s-bg-sunken",
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </div>
 
@@ -826,10 +1022,8 @@ export default function SearchTemplate({
           ) : loading ? (
             <div
               className={cn(
-                "grid gap-3 md:gap-5",
-                mapOpen
-                  ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-2"
-                  : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+                "grid grid-cols-2 gap-x-3 gap-y-4 md:gap-x-5 md:gap-y-6",
+                mapOpen ? "lg:grid-cols-2" : "md:grid-cols-3 lg:grid-cols-4",
               )}
             >
               {Array.from({ length: 8 }).map((_, i) => (
@@ -848,37 +1042,67 @@ export default function SearchTemplate({
             />
           ) : (
             <>
+              {/* V3-D350: 2-column grid of clean Airbnb cards (SalonResultCard).
+                  Mobile = 2 cols per the approved mockup; scales to 3/4 on
+                  larger screens (and stays 2 when the desktop map split is open). */}
               <div
                 className={cn(
-                  "salon-card-stagger grid gap-3 md:gap-5",
-                  mapOpen
-                    ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-2"
-                    : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+                  "salon-card-stagger",
+                  listLayout
+                    ? cn(
+                        // V3-D355: list rows stack vertically. Map closed on desktop:
+                        // cap the width so rows do not sprawl across a wide screen.
+                        "flex flex-col gap-3.5",
+                        !mapOpen && "md:mx-auto md:max-w-[780px]",
+                      )
+                    : gridLayout
+                      ? cn(
+                          // ?layout=grid escape hatch: the old 2-col square grid (B).
+                          "grid grid-cols-2 gap-x-3 gap-y-4 md:gap-x-5 md:gap-y-6",
+                          mapOpen ? "lg:grid-cols-2" : "md:grid-cols-3 lg:grid-cols-4",
+                        )
+                      : cn(
+                          // DEFAULT (V3-D372): full-width landscape cards - 1-col on
+                          // mobile (photo-led), 2-3 col on desktop (2 when map open).
+                          "grid grid-cols-1 gap-x-4 gap-y-7 md:grid-cols-2",
+                          mapOpen ? "lg:grid-cols-2" : "lg:grid-cols-3",
+                        ),
                 )}
               >
-                {salons.map((s) => {
-                  const cardProps: SalonCardProps = {
-                    slug: s.slug,
-                    name: s.name,
-                    rating: s.average_rating,
-                    photoUrl: s.cover_photo_url ?? undefined,
-                    category: safeCategory(s.categories),
-                    variant: "service",
-                    discountPercent:
-                      s.last_minute_discount_percent &&
-                      s.last_minute_discount_percent > 0
-                        ? s.last_minute_discount_percent
-                        : null,
-                    priceFromCHF: s.avg_price ?? null,
-                    address: s.address?.split(",")[0],
-                    city:
-                      s.city ??
-                      (activeCity ? getCityName(activeCity, locale) : undefined),
-                    isSaved: favoriteIds.has(s.id),
-                    className: "!w-full",
-                  };
-                  return <SalonCard key={s.id} {...cardProps} />;
-                })}
+                {salons.map((s) => (
+                  <SalonResultCard
+                    key={s.id}
+                    variant={listLayout ? "list" : gridLayout ? "grid" : "card"}
+                    slug={s.slug}
+                    name={s.name}
+                    locale={locale}
+                    rating={s.average_rating}
+                    photoUrl={s.cover_photo_url ?? undefined}
+                    // V3-D370: on a category route the category is implied by the
+                    // whole page, so drop it from the card meta (it read "Coiffeur ·
+                    // Grossbasel" on every card). Keep it on /search (activeCategory
+                    // null) where results mix categories and the label is useful.
+                    category={activeCategory ? undefined : safeCategory(s.categories)}
+                    city={
+                      // V3-D374 (user: "just put in address"): location line = the
+                      // street address ("Spalenvorstadt 22, Basel"). Falls back to the
+                      // quartier / active city only when a salon has no address.
+                      s.address ||
+                      (s.quartier
+                        ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1)
+                        : undefined) ||
+                      (activeCity ? getCityName(activeCity, locale) : undefined)
+                    }
+                    distanceMeters={s.distance_meters ?? null}
+                    priceFromCHF={s.avg_price ?? null}
+                    // V3-D373 (Fresha-match): review count -> its own "category · N
+                    // reviews" line; location is "area, town" (built in city= above).
+                    reviewCount={s.review_count ?? null}
+                    nextSlot={nextSlotLabel(s.services, locale)}
+                    isSaved={favoriteIds.has(s.id)}
+                    salonId={s.id}
+                  />
+                ))}
               </div>
               {hasMore && (
                 <div className="flex justify-center pb-2 pt-8">
@@ -959,6 +1183,100 @@ export default function SearchTemplate({
           {belowSlot}
         </div>
       )}
+
+      {/* Floating "Karte" pill — bottom-center, ink fill, scroll-revealed once
+          the big search clears the viewport (mapFabVisible). It is the SOLE map
+          affordance (the sticky map button was removed), so it never co-exists
+          with the big search's map icon. Fires the shared handleMapToggle;
+          label flips to "Liste" while the map is open. V3-D350: now always
+          rendered (default UI — no flag). */}
+      <button
+        type="button"
+        onClick={handleMapToggle}
+        aria-pressed={mapOpen || mobileView === "map"}
+        aria-label={
+          mapOpen || mobileView === "map"
+            ? LIST_FAB_LABEL[locale] ?? LIST_FAB_LABEL.de
+            : MAP_FAB_LABEL[locale] ?? MAP_FAB_LABEL.de
+        }
+        className={cn(
+          "fixed bottom-5 left-1/2 z-30 -translate-x-1/2",
+          "inline-flex items-center gap-2 rounded-pill bg-s-ink px-[18px] py-[11px]",
+          "font-body text-[13.5px] font-medium text-white",
+          "shadow-[0_6px_20px_rgba(50,47,44,0.18),0_2px_6px_rgba(50,47,44,0.10)]",
+          "transition-[opacity,transform] duration-200 ease-glide",
+          "hover:bg-black active:scale-[0.97] active:duration-[80ms]",
+          "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+          mapFabVisible
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "pointer-events-none translate-y-3.5 opacity-0",
+        )}
+      >
+        {mapOpen || mobileView === "map" ? (
+          <ListIcon size={16} strokeWidth={2} aria-hidden />
+        ) : (
+          <MapIcon size={16} strokeWidth={2} aria-hidden />
+        )}
+        {mapOpen || mobileView === "map"
+          ? LIST_FAB_LABEL[locale] ?? LIST_FAB_LABEL.de
+          : MAP_FAB_LABEL[locale] ?? MAP_FAB_LABEL.de}
+      </button>
+
+      {/* V3-D351: FilterSheet - opened by the round filter button. Every control
+          writes the SAME URL params as the chip row (single source of truth);
+          open state owned here, passed as isOpen / onClose. */}
+      <FilterSheet
+        isOpen={filterSheetOpen}
+        onClose={() => setFilterSheetOpen(false)}
+        resultCount={total}
+        sortOptions={SORT_OPTIONS}
+        sort={sort}
+        onSortChange={(value) =>
+          updateParam("sort", value === "rating" ? null : value)
+        }
+        openNow={openNow}
+        instantBookable={instantBookable}
+        walkIn={walkIn}
+        deals={deals}
+        onToggleBoolean={toggleBooleanParam}
+        minRating={minRating}
+        onMinRatingChange={(value) => updateParam("min_rating", value)}
+        onReset={() => {
+          // Clear every filter param the sheet/chips write. sort resets to the
+          // default (rating) by deleting it.
+          const sp = new URLSearchParams(searchParams.toString());
+          for (const key of [
+            "open_now",
+            "instant_bookable",
+            "walk_in",
+            "deals",
+            "min_rating",
+            "sort",
+          ]) {
+            sp.delete(key);
+          }
+          sp.delete("page");
+          router.replace(`${pathname}${sp.toString() ? `?${sp}` : ""}`, {
+            scroll: false,
+          });
+        }}
+        labels={{
+          title: tFilter("title"),
+          reset: tFilter("reset"),
+          close: tFilter("close"),
+          sortHeading: tFilter("sortHeading"),
+          availabilityHeading: tFilter("availabilityHeading"),
+          ratingHeading: tFilter("ratingHeading"),
+          openNow: tChrome("openNow"),
+          instant: tChrome("instant"),
+          walkIn: tChrome("walkIn"),
+          deals: tChrome("deals"),
+          rating45: tFilter("rating45"),
+          rating40: tFilter("rating40"),
+          ratingAny: tFilter("ratingAny"),
+          apply: (count: number) => tFilter("apply", { count }),
+        }}
+      />
     </div>
   );
 }

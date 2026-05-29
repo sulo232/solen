@@ -34,11 +34,20 @@ export async function GET(request: NextRequest) {
     const idsParam = searchParams.get("ids");
     const serviceFilter = searchParams.get("service");
 
+    // V3-D349: the category/search page (?with_slots=1) needs per-salon services
+    // + next available slots for the Fresha-style booking card. Homepage feeds omit
+    // the flag -> lighter payload (just price for avg_price).
+    const withSlots = searchParams.get("with_slots") === "1";
+    // NB: services has only name_de + name_en in the live DB (no name_fr/name_it).
+    const servicesCols = withSlots
+      ? "id, name_de, name_en, duration_minutes, price, category"
+      : "price";
+
     const supabase = await createServerSupabaseClient();
 
     let query = supabase
       .from("salons")
-      .select("*, services(price)", { count: "exact" })
+      .select(`*, services(${servicesCols})`, { count: "exact" })
       .eq("is_active", true)
       .eq("is_test", false);
 
@@ -207,19 +216,77 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Compute avg_price from joined services, then strip services from response
+    // V3-D349: top services (category-preferred) + their next available slots,
+    // for the Fresha-style booking card. Only when ?with_slots=1. Two-pass: pick
+    // top 3 services per salon, batch-query slots by service_id, group (3 each),
+    // attach as service.slots. Graceful on error so the list still renders.
+    const topServicesBySalon: Record<string, Array<Record<string, unknown>>> = {};
+    if (withSlots) {
+      for (const salon of data ?? []) {
+        const sid = (salon as Record<string, unknown>).id as string;
+        const services =
+          ((salon as Record<string, unknown>).services as Array<Record<string, unknown>>) ?? [];
+        const sorted = [...services];
+        if (serviceFilter) {
+          sorted.sort(
+            (a, b) => Number(b.category === serviceFilter) - Number(a.category === serviceFilter),
+          );
+        }
+        topServicesBySalon[sid] = sorted.slice(0, 3);
+      }
+      const serviceIds = Object.values(topServicesBySalon)
+        .flat()
+        .map((s) => s.id as string);
+      if (serviceIds.length > 0) {
+        const nowIso = new Date().toISOString();
+        const horizonIso = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+        const { data: upcoming, error: slotErr } = await supabase
+          .from("availability_slots")
+          .select("service_id, starts_at")
+          .eq("status", "available")
+          .in("service_id", serviceIds)
+          .gte("starts_at", nowIso)
+          .lte("starts_at", horizonIso)
+          .order("starts_at", { ascending: true })
+          .limit(3000);
+        if (slotErr) {
+          console.error("[api/salons GET] next-slots query error:", slotErr.message);
+        } else {
+          const slotsByService: Record<string, string[]> = {};
+          for (const slot of upcoming ?? []) {
+            const svcId = (slot as { service_id: string }).service_id;
+            const ts = (slot as { starts_at: string }).starts_at;
+            if (!slotsByService[svcId]) slotsByService[svcId] = [];
+            if (slotsByService[svcId].length < 3) slotsByService[svcId].push(ts);
+          }
+          for (const sid of Object.keys(topServicesBySalon)) {
+            topServicesBySalon[sid] = topServicesBySalon[sid].map((s) => ({
+              ...s,
+              slots: slotsByService[s.id as string] ?? [],
+            }));
+          }
+        }
+      }
+    }
+
+    // Compute avg_price from joined services. When ?with_slots=1, attach the top
+    // services (each with its .slots) for the booking card.
     const items = (data ?? []).map((salon: Record<string, unknown>) => {
-      const services = salon.services as { price: number }[] | null;
-      const prices = (services ?? []).map((s) => s.price).filter((p) => typeof p === "number" && p > 0);
+      const services = salon.services as Array<Record<string, unknown>> | null;
+      const prices = (services ?? [])
+        .map((s) => s.price as number)
+        .filter((p) => typeof p === "number" && p > 0);
       const avg_price = prices.length > 0 ? Math.round(prices.reduce((a, b) => a + b, 0) / prices.length) : null;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { services: _services, ...rest } = salon;
 
       const salonId = salon.id as string;
+
       return {
         ...rest,
         avg_price,
         distance_meters: distanceMap ? distanceMap[salonId] : undefined,
+        ...(withSlots ? { services: topServicesBySalon[salonId] ?? [] } : {}),
         ...(availableIds !== null
           ? {
               available_on_date: availableIds.has(salonId),

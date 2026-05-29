@@ -241,7 +241,7 @@ function BuyRow({ title, subtitle, href }: { title: string; subtitle: string; hr
   return (
     <div className="flex items-start gap-3">
       <div className="min-w-0 flex-1">
-        <div className="font-body text-[15px] font-semibold text-s-ink md:text-[16px]">
+        <div className="font-body text-[15px] font-medium text-s-ink md:text-[16px]">
           {title}
         </div>
         <div className="font-body mt-1 text-[13px] leading-snug text-s-ink-3 md:text-[14px]">

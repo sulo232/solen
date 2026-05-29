@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
-import CategoryHero from "@/app/[locale]/_components/landings/CategoryHero";
-import { CoiffeurAboveGrid, CoiffeurBelowGrid } from "@/components-legacy/coiffeur/CoiffeurSections";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
 
@@ -53,7 +50,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   const loc = locale ?? "de";
   let jsonLd = null;
@@ -92,27 +93,12 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      {/* V3-D340 (W11, 2026-05-28): editorial split-hero ABOVE SearchTemplate.
-          STRUCTURE = Solen precedent (no Fresha /coiffeur equivalent, per §10.5).
-          AESTHETIC = LOCKFILE §11 Pattern 1 (split-hero, no overlay, rounded-none).
-          Universal-components per V3-D205 — single primitive, props-driven. */}
-      <CategoryHero category="coiffeur" locale={loc} />
-      {/* V3-D230 (2026-05-26): swapped legacy CategoryPage → unified SearchTemplate. */}
-      <SearchTemplate
-        locale={loc}
-        serviceFilter="coiffeur"
-        breadcrumb={[
-          { label: "Solen", href: `/${loc}` },
-          { label: "Coiffeur" },
-        ]}
-        hero={{ title: "Coiffeur in Basel" }}
-        aboveSlot={
-          <Suspense fallback={null}>
-            <CoiffeurAboveGrid />
-          </Suspense>
-        }
-        belowSlot={<CoiffeurBelowGrid />}
-      />
+      {/* V3-D350 (2026-05-28): the unified Airbnb-style search IS the default
+          render now (no flag). CategoryHero + the SEO above/below slots are
+          dropped unconditionally; the page leads with the search + 2-col card
+          grid (the approved mockup — no big category image, like Uber/Fresha).
+          generateMetadata + the JSON-LD above are KEPT (the real SEO). */}
+      <SearchTemplate locale={loc} serviceFilter="coiffeur" />
     </>
   );
 }

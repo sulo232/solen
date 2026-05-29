@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Coiffeur category page — direction mockups</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9A9A9A;
+    --bg:#FFFFFF; --sunken:#F5F5F4; --border:#E7E5E4; --hair:#EFEDEB;
+    --star:#FFC32B;
+    --radius-card:16px;
+    --shadow1:0 1px 3px rgba(50,47,44,.06),0 1px 2px rgba(50,47,44,.04);
+    --shadow2:0 6px 20px rgba(50,47,44,.10),0 2px 6px rgba(50,47,44,.05);
+    font-synthesis-weight:none;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:#E9E7E4;
+    font-family:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    color:var(--ink);-webkit-font-smoothing:antialiased;padding:28px 20px 60px;
+  }
+  .page-head{max-width:1180px;margin:0 auto 26px;}
+  .page-head h1{font-size:24px;font-weight:600;letter-spacing:-.02em}
+  .page-head p{margin-top:8px;color:#444;font-size:14px;line-height:1.5;max-width:760px}
+  .page-head .axis{margin-top:12px;font-size:12.5px;color:#555;background:#fff;border:1px solid #d9d6d3;border-radius:10px;padding:10px 13px;max-width:760px;line-height:1.55}
+  .page-head .axis b{color:var(--ink)}
+
+  .rail{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;align-items:flex-start;max-width:1240px;margin:0 auto}
+  .col{width:344px}
+  .col > .label{margin-bottom:10px}
+  .col > .label .name{font-size:15px;font-weight:600;letter-spacing:-.01em}
+  .col > .label .refs{font-size:12px;color:#6a6a6a;margin-top:3px}
+  .col > .label .desc{font-size:12.5px;color:#444;margin-top:6px;line-height:1.5}
+
+  /* phone frame */
+  .phone{width:344px;height:732px;background:var(--bg);border-radius:34px;border:9px solid #111;
+    overflow:hidden;position:relative;box-shadow:var(--shadow2)}
+  .scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden}
+  .scroll::-webkit-scrollbar{width:0}
+  .statusbar{height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:12px;font-weight:600}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:6px 16px 10px}
+  .nav .logo{font-size:18px;font-weight:600;letter-spacing:-.02em}
+  .nav .icons{display:flex;gap:14px;color:var(--ink)}
+  .ic{width:20px;height:20px;display:inline-block}
+
+  /* Airbnb-style fused sticky search nav — the search lives IN the top nav and
+     pins to the top on scroll. No map icon here, so the floating Karte pill is
+     the only map affordance (never two). */
+  .topbar{position:sticky;top:0;z-index:6;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:9px 14px 11px;border-bottom:1px solid var(--hair)}
+  .topbar .logo{font-size:15px;font-weight:600;letter-spacing:-.02em;flex:0 0 auto}
+  .topbar .menu{flex:0 0 auto;color:var(--ink)}
+  /* compact fused pill — hidden at the top; slides into the nav only after the
+     big search scrolls away (Airbnb shrink-into-nav). No map icon here. */
+  .navsearch{display:none}
+  .phone.scrolled .navsearch{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:8px;border:1px solid var(--border);
+    border-radius:999px;padding:9px 13px;box-shadow:var(--shadow1);background:#fff;color:var(--ink)}
+  .navsearch .t{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* shared bits */
+  .photo{background-size:cover;background-position:center;background-color:var(--sunken)}
+  .chiprow{display:flex;gap:8px;overflow-x:auto;padding:0 16px 2px}
+  .chiprow::-webkit-scrollbar{height:0}
+  .chip{flex:0 0 auto;border:1px solid var(--border);border-radius:999px;padding:8px 14px;font-size:13px;color:var(--ink);background:#fff;display:flex;align-items:center;gap:6px;white-space:nowrap}
+  .chip.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .count{padding:14px 16px 8px;font-size:13px;color:var(--ink2)}
+  .star{color:var(--star)}
+  .name{font-weight:500;color:var(--ink)}
+  .meta{color:var(--ink2);font-weight:400}
+  .sectionTitle{font-size:18px;font-weight:600;letter-spacing:-.01em;padding:18px 16px 10px}
+
+  /* search summary pill (Fresha/Airbnb) */
+  .searchpill{margin:6px 16px 12px;border:1px solid var(--border);border-radius:999px;box-shadow:var(--shadow1);
+    display:flex;align-items:center;gap:10px;padding:11px 14px;font-size:14px}
+  .searchpill .q{font-weight:500}
+  .searchpill .sub{color:var(--ink2);font-size:12.5px}
+  .searchpill .map{margin-left:auto;width:34px;height:34px;border:1px solid var(--border);border-radius:999px;display:grid;place-items:center}
+
+  /* time slot pills */
+  .slots{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+  .slot{border:1px solid var(--border);border-radius:8px;padding:7px 11px;font-size:12.5px;color:var(--ink)}
+  .svcrow{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 0;border-top:1px solid var(--hair)}
+  .svcrow .svc-name{font-size:13.5px;color:var(--ink);font-weight:400}
+  .svcrow .svc-dur{font-size:12px;color:var(--ink3);margin-top:2px}
+  .svcrow .svc-price{font-size:13px;color:var(--ink2);white-space:nowrap;padding-left:10px}
+
+  /* floating map pill */
+  .mapfab{position:absolute;left:50%;bottom:18px;transform:translateX(-50%) translateY(14px);opacity:0;pointer-events:none;
+    background:var(--ink);color:#fff;font-size:13.5px;font-weight:500;padding:11px 18px;border-radius:999px;
+    display:flex;align-items:center;gap:8px;box-shadow:var(--shadow2);transition:opacity .22s ease,transform .22s ease}
+  /* Map pill appears ONLY after scrolling past the search bar, so it never
+     doubles up with the search-bar map icon (per user, Direction A). */
+  .phone.scrolled .mapfab{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+
+  .heart{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--ink)}
+  .badge{position:absolute;top:12px;left:12px;background:#fff;color:var(--ink);font-size:11px;font-weight:500;padding:5px 9px;border-radius:999px;box-shadow:var(--shadow1)}
+  .dots{position:absolute;bottom:10px;left:0;right:0;display:flex;gap:5px;justify-content:center}
+  .dots i{width:5px;height:5px;border-radius:999px;background:rgba(255,255,255,.6)}
+  .dots i.on{background:#fff}
+
+  .tabrow{display:flex;gap:20px;padding:4px 16px 0;border-bottom:1px solid var(--hair);overflow-x:auto}
+  .tabrow .tab{flex:0 0 auto;padding:10px 0 12px;font-size:13px;color:var(--ink2);display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+  .tabrow .tab.on{color:var(--ink);font-weight:500}
+  .tabrow .tab.on:after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--ink)}
+  .tabrow .tab .gi{width:22px;height:22px;opacity:.9}
+
+  .cta{margin:8px 16px 0;background:var(--ink);color:#fff;border-radius:999px;text-align:center;padding:13px;font-size:15px;font-weight:500}
+  .note{font-size:11px;color:#999;text-align:center;padding:14px}
+  svg{display:block}
+</style>
+</head>
+<body>
+  <div class="page-head">
+    <h1>Coiffeur category page — 3 directions</h1>
+    <p>All three use the same locked Solen aesthetic (B&amp;W, ink name-anchors + grey meta, rounded-none photos, no pastel tiles, ink CTA). They differ only in <b>structure + density</b> — each copied from a real, proven booking/search app.</p>
+    <div class="axis"><b>Dual-axis:</b> STRUCTURE is lifted from real apps (Fresha is our source-of-truth; Airbnb/Vinted referenced for the alternatives). AESTHETIC is the LOCKFILE (Uber B&amp;W). Both heroes you currently have ("Coiffeur in der Schweiz" + "Coiffeur in Basel") collapse into ONE in every direction — that double-title is the first thing fixed. <b>The search now fuses into a sticky Airbnb-style top nav</b> (Solen + search pill + menu) that pins to the top as you scroll — no map icon in it, so the floating "Karte" pill (revealed on scroll) is the only map affordance.</div>
+  </div>
+
+  <div class="rail">
+
+    <!-- ============ A · FRESHA-DENSE ============ -->
+    <div class="col">
+      <div class="label">
+        <div class="name">A · Booking-dense</div>
+        <div class="refs">Ref: Fresha (exact structure)</div>
+        <div class="desc">Each salon shows its top services + real time-slots inline. Highest booking intent — you can book without opening the salon. The "Karte" pill is hidden at the top (search bar already has a map icon) and fades in only after you scroll past it — scroll to see it.</div>
+      </div>
+      <div class="phone"><div class="scroll">
+        <div class="statusbar"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+        <div class="topbar">
+          <span class="logo">Solen</span>
+          <button class="navsearch">
+            <svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <span class="t">Coiffeur <span class="meta" style="font-size:12.5px">· Basel · Heute</span></span>
+          </button>
+          <svg class="ic menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </div>
+        <!-- big search at top (like original A) — map icon on the right.
+             Scrolls away; the compact pill in .topbar takes over on scroll. -->
+        <div class="searchpill">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <div><div class="q">Coiffeur</div><div class="sub">Heute · Basel</div></div>
+          <div class="map"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3Z"/><path d="M9 3v15M15 6v15"/></svg></div>
+        </div>
+        <div class="chiprow">
+          <div class="chip"><svg class="ic" style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filter</div>
+          <div class="chip">Sortieren ▾</div>
+          <div class="chip">Preis ▾</div>
+          <div class="chip">Offen jetzt</div>
+        </div>
+        <div class="count">24 Coiffeure in Basel</div>
+
+        <!-- venue card -->
+        <div style="padding:0 16px 18px">
+          <div class="photo" style="height:170px;background-image:url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=700&q=70&auto=format&fit=crop');position:relative">
+            <div class="heart"><svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-8.5C1 9 3 5.5 6.5 5.5 9 5.5 12 8 12 8s3-2.5 5.5-2.5C21 5.5 23 9 21.5 12.5 19 16.5 12 21 12 21Z"/></svg></div>
+            <div class="dots"><i class="on"></i><i></i><i></i></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:10px">
+            <span class="name" style="font-size:15px">Atelier Haarwerk</span>
+            <span class="meta" style="font-size:13px"><span class="star">★</span> 4.8 (751)</span>
+          </div>
+          <div class="meta" style="font-size:12px;margin-top:2px">Freie Strasse 12, Basel · 1.2 km</div>
+          <div class="svcrow"><div><div class="svc-name">Damenschnitt</div><div class="svc-dur">45 Min</div>
+            <div class="slots"><span class="slot">09:00</span><span class="slot">09:30</span><span class="slot">10:00</span></div></div>
+            <div class="svc-price">ab 85 CHF</div></div>
+          <div class="svcrow"><div><div class="svc-name">Färben + Schnitt</div><div class="svc-dur">1 Std 30 Min</div>
+            <div class="slots"><span class="slot">11:00</span><span class="slot">13:30</span><span class="slot">15:00</span></div></div>
+            <div class="svc-price">ab 160 CHF</div></div>
+        </div>
+
+        <!-- venue card 2 condensed -->
+        <div style="padding:0 16px 18px">
+          <div class="photo" style="height:170px;background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=700&q=70&auto=format&fit=crop');position:relative">
+            <div class="heart"><svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-8.5C1 9 3 5.5 6.5 5.5 9 5.5 12 8 12 8s3-2.5 5.5-2.5C21 5.5 23 9 21.5 12.5 19 16.5 12 21 12 21Z"/></svg></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:10px">
+            <span class="name" style="font-size:15px">Salon Lumière</span>
+            <span class="meta" style="font-size:13px"><span class="star">★</span> 4.7 (321)</span>
+          </div>
+          <div class="meta" style="font-size:12px;margin-top:2px">Spalenberg 5, Basel · 0.8 km</div>
+          <div class="svcrow"><div><div class="svc-name">Herrenschnitt</div><div class="svc-dur">30 Min</div>
+            <div class="slots"><span class="slot">10:15</span><span class="slot">11:00</span><span class="slot">12:30</span></div></div>
+            <div class="svc-price">ab 55 CHF</div></div>
+        </div>
+        <div class="note">live uses Geist · photos are placeholders</div>
+      </div>
+      <div class="mapfab"><svg class="ic" style="width:16px;height:16px;color:#fff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3Z"/></svg>Karte</div>
+      </div>
+    </div>
+
+    <!-- ============ B · AIRBNB-EDITORIAL ============ -->
+    <div class="col">
+      <div class="label">
+        <div class="name">B · Photo-forward</div>
+        <div class="refs">Ref: Airbnb + Uber aesthetic</div>
+        <div class="desc">Category tabs with icons, big single-photo cards, floating Map pill. Browse-y and premium. Tap a card to see services. Less dense, more beautiful.</div>
+      </div>
+      <div class="phone"><div class="scroll">
+        <div class="statusbar"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+        <div class="topbar">
+          <span class="logo">Solen</span>
+          <button class="navsearch">
+            <svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <span class="t">Coiffeur <span class="meta" style="font-size:12.5px">· Basel · Heute</span></span>
+          </button>
+          <svg class="ic menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </div>
+        <!-- big search at top (like original A) — map icon on the right.
+             Scrolls away; the compact pill in .topbar takes over on scroll. -->
+        <div class="searchpill">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <div><div class="q">Coiffeur</div><div class="sub">Heute · Basel</div></div>
+          <div class="map"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3Z"/><path d="M9 3v15M15 6v15"/></svg></div>
+        </div>
+        <!-- category tabs w/ icons -->
+        <div class="tabrow">
+          <div class="tab on"><svg class="gi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.5 15.5M14.5 14 20 20"/></svg>Coiffeur</div>
+          <div class="tab"><svg class="gi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 4v8a5 5 0 0 0 10 0V4M5 20h14"/></svg>Barber</div>
+          <div class="tab"><svg class="gi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M8 7c-2 1-3 4 0 6M16 7c2 1 3 4 0 6"/></svg>Nails</div>
+          <div class="tab"><svg class="gi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 14c0-4 4-8 8-8s8 4 8 8M4 14h16M7 18h10"/></svg>Spa</div>
+        </div>
+        <div class="count">24 Coiffeure · nach Bewertung</div>
+
+        <div style="padding:0 16px 20px">
+          <div class="photo" style="height:230px;border-radius:0;background-image:url('https://images.unsplash.com/photo-1562322140-8baeececf3df?w=720&q=70&auto=format&fit=crop');position:relative">
+            <div class="badge">Empfohlen</div>
+            <div class="heart"><svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-8.5C1 9 3 5.5 6.5 5.5 9 5.5 12 8 12 8s3-2.5 5.5-2.5C21 5.5 23 9 21.5 12.5 19 16.5 12 21 12 21Z"/></svg></div>
+            <div class="dots"><i class="on"></i><i></i><i></i><i></i></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:11px">
+            <span class="name" style="font-size:15px">Atelier Haarwerk</span>
+            <span class="meta" style="font-size:13px"><span class="star">★</span> 4.8</span>
+          </div>
+          <div class="meta" style="font-size:13px;margin-top:3px">Coiffeur · Basel · 1.2 km</div>
+          <div style="margin-top:3px;font-size:13px"><span class="name">ab 85 CHF</span> <span class="meta">· nächster Termin 14:30</span></div>
+        </div>
+
+        <div style="padding:0 16px 20px">
+          <div class="photo" style="height:230px;background-image:url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=720&q=70&auto=format&fit=crop');position:relative">
+            <div class="heart"><svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-8.5C1 9 3 5.5 6.5 5.5 9 5.5 12 8 12 8s3-2.5 5.5-2.5C21 5.5 23 9 21.5 12.5 19 16.5 12 21 12 21Z"/></svg></div>
+            <div class="dots"><i class="on"></i><i></i><i></i></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:11px">
+            <span class="name" style="font-size:15px">Salon Lumière</span>
+            <span class="meta" style="font-size:13px"><span class="star">★</span> 4.7</span>
+          </div>
+          <div class="meta" style="font-size:13px;margin-top:3px">Coiffeur · Basel · 0.8 km</div>
+          <div style="margin-top:3px;font-size:13px"><span class="name">ab 55 CHF</span> <span class="meta">· nächster Termin 11:00</span></div>
+        </div>
+        <div class="note">live uses Geist · photos are placeholders</div>
+      </div>
+      <div class="mapfab"><svg class="ic" style="width:16px;height:16px;color:#fff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3Z"/></svg>Karte anzeigen</div>
+      </div>
+    </div>
+
+    <!-- ============ C · SEARCH-FIRST GRID ============ -->
+    <div class="col">
+      <div class="label">
+        <div class="name">C · Search-first grid</div>
+        <div class="refs">Ref: Vinted/Mercari grid + Fresha filters</div>
+        <div class="desc">No decorative hero at all. Search + filters, then a tight 2-col grid. Fastest to scan a lot of salons. Most utilitarian — closest to "I know what I want".</div>
+      </div>
+      <div class="phone"><div class="scroll">
+        <div class="statusbar"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+        <div class="topbar">
+          <span class="logo">Solen</span>
+          <button class="navsearch">
+            <svg class="ic" style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <span class="t">Coiffeur <span class="meta" style="font-size:12.5px">· Basel · Heute</span></span>
+          </button>
+          <svg class="ic menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </div>
+        <!-- big search at top (like original A) — map icon on the right.
+             Scrolls away; the compact pill in .topbar takes over on scroll. -->
+        <div class="searchpill">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <div><div class="q">Coiffeur</div><div class="sub">Heute · Basel</div></div>
+          <div class="map"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3Z"/><path d="M9 3v15M15 6v15"/></svg></div>
+        </div>
+        <div class="chiprow">
+          <div class="chip"><svg class="ic" style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filter</div>
+          <div class="chip">Sortieren ▾</div>
+          <div class="chip">Preis ▾</div>
+          <div class="chip">Offen jetzt</div>
+        </div>
+        <div class="count">24 Ergebnisse</div>
+
+        <!-- 2-col grid -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;padding:6px 16px 20px">
+          <!-- card template repeated -->
+          <div>
+            <div class="photo" style="height:120px;background-image:url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=480&q=70&auto=format&fit=crop');position:relative">
+              <div class="heart" style="width:26px;height:26px;top:8px;right:8px"><svg class="ic" style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-8.5C1 9 3 5.5 6.5 5.5 9 5.5 12 8 12 8s3-2.5 5.5-2.5C21 5.5 23 9 21.5 12.5 19 16.5 12 21 12 21Z"/></svg></div>
+            </div>
+            <div class="name" style="font-size:13.5px;margin-top:8px">Atelier Haarwerk</div>
+            <div class="meta" style="font-size:12px;margin-top:2px"><span class="star">★</span> 4.8 · 1.2 km</div>
+            <div class="meta" style="font-size:12px;margin-top:1px">ab 85 CHF</div>
+          </div>
+          <div>
+            <div class="photo" style="height:120px;background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=480&q=70&auto=format&fit=crop');position:relative">
+              <div class="heart" style="width:26px;height:26px;top:8px;right:8px"><svg class="ic" style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-8.5C1 9 3 5.5 6.5 5.5 9 5.5 12 8 12 8s3-2.5 5.5-2.5C21 5.5 23 9 21.5 12.5 19 16.5 12 21 12 21Z"/></svg></div>
+            </div>
+            <div class="name" style="font-size:13.5px;margin-top:8px">Salon Lumière</div>
+            <div class="meta" style="font-size:12px;margin-top:2px"><span class="star">★</span> 4.7 · 0.8 km</div>
+            <div class="meta" style="font-size:12px;margin-top:1px">ab 55 CHF</div>
+          </div>
+          <div>
+            <div class="photo" style="height:120px;background-image:url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=480&q=70&auto=format&fit=crop');position:relative">
+              <div class="heart" style="width:26px;height:26px;top:8px;right:8px"><svg class="ic" style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-8.5C1 9 3 5.5 6.5 5.5 9 5.5 12 8 12 8s3-2.5 5.5-2.5C21 5.5 23 9 21.5 12.5 19 16.5 12 21 12 21Z"/></svg></div>
+            </div>
+            <div class="name" style="font-size:13.5px;margin-top:8px">Haarsalon Margot</div>
+            <div class="meta" style="font-size:12px;margin-top:2px"><span class="star">★</span> 4.9 · 2.1 km</div>
+            <div class="meta" style="font-size:12px;margin-top:1px">ab 70 CHF</div>
+          </div>
+          <div>
+            <div class="photo" style="height:120px;background-image:url('https://images.unsplash.com/photo-1562322140-8baeececf3df?w=480&q=70&auto=format&fit=crop');position:relative">
+              <div class="heart" style="width:26px;height:26px;top:8px;right:8px"><svg class="ic" style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-8.5C1 9 3 5.5 6.5 5.5 9 5.5 12 8 12 8s3-2.5 5.5-2.5C21 5.5 23 9 21.5 12.5 19 16.5 12 21 12 21Z"/></svg></div>
+            </div>
+            <div class="name" style="font-size:13.5px;margin-top:8px">Studio Schönheit</div>
+            <div class="meta" style="font-size:12px;margin-top:2px"><span class="star">★</span> 4.6 · 1.5 km</div>
+            <div class="meta" style="font-size:12px;margin-top:1px">ab 60 CHF</div>
+          </div>
+        </div>
+        <div class="note">live uses Geist · photos are placeholders</div>
+      </div>
+      <div class="mapfab"><svg class="ic" style="width:16px;height:16px;color:#fff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3Z"/></svg>Karte</div>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    // Show each phone's floating "Karte" pill ONLY after the user scrolls past
+    // the search bar — so it never appears at the same time as the search-bar
+    // map icon (Direction A had two map affordances at once otherwise).
+    document.querySelectorAll('.phone').forEach(function (p) {
+      var sc = p.querySelector('.scroll');
+      if (!sc) return;
+      var update = function () {
+        if (sc.scrollTop > 85) p.classList.add('scrolled');
+        else p.classList.remove('scrolled');
+      };
+      sc.addEventListener('scroll', update, { passive: true });
+      update();
+    });
+  </script>
+</body>
+</html>

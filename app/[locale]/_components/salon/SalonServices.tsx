@@ -171,16 +171,18 @@ function ServiceRow({
   //   - Price format "ab {N} CHF" (German "ab" prefix, currency suffix)
   //   - BOTH mobile AND desktop variants get the same bordered card treatment now
   //     (previously mobile was a bare list with no border — off-spec)
+  // V3-D346 (2026-05-28): name 600->500 + price bold->grey-normal per LOCKFILE §2.5
+  // card-hierarchy rule A13 — exactly one ink anchor (the service name); duration + price recede.
   const inner = (
     <div className="flex items-start justify-between gap-4">
       <div className="min-w-0 flex-1">
-        <div className="font-body text-[15px] font-semibold text-s-ink md:text-[16px]">
+        <div className="font-body text-[15px] font-medium text-s-ink md:text-[16px]">
           {service.name_de}
         </div>
         <div className="font-body mt-1 text-[13px] text-s-ink-3 md:text-[14px]">
           {formatDurationDE(service.duration_minutes)}
         </div>
-        <div className="font-body mt-3 text-[14px] font-bold text-s-ink md:text-[15px]">
+        <div className="font-body mt-3 text-[14px] font-normal text-s-ink-2 md:text-[15px]">
           ab {service.price} CHF
         </div>
       </div>

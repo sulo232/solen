@@ -111,7 +111,7 @@ function TeamMember({
       {showRating && (
         <div className="mt-2.5 inline-flex items-center gap-1">
           <Star size={12} fill="#FFC32B" stroke="none" />
-          <span className={cn("font-body text-[13px] font-semibold text-s-ink", !hasRating && "opacity-70")}>
+          <span className={cn("font-body text-[13px] font-normal text-s-ink-2", !hasRating && "opacity-70")}>
             {displayRating?.toFixed(1)}
           </span>
         </div>

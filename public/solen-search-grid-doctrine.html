@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solen — search layout: grid vs list (card doctrine)</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#A8A29E;
+    --sunken:#F5F5F4; --border:#E7E5E4; --surface:#fff; --base:#FAFAF9;
+    --star:#FFC32B; --heart:#FF3366;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+  body{font-family:'Geist','Geist Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:#EEEDEB;color:var(--ink);line-height:1.4;padding:28px 16px 80px;}
+  h1{font-size:20px;font-weight:600;letter-spacing:-0.015em;margin-bottom:4px;}
+  .sub{font-size:13.5px;color:var(--ink2);max-width:760px;margin-bottom:8px;}
+  .doctrine{font-size:13px;color:var(--ink);background:#fff;border:1px solid var(--border);border-radius:12px;
+    padding:12px 14px;max-width:760px;margin:10px 0 26px;line-height:1.5;}
+  .doctrine b{font-weight:600;}
+  .row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start;}
+  .col{flex:0 0 312px;}
+  .tag{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--ink2);margin:0 0 10px 4px;}
+  .tag.rec{color:#185CE0;}
+  .tag .dot{width:6px;height:6px;border-radius:999px;background:currentColor;}
+  .phone{background:var(--base);border:1px solid var(--border);border-radius:24px;overflow:hidden;
+    box-shadow:0 16px 36px rgba(0,0,0,.08);padding:16px 14px 22px;}
+  .chips{display:flex;gap:7px;overflow:hidden;margin-bottom:13px;}
+  .chip{flex:none;border:1px solid var(--border);background:#fff;border-radius:999px;padding:7px 13px;font-size:13px;font-weight:500;}
+  .chip.on{background:var(--sunken);border-color:var(--sunken);font-weight:600;}
+  .count{font-size:15px;font-weight:600;letter-spacing:-.01em;margin:4px 2px 12px;}
+  /* shared card bits */
+  .photo{position:relative;background:var(--sunken);overflow:hidden;}
+  .photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .heart{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:999px;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(4px);display:grid;place-items:center;}
+  .heart svg{width:15px;height:15px;}
+  .name{font-size:14px;font-weight:600;letter-spacing:-.01em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rate{display:inline-flex;align-items:center;gap:3px;font-size:13px;color:var(--ink2);flex:none;}
+  .rate svg{width:11px;height:11px;}
+  .meta{font-size:12px;color:var(--ink2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .price{font-size:12px;color:var(--ink2);margin-top:2px;}
+  /* GRID (A + B) */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 12px;}
+  .gcard .photo{border-radius:18px;box-shadow:0 14px 30px rgba(0,0,0,.05);}
+  .a .photo{aspect-ratio:1/1;}
+  .b .photo{aspect-ratio:4/3;}
+  .gcard .row1{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:8px;}
+  /* LIST (C) */
+  .list{display:flex;flex-direction:column;gap:14px;}
+  .lrow{display:flex;gap:12px;align-items:stretch;}
+  .lrow .photo{width:96px;height:96px;flex:none;border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.06);}
+  .lrow .ltext{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;}
+  .lrow .row1{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
+  .note{font-size:12.5px;color:var(--ink2);margin:12px 4px 0;line-height:1.5;}
+  .note b{color:var(--ink);font-weight:600;}
+  .pro{color:#15803D;font-weight:600;}
+  .con{color:#9A3412;font-weight:600;}
+</style>
+</head>
+<body>
+  <h1>Search layout — grid vs list (and the card doctrine)</h1>
+  <p class="sub">Same salon data, same card family (radius / shadow / star / price all identical). Only the <b>container + aspect</b> change. Pick the search layout; the homepage scroll-rows stay as-is.</p>
+  <div class="doctrine"><b>Council doctrine (unanimous):</b> consistency = ONE card family, container/aspect varied by surface intent. Home = discovery (scroll rows, 1:1). Search = the question below. Varying the shape across surfaces reads as an <b>intentional system</b>, not inconsistency, because the primitives stay identical.</div>
+
+  <div class="row">
+
+    <!-- A: current square grid -->
+    <div class="col">
+      <div class="tag"><span class="dot"></span>A — 2-col square grid (current, 1:1)</div>
+      <div class="phone a">
+        <div class="chips"><span class="chip on">Coiffeur</span><span class="chip">Barber</span><span class="chip">Nails</span><span class="chip">Spa</span></div>
+        <div class="count">4 Salons</div>
+        <div class="grid">
+          <div class="gcard"><div class="photo"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop&q=80"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span></div>
+            <div class="row1"><span class="name">Atelier Haarwerk</span><span class="rate"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.8</span></div>
+            <div class="meta">Coiffeur · Basel · 1.2 km</div><div class="price">ab 80 CHF</div></div>
+          <div class="gcard"><div class="photo"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=400&fit=crop&q=80"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span></div>
+            <div class="row1"><span class="name">Salon Lumiere</span><span class="rate"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.9</span></div>
+            <div class="meta">Coiffeur · Basel · 450 m</div><div class="price">ab 95 CHF</div></div>
+          <div class="gcard"><div class="photo"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=400&fit=crop&q=80"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span></div>
+            <div class="row1"><span class="name">Boheme</span><span class="rate"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.9</span></div>
+            <div class="meta">Barber · Basel · 1.5 km</div><div class="price">ab 50 CHF</div></div>
+          <div class="gcard"><div class="photo"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop&q=80"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span></div>
+            <div class="row1"><span class="name">Spa Rheinufer</span><span class="rate"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.8</span></div>
+            <div class="meta">Spa · Basel · 2.0 km</div><div class="price">ab 120 CHF</div></div>
+        </div>
+      </div>
+      <p class="note"><span class="pro">+</span> Most identical to the homepage (1:1). Photo-led, "beauty vibe" reads strong. <span class="con">-</span> 2 per row = lots of scrolling; least data per card.</p>
+    </div>
+
+    <!-- B: 4:3 grid (Grok) -->
+    <div class="col">
+      <div class="tag"><span class="dot"></span>B — 2-col grid, 4:3 photos (Grok)</div>
+      <div class="phone b">
+        <div class="chips"><span class="chip on">Coiffeur</span><span class="chip">Barber</span><span class="chip">Nails</span><span class="chip">Spa</span></div>
+        <div class="count">4 Salons</div>
+        <div class="grid">
+          <div class="gcard"><div class="photo"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop&q=80"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span></div>
+            <div class="row1"><span class="name">Atelier Haarwerk</span><span class="rate"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.8</span></div>
+            <div class="meta">Coiffeur · Basel · 1.2 km</div><div class="price">ab 80 CHF</div></div>
+          <div class="gcard"><div class="photo"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=300&fit=crop&q=80"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span></div>
+            <div class="row1"><span class="name">Salon Lumiere</span><span class="rate"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.9</span></div>
+            <div class="meta">Coiffeur · Basel · 450 m</div><div class="price">ab 95 CHF</div></div>
+          <div class="gcard"><div class="photo"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop&q=80"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span></div>
+            <div class="row1"><span class="name">Boheme</span><span class="rate"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.9</span></div>
+            <div class="meta">Barber · Basel · 1.5 km</div><div class="price">ab 50 CHF</div></div>
+          <div class="gcard"><div class="photo"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=300&fit=crop&q=80"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span></div>
+            <div class="row1"><span class="name">Spa Rheinufer</span><span class="rate"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.8</span></div>
+            <div class="meta">Spa · Basel · 2.0 km</div><div class="price">ab 120 CHF</div></div>
+        </div>
+      </div>
+      <p class="note"><span class="pro">+</span> Same grid, but 4:3 shows more salon/room context + a touch denser vertically. <span class="con">-</span> Slightly less "matches home" than 1:1; the aspect difference is the one thing to be deliberate about.</p>
+    </div>
+
+    <!-- C: list rows (Gemini / Fresha) -->
+    <div class="col">
+      <div class="tag rec"><span class="dot"></span>C — list rows (Gemini + Fresha-true)</div>
+      <div class="phone">
+        <div class="chips"><span class="chip on">Coiffeur</span><span class="chip">Barber</span><span class="chip">Nails</span><span class="chip">Spa</span></div>
+        <div class="count">4 Salons</div>
+        <div class="list">
+          <div class="lrow"><div class="photo"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=300&fit=crop&q=80"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span></div>
+            <div class="ltext"><div class="row1"><span class="name">Atelier Haarwerk</span><span class="rate"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.8</span></div><div class="meta">Coiffeur · Basel · 1.2 km</div><div class="price">ab 80 CHF</div></div></div>
+          <div class="lrow"><div class="photo"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=300&h=300&fit=crop&q=80"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span></div>
+            <div class="ltext"><div class="row1"><span class="name">Salon Lumiere</span><span class="rate"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.9</span></div><div class="meta">Coiffeur · Basel · 450 m</div><div class="price">ab 95 CHF</div></div></div>
+          <div class="lrow"><div class="photo"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=300&h=300&fit=crop&q=80"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span></div>
+            <div class="ltext"><div class="row1"><span class="name">Boheme</span><span class="rate"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.9</span></div><div class="meta">Barber · Basel · 1.5 km</div><div class="price">ab 50 CHF</div></div></div>
+          <div class="lrow"><div class="photo"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=300&h=300&fit=crop&q=80"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span></div>
+            <div class="ltext"><div class="row1"><span class="name">Spa Rheinufer</span><span class="rate"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.8</span></div><div class="meta">Spa · Basel · 2.0 km</div><div class="price">ab 120 CHF</div></div></div>
+        </div>
+      </div>
+      <p class="note"><span class="pro">+</span> Fastest to compare (name/rating/price line up vertically), it IS Fresha's actual search pattern, and it has the most room to add a "next slot HH:MM" line later. <span class="con">-</span> Smaller photos = less "vibe"; least like the square homepage cards.</p>
+    </div>
+
+  </div>
+</body>
+</html>

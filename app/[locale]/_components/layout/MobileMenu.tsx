@@ -3,7 +3,18 @@
 import * as React from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowRight, ChevronRight, Globe } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronRight,
+  Globe,
+  Gift,
+  Award,
+  Users,
+  HelpCircle,
+  LogIn,
+  Info,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { CITY_SLUGS, getCityName, type CitySlug } from "@/lib/cities";
 import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
@@ -62,6 +73,8 @@ const swissFlagStyle: React.CSSProperties = {
 };
 
 export default function MobileMenu({ open, onClose, locale }: MobileMenuProps) {
+  // V3-D354 (2026-05-28): i18n for the rebuilt Schnellzugriff grid + utility rows.
+  const t = useTranslations("ui.mobileMenu");
   // V3-D157 (2026-05-25): city selector state. Reads persisted city when the
   // menu opens (not on first mount — the menu may render before the user has
   // any cookie). Reload on change matches CityTopBar's existing behavior so
@@ -122,7 +135,9 @@ export default function MobileMenu({ open, onClose, locale }: MobileMenuProps) {
             // close stays visible), so we only need to clear that single
             // 44px button + ~36px margin. Content sits closer to the
             // top edge → tighter, less wasted vertical space.
-            "pt-20 pb-16 px-5",
+            // V3-D352: pt-20 -> pt-16. Header is transparent while the menu is open
+            // (only the X floats top-right), so content can sit higher / more balanced.
+            "pt-16 pb-16 px-5",
             "[-webkit-overflow-scrolling:touch]",
           )}
         >
@@ -182,23 +197,60 @@ export default function MobileMenu({ open, onClose, locale }: MobileMenuProps) {
               )}
             </div>
 
-            {/* ─── Für Kund:innen (V3-D171: h2 removed per user, rows
-                are self-explanatory — Anmelden, Hilfe, Sprache) ─── */}
-            <div className="overflow-hidden rounded-[18px] bg-s-bg-surface shadow-[0_1px_3px_rgba(26,18,9,0.04)]">
+            {/* ─── Schnellzugriff (V3-D354, Variant B per user pick): a 2x2
+                quick-action grid of personal shortcuts (echoes the search "Fuer
+                dich" row), then utility rows below. Replaces the 3 plain text
+                rows (user: the menu "looks really dry"). Every destination is a
+                route verified to exist (no 404s). i18n via ui.mobileMenu. ─── */}
+            <p className="mb-2 ml-1 font-body text-[11px] font-semibold uppercase tracking-[0.05em] text-s-ink-3">
+              {t("quickAccess")}
+            </p>
+            <div className="grid grid-cols-2 gap-2.5">
+              <QuickTile
+                href={`/${locale}/vouchers`}
+                label={t("giftCards")}
+                icon={<Gift size={22} strokeWidth={1.8} aria-hidden />}
+                onClick={onClose}
+              />
+              <QuickTile
+                href={`/${locale}/loyalty/stamp`}
+                label={t("loyalty")}
+                icon={<Award size={22} strokeWidth={1.8} aria-hidden />}
+                onClick={onClose}
+              />
+              <QuickTile
+                href={`/${locale}/profile/referral`}
+                label={t("invite")}
+                icon={<Users size={22} strokeWidth={1.8} aria-hidden />}
+                onClick={onClose}
+              />
+              <QuickTile
+                href={`/${locale}/help`}
+                label={t("help")}
+                icon={<HelpCircle size={22} strokeWidth={1.8} aria-hidden />}
+                onClick={onClose}
+              />
+            </div>
+
+            {/* Utility rows below the grid: sign-in (primary), Warum Solen,
+                language. Each row carries a leading icon (kills the "dry" feel). */}
+            <div className="mt-3 overflow-hidden rounded-[18px] bg-s-bg-surface shadow-[0_1px_3px_rgba(26,18,9,0.04)]">
               <MenuRow
                 href={`/${locale}/auth/login`}
-                label="Anmelden oder Registrieren"
+                label={t("signIn")}
+                icon={<LogIn size={20} strokeWidth={1.75} aria-hidden />}
                 primary
                 onClick={onClose}
               />
               <MenuRow
-                href={`/${locale}/help`}
-                label="Hilfe & Support"
+                href={`/${locale}/warum-solen`}
+                label={t("whySolen")}
+                icon={<Info size={20} strokeWidth={1.75} aria-hidden />}
                 onClick={onClose}
               />
               <MenuRow
                 href={`/${locale}`}
-                label="Deutsch"
+                label={t("language")}
                 icon={<Globe size={20} strokeWidth={1.75} aria-hidden />}
                 onClick={onClose}
                 isLast
@@ -256,7 +308,7 @@ export default function MobileMenu({ open, onClose, locale }: MobileMenuProps) {
                   Werde Solen-Partner
                 </span>
                 <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-3">
-                  In 60 Sekunden eintragen — kostenlos starten
+                  In 60 Sekunden eintragen, kostenlos starten
                 </span>
               </span>
               <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-s-ink text-white">
@@ -310,6 +362,40 @@ function MenuRow({
         className={primary ? "text-s-ink" : "text-s-ink-3"}
         aria-hidden
       />
+    </Link>
+  );
+}
+
+// V3-D354: a quick-action tile for the Schnellzugriff 2x2 grid (Variant B).
+// Icon top-left, label below - the same square-tile family as the search
+// "Fuer dich" shortcuts, sized for a 2-column grid.
+function QuickTile({
+  href,
+  label,
+  icon,
+  onClick,
+}: {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  onClick?: () => void;
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className={cn(
+        "flex flex-col gap-2.5 rounded-[16px] border border-s-ink/[0.05] bg-s-bg-surface p-3.5",
+        "shadow-[0_1px_2px_rgba(0,0,0,0.03)]",
+        "transition-[transform,box-shadow] duration-150 ease-glide",
+        "hover:shadow-[0_4px_14px_rgba(26,18,9,0.08)] active:scale-[0.98] active:duration-[80ms]",
+        "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+      )}
+    >
+      <span className="text-s-ink">{icon}</span>
+      <span className="font-body text-[13.5px] font-semibold leading-tight text-s-ink">
+        {label}
+      </span>
     </Link>
   );
 }

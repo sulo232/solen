@@ -70,6 +70,34 @@ const BUSINESS_MENU: { label: string; href: string }[] = [
   { label: "Preise",               href: "/business#pricing"  },
 ];
 
+// V3-D349 (2026-05-28): compact search pill fused into the mobile header on
+// the category/search routes (Airbnb shrink-into-nav). The big search lives in
+// SearchTemplate's document flow and scrolls away; once `scrolled` flips true
+// this pill takes over the previously-empty mobile middle slot. Route-gated +
+// scroll-gated so the homepage and all non-category routes are untouched.
+// `search` → the segment that maps to /search (all services, no category label).
+const CATEGORY_SEARCH_SEGMENTS = [
+  "coiffeur",
+  "barbershop",
+  "nails",
+  "spa",
+  "makeup",
+  "waxing",
+  "search",
+] as const;
+type CategorySearchSegment = (typeof CATEGORY_SEARCH_SEGMENTS)[number];
+
+// V3-D364 (2026-05-29): the category bar that lives IN the header's mobile middle
+// slot (between the logo and the hamburger) at the top of category routes - per
+// repeated user request ("the red box"). Mirrors SearchTemplate's CATEGORY_PILLS
+// (coiffeur / barbershop / nails / spa; icons under /public/icons/categories).
+const HEADER_CATEGORIES: { slug: string; route: string; label: string; iconSrc: string }[] = [
+  { slug: "coiffeur", route: "coiffeur", label: "Coiffeur", iconSrc: "/icons/categories/scissors.png" },
+  { slug: "barbershop", route: "barbershop", label: "Barber", iconSrc: "/icons/categories/clippers.png" },
+  { slug: "nails", route: "nails", label: "Nails", iconSrc: "/icons/categories/nails.png" },
+  { slug: "spa", route: "spa", label: "Spa", iconSrc: "/icons/categories/spa.png" },
+];
+
 /**
  * DropdownMenu — header dropdown nav item with hover-to-open behavior.
  *
@@ -194,6 +222,13 @@ function DropdownMenu({
 export default function Header({ locale }: { locale: string }) {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
+  // V3-D377 (2026-05-29): category-route header FOLD threshold, kept SEPARATE from
+  // `scrolled` (the >30 frost trigger) and SYNCED to the search band's shrink in
+  // SearchTemplate. The approved mock (public/solen-search-shrink.html) toggles ONE
+  // class at ONE scroll point, so the header-collapse + the search-shrink move as a
+  // SINGLE motion. Matching the band's hysteresis (collapse past 60, release under 30)
+  // stops the two-stage "header vanishes, THEN search shrinks 30px later" desync.
+  const [categoryCollapsed, setCategoryCollapsed] = React.useState(false);
   // V3-D215 (verifier #1): hide site header on salon-detail pages when scrolled
   // past 200px. At that threshold SalonStickyTabNav takes over the top chrome
   // role (Fresha PDP pattern). Previously both stacked: translucent header
@@ -217,11 +252,26 @@ export default function Header({ locale }: { locale: string }) {
     return !!m;
   }, [pathname]);
 
+  // V3-D349 (2026-05-28): detect a category/search route so the fused compact
+  // search pill only ever appears there. Matches /{locale}/{segment} exactly
+  // (trailing slash tolerated); query string is irrelevant to pathname.
+  const categorySegment = React.useMemo<CategorySearchSegment | null>(() => {
+    if (!pathname) return null;
+    const m = pathname.match(/^\/[a-z]{2}\/([^/?#]+)\/?$/);
+    const seg = m?.[1];
+    return seg && (CATEGORY_SEARCH_SEGMENTS as readonly string[]).includes(seg)
+      ? (seg as CategorySearchSegment)
+      : null;
+  }, [pathname]);
+
   React.useEffect(() => {
     const HEADER_H = 80; // approximate header height incl. padding
     const onScroll = () => {
       const y = window.scrollY;
       setScrolled(y > 30);
+      // V3-D377: fold trigger synced to the search band shrink (60 down / 30 up) so
+      // the header collapse + the search collapse fire on the same scroll frame.
+      setCategoryCollapsed((prev) => (prev ? y > 30 : y > 60));
       // V3-D215: hysteresis matches SalonStickyTabNav.tsx (visible past 200,
       // hide until back near top at 100) so the handoff is clean — no flicker.
       setHiddenForSalonNav((prev) => (prev ? y > 100 : y > 200));
@@ -260,17 +310,48 @@ export default function Header({ locale }: { locale: string }) {
       data-tone={tone}
       className={cn(
         "sticky top-0 left-0 right-0 z-50 transition-all duration-300 ease-glide",
-        // Dark tone wins over frosted-light. White text + navy bg over dark sections.
-        isDark
-          ? "bg-black/85 backdrop-blur-[28px] backdrop-saturate-[1.4] py-3 shadow-[0_1px_24px_rgba(0,0,0,0.15)] text-s-ink"
-          : scrolled
-            ? "bg-white/65 backdrop-blur-[28px] backdrop-saturate-[1.7] py-3 shadow-[0_1px_24px_rgba(4,51,56,0.04)]"
-            : "bg-transparent py-5",
+        // V3-D354: vertical padding is decoupled from menuOpen so opening the menu
+        // never shifts the header height. Before, the menuOpen branch forced py-3
+        // over the top-state py-5, so the hamburger -> X box jumped up ~8px on open.
+        // py now depends ONLY on scrolled/dark; menuOpen just flips the bg/shadow.
+        // V3-D365: on category routes (top state) keep the top breathing (pt-5) but
+        // tighten the BOTTOM (pb-1) so the in-page search bar tucks right under the
+        // category bar - the 20px py-5 bottom was the real "gap too big" (user). Other
+        // routes + scrolled state unchanged.
+        scrolled || isDark ? "py-3" : categorySegment ? "pt-5 pb-1" : "py-5",
+        // V3-D352: with the mobile menu open, the header goes fully transparent (no
+        // frosted band, no shadow) so the menu reads as one clean full-screen sheet
+        // from the top - only the X floats in the corner. Checked first so its bg wins.
+        menuOpen
+          ? "bg-transparent shadow-none"
+          : // Dark tone wins over frosted-light. White text + navy bg over dark sections.
+            isDark
+            ? "bg-black/85 backdrop-blur-[28px] backdrop-saturate-[1.4] shadow-[0_1px_24px_rgba(0,0,0,0.15)] text-s-ink"
+            : scrolled
+              ? "bg-white/65 backdrop-blur-[28px] backdrop-saturate-[1.7] shadow-[0_1px_24px_rgba(4,51,56,0.04)]"
+              : "bg-transparent",
         // V3-D215: hide header when SalonStickyTabNav is taking over (PDP-deep-scroll).
         isSalonDetail && hiddenForSalonNav && "-translate-y-full pointer-events-none",
+        // V3-D376 (2026-05-29): Airbnb shrink-search handoff. On category/search
+        // routes (MOBILE only) the WHOLE header FOLDS AWAY on scroll - logo +
+        // category bar + hamburger collapse together - so the sticky search band in
+        // SearchTemplate (z-[55], above this z-50) takes over the very top. "The
+        // search replaces the header" per the user-approved mock
+        // (public/solen-search-shrink.html). max-h collapses the FLOW box (border-box
+        // clamps padding too), so the page content + that search rise to top-0;
+        // opacity + pointer-events finish the handoff. Desktop (md+) is untouched -
+        // the dropdown-nav header stays put (the shrink-search is a mobile pattern).
+        // ONE max-h value per state (ternary, not two competing utilities) - cn() here
+        // is clsx-only, so two `max-md:max-h-*` would both emit and CSS source-order
+        // would let the larger win (the header would go invisible but keep its height).
+        categorySegment &&
+          (categoryCollapsed && !menuOpen
+            ? "max-md:overflow-hidden max-md:max-h-0 max-md:opacity-0 max-md:pointer-events-none"
+            : "max-md:overflow-hidden max-md:max-h-[140px]"),
       )}
       style={{
-        WebkitBackdropFilter: scrolled || isDark ? "blur(14px) saturate(1.4)" : undefined,
+        WebkitBackdropFilter:
+          !menuOpen && (scrolled || isDark) ? "blur(14px) saturate(1.4)" : undefined,
       }}
     >
       <div className="mx-auto flex max-w-[1280px] items-center gap-2.5 px-4 md:gap-6 md:px-8">
@@ -284,11 +365,13 @@ export default function Header({ locale }: { locale: string }) {
           aria-label="Solen zur Startseite"
           className={cn(
             // V3-D193 (2026-05-26): Solen wordmark weight 900 → 800 per "too bold" sweep.
-            "font-display relative inline-flex shrink-0 items-baseline text-[22px] font-semibold leading-none tracking-normal md:text-[24px] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
+            "font-display relative inline-flex shrink-0 items-baseline text-[25px] font-semibold leading-none tracking-normal md:text-[26px] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
             "transition-opacity duration-200 ease-glide",
             menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
             // V3-D101: invert logo color when header is over a dark section
             isDark ? "text-white" : "text-s-ink",
+            // V3-D376 (2026-05-29): the logo no longer self-hides on scroll - it
+            // folds away WITH the whole header (see the header max-h collapse above).
           )}
         >
           Solen
@@ -298,9 +381,71 @@ export default function Header({ locale }: { locale: string }) {
               bg-s-ink class. */}
         </Link>
 
-        {/* Mobile: empty middle area (was scroll-x category strip, now in MobileMenu §Stöbern).
-            Flex spacer pushes the hamburger to the right edge. */}
-        <div className="flex-1 md:hidden" />
+        {/* Mobile: middle area. Empty by default (flex spacer pushes the
+            hamburger to the right edge — as it was for the homepage + all
+            non-category routes).
+            V3-D376 (2026-05-29): on a category/search route this slot holds the
+            scrollable CATEGORY BAR (Coiffeur / Barber / Nails / Spa). It no longer
+            crossfades into a search pill on scroll - instead the WHOLE header folds
+            away (see the max-h collapse on <header>) and the sticky search band in
+            SearchTemplate takes the top. ONE element shrinks, not two that swap
+            (the V3-D375 "flip" the user rejected). When `categorySegment` is null
+            this is the same empty spacer as the homepage + every other route. */}
+        {categorySegment ? (
+          <div
+            role="tablist"
+            aria-label="Kategorien"
+            className={cn(
+              // md:hidden — desktop uses the dropdown <nav> below instead.
+              // mr-3 = clear gap from the hamburger. Right fade mask signals
+              // "more categories scroll" + stops the last pill jamming the menu.
+              "md:hidden flex min-w-0 flex-1 items-center gap-2 overflow-x-auto scrollbar-none mr-3",
+              menuOpen && "pointer-events-none",
+            )}
+            style={{
+              scrollbarWidth: "none",
+              WebkitMaskImage: "linear-gradient(90deg, #000 86%, transparent)",
+              maskImage: "linear-gradient(90deg, #000 86%, transparent)",
+            }}
+          >
+            {[...HEADER_CATEGORIES]
+              .sort(
+                (a, b) =>
+                  (a.slug === categorySegment ? 0 : 1) -
+                  (b.slug === categorySegment ? 0 : 1),
+              )
+              .map((c) => {
+                const isActive = c.slug === categorySegment;
+                return (
+                  <Link
+                    key={c.slug}
+                    href={`/${locale}/${c.route}`}
+                    role="tab"
+                    aria-selected={isActive}
+                    className={cn(
+                      "inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4",
+                      "font-body text-[15px] leading-none transition-colors duration-150 ease-glide",
+                      "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+                      isActive
+                        ? "border-s-bg-sunken bg-s-bg-sunken font-semibold text-s-ink"
+                        : "border-s-border bg-white font-medium text-s-ink",
+                    )}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={c.iconSrc}
+                      alt=""
+                      className="h-[22px] w-[22px] shrink-0 object-contain"
+                      aria-hidden
+                    />
+                    {c.label}
+                  </Link>
+                );
+              })}
+          </div>
+        ) : (
+          <div className="flex-1 md:hidden" />
+        )}
 
         {/* ── DESKTOP NAV (md+) — V3-D75 dropdown menus ──
             Replaces V2-D49d 4-category list. Two hover dropdowns + Entdecken
@@ -395,6 +540,10 @@ export default function Header({ locale }: { locale: string }) {
             className={cn(
               "md:hidden grid h-11 w-11 place-items-center text-s-ink transition-[transform,opacity] duration-200 ease-glide active:scale-[0.94] focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none",
+              // V3-D362 (2026-05-29): hide the bell on category/search routes
+              // ALWAYS (not just when scrolled) - user wants those pages' header
+              // to be just logo + hamburger. Bell stays on the homepage + elsewhere.
+              categorySegment && "hidden",
             )}
           >
             <BellIcon size={22} strokeWidth={2.2} />
@@ -407,7 +556,13 @@ export default function Header({ locale }: { locale: string }) {
             aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
-            className="md:hidden relative -m-2 grid h-11 w-11 place-items-center rounded-xl p-2 bg-white text-s-ink shadow-[0_6px_18px_rgba(26,18,9,0.10)] transition-transform duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
+            className={cn(
+              "md:hidden relative -m-2 grid place-items-center rounded-xl p-2 bg-white text-s-ink shadow-[0_6px_18px_rgba(26,18,9,0.10)] transition-transform duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              // V3-D376 (2026-05-29): hamburger no longer self-hides on scroll - it
+              // folds away WITH the whole header (max-h collapse on <header>) so the
+              // sticky search band takes the top. Tap target stays 44px (h-10 w-10).
+              "h-10 w-10",
+            )}
           >
             <span
               className={cn(

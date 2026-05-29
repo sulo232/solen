@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — /coiffeur structure options</title>
+<style>
+  :root{
+    --ink:#0D0D0D; --ink2:#6B6B6B; --ink3:#9A9A9A; --line:#ECECEC; --bg:#FFFFFF;
+    --sunken:#F5F5F4; --star:#FFC32B; --heart:#FF3366; --accent:#185CE0;
+    --font:'Geist',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:#E9E9E9;color:var(--ink);padding:28px 18px 60px;-webkit-font-smoothing:antialiased}
+  h1{font-size:21px;font-weight:600;letter-spacing:-0.01em;margin-bottom:4px}
+  .sub{font-size:13.5px;color:var(--ink2);margin-bottom:24px;max-width:760px;line-height:1.5}
+  .row{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+  .col{flex:0 0 auto}
+  .cap{font-size:12.5px;font-weight:600;color:var(--ink);margin:0 0 2px 2px}
+  .capsub{font-size:11.5px;color:var(--ink2);margin:0 0 10px 2px;max-width:340px;line-height:1.45;min-height:46px}
+  .rec{display:inline-block;background:var(--ink);color:#fff;font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:999px;letter-spacing:.02em;vertical-align:middle;margin-left:6px}
+  .phone{width:340px;height:720px;overflow:hidden;background:var(--bg);border-radius:30px;border:1px solid #d8d8d8;box-shadow:0 18px 40px rgba(0,0,0,.10);position:relative}
+  .scroll{height:100%;overflow:hidden;padding:0}
+  /* chrome */
+  .hdr{display:flex;align-items:center;gap:9px;padding:13px 14px 9px}
+  .logo{font-size:19px;font-weight:600;letter-spacing:-.02em;flex:0 0 auto}
+  .pill{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:500;white-space:nowrap}
+  .pill.on{border-color:var(--ink);font-weight:600}
+  .ham{margin-left:auto;width:34px;height:34px;border:1px solid var(--line);border-radius:999px;display:grid;place-items:center;flex:0 0 auto}
+  .ham span{width:15px;height:1.5px;background:var(--ink);position:relative}
+  .ham span::before,.ham span::after{content:"";position:absolute;left:0;width:15px;height:1.5px;background:var(--ink)}
+  .ham span::before{top:-4px}.ham span::after{top:4px}
+  .search{margin:4px 14px 0;border:1px solid var(--line);border-radius:14px;padding:11px 13px;display:flex;align-items:center;gap:9px;box-shadow:0 6px 18px rgba(0,0,0,.04)}
+  .search .mag{width:15px;height:15px;border:1.6px solid var(--ink2);border-radius:999px;position:relative;flex:0 0 auto}
+  .search .mag::after{content:"";position:absolute;width:6px;height:1.6px;background:var(--ink2);transform:rotate(45deg);bottom:-1px;right:-4px}
+  .search .txt{font-size:14px;font-weight:500}.search .txt small{display:block;color:var(--ink3);font-size:11px;font-weight:400}
+  .search .map{margin-left:auto;width:17px;height:17px;border:1.5px solid var(--ink2);border-radius:4px}
+  .chips{display:flex;gap:7px;padding:11px 14px 0;overflow:hidden}
+  .chip{border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:500;white-space:nowrap;color:var(--ink)}
+  .fuer{display:flex;gap:15px;padding:13px 14px 4px}
+  .fz{display:flex;flex-direction:column;align-items:center;gap:4px;width:46px}
+  .fz .ic{width:42px;height:42px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;font-size:17px}
+  .fz small{font-size:10.5px;color:var(--ink2);font-weight:500}
+  .count{display:flex;align-items:center;padding:14px 14px 9px}
+  .count b{font-size:15px;font-weight:600}
+  .count .sort{margin-left:auto;font-size:11.5px;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:5px 10px}
+  /* grid (2-col) */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 11px;padding:0 14px}
+  .card .ph{position:relative;width:100%;aspect-ratio:1/1;border-radius:18px;overflow:hidden;background:var(--sunken)}
+  .card .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .heart{position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:999px;background:rgba(255,255,255,.85);display:grid;place-items:center;font-size:12px}
+  .nm{display:flex;align-items:center;gap:5px;margin-top:7px}
+  .nm b{font-size:13.5px;font-weight:500;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .nm .star{margin-left:auto;font-size:12px;color:var(--ink);white-space:nowrap}
+  .meta{font-size:12px;color:var(--ink2);margin-top:2px}
+  .price{font-size:12px;color:var(--ink2);margin-top:1px}
+  .slot{display:inline-flex;align-items:center;gap:4px;margin-top:5px;font-size:11.5px;font-weight:600;color:var(--ink);border:1px solid var(--ink);border-radius:7px;padding:3px 7px}
+  .slot .dot{width:5px;height:5px;border-radius:999px;background:#16A34A}
+  /* list (1-col, fresha) */
+  .list{padding:0 14px;display:flex;flex-direction:column;gap:16px}
+  .lcard .ph{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:var(--sunken)}
+  .lcard .ph img{width:100%;height:100%;object-fit:cover}
+  .lcard .badge{position:absolute;top:8px;left:8px;background:#fff;font-size:10px;font-weight:600;padding:3px 7px;border-radius:999px}
+  .lnm{display:flex;align-items:center;gap:6px;margin-top:8px}
+  .lnm b{font-size:15px;font-weight:600}
+  .lnm .star{margin-left:auto;font-size:13px;font-weight:600}
+  .lmeta{font-size:12.5px;color:var(--ink2);margin-top:3px}
+  .lmeta2{font-size:12.5px;color:var(--ink3);margin-top:1px}
+</style>
+</head>
+<body>
+  <h1>/coiffeur — structure options</h1>
+  <p class="sub">Layout (header → search → chips → count → results) is already on-spec with Fresha. The fork is the <b>card</b>. A = where you are now. B = booking-intent cards (same layout, cards sell availability — your "Termin in 30 Sek" pitch). C = Fresha's actual single-column list. The Für-dich row is shown in A/B (your addition) and dropped in C (Fresha doesn't have it).</p>
+
+  <div class="row">
+
+    <!-- A: CURRENT -->
+    <div class="col">
+      <div class="cap">A · Current (minimal cards)</div>
+      <div class="capsub">Clean, but reads like any directory — the card shows nothing about <i>when</i> or <i>how much</i>, so nothing says "book now."</div>
+      <div class="phone"><div class="scroll">
+        <div class="hdr"><span class="logo">Solen</span><span class="pill on">✂ Coiffeur</span><span class="pill">Barber</span><span class="ham"><span></span></span></div>
+        <div class="search"><span class="mag"></span><span class="txt">Suchen<small>Schweizweit</small></span><span class="map"></span></div>
+        <div class="chips"><span class="chip">Offen jetzt</span><span class="chip">Sofort buchbar</span><span class="chip">Top bewertet</span></div>
+        <div class="fuer">
+          <div class="fz"><div class="ic">⭐</div><small>Stempel</small></div>
+          <div class="fz"><div class="ic">🧭</div><small>Inspo</small></div>
+          <div class="fz"><div class="ic">👥</div><small>Gruppe</small></div>
+          <div class="fz"><div class="ic">↺</div><small>Verlauf</small></div>
+        </div>
+        <div class="count"><b>4 Salons</b><span class="sort">Beliebteste ⌄</span></div>
+        <div class="grid">
+          <div class="card"><div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=70"><span class="heart">♡</span></div><div class="nm"><b>Atelier Haarwerk</b><span class="star">★ 4.8</span></div><div class="meta">Grossbasel</div><div class="price">ab 100 CHF</div></div>
+          <div class="card"><div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&q=70"><span class="heart">♡</span></div><div class="nm"><b>Salon Lumière</b><span class="star">★ 4.8</span></div><div class="meta">Grossbasel</div></div>
+          <div class="card"><div class="ph"><img src="https://images.unsplash.com/photo-1559599101-f09722fb4948?w=400&q=70"><span class="heart">♡</span></div><div class="nm"><b>Haarsalon Margot</b><span class="star">★ 4.8</span></div><div class="meta">Grossbasel</div></div>
+          <div class="card"><div class="ph"><img src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=400&q=70"><span class="heart">♡</span></div><div class="nm"><b>Studio Schnittkunst</b><span class="star">★ 4.7</span></div><div class="meta">Gundeli</div></div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- B: BOOKING-INTENT -->
+    <div class="col">
+      <div class="cap">B · Booking-intent cards <span class="rec">recommend</span></div>
+      <div class="capsub">Same layout, but each card shows the next free slot + price. The page now says "book a coiffeur today" — your pitch, Fresha's service-card pattern.</div>
+      <div class="phone"><div class="scroll">
+        <div class="hdr"><span class="logo">Solen</span><span class="pill on">✂ Coiffeur</span><span class="pill">Barber</span><span class="ham"><span></span></span></div>
+        <div class="search"><span class="mag"></span><span class="txt">Suchen<small>Schweizweit</small></span><span class="map"></span></div>
+        <div class="chips"><span class="chip">Offen jetzt</span><span class="chip">Sofort buchbar</span><span class="chip">Top bewertet</span></div>
+        <div class="fuer">
+          <div class="fz"><div class="ic">⭐</div><small>Stempel</small></div>
+          <div class="fz"><div class="ic">🧭</div><small>Inspo</small></div>
+          <div class="fz"><div class="ic">👥</div><small>Gruppe</small></div>
+          <div class="fz"><div class="ic">↺</div><small>Verlauf</small></div>
+        </div>
+        <div class="count"><b>4 Salons</b><span class="sort">Beliebteste ⌄</span></div>
+        <div class="grid">
+          <div class="card"><div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=70"><span class="heart">♡</span></div><div class="nm"><b>Atelier Haarwerk</b><span class="star">★ 4.8</span></div><div class="meta">Grossbasel · ab 75 CHF</div><span class="slot"><span class="dot"></span>Heute 14:30</span></div>
+          <div class="card"><div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&q=70"><span class="heart">♡</span></div><div class="nm"><b>Salon Lumière</b><span class="star">★ 4.8</span></div><div class="meta">Grossbasel · ab 80 CHF</div><span class="slot"><span class="dot"></span>Heute 16:00</span></div>
+          <div class="card"><div class="ph"><img src="https://images.unsplash.com/photo-1559599101-f09722fb4948?w=400&q=70"><span class="heart">♡</span></div><div class="nm"><b>Haarsalon Margot</b><span class="star">★ 4.8</span></div><div class="meta">Grossbasel · ab 70 CHF</div><span class="slot"><span class="dot"></span>Mo. 09:30</span></div>
+          <div class="card"><div class="ph"><img src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=400&q=70"><span class="heart">♡</span></div><div class="nm"><b>Studio Schnittkunst</b><span class="star">★ 4.7</span></div><div class="meta">Gundeli · ab 65 CHF</div><span class="slot"><span class="dot"></span>Heute 17:15</span></div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- C: FRESHA-TRUE LIST -->
+    <div class="col">
+      <div class="cap">C · Fresha-true list (1-column)</div>
+      <div class="capsub">Closest to Fresha's real category page: single column, bigger cards, distance · address + category · reviews. No Für-dich row. Most info, fewer salons per screen.</div>
+      <div class="phone"><div class="scroll">
+        <div class="hdr"><span class="logo">Solen</span><span class="pill on">✂ Coiffeur</span><span class="pill">Barber</span><span class="ham"><span></span></span></div>
+        <div class="search"><span class="mag"></span><span class="txt">Suchen<small>Basel · Heute</small></span><span class="map"></span></div>
+        <div class="chips"><span class="chip">Filter</span><span class="chip">Beste</span><span class="chip">Preis</span><span class="chip">Offen jetzt</span></div>
+        <div class="count"><b>4 Salons in Basel</b><span class="sort">Karte ▢</span></div>
+        <div class="list">
+          <div class="lcard"><div class="ph"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&q=70"><span class="badge">Empfohlen</span><span class="heart">♡</span></div><div class="lnm"><b>Atelier Haarwerk</b><span class="star">★ 4.8</span></div><div class="lmeta">1.1 km · Freie Strasse 12, Basel</div><div class="lmeta2">Coiffeur · 124 Bewertungen · Heute 14:30 frei</div></div>
+          <div class="lcard"><div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&q=70"><span class="heart">♡</span></div><div class="lnm"><b>Salon Lumière</b><span class="star">★ 4.8</span></div><div class="lmeta">0.8 km · Spalenvorstadt 22, Basel</div><div class="lmeta2">Coiffeur · 98 Bewertungen · Heute 16:00 frei</div></div>
+          <div class="lcard"><div class="ph"><img src="https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&q=70"><span class="heart">♡</span></div><div class="lnm"><b>Haarsalon Margot</b><span class="star">★ 4.8</span></div><div class="lmeta">1.4 km · Aeschengraben 9, Basel</div><div class="lmeta2">Coiffeur · 211 Bewertungen · Mo. 09:30 frei</div></div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</body>
+</html>
