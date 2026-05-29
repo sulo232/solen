@@ -35,7 +35,7 @@ export default function ToSCheckbox({ checked, onChange }: ToSCheckboxProps) {
       />
       <span>
         {LABELS[locale] ?? LABELS.de}{" "}
-        <Link href={`/${locale}/terms/discovery`} className="underline hover:text-s-accent" target="_blank">
+        <Link href={`/${locale}/terms/discovery`} className="underline underline-offset-2 hover:text-s-ink" target="_blank">
           {TOS_LABELS[locale] ?? TOS_LABELS.de}
         </Link>
       </span>

@@ -23,6 +23,9 @@ const extractTiktokId = (url: string | null) => {
 };
 
 // ── Color-coded category badges ────────────────────────────────────
+// V3-D346 (2026-05-29): category color identity KEPT per user decision —
+// intentional deviation from the B&W pivot + V3-D205 universal-components rule.
+// s-amber/s-plum resolve via config aliases (#F59E0B / #6B6B6B). Do not sweep to neutral.
 const CATEGORY_COLORS: Record<string, string> = {
   hair: "bg-s-amber/70",
   beard: "bg-s-ink/70",

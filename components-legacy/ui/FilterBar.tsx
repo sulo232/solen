@@ -98,8 +98,8 @@ export default function FilterBar({
                 motionClass,
                 hoverLift,
                 active
-                  ? 'bg-s-ink text-white border border-s-accent'
-                  : 'bg-white/70 border border-s-ink/[0.08] text-s-ink/65 hover:border-s-accent/40 hover:text-s-accent:text-s-accent',
+                  ? 'bg-s-ink text-white border border-s-ink'
+                  : 'bg-white/70 border border-s-ink/[0.08] text-s-ink/65 hover:border-s-ink/40 hover:text-s-ink',
               ].join(' ')}
               aria-pressed={active}
               aria-label={`${t('filter')}: ${pill.label}`}
@@ -126,8 +126,8 @@ export default function FilterBar({
               motionClass,
               hoverLift,
               drawerOpen
-                ? 'bg-s-plum-subtle border-s-plum/30 text-s-plum-text'
-                : 'text-s-ink/65 hover:border-s-accent/40 hover:text-s-accent',
+                ? 'bg-s-ink/[0.06] border-s-ink/30 text-s-ink'
+                : 'text-s-ink/65 hover:border-s-ink/40 hover:text-s-ink',
             ].join(' ')}
             aria-expanded={drawerOpen}
             aria-label={t('moreFilters', { count: overflowNonSortCount })}
@@ -166,7 +166,7 @@ export default function FilterBar({
               {f.label}
               <button
                 onClick={() => removeFilter(f)}
-                className="ml-0.5 p-2 hover:text-s-accent"
+                className="ml-0.5 p-2 hover:text-s-ink"
                 aria-label={t('removeFilter', { name: f.label })}
               >
                 <X size={11} aria-hidden />
@@ -175,7 +175,7 @@ export default function FilterBar({
           ))}
           <button
             onClick={clearAll}
-            className="text-xs text-s-ink/50 hover:text-s-accent underline underline-offset-2 font-body"
+            className="text-xs text-s-ink/50 hover:text-s-ink underline underline-offset-2 font-body"
           >
             {t('clearAll')}
           </button>

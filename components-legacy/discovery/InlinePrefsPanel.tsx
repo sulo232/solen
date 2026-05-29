@@ -65,8 +65,8 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
   const pillClass = (active: boolean) =>
     `px-3.5 py-2 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] border transition-[background-color,color,box-shadow] duration-150 cursor-pointer ${
       active
-        ? "border-s-accent bg-s-ink/[0.08] text-s-accent"
-        : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-accent/40"
+        ? "border-s-ink bg-s-ink/[0.08] text-s-ink"
+        : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-ink/40"
     }`;
 
   const handleSave = () => {
@@ -96,8 +96,9 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
     );
   }
 
+  // V3-D346 (2026-05-29): resting border accent→s-border (A9); pills + icon + label swept to ink.
   return (
-    <div className="rounded-[12px] border border-s-accent/15 overflow-hidden bg-s-ink/[0.03]">
+    <div className="rounded-[12px] border border-s-border overflow-hidden bg-s-ink/[0.03]">
       {/* Collapsed banner */}
       <button
         onClick={() => setExpanded(!expanded)}
@@ -105,7 +106,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
         className="w-full flex items-center gap-3 px-4 py-3.5 text-left"
       >
         <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 bg-s-ink/10">
-          <Sparkles size={14} className="text-s-accent" />
+          <Sparkles size={14} className="text-s-ink-3" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-heading text-s-ink">{t.banner}</p>
@@ -113,7 +114,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {!expanded && (
-            <span className="text-[10px] font-heading uppercase tracking-[.06em] text-s-accent">
+            <span className="text-[10px] font-heading uppercase tracking-[.06em] text-s-ink-3">
               {t.expand}
             </span>
           )}
@@ -137,7 +138,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
             <div className="px-4 pb-4 space-y-4 border-t border-s-ink/[0.05] pt-3">
               {/* Gender */}
               <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/50 mb-2">{t.genderLabel}</p>
+                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/50 mb-2">{t.genderLabel}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { v: "female", l: t.female },
@@ -153,7 +154,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
 
               {/* Texture */}
               <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/50 mb-2">{t.textureLabel}</p>
+                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/50 mb-2">{t.textureLabel}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { v: "straight", l: t.straight },
@@ -170,7 +171,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
 
               {/* Length */}
               <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/50 mb-2">{t.lengthLabel}</p>
+                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/50 mb-2">{t.lengthLabel}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { v: "short", l: t.short },
@@ -194,7 +195,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
                 </button>
                 <button
                   onClick={handleSave}
-                  className="flex-1 py-2.5 rounded-pill text-white text-[10px] font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-ink shadow-elevation-2"
+                  className="flex-1 py-2.5 rounded-pill text-white text-[10px] font-heading uppercase tracking-[.06em] active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-ink shadow-elevation-2"
                 >
                   {t.save}
                 </button>

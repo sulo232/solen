@@ -33,12 +33,13 @@ export default function FilterDrawer(props: FilterDrawerProps) {
         aria-label={t("open_filters")}
         className={`md:hidden flex items-center gap-1.5 px-3 py-2.5 rounded-pill border text-[10px] font-heading uppercase tracking-[.08em] transition-colors duration-150 ${
           hasFilters
-            ? "border-s-accent/40 text-s-accent bg-s-ink/[0.06]"
+            ? "border-s-ink text-s-ink bg-s-ink/[0.06]"
             : "border-s-ink/[0.08] text-s-ink/60"
         }`}
       >
         <SlidersHorizontal size={13} />
-        {t("filter_label")} {hasFilters && <span className="ml-0.5 text-s-accent">·</span>}
+        {/* V3-D346 (2026-05-29): active filter state + indicator dot swept accent→ink (A9). */}
+        {t("filter_label")} {hasFilters && <span className="ml-0.5 text-s-ink-3">·</span>}
       </button>
 
       {/* Drawer overlay */}
@@ -54,13 +55,13 @@ export default function FilterDrawer(props: FilterDrawerProps) {
             {/* Header */}
             <div className="px-5 py-4 border-b border-s-ink/[0.06] flex items-center justify-between">
               <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/50">{t("filter_label")}</p>
+                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/50">{t("filter_label")}</p>
                 <p className="font-heading text-base text-s-ink">{t("refine_search")}</p>
               </div>
               <button
                 onClick={() => setOpen(false)}
                 aria-label={t("close")}
-                className="p-2 rounded-pill hover:bg-s-ink/[0.04]:bg-white/[0.04] transition-colors duration-150"
+                className="p-2 rounded-pill hover:bg-s-ink/[0.04] transition-colors duration-150"
               >
                 <X size={16} className="text-s-ink/50" />
               </button>
@@ -68,11 +69,11 @@ export default function FilterDrawer(props: FilterDrawerProps) {
 
             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
               <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/50 mb-2">{t("category")}</p>
+                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/50 mb-2">{t("category")}</p>
                 <CategoryPills selected={props.category} onSelect={props.onCategoryChange} />
               </div>
               <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/50 mb-2">{t("gender")}</p>
+                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/50 mb-2">{t("gender")}</p>
                 <GenderToggle selected={props.gender} onSelect={props.onGenderChange} />
               </div>
               <div>

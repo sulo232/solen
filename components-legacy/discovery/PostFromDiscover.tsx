@@ -151,11 +151,8 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
       {/* Floating + button */}
       <button
         onClick={handleOpen}
-        className="fixed bottom-24 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center text-white active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
-        style={{
-          background: "#C05038",
-          boxShadow: "0 4px 12px rgba(27, 77, 27,.40), 0 12px 32px rgba(27, 77, 27,.22)"
-        }}
+        /* V3-D346 (2026-05-29): FAB swept from a hardcoded terracotta fill + green shadow to bg-s-ink + canonical elevation (A1 + CTA discipline). */
+        className="fixed bottom-24 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center bg-s-ink text-white active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
         aria-label={t.newPost}
       >
         <Plus size={20} strokeWidth={2.5} />
@@ -192,7 +189,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
 
             {success ? (
               <div className="text-center py-8">
-                <p className="text-s-accent font-medium">{t.created}</p>
+                <p className="text-s-success font-medium">{t.created}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -229,7 +226,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                     <input ref={fileRef} type="file" accept="image/*" className="hidden" aria-label={t.uploadPhoto} />
                     <button
                       onClick={() => fileRef.current?.click()}
-                      className="w-full py-8 rounded-btn border-2 border-dashed border-s-ink/10 text-sm text-s-ink/40 hover:border-s-accent/30 transition-colors"
+                      className="w-full py-8 rounded-btn border-2 border-dashed border-s-ink/10 text-sm text-s-ink/40 hover:border-s-ink/30 transition-colors"
                     >
                       {t.uploadPhoto}
                     </button>

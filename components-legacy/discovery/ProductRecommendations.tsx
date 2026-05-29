@@ -19,16 +19,17 @@ export default function ProductRecommendations({ products, locale }: ProductReco
 
   return (
     <div className="mt-4 px-1">
-      <div className="p-4 rounded-[16px] bg-s-amber/5 border border-s-amber/10">
+      {/* V3-D346 Pass-2 (2026-05-29): amber → neutral ink (A9) — products aren't a warning/semantic state. */}
+      <div className="p-4 rounded-[16px] bg-s-ink/5 border border-s-border">
         <div className="flex items-center gap-2 mb-3">
-          <ShoppingBag size={14} className="text-s-amber" />
-          <span className="text-xs font-medium text-s-amber">{TITLES[locale] ?? TITLES.en}</span>
+          <ShoppingBag size={14} className="text-s-ink-3" />
+          <span className="text-xs font-medium text-s-ink">{TITLES[locale] ?? TITLES.en}</span>
         </div>
         <div className="flex flex-wrap gap-2">
           {products.map((product) => (
             <span
               key={product}
-              className="text-xs px-3 py-1.5 rounded-pill bg-s-amber/10 text-s-amber border border-s-amber/20 font-medium"
+              className="text-xs px-3 py-1.5 rounded-pill bg-s-ink/[0.05] text-s-ink/70 border border-s-border font-medium"
             >
               {product}
             </span>

@@ -43,7 +43,7 @@ export default function ReportButton({ type, targetId }: ReportButtonProps) {
   return (
     <button
       onClick={handleReport}
-      className="text-s-ink/20 hover:text-s-accent transition-colors ml-auto"
+      className="text-s-ink/20 hover:text-s-ink transition-colors ml-auto"
       aria-label={t("report")}
       title={t("report")}
     >

@@ -43,11 +43,12 @@ export default function SalonScript({ item, locale }: SalonScriptProps) {
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
+  // V3-D346 Pass-2 (2026-05-29): accent → ink (A9); border accent → s-border.
   return (
-    <div className="p-4 rounded-[16px] bg-s-ink/5 border border-s-accent/10">
+    <div className="p-4 rounded-[16px] bg-s-ink/5 border border-s-border">
       <div className="flex items-center gap-2 mb-2">
-        <Scissors size={14} className="text-s-accent" />
-        <span className="text-xs font-medium text-s-accent">
+        <Scissors size={14} className="text-s-ink-3" />
+        <span className="text-xs font-medium text-s-ink">
           {TITLES[locale] ?? TITLES.de}
         </span>
       </div>
@@ -57,7 +58,7 @@ export default function SalonScript({ item, locale }: SalonScriptProps) {
       <div className="flex gap-2 mt-3">
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-s-ink/5 text-xs text-s-ink/60 hover:bg-s-ink/10:bg-white/10 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-s-ink/5 text-xs text-s-ink/60 hover:bg-s-ink/10 transition-colors"
         >
           {copied ? <Check size={12} className="text-s-success" /> : <Copy size={12} />}
           {copied ? "Copied!" : "Copy"}

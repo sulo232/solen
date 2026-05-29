@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, ChevronDown, ExternalLink, Play } from "lucide-react";
+import { ChevronDown, ExternalLink, Play } from "lucide-react";
 import { motion } from "framer-motion";
 import type { DiscoveryItem } from "@/lib/types";
 import SourceBadge from "./SourceBadge";
@@ -52,16 +52,13 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
   const displayImage = item.image_url || item.tiktok_thumbnail_url;
 
   return (
-    <div className="max-w-2xl mx-auto pb-24">
-      {/* Back button */}
-      <button
-        onClick={() => window.history.back()}
-        className="flex items-center gap-1.5 text-sm text-s-ink/50 hover:text-s-ink mb-4 transition-colors"
-      >
-        <ArrowLeft size={16} />
-        <span>{dt.back}</span>
-      </button>
-
+    <div className="max-w-5xl mx-auto pb-24">
+      {/* V3-D346 Pass-2 (2026-05-29): own back button removed — global Breadcrumb already
+          provides a mobile back button + the desktop trail (was a duplicate "Zurück" on mobile). */}
+      {/* V3-D346 (Move 3): 2-column on desktop — sticky hero left, content right; single column on mobile. */}
+      <div className="md:grid md:grid-cols-2 md:gap-8 md:items-start">
+      {/* ═══ Left column: Hero Media (sticky on desktop) ═══ */}
+      <div className="md:sticky md:top-20">
       {/* ═══ Section 1: Hero Media ═══ */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -76,7 +73,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
               alt={item.alt_text || item.style_name || "TikTok"}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, 672px"
+              sizes="(max-width: 768px) 100vw, 480px"
               priority
             />
             {/* TikTok play overlay — opens in new tab instead of embedding (avoids GDPR cookie wall) */}
@@ -105,7 +102,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
               alt={item.alt_text || item.style_name || "Discovery item"}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, 672px"
+              sizes="(max-width: 768px) 100vw, 480px"
               priority
             />
           </div>
@@ -115,6 +112,10 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
           </div>
         )}
       </motion.div>
+      </div>{/* /left column */}
+
+      {/* ═══ Right column: all detail content ═══ */}
+      <div className="min-w-0">
 
       {/* Source + Author + Date */}
       <motion.div
@@ -131,7 +132,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
         {item.author_name && (
           <span className="text-xs text-s-ink/50">
             {item.author_url ? (
-              <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="hover:text-s-accent transition-colors">@{item.author_name}</a>
+              <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="hover:text-s-ink transition-colors">@{item.author_name}</a>
             ) : `@${item.author_name}`}
           </span>
         )}
@@ -193,7 +194,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
       )}
 
       {/* ═══ Section 8: Similar Styles ═══ */}
-      <SimilarStyles itemId={item.id} category={item.category} tags={item.tags} />
+      <SimilarStyles itemId={item.id} category={item.category} tags={item.tags} isAuthenticated={isAuthenticated} />
 
       {/* ═══ Section 9: Related TikToks ═══ */}
       <RelatedTikToks itemId={item.id} isCurrentTikTok={item.media_type === "tiktok"} />
@@ -222,6 +223,8 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
       <div className="mt-6 px-1">
         <CommentSection itemId={item.id} isAuthenticated={isAuthenticated} />
       </div>
+      </div>{/* /right column */}
+      </div>{/* /grid */}
     </div>
   );
 }
