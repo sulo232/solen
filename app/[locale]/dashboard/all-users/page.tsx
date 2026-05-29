@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Users, Search, ShieldCheck, Scissors, User, X, Ban, CheckCircle } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { containerVariants, itemVariants } from "@/lib/animations";
@@ -22,9 +23,9 @@ interface AdminUser {
 }
 
 const ROLE_MAP: Record<UserRole, { label: string; icon: React.ElementType; cls: string }> = {
-  customer:    { label: "Kunde",          icon: User,       cls: "bg-s-bg-sunken text-s-ink/50" },
-  salon_owner: { label: "Salonbesitzer",  icon: Scissors,   cls: "bg-s-coral/10 text-s-coral" },
-  admin:       { label: "Admin",          icon: ShieldCheck, cls: "bg-s-coral/10 text-s-coral" },
+  customer:    { label: "Kunde",          icon: User,       cls: "bg-s-bg-sunken text-s-ink-2" },
+  salon_owner: { label: "Salonbesitzer",  icon: Scissors,   cls: "bg-s-bg-sunken text-s-ink" },
+  admin:       { label: "Admin",          icon: ShieldCheck, cls: "bg-s-ink text-white" },
 };
 
 const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
@@ -60,7 +61,7 @@ function ConfirmModal({
         </div>
         <p className="text-sm text-s-ink/50 mb-5">{message}</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">
             Abbrechen
           </button>
           <button
@@ -90,7 +91,7 @@ export default function AllUsersPage() {
     fetch("/api/admin/users")
       .then((r) => r.json())
       .then((d) => setUsers(d.users ?? []))
-      .catch(() => setUsers([]))
+      .catch((err) => { console.error("[DashboardAllUsers] failed to fetch users:", err); setUsers([]); })
       .finally(() => setLoading(false));
   }, []);
 
@@ -121,8 +122,8 @@ export default function AllUsersPage() {
         prev.map((u) => u.id === suspendTarget.id ? { ...u, is_suspended: newSuspended } : u)
       );
       setSuspendTarget(null);
-    } catch {
-      // silently fail
+    } catch (err) {
+      console.error("[DashboardAllUsers] suspend/unsuspend failed:", err);
     } finally {
       setActionLoading(false);
     }
@@ -146,7 +147,7 @@ export default function AllUsersPage() {
               : `Benutzer "${suspendTarget.display_name ?? suspendTarget.email}" sperren? Der Benutzer kann sich nicht mehr anmelden.`
           }
           confirmLabel={suspendTarget.is_suspended ? "Freigeben" : "Sperren"}
-          confirmCls={suspendTarget.is_suspended ? "bg-s-coral" : "bg-s-coral"}
+          confirmCls="bg-s-ink hover:bg-black"
           onConfirm={handleSuspendToggle}
           onClose={() => setSuspendTarget(null)}
           loading={actionLoading}
@@ -155,7 +156,7 @@ export default function AllUsersPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading text-2xl text-s-ink">Alle Nutzer</h1>
+        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Alle Nutzer</h1>
         <p className="text-sm text-s-ink/40 mt-0.5">Registrierte Benutzer verwalten</p>
       </div>
 
@@ -167,7 +168,7 @@ export default function AllUsersPage() {
           placeholder="Name oder E-Mail suchen..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-ink/10 bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-border bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-ink transition-colors"
         />
       </div>
 
@@ -189,13 +190,13 @@ export default function AllUsersPage() {
               <motion.div
                 key={u.id}
                 variants={itemVariants}
-                className={`bg-white rounded-[12px] border shadow-warm-md p-4 ${
-                  u.is_suspended ? "border-s-coral/30 bg-s-coral/[0.02]" : "border-s-ink/5"
+                className={`bg-white rounded-2xl border shadow-warm-md p-4 ${
+                  u.is_suspended ? "border-s-error/30 bg-s-error-bg/40" : "border-s-border"
                 }`}
               >
                 <div className="flex gap-3 items-start">
                   {/* Avatar */}
-                  <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-xs font-bold text-s-coral overflow-hidden relative">
+                  <div className="w-8 h-8 rounded-full bg-s-bg-sunken flex items-center justify-center shrink-0 text-xs font-bold text-s-ink overflow-hidden relative">
                     {u.avatar_url ? (
                       <Image src={u.avatar_url} alt="" fill className="object-cover" unoptimized />
                     ) : (
@@ -210,9 +211,7 @@ export default function AllUsersPage() {
                         {u.display_name ?? "—"}
                       </p>
                       {u.is_suspended && (
-                        <span className="px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[10px] font-bold">
-                          GESPERRT
-                        </span>
+                        <DashStatusPill tone="error">GESPERRT</DashStatusPill>
                       )}
                     </div>
                     {u.email && (
@@ -229,9 +228,9 @@ export default function AllUsersPage() {
                 </div>
 
                 {/* Bottom actions */}
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-ink/5 gap-2">
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-border gap-2">
                   {/* Role pill */}
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-[10px] font-bold ${cls}`}>
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${cls}`}>
                     <RoleIcon size={10} />
                     {label}
                   </span>
@@ -241,7 +240,7 @@ export default function AllUsersPage() {
                     <select
                       value={u.role}
                       onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
-                      className="px-2 py-1.5 rounded-btn border border-s-ink/10 text-xs text-s-ink/60 bg-white focus:outline-none focus:border-s-coral cursor-pointer"
+                      className="px-2 py-1.5 rounded-btn border border-s-border text-xs text-s-ink-2 bg-white focus:outline-none focus:border-s-ink cursor-pointer"
                     >
                       {ROLE_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -252,7 +251,7 @@ export default function AllUsersPage() {
                     {u.is_suspended ? (
                       <button
                         onClick={() => setSuspendTarget(u)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-ink text-s-ink text-xs font-medium hover:bg-s-bg-sunken transition-colors"
                       >
                         <CheckCircle size={12} />
                         Freigeben
@@ -260,7 +259,7 @@ export default function AllUsersPage() {
                     ) : (
                       <button
                         onClick={() => setSuspendTarget(u)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-error/40 text-s-error text-xs font-medium hover:bg-s-error-bg transition-colors"
                       >
                         <Ban size={12} />
                         Sperren

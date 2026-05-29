@@ -5,6 +5,7 @@ import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Check, UserX, RotateCcw, ChevronDown, X, BadgeCheck, AlertTriangle } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
 import ClientTags from "@/components-legacy/chat/ClientTags";
 import DisputeNotification from "@/components-legacy/dashboard/DisputeNotification";
@@ -26,13 +27,13 @@ const STATUS_LABELS: Record<BookingStatus, string> = {
   completed: "Abgeschlossen",
   no_show: "Nicht erschienen",
 };
-const STATUS_COLORS: Record<BookingStatus, string> = {
-  pending: "bg-s-amber/10 text-s-amber",
-  pending_approval: "bg-s-amber/10 text-s-amber",
-  confirmed: "bg-s-coral/10 text-s-coral",
-  cancelled: "bg-s-coral/10 text-s-coral",
-  completed: "bg-s-bg-sunken text-s-ink/50",
-  no_show: "bg-s-bg-sunken text-s-ink/30",
+const STATUS_TONE: Record<BookingStatus, "success" | "warning" | "error" | "neutral"> = {
+  pending: "warning",
+  pending_approval: "warning",
+  confirmed: "success",
+  cancelled: "error",
+  completed: "neutral",
+  no_show: "neutral",
 };
 
 const CANCEL_REASONS = [
@@ -75,25 +76,25 @@ function SalonCancelModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
+      <div className="bg-white rounded-2xl shadow-warm-xl w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading text-base">Termin stornieren</h3>
-          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
+          <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-s-ink">Termin stornieren</h3>
+          <button onClick={onClose}><X size={18} className="text-s-ink-2" /></button>
         </div>
-        <p className="text-sm text-s-ink/50 mb-4">Bitte wähle einen Grund. Der Kunde wird automatisch per E-Mail informiert.</p>
+        <p className="text-sm text-s-ink-2 mb-4">Bitte wähle einen Grund. Der Kunde wird automatisch per E-Mail informiert.</p>
         <div className="space-y-2 mb-5">
           {CANCEL_REASONS.map((r) => (
-            <label key={r.value} className="flex items-center gap-3 p-3 rounded-btn border border-s-ink/10 cursor-pointer hover:border-s-coral transition-colors">
+            <label key={r.value} className="flex items-center gap-3 p-3 rounded-xl border border-s-border cursor-pointer hover:border-s-ink transition-colors">
               <input type="radio" name="reason" value={r.value} checked={reason === r.value}
-                onChange={() => setReason(r.value)} className="accent-s-coral" />
+                onChange={() => setReason(r.value)} className="accent-s-ink" />
               <span className="text-sm">{r.label}</span>
             </label>
           ))}
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-full border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">Abbrechen</button>
           <button onClick={handleSubmit} disabled={!reason || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-full bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-colors">
             {loading && <Spinner size="sm" invert />}Stornieren
           </button>
         </div>
@@ -174,7 +175,9 @@ export default function BookingsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ booking_id: id }),
       });
-    } catch { /* ignore */ } finally {
+    } catch (err) {
+      console.error("[Bookings] Stripe confirm-price POST failed:", err);
+    } finally {
       setConfirmingPrice(null);
     }
   };
@@ -190,7 +193,7 @@ export default function BookingsPage() {
       )}
 
       <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
-        <h1 className="font-heading text-2xl text-s-ink">Termine</h1>
+        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Termine</h1>
       </div>
 
       {/* Filters */}
@@ -200,8 +203,8 @@ export default function BookingsPage() {
             key={s}
             onClick={() => setStatusFilter(s)}
             className={[
-              "px-3 py-1.5 rounded-pill text-sm font-medium whitespace-nowrap transition-colors",
-              statusFilter === s ? "bg-s-coral text-white" : "bg-white border border-s-ink/10 text-s-ink/60 hover:border-s-coral",
+              "px-3.5 py-1.5 rounded-full text-[14px] font-medium whitespace-nowrap transition-colors",
+              statusFilter === s ? "bg-s-ink text-white" : "bg-white border border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink",
             ].join(" ")}
           >
             {s === "all" ? "Alle" : STATUS_LABELS[s]}
@@ -218,11 +221,11 @@ export default function BookingsPage() {
       ) : (
         <div className="space-y-2">
           {bookings.map((b) => (
-            <div key={b.id} className="bg-white rounded-[12px] border border-s-ink/5 p-4">
+            <div key={b.id} className="bg-white rounded-2xl border border-s-border p-4">
               <div className="flex items-start gap-4">
                 {/* Time */}
                 <div className="shrink-0 text-center w-14">
-                  <p className="data-text font-bold text-sm text-s-coral">
+                  <p className="data-text font-semibold text-sm text-s-ink">
                     {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                   </p>
                   <p className="text-[10px] text-s-ink/30">
@@ -235,7 +238,7 @@ export default function BookingsPage() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <p className="text-sm font-medium text-s-ink">{b.customer_name}</p>
                     {b.is_first_visit && (
-                      <span className="px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[10px] font-bold">NEUKUNDE</span>
+                      <span className="px-2 py-0.5 rounded-full bg-s-bg-sunken border border-s-border text-s-ink-2 text-[10px] font-semibold uppercase tracking-[0.06em]">Neukunde</span>
                     )}
                     {b.is_recurring && (
                       <span className="flex items-center gap-0.5 text-[10px] text-s-ink/40">
@@ -255,28 +258,26 @@ export default function BookingsPage() {
 
                 {/* Status + actions */}
                 <div className="flex flex-col items-end gap-2 shrink-0">
-                  <span className={["px-2 py-0.5 rounded-pill text-[11px] font-medium", STATUS_COLORS[b.status]].join(" ")}>
-                    {STATUS_LABELS[b.status]}
-                  </span>
+                  <DashStatusPill tone={STATUS_TONE[b.status]}>{STATUS_LABELS[b.status]}</DashStatusPill>
                   {b.status === "confirmed" && (
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => updateStatus(b.id, "completed")}
-                        className="p-1.5 rounded-btn bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
+                        className="p-1.5 rounded-full bg-s-bg-sunken text-s-ink hover:bg-s-border transition-colors"
                         title="Abgeschlossen"
                       >
                         <Check size={13} />
                       </button>
                       <button
                         onClick={() => updateStatus(b.id, "no_show")}
-                        className="p-1.5 rounded-btn bg-s-bg-sunken text-s-ink/40 hover:bg-s-sand transition-colors"
+                        className="p-1.5 rounded-full bg-s-bg-sunken text-s-ink-2 hover:bg-s-border hover:text-s-ink transition-colors"
                         title="Nicht erschienen"
                       >
                         <UserX size={13} />
                       </button>
                       <button
                         onClick={() => setCancelTarget(b.id)}
-                        className="p-1.5 rounded-btn bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
+                        className="p-1.5 rounded-full bg-s-bg-sunken text-s-error hover:bg-s-error-bg transition-colors"
                         title="Stornieren"
                       >
                         <X size={13} />
@@ -287,7 +288,7 @@ export default function BookingsPage() {
                     <button
                       onClick={() => confirmPrice(b.id)}
                       disabled={confirmingPrice === b.id}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-btn bg-s-coral/10 text-s-coral text-[11px] font-medium hover:bg-s-coral/20 transition-colors disabled:opacity-50"
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-s-border text-s-ink text-[11px] font-medium hover:bg-s-bg-sunken transition-colors disabled:opacity-50"
                       title="Preis bestätigen"
                     >
                       <BadgeCheck size={12} />

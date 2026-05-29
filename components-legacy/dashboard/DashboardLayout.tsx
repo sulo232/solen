@@ -8,14 +8,13 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Home, Calendar, Clock, MessageCircle, Users, Scissors,
-  BarChart, Settings, Menu, X, Search,
+  BarChart, Settings, Menu, X, Search, ChevronDown,
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
   UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid, FlaskConical,
 } from "lucide-react";
 
 import Skeleton from "@/components-legacy/ui/Skeleton";
-import { Sidebar, SidebarBody } from "@/components-legacy/ui/sidebar";
 import type { Profile, UserRole } from "@/lib/types";
 import { useMemo } from "react";
 import { getCategoryNavGroups } from "@/lib/dashboard/category-nav";
@@ -122,6 +121,21 @@ const STAFF_NAV = [
   { key: "myBreaks",  href: "/dashboard/my-breaks", icon: Calendar },
   { key: "myPortfolio", href: "/dashboard/my-portfolio", icon: ImageIcon },
   { key: "myProfile",   href: "/dashboard/settings",  icon: Settings },
+] as const;
+
+// V3-D347 (W1): Fresha icon-rail nav — the 9 operator sections. Labels are tooltips
+// (icon-only rail); i18n keys for the new taxonomy land in the i18n pass.
+const RAIL_NAV = [
+  { key: "overview",  href: "/dashboard",           icon: LayoutGrid, label: "Übersicht" },
+  { key: "calendar",  href: "/dashboard/calendar",  icon: Calendar,   label: "Kalender" },
+  { key: "catalog",   href: "/dashboard/services",  icon: Scissors,   label: "Katalog" },
+  { key: "clients",   href: "/dashboard/clients",   icon: Users,         label: "Kund:innen" },
+  { key: "messages",  href: "/dashboard/messages",  icon: MessageCircle, label: "Nachrichten" },
+  { key: "marketing", href: "/dashboard/marketing", icon: Megaphone,     label: "Marketing" },
+  { key: "sales",     href: "/dashboard/bookings",  icon: DollarSign, label: "Verkäufe" },
+  { key: "team",      href: "/dashboard/staff",     icon: UserCheck,  label: "Team" },
+  { key: "reports",   href: "/dashboard/analytics", icon: BarChart3,  label: "Berichte" },
+  { key: "settings",  href: "/dashboard/settings",  icon: Settings,   label: "Einstellungen" },
 ] as const;
 
 // Mobile bottom nav shows 5 items: first 3 + Messages + "Mehr"
@@ -254,7 +268,7 @@ export default function DashboardLayout({
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-white flex">
+      <div className="min-h-screen bg-s-bg-sunken flex">
         {/* Sidebar skeleton */}
         <div className="hidden md:flex flex-col w-[240px] border-r border-s-ink/[0.06] p-3 gap-4">
           <Skeleton className="h-8 w-8 rounded-input" />
@@ -282,131 +296,50 @@ export default function DashboardLayout({
       : pathname.startsWith(`/${locale}${href}`);
 
   return (
-    <div className="min-h-screen bg-white flex">
-      {/* ── Desktop Sidebar (animated) ── */}
-      <Sidebar>
-        <SidebarBody>
-          {/* Salon identity */}
-          <div className="px-4 py-4 border-b border-s-ink/[0.05]">
-            {salonAvatar && (
-              <Image src={salonAvatar} alt={salonName ?? ""} width={32} height={32}
-                className="rounded-input mb-3" />
-            )}
-            {!salonAvatar && salonName && (
-              <div className="w-8 h-8 rounded-input bg-s-coral/10 flex items-center justify-center mb-3">
-                <span className="text-xs font-bold text-s-coral">{salonName[0]}</span>
-              </div>
-            )}
-            <p className="font-heading text-sm text-s-ink truncate">{salonName ?? "Dashboard"}</p>
-            <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/35 mt-0.5">Dashboard</p>
-          </div>
-
-          {/* Nav */}
-          <nav className="flex-1 overflow-y-auto py-2 px-1">
-            {isStaff ? (
-              STAFF_NAV.map((item) => {
-                const { href, icon: Icon } = item;
-                const active = isActive(href);
-                return (
-                  <Link key={href} href={`/${locale}${href}`}
-                    aria-current={active ? "page" : undefined}
-                    className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
-                      active
-                        ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                        : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
-                    }`}>
-                    <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
-                    <span className="flex-1 overflow-hidden whitespace-nowrap">{t(item.key)}</span>
-                  </Link>
-                );
-              })
-            ) : (
-              <>
-                {filteredOwnerNavGroups.map((group) => (
-                  <div key={group.label} className="px-3 pt-4 pb-1">
-                    <p className="text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25 mb-1">{group.label}</p>
-                    {group.items.map((item) => {
-                      const { href, icon: Icon } = item;
-                      const label = "key" in item ? t(item.key as Parameters<typeof t>[0]) : ("label" in item ? item.label : "");
-                      const active = isActive(href);
-                      const isMessages = href === "/dashboard/messages";
-                      return (
-                        <Link key={href} href={`/${locale}${href}`}
-                          aria-current={active ? "page" : undefined}
-                          className={`flex items-center gap-3 px-1 py-2 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
-                            active
-                              ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                              : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
-                          }`}>
-                          <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
-                          <span className="flex-1 overflow-hidden whitespace-nowrap">{label}</span>
-                          {isMessages && unreadCount > 0 && (
-                            <span className="ml-auto text-[10px] font-heading px-1.5 py-0.5 rounded-pill bg-s-coral text-white">
-                              {unreadCount > 9 ? "9+" : unreadCount}
-                            </span>
-                          )}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                ))}
-                {/* Category-specific nav groups */}
-                {categoryNavGroups.map(group => (
-                  <div key={group.category} className="px-3 pt-4 pb-1">
-                    <p className="text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25 mb-1">
-                      {t(group.labelKey as any)}
-                    </p>
-                    {group.items.map(item => (
-                      <Link key={item.key} href={`/${locale}${item.href}`}
-                        aria-current={isActive(item.href) ? "page" : undefined}
-                        className={`flex items-center gap-3 px-1 py-2 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
-                          isActive(item.href)
-                            ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                            : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
-                        }`}>
-                        <item.icon size={15} className={isActive(item.href) ? "text-s-coral" : "text-s-ink/35"} />
-                        <span className="flex-1 overflow-hidden whitespace-nowrap">{t(item.labelKey as any)}</span>
-                      </Link>
-                    ))}
-                  </div>
-                ))}
-              </>
-            )}
-          </nav>
-
-          {/* Admin nav */}
+    <div className="min-h-screen bg-s-bg-sunken flex">
+      {/* ── Desktop icon rail (V3-D347 W1 — Fresha structure) ── */}
+      <aside className="hidden md:flex fixed left-0 top-0 h-full w-[64px] bg-white border-r border-s-border flex-col items-center py-3 z-30">
+        <Link href={`/${locale}/dashboard`} aria-label="Solen" className="w-9 h-9 grid place-items-center text-[20px] font-bold tracking-[-0.04em] text-s-ink mb-2">S</Link>
+        <nav className="flex-1 flex flex-col gap-1 items-center w-full">
+          {RAIL_NAV.map(({ key, href, icon: Icon, label }) => {
+            const active = isActive(href);
+            return (
+              <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
+                className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-accent-bright text-white" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
+                <Icon size={20} strokeWidth={1.9} />
+                {key === "messages" && unreadCount > 0 && (
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-s-error ring-2 ring-white" aria-hidden />
+                )}
+                <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[11.5px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{label}</span>
+              </Link>
+            );
+          })}
           {role === "admin" && (
-            <div className="px-1 pb-3 border-t border-s-ink/[0.06] pt-3">
-              <p className="text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4">Admin</p>
-              {ADMIN_NAV.map(({ key, href, icon: Icon }) => {
+            <>
+              <span className="my-1.5 h-px w-7 bg-s-border" aria-hidden />
+              {ADMIN_NAV.slice(0, 6).map(({ key, href, icon: Icon }) => {
                 const active = isActive(href);
                 return (
-                  <Link key={href} href={`/${locale}${href}`}
-                    aria-current={active ? "page" : undefined}
-                    className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
-                      active
-                        ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                        : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
-                    }`}>
-                    <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
-                    <span className="flex-1 overflow-hidden whitespace-nowrap">{t(key)}</span>
+                  <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
+                    className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-accent-bright text-white" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
+                    <Icon size={19} strokeWidth={1.9} />
+                    <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[11.5px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t(key)}</span>
                   </Link>
                 );
               })}
-            </div>
+            </>
           )}
-
-          {/* Footer */}
-          <div className="px-3 py-3 border-t border-s-ink/[0.06]">
-            <Link
-              href={`/${locale}`}
-              className="text-xs text-s-ink/30 hover:text-s-coral transition-colors whitespace-nowrap"
-            >
-              ← {t("backToSite")}
-            </Link>
-          </div>
-        </SidebarBody>
-      </Sidebar>
+        </nav>
+        <Link href={`/${locale}`} className="group relative w-10 h-10 rounded-xl grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors mb-1.5">
+          <span aria-hidden className="text-[17px] leading-none">←</span>
+          <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[11.5px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t("backToSite")}</span>
+        </Link>
+        {salonAvatar ? (
+          <Image src={salonAvatar} alt={salonName ?? ""} width={34} height={34} className="rounded-full object-cover" />
+        ) : (
+          <div className="w-[34px] h-[34px] rounded-full bg-s-ink text-white grid place-items-center text-[12px] font-semibold">{(salonName?.trim()?.[0] ?? "S").toUpperCase()}</div>
+        )}
+      </aside>
 
       {/* ── Mobile sidebar overlay ── */}
       <AnimatePresence>
@@ -429,7 +362,7 @@ export default function DashboardLayout({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="px-4 py-4 border-b border-s-ink/[0.06] flex items-center justify-between">
-                <span className="font-heading text-base text-s-ink">solen<span className="text-s-coral">.</span>ch</span>
+                <span className="font-heading text-base text-s-ink">Solen<span className="inline-block w-[5px] h-[5px] rounded-full bg-s-ink ml-1 align-middle" aria-hidden></span></span>
                 <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-s-ink/40" /></button>
               </div>
               <nav className="py-3 px-1 overflow-y-auto">
@@ -443,16 +376,16 @@ export default function DashboardLayout({
                       href={`/${locale}${href}`}
                       onClick={() => setMobileSidebarOpen(false)}
                       aria-current={active ? "page" : undefined}
-                      className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
+                      className={`flex items-center gap-3 px-3 py-2 text-[14px] font-medium transition-colors duration-150 rounded-[10px] ${
                         active
-                          ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                          : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                          ? "bg-s-bg-sunken text-s-ink"
+                          : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"
                       }`}
                     >
-                      <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
+                      <Icon size={15} className={active ? "text-s-ink" : "text-s-ink-2"} />
                       <span className="flex-1">{label}</span>
                       {href === "/dashboard/messages" && unreadCount > 0 && (
-                        <span className="ml-auto text-[10px] font-heading px-1.5 py-0.5 rounded-pill bg-s-coral text-white">
+                        <span className="ml-auto text-[10px] font-heading px-1.5 py-0.5 rounded-full bg-s-ink text-white">
                           {unreadCount > 9 ? "9+" : unreadCount}
                         </span>
                       )}
@@ -462,7 +395,7 @@ export default function DashboardLayout({
                 {/* Category-specific nav items (mobile) */}
                 {!isStaff && categoryNavGroups.map(group => (
                   <div key={`mobile-${group.category}`}>
-                    <p className="text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4 mt-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-1 px-4 mt-4">
                       {t(group.labelKey as any)}
                     </p>
                     {group.items.map(item => (
@@ -471,13 +404,13 @@ export default function DashboardLayout({
                         href={`/${locale}${item.href}`}
                         onClick={() => setMobileSidebarOpen(false)}
                         aria-current={isActive(item.href) ? "page" : undefined}
-                        className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
+                        className={`flex items-center gap-3 px-3 py-2 text-[14px] font-medium transition-colors duration-150 rounded-[10px] ${
                           isActive(item.href)
-                            ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                            : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                            ? "bg-s-bg-sunken text-s-ink"
+                            : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"
                         }`}
                       >
-                        <item.icon size={15} className={isActive(item.href) ? "text-s-coral" : "text-s-ink/35"} />
+                        <item.icon size={15} className={isActive(item.href) ? "text-s-ink" : "text-s-ink-2"} />
                         <span className="flex-1">{t(item.labelKey as any)}</span>
                       </Link>
                     ))}
@@ -485,7 +418,7 @@ export default function DashboardLayout({
                 ))}
                 {role === "admin" && (
                   <>
-                    <p className="text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4 mt-4">Admin</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-1 px-4 mt-4">Admin</p>
                     {ADMIN_NAV.map(({ key, href, icon: Icon }) => {
                       const active = isActive(href);
                       return (
@@ -494,13 +427,13 @@ export default function DashboardLayout({
                           href={`/${locale}${href}`}
                           onClick={() => setMobileSidebarOpen(false)}
                           aria-current={active ? "page" : undefined}
-                          className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading transition-colors duration-150 border-l-2 ${
+                          className={`flex items-center gap-3 px-3 py-2 text-[14px] font-medium transition-colors duration-150 rounded-[10px] ${
                             active
-                              ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                              : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                              ? "bg-s-bg-sunken text-s-ink"
+                              : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"
                           }`}
                         >
-                          <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
+                          <Icon size={15} className={active ? "text-s-ink" : "text-s-ink-2"} />
                           <span className="flex-1">{t(key)}</span>
                         </Link>
                       );
@@ -514,13 +447,25 @@ export default function DashboardLayout({
       </AnimatePresence>
 
       {/* ── Main content ── */}
-      <div className="flex-1 md:ml-60 flex flex-col min-h-screen">
+      <div className="flex-1 md:ml-[64px] flex flex-col min-h-screen">
+        {/* Desktop top bar */}
+        <div className="hidden md:flex sticky top-0 z-20 bg-white/85 backdrop-blur-md border-b border-s-border h-[56px] items-center gap-3 px-6">
+          <button className="inline-flex items-center gap-2 text-[14px] font-semibold tracking-[-0.01em] text-s-ink px-3 py-1.5 rounded-full border border-s-border hover:bg-s-bg-sunken transition-colors">
+            {salonName ?? "Dein Salon"}
+            <ChevronDown size={14} className="text-s-ink-2" />
+          </button>
+          <div className="flex-1" />
+          <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="w-[38px] h-[38px] rounded-full grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors">
+            <Search size={19} strokeWidth={1.9} />
+          </button>
+          <NotificationCenter salonId={undefined} />
+        </div>
         {/* Mobile top bar */}
         <div className="md:hidden sticky top-0 z-20 bg-white border-b border-s-ink/[0.06] px-4 py-3 flex items-center gap-3">
           <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60" aria-label="Menu öffnen">
             <Menu size={20} />
           </button>
-          <span className="font-heading text-base flex-1">solen<span className="text-s-coral">.</span>ch</span>
+          <span className="font-heading text-base flex-1">Solen<span className="inline-block w-[5px] h-[5px] rounded-full bg-s-ink ml-1 align-middle" aria-hidden></span></span>
           <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="p-1.5 text-s-ink/40 hover:text-s-ink/70 transition-colors">
             <Search size={16} />
           </button>
@@ -529,15 +474,15 @@ export default function DashboardLayout({
 
         {/* Admin preview banner */}
         {isPreviewing && (
-          <div className="sticky top-0 z-30 flex items-center gap-3 px-4 py-2.5 bg-s-amber text-white text-xs font-heading">
-            <FlaskConical size={13} className="shrink-0" />
+          <div className="sticky top-0 z-30 flex items-center gap-3 px-5 py-2.5 bg-s-warning-bg border-b border-s-warning/20 text-s-ink text-[13px] font-medium">
+            <FlaskConical size={15} className="shrink-0 text-s-warning" />
             <span className="flex-1 truncate">
-              {t("previewBanner")} <span className="font-bold">{previewSalonName}</span>
+              {t("previewBanner")} <span className="font-semibold">{previewSalonName}</span>
             </span>
             <button
               onClick={exitPreview}
               disabled={exitingPreview}
-              className="shrink-0 px-2.5 py-1 rounded-[6px] bg-white/20 hover:bg-white/30 transition-colors text-[11px] font-bold uppercase tracking-[.06em] disabled:opacity-60"
+              className="shrink-0 px-3 py-1.5 rounded-full bg-white border border-s-border hover:bg-s-bg-sunken transition-colors text-[12px] font-medium disabled:opacity-60"
               aria-label={t("previewExit")}
             >
               {t("previewExit")}
@@ -565,13 +510,13 @@ export default function DashboardLayout({
                 key={href}
                 href={`/${locale}${href}`}
                 className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 transition-colors ${
-                  active ? "text-s-coral" : "text-s-ink/40"
+                  active ? "text-s-accent-bright" : "text-s-ink-2"
                 }`}
               >
                 <div className="relative">
                   <Icon size={20} />
                   {isMessages && unreadCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-pill bg-s-coral" />
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-s-ink" />
                   )}
                 </div>
                 <span className="text-[8px] font-heading uppercase tracking-[.08em]">

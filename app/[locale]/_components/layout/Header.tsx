@@ -254,6 +254,10 @@ export default function Header({ locale }: { locale: string }) {
 
   const isDark = tone === "dark";
 
+  // V3-D346: hide the marketing header on the operator dashboard — DashboardLayout
+  // owns its own chrome (sidebar + topbar). Prevents the double-header + logo collision.
+  if (pathname && /^\/[a-z]{2}\/dashboard(\/|$)/.test(pathname)) return null;
+
   return (
     <>
     <header

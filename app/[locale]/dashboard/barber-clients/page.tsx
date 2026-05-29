@@ -27,7 +27,7 @@ export default function BarberClientsPage() {
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-8">
         <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/30 mb-1">Barber</p>
-        <h1 className="font-heading text-[28px] text-s-ink leading-none">
+        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink leading-none">
           Barber Kunden
         </h1>
         <p className="text-sm text-s-ink/40 mt-2">
@@ -37,8 +37,8 @@ export default function BarberClientsPage() {
 
       {loading ? (
         <div className="space-y-6 animate-pulse">
-          <div className="h-64 bg-s-bg-sunken rounded-[12px]" />
-          <div className="h-64 bg-s-bg-sunken rounded-[12px]" />
+          <div className="h-64 bg-s-bg-sunken rounded-2xl" />
+          <div className="h-64 bg-s-bg-sunken rounded-2xl" />
         </div>
       ) : (
         <div className="space-y-6">

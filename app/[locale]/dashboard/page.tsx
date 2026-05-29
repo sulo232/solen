@@ -3,83 +3,78 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Calendar, MessageCircle, Users, TrendingUp, AlertTriangle, ShieldAlert,
-  Plus, Scissors, Star, PartyPopper, Zap,
-} from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Plus, Calendar, CheckCircle2, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import SetupBanner from "@/components-legacy/dashboard/SetupBanner";
-import { StatCard } from "@/components-legacy/dashboard/StatCard";
 import ActivityFeed from "@/components-legacy/dashboard/ActivityFeed";
-import TodayLiveCard from "@/components-legacy/dashboard/TodayLiveCard";
-import DashboardHeaderStrip from "@/components-legacy/dashboard/DashboardHeaderStrip";
-import { containerVariants, itemVariants } from "@/lib/animations";
-import type { Booking, SalonCategory } from "@/lib/types";
-import { getCategoryNavGroups } from "@/lib/dashboard/category-nav";
-import { useMemo } from "react";
+import {
+  DashPanel, DashStatusPill, DashRow, DashButton, DashLineChart, DashBarChart,
+} from "@/app/[locale]/_components/dashboard/DashboardUI";
+import { cn } from "@/lib/utils";
+import type { Booking } from "@/lib/types";
 
+interface DailyPoint { date: string; bookings: number; revenue: number; confirmed: number; cancelled: number }
 interface DashboardStats {
   total_bookings: number;
-  revenue: number;
+  total_revenue: number;
   new_customers: number;
-  average_rating: number;
-  low_slots_warning: boolean;
-  pending_cancellations: number;
-  trends?: {
-    bookings: number[];
-    revenue: number[];
-    new_customers: number[];
-    rating: number[];
-  };
-  trends_vs_prior?: {
-    bookings: number;
-    revenue: number;
-    new_customers: number;
-    rating: number;
-  };
-  verification_overdue?: boolean;
+  avg_rating: number;
+  trends_vs_prior?: { bookings: number; revenue: number; new_customers: number; rating: number };
+  daily?: DailyPoint[];
+  popular_services?: { id: string; name: string; count: number }[];
 }
+interface EnrichedBooking extends Booking { customer_name: string; service_name: string }
+interface StaffStat { id: string; name: string; revenue?: number; bookings?: number }
 
-interface EnrichedBooking extends Booking {
-  customer_name: string;
-  service_name: string;
-}
-
-const SectionLabel = ({ children, amber }: { children: React.ReactNode; amber?: boolean }) => (
-  <p className={`text-[9px] font-heading uppercase tracking-[.18em] mb-3 ${amber ? "text-s-amber" : "text-s-ink/35"}`}>
-    {children}
-  </p>
+const Eyebrow = ({ children }: { children: React.ReactNode }) => (
+  <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-3">{children}</p>
 );
 
-function deltaDir(v: number): "up" | "down" | "flat" {
-  if (v > 0) return "up";
-  if (v < 0) return "down";
-  return "flat";
+function Delta({ v }: { v?: number }) {
+  if (v === undefined) return null;
+  const up = v > 0, flat = v === 0;
+  return (
+    <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold ml-2", up ? "text-s-success" : flat ? "text-s-ink-3" : "text-s-error")}>
+      {up && <ArrowUpRight size={12} strokeWidth={2.4} />}
+      {!up && !flat && <ArrowDownRight size={12} strokeWidth={2.4} />}
+      {Math.abs(v)}%
+    </span>
+  );
 }
+
+function statusPill(status: string) {
+  switch (status) {
+    case "confirmed": return <DashStatusPill tone="success">Bestätigt</DashStatusPill>;
+    case "pending": return <DashStatusPill tone="warning">Ausstehend</DashStatusPill>;
+    case "cancelled": return <DashStatusPill tone="error">Storniert</DashStatusPill>;
+    default: return <DashStatusPill tone="neutral">{status}</DashStatusPill>;
+  }
+}
+const initials = (name: string) => {
+  const p = name.trim().split(/\s+/);
+  return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toUpperCase() || "—";
+};
+const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+const fmtChf = (n: number) => n.toLocaleString("de-CH");
 
 export default function DashboardPage() {
   const locale = useLocale();
   const params = useSearchParams();
   const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [staff, setStaff] = useState<StaffStat[]>([]);
   const [salonId, setSalonId] = useState<string | undefined>();
   const [unread, setUnread] = useState(0);
   const [loading, setLoading] = useState(true);
   const [salonName, setSalonName] = useState<string | undefined>();
   const [salonCategories, setSalonCategories] = useState<string[] | undefined>();
-
-  const categoryToolGroups = useMemo(
-    () => getCategoryNavGroups((salonCategories ?? []) as SalonCategory[]),
-    [salonCategories]
-  );
   const [showCelebration, setShowCelebration] = useState(params.get("onboarded") === "1");
 
   useEffect(() => {
     if (showCelebration) {
-      const t = setTimeout(() => setShowCelebration(false), 4000);
-      return () => clearTimeout(t);
+      const timer = setTimeout(() => setShowCelebration(false), 4000);
+      return () => clearTimeout(timer);
     }
   }, [showCelebration]);
 
@@ -93,17 +88,15 @@ export default function DashboardPage() {
         const sid = profile?.salon_id;
         setSalonId(sid);
         const todayBookings = fetch(`/api/bookings?date=${today}&limit=20`).then((r) => r.json());
-        const analytics = sid
-          ? fetch(`/api/analytics/salon/${sid}?period=week`).then((r) => r.json())
-          : Promise.resolve(null);
-        const convos = sid
-          ? fetch(`/api/conversations?salon_id=${sid}&unread=true`).then((r) => r.json())
-          : Promise.resolve(null);
-        return Promise.all([todayBookings, analytics, convos]);
+        const analytics = sid ? fetch(`/api/analytics/salon/${sid}?period=week`).then((r) => r.json()) : Promise.resolve(null);
+        const convos = sid ? fetch(`/api/conversations?salon_id=${sid}&unread=true`).then((r) => r.json()) : Promise.resolve(null);
+        const staffStats = sid ? fetch(`/api/analytics/staff-comparison?salon_id=${sid}&period=month`).then((r) => r.json()) : Promise.resolve(null);
+        return Promise.all([todayBookings, analytics, convos, staffStats]);
       })
-      .then(([bData, analyticsData, convoData]) => {
+      .then(([bData, analyticsData, convoData, staffData]) => {
         setBookings(bData?.bookings ?? []);
         if (analyticsData) setStats(analyticsData);
+        if (staffData?.staff) setStaff(staffData.staff);
         if (convoData) {
           const convos: { unread_count_salon?: number }[] = convoData.conversations ?? convoData.data ?? [];
           setUnread(convos.reduce((sum, c) => sum + (c.unread_count_salon ?? 0), 0));
@@ -115,23 +108,18 @@ export default function DashboardPage() {
 
   const today = new Date().toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
   const prior = stats?.trends_vs_prior;
+  const daily = stats?.daily ?? [];
 
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories} unreadCount={unread}>
       <AnimatePresence>
         {showCelebration && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            className="mb-6 rounded-[12px] px-4 py-4 flex items-center gap-3"
-            style={{ background: "#1B4D1B" }}
-          >
-            <PartyPopper size={20} className="shrink-0 text-white/80" />
+          <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}
+            className="mb-6 rounded-card-lg bg-s-success-bg border border-s-success/20 px-5 py-4 flex items-center gap-3">
+            <CheckCircle2 size={20} className="shrink-0 text-s-success" />
             <div>
-              <p className="font-heading text-sm text-white">Willkommen bei solen.ch!</p>
-              <p className="text-xs text-white/70 mt-0.5">Dein Salon ist jetzt live. Kunden können dich ab sofort buchen.</p>
+              <p className="text-[15px] font-semibold text-s-ink">Willkommen bei Solen</p>
+              <p className="text-[13px] text-s-ink-2 mt-0.5">Dein Salon ist live. Kund:innen können dich ab sofort buchen.</p>
             </div>
           </motion.div>
         )}
@@ -139,284 +127,123 @@ export default function DashboardPage() {
 
       <SetupBanner />
 
-      {/* Q61 (locked 2026-05-02) — additive top-of-page surfaces. Mobile sees TodayLiveCard;
-          desktop sees DashboardHeaderStrip + the existing Übersicht stats grid below. The
-          existing stats homepage stays in place per "no kill features" — owner can choose
-          which to glance at first. Phase 7 may collapse to viewport-router default once
-          live data has been observed. */}
-      <DashboardHeaderStrip />
-      <TodayLiveCard />
-
-      <div className="mb-8">
-        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/30 mb-1">
-          {today}
-        </p>
-        <h1 className="font-heading text-[28px] text-s-ink leading-none">
-          Übersicht
-        </h1>
+      <div className="flex items-end justify-between gap-4 mb-6">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-2">{today}</p>
+          <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink leading-none">Übersicht</h1>
+        </div>
+        <DashButton icon={Plus} href={`/${locale}/dashboard/calendar`}>Termin erstellen</DashButton>
       </div>
 
       {loading ? (
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white animate-pulse">
-                <div className="w-8 h-8 rounded-[10px] bg-s-bg-sunken mb-4" />
-                <div className="h-7 w-16 bg-s-bg-sunken rounded mb-2" />
-                <div className="h-2.5 w-24 bg-s-bg-sunken rounded" />
-              </div>
-            ))}
-          </div>
-          <div className="space-y-2">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="rounded-[12px] border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white animate-pulse">
-                <div className="w-10 h-10 bg-s-bg-sunken rounded-[8px] shrink-0" />
-                <div className="w-px h-8 bg-s-ink/[0.05] shrink-0" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-3 w-32 bg-s-bg-sunken rounded" />
-                  <div className="h-2.5 w-20 bg-s-bg-sunken rounded" />
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
+          {[...Array(2)].map((_, i) => <div key={i} className="rounded-card-lg border border-s-border bg-white h-56 animate-pulse" />)}
         </div>
       ) : (
-        <div className="space-y-6">
-          {/* KPI stats with delta badges */}
-          {stats && (
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="grid grid-cols-2 sm:grid-cols-4 gap-3"
-            >
-              {[
-                {
-                  label: "Termine diese Woche",
-                  value: stats.total_bookings,
-                  Icon: Calendar,
-                  color: "text-s-coral",
-                  bg: "bg-s-coral/5",
-                  sparklineData: stats.trends?.bookings,
-                  sparklineColor: "#1B4D1B",
-                  delta: prior ? { value: Math.abs(prior.bookings), direction: deltaDir(prior.bookings) } : undefined,
-                },
-                {
-                  label: "Umsatz (CHF)",
-                  value: Math.round(stats.revenue),
-                  Icon: TrendingUp,
-                  color: "text-s-ink",
-                  bg: "bg-s-ink/5",
-                  sparklineData: stats.trends?.revenue,
-                  sparklineColor: "#1A1209",
-                  delta: prior ? { value: Math.abs(prior.revenue), direction: deltaDir(prior.revenue) } : undefined,
-                },
-                {
-                  label: "Neukunden",
-                  value: stats.new_customers,
-                  Icon: Users,
-                  color: "text-s-coral",
-                  bg: "bg-s-coral/5",
-                  sparklineData: stats.trends?.new_customers,
-                  sparklineColor: "#F3A864",
-                  delta: prior ? { value: Math.abs(prior.new_customers), direction: deltaDir(prior.new_customers) } : undefined,
-                },
-                {
-                  label: "Bewertung",
-                  value: Math.round(stats.average_rating * 10),
-                  Icon: Star,
-                  color: "text-s-amber",
-                  bg: "bg-s-amber-subtle/50",
-                  isRating: true,
-                  sparklineData: stats.trends?.rating,
-                  sparklineColor: "#F3A864",
-                  delta: prior ? { value: Math.abs(prior.rating), direction: deltaDir(prior.rating) } : undefined,
-                },
-              ].map((s) => (
-                <StatCard key={s.label} {...s} />
-              ))}
-            </motion.div>
-          )}
-
-          {/* Alerts */}
-          {stats && (stats.low_slots_warning || stats.pending_cancellations > 0 || stats.verification_overdue) && (
-            <div className="space-y-2">
-              <SectionLabel amber>Handlungsbedarf</SectionLabel>
-              {stats.verification_overdue && (
-                <div className="rounded-[12px] px-4 py-3.5 flex items-center gap-3"
-                  style={{ background: "rgba(27, 77, 27,.06)", border: "1px solid rgba(27, 77, 27,.18)" }}>
-                  <ShieldAlert size={16} className="text-s-coral shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-heading text-s-ink">Verifizierung überfällig</p>
-                    <p className="text-[10px] text-s-ink/45 mt-0.5">Seit über 90 Tagen nicht verifiziert.</p>
-                  </div>
-                  <Link href={`/${locale}/dashboard/settings?tab=verification`}
-                    className="text-[10px] font-heading uppercase tracking-[.04em] text-s-coral shrink-0">
-                    Verifizieren →
-                  </Link>
-                </div>
-              )}
-              {stats.low_slots_warning && (
-                <div className="rounded-[12px] px-4 py-3.5 flex items-center gap-3"
-                  style={{ background: "rgba(27, 77, 27,.06)", border: "1px solid rgba(27, 77, 27,.18)" }}>
-                  <AlertTriangle size={16} className="text-s-coral shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-heading text-s-ink">Wenig freie Slots</p>
-                    <p className="text-[10px] text-s-ink/45 mt-0.5">Weniger als 5 Slots in den nächsten 7 Tagen.</p>
-                  </div>
-                  <Link href={`/${locale}/dashboard/calendar`}
-                    className="text-[10px] font-heading uppercase tracking-[.04em] text-s-coral shrink-0">
-                    Erstellen →
-                  </Link>
-                </div>
-              )}
-              {stats.pending_cancellations > 0 && (
-                <div className="rounded-[12px] px-4 py-3.5 flex items-center gap-3"
-                  style={{ background: "rgba(243,168,100,.06)", border: "1px solid rgba(243,168,100,.20)" }}>
-                  <AlertTriangle size={16} className="text-s-amber shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-heading text-s-ink">{stats.pending_cancellations} Stornierungsanfragen</p>
-                  </div>
-                  <Link href={`/${locale}/dashboard/bookings?status=cancelled`}
-                    className="text-[10px] font-heading uppercase tracking-[.04em] text-s-amber shrink-0">
-                    Anzeigen →
-                  </Link>
-                </div>
-              )}
+        <div className="space-y-3.5">
+          {/* Row 1 — charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
+            <div className="rounded-card-lg border border-s-border bg-white p-5">
+              <div className="flex items-center justify-between mb-1">
+                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-s-ink">Umsatz</h2>
+                <span className="text-[12px] text-s-ink-3">Diese Woche</span>
+              </div>
+              <p className="text-[30px] font-semibold tracking-[-0.02em] leading-none text-s-ink">
+                <span className="text-[15px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
+                <Delta v={prior?.revenue} />
+              </p>
+              <div className="mt-4">
+                <DashLineChart lines={[
+                  { values: daily.map((d) => d.revenue), className: "stroke-s-accent-bright" },
+                  { values: daily.map((d) => d.bookings), className: "stroke-s-success" },
+                ]} />
+              </div>
+              <div className="flex gap-4 mt-2 text-[11.5px] text-s-ink-2">
+                <span className="inline-flex items-center gap-1.5"><span className="w-3.5 h-[3px] rounded bg-s-accent-bright" />Umsatz</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-3.5 h-[3px] rounded bg-s-success" />Termine</span>
+              </div>
             </div>
-          )}
-
-          {/* Unread messages */}
-          {unread > 0 && (
-            <Link href={`/${locale}/dashboard/messages`}
-              className="block rounded-[12px] border border-s-ink/[0.06] p-4 bg-white hover:border-s-coral/40 transition-colors">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-[10px] bg-s-coral/10 flex items-center justify-center">
-                  <MessageCircle size={18} className="text-s-coral" />
-                </div>
-                <div>
-                  <p className="text-sm font-heading text-s-ink">{unread} ungelesene Nachricht{unread > 1 ? "en" : ""}</p>
-                  <p className="text-[10px] text-s-ink/40 mt-0.5">Jetzt antworten →</p>
-                </div>
+            <div className="rounded-card-lg border border-s-border bg-white p-5">
+              <div className="flex items-center justify-between mb-1">
+                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-s-ink">Termine</h2>
+                <span className="text-[12px] text-s-ink-3">Diese Woche</span>
               </div>
-            </Link>
-          )}
-
-          {/* Two-column layout: Today's bookings + Activity feed */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Today's bookings */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <SectionLabel>Heute</SectionLabel>
-                <Link href={`/${locale}/dashboard/bookings`} className="text-[10px] font-heading uppercase tracking-[.04em] text-s-coral">Alle →</Link>
+              <p className="text-[30px] font-semibold tracking-[-0.02em] leading-none text-s-ink">
+                {stats?.total_bookings ?? 0}<span className="text-[15px] font-semibold text-s-ink-2 ml-1">gebucht</span>
+                <Delta v={prior?.bookings} />
+              </p>
+              <div className="mt-4">
+                <DashBarChart data={daily.map((d) => ({ primary: d.confirmed, secondary: d.cancelled }))} />
               </div>
+              <div className="flex gap-4 mt-2 text-[11.5px] text-s-ink-2">
+                <span className="inline-flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-s-accent-bright" />Bestätigt</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-s-error" />Storniert</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Row 2 — activity + today */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
+            {salonId && (
+              <DashPanel title="Aktivität"><div className="p-4"><ActivityFeed salonId={salonId} /></div></DashPanel>
+            )}
+            <DashPanel title="Heute" actionLabel="Alle ansehen" actionHref={`/${locale}/dashboard/bookings`}>
               {bookings.length === 0 ? (
-                <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-8 text-center bg-white">
-                  <Calendar size={24} className="mx-auto mb-2 text-s-ink/20" />
-                  <p className="text-xs font-heading text-s-ink/30 uppercase tracking-[.10em]">Keine Termine heute</p>
+                <div className="px-5 py-12 text-center">
+                  <Calendar size={26} className="mx-auto mb-3 text-s-ink-3" strokeWidth={1.6} />
+                  <p className="text-[14px] text-s-ink-2">Keine Termine heute</p>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  {bookings.map((b) => (
-                    <div key={b.id}
-                      className="rounded-[12px] border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white">
-                      <div className="shrink-0 text-center w-10">
-                        <p className="data-text font-bold text-base text-s-coral leading-none">
-                          {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
-                        </p>
-                      </div>
-                      <div className="w-px h-8 bg-s-ink/[0.07] shrink-0" />
-                      <div className="flex-1 min-w-0 overflow-hidden">
-                        <p className="text-sm font-heading text-s-ink truncate">{b.customer_name}</p>
-                        <p className="text-xs font-heading uppercase tracking-[.08em] text-s-ink/40 truncate mt-0.5 max-w-[160px] sm:max-w-none">{b.service_name}</p>
-                      </div>
-                      <div className="shrink-0 flex items-center gap-2">
-                        {b.is_first_visit && (
-                          <span className="px-2 py-0.5 rounded-[6px] text-[9px] font-heading uppercase tracking-[.06em]"
-                            style={{ background: "rgba(27, 77, 27,.10)", color: "#7A2415" }}>
-                            Neu
-                          </span>
-                        )}
-                        <div className={`w-2 h-2 rounded-full ${
-                          b.status === "confirmed" ? "bg-[#16A34A]" :
-                          b.status === "pending" ? "bg-s-amber" : "bg-s-ink/20"
-                        }`} />
-                      </div>
-                    </div>
+                <div>
+                  {bookings.slice(0, 6).map((b) => (
+                    <DashRow key={b.id} href={`/${locale}/dashboard/bookings`}>
+                      <span className="text-[14px] font-semibold tracking-[-0.01em] text-s-ink w-[52px] shrink-0">{fmtTime(b.starts_at)}</span>
+                      <span className="grid place-items-center w-[30px] h-[30px] rounded-full bg-s-ink text-white text-[12px] font-semibold shrink-0">{initials(b.customer_name)}</span>
+                      <span className="flex-1 min-w-0">
+                        <span className="block text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{b.customer_name}</span>
+                        <span className="block text-[13px] text-s-ink-2 truncate">{b.service_name}</span>
+                      </span>
+                      {statusPill(b.status)}
+                    </DashRow>
                   ))}
                 </div>
               )}
-            </div>
-
-            {/* Activity Feed */}
-            {salonId && (
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <SectionLabel>Aktivitäten</SectionLabel>
-                  <Zap size={12} className="text-s-ink/25" />
-                </div>
-                <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4">
-                  <ActivityFeed salonId={salonId} />
-                </div>
-              </div>
-            )}
+            </DashPanel>
           </div>
 
-          {/* Category tool shortcuts */}
-          {categoryToolGroups.length > 0 && (
-            <div>
-              <SectionLabel>Deine Werkzeuge</SectionLabel>
-              <div className="space-y-3">
-                {categoryToolGroups.map(group => (
-                  <div key={group.category}>
-                    <p className="text-[8px] font-heading uppercase tracking-[.20em] text-s-ink/25 mb-2">
-                      {group.category.charAt(0).toUpperCase() + group.category.slice(1)}
-                    </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {group.items.map(item => {
-                        const Icon = item.icon;
-                        return (
-                          <a
-                            key={item.key}
-                            href={`/${locale}${item.href}`}
-                            className="rounded-[12px] border border-s-ink/[0.06] p-3.5 flex items-center gap-3 bg-white hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors group"
-                          >
-                            <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0"
-                              style={{ background: "rgba(27, 77, 27,.08)" }}>
-                              <Icon size={15} className="text-s-coral" />
-                            </div>
-                            <span className="text-[11px] font-heading text-s-ink/65 group-hover:text-s-coral transition-colors leading-tight">
-                              {item.href.split("/").pop()?.replace(/-/g, " ")}
-                            </span>
-                          </a>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Quick actions — horizontal scroll on mobile */}
-          <div>
-            <SectionLabel>Schnellaktionen</SectionLabel>
-            <div className="flex gap-2 overflow-x-auto md:grid md:grid-cols-3 scrollbar-hide">
-              {[
-                { label: "Termin", href: `/${locale}/dashboard/calendar`, Icon: Plus },
-                { label: "Service", href: `/${locale}/dashboard/services`, Icon: Scissors },
-                { label: "Nachrichten", href: `/${locale}/dashboard/messages`, Icon: MessageCircle },
-              ].map(({ label, href, Icon }) => (
-                <a key={href} href={href}
-                  className="shrink-0 w-24 md:w-auto rounded-[12px] border border-s-ink/[0.06] p-4 flex flex-col items-center gap-2.5 text-center bg-white hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors">
-                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center"
-                    style={{ background: "rgba(27, 77, 27,.08)" }}>
-                    <Icon size={17} className="text-s-coral" />
-                  </div>
-                  <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/55 leading-tight">{label}</p>
-                </a>
-              ))}
-            </div>
+          {/* Row 3 — top services + top team */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
+            <DashPanel title="Top Services">
+              {(stats?.popular_services?.length ?? 0) === 0 ? (
+                <div className="px-5 py-10 text-center text-[14px] text-s-ink-2">Noch keine Daten</div>
+              ) : (
+                <div>
+                  {stats!.popular_services!.map((s, i) => (
+                    <DashRow key={s.id}>
+                      <span className="text-[13px] font-semibold text-s-ink-3 w-5 shrink-0">{i + 1}</span>
+                      <span className="flex-1 text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{s.name}</span>
+                      <span className="text-[13px] text-s-ink-2">{s.count}× gebucht</span>
+                    </DashRow>
+                  ))}
+                </div>
+              )}
+            </DashPanel>
+            <DashPanel title="Top Mitarbeiter">
+              {staff.length === 0 ? (
+                <div className="px-5 py-10 text-center text-[14px] text-s-ink-2">Noch keine Daten</div>
+              ) : (
+                <div>
+                  {staff.slice(0, 5).map((m) => (
+                    <DashRow key={m.id}>
+                      <span className="grid place-items-center w-[30px] h-[30px] rounded-full bg-s-ink text-white text-[12px] font-semibold shrink-0">{initials(m.name)}</span>
+                      <span className="flex-1 text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{m.name}</span>
+                      {m.revenue !== undefined && <span className="text-[13px] font-semibold text-s-ink">CHF {fmtChf(Math.round(m.revenue))}</span>}
+                      {m.bookings !== undefined && <span className="text-[13px] text-s-ink-2 w-14 text-right">{m.bookings} Term.</span>}
+                    </DashRow>
+                  ))}
+                </div>
+              )}
+            </DashPanel>
           </div>
         </div>
       )}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Mail, Check, Clock as ClockIcon, Send } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
 import type { StaffMember } from "@/lib/types";
 
@@ -134,7 +135,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-warm-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base text-s-ink">{initial ? "Bearbeiten" : "Mitarbeiter hinzufügen"}</h3>
           <button onClick={onClose} aria-label="Schliessen"><X size={18} className="text-s-ink/30" /></button>
@@ -143,12 +144,12 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
           <div>
             <label className="block text-xs font-medium text-s-ink/50 mb-1">Name *</label>
             <input value={name} onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
           </div>
           <div>
             <label className="block text-xs font-medium text-s-ink/50 mb-1">Foto URL</label>
             <input value={avatar} onChange={(e) => setAvatar(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
           </div>
           <div>
             <label className="block text-xs font-medium text-s-ink/50 mb-1">Spezialitäten</label>
@@ -156,12 +157,12 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
               <input value={specInput} onChange={(e) => setSpecInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSpec(); } }}
                 placeholder="z. B. Balayage…"
-                className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
-              <button type="button" onClick={addSpec} aria-label="Spezialisierung hinzufügen" className="px-2.5 rounded-btn bg-s-bg-sunken text-s-ink/60"><Plus size={14} /></button>
+                className="flex-1 px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
+              <button type="button" onClick={addSpec} aria-label="Spezialisierung hinzufügen" className="px-2.5 rounded-btn bg-s-bg-sunken text-s-ink-2"><Plus size={14} /></button>
             </div>
             <div className="flex flex-wrap gap-1">
               {specialties.map((s, i) => (
-                <span key={i} className="flex items-center gap-1 px-2 py-0.5 bg-s-coral/10 text-s-coral text-xs rounded-pill">
+                <span key={i} className="flex items-center gap-1 px-2 py-0.5 bg-s-bg-sunken text-s-ink text-xs rounded-full">
                   {s}
                   <button type="button" onClick={() => setSpecialties((p) => p.filter((_, j) => j !== i))}>×</button>
                 </span>
@@ -184,7 +185,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
                       type="checkbox"
                       checked={assignedServices.has(svc.id)}
                       onChange={() => toggleService(svc.id)}
-                      className="w-3.5 h-3.5 rounded accent-s-coral"
+                      className="w-3.5 h-3.5 rounded accent-s-ink"
                     />
                     <span className="text-sm text-s-ink/70">{svc.name_de}</span>
                   </label>
@@ -198,15 +199,15 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
             <label className="block text-xs font-medium text-s-ink/50 mb-2">Berechtigungen</label>
             <div className="space-y-2">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={canEditSchedule} onChange={e => setCanEditSchedule(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-coral" />
+                <input type="checkbox" checked={canEditSchedule} onChange={e => setCanEditSchedule(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-ink" />
                 <span className="text-sm text-s-ink/70">Kalender bearbeiten</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={canViewOwnBookings} onChange={e => setCanViewOwnBookings(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-coral" />
+                <input type="checkbox" checked={canViewOwnBookings} onChange={e => setCanViewOwnBookings(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-ink" />
                 <span className="text-sm text-s-ink/70">Buchungen sehen</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={canManagePortfolio} onChange={e => setCanManagePortfolio(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-coral" />
+                <input type="checkbox" checked={canManagePortfolio} onChange={e => setCanManagePortfolio(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-ink" />
                 <span className="text-sm text-s-ink/70">Portfolio verwalten</span>
               </label>
             </div>
@@ -217,21 +218,21 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
             <label className="block text-xs font-medium text-s-ink/50 mb-1">Provision (%)</label>
             <input type="number" min="0" max="100" value={commissionRate}
               onChange={(e) => setCommissionRate(Math.max(0, Math.min(100, parseInt(e.target.value) || 0)))}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
             <p className="text-[10px] text-s-ink/30 mt-1">Anteil des Mitarbeiters am Umsatz (0–100%)</p>
           </div>
 
           <label className="flex items-center gap-3 cursor-pointer">
-            <button type="button" onClick={() => setActive(!active)} className={active ? "text-s-coral" : "text-s-ink/30"}>
+            <button type="button" onClick={() => setActive(!active)} className={active ? "text-s-ink" : "text-s-ink/30"}>
               {active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
             </button>
             <span className="text-sm text-s-ink/60">Aktiv</span>
           </label>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">Abbrechen</button>
           <button onClick={handleSave} disabled={!name || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-colors">
             {loading && <Spinner size="sm" invert />}Speichern
           </button>
         </div>
@@ -275,10 +276,10 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
+      <div className="bg-white rounded-2xl shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Mail size={16} className="text-s-coral" />
+            <Mail size={16} className="text-s-ink" />
             <h3 className="font-heading text-base text-s-ink">Mitarbeiter einladen</h3>
           </div>
           <button onClick={onClose} aria-label="Schliessen"><X size={18} className="text-s-ink/30" /></button>
@@ -287,19 +288,19 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
           <div>
             <label className="block text-xs font-medium text-s-ink/50 mb-1">Name *</label>
             <input value={name} onChange={e => setName(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
           </div>
           <div>
             <label className="block text-xs font-medium text-s-ink/50 mb-1">E-Mail *</label>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
           </div>
         </div>
-        {error && <p className="text-xs text-s-coral mb-3">{error}</p>}
+        {error && <p className="text-xs text-s-error mb-3">{error}</p>}
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">Abbrechen</button>
           <button onClick={handleSend} disabled={!email || !name.trim() || sending}
-            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-colors">
             {sending && <Spinner size="sm" invert />}<Send size={14} /> Einladen
           </button>
         </div>
@@ -333,18 +334,18 @@ function DeleteModal({ member, onClose, onDeleted }: {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
+      <div className="bg-white rounded-2xl shadow-warm-lg w-full max-w-sm p-6">
         <h3 className="font-heading text-base text-s-ink mb-3">Mitarbeiter löschen</h3>
         <p className="text-sm text-s-ink/60 mb-2">Möchtest du <strong>{member.name}</strong> wirklich löschen?</p>
         {member.future_bookings && member.future_bookings > 0 ? (
-          <p className="text-sm text-s-coral font-medium mb-4">
+          <p className="text-sm text-s-warning font-medium mb-4">
             Diese Person hat {member.future_bookings} Termine. Diese werden storniert.
           </p>
         ) : null}
         <div className="flex gap-2 mt-4">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">Abbrechen</button>
           <button onClick={handleDelete} disabled={loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-colors">
             {loading && <Spinner size="sm" invert />}Löschen
           </button>
         </div>
@@ -387,12 +388,12 @@ function PendingInvites({ salonId }: { salonId: string }) {
       </h2>
       <div className="space-y-2">
         {invites.map(inv => (
-          <div key={inv.id} className="bg-s-amber-subtle rounded-[12px] border border-s-amber/10 p-3 flex items-center justify-between">
+          <div key={inv.id} className="bg-s-warning-bg rounded-2xl border border-s-warning/10 p-3 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-s-ink">{inv.name}</p>
               <p className="text-xs text-s-ink/40">{inv.email}</p>
             </div>
-            <span className="text-[10px] font-medium text-s-amber px-2 py-0.5 bg-s-amber/10 rounded-pill">Ausstehend</span>
+            <DashStatusPill tone="warning">Ausstehend</DashStatusPill>
           </div>
         ))}
       </div>
@@ -468,14 +469,14 @@ export default function StaffPage() {
       )}
 
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-heading text-2xl text-s-ink">Team</h1>
+        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Team</h1>
         <div className="flex items-center gap-2">
           <button onClick={() => setInviteOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-coral text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink text-s-ink text-sm font-medium hover:bg-s-bg-sunken transition-colors">
             <Mail size={14} /> Einladen
           </button>
           <button onClick={() => setAddOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-coral text-white text-sm font-medium">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black transition-colors">
             <Plus size={14} /> Hinzufügen
           </button>
         </div>
@@ -493,8 +494,8 @@ export default function StaffPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {staff.map((s) => (
-            <div key={s.id} className="bg-white rounded-[12px] border border-s-ink/5 p-4 flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-sm font-bold text-s-coral overflow-hidden relative">
+            <div key={s.id} className="bg-white rounded-2xl border border-s-border p-4 flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-s-bg-sunken flex items-center justify-center shrink-0 text-sm font-bold text-s-ink overflow-hidden relative">
                 {s.avatar_url ? (
                   <Image src={s.avatar_url} alt="" fill className="object-cover" unoptimized />
                 ) : (s.name?.charAt(0) ?? "?").toUpperCase()}
@@ -510,13 +511,13 @@ export default function StaffPage() {
                 )}
               </div>
               <div className="flex items-center gap-1 shrink-0">
-                <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-coral" : "text-s-ink/20"}>
+                <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-ink" : "text-s-ink/20"}>
                   {s.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                 </button>
-                <button onClick={() => setEditTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors">
+                <button onClick={() => setEditTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-ink transition-colors">
                   <Pencil size={14} />
                 </button>
-                <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors">
+                <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-error transition-colors">
                   <Trash2 size={14} />
                 </button>
               </div>

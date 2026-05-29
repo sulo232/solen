@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Star, MessageSquareWarning, Check, EyeOff, Trash2, X } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
+import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { containerVariants, itemVariants } from "@/lib/animations";
@@ -30,7 +31,7 @@ function Stars({ rating }: { rating: number }) {
         <Star
           key={i}
           size={12}
-          className={i <= rating ? "fill-s-amber text-s-amber" : "text-s-ink/20"}
+          className={i <= rating ? "fill-s-star text-s-star" : "text-s-ink/20"}
         />
       ))}
     </div>
@@ -49,15 +50,15 @@ function DeleteModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-[12px] shadow-v5-float w-full max-w-sm p-6">
+      <div className="bg-white rounded-2xl shadow-v5-float w-full max-w-sm p-6">
         <h3 className="font-heading text-base text-s-ink mb-2">Bewertung löschen</h3>
         <p className="text-sm text-s-ink/50 mb-5">Bewertung endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">Abbrechen</button>
           <button
             onClick={onConfirm}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-colors"
           >
             {loading && <Spinner size="sm" invert />}
             Löschen
@@ -83,7 +84,7 @@ export default function ReviewModerationPage() {
     fetch(url)
       .then((r) => r.json())
       .then((d) => setReviews(d.reviews ?? []))
-      .catch(() => setReviews([]))
+      .catch((err) => { console.error("[DashboardReviewModeration] failed to fetch reviews:", err); setReviews([]); })
       .finally(() => setLoading(false));
   }, [tab]);
 
@@ -136,7 +137,7 @@ export default function ReviewModerationPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading text-2xl text-s-ink">Bewertungs-Moderation</h1>
+        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Bewertungs-Moderation</h1>
         <p className="text-sm text-s-ink/40 mt-0.5">Gemeldete und neue Bewertungen prüfen</p>
       </div>
 
@@ -149,8 +150,8 @@ export default function ReviewModerationPage() {
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${
-              tab === t.id ? "bg-s-coral text-white" : "bg-white border border-s-ink/10 text-s-ink/60 hover:border-s-coral"
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+              tab === t.id ? "bg-s-ink text-white hover:bg-black" : "bg-white border border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"
             }`}
           >
             {t.label}
@@ -169,8 +170,8 @@ export default function ReviewModerationPage() {
             <motion.div
               key={r.id}
               variants={itemVariants}
-              className={`bg-white rounded-[12px] border shadow-warm-md p-4 ${
-                r.is_hidden ? "border-s-coral/30 bg-s-coral/[0.02]" : r.is_flagged ? "border-s-coral/30" : "border-s-ink/5"
+              className={`bg-white rounded-2xl border shadow-warm-md p-4 ${
+                r.is_hidden ? "border-s-error/30 bg-s-error-bg/40" : r.is_flagged ? "border-s-warning/40" : "border-s-border"
               }`}
             >
               {/* Header */}
@@ -197,21 +198,17 @@ export default function ReviewModerationPage() {
               {/* Flag + hidden badges */}
               <div className="flex gap-1.5 mb-3 flex-wrap">
                 {r.flag_reason && (
-                  <span className="px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[10px] font-bold">
-                    {r.flag_reason}
-                  </span>
+                  <DashStatusPill tone="warning">{r.flag_reason}</DashStatusPill>
                 )}
                 {r.is_hidden && (
-                  <span className="px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[10px] font-bold">
-                    Versteckt
-                  </span>
+                  <DashStatusPill tone="error">Versteckt</DashStatusPill>
                 )}
               </div>
 
               {/* Existing admin response */}
               {r.admin_response && (
-                <div className="bg-s-coral/5 rounded-btn p-3 mb-3">
-                  <p className="text-[10px] font-bold text-s-coral mb-1">Admin-Antwort</p>
+                <div className="bg-s-bg-sunken rounded-btn p-3 mb-3">
+                  <p className="text-[10px] font-bold text-s-ink mb-1">Admin-Antwort</p>
                   <p className="text-xs text-s-ink/70">{r.admin_response}</p>
                 </div>
               )}
@@ -224,12 +221,12 @@ export default function ReviewModerationPage() {
                     placeholder="Öffentliche Antwort schreiben..."
                     value={adminResponses[r.id] ?? ""}
                     onChange={(e) => setAdminResponses((prev) => ({ ...prev, [r.id]: e.target.value }))}
-                    className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 bg-white text-s-ink text-xs focus:outline-none focus:border-s-coral"
+                    className="flex-1 px-3 py-2 rounded-btn border border-s-border bg-white text-s-ink text-xs focus:outline-none focus:border-s-ink"
                   />
                   <button
                     onClick={() => handleAdminResponse(r.id)}
                     disabled={!adminResponses[r.id]?.trim()}
-                    className="px-3 py-2 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50"
+                    className="px-3 py-2 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-50 transition-colors"
                   >
                     Senden
                   </button>
@@ -237,24 +234,24 @@ export default function ReviewModerationPage() {
               )}
 
               {/* Actions */}
-              <div className="flex items-center gap-2 pt-2 border-t border-s-ink/5">
+              <div className="flex items-center gap-2 pt-2 border-t border-s-border">
                 <button
                   onClick={() => handleAction(r.id, "approve")}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black transition-colors"
                 >
                   <Check size={12} />
                   Genehmigen
                 </button>
                 <button
                   onClick={() => handleAction(r.id, "hide")}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-ink/10 text-s-ink/50 text-xs font-medium hover:bg-s-bg-surface transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-border text-s-ink-2 text-xs font-medium hover:bg-s-bg-sunken hover:text-s-ink transition-colors"
                 >
                   <EyeOff size={12} />
                   Verstecken
                 </button>
                 <button
                   onClick={() => setDeleteTarget(r.id)}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-error/40 text-s-error text-xs font-medium hover:bg-s-error-bg transition-colors"
                 >
                   <Trash2 size={12} />
                   Löschen

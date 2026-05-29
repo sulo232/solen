@@ -898,3 +898,27 @@ User locked path: **AI placeholders during sweep, swap real photos lazily.** Pat
 
 Per Uber measurement: `1:1` (split-hero squares), `3:2` (alternating rows + card thumbs), `16:9` (magazine grid + newsroom), `21:9` (full-bleed wide heroes). Allowed values: `aspect-square`, `aspect-[3/2]`, `aspect-video`, `aspect-[21/9]`, `aspect-[4/3]` (PDP cover photos only). Anything else = drift A11.
 Example: Fresha closes "Closed" in burnt amber `#B7570B`. LOCKFILE has `s-urgency #9A3412` as urgency amber. → LOCKFILE wins (visually equivalent, our token is the source).
+
+---
+
+## §12 — Operator dashboard skin (VIBRANT — distinct from customer B&W) (V3-D347, 2026-05-29)
+
+User flag 2026-05-29: dashboard "too monochrome … I want vibrancy, same saturation as the blue … if the pill is green I don't want black text inside … more rounded, modern." Reframe: **the customer-facing marketplace stays B&W (§1–§11); the OPERATOR dashboard (`/dashboard/*`) is a separate, vibrant skin.** Customers never see the dashboard, so its vibrancy doesn't touch the public brand.
+
+### §12.1 — Structure source = Fresha B2B (Mobbin-captured)
+Dashboard IA mirrors Fresha for Business (verified via Mobbin web screens, 2026-05-29): **icon rail** (Übersicht · Kalender · Katalog · Kund:innen · Marketing · Verkäufe · Team · Berichte · Einstellungen) + topbar (location switcher · setup · search · notifications · avatar). **Calendar = staff-as-columns** (day/week), blocks colored by **service type**, slide-in detail panel. **Verkäufe** consolidates sales/payments/gift-cards/memberships. Home = KPI overview (sales line chart · upcoming bar chart · activity · today · top services · top team). Multi-category support stays **conditional/hybrid** (a salon's `categories[]`), folded into Katalog/Team — NOT per-category nav soup. **No makeup** (dropped from `SalonCategory`).
+
+### §12.2 — Vibrant palette (full saturation, consistent with accent blue)
+| Role | Token | Notes |
+|---|---|---|
+| Primary CTA + active nav | `s-accent.bright` `#276EF1` | The vibrant blue. Hover → `s-accent` `#185CE0`. (Dashboard ONLY — customer site keeps ink CTAs per §0.2.) |
+| Status pill text | **saturated semantic** (`text-s-success`/`s-error`/`s-warning.text`/`s-ink-2`) | NEVER ink/black text on a colored pill. Resolves the §1 "pastel+ink" vs §2.5 "semantic text" conflict in favor of **§2.5 semantic text** for dashboard. |
+| `s-warning.text` | `#B45309` | Readable darker amber for warning text on `s-warning.bg` (amber DEFAULT fails contrast as text). |
+| Charts (data-vis) | accent-blue + universal semantics | Line/bar charts use `#276EF1` / `#16A34A` / `#D32F2F` — NOT chart-grey. (Chart-grey §1 Layer-4 is for the *customer* competitor-chart only.) |
+| Calendar service colors | service palette (W3, to be locked) | blue cut / pink color / orange beard / violet nails / green spa — vibrant, store-defined service types, tinted block bg + colored border. |
+
+### §12.3 — Radii (rounder/modern)
+Dashboard cards/panels = `rounded-card-lg` (20px). Calendar blocks = 12px. Pills/buttons = `rounded-btn`/`rounded-full`. Softer than the customer-site 16px.
+
+### §12.4 — Drift-checker scope
+Files under `app/[locale]/dashboard/**` and `app/[locale]/_components/dashboard/**` are **exempt from A9** (accent-restriction) and may use `s-accent-bright` as primary + the vibrant semantics/service palette. They are NOT exempt from A4 (retired easings), A5 (RETIRED tokens like s-coral/s-amber/makeup), A6 (emoji). Primitives: `DashButton` (primary=`s-accent-bright`), `DashStatusPill` (semantic colored text). See `_components/dashboard/DashboardUI.tsx` + `_design-system/components/DashboardUI.md`.

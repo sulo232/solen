@@ -57,9 +57,9 @@ export default function ApprovalsPage() {
   return (
     <DashboardLayout>
       <div className="mb-6 flex items-center gap-3">
-        <ShieldCheck size={22} className="text-s-coral" />
+        <ShieldCheck size={22} className="text-s-ink" />
         <div>
-          <h1 className="font-heading text-2xl text-s-ink">Genehmigungen</h1>
+          <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Genehmigungen</h1>
           <p className="text-sm text-s-ink/40 mt-0.5">Neue Salons warten auf Freischaltung</p>
         </div>
       </div>
@@ -67,14 +67,14 @@ export default function ApprovalsPage() {
       {loading ? (
         <div className="flex justify-center py-16"><Spinner size="lg" /></div>
       ) : salons.length === 0 ? (
-        <div className="bg-white rounded-[12px] border border-s-ink/5 p-12 text-center">
-          <ShieldCheck size={36} className="mx-auto mb-3 text-s-coral opacity-40" />
+        <div className="bg-white rounded-2xl border border-s-border p-12 text-center">
+          <ShieldCheck size={36} className="mx-auto mb-3 text-s-ink opacity-40" />
           <p className="text-s-ink/40 text-sm">Keine ausstehenden Genehmigungen</p>
         </div>
       ) : (
         <div className="space-y-4">
           {salons.map((salon) => (
-            <div key={salon.id} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-5">
+            <div key={salon.id} className="bg-white rounded-2xl border border-s-border shadow-warm-md p-5">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex-1 min-w-0 space-y-1.5">
                   <h2 className="font-heading text-lg text-s-ink">{salon.name}</h2>
@@ -99,7 +99,7 @@ export default function ApprovalsPage() {
                   {salon.categories.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       {salon.categories.map((cat) => (
-                        <span key={cat} className="px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-xs font-medium">
+                        <span key={cat} className="px-2 py-0.5 rounded-full bg-s-bg-sunken text-s-ink text-xs font-medium">
                           {cat}
                         </span>
                       ))}
@@ -111,7 +111,7 @@ export default function ApprovalsPage() {
                   <button
                     onClick={() => approve(salon.id)}
                     disabled={actionLoading === salon.id}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black transition-colors disabled:opacity-50"
                   >
                     <Check size={15} />
                     Genehmigen
@@ -119,7 +119,7 @@ export default function ApprovalsPage() {
                   <button
                     onClick={() => setRejectModal({ id: salon.id, name: salon.name })}
                     disabled={actionLoading === salon.id}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-btn border border-s-coral/30 text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-btn border border-s-error/40 text-s-error text-sm font-medium hover:bg-s-error-bg transition-colors disabled:opacity-50"
                   >
                     <X size={15} />
                     Ablehnen
@@ -140,7 +140,7 @@ export default function ApprovalsPage() {
               Begründung für <strong>{rejectModal.name}</strong> (wird per E-Mail gesendet):
             </p>
             <textarea
-              className="w-full border border-s-ink/10 rounded-btn px-3 py-2 text-sm text-s-ink resize-none focus:outline-none focus:border-s-coral"
+              className="w-full border border-s-border rounded-btn px-3 py-2 text-sm text-s-ink resize-none focus:outline-none focus:border-s-ink"
               rows={4}
               placeholder="z.B. Unvollständige Angaben, kein Basel-Bezug..."
               value={rejectReason}
@@ -150,14 +150,14 @@ export default function ApprovalsPage() {
             <div className="flex gap-2 mt-4 justify-end">
               <button
                 onClick={() => { setRejectModal(null); setRejectReason(""); }}
-                className="px-4 py-2 rounded-btn text-sm text-s-ink/50 hover:text-s-ink transition-colors"
+                className="px-4 py-2 rounded-btn text-sm text-s-ink-2 hover:text-s-ink transition-colors"
               >
                 Abbrechen
               </button>
               <button
                 onClick={reject}
                 disabled={!rejectReason.trim() || actionLoading === rejectModal.id}
-                className="px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50"
+                className="px-4 py-2 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black transition-colors disabled:opacity-50"
               >
                 Ablehnen & E-Mail senden
               </button>
