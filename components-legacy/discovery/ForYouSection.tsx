@@ -68,7 +68,7 @@ export default function ForYouSection() {
       {sections.map(({ item, similar }) => (
         <div key={item.id}>
           <div className="mb-4 flex items-center gap-2">
-            <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/30">
+            <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/30">
               {locale === "de"
                 ? `Weil du „${item.style_name || item.category}" gespeichert hast`
                 : `Because you saved "${item.style_name || item.category}"`}
@@ -80,7 +80,8 @@ export default function ForYouSection() {
               <div
                 key={sim.id}
                 onClick={() => router.push(`/${locale}/discover/${sim.id}`)}
-                className="w-32 shrink-0 snap-start rounded-[12px] overflow-hidden bg-[--raised] border border-s-ink/[0.06] cursor-pointer hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+                /* V3-D346 (2026-05-29): motion swept to canonical §4 card-hover — duration-200 ease-glide, -translate-y-px, elevation-2; rounded-[12px]→rounded-xl (A2/A4). */
+                className="w-32 shrink-0 snap-start rounded-xl overflow-hidden bg-[--raised] border border-s-ink/[0.06] cursor-pointer hover:shadow-elevation-2 hover:-translate-y-px transition-[transform,box-shadow] duration-200 ease-glide"
               >
                 <div className="aspect-[3/4] relative bg-s-ink/5">
                   {(sim.image_url || sim.tiktok_thumbnail_url) && (

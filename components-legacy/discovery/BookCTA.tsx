@@ -57,12 +57,13 @@ export default function BookCTA({ item, locale }: BookCTAProps) {
 
   return (
     <div className="mt-6 px-1">
-      <div className="p-5 rounded-[16px] bg-gradient-to-br from-s-ink/5 to-s-amber/5 border border-s-accent/10">
+      {/* V3-D346 Pass-2 (2026-05-29): amber gradient + accent → neutral ink card (A9). */}
+      <div className="p-5 rounded-[16px] bg-s-ink/5 border border-s-border">
         {/* Style context */}
         {item.style_name && (
           <div className="flex items-center gap-1.5 mb-3">
-            <Sparkles size={12} className="text-s-accent" />
-            <p className="text-xs text-s-accent font-medium">{item.style_name}</p>
+            <Sparkles size={12} className="text-s-ink-3" />
+            <p className="text-xs text-s-ink font-medium">{item.style_name}</p>
           </div>
         )}
 

@@ -25,12 +25,12 @@ const BADGE_CONFIG: Record<DiscoveryContentType, { label: string; bg: string; ic
   },
   curated: {
     label: "Inspo",
-    bg: "bg-s-plum/80 text-white",
+    bg: "bg-s-ink/70 text-white",
     icon: <Sparkles size={10} />,
   },
   user: {
     label: "Community",
-    bg: "bg-s-blue/80 text-white",
+    bg: "bg-s-ink/80 text-white",
     icon: <Users size={10} />,
   },
 };

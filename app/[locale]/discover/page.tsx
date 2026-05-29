@@ -174,6 +174,8 @@ function DiscoverPageContent() {
   };
 
   const handleBoardSelect = (filters: Partial<DiscoveryFilters>) => {
+    // V3-D346 (Move 1): boards carry a keyword in `search` — apply it so the tile filters the feed.
+    if (filters.search !== undefined) setSearch(filters.search);
     if (filters.category) setCategory(filters.category);
     const newFilters: ActiveFilter[] = [];
     if (filters.gender && filters.gender !== "all") {

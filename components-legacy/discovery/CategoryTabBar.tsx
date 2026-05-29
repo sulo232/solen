@@ -42,17 +42,13 @@ export default function CategoryTabBar({ activeCategory, onChange }: CategoryTab
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(tab.key)}
+            /* V3-D346 (2026-05-29): dropped inline green-tint shadow (retired brand) — canonical shadow-elevation-2 from className now applies; fixed malformed hover class. */
             className={[
               "flex-shrink-0 px-4 py-3 rounded-pill text-xs font-heading uppercase tracking-[.06em] whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
               isActive
                 ? "bg-s-ink text-white shadow-elevation-2"
-                : "bg-s-bg-surface text-s-ink/70 border border-s-ink/10 hover:bg-s-ink/[0.08]:bg-white/[0.12]",
+                : "bg-s-bg-surface text-s-ink/70 border border-s-ink/10 hover:bg-s-ink/[0.08]",
             ].join(" ")}
-            style={
-              isActive
-                ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" }
-                : undefined
-            }
           >
             {t(tab.labelKey as any)}
           </button>

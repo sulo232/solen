@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen Discovery × Pinterest structure — B&W skin</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E7E5E4; --sunken:#F5F5F4; --white:#fff;
+    --e1:0 1px 3px rgba(50,47,44,.04),0 1px 2px rgba(50,47,44,.03);
+    --e2:0 4px 12px rgba(50,47,44,.08),0 2px 4px rgba(50,47,44,.04);
+    --e3:0 8px 28px rgba(50,47,44,.12),0 4px 10px rgba(50,47,44,.06);
+    --r-card:16px; --r-pill:9999px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);background:#ECEBE9;color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;padding:48px 24px 120px}
+  .wrap{max-width:1240px;margin:0 auto}
+
+  /* page header */
+  .doc-head{max-width:760px;margin:0 auto 56px}
+  .doc-eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-bottom:10px}
+  .doc-head h1{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:14px}
+  .doc-head p{font-size:15px;color:var(--ink2);max-width:62ch}
+  .doc-head .axis{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+  .chip{font-size:12px;font-weight:500;border:1px solid var(--border);background:#fff;border-radius:var(--r-pill);padding:6px 12px;color:var(--ink2)}
+  .chip b{color:var(--ink);font-weight:600}
+
+  /* section scaffold */
+  .move{margin:0 auto 72px}
+  .move-head{max-width:760px;margin:0 auto 24px;display:flex;gap:14px;align-items:flex-start}
+  .move-num{flex:0 0 auto;width:30px;height:30px;border-radius:var(--r-pill);background:var(--ink);color:#fff;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center}
+  .move-head h2{font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+  .move-head .new{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:var(--ink);color:#fff;border-radius:var(--r-pill);padding:3px 8px;margin-left:8px;vertical-align:middle}
+  .move-head p{font-size:14px;color:var(--ink2);margin-top:5px}
+  .move-head .before{font-size:13px;color:var(--ink2);margin-top:8px;padding-left:12px;border-left:2px solid var(--border)}
+  .move-head .before b{color:var(--ink);font-weight:600}
+
+  .stage{display:flex;gap:36px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+
+  /* phone frame */
+  .phone{width:390px;background:#fff;border-radius:34px;box-shadow:var(--e3);overflow:hidden;border:1px solid rgba(0,0,0,.04)}
+  .phone-label{text-align:center;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-top:14px;font-weight:600}
+  .scr{height:760px;overflow:hidden;position:relative}
+  .scr-inner{padding:0}
+
+  /* app chrome */
+  .appbar{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 10px}
+  .word{font-size:20px;font-weight:700;letter-spacing:-.01em}
+  .appbar .icons{display:flex;gap:14px;color:var(--ink)}
+  .appbar svg{width:22px;height:22px}
+  .feedhead{padding:6px 18px 0}
+  .feedhead h3{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.05}
+  .feedhead .eb{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-top:6px}
+
+  /* category tabs */
+  .tabs{display:flex;gap:8px;padding:16px 18px 0;overflow:hidden}
+  .tab{flex:0 0 auto;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:10px 16px;border-radius:var(--r-pill);border:1px solid var(--border);color:var(--ink2);background:#fff;white-space:nowrap}
+  .tab.on{background:var(--ink);color:#fff;border-color:var(--ink);box-shadow:var(--e2)}
+
+  /* collections row (NEW) */
+  .collrow{padding:18px 0 6px}
+  .collrow .lbl{display:flex;align-items:center;justify-content:space-between;padding:0 18px 12px}
+  .collrow .lbl .eb{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+  .collrow .lbl .all{font-size:12px;font-weight:500;color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+  .colls{display:flex;gap:12px;padding:0 18px;overflow:hidden}
+  .coll{flex:0 0 auto;width:128px}
+  .coll .cover{width:128px;height:128px;border-radius:14px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;background:var(--sunken);box-shadow:var(--e1)}
+  .coll .cover img{width:100%;height:100%;object-fit:cover;display:block;background:var(--sunken)}
+  .coll .cover .big{grid-row:1 / span 2}
+  .coll .nm{font-size:13px;font-weight:600;margin-top:8px;letter-spacing:-.01em}
+  .coll .ct{font-size:11px;color:var(--ink2);margin-top:1px}
+
+  /* search */
+  .search{margin:16px 18px 0;display:flex;align-items:center;gap:8px;background:var(--sunken);border:1px solid rgba(10,10,10,.06);border-radius:var(--r-pill);padding:12px 16px;color:var(--ink2);font-size:14px}
+  .search svg{width:16px;height:16px}
+
+  /* trending guides */
+  .guides{display:flex;gap:8px;padding:14px 18px 0;overflow:hidden;align-items:center}
+  .guides .g-eb{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);flex:0 0 auto}
+  .guide{flex:0 0 auto;font-size:13px;border:1px solid var(--border);border-radius:var(--r-pill);padding:7px 14px;white-space:nowrap;color:var(--ink)}
+
+  /* masonry */
+  .masonry{columns:2;column-gap:10px;padding:16px 18px 0}
+  .pin{break-inside:avoid;margin-bottom:10px;position:relative;border-radius:14px;overflow:hidden;background:var(--sunken);box-shadow:var(--e1)}
+  .pin img{width:100%;display:block;object-fit:cover;background:var(--sunken)}
+  .pin .save{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:var(--r-pill);background:rgba(255,255,255,.85);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center}
+  .pin .save svg{width:15px;height:15px;color:var(--ink)}
+  .pin .badge{position:absolute;top:8px;left:8px;font-size:9px;font-weight:600;letter-spacing:.02em;color:#fff;padding:3px 7px;border-radius:var(--r-pill);backdrop-filter:blur(6px)}
+  .pin .cap{position:absolute;left:8px;bottom:8px;font-size:11px;font-weight:600;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+  .pin .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+  .pin .play span{width:42px;height:42px;border-radius:var(--r-pill);background:rgba(10,10,10,.55);display:flex;align-items:center;justify-content:center}
+  .pin .play svg{width:18px;height:18px;color:#fff;margin-left:2px}
+  /* badge bg = category identity (kept per user) */
+  .b-hair{background:rgba(245,158,11,.82)} .b-nails{background:rgba(107,107,107,.82)} .b-spa{background:rgba(22,163,74,.82)} .b-ink{background:rgba(10,10,10,.7)}
+
+  /* pin detail */
+  .pd{padding:14px 18px 0}
+  .pd .back{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2);margin-bottom:12px}
+  .pd .back svg{width:15px;height:15px}
+  .pd .hero{border-radius:var(--r-card);overflow:hidden;background:var(--ink);position:relative}
+  .pd .hero img{width:100%;display:block;height:264px;object-fit:cover}
+  .pd .meta{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12px;color:var(--ink2)}
+  .pd .src{font-size:9px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:#fff;background:rgba(10,10,10,.7);border-radius:var(--r-pill);padding:3px 8px}
+  .pd .acts{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+  .pd .acts .l{display:flex;gap:16px;color:var(--ink2)}
+  .pd .acts svg{width:19px;height:19px}
+  .pd h4{font-size:19px;font-weight:600;letter-spacing:-.01em;margin-top:14px}
+  .pd .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .pd .tag{font-size:10px;color:var(--ink2);background:rgba(10,10,10,.05);border-radius:var(--r-pill);padding:3px 8px}
+  .pd .book{margin-top:16px;background:var(--ink);color:#fff;border-radius:var(--r-pill);padding:14px;text-align:center;font-size:14px;font-weight:500;box-shadow:var(--e2)}
+  .pd .book .sub{display:block;font-size:11px;color:rgba(255,255,255,.6);font-weight:400;margin-top:2px}
+
+  .relhead{display:flex;align-items:center;gap:8px;margin:22px 18px 0}
+  .relhead .t{font-size:13px;font-weight:600}
+  .relhead .ln{flex:1;height:1px;background:var(--border)}
+
+  /* old rail (for the BEFORE strip) */
+  .railwrap{padding:16px 18px}
+  .rail{display:flex;gap:10px;overflow:hidden}
+  .rail .rc{flex:0 0 auto;width:120px}
+  .rail .rc .im{width:120px;height:160px;border-radius:12px;overflow:hidden;background:var(--sunken)}
+  .rail .rc img{width:100%;height:100%;object-fit:cover;display:block}
+  .rail .rc .nm{font-size:11px;font-weight:500;margin-top:6px}
+
+  /* desktop frame */
+  .desktop{width:100%;max-width:1080px;background:#fff;border-radius:18px;box-shadow:var(--e3);overflow:hidden;border:1px solid rgba(0,0,0,.05)}
+  .dk-bar{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border)}
+  .dk-bar .nav{display:flex;gap:24px;font-size:14px;color:var(--ink2)}
+  .dk-bar .word{font-size:20px}
+  .dk-bar .signin{background:var(--ink);color:#fff;border-radius:var(--r-pill);padding:9px 18px;font-size:13px;font-weight:500}
+  .pin2{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:28px 28px 40px;align-items:start}
+  .pin2 .imgcol{position:sticky;top:20px}
+  .pin2 .imgcol img{width:100%;border-radius:var(--r-card);display:block;aspect-ratio:3/4;object-fit:cover;background:var(--sunken)}
+  .pin2 .info h3{font-size:26px;font-weight:600;letter-spacing:-.015em}
+  .pin2 .info .by{font-size:13px;color:var(--ink2);margin-top:6px}
+  .pin2 .info .row{display:flex;gap:18px;margin-top:16px;color:var(--ink2)}
+  .pin2 .info .row svg{width:20px;height:20px}
+  .pin2 .info .desc{font-size:14px;color:var(--ink2);margin-top:16px;line-height:1.6}
+  .pin2 .info .script{margin-top:16px;border:1px solid var(--border);border-radius:var(--r-card);padding:14px}
+  .pin2 .info .script .h{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+  .pin2 .info .script p{font-size:13px;margin-top:6px;color:var(--ink)}
+  .pin2 .info .book{margin-top:18px;background:var(--ink);color:#fff;border-radius:var(--r-pill);padding:15px;text-align:center;font-size:14px;font-weight:500;box-shadow:var(--e2)}
+  .pin2 .info .book .sub{display:block;font-size:11px;color:rgba(255,255,255,.6);font-weight:400;margin-top:2px}
+  .pin2 .info .relmini{columns:2;column-gap:10px;margin-top:22px}
+  .pin2 .info .relmini .m{break-inside:avoid;margin-bottom:10px;border-radius:12px;overflow:hidden;background:var(--sunken);box-shadow:var(--e1)}
+  .pin2 .info .relmini img{width:100%;display:block}
+
+  .note{max-width:760px;margin:18px auto 0;font-size:13px;color:var(--ink2);background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+  .note b{color:var(--ink)}
+  .footer{max-width:760px;margin:64px auto 0;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--ink2)}
+  .ico{stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  /* feature inventory */
+  .inv{max-width:980px;margin:0 auto 64px;background:#fff;border:1px solid var(--border);border-radius:var(--r-card);padding:28px 30px;box-shadow:var(--e1)}
+  .inv h2{font-size:18px;font-weight:600;letter-spacing:-.01em;margin-bottom:4px}
+  .inv .sub{font-size:13px;color:var(--ink2);margin-bottom:22px}
+  .inv .cols{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  @media(max-width:720px){.inv .cols{grid-template-columns:1fr}}
+  .inv .grp-t{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+  .inv ul{list-style:none}
+  .inv li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;font-size:13.5px}
+  .inv li .ck{flex:0 0 auto;width:16px;height:16px;margin-top:2px;color:var(--ink)}
+  .inv li .nm{flex:1}
+  .inv .tg{flex:0 0 auto;font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:var(--r-pill);white-space:nowrap}
+  .tg-keep{background:var(--sunken);color:var(--ink2)}
+  .tg-new{background:var(--ink);color:#fff}
+  .tg-solen{background:#fff;color:var(--ink);border:1px solid var(--ink)}
+
+  /* FAB on feed */
+  .fab{position:absolute;bottom:18px;right:18px;width:46px;height:46px;border-radius:var(--r-pill);background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--e2);font-size:24px;font-weight:300;line-height:1}
+
+  /* pin anatomy (move 4) */
+  .anat{display:grid;grid-template-columns:390px 1fr;gap:44px;max-width:980px;margin:0 auto;align-items:start}
+  @media(max-width:860px){.anat{grid-template-columns:1fr;gap:24px}}
+  .anat .full{width:390px;background:#fff;border-radius:34px;box-shadow:var(--e3);overflow:hidden;border:1px solid rgba(0,0,0,.04)}
+  .anat .full .pd{padding-bottom:22px}
+  .anat .legend{position:sticky;top:24px}
+  .anat .legend h3{font-size:16px;font-weight:600;margin-bottom:14px}
+  .anat .legend ol{list-style:none;counter-reset:f}
+  .anat .legend li{counter-increment:f;display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);font-size:13.5px}
+  .anat .legend li::before{content:counter(f);flex:0 0 auto;width:22px;height:22px;border-radius:var(--r-pill);background:var(--sunken);color:var(--ink2);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .anat .legend li .ft{flex:1}
+  .anat .legend li .ft b{font-weight:600}
+  .anat .legend li .ft span{display:block;color:var(--ink2);font-size:12px;margin-top:1px}
+  .anat .legend li .tg{flex:0 0 auto;font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:var(--r-pill);white-space:nowrap;margin-top:1px}
+
+  /* extra pin feature blocks */
+  .card-blk{margin-top:14px;border:1px solid var(--border);border-radius:var(--r-card);padding:13px 14px}
+  .card-blk .h{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2)}
+  .card-blk .h svg{width:13px;height:13px}
+  .card-blk p{font-size:13px;margin-top:7px;color:var(--ink)}
+  .card-blk.script p{font-style:italic;color:var(--ink);line-height:1.55}
+  .card-blk .btns{display:flex;gap:8px;margin-top:10px}
+  .card-blk .btns .b{font-size:11px;font-weight:500;border-radius:var(--r-pill);padding:6px 11px;display:flex;align-items:center;gap:5px}
+  .b-ghost{background:var(--sunken);color:var(--ink2)} .b-wa{background:#E8F5E9;color:#16A34A}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .chips .c{font-size:11px;border:1px solid var(--border);border-radius:var(--r-pill);padding:5px 10px;color:var(--ink)}
+  .maint{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;border-radius:var(--r-pill);padding:3px 9px;margin-top:8px}
+  .maint.low{background:#E8F5E9;color:#16A34A;border:1px solid rgba(22,163,74,.2)}
+  .stylist{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid var(--border);border-radius:var(--r-card);margin-top:8px}
+  .stylist .av{width:38px;height:38px;border-radius:var(--r-pill);background:var(--sunken);overflow:hidden;flex:0 0 auto}
+  .stylist .av img{width:100%;height:100%;object-fit:cover}
+  .stylist .nm{flex:1;font-size:13px;font-weight:500}
+  .stylist .nm span{display:block;font-size:11px;color:var(--ink2);font-weight:400}
+  .stylist svg{width:15px;height:15px;color:var(--ink2)}
+  .collapse{margin-top:14px;display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2)}
+  .collapse svg{width:14px;height:14px}
+  .cmt{display:flex;gap:9px;margin-top:13px}
+  .cmt .av{width:30px;height:30px;border-radius:var(--r-pill);background:var(--sunken);flex:0 0 auto}
+  .cmt .bub{flex:1}
+  .cmt .bub .nm{font-size:12px;font-weight:600}
+  .cmt .bub .tx{font-size:12.5px;color:var(--ink);margin-top:1px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="doc-head">
+    <div class="doc-eyebrow">Solen · Discovery · structural mockup</div>
+    <h1>Pinterest structure, Solen skin</h1>
+    <p>The three structural moves we discussed, rendered in the locked black-&-white aesthetic. This shows <b>where things go</b> — the chrome stays mono (ink / grey / hairline); only the photos carry colour. Nothing here is wired up; it's for picking a direction.</p>
+    <div class="axis">
+      <span class="chip"><b>Structure</b> → Pinterest</span>
+      <span class="chip"><b>Aesthetic</b> → Uber / LOCKFILE (B&W)</span>
+      <span class="chip">Booking funnel = the moat, kept</span>
+    </div>
+  </div>
+
+  <!-- ═══════════ FEATURE INVENTORY ═══════════ -->
+  <section class="inv">
+    <h2>Every discovery feature, mapped</h2>
+    <div class="sub">So nothing's "missed" — the full feature set, where each lives in the Pinterest structure. <b class="tg tg-keep" style="padding:1px 6px">kept</b> = already shipped · <b class="tg tg-new" style="padding:1px 6px">new</b> = added here · <b class="tg tg-solen" style="padding:1px 6px">solen</b> = your edge over Pinterest.</div>
+    <div class="cols">
+      <div>
+        <div class="grp-t">Feed — Entdecken</div>
+        <ul>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Masonry feed + infinite scroll</span><span class="tg tg-keep">kept</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Category tabs (Alle / Haare / Nägel…)</span><span class="tg tg-keep">kept</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Collections row</span><span class="tg tg-new">new</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Search</span><span class="tg tg-keep">kept</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">AI suggestion pills ("Trending")</span><span class="tg tg-keep">kept</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Filters — gender + texture (drawer)</span><span class="tg tg-keep">kept</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">"For You" — Weil du … gespeichert hast</span><span class="tg tg-keep">kept</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Personalize-feed prefs panel</span><span class="tg tg-keep">kept</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Post a look (floating +)</span><span class="tg tg-keep">kept</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="grp-t">Pin — the look detail</div>
+        <ul>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Hero — photo / TikTok (tap → play)</span><span class="tg tg-keep">kept</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Source + @author + date</span><span class="tg tg-keep">kept</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Like (+count) · Save · Share</span><span class="tg tg-keep">kept</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Title + #tags</span><span class="tg tg-keep">kept</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Maintenance badge (Low/Med/High)</span><span class="tg tg-solen">solen</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">AI description</span><span class="tg tg-solen">solen</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Salon script — "Was dem Friseur sagen"</span><span class="tg tg-solen">solen</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Products for this look</span><span class="tg tg-solen">solen</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Book this look (CTA)</span><span class="tg tg-solen">solen</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Pick your stylist</span><span class="tg tg-solen">solen</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">More like this (masonry)</span><span class="tg tg-new">new</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Related TikToks</span><span class="tg tg-keep">kept</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Technical cut guide (collapsible)</span><span class="tg tg-solen">solen</span></li>
+          <li><svg class="ico ck" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="nm">Comments</span><span class="tg tg-keep">kept</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ MOVE 1: Collections row ═══════════ -->
+  <section class="move">
+    <div class="move-head">
+      <div class="move-num">1</div>
+      <div>
+        <h2>Collections row on the feed <span class="new">new</span></h2>
+        <p>Curated, editorial entry points above the masonry — Pinterest's board-cover row, but pointed at booking. Tap a collection → filtered looks → book.</p>
+        <div class="before"><b>Today:</b> <code>FeaturedBoards</code> renders <code>&lt;div /&gt;</code> — nothing. This fills the dead slot.</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div>
+        <div class="phone"><div class="scr"><div class="scr-inner">
+          <div class="appbar"><div class="word">Solen</div><div class="icons">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            <svg class="ico" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </div></div>
+          <div class="feedhead"><h3>Entdecken</h3><div class="eb">Dein nächster Look</div></div>
+          <div class="tabs"><div class="tab on">Alle</div><div class="tab">Haare</div><div class="tab">Nägel</div><div class="tab">Makeup</div></div>
+
+          <div class="collrow">
+            <div class="lbl"><span class="eb">Kollektionen</span><span class="all">Alle →</span></div>
+            <div class="colls">
+              <div class="coll">
+                <div class="cover">
+                  <img class="big" src="https://picsum.photos/seed/curtain1/120/256" alt="">
+                  <img src="https://picsum.photos/seed/curtain2/64/64" alt="">
+                  <img src="https://picsum.photos/seed/curtain3/64/64" alt="">
+                </div>
+                <div class="nm">Curtain Bangs</div><div class="ct">48 Looks</div>
+              </div>
+              <div class="coll">
+                <div class="cover">
+                  <img class="big" src="https://picsum.photos/seed/bridal1/120/256" alt="">
+                  <img src="https://picsum.photos/seed/bridal2/64/64" alt="">
+                  <img src="https://picsum.photos/seed/bridal3/64/64" alt="">
+                </div>
+                <div class="nm">Bridal</div><div class="ct">112 Looks</div>
+              </div>
+              <div class="coll">
+                <div class="cover">
+                  <img class="big" src="https://picsum.photos/seed/nails1/120/256" alt="">
+                  <img src="https://picsum.photos/seed/nails2/64/64" alt="">
+                  <img src="https://picsum.photos/seed/nails3/64/64" alt="">
+                </div>
+                <div class="nm">Summer Nails</div><div class="ct">73 Looks</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="search">
+            <svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search styles…</span>
+          </div>
+          <div class="guides"><span class="g-eb">Trending</span><span class="guide">Balayage</span><span class="guide">Fade</span><span class="guide">Gel Nails</span></div>
+
+          <div class="masonry">
+            <div class="pin"><span class="badge b-hair">Hair · TikTok</span><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/m1/300/400" alt=""><span class="cap">Textured Crop</span></div>
+            <div class="pin"><span class="badge b-nails">Nails</span><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/m2/300/300" alt=""><span class="cap">Chrome French</span></div>
+            <div class="pin"><span class="badge b-ink">Inspo</span><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/m3/300/460" alt=""><span class="cap">Soft Balayage</span></div>
+            <div class="pin"><span class="badge b-hair">Hair</span><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/m4/300/340" alt=""><span class="cap">Skin Fade</span></div>
+          </div>
+          <div class="fab" title="Post a look">+</div>
+        </div></div></div>
+        <div class="phone-label">Mobile · 390 · post-a-look FAB ↘</div>
+      </div>
+    </div>
+    <div class="note"><b>Why it earns its slot:</b> a salon-booking app's collections aren't vanity boards — they're merchandising. "Bridal", "Summer Nails", "Curtain Bangs" are editorial funnels: browse a themed set → tap a look → book it. The cover is a 1+2 image collage (Pinterest's board-cover signature), label + count below.</div>
+  </section>
+
+  <!-- ═══════════ MOVE 2: Related-masonry pin page ═══════════ -->
+  <section class="move">
+    <div class="move-head">
+      <div class="move-num">2</div>
+      <div>
+        <h2>"More like this" as a continuing masonry <span class="new">new</span></h2>
+        <p>The pin page keeps feeding discovery instead of stopping. Below the look + its booking CTA, the related set flows as a full masonry — the same retention loop that keeps people in Pinterest.</p>
+        <div class="before"><b>Today:</b> related is a 120px-wide horizontal scroll rail (4–5 items, then it ends). It dead-ends discovery.</div>
+      </div>
+    </div>
+    <div class="stage">
+      <!-- BEFORE -->
+      <div>
+        <div class="phone"><div class="scr"><div class="scr-inner">
+          <div class="pd">
+            <div class="back"><svg class="ico" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Zurück</div>
+            <div class="hero"><img src="https://picsum.photos/seed/hero1/600/800" alt=""></div>
+            <div class="acts"><div class="l">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg>
+              <svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+              <svg class="ico" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg>
+            </div>
+            <h4>Textured Modern Mod Cut</h4>
+            <div class="book">Diesen Look buchen<span class="sub">3 Coiffeure in Basel · ab CHF 65</span></div>
+          </div>
+          <div class="relhead"><span class="t" style="font-size:12px;color:var(--ink2)">Ähnliche Styles</span><span class="ln"></span></div>
+          <div class="railwrap"><div class="rail">
+            <div class="rc"><div class="im"><img src="https://picsum.photos/seed/r1/240/320" alt=""></div><div class="nm">Crop Fade</div></div>
+            <div class="rc"><div class="im"><img src="https://picsum.photos/seed/r2/240/320" alt=""></div><div class="nm">Mod Cut</div></div>
+            <div class="rc"><div class="im"><img src="https://picsum.photos/seed/r3/240/320" alt=""></div><div class="nm">Quiff</div></div>
+          </div></div>
+        </div></div></div>
+        <div class="phone-label">Before · rail (dead-ends)</div>
+      </div>
+      <!-- AFTER -->
+      <div>
+        <div class="phone"><div class="scr"><div class="scr-inner">
+          <div class="pd">
+            <div class="back"><svg class="ico" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Zurück</div>
+            <div class="hero"><img src="https://picsum.photos/seed/hero1/600/800" alt=""></div>
+            <div class="acts"><div class="l">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg>
+              <svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+              <svg class="ico" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg>
+            </div>
+            <h4>Textured Modern Mod Cut</h4>
+            <div class="book">Diesen Look buchen<span class="sub">3 Coiffeure in Basel · ab CHF 65</span></div>
+          </div>
+          <div class="relhead"><span class="t">Mehr wie dieser</span><span class="ln"></span></div>
+          <div class="masonry" style="padding-top:14px">
+            <div class="pin"><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/r1/300/400" alt=""></div>
+            <div class="pin"><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/r2/300/300" alt=""></div>
+            <div class="pin"><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/r3/300/460" alt=""></div>
+            <div class="pin"><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/r4/300/350" alt=""></div>
+            <div class="pin"><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/r5/300/420" alt=""></div>
+            <div class="pin"><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/r6/300/300" alt=""></div>
+          </div>
+        </div></div></div>
+        <div class="phone-label">After · continuing masonry</div>
+      </div>
+    </div>
+    <div class="note"><b>The trade you're making:</b> the rail says "here are a few alternatives, now leave." The masonry says "there's always one more look" — and every look is a booking surface. This is the single highest-leverage retention change, and it reuses the masonry you already have.</div>
+  </section>
+
+  <!-- ═══════════ MOVE 3: Desktop 2-column pin ═══════════ -->
+  <section class="move">
+    <div class="move-head">
+      <div class="move-num">3</div>
+      <div>
+        <h2>Desktop pin = two columns</h2>
+        <p>Sticky image left, scrolling info + booking + related right (mobile stays single-column). Uses the desktop width instead of a narrow centred strip.</p>
+        <div class="before"><b>Today:</b> <code>max-w-2xl</code> centred column — a phone layout stretched onto a 1440 screen.</div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="desktop">
+        <div class="dk-bar"><div class="word">Solen</div><div class="nav"><span>Services</span><span>Für Unternehmen</span><span>Entdecken</span></div><div class="signin">Anmelden</div></div>
+        <div class="pin2">
+          <div class="imgcol"><img src="https://picsum.photos/seed/hero1/800/1066" alt=""></div>
+          <div class="info">
+            <h3>Textured Modern Mod Cut</h3>
+            <div class="by">@studio.basel · TikTok</div>
+            <div class="row">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg>
+              <svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              <svg class="ico" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg>
+            </div>
+            <p class="desc">A grown-out textured crop with soft, piecey movement on top and a clean taper at the sides. Low maintenance, works on wavy-to-straight hair.</p>
+            <div class="script"><div class="h">So fragst du danach</div><p>"Textured crop, scissor-cut on top for movement, taper fade at the sides — keep length through the fringe."</p></div>
+            <div class="book">Diesen Look buchen<span class="sub">3 Coiffeure in Basel · ab CHF 65</span></div>
+            <div class="relmini">
+              <div class="m"><img src="https://picsum.photos/seed/r1/300/400" alt=""></div>
+              <div class="m"><img src="https://picsum.photos/seed/r2/300/300" alt=""></div>
+              <div class="m"><img src="https://picsum.photos/seed/r5/300/420" alt=""></div>
+              <div class="m"><img src="https://picsum.photos/seed/r4/300/340" alt=""></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="note"><b>Lowest priority of the three</b> — it's an enhancement, not a gap. Mobile is where discovery lives; I'd only do this after 1 & 2 land.</div>
+  </section>
+
+  <!-- ═══════════ MOVE 4: Full pin anatomy ═══════════ -->
+  <section class="move">
+    <div class="move-head">
+      <div class="move-num">4</div>
+      <div>
+        <h2>The full pin page — every feature, one column</h2>
+        <p>All 13 look-detail features in the B&amp;W skin, in order. The Solen-originals (★) are what Pinterest can't do — they turn "I like this" into "I booked this." Nothing's dropped; the structure just holds more.</p>
+      </div>
+    </div>
+    <div class="anat">
+      <!-- full pin phone -->
+      <div class="full">
+        <div class="pd">
+          <div class="back"><svg class="ico" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Zurück</div>
+          <div class="hero"><img src="https://picsum.photos/seed/hero1/600/600" alt=""></div>
+          <!-- source/author/date -->
+          <div class="meta"><span class="src">TikTok</span><span style="color:var(--ink)">@studio.basel</span><span>· 12. Mai 2026</span></div>
+          <!-- actions: like+count / save / share -->
+          <div class="acts"><div class="l" style="align-items:center">
+            <span style="display:flex;align-items:center;gap:5px"><svg class="ico" viewBox="0 0 24 24" style="width:19px;height:19px"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg><span style="font-size:13px;color:var(--ink2)">128</span></span>
+            <svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+            <svg class="ico" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg>
+          </div>
+          <!-- title + tags + maintenance -->
+          <h4>Textured Modern Mod Cut</h4>
+          <div class="tags"><span class="tag">#texturedcrop</span><span class="tag">#taperfade</span><span class="tag">#menshair</span></div>
+          <span class="maint low"><svg class="ico" viewBox="0 0 24 24" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg> Low maintenance</span>
+          <!-- AI description -->
+          <div class="card-blk"><div class="h"><svg class="ico" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2L12 16.6 5.7 21l2.3-7.2-6-4.4h7.6z"/></svg> KI-Beschreibung</div><p>A grown-out textured crop with soft, piecey movement on top and a clean taper at the sides. Low upkeep; works on wavy-to-straight hair.</p></div>
+          <!-- salon script ★ -->
+          <div class="card-blk script"><div class="h"><svg class="ico" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg> Was dem Friseur sagen</div><p>"Textured crop, scissor-cut on top for movement, taper fade at the sides — keep length through the fringe."</p><div class="btns"><span class="b b-ghost"><svg class="ico" viewBox="0 0 24 24" style="width:11px;height:11px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Kopieren</span><span class="b b-wa"><svg class="ico" viewBox="0 0 24 24" style="width:11px;height:11px"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 0 1-.9-3.8 8.38 8.38 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg> WhatsApp</span></div></div>
+          <!-- products ★ -->
+          <div class="card-blk"><div class="h"><svg class="ico" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Produkte für diesen Look</div><div class="chips"><span class="c">Matte Clay</span><span class="c">Sea-salt Spray</span><span class="c">Sulfatfreies Shampoo</span></div></div>
+          <!-- book CTA ★ -->
+          <div class="book" style="margin-top:16px">Diesen Look buchen<span class="sub">3 Coiffeure in Basel · ab CHF 65</span></div>
+          <!-- pick stylist ★ -->
+          <h4 style="font-size:15px;margin-top:20px">Wähle deinen Stylisten</h4>
+          <div class="stylist"><div class="av" style="display:flex;align-items:center;justify-content:center;color:var(--ink2)"><svg class="ico" viewBox="0 0 24 24" style="width:16px;height:16px"><polygon points="12 2 15.1 8.6 22 9.3 17 14 18.2 21 12 17.6 5.8 21 7 14 2 9.3 8.9 8.6"/></svg></div><div class="nm">Egal wer<span>Erste verfügbare Zeit</span></div><svg class="ico" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          <div class="stylist"><div class="av"><img src="https://picsum.photos/seed/stylist1/80/80" alt=""></div><div class="nm">Lena M.<span>Fades · Herrenschnitt</span></div><svg class="ico" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          <!-- more like this -->
+          <div class="relhead"><span class="t">Mehr wie dieser</span><span class="ln"></span></div>
+          <div class="masonry" style="padding:14px 0 0">
+            <div class="pin"><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/r1/300/400" alt=""></div>
+            <div class="pin"><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/r2/300/300" alt=""></div>
+            <div class="pin"><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/r5/300/360" alt=""></div>
+            <div class="pin"><span class="save"><svg class="ico" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><img src="https://picsum.photos/seed/r4/300/300" alt=""></div>
+          </div>
+          <!-- related tiktoks -->
+          <div class="relhead"><span class="t">Ähnliche Videos</span><span class="ln"></span></div>
+          <div class="masonry" style="padding:14px 0 0">
+            <div class="pin"><span class="play"><span><svg viewBox="0 0 24 24" fill="#fff"><polygon points="6 4 20 12 6 20"/></svg></span></span><img src="https://picsum.photos/seed/v1/300/420" alt=""></div>
+            <div class="pin"><span class="play"><span><svg viewBox="0 0 24 24" fill="#fff"><polygon points="6 4 20 12 6 20"/></svg></span></span><img src="https://picsum.photos/seed/v2/300/420" alt=""></div>
+          </div>
+          <!-- cut guide -->
+          <div class="collapse"><svg class="ico" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg> Technische Schnittanleitung</div>
+          <!-- comments -->
+          <div class="relhead"><span class="t">Kommentare · 3</span><span class="ln"></span></div>
+          <div class="cmt"><div class="av"></div><div class="bub"><div class="nm">@mira.k</div><div class="tx">Genau das wollte ich — wo in Basel?</div></div></div>
+          <div class="cmt"><div class="av"></div><div class="bub"><div class="nm">@studio.basel</div><div class="tx">Bei uns ☺ Termin über den Button oben.</div></div></div>
+        </div>
+      </div>
+      <!-- legend -->
+      <div class="legend">
+        <h3>Anatomy — in scroll order</h3>
+        <ol>
+          <li><span class="ft"><b>Hero</b><span>Photo or TikTok (tap → play)</span></span><span class="tg tg-keep">kept</span></li>
+          <li><span class="ft"><b>Source · author · date</b></span><span class="tg tg-keep">kept</span></li>
+          <li><span class="ft"><b>Like (+count) · Save · Share</b></span><span class="tg tg-keep">kept</span></li>
+          <li><span class="ft"><b>Title · tags · maintenance</b><span>Low/Med/High = semantic colour (kept)</span></span><span class="tg tg-solen">solen</span></li>
+          <li><span class="ft"><b>AI description</b></span><span class="tg tg-solen">solen</span></li>
+          <li><span class="ft"><b>Salon script</b><span>Copy / WhatsApp to your stylist</span></span><span class="tg tg-solen">solen ★</span></li>
+          <li><span class="ft"><b>Products for this look</b></span><span class="tg tg-solen">solen</span></li>
+          <li><span class="ft"><b>Book this look</b><span>The funnel — one tap from any look</span></span><span class="tg tg-solen">solen ★</span></li>
+          <li><span class="ft"><b>Pick your stylist</b><span>Anyone, or a named stylist's portfolio</span></span><span class="tg tg-solen">solen ★</span></li>
+          <li><span class="ft"><b>More like this</b><span>Continuing masonry (Move 2)</span></span><span class="tg tg-new">new</span></li>
+          <li><span class="ft"><b>Related videos</b></span><span class="tg tg-keep">kept</span></li>
+          <li><span class="ft"><b>Technical cut guide</b><span>Collapsible — for the pro</span></span><span class="tg tg-solen">solen</span></li>
+          <li><span class="ft"><b>Comments</b></span><span class="tg tg-keep">kept</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">
+    Placeholders via picsum.photos (generic photos — real feed photos are salon content). Chrome is mono per LOCKFILE §1/§1.5; photos carry the only colour, plus the kept category-badge identity. Booking CTA appears on every look — the conversion path is never more than one tap from inspiration.
+  </div>
+
+</div>
+</body>
+</html>

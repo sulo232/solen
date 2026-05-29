@@ -67,7 +67,7 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
         {/* "Anyone" option */}
         <button
           onClick={() => onSelect(null)}
-          className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-[--raised] border border-s-ink/5 hover:border-s-accent/30 transition-colors duration-150 text-left"
+          className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-[--raised] border border-s-ink/5 hover:border-s-ink/30 transition-colors duration-150 text-left"
         >
           <div className="w-10 h-10 rounded-full bg-s-ink/5 flex items-center justify-center text-s-ink/30">
             <Star size={16} />
@@ -81,7 +81,7 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
           <div key={member.id}>
             <button
               onClick={() => setExpanded(expanded === member.id ? null : member.id)}
-              className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-[--raised] border border-s-ink/5 hover:border-s-accent/30 transition-colors duration-150 text-left"
+              className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-[--raised] border border-s-ink/5 hover:border-s-ink/30 transition-colors duration-150 text-left"
             >
               <div className="w-10 h-10 rounded-full bg-s-ink/5 overflow-hidden shrink-0">
                 {member.avatar_url ? (
