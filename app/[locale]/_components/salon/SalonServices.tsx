@@ -112,8 +112,9 @@ export function SalonServices({
         </div>
       )}
 
-      {/* MOBILE — divider list */}
-      <ul className="mt-5 divide-y divide-s-border md:hidden">
+      {/* MOBILE — spaced bordered cards (same card as desktop per V3-D227, so
+          the rounded cards need a gap, not divide-y which stacked them flush) */}
+      <ul className="mt-5 space-y-3 md:hidden">
         {shown.map((s) => (
           <ServiceRow key={s.id} service={s} locale={locale} slug={slug} variant="mobile" />
         ))}
