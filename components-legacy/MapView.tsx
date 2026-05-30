@@ -209,14 +209,12 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
         const salonId = props.salonId as string;
         const minPrice = props.minPrice as number | null;
         const isSelected = salonId === selectedId;
-        const rating = Number((props as { rating?: number }).rating ?? 0);
 
         if (minPrice && minPrice > 0) {
-          // V3-D383 (council): crisp 2-layer shadow; the selected pill lifts bigger
-          // with a deeper shadow so it visibly pops; a gold star on highly-rated
-          // venues (>=4.7) earns its pixels as information, not decoration.
+          // V3-D386 (user): price-only pill, no star. Crisp 2-layer shadow; the
+          // selected pill lifts bigger with a deeper shadow so it visibly pops.
           inner.style.cssText += `
-            display:flex;align-items:center;gap:3px;justify-content:center;
+            display:flex;align-items:center;justify-content:center;
             padding:${isSelected ? "6px 12px" : "5px 11px"};border-radius:9999px;
             font-size:${isSelected ? "13px" : "12.5px"};font-weight:600;white-space:nowrap;
             box-shadow:${isSelected
@@ -226,13 +224,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
             color:${isSelected ? "#ffffff" : "#0A0A0A"};
             border:1px solid ${isSelected ? "#0A0A0A" : "rgba(10,10,10,0.10)"};
           `;
-          if (rating >= 4.7) {
-            const star = document.createElement("span");
-            star.textContent = "★";
-            star.style.color = "#FFC32B";
-            inner.appendChild(star);
-          }
-          inner.appendChild(document.createTextNode(`ab ${formatCurrency(minPrice)}`));
+          inner.textContent = `ab ${formatCurrency(minPrice)}`;
         } else {
           inner.style.cssText += `
             width:13px;height:13px;border-radius:50%;background:#0A0A0A;

@@ -380,6 +380,14 @@ export default function SearchTemplate({
   const minRating = minRatingParam ? Number(minRatingParam) : null;
   const minPrice = searchParams.get("min_price") ? Number(searchParams.get("min_price")) : null;
   const maxPrice = searchParams.get("max_price") ? Number(searchParams.get("max_price")) : null;
+  // V3-D386: Fresha-style dropdown filter pills, shared by the list chrome + the map
+  // sheet. Each opens the full FilterSheet; ink-filled when that filter is active.
+  const sortLbl = SORT_OPTIONS.find((o) => o.value === sort)?.label ?? SORT_OPTIONS[0].label;
+  const filterPills = [
+    { key: "sort", label: sortLbl, active: !!sort && sort !== "rating" },
+    { key: "price", label: PRICE_HEADING[locale] ?? PRICE_HEADING.de, active: minPrice != null || maxPrice != null },
+    { key: "rating", label: minRating ? `${minRating}+` : tFilter("ratingHeading"), active: minRating != null },
+  ];
   // V3-D385: user location for the "Entfernung" (distance) sort, captured via the
   // browser's native permission prompt. Held in STATE — precise geo shouldn't live
   // in a shareable/loggable page URL; it's injected into the API fetch only.
@@ -418,35 +426,6 @@ export default function SearchTemplate({
   // selects its card; swiping the collapsed card stub selects + recenters the
   // matching pin (MapView already ink-fills selectedId + easeTo-recenters).
   const [mapSelectedId, setMapSelectedId] = React.useState<string | null>(null);
-  const mapSwiperRef = React.useRef<HTMLDivElement | null>(null);
-  const swiperScrollTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const scrollSwiperTo = (id: string) => {
-    const row = mapSwiperRef.current;
-    if (!row) return;
-    const el = row.querySelector<HTMLElement>(`[data-salon="${id}"]`);
-    if (el) row.scrollTo({ left: el.offsetLeft - row.offsetWidth * 0.07, behavior: "smooth" });
-  };
-  const selectMapSalon = (id: string, fromSwiper?: boolean) => {
-    setMapSelectedId(id);
-    if (!fromSwiper) scrollSwiperTo(id);
-  };
-  // Centered card of the collapsed swiper drives pin selection (debounced).
-  const onSwiperScroll = () => {
-    const row = mapSwiperRef.current;
-    if (!row) return;
-    if (swiperScrollTimer.current) clearTimeout(swiperScrollTimer.current);
-    swiperScrollTimer.current = setTimeout(() => {
-      const mid = row.scrollLeft + row.offsetWidth / 2;
-      let best: string | null = null;
-      let bd = Infinity;
-      row.querySelectorAll<HTMLElement>("[data-salon]").forEach((el) => {
-        const c = el.offsetLeft + el.offsetWidth / 2;
-        const d = Math.abs(c - mid);
-        if (d < bd) { bd = d; best = el.dataset.salon ?? null; }
-      });
-      if (best && best !== mapSelectedId) selectMapSalon(best, true);
-    }, 90);
-  };
   const onSheetPointerDown = (e: React.PointerEvent) => {
     const { peek } = sheetSnaps();
     sheetDragRef.current = { startY: e.clientY, startTop: sheetTopPx ?? peek, moved: false };
@@ -880,63 +859,29 @@ export default function SearchTemplate({
             className="scrollbar-none flex min-w-0 flex-1 items-center gap-2 overflow-x-auto"
             style={{ scrollbarWidth: "none" }}
           >
-            {(() => {
-              // Single descriptor list; partition active-first. Each writes the
-              // SAME URL param the FilterSheet writes (single source of truth).
-              // V3-D384: only the filters that actually work + matter (Fresha/Airbnb
-              // pattern). Dropped open_now (API ignores it), walk_in (column/feature
-              // not live), instant_bookable (confusing on a booking platform). Price
-              // + Sort live in the FilterSheet.
-              const chips = [
-                {
-                  key: "min_rating",
-                  label: tChrome("topRated"),
-                  active: minRating === 4.5,
-                  onClick: () => updateParam("min_rating", minRating === 4.5 ? null : "4.5"),
-                },
-                {
-                  key: "deals",
-                  label: tChrome("deals"),
-                  active: deals,
-                  onClick: () => toggleBooleanParam("deals", deals),
-                },
-              ];
-              const activeChips = chips.filter((c) => c.active);
-              const inactiveChips = chips.filter((c) => !c.active);
-              const renderChip = (c: (typeof chips)[number]) => (
+            {/* V3-D386: dropdown filter pills (match the map sheet). Sort lives in
+                the dedicated sort dropdown below, so the row shows Preis + Bewertung. */}
+            {filterPills
+              .filter((p) => p.key !== "sort")
+              .map((p) => (
                 <button
-                  key={c.key}
+                  key={p.key}
                   type="button"
-                  onClick={c.onClick}
-                  aria-pressed={c.active}
+                  onClick={() => setFilterSheetOpen(true)}
+                  aria-haspopup="dialog"
                   className={cn(
-                    "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-pill px-3.5",
-                    "font-body text-[13.5px] font-medium leading-none",
-                    "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
-                    "active:scale-[0.97] active:duration-[80ms]",
+                    "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
+                    "transition-[background-color,border-color,color] duration-150 ease-glide",
                     "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-                    c.active
+                    p.active
                       ? "border border-s-ink bg-s-ink text-white"
                       : "border border-s-border bg-white text-s-ink hover:border-s-ink",
                   )}
                 >
-                  {c.active && <Check size={14} strokeWidth={2.5} aria-hidden />}
-                  {c.label}
+                  {p.label}
+                  <ChevronDown size={14} strokeWidth={2} className={p.active ? "opacity-80" : "opacity-50"} aria-hidden />
                 </button>
-              );
-              return (
-                <>
-                  {activeChips.map(renderChip)}
-                  {activeChips.length > 0 && inactiveChips.length > 0 && (
-                    <span
-                      className="h-5 w-px shrink-0 bg-s-border"
-                      aria-hidden
-                    />
-                  )}
-                  {inactiveChips.map(renderChip)}
-                </>
-              );
-            })()}
+              ))}
             {/* V3-D352 (2026-05-28): filter button is the LAST item INSIDE the
                 scroll, so it sits at the very end of the chip row (reached by
                 scrolling to the end) rather than pinned to the right edge. */}
@@ -1301,7 +1246,6 @@ export default function SearchTemplate({
         // centered card selects + recenters the matching pin (Google/Apple-Maps pattern).
         const snaps = sheetSnaps();
         const curTop = sheetTopPx ?? snaps.peek;
-        const isCollapsed = curTop >= (snaps.peek + snaps.collapsed) / 2;
         const cardProps = (s: (typeof salons)[number]) => ({
           slug: s.slug,
           name: s.name,
@@ -1321,10 +1265,6 @@ export default function SearchTemplate({
           isSaved: favoriteIds.has(s.id),
           salonId: s.id,
         });
-        const filterChips = [
-          { key: "min_rating", label: tChrome("topRated"), active: minRating === 4.5, onClick: () => updateParam("min_rating", minRating === 4.5 ? null : "4.5") },
-          { key: "deals", label: tChrome("deals"), active: deals, onClick: () => toggleBooleanParam("deals", deals) },
-        ];
         const mapOverlay = (
           <div className="fixed inset-0 z-[60] bg-s-bg-base md:hidden">
             {/* V3-D382: FULL-BLEED map — the overlay covers the global header, so
@@ -1333,13 +1273,7 @@ export default function SearchTemplate({
               <MapView
                 salons={salons as never}
                 selectedId={mapSelectedId ?? undefined}
-                onSelect={(id) => {
-                  // tap a pin → select it + drop the sheet to the swipeable stub,
-                  // centered on that venue (after the stub mounts).
-                  setMapSelectedId(id);
-                  setSheetTopPx(sheetSnaps().collapsed);
-                  setTimeout(() => scrollSwiperTo(id), 60);
-                }}
+                onSelect={(id) => setMapSelectedId(id)}
                 enhanced
               />
             </div>
@@ -1376,82 +1310,50 @@ export default function SearchTemplate({
               )}
               style={{ top: `${curTop}px` }}
             >
+              {/* V3-D386: bigger grab area so the handle is easy to drag. */}
               <div
                 onPointerDown={onSheetPointerDown}
                 onPointerMove={onSheetPointerMove}
                 onPointerUp={onSheetPointerUp}
-                className="flex shrink-0 cursor-grab touch-none items-center justify-center py-3.5 active:cursor-grabbing"
+                className="flex shrink-0 cursor-grab touch-none items-center justify-center pb-2 pt-5 active:cursor-grabbing"
                 role="button"
                 aria-label="Liste ziehen"
               >
-                <span className="h-1 w-10 rounded-full bg-s-ink/25" aria-hidden />
+                <span className="h-1.5 w-11 rounded-full bg-s-ink/25" aria-hidden />
               </div>
 
-              {isCollapsed ? (
-                // collapsed: mostly map + horizontal swipeable card stub
-                <div
-                  ref={mapSwiperRef}
-                  onScroll={onSwiperScroll}
-                  className="scrollbar-none flex flex-1 snap-x snap-mandatory items-start gap-3 overflow-x-auto px-4 pb-5 pt-1"
-                  style={{ scrollbarWidth: "none" }}
-                >
-                  {salons.map((s) => (
-                    <div
-                      key={s.id}
-                      data-salon={s.id}
-                      className={cn(
-                        "w-[86%] shrink-0 snap-center rounded-2xl",
-                        mapSelectedId === s.id && "outline outline-2 outline-s-ink outline-offset-2",
-                      )}
-                    >
-                      <SalonResultCard variant="list" {...cardProps(s)} />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <>
-                  {/* filter pills — reuse the list-chrome handlers (one source of truth) */}
-                  <div
-                    className="scrollbar-none flex shrink-0 items-center gap-2 overflow-x-auto px-4 pb-2 pt-1"
-                    style={{ scrollbarWidth: "none" }}
+              {/* V3-D386: no collapsed swiper — the sheet just lowers over the map
+                  (Fresha). Always the dropdown filter pills + count + vertical list. */}
+              <div
+                className="scrollbar-none flex shrink-0 items-center gap-2 overflow-x-auto px-4 pb-2.5 pt-1"
+                style={{ scrollbarWidth: "none" }}
+              >
+                {filterPills.map((p) => (
+                  <button
+                    key={p.key}
+                    type="button"
+                    onClick={() => setFilterSheetOpen(true)}
+                    aria-haspopup="dialog"
+                    className={cn(
+                      "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none transition-colors",
+                      p.active
+                        ? "border border-s-ink bg-s-ink text-white"
+                        : "border border-s-border bg-white text-s-ink hover:border-s-ink",
+                    )}
                   >
-                    {filterChips.map((c) => (
-                      <button
-                        key={c.key}
-                        type="button"
-                        onClick={c.onClick}
-                        aria-pressed={c.active}
-                        className={cn(
-                          "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-pill px-3.5 font-body text-[13.5px] font-medium leading-none",
-                          c.active
-                            ? "border border-s-ink bg-s-ink text-white"
-                            : "border border-s-border bg-white text-s-ink hover:border-s-ink",
-                        )}
-                      >
-                        {c.active && <Check size={14} strokeWidth={2.5} aria-hidden />}
-                        {c.label}
-                      </button>
-                    ))}
-                    {/* V3-D382: filter button LAST — far right, reached by scrolling the chip row */}
-                    <button
-                      type="button"
-                      onClick={() => setFilterSheetOpen(true)}
-                      aria-label={tFilter("open")}
-                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border bg-white text-s-ink transition-colors hover:border-s-ink"
-                    >
-                      <SlidersHorizontal size={16} strokeWidth={2} aria-hidden />
-                    </button>
-                  </div>
-                  <div className="shrink-0 px-4 pb-1 pt-1 font-body text-[12.5px] text-s-ink-2">
-                    <span className="font-semibold text-s-ink">{salons.length}</span> Salons in diesem Bereich
-                  </div>
-                  <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8 pt-1">
-                    {salons.map((s) => (
-                      <SalonResultCard key={s.id} variant="card" {...cardProps(s)} />
-                    ))}
-                  </div>
-                </>
-              )}
+                    {p.label}
+                    <ChevronDown size={14} strokeWidth={2} className={p.active ? "opacity-80" : "opacity-50"} aria-hidden />
+                  </button>
+                ))}
+              </div>
+              <div className="shrink-0 px-4 pb-1 pt-1 font-body text-[12.5px] text-s-ink-2">
+                <span className="font-semibold text-s-ink">{salons.length}</span> Salons in diesem Bereich
+              </div>
+              <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8 pt-1">
+                {salons.map((s) => (
+                  <SalonResultCard key={s.id} variant="card" {...cardProps(s)} />
+                ))}
+              </div>
             </div>
           </div>
         );
