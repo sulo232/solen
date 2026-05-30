@@ -147,7 +147,7 @@ export default function WalkInPayPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
-        className="bg-white rounded-card max-w-md w-full p-6 shadow-v5-float"
+        className="bg-white rounded-card max-w-md w-full p-6 shadow-elevation-2"
       >
         {loading ? (
           <div className="flex items-center justify-center gap-1.5 py-14">
@@ -161,13 +161,10 @@ export default function WalkInPayPage() {
           </div>
         ) : paid ? (
           <div className="text-center py-8">
-            <div
-              className="w-16 h-16 rounded-[18px] mx-auto mb-5 flex items-center justify-center"
-              style={{ background: "rgba(27, 77, 27,.10)" }}
-            >
-              <Check size={26} className="text-s-accent" />
+            <div className="w-16 h-16 rounded-[18px] mx-auto mb-5 flex items-center justify-center bg-s-success/10">
+              <Check size={26} className="text-s-success" />
             </div>
-            <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-accent mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-ink-3 mb-2">
               Zahlung
             </p>
             <h2 className="font-heading text-lg text-s-ink mb-2">{l.paid}</h2>
@@ -175,13 +172,10 @@ export default function WalkInPayPage() {
           </div>
         ) : error ? (
           <div className="text-center py-8">
-            <div
-              className="w-16 h-16 rounded-[18px] mx-auto mb-5 flex items-center justify-center"
-              style={{ background: "rgba(243,168,100,.10)" }}
-            >
+            <div className="w-16 h-16 rounded-[18px] mx-auto mb-5 flex items-center justify-center bg-s-warning/10">
               <AlertTriangle size={26} className="text-s-warning" />
             </div>
-            <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-warning mb-2">
+            <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink-3 mb-2">
               Fehler
             </p>
             <p className="text-sm font-body text-s-ink/60">
@@ -191,21 +185,18 @@ export default function WalkInPayPage() {
         ) : booking ? (
           <>
             <div className="flex items-start gap-3 mb-6">
-              <div
-                className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
-                style={{ background: "rgba(27, 77, 27,.10)" }}
-              >
-                <CreditCard size={17} className="text-s-accent" />
+              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-s-ink/[0.04]">
+                <CreditCard size={17} className="text-s-ink" />
               </div>
               <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/50 mb-0.5">
+                <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink-3 mb-0.5">
                   Walk-in
                 </p>
                 <h1 className="font-heading text-lg text-s-ink">{l.title}</h1>
               </div>
             </div>
 
-            <div className="rounded-[12px] p-4 mb-6 space-y-3" style={{ background: "rgba(26,18,9,.03)" }}>
+            <div className="rounded-[12px] p-4 mb-6 space-y-3 bg-s-ink/[0.03]">
               {/* Salon row */}
               <div className="flex justify-between items-center">
                 <span className="text-[9px] font-heading uppercase tracking-[.12em] text-s-ink/50">{l.salon}</span>

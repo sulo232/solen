@@ -64,7 +64,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
 
   if (result?.success) {
     return (
-      <div className="rounded-[16px] bg-s-success/10 border border-s-success/20 p-5 text-center">
+      <div className="rounded-card bg-s-success/10 border border-s-success/20 p-5 text-center">
         <CheckCircle size={32} className="text-s-success mx-auto mb-3" />
         <h4 className="font-heading text-base font-semibold text-s-ink mb-1">
           {t("joinedSuccess")}

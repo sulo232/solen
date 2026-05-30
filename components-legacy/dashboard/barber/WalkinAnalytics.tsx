@@ -57,41 +57,41 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
       label: t("walkin_rate"),
       value: `${stats.total_walkins}/${stats.total_appointments}`,
       icon: Users,
-      color: "#1B4D1B",
+      color: "#276EF1",
       trend: trends?.walkins,
     },
     {
       label: t("avg_wait"),
       value: t("minutes", { minutes: stats.avg_wait_minutes }),
       icon: Clock,
-      color: "#6BA3C8",
+      color: "#276EF1",
       trend: trends?.waits,
     },
     {
       label: t("conversion_rate"),
       value: `${stats.conversion_rate}%`,
       icon: TrendingUp,
-      color: "#7BA688",
+      color: "#16A34A",
       trend: trends?.conversions,
     },
     {
       label: t("abandonment_rate"),
       value: `${stats.abandonment_rate}%`,
       icon: BarChart3,
-      color: "#F3A864",
+      color: "#D32F2F",
       trend: trends?.abandonments,
     },
     {
       label: t("chair_utilization"),
       value: `${stats.chair_utilization}%`,
       icon: Armchair,
-      color: "#4A1E3C",
+      color: "#276EF1",
       trend: undefined,
     },
   ] : [];
 
   return (
-    <div className="rounded-[16px] bg-white border border-s-ink/5 p-4">
+    <div className="rounded-card bg-white border border-s-ink/5 p-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-sm font-semibold text-s-ink">{t("title")}</h3>
         <div className="flex rounded-btn border border-s-ink/10 overflow-hidden">
@@ -102,7 +102,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
               onClick={() => setPeriod(p)}
               className={`px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                 period === p
-                  ? "bg-s-coral text-white"
+                  ? "bg-s-ink text-white"
                   : "text-s-ink/50 hover:bg-s-bg-surface"
               }`}
             >
@@ -119,8 +119,8 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {metrics.map((m) => (
-            <div key={m.label} className="bg-white rounded-[16px] border border-s-ink/5 p-4">
-              <p className="text-[11px] tracking-[0.2em] uppercase text-s-amber font-heading">
+            <div key={m.label} className="bg-white rounded-card border border-s-ink/5 p-4">
+              <p className="text-[11px] tracking-[0.2em] uppercase text-s-ink-3 font-heading">
                 {m.label}
               </p>
               <p className="text-2xl font-heading text-s-ink data-text mt-1">

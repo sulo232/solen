@@ -15,8 +15,8 @@ interface WalkinHourlyChartProps {
 }
 
 const HOURS = Array.from({ length: 13 }, (_, i) => i + 8); // 8..20
-const CHART_CORAL = "#1B4D1B"; // peak hour bar
-const CHART_AMBER = "#F3A864"; // standard hour bar
+const CHART_PEAK = "#276EF1"; // peak hour bar — accent blue (LOCKFILE §937 data-viz)
+const CHART_BASE = "#276EF1"; // standard hour bar — accent blue, dimmed via fillOpacity
 
 export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
   const t = useTranslations("dashboardBarber");
@@ -57,8 +57,8 @@ export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
     <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-[8px] bg-s-blue/10 flex items-center justify-center">
-            <Clock size={13} className="text-s-blue" />
+          <div className="w-7 h-7 rounded-[8px] bg-s-accent/10 flex items-center justify-center">
+            <Clock size={13} className="text-s-accent" />
           </div>
           <div>
             <p className="text-sm font-heading text-s-ink">
@@ -70,7 +70,7 @@ export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
           </div>
         </div>
         {peakHour !== null && (
-          <span className="text-[10px] font-heading text-s-coral bg-s-coral/[0.08] px-2 py-1 rounded-pill">
+          <span className="text-[10px] font-heading text-s-accent bg-s-accent/[0.08] px-2 py-1 rounded-pill">
             {t("peakHour", { hour: peakHour })}
           </span>
         )}
@@ -97,8 +97,8 @@ export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
               {data.map((entry) => (
                 <Cell
                   key={entry.hour}
-                  fill={entry.count === maxCount && maxCount > 0 ? CHART_CORAL : CHART_AMBER}
-                  fillOpacity={entry.count === 0 ? 0.2 : 1}
+                  fill={entry.count === maxCount && maxCount > 0 ? CHART_PEAK : CHART_BASE}
+                  fillOpacity={entry.count === 0 ? 0.15 : entry.count === maxCount && maxCount > 0 ? 1 : 0.45}
                 />
               ))}
             </Bar>
