@@ -278,9 +278,8 @@
     padding-left: 1rem;
     padding-right: 1rem;
     font-size: 1rem;       /* 16px — prevents iOS zoom-on-focus */
-    /* V3-D189 (2026-05-26, QUESTIONS.md#q4): Plus Jakarta Sans → Hanken Grotesk.
-       V2-D70-era leftover — body font is now Hanken, so input fonts must match. */
-    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    /* V3-D317: inputs use Geist — single-family with body (was Hanken leftover). */
+    font-family: "Geist", system-ui, -apple-system, sans-serif;
     color: var(--color-body);
     background: #ffffff;
     transition: border-color 200ms ease, box-shadow 200ms ease;
@@ -705,13 +704,13 @@ html {
   border: 1px solid rgba(26, 18, 9, 0.08) !important;
   border-radius: 20px !important;
   box-shadow: 0 8px 32px rgba(26,18,9,0.08), 0 24px 72px rgba(26,18,9,0.12) !important;
-  font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif !important;
+  font-family: "Geist", system-ui, -apple-system, sans-serif !important;
   padding: 24px !important;
   color: #1A1209 !important;
 }
 
 .solen-tour-popover .driver-popover-title {
-  font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif !important;
+  font-family: "Geist", system-ui, -apple-system, sans-serif !important;
   font-size: 1.25rem !important;
   font-weight: 700 !important;
   margin-bottom: 8px !important;

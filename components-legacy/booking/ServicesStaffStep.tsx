@@ -3,11 +3,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
-import { Plus, Check, ArrowUp, ArrowRight, ShoppingCart } from 'lucide-react';
+import { ArrowUp, ArrowRight, ShoppingCart, List, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useBooking } from '@/lib/booking-context';
 import { formatCurrency } from '@/lib/format-currency';
-import { StaffPicker } from '@/components-legacy/booking';
+import { StaffPicker, StaffListSheet } from '@/components-legacy/booking';
+import ToggleCircle from './ToggleCircle';
+import ServiceDetailSheet from './ServiceDetailSheet';
 import Spinner from '@/components-legacy/ui/Spinner';
 import type { SelectedService } from '@/lib/booking-state';
 import type { StaffMember } from '@/lib/types';
@@ -17,6 +19,7 @@ interface Service {
   name_de: string;
   name_en: string;
   category: string;
+  subcategory: string | null;
   duration_minutes: number;
   price: number;
   is_active: boolean;
@@ -25,10 +28,33 @@ interface Service {
   suitable_gender: string[] | null;
 }
 
+interface StaffService {
+  staff_member_id: string;
+  service_id: string;
+}
+interface ServiceAddon {
+  service_id: string;
+  addon_service_id: string;
+  sort_order: number | null;
+}
+interface ServiceOption {
+  id: string;
+  service_id: string;
+  name_de: string;
+  name_en: string;
+  price: number;
+  duration_minutes: number;
+  sort_order: number | null;
+}
+
 interface ServicesStaffStepProps {
   services: Service[];
   staffList: StaffMember[];
   salonId: string;
+  salonSlug: string;
+  staffServices: StaffService[];
+  serviceAddons: ServiceAddon[];
+  serviceOptions: ServiceOption[];
 }
 
 const catId = (category: string) => `cat-${category.replace(/[^a-z0-9]/gi, '-')}`;
@@ -37,13 +63,19 @@ export default function ServicesStaffStep({
   services,
   staffList,
   salonId,
+  salonSlug,
+  staffServices,
+  serviceAddons,
+  serviceOptions,
 }: ServicesStaffStepProps) {
   const t = useTranslations('booking.serviceSelection');
-  const tStaff = useTranslations('booking.staffSelection');
   const locale = useLocale();
   const { formData, updateFormData, goToStep } = useBooking();
   const [isChecking, setIsChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showCatSheet, setShowCatSheet] = useState(false);
+  const [showStaffList, setShowStaffList] = useState(false);
+  const [sheetServiceId, setSheetServiceId] = useState<string | null>(null);
 
   const selectedServiceIds = new Set(formData.services.map((s) => s.id));
   const hasSelectedServices = formData.services.length > 0;
@@ -75,10 +107,22 @@ export default function ServicesStaffStep({
     };
 
     if (selectedServiceIds.has(service.id)) {
+      // Deselecting a service also clears its selected add-ons — otherwise an
+      // add-on stays in the cart/total with no UI to see or remove it.
+      const addonIds = serviceAddons
+        .filter((a) => a.service_id === service.id)
+        .map((a) => a.addon_service_id);
+      const removeIds = new Set([service.id, ...addonIds]);
+      const removed = formData.services.filter((s) => removeIds.has(s.id));
+      const removedPrice = removed.reduce((sum, s) => sum + s.price, 0);
+      const removedDuration = removed.reduce(
+        (sum, s) => sum + s.duration_minutes,
+        0
+      );
       updateFormData({
-        services: formData.services.filter((s) => s.id !== service.id),
-        totalPrice: formData.totalPrice - service.price,
-        totalDuration: formData.totalDuration - service.duration_minutes,
+        services: formData.services.filter((s) => !removeIds.has(s.id)),
+        totalPrice: formData.totalPrice - removedPrice,
+        totalDuration: formData.totalDuration - removedDuration,
       });
     } else {
       updateFormData({
@@ -107,10 +151,133 @@ export default function ServicesStaffStep({
     setIsChecking(false);
   };
 
-  // Group services by category
-  const categories = Array.from(
-    new Map(services.map((s) => [s.category, s])).keys()
-  ).sort();
+  // #6: when a specific stylist is picked, show only the services they offer
+  // (fall back to all if that stylist has no mapped services).
+  const selStaffId = formData.selectedStaffId;
+  const stylistServiceIds =
+    selStaffId && selStaffId !== 'any'
+      ? new Set(
+          staffServices
+            .filter((m) => m.staff_member_id === selStaffId)
+            .map((m) => m.service_id)
+        )
+      : null;
+  const visibleServices =
+    stylistServiceIds && stylistServiceIds.size > 0
+      ? services.filter((s) => stylistServiceIds.has(s.id))
+      : services;
+
+  // #7: look up add-on services by id (from the full list, so add-ons still
+  // resolve even when the main list is filtered by stylist)
+  const serviceById = new Map(services.map((s) => [s.id, s]));
+
+  const toSel = (s: Service): SelectedService => ({
+    id: s.id,
+    name_de: s.name_de,
+    name_en: s.name_en,
+    price: s.price,
+    duration_minutes: s.duration_minutes,
+  });
+
+  // Commit the service + its chosen add-ons as one unit, rebuilding the cart
+  // from scratch so totals can't drift. Backs both "Add" and "Update".
+  const handleSheetConfirm = (
+    serviceId: string,
+    addonIds: string[],
+    optionId?: string | null
+  ) => {
+    const svc = serviceById.get(serviceId);
+    if (!svc) {
+      setSheetServiceId(null);
+      return;
+    }
+    // A chosen required option replaces the service's base price + duration.
+    const opt = optionId ? serviceOptions.find((o) => o.id === optionId) : null;
+    const svcLine: SelectedService = opt
+      ? {
+          id: svc.id,
+          name_de: svc.name_de,
+          name_en: svc.name_en,
+          price: opt.price,
+          duration_minutes: opt.duration_minutes,
+        }
+      : toSel(svc);
+    const ownAddonIds = serviceAddons
+      .filter((a) => a.service_id === serviceId)
+      .map((a) => a.addon_service_id);
+    const clear = new Set([serviceId, ...ownAddonIds]);
+    const kept = formData.services.filter((s) => !clear.has(s.id));
+    const additions = [
+      svcLine,
+      ...addonIds
+        .map((id) => serviceById.get(id))
+        .filter((s): s is Service => !!s)
+        .map(toSel),
+    ];
+    const next = [...kept, ...additions];
+    updateFormData({
+      services: next,
+      totalPrice: next.reduce((sum, s) => sum + s.price, 0),
+      totalDuration: next.reduce((sum, s) => sum + s.duration_minutes, 0),
+      ...(singleStaff ? { selectedStaffId: staffList[0].id } : {}),
+    });
+    setError(null);
+    setSheetServiceId(null);
+  };
+
+  const handleRemoveService = (serviceId: string) => {
+    const ownAddonIds = serviceAddons
+      .filter((a) => a.service_id === serviceId)
+      .map((a) => a.addon_service_id);
+    const clear = new Set([serviceId, ...ownAddonIds]);
+    const next = formData.services.filter((s) => !clear.has(s.id));
+    updateFormData({
+      services: next,
+      totalPrice: next.reduce((sum, s) => sum + s.price, 0),
+      totalDuration: next.reduce((sum, s) => sum + s.duration_minutes, 0),
+    });
+    setSheetServiceId(null);
+  };
+
+  // Active-sheet data
+  const sheetService = sheetServiceId
+    ? services.find((s) => s.id === sheetServiceId) ?? null
+    : null;
+  const sheetAddons = sheetService
+    ? serviceAddons
+        .filter((a) => a.service_id === sheetService.id)
+        .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+        .map((a) => serviceById.get(a.addon_service_id))
+        .filter((s): s is Service => !!s)
+    : [];
+  const sheetInitialAddonIds = sheetAddons
+    .filter((a) => selectedServiceIds.has(a.id))
+    .map((a) => a.id);
+  const sheetInCart = sheetService
+    ? selectedServiceIds.has(sheetService.id)
+    : false;
+  const sheetOptions = sheetService
+    ? serviceOptions
+        .filter((o) => o.service_id === sheetService.id)
+        .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+    : [];
+  const sheetCartLine = sheetService
+    ? formData.services.find((s) => s.id === sheetService.id) ?? null
+    : null;
+  const sheetInitialOptionId =
+    sheetCartLine && sheetOptions.length
+      ? sheetOptions.find(
+          (o) =>
+            o.price === sheetCartLine.price &&
+            o.duration_minutes === sheetCartLine.duration_minutes
+        )?.id ?? null
+      : null;
+
+  // Group by subcategory (Schnitt / Farbe / Styling / …) like the locked
+  // SalonServicesSheet, falling back to the top-level category. This is what
+  // populates the scrolling category pills.
+  const groupKey = (s: Service) => s.subcategory ?? s.category;
+  const categories = Array.from(new Set(visibleServices.map(groupKey))).sort();
 
   // Sticky category tabs — scroll-spy (matches Fresha: all sections stay in DOM)
   const [activeCat, setActiveCat] = useState<string>(categories[0] ?? '');
@@ -154,25 +321,61 @@ export default function ServicesStaffStep({
                 <button
                   key={cat}
                   onClick={() => goToCat(cat)}
-                  className={`shrink-0 px-4 py-2 rounded-full text-[13px] font-heading capitalize whitespace-nowrap transition-colors duration-150 ${
+                  className={`relative shrink-0 px-4 py-2 rounded-full text-[13px] font-heading capitalize whitespace-nowrap transition-colors duration-200 ${
                     isActive
-                      ? 'bg-s-ink text-white'
-                      : 'bg-[--raised] text-s-ink border border-s-ink/[0.12] hover:border-s-ink/25'
+                      ? 'text-white'
+                      : 'text-s-ink border border-s-ink/[0.12] hover:border-s-ink/25'
                   }`}
                 >
-                  {cat}
+                  {isActive && (
+                    <motion.span
+                      layoutId="bookingCatPill"
+                      className="absolute inset-0 rounded-full bg-s-ink"
+                      transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+                    />
+                  )}
+                  <span className="relative z-10">{cat}</span>
                 </button>
               );
             })}
+            {/* Fresha ☰ — opens the categories quick-jump sheet */}
+            <button
+              type="button"
+              onClick={() => setShowCatSheet(true)}
+              aria-label={t('categories')}
+              className="shrink-0 grid h-9 w-9 place-items-center rounded-full border border-s-ink/[0.12] text-s-ink transition-colors hover:border-s-ink/25"
+            >
+              <List size={17} strokeWidth={2} />
+            </button>
           </div>
         </div>
       )}
 
+      {/* Staff picker — top, always visible (stylist-first) */}
+      {!singleStaff && (
+        <div className="pt-5">
+          <div className="mb-1 flex items-center justify-end px-1">
+            <button
+              type="button"
+              onClick={() => setShowStaffList(true)}
+              className="font-body text-[14px] font-medium text-s-accent transition-opacity hover:opacity-80"
+            >
+              Alle ansehen
+            </button>
+          </div>
+          <StaffPicker
+            staffList={staffList}
+            selectedStaff={formData.selectedStaffId}
+            onSelect={handleSelectStaff}
+          />
+        </div>
+      )}
+
       {/* Services grouped by category */}
-      <div className="space-y-7 pt-5">
+      <div className={`space-y-7 pt-5 ${!singleStaff ? 'border-t border-s-ink/[0.06] mt-5' : ''}`}>
         {categories.map((category) => {
-          const categoryServices = services.filter(
-            (s) => s.category === category
+          const categoryServices = visibleServices.filter(
+            (s) => groupKey(s) === category
           );
           return (
             <section key={category} id={catId(category)} className="scroll-mt-[120px]">
@@ -181,17 +384,35 @@ export default function ServicesStaffStep({
               </h3>
               <div className="space-y-2.5">
                 {categoryServices.map((service) => {
-                  const isSelected = selectedServiceIds.has(service.id);
+                  const inCart = selectedServiceIds.has(service.id);
                   const desc = serviceDesc(service);
                   const gLabel = genderLabel(service);
+                  const ownAddons = serviceAddons.filter(
+                    (a) => a.service_id === service.id
+                  );
+                  const hasAddons = ownAddons.length > 0;
+                  const ownOptions = serviceOptions.filter(
+                    (o) => o.service_id === service.id
+                  );
+                  const hasOptions = ownOptions.length > 0;
+                  const minOptionPrice = hasOptions
+                    ? Math.min(...ownOptions.map((o) => o.price))
+                    : null;
+                  const selAddonCount = ownAddons.filter((a) =>
+                    selectedServiceIds.has(a.addon_service_id)
+                  ).length;
                   return (
                     <button
                       key={service.id}
-                      onClick={() => handleSelectService(service)}
-                      className={`w-full text-left p-4 rounded-input border-2 bg-[--raised] transition-[border-color] duration-200 ${
-                        isSelected
-                          ? 'border-s-accent'
-                          : 'border-s-ink/[0.08] hover:border-s-accent/30'
+                      onClick={() =>
+                        hasAddons || hasOptions
+                          ? setSheetServiceId(service.id)
+                          : handleSelectService(service)
+                      }
+                      className={`w-full text-left rounded-input border-2 bg-[--raised] p-4 transition-[border-color] duration-200 ${
+                        inCart
+                          ? 'border-s-ink'
+                          : 'border-s-ink/[0.08] hover:border-s-ink/30'
                       }`}
                     >
                       <h4 className="font-heading text-[15px] font-semibold text-s-ink leading-snug">
@@ -208,23 +429,17 @@ export default function ServicesStaffStep({
                       )}
                       <div className="flex items-center justify-between mt-3">
                         <span className="font-body font-bold text-[15px] text-s-ink tabular-nums">
-                          {formatCurrency(service.price, locale)}
+                          {hasOptions
+                            ? `${t('from')} ${formatCurrency(minOptionPrice!, locale)}`
+                            : formatCurrency(service.price, locale)}
                         </span>
-                        <span
-                          className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-colors duration-200 ${
-                            isSelected
-                              ? 'bg-s-accent text-white'
-                              : 'border border-s-ink/15 text-s-ink/50'
-                          }`}
-                          aria-hidden
-                        >
-                          {isSelected ? (
-                            <Check size={17} strokeWidth={2.5} />
-                          ) : (
-                            <Plus size={17} strokeWidth={2} />
-                          )}
-                        </span>
+                        <ToggleCircle selected={inCart} />
                       </div>
+                      {inCart && selAddonCount > 0 && (
+                        <p className="mt-2 text-[12px] font-medium text-s-ink">
+                          +{selAddonCount} {t('addOns')}
+                        </p>
+                      )}
                     </button>
                   );
                 })}
@@ -234,40 +449,17 @@ export default function ServicesStaffStep({
         })}
       </div>
 
-      {/* Staff picker — slides in after service selected, hidden for single-staff salons */}
-      <AnimatePresence>
-        {hasSelectedServices && !singleStaff && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <div className="border-t border-s-ink/[0.06] mt-7 pt-5">
-              <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 mb-3 px-1">
-                {tStaff('title')}
-              </p>
-              <StaffPicker
-                staffList={staffList}
-                selectedStaff={formData.selectedStaffId}
-                onSelect={handleSelectStaff}
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Inline error */}
       {error && (
         <p className="text-sm text-s-error text-center mt-4">{error}</p>
       )}
 
-      {/* Floating "X selected" pill — Fresha pattern, in s-accent */}
+      {/* Floating "X selected" pill — Fresha pattern, ink (matches selection language) */}
       {hasSelectedServices && (
         <div className="fixed left-0 right-0 bottom-[80px] z-40 flex justify-center px-4 pointer-events-none">
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="pointer-events-auto flex items-center gap-2 pl-4 pr-3.5 py-2 rounded-full bg-[--raised] border-[1.5px] border-s-accent text-s-accent text-[13px] font-heading font-semibold shadow-[0_6px_18px_-6px_rgba(24,92,224,0.42)]"
+            className="pointer-events-auto flex items-center gap-2 pl-4 pr-3.5 py-2 rounded-full bg-[--raised] border-[1.5px] border-s-ink text-s-ink text-[13px] font-heading font-semibold shadow-[0_6px_18px_-6px_rgba(10,10,10,0.22)]"
           >
             {formData.services.length} {t('selected')}
             <ArrowUp size={15} strokeWidth={2.4} />
@@ -299,6 +491,89 @@ export default function ServicesStaffStep({
           </button>
         </div>
       </div>
+
+      {/* Categories bottom sheet — Fresha ☰ quick-jump (IMG_4830) */}
+      <AnimatePresence>
+        {showCatSheet && (
+          <>
+            <motion.div
+              className="fixed inset-0 z-50 bg-black/40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowCatSheet(false)}
+            />
+            <motion.div
+              className="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl bg-white px-5 pt-3 pb-8"
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 32, stiffness: 320 }}
+            >
+              <div className="mx-auto mb-3 h-1 w-9 rounded-full bg-s-ink/15" />
+              <div className="mb-1 flex items-center justify-between">
+                <h3 className="font-heading text-lg font-bold text-s-ink">
+                  {t('categories')}
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setShowCatSheet(false)}
+                  aria-label={t('categories')}
+                  className="grid h-9 w-9 place-items-center rounded-full hover:bg-s-ink/[0.06]"
+                >
+                  <X size={20} className="text-s-ink" />
+                </button>
+              </div>
+              <div className="divide-y divide-s-ink/[0.06]">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => {
+                      goToCat(cat);
+                      setShowCatSheet(false);
+                    }}
+                    className={`w-full py-3.5 text-left text-[15px] capitalize ${
+                      cat === activeCat
+                        ? 'font-semibold text-s-ink'
+                        : 'text-s-ink/80'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Service detail sheet — Fresha options + add-ons (Variant A) */}
+      {sheetService && (
+        <ServiceDetailSheet
+          service={sheetService}
+          addons={sheetAddons}
+          options={sheetOptions}
+          initialAddonIds={sheetInitialAddonIds}
+          initialOptionId={sheetInitialOptionId}
+          isInCart={sheetInCart}
+          locale={locale}
+          onConfirm={handleSheetConfirm}
+          onRemove={handleRemoveService}
+          onClose={() => setSheetServiceId(null)}
+        />
+      )}
+
+      {/* Full-screen "Select professional" list (Fresha pattern) */}
+      {showStaffList && (
+        <StaffListSheet
+          staffList={staffList}
+          selectedStaff={formData.selectedStaffId}
+          onSelect={handleSelectStaff}
+          onClose={() => setShowStaffList(false)}
+          salonSlug={salonSlug}
+        />
+      )}
     </div>
   );
 }

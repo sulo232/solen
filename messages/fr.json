@@ -912,8 +912,25 @@
       "items": "article(s)",
       "menOnly": "Hommes uniquement",
       "womenOnly": "Femmes uniquement",
+      "addOns": "Compléments",
+      "from": "dès",
+      "chooseOption": "Choisis une option",
+      "required": "Obligatoire",
+      "subtotal": "Sous-total",
+      "categories": "Catégories",
+      "add": "Ajouter",
+      "update": "Mettre à jour",
+      "remove": "Supprimer",
+      "optional": "Optionnel",
+      "close": "Fermer",
       "continue": "Continuer",
       "selectAtLeastOne": "Veuillez sélectionner au moins un service."
+    },
+    "leave": {
+      "title": "Voulez-vous vraiment quitter cette réservation ?",
+      "subtitle": "Toutes les sélections seront perdues.",
+      "cancel": "Annuler",
+      "exit": "Oui, quitter"
     },
     "staffSelection": {
       "title": "Quel styliste préférez-vous ?",
@@ -926,7 +943,8 @@
       "subtitle": "Sélectionnez une date pour votre rendez-vous",
       "back": "Retour",
       "continue": "Continuer",
-      "selectDate": "Veuillez sélectionner une date"
+      "selectDate": "Veuillez sélectionner une date",
+      "pickDate": "Choisis une date"
     },
     "timeSelection": {
       "title": "Sélectionnez une heure",

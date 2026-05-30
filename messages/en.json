@@ -928,8 +928,25 @@
       "items": "item(s)",
       "menOnly": "Men only",
       "womenOnly": "Women only",
+      "addOns": "Add-ons",
+      "from": "from",
+      "chooseOption": "Choose an option",
+      "required": "Required",
+      "subtotal": "Subtotal",
+      "categories": "Categories",
+      "add": "Add",
+      "update": "Update",
+      "remove": "Remove",
+      "optional": "Optional",
+      "close": "Close",
       "continue": "Continue",
       "selectAtLeastOne": "Please select at least one service."
+    },
+    "leave": {
+      "title": "Are you sure you want to leave this booking?",
+      "subtitle": "All selections will be lost.",
+      "cancel": "Cancel",
+      "exit": "Yes, exit"
     },
     "staffSelection": {
       "title": "Which stylist would you prefer?",
@@ -942,7 +959,8 @@
       "subtitle": "Select a date for your appointment",
       "back": "Back",
       "continue": "Continue",
-      "selectDate": "Please select a date"
+      "selectDate": "Please select a date",
+      "pickDate": "Select a date"
     },
     "timeSelection": {
       "title": "Select a time",

@@ -38,7 +38,7 @@ export async function GET(
       .select("id, rating, comment, created_at, profiles(display_name, avatar_url), review_photos(id, photo_url)")
       .eq("staff_member_id", id)
       .order("created_at", { ascending: false })
-      .limit(10),
+      .limit(100),
   ]);
 
   return NextResponse.json({
@@ -47,11 +47,14 @@ export async function GET(
       name: staff.name,
       avatar_url: staff.avatar_url,
       specialties: staff.specialties,
+      languages: staff.languages,
       bio: staff.bio,
       instagram_url: staff.instagram_url,
       years_experience: staff.years_experience,
       average_rating: staff.average_rating,
       review_count: staff.review_count,
+      appointments_completed: staff.appointments_completed,
+      clients_served: staff.clients_served,
       salon_name: staff.salons?.name,
       salon_slug: staff.salons?.slug,
       salon_categories: staff.salons?.categories,

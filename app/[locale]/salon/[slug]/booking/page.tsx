@@ -4,10 +4,12 @@ import { getTranslations } from 'next-intl/server';
 import { createAdminSupabaseClient } from '@/lib/supabase';
 import { BookingProvider } from '@/lib/booking-context';
 import { BookingWizard } from '@/components-legacy/booking';
+import BookingExitButton from '@/components-legacy/booking/BookingExitButton';
 import type { StaffMember, Salon } from '@/lib/types';
 
 interface BookingSalonPageProps {
   params: Promise<{ locale: string; slug: string }>;
+  searchParams: Promise<{ staff?: string }>;
 }
 
 export async function generateMetadata({
@@ -23,8 +25,10 @@ export async function generateMetadata({
 
 export default async function BookingSalonPage({
   params,
+  searchParams,
 }: BookingSalonPageProps) {
   const { locale, slug } = await params;
+  const { staff: staffParam } = await searchParams;
   const supabase = createAdminSupabaseClient();
   const t = await getTranslations({ locale, namespace: 'booking' });
 
@@ -47,7 +51,7 @@ export default async function BookingSalonPage({
   const { data: services, error: servicesError } = await supabase
     .from('services')
     .select(
-      'id, name_de, name_en, category, duration_minutes, price, is_active, description_de, description_en, suitable_gender'
+      'id, name_de, name_en, category, subcategory, duration_minutes, price, is_active, description_de, description_en, suitable_gender'
     )
     .eq('salon_id', salon.id)
     .eq('is_active', true)
@@ -61,7 +65,7 @@ export default async function BookingSalonPage({
   const { data: staffRaw, error: staffError } = await supabase
     .from('staff_members')
     .select(
-      `id, name, avatar_url, specialties, is_active, average_rating`
+      `id, name, avatar_url, specialties, is_active, average_rating, languages`
     )
     .eq('salon_id', salon.id)
     .eq('is_active', true)
@@ -73,21 +77,65 @@ export default async function BookingSalonPage({
 
   const staff = staffRaw as StaffMember[];
 
+  // Preselect a stylist when arriving from the PDP "Team" section (?staff=<id>).
+  // Validated against the real staff list so a bogus param is ignored.
+  const initialStaffId =
+    staffParam && staff.some((s) => s.id === staffParam) ? staffParam : undefined;
+
+  // Phase 3 data: stylist↔service map (#6 filter) + service add-ons (#7 expand).
+  // Enhancement data — degrade gracefully, never block booking if absent.
+  const staffIds = staff.map((s) => s.id);
+  const serviceIds = (services as { id: string }[]).map((s) => s.id);
+  const staffServices = staffIds.length
+    ? (
+        await supabase
+          .from('staff_services')
+          .select('staff_member_id, service_id')
+          .in('staff_member_id', staffIds)
+      ).data ?? []
+    : [];
+  const serviceAddons = serviceIds.length
+    ? (
+        await supabase
+          .from('service_addons')
+          .select('service_id, addon_service_id, sort_order')
+          .in('service_id', serviceIds)
+      ).data ?? []
+    : [];
+  const serviceOptions = serviceIds.length
+    ? (
+        await supabase
+          .from('service_options')
+          .select(
+            'id, service_id, name_de, name_en, price, duration_minutes, sort_order'
+          )
+          .in('service_id', serviceIds)
+      ).data ?? []
+    : [];
+
   return (
-    <BookingProvider salonId={salon.id}>
+    <BookingProvider salonId={salon.id} initialStaffId={initialStaffId}>
       <div className="min-h-screen bg-[--base]">
         {/* Header with salon name */}
         <header className="sticky top-0 z-40 border-b border-s-ink/[0.06] bg-[--raised]">
-          <div className="max-w-2xl mx-auto px-4 py-4">
-            <h1 className="font-display text-xl text-s-ink">
+          <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+            <h1 className="font-heading text-lg font-semibold tracking-[-0.01em] text-s-ink truncate">
               {t('bookingAt', { salon: salon.name })}
             </h1>
+            <BookingExitButton slug={slug} />
           </div>
         </header>
 
         {/* Main content */}
         <main className="max-w-2xl mx-auto px-4 py-6">
-          <BookingWizard services={services} staffList={staff} salon={salon as Salon} />
+          <BookingWizard
+            services={services}
+            staffList={staff}
+            salon={salon as Salon}
+            staffServices={staffServices}
+            serviceAddons={serviceAddons}
+            serviceOptions={serviceOptions}
+          />
         </main>
       </div>
     </BookingProvider>

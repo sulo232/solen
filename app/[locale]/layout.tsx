@@ -15,6 +15,7 @@ import { ToastProvider } from "@/components-legacy/ui/Toast";
 import { Toaster } from "./_components/primitives/Toast";
 import Header from "./_components/layout/Header";
 import Footer from "./_components/layout/Footer";
+import HideInBooking from "./_components/layout/HideInBooking";
 // V3-D142 (2026-05-25): Revolut-style city-selector top bar. Sits above
 // the Header site-wide. Hides itself when user has dismissed (30-day cookie)
 // or when no city change is needed. Variant B from
@@ -95,12 +96,16 @@ export default async function LocaleLayout({
           {/* V3-D142 (2026-05-25): city-selector top bar sits above Header.
               Hidden once user dismisses (30-day cookie) — no-flash via
               client-side mount guard inside the component. */}
-          <CityTopBar locale={locale} />
-          <Header locale={locale} />
+          <HideInBooking>
+            <CityTopBar locale={locale} />
+            <Header locale={locale} />
+          </HideInBooking>
           <PageTransitionWrapper>
             <CompareProvider>
               <main id="main-content" tabIndex={-1} className="pb-[env(safe-area-inset-bottom)] isolate">
-                <Breadcrumb />
+                <HideInBooking>
+                  <Breadcrumb />
+                </HideInBooking>
                 {children}
               </main>
             </CompareProvider>
@@ -109,7 +114,9 @@ export default async function LocaleLayout({
               so it renders site-wide (not just homepage). Replaces the
               legacy components-legacy/layout/Footer.tsx which was never
               mounted in the V3 rebuild. */}
-          <Footer locale={locale} />
+          <HideInBooking>
+            <Footer locale={locale} />
+          </HideInBooking>
           {/* BottomTabBar removed from web rendering 2026-05-03 per Q58
               ("No bottom nav (web-only decision); bottom-nav components
               deprecated for web rendering. Mobile native/PWA can re-introduce

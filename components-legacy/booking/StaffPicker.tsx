@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Star, Shuffle } from "lucide-react";
+import { Shuffle, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { StaffMember } from "@/lib/types";
 
@@ -11,78 +11,93 @@ interface StaffPickerProps {
   onSelect: (staffId: string) => void;
 }
 
+/**
+ * StaffPicker — booking stylist row (Fresha team-list look).
+ *   • 88px avatar, selected = hugging ink ring (matches the service-card border).
+ *   • Gold ★ rating PILL overlapping the avatar's bottom edge (Fresha).
+ *   • name + role (first specialty).
+ * Carousel has pt/pb so neither the ring (top) nor the pill (bottom) clip.
+ */
 export default function StaffPicker({ staffList, selectedStaff, onSelect }: StaffPickerProps) {
   const t = useTranslations("staffPicker") as any;
-
   if (staffList.length === 0) return null;
 
-  return (
-    <div className="px-4 pt-4">
-      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/40 mb-3">
-        {t("title")}
-      </p>
-      <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
-        {/* "Egal" option */}
-        <button
-          onClick={() => onSelect("any")}
-          aria-label={t("any")}
-          className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-[14px] border transition-[border-color,background-color,box-shadow,transform] duration-150 ${
-            selectedStaff === "any"
-              ? "border-s-accent ring-2 ring-s-accent/30 bg-s-ink/[0.06]"
-              : "border-s-ink/[0.08] bg-[--raised] hover:-translate-y-[5px] hover:shadow-v5-card-hover hover:border-s-accent/40 transition-[transform,box-shadow,border-color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
-          }`}
-          style={{ minWidth: "90px" }}
-        >
-          <div className="w-12 h-12 rounded-full bg-s-accent-pale flex items-center justify-center">
-            <Shuffle size={18} className="text-s-accent" />
-          </div>
-          <span className="text-xs font-heading text-s-ink text-center leading-tight max-w-[80px]">{t("any")}</span>
-        </button>
+  const circle = (sel: boolean) =>
+    `h-[88px] w-[88px] rounded-full grid place-items-center overflow-hidden bg-s-bg-sunken ${
+      sel ? "ring-2 ring-s-ink" : ""
+    }`;
 
-        {/* Staff cards */}
-        {staffList.map((s) => (
+  const Pill = ({ rating }: { rating: number }) => (
+    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 inline-flex items-center gap-0.5 rounded-full bg-white px-2 py-[3px] shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]">
+      <Star size={11} fill="#FFC32B" stroke="none" />
+      <span className="text-[12px] font-semibold leading-none tabular-nums text-s-ink">
+        {rating.toFixed(1)}
+      </span>
+    </span>
+  );
+
+  return (
+    <div className="-mx-4 px-4 flex gap-4 overflow-x-auto pt-2 pb-3 scrollbar-hide">
+      {/* Keine Präferenz */}
+      <button
+        onClick={() => onSelect("any")}
+        aria-label={t("any")}
+        className="shrink-0 flex flex-col items-center w-[88px]"
+      >
+        <div className="relative">
+          <div className={circle(selectedStaff === "any")}>
+            <Shuffle size={28} className="text-s-ink-2" strokeWidth={2} />
+          </div>
+        </div>
+        <span className="mt-3 text-[14px] font-body font-medium text-s-ink text-center leading-tight">
+          {t("any")}
+        </span>
+      </button>
+
+      {/* Staff */}
+      {staffList.map((s) => {
+        const rating =
+          s.average_rating != null && s.average_rating > 0 ? s.average_rating : null;
+        const role = s.specialties?.[0] ?? null;
+        return (
           <button
             key={s.id}
             onClick={() => onSelect(s.id)}
-            className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-[14px] border transition-[border-color,background-color,box-shadow,transform] duration-150 ${
-              selectedStaff === s.id
-                ? "border-s-accent ring-2 ring-s-accent/30 bg-s-ink/[0.06]"
-                : "border-s-ink/[0.08] bg-[--raised] hover:-translate-y-[5px] hover:shadow-v5-card-hover hover:border-s-accent/40 transition-[transform,box-shadow,border-color] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
-            }`}
-            style={{ minWidth: "90px" }}
+            className="shrink-0 flex flex-col items-center w-[88px]"
           >
-            <div className="w-12 h-12 rounded-full bg-s-bg-sunken overflow-hidden flex items-center justify-center">
-              {s.avatar_url ? (
-                <Image
-                  src={s.avatar_url}
-                  alt={s.name}
-                  width={48}
-                  height={48}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-sm font-bold text-s-ink/20">
-                  {s.name[0]}
-                </span>
-              )}
+            <div className="relative">
+              <div className={circle(selectedStaff === s.id)}>
+                {s.avatar_url ? (
+                  <Image
+                    src={s.avatar_url}
+                    alt={s.name}
+                    width={88}
+                    height={88}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="font-display text-[30px] font-semibold text-s-ink-2">
+                    {s.name.charAt(0).toUpperCase()}
+                  </span>
+                )}
+              </div>
+              {rating != null && <Pill rating={rating} />}
             </div>
-            <span className="text-xs font-heading text-s-ink text-center leading-tight max-w-[80px] truncate">
+            <span
+              className={`text-[14px] font-body font-medium text-s-ink text-center leading-tight truncate max-w-[88px] ${
+                rating != null ? "mt-4" : "mt-3"
+              }`}
+            >
               {s.name}
             </span>
-            {s.specialties?.length > 0 && (
-              <span className="text-[10px] text-s-ink/40 text-center leading-tight max-w-[80px] truncate">
-                {s.specialties[0]}
-              </span>
-            )}
-            {s.average_rating != null && s.average_rating > 0 && (
-              <span className="flex items-center gap-0.5 text-[10px] text-s-ink/50">
-                <Star size={8} className="fill-s-amber text-s-amber" />
-                <span className="data-text">{s.average_rating.toFixed(1)}</span>
+            {role && (
+              <span className="text-[12px] text-s-ink-2 text-center leading-tight truncate max-w-[88px]">
+                {role}
               </span>
             )}
           </button>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }

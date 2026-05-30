@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { Star } from "lucide-react";
 import type { StaffMember } from "./_shared";
 import { cn } from "@/lib/utils";
@@ -36,35 +37,46 @@ import { cn } from "@/lib/utils";
 export function SalonTeam({
   staff,
   salonAverageRating,
+  slug,
+  locale,
 }: {
   staff: StaffMember[];
   salonAverageRating: number | null;
+  slug: string;
+  locale: string;
 }) {
   if (staff.length === 0) return null;
 
   return (
-    <section id="section-team">
-      {/* V3-D234: title row with "Alle ansehen" link top-right, h2 24/600 */}
+    <section
+      id="section-team"
+      className="overflow-hidden rounded-3xl bg-s-bg-sunken p-5 md:p-7"
+    >
+      {/* Title row + "Alle ansehen" → opens the booking flow's stylist picker */}
       <div className="flex items-baseline justify-between">
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
           Team
         </h2>
-        {/* Link goes nowhere meaningful yet — placeholder href; wire when
-            full-team booking surface exists. */}
-        {/* V3-D335 (overnight T3): decorative accent link label → ink-2 per §1.5 (decorative accent forbidden). */}
-        <span className="font-body text-[14px] font-medium text-s-ink-2 md:text-[15px]">
+        <Link
+          href={`/${locale}/salon/${slug}/booking`}
+          className="font-body text-[14px] font-medium text-s-accent transition-opacity hover:opacity-80 md:text-[15px]"
+        >
           Alle ansehen
-        </span>
+        </Link>
       </div>
 
-      {/* Horizontal carousel — fixed-width 120px cards, gap matches Fresha
-          (24px column-gap). Negative-margin keeps left edge flush with the
-          section padding. Snap-x for mobile thumb scroll. */}
-      <div className="-mx-4 mt-5 flex gap-6 overflow-x-auto px-4 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:px-0">
+      {/* Horizontal carousel — tapping a stylist opens their individual profile
+          (Fresha); "Alle ansehen" above opens the booking flow. Cards clip at the
+          panel's rounded edge as a subtle "scroll for more" cue. */}
+      <div className="mt-5 flex gap-5 overflow-x-auto pt-2 pb-3 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {staff.map((s) => (
-          <div key={s.id} className="w-[112px] shrink-0 snap-start md:w-[120px]">
+          <Link
+            key={s.id}
+            href={`/${locale}/salon/${slug}/staff/${s.id}`}
+            className="group w-[104px] shrink-0 snap-start md:w-[112px]"
+          >
             <TeamMember member={s} salonAverageRating={salonAverageRating} />
-          </div>
+          </Link>
         ))}
       </div>
     </section>
@@ -90,35 +102,35 @@ function TeamMember({
     <div className="flex flex-col items-center text-center">
       {/* Avatar — V3-D234: plain circle, no ring, no shadow. Bg s-bg-sunken
           for the empty-state container so the initial letter has contrast. */}
-      <div className="grid h-[88px] w-[88px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken md:h-[88px] md:w-[88px]">
-        {member.avatar_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={member.avatar_url}
-            alt=""
-            className="h-full w-full object-cover"
-            loading="lazy"
-          />
-        ) : (
-          // V3-D335 (overnight T3): avatar fallback initial accent → ink-2 (decorative accent forbidden §1.5).
-          <span className="font-display text-[32px] font-semibold text-s-ink-2">
-            {member.name.charAt(0).toUpperCase()}
+      {/* Avatar + Fresha rating pill overlapping the bottom edge */}
+      <div className="relative transition-transform duration-200 group-hover:scale-[1.04]">
+        <div className="grid h-[88px] w-[88px] place-items-center overflow-hidden rounded-full bg-white ring-1 ring-s-ink/[0.05]">
+          {member.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={member.avatar_url}
+              alt=""
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <span className="font-display text-[32px] font-semibold text-s-ink-2">
+              {member.name.charAt(0).toUpperCase()}
+            </span>
+          )}
+        </div>
+        {showRating && (
+          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 inline-flex items-center gap-0.5 rounded-full bg-white px-2 py-[3px] shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]">
+            <Star size={11} fill="#FFC32B" stroke="none" />
+            <span className={cn("text-[12px] font-semibold leading-none tabular-nums text-s-ink", !hasRating && "opacity-70")}>
+              {displayRating?.toFixed(1)}
+            </span>
           </span>
         )}
       </div>
 
-      {/* Rating — V3-D234: BELOW avatar (was floating badge ON avatar) */}
-      {showRating && (
-        <div className="mt-2.5 inline-flex items-center gap-1">
-          <Star size={12} fill="#FFC32B" stroke="none" />
-          <span className={cn("font-body text-[13px] font-normal text-s-ink-2", !hasRating && "opacity-70")}>
-            {displayRating?.toFixed(1)}
-          </span>
-        </div>
-      )}
-
       {/* Name */}
-      <div className="font-body mt-2 text-[14px] font-medium leading-tight text-s-ink md:text-[15px]">
+      <div className={`font-body text-[14px] font-medium leading-tight text-s-ink md:text-[15px] ${showRating ? "mt-4" : "mt-2.5"}`}>
         {member.name}
       </div>
 

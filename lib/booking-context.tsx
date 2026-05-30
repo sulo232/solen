@@ -52,8 +52,20 @@ function bookingReducer(state: typeof initialState, action: BookingAction) {
   }
 }
 
-export function BookingProvider({ children, salonId }: { children: ReactNode; salonId: string }) {
-  const [state, dispatch] = useReducer(bookingReducer, initialState);
+export function BookingProvider({
+  children,
+  salonId,
+  initialStaffId,
+}: {
+  children: ReactNode;
+  salonId: string;
+  initialStaffId?: string;
+}) {
+  const [state, dispatch] = useReducer(bookingReducer, initialState, (base) =>
+    initialStaffId
+      ? { ...base, formData: { ...base.formData, selectedStaffId: initialStaffId } }
+      : base
+  );
 
   const goToStep = (step: BookingStep) => {
     dispatch({ type: 'SET_STEP', payload: step });

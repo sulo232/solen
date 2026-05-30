@@ -938,8 +938,25 @@
       "items": "Artikel",
       "menOnly": "Nur Männer",
       "womenOnly": "Nur Frauen",
+      "addOns": "Dazu passend",
+      "from": "ab",
+      "chooseOption": "Wähle eine Option",
+      "required": "Erforderlich",
+      "subtotal": "Zwischensumme",
+      "categories": "Kategorien",
+      "add": "Hinzufügen",
+      "update": "Aktualisieren",
+      "remove": "Entfernen",
+      "optional": "Optional",
+      "close": "Schließen",
       "continue": "Weiter",
       "selectAtLeastOne": "Bitte wähle mindestens einen Service aus."
+    },
+    "leave": {
+      "title": "Möchtest du diese Buchung wirklich verlassen?",
+      "subtitle": "Alle Auswahlen gehen verloren.",
+      "cancel": "Abbrechen",
+      "exit": "Ja, verlassen"
     },
     "staffSelection": {
       "title": "Welcher Stylist darf's sein?",
@@ -952,7 +969,8 @@
       "subtitle": "Wähle ein Datum für deinen Termin",
       "back": "Zurück",
       "continue": "Weiter",
-      "selectDate": "Bitte wähle ein Datum aus"
+      "selectDate": "Bitte wähle ein Datum aus",
+      "pickDate": "Wähle ein Datum"
     },
     "timeSelection": {
       "title": "Wähle eine Uhrzeit",

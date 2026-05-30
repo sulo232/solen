@@ -117,8 +117,8 @@ export function SalonSidebar({
         <button
           type="button"
           onClick={scrollToReviews}
-          // V3-D335 (overnight T3): text-s-accent decorative link → text-s-ink underline per LOCKFILE §1.5 forbidden table (link text → s-ink underline).
-          className="font-body text-[18px] font-medium leading-none text-s-ink underline underline-offset-2 transition-opacity hover:opacity-80 md:text-[20px]"
+          // 2026-05-30: links → saturated blue (s-accent), no underline (user direction; reverses V3-D335).
+          className="font-body text-[18px] font-medium leading-none text-s-accent transition-opacity hover:opacity-80 md:text-[20px]"
         >
           ({salon.review_count.toLocaleString("de-CH")})
         </button>
@@ -188,8 +188,8 @@ export function SalonSidebar({
             href={directionsHref}
             target="_blank"
             rel="noreferrer noopener"
-            // V3-D335 (overnight T3): decorative accent link → ink underline per §1.5.
-            className="font-medium text-s-ink underline underline-offset-2 hover:no-underline"
+            // 2026-05-30: links → saturated blue (s-accent), no underline.
+            className="font-medium text-s-accent transition-opacity hover:opacity-80"
           >
             Route
           </a>

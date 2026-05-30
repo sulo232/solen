@@ -34,7 +34,7 @@ const STEPS = ['services-staff', 'datetime', 'pay-confirm'] as const;
 type ActiveStep = typeof STEPS[number];
 
 const STEP_LABELS: Record<ActiveStep, string> = {
-  'services-staff': 'Service & Stylist',
+  'services-staff': 'Auswahl',
   'datetime': 'Datum & Zeit',
   'pay-confirm': 'Bestätigen & Zahlen',
 };
@@ -52,19 +52,45 @@ interface Service {
   suitable_gender: string[] | null;
 }
 
+export interface StaffService {
+  staff_member_id: string;
+  service_id: string;
+}
+export interface ServiceAddon {
+  service_id: string;
+  addon_service_id: string;
+  sort_order: number | null;
+}
+export interface ServiceOption {
+  id: string;
+  service_id: string;
+  name_de: string;
+  name_en: string;
+  price: number;
+  duration_minutes: number;
+  sort_order: number | null;
+}
+
 interface BookingWizardProps {
   services: Service[];
   staffList: StaffMember[];
   salon: Salon;
+  staffServices: StaffService[];
+  serviceAddons: ServiceAddon[];
+  serviceOptions: ServiceOption[];
 }
 
+// Opacity-only crossfade — deliberately NO x/y transform. A transformed
+// ancestor becomes the containing block for `position: fixed`, which traps each
+// step's fixed action bar + floating pill inside the wizard (they scroll away at
+// the footer instead of staying pinned). Fading keeps the bars viewport-fixed.
 const slideVariants = {
-  enter: (direction: number) => ({ x: direction > 0 ? 60 : -60, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (direction: number) => ({ x: direction > 0 ? -60 : 60, opacity: 0 }),
+  enter: { opacity: 0 },
+  center: { opacity: 1 },
+  exit: { opacity: 0 },
 };
 
-export default function BookingWizard({ services, staffList, salon }: BookingWizardProps) {
+export default function BookingWizard({ services, staffList, salon, staffServices, serviceAddons, serviceOptions }: BookingWizardProps) {
   const t = useTranslations('booking') as any;
   const { currentStep, goToStep, formData } = useBooking();
 
@@ -97,9 +123,9 @@ export default function BookingWizard({ services, staffList, salon }: BookingWiz
   const renderStep = () => {
     switch (normalizedStep) {
       case 'services-staff':
-        return <ServicesStaffStep services={services} staffList={staffList} salonId={salon.id} />;
+        return <ServicesStaffStep services={services} staffList={staffList} salonId={salon.id} salonSlug={salon.slug} staffServices={staffServices} serviceAddons={serviceAddons} serviceOptions={serviceOptions} />;
       case 'datetime':
-        return <DateTimeStep salonId={salon.id} />;
+        return <DateTimeStep salonId={salon.id} staffList={staffList} />;
       case 'pay-confirm':
         return <PayConfirmStep salon={salon} staff={selectedStaff} />;
       default:
@@ -124,7 +150,7 @@ export default function BookingWizard({ services, staffList, salon }: BookingWiz
                 disabled={!isPast}
                 aria-label={`Zurück zu Schritt ${i + 1}: ${STEP_LABELS[step]}`}
                 className={[
-                  'flex-1 h-[3px] rounded-full transition-colors duration-200',
+                  'flex-1 h-1.5 rounded-full transition-colors duration-200',
                   isFilled ? 'bg-s-ink' : 'bg-s-bg-sunken',
                   isPast ? 'cursor-pointer hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-1' : 'cursor-default',
                 ].join(' ')}
@@ -146,10 +172,7 @@ export default function BookingWizard({ services, staffList, salon }: BookingWiz
             </button>
           )}
           <div className="flex-1 min-w-0">
-            <p className="font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-[.22em] text-s-accent">
-              Schritt {currentIndex + 1} / {STEPS.length}
-            </p>
-            <h3 className="font-heading text-[16px] sm:text-[20px] uppercase text-s-ink leading-[0.95]" style={{ letterSpacing: '0.01em' }}>
+            <h3 className="font-heading text-[20px] sm:text-[24px] font-bold text-s-ink leading-tight">
               {STEP_LABELS[normalizedStep]}
             </h3>
           </div>

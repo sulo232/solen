@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
  * Layer: 3 (semantic UI) — color carries the meaning per V3-D197 + universal-
  * color convention (§1):
  *   - Open  → `text-s-success` green (universal "go/open")
- *   - Closed → `text-s-ink-2` muted (universal "off/inactive")
+ *   - Closed → `text-s-closed` red (universal "stop/closed", per user 2026-05-30)
  *
  * The dot mirrors the text color and is purely decorative (`aria-hidden`).
  * Status text itself is the accessible label (live region wraps it upstream
@@ -51,7 +51,7 @@ const pillVariants = cva(
     variants: {
       tone: {
         open:   "text-s-success",
-        closed: "text-s-ink-2",
+        closed: "text-s-closed",
       },
       size: {
         sm: "gap-1.5 text-[13px] leading-[1.3]",
@@ -68,7 +68,7 @@ const dotVariants = cva(
     variants: {
       tone: {
         open:   "bg-s-success",
-        closed: "bg-s-border",
+        closed: "bg-s-closed",
       },
       size: {
         sm: "h-2 w-2",

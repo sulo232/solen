@@ -1,43 +1,33 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { Star, ArrowLeft, Clock, Instagram, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import StaffAvailability from "@/components-legacy/staff/StaffAvailability";
+import StaffReviewsSheet from "@/components-legacy/staff/StaffReviewsSheet";
 import { formatCurrency } from "@/lib/format-currency";
 
 interface StaffProfile {
   id: string;
   name: string;
   avatar_url: string | null;
-  specialties: string[];
+  specialties: string[] | null;
+  languages: string[] | null;
   bio: string | null;
   instagram_url: string | null;
   years_experience: number | null;
   average_rating: number;
   review_count: number;
+  appointments_completed: number | null;
+  clients_served: number | null;
   salon_name: string;
   salon_slug: string;
-  salon_categories: string[];
 }
-
-interface PortfolioImage {
-  id: string;
-  image_url: string;
-  sort_order: number;
-}
-
-interface StaffService {
-  id: string;
-  name_de: string;
-  name_en: string;
-  duration_minutes: number;
-  price: number;
-}
-
+interface PortfolioImage { id: string; image_url: string; sort_order: number }
+interface StaffService { id: string; name_de: string; name_en: string; duration_minutes: number; price: number }
 interface StaffReview {
   id: string;
   rating: number;
@@ -47,334 +37,459 @@ interface StaffReview {
   review_photos: { id: string; photo_url: string }[];
 }
 
-interface StaffProfilePageProps {
+const LANG: Record<string, string> = {
+  de: "Deutsch", en: "English", fr: "Français", it: "Italiano",
+  es: "Español", uk: "Українська", pt: "Português", ru: "Русский",
+};
+type Tab = "about" | "availability" | "services" | "portfolio" | "reviews";
+const TAB_LABEL: Record<Tab, string> = {
+  about: "Über", availability: "Verfügbarkeit", services: "Leistungen", portfolio: "Portfolio", reviews: "Bewertungen",
+};
+const SERVICES_PREVIEW = 4;
+const REVIEWS_PREVIEW = 3;
+const PORTFOLIO_PREVIEW = 9;
+
+/**
+ * StaffProfilePage — Fresha individual-stylist profile (IMG_4885–4892):
+ * centered hero, stat row, scroll-spy tabs (Über / Verfügbarkeit / Leistungen /
+ * Portfolio / Bewertungen), services + "Alle ansehen", portfolio grid + lightbox,
+ * reviews + "Alle ansehen". Solen black/Geist · gold ★ · blue review count.
+ *
+ * Context-aware CTA:
+ *   - `onSelect` set (opened from the booking staff-list) → "Auswählen" (pick).
+ *   - else → "Jetzt buchen" (→ booking with this stylist preselected).
+ * `onClose` → renders as a closeable sheet (X); else a back-link page.
+ */
+export default function StaffProfilePage({
+  staffId,
+  salonSlug,
+  onClose,
+  onSelect,
+}: {
   staffId: string;
   salonSlug: string;
-}
-
-export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePageProps) {
+  onClose?: () => void;
+  onSelect?: (staffId: string) => void;
+}) {
   const locale = useLocale();
   const [staff, setStaff] = useState<StaffProfile | null>(null);
   const [portfolio, setPortfolio] = useState<PortfolioImage[]>([]);
   const [services, setServices] = useState<StaffService[]>([]);
   const [reviews, setReviews] = useState<StaffReview[]>([]);
   const [loading, setLoading] = useState(true);
+  const [active, setActive] = useState<Tab>("about");
+  const [condensed, setCondensed] = useState(false);
+  const [showAllServices, setShowAllServices] = useState(false);
+  const [showReviews, setShowReviews] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const sectionRefs = useRef<Partial<Record<Tab, HTMLElement | null>>>({});
+  const navLock = useRef(false); // suppresses scroll-spy while an explicit tap scrolls
+  const navTimer = useRef<number | undefined>(undefined);
+
   useEffect(() => {
-    const fetchProfile = async () => {
+    let active = true;
+    (async () => {
       try {
         const res = await fetch(`/api/staff/${staffId}/profile`);
         if (res.ok) {
-          const data = await res.json();
-          setStaff(data.staff);
-          setPortfolio(data.portfolio);
-          setServices(data.services);
-          setReviews(data.reviews);
+          const d = await res.json();
+          if (!active) return;
+          setStaff(d.staff);
+          setPortfolio(d.portfolio ?? []);
+          setServices(d.services ?? []);
+          setReviews(d.reviews ?? []);
         }
-      } catch {
-        // silently fail
+      } catch (err) {
+        console.error("[StaffProfilePage] fetch failed:", err);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
+    })();
+    return () => {
+      active = false;
     };
-    fetchProfile();
   }, [staffId]);
+
+  const tabs: Tab[] = [
+    "about",
+    "availability",
+    ...(services.length > 0 ? (["services"] as Tab[]) : []),
+    "portfolio",
+    "reviews",
+  ];
+
+  // Scroll-spy + condensed-header — IntersectionObserver works whether the page
+  // scrolls in the window (standalone route) or inside the booking sheet.
+  useEffect(() => {
+    if (loading) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (navLock.current) return;
+        const vis = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (vis[0]) {
+          const t = (vis[0].target as HTMLElement).dataset.tab as Tab | undefined;
+          if (t) setActive(t);
+        }
+      },
+      { rootMargin: "-118px 0px -74% 0px", threshold: 0 }
+    );
+    tabs.forEach((t) => {
+      const el = sectionRefs.current[t];
+      if (el) io.observe(el);
+    });
+    const heroIo = new IntersectionObserver(
+      ([e]) => setCondensed(!e.isIntersecting),
+      { rootMargin: "-64px 0px 0px 0px", threshold: 0 }
+    );
+    if (heroRef.current) heroIo.observe(heroRef.current);
+    return () => {
+      io.disconnect();
+      heroIo.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, tabs.join("|")]);
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="grid min-h-[60vh] place-items-center bg-white">
         <Spinner />
       </div>
     );
   }
-
   if (!staff) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <p className="text-s-ink-2">Mitarbeiter nicht gefunden</p>
-        {/* V3-D254 (W3): retired s-coral → s-accent (link role) per LOCKFILE §1 */}
-        <Link
-          href={`/${locale}/salon/${salonSlug}`}
-          className="text-s-accent hover:text-s-accent-deep hover:underline text-sm transition-colors"
-        >
-          Zurück zum Salon
-        </Link>
+      <div className="grid min-h-[60vh] place-items-center bg-white px-6 text-center">
+        <p className="text-[15px] text-s-ink/60">Profil nicht gefunden.</p>
       </div>
     );
   }
 
-  const serviceName = (s: StaffService) => (locale === "de" ? s.name_de : s.name_en) || s.name_de;
+  const langRole = [
+    staff.languages?.map((l) => l.toUpperCase()).join("/"),
+    staff.specialties?.[0],
+  ]
+    .filter(Boolean)
+    .join("  ");
+  const bookHref = `/${locale}/salon/${salonSlug}/booking?staff=${staff.id}`;
+  const sName = (s: StaffService) => (locale === "en" ? s.name_en : s.name_de);
+  const fmtDate = (iso: string) =>
+    new Date(iso).toLocaleDateString(locale === "en" ? "en-US" : "de-DE", {
+      day: "2-digit", month: "long", year: "numeric",
+    });
+
+  const goTo = (t: Tab) => {
+    navLock.current = true;
+    setActive(t);
+    sectionRefs.current[t]?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (navTimer.current) window.clearTimeout(navTimer.current);
+    navTimer.current = window.setTimeout(() => {
+      navLock.current = false;
+    }, 800);
+  };
+  const visibleServices = showAllServices ? services : services.slice(0, SERVICES_PREVIEW);
+  const visibleReviews = reviews.slice(0, REVIEWS_PREVIEW);
+  const portfolioShown = portfolio.slice(0, PORTFOLIO_PREVIEW);
+  const portfolioOverflow = portfolio.length - PORTFOLIO_PREVIEW;
+
+  const setRef = (t: Tab) => (el: HTMLElement | null) => {
+    sectionRefs.current[t] = el;
+  };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      {/* Back link — V3-D254 (W3): s-coral → s-accent per LOCKFILE §1 */}
-      <Link
-        href={`/${locale}/salon/${salonSlug}`}
-        className="inline-flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-accent transition-colors mb-6"
-      >
-        <ArrowLeft size={16} />
-        Zurück zum Salon
-      </Link>
-
-      {/* Hero card */}
-      <div className="rounded-[12px] border border-s-border p-6 bg-white mb-8">
-        <div className="flex items-start gap-4">
-          {/* Avatar */}
-          <div className="w-24 h-24 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center">
-            {staff.avatar_url ? (
-              <Image
-                src={staff.avatar_url}
-                alt={staff.name}
-                width={96}
-                height={96}
-                priority
-                sizes="96px"
-                className="object-cover w-full h-full"
-              />
-            ) : (
-              <span className="data-text text-3xl font-bold text-s-ink-2">
-                {staff.name[0]}
-              </span>
-            )}
-          </div>
-
-          <div className="flex-1 min-w-0">
-            {/* V3-D254 (W3): bumped to LOCKFILE Salon-PDP H1 (40/48px, weight 700) */}
-            <h1 className="font-heading text-[clamp(22px,2.8vw,26px)] md:text-[48px] font-semibold text-s-ink leading-[1.05] tracking-[-0.03em]">
-              {staff.name}
-            </h1>
-
-            {/* Specialties pills — V3-D254: retired s-coral-subtle/text → s-accent-pale + s-accent */}
-            {staff.specialties?.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-2">
-                {staff.specialties.map((s) => (
-                  <span
-                    key={s}
-                    className="px-2 py-0.5 rounded-pill bg-s-accent-pale text-s-accent text-xs font-medium"
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Rating + experience — V3-D254: s-amber → s-star (yellow #FFC32B, LOCKFILE rating token) */}
-            <div className="flex items-center gap-4 mt-2">
-              {staff.average_rating > 0 && (
-                <span className="flex items-center gap-1 text-sm text-s-ink-2">
-                  <Star size={14} className="fill-s-star text-s-star" />
-                  <span className="data-text">{staff.average_rating.toFixed(1)}</span>
-                  {staff.review_count > 0 && (
-                    <span className="text-s-ink-2">
-                      ({staff.review_count})
-                    </span>
-                  )}
-                </span>
-              )}
-              {staff.years_experience != null && (
-                <span className="text-sm text-s-ink-2">
-                  {staff.years_experience} {staff.years_experience === 1 ? "Jahr" : "Jahre"} Erfahrung
-                </span>
-              )}
-            </div>
-
-            {/* Instagram */}
-            {staff.instagram_url && (
-              <a
-                href={staff.instagram_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm text-s-ink-2 hover:text-s-accent transition-colors mt-1"
-              >
-                <Instagram size={14} />
-                Instagram
-              </a>
-            )}
-          </div>
-        </div>
-
-        {/* Bio */}
-        {staff.bio && (
-          <p className="mt-4 text-[15px] text-s-ink-2 leading-relaxed">
-            {staff.bio}
-          </p>
+    <div className="flex min-h-screen flex-col bg-white pb-24">
+      {/* Top bar — back (left) + name on scroll */}
+      <div className="sticky top-0 z-20 flex items-center gap-2 border-b border-s-ink/[0.06] bg-white px-3 py-2.5">
+        {onClose ? (
+          <button type="button" onClick={onClose} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-ink/[0.06]">
+            <ArrowLeft size={20} className="text-s-ink" />
+          </button>
+        ) : (
+          <Link href={`/${locale}/salon/${salonSlug}`} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-ink/[0.06]">
+            <ArrowLeft size={20} className="text-s-ink" />
+          </Link>
         )}
+        <div className={`flex min-w-0 items-center gap-2 transition-opacity duration-200 ${condensed ? "opacity-100" : "opacity-0"}`}>
+          <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full bg-s-bg-sunken">
+            {staff.avatar_url ? (
+              <Image src={staff.avatar_url} alt="" width={28} height={28} className="h-full w-full object-cover" />
+            ) : (
+              <span className="text-[12px] font-semibold text-s-ink-2">{staff.name.charAt(0)}</span>
+            )}
+          </span>
+          <span className="truncate font-heading text-[15px] font-semibold text-s-ink">{staff.name}</span>
+        </div>
       </div>
 
-      {/* Portfolio gallery — V3-D254 (W3): h2 to LOCKFILE Section spec (20-24/600/-0.02em) */}
-      {portfolio.length > 0 && (
-        <section className="mb-8">
-          <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-4">
-            Portfolio
-          </h2>
-          <div className="grid grid-cols-3 gap-1.5 rounded-[12px] overflow-hidden">
-            {portfolio.map((img, i) => (
+      {/* Centered hero */}
+      <div ref={heroRef} className="flex flex-col items-center px-5 pt-6 text-center">
+        <div className="grid h-[104px] w-[104px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken">
+          {staff.avatar_url ? (
+            <Image src={staff.avatar_url} alt={staff.name} width={104} height={104} priority className="h-full w-full object-cover" />
+          ) : (
+            <span className="font-display text-[36px] font-semibold text-s-ink-2">{staff.name.charAt(0).toUpperCase()}</span>
+          )}
+        </div>
+        <h1 className="mt-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.01em] text-s-ink">{staff.name}</h1>
+        {langRole && <p className="mt-1 text-[14px] text-s-ink-2">{langRole}</p>}
+        <div className="mt-2 flex items-center gap-3">
+          {staff.average_rating > 0 && (
+            <button type="button" onClick={() => goTo("reviews")} className="inline-flex items-center gap-1 text-[14px] transition-opacity hover:opacity-80" aria-label={`${staff.review_count} Bewertungen ansehen`}>
+              <Star size={15} fill="#FFC32B" stroke="none" />
+              <span className="font-semibold text-s-ink tabular-nums">{staff.average_rating.toFixed(1)}</span>
+              <span className="text-s-accent underline-offset-2 hover:underline">({staff.review_count})</span>
+            </button>
+          )}
+          {staff.instagram_url && (
+            <a href={staff.instagram_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[14px] text-s-ink-2 transition-colors hover:text-s-accent">
+              <Instagram size={14} />
+              Instagram
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Sticky tabs */}
+      <div className="sticky top-[53px] z-10 mt-5 border-b border-s-ink/[0.06] bg-white px-4 pb-2.5 pt-1">
+        <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {tabs.map((t) => {
+            const on = t === active;
+            const count = t === "portfolio" ? portfolio.length : t === "reviews" ? staff.review_count : 0;
+            return (
               <button
-                key={img.id}
-                onClick={() => setLightboxIndex(i)}
-                className="aspect-square bg-s-bg-sunken overflow-hidden hover:brightness-[0.95] transition-[filter] duration-150"
+                key={t}
+                type="button"
+                onClick={() => goTo(t)}
+                className={`shrink-0 rounded-full px-4 py-2 font-heading text-[13px] font-semibold transition-colors ${
+                  on ? "bg-s-ink text-white" : "border border-s-ink/[0.12] text-s-ink hover:border-s-ink/25"
+                }`}
               >
-                <Image
-                  src={img.image_url}
-                  alt={`${staff.name} portfolio ${i + 1}`}
-                  width={300}
-                  height={300}
-                  sizes="(max-width: 640px) 50vw, 33vw"
-                  className="w-full h-full object-cover"
-                />
+                {TAB_LABEL[t]}
+                {count > 0 && <span className={on ? "text-white/70" : "text-s-ink/45"}> {count}</span>}
               </button>
-            ))}
+            );
+          })}
+        </div>
+      </div>
+
+      {/* About */}
+      <section ref={setRef("about")} data-tab="about" className="scroll-mt-[112px] px-5 pt-6">
+        {(staff.appointments_completed || staff.clients_served) ? (
+          <div className="mb-6 divide-y divide-s-ink/[0.06] rounded-input border border-s-ink/[0.08]">
+            {staff.appointments_completed ? (
+              <div className="flex items-center justify-between px-4 py-3">
+                <span className="text-[14px] text-s-ink-2">Abgeschlossene Termine</span>
+                <span className="font-body text-[15px] font-semibold text-s-ink tabular-nums">{staff.appointments_completed}</span>
+              </div>
+            ) : null}
+            {staff.clients_served ? (
+              <div className="flex items-center justify-between px-4 py-3">
+                <span className="text-[14px] text-s-ink-2">Betreute Kund:innen</span>
+                <span className="font-body text-[15px] font-semibold text-s-ink tabular-nums">{staff.clients_served}</span>
+              </div>
+            ) : null}
           </div>
-        </section>
-      )}
+        ) : null}
+        {staff.bio && <p className="text-[15px] leading-relaxed text-s-ink/75">{staff.bio}</p>}
+        {staff.years_experience != null && staff.years_experience > 0 && (
+          <p className="mt-4 text-[14px] text-s-ink-2">{staff.years_experience} Jahre Erfahrung</p>
+        )}
+        {staff.languages && staff.languages.length > 0 && (
+          <div className="mt-6">
+            <p className="mb-2.5 font-heading text-[16px] font-bold text-s-ink">Sprachen</p>
+            <div className="flex flex-wrap gap-2">
+              {staff.languages.map((l) => (
+                <span key={l} className="rounded-full bg-s-bg-sunken px-3.5 py-1.5 text-[13px] font-medium text-s-ink">
+                  {LANG[l] ?? l.toUpperCase()}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
 
-      {/* Availability */}
-      <StaffAvailability staffId={staffId} locale={locale} />
+      {/* Verfügbarkeit */}
+      <section ref={setRef("availability")} data-tab="availability" className="scroll-mt-[112px] px-5 pt-9">
+        <p className="mb-4 font-heading text-[18px] font-bold text-s-ink">Verfügbarkeit</p>
+        <StaffAvailability staffId={staffId} locale={locale} />
+      </section>
 
-      {/* Services */}
+      {/* Leistungen */}
       {services.length > 0 && (
-        <section className="mb-8">
-          <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-4">
-            Services
-          </h2>
-          <div className="space-y-2">
-            {services.map((s) => (
-              <div
-                key={s.id}
-                className="rounded-[12px] border border-s-border p-4 bg-white flex items-center justify-between"
-              >
-                <div>
-                  <p className="font-heading text-s-ink">
-                    {serviceName(s)}
-                  </p>
-                  <p className="text-sm text-s-ink-2 flex items-center gap-1 mt-0.5">
-                    <Clock size={12} />
-                    {s.duration_minutes} Min. · {formatCurrency(s.price, locale)}
-                  </p>
+        <section ref={setRef("services")} data-tab="services" className="scroll-mt-[112px] px-5 pt-9">
+          <p className="mb-4 font-heading text-[18px] font-bold text-s-ink">Leistungen</p>
+          <div className="space-y-2.5">
+            {visibleServices.map((s) => (
+              <div key={s.id} className="flex items-center justify-between gap-3 rounded-input border border-s-ink/[0.08] p-4">
+                <div className="min-w-0">
+                  <div className="text-[15px] font-semibold text-s-ink">{sName(s)}</div>
+                  <div className="mt-1 text-[13px] text-s-ink-2 tabular-nums">
+                    {s.duration_minutes} Min · {formatCurrency(s.price, locale)}
+                  </div>
                 </div>
-                {/* V3-D254 (W3): service-row CTA "Buchen" per LOCKFILE §6; coral → ink per §0.2 */}
-                <Link
-                  href={`/${locale}/salon/${salonSlug}?staffId=${staff.id}&serviceId=${s.id}`}
-                  className="px-4 py-2 rounded-btn active:scale-[0.97] bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter]"
-                >
+                <Link href={bookHref} className="shrink-0 rounded-full border border-s-ink/15 px-5 py-2.5 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/30">
                   Buchen
                 </Link>
               </div>
             ))}
           </div>
+          {services.length > SERVICES_PREVIEW && (
+            <button
+              type="button"
+              onClick={() => setShowAllServices((v) => !v)}
+              className="mt-3 w-full rounded-full border border-s-ink/[0.12] py-3 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/25"
+            >
+              {showAllServices ? "Weniger anzeigen" : `Alle ${services.length} Leistungen ansehen`}
+            </button>
+          )}
         </section>
       )}
 
-      {/* Reviews — V3-D254 (W3): h2 to LOCKFILE Section spec; s-amber → s-star */}
-      {reviews.length > 0 && (
-        <section className="mb-8">
-          <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-4">
-            Bewertungen
-          </h2>
-          <div className="space-y-4">
-            {reviews.map((r) => (
-              <div
-                key={r.id}
-                className="rounded-[12px] border border-s-border p-4 bg-white"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center">
-                    {r.profiles?.avatar_url ? (
-                      <Image
-                        src={r.profiles.avatar_url}
-                        alt=""
-                        width={32}
-                        height={32}
-                        className="object-cover w-full h-full"
-                      />
-                    ) : (
-                      <span className="text-xs font-bold text-s-ink-2">
-                        {r.profiles?.display_name?.[0] ?? "?"}
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-s-ink">
-                      {r.profiles?.display_name ?? "Anonym"}
-                    </p>
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          size={10}
-                          className={i < r.rating ? "fill-s-star text-s-star" : "text-s-ink-disabled"}
-                        />
-                      ))}
-                      <span className="text-xs text-s-ink-2 ml-1">
-                        {new Date(r.created_at).toLocaleDateString(locale)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                {r.comment && (
-                  <p className="text-sm text-s-ink-2 leading-relaxed">
-                    {r.comment}
-                  </p>
-                )}
-                {r.review_photos?.length > 0 && (
-                  <div className="flex gap-1.5 mt-2">
-                    {r.review_photos.map((p) => (
-                      <Image
-                        key={p.id}
-                        src={p.photo_url}
-                        alt=""
-                        width={64}
-                        height={64}
-                        className="w-16 h-16 rounded-btn object-cover"
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
+      {/* Portfolio */}
+      <section ref={setRef("portfolio")} data-tab="portfolio" className="scroll-mt-[112px] px-5 pt-9">
+        <p className="mb-4 font-heading text-[18px] font-bold text-s-ink">
+          Portfolio{portfolio.length > 0 && <span className="text-s-ink/45"> {portfolio.length}</span>}
+        </p>
+        {portfolio.length === 0 ? (
+          <p className="py-2 text-[14px] italic text-s-ink/55">Noch kein Portfolio vorhanden.</p>
+        ) : (
+          <div className="grid grid-cols-3 gap-2">
+            {portfolioShown.map((img, i) => {
+              const isLast = i === PORTFOLIO_PREVIEW - 1 && portfolioOverflow > 0;
+              return (
+                <button
+                  key={img.id}
+                  type="button"
+                  onClick={() => setLightboxIndex(i)}
+                  className="relative aspect-square overflow-hidden rounded-input transition-[filter] duration-150 hover:brightness-[0.95]"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={img.image_url} alt="" loading="lazy" className="h-full w-full object-cover" />
+                  {isLast && (
+                    <span className="absolute inset-0 grid place-items-center bg-s-ink/55 font-heading text-[18px] font-bold text-white">
+                      +{portfolioOverflow + 1}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* Bewertungen */}
+      <section ref={setRef("reviews")} data-tab="reviews" className="scroll-mt-[112px] px-5 pb-2 pt-9">
+        <p className="mb-4 font-heading text-[18px] font-bold text-s-ink">Bewertungen</p>
+        <div className="mb-6 flex items-baseline gap-2.5">
+          <div className="flex items-center gap-0.5">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <Star key={i} size={18} fill={i < Math.floor(staff.average_rating) ? "#FFC32B" : "#E7E5E4"} stroke="none" />
             ))}
           </div>
-        </section>
-      )}
+          <span className="font-body text-[18px] font-semibold tabular-nums text-s-ink">{staff.average_rating.toFixed(1)}</span>
+          <span className="text-[14px] text-s-accent">({staff.review_count})</span>
+        </div>
+        {reviews.length === 0 ? (
+          <p className="text-[14px] italic text-s-ink/55">Noch keine Bewertungen.</p>
+        ) : (
+          <>
+            <div className="space-y-7">
+              {visibleReviews.map((r) => {
+                const who = r.profiles?.display_name ?? "Solen-Kund:in";
+                return (
+                  <article key={r.id}>
+                    <div className="flex items-center gap-2.5">
+                      <div className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-s-bg-sunken">
+                        {r.profiles?.avatar_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={r.profiles.avatar_url} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          <span className="font-display text-[14px] font-semibold text-s-ink-2">{who.charAt(0).toUpperCase()}</span>
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="truncate text-[14px] font-semibold text-s-ink">{who}</div>
+                        <div className="text-[12px] text-s-ink-3">{fmtDate(r.created_at)}</div>
+                      </div>
+                    </div>
+                    <div className="mt-2.5 flex items-center gap-0.5">
+                      {[0, 1, 2, 3, 4].map((i) => (
+                        <Star key={i} size={13} fill={i < Math.floor(r.rating) ? "#FFC32B" : "#E7E5E4"} stroke="none" />
+                      ))}
+                    </div>
+                    {r.comment && <p className="mt-2.5 text-[14px] leading-relaxed text-s-ink-2">{r.comment}</p>}
+                  </article>
+                );
+              })}
+            </div>
+            {reviews.length > REVIEWS_PREVIEW && (
+              <button
+                type="button"
+                onClick={() => setShowReviews(true)}
+                className="mt-6 w-full rounded-full border border-s-ink/[0.12] py-3 font-heading text-[14px] font-semibold text-s-ink transition-colors hover:border-s-ink/25"
+              >
+                Alle ansehen
+              </button>
+            )}
+          </>
+        )}
+      </section>
 
-      {/* Lightbox */}
-      {lightboxIndex !== null && (
-        <div
-          className="fixed inset-0 z-modal bg-s-ink/80 backdrop-blur-sm flex items-center justify-center"
-          onClick={() => setLightboxIndex(null)}
-        >
-          <button
-            onClick={(e) => { e.stopPropagation(); setLightboxIndex(null); }}
-            className="absolute top-4 right-4 text-white/80 hover:text-white"
-          >
+      {/* Portfolio lightbox */}
+      {lightboxIndex !== null && portfolio[lightboxIndex] && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-s-ink/80 backdrop-blur-sm" onClick={() => setLightboxIndex(null)}>
+          <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(null); }} aria-label="Schließen" className="absolute right-4 top-4 text-white/80 hover:text-white">
             <X size={24} />
           </button>
           {lightboxIndex > 0 && (
-            <button
-              onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1); }}
-              className="absolute left-4 text-white/80 hover:text-white"
-            >
+            <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1); }} aria-label="Zurück" className="absolute left-4 text-white/80 hover:text-white">
               <ChevronLeft size={32} />
             </button>
           )}
           {lightboxIndex < portfolio.length - 1 && (
-            <button
-              onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex + 1); }}
-              className="absolute right-4 text-white/80 hover:text-white"
-            >
+            <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex + 1); }} aria-label="Weiter" className="absolute right-4 text-white/80 hover:text-white">
               <ChevronRight size={32} />
             </button>
           )}
-          <Image
-            src={portfolio[lightboxIndex].image_url}
-            alt=""
-            width={800}
-            height={800}
-            className="max-w-[90vw] max-h-[90vh] object-contain rounded-[12px]"
-            onClick={(e) => e.stopPropagation()}
-          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={portfolio[lightboxIndex].image_url} alt="" className="max-h-[90vh] max-w-[90vw] rounded-[12px] object-contain" onClick={(e) => e.stopPropagation()} />
         </div>
       )}
+
+      {/* Full reviews sheet (Filtern nach + sort + all) */}
+      {showReviews && (
+        <StaffReviewsSheet
+          reviews={reviews}
+          averageRating={staff.average_rating}
+          reviewCount={staff.review_count}
+          locale={locale}
+          onClose={() => setShowReviews(false)}
+        />
+      )}
+
+      {/* CTA — Auswählen (selection mode) or Jetzt buchen */}
+      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-s-ink/[0.06] bg-white px-4 py-3">
+        {onSelect ? (
+          <button
+            type="button"
+            onClick={() => onSelect(staff.id)}
+            className="flex w-full items-center justify-center gap-2 rounded-btn bg-s-ink py-3.5 font-heading text-[15px] font-semibold text-white transition-[filter] hover:brightness-[1.06]"
+          >
+            <Check size={18} strokeWidth={2.5} />
+            Auswählen
+          </button>
+        ) : (
+          <Link
+            href={bookHref}
+            className="flex w-full items-center justify-center rounded-btn bg-s-ink py-3.5 font-heading text-[15px] font-semibold text-white transition-[filter] hover:brightness-[1.06]"
+          >
+            Jetzt buchen
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

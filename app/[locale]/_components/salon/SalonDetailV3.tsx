@@ -238,7 +238,7 @@ export function SalonDetailV3() {
               <SalonServices services={salon.services} locale={locale} slug={slug} salon={salon} />
 
             {salon.staff.length > 0 && (
-              <SalonTeam staff={salon.staff} salonAverageRating={salon.average_rating} />
+              <SalonTeam staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} locale={locale} />
             )}
 
             <SalonReviews
