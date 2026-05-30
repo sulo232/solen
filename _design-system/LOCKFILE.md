@@ -110,7 +110,7 @@ Drift-check `RETIRED_TOKENS` list flags any new usage.
 | Current usage | Sweep to |
 |---|---|
 | `text-s-accent` on eyebrow / label | `text-s-ink-3` |
-| `text-s-accent` on body link | `text-s-ink underline` |
+| `text-s-accent` on body link | `text-s-ink` — NO underline (V3 2026-05-30); signal via weight / icon affordance |
 | `text-s-accent` on hero accent span | `text-s-ink` (single word can use weight contrast instead) |
 | `bg-s-accent-pale text-s-accent` pill | Either `bg-white text-s-accent` OR `bg-s-accent-pale text-s-ink` — never both blue |
 | `bg-s-accent` step circle | `bg-s-ink text-white` |
@@ -301,7 +301,7 @@ ALL other uppercase usage = drift violation. Sweep target: 733 → ~50-80 legit 
 | `text-[10-12px] uppercase tracking-[.1Xem] text-s-accent` | Eyebrow (drop) | **Drop entirely** per V3-D331 — sections go straight to H2. Keep only if magazine-style identity label needed |
 | `<span ...rounded-full bg-s-*>` immediately before eyebrow text | Decoration dot (forbidden A12) | **Drop the dot span** — eyebrow is plain text only |
 | `text-[9-12px] uppercase tracking-[.16-.22em]` | Tag/Status | `text-[10-12px] font-semibold uppercase tracking-[0.08em] text-<semantic>` |
-| `text-s-accent` on link | Body link | `text-s-ink underline underline-offset-2` |
+| `text-s-accent` on link | Body link | `text-s-ink` — **NO underline** (V3 2026-05-30, user rule "no underline anywhere"); signal via font-weight or an icon affordance |
 
 ### Escape hatch
 

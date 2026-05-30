@@ -354,7 +354,7 @@ Don't use `<em>` (italic banned per V2-D15) or `<u>` (underline banned). To emph
 - ❌ Plus Jakarta Sans (V2-D70 era — retired V3-D75)
 - ❌ Peace Sans / Open Sauce One (V2-D42 era — retired V3-D75)
 - ❌ Italic (`<em>`, `italic` class, font-style:italic)
-- ❌ Underline outside `<a>` links
+- ❌ Underline anywhere — **including `<a>` links** (V3, 2026-05-30: no underlines at all). Signal links / tappable text with weight, an icon affordance (e.g. map pin), or hover color — never an underline.
 - ❌ Inventing new sizes outside the role table
 - ❌ `<h1>` more than once per page (semantic)
 
