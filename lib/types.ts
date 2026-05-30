@@ -487,6 +487,8 @@ export interface DiscoveryItem {
   sort_order: number;
   owner_user_id: string | null;
   owner_salon_id: string | null;
+  /** V3-D389: populated by the feed (salon join) for source="salon" items so the card can tap → /salon/[slug]. */
+  salon_slug?: string | null;
   created_at: string;
   updated_at: string;
 }

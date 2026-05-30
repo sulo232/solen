@@ -22,6 +22,25 @@ import DiscoveryAdmin from "@/components-legacy/discovery/DiscoveryAdmin";
 import FilterBar from "@/components-legacy/ui/FilterBar";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
 
+// PROOF (frontend-only, V3-D389): seeded salon-portfolio discovery items to preview how OPTED-IN salon photos would
+// render in the feed — studio attribution + tap→salon + varied aspect ratios (900×650, 700×700, 640×860). Images are
+// picsum placeholders; real salons + slugs. NO DB / NO sync. Remove this const + its prepend + the picsum allowlist in
+// next.config when the real opt-in sync lands.
+const PROOF_SALON_ITEMS = [
+  { id: "proof-salon-1", source: "salon", content_type: "salon", media_type: "photo", category: "hair",
+    image_url: "https://picsum.photos/seed/solensalon1/900/650", tiktok_url: null, tiktok_embed_html: null,
+    author_name: "Muse Beauty Studio", salon_slug: "muse-beauty-studio", style_name: "Balayage",
+    tags: ["balayage"], like_count: 0, alt_text: "Balayage — Muse Beauty Studio" },
+  { id: "proof-salon-2", source: "salon", content_type: "salon", media_type: "photo", category: "nails",
+    image_url: "https://picsum.photos/seed/solensalon2/700/700", tiktok_url: null, tiktok_embed_html: null,
+    author_name: "Nail Studio Bliss", salon_slug: "nail-studio-bliss", style_name: "Gel Nails",
+    tags: ["gel nails"], like_count: 0, alt_text: "Gel nails — Nail Studio Bliss" },
+  { id: "proof-salon-3", source: "salon", content_type: "salon", media_type: "photo", category: "hair",
+    image_url: "https://picsum.photos/seed/solensalon3/640/860", tiktok_url: null, tiktok_embed_html: null,
+    author_name: "Old Town Barbers", salon_slug: "old-town-barbers", style_name: "Skin Fade",
+    tags: ["skin fade"], like_count: 0, alt_text: "Skin fade — Old Town Barbers" },
+] as unknown as DiscoveryItem[];
+
 function DiscoverPageContent() {
   const locale = useLocale();
   const router = useRouter();
@@ -39,6 +58,7 @@ function DiscoverPageContent() {
     (searchParams?.get("category") as DiscoveryCategory | "all") || "all"
   );
   const [search, setSearch] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
   const [gridVisible, setGridVisible] = useState(true);
@@ -154,8 +174,16 @@ function DiscoverPageContent() {
   }, [hasMore, loading, page, fetchItems]);
 
   const handleItemClick = (item: DiscoveryItem) => {
+    // V3-D389: salon-sourced items tap through to the salon page, not a discovery detail.
+    if ((item.source === "salon" || item.content_type === "salon") && item.salon_slug) {
+      router.push(`/${locale}/salon/${item.salon_slug}`);
+      return;
+    }
     router.push(`/${locale}/discover/${item.id}`);
   };
+
+  // V3-D389 PROOF: prepend the seeded salon items in the default "all" feed only (contextual, not inside every filter).
+  const feedItems = category === "all" ? [...PROOF_SALON_ITEMS, ...items] : items;
 
   const handleProfileSave = async (prefs: Record<string, string | null>) => {
     try {
@@ -226,15 +254,14 @@ function DiscoverPageContent() {
     <main className="min-h-screen bg-white pt-4 pb-24">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
-        <div className="mb-6 flex items-start justify-between gap-4">
+        <div className="mb-4 flex items-center justify-between gap-4">
           <div>
-            {/* V3-D341 (W13, 2026-05-28): tracking snap — h1 [0.01em] (positive, non-canonical) → [-0.01em] (H2 recipe §2.5); subtitle [.12em] → [.08em] (canonical max). */}
-            <h1 className="font-heading text-[clamp(22px,2.8vw,26px)] leading-[1.05] tracking-[-0.01em] text-s-ink">
+            {/* V3-D341 (W13): h1 tracking → H2 recipe §2.5. V3-D378 (2026-05-30): subtitle eyebrow dropped per §2.5 V3-D331
+                (eyebrows preferred-dropped — it's the decorative "AI landing-page" tell the policy targets; reclaims ~24px so
+                the feed surfaces higher). Title now stands alone. */}
+            <h1 className="font-heading font-semibold text-[clamp(22px,2.8vw,26px)] leading-[1.05] tracking-[-0.015em] text-s-ink">
               {t("title")}
             </h1>
-            <p className="text-xs font-heading uppercase tracking-[.08em] text-s-ink/40 mt-1.5">
-              {t("subtitle")}
-            </p>
           </div>
           {/* Mobile filter drawer trigger */}
           <FilterDrawer
@@ -269,28 +296,43 @@ function DiscoverPageContent() {
         </div>
 
         {/* Category tab row */}
-        <div className="mb-6">
+        <div className="mb-3">
           <CategoryTabBar
             activeCategory={category}
             onChange={handleCategoryChange}
           />
         </div>
 
-        {/* Universal FilterBar (Zone 1) - placed BELOW CategoryTabBar */}
-        <div className="mb-6">
+        {/* Secondary filters (gender / texture) — V3-D378 (2026-05-30): desktop-only inline. On mobile these live in the
+            FILTER drawer (md:hidden trigger in the header), so the page no longer renders BOTH the drawer button AND the
+            inline pills. Removes the redundant mobile control row + surfaces the feed higher. */}
+        <div className="hidden md:block mb-3">
           <FilterBar
             pills={filterPills}
             activeFilters={activeFilters}
             onFilterChange={setActiveFilters}
             zone={1}
-            className="mb-4"
           />
-          <DiscoverySearchBar value={search} onChange={setSearch} />
         </div>
 
-        {/* AI Suggestion Pills */}
-        <div className="mb-5">
-          <AISuggestionPills category={category} onSelect={setSearch} />
+        {/* Search — V3-D388 (2026-05-30): trending suggestions folded in here (council #4: removes the second
+            always-visible pill row that mirrored the category pills). They drop down on focus, not as a standing row. */}
+        <div className="relative mb-5">
+          <DiscoverySearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder={t("searchPlaceholder")}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
+          />
+          {searchFocused && (
+            <div className="absolute inset-x-0 top-full z-30 mt-2 rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
+              <AISuggestionPills
+                category={category}
+                onSelect={(term) => { setSearch(term); setSearchFocused(false); }}
+              />
+            </div>
+          )}
         </div>
 
         {/* Inline preferences setup (shown when profile not configured) */}
@@ -329,7 +371,7 @@ function DiscoverPageContent() {
             style={{ opacity: gridVisible ? 1 : 0 }}
           >
             <MasonryGrid
-              items={items}
+              items={feedItems}
               renderItem={(item, width) =>
                 item.media_type === "tiktok" ? (
                   <VideoCard

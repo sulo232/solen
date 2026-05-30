@@ -3001,6 +3001,7 @@
     "subtitle": "Ton prochain look",
     "genderPill": "Pour qui ?",
     "texturePill": "Texture",
+    "searchPlaceholder": "Rechercher des styles...",
     "tabs": {
       "all": "Tout",
       "hair": "Cheveux",

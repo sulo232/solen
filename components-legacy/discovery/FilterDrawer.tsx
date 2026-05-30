@@ -27,19 +27,19 @@ export default function FilterDrawer(props: FilterDrawerProps) {
 
   return (
     <>
-      {/* Trigger button — visible on mobile only */}
+      {/* Trigger — mobile only. V3-D380 (2026-05-30): icon-only circle (was an uppercase "FILTER" pill — user flag);
+          matches the circular back button. A small ink dot marks active filters. */}
       <button
         onClick={() => setOpen(true)}
         aria-label={t("open_filters")}
-        className={`md:hidden flex items-center gap-1.5 px-3 py-2.5 rounded-pill border text-[10px] font-heading uppercase tracking-[.08em] transition-colors duration-150 ${
+        className={`md:hidden relative grid h-9 w-9 place-items-center rounded-full border transition-colors duration-150 ${
           hasFilters
             ? "border-s-ink text-s-ink bg-s-ink/[0.06]"
-            : "border-s-ink/[0.08] text-s-ink/60"
+            : "border-s-border text-s-ink-2 hover:text-s-ink"
         }`}
       >
-        <SlidersHorizontal size={13} />
-        {/* V3-D346 (2026-05-29): active filter state + indicator dot swept accent→ink (A9). */}
-        {t("filter_label")} {hasFilters && <span className="ml-0.5 text-s-ink-3">·</span>}
+        <SlidersHorizontal size={16} />
+        {hasFilters && <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-s-ink" />}
       </button>
 
       {/* Drawer overlay */}

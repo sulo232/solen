@@ -3,11 +3,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import { ChevronDown, ExternalLink, Play } from "lucide-react";
-import { motion } from "framer-motion";
 import type { DiscoveryItem } from "@/lib/types";
 import SourceBadge from "./SourceBadge";
 import LikeButton from "./LikeButton";
-import SaveButton from "./SaveButton";
 import DescriptionCard from "./DescriptionCard";
 import SalonScript from "./SalonScript";
 import ProductRecommendations from "./ProductRecommendations";
@@ -50,6 +48,9 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
   // Consider it a video if media_type is tiktok OR if tiktok data exists
   const isVideo = item.media_type === "tiktok" || !!item.tiktok_url || !!item.tiktok_embed_html;
   const displayImage = item.image_url || item.tiktok_thumbnail_url;
+  // V3-D390: TikTok thumbnails expire → route the hero through the /api/discovery/thumb refresh proxy (same as the
+  // feed cards) so the detail hero isn't a blank grey box.
+  const heroSrc = item.tiktok_url ? `/api/discovery/thumb/${item.id}` : displayImage;
 
   return (
     <div className="max-w-5xl mx-auto pb-24">
@@ -60,16 +61,13 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
       {/* ═══ Left column: Hero Media (sticky on desktop) ═══ */}
       <div className="md:sticky md:top-20">
       {/* ═══ Section 1: Hero Media ═══ */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: 0.05 }}
-        className="relative rounded-[16px] overflow-hidden bg-s-ink"
-      >
-        {isVideo && (item.tiktok_thumbnail_url || displayImage) ? (
+      {/* V3-D390: was a framer-motion entrance that stranded the hero at opacity:0 on mount (invisible even though the
+          image loaded). Plain div — always visible. */}
+      <div className="relative rounded-[16px] overflow-hidden bg-s-ink">
+        {isVideo && heroSrc ? (
           <div className="relative w-full aspect-[9/16] max-h-[80vh] bg-s-ink">
             <Image
-              src={item.tiktok_thumbnail_url || displayImage!}
+              src={heroSrc}
               alt={item.alt_text || item.style_name || "TikTok"}
               fill
               className="object-cover"
@@ -95,10 +93,10 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
               </a>
             )}
           </div>
-        ) : displayImage ? (
+        ) : heroSrc ? (
           <div className="relative aspect-[3/4] max-h-[70vh]">
             <Image
-              src={displayImage}
+              src={heroSrc}
               alt={item.alt_text || item.style_name || "Discovery item"}
               fill
               className="object-cover"
@@ -111,19 +109,14 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
             {dt.noMedia}
           </div>
         )}
-      </motion.div>
+      </div>
       </div>{/* /left column */}
 
       {/* ═══ Right column: all detail content ═══ */}
       <div className="min-w-0">
 
       {/* Source + Author + Date */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: 0.15 }}
-        className="flex items-center gap-2 mt-3 px-1"
-      >
+      <div className="flex items-center gap-2 mt-3 px-1">
         <SourceBadge contentType={
           (item.tiktok_url || item.tiktok_embed_html || item.media_type === "tiktok")
             ? "tiktok"
@@ -137,13 +130,13 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
           </span>
         )}
         <span className="text-xs text-s-ink/30">{formatDate(item.created_at, locale)}</span>
-      </motion.div>
+      </div>
 
       {/* ═══ Section 2: Actions Bar ═══ */}
       <div className="flex items-center justify-between mt-3 px-1">
         <div className="flex items-center gap-4">
-          <LikeButton itemId={item.id} initialLiked={false} initialCount={item.like_count} isAuthenticated={isAuthenticated} />
-          <SaveButton itemId={item.id} initialSaved={false} isAuthenticated={isAuthenticated} />
+          {/* V3-D390: heart only (no bookmark — Solen has a single save concept). Bare variant for the light toolbar. */}
+          <LikeButton itemId={item.id} initialLiked={false} isAuthenticated={isAuthenticated} variant="bare" />
         </div>
         <ShareButton item={item} />
       </div>
@@ -151,11 +144,12 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
       {/* ═══ Section 3: Title + Tags ═══ */}
       <div className="mt-4 px-1">
         {item.style_name && (
-          <h1 className="text-xl font-heading text-s-ink">{item.style_name}</h1>
+          <h1 className="text-xl font-heading font-semibold tracking-[-0.01em] text-s-ink">{item.style_name}</h1>
         )}
         {item.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-2">
-            {item.tags.map((tag) => (
+            {/* V3-D390: cap to 6 — the raw 14-tag cloud read cluttered. */}
+            {item.tags.slice(0, 6).map((tag) => (
               <span key={tag} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 text-s-ink/60">
                 #{tag}
               </span>

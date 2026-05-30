@@ -38,6 +38,10 @@ export default function Breadcrumb() {
     // handles /de, /en, /fr, /it with or without trailing slash
     /^\/(de|en|fr|it)\/?$/.test(normalizedPath);
   if (isHomepage) return null;
+  // V3-D384 (2026-05-30): /discover is a top-level browse destination (reached from header nav, like the homepage) —
+  // no standalone back-bar, which was leaving a tall empty band + a lone arrow above the title. Exact match only, so
+  // the detail page /discover/[id] keeps its breadcrumb back button.
+  if (normalizedPath === `/${locale}/discover`) return null;
   if (EXCLUDED.some((prefix) => withoutLocale.startsWith(prefix))) return null;
 
   const segments = withoutLocale.split("/").filter(Boolean);
@@ -46,20 +50,21 @@ export default function Breadcrumb() {
   // Desktop: breadcrumb path
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
-      {/* Mobile back button */}
+      {/* Mobile back button — V3-D380 (2026-05-30): icon-only circle (was a "← Zurück" text link).
+          Global chrome: applies to every non-excluded route's mobile back, for a consistent clean affordance. */}
       <button
         onClick={() => router.back()}
-        className="md:hidden flex items-center gap-1.5 text-sm text-s-ink/50 hover:text-s-accent transition-colors min-h-12"
+        aria-label={t("back")}
+        className="md:hidden grid h-9 w-9 place-items-center rounded-full border border-s-border text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken transition-colors"
       >
         <ArrowLeft size={16} />
-        {t("back")}
       </button>
 
       {/* Desktop breadcrumb */}
       <nav className="hidden md:flex items-center gap-1.5 text-sm" aria-label="Breadcrumb">
         <Link
           href={`/${locale}`}
-          className="text-s-ink/40 hover:text-s-accent transition-colors"
+          className="text-s-ink/40 hover:text-s-ink transition-colors"
         >
           Home
         </Link>
@@ -76,7 +81,7 @@ export default function Breadcrumb() {
               ) : (
                 <Link
                   href={href}
-                  className="text-s-ink/40 hover:text-s-accent transition-colors"
+                  className="text-s-ink/40 hover:text-s-ink transition-colors"
                 >
                   {label}
                 </Link>
