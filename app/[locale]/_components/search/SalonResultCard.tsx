@@ -49,6 +49,17 @@ export interface SalonResultCardProps {
   /** V3-D357: earliest available slot label ("heute 15:30") - the booking hook +
    *  the content that stops the card reading empty. Computed in SearchTemplate. */
   nextSlot?: string | null;
+  /** V3-D376 (2026-05-30): top services + their bookable slots, rendered as the
+   *  card's "featured service + time pills + Alle Services" block (user pick "#3").
+   *  Supersedes the V3-D371 no-service-rows decision. From ?with_slots=1. */
+  services?: {
+    id: string;
+    name_de?: string | null;
+    name_en?: string | null;
+    price?: number | null;
+    duration_minutes?: number | null;
+    slots?: string[] | null;
+  }[] | null;
   /** "grid" = square 2-col card (default). "list" = Fresha-style row (photo-left)
    *  for the map-OPEN split. "card" = full-width landscape gallery card (photo on
    *  TOP, text below) - Fresha's real mobile-search shape, photo-led, for map-CLOSED
@@ -75,11 +86,40 @@ function formatDistance(m?: number | null): string | null {
   return m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1)} km`;
 }
 
+// V3-D376 (2026-05-30): "Std." German hours unit for the featured-service row.
+function formatDuration(mins?: number | null): string | null {
+  if (!mins || mins <= 0) return null;
+  if (mins < 60) return `${mins} Min.`;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  const hPart = h === 1 ? "1 Std." : `${h} Std.`;
+  return m === 0 ? hPart : `${hPart} ${m} Min.`;
+}
+
+// ISO slot timestamp → "14:30" in the locale's CH formatting.
+function formatSlotTime(iso: string, locale: string): string {
+  try {
+    return new Date(iso).toLocaleTimeString(
+      locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH",
+      { hour: "2-digit", minute: "2-digit" },
+    );
+  } catch {
+    return "";
+  }
+}
+
+const ALL_SVC_LABEL: Record<string, string> = {
+  de: "Alle Services ansehen",
+  en: "View all services",
+  fr: "Voir tous les services",
+  it: "Vedi tutti i servizi",
+};
+
 export function SalonResultCard(props: SalonResultCardProps) {
   const {
     slug, name, locale, rating, reviewCount, photoUrl, category,
     city, distanceMeters, priceFromCHF, isSaved, salonId,
-    nextSlot, variant = "grid",
+    nextSlot, services, variant = "grid",
   } = props;
 
   const href = `/${locale}/salon/${slug}`;
@@ -97,6 +137,18 @@ export function SalonResultCard(props: SalonResultCardProps) {
     rating != null ? rating.toFixed(1) + (reviewCount && reviewCount > 0 ? ` (${reviewCount})` : "") : null;
   // V3-D353: monogram fallback initial (matches the homepage SalonCard when no photo).
   const initial = (name ?? "").trim().charAt(0).toUpperCase() || "?";
+
+  // V3-D376: featured service for the card booking block — prefer one with open
+  // slots, else the first. Its slots (ISO) format to HH:MM; each pill links into
+  // booking with that service preselected. "Alle Services" → the PDP service list.
+  const featured = services?.find((s) => (s.slots?.length ?? 0) > 0) ?? services?.[0] ?? null;
+  const featuredName = featured
+    ? (locale === "en" && featured.name_en ? featured.name_en : featured.name_de) ?? null
+    : null;
+  const featuredDur = featured ? formatDuration(featured.duration_minutes) : null;
+  const featuredSlots = (featured?.slots ?? []).slice(0, 3);
+  const hasMoreSlots = (featured?.slots?.length ?? 0) > 3;
+  const allServicesLabel = ALL_SVC_LABEL[locale] ?? ALL_SVC_LABEL.de;
 
   // Shared photo fill (next/Image or monogram) - reused by BOTH variants so the
   // photo treatment stays identical across the square card and the list row.
@@ -210,24 +262,72 @@ export function SalonResultCard(props: SalonResultCardProps) {
               {metaBits}
             </CardMeta>
           )}
-          {/* V3-D374: booking row — "ab X CHF" + next-slot pill on ONE line (was
-              two rows + a reviews row; trimmed per user "too many lines"). */}
-          {(priceFromCHF != null || nextSlot) && (
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-              {priceFromCHF != null && (
-                <CardMeta as="span" className="text-[13px] leading-[1.4]">
-                  {fromLabel} {priceFromCHF} CHF
-                </CardMeta>
-              )}
-              {nextSlot && (
-                <span className="inline-flex items-center gap-1 font-body text-[12.5px] font-medium text-s-ink">
-                  <Clock size={13} strokeWidth={2} aria-hidden className="text-s-ink-2" />
-                  {nextSlot}
-                </span>
+        </Link>
+
+        {/* V3-D376: featured service + bookable slot pills + "Alle Services" link.
+            OUTSIDE the card <Link> so these nested links stay valid HTML. Falls
+            back to the V3-D374 price + next-slot row when a salon has no services. */}
+        {featured ? (
+          <div className="mt-3 border-t border-s-border pt-3">
+            <div className="flex items-baseline justify-between gap-3">
+              <div className="min-w-0">
+                {featuredName && (
+                  <p className="truncate font-body text-[14px] font-medium text-s-ink">{featuredName}</p>
+                )}
+                {featuredDur && <p className="mt-0.5 font-body text-[12.5px] text-s-ink-3">{featuredDur}</p>}
+              </div>
+              {featured.price != null && (
+                <p className="shrink-0 font-body text-[13px] font-semibold text-s-ink">
+                  {fromLabel} {featured.price} CHF
+                </p>
               )}
             </div>
-          )}
-        </Link>
+            {featuredSlots.length > 0 && (
+              // V3-D377: time pills are desktop-only — they read cluttered on the
+              // mobile card (user 2026-05-30). Mobile keeps the featured service +
+              // price + "Alle Services"; the slot grid shows from md up.
+              <div className="mt-2.5 hidden items-center gap-2 md:flex">
+                {featuredSlots.map((iso, i) => (
+                  <Link
+                    key={iso}
+                    href={`/${locale}/salon/${slug}/booking?service=${featured.id}&start=${encodeURIComponent(iso)}`}
+                    className={`rounded-[10px] border px-3 py-1.5 font-body text-[12.5px] font-semibold transition-colors ${
+                      i === 0 ? "border-s-ink bg-s-ink text-white" : "border-s-border text-s-ink hover:border-s-ink/40"
+                    }`}
+                  >
+                    {formatSlotTime(iso, locale)}
+                  </Link>
+                ))}
+                {hasMoreSlots && (
+                  <Link
+                    href={`/${locale}/salon/${slug}/booking?service=${featured.id}`}
+                    className="flex h-[34px] w-9 items-center justify-center rounded-[10px] border border-s-border font-body text-[15px] font-bold leading-none text-s-ink-3 hover:border-s-ink/40"
+                    aria-label="Mehr Zeiten"
+                  >
+                    ⋯
+                  </Link>
+                )}
+              </div>
+            )}
+            <Link href={`${href}#section-services`} className="mt-3 inline-block font-body text-[13px] font-semibold text-s-accent">
+              {allServicesLabel} →
+            </Link>
+          </div>
+        ) : (priceFromCHF != null || nextSlot) ? (
+          <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+            {priceFromCHF != null && (
+              <CardMeta as="span" className="text-[13px] leading-[1.4]">
+                {fromLabel} {priceFromCHF} CHF
+              </CardMeta>
+            )}
+            {nextSlot && (
+              <span className="inline-flex items-center gap-1 font-body text-[12.5px] font-medium text-s-ink">
+                <Clock size={13} strokeWidth={2} aria-hidden className="text-s-ink-2" />
+                {nextSlot}
+              </span>
+            )}
+          </div>
+        ) : null}
       </article>
     );
   }

@@ -13,16 +13,6 @@ import Supercluster from "supercluster";
 
 const BASEL_CENTER: [number, number] = [7.5886, 47.5596];
 
-const CATEGORY_CHIPS = [
-  { key: "all", label: "Alle" },
-  { key: "coiffeur", label: "Haare" },
-  { key: "nails", label: "Nails" },
-  { key: "spa", label: "Spa" },
-  { key: "barbershop", label: "Barber" },
-  { key: "makeup", label: "Kosmetik" },
-  { key: "waxing", label: "Waxing" },
-] as const;
-
 interface MapViewProps {
   salons: SalonCard[];
   selectedId?: string;
@@ -35,9 +25,14 @@ interface MapViewProps {
 
 export default function MapView({ salons, selectedId, onSelect, enhanced = false, onAreaSearch }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<mapboxgl.Map | null>(null);
-  const markersRef = useRef<Map<string, mapboxgl.Marker>>(new Map());
-  const [activeCategory, setActiveCategory] = useState("all");
+  // mapbox-gl v3's Map/Marker types are so deeply recursive that tsc throws
+  // TS2321 "Excessive stack depth" when comparing them on assignment — a known
+  // v3 issue that fails `next build` (ignoreBuildErrors:false). Typing these
+  // refs loosely sidesteps the structural comparison without changing runtime.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mapRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const markersRef = useRef<Map<string, any>>(new Map());
   const [showAreaSearch, setShowAreaSearch] = useState(false);
   const [mapError, setMapError] = useState(!process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
   const moveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -50,14 +45,9 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
   // re-render — repeated fitBounds is what made the map "move weirdly".
   const fittedSigRef = useRef<string>("");
 
-  // Filter salons by category. Memoised so its identity changes only when the
-  // salon set or active category actually changes (not on every parent render).
-  const filteredSalons = useMemo(
-    () => (activeCategory === "all"
-      ? salons
-      : salons.filter((s) => s.categories?.includes(activeCategory as any))),
-    [salons, activeCategory],
-  );
+  // Markers reflect exactly the salons the PAGE passes — the page owns category
+  // filtering now (MapView's own chip row was a duplicate; removed V3-D378).
+  const filteredSalons = salons;
 
   // Cluster nearby salons (Fresha-style) so dense areas don't overlap. Rebuilt
   // only when the salon set changes.
@@ -102,7 +92,11 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       center: BASEL_CENTER,
       zoom: 13,
       projection: "mercator", // flat map, Fresha-style
-      cooperativeGestures: true, // Require Ctrl+scroll / two-finger on mobile
+      // Dedicated search maps (enhanced) pan with ONE finger / normal scroll —
+      // forcing two-finger there made the full-screen mobile map feel frozen.
+      // Inline mini-maps (enhanced=false) keep cooperative gestures so the page
+      // can still scroll past them.
+      cooperativeGestures: !enhanced,
     });
 
     // Keep scrollZoom ENABLED so a MacBook trackpad pinch (delivered as a
@@ -139,7 +133,8 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
     // down (that drove the create→remove→recreate loop). Just log it.
     map.on("error", (e) => console.warn("Mapbox error:", e));
 
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
+    // V3-D382: no NavigationControl — Fresha mobile has no zoom +/- buttons
+    // (pinch / double-tap to zoom). The corner buttons were visual clutter.
     mapRef.current = map;
 
     // Show area search button on pan/zoom (debounced)
@@ -238,17 +233,11 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
         el.addEventListener("mouseenter", () => { inner.style.transform = "scale(1.15)"; });
         el.addEventListener("mouseleave", () => { inner.style.transform = isSelected ? "scale(1.12)" : "scale(1)"; });
 
-        const popup = new mapboxgl.Popup({ offset: 12, closeButton: false, maxWidth: "220px" }).setHTML(
-          `<div style="font-family:Geist,system-ui,-apple-system,sans-serif;padding:8px">
-             <p style="font-weight:600;font-size:13px;color:#0A0A0A;margin:0 0 2px">${props.name as string}</p>
-             <p style="font-size:11px;color:#6B6B6B;margin:0 0 4px">${(props.address as string) ?? ""}</p>
-             <p style="font-size:11px;color:#0A0A0A;margin:0"><span style="color:#FFC32B">★</span> ${Number(props.rating ?? 0).toFixed(1)}${minPrice ? ` · ab ${formatCurrency(minPrice)}` : ""}</p>
-           </div>`
-        );
-
+        // V3-D382: no marker popup. The bottom-sheet card already shows the
+        // salon's name / rating / price, so a popup bubble over the map was a
+        // redundant "second" info display.
         const marker = new mapboxgl.Marker({ element: el })
           .setLngLat([lng, lat])
-          .setPopup(popup)
           .addTo(map);
         markersRef.current.set(salonId, marker);
       });
@@ -269,14 +258,15 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
     return () => { map.off("zoomend", render); };
   }, [clusterIndex, selectedId]);
 
-  // Pan + popup on selection change
+  // V3-D382: PAN (don't hard-zoom) to the selected salon. Forcing zoom:15 on
+  // every swipe-select ratcheted the map deeper each time, so the overview was
+  // unrecoverable ("can't go back on the map"). Pan-only preserves the user's
+  // zoom; the popup toggle is gone (the sheet card shows the info now).
   useEffect(() => {
     if (!selectedId || !mapRef.current) return;
     const salon = filteredSalons.find((s) => s.id === selectedId);
     if (!salon) return;
-    mapRef.current.easeTo({ center: [salon.longitude, salon.latitude], zoom: 15, duration: 400 });
-    const marker = markersRef.current.get(selectedId);
-    if (marker && !marker.getPopup()?.isOpen()) marker.togglePopup();
+    mapRef.current.easeTo({ center: [salon.longitude, salon.latitude], duration: 400 });
   }, [selectedId, filteredSalons]);
 
   const handleAreaSearch = useCallback(() => {
@@ -295,25 +285,6 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
 
   return (
     <div className="relative w-full h-full min-h-[200px]">
-      {/* Category filter chips */}
-      {enhanced && !mapError && (
-        <div className="absolute top-3 left-3 right-12 z-10 flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">
-          {CATEGORY_CHIPS.map((chip) => (
-            <button
-              key={chip.key}
-              onClick={() => { setActiveCategory(chip.key); setShowAreaSearch(false); }}
-              className={`shrink-0 px-4 py-2 rounded-full text-[13px] font-heading font-semibold transition-colors ${
-                activeCategory === chip.key
-                  ? "bg-s-ink text-white shadow-[0_2px_8px_rgba(10,10,10,0.12)]"
-                  : "bg-white text-s-ink border border-s-ink/[0.12] hover:border-s-ink/25"
-              }`}
-            >
-              {chip.label}
-            </button>
-          ))}
-        </div>
-      )}
-
       {/* Map container */}
       <div ref={containerRef} className={`w-full h-full min-h-[280px] md:min-h-[400px] rounded-[12px] overflow-hidden ${mapError ? 'hidden' : ''}`} />
 

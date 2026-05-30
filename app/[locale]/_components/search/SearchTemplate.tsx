@@ -42,6 +42,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import {
   ChevronDown,
+  ChevronLeft,
   Map as MapIcon,
   List as ListIcon,
   Search,
@@ -60,6 +61,7 @@ import {
   DoorOpen,
   Brush,
 } from "lucide-react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { SalonResultCard } from "./SalonResultCard";
 import { CategoryBrowseRails } from "./CategoryBrowseRails";
@@ -391,6 +393,78 @@ export default function SearchTemplate({
   const [error, setError] = React.useState<string | null>(null);
   const [favoriteIds, setFavoriteIds] = React.useState<Set<string>>(new Set());
   const [mobileView, setMobileView] = React.useState<"list" | "map">("list");
+  // V3-D380: mobile map sheet — DRAG the handle to resize (snaps to peek/expanded
+  // on release); a plain tap toggles. sheetTopPx = the sheet's viewport top in px
+  // (null = the 55% peek default). Pointer events cover touch + mouse.
+  const [sheetTopPx, setSheetTopPx] = React.useState<number | null>(null);
+  const [sheetDragging, setSheetDragging] = React.useState(false);
+  const sheetDragRef = React.useRef<{ startY: number; startTop: number; moved: boolean } | null>(null);
+  // V3-D381: THREE snaps — expanded (full list) / peek (half) / collapsed
+  // (mostly map + a horizontal swipeable card stub, the Google/Apple-Maps pattern).
+  const sheetSnaps = () => {
+    const h = typeof window !== "undefined" ? window.innerHeight : 800;
+    return { expanded: Math.round(h * 0.16), peek: Math.round(h * 0.55), collapsed: Math.round(h * 0.8) };
+  };
+  // V3-D381: selectedId correlates the sheet cards with the map pins. A pin tap
+  // selects its card; swiping the collapsed card stub selects + recenters the
+  // matching pin (MapView already ink-fills selectedId + easeTo-recenters).
+  const [mapSelectedId, setMapSelectedId] = React.useState<string | null>(null);
+  const mapSwiperRef = React.useRef<HTMLDivElement | null>(null);
+  const swiperScrollTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scrollSwiperTo = (id: string) => {
+    const row = mapSwiperRef.current;
+    if (!row) return;
+    const el = row.querySelector<HTMLElement>(`[data-salon="${id}"]`);
+    if (el) row.scrollTo({ left: el.offsetLeft - row.offsetWidth * 0.07, behavior: "smooth" });
+  };
+  const selectMapSalon = (id: string, fromSwiper?: boolean) => {
+    setMapSelectedId(id);
+    if (!fromSwiper) scrollSwiperTo(id);
+  };
+  // Centered card of the collapsed swiper drives pin selection (debounced).
+  const onSwiperScroll = () => {
+    const row = mapSwiperRef.current;
+    if (!row) return;
+    if (swiperScrollTimer.current) clearTimeout(swiperScrollTimer.current);
+    swiperScrollTimer.current = setTimeout(() => {
+      const mid = row.scrollLeft + row.offsetWidth / 2;
+      let best: string | null = null;
+      let bd = Infinity;
+      row.querySelectorAll<HTMLElement>("[data-salon]").forEach((el) => {
+        const c = el.offsetLeft + el.offsetWidth / 2;
+        const d = Math.abs(c - mid);
+        if (d < bd) { bd = d; best = el.dataset.salon ?? null; }
+      });
+      if (best && best !== mapSelectedId) selectMapSalon(best, true);
+    }, 90);
+  };
+  const onSheetPointerDown = (e: React.PointerEvent) => {
+    const { peek } = sheetSnaps();
+    sheetDragRef.current = { startY: e.clientY, startTop: sheetTopPx ?? peek, moved: false };
+    setSheetDragging(true);
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+  };
+  const onSheetPointerMove = (e: React.PointerEvent) => {
+    const d = sheetDragRef.current;
+    if (!d) return;
+    const delta = e.clientY - d.startY;
+    if (Math.abs(delta) > 6) d.moved = true;
+    const { expanded, collapsed } = sheetSnaps();
+    setSheetTopPx(Math.max(expanded - 30, Math.min(collapsed + 40, d.startTop + delta)));
+  };
+  const onSheetPointerUp = () => {
+    const d = sheetDragRef.current;
+    if (!d) return;
+    const { expanded, peek, collapsed } = sheetSnaps();
+    setSheetTopPx((cur) => {
+      const c = cur ?? peek;
+      if (!d.moved) return c <= (expanded + peek) / 2 ? peek : expanded; // tap = toggle peek/expanded
+      // drag = snap to nearest of the three
+      return [expanded, peek, collapsed].sort((a, b) => Math.abs(c - a) - Math.abs(c - b))[0];
+    });
+    sheetDragRef.current = null;
+    setSheetDragging(false);
+  };
   const [sortOpen, setSortOpen] = React.useState(false);
   const sortBtnRef = React.useRef<HTMLDivElement>(null);
   // V3-D351 (2026-05-28): FilterSheet open state lives here (single source of
@@ -405,6 +479,17 @@ export default function SearchTemplate({
   // `window` (not a nested container) — same scroll axis the Header watches.
   const [mapFabVisible, setMapFabVisible] = React.useState(false);
   const bigSearchRef = React.useRef<HTMLAnchorElement | null>(null);
+
+  // V3-D378 (2026-05-30): lock body scroll while the mobile full-screen map is
+  // open, so the page (footer etc.) can't scroll behind the fixed map overlay.
+  React.useEffect(() => {
+    if (mobileView !== "map") return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileView]);
 
   // V3-D376 (2026-05-29): Airbnb-style shrink-search. The search bar is a sticky
   // band that PINS to the top + COLLAPSES (2-line -> 1-line, padding down, city
@@ -595,6 +680,16 @@ export default function SearchTemplate({
       updateParam("map", mapOpen ? null : "1");
     }
   }, [mapOpen, updateParam]);
+
+  // V3-D382 (#1 load speed): warm the MapView chunk (mapbox-gl is a heavy dynamic
+  // import) shortly after the list renders, so the FIRST tap on "Karte" doesn't
+  // pay the full chunk-download delay. Fired off-idle so it never blocks the list.
+  React.useEffect(() => {
+    const t = setTimeout(() => {
+      void import("@/components-legacy/MapView");
+    }, 1200);
+    return () => clearTimeout(t);
+  }, []);
 
   // ── Favorite toggle ───────────────────────────────────────────────────────
   const toggleFavorite = React.useCallback((salonId: string) => {
@@ -1099,6 +1194,7 @@ export default function SearchTemplate({
                     // reviews" line; location is "area, town" (built in city= above).
                     reviewCount={s.review_count ?? null}
                     nextSlot={nextSlotLabel(s.services, locale)}
+                    services={s.services}
                     isSaved={favoriteIds.has(s.id)}
                     salonId={s.id}
                   />
@@ -1161,21 +1257,176 @@ export default function SearchTemplate({
         )}
       </div>
 
-      {/* Mobile full-viewport map mode */}
-      {mobileView === "map" && !loading && !error && salons.length > 0 && (
-        <div className="fixed inset-x-0 bottom-0 top-[110px] z-30 md:hidden">
-          <MapView
-            salons={salons as never}
-            onSelect={(id) => {
-              const salon = salons.find((s) => s.id === id);
-              if (salon) {
-                router.push(`/${locale}/salon/${salon.slug ?? id}`);
-              }
-            }}
-            enhanced
-          />
-        </div>
-      )}
+      {/* Mobile full-viewport map mode — pannable map + a bottom sheet holding the
+          result cards (V3-D378). Replaces the old bare full-screen swap: the map
+          fills below the header, the sheet overlays the lower ~half with the count
+          + vertical cards (scroll inside the sheet). Body scroll is locked above. */}
+      {mobileView === "map" && !loading && !error && salons.length > 0 && (() => {
+        // V3-D381: three-snap map sheet. peek/expanded → vertical list + filter
+        // pills; collapsed → mostly map + a horizontal swipeable card stub whose
+        // centered card selects + recenters the matching pin (Google/Apple-Maps pattern).
+        const snaps = sheetSnaps();
+        const curTop = sheetTopPx ?? snaps.peek;
+        const isCollapsed = curTop >= (snaps.peek + snaps.collapsed) / 2;
+        const cardProps = (s: (typeof salons)[number]) => ({
+          slug: s.slug,
+          name: s.name,
+          locale,
+          rating: s.average_rating,
+          photoUrl: s.cover_photo_url ?? undefined,
+          category: activeCategory ? undefined : safeCategory(s.categories),
+          city:
+            s.address ||
+            (s.quartier ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1) : undefined) ||
+            (activeCity ? getCityName(activeCity, locale) : undefined),
+          distanceMeters: s.distance_meters ?? null,
+          priceFromCHF: s.avg_price ?? null,
+          reviewCount: s.review_count ?? null,
+          nextSlot: nextSlotLabel(s.services, locale),
+          services: s.services,
+          isSaved: favoriteIds.has(s.id),
+          salonId: s.id,
+        });
+        const filterChips = [
+          { key: "open_now", label: tChrome("openNow"), active: openNow, onClick: () => toggleBooleanParam("open_now", openNow) },
+          { key: "instant_bookable", label: tChrome("instant"), active: instantBookable, onClick: () => toggleBooleanParam("instant_bookable", instantBookable) },
+          { key: "min_rating", label: tChrome("topRated"), active: minRating === 4.5, onClick: () => updateParam("min_rating", minRating === 4.5 ? null : "4.5") },
+        ];
+        const mapOverlay = (
+          <div className="fixed inset-0 z-[60] bg-s-bg-base md:hidden">
+            {/* V3-D382: FULL-BLEED map — the overlay covers the global header, so
+                the map runs edge-to-edge and the search floats on top of it. */}
+            <div className="absolute inset-0">
+              <MapView
+                salons={salons as never}
+                selectedId={mapSelectedId ?? undefined}
+                onSelect={(id) => {
+                  // tap a pin → select it + drop the sheet to the swipeable stub,
+                  // centered on that venue (after the stub mounts).
+                  setMapSelectedId(id);
+                  setSheetTopPx(sheetSnaps().collapsed);
+                  setTimeout(() => scrollSwiperTo(id), 60);
+                }}
+                enhanced
+              />
+            </div>
+            {/* V3-D382: floating top bar over the map — back button + search pill
+                ONLY (no logo / category chips / hamburger). The full-screen overlay
+                covers the global header, so this IS the entire map-view chrome. */}
+            <div className="absolute inset-x-0 top-0 z-20 flex items-center gap-2 px-3 pt-3">
+              <button
+                type="button"
+                onClick={() => setMobileView("list")}
+                aria-label="Zurück zur Liste"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white text-s-ink shadow-[0_2px_12px_rgba(10,10,10,0.14)] transition-transform active:scale-95"
+              >
+                <ChevronLeft size={20} strokeWidth={2} aria-hidden />
+              </button>
+              <Link
+                href={`/${locale}`}
+                aria-label={tChrome("editSearch")}
+                className="flex min-w-0 flex-1 items-center gap-2.5 rounded-pill border border-s-border bg-white px-4 py-3 shadow-[0_2px_12px_rgba(10,10,10,0.14)]"
+              >
+                <Search size={17} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+                <span className="min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
+                  {q ? `„${q}"` : tChrome("searchPlaceholder")}
+                  <span className="ml-1.5 font-normal text-s-ink-2">· {cityName}</span>
+                </span>
+              </Link>
+            </div>
+            {/* bottom sheet — DRAG the handle: snaps expanded / peek / collapsed.
+                `fixed` so the px drag-top works; z-[31] keeps it above the map. */}
+            <div
+              className={cn(
+                "fixed inset-x-0 bottom-0 z-[31] flex flex-col rounded-t-[20px] border-t border-s-border bg-white shadow-[0_-10px_30px_rgba(10,10,10,0.16)]",
+                !sheetDragging && "transition-[top] duration-300 ease-glide",
+              )}
+              style={{ top: `${curTop}px` }}
+            >
+              <div
+                onPointerDown={onSheetPointerDown}
+                onPointerMove={onSheetPointerMove}
+                onPointerUp={onSheetPointerUp}
+                className="flex shrink-0 cursor-grab touch-none items-center justify-center py-3.5 active:cursor-grabbing"
+                role="button"
+                aria-label="Liste ziehen"
+              >
+                <span className="h-1 w-10 rounded-full bg-s-ink/25" aria-hidden />
+              </div>
+
+              {isCollapsed ? (
+                // collapsed: mostly map + horizontal swipeable card stub
+                <div
+                  ref={mapSwiperRef}
+                  onScroll={onSwiperScroll}
+                  className="scrollbar-none flex flex-1 snap-x snap-mandatory items-start gap-3 overflow-x-auto px-4 pb-5 pt-1"
+                  style={{ scrollbarWidth: "none" }}
+                >
+                  {salons.map((s) => (
+                    <div
+                      key={s.id}
+                      data-salon={s.id}
+                      className={cn(
+                        "w-[86%] shrink-0 snap-center rounded-2xl",
+                        mapSelectedId === s.id && "outline outline-2 outline-s-ink outline-offset-2",
+                      )}
+                    >
+                      <SalonResultCard variant="list" {...cardProps(s)} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {/* filter pills — reuse the list-chrome handlers (one source of truth) */}
+                  <div
+                    className="scrollbar-none flex shrink-0 items-center gap-2 overflow-x-auto px-4 pb-2 pt-1"
+                    style={{ scrollbarWidth: "none" }}
+                  >
+                    {filterChips.map((c) => (
+                      <button
+                        key={c.key}
+                        type="button"
+                        onClick={c.onClick}
+                        aria-pressed={c.active}
+                        className={cn(
+                          "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-pill px-3.5 font-body text-[13.5px] font-medium leading-none",
+                          c.active
+                            ? "border border-s-ink bg-s-ink text-white"
+                            : "border border-s-border bg-white text-s-ink hover:border-s-ink",
+                        )}
+                      >
+                        {c.active && <Check size={14} strokeWidth={2.5} aria-hidden />}
+                        {c.label}
+                      </button>
+                    ))}
+                    {/* V3-D382: filter button LAST — far right, reached by scrolling the chip row */}
+                    <button
+                      type="button"
+                      onClick={() => setFilterSheetOpen(true)}
+                      aria-label={tFilter("open")}
+                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border bg-white text-s-ink transition-colors hover:border-s-ink"
+                    >
+                      <SlidersHorizontal size={16} strokeWidth={2} aria-hidden />
+                    </button>
+                  </div>
+                  <div className="shrink-0 px-4 pb-1 pt-1 font-body text-[12.5px] text-s-ink-2">
+                    <span className="font-semibold text-s-ink">{salons.length}</span> Salons in diesem Bereich
+                  </div>
+                  <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8 pt-1">
+                    {salons.map((s) => (
+                      <SalonResultCard key={s.id} variant="card" {...cardProps(s)} />
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        );
+        // V3-D382: portal to <body> so the overlay escapes the trapped stacking
+        // context and covers the global header (z-50). createPortal keeps the React
+        // tree intact — refs / state / handlers all keep working.
+        return typeof document !== "undefined" ? createPortal(mapOverlay, document.body) : mapOverlay;
+      })()}
 
       {/* belowSlot — per-category SEO content (FAQ / About / etc.) */}
       {belowSlot && (

@@ -20,9 +20,15 @@ export async function GET(
       .eq("staff_member_id", staffId)
       .eq("is_active", true);
 
+    // Schema drift / RLS / transient PostgREST failures must not 500 the
+    // booking flow — degrade to an empty schedule set like the sibling
+    // staff/profile route does for missing data.
     if (scheduleError) {
-      console.error("Failed to fetch schedules:", scheduleError);
-      return NextResponse.json({ error: "Failed to fetch availability" }, { status: 500 });
+      console.error("[api/staff/availability] failed to fetch schedules:", scheduleError);
+      return NextResponse.json({
+        success: true,
+        data: { schedules: [] },
+      });
     }
 
     // Format output (very basic 7-day lookahead based on day_of_week)
@@ -37,6 +43,7 @@ export async function GET(
     });
 
   } catch (error: any) {
+    console.error("[api/staff/availability] unexpected error:", error);
     return NextResponse.json(
       { error: "Internal Server Error", details: error.message },
       { status: 500 }

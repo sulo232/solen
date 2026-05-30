@@ -9,7 +9,7 @@ import type { StaffMember, Salon } from '@/lib/types';
 
 interface BookingSalonPageProps {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<{ staff?: string }>;
+  searchParams: Promise<{ staff?: string; service?: string; start?: string }>;
 }
 
 export async function generateMetadata({
@@ -28,7 +28,7 @@ export default async function BookingSalonPage({
   searchParams,
 }: BookingSalonPageProps) {
   const { locale, slug } = await params;
-  const { staff: staffParam } = await searchParams;
+  const { staff: staffParam, service: serviceParam, start: startParam } = await searchParams;
   const supabase = createAdminSupabaseClient();
   const t = await getTranslations({ locale, namespace: 'booking' });
 
@@ -82,6 +82,28 @@ export default async function BookingSalonPage({
   const initialStaffId =
     staffParam && staff.some((s) => s.id === staffParam) ? staffParam : undefined;
 
+  // V3-D379: preselect a service when arriving from a search/category card slot
+  // pill (?service=<id>) — validated against the real service list, so it lands
+  // in the booking cart instead of dumping the user on an empty step 1.
+  const matchedService = serviceParam
+    ? (services as {
+        id: string;
+        name_de?: string | null;
+        name_en?: string | null;
+        price?: number | null;
+        duration_minutes?: number | null;
+      }[]).find((s) => s.id === serviceParam)
+    : undefined;
+  const initialService = matchedService
+    ? {
+        id: matchedService.id,
+        name_de: matchedService.name_de ?? "",
+        name_en: matchedService.name_en ?? matchedService.name_de ?? "",
+        price: matchedService.price ?? 0,
+        duration_minutes: matchedService.duration_minutes ?? 0,
+      }
+    : undefined;
+
   // Phase 3 data: stylist↔service map (#6 filter) + service add-ons (#7 expand).
   // Enhancement data — degrade gracefully, never block booking if absent.
   const staffIds = staff.map((s) => s.id);
@@ -114,7 +136,7 @@ export default async function BookingSalonPage({
     : [];
 
   return (
-    <BookingProvider salonId={salon.id} initialStaffId={initialStaffId}>
+    <BookingProvider salonId={salon.id} initialStaffId={initialStaffId} initialService={initialService} initialStart={startParam}>
       <div className="min-h-screen bg-[--base]">
         {/* Header with salon name */}
         <header className="sticky top-0 z-40 border-b border-s-ink/[0.06] bg-[--raised]">
