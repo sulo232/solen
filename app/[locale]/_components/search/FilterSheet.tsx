@@ -53,6 +53,14 @@ import {
   useResponsiveOverlay,
 } from "../primitives";
 
+// V3-D384: price buckets — symbol labels are locale-agnostic (no i18n key needed).
+// Tapping the active bucket clears it (back to "any").
+const PRICE_BUCKETS: { label: string; min: number | null; max: number | null }[] = [
+  { label: "≤ CHF 50", min: null, max: 50 },
+  { label: "CHF 50–100", min: 50, max: 100 },
+  { label: "≥ CHF 100", min: 100, max: null },
+];
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Public API - all state + writers are owned by SearchTemplate (single source of
 // truth). The sheet is a controlled, stateless view over the URL params.
@@ -72,15 +80,10 @@ export interface FilterSheetLabels {
   close: string;
   /** Group heading - "Sortieren". */
   sortHeading: string;
-  /** Group heading - "Verfuegbarkeit". */
-  availabilityHeading: string;
+  /** Group heading - "Preis". */
+  priceHeading: string;
   /** Group heading - "Bewertung". */
   ratingHeading: string;
-  /** Verfuegbarkeit chips. */
-  openNow: string;
-  instant: string;
-  walkIn: string;
-  deals: string;
   /** Bewertung chips. */
   rating45: string;
   rating40: string;
@@ -101,12 +104,10 @@ export interface FilterSheetProps {
   sort: string;
   onSortChange: (value: string) => void;
 
-  // ── Verfuegbarkeit (booleans) ──
-  openNow: boolean;
-  instantBookable: boolean;
-  walkIn: boolean;
-  deals: boolean;
-  onToggleBoolean: (key: string, currentlyActive: boolean) => void;
+  // ── Preis (min_price / max_price) ──
+  minPrice: number | null;
+  maxPrice: number | null;
+  onPriceChange: (min: number | null, max: number | null) => void;
 
   // ── Bewertung (min_rating) ──
   minRating: number | null;
@@ -177,11 +178,9 @@ function FilterSheetContent({
   sortOptions,
   sort,
   onSortChange,
-  openNow,
-  instantBookable,
-  walkIn,
-  deals,
-  onToggleBoolean,
+  minPrice,
+  maxPrice,
+  onPriceChange,
   minRating,
   onMinRatingChange,
 }: Omit<FilterSheetProps, "isOpen" | "onClose" | "resultCount" | "onReset">) {
@@ -215,33 +214,22 @@ function FilterSheetContent({
         </div>
       </FilterGroup>
 
-      {/* Verfuegbarkeit - boolean chips (same params as the chip row). */}
-      <FilterGroup heading={labels.availabilityHeading}>
+      {/* Preis - buckets writing min_price / max_price (the #1 Fresha/Airbnb
+          filter). Tapping the active bucket clears it (back to "any"). */}
+      <FilterGroup heading={labels.priceHeading}>
         <div className="flex flex-wrap gap-2">
-          <SheetChip
-            active={openNow}
-            onClick={() => onToggleBoolean("open_now", openNow)}
-          >
-            {labels.openNow}
-          </SheetChip>
-          <SheetChip
-            active={instantBookable}
-            onClick={() => onToggleBoolean("instant_bookable", instantBookable)}
-          >
-            {labels.instant}
-          </SheetChip>
-          <SheetChip
-            active={walkIn}
-            onClick={() => onToggleBoolean("walk_in", walkIn)}
-          >
-            {labels.walkIn}
-          </SheetChip>
-          <SheetChip
-            active={deals}
-            onClick={() => onToggleBoolean("deals", deals)}
-          >
-            {labels.deals}
-          </SheetChip>
+          {PRICE_BUCKETS.map((b) => {
+            const active = minPrice === b.min && maxPrice === b.max;
+            return (
+              <SheetChip
+                key={b.label}
+                active={active}
+                onClick={() => onPriceChange(active ? null : b.min, active ? null : b.max)}
+              >
+                {b.label}
+              </SheetChip>
+            );
+          })}
         </div>
       </FilterGroup>
 

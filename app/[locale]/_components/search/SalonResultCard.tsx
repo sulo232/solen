@@ -247,7 +247,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
           {/* V3-D356 polish (per Gemini): looser rhythm below the photo + a bigger
               name anchor so the hierarchy reads (was cramped/uniform). */}
           <div className="mt-3 flex items-baseline justify-between gap-2">
-            <CardName as="h3" className="min-w-0 truncate text-[16px] leading-[1.2] tracking-[-0.015em]">
+            <CardName as="h3" className="min-w-0 truncate text-[18px] leading-[1.15] tracking-[-0.015em]">
               {name}
             </CardName>
             {rating != null && (

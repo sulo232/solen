@@ -177,6 +177,9 @@ const SORT_OPTIONS = [
 ] as const;
 type SortValue = (typeof SORT_OPTIONS)[number]["value"];
 
+// V3-D384: price-group heading, locale-mapped so no new i18n key is needed.
+const PRICE_HEADING: Record<string, string> = { de: "Preis", en: "Price", fr: "Prix", it: "Prezzo" };
+
 // ─────────────────────────────────────────────────────────────────────────────
 // SalonCardSkeleton — matches V3 SalonCard footprint per LoadingStates.md
 // Pattern 1. Shimmer via existing `.skeleton-shimmer` keyframe in globals.css.
@@ -375,6 +378,12 @@ export default function SearchTemplate({
   const walkIn = searchParams.get("walk_in") === "true";
   const minRatingParam = searchParams.get("min_rating");
   const minRating = minRatingParam ? Number(minRatingParam) : null;
+  const minPrice = searchParams.get("min_price") ? Number(searchParams.get("min_price")) : null;
+  const maxPrice = searchParams.get("max_price") ? Number(searchParams.get("max_price")) : null;
+  // V3-D385: user location for the "Entfernung" (distance) sort, captured via the
+  // browser's native permission prompt. Held in STATE — precise geo shouldn't live
+  // in a shareable/loggable page URL; it's injected into the API fetch only.
+  const [coords, setCoords] = React.useState<{ lat: number; lng: number } | null>(null);
   const mapOpen = searchParams.get("map") === "1";
   // V3-D372 (2026-05-29): the full-width 1-col CARD list ("C") is now the DEFAULT
   // category/search layout - the results-page shape (photo-top, name + ★ + meta +
@@ -517,6 +526,16 @@ export default function SearchTemplate({
       if (date) sp.set("date", date);
       if (sort) sp.set("sort", sort);
       if (minRating) sp.set("min_rating", String(minRating));
+      // V3-D384 fix: forward the price filter to the API (it was written to the URL
+      // but never added here, so the filter silently no-op'd from the UI).
+      if (minPrice != null) sp.set("min_price", String(minPrice));
+      if (maxPrice != null) sp.set("max_price", String(maxPrice));
+      // V3-D385: distance sort needs the user's coords — injected from state (never
+      // the page URL). The API maps lat/lng → nearby RPC + true distance ordering.
+      if (sort === "distance" && coords) {
+        sp.set("lat", String(coords.lat));
+        sp.set("lng", String(coords.lng));
+      }
       // V3-D357 (2026-05-28): re-enabled `with_slots` - after the V3-D350 minimal
       // pivot the cards read EMPTY (just name/rating/category/price). Services +
       // next-available slots fill them back to a Fresha-grade density (user: "those
@@ -531,7 +550,7 @@ export default function SearchTemplate({
       }
       return `/api/salons?${sp.toString()}`;
     },
-    [activeCategory, activeCity, date, sort, minRating, q],
+    [activeCategory, activeCity, date, sort, minRating, minPrice, maxPrice, coords, q],
   );
 
   // ── Initial fetch + refetch on params change ──────────────────────────────
@@ -691,6 +710,35 @@ export default function SearchTemplate({
     return () => clearTimeout(t);
   }, []);
 
+  // V3-D385: sort handler. "Entfernung" (distance) needs the user's location — fire
+  // the browser's native geo prompt; on grant we stash coords in state + apply the
+  // sort, on deny we flag it (and don't switch sort). Other sorts just write the param.
+  const handleSortChange = React.useCallback(
+    (value: string) => {
+      if (value === "distance") {
+        if (coords) {
+          updateParam("sort", "distance");
+          return;
+        }
+        if (typeof navigator !== "undefined" && "geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+              updateParam("sort", "distance");
+            },
+            (err) => {
+              console.warn("[SearchTemplate] geolocation unavailable:", err?.message);
+            },
+            { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 },
+          );
+        }
+        return;
+      }
+      updateParam("sort", value === "rating" ? null : value);
+    },
+    [coords, updateParam],
+  );
+
   // ── Favorite toggle ───────────────────────────────────────────────────────
   const toggleFavorite = React.useCallback((salonId: string) => {
     setFavoriteIds((prev) => {
@@ -835,30 +883,16 @@ export default function SearchTemplate({
             {(() => {
               // Single descriptor list; partition active-first. Each writes the
               // SAME URL param the FilterSheet writes (single source of truth).
+              // V3-D384: only the filters that actually work + matter (Fresha/Airbnb
+              // pattern). Dropped open_now (API ignores it), walk_in (column/feature
+              // not live), instant_bookable (confusing on a booking platform). Price
+              // + Sort live in the FilterSheet.
               const chips = [
-                {
-                  key: "open_now",
-                  label: tChrome("openNow"),
-                  active: openNow,
-                  onClick: () => toggleBooleanParam("open_now", openNow),
-                },
-                {
-                  key: "instant_bookable",
-                  label: tChrome("instant"),
-                  active: instantBookable,
-                  onClick: () => toggleBooleanParam("instant_bookable", instantBookable),
-                },
                 {
                   key: "min_rating",
                   label: tChrome("topRated"),
                   active: minRating === 4.5,
                   onClick: () => updateParam("min_rating", minRating === 4.5 ? null : "4.5"),
-                },
-                {
-                  key: "walk_in",
-                  label: tChrome("walkIn"),
-                  active: walkIn,
-                  onClick: () => toggleBooleanParam("walk_in", walkIn),
                 },
                 {
                   key: "deals",
@@ -1288,9 +1322,8 @@ export default function SearchTemplate({
           salonId: s.id,
         });
         const filterChips = [
-          { key: "open_now", label: tChrome("openNow"), active: openNow, onClick: () => toggleBooleanParam("open_now", openNow) },
-          { key: "instant_bookable", label: tChrome("instant"), active: instantBookable, onClick: () => toggleBooleanParam("instant_bookable", instantBookable) },
           { key: "min_rating", label: tChrome("topRated"), active: minRating === 4.5, onClick: () => updateParam("min_rating", minRating === 4.5 ? null : "4.5") },
+          { key: "deals", label: tChrome("deals"), active: deals, onClick: () => toggleBooleanParam("deals", deals) },
         ];
         const mapOverlay = (
           <div className="fixed inset-0 z-[60] bg-s-bg-base md:hidden">
@@ -1313,19 +1346,19 @@ export default function SearchTemplate({
             {/* V3-D382: floating top bar over the map — back button + search pill
                 ONLY (no logo / category chips / hamburger). The full-screen overlay
                 covers the global header, so this IS the entire map-view chrome. */}
-            <div className="absolute inset-x-0 top-0 z-20 flex items-center gap-2 px-3 pt-3">
+            <div className="absolute inset-x-0 top-0 z-20 flex items-center gap-2.5 px-4 pt-3">
               <button
                 type="button"
                 onClick={() => setMobileView("list")}
                 aria-label="Zurück zur Liste"
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white text-s-ink shadow-[0_2px_12px_rgba(10,10,10,0.14)] transition-transform active:scale-95"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-s-border bg-white text-s-ink shadow-[0_1px_2px_rgba(10,10,10,0.10),0_4px_12px_rgba(10,10,10,0.08)] transition-transform active:scale-95"
               >
                 <ChevronLeft size={20} strokeWidth={2} aria-hidden />
               </button>
               <Link
                 href={`/${locale}`}
                 aria-label={tChrome("editSearch")}
-                className="flex min-w-0 flex-1 items-center gap-2.5 rounded-pill border border-s-border bg-white px-4 py-3 shadow-[0_2px_12px_rgba(10,10,10,0.14)]"
+                className="flex min-w-0 flex-1 items-center gap-2.5 rounded-pill border border-s-border bg-white px-4 py-3 shadow-[0_1px_2px_rgba(10,10,10,0.10),0_4px_12px_rgba(10,10,10,0.08)]"
               >
                 <Search size={17} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                 <span className="min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
@@ -1482,14 +1515,16 @@ export default function SearchTemplate({
         resultCount={total}
         sortOptions={SORT_OPTIONS}
         sort={sort}
-        onSortChange={(value) =>
-          updateParam("sort", value === "rating" ? null : value)
-        }
-        openNow={openNow}
-        instantBookable={instantBookable}
-        walkIn={walkIn}
-        deals={deals}
-        onToggleBoolean={toggleBooleanParam}
+        onSortChange={handleSortChange}
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+        onPriceChange={(min, max) => {
+          const sp = new URLSearchParams(searchParams.toString());
+          if (min != null) sp.set("min_price", String(min)); else sp.delete("min_price");
+          if (max != null) sp.set("max_price", String(max)); else sp.delete("max_price");
+          sp.delete("page");
+          router.replace(`${pathname}${sp.toString() ? `?${sp}` : ""}`, { scroll: false });
+        }}
         minRating={minRating}
         onMinRatingChange={(value) => updateParam("min_rating", value)}
         onReset={() => {
@@ -1501,6 +1536,8 @@ export default function SearchTemplate({
             "instant_bookable",
             "walk_in",
             "deals",
+            "min_price",
+            "max_price",
             "min_rating",
             "sort",
           ]) {
@@ -1516,12 +1553,8 @@ export default function SearchTemplate({
           reset: tFilter("reset"),
           close: tFilter("close"),
           sortHeading: tFilter("sortHeading"),
-          availabilityHeading: tFilter("availabilityHeading"),
+          priceHeading: PRICE_HEADING[locale] ?? PRICE_HEADING.de,
           ratingHeading: tFilter("ratingHeading"),
-          openNow: tChrome("openNow"),
-          instant: tChrome("instant"),
-          walkIn: tChrome("walkIn"),
-          deals: tChrome("deals"),
           rating45: tFilter("rating45"),
           rating40: tFilter("rating40"),
           ratingAny: tFilter("ratingAny"),

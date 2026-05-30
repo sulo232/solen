@@ -130,8 +130,21 @@ export async function GET(request: NextRequest) {
       query = query.eq("walk_in_available", true);
     }
 
-    // Price filtering requires joining services — use subquery via RPC or filter post-fetch
-    // For V1, we skip price filter on the salons level (services are filtered client-side)
+    // V3-D384: Price filter — salons with >=1 active service in the [min,max]
+    // band. Price lives in `services`, so resolve matching salon_ids first (same
+    // pattern as instant_bookable above), then constrain the salon query.
+    if (min_price || max_price) {
+      let priceQ = supabase.from("services").select("salon_id").eq("is_active", true);
+      if (min_price) priceQ = priceQ.gte("price", parseFloat(min_price));
+      if (max_price) priceQ = priceQ.lte("price", parseFloat(max_price));
+      const { data: priceRows } = await priceQ;
+      const priceIds = [...new Set((priceRows ?? []).map((s: { salon_id: string }) => s.salon_id))];
+      if (priceIds.length > 0) {
+        query = query.in("id", priceIds);
+      } else {
+        return NextResponse.json({ items: [], total: 0, page, limit });
+      }
+    }
 
     let distanceMap: Record<string, number> | null = null;
     let orderedIds: string[] | null = null;
@@ -301,6 +314,10 @@ export async function GET(request: NextRequest) {
 
     if (sort === "distance" && distanceMap) {
       items.sort((a, b) => (a.distance_meters ?? Infinity) - (b.distance_meters ?? Infinity));
+    } else if (sort === "price") {
+      // V3-D384: real cheapest-first sort (line 157's DB order is only the fetch
+      // order; min_price is computed post-fetch from services, so sort here).
+      items.sort((a, b) => (a.min_price ?? Infinity) - (b.min_price ?? Infinity));
     }
 
     return NextResponse.json({ items, total: count ?? 0, page, limit });
