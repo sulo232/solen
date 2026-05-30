@@ -14,24 +14,19 @@ import PartnerSignupForm from "@/components-legacy/partner/PartnerSignupForm";
 /**
  * /de/fuer-salons — Canonical Solen B2B landing page.
  *
- * V3-D350 (2026-05-30): full rebuild to the competitor-teardown mockup
- * (public/solen-fuer-salons-mockup.html). Structure axis from the 8-site teardown
- * (_audits/competitor-teardowns/); aesthetic axis LOCKFILE (Geist, s-accent
- * #185CE0, s-ink CTAs, pill buttons) — NOT the warm-coral category norm.
+ * V3-D350 (2026-05-30): rebuilt to the competitor-teardown IA. Aesthetic =
+ * LOCKFILE (Geist, s-accent #185CE0, s-ink CTAs, pill buttons).
+ * V3-D351: scroll-in motion (<Reveal> spring pop + <CountUp> + <MotionProvider>).
+ * V3-D353 (2026-05-30): i18n — all body copy moved to the `fuersalons` namespace
+ *   (DE/EN/FR/IT). Pricing chart uses the `partner` namespace. EN/FR/IT are
+ *   first-draft translations — flag for native/marketing review before launch.
  *
- * V3-D351 (2026-05-30): scroll-in motion wired via <Reveal> (per-card spring
- * "pop" = rise + scale overshoot, Solen spring-bounce curve; staggered) +
- * <CountUp> on stat cards + hover-lift on cards. Framer Motion, on-brand,
- * respects prefers-reduced-motion. (Replaced a rejected blur-fade prototype.)
+ * Real assets are AssetPlaceholder scaffolds; AssetPlaceholder `desc` (the photo
+ * brief) stays inline German — it's a dev instruction, removed when the real
+ * asset lands. Stat numbers are DEMO figures (count-up) flagged "echte Daten".
+ * Page not yet auto-shippable until real screenshots/stats land.
  *
- * Real assets are AssetPlaceholder scaffolds + amber markers. Stat numbers are
- * DEMO figures (count-up) flagged "Beispiel — echte Daten folgen"; swap CountUp
- * `to` for real numbers when known. Page is NOT yet linked from nav (→ /business);
- * going-live (redirects + nav) is separate and gated on real assets.
- *
- * ⚠️ HEADLINE softened from the mockup's literal "#1" to a definite-article
- * leadership claim for Swiss UWG Art. 3 safety. i18n: pricing chart uses the
- * `partner` namespace (4 langs); new hero/feature/calculator copy is inline German.
+ * ⚠️ HEADLINE deliberately descriptive (not literal "Nr. 1") for Swiss UWG safety.
  *
  * Section IA: 1 Hero · 2 Stat cards · 3 Categories · 4 Features ·
  *   5 Calculator (#rechner) · 6 Pricing (#pricing) · 7 Social proof · 8 FAQ ·
@@ -94,76 +89,60 @@ export async function generateMetadata({
 export const revalidate = 600;
 
 // Stat numbers are DEMO figures (count-up shows the effect) — swap for real data.
-const STATS: { to: number; suffix?: string; plus?: boolean; cap: string }[] = [
-  { to: 89, suffix: "%", cap: "weniger No-Shows" },
-  { to: 1200, plus: true, cap: "Schweizer Salons auf Solen" },
-  { to: 32, suffix: "%", cap: "mehr Folgetermine" },
+const STATS: { to: number; suffix?: string; plus?: boolean; capKey: string }[] = [
+  { to: 89, suffix: "%", capKey: "stat_no_shows" },
+  { to: 1200, plus: true, capKey: "stat_salons" },
+  { to: 32, suffix: "%", capKey: "stat_rebookings" },
 ];
 
-const CATEGORIES: { name: string; sub: string; desc: string }[] = [
-  { name: "Coiffeur", sub: "Schnitt, Farbe, Styling", desc: "Coiffeur — echtes Schweizer Haarsalon-Interieur" },
-  { name: "Barbershop", sub: "Schnitt, Bart, Pflege", desc: "Barbershop — Schnitt & Bart, echter Shop" },
-  { name: "Nagelstudio", sub: "Maniküre, Pediküre, Nail-Art", desc: "Nagelstudio — Maniküre-Station" },
-  { name: "Spa & Wellness", sub: "Massage, Facials", desc: "Spa & Wellness — Behandlungsraum" },
-  { name: "Makeup", sub: "Braut, Events, Kurse", desc: "Makeup — Artist bei der Arbeit" },
-  { name: "Waxing", sub: "Haarentfernung, Haut", desc: "Waxing / Ästhetik — sauberes Studio" },
+// `desc` = AssetPlaceholder photo brief (dev instruction, stays inline German).
+const CATEGORIES: { nameKey: string; subKey: string; desc: string }[] = [
+  { nameKey: "cat_coiffeur", subKey: "cat_coiffeur_sub", desc: "Coiffeur — echtes Schweizer Haarsalon-Interieur" },
+  { nameKey: "cat_barbershop", subKey: "cat_barbershop_sub", desc: "Barbershop — Schnitt & Bart, echter Shop" },
+  { nameKey: "cat_nails", subKey: "cat_nails_sub", desc: "Nagelstudio — Maniküre-Station" },
+  { nameKey: "cat_spa", subKey: "cat_spa_sub", desc: "Spa & Wellness — Behandlungsraum" },
+  { nameKey: "cat_makeup", subKey: "cat_makeup_sub", desc: "Makeup — Artist bei der Arbeit" },
+  { nameKey: "cat_waxing", subKey: "cat_waxing_sub", desc: "Waxing / Ästhetik — sauberes Studio" },
 ];
 
 const FEATURES: {
-  eyebrow: string;
-  title: string;
-  copy: string;
-  checks: string[];
-  shotLabel: string;
+  eyebrowKey: string;
+  titleKey: string;
+  copyKey: string;
+  checkKeys: string[];
   shotDesc: string;
   reverse: boolean;
 }[] = [
   {
-    eyebrow: "Buchungen",
-    title: "Voller Kalender, kein Telefon-Pingpong.",
-    copy: "Kund:innen buchen und verschieben selbst — rund um die Uhr. Sofortige Bestätigung, automatische Erinnerungen, keine Doppelbuchungen.",
-    checks: [
-      "Echtzeit-Verfügbarkeit über dein ganzes Team",
-      "SMS- & E-Mail-Erinnerungen gegen No-Shows",
-      "Anzahlungen & Stornoregeln, die du bestimmst",
-    ],
-    shotLabel: "Product screenshot",
+    eyebrowKey: "feat_bookings_eyebrow",
+    titleKey: "feat_bookings_title",
+    copyKey: "feat_bookings_copy",
+    checkKeys: ["feat_bookings_1", "feat_bookings_2", "feat_bookings_3"],
     shotDesc: "Buchungskalender — Wochenansicht mit einer Bestätigung; Erinnerungs-Toggle sichtbar.",
     reverse: false,
   },
   {
-    eyebrow: "Kund:innen",
-    title: "Kenn jede:n Kund:in beim Namen.",
-    copy: "Besuchshistorie, Notizen, Vorlieben und Umsatz — alles in einem Profil. Mach aus Einmalbesuchen Stammkund:innen.",
-    checks: [
-      "Notizen, Fotos & Service-Historie pro Kund:in",
-      "Automatische Wiederbuchungs-Erinnerungen",
-      "Treueprogramm & Bewertungsanfragen integriert",
-    ],
-    shotLabel: "Product screenshot",
+    eyebrowKey: "feat_clients_eyebrow",
+    titleKey: "feat_clients_title",
+    copyKey: "feat_clients_copy",
+    checkKeys: ["feat_clients_1", "feat_clients_2", "feat_clients_3"],
     shotDesc: "Kund:innen-Profil (CRM) — Besuchshistorie, Notizen, Gesamtumsatz, nächster Termin.",
     reverse: true,
   },
 ];
 
-const FAQS: { q: string; a: string }[] = [
-  { q: "Wie viel kostet Solen?", a: "Kostenlose Anmeldung, keine Setup-Gebühr, keine monatliche Grundgebühr. Du zahlst nur pro vermitteltem Termin — fair und transparent." },
-  { q: "Wann zahle ich?", a: "Erst ab dem ersten erfolgreich vermittelten Termin. Bis dahin entstehen keine Kosten." },
-  { q: "Wie lange dauert das Onboarding?", a: "Anmelden in 60 Sekunden, Onboarding in 7 Tagen. Wir melden uns binnen 24 Stunden nach deiner Anmeldung." },
-  { q: "Kann ich meine bestehende Kalender-Software importieren?", a: "Ja. Wir unterstützen Imports aus den gängigen Schweizer Salon-Systemen. Sprich uns nach der Anmeldung an." },
-  { q: "Wer kümmert sich um Zahlungen?", a: "Solen verarbeitet die Zahlungen sicher via Stripe. Du erhältst eine monatliche Auszahlung." },
-  { q: "In welchen Städten ist Solen verfügbar?", a: "Aktuell Basel, Zürich, Bern und Lugano. Weitere Städte folgen 2026." },
-];
+const FAQ_NUMS = [1, 2, 3, 4, 5, 6];
 
-const TRUST_BADGES: { icon: typeof Shield; label: string }[] = [
-  { icon: Shield, label: "Schweizer Hosting" },
-  { icon: Lock, label: "DSGVO-konform" },
-  { icon: CreditCard, label: "Sichere Zahlung via Stripe" },
-  { icon: Check, label: "Kein Vertrag" },
+const TRUST_BADGES: { icon: typeof Shield; labelKey: string }[] = [
+  { icon: Shield, labelKey: "badge_hosting" },
+  { icon: Lock, labelKey: "badge_gdpr" },
+  { icon: CreditCard, labelKey: "badge_stripe" },
+  { icon: Check, labelKey: "badge_no_contract" },
 ];
 
 export default async function FuerSalonsPage() {
   const tPartner = await getTranslations("partner");
+  const t = await getTranslations("fuersalons");
   return (
     <MotionProvider>
     <div className="relative bg-white">
@@ -172,32 +151,32 @@ export default async function FuerSalonsPage() {
         <div className="grid grid-cols-1 items-center gap-9 md:grid-cols-[1.05fr_1.1fr] md:gap-12">
           <Reveal>
             <p className="font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2">
-              Für Salons
+              {t("hero_eyebrow")}
             </p>
-            {/* ⚠️ literal "Nr. 1" softened — see file header (UWG). */}
+            {/* ⚠️ headline kept descriptive (not literal "Nr. 1") — see file header (UWG). */}
             <h1 className="mt-3 font-display text-[clamp(30px,5vw,42px)] font-bold leading-[1.06] tracking-[-0.025em] text-s-ink">
-              Die Buchungsplattform für Schweizer Salons.
+              {t("hero_h1")}
             </h1>
             <p className="mt-[18px] max-w-[440px] font-body text-[clamp(15px,2vw,17px)] font-normal leading-[1.5] text-s-ink-2">
-              Mehr Buchungen, weniger No-Shows, ein Kalender. Über 1&apos;200 Salons in Basel, Zürich, Bern und Lugano wachsen schon mit Solen.
+              {t("hero_sub")}
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="#anmelden"
                 className="inline-flex items-center gap-2 rounded-btn bg-s-ink px-7 py-3.5 font-body text-[15px] font-medium tracking-[-0.005em] text-white transition-transform duration-200 ease-glide hover:-translate-y-[1px] active:scale-[0.97]"
               >
-                Jetzt anmelden
+                {t("cta_signup")}
                 <ArrowRight size={16} strokeWidth={2.5} aria-hidden />
               </Link>
               <Link
                 href="#features"
                 className="inline-flex items-center gap-2 rounded-btn border border-s-border bg-transparent px-7 py-3.5 font-body text-[15px] font-medium tracking-[-0.005em] text-s-ink transition-colors duration-200 ease-glide hover:bg-s-bg-sunken active:scale-[0.97]"
               >
-                So funktioniert&apos;s
+                {t("cta_how")}
               </Link>
             </div>
             <div className="mt-[22px] flex flex-wrap items-center gap-x-3.5 gap-y-2 font-body text-[13px] font-medium text-s-ink-2">
-              <span><strong className="font-semibold text-s-ink">1&apos;200+</strong> Salons</span>
+              <span><strong className="font-semibold text-s-ink">1&apos;200+</strong> {t("trust_salons")}</span>
               <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-3" />
               <span className="inline-flex items-center gap-1">
                 <Star size={13} fill="#FFC32B" stroke="none" aria-hidden />
@@ -223,15 +202,15 @@ export default async function FuerSalonsPage() {
       <section aria-label="Kennzahlen" className="bg-white py-2">
         <div className="mx-auto grid max-w-[1280px] grid-cols-3 gap-4 px-4 md:px-8">
           {STATS.map((s, i) => (
-            <Reveal key={s.cap} delay={i * 0.08}>
+            <Reveal key={s.capKey} delay={i * 0.08}>
               <div className="rounded-card border border-s-border bg-white px-3 py-7 text-center shadow-elevation-1 transition-transform duration-200 ease-glide hover:-translate-y-1.5 hover:shadow-elevation-2 md:py-9">
                 <div className="font-display text-[clamp(32px,4.2vw,46px)] font-bold leading-none tracking-[-0.03em] text-s-ink tabular-nums">
                   <CountUp to={s.to} plus={s.plus} className="text-s-accent" />
                   {s.suffix}
                 </div>
-                <div className="mt-2 font-body text-[13px] text-s-ink-2">{s.cap}</div>
+                <div className="mt-2 font-body text-[13px] text-s-ink-2">{t(s.capKey)}</div>
                 <span className="mt-2 inline-block rounded-md bg-s-warning-bg px-1.5 py-0.5 font-mono text-[10px] text-s-warning-text">
-                  Beispiel — echte Daten folgen
+                  {t("stat_demo")}
                 </span>
               </div>
             </Reveal>
@@ -244,19 +223,19 @@ export default async function FuerSalonsPage() {
         <Reveal>
           <div className="mx-auto mb-10 max-w-[620px] text-center">
             <p className="font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2">
-              Jeder Stuhl, jedes Handwerk
+              {t("cat_eyebrow")}
             </p>
             <h2 className="mt-2.5 font-display text-[clamp(20px,2.4vw,26px)] font-semibold leading-[1.2] tracking-[-0.015em] text-s-ink">
-              Für jede Salon-Kategorie gemacht.
+              {t("cat_h2")}
             </h2>
             <p className="mt-3 font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-s-ink-2">
-              Was auch immer du machst — Solen passt sich deinem Ablauf an. Eine Plattform, keine Kategorie-Sonderfälle.
+              {t("cat_sub")}
             </p>
           </div>
         </Reveal>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           {CATEGORIES.map((cat, i) => (
-            <Reveal key={cat.name} delay={(i % 3) * 0.07}>
+            <Reveal key={cat.nameKey} delay={(i % 3) * 0.07}>
               <div className="overflow-hidden rounded-card border border-s-border bg-white transition-[box-shadow,border-color,transform] duration-200 ease-glide hover:-translate-y-1.5 hover:border-s-ink hover:shadow-elevation-2">
                 <AssetPlaceholder
                   variant="photo"
@@ -266,8 +245,8 @@ export default async function FuerSalonsPage() {
                   className="aspect-[4/3] rounded-none border-0 border-b-[1.5px]"
                 />
                 <div className="px-4 py-3.5">
-                  <div className="font-heading text-[15px] font-semibold text-s-ink">{cat.name}</div>
-                  <div className="mt-0.5 font-body text-[12px] font-normal text-s-ink-2">{cat.sub}</div>
+                  <div className="font-heading text-[15px] font-semibold text-s-ink">{t(cat.nameKey)}</div>
+                  <div className="mt-0.5 font-body text-[12px] font-normal text-s-ink-2">{t(cat.subKey)}</div>
                 </div>
               </div>
             </Reveal>
@@ -279,30 +258,30 @@ export default async function FuerSalonsPage() {
       <section id="features" className="scroll-mt-24 bg-s-bg-sunken">
         <div className="mx-auto max-w-[1280px] px-4 py-16 md:px-8 md:py-20">
           {FEATURES.map((f) => (
-            <Reveal key={f.title}>
+            <Reveal key={f.titleKey}>
               <div className="grid grid-cols-1 items-center gap-7 py-7 md:grid-cols-2 md:gap-14">
                 <div className={f.reverse ? "md:order-2" : ""}>
                   <p className="font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2">
-                    {f.eyebrow}
+                    {t(f.eyebrowKey)}
                   </p>
                   <h2 className="mb-3.5 mt-2 font-display text-[clamp(20px,2.4vw,26px)] font-semibold leading-[1.2] tracking-[-0.015em] text-s-ink">
-                    {f.title}
+                    {t(f.titleKey)}
                   </h2>
                   <p className="font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-s-ink-2">
-                    {f.copy}
+                    {t(f.copyKey)}
                   </p>
                   <ul className="mt-4 flex flex-col gap-2.5">
-                    {f.checks.map((c) => (
-                      <li key={c} className="flex items-start gap-2.5 font-body text-[14px] text-s-ink">
+                    {f.checkKeys.map((ck) => (
+                      <li key={ck} className="flex items-start gap-2.5 font-body text-[14px] text-s-ink">
                         <Check size={18} strokeWidth={2.5} aria-hidden className="mt-0.5 shrink-0 text-s-ink" />
-                        {c}
+                        {t(ck)}
                       </li>
                     ))}
                   </ul>
                 </div>
                 <AssetPlaceholder
                   variant="screenshot"
-                  label={f.shotLabel}
+                  label="Product screenshot"
                   desc={f.shotDesc}
                   dim="~960 × 660"
                   className={`aspect-[16/11] ${f.reverse ? "md:order-1" : ""}`}
@@ -318,13 +297,13 @@ export default async function FuerSalonsPage() {
         <Reveal>
           <div className="mx-auto mb-10 max-w-[620px] text-center">
             <p className="font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2">
-              Dein Potenzial
+              {t("calc_eyebrow")}
             </p>
             <h2 className="mt-2.5 font-display text-[clamp(20px,2.4vw,26px)] font-semibold leading-[1.2] tracking-[-0.015em] text-s-ink">
-              Schätze deinen Solen-Umsatz.
+              {t("calc_h2")}
             </h2>
             <p className="mt-3 font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-s-ink-2">
-              Nenn uns deine Eckdaten — wir zeigen das monatliche Plus aus neuen Buchungen und vermiedenen No-Shows.
+              {t("calc_sub")}
             </p>
           </div>
         </Reveal>
@@ -333,7 +312,7 @@ export default async function FuerSalonsPage() {
         </Reveal>
       </section>
 
-      {/* ───────────────── 6 · PRICING (comparison chart, ported from /partner) ───────────────── */}
+      {/* ───────────────── 6 · PRICING (comparison chart, `partner` namespace) ───────────────── */}
       <section id="pricing" className="scroll-mt-24 bg-s-bg-sunken">
         <div className="mx-auto max-w-[1280px] px-4 py-16 md:px-8 md:py-20">
           <Reveal>
@@ -436,16 +415,16 @@ export default async function FuerSalonsPage() {
           <Reveal delay={0.08}>
             <div>
               <p className="font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-2">
-                Von Schweizer Salons geliebt
+                {t("social_eyebrow")}
               </p>
               <h2 className="mt-2.5 font-display text-[clamp(20px,2.4vw,26px)] font-semibold leading-[1.25] tracking-[-0.015em] text-s-ink">
-                „[ Echtes Zitat einer:s Inhaber:in — ein, zwei prägnante Sätze zu Buchungen / weniger No-Shows. ]"
+                {t("social_quote")}
               </h2>
               <p className="mt-3.5 font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-s-ink-2">
                 <span className="rounded-md bg-s-warning-bg px-1.5 py-0.5 font-mono text-[11px] text-s-warning-text">
-                  echtes Zitat nötig
+                  {t("social_need_quote")}
                 </span>{" "}
-                — Name, Salon, Stadt
+                {t("social_attr")}
               </p>
               <div className="mt-5 flex flex-wrap gap-6">
                 <div className="font-body text-[14px]">
@@ -464,10 +443,10 @@ export default async function FuerSalonsPage() {
         </div>
         <div className="mx-auto mt-9 grid max-w-[760px] grid-cols-2 gap-3.5 md:grid-cols-4">
           {TRUST_BADGES.map((b, i) => (
-            <Reveal key={b.label} delay={(i % 4) * 0.07}>
+            <Reveal key={b.labelKey} delay={(i % 4) * 0.07}>
               <div className="flex flex-col items-center gap-2 rounded-[14px] border border-s-border bg-s-bg-sunken p-4 text-center transition-transform duration-200 ease-glide hover:-translate-y-1">
                 <b.icon size={22} strokeWidth={2} aria-hidden className="text-s-accent" />
-                <span className="font-heading text-[12px] font-semibold text-s-ink">{b.label}</span>
+                <span className="font-heading text-[12px] font-semibold text-s-ink">{t(b.labelKey)}</span>
               </div>
             </Reveal>
           ))}
@@ -479,13 +458,13 @@ export default async function FuerSalonsPage() {
         <div className="mx-auto max-w-[820px] px-4 py-16 md:px-8 md:py-20">
           <Reveal>
             <h2 className="text-center font-display text-[clamp(20px,2.4vw,26px)] font-semibold leading-[1.25] tracking-[-0.015em] text-s-ink">
-              Häufige Fragen.
+              {t("faq_h2")}
             </h2>
           </Reveal>
           <Reveal delay={0.06}>
             <div className="mt-10 divide-y divide-s-border">
-              {FAQS.map(({ q, a }) => (
-                <FAQItem key={q} q={q} a={a} />
+              {FAQ_NUMS.map((n) => (
+                <FAQItem key={n} q={t(`faq_q${n}`)} a={t(`faq_a${n}`)} />
               ))}
             </div>
           </Reveal>
@@ -497,10 +476,10 @@ export default async function FuerSalonsPage() {
         <Reveal>
           <div className="rounded-card-lg bg-s-ink p-10 text-center md:p-14">
             <h2 className="font-display text-[clamp(24px,3.4vw,32px)] font-bold leading-[1.1] tracking-[-0.02em] text-white">
-              Bereit für einen vollen Kalender?
+              {t("final_h2")}
             </h2>
             <p className="mx-auto mt-3 max-w-md font-body text-[15px] font-normal text-white/80">
-              In 60 Sekunden anmelden. Keine Setup-Gebühr — Bezahlung erst ab dem ersten Termin.
+              {t("final_sub")}
             </p>
             <PartnerSignupForm />
           </div>
