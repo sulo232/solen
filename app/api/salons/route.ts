@@ -277,6 +277,8 @@ export async function GET(request: NextRequest) {
         .map((s) => s.price as number)
         .filter((p) => typeof p === "number" && p > 0);
       const avg_price = prices.length > 0 ? Math.round(prices.reduce((a, b) => a + b, 0) / prices.length) : null;
+      // "ab X CHF" map pills need the cheapest service price, not the average.
+      const min_price = prices.length > 0 ? Math.min(...prices) : null;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { services: _services, ...rest } = salon;
 
@@ -285,6 +287,7 @@ export async function GET(request: NextRequest) {
       return {
         ...rest,
         avg_price,
+        min_price,
         distance_meters: distanceMap ? distanceMap[salonId] : undefined,
         ...(withSlots ? { services: topServicesBySalon[salonId] ?? [] } : {}),
         ...(availableIds !== null

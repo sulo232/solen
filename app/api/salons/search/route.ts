@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   // Full-text search across salon name + description
   const { data: salonResults, error } = await supabase
     .from("salons")
-    .select("*")
+    .select("*, services(price)")
     .eq("is_active", true)
     .or(`name.ilike.%${q}%,description_de.ilike.%${q}%,description_en.ilike.%${q}%`)
     .limit(20);
@@ -50,12 +50,20 @@ export async function GET(request: NextRequest) {
   if (extraSalonIds.length > 0) {
     const { data } = await supabase
       .from("salons")
-      .select("*")
+      .select("*, services(price)")
       .eq("is_active", true)
       .in("id", [...new Set(extraSalonIds)]);
     extraSalons = data ?? [];
   }
 
-  const results = [...(salonResults ?? []), ...extraSalons];
+  // Add min_price (cheapest service) for "ab X CHF" map pills; strip the joined services.
+  const results = [...(salonResults ?? []), ...extraSalons].map((salon) => {
+    const prices = ((salon as { services?: { price: number }[] }).services ?? [])
+      .map((s) => s.price)
+      .filter((p) => typeof p === "number" && p > 0);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { services: _services, ...rest } = salon as Record<string, unknown>;
+    return { ...rest, min_price: prices.length > 0 ? Math.min(...prices) : null };
+  });
   return NextResponse.json({ items: results, total: results.length, page: 1, limit: 20 });
 }
