@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: booking } = await supabase
     .from("bookings")
-    .select("id, salon_id, service_id, starts_at, price_paid, payment_status, paid_via, salons(name, stripe_account_id), services(name_de)")
+    .select("id, salon_id, service_id, starts_at, price_paid, payment_status, paid_via, salons(name, stripe_account_id, cover_photo_url, average_rating, review_count, address), services(name_de, duration_minutes)")
     .eq("id", bookingId)
     .eq("paid_via", "walk_in")
     .single();
@@ -60,16 +60,23 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Already paid", booking_id: bookingId }, { status: 409 });
   }
 
+  const salon = booking.salons as any;
+  const service = booking.services as any;
   return NextResponse.json({
     booking: {
       id: booking.id,
       salon_id: booking.salon_id,
       service_id: booking.service_id,
-      salon_name: (booking.salons as any)?.name,
-      service_name: (booking.services as any)?.name_de,
+      salon_name: salon?.name,
+      salon_image: salon?.cover_photo_url ?? null,
+      salon_rating: salon?.average_rating ?? null,
+      salon_review_count: salon?.review_count ?? null,
+      salon_address: salon?.address ?? null,
+      service_name: service?.name_de,
+      service_duration: service?.duration_minutes ?? null,
       amount: booking.price_paid,
       starts_at: booking.starts_at,
-      stripe_account_id: (booking.salons as any)?.stripe_account_id,
+      stripe_account_id: salon?.stripe_account_id,
     },
   });
 }
