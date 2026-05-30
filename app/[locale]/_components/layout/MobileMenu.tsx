@@ -291,7 +291,7 @@ export default function MobileMenu({ open, onClose, locale }: MobileMenuProps) {
               Für Salons
             </h2>
             <Link
-              href={`/${locale}/business#anmelden`}
+              href={`/${locale}/fuer-salons#anmelden`}
               onClick={onClose}
               className={cn(
                 "flex items-center justify-between gap-4",

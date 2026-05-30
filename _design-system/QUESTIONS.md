@@ -38,6 +38,10 @@ mid-build) and picks an option per entry. Resolution flows back into
 
 ## Open
 
+### Q36 — Reduced-motion support for `<Reveal>` scroll-pop
+**Severity:** LOW · **Status:** OPEN
+`/fuer-salons` scroll-in pop (`app/[locale]/_components/business/Reveal.tsx`, V3-D351) always animates. A per-component `useReducedMotion()` branch (returning a plain `<div>`) caused an SSR hydration mismatch in reduced-motion contexts, so it was removed. For `prefers-reduced-motion: reduce` users, wrap the app (or page) in `<MotionConfig reducedMotion="user">` so Framer disables transforms globally without a render-time branch. Rec: add MotionConfig in a client layout boundary.
+
 ### Q35 — Marketplace pitch link destination
 **Severity:** LOW · **Status:** OPEN
 **SOURCE.md anchor:** N/A

@@ -55,19 +55,14 @@ const SERVICES_MENU: { label: string; href: string }[] = [
 ];
 
 const BUSINESS_MENU: { label: string; href: string }[] = [
-  // V3-D147 (2026-05-25): /business/signup was a 404 (no page existed).
-  // Now points to /business — the new B2B landing page with anchor #anmelden
-  // for the signup form scroll target.
-  // V3-D208 (2026-05-26, overnight ghost-404 sweep): /business/how, /business/demo,
-  // /business/pricing also 404 — no sub-routes ever existed. The /business page
-  // covers all three intents inline (how-it-works section #3, anmelden form
-  // section #9, pricing section #6). Swap to in-page anchors so nav doesn't
-  // dead-end. Anchors: #how, #anmelden, #pricing (added to /business page sections
-  // when Wave 2 rebuild lands; until then they scroll to nearest section).
-  { label: "Werde Solen-Partner",  href: "/business#anmelden" },
-  { label: "Wie es funktioniert",  href: "/business#how"      },
-  { label: "Demo buchen",          href: "/business#anmelden" },
-  { label: "Preise",               href: "/business#pricing"  },
+  // V3-D352 (2026-05-30): canonical B2B page is now /fuer-salons (the /business
+  // rebuild was absorbed there). /business + /partner 301 → /fuer-salons via
+  // next.config.mjs. Anchors live on the /fuer-salons page: #features
+  // (how it works), #anmelden (signup form), #pricing.
+  { label: "Werde Solen-Partner",  href: "/fuer-salons#anmelden" },
+  { label: "Wie es funktioniert",  href: "/fuer-salons#features" },
+  { label: "Demo buchen",          href: "/fuer-salons#anmelden" },
+  { label: "Preise",               href: "/fuer-salons#pricing"  },
 ];
 
 // V3-D349 (2026-05-28): compact search pill fused into the mobile header on

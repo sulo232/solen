@@ -125,7 +125,7 @@ export default function SalonRegister() {
             </p>
 
             <Link
-              href="/business/signup"
+              href="/fuer-salons#anmelden"
               className="mt-7 inline-flex items-center gap-2.5 self-start rounded-full bg-s-ink px-6 py-3.5 font-body text-[14px] font-bold text-white shadow-[0_4px_14px_rgba(31,92,66,0.25)] transition-all duration-200 ease-glide hover:bg-black hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(31,92,66,0.32)] active:scale-[0.97] active:duration-[80ms]"
             >
               Mehr erfahren

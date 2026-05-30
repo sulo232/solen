@@ -33,6 +33,17 @@ const nextConfig = {
         destination: "/:locale/basel/nails",
         permanent: true,
       },
+      // V3-D352 (2026-05-30): B2B consolidation → canonical /fuer-salons.
+      {
+        source: "/:locale/business",
+        destination: "/:locale/fuer-salons",
+        permanent: true,
+      },
+      {
+        source: "/:locale/partner",
+        destination: "/:locale/fuer-salons",
+        permanent: true,
+      },
     ];
   },
   images: {

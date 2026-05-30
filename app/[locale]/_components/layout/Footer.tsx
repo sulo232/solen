@@ -43,7 +43,7 @@ const COLUMNS: Array<{ heading: string; items: Array<{ label: string; href: stri
     heading: "Hilfe",
     items: [
       { label: "Kund:innen-Hilfe", href: "/help" },
-      { label: "Salon-Hilfe", href: "/business/help" },
+      { label: "Salon-Hilfe", href: "/fuer-salons" },
       { label: "Sicherheit", href: "/safety" },
       { label: "Kontakt", href: "/contact" },
     ],
