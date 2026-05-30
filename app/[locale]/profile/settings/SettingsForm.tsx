@@ -1,0 +1,296 @@
+"use client";
+
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
+import { Switch } from "@/app/[locale]/_components/primitives/Switch";
+import { TextInput } from "@/app/[locale]/_components/primitives/TextInput";
+import { FieldLabel } from "@/app/[locale]/_components/primitives/FieldLabel";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
+
+export type SettingsLocale = "de" | "en" | "fr" | "it";
+
+export interface SettingsInitial {
+  display_name: string;
+  avatar_url: string;
+  bio: string;
+  phone_number: string;
+  locale: SettingsLocale;
+  notification_email: boolean;
+  notification_sms: boolean;
+}
+
+const LOCALES: { value: SettingsLocale; label: string }[] = [
+  { value: "de", label: "Deutsch" },
+  { value: "en", label: "English" },
+  { value: "fr", label: "Français" },
+  { value: "it", label: "Italiano" },
+];
+
+export default function SettingsForm({
+  locale,
+  email,
+  initial,
+}: {
+  locale: string;
+  email: string;
+  initial: SettingsInitial;
+}) {
+  const t = useTranslations("profileHub");
+  const tp = useTranslations("Profile");
+  const router = useRouter();
+
+  // ── profile + notifications ──────────────────────────────
+  const [form, setForm] = React.useState<SettingsInitial>(initial);
+  const [saving, setSaving] = React.useState(false);
+  const set = <K extends keyof SettingsInitial>(k: K, v: SettingsInitial[K]) =>
+    setForm((f) => ({ ...f, [k]: v }));
+
+  const saveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          display_name: form.display_name.trim() || undefined,
+          avatar_url: form.avatar_url.trim() || null,
+          bio: form.bio.trim() || null,
+          phone_number: form.phone_number.trim() || null,
+          locale: form.locale,
+          notification_email: form.notification_email,
+          notification_sms: form.notification_sms,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.error("[Settings] save failed:", err?.message ?? res.status);
+        toast.error(t("saveError"));
+        return;
+      }
+      toast.success(t("savedToast"));
+      router.refresh();
+    } catch (err) {
+      console.error("[Settings] save exception:", err);
+      toast.error(t("saveError"));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // ── security: email + password ───────────────────────────
+  const [newEmail, setNewEmail] = React.useState("");
+  const [newPassword, setNewPassword] = React.useState("");
+  const [emailBusy, setEmailBusy] = React.useState(false);
+  const [pwBusy, setPwBusy] = React.useState(false);
+
+  const emailValid = /\S+@\S+\.\S+/.test(newEmail.trim()) && newEmail.trim() !== email;
+  const pwValid = newPassword.length >= 8;
+
+  const updateEmail = async () => {
+    if (!emailValid) return;
+    setEmailBusy(true);
+    try {
+      const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+      const supabase = createBrowserSupabaseClient();
+      const { error } = await supabase.auth.updateUser({ email: newEmail.trim() });
+      if (error) {
+        console.error("[Settings] email update:", error.message);
+        toast.error(error.message);
+        return;
+      }
+      toast.success(t("emailSentToast"));
+      setNewEmail("");
+    } catch (err) {
+      console.error("[Settings] email exception:", err);
+      toast.error(t("saveError"));
+    } finally {
+      setEmailBusy(false);
+    }
+  };
+
+  const updatePassword = async () => {
+    if (!pwValid) return;
+    setPwBusy(true);
+    try {
+      const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+      const supabase = createBrowserSupabaseClient();
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) {
+        console.error("[Settings] password update:", error.message);
+        toast.error(error.message);
+        return;
+      }
+      toast.success(t("passwordChangedToast"));
+      setNewPassword("");
+    } catch (err) {
+      console.error("[Settings] password exception:", err);
+      toast.error(t("saveError"));
+    } finally {
+      setPwBusy(false);
+    }
+  };
+
+  // ── danger: delete account ───────────────────────────────
+  const CONFIRM = tp("deleteAccountConfirmPlaceholder");
+  const [confirmText, setConfirmText] = React.useState("");
+  const [deleting, setDeleting] = React.useState(false);
+
+  const deleteAccount = async () => {
+    if (confirmText.trim() !== CONFIRM) return;
+    setDeleting(true);
+    try {
+      const res = await fetch("/api/profile/delete", { method: "DELETE" });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.error("[Settings] delete failed:", err?.message ?? res.status);
+        toast.error(err?.message || t("saveError"));
+        return;
+      }
+      toast.success(tp("deleteAccount30Days"));
+      window.location.href = `/${locale}`;
+    } catch (err) {
+      console.error("[Settings] delete exception:", err);
+      toast.error(t("saveError"));
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-7">
+      {/* Profile + notifications */}
+      <form onSubmit={saveProfile} className="space-y-7">
+        <Section title={t("secProfile")}>
+          <Field label={tp("avatarUrl")} htmlFor="avatar_url" optional>
+            <TextInput id="avatar_url" type="url" inputMode="url" placeholder="https://…"
+              value={form.avatar_url} onChange={(e) => set("avatar_url", e.target.value)} />
+          </Field>
+          <Field label={tp("name")} htmlFor="display_name">
+            <TextInput id="display_name" value={form.display_name}
+              onChange={(e) => set("display_name", e.target.value)} />
+          </Field>
+          <Field label={t("phone")} htmlFor="phone" optional>
+            <TextInput id="phone" type="tel" inputMode="tel" autoComplete="tel"
+              value={form.phone_number} onChange={(e) => set("phone_number", e.target.value)} />
+          </Field>
+          <Field label={tp("bio")} htmlFor="bio" optional>
+            <textarea id="bio" rows={3} maxLength={500} value={form.bio}
+              onChange={(e) => set("bio", e.target.value)}
+              className="block w-full font-body font-normal text-[16px] text-s-ink bg-white border border-s-ink/10 rounded-[12px] px-4 py-3 placeholder:text-s-ink-3 focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:border-s-ink transition-colors duration-150" />
+          </Field>
+          <div className="space-y-1.5">
+            <FieldLabel>{tp("language")}</FieldLabel>
+            <div className="flex flex-wrap gap-2">
+              {LOCALES.map((l) => (
+                <button key={l.value} type="button" onClick={() => set("locale", l.value)}
+                  aria-pressed={form.locale === l.value}
+                  className={cn(
+                    "h-10 px-4 rounded-btn text-[14px] font-medium transition-colors duration-200",
+                    form.locale === l.value
+                      ? "bg-s-ink text-white"
+                      : "border border-s-border text-s-ink hover:bg-s-bg-sunken",
+                  )}>
+                  {l.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-[12px] text-s-ink-2">{t("localeNote")}</p>
+          </div>
+        </Section>
+
+        <section>
+          <h2 className="text-[13px] font-medium text-s-ink-2 mb-2 px-0.5">{t("secNotifications")}</h2>
+          <div className="rounded-card border border-s-border bg-white px-[18px]">
+            <Switch checked={form.notification_email}
+              onCheckedChange={(v) => set("notification_email", v)}
+              label={tp("emailNotifications")} subLabel={tp("notifBookingsDesc")} />
+            <Switch checked={form.notification_sms}
+              onCheckedChange={(v) => set("notification_sms", v)}
+              label="SMS" subLabel={tp("notifDealsDesc")} />
+          </div>
+        </section>
+
+        <button type="submit" disabled={saving}
+          className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] flex items-center justify-center gap-2 transition-opacity duration-200 disabled:opacity-50 active:scale-[0.99]">
+          {saving && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />}
+          {t("saveProfile")}
+        </button>
+      </form>
+
+      {/* Security */}
+      <Section title={t("secSecurity")}>
+        <Field label={t("changeEmail")} htmlFor="new_email">
+          <div className="flex gap-2">
+            <TextInput id="new_email" type="email" inputMode="email" autoComplete="email"
+              placeholder={email} value={newEmail} onChange={(e) => setNewEmail(e.target.value)}
+              className="flex-1" />
+            <ActionButton onClick={updateEmail} busy={emailBusy} disabled={!emailValid}>
+              {t("updateAction")}
+            </ActionButton>
+          </div>
+        </Field>
+        <Field label={t("changePassword")} htmlFor="new_password">
+          <div className="flex gap-2">
+            <TextInput id="new_password" type="password" revealable autoComplete="new-password"
+              placeholder={t("newPassword")} value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)} className="flex-1" />
+            <ActionButton onClick={updatePassword} busy={pwBusy} disabled={!pwValid}>
+              {t("updateAction")}
+            </ActionButton>
+          </div>
+        </Field>
+      </Section>
+
+      {/* Danger zone */}
+      <section>
+        <h2 className="text-[13px] font-medium text-s-ink-2 mb-2 px-0.5">{tp("dangerZone")}</h2>
+        <div className="rounded-card border border-s-error/30 bg-white p-[18px] space-y-3">
+          <p className="text-[14px] font-medium text-s-ink">{tp("deleteAccount")}</p>
+          <p className="text-[13px] text-s-ink-2 leading-[1.5]">{tp("deleteAccountWarningDesc")}</p>
+          <div className="space-y-1.5 pt-1">
+            <FieldLabel htmlFor="delete_confirm">{tp("deleteAccountConfirmLabel")}</FieldLabel>
+            <TextInput id="delete_confirm" value={confirmText} placeholder={CONFIRM}
+              onChange={(e) => setConfirmText(e.target.value)} autoComplete="off" />
+          </div>
+          <button type="button" onClick={deleteAccount}
+            disabled={confirmText.trim() !== CONFIRM || deleting}
+            className="w-full h-11 rounded-btn border border-s-error/40 text-s-error text-[14px] font-medium flex items-center justify-center gap-2 transition-colors duration-200 hover:bg-s-error-bg disabled:opacity-40 disabled:hover:bg-white">
+            {deleting && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-s-error/30 border-t-s-error animate-spin" />}
+            {tp("deleteAccountConfirm")}
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section>
+      <h2 className="text-[13px] font-medium text-s-ink-2 mb-2 px-0.5">{title}</h2>
+      <div className="rounded-card border border-s-border bg-white p-[18px] space-y-[18px]">{children}</div>
+    </section>
+  );
+}
+
+function Field({ label, htmlFor, optional, children }: { label: string; htmlFor: string; optional?: boolean; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      <FieldLabel htmlFor={htmlFor} optional={optional}>{label}</FieldLabel>
+      {children}
+    </div>
+  );
+}
+
+function ActionButton({ onClick, busy, disabled, children }: { onClick: () => void; busy: boolean; disabled: boolean; children: React.ReactNode }) {
+  return (
+    <button type="button" onClick={onClick} disabled={disabled || busy}
+      className="shrink-0 h-14 px-4 rounded-[12px] border border-s-border text-s-ink text-[14px] font-medium flex items-center justify-center gap-2 transition-colors duration-200 hover:bg-s-bg-sunken disabled:opacity-40 disabled:hover:bg-white">
+      {busy && <span aria-hidden className="w-4 h-4 rounded-full border-2 border-s-ink/20 border-t-s-ink animate-spin" />}
+      {children}
+    </button>
+  );
+}

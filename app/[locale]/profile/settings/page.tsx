@@ -1,0 +1,75 @@
+// /profile/settings — account settings (V3-D348, 2026-05-30).
+// Server component: auth guard + fetch the editable profile, then hand off to the
+// client <SettingsForm>. Backend already exists — this page wires to PATCH /api/profile
+// (profile + notifications), Supabase auth.updateUser (email/password), and
+// DELETE /api/profile/delete (soft-delete, 30-day window).
+
+export const dynamic = "force-dynamic";
+
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { createServerSupabaseClient } from "@/lib/supabase";
+import SettingsForm, { type SettingsLocale } from "./SettingsForm";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "profileHub" });
+  return { title: t("settingsTitle"), robots: { index: false, follow: false } };
+}
+
+export default async function SettingsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "profileHub" });
+
+  const supabase = await createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
+  if (!user) {
+    redirect(`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile/settings`)}`);
+  }
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("display_name, avatar_url, bio, phone_number, locale, notification_email, notification_sms")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (error) console.error("[Settings] profile fetch error:", error.message);
+
+  const allowed: SettingsLocale[] = ["de", "en", "fr", "it"];
+  const profileLocale = (allowed as string[]).includes(profile?.locale ?? "")
+    ? (profile!.locale as SettingsLocale)
+    : ((allowed as string[]).includes(locale) ? (locale as SettingsLocale) : "de");
+
+  return (
+    <main className="min-h-screen bg-white">
+      <div className="max-w-md mx-auto px-5 pt-6 pb-20">
+        <div className="flex items-center gap-2 mb-6">
+          <Link
+            href={`/${locale}/profile`}
+            aria-label={t("back")}
+            className="grid place-items-center w-10 h-10 -ml-2 rounded-full text-s-ink hover:bg-s-bg-sunken transition-colors duration-200"
+          >
+            <ChevronLeft size={22} aria-hidden />
+          </Link>
+          <h1 className="text-[22px] font-semibold tracking-[-0.015em] text-s-ink">{t("settingsTitle")}</h1>
+        </div>
+
+        <SettingsForm
+          locale={locale}
+          email={user.email ?? ""}
+          initial={{
+            display_name: profile?.display_name ?? "",
+            avatar_url: profile?.avatar_url ?? "",
+            bio: profile?.bio ?? "",
+            phone_number: profile?.phone_number ?? "",
+            locale: profileLocale,
+            notification_email: profile?.notification_email ?? true,
+            notification_sms: profile?.notification_sms ?? true,
+          }}
+        />
+      </div>
+    </main>
+  );
+}
