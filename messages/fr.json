@@ -1,4 +1,26 @@
 {
+  "profileHub": {
+    "title": "Compte",
+    "memberSince": "Membre depuis {year}",
+    "statBookings": "Réservations",
+    "statFavorites": "Favoris",
+    "statStamps": "Tampons",
+    "tileAppointments": "Rendez-vous",
+    "tileFavorites": "Favoris",
+    "tileLoyalty": "Fidélité",
+    "tileWallet": "Portefeuille",
+    "upcomingCount": "{count} à venir",
+    "savedCount": "{count} enregistrés",
+    "stampsCount": "{count} tampons",
+    "walletDesc": "Cartes cadeaux & bons",
+    "sectionMore": "Plus",
+    "looks": "Looks",
+    "refer": "Parrainer un ami",
+    "referReward": "CHF 10",
+    "settings": "Profil & paramètres",
+    "help": "Aide & assistance",
+    "signOut": "Se déconnecter"
+  },
   "cities": {
     "label": "Ville",
     "select": "Choisir une ville",

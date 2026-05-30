@@ -1,4 +1,26 @@
 {
+  "profileHub": {
+    "title": "Konto",
+    "memberSince": "Mitglied seit {year}",
+    "statBookings": "Buchungen",
+    "statFavorites": "Favoriten",
+    "statStamps": "Stempel",
+    "tileAppointments": "Termine",
+    "tileFavorites": "Favoriten",
+    "tileLoyalty": "Treue",
+    "tileWallet": "Wallet",
+    "upcomingCount": "{count} anstehend",
+    "savedCount": "{count} gespeichert",
+    "stampsCount": "{count} Stempel",
+    "walletDesc": "Geschenkkarten & Gutscheine",
+    "sectionMore": "Mehr",
+    "looks": "Looks",
+    "refer": "Freunde einladen",
+    "referReward": "CHF 10",
+    "settings": "Profil & Einstellungen",
+    "help": "Hilfe & Support",
+    "signOut": "Abmelden"
+  },
   "cities": {
     "label": "Stadt",
     "select": "Stadt wählen",
