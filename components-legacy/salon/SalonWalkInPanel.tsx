@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Clock, Users, Info, Star, X } from "lucide-react";
+import { Clock, Users, Info, Star, X, Check } from "lucide-react";
 
 interface WalkInService {
   id: string;
@@ -19,6 +19,7 @@ interface WalkInStaff {
   specialties?: string[] | null;
   staff_average_rating?: number | null;
   staff_review_count?: number | null;
+  service_ids?: string[] | null; // services this barber performs (staff_services)
 }
 
 // No em-dashes anywhere (user rule). Separators are middots (·) or commas.
@@ -33,9 +34,9 @@ const COPY: Record<string, {
     what: "Walk-in", tagline: "jetzt zahlen, Schlange überspringen",
     howTitle: "So funktioniert Walk-in",
     bullets: [
-      "Kein Termin. Zahl und komm vorbei, wann es dir passt.",
-      "Dein Platz ist reserviert, sobald du zahlst.",
-      "Die Karte wird nur gehalten, belastet wenn du dran bist.",
+      "Kein Termin. Zahl und komm einfach vorbei.",
+      "Zahlen sichert deinen Platz in der Schlange.",
+      "Karte wird nur gehalten, belastet wenn du dran bist.",
       "Kostenlos stornierbar, bis du aufgerufen wirst.",
     ],
     openLabel: "Walk-ins offen", busyLabel: "Stark gefragt", closedLabel: "Momentan geschlossen",
@@ -48,10 +49,10 @@ const COPY: Record<string, {
     what: "Walk-in", tagline: "pay now, skip the line",
     howTitle: "How walk-in works",
     bullets: [
-      "No appointment. Pay, then come by when it suits you.",
-      "Your spot is reserved the moment you pay.",
-      "Card is only held, charged when it's your turn.",
-      "Free to cancel until you're called.",
+      "No appointment. Just pay and drop by.",
+      "Paying holds your spot in the queue.",
+      "Card is held now, charged when it's your turn.",
+      "Cancel free until you're called.",
     ],
     openLabel: "Open for walk-ins", busyLabel: "In demand", closedLabel: "Currently closed",
     emptyBig: "No wait, walk right in", emptySub: "Pay now to lock your spot",
@@ -63,9 +64,9 @@ const COPY: Record<string, {
     what: "Walk-in", tagline: "payez maintenant, sautez la file",
     howTitle: "Comment ça marche",
     bullets: [
-      "Sans rendez-vous. Payez et venez quand ça vous arrange.",
-      "Votre place est réservée dès le paiement.",
-      "La carte est préautorisée, débitée quand c'est votre tour.",
+      "Sans rendez-vous. Payez et passez.",
+      "Le paiement réserve votre place dans la file.",
+      "Carte préautorisée, débitée quand c'est votre tour.",
       "Annulation gratuite jusqu'à votre appel.",
     ],
     openLabel: "Walk-ins ouverts", busyLabel: "Forte affluence", closedLabel: "Actuellement fermé",
@@ -78,9 +79,9 @@ const COPY: Record<string, {
     what: "Walk-in", tagline: "paga ora, salta la coda",
     howTitle: "Come funziona",
     bullets: [
-      "Senza appuntamento. Paga e passa quando ti fa comodo.",
-      "Il posto è riservato appena paghi.",
-      "La carta è solo trattenuta, addebitata quando tocca a te.",
+      "Senza appuntamento. Paga e passa.",
+      "Il pagamento assicura il posto in coda.",
+      "Carta trattenuta, addebitata quando tocca a te.",
       "Annullamento gratuito fino alla chiamata.",
     ],
     openLabel: "Walk-in aperti", busyLabel: "Molto richiesto", closedLabel: "Attualmente chiuso",
@@ -91,11 +92,14 @@ const COPY: Record<string, {
   },
 };
 
+const VIEW_ALL: Record<string, string> = { de: "Alle ansehen", en: "View all", fr: "Voir tout", it: "Vedi tutti" };
+
 export default function SalonWalkInPanel({
   salonId,
   services,
   staff = [],
   salonAverageRating = null,
+  slug,
   locale,
   isOpen = true,
 }: {
@@ -103,6 +107,7 @@ export default function SalonWalkInPanel({
   services: WalkInService[];
   staff?: WalkInStaff[];
   salonAverageRating?: number | null;
+  slug?: string;
   locale: string;
   isOpen?: boolean;
 }) {
@@ -136,6 +141,13 @@ export default function SalonWalkInPanel({
   // staff_id rides the join link → pay-intent metadata → barber_walkin_queue.preferred_barber_id.
   const joinHref = (serviceId: string) =>
     `/${locale}/walk-in-pay?salon_id=${salonId}&service_id=${serviceId}${barberId ? `&staff_id=${barberId}` : ""}`;
+
+  // Staff↔service link (staff_services): a chosen barber filters the list to what they actually
+  // do. Falls back to all services if the barber has no links (so the list never goes empty).
+  const selectedStaff = barberId ? staff.find((b) => b.id === barberId) : null;
+  const visibleServices = selectedStaff && (selectedStaff.service_ids?.length ?? 0) > 0
+    ? services.filter((s) => selectedStaff.service_ids!.includes(s.id))
+    : services;
 
   return (
     <div className="flex flex-col gap-5">
@@ -172,10 +184,18 @@ export default function SalonWalkInPanel({
       </div>
 
       {/* Barber picker — the SAME card as the booking "Team" section, selectable.
-          78px avatar + rating pill + name + role. "Egal" first. Selected = ink ring. */}
+          78px avatar + rating pill + name + role. "Egal" first. Selected = dark photo
+          overlay + white check (Option 4); "Alle ansehen" opens the full team. */}
       {staff.length > 0 && (
         <div>
-          <h2 className="mb-3 font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">{l.barberPick}</h2>
+          <div className="mb-3 flex items-baseline justify-between gap-3">
+            <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">{l.barberPick}</h2>
+            {slug && (
+              <Link href={`/${locale}/salon/${slug}/booking`} className="font-body shrink-0 text-[14px] font-medium text-s-accent transition-opacity hover:opacity-80">
+                {VIEW_ALL[locale] ?? VIEW_ALL.de}
+              </Link>
+            )}
+          </div>
           <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pt-2 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {/* Egal / anyone */}
             <button
@@ -184,8 +204,13 @@ export default function SalonWalkInPanel({
               aria-pressed={barberId === null}
               className="flex w-[88px] shrink-0 flex-col items-center text-center"
             >
-              <div className={`grid h-[78px] w-[78px] place-items-center rounded-full bg-s-bg-sunken transition-shadow ${barberId === null ? "ring-2 ring-s-ink" : "ring-1 ring-s-ink/[0.05]"}`}>
+              <div className="relative grid h-[78px] w-[78px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken ring-1 ring-s-ink/[0.05]">
                 <Users className="h-7 w-7 text-s-ink-2" />
+                {barberId === null && (
+                  <span className="absolute inset-0 grid place-items-center bg-s-ink/45">
+                    <Check className="h-7 w-7 text-white" strokeWidth={3} />
+                  </span>
+                )}
               </div>
               <div className={`mt-3 font-body text-[14px] leading-tight text-s-ink ${barberId === null ? "font-semibold" : "font-medium"}`}>{l.anyone}</div>
               <div className="mt-1 font-body text-[12px] leading-snug text-s-ink-2">{l.noPref}</div>
@@ -205,12 +230,17 @@ export default function SalonWalkInPanel({
                   className="flex w-[88px] shrink-0 flex-col items-center text-center"
                 >
                   <div className="relative">
-                    <div className={`grid h-[78px] w-[78px] place-items-center overflow-hidden rounded-full bg-white transition-shadow ${active ? "ring-2 ring-s-ink" : "ring-1 ring-s-ink/[0.05]"}`}>
+                    <div className="relative grid h-[78px] w-[78px] place-items-center overflow-hidden rounded-full bg-white ring-1 ring-s-ink/[0.05]">
                       {b.avatar_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={b.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" />
                       ) : (
                         <span className="font-display text-[28px] font-semibold text-s-ink-2">{b.name.charAt(0).toUpperCase()}</span>
+                      )}
+                      {active && (
+                        <span className="absolute inset-0 grid place-items-center bg-s-ink/45">
+                          <Check className="h-7 w-7 text-white" strokeWidth={3} />
+                        </span>
                       )}
                     </div>
                     {showRating && (
@@ -233,7 +263,7 @@ export default function SalonWalkInPanel({
       <div>
         <h2 className="mb-3 font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">{l.pick}</h2>
         <ul className="flex flex-col gap-3">
-          {services.map((s) => (
+          {visibleServices.map((s) => (
             <li key={s.id} className="rounded-2xl border border-s-border bg-white p-5 transition-shadow hover:shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
@@ -273,7 +303,7 @@ export default function SalonWalkInPanel({
             <ul className="mt-4 space-y-3.5">
               {l.bullets.map((b, i) => (
                 <li key={i} className="flex items-start gap-3 font-body text-[13.5px] leading-relaxed text-s-ink-2">
-                  <span className="mt-[7px] h-[7px] w-[7px] shrink-0 rounded-full bg-s-success" />
+                  <Check className="mt-0.5 h-[17px] w-[17px] shrink-0 text-s-ink" strokeWidth={2.5} />
                   <span>{b}</span>
                 </li>
               ))}

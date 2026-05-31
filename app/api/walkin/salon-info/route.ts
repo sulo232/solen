@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
   const { data: salon } = await admin
     .from("salons")
-    .select("id, name, address")
+    .select("id, slug, name, address, cover_photo_url, average_rating, review_count")
     .eq("id", salonId)
     .maybeSingle();
 
@@ -27,15 +27,16 @@ export async function GET(req: NextRequest) {
   // tolerate is_active = null (some seeded rows leave it unset) — only hide explicit-off.
   const { data: raw } = await admin
     .from("services")
-    .select("id, name_de, name_en, price, duration_minutes")
+    .select("id, name_de, name_en, price, duration_minutes, description_de, description_en")
     .eq("salon_id", salonId)
     .or("is_active.is.null,is_active.eq.true")
     .order("price", { ascending: true });
 
-  // Normalize for the client: pick a localized name, coerce numeric price to a real number.
+  // Normalize for the client: pick a localized name + description, coerce price to a number.
   const services = (raw || []).map((s) => ({
     id: s.id,
     name: (locale === "en" ? s.name_en : s.name_de) || s.name_de || s.name_en || "Service",
+    description: (locale === "en" ? s.description_en : s.description_de) || s.description_de || s.description_en || null,
     price: Number(s.price),
     duration_minutes: s.duration_minutes,
   }));

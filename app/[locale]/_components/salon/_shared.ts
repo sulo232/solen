@@ -28,6 +28,8 @@ export interface StaffMember {
   // V2-D53.3: per-staff ratings from staff_ratings_view (joined in /api/salons/[slug])
   staff_average_rating?: number;
   staff_review_count?: number;
+  // service_ids this staff performs (from staff_services) — drives staff↔service filtering.
+  service_ids?: string[];
 }
 
 export interface Review {

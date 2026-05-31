@@ -28,7 +28,7 @@ import SalonModeToggle from "@/components-legacy/salon/SalonModeToggle";
 import SalonWalkInPanel from "@/components-legacy/salon/SalonWalkInPanel";
 import { SalonLightbox } from "./SalonLightbox";
 import type { SalonDetail, TabKey } from "./_shared";
-import { postalToCity } from "./_shared";
+import { postalToCity, computeOpenStatus } from "./_shared";
 import { usePostHog } from "posthog-js/react";
 import { trackSalonView } from "@/components-legacy/RecentlyViewed";
 import { generateSalonSchema } from "@/lib/seo";
@@ -162,6 +162,9 @@ export function SalonDetailV3() {
   };
 
   const primaryCategory = (salon.categories[0] ?? "coiffeur").toLowerCase();
+  // Walk-in status must follow real opening hours — same source as the header's
+  // "Geschlossen · Öffnet …" so the panel can't say "open" while the salon is closed.
+  const salonOpen = computeOpenStatus(salon.opening_hours).isOpen;
 
   // V3-D344 (2026-05-28): JSON-LD structured data — parity with legacy salon
   // render (generateSalonSchema). Required before V3 became the default so salon
@@ -245,7 +248,7 @@ export function SalonDetailV3() {
             {salon.categories?.includes("barbershop") && (salon as any).accepts_online_payment && (
               <div className="mt-6 flex flex-col gap-5">
                 <SalonModeToggle mode={walkinMode ? "walkin" : "book"} onChange={(m) => setWalkinMode(m === "walkin")} locale={locale} />
-                {walkinMode && <SalonWalkInPanel salonId={salon.id} services={salon.services} staff={salon.staff} salonAverageRating={salon.average_rating} locale={locale} />}
+                {walkinMode && <SalonWalkInPanel salonId={salon.id} services={salon.services} staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} isOpen={salonOpen} locale={locale} />}
               </div>
             )}
 

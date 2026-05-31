@@ -49,10 +49,29 @@ export async function GET(
       .limit(20),
   ]);
 
+  // Attach service_ids to each staff member (which services they perform) so the UI can
+  // filter services by a chosen staff/barber — staff_services is the same link the booking
+  // flow uses. Additive: consumers that don't need it (SalonTeam) ignore the field.
+  const staff = staffRes.data ?? [];
+  let staffWithServices = staff;
+  if (staff.length > 0) {
+    const { data: links } = await supabase
+      .from("staff_services")
+      .select("staff_member_id, service_id")
+      .in("staff_member_id", staff.map((s) => s.id));
+    const byStaff = new Map<string, string[]>();
+    (links ?? []).forEach((l) => {
+      const arr = byStaff.get(l.staff_member_id) ?? [];
+      arr.push(l.service_id);
+      byStaff.set(l.staff_member_id, arr);
+    });
+    staffWithServices = staff.map((s) => ({ ...s, service_ids: byStaff.get(s.id) ?? [] }));
+  }
+
   return NextResponse.json({
     ...salon,
     services: servicesRes.data ?? [],
-    staff: staffRes.data ?? [],
+    staff: staffWithServices,
     reviews: reviewsRes.data ?? [],
   });
 }
