@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   CITY_SLUGS,
@@ -80,7 +80,11 @@ export default function DesktopCitySelector({ locale }: Props) {
   };
 
   return (
-    <div ref={rootRef} className="relative hidden md:inline-flex">
+    // V3-D348 (tweak #3): now RESPONSIVE (was hidden md:). This single city
+    // pill replaces the redundant CityTopBar row on mobile — the bar showed
+    // "Du siehst gerade Basel" + a duplicate Basel pill + a mystery arrow.
+    // One bordered "📍 Basel ▾" pill in the header covers both viewports.
+    <div ref={rootRef} className="relative inline-flex">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -88,19 +92,20 @@ export default function DesktopCitySelector({ locale }: Props) {
         aria-expanded={open}
         aria-label="Stadt wählen"
         className={cn(
-          "inline-flex items-center gap-1 font-body text-[14px] font-medium",
-          "text-s-ink-2 transition-colors duration-150 ease-glide",
-          "hover:text-s-ink",
-          "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
+          "inline-flex items-center gap-1.5 rounded-full border border-s-border bg-white",
+          "px-3 py-[7px] font-body text-[13.5px] font-medium text-s-ink",
+          "transition-colors duration-150 ease-glide hover:bg-s-bg-sunken hover:border-s-ink/30",
+          "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         )}
       >
+        <MapPin size={14} strokeWidth={2} aria-hidden className="text-s-ink-2" />
         <span>{cityName}</span>
         <ChevronDown
-          size={14}
+          size={13}
           strokeWidth={2.5}
           aria-hidden
           className={cn(
-            "transition-transform duration-150 ease-glide",
+            "text-s-ink-2 transition-transform duration-150 ease-glide",
             open && "rotate-180",
           )}
         />
