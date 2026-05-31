@@ -13,11 +13,30 @@ import type { ReactNode } from "react";
  * crowd / cover the flow. Server-rendered children are passed through; this
  * only gates visibility by route.
  */
-export default function HideInBooking({ children }: { children: ReactNode }) {
+export default function HideInBooking({
+  children,
+  showOnLogin = false,
+}: {
+  children: ReactNode;
+  showOnLogin?: boolean;
+}) {
   const pathname = usePathname();
-  // Booking flow + individual staff pages are self-contained.
-  // V3-D348: /auth pages are standalone too (Uber pattern) — no marketing
-  // header/city-bar/breadcrumb, so the login's own wordmark is the only logo.
-  if (pathname && (/\/(booking|staff\/[^/]+)\/?$/.test(pathname) || /\/(auth|onboarding)(\/|$)/.test(pathname))) return null;
+  if (!pathname) return <>{children}</>;
+
+  // Booking flow, individual staff pages, and onboarding are self-contained —
+  // always drop the marketing chrome.
+  if (/\/(booking|staff\/[^/]+)\/?$/.test(pathname) || /\/onboarding(\/|$)/.test(pathname)) {
+    return null;
+  }
+
+  // Auth pages are standalone (Uber pattern). EXCEPTION: the login page opts the
+  // global Header back in via showOnLogin (Solen wordmark + hamburger) so it
+  // carries the standard nav instead of a bespoke wordmark. Register/reset stay
+  // standalone with their own lockups.
+  if (/\/auth(\/|$)/.test(pathname)) {
+    if (showOnLogin && /\/auth\/login(\/|$)/.test(pathname)) return <>{children}</>;
+    return null;
+  }
+
   return <>{children}</>;
 }
