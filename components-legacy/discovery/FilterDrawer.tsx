@@ -32,7 +32,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
       <button
         onClick={() => setOpen(true)}
         aria-label={t("open_filters")}
-        className={`md:hidden relative grid h-9 w-9 place-items-center rounded-full border transition-colors duration-150 ${
+        className={`relative grid h-9 w-9 place-items-center rounded-full border transition-colors duration-150 ${
           hasFilters
             ? "border-s-ink text-s-ink bg-s-ink/[0.06]"
             : "border-s-border text-s-ink-2 hover:text-s-ink"
@@ -48,7 +48,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
           role="dialog"
           aria-modal="true"
           aria-label={t("filter_label")}
-          className="fixed inset-0 z-50 flex items-end md:hidden"
+          className="fixed inset-0 z-50 flex items-end"
         >
           <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-[6px]" onClick={() => setOpen(false)} />
           <div className="relative w-full bg-[--raised] shadow-elevation-3 flex flex-col rounded-t-[16px] max-h-[80vh] animate-in slide-in-from-bottom">

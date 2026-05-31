@@ -6,6 +6,7 @@ import { Play, Store } from "lucide-react";
 import type { DiscoveryItem } from "@/lib/types";
 import LikeButton from "./LikeButton";
 import { formatStyleTag, formatCreator } from "./format";
+import CardSignals from "./CardSignals";
 
 interface ItemCardProps {
   item: DiscoveryItem;
@@ -92,6 +93,9 @@ export default memo(function ItemCard({
           <span className="truncate">{creator}</span>
         </span>
       )}
+
+      {/* V3-D393: backend-fed booking signals (rating / price / availability). Renders nothing until real data exists. */}
+      <CardSignals item={item} />
     </div>
   );
 });

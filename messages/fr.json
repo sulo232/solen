@@ -3021,6 +3021,8 @@
     },
     "texture": "Texture",
     "trending": "Tendance",
+    "priceFrom": "dès {amount} CHF",
+    "searchByPattern": "Rechercher par motif",
     "myLooks": "Mes looks",
     "preferences": "Préférences Discovery",
     "notSet": "Non défini — modifier pour personnaliser votre fil",

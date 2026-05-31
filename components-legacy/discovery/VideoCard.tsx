@@ -6,6 +6,7 @@ import type { DiscoveryItem } from "@/lib/types";
 import { Play } from "lucide-react";
 import LikeButton from "./LikeButton";
 import { formatStyleTag, formatCreator } from "./format";
+import CardSignals from "./CardSignals";
 
 interface VideoCardProps {
   item: DiscoveryItem;
@@ -126,6 +127,9 @@ export default memo(function VideoCard({
           {creator}
         </span>
       )}
+
+      {/* V3-D393: backend-fed booking signals (rating / price / availability). Renders nothing until real data exists. */}
+      <CardSignals item={item} />
     </div>
   );
 });

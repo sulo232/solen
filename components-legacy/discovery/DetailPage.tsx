@@ -6,6 +6,7 @@ import { ChevronDown, ExternalLink, Play } from "lucide-react";
 import type { DiscoveryItem } from "@/lib/types";
 import SourceBadge from "./SourceBadge";
 import LikeButton from "./LikeButton";
+import { formatCreator } from "./format";
 import DescriptionCard from "./DescriptionCard";
 import SalonScript from "./SalonScript";
 import ProductRecommendations from "./ProductRecommendations";
@@ -43,6 +44,7 @@ const DL: Record<string, { back: string; cutGuide: string; noMedia: string }> = 
 };
 
 export default function DetailPage({ item, locale, isAuthenticated }: DetailPageProps) {
+  // V3-D390: heart-only save concept (SaveButton removed); hero routes through the refresh proxy.
   const [showCutGuide, setShowCutGuide] = useState(false);
   const dt = DL[locale] ?? DL.en;
   // Consider it a video if media_type is tiktok OR if tiktok data exists
@@ -51,6 +53,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
   // V3-D390: TikTok thumbnails expire → route the hero through the /api/discovery/thumb refresh proxy (same as the
   // feed cards) so the detail hero isn't a blank grey box.
   const heroSrc = item.tiktok_url ? `/api/discovery/thumb/${item.id}` : displayImage;
+  const creator = formatCreator(item.author_name);
 
   return (
     <div className="max-w-5xl mx-auto pb-24">
@@ -122,11 +125,12 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
             ? "tiktok"
             : item.content_type
         } />
-        {item.author_name && (
+        {/* V3-D390: same junk-handle filter as the feed cards (formatCreator) — a scraped "@☆" reads as broken. */}
+        {creator && (
           <span className="text-xs text-s-ink/50">
             {item.author_url ? (
-              <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="hover:text-s-ink transition-colors">@{item.author_name}</a>
-            ) : `@${item.author_name}`}
+              <a href={item.author_url} target="_blank" rel="noopener noreferrer" className="hover:text-s-ink transition-colors">@{creator}</a>
+            ) : `@${creator}`}
           </span>
         )}
         <span className="text-xs text-s-ink/30">{formatDate(item.created_at, locale)}</span>
