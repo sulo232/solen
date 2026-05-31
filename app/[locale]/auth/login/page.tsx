@@ -7,16 +7,9 @@ export const dynamic = "force-dynamic";
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   return (
-    <div className="min-h-screen bg-white flex flex-col px-6 pt-16 pb-12">
+    <div className="min-h-screen bg-white flex flex-col px-6 pt-8 pb-12">
       <div className="w-full max-w-sm mx-auto">
-        <Link
-          href={`/${locale}`}
-          className="inline-block font-heading text-[20px] font-semibold text-s-ink leading-none hover:opacity-80 transition-opacity"
-        >
-          solen.ch
-        </Link>
-
-        <h1 className="text-[28px] font-semibold tracking-[-0.02em] leading-[1.1] text-s-ink mt-8">
+        <h1 className="text-[28px] font-semibold tracking-[-0.02em] leading-[1.1] text-s-ink">
           Willkommen zurück
         </h1>
         <p className="text-[15px] text-s-ink-2 mt-2 leading-[1.4]">

@@ -98,6 +98,10 @@ export default async function LocaleLayout({
               client-side mount guard inside the component. */}
           <HideInBooking>
             <CityTopBar locale={locale} />
+          </HideInBooking>
+          {/* Header carries showOnLogin so the login page gets the global
+              Solen wordmark + hamburger (V3-D348); city bar stays hidden there. */}
+          <HideInBooking showOnLogin>
             <Header locale={locale} />
           </HideInBooking>
           <PageTransitionWrapper>
