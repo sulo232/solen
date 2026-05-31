@@ -1,30 +1,22 @@
 "use client";
 
-// V3-D346 (2026-05-29) Move 1 — collections row on the discovery feed.
-// Renders is_active discovery_boards as Pinterest-style board-cover tiles (B&W skin).
-// Tapping a board applies its category + keyword (style_name) as the feed search.
-// Returns null when no boards exist, so the row simply disappears on an empty library.
+// V3-D414: collections row on the discovery feed, rebuilt as bigger 2-col collage cards (mockup frame 3) that
+// OPEN a board-detail page (/discover/board/[id]) — was small tiles that just applied a feed filter (the "tapping
+// does nothing" problem). Renders is_active discovery_boards; returns null on an empty library.
 
 import { useState, useEffect } from "react";
 import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { Images } from "lucide-react";
-import type { DiscoveryBoard, DiscoveryFilters, DiscoveryCategory } from "@/lib/types";
+import type { DiscoveryBoard, DiscoveryFilters } from "@/lib/types";
 
 const LABEL: Record<string, string> = {
   de: "Kollektionen", en: "Collections", fr: "Collections", it: "Collezioni",
 };
 
-// V3-D379 (2026-05-30): robust board-cover collage. The old version rendered a fixed 2×2 grid and hid a dead/missing
-// thumbnail with visibility:hidden — which left the grid cell reserved, showing a grey hole (the "Textured Crops" bug).
-// This tracks which covers actually load and recomputes the layout from the live ones (3 → 1-big+2-stacked collage,
-// 2 → split, 1 → full-bleed, 0 → board initial), so the tile always reads as an intentional collage.
-function BoardTile({
-  label, covers, onSelect,
-}: {
-  label: string;
-  covers: string[];
-  onSelect: () => void;
-}) {
+// Robust board-cover collage: tracks which covers actually load and recomputes the layout from the live ones
+// (3 → 1-big + 2-stacked, 2 → split, 1 → full-bleed, 0 → neutral icon) so a dead thumbnail never leaves a grey hole.
+function BoardCard({ label, covers, onClick }: { label: string; covers: string[]; onClick: () => void }) {
   const [failed, setFailed] = useState<number[]>([]);
   const live = covers.map((url, i) => ({ url, i })).filter((c) => !failed.includes(c.i));
   const markFailed = (i: number) => setFailed((p) => (p.includes(i) ? p : [...p, i]));
@@ -32,20 +24,19 @@ function BoardTile({
 
   return (
     <button
-      onClick={onSelect}
+      onClick={onClick}
       aria-label={label}
-      className="shrink-0 w-32 text-left active:scale-[0.98] transition-transform duration-150"
+      className="w-[168px] shrink-0 text-left transition-transform duration-150 active:scale-[0.98]"
     >
       <div
         className={[
-          "w-32 h-32 rounded-2xl overflow-hidden bg-s-bg-sunken border border-s-border shadow-elevation-1 grid gap-0.5",
+          "grid h-[118px] w-full gap-0.5 overflow-hidden rounded-2xl border border-s-border bg-s-bg-sunken",
           n >= 3 ? "grid-cols-2 grid-rows-2" : n === 2 ? "grid-cols-2 grid-rows-1" : "grid-cols-1 grid-rows-1",
         ].join(" ")}
       >
         {n === 0 ? (
-          // V3-D380: neutral icon fallback (was a letter-initial — user dislikes letters-in-circles/tiles).
           <div className="flex items-center justify-center">
-            <Images size={20} className="text-s-ink-3" strokeWidth={1.75} />
+            <Images size={22} className="text-s-ink-3" strokeWidth={1.75} />
           </div>
         ) : (
           live.map((c, idx) => (
@@ -55,19 +46,19 @@ function BoardTile({
               alt=""
               loading="lazy"
               onError={() => markFailed(c.i)}
-              className={`w-full h-full object-cover ${n >= 3 && idx === 0 ? "row-span-2" : ""}`}
+              className={`h-full w-full object-cover ${n >= 3 && idx === 0 ? "row-span-2" : ""}`}
             />
           ))
         )}
       </div>
-      {/* V3-D380: board name only — the "X Looks" count was removed (doesn't scale, user flag). */}
-      <p className="text-[12px] font-medium text-s-ink mt-2 truncate">{label}</p>
+      <p className="mt-2 truncate font-heading text-[14px] font-semibold text-s-ink">{label}</p>
     </button>
   );
 }
 
-export default function FeaturedBoards({ onBoardSelect }: { onBoardSelect?: (filters: Partial<DiscoveryFilters>) => void }) {
+export default function FeaturedBoards(_props: { onBoardSelect?: (filters: Partial<DiscoveryFilters>) => void }) {
   const locale = useLocale();
+  const router = useRouter();
   const [boards, setBoards] = useState<DiscoveryBoard[]>([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -83,29 +74,22 @@ export default function FeaturedBoards({ onBoardSelect }: { onBoardSelect?: (fil
     return () => { cancelled = true; };
   }, []);
 
-  if (loaded && boards.length === 0) return null;
-  if (!loaded) return null;
+  if (!loaded || boards.length === 0) return null;
 
   const localName = (b: DiscoveryBoard) =>
     (locale === "de" ? b.name_de : locale === "en" ? b.name_en : locale === "fr" ? b.name_fr : b.name_it) || b.name;
 
   return (
     <section className="mb-6">
-      {/* V3-D381 (2026-05-30): section label de-eyebrowed — sentence-case ink header (was uppercase+tracked
-          11px eyebrow, the "weird font" the user flagged; treatment, not typeface — it's Geist either way). */}
-      <p className="text-[13px] font-semibold text-s-ink tracking-[-0.01em] mb-3">
-        {LABEL[locale] ?? LABEL.en}
-      </p>
-      <div className="flex gap-3 overflow-x-auto scrollbar-hide -mx-4 px-4 pb-1">
+      <p className="mb-3 text-[13px] font-semibold tracking-[-0.01em] text-s-ink">{LABEL[locale] ?? LABEL.en}</p>
+      {/* V3-D414: horizontal scroll (like the chip row), NOT a 2-col grid that stacks into 2-3 lines on mobile. */}
+      <div className="-mx-4 flex gap-3 overflow-x-auto scrollbar-hide px-4 pb-1">
         {boards.map((b) => (
-          <BoardTile
+          <BoardCard
             key={b.id}
             label={localName(b)}
             covers={(b.cover_images ?? []).slice(0, 3)}
-            onSelect={() => onBoardSelect?.({
-              category: (b.category as DiscoveryCategory) || undefined,
-              search: b.style_name || undefined,
-            })}
+            onClick={() => router.push(`/${locale}/discover/board/${b.id}`)}
           />
         ))}
       </div>

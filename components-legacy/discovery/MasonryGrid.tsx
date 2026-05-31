@@ -17,9 +17,11 @@ interface MasonryGridProps {
 
 export default function MasonryGrid({ items, renderItem }: MasonryGridProps) {
   return (
-    <div className="columns-2 md:columns-3 lg:columns-4 gap-3 [column-fill:balance]">
+    // V3-D412 (user, "make it dense like Pinterest"): gutters tightened 12px → 6px (gap-1.5 / mb-1.5) so the
+    // look-feed reads as an immersive wall instead of an airy grid. Column counts unchanged (2 mobile → 4 lg).
+    <div className="columns-2 md:columns-3 lg:columns-4 gap-1.5 [column-fill:balance]">
       {items.map((item) => (
-        <div key={item.id} className="mb-3 break-inside-avoid animate-in fade-in duration-300">
+        <div key={item.id} className="mb-1.5 break-inside-avoid animate-in fade-in duration-300">
           {renderItem(item, 0)}
         </div>
       ))}
