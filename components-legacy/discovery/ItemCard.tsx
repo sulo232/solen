@@ -1,12 +1,12 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useState } from "react";
 import Image from "next/image";
-import { Play } from "lucide-react";
+import { Play, Store } from "lucide-react";
 import type { DiscoveryItem } from "@/lib/types";
-import { motion } from "framer-motion";
 import LikeButton from "./LikeButton";
-import SaveButton from "./SaveButton";
+import { formatStyleTag, formatCreator } from "./format";
+import CardSignals from "./CardSignals";
 
 interface ItemCardProps {
   item: DiscoveryItem;
@@ -16,48 +16,32 @@ interface ItemCardProps {
   isExpanded?: boolean;
 }
 
-// ── Color-coded category badges ────────────────────────────────────
-// V3-D346 (2026-05-29): category color identity KEPT per user decision —
-// intentional deviation from the B&W pivot + V3-D205 universal-components rule.
-// s-amber/s-plum resolve via config aliases (#F59E0B / #6B6B6B). Do not sweep to neutral.
-const CATEGORY_COLORS: Record<string, string> = {
-  hair: "bg-s-amber/70",
-  beard: "bg-s-ink/70",
-  nails: "bg-s-plum/70",
-  makeup: "bg-s-plum/70",
-  waxing: "bg-s-success/70",
-};
-
-const CONTENT_TYPE_LABELS: Record<string, string> = {
-  tiktok: "TikTok",
-  salon: "Salon",
-  curated: "Inspo",
-  user: "Community",
-};
-
+// V3-D387 (2026-05-30): CSS-columns masonry card. The image fills a container whose aspect-ratio is the photo's
+// NATURAL ratio (self-measured on load; default 9/16 so most cards don't reflow) → varied Pinterest heights.
+// Haircut-type chip on the photo (tags[0]); creator below (plain span = the shared CardMeta recipe: ink-2 / 400).
+// V3-D386: TikTok thumbs route through the /api/discovery/thumb refresh proxy (fresh signed URL, no CORS).
 export default memo(function ItemCard({
   item,
   onClick,
   isAuthenticated = false,
   onAuthRequired,
-  isExpanded = false,
 }: ItemCardProps) {
-  const displayImage = item.image_url || item.tiktok_thumbnail_url;
+  const [aspect, setAspect] = useState("9 / 16");
   const isTikTok =
     !!item.tiktok_url || !!item.tiktok_embed_html || item.media_type === "tiktok";
-  const categoryBg = CATEGORY_COLORS[item.category] ?? "bg-white/50";
-  const contentLabel = CONTENT_TYPE_LABELS[isTikTok ? "tiktok" : item.content_type] ?? "";
+  const displayImage = item.tiktok_url
+    ? `/api/discovery/thumb/${item.id}`
+    : item.image_url || item.tiktok_thumbnail_url;
+  const styleTag = formatStyleTag(item.tags);
+  const creator = formatCreator(item.author_name);
+  const isSalon = item.source === "salon" || item.content_type === "salon";
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.05 }}
-      onClick={onClick}
-      className="group relative rounded-[16px] overflow-hidden cursor-pointer active:scale-[0.97] transition-transform duration-150 w-full h-full"
-    >
-      {/* Full-bleed image */}
-      <div className="absolute inset-0 bg-s-ink overflow-hidden">
+    <div onClick={onClick} className="group w-full cursor-pointer">
+      <div
+        className="relative w-full overflow-hidden rounded-2xl bg-s-bg-sunken"
+        style={{ aspectRatio: aspect }}
+      >
         {displayImage ? (
           <Image
             src={displayImage}
@@ -65,83 +49,53 @@ export default memo(function ItemCard({
             fill
             className="object-cover"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            onError={(e) => {
-              (e.target as HTMLElement).style.display = "none";
+            onLoad={(e) => {
+              const img = e.currentTarget;
+              if (img.naturalWidth && img.naturalHeight) {
+                setAspect(`${img.naturalWidth} / ${img.naturalHeight}`);
+              }
             }}
           />
         ) : null}
 
-        {/* TikTok play button overlay */}
+        {/* Light play affordance for video */}
         {isTikTok && (
-          <div className="absolute inset-0 flex items-center justify-center bg-s-ink/20">
-            <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-              <Play size={16} className="text-white ml-0.5" fill="white" />
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-white/85 shadow-elevation-2 backdrop-blur-[2px]">
+              <Play size={15} className="ml-0.5 text-s-ink" fill="currentColor" />
             </div>
           </div>
         )}
 
-        {/* TikTok fallback when thumbnail fails */}
-        {isTikTok && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-s-ink to-s-ink -z-10 gap-3">
-            <svg viewBox="0 0 24 24" className="w-8 h-8 text-white/30" fill="currentColor">
-              <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.71a8.19 8.19 0 004.76 1.52V6.78a4.83 4.83 0 01-1-.09z" />
-            </svg>
-            <div className="w-10 h-10 rounded-full border-2 border-white/10 flex items-center justify-center">
-              <Play size={16} className="text-white/30 ml-0.5" fill="currentColor" />
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* ── Top-left: Category + content type badge ── */}
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none z-10" />
-
-      <div className="absolute top-2 left-2 z-10">
-        <span
-          className={`inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-pill backdrop-blur-[6px] font-medium text-white ${categoryBg}`}
-        >
-          <span className="capitalize">{item.category}</span>
-          {contentLabel && (
-            <>
-              <span className="opacity-60">·</span>
-              <span>{contentLabel}</span>
-            </>
-          )}
-        </span>
-      </div>
-
-      {/* ── Top-right: Like + Save buttons ── */}
-      <div
-        className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center gap-1 bg-white/30 backdrop-blur-[6px] rounded-pill px-1.5 py-1">
+        {/* Canonical heart — top-right */}
+        <div className="absolute right-1 top-1" onClick={(e) => e.stopPropagation()}>
           <LikeButton
             itemId={item.id}
             initialLiked={false}
-            initialCount={item.like_count}
             isAuthenticated={isAuthenticated}
             onAuthRequired={onAuthRequired}
           />
-          <SaveButton
-            itemId={item.id}
-            initialSaved={false}
-            isAuthenticated={isAuthenticated}
-            onAuthPrompt={onAuthRequired}
-          />
         </div>
+
+        {/* Haircut-type chip — bottom-left on the photo */}
+        {styleTag && (
+          <span className="absolute bottom-1.5 left-1.5 max-w-[80%] truncate rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-medium text-s-ink shadow-elevation-1 backdrop-blur-[2px]">
+            {styleTag}
+          </span>
+        )}
       </div>
 
-      {/* ── Bottom: Glassmorphism info pill ── */}
-      {item.style_name && (
-        <div className="absolute bottom-2 left-2 right-2 z-10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <div className="bg-white/30 backdrop-blur-[6px] rounded-pill px-2.5 py-1.5 max-w-[70%]">
-            <p className="text-[11px] font-medium text-white truncate">
-              {item.style_name}
-            </p>
-          </div>
-        </div>
+      {/* Creator — V3-D389: salon items show the studio name + a store mark (real local studio, taps to the salon);
+          TikTok items show the @handle. Both use the CardMeta recipe (text-s-ink-2 / font-normal). */}
+      {creator && (
+        <span className="mt-1.5 flex items-center gap-1 font-body text-[12px] font-normal text-s-ink-2">
+          {isSalon && <Store size={12} className="shrink-0" aria-hidden />}
+          <span className="truncate">{creator}</span>
+        </span>
       )}
-    </motion.div>
+
+      {/* V3-D393: backend-fed booking signals (rating / price / availability). Renders nothing until real data exists. */}
+      <CardSignals item={item} />
+    </div>
   );
 });

@@ -3065,6 +3065,7 @@
     "subtitle": "Your next look",
     "genderPill": "For whom?",
     "texturePill": "Texture",
+    "searchPlaceholder": "Search styles...",
     "tabs": {
       "all": "All",
       "hair": "Hair",
@@ -3084,6 +3085,8 @@
     },
     "texture": "Texture",
     "trending": "Trending",
+    "priceFrom": "from {amount} CHF",
+    "searchByPattern": "Search by pattern",
     "myLooks": "My Looks",
     "preferences": "Discovery Preferences",
     "notSet": "Not set — edit to personalize your feed",

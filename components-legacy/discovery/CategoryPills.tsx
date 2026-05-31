@@ -2,8 +2,12 @@
 
 import type { DiscoveryCategory } from "@/lib/types";
 import { useTranslations } from "next-intl";
+import { DISCOVERY_CATEGORIES } from "./CategoryTabBar";
 
-const CATEGORY_KEYS: (DiscoveryCategory | "all")[] = ["all", "hair", "nails", "makeup", "waxing"];
+// V3-D392: consume the single shared category list (CategoryTabBar) so the drawer can't drift out of sync — this is
+// where "makeup / waxing" had rotted after the tab bar moved to hair/nails/lashes/brows (user: "we don't have makeup
+// and waxing").
+const CATEGORY_KEYS = DISCOVERY_CATEGORIES.map((c) => c.key) as (DiscoveryCategory | "all")[];
 
 interface CategoryPillsProps {
   selected: DiscoveryCategory | "all";
@@ -20,10 +24,13 @@ export default function CategoryPills({ selected, onSelect }: CategoryPillsProps
           key={key}
           onClick={() => onSelect(key)}
           aria-pressed={selected === key}
+          /* V3-D392: sentence-case per §2.5 rule A7 (tab-label role — only Eyebrow/Tag may be uppercase), matching the
+             CategoryTabBar treatment so the same categories don't read differently in the drawer vs the feed. */
+          /* V3-D394: selected = accent (blue) — discovery selected-state sweep. */
           className={[
-            "px-4 py-2.5 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
+            "px-4 py-2.5 rounded-pill text-xs font-heading font-medium whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
             selected === key
-              ? "bg-s-ink text-white shadow-elevation-2"
+              ? "bg-s-ink text-white"
               : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]",
           ].join(" ")}
         >

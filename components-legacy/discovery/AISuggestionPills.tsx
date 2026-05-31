@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { TrendingUp } from "lucide-react";
 
 /**
  * AI Suggestion Pills – quick-tap trending style/service suggestions.
@@ -83,8 +84,11 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
   return (
     <div className="relative scroll-fade-right">
       <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1">
-        {/* V3-D346 (2026-05-29): eyebrow swept to plain ink-3 text — dropped Sparkles icon (A12), accent→ink-3 (A9), .14em→.08em (A8). */}
-        <span className="shrink-0 text-[9px] font-heading uppercase tracking-[.08em] text-s-ink-3">
+        {/* V3-D346: eyebrow swept to plain ink-3 text. V3-D381 (2026-05-30): de-eyebrowed — sentence-case 12px
+            (was uppercase+tracked 9px, the "weird font" treatment the user flagged). */}
+        <span className="flex shrink-0 items-center gap-1 text-[13px] font-semibold text-s-ink tracking-[-0.01em]">
+          {/* V3-D393: trending-up mark — a literal signal for "what's rising", not decoration. Stays ink (chrome). */}
+          <TrendingUp size={14} className="shrink-0" aria-hidden />
           {t("trending")}
         </span>
         {pills.map(({ label }) => (
@@ -95,10 +99,11 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
               setSelected(selected === label ? null : label);
               onSelect(selected === label ? "" : label);
             }}
+            /* V3-D394: selected = accent (blue), matching the discovery selected-state sweep. */
             className={[
-              "shrink-0 px-3 py-1.5 rounded-pill text-[11px] font-heading whitespace-nowrap transition-[background-color,color,border-color,box-shadow] duration-150",
+              "shrink-0 px-3 py-1.5 rounded-pill text-xs font-medium whitespace-nowrap transition-[background-color,color,border-color,box-shadow] duration-150",
               selected === label
-                ? "bg-s-ink text-white border border-s-ink shadow-elevation-2"
+                ? "bg-s-ink text-white border border-s-ink"
                 : "border border-s-ink/[0.08] text-s-ink/65 bg-white/70 hover:border-s-ink/40 hover:text-s-ink",
             ].join(" ")}
           >

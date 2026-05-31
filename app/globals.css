@@ -1,12 +1,8 @@
 /* Solen Design System — globals.css */
-/* V3-D317 (2026-05-27): Type swap Inter Tight + Hanken Grotesk → Geist Sans
-   single family + JetBrains Mono for codes. Geist (Vercel-issued) is the
-   closest free analog to Uber Move — geometric, modern, lighter default
-   weights (700 display / 400 body vs old 800/300). Per user pick after
-   reviewing /solen-type-uber.html mockup. JetBrains Mono replaces the
-   font-mono fallback for gift codes / voucher codes / receipt amounts.
-   Supersedes V3-D191 (Hanken 300 weight contrast) + V3-D190 (Inter Tight). */
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=JetBrains+Mono:wght@400..700&display=swap');
+/* Type system (2026-05-30): Inter Tight (display/headings) + Hanken Grotesk (body)
+   + JetBrains Mono (codes). REVERTED the V3-D317 Geist swap per user — "no Geist
+   anywhere". Do NOT reintroduce Geist. */
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Hanken+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400..700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -116,15 +112,15 @@
   }
 
   body {
-    /* V3-D317 (2026-05-27): Geist (single-family) — supersedes Hanken body. */
-    font-family: "Geist", system-ui, -apple-system, sans-serif;
+    /* 2026-05-30: Hanken Grotesk body — Geist (V3-D317) reverted per user. */
+    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
     background-color: var(--base);
     color: var(--color-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    /* V3-D317 (2026-05-27): Geist (single-family) — supersedes Inter Tight display. */
-    font-family: "Geist", system-ui, -apple-system, sans-serif;
+    /* 2026-05-30: Inter Tight display — Geist (V3-D317) reverted per user. */
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
     color: var(--color-heading);
     letter-spacing: -0.025em;
   }
@@ -152,17 +148,16 @@
 }
 
 @layer utilities {
-  /* V3-D317 (2026-05-27): Single-family swap. .font-heading / .font-body /
-     .font-display all collapse to Geist. Aliases retained so existing
-     callsites compile; semantics now identical. */
+  /* 2026-05-30: distinct families restored — .font-heading / .font-display →
+     Inter Tight, .font-body → Hanken Grotesk (Geist V3-D317 reverted per user). */
   .font-heading {
-    font-family: "Geist", system-ui, -apple-system, sans-serif;
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
   }
   .font-body {
-    font-family: "Geist", system-ui, -apple-system, sans-serif;
+    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
   }
   .font-display {
-    font-family: "Geist", system-ui, -apple-system, sans-serif;
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
   }
   /* V3-D317 + V3-D318: JetBrains Mono now backs font-mono-code (gift codes,
      voucher codes, receipt amounts). Tabular-nums kept for column alignment. */
@@ -171,7 +166,7 @@
     font-variant-numeric: tabular-nums;
   }
   .data-text {
-    font-family: "Geist", system-ui, -apple-system, sans-serif;
+    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
     font-variant-numeric: tabular-nums;
     font-weight: 500;
   }
@@ -278,8 +273,8 @@
     padding-left: 1rem;
     padding-right: 1rem;
     font-size: 1rem;       /* 16px — prevents iOS zoom-on-focus */
-    /* V3-D317: inputs use Geist — single-family with body (was Hanken leftover). */
-    font-family: "Geist", system-ui, -apple-system, sans-serif;
+    /* 2026-05-30: inputs use Hanken Grotesk (body) — Geist reverted. */
+    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
     color: var(--color-body);
     background: #ffffff;
     transition: border-color 200ms ease, box-shadow 200ms ease;
@@ -704,13 +699,13 @@ html {
   border: 1px solid rgba(26, 18, 9, 0.08) !important;
   border-radius: 20px !important;
   box-shadow: 0 8px 32px rgba(26,18,9,0.08), 0 24px 72px rgba(26,18,9,0.12) !important;
-  font-family: "Geist", system-ui, -apple-system, sans-serif !important;
+  font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif !important;
   padding: 24px !important;
   color: #1A1209 !important;
 }
 
 .solen-tour-popover .driver-popover-title {
-  font-family: "Geist", system-ui, -apple-system, sans-serif !important;
+  font-family: "Inter Tight", system-ui, -apple-system, sans-serif !important;
   font-size: 1.25rem !important;
   font-weight: 700 !important;
   margin-bottom: 8px !important;

@@ -122,7 +122,9 @@ export const generateRoadmapSchema = z.object({
 // ─── Discovery ──────────────────────────────────────────────────────────────
 
 export const discoveryFeedSchema = z.object({
-  category: z.enum(["all", "hair", "beard", "nails", "makeup", "waxing"]).default("all"),
+  // V3-D391: added lashes/brows (Wimpern/Augenbrauen) so those category tabs stop 400-ing; beard/makeup/waxing kept
+  // for back-compat (no tab, harmless).
+  category: z.enum(["all", "hair", "beard", "nails", "lashes", "brows", "makeup", "waxing"]).default("all"),
   gender: z.enum(["all", "female", "male", "unisex"]).default("all"),
   texture: z.string().optional(),
   style: z.string().optional(),

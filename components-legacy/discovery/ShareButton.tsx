@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Share2, Check, Link2, MessageCircle, Download } from "lucide-react";
+import { Share2, MoreHorizontal, Check, Link2, MessageCircle, Download } from "lucide-react";
 import type { DiscoveryItem } from "@/lib/types";
 
 interface ShareButtonProps {
   item: DiscoveryItem;
+  /** V3-D380: "more" renders a Pinterest-style ⋯ trigger (used below feed cards); default keeps the share icon. */
+  trigger?: "share" | "more";
 }
 
 const SL: Record<string, { copied: string; copyLink: string; download: string }> = {
@@ -15,7 +17,7 @@ const SL: Record<string, { copied: string; copyLink: string; download: string }>
   it: { copied: "Copiato!", copyLink: "Copia link", download: "Scarica" },
 };
 
-export default function ShareButton({ item }: ShareButtonProps) {
+export default function ShareButton({ item, trigger = "share" }: ShareButtonProps) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -66,11 +68,11 @@ export default function ShareButton({ item }: ShareButtonProps) {
   return (
     <div className="relative">
       <button
-        onClick={() => setOpen(!open)}
-        className="p-2 rounded-full hover:bg-s-ink/5 text-s-ink/40 hover:text-s-ink transition-colors"
-        aria-label="Share"
+        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
+        className="p-1.5 rounded-full hover:bg-s-ink/5 text-s-ink-2 hover:text-s-ink transition-colors"
+        aria-label={trigger === "more" ? "Mehr" : "Share"}
       >
-        <Share2 size={18} />
+        {trigger === "more" ? <MoreHorizontal size={18} /> : <Share2 size={18} />}
       </button>
 
       {open && (

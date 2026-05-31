@@ -3029,6 +3029,7 @@
     "subtitle": "Il tuo prossimo look",
     "genderPill": "Per chi?",
     "texturePill": "Texture",
+    "searchPlaceholder": "Cerca stili...",
     "tabs": {
       "all": "Tutto",
       "hair": "Capelli",
@@ -3048,6 +3049,8 @@
     },
     "texture": "Texture",
     "trending": "In tendenza",
+    "priceFrom": "da {amount} CHF",
+    "searchByPattern": "Cerca per motivo",
     "myLooks": "I miei look",
     "preferences": "Preferenze Discovery",
     "notSet": "Non impostato — modifica per personalizzare il feed",

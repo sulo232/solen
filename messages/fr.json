@@ -3048,6 +3048,7 @@
     "subtitle": "Ton prochain look",
     "genderPill": "Pour qui ?",
     "texturePill": "Texture",
+    "searchPlaceholder": "Rechercher des styles...",
     "tabs": {
       "all": "Tout",
       "hair": "Cheveux",
@@ -3067,6 +3068,8 @@
     },
     "texture": "Texture",
     "trending": "Tendance",
+    "priceFrom": "dès {amount} CHF",
+    "searchByPattern": "Rechercher par motif",
     "myLooks": "Mes looks",
     "preferences": "Préférences Discovery",
     "notSet": "Non défini — modifier pour personnaliser votre fil",
