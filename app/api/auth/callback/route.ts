@@ -38,9 +38,30 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { data: exch, error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return response; // Redirect WITH cookies set
+      // V3-D348: route freshly-authenticated customers into the personalization
+      // flow. Salon onboarding redirects are left alone. We only rewrite the
+      // Location header — `response` already carries the auth cookies that
+      // exchangeCodeForSession set, so the session survives the redirect.
+      const isSalonOnboarding = redirect.includes("/onboarding/salon");
+      const userId = exch?.user?.id ?? exch?.session?.user?.id ?? null;
+      if (!isSalonOnboarding && userId) {
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("onboarding_completed")
+          .eq("id", userId)
+          .maybeSingle();
+        if (!prof?.onboarding_completed) {
+          const locale = redirect.match(/^\/(de|en|fr|it)(?:\/|$)/)?.[1] ?? "de";
+          const onbUrl = new URL(`/${locale}/onboarding`, origin);
+          if (redirect !== `/${locale}` && redirect !== "/de") {
+            onbUrl.searchParams.set("redirect", redirect);
+          }
+          response.headers.set("location", onbUrl.toString());
+        }
+      }
+      return response; // Redirect WITH cookies set (Location may point to /onboarding)
     }
   }
 
