@@ -4,32 +4,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { z } from "zod";
-import {
-  Check,
-  User,
-  Scissors,
-  Baby,
-  Users,
-  UserCircle,
-  HelpCircle,
-  Minus,
-  Wind,
-  CloudRain,
-  Waves,
-  Sparkles,
-  Building2,
-  ChevronRight,
-  ArrowLeft,
-  PartyPopper,
-  Mail,
-} from "lucide-react";
+import { User, Building2, ChevronRight, Mail } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useToast } from "@/components-legacy/ui/Toast";
 import { slideSwitch } from "@/lib/animations";
-import type { HairType, AgeGroup, Gender, SalonCategory } from "@/lib/types";
 
 // ─────────────────────────────────────────
 // Step 0 — Customer vs Salon choice (NEW)
@@ -221,348 +200,10 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
 }
 
 // ─────────────────────────────────────────
-// Step 1 — Name + Avatar + Bio
-// ─────────────────────────────────────────
-function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string; avatar_url: string }) => void }) {
-  const tc = useTranslations("common");
-  const [name, setName] = useState("");
-  const [bio, setBio] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const [saving, setSaving] = useState(false);
-  const toast = useToast();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      const res = await fetch("/api/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ display_name: name, bio, avatar_url: avatarUrl || null }),
-      });
-      if (!res.ok) {
-        toast(tc("profileSaveError"), "error");
-        setSaving(false);
-        return;
-      }
-    } catch {
-      toast(tc("networkError"), "error");
-      setSaving(false);
-      return;
-    }
-    setSaving(false);
-    onNext({ display_name: name, bio, avatar_url: avatarUrl });
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="font-heading text-xl text-s-ink">{tc("yourName")}</h2>
-
-      <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center text-s-ink/20">
-          {avatarUrl ? (
-            <Image src={avatarUrl} alt="" width={64} height={64} className="object-cover" />
-          ) : (
-            <User size={24} className="text-s-ink/50" />
-          )}
-        </div>
-        <input
-          type="url"
-          placeholder="Avatar-URL (optional)"
-          value={avatarUrl}
-          onChange={(e) => setAvatarUrl(e.target.value)}
-          className="flex-1 px-3 py-2 rounded-input border border-s-ink/10 text-sm font-body text-s-ink bg-white outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] duration-150"
-        />
-      </div>
-
-      <input
-        type="text"
-        placeholder="Dein Name *"
-        required
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="px-4 py-2.5 rounded-input border border-s-ink/10 text-sm font-body text-s-ink bg-white outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] duration-150"
-      />
-      <textarea
-        placeholder="Kurze Bio (optional)"
-        value={bio}
-        onChange={(e) => setBio(e.target.value)}
-        rows={3}
-        className="px-4 py-2.5 rounded-input border border-s-ink/10 text-sm font-body text-s-ink bg-white outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/10 transition-[border-color,box-shadow] duration-150 resize-none"
-      />
-
-      <button
-        type="submit"
-        disabled={!name || saving}
-        className="w-full py-3 rounded-pill bg-s-ink text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
-      >
-        {saving && <Spinner size="sm" invert />}
-        {tc("next")}
-      </button>
-    </form>
-  );
-}
-
-// ─────────────────────────────────────────
-// Step 2 — Age + Gender + Hair type
-// ─────────────────────────────────────────
-
-const AGE_OPTIONS: { value: AgeGroup; label: string; icon: React.ReactNode }[] = [
-  // Removed from step 2 since we collect exact DOB in signup step
-];
-
-const GENDER_OPTIONS: { value: Gender; label: string; icon: React.ReactNode }[] = [
-  { value: "female", label: "Weiblich", icon: <Sparkles size={16} /> },
-  { value: "male", label: "Männlich", icon: <User size={16} /> },
-  { value: "non_binary", label: "Non-binary", icon: <Minus size={16} /> },
-  { value: "prefer_not_to_say", label: "Keine Angabe", icon: <HelpCircle size={16} /> },
-];
-
-const HAIR_OPTIONS: { value: HairType; label: string; icon: React.ReactNode }[] = [
-  { value: "straight", label: "Glatt", icon: <Wind size={16} /> },
-  { value: "wavy", label: "Wellig", icon: <CloudRain size={16} /> },
-  { value: "curly", label: "Lockig", icon: <Waves size={16} /> },
-  { value: "coily", label: "Kraus", icon: <Sparkles size={16} /> },
-  { value: "unknown", label: "Weiss nicht", icon: <HelpCircle size={16} /> },
-];
-
-function SelectPill<T extends string>({
-  options,
-  value,
-  onChange,
-}: {
-  options: { value: T; label: string; icon: React.ReactNode }[];
-  value: T | null;
-  onChange: (v: T) => void;
-}) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      {options.map((o) => (
-        <button
-          key={o.value}
-          type="button"
-          onClick={() => onChange(o.value)}
-          className={[
-            "flex items-center gap-2 px-3.5 py-2.5 rounded-pill border text-xs font-heading transition-[background-color,color,border-color] duration-150",
-            value === o.value
-              ? "border-s-accent bg-s-ink/[0.08] text-s-accent font-bold"
-              : "border-s-ink/[0.08] text-s-ink/60 hover:border-s-accent/40 hover:text-s-accent",
-          ].join(" ")}
-        >
-          {o.icon}
-          {o.label}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function Step2({ onNext }: { onNext: () => void }) {
-  const tc = useTranslations("common");
-  const [gender, setGender] = useState<Gender | null>(null);
-  const [hair, setHair] = useState<HairType | null>(null);
-  const [saving, setSaving] = useState(false);
-  const toast = useToast();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      const res = await fetch("/api/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ gender, hair_type: hair }),
-      });
-      if (!res.ok) {
-        toast(tc("profileSaveError"), "error");
-        setSaving(false);
-        return;
-      }
-    } catch {
-      toast(tc("networkError"), "error");
-      setSaving(false);
-      return;
-    }
-    setSaving(false);
-    onNext();
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <h2 className="font-heading text-xl text-s-ink">{tc("details")}</h2>
-
-      <div>
-        <p className="text-sm font-body font-medium text-s-ink/70 mb-2">{tc("gender")}</p>
-        <SelectPill options={GENDER_OPTIONS} value={gender} onChange={setGender} />
-      </div>
-      <div>
-        <p className="text-sm font-body font-medium text-s-ink/70 mb-2">{tc("hair")}</p>
-        <SelectPill options={HAIR_OPTIONS} value={hair} onChange={setHair} />
-      </div>
-
-      <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={onNext}
-          className="flex-1 py-3 rounded-pill border border-s-ink/10 text-sm font-body text-s-ink/60 hover:border-s-accent transition-[background-color,color,border-color] duration-150"
-        >
-          {tc("skip")}
-        </button>
-        <button
-          type="submit"
-          disabled={saving}
-          className="flex-1 py-3 rounded-pill bg-s-ink text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
-        >
-          {saving && <Spinner size="sm" invert />}
-          {tc("next")}
-        </button>
-      </div>
-    </form>
-  );
-}
-
-// ─────────────────────────────────────────
-// Step 3 — Category preferences
-// ─────────────────────────────────────────
-
-const CATEGORY_OPTIONS: { value: SalonCategory; label: string; icon: React.ReactNode }[] = [
-  { value: "coiffeur", label: "Coiffeur", icon: <Scissors size={20} /> },
-  { value: "barbershop", label: "Barbershop", icon: <Scissors size={20} /> },
-  { value: "nails", label: "Nägel", icon: <Sparkles size={20} /> },
-  { value: "spa", label: "Spa", icon: <Waves size={20} /> },
-  { value: "makeup", label: "Makeup", icon: <Sparkles size={20} /> },
-  { value: "waxing", label: "Waxing", icon: <Wind size={20} /> },
-];
-
-function Step3({ onComplete }: { onComplete: () => void }) {
-  const tc = useTranslations("common");
-  const [selected, setSelected] = useState<SalonCategory[]>([]);
-  const [saving, setSaving] = useState(false);
-  const toast = useToast();
-
-  const toggle = (cat: SalonCategory) =>
-    setSelected((prev) =>
-      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
-    );
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      const res = await fetch("/api/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ favorite_categories: selected, onboarding_completed: true }),
-      });
-      if (!res.ok) {
-        toast(tc("profileSaveError"), "error");
-        setSaving(false);
-        return;
-      }
-    } catch {
-      toast(tc("networkError"), "error");
-      setSaving(false);
-      return;
-    }
-    setSaving(false);
-    onComplete();
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <div>
-        <h2 className="font-heading text-xl text-s-ink">Was interessiert dich?</h2>
-        <p className="text-sm font-body text-s-ink/50 mt-1">Wähle deine Lieblingskategorien</p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        {CATEGORY_OPTIONS.map((o) => {
-          const active = selected.includes(o.value);
-          return (
-            <button
-              key={o.value}
-              type="button"
-              onClick={() => toggle(o.value)}
-              className={`relative flex flex-col items-center justify-center gap-2.5 p-4 rounded-input border transition-[transform,filter,border-color,background-color] duration-150 ${
-                active
-                  ? "border-s-accent bg-s-ink/[0.08]"
-                  : "border-s-ink/[0.07] hover:border-s-accent/40"
-              }`}>
-              {active && (
-                <span className="absolute top-2 right-2 w-4 h-4 rounded-full bg-s-ink flex items-center justify-center">
-                  <Check className="w-2.5 h-2.5 text-white" />
-                </span>
-              )}
-              <span className={active ? "text-s-accent" : "text-s-ink/50"}>{o.icon}</span>
-              <span className="text-[11px] font-heading text-s-ink">{o.label}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={onComplete}
-          className="flex-1 py-3 rounded-pill border border-s-ink/10 text-sm font-body text-s-ink/60 hover:border-s-accent transition-[background-color,color,border-color] duration-150"
-        >
-          {tc("skip")}
-        </button>
-        <button
-          type="submit"
-          disabled={saving}
-          className="flex-1 py-3 rounded-pill bg-s-ink text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
-        >
-          {saving && <Spinner size="sm" invert />}
-          {tc("done")}
-        </button>
-      </div>
-    </form>
-  );
-}
-
-// ─────────────────────────────────────────
-// Completion screen — animated, no emoji
-// ─────────────────────────────────────────
-function DoneScreen() {
-  return (
-    <div className="flex flex-col items-center gap-4 py-8 text-center">
-      {/* Icon — fade in only, NO scale */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
-        className="w-16 h-16 rounded-[20px] flex items-center justify-center"
-        style={{ background: "rgba(22,163,74,.12)" }}>
-        <PartyPopper size={28} className="text-s-success" />
-      </motion.div>
-
-      <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: 0.15 }}>
-        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-success mb-2">
-          Konto erstellt
-        </p>
-        <p className="font-heading text-xl text-s-ink">Willkommen bei solen.ch!</p>
-        <p className="font-body italic text-s-ink/45 text-sm mt-1">Du wirst weitergeleitet…</p>
-      </motion.div>
-
-      {/* Loading dots — opacity animation only */}
-      <div className="flex gap-1.5 mt-1">
-        {[0, 1, 2].map((i) => (
-          <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-s-ink"
-            animate={{ opacity: [0.3, 1, 0.3] }}
-            transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.25 }} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────
 // Main wizard
 // ─────────────────────────────────────────
 
-type WizardStep = -1 | 0 | 1 | 2 | 3 | "done";
+type WizardStep = -1 | 0;
 
 export default function RegisterPage() {
   const locale = useLocale();
@@ -586,53 +227,20 @@ export default function RegisterPage() {
     setStep(next);
   };
 
-  const handleComplete = () => {
-    goTo("done");
-    setTimeout(() => router.push(`/${locale}`), 2200);
-  };
-
   const handleSalonChoice = () => {
     setSalonIntent(true);
     goTo(0); // Show the registration form first — account must exist before onboarding
   };
 
-  const direction =
-    step === "done" || (step !== -1 && prevStep !== "done" && Number(step) > Number(prevStep))
-      ? "right"
-      : "left";
+  const direction = prevStep === -1 && step === 0 ? "right" : "left";
   const variants = slideSwitch(direction);
-
-  const totalSteps = 3;
-  const currentStepNum = step === -1 ? 0 : step === "done" ? totalSteps : Number(step);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center px-4 pt-8 pb-12">
       <div className="w-full max-w-sm">
-        {/* Progress bar — linear track */}
-        {step !== -1 && step !== "done" && (
-          <div className="mb-5 px-1">
-            <div className="flex gap-1">
-              {[1, 2, 3].map((s) => (
-                <div key={s} className={`flex-1 h-1 rounded-full transition-[width] duration-[350ms] ${(s as number) <= (step as number) ? "bg-s-ink" : "bg-s-ink/[0.08]"}`} />
-              ))}
-            </div>
-            <p className="text-right text-[12px] text-s-ink-2 mt-1.5">
-              Schritt {currentStepNum} von {totalSteps}
-            </p>
-          </div>
-        )}
-
         {/* Auth card — clean B&W surface (design-system) */}
         <div className="rounded-card border border-s-border bg-white overflow-hidden">
           <div className="p-7">
-            {(step === 2 || step === 3) && (
-              <button
-                onClick={() => goTo((step - 1) as WizardStep)}
-                className="flex items-center gap-1.5 text-[13px] text-s-ink-2 hover:text-s-ink transition-colors mb-4">
-                <ArrowLeft size={14} /> Zurück
-              </button>
-            )}
-
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={String(step)}
@@ -652,16 +260,12 @@ export default function RegisterPage() {
                     router.push(`/${locale}`);
                   }
                 }} />}
-                {step === 1 && <Step1 onNext={() => goTo(2)} />}
-                {step === 2 && <Step2 onNext={() => goTo(3)} />}
-                {step === 3 && <Step3 onComplete={handleComplete} />}
-                {step === "done" && <DoneScreen />}
               </motion.div>
             </AnimatePresence>
           </div>
         </div>
 
-        {step !== "done" && step === -1 && (
+        {step === -1 && (
           <p className="text-center mt-8 text-[13px] text-s-ink-2">
             Bereits registriert?{" "}
             <Link href={`/${locale}/auth/login`}
