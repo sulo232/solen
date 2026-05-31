@@ -392,37 +392,20 @@ export default function Header({ locale }: { locale: string }) {
             position doesn't shift) while making the wordmark invisible
             and untappable while menu is open. */}
         {isDiscover ? (
-          /* V3-D410 (user): Discover header — page title where the wordmark was, with a
-             "Solen › Entdecken" breadcrumb underneath. Solen still links home; the page's
-             own h1 is removed so the two no longer stack. */
-          <div
+          /* V3-D411 (user): no breadcrumb on this top-level browse tab — the page title sits in the logo slot
+             and taps → home. Breadcrumbs are reserved for deep pages (SOURCE.md §20 navigation pattern). */
+          <Link
+            href={`/${locale}`}
+            aria-label={`${tDiscover("title")} — zur Solen Startseite`}
             className={cn(
-              "flex shrink-0 flex-col gap-1 transition-opacity duration-200 ease-glide",
+              "font-display shrink-0 text-[25px] font-semibold leading-none tracking-normal md:text-[26px]",
+              "transition-opacity duration-200 ease-glide focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
+              isDark ? "text-white" : "text-s-ink",
             )}
           >
-            <span
-              className={cn(
-                "font-display text-[25px] font-semibold leading-none tracking-normal md:text-[26px]",
-                isDark ? "text-white" : "text-s-ink",
-              )}
-            >
-              {tDiscover("title")}
-            </span>
-            <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 font-body text-[12.5px] leading-none">
-              <Link
-                href={`/${locale}`}
-                className={cn(
-                  "transition-colors duration-150",
-                  isDark ? "text-white/70 hover:text-white" : "text-s-ink-2 hover:text-s-ink",
-                )}
-              >
-                Solen
-              </Link>
-              <span className={isDark ? "text-white/40" : "text-s-ink/30"} aria-hidden>›</span>
-              <span className={isDark ? "text-white/55" : "text-s-ink/45"} aria-current="page">{tDiscover("title")}</span>
-            </nav>
-          </div>
+            {tDiscover("title")}
+          </Link>
         ) : (
           <Link
             href={`/${locale}`}
