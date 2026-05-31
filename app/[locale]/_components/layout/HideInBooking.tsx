@@ -15,10 +15,10 @@ import type { ReactNode } from "react";
  */
 export default function HideInBooking({
   children,
-  showOnLogin = false,
+  showOnAuth = false,
 }: {
   children: ReactNode;
-  showOnLogin?: boolean;
+  showOnAuth?: boolean;
 }) {
   const pathname = usePathname();
   if (!pathname) return <>{children}</>;
@@ -29,12 +29,12 @@ export default function HideInBooking({
     return null;
   }
 
-  // Auth pages are standalone (Uber pattern). EXCEPTION: the login page opts the
-  // global Header back in via showOnLogin (Solen wordmark + hamburger) so it
-  // carries the standard nav instead of a bespoke wordmark. Register/reset stay
-  // standalone with their own lockups.
+  // Auth pages are standalone (Uber pattern). EXCEPTION: login + register opt the
+  // global Header back in via showOnAuth (Solen wordmark + hamburger) so they
+  // carry the standard nav instead of a bespoke wordmark. Reset-password stays
+  // standalone with its own lockup.
   if (/\/auth(\/|$)/.test(pathname)) {
-    if (showOnLogin && /\/auth\/login(\/|$)/.test(pathname)) return <>{children}</>;
+    if (showOnAuth && /\/auth\/(login|register)(\/|$)/.test(pathname)) return <>{children}</>;
     return null;
   }
 

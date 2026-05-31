@@ -99,9 +99,9 @@ export default async function LocaleLayout({
           <HideInBooking>
             <CityTopBar locale={locale} />
           </HideInBooking>
-          {/* Header carries showOnLogin so the login page gets the global
+          {/* Header carries showOnAuth so login + register get the global
               Solen wordmark + hamburger (V3-D348); city bar stays hidden there. */}
-          <HideInBooking showOnLogin>
+          <HideInBooking showOnAuth>
             <Header locale={locale} />
           </HideInBooking>
           <PageTransitionWrapper>
