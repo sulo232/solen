@@ -34,9 +34,9 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
           onClick={() => onSelect(null)}
           aria-pressed={!selected}
           className={cn(
-            "px-3.5 py-2 rounded-pill text-[10px] font-heading uppercase tracking-[.06em] whitespace-nowrap border transition-colors duration-150",
+            "px-3.5 py-2 rounded-pill text-[11px] font-heading font-medium whitespace-nowrap border transition-colors duration-150",
             !selected
-              ? "border-s-ink bg-s-ink/[0.08] text-s-ink"
+              ? "border-s-ink bg-s-ink text-white"
               : "border-s-ink/[0.07] text-s-ink/50 hover:border-s-ink/40"
           )}
         >
@@ -48,9 +48,9 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
             onClick={() => onSelect(s.name)}
             aria-pressed={selected === s.name}
             className={cn(
-              "px-3.5 py-2 rounded-pill text-[10px] font-heading uppercase tracking-[.06em] whitespace-nowrap border transition-colors duration-150",
+              "px-3.5 py-2 rounded-pill text-[11px] font-heading font-medium whitespace-nowrap border transition-colors duration-150",
               selected === s.name
-                ? "border-s-ink bg-s-ink/[0.08] text-s-ink"
+                ? "border-s-ink bg-s-ink text-white"
                 : "border-s-ink/[0.07] text-s-ink/50 hover:border-s-ink/40"
             )}
           >

@@ -16,6 +16,7 @@ import { SalonReviews } from "./SalonReviews";
 import { SalonPortfolio } from "./SalonPortfolio";
 import { SalonBuy } from "./SalonBuy";
 import { SalonAbout } from "./SalonAbout";
+import { SalonLocation } from "./SalonLocation";
 import { SalonOpeningTimes } from "./SalonOpeningTimes";
 import { SalonAdditionalInfo } from "./SalonAdditionalInfo";
 import { SalonLoyalty } from "./SalonLoyalty";
@@ -140,7 +141,9 @@ export function SalonDetailV3() {
   if (salon.services.length > 0) availableSections.add("services");
   if (salon.staff.length > 0) availableSections.add("team");
   if (salon.review_count > 0 || (salon.average_rating ?? 0) > 0) availableSections.add("reviews");
-  if (salon.about_text_de || salon.description_de || salon.about_text_en || salon.description_en || salon.address) {
+  // V3-D389: "Über uns" tab is now description-only (location moved to its own
+  // section), so the tab tracks description text — not address.
+  if (salon.about_text_de || salon.description_de || salon.about_text_en || salon.description_en) {
     availableSections.add("about");
   }
 
@@ -257,11 +260,14 @@ export function SalonDetailV3() {
 
             <SalonAbout salon={salon} locale={locale} />
 
-            {/* Opening Times + Additional Info side-by-side on desktop */}
-            <div className="grid gap-8 md:grid-cols-2 md:gap-10">
-              <SalonOpeningTimes hours={salon.opening_hours} />
-              <SalonAdditionalInfo salon={salon} />
-            </div>
+            {/* V3-D389 (Fresha 1:1 capture): location, opening times + amenities are
+                each their OWN full-width section now — no more lumped "Über uns"
+                block + no side-by-side hours/amenities grid. */}
+            <SalonLocation salon={salon} />
+
+            <SalonOpeningTimes hours={salon.opening_hours} />
+
+            <SalonAdditionalInfo salon={salon} />
 
             {/* V2-D53.3 mobile-parity fix: contact rows visible on mobile here.
                 Desktop has the same info in SalonSidebar. */}

@@ -422,7 +422,7 @@ export interface ApiSuccess<T = void> {
 // Discovery Types
 // ---------------------------------------------------------------------------
 
-export type DiscoveryCategory = "hair" | "beard" | "nails" | "makeup" | "waxing";
+export type DiscoveryCategory = "hair" | "beard" | "nails" | "lashes" | "brows" | "makeup" | "waxing";
 export type DiscoveryContentType = "curated" | "tiktok" | "salon" | "user";
 export type DiscoveryMediaType = "photo" | "tiktok" | "video";
 export type DiscoveryStatus = "staging" | "published" | "flagged" | "archived";
@@ -487,6 +487,14 @@ export interface DiscoveryItem {
   sort_order: number;
   owner_user_id: string | null;
   owner_salon_id: string | null;
+  /** V3-D389: populated by the feed (salon join) for source="salon" items so the card can tap → /salon/[slug]. */
+  salon_slug?: string | null;
+  /** V3-D393: backend-fed booking signals. The card renders the coloured meta row (★ rating / accent price / amber
+      availability) ONLY when these are present — never faked. `price_min`/`price_max` already exist above. They wait
+      for the booking/availability backend; until then they're undefined and the card stays clean B&W. */
+  rating?: number | null;
+  /** Pre-localised, backend-provided urgency string, e.g. "Frei in 20 Min" / "Heute buchbar". Rendered as-is. */
+  availability_label?: string | null;
   created_at: string;
   updated_at: string;
 }

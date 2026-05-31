@@ -1218,6 +1218,15 @@ The running list of "we already decided this, don't re-litigate." If you find yo
 | Photography under B&W lock: brand-chrome-B&W + content-color two-tier | V3-D183 (this doc) | This doc §9 |
 | Atmosphere wash retired | V2-D68 | (and never reintroduced) |
 | AI-generated icons retired (lucide canonical + 3D category PNGs only) | V3-D183 (this doc) | This doc §7 |
+| Breadcrumbs reserved for deep pages (≥2 levels); top-level browse uses title-in-header that taps → home, NOT a breadcrumb | V3-D411 (2026-05-31) | §20 note below + Header.tsx |
+
+### Navigation pattern — breadcrumbs (V3-D411, 2026-05-31)
+
+**Breadcrumbs earn their place by DEPTH, not by default.** A breadcrumb's only job is to show position in a hierarchy and let you climb *up* it — value that scales with depth, against a cost of visual clutter + tiny tap targets on mobile.
+
+- **Top-level browse destinations** (Discover/Entdecken; the category landings — reached from nav like a tab, ~1 level deep): **no breadcrumb.** The global header shows the **page title in the logo slot**, and the title taps → home. A 1-level "Home › X" crumb is a dressed-up home link = noise. (This is what the Discover header does — see Header.tsx `isDiscover`.)
+- **Deep pages (≥2 levels)** — detail pages (`/discover/[id]`, salon PDP): a **back affordance / breadcrumb is fine** — climbing up genuinely helps, and breadcrumb structured data earns SEO there.
+- **Rationale (first-principles, not imitation):** Solen is an app-like consumer product (Pinterest / Uber / Airbnb register) → bottom-tab + back-button + clear-title navigation, *not* the e-commerce/docs breadcrumb tree. Confirmed twice: V3-D384 removed the global breadcrumb on /discover; V3-D410/411 made the title the header and dropped the crumb.
 
 ---
 

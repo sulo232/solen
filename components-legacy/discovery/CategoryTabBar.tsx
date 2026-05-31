@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 
 export interface CategoryTab {
@@ -8,21 +8,25 @@ export interface CategoryTab {
   labelKey: string;
 }
 
+// V3-D398 (council): category tabs are TEXT-ONLY. The per-category icons (nails=sparkles, brows=none) didn't make
+// sense — abstract glyphs add nothing on the tabs. Icons belong on the texture-pattern swatches, not here.
 export const DISCOVERY_CATEGORIES: CategoryTab[] = [
   { key: "all",     labelKey: "all" },
   { key: "hair",    labelKey: "hair" },
   { key: "nails",   labelKey: "nails" },
   { key: "lashes",  labelKey: "lashes" },
   { key: "brows",   labelKey: "brows" },
-  { key: "makeup",  labelKey: "makeup" },
+  // V3-D391: Makeup tab dropped (user: "we don't have makeup and waxing"). Discovery categories = hair/nails/lashes/brows.
 ];
 
 interface CategoryTabBarProps {
   activeCategory: string;
   onChange: (key: string) => void;
+  /** V3-D398: rendered as the LAST item inside the scroll row, so the filter button sits after the last pill. */
+  trailing?: ReactNode;
 }
 
-export default function CategoryTabBar({ activeCategory, onChange }: CategoryTabBarProps) {
+export default function CategoryTabBar({ activeCategory, onChange, trailing }: CategoryTabBarProps) {
   const t = useTranslations("discover.tabs") as any;
   const td = useTranslations("discover") as any;
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -30,7 +34,7 @@ export default function CategoryTabBar({ activeCategory, onChange }: CategoryTab
   return (
     <div
       ref={scrollRef}
-      className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none overscroll-x-contain"
+      className="flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none overscroll-x-contain"
       role="tablist"
       aria-label={td("tablist")}
     >
@@ -42,11 +46,12 @@ export default function CategoryTabBar({ activeCategory, onChange }: CategoryTab
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(tab.key)}
-            /* V3-D346 (2026-05-29): dropped inline green-tint shadow (retired brand) — canonical shadow-elevation-2 from className now applies; fixed malformed hover class. */
+            /* V3-D398 (council): text-only tab; active = SOLID accent + white (was the accent-pale tint, which the user
+               read as washed-out — "colours, not a pale shape"). Category icons removed (nails/brows made no sense). */
             className={[
-              "flex-shrink-0 px-4 py-3 rounded-pill text-xs font-heading uppercase tracking-[.06em] whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
+              "flex-shrink-0 px-4 py-3 rounded-pill text-xs font-heading font-medium whitespace-nowrap transition-[background-color,color] duration-150",
               isActive
-                ? "bg-s-ink text-white shadow-elevation-2"
+                ? "bg-s-ink text-white"
                 : "bg-s-bg-surface text-s-ink/70 border border-s-ink/10 hover:bg-s-ink/[0.08]",
             ].join(" ")}
           >
@@ -54,6 +59,8 @@ export default function CategoryTabBar({ activeCategory, onChange }: CategoryTab
           </button>
         );
       })}
+      {/* V3-D398: filter button rides at the END of the scroll row (after the last pill), not hardcoded to the right. */}
+      {trailing}
     </div>
   );
 }

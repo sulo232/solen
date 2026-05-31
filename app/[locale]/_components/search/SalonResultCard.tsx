@@ -49,6 +49,17 @@ export interface SalonResultCardProps {
   /** V3-D357: earliest available slot label ("heute 15:30") - the booking hook +
    *  the content that stops the card reading empty. Computed in SearchTemplate. */
   nextSlot?: string | null;
+  /** V3-D376 (2026-05-30): top services + their bookable slots, rendered as the
+   *  card's "featured service + time pills + Alle Services" block (user pick "#3").
+   *  Supersedes the V3-D371 no-service-rows decision. From ?with_slots=1. */
+  services?: {
+    id: string;
+    name_de?: string | null;
+    name_en?: string | null;
+    price?: number | null;
+    duration_minutes?: number | null;
+    slots?: string[] | null;
+  }[] | null;
   /** "grid" = square 2-col card (default). "list" = Fresha-style row (photo-left)
    *  for the map-OPEN split. "card" = full-width landscape gallery card (photo on
    *  TOP, text below) - Fresha's real mobile-search shape, photo-led, for map-CLOSED
@@ -75,11 +86,40 @@ function formatDistance(m?: number | null): string | null {
   return m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1)} km`;
 }
 
+// V3-D376 (2026-05-30): "Std." German hours unit for the featured-service row.
+function formatDuration(mins?: number | null): string | null {
+  if (!mins || mins <= 0) return null;
+  if (mins < 60) return `${mins} Min.`;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  const hPart = h === 1 ? "1 Std." : `${h} Std.`;
+  return m === 0 ? hPart : `${hPart} ${m} Min.`;
+}
+
+// ISO slot timestamp → "14:30" in the locale's CH formatting.
+function formatSlotTime(iso: string, locale: string): string {
+  try {
+    return new Date(iso).toLocaleTimeString(
+      locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH",
+      { hour: "2-digit", minute: "2-digit" },
+    );
+  } catch {
+    return "";
+  }
+}
+
+const ALL_SVC_LABEL: Record<string, string> = {
+  de: "Alle Services ansehen",
+  en: "View all services",
+  fr: "Voir tous les services",
+  it: "Vedi tutti i servizi",
+};
+
 export function SalonResultCard(props: SalonResultCardProps) {
   const {
     slug, name, locale, rating, reviewCount, photoUrl, category,
     city, distanceMeters, priceFromCHF, isSaved, salonId,
-    nextSlot, variant = "grid",
+    nextSlot, services, variant = "grid",
   } = props;
 
   const href = `/${locale}/salon/${slug}`;
@@ -97,6 +137,18 @@ export function SalonResultCard(props: SalonResultCardProps) {
     rating != null ? rating.toFixed(1) + (reviewCount && reviewCount > 0 ? ` (${reviewCount})` : "") : null;
   // V3-D353: monogram fallback initial (matches the homepage SalonCard when no photo).
   const initial = (name ?? "").trim().charAt(0).toUpperCase() || "?";
+
+  // V3-D376: featured service for the card booking block — prefer one with open
+  // slots, else the first. Its slots (ISO) format to HH:MM; each pill links into
+  // booking with that service preselected. "Alle Services" → the PDP service list.
+  const featured = services?.find((s) => (s.slots?.length ?? 0) > 0) ?? services?.[0] ?? null;
+  const featuredName = featured
+    ? (locale === "en" && featured.name_en ? featured.name_en : featured.name_de) ?? null
+    : null;
+  const featuredDur = featured ? formatDuration(featured.duration_minutes) : null;
+  const featuredSlots = (featured?.slots ?? []).slice(0, 3);
+  const hasMoreSlots = (featured?.slots?.length ?? 0) > 3;
+  const allServicesLabel = ALL_SVC_LABEL[locale] ?? ALL_SVC_LABEL.de;
 
   // Shared photo fill (next/Image or monogram) - reused by BOTH variants so the
   // photo treatment stays identical across the square card and the list row.
@@ -195,7 +247,7 @@ export function SalonResultCard(props: SalonResultCardProps) {
           {/* V3-D356 polish (per Gemini): looser rhythm below the photo + a bigger
               name anchor so the hierarchy reads (was cramped/uniform). */}
           <div className="mt-3 flex items-baseline justify-between gap-2">
-            <CardName as="h3" className="min-w-0 truncate text-[16px] leading-[1.2] tracking-[-0.015em]">
+            <CardName as="h3" className="min-w-0 truncate text-[18px] leading-[1.15] tracking-[-0.015em]">
               {name}
             </CardName>
             {rating != null && (
@@ -210,24 +262,8 @@ export function SalonResultCard(props: SalonResultCardProps) {
               {metaBits}
             </CardMeta>
           )}
-          {/* V3-D374: booking row — "ab X CHF" + next-slot pill on ONE line (was
-              two rows + a reviews row; trimmed per user "too many lines"). */}
-          {(priceFromCHF != null || nextSlot) && (
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-              {priceFromCHF != null && (
-                <CardMeta as="span" className="text-[13px] leading-[1.4]">
-                  {fromLabel} {priceFromCHF} CHF
-                </CardMeta>
-              )}
-              {nextSlot && (
-                <span className="inline-flex items-center gap-1 font-body text-[12.5px] font-medium text-s-ink">
-                  <Clock size={13} strokeWidth={2} aria-hidden className="text-s-ink-2" />
-                  {nextSlot}
-                </span>
-              )}
-            </div>
-          )}
         </Link>
+
       </article>
     );
   }

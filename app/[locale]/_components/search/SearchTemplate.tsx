@@ -42,9 +42,21 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import {
   ChevronDown,
+  ChevronLeft,
   Map as MapIcon,
   List as ListIcon,
   Search,
+  // V3-D388: amenity facet icons — same lucide set SalonAdditionalInfo uses on
+  // the PDP, so the filter sheet and the salon page read as one icon language.
+  Accessibility,
+  Bus,
+  Baby,
+  Dog,
+  Wifi,
+  Heart,
+  Star,
+  Home,
+  GraduationCap,
   AlertCircle,
   Loader2,
   SearchX,
@@ -60,6 +72,7 @@ import {
   DoorOpen,
   Brush,
 } from "lucide-react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { SalonResultCard } from "./SalonResultCard";
 import { CategoryBrowseRails } from "./CategoryBrowseRails";
@@ -174,6 +187,33 @@ const SORT_OPTIONS = [
   { value: "distance", label: "Entfernung" },
 ] as const;
 type SortValue = (typeof SORT_OPTIONS)[number]["value"];
+
+// V3-D384: price-group heading, locale-mapped so no new i18n key is needed.
+const PRICE_HEADING: Record<string, string> = { de: "Preis", en: "Price", fr: "Prix", it: "Prezzo" };
+
+// V3-D387: amenity facets (Fresha "Ausstattung") — each maps to a salons boolean
+// column. German labels for now (de-primary); i18n keys are a follow-up.
+const AMENITY_OPTIONS: { col: string; label: string; icon: LucideIcon }[] = [
+  { col: "wheelchair_accessible", label: "Rollstuhlgerecht", icon: Accessibility },
+  { col: "near_public_transport", label: "ÖV in der Nähe", icon: Bus },
+  { col: "kid_friendly", label: "Kinderfreundlich", icon: Baby },
+  { col: "pet_friendly", label: "Haustiere willkommen", icon: Dog },
+  { col: "wifi_friendly", label: "WLAN", icon: Wifi },
+  { col: "lgbtq_friendly", label: "LGBTQ+ freundlich", icon: Heart },
+  { col: "woman_owned", label: "Von Frau geführt", icon: Star },
+  { col: "family_owned", label: "Familienbetrieb", icon: Home },
+  { col: "student_discount", label: "Studentenrabatt", icon: GraduationCap },
+];
+const AMENITY_COLS = AMENITY_OPTIONS.map((a) => a.col);
+// V3-D390: title of the FOCUSED filter sheet (the category whose pill opened it).
+const SECTION_TITLE: Record<string, string> = {
+  sort: "Sortieren",
+  price: "Preis",
+  gender: "Für wen",
+  rating: "Bewertung",
+  amenities: "Ausstattung",
+  deals: "Angebote",
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SalonCardSkeleton — matches V3 SalonCard footprint per LoadingStates.md
@@ -373,6 +413,30 @@ export default function SearchTemplate({
   const walkIn = searchParams.get("walk_in") === "true";
   const minRatingParam = searchParams.get("min_rating");
   const minRating = minRatingParam ? Number(minRatingParam) : null;
+  const minPrice = searchParams.get("min_price") ? Number(searchParams.get("min_price")) : null;
+  const maxPrice = searchParams.get("max_price") ? Number(searchParams.get("max_price")) : null;
+  // V3-D387: Service type (gender) + amenity facets from the URL. amenityKey is a
+  // STABLE string (not a fresh array) so it can sit in buildUrl's deps without looping.
+  const gender = searchParams.get("gender");
+  const amenityKey = AMENITY_COLS.filter((c) => searchParams.get(c) === "true").join(",");
+  const activeAmenities = amenityKey ? amenityKey.split(",") : [];
+  // V3-D390: per-category filter pills — each opens a FOCUSED sheet for just that
+  // one filter (Fresha model: Amenities / Service type / Price each = own sheet).
+  // The label reflects the current selection when that filter is set.
+  const sortLbl = SORT_OPTIONS.find((o) => o.value === sort)?.label ?? SORT_OPTIONS[0].label;
+  const pricePillLabel = maxPrice != null ? `Bis CHF ${maxPrice}` : "Preis";
+  const filterPills = [
+    { key: "sort", label: sort && sort !== "rating" ? sortLbl : "Sortieren", active: !!sort && sort !== "rating" },
+    { key: "price", label: pricePillLabel, active: minPrice != null || maxPrice != null },
+    { key: "gender", label: gender === "female" ? "Damen" : gender === "male" ? "Herren" : gender === "non_binary" ? "Divers" : "Für wen", active: !!gender },
+    { key: "rating", label: minRating ? `${minRating}` : "Bewertung", active: minRating != null },
+    { key: "amenities", label: activeAmenities.length ? `Ausstattung · ${activeAmenities.length}` : "Ausstattung", active: activeAmenities.length > 0 },
+    { key: "deals", label: "Angebote", active: deals },
+  ];
+  // V3-D385: user location for the "Entfernung" (distance) sort, captured via the
+  // browser's native permission prompt. Held in STATE — precise geo shouldn't live
+  // in a shareable/loggable page URL; it's injected into the API fetch only.
+  const [coords, setCoords] = React.useState<{ lat: number; lng: number } | null>(null);
   const mapOpen = searchParams.get("map") === "1";
   // V3-D372 (2026-05-29): the full-width 1-col CARD list ("C") is now the DEFAULT
   // category/search layout - the results-page shape (photo-top, name + ★ + meta +
@@ -391,6 +455,49 @@ export default function SearchTemplate({
   const [error, setError] = React.useState<string | null>(null);
   const [favoriteIds, setFavoriteIds] = React.useState<Set<string>>(new Set());
   const [mobileView, setMobileView] = React.useState<"list" | "map">("list");
+  // V3-D380: mobile map sheet — DRAG the handle to resize (snaps to peek/expanded
+  // on release); a plain tap toggles. sheetTopPx = the sheet's viewport top in px
+  // (null = the 55% peek default). Pointer events cover touch + mouse.
+  const [sheetTopPx, setSheetTopPx] = React.useState<number | null>(null);
+  const [sheetDragging, setSheetDragging] = React.useState(false);
+  const sheetDragRef = React.useRef<{ startY: number; startTop: number; moved: boolean } | null>(null);
+  // V3-D381: THREE snaps — expanded (full list) / peek (half) / collapsed
+  // (mostly map + a horizontal swipeable card stub, the Google/Apple-Maps pattern).
+  const sheetSnaps = () => {
+    const h = typeof window !== "undefined" ? window.innerHeight : 800;
+    return { expanded: Math.round(h * 0.16), peek: Math.round(h * 0.55), collapsed: Math.round(h * 0.8) };
+  };
+  // V3-D381: selectedId correlates the sheet cards with the map pins. A pin tap
+  // selects its card; swiping the collapsed card stub selects + recenters the
+  // matching pin (MapView already ink-fills selectedId + easeTo-recenters).
+  const [mapSelectedId, setMapSelectedId] = React.useState<string | null>(null);
+  const onSheetPointerDown = (e: React.PointerEvent) => {
+    const { peek } = sheetSnaps();
+    sheetDragRef.current = { startY: e.clientY, startTop: sheetTopPx ?? peek, moved: false };
+    setSheetDragging(true);
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+  };
+  const onSheetPointerMove = (e: React.PointerEvent) => {
+    const d = sheetDragRef.current;
+    if (!d) return;
+    const delta = e.clientY - d.startY;
+    if (Math.abs(delta) > 6) d.moved = true;
+    const { expanded, collapsed } = sheetSnaps();
+    setSheetTopPx(Math.max(expanded - 30, Math.min(collapsed + 40, d.startTop + delta)));
+  };
+  const onSheetPointerUp = () => {
+    const d = sheetDragRef.current;
+    if (!d) return;
+    const { expanded, peek, collapsed } = sheetSnaps();
+    setSheetTopPx((cur) => {
+      const c = cur ?? peek;
+      if (!d.moved) return c <= (expanded + peek) / 2 ? peek : expanded; // tap = toggle peek/expanded
+      // drag = snap to nearest of the three
+      return [expanded, peek, collapsed].sort((a, b) => Math.abs(c - a) - Math.abs(c - b))[0];
+    });
+    sheetDragRef.current = null;
+    setSheetDragging(false);
+  };
   const [sortOpen, setSortOpen] = React.useState(false);
   const sortBtnRef = React.useRef<HTMLDivElement>(null);
   // V3-D351 (2026-05-28): FilterSheet open state lives here (single source of
@@ -398,6 +505,13 @@ export default function SearchTemplate({
   // holds NO filter state — every control writes the same URL params the chip
   // row uses.
   const [filterSheetOpen, setFilterSheetOpen] = React.useState(false);
+  // V3-D390: which category's FOCUSED sheet is open (null = full "all filters" sheet
+  // via the ≡ button). Each pill calls openSection(its key).
+  const [filterSection, setFilterSection] = React.useState<string | null>(null);
+  const openSection = React.useCallback((section: string | null) => {
+    setFilterSection(section);
+    setFilterSheetOpen(true);
+  }, []);
   // V3-D349 (2026-05-28): the floating "Karte" pill is hidden at the top and
   // fades in once the big in-flow search pill scrolls out of view. Observed via
   // IntersectionObserver on the big search pill so the threshold tracks the
@@ -405,6 +519,17 @@ export default function SearchTemplate({
   // `window` (not a nested container) — same scroll axis the Header watches.
   const [mapFabVisible, setMapFabVisible] = React.useState(false);
   const bigSearchRef = React.useRef<HTMLAnchorElement | null>(null);
+
+  // V3-D378 (2026-05-30): lock body scroll while the mobile full-screen map is
+  // open, so the page (footer etc.) can't scroll behind the fixed map overlay.
+  React.useEffect(() => {
+    if (mobileView !== "map") return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileView]);
 
   // V3-D376 (2026-05-29): Airbnb-style shrink-search. The search bar is a sticky
   // band that PINS to the top + COLLAPSES (2-line -> 1-line, padding down, city
@@ -432,6 +557,19 @@ export default function SearchTemplate({
       if (date) sp.set("date", date);
       if (sort) sp.set("sort", sort);
       if (minRating) sp.set("min_rating", String(minRating));
+      // V3-D384 fix: forward the price filter to the API (it was written to the URL
+      // but never added here, so the filter silently no-op'd from the UI).
+      if (minPrice != null) sp.set("min_price", String(minPrice));
+      if (maxPrice != null) sp.set("max_price", String(maxPrice));
+      // V3-D385: distance sort needs the user's coords — injected from state (never
+      // the page URL). The API maps lat/lng → nearby RPC + true distance ordering.
+      if (sort === "distance" && coords) {
+        sp.set("lat", String(coords.lat));
+        sp.set("lng", String(coords.lng));
+      }
+      // V3-D387: service type (gender) + amenity facets.
+      if (gender) sp.set("gender", gender);
+      if (amenityKey) for (const c of amenityKey.split(",")) sp.set(c, "true");
       // V3-D357 (2026-05-28): re-enabled `with_slots` - after the V3-D350 minimal
       // pivot the cards read EMPTY (just name/rating/category/price). Services +
       // next-available slots fill them back to a Fresha-grade density (user: "those
@@ -446,7 +584,7 @@ export default function SearchTemplate({
       }
       return `/api/salons?${sp.toString()}`;
     },
-    [activeCategory, activeCity, date, sort, minRating, q],
+    [activeCategory, activeCity, date, sort, minRating, minPrice, maxPrice, gender, amenityKey, coords, q],
   );
 
   // ── Initial fetch + refetch on params change ──────────────────────────────
@@ -596,6 +734,45 @@ export default function SearchTemplate({
     }
   }, [mapOpen, updateParam]);
 
+  // V3-D382 (#1 load speed): warm the MapView chunk (mapbox-gl is a heavy dynamic
+  // import) shortly after the list renders, so the FIRST tap on "Karte" doesn't
+  // pay the full chunk-download delay. Fired off-idle so it never blocks the list.
+  React.useEffect(() => {
+    const t = setTimeout(() => {
+      void import("@/components-legacy/MapView");
+    }, 1200);
+    return () => clearTimeout(t);
+  }, []);
+
+  // V3-D385: sort handler. "Entfernung" (distance) needs the user's location — fire
+  // the browser's native geo prompt; on grant we stash coords in state + apply the
+  // sort, on deny we flag it (and don't switch sort). Other sorts just write the param.
+  const handleSortChange = React.useCallback(
+    (value: string) => {
+      if (value === "distance") {
+        if (coords) {
+          updateParam("sort", "distance");
+          return;
+        }
+        if (typeof navigator !== "undefined" && "geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+              updateParam("sort", "distance");
+            },
+            (err) => {
+              console.warn("[SearchTemplate] geolocation unavailable:", err?.message);
+            },
+            { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 },
+          );
+        }
+        return;
+      }
+      updateParam("sort", value === "rating" ? null : value);
+    },
+    [coords, updateParam],
+  );
+
   // ── Favorite toggle ───────────────────────────────────────────────────────
   const toggleFavorite = React.useCallback((salonId: string) => {
     setFavoriteIds((prev) => {
@@ -737,83 +914,37 @@ export default function SearchTemplate({
             className="scrollbar-none flex min-w-0 flex-1 items-center gap-2 overflow-x-auto"
             style={{ scrollbarWidth: "none" }}
           >
-            {(() => {
-              // Single descriptor list; partition active-first. Each writes the
-              // SAME URL param the FilterSheet writes (single source of truth).
-              const chips = [
-                {
-                  key: "open_now",
-                  label: tChrome("openNow"),
-                  active: openNow,
-                  onClick: () => toggleBooleanParam("open_now", openNow),
-                },
-                {
-                  key: "instant_bookable",
-                  label: tChrome("instant"),
-                  active: instantBookable,
-                  onClick: () => toggleBooleanParam("instant_bookable", instantBookable),
-                },
-                {
-                  key: "min_rating",
-                  label: tChrome("topRated"),
-                  active: minRating === 4.5,
-                  onClick: () => updateParam("min_rating", minRating === 4.5 ? null : "4.5"),
-                },
-                {
-                  key: "walk_in",
-                  label: tChrome("walkIn"),
-                  active: walkIn,
-                  onClick: () => toggleBooleanParam("walk_in", walkIn),
-                },
-                {
-                  key: "deals",
-                  label: tChrome("deals"),
-                  active: deals,
-                  onClick: () => toggleBooleanParam("deals", deals),
-                },
-              ];
-              const activeChips = chips.filter((c) => c.active);
-              const inactiveChips = chips.filter((c) => !c.active);
-              const renderChip = (c: (typeof chips)[number]) => (
+            {/* V3-D386: dropdown filter pills (match the map sheet). Sort lives in
+                the dedicated sort dropdown below, so the row shows Preis + Bewertung. */}
+            {filterPills
+              .filter((p) => p.key !== "sort")
+              .map((p) => (
                 <button
-                  key={c.key}
+                  key={p.key}
                   type="button"
-                  onClick={c.onClick}
-                  aria-pressed={c.active}
+                  onClick={() => (p.key === "deals" ? toggleBooleanParam("deals", deals) : openSection(p.key))}
+                  aria-haspopup={p.key === "deals" ? undefined : "dialog"}
+                  aria-pressed={p.key === "deals" ? p.active : undefined}
                   className={cn(
-                    "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-pill px-3.5",
-                    "font-body text-[13.5px] font-medium leading-none",
+                    "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
                     "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
                     "active:scale-[0.97] active:duration-[80ms]",
                     "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-                    c.active
-                      ? "border border-s-ink bg-s-ink text-white"
+                    p.active
+                      ? "border border-s-border bg-s-bg-sunken text-s-ink font-semibold"
                       : "border border-s-border bg-white text-s-ink hover:border-s-ink",
                   )}
                 >
-                  {c.active && <Check size={14} strokeWidth={2.5} aria-hidden />}
-                  {c.label}
+                  {p.label}
+                  {p.key !== "deals" && <ChevronDown size={14} strokeWidth={2} className={p.active ? "opacity-80" : "opacity-50"} aria-hidden />}
                 </button>
-              );
-              return (
-                <>
-                  {activeChips.map(renderChip)}
-                  {activeChips.length > 0 && inactiveChips.length > 0 && (
-                    <span
-                      className="h-5 w-px shrink-0 bg-s-border"
-                      aria-hidden
-                    />
-                  )}
-                  {inactiveChips.map(renderChip)}
-                </>
-              );
-            })()}
+              ))}
             {/* V3-D352 (2026-05-28): filter button is the LAST item INSIDE the
                 scroll, so it sits at the very end of the chip row (reached by
                 scrolling to the end) rather than pinned to the right edge. */}
             <button
               type="button"
-              onClick={() => setFilterSheetOpen(true)}
+              onClick={() => openSection(null)}
               aria-haspopup="dialog"
               aria-label={
                 activeFilterCount > 0
@@ -962,7 +1093,7 @@ export default function SearchTemplate({
                 "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
                 "min-h-[36px]",
                 sort !== "rating"
-                  ? "border-s-ink bg-s-ink text-white hover:bg-black"
+                  ? "border-s-border bg-s-bg-sunken text-s-ink font-semibold hover:bg-s-border"
                   : "border-s-border bg-white text-s-ink hover:border-s-ink",
               )}
             >
@@ -1099,6 +1230,7 @@ export default function SearchTemplate({
                     // reviews" line; location is "area, town" (built in city= above).
                     reviewCount={s.review_count ?? null}
                     nextSlot={nextSlotLabel(s.services, locale)}
+                    services={s.services}
                     isSaved={favoriteIds.has(s.id)}
                     salonId={s.id}
                   />
@@ -1161,21 +1293,134 @@ export default function SearchTemplate({
         )}
       </div>
 
-      {/* Mobile full-viewport map mode */}
-      {mobileView === "map" && !loading && !error && salons.length > 0 && (
-        <div className="fixed inset-x-0 bottom-0 top-[110px] z-30 md:hidden">
-          <MapView
-            salons={salons as never}
-            onSelect={(id) => {
-              const salon = salons.find((s) => s.id === id);
-              if (salon) {
-                router.push(`/${locale}/salon/${salon.slug ?? id}`);
-              }
-            }}
-            enhanced
-          />
-        </div>
-      )}
+      {/* Mobile full-viewport map mode — pannable map + a bottom sheet holding the
+          result cards (V3-D378). Replaces the old bare full-screen swap: the map
+          fills below the header, the sheet overlays the lower ~half with the count
+          + vertical cards (scroll inside the sheet). Body scroll is locked above. */}
+      {mobileView === "map" && !loading && !error && salons.length > 0 && (() => {
+        // V3-D381: three-snap map sheet. peek/expanded → vertical list + filter
+        // pills; collapsed → mostly map + a horizontal swipeable card stub whose
+        // centered card selects + recenters the matching pin (Google/Apple-Maps pattern).
+        const snaps = sheetSnaps();
+        const curTop = sheetTopPx ?? snaps.peek;
+        const cardProps = (s: (typeof salons)[number]) => ({
+          slug: s.slug,
+          name: s.name,
+          locale,
+          rating: s.average_rating,
+          photoUrl: s.cover_photo_url ?? undefined,
+          category: activeCategory ? undefined : safeCategory(s.categories),
+          city:
+            s.address ||
+            (s.quartier ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1) : undefined) ||
+            (activeCity ? getCityName(activeCity, locale) : undefined),
+          distanceMeters: s.distance_meters ?? null,
+          priceFromCHF: s.avg_price ?? null,
+          reviewCount: s.review_count ?? null,
+          nextSlot: nextSlotLabel(s.services, locale),
+          services: s.services,
+          isSaved: favoriteIds.has(s.id),
+          salonId: s.id,
+        });
+        const mapOverlay = (
+          <div className="fixed inset-0 z-[60] bg-s-bg-base md:hidden">
+            {/* V3-D382: FULL-BLEED map — the overlay covers the global header, so
+                the map runs edge-to-edge and the search floats on top of it. */}
+            <div className="absolute inset-0">
+              <MapView
+                salons={salons as never}
+                selectedId={mapSelectedId ?? undefined}
+                onSelect={(id) => setMapSelectedId(id)}
+                enhanced
+              />
+            </div>
+            {/* V3-D382: floating top bar over the map — back button + search pill
+                ONLY (no logo / category chips / hamburger). The full-screen overlay
+                covers the global header, so this IS the entire map-view chrome. */}
+            <div className="absolute inset-x-0 top-0 z-20 flex items-center gap-2.5 px-4 pt-3">
+              <button
+                type="button"
+                onClick={() => setMobileView("list")}
+                aria-label="Zurück zur Liste"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-s-border bg-white text-s-ink shadow-[0_1px_2px_rgba(10,10,10,0.10),0_4px_12px_rgba(10,10,10,0.08)] transition-transform active:scale-95"
+              >
+                <ChevronLeft size={20} strokeWidth={2} aria-hidden />
+              </button>
+              <Link
+                href={`/${locale}`}
+                aria-label={tChrome("editSearch")}
+                className="flex min-w-0 flex-1 items-center gap-2.5 rounded-pill border border-s-border bg-white px-4 py-3 shadow-[0_1px_2px_rgba(10,10,10,0.10),0_4px_12px_rgba(10,10,10,0.08)]"
+              >
+                <Search size={17} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+                <span className="min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
+                  {q ? `„${q}"` : tChrome("searchPlaceholder")}
+                  <span className="ml-1.5 font-normal text-s-ink-2">· {cityName}</span>
+                </span>
+              </Link>
+            </div>
+            {/* bottom sheet — DRAG the handle: snaps expanded / peek / collapsed.
+                `fixed` so the px drag-top works; z-[31] keeps it above the map. */}
+            <div
+              className={cn(
+                "fixed inset-x-0 bottom-0 z-[31] flex flex-col rounded-t-[20px] border-t border-s-border bg-white shadow-[0_-10px_30px_rgba(10,10,10,0.16)]",
+                !sheetDragging && "transition-[top] duration-300 ease-glide",
+              )}
+              style={{ top: `${curTop}px` }}
+            >
+              {/* V3-D386: bigger grab area so the handle is easy to drag. */}
+              <div
+                onPointerDown={onSheetPointerDown}
+                onPointerMove={onSheetPointerMove}
+                onPointerUp={onSheetPointerUp}
+                className="flex shrink-0 cursor-grab touch-none items-center justify-center pb-2 pt-5 active:cursor-grabbing"
+                role="button"
+                aria-label="Liste ziehen"
+              >
+                <span className="h-1.5 w-11 rounded-full bg-s-ink/25" aria-hidden />
+              </div>
+
+              {/* V3-D386: no collapsed swiper — the sheet just lowers over the map
+                  (Fresha). Always the dropdown filter pills + count + vertical list. */}
+              <div
+                className="scrollbar-none flex shrink-0 items-center gap-2 overflow-x-auto px-4 pb-2.5 pt-1"
+                style={{ scrollbarWidth: "none" }}
+              >
+                {filterPills.map((p) => (
+                  <button
+                    key={p.key}
+                    type="button"
+                    onClick={() => (p.key === "deals" ? toggleBooleanParam("deals", deals) : openSection(p.key))}
+                    aria-haspopup={p.key === "deals" ? undefined : "dialog"}
+                    aria-pressed={p.key === "deals" ? p.active : undefined}
+                    className={cn(
+                      "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
+                      "transition-[background-color,border-color,color,transform] duration-150 ease-glide active:scale-[0.97] active:duration-[80ms]",
+                      p.active
+                        ? "border border-s-border bg-s-bg-sunken text-s-ink font-semibold"
+                        : "border border-s-border bg-white text-s-ink hover:border-s-ink",
+                    )}
+                  >
+                    {p.label}
+                    {p.key !== "deals" && <ChevronDown size={14} strokeWidth={2} className={p.active ? "opacity-80" : "opacity-50"} aria-hidden />}
+                  </button>
+                ))}
+              </div>
+              <div className="shrink-0 px-4 pb-1 pt-1 font-body text-[12.5px] text-s-ink-2">
+                <span className="font-semibold text-s-ink">{salons.length}</span> Salons in diesem Bereich
+              </div>
+              <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-8 pt-1">
+                {salons.map((s) => (
+                  <SalonResultCard key={s.id} variant="card" {...cardProps(s)} />
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+        // V3-D382: portal to <body> so the overlay escapes the trapped stacking
+        // context and covers the global header (z-50). createPortal keeps the React
+        // tree intact — refs / state / handlers all keep working.
+        return typeof document !== "undefined" ? createPortal(mapOverlay, document.body) : mapOverlay;
+      })()}
 
       {/* belowSlot — per-category SEO content (FAQ / About / etc.) */}
       {belowSlot && (
@@ -1229,18 +1474,28 @@ export default function SearchTemplate({
         isOpen={filterSheetOpen}
         onClose={() => setFilterSheetOpen(false)}
         resultCount={total}
+        section={filterSection}
         sortOptions={SORT_OPTIONS}
         sort={sort}
-        onSortChange={(value) =>
-          updateParam("sort", value === "rating" ? null : value)
-        }
-        openNow={openNow}
-        instantBookable={instantBookable}
-        walkIn={walkIn}
-        deals={deals}
-        onToggleBoolean={toggleBooleanParam}
+        onSortChange={handleSortChange}
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+        onPriceChange={(min, max) => {
+          const sp = new URLSearchParams(searchParams.toString());
+          if (min != null) sp.set("min_price", String(min)); else sp.delete("min_price");
+          if (max != null) sp.set("max_price", String(max)); else sp.delete("max_price");
+          sp.delete("page");
+          router.replace(`${pathname}${sp.toString() ? `?${sp}` : ""}`, { scroll: false });
+        }}
         minRating={minRating}
         onMinRatingChange={(value) => updateParam("min_rating", value)}
+        gender={gender}
+        onGenderChange={(value) => updateParam("gender", value)}
+        amenityOptions={AMENITY_OPTIONS}
+        amenities={activeAmenities}
+        onAmenityToggle={(col) => toggleBooleanParam(col, activeAmenities.includes(col))}
+        deals={deals}
+        onDealsToggle={() => toggleBooleanParam("deals", deals)}
         onReset={() => {
           // Clear every filter param the sheet/chips write. sort resets to the
           // default (rating) by deleting it.
@@ -1250,8 +1505,12 @@ export default function SearchTemplate({
             "instant_bookable",
             "walk_in",
             "deals",
+            "min_price",
+            "max_price",
             "min_rating",
+            "gender",
             "sort",
+            ...AMENITY_COLS,
           ]) {
             sp.delete(key);
           }
@@ -1261,19 +1520,20 @@ export default function SearchTemplate({
           });
         }}
         labels={{
-          title: tFilter("title"),
+          title: filterSection ? (SECTION_TITLE[filterSection] ?? tFilter("title")) : tFilter("title"),
           reset: tFilter("reset"),
           close: tFilter("close"),
           sortHeading: tFilter("sortHeading"),
-          availabilityHeading: tFilter("availabilityHeading"),
+          priceHeading: PRICE_HEADING[locale] ?? PRICE_HEADING.de,
           ratingHeading: tFilter("ratingHeading"),
-          openNow: tChrome("openNow"),
-          instant: tChrome("instant"),
-          walkIn: tChrome("walkIn"),
-          deals: tChrome("deals"),
           rating45: tFilter("rating45"),
           rating40: tFilter("rating40"),
           ratingAny: tFilter("ratingAny"),
+          forWhoHeading: "Für wen",
+          genderAny: "Alle",
+          genderFemale: "Damen",
+          genderMale: "Herren",
+          amenitiesHeading: "Ausstattung",
           apply: (count: number) => tFilter("apply", { count }),
         }}
       />

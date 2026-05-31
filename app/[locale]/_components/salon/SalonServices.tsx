@@ -112,8 +112,9 @@ export function SalonServices({
         </div>
       )}
 
-      {/* MOBILE — divider list */}
-      <ul className="mt-5 divide-y divide-s-border md:hidden">
+      {/* MOBILE — spaced bordered cards (same card as desktop per V3-D227, so
+          the rounded cards need a gap, not divide-y which stacked them flush) */}
+      <ul className="mt-5 space-y-3 md:hidden">
         {shown.map((s) => (
           <ServiceRow key={s.id} service={s} locale={locale} slug={slug} variant="mobile" />
         ))}
@@ -135,7 +136,7 @@ export function SalonServices({
           <button
             type="button"
             onClick={() => setSheetOpen(true)}
-            className="font-body inline-flex items-center rounded-full border border-s-ink bg-white px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-ink hover:text-white md:px-10 md:py-3.5 md:text-[15px]"
+            className="font-body inline-flex items-center rounded-full bg-s-bg-sunken px-8 py-3 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-10 md:py-3.5 md:text-[15px]"
           >
             Alle ansehen
           </button>
@@ -176,7 +177,7 @@ function ServiceRow({
   const inner = (
     <div className="flex items-start justify-between gap-4">
       <div className="min-w-0 flex-1">
-        <div className="font-body text-[15px] font-medium text-s-ink md:text-[16px]">
+        <div className="font-body text-[15px] font-semibold text-s-ink md:text-[16px]">
           {service.name_de}
         </div>
         <div className="font-body mt-1 text-[13px] text-s-ink-3 md:text-[14px]">
@@ -188,7 +189,7 @@ function ServiceRow({
       </div>
       <Link
         href={`/${locale}/salon/${slug}/booking?service=${service.id}`}
-        className="font-body shrink-0 rounded-full border border-s-ink bg-white px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-ink hover:text-white md:px-6 md:py-2.5 md:text-[14px]"
+        className="font-body shrink-0 rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-6 md:py-2.5 md:text-[14px]"
       >
         Buchen
       </Link>

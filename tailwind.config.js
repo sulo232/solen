@@ -213,19 +213,14 @@ module.exports = {
         // V3-D190 (2026-05-26): Inter Tight (display) — supersedes V3-D75
         // Bricolage Grotesque. Inter Tight at weight 900 reads as modern-
         // confident (Tap2/Linear/Vercel pattern) where Bricolage read as
-        // humanist-warm. Body font Hanken Grotesk unchanged.
-        // 2026-05-30: REVERTED V3-D317 Geist swap per user ("no Geist"). Back to
-        // Inter Tight (display/heading) + Hanken Grotesk (body). Do NOT reintroduce Geist.
-        // 2026-05-30 (fix): point at next/font CSS vars (self-hosted, same-origin) —
-        // same typefaces, just no runtime Google Fonts fetch that defaulted on phone/LAN.
-        // 2026-05-30: Inter Tight REMOVED per user (rejected repeatedly). Headings +
-        // display now use Hanken Grotesk — the same font already used for body, so the
-        // whole app is one consistent typeface. Do NOT reintroduce Inter Tight or Geist.
-        display: ["var(--font-hanken)", "system-ui", "-apple-system", "sans-serif"],
-        heading: ["var(--font-hanken)", "system-ui", "-apple-system", "sans-serif"],
-        body:    ["var(--font-hanken)", "system-ui", "-apple-system", "sans-serif"],
+        // 2026-05-31 (V3-D410): body font Hanken Grotesk → Inter. Mirrors Uber's
+        // one-family display+text structure (Inter Tight + Inter ≈ Uber Move + Uber
+        // Move Text); Inter 400 reads solid where Hanken 400 read thin. No Geist.
+        display: ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
+        heading: ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
+        body:    ["'Inter'", "system-ui", "-apple-system", "sans-serif"],
         // V3-D318 (2026-05-27): JetBrains Mono for codes/receipts (font-mono-code class)
-        mono:    ["var(--font-jetbrains)", "'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
+        mono:    ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       borderRadius: {
         // Legacy Tailwind vars (keep for shadcn compat)
@@ -314,10 +309,6 @@ module.exports = {
         // V4 additions
         "v4-reveal": "v4-reveal 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards",
         "v4-scale-in": "v4-scale-in 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards",
-        // Walk-in live-status entrance (CSS so it's compositor-smooth + degrades to visible)
-        "enter-up": "v4-reveal 0.55s cubic-bezier(0.22, 0.61, 0.36, 1) both",
-        "draw-x": "draw-x 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both",
-        "ping-slow": "ping 2.6s cubic-bezier(0, 0, 0.2, 1) infinite",
       },
       keyframes: {
         "shimmer": {
@@ -340,10 +331,6 @@ module.exports = {
         "v4-scale-in": {
           from: { opacity: "0", transform: "scale(0.96)" },
           to: { opacity: "1", transform: "scale(1)" },
-        },
-        "draw-x": {
-          from: { transform: "scaleX(0)" },
-          to: { transform: "scaleX(1)" },
         },
       },
     },

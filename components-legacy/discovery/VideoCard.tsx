@@ -5,7 +5,8 @@ import Image from "next/image";
 import type { DiscoveryItem } from "@/lib/types";
 import { Play } from "lucide-react";
 import LikeButton from "./LikeButton";
-import SaveButton from "./SaveButton";
+import { formatStyleTag, formatCreator } from "./format";
+import CardSignals from "./CardSignals";
 
 interface VideoCardProps {
   item: DiscoveryItem;
@@ -15,30 +16,15 @@ interface VideoCardProps {
   isExpanded?: boolean;
 }
 
-// ── Extract TikTok Video ID ────────────────────────────
 const extractTiktokId = (url: string | null) => {
   if (!url) return null;
   const match = url.match(/\/video\/(\d+)/);
   return match ? match[1] : null;
 };
 
-// ── Color-coded category badges ────────────────────────────────────
-// V3-D346 (2026-05-29): category color identity KEPT per user decision —
-// intentional deviation from the B&W pivot + V3-D205 universal-components rule.
-// s-amber/s-plum resolve via config aliases (#F59E0B / #6B6B6B). Do not sweep to neutral.
-const CATEGORY_COLORS: Record<string, string> = {
-  hair: "bg-s-amber/70",
-  beard: "bg-s-ink/70",
-  nails: "bg-s-plum/70",
-  makeup: "bg-s-plum/70",
-  waxing: "bg-s-success/70",
-};
-
-/**
- * Grid card for TikTok videos.
- * Shows thumbnail + play overlay — clicking navigates to detail page.
- * No iframe in grid (blocks clicks + shows black).
- */
+// V3-D387 (2026-05-30): CSS-columns masonry card (varied natural heights via self-measured aspect). V3-D386: thumbnail
+// via the /api/discovery/thumb refresh proxy (fresh signed URL, no CORS). Haircut-type chip + creator below. Keeps
+// the expand-to-iframe behaviour for the detail view.
 export default memo(function VideoCard({
   item,
   onClick,
@@ -46,74 +32,59 @@ export default memo(function VideoCard({
   onAuthRequired,
   isExpanded = false,
 }: VideoCardProps) {
-  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(
-    item.tiktok_thumbnail_url || item.image_url || null
-  );
+  const [aspect, setAspect] = useState("9 / 16");
   const [imgError, setImgError] = useState(false);
   const [iframeError, setIframeError] = useState(false);
   const iframeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const videoId = extractTiktokId(item.tiktok_url);
+  const styleTag = formatStyleTag(item.tags);
+  const creator = formatCreator(item.author_name);
 
-  // Reset iframeError when card is re-expanded so iframe gets a fresh attempt
+  const thumbnailUrl = item.tiktok_url
+    ? `/api/discovery/thumb/${item.id}`
+    : item.image_url || item.tiktok_thumbnail_url;
+
   useEffect(() => {
-    if (isExpanded) {
-      setIframeError(false);
-    }
+    if (isExpanded) setIframeError(false);
   }, [isExpanded]);
 
-  // Fallback: if iframe hasn't loaded within 5s, revert to thumbnail
   useEffect(() => {
     if (isExpanded && videoId && !iframeError) {
-      iframeTimerRef.current = setTimeout(() => {
-        setIframeError(true);
-      }, 5000);
+      iframeTimerRef.current = setTimeout(() => setIframeError(true), 5000);
     }
     return () => {
       if (iframeTimerRef.current) clearTimeout(iframeTimerRef.current);
     };
   }, [isExpanded, videoId, iframeError]);
 
-  // If no stored thumbnail, or stored one fails, try oEmbed for fresh one
-  useEffect(() => {
-    if (thumbnailUrl && !imgError) return;
-    if (!item.tiktok_url) return;
-
-    fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(item.tiktok_url)}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (data?.thumbnail_url) {
-          setThumbnailUrl(data.thumbnail_url);
-          setImgError(false);
-        }
-      })
-      .catch((err) => console.error("[VideoCard] failed to load TikTok oEmbed thumbnail:", err));
-  }, [thumbnailUrl, imgError, item.tiktok_url]);
-
-  const categoryBg = CATEGORY_COLORS[item.category] ?? "bg-white/50";
-
   return (
-    <div
-      onClick={onClick}
-      className="group relative rounded-[16px] overflow-hidden cursor-pointer active:scale-[0.97] transition-transform duration-150 w-full h-full"
-    >
-      {/* Full-bleed image */}
-      <div className="absolute inset-0 bg-s-ink overflow-hidden">
-        {/* Thumbnail — always visible as background layer (also fallback when iframe fails) */}
+    <div onClick={onClick} className="group w-full cursor-pointer">
+      <div
+        className="relative w-full overflow-hidden rounded-2xl bg-s-bg-sunken"
+        style={{ aspectRatio: aspect }}
+      >
         {thumbnailUrl && !imgError ? (
           <Image
             src={thumbnailUrl}
             alt={item.alt_text || item.style_name || ""}
             fill
-            className="absolute inset-0 w-full h-full object-cover"
+            className="object-cover"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            onLoad={(e) => {
+              const img = e.currentTarget;
+              if (img.naturalWidth && img.naturalHeight) {
+                setAspect(`${img.naturalWidth} / ${img.naturalHeight}`);
+              }
+            }}
             onError={() => setImgError(true)}
           />
         ) : null}
 
-        {/* TikTok iframe — only when expanded and no error; sits on top of thumbnail */}
+        {/* Expanded: TikTok iframe (detail view) */}
         {isExpanded && videoId && !iframeError && (
           <iframe
             src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1&muted=1`}
-            className="absolute inset-0 w-full h-full"
+            className="absolute inset-0 h-full w-full"
             allow="autoplay; encrypted-media"
             style={{ border: "none" }}
             onLoad={() => {
@@ -123,74 +94,42 @@ export default memo(function VideoCard({
           />
         )}
 
-        {/* Play button overlay — shown when not expanded or when iframe failed */}
+        {/* Light play affordance */}
         {(!isExpanded || iframeError) && (
-          <div className="absolute inset-0 flex items-center justify-center bg-s-ink/20">
-            <div className="w-9 h-9 rounded-full bg-s-ink/90 backdrop-blur-[6px] flex items-center justify-center shadow-elevation-2">
-              <Play size={16} className="text-white ml-0.5" fill="white" />
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-white/85 shadow-elevation-2 backdrop-blur-[2px]">
+              <Play size={15} className="ml-0.5 text-s-ink" fill="currentColor" />
             </div>
           </div>
         )}
 
-        {/* Fallback when image fails — TikTok logo + play */}
-        {(!thumbnailUrl || imgError) && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 -z-10">
-            <svg viewBox="0 0 24 24" className="w-8 h-8 text-white/30" fill="currentColor">
-              <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.71a8.19 8.19 0 004.76 1.52V6.78a4.83 4.83 0 01-1-.09z" />
-            </svg>
-            <div className="w-10 h-10 rounded-full border-2 border-white/10 flex items-center justify-center">
-              <Play size={16} className="text-white/30 ml-0.5" fill="currentColor" />
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* ── Dark gradient overlay for bottom text contrast ── */}
-      <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none z-10" />
-
-      {/* ── Top-left: Category badge ── */}
-      <div className="absolute top-2 left-2 z-10">
-        <span
-          className={`inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-pill backdrop-blur-[6px] font-medium text-white ${categoryBg}`}
-        >
-          <span className="capitalize">{item.category}</span>
-          <span className="opacity-60">·</span>
-          <span>TikTok</span>
-        </span>
-      </div>
-
-      {/* ── Top-right: Like + Save buttons ── */}
-      <div
-        className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center gap-1 bg-white/30 backdrop-blur-[6px] rounded-pill px-1.5 py-1">
+        {/* Canonical heart — top-right */}
+        <div className="absolute right-1 top-1" onClick={(e) => e.stopPropagation()}>
           <LikeButton
             itemId={item.id}
             initialLiked={false}
-            initialCount={item.like_count}
             isAuthenticated={isAuthenticated}
             onAuthRequired={onAuthRequired}
           />
-          <SaveButton
-            itemId={item.id}
-            initialSaved={false}
-            isAuthenticated={isAuthenticated}
-            onAuthPrompt={onAuthRequired}
-          />
         </div>
+
+        {/* Haircut-type chip — bottom-left on the photo */}
+        {styleTag && (
+          <span className="absolute bottom-1.5 left-1.5 max-w-[80%] truncate rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-medium text-s-ink shadow-elevation-1 backdrop-blur-[2px]">
+            {styleTag}
+          </span>
+        )}
       </div>
 
-      {/* ── Bottom: Glassmorphism info pill ── */}
-      {item.style_name && (
-        <div className="absolute bottom-2 left-2 right-2 z-10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <div className="bg-white/30 backdrop-blur-[6px] rounded-pill px-2.5 py-1.5 max-w-[70%]">
-            <p className="text-[11px] font-medium text-white truncate">
-              {item.style_name}
-            </p>
-          </div>
-        </div>
+      {/* Creator (CardMeta recipe: text-s-ink-2 / font-normal) */}
+      {creator && (
+        <span className="mt-1.5 block truncate font-body text-[12px] font-normal text-s-ink-2">
+          {creator}
+        </span>
       )}
+
+      {/* V3-D393: backend-fed booking signals (rating / price / availability). Renders nothing until real data exists. */}
+      <CardSignals item={item} />
     </div>
   );
 });

@@ -7,43 +7,25 @@ export const dynamic = "force-dynamic";
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
-      {/* Single ambient glow — Zone 3 exception */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
-        <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full"
-          style={{ background: "rgba(27, 77, 27,.08)", filter: "blur(120px)" }} />
-      </div>
+    <div className="min-h-screen bg-white flex flex-col px-6 pt-8 pb-12">
+      <div className="w-full max-w-sm mx-auto">
+        <h1 className="text-[28px] font-semibold tracking-[-0.02em] leading-[1.1] text-s-ink">
+          Willkommen zurück
+        </h1>
+        <p className="text-[15px] text-s-ink-2 mt-2 leading-[1.4]">
+          Melde dich an, um Termine zu buchen und zu verwalten.
+        </p>
 
-      <div className="w-full max-w-sm">
-        {/* Logo lockup */}
-        <div className="text-center mb-8">
-          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-warning mb-3">
-            solen.ch
-          </p>
-          <Link
-            href={`/${locale}`}
-            className="inline-block font-heading text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity"
-          >
-            solen<span className="text-s-accent">.</span>ch
-          </Link>
-          <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 mt-3">
-            Willkommen zurück
-          </p>
-        </div>
-
-        {/* Auth card — Zone 3, warm shadow */}
-        <div className="rounded-card border border-s-ink/[0.06] p-8 bg-white shadow-elevation-3">
+        <div className="mt-8">
           <Suspense>
             <SignIn />
           </Suspense>
         </div>
 
-        <p className="text-center mt-6">
-          <span className="text-[11px] font-heading uppercase tracking-[.08em] text-s-ink/30">
-            Noch kein Konto?{" "}
-          </span>
+        <p className="text-center mt-8 text-[13px] text-s-ink-2">
+          Noch kein Konto?{" "}
           <Link href={`/${locale}/auth/register`}
-            className="text-[11px] font-heading uppercase tracking-[.08em] text-s-accent hover:underline">
+            className="text-s-ink font-medium underline underline-offset-2">
             Registrieren
           </Link>
         </p>

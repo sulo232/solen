@@ -3,7 +3,7 @@
 // Must be loaded with: dynamic(() => import('@/components-legacy/MapView'), { ssr: false })
 // Requires NEXT_PUBLIC_MAPBOX_TOKEN in env.
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MapPin } from "lucide-react";
@@ -12,16 +12,6 @@ import type { SalonCard } from "@/lib/types";
 import Supercluster from "supercluster";
 
 const BASEL_CENTER: [number, number] = [7.5886, 47.5596];
-
-const CATEGORY_CHIPS = [
-  { key: "all", label: "Alle" },
-  { key: "coiffeur", label: "Haare" },
-  { key: "nails", label: "Nails" },
-  { key: "spa", label: "Spa" },
-  { key: "barbershop", label: "Barber" },
-  { key: "makeup", label: "Kosmetik" },
-  { key: "waxing", label: "Waxing" },
-] as const;
 
 interface MapViewProps {
   salons: SalonCard[];
@@ -35,65 +25,116 @@ interface MapViewProps {
 
 export default function MapView({ salons, selectedId, onSelect, enhanced = false, onAreaSearch }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<mapboxgl.Map | null>(null);
-  const markersRef = useRef<Map<string, mapboxgl.Marker>>(new Map());
-  const [activeCategory, setActiveCategory] = useState("all");
+  // mapbox-gl v3's Map/Marker types are so deeply recursive that tsc throws
+  // TS2321 "Excessive stack depth" when comparing them on assignment — a known
+  // v3 issue that fails `next build` (ignoreBuildErrors:false). Typing these
+  // refs loosely sidesteps the structural comparison without changing runtime.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mapRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const markersRef = useRef<Map<string, any>>(new Map());
   const [showAreaSearch, setShowAreaSearch] = useState(false);
   const [mapError, setMapError] = useState(!process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
   const moveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Marker click handlers should always call the LATEST onSelect, but onSelect
+  // must NOT be a dep of the markers effect — parents pass an inline onSelect,
+  // which would otherwise rebuild every marker (and re-fit the map) every render.
+  const onSelectRef = useRef(onSelect);
+  onSelectRef.current = onSelect;
+  // fitBounds should fire only when the SET of salons changes, not on every
+  // re-render — repeated fitBounds is what made the map "move weirdly".
+  const fittedSigRef = useRef<string>("");
 
-  // Sync dark mode state from document root
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    
-    const root = document.documentElement;
-    setIsDarkTheme(root.classList.contains("dark"));
+  // Markers reflect exactly the salons the PAGE passes — the page owns category
+  // filtering now (MapView's own chip row was a duplicate; removed V3-D378).
+  const filteredSalons = salons;
 
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === "class") {
-          setIsDarkTheme(root.classList.contains("dark"));
-        }
-      });
-    });
+  // Cluster nearby salons (Fresha-style) so dense areas don't overlap. Rebuilt
+  // only when the salon set changes.
+  const clusterIndex = useMemo(() => {
+    const idx = new Supercluster<{
+      salonId: string; minPrice: number | null; name: string; address: string; rating: number;
+    }>({ radius: 56, maxZoom: 16 });
+    idx.load(
+      filteredSalons.map((s) => ({
+        type: "Feature" as const,
+        properties: {
+          salonId: s.id,
+          minPrice: (s as SalonCard & { min_price?: number | null }).min_price ?? null,
+          name: s.name,
+          address: s.address,
+          rating: s.average_rating,
+        },
+        geometry: { type: "Point" as const, coordinates: [s.longitude, s.latitude] as [number, number] },
+      })),
+    );
+    return idx;
+  }, [filteredSalons]);
 
-    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
-    return () => observer.disconnect();
-  }, []);
-
-  // Filter salons by category
-  const filteredSalons = activeCategory === "all"
-    ? salons
-    : salons.filter((s) => s.categories?.includes(activeCategory as any));
-
-  // Init map once
+  // Init map once. Basemap = Solen's custom Mapbox Studio style (built by the
+  // user in the solen32 account, 2026-05-30). One fixed style; no dark-mode
+  // observer / setStyle churn (that re-fetched the style in a loop and — with
+  // StrictMode's dev double-mount — left the canvas blank). The bare streets-v12
+  // fallback still gets a runtime declutter; the Studio style is used as-is.
   useEffect(() => {
     if (!containerRef.current || mapError || mapRef.current) return;
 
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
-
-    const styleDark = process.env.NEXT_PUBLIC_MAPBOX_STYLE_DARK || "mapbox://styles/mapbox/dark-v11";
-    const styleLight = process.env.NEXT_PUBLIC_MAPBOX_STYLE_LIGHT || "mapbox://styles/mapbox/light-v11";
-    const initialStyle = isDarkTheme ? styleDark : styleLight;
+    // Default basemap = Solen's custom Mapbox Studio style (solen32 account),
+    // used exactly as designed. The runtime declutter below only applies to the
+    // bare streets-v12 fallback. NEXT_PUBLIC_MAPBOX_STYLE_LIGHT still overrides.
+    const style = process.env.NEXT_PUBLIC_MAPBOX_STYLE_LIGHT || "mapbox://styles/solen32/cmpshru31000801s751e55735";
+    const isBareStreets = style === "mapbox://styles/mapbox/streets-v12";
 
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: initialStyle,
+      style,
       center: BASEL_CENTER,
       zoom: 13,
-      cooperativeGestures: true, // Require Ctrl+scroll / two-finger on mobile
+      projection: "mercator", // flat map, Fresha-style
+      // Dedicated search maps (enhanced) pan with ONE finger / normal scroll —
+      // forcing two-finger there made the full-screen mobile map feel frozen.
+      // Inline mini-maps (enhanced=false) keep cooperative gestures so the page
+      // can still scroll past them.
+      cooperativeGestures: !enhanced,
     });
 
-    // Disable scroll zoom to prevent accidental zoom on mobile
-    map.scrollZoom.disable();
-
-    map.on('error', (e) => {
-      console.warn("Mapbox error:", e);
-      setMapError(true);
+    // Keep scrollZoom ENABLED so a MacBook trackpad pinch (delivered as a
+    // ⌘/ctrl wheel event) zooms the MAP, not the whole page. cooperativeGestures
+    // already gates it — a plain scroll scrolls the page; only pinch / ⌘+scroll
+    // (or two fingers on mobile) zooms the map. Disabling it let pinch events
+    // bubble to the browser and zoom the entire website.
+    // Resize once the flex container has its final size — without this the
+    // canvas can paint blank when the map inits before layout settles.
+    map.on("load", () => {
+      map.resize();
+      // Uber-style clean detail on Fresha-colour streets: KEEP the drivable road
+      // network (minor / service / street / arterials) so it reads as a real
+      // map, but hide the clutter that felt "busy" — POI + transit swarm, road
+      // labels, highway shields, building footprints, and pedestrian footpaths/
+      // steps. Iterate ids so it's robust to renames; try/catch so a style
+      // override lacking these layers fails silently. Skipped for a custom style.
+      if (!isBareStreets) return;
+      try {
+        for (const layer of map.getStyle()?.layers ?? []) {
+          if (/poi|transit|road-label|road-number|building|path|steps|pedestrian/i.test(layer.id)) {
+            map.setLayoutProperty(layer.id, "visibility", "none");
+          }
+        }
+        // Colours ≈ Fresha (streets-v12's own palette) with a light saturation
+        // bump so it isn't flat. Canvas-only filter — the B&W price-pill markers
+        // are DOM siblings of the canvas, so they stay untouched.
+        map.getCanvas().style.filter = "saturate(1.15)";
+      } catch (e) {
+        console.warn("[MapView] streets styling skipped:", e);
+      }
     });
+    // A transient tile/style error must NOT flip to the fallback + tear the map
+    // down (that drove the create→remove→recreate loop). Just log it.
+    map.on("error", (e) => console.warn("Mapbox error:", e));
 
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
+    // V3-D382: no NavigationControl — Fresha mobile has no zoom +/- buttons
+    // (pinch / double-tap to zoom). The corner buttons were visual clutter.
     mapRef.current = map;
 
     // Show area search button on pan/zoom (debounced)
@@ -111,150 +152,126 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       map.remove();
       mapRef.current = null;
     };
-  // We intentionally do not include `resolvedTheme` here because we ONLY want to init the map once,
-  // and handle style changes in a separate effect below.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enhanced, mapError]);
 
-  // Handle dynamic style switching (Dark/Light mode) without destroying map
-  useEffect(() => {
-    if (mapRef.current) {
-      const styleDark = process.env.NEXT_PUBLIC_MAPBOX_STYLE_DARK || "mapbox://styles/mapbox/dark-v11";
-      const styleLight = process.env.NEXT_PUBLIC_MAPBOX_STYLE_LIGHT || "mapbox://styles/mapbox/light-v11";
-      mapRef.current.setStyle(isDarkTheme ? styleDark : styleLight);
-    }
-  }, [isDarkTheme, mapError]);
-
-  // Sync markers whenever salons, selection, or category change
+  // Render cluster bubbles + price pills for the current zoom. Re-runs when the
+  // salon set or selection changes, and on zoomend (clusters depend on zoom).
+  // NOT on pan — markers are geo-anchored so mapbox moves them; no rebuild =
+  // no flicker. Markers are always SOLID (no opacity fade) — motion comes from
+  // the cluster-expand zoom, hover scale, and the selection pop.
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
 
     const render = () => {
-      // Remove stale markers
       markersRef.current.forEach((m) => m.remove());
       markersRef.current.clear();
 
-      // Sort salons so gold pins render last (on top)
-      const sorted = [...filteredSalons].sort((a, b) => {
-        const tierOrder: Record<string, number> = { dark: 0, grey: 1, coral: 2, gold: 3 };
-        const aT = (a as any).solen_tier ?? "grey";
-        const bT = (b as any).solen_tier ?? "grey";
-        return (tierOrder[aT] ?? 1) - (tierOrder[bT] ?? 1);
-      });
+      const zoom = Math.floor(map.getZoom());
+      const features = clusterIndex.getClusters([-180, -85, 180, 85], zoom);
 
-      sorted.forEach((salon) => {
-        const isSelected = salon.id === selectedId;
-        const minPrice = (salon as SalonCard & { min_price?: number }).min_price;
-        const tier: string = (salon as any).solen_tier ?? "grey";
+      features.forEach((f) => {
+        const [lng, lat] = f.geometry.coordinates as [number, number];
+        const props = f.properties as Record<string, unknown>;
 
-        const isGold = tier === "gold";
-        const isDark = tier === "dark";
-        const isGrey = tier === "grey";
-
+        // Outer = mapbox positioning (NO transition on transform, or markers lag
+        // during pans). Inner = visuals + hover/selection scale.
         const el = document.createElement("div");
         el.style.cursor = "pointer";
-        el.style.transition = "transform 150ms ease";
+        const inner = document.createElement("div");
+        inner.style.fontFamily = "Geist, system-ui, -apple-system, sans-serif";
+        inner.style.transition = "transform 150ms ease";
 
-        if (isGold) {
-          // Gold tier: larger pin with gold styling + "Top Salon" label
-          const wrapper = document.createElement("div");
-          wrapper.style.cssText = "display:flex;flex-direction:column;align-items:center;gap:2px;";
-
-          const pin = document.createElement("div");
-          pin.style.cssText = `
+        if ((props as { cluster?: boolean }).cluster) {
+          // Cluster bubble — ink-filled circle + white count. Click zooms in to
+          // split it (Fresha behaviour).
+          inner.style.cssText += `
             display:flex;align-items:center;justify-content:center;
-            padding:3px 8px;border-radius:9999px;font-size:12px;font-weight:700;
-            white-space:nowrap;box-shadow:0 2px 8px rgba(212,175,55,0.35);
-            transform:scale(1.3);z-index:10;
-            background:${isSelected ? "#1B4D1B" : "#F3A864"};
-            color:white;border:2px solid white;
+            min-width:30px;height:30px;padding:0 9px;border-radius:9999px;
+            font-size:13px;font-weight:700;background:#0A0A0A;color:#ffffff;
+            border:2px solid #ffffff;box-shadow:0 2px 10px rgba(10,10,10,0.30);
           `;
-          pin.textContent = minPrice && minPrice > 0 ? `ab ${formatCurrency(minPrice)}` : "★";
-          wrapper.appendChild(pin);
-
-          const label = document.createElement("span");
-          label.style.cssText = "font-size:9px;font-weight:700;color:#F3A864;white-space:nowrap;text-shadow:0 0 3px white,0 0 3px white;";
-          label.textContent = "★ Top Salon";
-          wrapper.appendChild(label);
-
-          el.appendChild(wrapper);
-        } else if (isDark) {
-          // Dark tier: small grey dot
-          el.style.cssText += `
-            width:10px;height:10px;border-radius:50%;
-            background:#9CA3AF;border:1.5px solid white;
-            box-shadow:0 1px 3px rgba(26,18,9,.08);opacity:0.7;
-          `;
-        } else if (minPrice && minPrice > 0) {
-          // Price badge pin with color coding
-          const priceColor = minPrice < 50 ? "#22C55E" : minPrice <= 100 ? "#EAB308" : "#1B4D1B";
-          const opacity = isGrey ? "0.75" : "1";
-          el.style.cssText += `
-            display:flex;align-items:center;justify-content:center;
-            padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:700;
-            white-space:nowrap;box-shadow:0 2px 6px rgba(26,18,9,.08);
-            opacity:${opacity};
-            background:${isSelected ? "#1B4D1B" : "white"};
-            color:${isSelected ? "white" : priceColor};
-            border:1.5px solid ${isSelected ? "#1B4D1B" : priceColor + "40"};
-          `;
-          el.textContent = `ab ${formatCurrency(minPrice)}`;
-        } else {
-          // Dot pin (no price)
-          const dotColor = isSelected ? "#1B4D1B" : "#1B4D1B";
-          const opacity = isGrey ? "0.75" : "1";
-          el.style.cssText += `
-            width:14px;height:14px;border-radius:50%;
-            background:${dotColor};border:2px solid white;
-            box-shadow:0 1px 4px rgba(26,18,9,.10);opacity:${opacity};
-          `;
+          inner.textContent = String(props.point_count as number);
+          el.appendChild(inner);
+          el.addEventListener("click", () => {
+            const ez = clusterIndex.getClusterExpansionZoom(props.cluster_id as number);
+            map.easeTo({ center: [lng, lat], zoom: ez, duration: 500 });
+          });
+          el.addEventListener("mouseenter", () => { inner.style.transform = "scale(1.12)"; });
+          el.addEventListener("mouseleave", () => { inner.style.transform = "scale(1)"; });
+          const cm = new mapboxgl.Marker({ element: el }).setLngLat([lng, lat]).addTo(map);
+          markersRef.current.set(`cluster-${props.cluster_id}`, cm);
+          return;
         }
 
-        el.addEventListener("click", () => onSelect?.(salon.id));
-        el.addEventListener("mouseenter", () => { el.style.transform = "scale(1.15)"; });
-        el.addEventListener("mouseleave", () => { el.style.transform = "scale(1)"; });
+        // Individual salon — solid price pill, ink-filled when selected.
+        const salonId = props.salonId as string;
+        const minPrice = props.minPrice as number | null;
+        const isSelected = salonId === selectedId;
 
-        const tierLabel = isGold ? "★ Top Salon · " : "";
-        const popup = new mapboxgl.Popup({ offset: isGold ? 18 : 10, closeButton: false, maxWidth: "220px" }).setHTML(
-          `<div style="padding:8px">
-             <p style="font-weight:600;font-size:13px;color:#1A1209;margin:0 0 2px">${salon.name}</p>
-             <p style="font-size:11px;color:#888;margin:0 0 4px">${tierLabel}${salon.address}</p>
-             <p style="font-size:11px;color:#333;margin:0">★ ${salon.average_rating.toFixed(1)}${minPrice ? ` · ab ${formatCurrency(minPrice)}` : ""}</p>
-           </div>`
-        );
+        if (minPrice && minPrice > 0) {
+          // V3-D386 (user): price-only pill, no star. Crisp 2-layer shadow; the
+          // selected pill lifts bigger with a deeper shadow so it visibly pops.
+          inner.style.cssText += `
+            display:flex;align-items:center;justify-content:center;
+            padding:${isSelected ? "6px 12px" : "5px 11px"};border-radius:9999px;
+            font-size:${isSelected ? "13px" : "12.5px"};font-weight:600;white-space:nowrap;
+            box-shadow:${isSelected
+              ? "0 2px 4px rgba(10,10,10,0.16),0 10px 22px rgba(10,10,10,0.20)"
+              : "0 1px 2px rgba(10,10,10,0.10),0 4px 12px rgba(10,10,10,0.08)"};
+            background:${isSelected ? "#0A0A0A" : "#ffffff"};
+            color:${isSelected ? "#ffffff" : "#0A0A0A"};
+            border:1px solid ${isSelected ? "#0A0A0A" : "rgba(10,10,10,0.10)"};
+          `;
+          inner.textContent = `ab ${formatCurrency(minPrice)}`;
+        } else {
+          inner.style.cssText += `
+            width:13px;height:13px;border-radius:50%;background:#0A0A0A;
+            border:2px solid #ffffff;box-shadow:0 1px 4px rgba(10,10,10,0.20);
+          `;
+        }
+        if (isSelected) inner.style.transform = "scale(1.12)";
+        el.appendChild(inner);
 
-        const marker = new mapboxgl.Marker(el)
-          .setLngLat([salon.longitude, salon.latitude])
-          .setPopup(popup)
+        el.addEventListener("click", () => onSelectRef.current?.(salonId));
+        el.addEventListener("mouseenter", () => { inner.style.transform = "scale(1.15)"; });
+        el.addEventListener("mouseleave", () => { inner.style.transform = isSelected ? "scale(1.12)" : "scale(1)"; });
+
+        // V3-D382: no marker popup. The bottom-sheet card already shows the
+        // salon's name / rating / price, so a popup bubble over the map was a
+        // redundant "second" info display.
+        const marker = new mapboxgl.Marker({ element: el })
+          .setLngLat([lng, lat])
           .addTo(map);
-
-        markersRef.current.set(salon.id, marker);
+        markersRef.current.set(salonId, marker);
       });
 
-      // Fit bounds
-      if (filteredSalons.length > 0) {
+      // Fit bounds — only when the SET of salons changes.
+      const sig = filteredSalons.map((s) => s.id).join("|");
+      if (filteredSalons.length > 0 && sig !== fittedSigRef.current) {
+        fittedSigRef.current = sig;
         const bounds = new mapboxgl.LngLatBounds();
         filteredSalons.forEach((s) => bounds.extend([s.longitude, s.latitude]));
-        map.fitBounds(bounds, { padding: 48, maxZoom: 15, duration: 500 });
+        map.fitBounds(bounds, { padding: 56, maxZoom: 15, duration: 500 });
       }
     };
 
-    if (map.loaded()) {
-      render();
-    } else {
-      map.once("load", render);
-    }
-  }, [filteredSalons, selectedId, onSelect]);
+    if (map.loaded()) render();
+    else map.once("load", render);
+    map.on("zoomend", render);
+    return () => { map.off("zoomend", render); };
+  }, [clusterIndex, selectedId]);
 
-  // Pan + popup on selection change
+  // V3-D382: PAN (don't hard-zoom) to the selected salon. Forcing zoom:15 on
+  // every swipe-select ratcheted the map deeper each time, so the overview was
+  // unrecoverable ("can't go back on the map"). Pan-only preserves the user's
+  // zoom; the popup toggle is gone (the sheet card shows the info now).
   useEffect(() => {
     if (!selectedId || !mapRef.current) return;
     const salon = filteredSalons.find((s) => s.id === selectedId);
     if (!salon) return;
-    mapRef.current.easeTo({ center: [salon.longitude, salon.latitude], zoom: 15, duration: 400 });
-    const marker = markersRef.current.get(selectedId);
-    if (marker && !marker.getPopup()?.isOpen()) marker.togglePopup();
+    mapRef.current.easeTo({ center: [salon.longitude, salon.latitude], duration: 400 });
   }, [selectedId, filteredSalons]);
 
   const handleAreaSearch = useCallback(() => {
@@ -273,25 +290,6 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
 
   return (
     <div className="relative w-full h-full min-h-[200px]">
-      {/* Category filter chips */}
-      {enhanced && !mapError && (
-        <div className="absolute top-3 left-3 right-12 z-10 flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">
-          {CATEGORY_CHIPS.map((chip) => (
-            <button
-              key={chip.key}
-              onClick={() => { setActiveCategory(chip.key); setShowAreaSearch(false); }}
-              className={`shrink-0 px-4 py-2 rounded-pill text-[11px] font-heading uppercase tracking-[.06em] shadow-warm-sm transition-colors ${
-                activeCategory === chip.key
-                  ? "bg-s-ink text-white shadow-warm-md"
-                  : "bg-white/95 text-s-ink/70 hover:bg-white border border-s-ink/10"
-              }`}
-            >
-              {chip.label}
-            </button>
-          ))}
-        </div>
-      )}
-
       {/* Map container */}
       <div ref={containerRef} className={`w-full h-full min-h-[280px] md:min-h-[400px] rounded-[12px] overflow-hidden ${mapError ? 'hidden' : ''}`} />
 

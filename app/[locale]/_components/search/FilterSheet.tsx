@@ -39,7 +39,7 @@
  */
 
 import * as React from "react";
-import { Check } from "lucide-react";
+import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Sheet,
@@ -52,6 +52,79 @@ import {
   ModalFooter,
   useResponsiveOverlay,
 } from "../primitives";
+
+// V3-D391: price filter is a SLIDER (Fresha "Maximum price" model), not buckets.
+// Single max-price thumb — drag down to cap the price; at MAX = no filter. Live
+// label while dragging; commits to the URL only on release (pointer/key up).
+function PriceSlider({
+  maxPrice,
+  onChange,
+}: {
+  maxPrice: number | null;
+  onChange: (min: number | null, max: number | null) => void;
+}) {
+  const MIN = 20;
+  const MAX = 300;
+  const STEP = 10;
+  const [val, setVal] = React.useState(maxPrice ?? MAX);
+  const valRef = React.useRef(val);
+  valRef.current = val;
+  const trackRef = React.useRef<HTMLDivElement>(null);
+  const dragging = React.useRef(false);
+  React.useEffect(() => setVal(maxPrice ?? MAX), [maxPrice]);
+  const pct = ((val - MIN) / (MAX - MIN)) * 100;
+  const fromX = (clientX: number) => {
+    const r = trackRef.current?.getBoundingClientRect();
+    if (!r) return val;
+    const ratio = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+    return Math.round((MIN + ratio * (MAX - MIN)) / STEP) * STEP;
+  };
+  const down = (e: React.PointerEvent) => {
+    dragging.current = true;
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+    setVal(fromX(e.clientX));
+  };
+  const move = (e: React.PointerEvent) => {
+    if (dragging.current) setVal(fromX(e.clientX));
+  };
+  const up = () => {
+    if (!dragging.current) return;
+    dragging.current = false;
+    onChange(null, valRef.current >= MAX ? null : valRef.current);
+  };
+  return (
+    <div className="pt-1">
+      <div className="mb-4 font-body text-[15px] font-semibold text-s-ink">
+        {val >= MAX ? "Beliebiger Preis" : `Bis CHF ${val}`}
+      </div>
+      {/* V3-D392: custom track so the FILL (left → thumb) shows colour (accent blue),
+          not a flat grey bar. Drag the whole track; commits on release. */}
+      <div
+        ref={trackRef}
+        onPointerDown={down}
+        onPointerMove={move}
+        onPointerUp={up}
+        className="relative flex h-6 cursor-pointer touch-none select-none items-center"
+        role="slider"
+        aria-label="Maximalpreis"
+        aria-valuemin={MIN}
+        aria-valuemax={MAX}
+        aria-valuenow={val}
+      >
+        <div className="h-1.5 w-full rounded-full bg-s-border" />
+        <div className="absolute h-1.5 rounded-full bg-s-accent" style={{ width: `${pct}%` }} />
+        <div
+          className="absolute h-5 w-5 -translate-x-1/2 rounded-full border-2 border-s-accent bg-white shadow-[0_2px_6px_rgba(10,10,10,0.2)]"
+          style={{ left: `${pct}%` }}
+        />
+      </div>
+      <div className="mt-2 flex justify-between font-body text-[12px] text-s-ink-3">
+        <span>CHF {MIN}</span>
+        <span>CHF {MAX}+</span>
+      </div>
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public API - all state + writers are owned by SearchTemplate (single source of
@@ -72,19 +145,21 @@ export interface FilterSheetLabels {
   close: string;
   /** Group heading - "Sortieren". */
   sortHeading: string;
-  /** Group heading - "Verfuegbarkeit". */
-  availabilityHeading: string;
+  /** Group heading - "Preis". */
+  priceHeading: string;
   /** Group heading - "Bewertung". */
   ratingHeading: string;
-  /** Verfuegbarkeit chips. */
-  openNow: string;
-  instant: string;
-  walkIn: string;
-  deals: string;
   /** Bewertung chips. */
   rating45: string;
   rating40: string;
   ratingAny: string;
+  /** Für wen / Service type. */
+  forWhoHeading: string;
+  genderAny: string;
+  genderFemale: string;
+  genderMale: string;
+  /** Ausstattung / Amenities heading. */
+  amenitiesHeading: string;
   /** Footer apply button - receives the live count. */
   apply: (count: number) => string;
 }
@@ -94,6 +169,9 @@ export interface FilterSheetProps {
   onClose: () => void;
   /** Live result count for the apply button. */
   resultCount: number;
+  /** V3-D390: when set, render ONLY this category's group (focused pill sheet);
+   *  null = the full "all filters" sheet (the ≡ button). */
+  section?: string | null;
   labels: FilterSheetLabels;
 
   // ── Sortieren ──
@@ -101,16 +179,27 @@ export interface FilterSheetProps {
   sort: string;
   onSortChange: (value: string) => void;
 
-  // ── Verfuegbarkeit (booleans) ──
-  openNow: boolean;
-  instantBookable: boolean;
-  walkIn: boolean;
-  deals: boolean;
-  onToggleBoolean: (key: string, currentlyActive: boolean) => void;
+  // ── Preis (min_price / max_price) ──
+  minPrice: number | null;
+  maxPrice: number | null;
+  onPriceChange: (min: number | null, max: number | null) => void;
 
   // ── Bewertung (min_rating) ──
   minRating: number | null;
   onMinRatingChange: (value: string | null) => void;
+
+  // ── Für wen / Service type (services.suitable_gender) ──
+  gender: string | null;
+  onGenderChange: (value: string | null) => void;
+
+  // ── Ausstattung / Amenities (salons boolean columns) ──
+  amenityOptions: { col: string; label: string; icon?: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }> }[];
+  amenities: string[];
+  onAmenityToggle: (col: string) => void;
+
+  // ── Angebote (deals / last_minute_discount) ──
+  deals: boolean;
+  onDealsToggle: () => void;
 
   /** Clears every filter param (booleans + min_rating + sort). */
   onReset: () => void;
@@ -121,8 +210,8 @@ export interface FilterSheetProps {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // V3-D351: filter chip inside a sheet group. Secondary-CTA recipe at rest
-// (white + hairline + ink), flips to Primary-CTA ink fill when active, with a
-// leading check (matches the chip-row selected affordance). 36px min height.
+// (white + hairline + ink), flips to ink fill when active — the fill alone
+// signals selected (matches TabPill / PillToggle; no check). 36px min height.
 function SheetChip({
   active,
   onClick,
@@ -144,11 +233,10 @@ function SheetChip({
         "active:scale-[0.97] active:duration-[80ms]",
         "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         active
-          ? "border border-s-ink bg-s-ink text-white"
+          ? "border border-s-border bg-s-bg-sunken text-s-ink font-semibold"
           : "border border-s-border bg-white text-s-ink hover:border-s-ink",
       )}
     >
-      {active && <Check size={14} strokeWidth={2.5} aria-hidden />}
       {children}
     </button>
   );
@@ -162,112 +250,151 @@ function FilterGroup({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border-b border-s-border py-4 last:border-b-0">
-      {/* Section H2 recipe (LOCKFILE §2.5): 18px/600/ink. */}
-      <h3 className="font-display mb-3 text-[16px] font-semibold leading-tight tracking-[-0.01em] text-s-ink">
-        {heading}
-      </h3>
+    <section className="border-b border-s-border py-4 first:pt-0 last:border-b-0">
+      {/* V3-D390: heading hidden in a focused single-category sheet (the sheet title
+          already names it). Section H2 recipe (LOCKFILE §2.5). */}
+      {heading && (
+        <h3 className="font-display mb-3 text-[16px] font-semibold leading-tight tracking-[-0.01em] text-s-ink">
+          {heading}
+        </h3>
+      )}
       {children}
     </section>
   );
 }
 
 function FilterSheetContent({
+  section,
   labels,
   sortOptions,
   sort,
   onSortChange,
-  openNow,
-  instantBookable,
-  walkIn,
-  deals,
-  onToggleBoolean,
+  minPrice,
+  maxPrice,
+  onPriceChange,
   minRating,
   onMinRatingChange,
+  gender,
+  onGenderChange,
+  amenityOptions,
+  amenities,
+  onAmenityToggle,
+  deals,
+  onDealsToggle,
 }: Omit<FilterSheetProps, "isOpen" | "onClose" | "resultCount" | "onReset">) {
   return (
     <>
-      {/* Sortieren - segmented control over SORT_OPTIONS (writes `sort`). */}
-      <FilterGroup heading={labels.sortHeading}>
-        <div className="flex rounded-[12px] bg-s-bg-sunken p-1">
-          {sortOptions.map((opt) => {
-            const isActive = opt.value === sort;
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => onSortChange(opt.value)}
-                aria-pressed={isActive}
-                className={cn(
-                  "flex-1 rounded-[9px] px-2 py-2 text-center",
-                  "font-body text-[12.5px] leading-none",
-                  "transition-[background-color,color,box-shadow] duration-150 ease-glide",
-                  "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-                  isActive
-                    ? "bg-white font-semibold text-s-ink shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
-                    : "font-medium text-s-ink-2 hover:text-s-ink",
-                )}
-              >
-                {opt.label}
-              </button>
-            );
-          })}
-        </div>
-      </FilterGroup>
+      {/* Sortieren — segmented control (writes `sort`). */}
+      {(!section || section === "sort") && (
+        <FilterGroup heading={section ? "" : labels.sortHeading}>
+          <div className="flex rounded-[12px] bg-s-bg-sunken p-1">
+            {sortOptions.map((opt) => {
+              const isActive = opt.value === sort;
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => onSortChange(opt.value)}
+                  aria-pressed={isActive}
+                  className={cn(
+                    "flex-1 rounded-[9px] px-2 py-2 text-center",
+                    "font-body text-[12.5px] leading-none",
+                    "transition-[background-color,color,box-shadow] duration-150 ease-glide",
+                    "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+                    isActive
+                      ? "bg-white font-semibold text-s-ink shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
+                      : "font-medium text-s-ink-2 hover:text-s-ink",
+                  )}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+        </FilterGroup>
+      )}
 
-      {/* Verfuegbarkeit - boolean chips (same params as the chip row). */}
-      <FilterGroup heading={labels.availabilityHeading}>
-        <div className="flex flex-wrap gap-2">
-          <SheetChip
-            active={openNow}
-            onClick={() => onToggleBoolean("open_now", openNow)}
-          >
-            {labels.openNow}
-          </SheetChip>
-          <SheetChip
-            active={instantBookable}
-            onClick={() => onToggleBoolean("instant_bookable", instantBookable)}
-          >
-            {labels.instant}
-          </SheetChip>
-          <SheetChip
-            active={walkIn}
-            onClick={() => onToggleBoolean("walk_in", walkIn)}
-          >
-            {labels.walkIn}
-          </SheetChip>
-          <SheetChip
-            active={deals}
-            onClick={() => onToggleBoolean("deals", deals)}
-          >
-            {labels.deals}
-          </SheetChip>
-        </div>
-      </FilterGroup>
+      {/* Preis — buckets writing min_price / max_price. Tapping the active one clears. */}
+      {(!section || section === "price") && (
+        <FilterGroup heading={section ? "" : labels.priceHeading}>
+          <PriceSlider maxPrice={maxPrice} onChange={onPriceChange} />
+        </FilterGroup>
+      )}
 
-      {/* Bewertung - min_rating chips (4.5+ / 4.0+ / Egal). */}
-      <FilterGroup heading={labels.ratingHeading}>
-        <div className="flex flex-wrap gap-2">
-          <SheetChip
-            active={minRating === 4.5}
-            onClick={() => onMinRatingChange(minRating === 4.5 ? null : "4.5")}
-          >
-            {labels.rating45}
-          </SheetChip>
-          <SheetChip
-            active={minRating === 4.0}
-            onClick={() => onMinRatingChange(minRating === 4.0 ? null : "4.0")}
-          >
-            {labels.rating40}
-          </SheetChip>
-          <SheetChip
-            active={minRating === null}
-            onClick={() => onMinRatingChange(null)}
-          >
-            {labels.ratingAny}
-          </SheetChip>
-        </div>
-      </FilterGroup>
+      {/* Für wen / Service type — services.suitable_gender (Alle / Damen / Herren). */}
+      {(!section || section === "gender") && (
+        <FilterGroup heading={section ? "" : labels.forWhoHeading}>
+          <div className="flex flex-wrap gap-2">
+            <SheetChip active={gender === null} onClick={() => onGenderChange(null)}>
+              {labels.genderAny}
+            </SheetChip>
+            <SheetChip active={gender === "female"} onClick={() => onGenderChange(gender === "female" ? null : "female")}>
+              {labels.genderFemale}
+            </SheetChip>
+            <SheetChip active={gender === "male"} onClick={() => onGenderChange(gender === "male" ? null : "male")}>
+              {labels.genderMale}
+            </SheetChip>
+            <SheetChip active={gender === "non_binary"} onClick={() => onGenderChange(gender === "non_binary" ? null : "non_binary")}>
+              Divers
+            </SheetChip>
+          </div>
+        </FilterGroup>
+      )}
+
+      {/* Bewertung — min_rating chips (4.5+ / 4.0+ / Egal). */}
+      {(!section || section === "rating") && (
+        <FilterGroup heading={section ? "" : labels.ratingHeading}>
+          <div className="flex flex-wrap gap-2">
+            <SheetChip active={minRating === 4.5} onClick={() => onMinRatingChange(minRating === 4.5 ? null : "4.5")}>
+              <Star size={14} fill="#FFC32B" stroke="none" aria-hidden />
+              4.5
+            </SheetChip>
+            <SheetChip active={minRating === 4.0} onClick={() => onMinRatingChange(minRating === 4.0 ? null : "4.0")}>
+              <Star size={14} fill="#FFC32B" stroke="none" aria-hidden />
+              4.0
+            </SheetChip>
+            <SheetChip active={minRating === 3.5} onClick={() => onMinRatingChange(minRating === 3.5 ? null : "3.5")}>
+              <Star size={14} fill="#FFC32B" stroke="none" aria-hidden />
+              3.5
+            </SheetChip>
+            <SheetChip active={minRating === 3.0} onClick={() => onMinRatingChange(minRating === 3.0 ? null : "3.0")}>
+              <Star size={14} fill="#FFC32B" stroke="none" aria-hidden />
+              3.0
+            </SheetChip>
+            <SheetChip active={minRating === null} onClick={() => onMinRatingChange(null)}>
+              {labels.ratingAny}
+            </SheetChip>
+          </div>
+        </FilterGroup>
+      )}
+
+      {/* Ausstattung / Amenities — salons boolean columns + icons. */}
+      {(!section || section === "amenities") && (
+        <FilterGroup heading={section ? "" : labels.amenitiesHeading}>
+          <div className="flex flex-wrap gap-2">
+            {amenityOptions.map((a) => {
+              const Icon = a.icon;
+              return (
+                <SheetChip key={a.col} active={amenities.includes(a.col)} onClick={() => onAmenityToggle(a.col)}>
+                  {Icon && <Icon size={14} strokeWidth={2} className="shrink-0" />}
+                  {a.label}
+                </SheetChip>
+              );
+            })}
+          </div>
+        </FilterGroup>
+      )}
+
+      {/* V3-D391: Angebote / Last-Minute deals — the "more filters" the user asked for. */}
+      {(!section || section === "deals") && (
+        <FilterGroup heading={section ? "" : "Angebote"}>
+          <div className="flex flex-wrap gap-2">
+            <SheetChip active={deals} onClick={onDealsToggle}>
+              Angebote
+            </SheetChip>
+          </div>
+        </FilterGroup>
+      )}
     </>
   );
 }

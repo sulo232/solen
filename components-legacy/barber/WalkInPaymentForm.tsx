@@ -90,17 +90,17 @@ export default function WalkInPaymentForm({ clientSecret, ...rest }: WalkInPayme
       stripe={stripePromise}
       options={{
         clientSecret,
-        // Load Hanken Grotesk INTO the Stripe iframe so the card fields match the app font.
-        // Without this, Stripe can't see the self-hosted next/font and falls back to system-ui,
-        // making the card form look foreign next to the rest of the page.
-        fonts: [{ cssSrc: "https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" }],
+        // Load Inter INTO the Stripe iframe so the card fields match the app body font
+        // (V3-D410: app body is Inter). Without this, Stripe falls back to system-ui and
+        // the card form looks foreign next to the rest of the page.
+        fonts: [{ cssSrc: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" }],
         appearance: {
           theme: "flat",
           variables: {
             colorPrimary: "#0A0A0A",
             colorText: "#0A0A0A",
             colorDanger: "#D32F2F",
-            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
+            fontFamily: "'Inter', system-ui, sans-serif",
             borderRadius: "12px",
             spacingUnit: "4px",
           },

@@ -5,7 +5,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
+import type { Session } from "@supabase/supabase-js";
 import MobileMenu from "./MobileMenu";
 import DesktopCitySelector from "./DesktopCitySelector";
 import { BellIcon } from "./BellIcon";
@@ -264,6 +267,12 @@ export default function Header({ locale }: { locale: string }) {
       : null;
   }, [pathname]);
 
+  // V3-D410 (user): on the Discover page the logo slot becomes the page title + a
+  // "Solen › Entdecken" breadcrumb (Solen still taps → home), replacing the standalone
+  // wordmark + the page's own big h1 that were stacking redundantly. Route-gated to /discover.
+  const isDiscover = !!pathname && /^\/[a-z]{2}\/discover\/?$/.test(pathname);
+  const tDiscover = useTranslations("discover");
+
   React.useEffect(() => {
     const HEADER_H = 80; // approximate header height incl. padding
     const onScroll = () => {
@@ -303,6 +312,24 @@ export default function Header({ locale }: { locale: string }) {
   }, [menuOpen]);
 
   const isDark = tone === "dark";
+
+  // V3-D378 (2026-05-30): header auth-awareness. Signed-in users see an account
+  // avatar (→ /profile) where the "Anmelden" CTA sits; signed-out keep the CTA.
+  // Client-side session detection mirrors BottomTabBar's proven pattern (no change
+  // to the shared server layout). Brief signed-out→avatar swap on first paint is
+  // acceptable; most header views are marketing (signed-out) anyway.
+  const [session, setSession] = React.useState<Session | null>(null);
+  React.useEffect(() => {
+    const supabase = createBrowserSupabaseClient();
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, s) => setSession(s));
+    return () => subscription.unsubscribe();
+  }, []);
+  const loggedIn = !!session;
+  const meta = session?.user?.user_metadata as Record<string, string> | undefined;
+  const avatarUrl = meta?.avatar_url || meta?.picture || null;
+  const accountName = meta?.full_name || meta?.name || session?.user?.email || "";
+  const accountInitial = accountName.trim().charAt(0).toUpperCase() || "·";
 
   // V3-D346: hide the marketing header on the operator dashboard — DashboardLayout
   // owns its own chrome (sidebar + topbar). Prevents the double-header + logo collision.
@@ -364,26 +391,43 @@ export default function Header({ locale }: { locale: string }) {
             pointer-events-none keeps the flex layout intact (hamburger
             position doesn't shift) while making the wordmark invisible
             and untappable while menu is open. */}
-        <Link
-          href={`/${locale}`}
-          aria-label="Solen zur Startseite"
-          className={cn(
-            // V3-D193 (2026-05-26): Solen wordmark weight 900 → 800 per "too bold" sweep.
-            "font-display relative inline-flex shrink-0 items-baseline text-[25px] font-semibold leading-none tracking-normal md:text-[26px] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
-            "transition-opacity duration-200 ease-glide",
-            menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
-            // V3-D101: invert logo color when header is over a dark section
-            isDark ? "text-white" : "text-s-ink",
-            // V3-D376 (2026-05-29): the logo no longer self-hides on scroll - it
-            // folds away WITH the whole header (see the header max-h collapse above).
-          )}
-        >
-          Solen
-          {/* V3-D146 (2026-05-25): green dot removed per B&W palette pivot —
-              "drop the dot entirely — just 'Solen'". Wordmark is now pure
-              typographic. Restore by un-commenting the <span> below + the
-              bg-s-ink class. */}
-        </Link>
+        {isDiscover ? (
+          /* V3-D411 (user): no breadcrumb on this top-level browse tab — the page title sits in the logo slot
+             and taps → home. Breadcrumbs are reserved for deep pages (SOURCE.md §20 navigation pattern). */
+          <Link
+            href={`/${locale}`}
+            aria-label={`${tDiscover("title")} — zur Solen Startseite`}
+            className={cn(
+              "font-display shrink-0 text-[25px] font-semibold leading-none tracking-normal md:text-[26px]",
+              "transition-opacity duration-200 ease-glide focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
+              menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
+              isDark ? "text-white" : "text-s-ink",
+            )}
+          >
+            {tDiscover("title")}
+          </Link>
+        ) : (
+          <Link
+            href={`/${locale}`}
+            aria-label="Solen zur Startseite"
+            className={cn(
+              // V3-D193 (2026-05-26): Solen wordmark weight 900 → 800 per "too bold" sweep.
+              "font-display relative inline-flex shrink-0 items-baseline text-[25px] font-semibold leading-none tracking-normal md:text-[26px] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
+              "transition-opacity duration-200 ease-glide",
+              menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
+              // V3-D101: invert logo color when header is over a dark section
+              isDark ? "text-white" : "text-s-ink",
+              // V3-D376 (2026-05-29): the logo no longer self-hides on scroll - it
+              // folds away WITH the whole header (see the header max-h collapse above).
+            )}
+          >
+            Solen
+            {/* V3-D146 (2026-05-25): green dot removed per B&W palette pivot —
+                "drop the dot entirely — just 'Solen'". Wordmark is now pure
+                typographic. Restore by un-commenting the <span> below + the
+                bg-s-ink class. */}
+          </Link>
+        )}
 
         {/* Mobile: middle area. Empty by default (flex spacer pushes the
             hamburger to the right edge — as it was for the homepage + all
@@ -513,12 +557,26 @@ export default function Header({ locale }: { locale: string }) {
               MobileMenu instead — desktop has no hamburger until login,
               so the city control needs to live inline in the nav. */}
           <DesktopCitySelector locale={locale} />
-          <Link
-            href={`/${locale}/auth/login`}
-            className="hidden md:inline-flex items-center rounded-full bg-s-ink px-5 py-[9px] font-body text-[14px] font-semibold text-white shadow-[0_4px_12px_rgba(4,51,56,0.18)] transition-all duration-200 ease-glide hover:bg-black hover:shadow-[0_6px_16px_rgba(4,51,56,0.24)] active:scale-[0.97] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
-          >
-            Anmelden
-          </Link>
+          {loggedIn ? (
+            <Link
+              href={`/${locale}/profile`}
+              aria-label="Mein Konto"
+              className="relative hidden md:grid place-items-center w-9 h-9 shrink-0 overflow-hidden rounded-full border border-s-border bg-s-bg-sunken text-[13px] font-semibold text-s-ink transition-opacity duration-200 ease-glide hover:opacity-90 focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
+            >
+              <span aria-hidden>{accountInitial}</span>
+              {avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={avatarUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
+              ) : null}
+            </Link>
+          ) : (
+            <Link
+              href={`/${locale}/auth/login`}
+              className="hidden md:inline-flex items-center rounded-full bg-s-ink px-5 py-[9px] font-body text-[14px] font-semibold text-white shadow-[0_4px_12px_rgba(4,51,56,0.18)] transition-all duration-200 ease-glide hover:bg-black hover:shadow-[0_6px_16px_rgba(4,51,56,0.24)] active:scale-[0.97] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
+            >
+              Anmelden
+            </Link>
+          )}
           {/* V3-D167 (2026-05-26): notification Bell. Sits LEFT of the
               hamburger so the visual rhythm reads: [Bell] [Menu] — both
               utility, then primary nav. Same pill styling as the
@@ -590,7 +648,7 @@ export default function Header({ locale }: { locale: string }) {
         </div>
       </div>
     </header>
-    <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} locale={locale} />
+    <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} locale={locale} loggedIn={loggedIn} />
     </>
   );
 }

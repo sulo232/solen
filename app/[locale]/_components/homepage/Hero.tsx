@@ -143,7 +143,10 @@ export default async function Hero() {
           → 64px (mt-16). Search-card 4-layer white-rim shadow REMOVED per
           user "ths shadow sh makes it weird" (Fresha has zero shadow on
           this surface) — replaced with hairline border-s-border. */}
-      <div className="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-7 pt-16 pb-2 md:px-8 md:pt-20 md:pb-16">
+      {/* V3-D348 (tweak #1 — hero density): pt-16/20 -> pt-10/14 so the search
+          card rises toward the fold. Paired with the smaller H1 + tighter
+          sub->card gap below. */}
+      <div className="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-7 pt-10 pb-2 md:px-8 md:pt-14 md:pb-16">
         <div className="w-full">
           {displayName && (
             // V2-D70 (2026-05-18): greeting weight bumped 500 medium → still 500
@@ -185,7 +188,10 @@ export default async function Hero() {
               Fresha. Measured Fresha values: H1 40px mobile / 64px desktop,
               weight 700, lh 1.1, RoobertPRO (we use Geist as closest free).
               Will wrap to 2 lines mobile (editorial weight, intended). */}
-          <h1 className="mb-3 font-display text-[clamp(40px,10vw,64px)] font-bold leading-[1.1] tracking-[-0.02em] text-s-ink">
+          {/* V3-D348 (tweak #1): H1 clamp 40/64 -> 30/44, leading 1.1 -> 1.08.
+              Still the page's biggest type, but stops bullying the fold so the
+              search is reachable without scrolling. */}
+          <h1 className="mb-3 font-display text-[clamp(30px,8vw,44px)] font-bold leading-[1.08] tracking-[-0.02em] text-s-ink">
             Termin in 30 Sekunden.
           </h1>
           {/* V3-D327: Fresha sub 16px mobile / 22px desktop, weight 400, lh 1.3-1.4 */}
@@ -202,7 +208,10 @@ export default async function Hero() {
             white-on-grey card has natural separation; the shadow was noise.
             Sub→card gap bumped 12→64px (mt-16) to match Fresha's measured
             breathing room. Inner SearchBar provides its own border + radius. */}
-        <div className="relative rounded-[11px] mt-16 md:mt-16">
+        {/* V3-D348 (tweak #1): sub->card gap mt-16 (64px) -> mt-6/8 (24/32px).
+            This 64px gap was the single biggest reason the search sat below
+            the fold. */}
+        <div className="relative rounded-[11px] mt-6 md:mt-8">
           <SearchBar />
         </div>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useReducer, ReactNode } from 'react';
-import type { BookingContextType, BookingFormData, BookingStep } from './booking-state';
+import type { BookingContextType, BookingFormData, BookingStep, SelectedService } from './booking-state';
 
 const BookingContext = createContext<BookingContextType | undefined>(undefined);
 
@@ -56,16 +56,41 @@ export function BookingProvider({
   children,
   salonId,
   initialStaffId,
+  initialService,
+  initialStart,
 }: {
   children: ReactNode;
   salonId: string;
   initialStaffId?: string;
+  initialService?: SelectedService;
+  initialStart?: string;
 }) {
-  const [state, dispatch] = useReducer(bookingReducer, initialState, (base) =>
-    initialStaffId
-      ? { ...base, formData: { ...base.formData, selectedStaffId: initialStaffId } }
-      : base
-  );
+  const [state, dispatch] = useReducer(bookingReducer, initialState, (base) => {
+    let fd = base.formData;
+    if (initialStaffId) fd = { ...fd, selectedStaffId: initialStaffId };
+    // V3-D379: arriving from a card slot pill (?service=<id>) seeds the cart with
+    // that service + its totals, so the user lands mid-flow, not on an empty step.
+    if (initialService) {
+      fd = {
+        ...fd,
+        services: [initialService],
+        totalPrice: initialService.price,
+        totalDuration: initialService.duration_minutes,
+      };
+    }
+    // V3-D380: ?start=<ISO> (the tapped slot's time) seeds the date + time so the
+    // datetime step lands pre-filled on that slot. selectedTime is "HH:MM" (local,
+    // 24h) to match DateTimeStep's slot.time format.
+    if (initialStart) {
+      const d = new Date(initialStart);
+      if (!Number.isNaN(d.getTime())) {
+        const hh = String(d.getHours()).padStart(2, "0");
+        const mm = String(d.getMinutes()).padStart(2, "0");
+        fd = { ...fd, selectedDate: d, selectedTime: `${hh}:${mm}` };
+      }
+    }
+    return fd === base.formData ? base : { ...base, formData: fd };
+  });
 
   const goToStep = (step: BookingStep) => {
     dispatch({ type: 'SET_STEP', payload: step });

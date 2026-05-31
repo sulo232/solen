@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import CategoryTabBar from "@/components-legacy/discovery/CategoryTabBar";
 import MasonryGrid from "@/components-legacy/discovery/MasonryGrid";
 import ItemCard from "@/components-legacy/discovery/ItemCard";
 import VideoCard from "@/components-legacy/discovery/VideoCard";
@@ -14,13 +13,42 @@ import ProfileSetupModal from "@/components-legacy/discovery/ProfileSetupModal";
 import InlinePrefsPanel from "@/components-legacy/discovery/InlinePrefsPanel";
 import FeaturedBoards from "@/components-legacy/discovery/FeaturedBoards";
 import FilterDrawer from "@/components-legacy/discovery/FilterDrawer";
+import PatternSelector from "@/components-legacy/discovery/PatternSelector";
 import DiscoveryErrorState from "@/components-legacy/discovery/DiscoveryErrorState";
 import PostFromDiscover from "@/components-legacy/discovery/PostFromDiscover";
 import ForYouSection from "@/components-legacy/discovery/ForYouSection";
 import AISuggestionPills from "@/components-legacy/discovery/AISuggestionPills";
+import SearchAutocomplete from "@/components-legacy/discovery/SearchAutocomplete";
 import DiscoveryAdmin from "@/components-legacy/discovery/DiscoveryAdmin";
-import FilterBar from "@/components-legacy/ui/FilterBar";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
+
+// PROOF (frontend-only, V3-D389): seeded salon-portfolio discovery items to preview how OPTED-IN salon photos would
+// render in the feed — studio attribution + tap→salon + varied aspect ratios (900×650, 700×700, 640×860). Images are
+// picsum placeholders; real salons + slugs. NO DB / NO sync. Remove this const + its prepend + the picsum allowlist in
+// next.config when the real opt-in sync lands.
+const PROOF_SALON_ITEMS = [
+  { id: "proof-salon-1", source: "salon", content_type: "salon", media_type: "photo", category: "hair",
+    image_url: "https://picsum.photos/seed/solensalon1/900/650", tiktok_url: null, tiktok_embed_html: null,
+    author_name: "Muse Beauty Studio", salon_slug: "muse-beauty-studio", style_name: "Balayage",
+    tags: ["balayage"], like_count: 0, alt_text: "Balayage — Muse Beauty Studio" },
+  { id: "proof-salon-2", source: "salon", content_type: "salon", media_type: "photo", category: "nails",
+    image_url: "https://picsum.photos/seed/solensalon2/700/700", tiktok_url: null, tiktok_embed_html: null,
+    author_name: "Nail Studio Bliss", salon_slug: "nail-studio-bliss", style_name: "Gel Nails",
+    tags: ["gel nails"], like_count: 0, alt_text: "Gel nails — Nail Studio Bliss" },
+  { id: "proof-salon-3", source: "salon", content_type: "salon", media_type: "photo", category: "hair",
+    image_url: "https://picsum.photos/seed/solensalon3/640/860", tiktok_url: null, tiktok_embed_html: null,
+    author_name: "Old Town Barbers", salon_slug: "old-town-barbers", style_name: "Skin Fade",
+    tags: ["skin fade"], like_count: 0, alt_text: "Skin fade — Old Town Barbers" },
+] as unknown as DiscoveryItem[];
+
+// V3-D407 (#22): quick-chip labels are now DATA-DRIVEN — fetched from /api/discovery/chip-terms (the top style
+// tags in the actual content), so chips always lead to populated results and self-update as content grows. This
+// replaces the hardcoded list (Skin Fade / Buzz / Bob) that matched zero items. Photo backing is still the Nth
+// feed thumbnail (same approved visual; a real per-style image library is a separate, data-dependent step).
+// formatChip turns a raw tag ("textured-crop") into a display label ("Textured Crop").
+const formatChip = (term: string): string =>
+  term.split(/[-\s]+/).filter(Boolean).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 
 function DiscoverPageContent() {
   const locale = useLocale();
@@ -39,29 +67,17 @@ function DiscoverPageContent() {
     (searchParams?.get("category") as DiscoveryCategory | "all") || "all"
   );
   const [search, setSearch] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [patternOpen, setPatternOpen] = useState(false); // V3-D397: Hair-pattern pill dropdown
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
-
-  const [gridVisible, setGridVisible] = useState(true);
+  // V3-D407/408 (#22): data-driven quick chips — top style tags from real content, each with a representative
+  // photo OF that style (not a generic feed thumbnail). Fetched once; stable across filter taps.
+  const [chipTerms, setChipTerms] = useState<{ term: string; thumb: string }[]>([]);
 
   // Derive filter values from activeFilters
   const gender = activeFilters.find((f) => f.pillId === "gender")?.subId as DiscoveryGender | undefined || "all";
   const texture = activeFilters.find((f) => f.pillId === "texture")?.subId || null;
   const style = activeFilters.find((f) => f.pillId === "style")?.subId || null;
-
-  const handleCategoryChange = (key: string) => {
-    setGridVisible(false);
-    setTimeout(() => {
-      setCategory(key as DiscoveryCategory | "all");
-      setGridVisible(true);
-      const params = new URLSearchParams(searchParams?.toString() ?? "");
-      if (key === "all") {
-        params.delete("category");
-      } else {
-        params.set("category", key);
-      }
-      router.push(`?${params.toString()}`, { scroll: false });
-    }, 80);
-  };
 
   // Auth state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -98,8 +114,32 @@ function DiscoverPageContent() {
     return () => { cancelled = true; };
   }, []);
 
-  // Fetch items
+  // V3-D407 (#22): load the data-driven quick-chip terms once (top style tags in real content).
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/discovery/chip-terms")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (!cancelled && Array.isArray(d?.terms)) setChipTerms(d.terms.slice(0, 9)); })
+      .catch((err) => console.error("[Discover] chip-terms load failed:", err));
+    return () => { cancelled = true; };
+  }, []);
+
+  // Fetch items — V3-D402 (perf): session cache keyed by the filter signature. Re-tapping a filter combo you've
+  // already loaded restores its page-1 results instantly (no network, no grid flash) instead of a ~700ms refetch.
+  const feedCache = useRef<Map<string, { items: DiscoveryItem[]; hasMore: boolean }>>(new Map());
   const fetchItems = useCallback(async (pageNum: number, append = false) => {
+    const sig = JSON.stringify({ category, gender, search, texture, style });
+    // Cache-first for the initial page of a combo → instant repeat taps, no loading flash.
+    if (pageNum === 1 && !append) {
+      const cached = feedCache.current.get(sig);
+      if (cached) {
+        setItems(cached.items);
+        setHasMore(cached.hasMore);
+        setError(false);
+        setLoading(false);
+        return;
+      }
+    }
     setLoading(true);
     setError(false);
     try {
@@ -118,6 +158,8 @@ function DiscoverPageContent() {
         setItems((prev) => [...prev, ...(data.items ?? [])]);
       } else {
         setItems(data.items ?? []);
+        // Cache only the initial page of a combo (infinite-scroll pages stay live).
+        feedCache.current.set(sig, { items: data.items ?? [], hasMore: data.has_more ?? false });
       }
       setHasMore(data.has_more ?? false);
     } catch (err) {
@@ -154,8 +196,16 @@ function DiscoverPageContent() {
   }, [hasMore, loading, page, fetchItems]);
 
   const handleItemClick = (item: DiscoveryItem) => {
+    // V3-D389: salon-sourced items tap through to the salon page, not a discovery detail.
+    if ((item.source === "salon" || item.content_type === "salon") && item.salon_slug) {
+      router.push(`/${locale}/salon/${item.salon_slug}`);
+      return;
+    }
     router.push(`/${locale}/discover/${item.id}`);
   };
+
+  // V3-D389 PROOF: prepend the seeded salon items in the default "all" feed only (contextual, not inside every filter).
+  const feedItems = category === "all" ? [...PROOF_SALON_ITEMS, ...items] : items;
 
   const handleProfileSave = async (prefs: Record<string, string | null>) => {
     try {
@@ -225,72 +275,132 @@ function DiscoverPageContent() {
   return (
     <main className="min-h-screen bg-white pt-4 pb-24">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
-        <div className="mb-6 flex items-start justify-between gap-4">
-          <div>
-            {/* V3-D341 (W13, 2026-05-28): tracking snap — h1 [0.01em] (positive, non-canonical) → [-0.01em] (H2 recipe §2.5); subtitle [.12em] → [.08em] (canonical max). */}
-            <h1 className="font-heading text-[clamp(22px,2.8vw,26px)] leading-[1.05] tracking-[-0.01em] text-s-ink">
-              {t("title")}
-            </h1>
-            <p className="text-xs font-heading uppercase tracking-[.08em] text-s-ink/40 mt-1.5">
-              {t("subtitle")}
-            </p>
+        {/* V3-D410 (user): the page title ("Entdecken") + a "Solen › Entdecken" breadcrumb now live in the global
+            header's logo slot (see Header.tsx, route-gated to /discover) — so the standalone h1 here is removed to
+            stop the title stacking under the wordmark. */}
+
+        {/* Search (V1: top of the filter zone). V4: a cancel-arrow appears left on focus (Pinterest), and the trending
+            suggestions drop down. Tap the arrow to clear + exit search. */}
+        <div className="relative mb-3">
+          <div className="flex items-center gap-2">
+            {/* V3-D392: always rendered (toggle `hidden`, not presence) — a conditional sibling BEFORE the input would
+                remount it on focus and drop focus, resetting searchFocused. */}
+            <button
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); setSearch(""); setSearchFocused(false); (document.activeElement as HTMLElement | null)?.blur?.(); }}
+              aria-label={t("clearSearch")}
+              className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink ${searchFocused ? "" : "hidden"}`}
+            >
+              <ArrowLeft size={18} />
+            </button>
+            <div className="min-w-0 flex-1">
+              <DiscoverySearchBar
+                value={search}
+                onChange={setSearch}
+                placeholder={t("searchPlaceholder")}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
+              />
+            </div>
+            {/* V3-D399 (measured Pinterest): tune/filter icon BESIDE the search bar (not after the category pills). */}
+            <FilterDrawer
+              category={category}
+              gender={gender}
+              texture={texture}
+              style={style}
+              onCategoryChange={setCategory}
+              onGenderChange={(g) => {
+                const next = activeFilters.filter((f) => f.pillId !== "gender");
+                if (g !== "all") next.push({ pillId: "gender", subId: g, label: g });
+                setActiveFilters(next);
+              }}
+              onTextureChange={(tx) => {
+                const next = activeFilters.filter((f) => f.pillId !== "texture");
+                if (tx) next.push({ pillId: "texture", subId: tx, label: tx });
+                setActiveFilters(next);
+              }}
+              onStyleChange={(s) => {
+                const next = activeFilters.filter((f) => f.pillId !== "style");
+                if (s) next.push({ pillId: "style", subId: s, label: s });
+                setActiveFilters(next);
+              }}
+              onReset={resetFilters}
+            />
           </div>
-          {/* Mobile filter drawer trigger */}
-          <FilterDrawer
-            category={category}
-            gender={gender}
-            texture={texture}
-            style={style}
-            onCategoryChange={setCategory}
-            onGenderChange={(g) => {
-              const newFilters = activeFilters.filter((f) => f.pillId !== "gender");
-              if (g !== "all") {
-                newFilters.push({ pillId: "gender", subId: g, label: g });
-              }
-              setActiveFilters(newFilters);
-            }}
-            onTextureChange={(t) => {
-              const newFilters = activeFilters.filter((f) => f.pillId !== "texture");
-              if (t) {
-                newFilters.push({ pillId: "texture", subId: t, label: t });
-              }
-              setActiveFilters(newFilters);
-            }}
-            onStyleChange={(s) => {
-              const newFilters = activeFilters.filter((f) => f.pillId !== "style");
-              if (s) {
-                newFilters.push({ pillId: "style", subId: s, label: s });
-              }
-              setActiveFilters(newFilters);
-            }}
-            onReset={resetFilters}
-          />
+          {searchFocused && (
+            <div className="absolute inset-x-0 top-full z-30 mt-2 rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
+              {/* V3-D395: typed query → autocomplete suggestion list (matches the mockup); empty → trending pills. */}
+              {search.trim() ? (
+                <SearchAutocomplete
+                  query={search}
+                  onSelect={(term) => { setSearch(term); setSearchFocused(false); }}
+                />
+              ) : (
+                <AISuggestionPills
+                  category={category}
+                  onSelect={(term) => { setSearch(term); setSearchFocused(false); }}
+                />
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Category tab row */}
-        <div className="mb-6">
-          <CategoryTabBar
-            activeCategory={category}
-            onChange={handleCategoryChange}
-          />
-        </div>
-
-        {/* Universal FilterBar (Zone 1) - placed BELOW CategoryTabBar */}
-        <div className="mb-6">
-          <FilterBar
-            pills={filterPills}
-            activeFilters={activeFilters}
-            onFilterChange={setActiveFilters}
-            zone={1}
-            className="mb-4"
-          />
-          <DiscoverySearchBar value={search} onChange={setSearch} />
-        </div>
-
-        {/* AI Suggestion Pills */}
-        <div className="mb-5">
-          <AISuggestionPills category={category} onSelect={setSearch} />
+        {/* V3-D401 (user): category tabs REMOVED; the texture chip row takes their slot as the primary filter row.
+            Category is still switchable via the tune/filter sheet (FilterDrawer → CategoryPills). */}
+        <div className="relative mb-5">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none -mx-4 px-4">
+              {/* texture chip — dark when a pattern is picked (shows the pattern name), grey "Textur" otherwise */}
+              <button
+                type="button"
+                onClick={() => setPatternOpen((o) => !o)}
+                aria-expanded={patternOpen}
+                className={`inline-flex shrink-0 items-center gap-1.5 rounded-pill px-3.5 py-2 text-xs font-heading font-medium transition-colors duration-150 ${
+                  texture
+                    ? "bg-s-ink text-white"
+                    : "bg-s-bg-sunken text-s-ink border border-s-border hover:bg-s-ink/[0.06]"
+                }`}
+              >
+                {texture ? texture.charAt(0).toUpperCase() + texture.slice(1) : t("texture")}
+                <ChevronDown size={14} className={`transition-transform duration-150 ${patternOpen ? "rotate-180" : ""}`} />
+              </button>
+              {/* V3-D407/408 (#22): photo-backed quick chips — data-driven labels (top style tags, never an empty
+                  feed) AND a representative photo OF that style (not a generic feed thumbnail). Same chip visual. */}
+              {chipTerms.map(({ term, thumb }) => {
+                const label = formatChip(term);
+                return (
+                  <button
+                    key={term}
+                    type="button"
+                    onClick={() => setSearch(label)}
+                    className="relative h-10 w-[94px] shrink-0 overflow-hidden rounded-[14px]"
+                    aria-label={label}
+                  >
+                    <img src={thumb} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                    <span className="absolute inset-0 bg-gradient-to-b from-s-ink/10 to-s-ink/55" />
+                    <span className="absolute bottom-1.5 left-2.5 z-10 font-heading text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,.55)" }}>{label}</span>
+                  </button>
+                );
+              })}
+            </div>
+            {patternOpen && (
+              <>
+                {/* click-away */}
+                <div className="fixed inset-0 z-20" onClick={() => setPatternOpen(false)} />
+                <div className="absolute left-0 top-full z-30 mt-2 rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
+                  <PatternSelector
+                    category="hair"
+                    heading=""
+                    selected={texture}
+                    onSelect={(tx) => {
+                      const next = activeFilters.filter((f) => f.pillId !== "texture");
+                      if (tx) next.push({ pillId: "texture", subId: tx, label: tx });
+                      setActiveFilters(next);
+                      setPatternOpen(false);
+                    }}
+                  />
+                </div>
+              </>
+            )}
         </div>
 
         {/* Inline preferences setup (shown when profile not configured) */}
@@ -324,29 +434,24 @@ function DiscoverPageContent() {
         ) : items.length === 0 ? (
           <DiscoveryEmptyState />
         ) : (
-          <div
-            className="transition-opacity duration-150"
-            style={{ opacity: gridVisible ? 1 : 0 }}
-          >
-            <MasonryGrid
-              items={items}
-              renderItem={(item, width) =>
-                item.media_type === "tiktok" ? (
-                  <VideoCard
-                    item={item}
-                    onClick={() => handleItemClick(item)}
-                    isAuthenticated={isAuthenticated}
-                  />
-                ) : (
-                  <ItemCard
-                    item={item}
-                    onClick={() => handleItemClick(item)}
-                    isAuthenticated={isAuthenticated}
-                  />
-                )
-              }
-            />
-          </div>
+          <MasonryGrid
+            items={feedItems}
+            renderItem={(item, width) =>
+              item.media_type === "tiktok" ? (
+                <VideoCard
+                  item={item}
+                  onClick={() => handleItemClick(item)}
+                  isAuthenticated={isAuthenticated}
+                />
+              ) : (
+                <ItemCard
+                  item={item}
+                  onClick={() => handleItemClick(item)}
+                  isAuthenticated={isAuthenticated}
+                />
+              )
+            }
+          />
         )}
 
         {/* Infinite scroll trigger */}

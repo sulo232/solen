@@ -16,11 +16,9 @@ import { Toaster } from "./_components/primitives/Toast";
 import Header from "./_components/layout/Header";
 import Footer from "./_components/layout/Footer";
 import HideInBooking from "./_components/layout/HideInBooking";
-// V3-D142 (2026-05-25): Revolut-style city-selector top bar. Sits above
-// the Header site-wide. Hides itself when user has dismissed (30-day cookie)
-// or when no city change is needed. Variant B from
-// public/solen-city-top-bar-variants.html.
-import CityTopBar from "./_components/layout/CityTopBar";
+// V3-D348 (tweak #3): CityTopBar retired — city control moved into the Header
+// as a single responsive "📍 Basel ▾" pill (DesktopCitySelector). File kept on
+// disk for revert.
 // BottomTabBar import removed 2026-05-03 per Q58 (deprecated for web rendering).
 // Keep file at components/layout/BottomTabBar.tsx for future PWA mount.
 // import BottomTabBar from "@/components-legacy/layout/BottomTabBar";
@@ -93,11 +91,13 @@ export default async function LocaleLayout({
                 V3-D125 — fully removed.
               To revive: pull the deleted block from git history (last seen
               in layout.tsx at HEAD~1, lines 85-109). */}
-          {/* V3-D142 (2026-05-25): city-selector top bar sits above Header.
-              Hidden once user dismisses (30-day cookie) — no-flash via
-              client-side mount guard inside the component. */}
-          <HideInBooking>
-            <CityTopBar locale={locale} />
+          {/* V3-D348 (tweak #3): the redundant CityTopBar row is retired —
+              the city control is now a single "📍 Basel ▾" pill inside the
+              Header (DesktopCitySelector, made responsive). Reclaims the top
+              strip and removes the duplicate-Basel + mystery-arrow clutter.
+              Header carries showOnAuth so login + register keep the global
+              Solen wordmark + hamburger. */}
+          <HideInBooking showOnAuth>
             <Header locale={locale} />
           </HideInBooking>
           <PageTransitionWrapper>

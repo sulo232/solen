@@ -44,6 +44,10 @@ interface Service {
   name_de: string;
   name_en: string;
   category: string;
+  // V3-D380: ServicesStaffStep's Service requires subcategory and the booking
+  // page query already selects it — declaring it here aligns the two Service
+  // types (fixes the pre-existing TS2719 "two unrelated Service types" error).
+  subcategory: string | null;
   duration_minutes: number;
   price: number;
   is_active: boolean;
