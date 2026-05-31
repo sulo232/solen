@@ -125,6 +125,10 @@ DEFAULT_SCAN_GLOBS = [
     "app/**/*.tsx",
     "app/**/*.ts",
     "app/**/*.css",
+    # V3-D420: most shared components live in components-legacy/; scan it so
+    # control-elevation (A14) + the other rules cover it. INFO rules stay non-blocking.
+    "components-legacy/**/*.tsx",
+    "components/**/*.tsx",
 ]
 
 # Exclusion paths — never scan these.
@@ -289,6 +293,19 @@ CATEGORY_BRANCH_RE = re.compile(
     r"category\s*===?\s*[\'\"](?:coiffeur|barbershop|barber|nails|spa|massage)[\'\"]",
     re.IGNORECASE,
 )
+
+# A14 — control elevation (V3-D420 / CONTROL_ELEVATION.md). A control SHAPE
+# (rounded-full / rounded-btn / rounded-pill) carrying bg-white(/NN) + a box-shadow,
+# NOT over a photo (no backdrop-blur / absolute / inset-0 / object-cover hint),
+# = the banned "elevated white on a calm surface" drift. INFO + heuristic: over-photo
+# controls and rounded-2xl/3xl card surfaces are intentionally NOT matched.
+A14_BG_WHITE_RE = re.compile(r"\bbg-white(?:/\d+)?\b")
+A14_SHADOW_RE = re.compile(
+    r"\bshadow-(?:elevation-[123]|card|card-hover|surface|surface-hover|"
+    r"warm-(?:xs|sm|md|lg|xl|float)|v5-[\w-]+|pressed|\[)"
+)
+A14_CONTROL_SHAPE_RE = re.compile(r"\brounded-(?:full|btn|pill)\b")
+A14_OVER_IMAGE_RE = re.compile(r"\b(?:backdrop-blur|absolute|inset-0|object-cover)\b|FROST_GLASS")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -541,6 +558,18 @@ def scan_file(path: Path, root: Path | None = None) -> list[Finding]:
                     snippet=line,
                     recommendation="Per LOCKFILE §2.5 rule A13 (card text hierarchy, V3-D346): font-bold (700) is reserved for Hero H1. Card/list-item names use font-medium (500) as the single ink anchor; meta uses font-normal text-s-ink-2. Drop font-bold -> font-medium (if this is the name) or font-normal text-s-ink-2 (if this is meta). Or use the <CardName>/<CardMeta> primitives.",
                 ))
+
+        # A14 — control elevation (INFO, V3-D420). White + shadow on a control
+        # shape that is NOT over a photo = grey-haze drift; calm controls go flat.
+        if (A14_CONTROL_SHAPE_RE.search(line)
+                and A14_BG_WHITE_RE.search(line)
+                and A14_SHADOW_RE.search(line)
+                and not A14_OVER_IMAGE_RE.search(line)):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="INFO A14: elevated-white control on a calm surface",
+                snippet=line,
+                recommendation="Per CONTROL_ELEVATION.md (V3-D420): white+shadow is reserved for glass-over-photo (FROST_GLASS, lib/frost-glass.ts) and the one ink CTA. A calm control on white / s-bg-sunken casts NO shadow: text -> bg-s-bg-sunken no shadow; icon-only -> bg-white border-s-border no shadow. If this control IS over a photo, ignore (the line scanner can't see the background).",
+            ))
 
     return findings
 

@@ -103,8 +103,6 @@ export function SalonStickyTabNav({
     window.scrollTo({ top: y, behavior: "smooth" });
   };
 
-  const tabs = TAB_SECTIONS.filter((t) => availableSections.has(t.key));
-
   // V3-D206 (2026-05-26, salon-detail audit): mounted state for portal render.
   // The page wrapper has `isolation: isolate` on its outer <main>, which scopes
   // ALL z-indexes inside it — even our z-[60] couldn't escape above the site
@@ -112,6 +110,28 @@ export function SalonStickyTabNav({
   // breaks out of the isolation scope so z-[60] truly wins.
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => { setMounted(true); }, []);
+
+  // Tab DISPLAY order must match SCROLL order. TAB_SECTIONS lists "Über uns" 2nd,
+  // but the About section renders BELOW Reviews in the DOM — so the active underline
+  // jumped backward (Bewertungen → Über uns) on scroll: the "glitchy tab bar" the
+  // user reported. Sort tabs by live DOM position so the highlight always advances
+  // monotonically, drift-proof against future section reorders.
+  const [orderedKeys, setOrderedKeys] = React.useState<TabKey[]>(() => TAB_SECTIONS.map((t) => t.key));
+  React.useEffect(() => {
+    const sorted = TAB_SECTIONS
+      .map((t) => {
+        const el = document.getElementById(`section-${t.key}`);
+        return { key: t.key, top: el ? el.getBoundingClientRect().top + window.scrollY : Infinity };
+      })
+      .filter((x) => Number.isFinite(x.top))
+      .sort((a, b) => a.top - b.top)
+      .map((x) => x.key);
+    if (sorted.length) setOrderedKeys(sorted);
+  }, [mounted]);
+
+  const tabs = orderedKeys
+    .map((k) => TAB_SECTIONS.find((t) => t.key === k))
+    .filter((t): t is (typeof TAB_SECTIONS)[number] => !!t && availableSections.has(t.key));
 
   if (tabs.length === 0) return null;
   if (!mounted) return null;

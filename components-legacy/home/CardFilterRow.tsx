@@ -91,8 +91,8 @@ export default function CardFilterRow({
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2",
           "active:scale-[0.97]",
           isActive
-            ? "text-white shadow-elevation-1 hover:brightness-[1.06]"
-            : "bg-white text-s-ink-2 border border-s-ink/[0.08] shadow-elevation-1 hover:bg-s-bg-sunken",
+            ? "text-white hover:brightness-[1.06]"
+            : "bg-white text-s-ink-2 border border-s-ink/[0.08] hover:bg-s-bg-sunken",
         ].join(" ")}
         style={{
           padding: "8px 16px",

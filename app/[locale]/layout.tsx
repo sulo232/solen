@@ -97,13 +97,13 @@ export default async function LocaleLayout({
               strip and removes the duplicate-Basel + mystery-arrow clutter.
               Header carries showOnAuth so login + register keep the global
               Solen wordmark + hamburger. */}
-          <HideInBooking showOnAuth>
+          <HideInBooking showOnAuth coverSalonDetail>
             <Header locale={locale} />
           </HideInBooking>
           <PageTransitionWrapper>
             <CompareProvider>
               <main id="main-content" tabIndex={-1} className="pb-[env(safe-area-inset-bottom)] isolate">
-                <HideInBooking>
+                <HideInBooking coverSalonDetail>
                   <Breadcrumb />
                 </HideInBooking>
                 {children}

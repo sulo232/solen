@@ -44,7 +44,6 @@ import { computeOpenStatus } from "./_shared";
 export function SalonHeader({ salon }: { salon: SalonDetail }) {
   const status = computeOpenStatus(salon.opening_hours);
   const fullAddress = salon.address;
-  const directionsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
 
   // V3-D232: scroll to reviews on (N) click. Same anchor SalonSidebar uses.
   const scrollToReviews = React.useCallback(() => {
@@ -52,11 +51,15 @@ export function SalonHeader({ salon }: { salon: SalonDetail }) {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  // V3-D232: scroll to about/contact on address click — opens the location
-  // context. Fresha's address-button likely opens a map modal; we route to
-  // the about-section anchor which contains the static map placeholder.
-  const scrollToAbout = React.useCallback(() => {
-    const el = document.getElementById("section-about");
+  // Tap the open/closed status → jump to the opening-hours section.
+  const scrollToHours = React.useCallback(() => {
+    const el = document.getElementById("section-hours");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
+  // Tap the address → jump to the location/map section (directions live there now).
+  const scrollToLocation = React.useCallback(() => {
+    const el = document.getElementById("section-location");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
@@ -72,10 +75,12 @@ export function SalonHeader({ salon }: { salon: SalonDetail }) {
             {salon.name}
           </h1>
 
-          {/* Meta row — V3-D232: ONE inline wrap-row, `•` bullets between groups.
-              Was 3 stacked rows + pill row. Now matches Fresha's structure. */}
-          <div className="font-body mt-3 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[14px] text-s-ink-2 md:text-[15px]">
-            <span className="inline-flex items-center gap-1.5">
+          {/* Meta — stacked rows for a clear order, NO separator dots:
+              (1) rating  (2) open status → taps to opening hours  (3) address
+              as the link itself (blue) → directions. */}
+          <div className="font-body mt-3 space-y-1.5 text-[14px] text-s-ink-2 md:text-[15px]">
+            {/* Rating */}
+            <div className="flex items-center gap-1.5">
               <Star size={15} fill="#FFC32B" stroke="none" />
               <strong className="font-semibold text-s-ink">
                 {salon.average_rating?.toFixed(1) ?? "—"}
@@ -84,40 +89,32 @@ export function SalonHeader({ salon }: { salon: SalonDetail }) {
                 type="button"
                 onClick={scrollToReviews}
                 aria-label={`${salon.review_count} Bewertungen anzeigen`}
-                // 2026-05-30: links → saturated blue (s-accent), no underline (user direction; reverses V3-D335).
                 className="font-medium text-s-accent transition-opacity hover:opacity-80"
               >
                 ({salon.review_count.toLocaleString("de-CH")})
               </button>
-            </span>
+            </div>
 
-            <Dot />
-
-            <StatusInline isOpen={status.isOpen} label={status.label} size="md" />
-
-            <Dot />
-
-            <span className="inline-flex items-center gap-1">
-              <MapPin size={14} className="shrink-0 text-s-ink-3" strokeWidth={2} />
-              <button
-                type="button"
-                onClick={scrollToAbout}
-                aria-label="Standort anzeigen"
-                className="text-left text-s-ink-2 transition-colors hover:text-s-ink"
-              >
-                {fullAddress}
-              </button>
-            </span>
-
-            <a
-              href={directionsHref}
-              target="_blank"
-              rel="noreferrer noopener"
-              // 2026-05-30: links → saturated blue (s-accent), no underline.
-              className="font-medium text-s-accent transition-opacity hover:opacity-80"
+            {/* Open status — tap to jump to the opening hours */}
+            <button
+              type="button"
+              onClick={scrollToHours}
+              aria-label="Öffnungszeiten anzeigen"
+              className="block text-left transition-opacity hover:opacity-80"
             >
-              Wegbeschreibung
-            </a>
+              <StatusInline isOpen={status.isOpen} label={status.label} size="md" />
+            </button>
+
+            {/* Address — the link itself opens directions (no separate "Wegbeschreibung") */}
+            <button
+              type="button"
+              onClick={scrollToLocation}
+              aria-label="Standort anzeigen"
+              className="inline-flex items-center gap-1 text-left text-s-ink-2 transition-colors hover:text-s-ink"
+            >
+              <MapPin size={14} className="shrink-0 text-s-ink-3" strokeWidth={2} />
+              {fullAddress}
+            </button>
           </div>
         </div>
 
@@ -153,8 +150,4 @@ export function SalonHeader({ salon }: { salon: SalonDetail }) {
       </div>
     </header>
   );
-}
-
-function Dot() {
-  return <span className="text-s-ink-3" aria-hidden>·</span>;
 }

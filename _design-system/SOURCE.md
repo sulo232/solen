@@ -445,6 +445,7 @@ Three-level system. Warm-tinted RGB `(50, 47, 44)` — not pure black (clinical)
 - Never use `shadow-2xl` Tailwind defaults — too harsh
 - Never use colored shadows (`rgba(brand, ...)`) — clinical / off-brand
 - Always pair shadow change with motion (`transition-shadow duration-200`)
+- **Controls follow CONTROL_ELEVATION (V3-D420):** white+shadow on a button / pill / icon-control is only for glass-over-photo (`FROST_GLASS`, `lib/frost-glass.ts`) or the one ink CTA. Calm controls on white / `s-bg-sunken` cast NO shadow (text → flat sunken, icon → `bg-white border-s-border`). See `_design-system/CONTROL_ELEVATION.md`. The elevation-1-at-rest above is for SURFACES, not controls.
 
 ---
 
@@ -849,6 +850,8 @@ V3-D197 lock. Before picking ANY color class, answer in order:
    `bg-s-bg-base` / `bg-s-bg-sunken` for surfaces, `border-s-border` for
    hairlines.
 ```
+
+**Companion tree (V3-D420), control elevation:** the color tree above picks the *hue*; `_design-system/CONTROL_ELEVATION.md` picks the *elevation* (white-glass A over photo / flat B on a calm surface / ink C primary). Run both before styling any control.
 
 **This must be answered in the component's `_design-system/components/<Name>.md` Purpose section.** Drift checker will eventually enforce: every new component .md file must include a line `Layer: 1 / 2 / 3` so the classification is grep-able.
 

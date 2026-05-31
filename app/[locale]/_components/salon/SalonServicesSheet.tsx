@@ -210,23 +210,9 @@ export function SalonServicesSheet({
       <div className="mx-auto w-full max-w-[1280px] px-4 pb-32 pt-6 md:px-8 md:pt-8 lg:grid lg:grid-cols-[1fr_360px] lg:gap-10 lg:pb-10">
         {/* LEFT — services list */}
         <div className="min-w-0">
-          {/* Step breadcrumb — supplementary path above the title */}
-          <nav
-            aria-label="Buchungsschritte"
-            className="font-body flex items-center gap-1.5 text-[13px] md:text-[14px]"
-          >
-            <BreadcrumbStep label="Services" active />
-            <BreadcrumbDivider />
-            <BreadcrumbStep label="Profi" />
-            <BreadcrumbDivider />
-            <BreadcrumbStep label="Zeit" />
-            <BreadcrumbDivider />
-            <BreadcrumbStep label="Bestätigen" />
-          </nav>
-
           {/* V3-D202 (A21): font-body → font-display + Scale A.
               V3-D335 (T3): tracking -0.03em → -0.02em (canonical Salon-PDP H1 per §2.5). */}
-          <h1 className="font-display mt-3 text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.02em] text-s-ink md:mt-4">
+          <h1 className="font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.02em] text-s-ink">
             Services
           </h1>
 
@@ -515,29 +501,3 @@ function CartCard({
   );
 }
 
-// =====================================================
-// Breadcrumb step bits
-// =====================================================
-
-function BreadcrumbStep({ label, active = false }: { label: string; active?: boolean }) {
-  return (
-    <span
-      className={cn(
-        "font-body",
-        active ? "font-semibold text-s-ink" : "text-s-ink-3"
-      )}
-    >
-      {label}
-    </span>
-  );
-}
-
-function BreadcrumbDivider() {
-  return (
-    <ChevronRight
-      size={12}
-      strokeWidth={2}
-      className="shrink-0 text-s-ink-3/60"
-    />
-  );
-}

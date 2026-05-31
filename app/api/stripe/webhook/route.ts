@@ -172,6 +172,7 @@ export async function POST(req: NextRequest) {
           pi,
           salonId: obj.metadata.salon_id,
           serviceId: obj.metadata?.service_id || null,
+          preferredBarberId: obj.metadata?.preferred_barber_id || null,
         });
         console.log("[stripe/webhook] walk-in backstop ensured ticket", result.ticket_number, "for PI", obj.id);
       }

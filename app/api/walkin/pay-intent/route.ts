@@ -64,6 +64,23 @@ export async function POST(req: NextRequest) {
   }
   const amountRappen = toRappen(priceChf);
 
+  // Optional preferred barber (walk-in picker). Validate it's an active staff of THIS salon
+  // before trusting it — an invalid id would later break the queue insert's FK. Drop silently
+  // if absent/spoofed (barber preference is optional → "Egal").
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  let preferredBarberId = String(body?.preferred_barber_id ?? "").trim();
+  if (preferredBarberId && UUID_RE.test(preferredBarberId)) {
+    const { data: barber } = await admin
+      .from("staff_members")
+      .select("id")
+      .eq("id", preferredBarberId)
+      .eq("salon_id", salon_id)
+      .maybeSingle();
+    if (!barber) preferredBarberId = "";
+  } else {
+    preferredBarberId = "";
+  }
+
   // Capture customer_id opportunistically if logged in; guest = null.
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
@@ -79,7 +96,12 @@ export async function POST(req: NextRequest) {
     amount: amountRappen,
     currency: "chf",
     capture_method: "manual", // hold; captured when the barber marks the customer served
-    payment_method_types: ["card"], // card-only: redirect/BNPL methods don't fit a manual-capture walk-in hold
+    // Apple Pay / Google Pay are wallets that ride on `card`; the Payment Element shows their
+    // buttons automatically when eligible. allow_redirects:"never" surfaces wallets + Link while
+    // still EXCLUDING redirect/BNPL methods (TWINT etc.) that don't fit a manual-capture hold.
+    // Apple Pay additionally needs the domain registered in Stripe — deploy-time, HTTPS only.
+    // See _tasks/APPLE_PAY_SETUP.md. (Never appears on localhost.)
+    automatic_payment_methods: { enabled: true, allow_redirects: "never" },
 
     metadata: {
       type: "walk_in",
@@ -91,6 +113,7 @@ export async function POST(req: NextRequest) {
       customer_phone,
       customer_id: customerId ?? "",
       booking_id,
+      preferred_barber_id: preferredBarberId,
     },
     description: `Walk-in: ${service.name_de} @ ${salon.name}`,
   };

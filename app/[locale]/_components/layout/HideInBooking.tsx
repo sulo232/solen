@@ -17,12 +17,17 @@ export default function HideInBooking({
   children,
   showOnAuth = false,
   hideOnFeed = false,
+  coverSalonDetail = false,
 }: {
   children: ReactNode;
   showOnAuth?: boolean;
   /** V3-D414: also drop on the discovery experience (an infinite Pinterest-style scroll has no "bottom" for a
-      marketing footer — it just crowded the feed). Opt-in, so only the footer uses it, not the header. */
+      marketing footer, it just crowded the feed). Opt-in, so only the footer uses it, not the header. */
   hideOnFeed?: boolean;
+  /** Also hide on the salon detail PDP (/[locale]/salon/[slug]). The PDP is a
+   *  self-contained hero with its own back arrow (Fresha pattern); opt the
+   *  global Header + Breadcrumb out so the page leads with the hero. */
+  coverSalonDetail?: boolean;
 }) {
   const pathname = usePathname();
   if (!pathname) return <>{children}</>;
@@ -38,6 +43,14 @@ export default function HideInBooking({
   // self-contained — always drop the marketing chrome.
   if (/\/(booking|staff\/[^/]+|walk-in-pay)\/?$/.test(pathname) || /\/onboarding(\/|$)/.test(pathname)) {
     return null;
+  }
+
+  // Salon detail PDP — the MOBILE hero carries its own back/share/heart, so drop the global
+  // chrome there (Fresha hero-first pattern). Desktop keeps it: the desktop hero is a gallery
+  // with no back affordance + needs the nav. `contents` keeps the sticky header behaving as a
+  // direct child on desktop; `max-md:hidden` removes it on mobile.
+  if (coverSalonDetail && /\/salon\/[^/]+\/?$/.test(pathname)) {
+    return <div className="contents max-md:hidden">{children}</div>;
   }
 
   // Auth pages are standalone (Uber pattern). EXCEPTION: login + register opt the

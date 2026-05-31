@@ -955,7 +955,7 @@
       "title": "Quels services souhaitez-vous réserver ?",
       "subtitle": "Sélectionnez un ou plusieurs services. Les frais sont calculés automatiquement.",
       "minutes": "min",
-      "selected": "service(s) sélectionné(s)",
+      "selected": "sélectionnés",
       "items": "article(s)",
       "menOnly": "Hommes uniquement",
       "womenOnly": "Femmes uniquement",

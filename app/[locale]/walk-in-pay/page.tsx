@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, MapPin, Lock, Check, AlertTriangle, ChevronLeft, Scissors, Clock, Menu, X, Navigation } from "lucide-react";
+import { Star, MapPin, Lock, Check, AlertTriangle, ChevronLeft, Scissors, Clock, Menu, X, Navigation, Info, ArrowRight } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import QRCode from "qrcode";
 import WalkInPaymentForm from "@/components-legacy/barber/WalkInPaymentForm";
@@ -22,6 +22,7 @@ interface BookingData {
   salon_slug: string | null;
   service_name: string;
   service_duration: number | null;
+  service_description?: string | null;
   barber_name: string | null;
   barber_avatar: string | null;
   barber_id: string | null;
@@ -65,6 +66,7 @@ export default function WalkInPayPage() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [payError, setPayError] = useState<string | null>(null);
   const [qrExpanded, setQrExpanded] = useState(false);
+  const [serviceInfoOpen, setServiceInfoOpen] = useState(false);
 
   useEffect(() => {
     // Preview mode (?demo=1): render the booking state with sample data so the page
@@ -84,6 +86,7 @@ export default function WalkInPayPage() {
     // 3. ?demo (preview mode) — already handled above
     const salonId = searchParams.get("salon_id");
     const serviceId = searchParams.get("service_id");
+    const staffId = searchParams.get("staff_id"); // optional preferred barber (null = "Egal")
 
     if (token) {
       // Token flow: verify the booking via the HMAC token.
@@ -109,25 +112,30 @@ export default function WalkInPayPage() {
           const salon = data.salon;
           const service = data.services.find((s: { id: string }) => s.id === serviceId);
           if (!service) throw new Error("Service not found");
+          // Optional chosen barber (from &staff_id) → show their face on the pay screen.
+          const barber = staffId
+            ? (data.staff || []).find((b: { id: string }) => b.id === staffId) ?? null
+            : null;
           setBooking({
             id: `walkin-${Date.now()}`,
             salon_id: salon.id,
             service_id: service.id,
             salon_name: salon.name,
-            salon_image: null,
-            salon_rating: null,
-            salon_review_count: null,
+            salon_image: salon.cover_photo_url ?? null,
+            salon_rating: salon.average_rating ?? null,
+            salon_review_count: salon.review_count ?? null,
             salon_address: salon.address,
             salon_phone: null,
-            salon_slug: null,
+            salon_slug: salon.slug ?? null,
             service_name: service.name,
             service_duration: service.duration_minutes,
-            barber_name: null,
-            barber_avatar: null,
-            barber_id: null,
-            barber_role: null,
-            barber_rating: null,
-            barber_review_count: null,
+            service_description: service.description ?? null,
+            barber_name: barber?.name ?? null,
+            barber_avatar: barber?.avatar_url ?? null,
+            barber_id: barber?.id ?? null,
+            barber_role: barber?.role ?? null,
+            barber_rating: barber?.rating ?? null,
+            barber_review_count: barber?.review_count ?? null,
             salon_open_until: null,
             wait_minutes: null,
             queue_ahead: null,
@@ -170,13 +178,26 @@ export default function WalkInPayPage() {
   // Real booking (either token or tokenless) that's still unpaid → create a manual-capture PaymentIntent
   // so the Stripe card form can mount. Skipped in demo mode and once a ticket already exists.
   useEffect(() => {
-    if (!booking || paid || clientSecret || booking.ticket_number) return;
+    if (paid || clientSecret) return;
+    let body: { salon_id: string; service_id: string; booking_id?: string; preferred_barber_id?: string } | null = null;
+    if (token) {
+      // Token flow: salon/service come from the verified booking, so wait for it.
+      if (!booking || booking.ticket_number) return;
+      body = { salon_id: booking.salon_id, service_id: booking.service_id, booking_id: booking.id };
+    } else {
+      // Tokenless (QR / in-app): fire straight from the URL params, IN PARALLEL with salon-info —
+      // no need to wait for the booking object. Cuts a full round-trip off the perceived load.
+      const salonId = searchParams.get("salon_id");
+      const serviceId = searchParams.get("service_id");
+      const staffId = searchParams.get("staff_id");
+      if (!salonId || !serviceId) return;
+      body = { salon_id: salonId, service_id: serviceId, preferred_barber_id: staffId ?? undefined };
+    }
     let cancelled = false;
     fetch("/api/walkin/pay-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      // Only the token flow carries a real booking id; the tokenless (QR/in-app) flow has none.
-      body: JSON.stringify({ salon_id: booking.salon_id, service_id: booking.service_id, booking_id: token ? booking.id : undefined }),
+      body: JSON.stringify(body),
     })
       .then(async (r) => {
         const d = await r.json();
@@ -185,7 +206,7 @@ export default function WalkInPayPage() {
       })
       .catch((e) => console.error("[walk-in-pay] pay-intent error:", e));
     return () => { cancelled = true; };
-  }, [token, booking, paid, clientSecret]);
+  }, [token, booking, paid, clientSecret, searchParams]);
 
   const handleCancel = () => {
     // TODO(functional): confirm + POST /api/walkin/cancel — refund per the salon's
@@ -601,7 +622,13 @@ export default function WalkInPayPage() {
                       <span className="flex items-center gap-1.5">
                         <Star size={13} fill="#FFC32B" stroke="none" aria-hidden />
                         <span className="font-heading font-semibold tabular-nums text-s-ink">{booking.salon_rating.toFixed(1)}</span>
-                        {booking.salon_review_count != null && <span className="tabular-nums text-s-ink-2">({booking.salon_review_count})</span>}
+                        {booking.salon_review_count != null && (
+                          canOpenSalon ? (
+                            <button type="button" onClick={openSalon} className="tabular-nums font-semibold text-s-accent transition-opacity active:opacity-60">({booking.salon_review_count})</button>
+                          ) : (
+                            <span className="tabular-nums text-s-ink-2">({booking.salon_review_count})</span>
+                          )
+                        )}
                       </span>
                     )}
                     {booking.salon_open_until && (
@@ -641,7 +668,13 @@ export default function WalkInPayPage() {
                         <span className="flex items-center gap-1">
                           <Star size={12} fill="#FFC32B" stroke="none" aria-hidden />
                           <span className="font-semibold tabular-nums text-s-ink">{booking.barber_rating.toFixed(1)}</span>
-                          {booking.barber_review_count != null && <span className="tabular-nums">({booking.barber_review_count})</span>}
+                          {booking.barber_review_count != null && (
+                            canOpenBarber ? (
+                              <button type="button" onClick={openBarber} className="tabular-nums font-semibold text-s-accent transition-opacity active:opacity-60">({booking.barber_review_count})</button>
+                            ) : (
+                              <span className="tabular-nums">({booking.barber_review_count})</span>
+                            )
+                          )}
                         </span>
                       )}
                     </div>
@@ -655,8 +688,18 @@ export default function WalkInPayPage() {
                   <Scissors size={20} className="text-s-ink-2" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="font-heading text-[15px] font-semibold text-s-ink">{booking.service_name}</div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-heading text-[15px] font-semibold text-s-ink">{booking.service_name}</span>
+                    {booking.service_description && (
+                      <button type="button" onClick={() => setServiceInfoOpen((v) => !v)} aria-label={booking.service_name} className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-s-ink-3 transition active:scale-90">
+                        <Info size={14} />
+                      </button>
+                    )}
+                  </div>
                   {booking.service_duration ? <div className="mt-0.5 text-[13px] tabular-nums text-s-ink-2">ca. {booking.service_duration} {l.min}</div> : null}
+                  {serviceInfoOpen && booking.service_description && (
+                    <div className="mt-1.5 text-[13px] leading-relaxed text-s-ink-2">{booking.service_description}</div>
+                  )}
                 </div>
               </div>
 
@@ -684,7 +727,7 @@ export default function WalkInPayPage() {
               <div className="space-y-1.5">
                 <div className="flex items-baseline justify-between gap-3 text-[14px]">
                   <span className="truncate text-s-ink">{booking.service_name}</span>
-                  <span className="shrink-0 font-heading tabular-nums text-s-ink">{amountStr}</span>
+                  <span className="shrink-0 font-body tabular-nums text-s-ink">{amountStr}</span>
                 </div>
                 <div className="flex items-baseline justify-between gap-3 text-[13px]">
                   <span className="text-s-ink-2">{l.vat}</span>
@@ -693,7 +736,7 @@ export default function WalkInPayPage() {
               </div>
               <div className="mt-2.5 flex items-baseline justify-between gap-3 border-t border-s-ink/[0.08] pt-2.5">
                 <span className="self-center font-heading text-[15px] font-semibold text-s-ink">{l.total}</span>
-                <span className="font-heading text-[22px] font-bold tracking-[-.02em] tabular-nums text-s-accent">{amountStr}</span>
+                <span className="font-body text-[22px] font-semibold tabular-nums text-s-accent">{amountStr}</span>
               </div>
             </div>
 
@@ -726,10 +769,10 @@ export default function WalkInPayPage() {
               <button
                 onClick={handleDemoPay}
                 disabled={paying}
-                className="flex h-[54px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-heading text-[15px] font-semibold text-white shadow-elevation-2 transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50"
+                className="flex h-[54px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-body text-[15px] font-semibold text-white shadow-elevation-2 transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50"
               >
-                {paying && <Spinner size="sm" invert />}
                 {payCta}
+                {paying ? <Spinner size="sm" invert /> : <ArrowRight size={16} strokeWidth={2.4} />}
               </button>
               <div className="mt-3 flex items-center justify-center gap-1.5 text-[12px] font-medium text-s-ink-2">
                 <Lock size={12} />

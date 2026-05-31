@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { X, Star, Shuffle, Check } from "lucide-react";
+import { X, Star, Users, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import StaffProfilePage from "@/components-legacy/staff/StaffProfilePage";
 import type { StaffMember } from "@/lib/types";
@@ -63,7 +63,7 @@ export default function StaffListSheet({
           }`}
         >
           <span className="grid h-[60px] w-[60px] shrink-0 place-items-center rounded-full bg-s-bg-sunken">
-            <Shuffle size={22} className="text-s-ink-2" strokeWidth={2} />
+            <Users size={20} className="text-s-ink-2" strokeWidth={2} />
           </span>
           <span className="min-w-0 flex-1">
             <span className="block text-[16px] font-semibold text-s-ink">Keine Präferenz</span>

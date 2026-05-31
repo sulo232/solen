@@ -28,8 +28,10 @@ export default function BookingExitButton({ slug }: { slug: string }) {
   const exitTo = `/${locale}/salon/${slug}`;
 
   const handleX = () => {
+    // replace (not push): leaving the booking should REMOVE it from history, otherwise the
+    // browser back button returns to the booking flow (the loop the user hit).
     if (formData.services.length > 0) setConfirming(true);
-    else router.push(exitTo);
+    else router.replace(exitTo);
   };
 
   return (
@@ -49,10 +51,12 @@ export default function BookingExitButton({ slug }: { slug: string }) {
             {confirming && (
           <motion.div
             className="fixed inset-0 z-[60] flex flex-col bg-white px-6 pt-5 pb-8"
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 34, stiffness: 320 }}
+            // Quick fade — the full-screen y:100% slide-spring read as a heavy, "draggy" sheet
+            // that felt like it was looping. A fast opacity fade is snappy and can't re-trigger.
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.16, ease: [0.2, 0.8, 0.4, 1] }}
           >
             <div className="flex justify-end">
               <button
@@ -80,7 +84,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
               </button>
               <button
                 type="button"
-                onClick={() => router.push(exitTo)}
+                onClick={() => router.replace(exitTo)}
                 className="flex-1 rounded-btn bg-s-ink py-3.5 font-heading text-[15px] font-semibold text-white transition-[filter] hover:brightness-[1.06]"
               >
                 {t('exit')}

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Clock, Heart, Star } from "lucide-react";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
 import { cn } from "@/lib/utils";
+import { FROST_GLASS } from "@/lib/frost-glass";
 
 /**
  * FeaturedStylists — V3-D140 (2026-05-25).
@@ -162,10 +163,10 @@ function SaveHeart({ name }: { name: string }) {
       }}
       aria-label={saved ? `${name} aus Favoriten entfernen` : `${name} speichern`}
       aria-pressed={saved}
+      style={FROST_GLASS}
       className={cn(
         "absolute -right-1 -top-1 z-[1] grid h-8 w-8 place-items-center rounded-full",
-        "border border-white/60 bg-white/90 backdrop-blur-[4px]",
-        "shadow-[0_1px_3px_rgba(0,0,0,0.10),inset_0_1px_0_rgba(255,255,255,0.4)]",
+        // V3-D420: shared FROST_GLASS recipe (was an inline re-derive of the same values).
         "transition-transform duration-200 ease-glide",
         "hover:scale-110 active:scale-[0.97] active:duration-[80ms]",
         "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",

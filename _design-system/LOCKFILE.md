@@ -338,6 +338,8 @@ One-off campaign-style decorative type → use `style={{}}` inline + `// V3-D{n}
 
 **Fresha pattern lock (V3-D230):** the salon sidebar card has **NO box-shadow** — `boxShadow: none`. Only `border + radius`. Use shadow sparingly on Layer 1 surfaces; many cards in Fresha are flat.
 
+**Control elevation lock (V3-D420):** white + shadow on a CONTROL is allowed in exactly TWO places: (1) a control sitting OVER a photo (the `FROST_GLASS` recipe at `lib/frost-glass.ts`), and (2) the ONE ink primary CTA per region (`bg-s-ink` + at most `shadow-elevation-2`). On a flat white / `s-bg-sunken` surface a control casts NO shadow: text controls → `bg-s-bg-sunken` no shadow; icon-only controls → `bg-white border-s-border` no shadow (borderless grey on white is ~1.03:1, a contrast trap that also reads "inert"). Never stack fill + shadow + border at rest. The elevation-1-at-rest rule above is for SURFACES (cards), not controls. Full rule + decision tree: `_design-system/CONTROL_ELEVATION.md`.
+
 ### Z-index scale
 
 ```

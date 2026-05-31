@@ -199,7 +199,7 @@ export default function CityTopBar({ locale }: Props) {
           aria-label={copy.aria_dropdown}
           aria-expanded={open}
           aria-haspopup="listbox"
-          className="inline-flex items-center gap-1.5 rounded-full border border-black/[0.07] bg-white py-1 pl-1 pr-2.5 font-body text-[13px] font-semibold text-s-ink shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-[border-color,transform] duration-150 ease-glide hover:-translate-y-[1px] hover:border-s-ink focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
+          className="inline-flex items-center gap-1.5 rounded-full border border-black/[0.07] bg-white py-1 pl-1 pr-2.5 font-body text-[13px] font-semibold text-s-ink transition-[border-color,transform] duration-150 ease-glide hover:-translate-y-[1px] hover:border-s-ink focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
         >
           <span
             aria-hidden

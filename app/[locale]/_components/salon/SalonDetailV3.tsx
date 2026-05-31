@@ -19,14 +19,15 @@ import { SalonAbout } from "./SalonAbout";
 import { SalonLocation } from "./SalonLocation";
 import { SalonOpeningTimes } from "./SalonOpeningTimes";
 import { SalonAdditionalInfo } from "./SalonAdditionalInfo";
-import { SalonLoyalty } from "./SalonLoyalty";
 import { SalonOtherLocations } from "./SalonOtherLocations";
 import { SalonVenuesNearby } from "./SalonVenuesNearby";
 import { SalonSidebar } from "./SalonSidebar";
 import { SalonMobileBookBar } from "./SalonMobileBookBar";
+import SalonModeToggle from "@/components-legacy/salon/SalonModeToggle";
+import SalonWalkInPanel from "@/components-legacy/salon/SalonWalkInPanel";
 import { SalonLightbox } from "./SalonLightbox";
 import type { SalonDetail, TabKey } from "./_shared";
-import { postalToCity } from "./_shared";
+import { postalToCity, computeOpenStatus } from "./_shared";
 import { usePostHog } from "posthog-js/react";
 import { trackSalonView } from "@/components-legacy/RecentlyViewed";
 import { generateSalonSchema } from "@/lib/seo";
@@ -63,6 +64,7 @@ export function SalonDetailV3() {
   const locale = params?.locale ?? "de";
 
   const [salon, setSalon] = React.useState<SalonDetail | null>(null);
+  const [walkinMode, setWalkinMode] = React.useState(false); // barbershop Book/Walk-in switch
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(false);
   const [lightboxOpen, setLightboxOpen] = React.useState(false);
@@ -159,6 +161,9 @@ export function SalonDetailV3() {
   };
 
   const primaryCategory = (salon.categories[0] ?? "coiffeur").toLowerCase();
+  // Walk-in status must follow real opening hours — same source as the header's
+  // "Geschlossen · Öffnet …" so the panel can't say "open" while the salon is closed.
+  const salonOpen = computeOpenStatus(salon.opening_hours).isOpen;
 
   // V3-D344 (2026-05-28): JSON-LD structured data — parity with legacy salon
   // render (generateSalonSchema). Required before V3 became the default so salon
@@ -231,16 +236,27 @@ export function SalonDetailV3() {
           to lg so the sidebar only shows on TRULY wide screens (1024px+).
           On medium-width windows (768-1023px) the layout stays single-column
           and the mobile floating Book bar handles booking. */}
-      <div className="mx-auto mt-5 w-full max-w-[1180px] px-4 md:mt-7 md:px-6">
+      {/* Mobile: content card pulls up over the hero with a rounded top (Fresha PDP, IMG_4991).
+          Desktop: flat, no overlap (the hero is a gallery there). */}
+      <div className="relative z-10 mx-auto -mt-5 w-full max-w-[1180px] rounded-t-[20px] bg-white px-4 pt-5 md:mt-7 md:rounded-none md:bg-transparent md:px-6 md:pt-0">
         <div className="lg:grid lg:grid-cols-[1fr_340px] lg:gap-10 xl:gap-12">
           {/* LEFT column — title + content sections */}
           <div className="min-w-0">
             <SalonHeader salon={salon} />
 
-            <div className="mt-8 space-y-10 md:mt-10 md:space-y-12">
-              <SalonServices services={salon.services} locale={locale} slug={slug} salon={salon} />
+            {/* Book / Walk-in toggle — barbershops with online payment. Walk-in mode shows the
+                pay-gated queue join + hides bookable-service browsing (services + team). */}
+            {salon.categories?.includes("barbershop") && (salon as any).accepts_online_payment && (
+              <div className="mt-6 flex flex-col gap-5">
+                <SalonModeToggle mode={walkinMode ? "walkin" : "book"} onChange={(m) => setWalkinMode(m === "walkin")} locale={locale} />
+                {walkinMode && <SalonWalkInPanel salonId={salon.id} services={salon.services} staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} isOpen={salonOpen} locale={locale} />}
+              </div>
+            )}
 
-            {salon.staff.length > 0 && (
+            <div className="mt-8 space-y-10 md:mt-10 md:space-y-12">
+              {!walkinMode && <SalonServices services={salon.services} locale={locale} slug={slug} salon={salon} />}
+
+            {!walkinMode && salon.staff.length > 0 && (
               <SalonTeam staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} locale={locale} />
             )}
 
@@ -273,7 +289,8 @@ export function SalonDetailV3() {
                 Desktop has the same info in SalonSidebar. */}
             <SalonContact salon={salon} />
 
-            <SalonLoyalty />
+            {/* SalonLoyalty hidden (V3 2026-05-31): it rendered identical static copy on every
+                salon (no data behind it). Re-enable when a real per-salon loyalty system exists. */}
 
             {salon.siblings && salon.siblings.length > 0 && (
               <SalonOtherLocations siblings={salon.siblings} locale={locale} />
@@ -285,12 +302,14 @@ export function SalonDetailV3() {
               locale={locale}
             />
 
-              <SalonAppCta
-                locale={locale}
-                slug={slug}
-                city={postalToCity(salon.postal_code)}
-                quartier={salon.quartier}
-              />
+              {!walkinMode && (
+                <SalonAppCta
+                  locale={locale}
+                  slug={slug}
+                  city={postalToCity(salon.postal_code)}
+                  quartier={salon.quartier}
+                />
+              )}
             </div>
           </div>
 
@@ -300,7 +319,7 @@ export function SalonDetailV3() {
               at top-24; SalonSidebar internally manages collapse/expand. */}
           <aside className="hidden lg:block">
             <div className="sticky top-24 pt-3">
-              <SalonSidebar salon={salon} locale={locale} />
+              {!walkinMode && <SalonSidebar salon={salon} locale={locale} />}
             </div>
           </aside>
         </div>
@@ -309,8 +328,9 @@ export function SalonDetailV3() {
       </div>
       {/* /content layer */}
 
-      {/* Mobile sticky bottom CTA */}
-      <SalonMobileBookBar locale={locale} slug={slug} />
+      {/* Mobile sticky bottom CTA — hidden in walk-in mode (the walk-in cards carry their
+          own "Anstehen" action, so the global Book bar would be a confusing 2nd button). */}
+      {!walkinMode && <SalonMobileBookBar locale={locale} slug={slug} />}
 
       {/* Lightbox modal */}
       <SalonLightbox

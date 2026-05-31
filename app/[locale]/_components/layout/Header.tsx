@@ -619,7 +619,7 @@ export default function Header({ locale }: { locale: string }) {
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
             className={cn(
-              "md:hidden relative -m-2 grid place-items-center rounded-xl p-2 bg-white text-s-ink shadow-[0_6px_18px_rgba(26,18,9,0.10)] transition-transform duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              "md:hidden relative -m-2 grid place-items-center rounded-xl p-2 text-s-ink transition-transform duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               // V3-D376 (2026-05-29): hamburger no longer self-hides on scroll - it
               // folds away WITH the whole header (max-h collapse on <header>) so the
               // sticky search band takes the top. Tap target stays 44px (h-10 w-10).

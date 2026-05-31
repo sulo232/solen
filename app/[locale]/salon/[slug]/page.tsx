@@ -22,9 +22,6 @@ import { formatCurrency } from "@/lib/format-currency";
 import StaffSection from "@/components-legacy/salon/StaffSection";
 import StaffPortfolio from "@/components-legacy/StaffPortfolio";
 import SimilarSalons from "@/components-legacy/salon/SimilarSalons";
-import WaitTimeDisplay from "@/components-legacy/barber/WaitTimeDisplay";
-import RemoteQueueJoin from "@/components-legacy/barber/RemoteQueueJoin";
-import ExpressRebook from "@/components-legacy/barber/ExpressRebook";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { ReportContentButton } from "@/components-legacy/ui/ReportContentButton";
 import { trackSalonView } from "@/components-legacy/RecentlyViewed";
@@ -43,6 +40,8 @@ import SalonReviews from "@/components-legacy/salon/SalonReviews";
 import SalonReviewsSummary from "@/components-legacy/salon/SalonReviewsSummary";
 import SalonSidebar from "@/components-legacy/salon/SalonSidebar";
 import SalonMobileCTA from "@/components-legacy/salon/SalonMobileCTA";
+import SalonModeToggle from "@/components-legacy/salon/SalonModeToggle";
+import SalonWalkInPanel from "@/components-legacy/salon/SalonWalkInPanel";
 import { getPublicEnv } from "@/lib/env";
 
 
@@ -281,6 +280,8 @@ export default function SalonProfilePage() {
   const [salon, setSalon] = useState<SalonDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedService, setSelectedService] = useState<string | undefined>();
+  // Barbershop Book/Walk-in mode switch (walk-in = pay-gated queue join).
+  const [walkinMode, setWalkinMode] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState<string | undefined>();
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [unreviewedBookingId, setUnreviewedBookingId] = useState<string | null>(null);
@@ -530,6 +531,18 @@ export default function SalonProfilePage() {
                   </div>
                 </div>
 
+                {/* Book / Walk-in toggle — barbershops that accept online payment only.
+                    Walk-in mode replaces the bookable-service browsing with the pay-gated
+                    queue join (supersedes the old free RemoteQueueJoin section below). */}
+                {salon.categories?.includes("barbershop") && (salon as any).accepts_online_payment && (
+                  <div className="flex flex-col gap-5">
+                    <SalonModeToggle mode={walkinMode ? "walkin" : "book"} onChange={(m) => setWalkinMode(m === "walkin")} locale={locale} />
+                    {walkinMode && (
+                      <SalonWalkInPanel salonId={salon.id} services={salon.services} locale={locale} isOpen={isOpen} />
+                    )}
+                  </div>
+                )}
+
                 {/* Off-peak countdown */}
                 <OffPeakCountdown salonId={salon.id} />
 
@@ -662,8 +675,8 @@ export default function SalonProfilePage() {
                   </div>
                 )}
 
-                {/* Barber Roster — only for barbershops */}
-                {salon.categories?.includes("barbershop") && salon.staff.length > 0 && (
+                {/* Barber Roster — only for barbershops (hidden in walk-in mode) */}
+                {salon.categories?.includes("barbershop") && salon.staff.length > 0 && !walkinMode && (
                   <div id="section-barbers" className="scroll-mt-[80px]">
                     <h2 className="font-heading text-base text-s-ink mb-3">{t("team")}</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3 md:mt-0">
@@ -689,29 +702,18 @@ export default function SalonProfilePage() {
                   </div>
                 )}
 
-                {/* Walk-in Queue — only for barbershops */}
-                {salon.categories?.includes("barbershop") && (
-                  <div id="section-walkin" className="scroll-mt-[80px]">
-                    <h2 className="font-heading text-base text-s-ink mb-3">Walk-in</h2>
-                    <div className="space-y-4 mt-3 md:mt-0">
-                      <WaitTimeDisplay salonId={salon.id} />
-                      <RemoteQueueJoin
-                        salonId={salon.id}
-                        staff={salon.staff.map((s) => ({ id: s.id, name: s.name }))}
-                        services={salon.services.map((s) => ({ id: s.id, name_de: s.name_de ?? "" }))}
-                      />
-                      <ExpressRebook salonId={salon.id} />
-                    </div>
-                  </div>
-                )}
+                {/* Walk-in moved into the Book/Walk-in toggle above (pay-gated). The old free
+                    RemoteQueueJoin section was retired in favour of the pay-to-hold flow. */}
 
-                {/* ── Services ── */}
-                <SalonServices
-                  services={salon.services}
-                  salonId={salon.id}
-                  onServiceSelect={handleServiceSelect}
-                  selectedServiceId={selectedService}
-                />
+                {/* ── Services — hidden in walk-in mode (the toggle's panel owns service pick) ── */}
+                {!walkinMode && (
+                  <SalonServices
+                    services={salon.services}
+                    salonId={salon.id}
+                    onServiceSelect={handleServiceSelect}
+                    selectedServiceId={selectedService}
+                  />
+                )}
 
                 {/* Packages & Gift Cards */}
                 <div className="flex gap-3 my-4">

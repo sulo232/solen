@@ -971,7 +971,7 @@
       "title": "Which services would you like to book?",
       "subtitle": "Select one or more services. Costs are calculated automatically.",
       "minutes": "min",
-      "selected": "service(s) selected",
+      "selected": "selected",
       "items": "item(s)",
       "menOnly": "Men only",
       "womenOnly": "Women only",
