@@ -36,7 +36,15 @@
     "referReward": "CHF 10",
     "settings": "Profil & Einstellungen",
     "help": "Hilfe & Support",
-    "signOut": "Abmelden"
+    "signOut": "Abmelden",
+    "secBeauty": "Beauty-Profil",
+    "beautyIntro": "Damit wir deine Startseite und Empfehlungen auf dich abstimmen.",
+    "beautyGender": "Geschlecht",
+    "beautyHair": "Haare",
+    "beautySkin": "Haut",
+    "beautyCategories": "Kategorien",
+    "beautyInterests": "Interessen",
+    "saveBeauty": "Beauty-Profil speichern"
   },
   "cities": {
     "label": "Stadt",

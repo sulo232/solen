@@ -36,7 +36,15 @@
     "referReward": "CHF 10",
     "settings": "Profilo e impostazioni",
     "help": "Aiuto e supporto",
-    "signOut": "Esci"
+    "signOut": "Esci",
+    "secBeauty": "Profilo beauty",
+    "beautyIntro": "Per personalizzare la tua home e i consigli.",
+    "beautyGender": "Genere",
+    "beautyHair": "Capelli",
+    "beautySkin": "Pelle",
+    "beautyCategories": "Categorie",
+    "beautyInterests": "Interessi",
+    "saveBeauty": "Salva profilo beauty"
   },
   "cities": {
     "label": "Città",
