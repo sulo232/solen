@@ -19,7 +19,6 @@ import { SalonAbout } from "./SalonAbout";
 import { SalonLocation } from "./SalonLocation";
 import { SalonOpeningTimes } from "./SalonOpeningTimes";
 import { SalonAdditionalInfo } from "./SalonAdditionalInfo";
-import { SalonLoyalty } from "./SalonLoyalty";
 import { SalonOtherLocations } from "./SalonOtherLocations";
 import { SalonVenuesNearby } from "./SalonVenuesNearby";
 import { SalonSidebar } from "./SalonSidebar";
@@ -288,7 +287,8 @@ export function SalonDetailV3() {
                 Desktop has the same info in SalonSidebar. */}
             <SalonContact salon={salon} />
 
-            <SalonLoyalty />
+            {/* SalonLoyalty hidden (V3 2026-05-31): it rendered identical static copy on every
+                salon (no data behind it). Re-enable when a real per-salon loyalty system exists. */}
 
             {salon.siblings && salon.siblings.length > 0 && (
               <SalonOtherLocations siblings={salon.siblings} locale={locale} />
