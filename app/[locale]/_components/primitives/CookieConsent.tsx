@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { usePathname } from "next/navigation";
 import { Cookie, Settings2 } from "lucide-react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "./Modal";
 import { Switch } from "./Switch";
@@ -175,6 +176,14 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
 
 function CookieBanner() {
   const { acceptAll, acceptNecessary, openSettings } = useCookieConsent();
+  const pathname = usePathname();
+
+  // Display-only suppression on the focused walk-in-pay checkout: the fixed
+  // bottom strip covered the pay CTA. Consent STATE is untouched — analytics
+  // stays off (necessary-only) until the user consents on any other page, so
+  // this is DSG/GDPR-safe. Mirrors HideInBooking's "no global chrome in
+  // self-contained flows" rule.
+  if (pathname && /\/walk-in-pay\/?$/.test(pathname)) return null;
 
   return (
     <div

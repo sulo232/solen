@@ -1,5 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import "@/app/globals.css";
+
+// Self-hosted via next/font — Next downloads these at build time and serves the
+// woff2 from our own origin (/_next/static/media), so they always load (no runtime
+// fetch to fonts.gstatic.com that defaulted to the system font on phone/LAN).
+// 2026-05-30: Inter Tight REMOVED per user. Hanken Grotesk is now the ONE app font
+// (headings + body); JetBrains Mono stays for codes/receipts. Do NOT reintroduce
+// Inter Tight or Geist. Hanken loads up to 800 so bold headings render properly.
+const hanken = Hanken_Grotesk({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800"], variable: "--font-hanken", display: "swap" });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-jetbrains", display: "swap" });
 
 export const metadata: Metadata = {
   title: "solen.ch — Salons in Basel",
@@ -24,12 +34,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" suppressHydrationWarning>
+    <html lang="de" className={`${hanken.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="preload" href="/logo.svg" as="image" type="image/svg+xml" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Google Fonts preconnects removed — fonts are now self-hosted via next/font
+            (same-origin), so there's no fonts.gstatic.com fetch to warm up. */}
       </head>
       {/* `bg-white` removed 2026-05-09: it was hiding the page-wide §5g
           atmosphere wash defined in globals.css (body::before + body::after

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Walk-in Pay — B (improved)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#5F5F5F; --ink-3:#6B6B6B;
+    --surface:#F5F5F4; --line:rgba(10,10,10,.08); --line-soft:rgba(10,10,10,.06);
+    --accent:#185CE0; --success:#16A34A;
+    --el2:0 4px 16px rgba(40,37,34,.07), 0 1px 3px rgba(40,37,34,.05);
+    --el-phone:0 30px 80px rgba(30,28,26,.22), 0 8px 24px rgba(30,28,26,.10);
+    --head:'Inter Tight',system-ui,sans-serif; --body:'Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{background:#E9E9E7;font-family:var(--body);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:48px 24px 64px}
+  .h{max-width:760px;text-align:center;margin-bottom:34px}
+  .h h1{font-family:var(--head);font-weight:700;font-size:24px;letter-spacing:-.02em}
+  .h p{color:#55524e;font-size:13.5px;margin-top:7px;line-height:1.5}
+  .h .tag{display:inline-block;font-family:var(--head);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:#EAEFFE;padding:4px 10px;border-radius:99px;margin-bottom:12px}
+
+  .phone{width:404px;height:830px;background:#fff;border-radius:46px;box-shadow:var(--el-phone);padding:11px;position:relative}
+  .screen{position:absolute;inset:11px;border-radius:36px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+  .sb{display:flex;justify-content:space-between;align-items:center;padding:15px 30px 4px;font-family:var(--head);font-weight:600;font-size:14px}
+  .sb svg{display:block}
+  .pill{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:96px;height:24px;background:#0A0A0A;border-radius:99px;z-index:5}
+
+  .nav{padding:6px 20px 2px}
+  .iconbtn{width:38px;height:38px;border-radius:99px;background:var(--surface);display:flex;align-items:center;justify-content:center}
+  .iconbtn svg{margin-left:-1px}
+
+  .content{flex:1;overflow:hidden;padding:0 22px;display:flex;flex-direction:column}
+  h2.title{font-family:var(--head);font-weight:700;font-size:25px;letter-spacing:-.025em;margin:10px 0 22px}
+
+  /* salon identity */
+  .salon{display:flex;gap:14px;align-items:center}
+  .salon img{width:60px;height:60px;border-radius:11px;object-fit:cover;flex-shrink:0;box-shadow:var(--el2)}
+  .salon .nm{font-family:var(--head);font-weight:700;font-size:17px;letter-spacing:-.01em;line-height:1.15}
+  .salon .rate{display:flex;align-items:center;gap:5px;margin-top:3px;font-size:13px}
+  .salon .rate svg{transform:translateY(.5px)}
+  .salon .rate b{font-family:var(--head);font-weight:700;color:var(--ink)}
+  .salon .rate .c{color:var(--ink-2)}
+  .salon .rate .sep{color:var(--line);}
+  .salon .rate .area{color:var(--ink-2)}
+  .salon .addr{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:var(--ink-2);margin-top:4px;cursor:pointer;transition:color .15s;text-decoration:none}
+  .salon .addr:hover{color:var(--ink)}
+  .irow .dot{display:inline-block;width:6px;height:6px;border-radius:99px;background:var(--success);margin-right:6px;vertical-align:middle}
+  .irow .avail{color:var(--success);font-weight:600}
+
+  hr{border:0;height:1px;background:var(--line)}
+  .sec{padding:18px 0}
+
+  .irow{display:flex;align-items:center;gap:14px;padding:5px 0}
+  .irow .ic{width:42px;height:42px;border-radius:10px;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .irow .pr{font-family:var(--head);font-weight:600;font-size:15px;letter-spacing:-.005em}
+  .irow .sc{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+
+  /* price */
+  .price{padding:2px 0 0}
+  .li{display:flex;justify-content:space-between;align-items:center;font-size:14px;padding:3px 0}
+  .li .l{color:var(--ink)}
+  .li .v{font-family:var(--head);font-weight:600}
+  .total{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:16px;border-top:1px solid var(--line)}
+  .total .l{font-family:var(--head);font-weight:700;font-size:17px;letter-spacing:-.01em}
+  .total .v{font-family:var(--head);font-weight:800;font-size:25px;letter-spacing:-.025em;color:var(--accent);line-height:1}
+
+  /* pay bar */
+  .paybar{margin-top:auto;border-top:1px solid var(--line);padding:15px 22px 18px;background:#fff}
+  .cta{height:54px;border-radius:99px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--head);font-weight:600;font-size:15px;line-height:1;box-shadow:var(--el2)}
+  .cta .sepd{width:3px;height:3px;border-radius:99px;background:rgba(255,255,255,.45)}
+  .cta .amt{font-weight:700}
+  .secure{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;color:var(--ink-2);font-size:12px;font-weight:500}
+</style>
+</head>
+<body>
+  <div class="h">
+    <span class="tag">B · improved</span>
+    <h1>Walk-in Pay — Review &amp; confirm</h1>
+    <p>Fresha structure + Uber/B&amp;W treatment. Salon identity (name · rating · address), clear "what you booked → total", secure-with-Stripe bar under the CTA. Bigger icons, even rhythm, clean total. Micro-craft from here gets nailed in the React build.</p>
+  </div>
+
+  <div class="phone">
+    <div class="pill"></div>
+    <div class="screen">
+      <div class="sb">
+        <span>9:41</span>
+        <span style="display:flex;gap:7px;align-items:center">
+          <svg width="17" height="12" viewBox="0 0 18 12" fill="#0A0A0A"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4.5" width="3" height="7.5" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity=".3"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="#0A0A0A"><path d="M8 2.5c2.2 0 4.2.8 5.7 2.2l1.4-1.5C13.2 1.3 10.7.3 8 .3S2.8 1.3.9 3.2l1.4 1.5C3.8 3.3 5.8 2.5 8 2.5z"/><path d="M8 6c1.2 0 2.3.5 3.1 1.3l1.4-1.4C11.3 4.7 9.7 4 8 4s-3.3.7-4.5 1.9l1.4 1.4C5.7 6.5 6.8 6 8 6z"/><circle cx="8" cy="10" r="1.6"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1" width="21" height="10" rx="3" stroke="#0A0A0A" stroke-opacity=".4"/><rect x="2.5" y="2.5" width="17" height="7" rx="1.5" fill="#0A0A0A"/><rect x="23" y="4" width="1.5" height="4" rx=".75" fill="#0A0A0A" fill-opacity=".4"/></svg>
+        </span>
+      </div>
+
+      <div class="nav">
+        <div class="iconbtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+      </div>
+
+      <div class="content">
+        <h2 class="title">Bestätigen &amp; zahlen</h2>
+
+        <div class="salon">
+          <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=240&q=80" alt="">
+          <div>
+            <div class="nm">Barbier Studio Zürich</div>
+            <div class="rate">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l2.9 6.3 6.9.6-5.2 4.6 1.6 6.8L12 17.3 5.8 20.9l1.6-6.8L2.2 8.9l6.9-.6z"/></svg>
+              <b>4.9</b><span class="c">(128)</span><span class="sep">·</span><span class="area">Niederdorf</span>
+            </div>
+            <a class="addr" href="https://www.google.com/maps/search/?api=1&query=Niederdorfstrasse+21%2C+8001+Z%C3%BCrich" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Niederdorfstrasse 21, 8001 Zürich</a>
+          </div>
+        </div>
+
+        <div class="sec"><hr></div>
+
+        <div class="irow">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></div>
+          <div><div class="pr">Heute, 13:00</div><div class="sc"><span class="avail">Sofort</span></div></div>
+        </div>
+        <div class="irow">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.8 15.2M14.5 14.2L20 20"/></svg></div>
+          <div><div class="pr">Herrenschnitt &amp; Bart</div><div class="sc">ca. 45 Min</div></div>
+        </div>
+
+        <div class="sec"><hr></div>
+
+        <div class="price">
+          <div class="li"><span class="l">Herrenschnitt &amp; Bart</span><span class="v">CHF 45.00</span></div>
+          <div class="total"><span class="l">Gesamt</span><span class="v">CHF 45.00</span></div>
+        </div>
+      </div>
+
+      <div class="paybar">
+        <div class="cta">CHF 45.00 bezahlen</div>
+        <div class="secure">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Sichere Zahlung über Stripe
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

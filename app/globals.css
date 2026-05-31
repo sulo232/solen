@@ -1,8 +1,11 @@
 /* Solen Design System — globals.css */
 /* Type system (2026-05-30): Inter Tight (display/headings) + Hanken Grotesk (body)
    + JetBrains Mono (codes). REVERTED the V3-D317 Geist swap per user — "no Geist
-   anywhere". Do NOT reintroduce Geist. */
-@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Hanken+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400..700&display=swap');
+   anywhere". Do NOT reintroduce Geist.
+   2026-05-30 (fix): fonts now self-hosted via next/font (app/layout.tsx), exposed as
+   --font-inter-tight / --font-hanken / --font-jetbrains. Removed the Google Fonts
+   @import — it fetched from fonts.gstatic.com at runtime, which failed on LAN/phone
+   testing → page fell back to the system default font. Same typefaces, same-origin. */
 
 @tailwind base;
 @tailwind components;
@@ -113,14 +116,14 @@
 
   body {
     /* 2026-05-30: Hanken Grotesk body — Geist (V3-D317) reverted per user. */
-    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-hanken), system-ui, -apple-system, sans-serif;
     background-color: var(--base);
     color: var(--color-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
     /* 2026-05-30: Inter Tight display — Geist (V3-D317) reverted per user. */
-    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-hanken), system-ui, -apple-system, sans-serif;
     color: var(--color-heading);
     letter-spacing: -0.025em;
   }
@@ -151,22 +154,22 @@
   /* 2026-05-30: distinct families restored — .font-heading / .font-display →
      Inter Tight, .font-body → Hanken Grotesk (Geist V3-D317 reverted per user). */
   .font-heading {
-    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-hanken), system-ui, -apple-system, sans-serif;
   }
   .font-body {
-    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-hanken), system-ui, -apple-system, sans-serif;
   }
   .font-display {
-    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-hanken), system-ui, -apple-system, sans-serif;
   }
   /* V3-D317 + V3-D318: JetBrains Mono now backs font-mono-code (gift codes,
      voucher codes, receipt amounts). Tabular-nums kept for column alignment. */
   .font-mono-code {
-    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+    font-family: var(--font-jetbrains), "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
     font-variant-numeric: tabular-nums;
   }
   .data-text {
-    font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-hanken), system-ui, -apple-system, sans-serif;
     font-variant-numeric: tabular-nums;
     font-weight: 500;
   }
@@ -274,7 +277,7 @@
     padding-right: 1rem;
     font-size: 1rem;       /* 16px — prevents iOS zoom-on-focus */
     /* 2026-05-30: inputs use Hanken Grotesk (body) — Geist reverted. */
-    font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-hanken), system-ui, -apple-system, sans-serif;
     color: var(--color-body);
     background: #ffffff;
     transition: border-color 200ms ease, box-shadow 200ms ease;
@@ -699,13 +702,13 @@ html {
   border: 1px solid rgba(26, 18, 9, 0.08) !important;
   border-radius: 20px !important;
   box-shadow: 0 8px 32px rgba(26,18,9,0.08), 0 24px 72px rgba(26,18,9,0.12) !important;
-  font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif !important;
+  font-family: var(--font-hanken), system-ui, -apple-system, sans-serif !important;
   padding: 24px !important;
   color: #1A1209 !important;
 }
 
 .solen-tour-popover .driver-popover-title {
-  font-family: "Inter Tight", system-ui, -apple-system, sans-serif !important;
+  font-family: var(--font-hanken), system-ui, -apple-system, sans-serif !important;
   font-size: 1.25rem !important;
   font-weight: 700 !important;
   margin-bottom: 8px !important;

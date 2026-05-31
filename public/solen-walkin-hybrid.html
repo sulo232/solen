@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Walk-in — A + pills + bento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#5F5F5F; --ink3:#8E8E8C; --line:rgba(10,10,10,.08);
+    --success:#16A34A; --success-bg:rgba(22,163,74,.11);
+    --accent:#185CE0; --error:#C0392B; --tile:#F4F4F2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+  body{font-family:'Hanken Grotesk',system-ui,sans-serif;background:#D9D9D7;color:var(--ink);padding:40px 22px 90px}
+  .wrap{max-width:980px;margin:0 auto}
+  .intro{max-width:760px;margin:0 auto 30px;text-align:center}
+  .intro h1{font-weight:800;font-size:24px;letter-spacing:-.025em}
+  .intro p{color:#4f4d49;font-size:14px;margin-top:8px;line-height:1.6}
+
+  .rowx{display:flex;gap:48px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+  .col{width:360px}
+  .lab{text-align:center;margin-bottom:16px}
+  .lab .n{font-weight:800;font-size:16px}
+  .lab .d{font-size:12.5px;color:#5b5955;margin-top:7px;line-height:1.5}
+
+  .phone{width:360px;height:740px;border-radius:38px;padding:13px;background:#111;box-shadow:0 22px 60px rgba(20,18,16,.22)}
+  .scr{width:100%;height:100%;border-radius:26px;overflow:hidden;display:flex;flex-direction:column;background:#fff}
+  .nav{display:flex;justify-content:space-between;padding:16px 16px 6px}
+  .navbtn{width:36px;height:36px;border-radius:12px;background:#fff;display:grid;place-items:center;box-shadow:0 5px 14px rgba(26,18,9,.08)}
+  .navbtn svg{width:19px;height:19px}
+  .body{flex:1;display:flex;flex-direction:column;padding:6px 20px 18px}
+
+  /* motion */
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .rise{animation:rise .62s cubic-bezier(.22,.61,.36,1) both}
+  .d1{animation-delay:.05s}.d2{animation-delay:.13s}.d3{animation-delay:.22s}.d4{animation-delay:.34s}.d5{animation-delay:.46s}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--success-bg)}50%{box-shadow:0 0 0 7px rgba(22,163,74,.16)}}
+
+  /* hero (full-bleed on white) */
+  .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3)}
+  .hero{text-align:center;padding-top:6px}
+  .hero .num{font-weight:800;font-size:76px;letter-spacing:-.035em;line-height:.9;margin-top:3px}
+  .rot{position:relative;height:23px;overflow:hidden;margin-top:11px}
+  .rot span{position:absolute;left:0;right:0;top:0;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;font-size:15.5px;font-weight:600;color:var(--ink2)}
+  .rot span.on{opacity:1;transform:none}
+  .pillwrap{display:flex;justify-content:center;margin-top:16px}
+  .pill{display:inline-flex;gap:10px;align-items:center;background:var(--success-bg);color:var(--success);font-weight:700;font-size:13.5px;padding:7px 16px;border-radius:99px}
+  .pill .m{font-weight:600;opacity:.82}
+
+  /* stepper */
+  .step{margin-top:22px}
+  .step .track{display:flex;align-items:center}
+  .dot{width:12px;height:12px;border-radius:99px;background:rgba(10,10,10,.13);flex:0 0 auto}
+  .dot.done{background:var(--success)}
+  .dot.now{background:var(--success);animation:pulse 2s ease-in-out infinite}
+  .seg{height:3px;flex:1;border-radius:99px;background:rgba(10,10,10,.10)}
+  .seg.done{background:var(--success)}
+  .step .labs{display:flex;justify-content:space-between;margin-top:9px;font-size:10.5px;font-weight:600;color:var(--ink3)}
+  .step .labs .on{color:var(--ink)}
+
+  /* bento tiles (grey on white) */
+  .tile{background:var(--tile);border-radius:20px}
+  .qrbox{background:#fff;border-radius:12px;padding:7px;box-shadow:0 1px 0 rgba(10,10,10,.04)}
+  .qrbox .qr{display:block}
+  .scan{font-weight:700;text-align:center;color:var(--ink)}
+  .who img{border-radius:99px;object-fit:cover;flex:0 0 auto}
+  .who .nm{font-size:15.5px;font-weight:700;line-height:1.12}
+  .who .sv{font-size:12.5px;color:var(--ink2);margin-top:2px}
+  .cancel{display:block;width:100%;text-align:center;background:none;border:0;color:var(--error);font-family:inherit;font-weight:700;font-size:14.5px;padding:14px 0 4px;cursor:pointer}
+
+  /* layout 1 — 2-up bento */
+  .bento2{display:flex;gap:12px;margin-top:20px}
+  .bento2 .t-qr{flex:1;padding:15px;display:flex;flex-direction:column;align-items:center;gap:11px}
+  .bento2 .t-qr .qr{width:96px;height:96px}
+  .bento2 .t-qr .scan{font-size:11.5px;line-height:1.3}
+  .bento2 .t-who{flex:1;padding:16px 14px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:9px}
+  .bento2 .t-who img{width:46px;height:46px}
+
+  /* layout 2 — stacked wide bento */
+  .bentoS{margin-top:20px;display:flex;flex-direction:column;gap:12px}
+  .bentoS .t-qr{padding:16px 18px;display:flex;align-items:center;gap:16px}
+  .bentoS .t-qr .qr{width:84px;height:84px}
+  .bentoS .t-qr .scan{font-size:14px;text-align:left}
+  .bentoS .t-who{padding:15px 18px;display:flex;align-items:center;gap:14px}
+  .bentoS .t-who img{width:48px;height:48px}
+  .spacer{flex:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="intro">
+    <h1>A + pills + bento — two bento arrangements</h1>
+    <p>Same live hero on white (number, <b>rotating line</b>, green <b>pill</b>, pulsing stepper). The difference is how the bento sits below: <b>1</b> = QR + barber side by side, <b>2</b> = stacked wide rows. Reply 1 or 2.</p>
+  </div>
+
+  <div class="rowx">
+
+    <!-- ===== Layout 1 — 2-up bento ===== -->
+    <div class="col">
+      <div class="lab">
+        <div class="n">1 — Side-by-side bento</div>
+        <div class="d">QR tile and barber tile share a row, both centered. Compact, balanced, very "bento."</div>
+      </div>
+      <div class="phone"><div class="scr">
+        <div class="nav">
+          <div class="navbtn"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <div class="navbtn"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
+        </div>
+        <div class="body">
+          <div class="hero">
+            <div class="eyebrow rise d1">Your number</div>
+            <div class="num rise d1">A47</div>
+            <div class="rot rise d2" data-rot>
+              <span class="on">Hold tight — we've got your spot</span>
+              <span>No need to wait around</span>
+              <span>We'll ping you when you're close</span>
+              <span>Relax, your chair is coming</span>
+            </div>
+            <div class="pillwrap rise d3"><span class="pill">3 ahead <span class="m">~12 min</span></span></div>
+            <div class="step rise d3">
+              <div class="track">
+                <span class="dot done"></span><span class="seg done"></span>
+                <span class="dot now"></span><span class="seg"></span>
+                <span class="dot"></span><span class="seg"></span>
+                <span class="dot"></span>
+              </div>
+              <div class="labs"><span>Paid</span><span class="on">Waiting</span><span>Next</span><span>Chair</span></div>
+            </div>
+          </div>
+          <div class="bento2">
+            <div class="tile t-qr rise d4">
+              <div class="qrbox"><svg class="qr" viewBox="0 0 21 21" shape-rendering="crispEdges"><rect width="21" height="21" fill="#fff"/><g fill="#0A0A0A"><path d="M0 0h7v7h-7zM1 1h5v5h-5zM2 2h3v3h-3z" fill-rule="evenodd"/><path d="M14 0h7v7h-7zM15 1h5v5h-5zM16 2h3v3h-3z" fill-rule="evenodd"/><path d="M0 14h7v7h-7zM1 15h5v5h-5zM2 16h3v3h-3z" fill-rule="evenodd"/><rect x="9" y="1" width="1" height="2"/><rect x="11" y="2" width="1" height="1"/><rect x="9" y="9" width="2" height="2"/><rect x="13" y="9" width="1" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="18" y="9" width="1" height="2"/><rect x="9" y="13" width="1" height="2"/><rect x="11" y="14" width="2" height="1"/><rect x="14" y="13" width="1" height="1"/><rect x="16" y="14" width="2" height="2"/><rect x="19" y="13" width="1" height="1"/><rect x="9" y="17" width="2" height="1"/><rect x="12" y="18" width="1" height="2"/><rect x="14" y="17" width="3" height="1"/><rect x="18" y="18" width="1" height="2"/><rect x="11" y="11" width="1" height="1"/><rect x="13" y="16" width="1" height="1"/></g></svg></div>
+              <div class="scan">Show at the salon</div>
+            </div>
+            <div class="tile t-who rise d5">
+              <div class="eyebrow">Your barber</div>
+              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&q=80" alt="" />
+              <div>
+                <div class="nm">Marco Bianchi</div>
+                <div class="sv">Men's cut &amp; beard</div>
+              </div>
+            </div>
+          </div>
+          <div class="spacer"></div>
+          <button class="cancel rise d5">Cancel — free until called</button>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- ===== Layout 2 — stacked wide bento ===== -->
+    <div class="col">
+      <div class="lab">
+        <div class="n">2 — Stacked wide bento</div>
+        <div class="d">QR row, then barber row — full width each. More room, no cramping, reads top-to-bottom.</div>
+      </div>
+      <div class="phone"><div class="scr">
+        <div class="nav">
+          <div class="navbtn"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <div class="navbtn"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
+        </div>
+        <div class="body">
+          <div class="hero">
+            <div class="eyebrow rise d1">Your number</div>
+            <div class="num rise d1">A47</div>
+            <div class="rot rise d2" data-rot>
+              <span class="on">Hold tight — we've got your spot</span>
+              <span>No need to wait around</span>
+              <span>We'll ping you when you're close</span>
+              <span>Relax, your chair is coming</span>
+            </div>
+            <div class="pillwrap rise d3"><span class="pill">3 ahead <span class="m">~12 min</span></span></div>
+            <div class="step rise d3">
+              <div class="track">
+                <span class="dot done"></span><span class="seg done"></span>
+                <span class="dot now"></span><span class="seg"></span>
+                <span class="dot"></span><span class="seg"></span>
+                <span class="dot"></span>
+              </div>
+              <div class="labs"><span>Paid</span><span class="on">Waiting</span><span>Next</span><span>Chair</span></div>
+            </div>
+          </div>
+          <div class="bentoS">
+            <div class="tile t-qr rise d4">
+              <div class="qrbox"><svg class="qr" viewBox="0 0 21 21" shape-rendering="crispEdges"><rect width="21" height="21" fill="#fff"/><g fill="#0A0A0A"><path d="M0 0h7v7h-7zM1 1h5v5h-5zM2 2h3v3h-3z" fill-rule="evenodd"/><path d="M14 0h7v7h-7zM15 1h5v5h-5zM16 2h3v3h-3z" fill-rule="evenodd"/><path d="M0 14h7v7h-7zM1 15h5v5h-5zM2 16h3v3h-3z" fill-rule="evenodd"/><rect x="9" y="1" width="1" height="2"/><rect x="11" y="2" width="1" height="1"/><rect x="9" y="9" width="2" height="2"/><rect x="13" y="9" width="1" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="18" y="9" width="1" height="2"/><rect x="9" y="13" width="1" height="2"/><rect x="11" y="14" width="2" height="1"/><rect x="14" y="13" width="1" height="1"/><rect x="16" y="14" width="2" height="2"/><rect x="19" y="13" width="1" height="1"/><rect x="9" y="17" width="2" height="1"/><rect x="12" y="18" width="1" height="2"/><rect x="14" y="17" width="3" height="1"/><rect x="18" y="18" width="1" height="2"/><rect x="11" y="11" width="1" height="1"/><rect x="13" y="16" width="1" height="1"/></g></svg></div>
+              <div><div class="scan">Show this code at the salon</div></div>
+            </div>
+            <div class="tile t-who rise d5">
+              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&q=80" alt="" />
+              <div>
+                <div class="eyebrow" style="margin-bottom:2px">Your barber</div>
+                <div class="nm">Marco Bianchi</div>
+                <div class="sv">Men's cut &amp; beard</div>
+              </div>
+            </div>
+          </div>
+          <div class="spacer"></div>
+          <button class="cancel rise d5">Cancel — free until called</button>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-rot]').forEach((box) => {
+    const items = [...box.querySelectorAll('span')];
+    let i = 0;
+    setInterval(() => { items[i].classList.remove('on'); i = (i + 1) % items.length; items[i].classList.add('on'); }, 2800);
+  });
+</script>
+</body>
+</html>

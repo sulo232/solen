@@ -13,6 +13,7 @@ export const runtime = "nodejs";
 // Webhook URL to add in Stripe Dashboard:
 //   https://solen.ch/api/stripe/webhook
 // Events to enable: payment_intent.succeeded, payment_intent.payment_failed,
+//                   payment_intent.amount_capturable_updated (walk-in ticket backstop),
 //                   charge.dispute.created, account.updated
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -65,6 +66,10 @@ export async function POST(req: NextRequest) {
   switch (event.type) {
     case "payment_intent.succeeded": {
       const pi = event.data.object;
+
+      // Walk-in payments run their own flow (ticket issued at authorization via
+      // amount_capturable_updated); skip the scheduled-booking/payout path here.
+      if (pi.metadata?.type === "walk_in") break;
 
       // Handle voucher purchases before booking handler
       const { handleVoucherPurchase } = await import("./voucher-handler");
@@ -151,6 +156,24 @@ export async function POST(req: NextRequest) {
             }).catch((err) => console.error("[StripeWebhook] failed to send booking confirmation notification:", err));
           }
         }
+      }
+      break;
+    }
+
+    case "payment_intent.amount_capturable_updated": {
+      // Walk-in backstop: a manual-capture hold was just authorized. If the customer's
+      // confirm request never landed (dropped connection), issue the ticket here so a paid
+      // hold never strands without a number. Idempotent via the unique payment_intent index.
+      const obj = event.data.object;
+      if (obj.metadata?.type === "walk_in" && obj.metadata?.salon_id) {
+        const pi = await stripe.paymentIntents.retrieve(obj.id, { expand: ["latest_charge.payment_method_details"] });
+        const { createWalkinTicket } = await import("@/lib/barber/walkin-ticket");
+        const result = await createWalkinTicket(admin, {
+          pi,
+          salonId: obj.metadata.salon_id,
+          serviceId: obj.metadata?.service_id || null,
+        });
+        console.log("[stripe/webhook] walk-in backstop ensured ticket", result.ticket_number, "for PI", obj.id);
       }
       break;
     }

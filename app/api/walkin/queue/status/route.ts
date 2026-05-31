@@ -3,6 +3,8 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { estimateWaitMinutes } from "@/lib/barber/wait-time-calculator";
+import { recentAvgServiceMinutes } from "@/lib/barber/walkin-ticket";
 
 // GET /api/walkin/queue/status?token={tracking_token}
 // Public — anonymous clients poll this every 30s to track their queue position.
@@ -36,13 +38,25 @@ export async function GET(req: NextRequest) {
     .eq("status", "waiting")
     .lt("position", entry.position);
 
+  // Live ETA: recompute from the CURRENT queue depth + the salon's recent measured pace, so
+  // the wait drops as the line moves — instead of the frozen creation-time estimate.
+  const aheadCount = ahead ?? 0;
+  let estimatedWaitMinutes = 0;
+  if (entry.status === "waiting") {
+    const { data: staff } = await admin
+      .from("staff_members").select("id").eq("salon_id", entry.salon_id).eq("is_active", true);
+    const avg = await recentAvgServiceMinutes(admin, entry.salon_id);
+    // `|| 1`, not `?? 1`: 0 active staff must still estimate against 1 chair, else wait shows 0.
+    estimatedWaitMinutes = estimateWaitMinutes(aheadCount, avg, staff?.length || 1);
+  }
+
   return NextResponse.json({
     id: entry.id,
     customerName: entry.customer_name,
     position: entry.position,
     status: entry.status,
-    estimatedWaitMinutes: entry.estimated_wait_minutes,
-    aheadCount: ahead ?? 0,
+    estimatedWaitMinutes,
+    aheadCount,
     joinedAt: entry.joined_at,
     calledAt: entry.called_at,
     startedAt: entry.started_at,

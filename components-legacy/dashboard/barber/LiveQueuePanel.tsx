@@ -123,10 +123,10 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
   return (
     <div className="w-full lg:max-w-xl rounded-[12px] border border-s-ink/[0.06] bg-white p-4">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink-3">
           {t("live_queue")}
         </p>
-        <span className="text-xs data-text font-bold text-s-coral">
+        <span className="text-xs data-text font-bold text-s-ink">
           {waitingCount} {t("waiting")}
         </span>
       </div>
@@ -147,7 +147,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
               </span>
               <div
                 className={`w-2 h-2 rounded-full shrink-0 ${
-                  entry.status === "in_chair" ? "bg-s-sage" : "bg-s-amber"
+                  entry.status === "in_chair" ? "bg-s-success" : "bg-s-warning"
                 }`}
               />
               <div className="flex-1 min-w-0">
@@ -168,7 +168,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                 {entry.status === "waiting" && (
                   <button
                     onClick={() => updateStatus(entry.id, "in_chair")}
-                    className="p-1.5 rounded-[8px] bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors duration-150"
+                    className="p-1.5 rounded-[8px] bg-s-ink/[0.06] text-s-ink hover:bg-s-ink/10 transition-colors duration-150"
                     aria-label={t("start")}
                     title={t("start")}
                   >
@@ -178,7 +178,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                 {entry.status === "in_chair" && (
                   <button
                     onClick={() => updateStatus(entry.id, "completed")}
-                    className="p-1.5 rounded-[8px] bg-s-sage/20 text-s-sage hover:bg-s-sage/30 transition-colors duration-150"
+                    className="p-1.5 rounded-[8px] bg-s-success/10 text-s-success hover:bg-s-success/20 transition-colors duration-150"
                     aria-label={t("complete")}
                     title={t("complete")}
                   >
