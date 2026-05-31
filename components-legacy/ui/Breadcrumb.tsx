@@ -48,18 +48,19 @@ export default function Breadcrumb() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
       {/* Mobile back button */}
       <button
+        type="button"
         onClick={() => router.back()}
-        className="md:hidden flex items-center gap-1.5 text-sm text-s-ink/50 hover:text-s-accent transition-colors min-h-12"
+        aria-label={t("back")}
+        className="md:hidden grid place-items-center w-9 h-9 rounded-full border border-s-border text-s-ink hover:bg-s-bg-sunken transition-colors duration-200"
       >
-        <ArrowLeft size={16} />
-        {t("back")}
+        <ArrowLeft size={18} aria-hidden />
       </button>
 
       {/* Desktop breadcrumb */}
       <nav className="hidden md:flex items-center gap-1.5 text-sm" aria-label="Breadcrumb">
         <Link
           href={`/${locale}`}
-          className="text-s-ink/40 hover:text-s-accent transition-colors"
+          className="text-s-ink/40 hover:text-s-ink transition-colors"
         >
           Home
         </Link>
@@ -76,7 +77,7 @@ export default function Breadcrumb() {
               ) : (
                 <Link
                   href={href}
-                  className="text-s-ink/40 hover:text-s-accent transition-colors"
+                  className="text-s-ink/40 hover:text-s-ink transition-colors"
                 >
                   {label}
                 </Link>
