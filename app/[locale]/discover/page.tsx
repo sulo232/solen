@@ -42,20 +42,13 @@ const PROOF_SALON_ITEMS = [
     tags: ["skin fade"], like_count: 0, alt_text: "Skin fade — Old Town Barbers" },
 ] as unknown as DiscoveryItem[];
 
-// V3-D404 (user): photo-backed quick chips — a feed thumbnail behind a style label, tap to search/filter. Same visual
-// style as the original Kurz/Pflege chips, just more of them. The photo is the Nth loaded feed thumbnail (not a
-// per-style image yet — a real per-style image library is a separate, data-dependent step).
-const QUICK_CHIPS: { label: string; search: string }[] = [
-  { label: "Kurz", search: "kurze Haare" },
-  { label: "Pflege", search: "Pflege" },
-  { label: "Wolf Cut", search: "Wolf Cut" },
-  { label: "Buzz Cut", search: "Buzz Cut" },
-  { label: "Skin Fade", search: "Skin Fade" },
-  { label: "Bob", search: "Bob" },
-  { label: "Balayage", search: "Balayage" },
-  { label: "Curtain Bangs", search: "Curtain Bangs" },
-  { label: "Layers", search: "Layers" },
-];
+// V3-D407 (#22): quick-chip labels are now DATA-DRIVEN — fetched from /api/discovery/chip-terms (the top style
+// tags in the actual content), so chips always lead to populated results and self-update as content grows. This
+// replaces the hardcoded list (Skin Fade / Buzz / Bob) that matched zero items. Photo backing is still the Nth
+// feed thumbnail (same approved visual; a real per-style image library is a separate, data-dependent step).
+// formatChip turns a raw tag ("textured-crop") into a display label ("Textured Crop").
+const formatChip = (term: string): string =>
+  term.split(/[-\s]+/).filter(Boolean).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 
 function DiscoverPageContent() {
   const locale = useLocale();
@@ -77,6 +70,9 @@ function DiscoverPageContent() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [patternOpen, setPatternOpen] = useState(false); // V3-D397: Hair-pattern pill dropdown
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  // V3-D407 (#22): data-driven quick-chip terms (top style tags from real content). Fetched once; stable
+  // regardless of the current filter so the chip set doesn't jitter when you tap one.
+  const [chipTerms, setChipTerms] = useState<string[]>([]);
 
   // Derive filter values from activeFilters
   const gender = activeFilters.find((f) => f.pillId === "gender")?.subId as DiscoveryGender | undefined || "all";
@@ -115,6 +111,16 @@ function DiscoverPageContent() {
         setProfileChecked(true);
       })
       .catch(() => { if (!cancelled) setProfileChecked(true); });
+    return () => { cancelled = true; };
+  }, []);
+
+  // V3-D407 (#22): load the data-driven quick-chip terms once (top style tags in real content).
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/discovery/chip-terms")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (!cancelled && Array.isArray(d?.terms)) setChipTerms(d.terms.slice(0, 9)); })
+      .catch((err) => console.error("[Discover] chip-terms load failed:", err));
     return () => { cancelled = true; };
   }, []);
 
@@ -201,8 +207,8 @@ function DiscoverPageContent() {
   // V3-D389 PROOF: prepend the seeded salon items in the default "all" feed only (contextual, not inside every filter).
   const feedItems = category === "all" ? [...PROOF_SALON_ITEMS, ...items] : items;
 
-  // V3-D404 (user): photo-backed quick chips — one feed thumbnail per QUICK_CHIPS entry (was just 2: Kurz/Pflege).
-  const chipPhotos = items.slice(0, QUICK_CHIPS.length).map((it) =>
+  // V3-D407 (#22): one feed thumbnail per data-driven chip term (photo backing for the quick chips).
+  const chipPhotos = items.slice(0, chipTerms.length).map((it) =>
     it.tiktok_url ? `/api/discovery/thumb/${it.id}` : (it.image_url || it.tiktok_thumbnail_url || null)
   );
 
@@ -366,22 +372,24 @@ function DiscoverPageContent() {
                 {texture ? texture.charAt(0).toUpperCase() + texture.slice(1) : t("texture")}
                 <ChevronDown size={14} className={`transition-transform duration-150 ${patternOpen ? "rotate-180" : ""}`} />
               </button>
-              {/* V3-D404 (user): photo-backed quick chips — feed thumbnail + style label, tap to filter. Same visual
-                  style as the original Kurz/Pflege, just more of them. Each renders only when a backing thumbnail exists. */}
-              {QUICK_CHIPS.map((chip, i) => {
+              {/* V3-D407 (#22): photo-backed quick chips — labels are data-driven (top style tags in real content,
+                  so they never lead to an empty feed). Same visual as the original Kurz/Pflege photo chips. Each
+                  renders only when a backing feed thumbnail exists. */}
+              {chipTerms.map((term, i) => {
                 const photo = chipPhotos[i];
                 if (!photo) return null;
+                const label = formatChip(term);
                 return (
                   <button
-                    key={chip.label}
+                    key={term}
                     type="button"
-                    onClick={() => setSearch(chip.search)}
+                    onClick={() => setSearch(label)}
                     className="relative h-10 w-[94px] shrink-0 overflow-hidden rounded-[14px]"
-                    aria-label={chip.label}
+                    aria-label={label}
                   >
                     <img src={photo} alt="" className="absolute inset-0 h-full w-full object-cover" />
                     <span className="absolute inset-0 bg-gradient-to-b from-s-ink/10 to-s-ink/55" />
-                    <span className="absolute bottom-1.5 left-2.5 z-10 font-heading text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,.55)" }}>{chip.label}</span>
+                    <span className="absolute bottom-1.5 left-2.5 z-10 font-heading text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,.55)" }}>{label}</span>
                   </button>
                 );
               })}
