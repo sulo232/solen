@@ -15,9 +15,41 @@ import { useLocale } from "next-intl";
 import { Section, SectionFrame, SectionTitle, ScrollRow } from "./SectionHeader";
 import { SalonCard } from "./SalonCard";
 import { useCustomerPrefs, type CustomerPrefs } from "./useCustomerPrefs";
-import { FORYOU_SALONS, FORYOU_LABEL, FORYOU_CATEGORIES, type ForYouCategory } from "./forYouSalons";
+import { FORYOU_SALONS, FORYOU_LABEL, FORYOU_CATEGORIES, FORYOU_DEALS, type ForYouCategory } from "./forYouSalons";
 
-const MAX_ROWS = 2; // don't flood the feed — top 2 picks get a row
+const MAX_ROWS = 2; // don't flood the feed — top 2 picks get a "Weil du X magst" row
+
+function DealsRow({ locale }: { locale: string }) {
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+  return (
+    <Section>
+      <SectionFrame>
+        <SectionTitle
+          title="Deals für dich"
+          link={{ label: "Alle Angebote", href: `/${locale}/search/results` }}
+          scrollRef={scrollRef}
+        />
+        <ScrollRow ref={scrollRef}>
+          {FORYOU_DEALS.map((s) => (
+            <SalonCard
+              key={`deal-${s.slug}`}
+              slug={s.slug}
+              name={s.name}
+              rating={s.rating}
+              category={s.category}
+              photoUrl={s.photoUrl}
+              variant="service"
+              priceFromCHF={s.priceFromCHF}
+              address={s.address}
+              city="Zürich"
+              discountPercent={s.discountPercent}
+            />
+          ))}
+        </ScrollRow>
+      </SectionFrame>
+    </Section>
+  );
+}
 
 function ForYouRow({
   category,
@@ -96,6 +128,7 @@ export function ForYouSalonRowsView({
           wantsTopRated={wantsTopRated}
         />
       ))}
+      {wantsDeals && <DealsRow locale={locale} />}
     </>
   );
 }

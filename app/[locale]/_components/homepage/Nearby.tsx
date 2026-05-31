@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
+import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
 
 /**
  * In der Nähe — V3 (LIVE_TRUTH §Q51.2 + V2-D34 cards).
@@ -125,8 +126,17 @@ function resolveAvailability(
   };
 }
 
-export default function Nearby() {
-  const entries = DEMO; // TODO: replace w real geo query Phase 2
+export default function Nearby({
+  prefsOverride,
+}: {
+  /** Test seam — bypasses the live fetch when provided (dev previews). */
+  prefsOverride?: CustomerPrefs | null;
+} = {}) {
+  const fetched = useCustomerPrefs();
+  const prefs = prefsOverride !== undefined ? prefsOverride : fetched;
+  // V3-D348: bend toward the user's picks — picked-category salons lead, the
+  // rest keep their distance order. Logged-out (no prefs) = unchanged.
+  const entries = sortByCategoryPicks(DEMO, prefs?.categories ?? []);
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   return (

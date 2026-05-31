@@ -56,3 +56,15 @@ export const FORYOU_SALONS: Record<ForYouCategory, ForYouSalon[]> = {
     { slug: "boheme-zh", name: "Bohème", rating: 4.7, category: "barbershop", photoUrl: PHOTO.barbershop, priceFromCHF: 48, address: "Josefstrasse 102" },
   ],
 };
+
+export interface DealSalon extends ForYouSalon {
+  discountPercent: number;
+}
+
+/** Cross-category discounted salons for the "Deals für dich" row (deals interest). */
+export const FORYOU_DEALS: DealSalon[] = [
+  { ...FORYOU_SALONS.nails[1], discountPercent: 20 },
+  { ...FORYOU_SALONS.spa[2], discountPercent: 15 },
+  { ...FORYOU_SALONS.coiffeur[2], discountPercent: 25 },
+  { ...FORYOU_SALONS.barbershop[1], discountPercent: 15 },
+];
