@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { MapPin } from "lucide-react";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
@@ -150,6 +151,31 @@ export default function Nearby({
           link={{ label: "Alle in deiner Nähe →", href: "/search/results?nearby=true" }}
           scrollRef={scrollRef}
         />
+        {/* V3-D348 (tweak #2): map teaser — gives "In der Nähe" a location-led
+            identity distinct from the editorial "Top auf Solen" carousel above.
+            The salon cards below are UNCHANGED (name+star / street / time·price).
+            Tap → nearby results. */}
+        <a
+          href="/search/results?nearby=true"
+          aria-label="Salons in der Nähe auf der Karte ansehen"
+          className="relative mt-1 block h-[120px] overflow-hidden rounded-card border border-s-border bg-s-bg-sunken transition-transform duration-200 ease-glide active:scale-[0.99]"
+        >
+          <span
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(10,10,10,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(10,10,10,0.05) 1px, transparent 1px)",
+              backgroundSize: "26px 26px",
+            }}
+          />
+          <MapPin className="absolute left-[26%] top-[28%] text-s-ink" size={20} strokeWidth={2.5} fill="currentColor" aria-hidden />
+          <MapPin className="absolute left-[56%] top-[42%] text-s-accent" size={22} strokeWidth={2.5} fill="currentColor" aria-hidden />
+          <MapPin className="absolute left-[40%] top-[62%] text-s-ink" size={18} strokeWidth={2.5} fill="currentColor" aria-hidden />
+          <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-pill bg-white px-3 py-1.5 text-[13px] font-medium text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
+            <MapPin size={13} className="text-s-accent" aria-hidden /> 14 Salons in der Nähe · Karte öffnen
+          </span>
+        </a>
         <ScrollRow ref={scrollRef}>
         {entries.map((e, idx) => (
           <SalonCard
