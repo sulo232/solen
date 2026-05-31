@@ -42,6 +42,9 @@ import RecentlyViewed from "./_components/homepage/RecentlyViewed";
 // re-add the import + the <ArtistOfTheMonth /> usage in FeedZone below.
 // import ArtistOfTheMonth from "./_components/homepage/ArtistOfTheMonth";
 import Nearby from "./_components/homepage/Nearby";
+// V3-D348 (tweak #5): dark full-bleed feature band — breaks the run of
+// identical card carousels mid-feed + surfaces Walk-in.
+import WalkInBand from "./_components/homepage/WalkInBand";
 // V3-D150 (2026-05-25): CategoryPromos ("Stöber nach Kategorie." swipeable
 // promo cards) REMOVED from homepage per user. Browsing-by-category path
 // still lives via MobileCategoriesRow "Für dich" tiles (slot 3) + Header
@@ -148,6 +151,7 @@ export default async function Page() {
         <ForYouSalonRows />
         <RecentlyViewed />
         <Nearby />
+        <WalkInBand />
         <FeaturedStylists />
         <Entdecken />
         <Reviews />
