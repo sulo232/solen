@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { Session } from "@supabase/supabase-js";
@@ -266,6 +267,12 @@ export default function Header({ locale }: { locale: string }) {
       : null;
   }, [pathname]);
 
+  // V3-D410 (user): on the Discover page the logo slot becomes the page title + a
+  // "Solen › Entdecken" breadcrumb (Solen still taps → home), replacing the standalone
+  // wordmark + the page's own big h1 that were stacking redundantly. Route-gated to /discover.
+  const isDiscover = !!pathname && /^\/[a-z]{2}\/discover\/?$/.test(pathname);
+  const tDiscover = useTranslations("discover");
+
   React.useEffect(() => {
     const HEADER_H = 80; // approximate header height incl. padding
     const onScroll = () => {
@@ -384,26 +391,60 @@ export default function Header({ locale }: { locale: string }) {
             pointer-events-none keeps the flex layout intact (hamburger
             position doesn't shift) while making the wordmark invisible
             and untappable while menu is open. */}
-        <Link
-          href={`/${locale}`}
-          aria-label="Solen zur Startseite"
-          className={cn(
-            // V3-D193 (2026-05-26): Solen wordmark weight 900 → 800 per "too bold" sweep.
-            "font-display relative inline-flex shrink-0 items-baseline text-[25px] font-semibold leading-none tracking-normal md:text-[26px] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
-            "transition-opacity duration-200 ease-glide",
-            menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
-            // V3-D101: invert logo color when header is over a dark section
-            isDark ? "text-white" : "text-s-ink",
-            // V3-D376 (2026-05-29): the logo no longer self-hides on scroll - it
-            // folds away WITH the whole header (see the header max-h collapse above).
-          )}
-        >
-          Solen
-          {/* V3-D146 (2026-05-25): green dot removed per B&W palette pivot —
-              "drop the dot entirely — just 'Solen'". Wordmark is now pure
-              typographic. Restore by un-commenting the <span> below + the
-              bg-s-ink class. */}
-        </Link>
+        {isDiscover ? (
+          /* V3-D410 (user): Discover header — page title where the wordmark was, with a
+             "Solen › Entdecken" breadcrumb underneath. Solen still links home; the page's
+             own h1 is removed so the two no longer stack. */
+          <div
+            className={cn(
+              "flex shrink-0 flex-col gap-1 transition-opacity duration-200 ease-glide",
+              menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
+            )}
+          >
+            <span
+              className={cn(
+                "font-display text-[25px] font-semibold leading-none tracking-normal md:text-[26px]",
+                isDark ? "text-white" : "text-s-ink",
+              )}
+            >
+              {tDiscover("title")}
+            </span>
+            <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 font-body text-[12.5px] leading-none">
+              <Link
+                href={`/${locale}`}
+                className={cn(
+                  "transition-colors duration-150",
+                  isDark ? "text-white/70 hover:text-white" : "text-s-ink-2 hover:text-s-ink",
+                )}
+              >
+                Solen
+              </Link>
+              <span className={isDark ? "text-white/40" : "text-s-ink/30"} aria-hidden>›</span>
+              <span className={isDark ? "text-white/55" : "text-s-ink/45"} aria-current="page">{tDiscover("title")}</span>
+            </nav>
+          </div>
+        ) : (
+          <Link
+            href={`/${locale}`}
+            aria-label="Solen zur Startseite"
+            className={cn(
+              // V3-D193 (2026-05-26): Solen wordmark weight 900 → 800 per "too bold" sweep.
+              "font-display relative inline-flex shrink-0 items-baseline text-[25px] font-semibold leading-none tracking-normal md:text-[26px] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
+              "transition-opacity duration-200 ease-glide",
+              menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
+              // V3-D101: invert logo color when header is over a dark section
+              isDark ? "text-white" : "text-s-ink",
+              // V3-D376 (2026-05-29): the logo no longer self-hides on scroll - it
+              // folds away WITH the whole header (see the header max-h collapse above).
+            )}
+          >
+            Solen
+            {/* V3-D146 (2026-05-25): green dot removed per B&W palette pivot —
+                "drop the dot entirely — just 'Solen'". Wordmark is now pure
+                typographic. Restore by un-commenting the <span> below + the
+                bg-s-ink class. */}
+          </Link>
+        )}
 
         {/* Mobile: middle area. Empty by default (flex spacer pushes the
             hamburger to the right edge — as it was for the homepage + all

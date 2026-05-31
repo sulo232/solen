@@ -275,13 +275,9 @@ function DiscoverPageContent() {
   return (
     <main className="min-h-screen bg-white pt-4 pb-24">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Header — title only. V3-D392 (2026-05-30): V1 (Pinterest) layout — the filter moved to a sliders button on
-            the category row, and search is promoted to the top of the filter zone. */}
-        <div className="mb-3">
-          <h1 className="font-heading font-semibold text-[clamp(22px,2.8vw,26px)] leading-[1.05] tracking-[-0.015em] text-s-ink">
-            {t("title")}
-          </h1>
-        </div>
+        {/* V3-D410 (user): the page title ("Entdecken") + a "Solen › Entdecken" breadcrumb now live in the global
+            header's logo slot (see Header.tsx, route-gated to /discover) — so the standalone h1 here is removed to
+            stop the title stacking under the wordmark. */}
 
         {/* Search (V1: top of the filter zone). V4: a cancel-arrow appears left on focus (Pinterest), and the trending
             suggestions drop down. Tap the arrow to clear + exit search. */}
