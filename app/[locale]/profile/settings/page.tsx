@@ -12,6 +12,7 @@ import { ChevronLeft } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import SettingsForm, { type SettingsLocale } from "./SettingsForm";
+import BeautyProfileForm from "./BeautyProfileForm";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -32,7 +33,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("display_name, avatar_url, bio, phone_number, locale, notification_email, notification_sms")
+    .select("display_name, avatar_url, bio, phone_number, locale, notification_email, notification_sms, gender, hair_type, customer_preferences")
     .eq("id", user.id)
     .maybeSingle();
   if (error) console.error("[Settings] profile fetch error:", error.message);
@@ -41,6 +42,21 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
   const profileLocale = (allowed as string[]).includes(profile?.locale ?? "")
     ? (profile!.locale as SettingsLocale)
     : ((allowed as string[]).includes(locale) ? (locale as SettingsLocale) : "de");
+
+  // Beauty Profile — editable counterpart to /onboarding (shares ./beautyFields).
+  const beautyPrefs =
+    profile?.customer_preferences && typeof profile.customer_preferences === "object"
+      ? (profile.customer_preferences as Record<string, unknown>)
+      : {};
+  const asStrArr = (v: unknown): string[] =>
+    Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+  const beautyInitial = {
+    gender: profile?.gender ?? "",
+    hair_type: profile?.hair_type ?? "",
+    skinType: typeof beautyPrefs.skinType === "string" ? beautyPrefs.skinType : "",
+    categories: asStrArr(beautyPrefs.categories),
+    interests: asStrArr(beautyPrefs.interests),
+  };
 
   return (
     <main className="min-h-screen bg-white">
@@ -56,19 +72,23 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
           <h1 className="text-[22px] font-semibold tracking-[-0.015em] text-s-ink">{t("settingsTitle")}</h1>
         </div>
 
-        <SettingsForm
-          locale={locale}
-          email={user.email ?? ""}
-          initial={{
-            display_name: profile?.display_name ?? "",
-            avatar_url: profile?.avatar_url ?? "",
-            bio: profile?.bio ?? "",
-            phone_number: profile?.phone_number ?? "",
-            locale: profileLocale,
-            notification_email: profile?.notification_email ?? true,
-            notification_sms: profile?.notification_sms ?? true,
-          }}
-        />
+        <div className="space-y-7">
+          <BeautyProfileForm initial={beautyInitial} customerPreferences={beautyPrefs} />
+
+          <SettingsForm
+            locale={locale}
+            email={user.email ?? ""}
+            initial={{
+              display_name: profile?.display_name ?? "",
+              avatar_url: profile?.avatar_url ?? "",
+              bio: profile?.bio ?? "",
+              phone_number: profile?.phone_number ?? "",
+              locale: profileLocale,
+              notification_email: profile?.notification_email ?? true,
+              notification_sms: profile?.notification_sms ?? true,
+            }}
+          />
+        </div>
       </div>
     </main>
   );

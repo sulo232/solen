@@ -7,8 +7,12 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Star, Heart, Droplet, Zap, Check } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import {
+  GENDER_OPTS, HAIR_OPTS, SKIN_OPTS, CATEGORY_OPTS, INTEREST_OPTS,
+  CatIcon, INTEREST_ICON, type Choice, type InterestChoice,
+} from "./beautyFields";
 
 type Prefs = Record<string, unknown>;
 
@@ -18,81 +22,42 @@ export interface OnboardingInitial {
   customerPreferences: Prefs;
 }
 
-// ── category icons (inline — match the approved mockup) ──────────
-const CAT_PATHS: Record<string, React.ReactNode> = {
-  coiffeur: (<><circle cx="6" cy="6" r="3" /><circle cx="6" cy="18" r="3" /><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12" /></>),
-  barbershop: (<><rect x="4" y="4" width="16" height="6" rx="2" /><path d="M12 10v5M9 18h6" /></>),
-  nails: (<path d="M9 21V8a3 3 0 0 1 6 0v13M9 21h6M8 8c0-2 1-5 4-5s4 3 4 5" />),
-  spa: (<path d="M11 20A7 7 0 0 1 4 13c0-6 5-9 16-9 0 8-3 14-9 16zM4 20c2-5 6-8 11-9" />),
-  makeup: (<><path d="M14 4 20 10 11 19l-5 1 1-5z" /><path d="m12 6 6 6" /></>),
-  waxing: (<path d="M4 8c4-3 12-3 16 0M4 13c4-3 12-3 16 0M4 18c4-3 12-3 16 0" />),
-};
-function CatIcon({ name }: { name: string }) {
-  return (
-    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      {CAT_PATHS[name]}
-    </svg>
-  );
-}
-
 // ── step config ──────────────────────────────────────────────────
-type Choice = { value: string; label: string };
+// Question copy lives here; the option sets come from ./beautyFields so the
+// editable Beauty Profile in settings shares the exact same values.
 type Step =
   | { id: string; kind: "chips"; q: string; sub?: string; field: "gender" | "hair_type" | "skinType"; opts: Choice[] }
-  | { id: "categories"; kind: "grid"; q: string; sub?: string; opts: { value: string; label: string }[] }
-  | { id: "interests"; kind: "cards"; q: string; sub?: string; opts: { value: string; label: string; note?: string; cls: string }[] };
+  | { id: "categories"; kind: "grid"; q: string; sub?: string; opts: Choice[] }
+  | { id: "interests"; kind: "cards"; q: string; sub?: string; opts: InterestChoice[] };
 
 const STEPS: Step[] = [
   {
     id: "gender", kind: "chips", field: "gender",
     q: "Wie identifizierst du dich?", sub: "Damit wir Stylist:innen & Leistungen auf dich abstimmen.",
-    opts: [
-      { value: "female", label: "Frau" }, { value: "male", label: "Mann" },
-      { value: "non_binary", label: "Non-binär" }, { value: "prefer_not_to_say", label: "Keine Angabe" },
-    ],
+    opts: GENDER_OPTS,
   },
   {
     id: "hair", kind: "chips", field: "hair_type",
     q: "Wie sind deine Haare?", sub: "Hilft uns, dich mit den richtigen Profis zu matchen.",
-    opts: [
-      { value: "straight", label: "Glatt" }, { value: "wavy", label: "Wellig" },
-      { value: "curly", label: "Lockig" }, { value: "coily", label: "Kraus" }, { value: "unknown", label: "Weiss nicht" },
-    ],
+    opts: HAIR_OPTS,
   },
   {
     id: "skin", kind: "chips", field: "skinType",
     q: "Und deine Haut?", sub: "Für Gesichtsbehandlungen, Waxing & empfindliche Haut.",
-    opts: [
-      { value: "dry", label: "Trocken" }, { value: "normal", label: "Normal" },
-      { value: "combination", label: "Mischhaut" }, { value: "oily", label: "Fettig" }, { value: "sensitive", label: "Empfindlich" },
-    ],
+    opts: SKIN_OPTS,
   },
   {
     id: "categories", kind: "grid",
     q: "Was suchst du?", sub: "Wähle, was du buchst — wir bauen deine Startseite darum.",
-    opts: [
-      { value: "coiffeur", label: "Coiffeur" }, { value: "barbershop", label: "Barbershop" },
-      { value: "nails", label: "Nails" }, { value: "spa", label: "Spa & Wellness" },
-      { value: "makeup", label: "Makeup" }, { value: "waxing", label: "Waxing" },
-    ],
+    opts: CATEGORY_OPTS,
   },
   {
     id: "interests", kind: "cards",
     q: "Was interessiert dich?", sub: "Das zeigen wir dir zuerst auf deiner Startseite.",
-    opts: [
-      { value: "top_rated", label: "Top-Salons", cls: "text-s-star" },
-      { value: "deals", label: "Deals & Angebote", note: "Gutscheine, Last-Minute", cls: "text-s-urgency" },
-      { value: "favorites", label: "Favoriten", cls: "text-[#FF3366]" },
-      { value: "spa", label: "Spa & Entspannung", cls: "text-s-accent-bright" },
-    ],
+    opts: INTEREST_OPTS,
   },
 ];
 const TOTAL = STEPS.length;
-
-const INTEREST_ICON: Record<string, React.ReactNode> = {
-  top_rated: <Star size={20} aria-hidden />, deals: <Zap size={20} aria-hidden />,
-  favorites: <Heart size={20} aria-hidden />, spa: <Droplet size={20} aria-hidden />,
-};
 
 export default function OnboardingFlow({ locale, redirect, customerPreferences }: OnboardingInitial) {
   const router = useRouter();
@@ -120,20 +85,20 @@ export default function OnboardingFlow({ locale, redirect, customerPreferences }
       if (multi.categories.length) prefs.categories = multi.categories;
       if (multi.interests.length) prefs.interests = multi.interests;
 
-      const body: Record<string, unknown> = { customer_preferences: prefs };
+      // Always persist — even a full skip counts as "been through onboarding",
+      // so onboarding_completed flips and the user isn't re-prompted later.
+      const body: Record<string, unknown> = { customer_preferences: prefs, onboarding_completed: true };
       if (single.gender) body.gender = single.gender;
       if (single.hair_type) body.hair_type = single.hair_type;
-      if (single.gender || single.hair_type || Object.keys(prefs).length) {
-        const res = await fetch("/api/profile", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-        if (!res.ok) {
-          const e = await res.json().catch(() => ({}));
-          console.error("[Onboarding] save failed:", e?.message ?? res.status);
-          toast.error("Speichern fehlgeschlagen — du kannst es später im Profil ergänzen.");
-        }
+      const res = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const e = await res.json().catch(() => ({}));
+        console.error("[Onboarding] save failed:", e?.message ?? res.status);
+        toast.error("Speichern fehlgeschlagen — du kannst es später im Profil ergänzen.");
       }
     } catch (err) {
       console.error("[Onboarding] save exception:", err);
