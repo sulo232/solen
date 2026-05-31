@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Bookmark } from "lucide-react";
+import SaveToBoardSheet from "./SaveToBoardSheet";
 
 const GUEST_SAVES_KEY = "disc_saves_guest";
 
@@ -28,7 +29,7 @@ interface SaveButtonProps {
 export default function SaveButton(props: SaveButtonProps) {
   const { itemId, initialSaved, isAuthenticated, onAuthPrompt } = props;
   const [saved, setSaved] = useState(initialSaved);
-  const [isPending, startTransition] = useTransition();
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   // Check guest saves on mount
   useEffect(() => {
@@ -38,9 +39,9 @@ export default function SaveButton(props: SaveButtonProps) {
     }
   }, [isAuthenticated, initialSaved, itemId]);
 
-  const toggle = () => {
+  const onClick = () => {
     if (!isAuthenticated) {
-      // Guest: store in localStorage
+      // Guest: keep the localStorage save + auth prompt (unchanged).
       const guest = getGuestSaves();
       if (saved) {
         setGuestSaves(guest.filter((id) => id !== itemId));
@@ -52,40 +53,30 @@ export default function SaveButton(props: SaveButtonProps) {
       }
       return;
     }
-
-    const wasSaved = saved;
-    setSaved(!wasSaved);
-
-    startTransition(async () => {
-      try {
-        const res = await fetch("/api/discovery/save", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ item_id: itemId }),
-        });
-        if (!res.ok) setSaved(wasSaved);
-      } catch {
-        setSaved(wasSaved);
-      }
-    });
+    // V3-D414 (Phase 2): authenticated → open the "Speichern in" board sheet (was a flat toggle).
+    setSheetOpen(true);
   };
 
   return (
-    <button
-      onClick={toggle}
-      disabled={isPending}
-      className="flex items-center gap-1 text-xs group"
-      aria-label={saved ? "Unsave" : "Save"}
-      aria-pressed={saved}
-    >
-      <Bookmark
-        size={18}
-        className={[
-          "transition-[fill,color] duration-150",
-          saved ? "fill-s-ink text-s-ink" : "text-s-ink/30 group-hover:text-s-ink/60",
-        ].join(" ")}
-      />
-    </button>
+    <>
+      <button
+        onClick={onClick}
+        className="group flex items-center gap-1 text-xs"
+        aria-label={saved ? "Gespeichert" : "Speichern"}
+        aria-pressed={saved}
+      >
+        <Bookmark
+          size={18}
+          className={[
+            "transition-[fill,color] duration-150",
+            saved ? "fill-s-ink text-s-ink" : "text-s-ink/30 group-hover:text-s-ink/60",
+          ].join(" ")}
+        />
+      </button>
+      {isAuthenticated && (
+        <SaveToBoardSheet itemId={itemId} open={sheetOpen} onClose={() => setSheetOpen(false)} onSaved={() => setSaved(true)} />
+      )}
+    </>
   );
 }
 

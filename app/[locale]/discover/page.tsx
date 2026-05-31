@@ -21,7 +21,7 @@ import AISuggestionPills from "@/components-legacy/discovery/AISuggestionPills";
 import SearchAutocomplete from "@/components-legacy/discovery/SearchAutocomplete";
 import RecentSearches from "@/components-legacy/discovery/RecentSearches";
 import DiscoveryAdmin from "@/components-legacy/discovery/DiscoveryAdmin";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronDown, Bookmark } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
 
 // PROOF (frontend-only, V3-D389): seeded salon-portfolio discovery items to preview how OPTED-IN salon photos would
@@ -332,6 +332,15 @@ function DiscoverPageContent() {
               }}
               onReset={resetFilters}
             />
+            {/* V3-D414 (Phase 2): Saved (Gespeichert) entry point — opens the user's saved boards. */}
+            <button
+              type="button"
+              onClick={() => router.push(`/${locale}/discover/saved`)}
+              aria-label="Gespeichert"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
+            >
+              <Bookmark size={18} />
+            </button>
           </div>
           {searchFocused && (
             <div className="absolute inset-x-0 top-full z-30 mt-2 rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">

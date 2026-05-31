@@ -29,10 +29,10 @@ export default function HideInBooking({
 
   if (hideOnFeed && /\/discover(\/|$)/.test(pathname)) return null;
 
-  // V3-D414: board detail (/discover/board/[id]) is a focused view with its own hero cover + back button. Drop the
-  // marketing chrome (city bar, header, breadcrumb, footer) so there aren't doubled back/cancel controls stacked
-  // above it. The feed (/discover) is unaffected and keeps its header.
-  if (/\/discover\/board\//.test(pathname)) return null;
+  // V3-D414: board detail + saved (/discover/board/[id], /discover/saved, /discover/saved/[id]) are focused views
+  // with their own back button. Drop the marketing chrome (city bar, header, breadcrumb, footer) so there aren't
+  // doubled back/cancel controls stacked above them. The feed (/discover) is unaffected and keeps its header.
+  if (/\/discover\/(board|saved)(\/|$)/.test(pathname)) return null;
 
   // Booking flow, individual staff pages, and onboarding are self-contained —
   // always drop the marketing chrome.
