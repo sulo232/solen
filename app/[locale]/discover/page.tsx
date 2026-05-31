@@ -42,6 +42,21 @@ const PROOF_SALON_ITEMS = [
     tags: ["skin fade"], like_count: 0, alt_text: "Skin fade — Old Town Barbers" },
 ] as unknown as DiscoveryItem[];
 
+// V3-D404 (user): photo-backed quick chips — a feed thumbnail behind a style label, tap to search/filter. Same visual
+// style as the original Kurz/Pflege chips, just more of them. The photo is the Nth loaded feed thumbnail (not a
+// per-style image yet — a real per-style image library is a separate, data-dependent step).
+const QUICK_CHIPS: { label: string; search: string }[] = [
+  { label: "Kurz", search: "kurze Haare" },
+  { label: "Pflege", search: "Pflege" },
+  { label: "Wolf Cut", search: "Wolf Cut" },
+  { label: "Buzz Cut", search: "Buzz Cut" },
+  { label: "Skin Fade", search: "Skin Fade" },
+  { label: "Bob", search: "Bob" },
+  { label: "Balayage", search: "Balayage" },
+  { label: "Curtain Bangs", search: "Curtain Bangs" },
+  { label: "Layers", search: "Layers" },
+];
+
 function DiscoverPageContent() {
   const locale = useLocale();
   const router = useRouter();
@@ -103,8 +118,22 @@ function DiscoverPageContent() {
     return () => { cancelled = true; };
   }, []);
 
-  // Fetch items
+  // Fetch items — V3-D402 (perf): session cache keyed by the filter signature. Re-tapping a filter combo you've
+  // already loaded restores its page-1 results instantly (no network, no grid flash) instead of a ~700ms refetch.
+  const feedCache = useRef<Map<string, { items: DiscoveryItem[]; hasMore: boolean }>>(new Map());
   const fetchItems = useCallback(async (pageNum: number, append = false) => {
+    const sig = JSON.stringify({ category, gender, search, texture, style });
+    // Cache-first for the initial page of a combo → instant repeat taps, no loading flash.
+    if (pageNum === 1 && !append) {
+      const cached = feedCache.current.get(sig);
+      if (cached) {
+        setItems(cached.items);
+        setHasMore(cached.hasMore);
+        setError(false);
+        setLoading(false);
+        return;
+      }
+    }
     setLoading(true);
     setError(false);
     try {
@@ -123,6 +152,8 @@ function DiscoverPageContent() {
         setItems((prev) => [...prev, ...(data.items ?? [])]);
       } else {
         setItems(data.items ?? []);
+        // Cache only the initial page of a combo (infinite-scroll pages stay live).
+        feedCache.current.set(sig, { items: data.items ?? [], hasMore: data.has_more ?? false });
       }
       setHasMore(data.has_more ?? false);
     } catch (err) {
@@ -170,8 +201,8 @@ function DiscoverPageContent() {
   // V3-D389 PROOF: prepend the seeded salon items in the default "all" feed only (contextual, not inside every filter).
   const feedItems = category === "all" ? [...PROOF_SALON_ITEMS, ...items] : items;
 
-  // V3-D400 (council): photo-backed quick chips use the first loaded feed thumbnails (Pinterest's "Short"/"Routine").
-  const chipPhotos = items.slice(0, 2).map((it) =>
+  // V3-D404 (user): photo-backed quick chips — one feed thumbnail per QUICK_CHIPS entry (was just 2: Kurz/Pflege).
+  const chipPhotos = items.slice(0, QUICK_CHIPS.length).map((it) =>
     it.tiktok_url ? `/api/discovery/thumb/${it.id}` : (it.image_url || it.tiktok_thumbnail_url || null)
   );
 
@@ -335,31 +366,25 @@ function DiscoverPageContent() {
                 {texture ? texture.charAt(0).toUpperCase() + texture.slice(1) : t("texture")}
                 <ChevronDown size={14} className={`transition-transform duration-150 ${patternOpen ? "rotate-180" : ""}`} />
               </button>
-              {/* photo-backed quick chips — feed thumbnails behind the label (set a quick search) */}
-              {chipPhotos[0] && (
-                <button
-                  type="button"
-                  onClick={() => setSearch("kurze Haare")}
-                  className="relative h-10 w-[94px] shrink-0 overflow-hidden rounded-[14px]"
-                  aria-label="Kurz"
-                >
-                  <img src={chipPhotos[0]} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                  <span className="absolute inset-0 bg-gradient-to-b from-s-ink/10 to-s-ink/55" />
-                  <span className="absolute bottom-1.5 left-2.5 z-10 font-heading text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,.55)" }}>Kurz</span>
-                </button>
-              )}
-              {chipPhotos[1] && (
-                <button
-                  type="button"
-                  onClick={() => setSearch("Pflege")}
-                  className="relative h-10 w-[94px] shrink-0 overflow-hidden rounded-[14px]"
-                  aria-label="Pflege"
-                >
-                  <img src={chipPhotos[1]} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                  <span className="absolute inset-0 bg-gradient-to-b from-s-ink/10 to-s-ink/55" />
-                  <span className="absolute bottom-1.5 left-2.5 z-10 font-heading text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,.55)" }}>Pflege</span>
-                </button>
-              )}
+              {/* V3-D404 (user): photo-backed quick chips — feed thumbnail + style label, tap to filter. Same visual
+                  style as the original Kurz/Pflege, just more of them. Each renders only when a backing thumbnail exists. */}
+              {QUICK_CHIPS.map((chip, i) => {
+                const photo = chipPhotos[i];
+                if (!photo) return null;
+                return (
+                  <button
+                    key={chip.label}
+                    type="button"
+                    onClick={() => setSearch(chip.search)}
+                    className="relative h-10 w-[94px] shrink-0 overflow-hidden rounded-[14px]"
+                    aria-label={chip.label}
+                  >
+                    <img src={photo} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                    <span className="absolute inset-0 bg-gradient-to-b from-s-ink/10 to-s-ink/55" />
+                    <span className="absolute bottom-1.5 left-2.5 z-10 font-heading text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,.55)" }}>{chip.label}</span>
+                  </button>
+                );
+              })}
             </div>
             {patternOpen && (
               <>

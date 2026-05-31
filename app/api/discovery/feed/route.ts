@@ -21,7 +21,14 @@ export async function GET(req: NextRequest) {
     const userId = session?.user?.id ?? null;
 
     const admin = createAdminSupabaseClient();
-    let query = admin.from("discovery_items").select("*", { count: "exact" })
+    // V3-D402 (perf): select ONLY the columns the grid cards render — not select("*"). The old "*" dragged a ~13.8KB
+    // `ai_analysis` jsonb blob + 4 locale descriptions + salon scripts + cut guides into every card (≈200KB / 12 items),
+    // none of which the feed cards read (they live on the detail page, which fetches its own full row). Filters/order
+    // below still reference unselected columns (name/description/status/sort_order) — PostgREST allows that. Columns are
+    // the verified-real ones (schema-drift safe): rating/availability_label/salon_slug are type-only, intentionally omitted.
+    const FEED_COLUMNS =
+      "id,source,content_type,media_type,image_url,tiktok_url,tiktok_thumbnail_url,tiktok_embed_html,author_name,style_name,alt_text,tags,price_min";
+    let query = admin.from("discovery_items").select(FEED_COLUMNS, { count: "exact" })
       .eq("status", "published")
       .eq("is_active", true)
       .order("sort_order", { ascending: true })
