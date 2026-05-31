@@ -40,5 +40,20 @@ export async function GET(req: NextRequest) {
     duration_minutes: s.duration_minutes,
   }));
 
-  return NextResponse.json({ salon, services });
+  // Active staff for the walk-in barber picker (id + name + avatar + role-from-specialty).
+  const { data: staffRaw } = await admin
+    .from("staff_members")
+    .select("id, name, avatar_url, specialties, average_rating, review_count")
+    .eq("salon_id", salonId)
+    .eq("is_active", true);
+  const staff = (staffRaw || []).map((s) => ({
+    id: s.id,
+    name: s.name,
+    avatar_url: s.avatar_url,
+    role: Array.isArray(s.specialties) ? s.specialties[0] ?? null : null,
+    rating: s.average_rating ?? null,
+    review_count: s.review_count ?? null,
+  }));
+
+  return NextResponse.json({ salon, services, staff });
 }

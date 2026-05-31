@@ -84,6 +84,7 @@ export default function WalkInPayPage() {
     // 3. ?demo (preview mode) — already handled above
     const salonId = searchParams.get("salon_id");
     const serviceId = searchParams.get("service_id");
+    const staffId = searchParams.get("staff_id"); // optional preferred barber (null = "Egal")
 
     if (token) {
       // Token flow: verify the booking via the HMAC token.
@@ -109,6 +110,10 @@ export default function WalkInPayPage() {
           const salon = data.salon;
           const service = data.services.find((s: { id: string }) => s.id === serviceId);
           if (!service) throw new Error("Service not found");
+          // Optional chosen barber (from &staff_id) → show their face on the pay screen.
+          const barber = staffId
+            ? (data.staff || []).find((b: { id: string }) => b.id === staffId) ?? null
+            : null;
           setBooking({
             id: `walkin-${Date.now()}`,
             salon_id: salon.id,
@@ -122,12 +127,12 @@ export default function WalkInPayPage() {
             salon_slug: null,
             service_name: service.name,
             service_duration: service.duration_minutes,
-            barber_name: null,
-            barber_avatar: null,
-            barber_id: null,
-            barber_role: null,
-            barber_rating: null,
-            barber_review_count: null,
+            barber_name: barber?.name ?? null,
+            barber_avatar: barber?.avatar_url ?? null,
+            barber_id: barber?.id ?? null,
+            barber_role: barber?.role ?? null,
+            barber_rating: barber?.rating ?? null,
+            barber_review_count: barber?.review_count ?? null,
             salon_open_until: null,
             wait_minutes: null,
             queue_ahead: null,
@@ -176,7 +181,7 @@ export default function WalkInPayPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       // Only the token flow carries a real booking id; the tokenless (QR/in-app) flow has none.
-      body: JSON.stringify({ salon_id: booking.salon_id, service_id: booking.service_id, booking_id: token ? booking.id : undefined }),
+      body: JSON.stringify({ salon_id: booking.salon_id, service_id: booking.service_id, booking_id: token ? booking.id : undefined, preferred_barber_id: booking.barber_id ?? undefined }),
     })
       .then(async (r) => {
         const d = await r.json();

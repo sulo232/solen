@@ -41,7 +41,7 @@ const tabPillVariants = cva(
   cn(
     "inline-flex items-center gap-1.5 shrink-0 select-none whitespace-nowrap",
     "rounded-full font-body font-semibold",
-    "transition-colors duration-200 ease-glide",
+    "transition-[color,background-color,border-color,box-shadow] duration-200 ease-glide",
     "active:scale-[0.97] active:duration-[80ms]",
     "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
   ),
@@ -66,10 +66,11 @@ const tabPillVariants = cva(
         variant: "outline", tone: "active",
         className: "border-s-border bg-s-bg-sunken text-s-ink",
       },
-      // outline + inactive = white + hairline border, hovers to ink
+      // outline + inactive = white + hairline border; hover lifts with a soft shadow
+      // (NOT a black border — that read as a harsh outline).
       {
         variant: "outline", tone: "inactive",
-        className: "border-s-border bg-white text-s-ink-2 hover:border-s-ink hover:text-s-ink",
+        className: "border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:shadow-[0_2px_10px_-2px_rgba(10,10,10,0.12)]",
       },
       // ghost + active = soft gray fill, no border
       {

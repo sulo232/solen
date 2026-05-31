@@ -88,6 +88,7 @@ export async function POST(req: NextRequest) {
     // which derives salon + price server-side, never from the client).
     salonId = pi.metadata?.salon_id ?? "";
     serviceId = pi.metadata?.service_id || null;
+    preferredBarberId = pi.metadata?.preferred_barber_id || null;
     if (!salonId) return NextResponse.json({ error: "Payment missing salon context" }, { status: 400 });
   }
 
