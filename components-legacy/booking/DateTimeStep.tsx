@@ -8,7 +8,7 @@ import {
   Calendar as CalendarIcon,
   X,
   ChevronDown,
-  Shuffle,
+  Users,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useBooking } from '@/lib/booking-context';
@@ -208,7 +208,7 @@ export default function DateTimeStep({ salonId, staffList }: DateTimeStepProps) 
                 className="h-full w-full object-cover"
               />
             ) : (
-              <Shuffle size={14} className="text-s-ink-2" />
+              <Users size={14} className="text-s-ink-2" />
             )}
           </span>
           <span className="text-[14px] font-medium text-s-ink">

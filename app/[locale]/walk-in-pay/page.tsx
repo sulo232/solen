@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, MapPin, Lock, Check, AlertTriangle, ChevronLeft, Scissors, Clock, Menu, X, Navigation, Info } from "lucide-react";
+import { Star, MapPin, Lock, Check, AlertTriangle, ChevronLeft, Scissors, Clock, Menu, X, Navigation, Info, ArrowRight } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import QRCode from "qrcode";
 import WalkInPaymentForm from "@/components-legacy/barber/WalkInPaymentForm";
@@ -622,7 +622,13 @@ export default function WalkInPayPage() {
                       <span className="flex items-center gap-1.5">
                         <Star size={13} fill="#FFC32B" stroke="none" aria-hidden />
                         <span className="font-heading font-semibold tabular-nums text-s-ink">{booking.salon_rating.toFixed(1)}</span>
-                        {booking.salon_review_count != null && <span className="tabular-nums text-s-ink-2">({booking.salon_review_count})</span>}
+                        {booking.salon_review_count != null && (
+                          canOpenSalon ? (
+                            <button type="button" onClick={openSalon} className="tabular-nums font-semibold text-s-accent transition-opacity active:opacity-60">({booking.salon_review_count})</button>
+                          ) : (
+                            <span className="tabular-nums text-s-ink-2">({booking.salon_review_count})</span>
+                          )
+                        )}
                       </span>
                     )}
                     {booking.salon_open_until && (
@@ -763,10 +769,10 @@ export default function WalkInPayPage() {
               <button
                 onClick={handleDemoPay}
                 disabled={paying}
-                className="flex h-[54px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-heading text-[15px] font-semibold text-white shadow-elevation-2 transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50"
+                className="flex h-[54px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-body text-[15px] font-semibold text-white shadow-elevation-2 transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50"
               >
-                {paying && <Spinner size="sm" invert />}
                 {payCta}
+                {paying ? <Spinner size="sm" invert /> : <ArrowRight size={16} strokeWidth={2.4} />}
               </button>
               <div className="mt-3 flex items-center justify-center gap-1.5 text-[12px] font-medium text-s-ink-2">
                 <Lock size={12} />

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Shuffle, Star } from "lucide-react";
+import { Users, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { StaffMember } from "@/lib/types";
 
@@ -46,7 +46,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
       >
         <div className="relative">
           <div className={circle(selectedStaff === "any")}>
-            <Shuffle size={28} className="text-s-ink-2" strokeWidth={2} />
+            <Users size={26} className="text-s-ink-2" strokeWidth={2} />
           </div>
         </div>
         <span className="mt-3 text-[14px] font-body font-medium text-s-ink text-center leading-tight">
@@ -93,6 +93,11 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
             {role && (
               <span className="text-[12px] text-s-ink-2 text-center leading-tight truncate max-w-[88px]">
                 {role}
+              </span>
+            )}
+            {s.languages && s.languages.length > 0 && (
+              <span className="mt-0.5 max-w-[88px] truncate text-center text-[11px] leading-tight tracking-wide text-s-ink-3">
+                {s.languages.map((l) => l.toUpperCase()).join(" / ")}
               </span>
             )}
           </button>

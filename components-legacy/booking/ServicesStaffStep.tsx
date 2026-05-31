@@ -321,20 +321,15 @@ export default function ServicesStaffStep({
                 <button
                   key={cat}
                   onClick={() => goToCat(cat)}
-                  className={`relative shrink-0 px-4 py-2 rounded-full text-[13px] font-heading capitalize whitespace-nowrap transition-colors duration-200 ${
+                  // Matches the SalonServices TabPill: active = soft gray fill (s-bg-sunken) + ink,
+                  // NOT pure black. Instant (no layoutId spring — that slide was laggy).
+                  className={`shrink-0 rounded-full border px-4 py-2 text-[13px] font-heading capitalize whitespace-nowrap transition-[color,background-color,border-color,box-shadow] duration-200 ${
                     isActive
-                      ? 'text-white'
-                      : 'text-s-ink border border-s-ink/[0.12] hover:border-s-ink/25'
+                      ? 'border-s-border bg-s-bg-sunken text-s-ink'
+                      : 'border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:shadow-[0_2px_10px_-2px_rgba(10,10,10,0.12)]'
                   }`}
                 >
-                  {isActive && (
-                    <motion.span
-                      layoutId="bookingCatPill"
-                      className="absolute inset-0 rounded-full bg-s-ink"
-                      transition={{ type: 'spring', stiffness: 500, damping: 38 }}
-                    />
-                  )}
-                  <span className="relative z-10">{cat}</span>
+                  {cat}
                 </button>
               );
             })}
@@ -459,10 +454,11 @@ export default function ServicesStaffStep({
         <div className="fixed left-0 right-0 bottom-[80px] z-40 flex justify-center px-4 pointer-events-none">
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="pointer-events-auto flex items-center gap-2 pl-4 pr-3.5 py-2 rounded-full bg-[--raised] border-[1.5px] border-s-ink text-s-ink text-[13px] font-heading font-semibold shadow-[0_6px_18px_-6px_rgba(10,10,10,0.22)]"
+            // Ink-filled (modern), no outline. Micro: lifts the arrow on hover, presses on tap.
+            className="group pointer-events-auto flex items-center gap-2 pl-4 pr-3.5 py-2 rounded-full bg-s-ink text-white text-[13px] font-heading font-semibold shadow-[0_8px_24px_-8px_rgba(10,10,10,0.45)] transition-transform duration-200 ease-glide active:scale-[0.97]"
           >
             {formData.services.length} {t('selected')}
-            <ArrowUp size={15} strokeWidth={2.4} />
+            <ArrowUp size={15} strokeWidth={2.4} className="transition-transform duration-200 ease-glide group-hover:-translate-y-0.5" />
           </button>
         </div>
       )}
@@ -483,11 +479,11 @@ export default function ServicesStaffStep({
           <button
             onClick={handleContinue}
             disabled={formData.services.length === 0 || isChecking}
-            className="px-6 py-3 rounded-btn bg-s-ink text-white font-heading text-sm font-semibold hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center gap-2"
+            className="group px-6 py-3 rounded-btn bg-s-ink text-white font-heading text-sm font-semibold hover:brightness-[1.06] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 flex items-center gap-2"
           >
             {isChecking && <Spinner size="sm" invert />}
             {t('continue')}
-            <ArrowRight size={16} strokeWidth={2} aria-hidden />
+            <ArrowRight size={16} strokeWidth={2} aria-hidden className="transition-transform duration-200 ease-glide group-hover:translate-x-0.5" />
           </button>
         </div>
       </div>

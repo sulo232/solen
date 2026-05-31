@@ -93,6 +93,7 @@ const COPY: Record<string, {
 };
 
 const VIEW_ALL: Record<string, string> = { de: "Alle ansehen", en: "View all", fr: "Voir tout", it: "Vedi tutti" };
+const CLOSED_PILL: Record<string, string> = { de: "Geschlossen", en: "Closed", fr: "Fermé", it: "Chiuso" };
 
 export default function SalonWalkInPanel({
   salonId,
@@ -160,7 +161,7 @@ export default function SalonWalkInPanel({
           type="button"
           onClick={() => setInfoOpen(true)}
           aria-label={l.howTitle}
-          className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white text-s-ink-2 shadow-[0_1px_3px_rgba(0,0,0,.10)] transition active:scale-90"
+          className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-s-ink-2 transition hover:text-s-ink active:scale-90"
         >
           <Info className="h-[15px] w-[15px]" />
         </button>
@@ -273,12 +274,21 @@ export default function SalonWalkInPanel({
                   ) : null}
                   <div className="font-body mt-3 text-[14px] text-s-ink-2 md:text-[15px]">{l.from} {Number(s.price).toFixed(0)} CHF</div>
                 </div>
-                <Link
-                  href={joinHref(s.id)}
-                  className="font-body shrink-0 rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-6 md:py-2.5 md:text-[14px]"
-                >
-                  {l.join}
-                </Link>
+                {isOpen ? (
+                  <Link
+                    href={joinHref(s.id)}
+                    className="font-body shrink-0 rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink transition-colors hover:bg-s-border md:px-6 md:py-2.5 md:text-[14px]"
+                  >
+                    {l.join}
+                  </Link>
+                ) : (
+                  <span
+                    aria-disabled="true"
+                    className="font-body shrink-0 cursor-not-allowed rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink-3 opacity-70 md:px-6 md:py-2.5 md:text-[14px]"
+                  >
+                    {CLOSED_PILL[locale] ?? CLOSED_PILL.de}
+                  </span>
+                )}
               </div>
             </li>
           ))}
@@ -303,7 +313,7 @@ export default function SalonWalkInPanel({
             <ul className="mt-4 space-y-3.5">
               {l.bullets.map((b, i) => (
                 <li key={i} className="flex items-start gap-3 font-body text-[13.5px] leading-relaxed text-s-ink-2">
-                  <Check className="mt-0.5 h-[17px] w-[17px] shrink-0 text-s-ink" strokeWidth={2.5} />
+                  <span className="mt-[7px] h-[7px] w-[7px] shrink-0 rounded-full bg-s-success" />
                   <span>{b}</span>
                 </li>
               ))}

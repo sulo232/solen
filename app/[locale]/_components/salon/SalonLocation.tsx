@@ -46,24 +46,23 @@ export function SalonLocation({ salon }: { salon: SalonDetail }) {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             loading="lazy"
           />
-          {/* Tap affordance — it's a link, not a live map */}
-          <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 font-body text-[12.5px] font-semibold text-s-ink shadow-[0_2px_10px_rgba(0,0,0,0.14)]">
-            <Navigation size={13} className="text-s-accent" />
-            In Maps öffnen
-          </span>
         </a>
       )}
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px]">
-        <MapPin size={14} className="text-s-ink-3" strokeWidth={2} />
-        <span className="font-body text-s-ink-2">{salon.address}</span>
+      {/* Street stays plain ink; "In Maps öffnen" is the link BESIDE it (no blue street). */}
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-body text-[14px]">
+        <span className="inline-flex items-center gap-1.5 text-s-ink-2">
+          <MapPin size={14} className="shrink-0 text-s-ink-3" strokeWidth={2} />
+          {salon.address}
+        </span>
         <a
           href={directionsHref}
           target="_blank"
           rel="noreferrer noopener"
-          className="font-body font-semibold text-s-ink hover:underline"
+          className="group inline-flex items-center gap-1 font-medium text-s-ink transition-opacity hover:opacity-70"
         >
-          Wegbeschreibung
+          <Navigation size={13} className="text-s-ink-2 transition-transform duration-200 ease-glide group-hover:translate-x-0.5" />
+          In Maps öffnen
         </a>
       </div>
     </section>

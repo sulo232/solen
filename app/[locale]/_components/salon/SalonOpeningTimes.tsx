@@ -23,7 +23,7 @@ export function SalonOpeningTimes({
   const todayKey = (["sun", "mon", "tue", "wed", "thu", "fri", "sat"][new Date().getDay()]) as DayKey;
 
   return (
-    <section>
+    <section id="section-hours" className="scroll-mt-24">
       {/* V3-D202 (A13): font-body → font-display + Scale B. */}
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Öffnungszeiten

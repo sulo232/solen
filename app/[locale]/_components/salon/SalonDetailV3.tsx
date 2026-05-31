@@ -236,7 +236,9 @@ export function SalonDetailV3() {
           to lg so the sidebar only shows on TRULY wide screens (1024px+).
           On medium-width windows (768-1023px) the layout stays single-column
           and the mobile floating Book bar handles booking. */}
-      <div className="mx-auto mt-5 w-full max-w-[1180px] px-4 md:mt-7 md:px-6">
+      {/* Mobile: content card pulls up over the hero with a rounded top (Fresha PDP, IMG_4991).
+          Desktop: flat, no overlap (the hero is a gallery there). */}
+      <div className="relative z-10 mx-auto -mt-5 w-full max-w-[1180px] rounded-t-[20px] bg-white px-4 pt-5 md:mt-7 md:rounded-none md:bg-transparent md:px-6 md:pt-0">
         <div className="lg:grid lg:grid-cols-[1fr_340px] lg:gap-10 xl:gap-12">
           {/* LEFT column — title + content sections */}
           <div className="min-w-0">

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { Lock } from "lucide-react";
+import { Lock, ArrowRight } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 
@@ -71,10 +71,10 @@ function PayInner({ amount, locale, onPaid, payLabel, secureLabel }: Omit<WalkIn
       <button
         onClick={handlePay}
         disabled={!stripe || paying}
-        className="flex h-[52px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-heading text-[15px] text-white shadow-elevation-2 transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50"
+        className="group flex h-[52px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-body text-[15px] font-semibold text-white shadow-elevation-2 transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50"
       >
-        {paying ? <Spinner size="sm" invert /> : <Lock size={15} />}
         {cta}
+        {paying ? <Spinner size="sm" invert /> : <ArrowRight size={16} strokeWidth={2.4} className="transition-transform duration-200 ease-glide group-hover:translate-x-0.5" />}
       </button>
       <div className="flex items-center justify-center gap-1.5 text-[12px] font-medium text-s-ink-2">
         <Lock size={12} />
