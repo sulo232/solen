@@ -23,9 +23,17 @@ export async function GET(req: NextRequest) {
       console.error("[Discover] chip-terms RPC failed:", error);
       return NextResponse.json({ terms: [] });
     }
-    const terms = (data ?? [])
-      .map((r: { term: string }) => r.term)
-      .filter((t: unknown): t is string => typeof t === "string" && t.length > 0);
+    // V3-D408 (#22): each term carries a representative photo of that style (tiktok → the thumb refresh proxy,
+    // else the stored image/thumbnail). So a chip shows an actual photo of its label, not a random feed thumb.
+    type Row = { term: string; item_id: string | null; tiktok_url: string | null; image_url: string | null; tiktok_thumbnail_url: string | null };
+    const terms = ((data ?? []) as Row[])
+      .map((r) => ({
+        term: r.term,
+        thumb: r.tiktok_url && r.item_id
+          ? `/api/discovery/thumb/${r.item_id}`
+          : (r.image_url || r.tiktok_thumbnail_url || null),
+      }))
+      .filter((t): t is { term: string; thumb: string } => !!t.term && !!t.thumb);
     return NextResponse.json({ terms });
   } catch (e) {
     console.error("[Discover] chip-terms endpoint error:", e);

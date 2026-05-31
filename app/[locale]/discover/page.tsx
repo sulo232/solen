@@ -70,9 +70,9 @@ function DiscoverPageContent() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [patternOpen, setPatternOpen] = useState(false); // V3-D397: Hair-pattern pill dropdown
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
-  // V3-D407 (#22): data-driven quick-chip terms (top style tags from real content). Fetched once; stable
-  // regardless of the current filter so the chip set doesn't jitter when you tap one.
-  const [chipTerms, setChipTerms] = useState<string[]>([]);
+  // V3-D407/408 (#22): data-driven quick chips — top style tags from real content, each with a representative
+  // photo OF that style (not a generic feed thumbnail). Fetched once; stable across filter taps.
+  const [chipTerms, setChipTerms] = useState<{ term: string; thumb: string }[]>([]);
 
   // Derive filter values from activeFilters
   const gender = activeFilters.find((f) => f.pillId === "gender")?.subId as DiscoveryGender | undefined || "all";
@@ -206,11 +206,6 @@ function DiscoverPageContent() {
 
   // V3-D389 PROOF: prepend the seeded salon items in the default "all" feed only (contextual, not inside every filter).
   const feedItems = category === "all" ? [...PROOF_SALON_ITEMS, ...items] : items;
-
-  // V3-D407 (#22): one feed thumbnail per data-driven chip term (photo backing for the quick chips).
-  const chipPhotos = items.slice(0, chipTerms.length).map((it) =>
-    it.tiktok_url ? `/api/discovery/thumb/${it.id}` : (it.image_url || it.tiktok_thumbnail_url || null)
-  );
 
   const handleProfileSave = async (prefs: Record<string, string | null>) => {
     try {
@@ -372,12 +367,9 @@ function DiscoverPageContent() {
                 {texture ? texture.charAt(0).toUpperCase() + texture.slice(1) : t("texture")}
                 <ChevronDown size={14} className={`transition-transform duration-150 ${patternOpen ? "rotate-180" : ""}`} />
               </button>
-              {/* V3-D407 (#22): photo-backed quick chips — labels are data-driven (top style tags in real content,
-                  so they never lead to an empty feed). Same visual as the original Kurz/Pflege photo chips. Each
-                  renders only when a backing feed thumbnail exists. */}
-              {chipTerms.map((term, i) => {
-                const photo = chipPhotos[i];
-                if (!photo) return null;
+              {/* V3-D407/408 (#22): photo-backed quick chips — data-driven labels (top style tags, never an empty
+                  feed) AND a representative photo OF that style (not a generic feed thumbnail). Same chip visual. */}
+              {chipTerms.map(({ term, thumb }) => {
                 const label = formatChip(term);
                 return (
                   <button
@@ -387,7 +379,7 @@ function DiscoverPageContent() {
                     className="relative h-10 w-[94px] shrink-0 overflow-hidden rounded-[14px]"
                     aria-label={label}
                   >
-                    <img src={photo} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                    <img src={thumb} alt="" className="absolute inset-0 h-full w-full object-cover" />
                     <span className="absolute inset-0 bg-gradient-to-b from-s-ink/10 to-s-ink/55" />
                     <span className="absolute bottom-1.5 left-2.5 z-10 font-heading text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,.55)" }}>{label}</span>
                   </button>
