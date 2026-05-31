@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
     const instant_bookable = searchParams.get("instant_bookable");
     const deals = searchParams.get("deals");
     const walk_in = searchParams.get("walk_in");
+    const gender = searchParams.get("gender"); // V3-D387: "female" | "male" → services.suitable_gender
     const date = searchParams.get("date"); // YYYY-MM-DD for availability filtering
     const lat = searchParams.get("lat");
     const lng = searchParams.get("lng");
@@ -128,6 +129,38 @@ export async function GET(request: NextRequest) {
     // Filter to salons that accept walk-ins (column may not exist yet — skip if error)
     if (walk_in === "true") {
       query = query.eq("walk_in_available", true);
+    }
+
+    // V3-D387: Service type / "Für wen" — salons with >=1 active service suitable
+    // for the chosen gender (suitable_gender is a text[] like {male,female}).
+    if (gender) {
+      const { data: gRows } = await supabase
+        .from("services")
+        .select("salon_id")
+        .eq("is_active", true)
+        .contains("suitable_gender", [gender]);
+      const gIds = [...new Set((gRows ?? []).map((s: { salon_id: string }) => s.salon_id))];
+      if (gIds.length > 0) {
+        query = query.in("id", gIds);
+      } else {
+        return NextResponse.json({ items: [], total: 0, page, limit });
+      }
+    }
+
+    // V3-D387: amenity boolean filters — each query param maps 1:1 to a salons
+    // boolean column (seeded data). Simple .eq(col, true) when the param is "true".
+    for (const col of [
+      "wheelchair_accessible",
+      "near_public_transport",
+      "kid_friendly",
+      "pet_friendly",
+      "wifi_friendly",
+      "lgbtq_friendly",
+      "woman_owned",
+      "family_owned",
+      "student_discount",
+    ]) {
+      if (searchParams.get(col) === "true") query = query.eq(col, true);
     }
 
     // V3-D384: Price filter — salons with >=1 active service in the [min,max]

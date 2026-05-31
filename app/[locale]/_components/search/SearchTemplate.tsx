@@ -46,6 +46,17 @@ import {
   Map as MapIcon,
   List as ListIcon,
   Search,
+  // V3-D388: amenity facet icons — same lucide set SalonAdditionalInfo uses on
+  // the PDP, so the filter sheet and the salon page read as one icon language.
+  Accessibility,
+  Bus,
+  Baby,
+  Dog,
+  Wifi,
+  Heart,
+  Star,
+  Home,
+  GraduationCap,
   AlertCircle,
   Loader2,
   SearchX,
@@ -179,6 +190,30 @@ type SortValue = (typeof SORT_OPTIONS)[number]["value"];
 
 // V3-D384: price-group heading, locale-mapped so no new i18n key is needed.
 const PRICE_HEADING: Record<string, string> = { de: "Preis", en: "Price", fr: "Prix", it: "Prezzo" };
+
+// V3-D387: amenity facets (Fresha "Ausstattung") — each maps to a salons boolean
+// column. German labels for now (de-primary); i18n keys are a follow-up.
+const AMENITY_OPTIONS: { col: string; label: string; icon: LucideIcon }[] = [
+  { col: "wheelchair_accessible", label: "Rollstuhlgerecht", icon: Accessibility },
+  { col: "near_public_transport", label: "ÖV in der Nähe", icon: Bus },
+  { col: "kid_friendly", label: "Kinderfreundlich", icon: Baby },
+  { col: "pet_friendly", label: "Haustiere willkommen", icon: Dog },
+  { col: "wifi_friendly", label: "WLAN", icon: Wifi },
+  { col: "lgbtq_friendly", label: "LGBTQ+ freundlich", icon: Heart },
+  { col: "woman_owned", label: "Von Frau geführt", icon: Star },
+  { col: "family_owned", label: "Familienbetrieb", icon: Home },
+  { col: "student_discount", label: "Studentenrabatt", icon: GraduationCap },
+];
+const AMENITY_COLS = AMENITY_OPTIONS.map((a) => a.col);
+// V3-D390: title of the FOCUSED filter sheet (the category whose pill opened it).
+const SECTION_TITLE: Record<string, string> = {
+  sort: "Sortieren",
+  price: "Preis",
+  gender: "Für wen",
+  rating: "Bewertung",
+  amenities: "Ausstattung",
+  deals: "Angebote",
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SalonCardSkeleton — matches V3 SalonCard footprint per LoadingStates.md
@@ -380,13 +415,23 @@ export default function SearchTemplate({
   const minRating = minRatingParam ? Number(minRatingParam) : null;
   const minPrice = searchParams.get("min_price") ? Number(searchParams.get("min_price")) : null;
   const maxPrice = searchParams.get("max_price") ? Number(searchParams.get("max_price")) : null;
-  // V3-D386: Fresha-style dropdown filter pills, shared by the list chrome + the map
-  // sheet. Each opens the full FilterSheet; ink-filled when that filter is active.
+  // V3-D387: Service type (gender) + amenity facets from the URL. amenityKey is a
+  // STABLE string (not a fresh array) so it can sit in buildUrl's deps without looping.
+  const gender = searchParams.get("gender");
+  const amenityKey = AMENITY_COLS.filter((c) => searchParams.get(c) === "true").join(",");
+  const activeAmenities = amenityKey ? amenityKey.split(",") : [];
+  // V3-D390: per-category filter pills — each opens a FOCUSED sheet for just that
+  // one filter (Fresha model: Amenities / Service type / Price each = own sheet).
+  // The label reflects the current selection when that filter is set.
   const sortLbl = SORT_OPTIONS.find((o) => o.value === sort)?.label ?? SORT_OPTIONS[0].label;
+  const pricePillLabel = maxPrice != null ? `Bis CHF ${maxPrice}` : "Preis";
   const filterPills = [
-    { key: "sort", label: sortLbl, active: !!sort && sort !== "rating" },
-    { key: "price", label: PRICE_HEADING[locale] ?? PRICE_HEADING.de, active: minPrice != null || maxPrice != null },
-    { key: "rating", label: minRating ? `${minRating}+` : tFilter("ratingHeading"), active: minRating != null },
+    { key: "sort", label: sort && sort !== "rating" ? sortLbl : "Sortieren", active: !!sort && sort !== "rating" },
+    { key: "price", label: pricePillLabel, active: minPrice != null || maxPrice != null },
+    { key: "gender", label: gender === "female" ? "Damen" : gender === "male" ? "Herren" : gender === "non_binary" ? "Divers" : "Für wen", active: !!gender },
+    { key: "rating", label: minRating ? `${minRating}` : "Bewertung", active: minRating != null },
+    { key: "amenities", label: activeAmenities.length ? `Ausstattung · ${activeAmenities.length}` : "Ausstattung", active: activeAmenities.length > 0 },
+    { key: "deals", label: "Angebote", active: deals },
   ];
   // V3-D385: user location for the "Entfernung" (distance) sort, captured via the
   // browser's native permission prompt. Held in STATE — precise geo shouldn't live
@@ -460,6 +505,13 @@ export default function SearchTemplate({
   // holds NO filter state — every control writes the same URL params the chip
   // row uses.
   const [filterSheetOpen, setFilterSheetOpen] = React.useState(false);
+  // V3-D390: which category's FOCUSED sheet is open (null = full "all filters" sheet
+  // via the ≡ button). Each pill calls openSection(its key).
+  const [filterSection, setFilterSection] = React.useState<string | null>(null);
+  const openSection = React.useCallback((section: string | null) => {
+    setFilterSection(section);
+    setFilterSheetOpen(true);
+  }, []);
   // V3-D349 (2026-05-28): the floating "Karte" pill is hidden at the top and
   // fades in once the big in-flow search pill scrolls out of view. Observed via
   // IntersectionObserver on the big search pill so the threshold tracks the
@@ -515,6 +567,9 @@ export default function SearchTemplate({
         sp.set("lat", String(coords.lat));
         sp.set("lng", String(coords.lng));
       }
+      // V3-D387: service type (gender) + amenity facets.
+      if (gender) sp.set("gender", gender);
+      if (amenityKey) for (const c of amenityKey.split(",")) sp.set(c, "true");
       // V3-D357 (2026-05-28): re-enabled `with_slots` - after the V3-D350 minimal
       // pivot the cards read EMPTY (just name/rating/category/price). Services +
       // next-available slots fill them back to a Fresha-grade density (user: "those
@@ -529,7 +584,7 @@ export default function SearchTemplate({
       }
       return `/api/salons?${sp.toString()}`;
     },
-    [activeCategory, activeCity, date, sort, minRating, minPrice, maxPrice, coords, q],
+    [activeCategory, activeCity, date, sort, minRating, minPrice, maxPrice, gender, amenityKey, coords, q],
   );
 
   // ── Initial fetch + refetch on params change ──────────────────────────────
@@ -867,19 +922,21 @@ export default function SearchTemplate({
                 <button
                   key={p.key}
                   type="button"
-                  onClick={() => setFilterSheetOpen(true)}
-                  aria-haspopup="dialog"
+                  onClick={() => (p.key === "deals" ? toggleBooleanParam("deals", deals) : openSection(p.key))}
+                  aria-haspopup={p.key === "deals" ? undefined : "dialog"}
+                  aria-pressed={p.key === "deals" ? p.active : undefined}
                   className={cn(
                     "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
-                    "transition-[background-color,border-color,color] duration-150 ease-glide",
+                    "transition-[background-color,border-color,color,transform] duration-150 ease-glide",
+                    "active:scale-[0.97] active:duration-[80ms]",
                     "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
                     p.active
-                      ? "border border-s-ink bg-s-ink text-white"
+                      ? "border border-s-border bg-s-bg-sunken text-s-ink font-semibold"
                       : "border border-s-border bg-white text-s-ink hover:border-s-ink",
                   )}
                 >
                   {p.label}
-                  <ChevronDown size={14} strokeWidth={2} className={p.active ? "opacity-80" : "opacity-50"} aria-hidden />
+                  {p.key !== "deals" && <ChevronDown size={14} strokeWidth={2} className={p.active ? "opacity-80" : "opacity-50"} aria-hidden />}
                 </button>
               ))}
             {/* V3-D352 (2026-05-28): filter button is the LAST item INSIDE the
@@ -887,7 +944,7 @@ export default function SearchTemplate({
                 scrolling to the end) rather than pinned to the right edge. */}
             <button
               type="button"
-              onClick={() => setFilterSheetOpen(true)}
+              onClick={() => openSection(null)}
               aria-haspopup="dialog"
               aria-label={
                 activeFilterCount > 0
@@ -1036,7 +1093,7 @@ export default function SearchTemplate({
                 "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
                 "min-h-[36px]",
                 sort !== "rating"
-                  ? "border-s-ink bg-s-ink text-white hover:bg-black"
+                  ? "border-s-border bg-s-bg-sunken text-s-ink font-semibold hover:bg-s-border"
                   : "border-s-border bg-white text-s-ink hover:border-s-ink",
               )}
             >
@@ -1332,17 +1389,19 @@ export default function SearchTemplate({
                   <button
                     key={p.key}
                     type="button"
-                    onClick={() => setFilterSheetOpen(true)}
-                    aria-haspopup="dialog"
+                    onClick={() => (p.key === "deals" ? toggleBooleanParam("deals", deals) : openSection(p.key))}
+                    aria-haspopup={p.key === "deals" ? undefined : "dialog"}
+                    aria-pressed={p.key === "deals" ? p.active : undefined}
                     className={cn(
-                      "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none transition-colors",
+                      "inline-flex h-9 shrink-0 items-center gap-1 rounded-pill pl-3.5 pr-2.5 font-body text-[13.5px] font-medium leading-none",
+                      "transition-[background-color,border-color,color,transform] duration-150 ease-glide active:scale-[0.97] active:duration-[80ms]",
                       p.active
-                        ? "border border-s-ink bg-s-ink text-white"
+                        ? "border border-s-border bg-s-bg-sunken text-s-ink font-semibold"
                         : "border border-s-border bg-white text-s-ink hover:border-s-ink",
                     )}
                   >
                     {p.label}
-                    <ChevronDown size={14} strokeWidth={2} className={p.active ? "opacity-80" : "opacity-50"} aria-hidden />
+                    {p.key !== "deals" && <ChevronDown size={14} strokeWidth={2} className={p.active ? "opacity-80" : "opacity-50"} aria-hidden />}
                   </button>
                 ))}
               </div>
@@ -1415,6 +1474,7 @@ export default function SearchTemplate({
         isOpen={filterSheetOpen}
         onClose={() => setFilterSheetOpen(false)}
         resultCount={total}
+        section={filterSection}
         sortOptions={SORT_OPTIONS}
         sort={sort}
         onSortChange={handleSortChange}
@@ -1429,6 +1489,13 @@ export default function SearchTemplate({
         }}
         minRating={minRating}
         onMinRatingChange={(value) => updateParam("min_rating", value)}
+        gender={gender}
+        onGenderChange={(value) => updateParam("gender", value)}
+        amenityOptions={AMENITY_OPTIONS}
+        amenities={activeAmenities}
+        onAmenityToggle={(col) => toggleBooleanParam(col, activeAmenities.includes(col))}
+        deals={deals}
+        onDealsToggle={() => toggleBooleanParam("deals", deals)}
         onReset={() => {
           // Clear every filter param the sheet/chips write. sort resets to the
           // default (rating) by deleting it.
@@ -1441,7 +1508,9 @@ export default function SearchTemplate({
             "min_price",
             "max_price",
             "min_rating",
+            "gender",
             "sort",
+            ...AMENITY_COLS,
           ]) {
             sp.delete(key);
           }
@@ -1451,7 +1520,7 @@ export default function SearchTemplate({
           });
         }}
         labels={{
-          title: tFilter("title"),
+          title: filterSection ? (SECTION_TITLE[filterSection] ?? tFilter("title")) : tFilter("title"),
           reset: tFilter("reset"),
           close: tFilter("close"),
           sortHeading: tFilter("sortHeading"),
@@ -1460,6 +1529,11 @@ export default function SearchTemplate({
           rating45: tFilter("rating45"),
           rating40: tFilter("rating40"),
           ratingAny: tFilter("ratingAny"),
+          forWhoHeading: "Für wen",
+          genderAny: "Alle",
+          genderFemale: "Damen",
+          genderMale: "Herren",
+          amenitiesHeading: "Ausstattung",
           apply: (count: number) => tFilter("apply", { count }),
         }}
       />
