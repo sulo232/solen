@@ -210,10 +210,11 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
               {t("quickAccess")}
             </p>
             <div className="grid grid-cols-2 gap-2.5">
+              {/* V3-D378: Profil promoted into the quick-access grid (swapped with Geschenkkarten). */}
               <QuickTile
-                href={`/${locale}/vouchers`}
-                label={t("giftCards")}
-                icon={<Gift size={22} strokeWidth={1.8} aria-hidden />}
+                href={`/${locale}/profile`}
+                label={tNav("account")}
+                icon={<User size={22} strokeWidth={1.8} aria-hidden />}
                 onClick={onClose}
               />
               <QuickTile
@@ -239,15 +240,15 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
             {/* Utility rows below the grid: sign-in (primary), Warum Solen,
                 language. Each row carries a leading icon (kills the "dry" feel). */}
             <div className="mt-3 overflow-hidden rounded-[18px] bg-s-bg-surface shadow-[0_1px_3px_rgba(26,18,9,0.04)]">
-              {loggedIn ? (
-                <MenuRow
-                  href={`/${locale}/profile`}
-                  label={tNav("account")}
-                  icon={<User size={20} strokeWidth={1.75} aria-hidden />}
-                  primary
-                  onClick={onClose}
-                />
-              ) : (
+              {/* V3-D378: Geschenkkarten demoted to a row (Profil now lives in the grid above).
+                  /profile stays reachable from the menu via the grid tile. */}
+              <MenuRow
+                href={`/${locale}/vouchers`}
+                label={t("giftCards")}
+                icon={<Gift size={20} strokeWidth={1.75} aria-hidden />}
+                onClick={onClose}
+              />
+              {!loggedIn && (
                 <MenuRow
                   href={`/${locale}/auth/login`}
                   label={t("signIn")}
