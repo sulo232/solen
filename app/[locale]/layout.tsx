@@ -114,7 +114,7 @@ export default async function LocaleLayout({
               so it renders site-wide (not just homepage). Replaces the
               legacy components-legacy/layout/Footer.tsx which was never
               mounted in the V3 rebuild. */}
-          <HideInBooking>
+          <HideInBooking hideOnFeed>
             <Footer locale={locale} />
           </HideInBooking>
           {/* BottomTabBar removed from web rendering 2026-05-03 per Q58

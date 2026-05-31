@@ -16,12 +16,23 @@ import type { ReactNode } from "react";
 export default function HideInBooking({
   children,
   showOnAuth = false,
+  hideOnFeed = false,
 }: {
   children: ReactNode;
   showOnAuth?: boolean;
+  /** V3-D414: also drop on the discovery experience (an infinite Pinterest-style scroll has no "bottom" for a
+      marketing footer — it just crowded the feed). Opt-in, so only the footer uses it, not the header. */
+  hideOnFeed?: boolean;
 }) {
   const pathname = usePathname();
   if (!pathname) return <>{children}</>;
+
+  if (hideOnFeed && /\/discover(\/|$)/.test(pathname)) return null;
+
+  // V3-D414: board detail + saved (/discover/board/[id], /discover/saved, /discover/saved/[id]) are focused views
+  // with their own back button. Drop the marketing chrome (city bar, header, breadcrumb, footer) so there aren't
+  // doubled back/cancel controls stacked above them. The feed (/discover) is unaffected and keeps its header.
+  if (/\/discover\/(board|saved)(\/|$)/.test(pathname)) return null;
 
   // Booking flow, individual staff pages, onboarding, and the walk-in pay flow are
   // self-contained — always drop the marketing chrome.

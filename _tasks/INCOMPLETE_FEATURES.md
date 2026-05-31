@@ -64,3 +64,26 @@
   2. `Entdecken.tsx` now fetches `/api/discovery/feed?category=hair&limit=8` on mount, falls back to DEMO if 0 items or error. IntersectionObserver re-attaches when looks swap in.
   3. New `app/api/discovery/thumb/[id]/route.ts` proxy — DB lookup → TikTok oEmbed → image fetch → pipe back with `Cache-Control: public, max-age=3600, stale-while-revalidate=86400`. Solves the signed-URL expiry for every consumer (homepage + any future caller).
 - **Known follow-ups**: the `/discover` detail page (`/de/entdecken/[id]`) still reads raw `tiktok_thumbnail_url` via `VideoCard` — same expiry bug applies there. If detail-page thumbnails go dead, point `VideoCard` at the new `/api/discovery/thumb/[id]` proxy too.
+
+---
+
+## Discovery → Store: share-to-DM + book-from-inspo (customer↔store messaging) — PLANNED (user vision, 2026-05-31)
+
+- **Vision (user, verbatim gist)**: From a Discovery inspo (a look / TikTok), a customer can (a) **share it directly to a store's DM**, or (b) **book it directly** — and all the look details flow into the store's messages. "When you want to book in, all the details go to the store… and it goes to the DM." A customer↔store DM layer that carries inspo + booking context. Discovery is the front door; the DM/booking is the hand-off to the salon.
+- **Scope** (3 connected pieces):
+  1. **Customer↔store DM / messaging** — "text in between stores and stuff." Threaded conversation between a customer and a salon.
+  2. **Share inspo → store DM** — from a Discovery look/TikTok, send it into a salon's DM (the inspo image + style tags + name as a message).
+  3. **Book-from-inspo** — booking a look carries the chosen inspo (image + tags + notes) so the salon receives full context in their inbox/DM alongside the booking.
+- **Existing infra to build on** (do NOT rebuild from scratch — audit these first):
+  - `app/api/conversations/route.ts`, `app/api/conversations/[id]/messages/route.ts`, `app/api/conversations/[id]/price-offer/route.ts` — a conversations/messaging system already exists.
+  - `app/api/bookings/[id]/inspo/route.ts` — booking already supports attaching an inspo. This is likely 60% of piece #3.
+  - `app/api/discovery/salons-for-style/route.ts` — maps a style → salons that do it (answers "which store can do this look").
+  - `components-legacy/discovery/BookCTA.tsx`, `ShareButton.tsx`, `PickStylistFlow.tsx`, `SalonScript.tsx` — discovery-side CTAs that likely already gesture at this flow.
+  - Discovery detail page `/discover/[id]` — where the "Share to store" / "Book this look" actions live.
+- **Next steps (when picked up)**:
+  1. Audit conversations schema + `bookings/[id]/inspo` + BookCTA/ShareButton/PickStylistFlow — map what's wired vs. missing.
+  2. Add "Share to store" + "Book this look" actions on the inspo detail (and maybe the card).
+  3. On action: open/create a conversation with the chosen salon, post the inspo (image + style tags + look name) + booking details as the first message.
+  4. Store-side: the salon's DM/inbox surfaces the inspo + booking context.
+- **Open questions**: when an inspo isn't tied to a specific salon, which store receives a share? (suggest via `salons-for-style`, or let the user pick). Does `conversations` support customer→salon initiation + image attachments? Is there a salon-side inbox UI yet?
+- **Priority**: DEFERRED — explicitly AFTER the current Discovery build (Filter ✅ · Boards · Saved-system · Consistency+animations). User: "we're gonna do it after everything we've done."

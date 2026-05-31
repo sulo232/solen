@@ -3,10 +3,7 @@ import { useState } from "react";
 import { X, SlidersHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { DiscoveryCategory, DiscoveryGender } from "@/lib/types";
-import CategoryPills from "./CategoryPills";
-import GenderToggle from "./GenderToggle";
-import PatternSelector from "./PatternSelector";
-import StyleNamePills from "./StyleNamePills";
+import { DISCOVERY_CATEGORIES } from "./CategoryTabBar";
 
 interface FilterDrawerProps {
   category: DiscoveryCategory | "all";
@@ -20,83 +17,98 @@ interface FilterDrawerProps {
   onReset: () => void;
 }
 
+const CATEGORY_KEYS = DISCOVERY_CATEGORIES.map((c) => c.key) as (DiscoveryCategory | "all")[];
+const GENDER_KEYS: (DiscoveryGender | "all")[] = ["all", "female", "male", "unisex"];
+
+// V3-D414: filter rebuilt to the captured Pinterest pattern (IMG_4980) in Solen skin — a clean RADIO list
+// (Kategorie + Für) + Reset/Anwenden, and a count BADGE on the sliders trigger (replaces the tiny "weird dot").
+// Texture + style stay in the chip row (they're redundant here), so the sheet reads clean. Primary stays INK
+// (not Pinterest red) per LOCKFILE §1.5.
+function RadioRow({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className="flex w-full items-center justify-between px-1 py-3.5 text-left transition-colors duration-150 active:bg-s-ink/[0.03]"
+    >
+      <span className="font-heading text-[16px] font-semibold text-s-ink">{label}</span>
+      <span className={`grid h-[22px] w-[22px] place-items-center rounded-full border-2 transition-colors duration-150 ${selected ? "border-s-ink" : "border-s-border"}`}>
+        {selected && <span className="h-[11px] w-[11px] rounded-full bg-s-ink" />}
+      </span>
+    </button>
+  );
+}
+
 export default function FilterDrawer(props: FilterDrawerProps) {
   const [open, setOpen] = useState(false);
   const t = useTranslations("discoveryFilters") as any;
-  const hasFilters = props.category !== "all" || props.gender !== "all" || props.texture || props.style;
+  const tt = useTranslations("discover.tabs") as any;
+  const tg = useTranslations("discover.gender") as any;
+
+  // Count of active filters → the trigger badge. Texture/style still count (set from the chip row) so the badge
+  // reflects the true active state even though they're not edited in this sheet.
+  const activeCount =
+    (props.category !== "all" ? 1 : 0) + (props.gender !== "all" ? 1 : 0) + (props.texture ? 1 : 0) + (props.style ? 1 : 0);
 
   return (
     <>
-      {/* Trigger — mobile only. V3-D380 (2026-05-30): icon-only circle (was an uppercase "FILTER" pill — user flag);
-          matches the circular back button. A small ink dot marks active filters. */}
+      {/* Trigger — sliders icon + active-count badge (V3-D414, was a tiny ink dot the user flagged as "weird"). */}
       <button
         onClick={() => setOpen(true)}
         aria-label={t("open_filters")}
-        className={`relative grid h-9 w-9 place-items-center rounded-full border transition-colors duration-150 ${
-          hasFilters
-            ? "border-s-ink text-s-ink bg-s-ink/[0.06]"
-            : "border-s-border text-s-ink-2 hover:text-s-ink"
+        className={`relative grid h-10 w-10 shrink-0 place-items-center rounded-full border transition-colors duration-150 ${
+          activeCount > 0 ? "border-s-ink text-s-ink" : "border-s-border text-s-ink-2 hover:text-s-ink"
         }`}
       >
-        <SlidersHorizontal size={16} />
-        {hasFilters && <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-s-ink" />}
+        <SlidersHorizontal size={18} />
+        {activeCount > 0 && (
+          <span className="absolute -right-1 -top-1 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-s-ink px-1 text-[10px] font-heading font-bold leading-none text-white ring-2 ring-white animate-in zoom-in duration-200">
+            {activeCount}
+          </span>
+        )}
       </button>
 
-      {/* Drawer overlay */}
       {open && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={t("filter_label")}
-          className="fixed inset-0 z-50 flex items-end"
-        >
-          <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-[6px]" onClick={() => setOpen(false)} />
-          <div className="relative w-full bg-[--raised] shadow-elevation-3 flex flex-col rounded-t-[16px] max-h-[80vh] animate-in slide-in-from-bottom">
-            {/* Header */}
-            <div className="px-5 py-4 border-b border-s-ink/[0.06] flex items-center justify-between">
-              <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/50">{t("filter_label")}</p>
-                <p className="font-heading text-base text-s-ink">{t("refine_search")}</p>
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                aria-label={t("close")}
-                className="p-2 rounded-pill hover:bg-s-ink/[0.04] transition-colors duration-150"
-              >
-                <X size={16} className="text-s-ink/50" />
+        <div role="dialog" aria-modal="true" aria-label={t("filter_label")} className="fixed inset-0 z-50 flex items-end">
+          <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-[6px] animate-in fade-in duration-200" onClick={() => setOpen(false)} />
+          <div className="relative flex max-h-[82vh] w-full flex-col rounded-t-[22px] bg-white shadow-elevation-3 animate-in slide-in-from-bottom duration-300">
+            {/* Header: ✕ · title (centered) */}
+            <div className="flex items-center justify-between px-5 pb-3 pt-4">
+              <button onClick={() => setOpen(false)} aria-label={t("close")} className="text-s-ink transition-colors duration-150 hover:text-s-ink-2">
+                <X size={20} />
               </button>
+              <p className="font-heading text-[17px] font-semibold text-s-ink">{t("filter_label")}</p>
+              <span className="w-5" />
             </div>
 
-            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
-              <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/50 mb-2">{t("category")}</p>
-                <CategoryPills selected={props.category} onSelect={props.onCategoryChange} />
-              </div>
-              <div>
-                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/50 mb-2">{t("gender")}</p>
-                <GenderToggle selected={props.gender} onSelect={props.onGenderChange} />
-              </div>
-              <div>
-                <PatternSelector category={props.category === "all" ? null : props.category} selected={props.texture} onSelect={props.onTextureChange} />
-              </div>
-              <div>
-                <StyleNamePills selected={props.style} onSelect={props.onStyleChange} />
-              </div>
+            <div className="flex-1 overflow-y-auto px-5 pb-4">
+              <p className="pb-1 pt-3 text-[11px] font-heading font-semibold uppercase tracking-[0.05em] text-s-ink-3">{t("category")}</p>
+              {CATEGORY_KEYS.map((key) => (
+                <RadioRow key={key} label={tt(key)} selected={props.category === key} onClick={() => props.onCategoryChange(key)} />
+              ))}
+              <p className="pb-1 pt-4 text-[11px] font-heading font-semibold uppercase tracking-[0.05em] text-s-ink-3">{t("gender")}</p>
+              {GENDER_KEYS.map((key) => (
+                <RadioRow
+                  key={key}
+                  label={tg(key === "female" ? "women" : key === "male" ? "men" : key)}
+                  selected={props.gender === key}
+                  onClick={() => props.onGenderChange(key)}
+                />
+              ))}
             </div>
 
-            {/* Footer */}
-            <div className="px-5 py-4 border-t border-s-ink/[0.06] flex gap-2">
+            {/* Footer: Reset (sunken) · Apply (INK, per LOCKFILE) */}
+            <div className="flex gap-2.5 border-t border-s-border px-5 py-4">
               <button
                 onClick={() => { props.onReset(); setOpen(false); }}
-                aria-label={t("reset")}
-                className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-xs font-heading text-s-ink/50 hover:border-s-ink/20 transition-colors duration-150"
+                className="h-12 flex-1 rounded-pill bg-s-bg-sunken font-heading text-[15px] font-semibold text-s-ink transition-colors duration-150 hover:bg-s-ink/[0.08]"
               >
                 {t("reset")}
               </button>
               <button
                 onClick={() => setOpen(false)}
-                aria-label={t("apply")}
-                className="flex-1 py-3 rounded-pill text-white text-xs font-heading active:scale-[0.97] transition-[transform,filter] duration-150 bg-s-ink shadow-elevation-2"
+                className="h-12 flex-1 rounded-pill bg-s-ink font-heading text-[15px] font-semibold text-white transition-transform duration-150 active:scale-[0.97]"
               >
                 {t("apply")}
               </button>

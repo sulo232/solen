@@ -19,8 +19,9 @@ import PostFromDiscover from "@/components-legacy/discovery/PostFromDiscover";
 import ForYouSection from "@/components-legacy/discovery/ForYouSection";
 import AISuggestionPills from "@/components-legacy/discovery/AISuggestionPills";
 import SearchAutocomplete from "@/components-legacy/discovery/SearchAutocomplete";
+import RecentSearches from "@/components-legacy/discovery/RecentSearches";
 import DiscoveryAdmin from "@/components-legacy/discovery/DiscoveryAdmin";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronDown, Bookmark } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
 
 // PROOF (frontend-only, V3-D389): seeded salon-portfolio discovery items to preview how OPTED-IN salon photos would
@@ -66,7 +67,8 @@ function DiscoverPageContent() {
   const [category, setCategory] = useState<DiscoveryCategory | "all">(
     (searchParams?.get("category") as DiscoveryCategory | "all") || "all"
   );
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("");           // committed query — drives the feed + search logging
+  const [searchInput, setSearchInput] = useState("");  // V3-D414: live text — drives ONLY the dropdown; typing no longer auto-searches/logs
   const [searchFocused, setSearchFocused] = useState(false);
   const [patternOpen, setPatternOpen] = useState(false); // V3-D397: Hair-pattern pill dropdown
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
@@ -225,7 +227,7 @@ function DiscoverPageContent() {
 
   const handleBoardSelect = (filters: Partial<DiscoveryFilters>) => {
     // V3-D346 (Move 1): boards carry a keyword in `search` — apply it so the tile filters the feed.
-    if (filters.search !== undefined) setSearch(filters.search);
+    if (filters.search !== undefined) { setSearch(filters.search); setSearchInput(filters.search); }
     if (filters.category) setCategory(filters.category);
     const newFilters: ActiveFilter[] = [];
     if (filters.gender && filters.gender !== "all") {
@@ -243,6 +245,7 @@ function DiscoverPageContent() {
     setCategory("all");
     setActiveFilters([]);
     setSearch("");
+    setSearchInput("");
   };
 
   // Build filter pills — labels from translations (Issues C + D)
@@ -287,7 +290,7 @@ function DiscoverPageContent() {
                 remount it on focus and drop focus, resetting searchFocused. */}
             <button
               type="button"
-              onMouseDown={(e) => { e.preventDefault(); setSearch(""); setSearchFocused(false); (document.activeElement as HTMLElement | null)?.blur?.(); }}
+              onMouseDown={(e) => { e.preventDefault(); setSearch(""); setSearchInput(""); setSearchFocused(false); (document.activeElement as HTMLElement | null)?.blur?.(); }}
               aria-label={t("clearSearch")}
               className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink ${searchFocused ? "" : "hidden"}`}
             >
@@ -295,8 +298,11 @@ function DiscoverPageContent() {
             </button>
             <div className="min-w-0 flex-1">
               <DiscoverySearchBar
-                value={search}
-                onChange={setSearch}
+                value={searchInput}
+                /* typing only updates the live text (→ dropdown). Clearing to empty also resets the feed to browse. */
+                onChange={(v) => { setSearchInput(v); if (!v.trim()) setSearch(""); }}
+                /* Enter commits → the feed actually searches + logs once. */
+                onSubmit={(v) => { const term = v.trim(); setSearch(term); setSearchInput(term); setSearchFocused(false); }}
                 placeholder={t("searchPlaceholder")}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
@@ -326,20 +332,35 @@ function DiscoverPageContent() {
               }}
               onReset={resetFilters}
             />
+            {/* V3-D414 (Phase 2): Saved (Gespeichert) entry point — opens the user's saved boards. */}
+            <button
+              type="button"
+              onClick={() => router.push(`/${locale}/discover/saved`)}
+              aria-label="Gespeichert"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
+            >
+              <Bookmark size={18} />
+            </button>
           </div>
           {searchFocused && (
             <div className="absolute inset-x-0 top-full z-30 mt-2 rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
               {/* V3-D395: typed query → autocomplete suggestion list (matches the mockup); empty → trending pills. */}
-              {search.trim() ? (
+              {searchInput.trim() ? (
                 <SearchAutocomplete
-                  query={search}
-                  onSelect={(term) => { setSearch(term); setSearchFocused(false); }}
+                  query={searchInput}
+                  onSelect={(term) => { setSearch(term); setSearchInput(term); setSearchFocused(false); }}
+                  onSalonSelect={(slug) => { setSearchFocused(false); router.push(`/${locale}/salon/${slug}`); }}
                 />
               ) : (
-                <AISuggestionPills
-                  category={category}
-                  onSelect={(term) => { setSearch(term); setSearchFocused(false); }}
-                />
+                <>
+                  {/* V3-D413: recent searches (per-user history, photo · term · remove) above the trending row.
+                      RecentSearches renders nothing when there's no history → only Trending shows (fallback ladder). */}
+                  <RecentSearches onSelect={(term) => { setSearch(term); setSearchInput(term); setSearchFocused(false); }} />
+                  <AISuggestionPills
+                    category={category}
+                    onSelect={(term) => { setSearch(term); setSearchInput(term); setSearchFocused(false); }}
+                  />
+                </>
               )}
             </div>
           )}
@@ -367,16 +388,22 @@ function DiscoverPageContent() {
                   feed) AND a representative photo OF that style (not a generic feed thumbnail). Same chip visual. */}
               {chipTerms.map(({ term, thumb }) => {
                 const label = formatChip(term);
+                // V3-D414 (user pick: option E): selected chip = dimmed. A chip is "selected" when its label is the
+                // committed search. Tapping commits the search (+ fills the bar); tapping the selected one clears it.
+                const sel = !!search && search.trim().toLowerCase() === label.toLowerCase();
                 return (
                   <button
                     key={term}
                     type="button"
-                    onClick={() => setSearch(label)}
+                    aria-pressed={sel}
+                    onClick={() => { const v = sel ? "" : label; setSearch(v); setSearchInput(v); }}
                     className="relative h-10 w-[94px] shrink-0 overflow-hidden rounded-[14px]"
                     aria-label={label}
                   >
                     <img src={thumb} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                    <span className="absolute inset-0 bg-gradient-to-b from-s-ink/10 to-s-ink/55" />
+                    {/* normal: light top-to-bottom gradient. selected: a clearly heavier uniform dim (option E) so it
+                        reads as the active chip, not just a slightly darker one. */}
+                    <span className={`absolute inset-0 transition-colors duration-150 ${sel ? "bg-s-ink/70" : "bg-gradient-to-b from-s-ink/10 to-s-ink/55"}`} />
                     <span className="absolute bottom-1.5 left-2.5 z-10 font-heading text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 3px rgba(0,0,0,.55)" }}>{label}</span>
                   </button>
                 );
@@ -434,24 +461,28 @@ function DiscoverPageContent() {
         ) : items.length === 0 ? (
           <DiscoveryEmptyState />
         ) : (
-          <MasonryGrid
-            items={feedItems}
-            renderItem={(item, width) =>
-              item.media_type === "tiktok" ? (
-                <VideoCard
-                  item={item}
-                  onClick={() => handleItemClick(item)}
-                  isAuthenticated={isAuthenticated}
-                />
-              ) : (
-                <ItemCard
-                  item={item}
-                  onClick={() => handleItemClick(item)}
-                  isAuthenticated={isAuthenticated}
-                />
-              )
-            }
-          />
+          /* V3-D412 (user): the look-feed breaks out of the page's px-4 to span (near) edge-to-edge — Pinterest
+             immersion. -mx-4 cancels the container padding, px-1.5 leaves a 6px edge gutter matching the masonry. */
+          <div className="-mx-4 px-1.5">
+            <MasonryGrid
+              items={feedItems}
+              renderItem={(item, width) =>
+                item.media_type === "tiktok" ? (
+                  <VideoCard
+                    item={item}
+                    onClick={() => handleItemClick(item)}
+                    isAuthenticated={isAuthenticated}
+                  />
+                ) : (
+                  <ItemCard
+                    item={item}
+                    onClick={() => handleItemClick(item)}
+                    isAuthenticated={isAuthenticated}
+                  />
+                )
+              }
+            />
+          </div>
         )}
 
         {/* Infinite scroll trigger */}

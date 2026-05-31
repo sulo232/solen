@@ -59,7 +59,9 @@ export async function GET(req: NextRequest) {
   // Fetch matching salons (limit 3), optionally scoped by category
   let salonsQuery = supabase
     .from("salons")
-    .select("id, name, slug, average_rating, cover_image")
+    // V3-D413: column is cover_photo_url (cover_image never existed → this query silently errored and returned
+    // zero salons). Fixed + aliased back to cover_image below so any existing consumer of this shape is unaffected.
+    .select("id, name, slug, average_rating, cover_photo_url")
     .ilike("name", pattern)
     .eq("is_active", true);
 
@@ -70,10 +72,12 @@ export async function GET(req: NextRequest) {
     salonsQuery = salonsQuery.eq("city_id", cityId);
   }
 
-  const { data: salons } = await salonsQuery.limit(3);
+  const { data: salons, error: salonsErr } = await salonsQuery.limit(3);
+  if (salonsErr) console.error("[search/suggest] salons query failed:", salonsErr);
 
   return NextResponse.json({
     services: services ?? [],
-    salons: salons ?? [],
+    // Alias cover_photo_url → cover_image to preserve this route's documented response shape.
+    salons: (salons ?? []).map((s: Record<string, any>) => ({ ...s, cover_image: s.cover_photo_url ?? null })),
   });
 }
