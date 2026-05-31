@@ -15,6 +15,9 @@ import type { ReactNode } from "react";
  */
 export default function HideInBooking({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  if (pathname && /\/(booking|staff\/[^/]+)\/?$/.test(pathname)) return null;
+  // Booking flow + individual staff pages are self-contained.
+  // V3-D348: /auth pages are standalone too (Uber pattern) — no marketing
+  // header/city-bar/breadcrumb, so the login's own wordmark is the only logo.
+  if (pathname && (/\/(booking|staff\/[^/]+)\/?$/.test(pathname) || /\/auth(\/|$)/.test(pathname))) return null;
   return <>{children}</>;
 }

@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   return (
-    <div className="min-h-screen bg-white flex flex-col px-6 pt-6 pb-12">
+    <div className="min-h-screen bg-white flex flex-col px-6 pt-16 pb-12">
       <div className="w-full max-w-sm mx-auto">
         <Link
           href={`/${locale}`}
