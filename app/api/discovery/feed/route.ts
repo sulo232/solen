@@ -46,6 +46,17 @@ export async function GET(req: NextRequest) {
       const list = (rows ?? []) as Array<Record<string, any>>;
       const total = list.length > 0 ? Number(list[0].total_count) : 0;
       const items = list.map(({ total_count, ...rest }) => rest);
+      // V3-D409: log the search (page 1 only → one event per search action, not per scroll page) to power
+      // trending terms. Service role bypasses RLS; failures are non-fatal.
+      if (filters.page === 1) {
+        try {
+          await admin.from("discovery_search_events").insert({
+            term: filters.search,
+            normalized: filters.search.trim().toLowerCase().slice(0, 80),
+            user_id: userId,
+          });
+        } catch (e) { console.error("[Discover] search log failed:", e); }
+      }
       return NextResponse.json({ items, total, page: filters.page, limit, has_more: total > offset + limit });
     }
 
