@@ -22,6 +22,9 @@ import { FeedZone } from "./_components/homepage/SectionHeader";
 //   before Top auf Solen) per Fix 5.
 // import CategoryTabs from "./_components/homepage/CategoryTabs";
 import MobileCategoriesRow from "./_components/homepage/MobileCategoriesRow";
+// V3-D348: client-side curation — "Weil du X magst" salon rows for the
+// categories the user picked during onboarding (renders null when logged-out).
+import ForYouSalonRows from "./_components/homepage/ForYouSalonRows";
 // V3-D124 (2026-05-24): FeatureBento was added then scrapped per user.
 // Component file kept at ./_components/homepage/FeatureBento.tsx and
 // illustrations at public/illustrations/features/ for easy revive — just
@@ -140,6 +143,7 @@ export default async function Page() {
           preserved. Semantically also better — Für dich IS feed content. */}
       <FeedZone>
         <MobileCategoriesRow />
+        <ForYouSalonRows />
         <RecentlyViewed />
         <Nearby />
         <FeaturedStylists />
