@@ -12,8 +12,9 @@ import { cn } from "@/lib/utils";
  * single source. Generic primitive — will be used by search filters too.
  *
  * Layer: 1 (chrome) — TabPill is a navigation/filter affordance, not a
- * semantic-color signal. Active state uses ink (chrome dominance), NOT brand
- * accent (which is reserved for non-chrome highlights per V3-D192-fix).
+ * semantic-color signal. Active state = soft gray fill (s-bg-sunken) + ink
+ * text — the locked selection treatment, shared with the search filters
+ * (not ink-fill, not accent, no check).
  *
  * Variants:
  *   - `outline` (default) — visible border. For filter chips, segment controls.
@@ -60,20 +61,20 @@ const tabPillVariants = cva(
       },
     },
     compoundVariants: [
-      // outline + active = solid ink filled
+      // outline + active = soft gray fill (matches search filter selection)
       {
         variant: "outline", tone: "active",
-        className: "border-s-ink bg-s-ink text-white shadow-elevation-1",
+        className: "border-s-border bg-s-bg-sunken text-s-ink",
       },
       // outline + inactive = white + hairline border, hovers to ink
       {
         variant: "outline", tone: "inactive",
         className: "border-s-border bg-white text-s-ink-2 hover:border-s-ink hover:text-s-ink",
       },
-      // ghost + active = filled ink, no border
+      // ghost + active = soft gray fill, no border
       {
         variant: "ghost", tone: "active",
-        className: "bg-s-ink text-white",
+        className: "bg-s-bg-sunken text-s-ink",
       },
       // ghost + inactive = bare, low-emphasis
       {
