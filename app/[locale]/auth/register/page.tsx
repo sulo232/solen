@@ -36,42 +36,38 @@ import type { HairType, AgeGroup, Gender, SalonCategory } from "@/lib/types";
 // ─────────────────────────────────────────
 function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: () => void }) {
   return (
-    <div className="flex flex-col gap-5">
-      <div className="text-center mb-2">
-        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/45 mb-2">
-          Registrierung
-        </p>
-        <h2 className="font-heading text-xl text-s-ink">
+    <div className="flex flex-col gap-4">
+      <div className="mb-1">
+        <h2 className="text-[22px] font-semibold tracking-[-0.01em] text-s-ink">
           Wie möchtest du starten?
         </h2>
+        <p className="text-[14px] text-s-ink-2 mt-1">Wähle, wie du Solen nutzt.</p>
       </div>
 
       {/* Customer choice */}
       <button onClick={onCustomer}
-        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] hover:border-s-accent/40 hover:bg-s-ink/[0.03] transition-[border-color,background-color,box-shadow] duration-150 text-left">
-        <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0"
-          style={{ background: "rgba(27, 77, 27,.10)" }}>
-          <User size={20} className="text-s-accent" />
+        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-border hover:border-s-ink/30 hover:bg-s-bg-sunken transition-colors duration-150 text-left">
+        <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0 bg-s-bg-sunken">
+          <User size={20} className="text-s-ink" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-heading text-sm text-s-ink">Ich bin ein Kunde</p>
-          <p className="text-[10px] font-body text-s-ink/45 mt-0.5">Salons entdecken und Termine buchen</p>
+          <p className="text-[15px] font-medium text-s-ink">Ich bin ein Kunde</p>
+          <p className="text-[12px] text-s-ink-2 mt-0.5">Salons entdecken und Termine buchen</p>
         </div>
-        <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-accent transition-colors shrink-0" />
+        <ChevronRight size={18} className="text-s-ink/30 group-hover:text-s-ink transition-colors shrink-0" />
       </button>
 
       {/* Salon choice */}
       <button onClick={onSalon}
-        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] hover:border-s-accent/40 hover:bg-s-ink/[0.03] transition-[border-color,background-color,box-shadow] duration-150 text-left">
-        <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0"
-          style={{ background: "rgba(243,168,100,.10)" }}>
-          <Building2 size={20} className="text-s-warning" />
+        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-border hover:border-s-ink/30 hover:bg-s-bg-sunken transition-colors duration-150 text-left">
+        <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0 bg-s-bg-sunken">
+          <Building2 size={20} className="text-s-ink" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-heading text-sm text-s-ink">Ich bin Salon-Inhaber</p>
-          <p className="text-[10px] font-body text-s-ink/45 mt-0.5">Meinen Salon registrieren und verwalten</p>
+          <p className="text-[15px] font-medium text-s-ink">Ich bin Salon-Inhaber</p>
+          <p className="text-[12px] text-s-ink-2 mt-0.5">Meinen Salon registrieren und verwalten</p>
         </div>
-        <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-accent transition-colors shrink-0" />
+        <ChevronRight size={18} className="text-s-ink/30 group-hover:text-s-ink transition-colors shrink-0" />
       </button>
     </div>
   );
@@ -139,22 +135,18 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
   if (success) {
     return (
       <div className="text-center py-6 flex flex-col items-center gap-4">
-        <div className="w-14 h-14 rounded-[14px] flex items-center justify-center"
-          style={{ background: "rgba(27, 77, 27,.10)" }}>
-          <Mail size={24} className="text-s-accent" />
+        <div className="w-14 h-14 rounded-[14px] flex items-center justify-center bg-s-bg-sunken">
+          <Mail size={24} className="text-s-ink" />
         </div>
         <div>
-          <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-accent mb-2">
-            E-Mail gesendet
-          </p>
-          <p className="font-heading text-lg text-s-ink">Fast fertig!</p>
-          <p className="text-xs font-body text-s-ink/50 mt-1 leading-relaxed">
+          <p className="text-[18px] font-semibold text-s-ink">Fast fertig!</p>
+          <p className="text-[13px] text-s-ink-2 mt-1.5 leading-relaxed">
             Überprüfe deine E-Mails und klicke auf den Bestätigungslink.
           </p>
         </div>
         <button onClick={onNext}
-          className="text-[11px] font-heading uppercase tracking-[.06em] text-s-accent/60 hover:text-s-accent transition-colors mt-2">
-          Weiter →
+          className="text-[13px] text-s-ink-2 underline underline-offset-2 hover:text-s-ink transition-colors mt-2">
+          Weiter
         </button>
       </div>
     );
@@ -162,7 +154,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="font-heading text-xl text-s-ink">Konto erstellen</h2>
+      <h2 className="text-[22px] font-semibold tracking-[-0.01em] text-s-ink">Konto erstellen</h2>
 
       <input
         type="email"
@@ -183,7 +175,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       
       {isSalon ? (
         <div>
-          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+          <label className="block text-[13px] font-medium text-s-ink-2 mb-1.5">
             Name des Salons
           </label>
           <input
@@ -197,7 +189,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         </div>
       ) : (
         <div>
-          <label className="block text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+          <label className="block text-[13px] font-medium text-s-ink-2 mb-1.5">
             Geburtsdatum <span className="text-s-ink/25">(mind. 16 Jahre)</span>
           </label>
           <input
@@ -213,14 +205,14 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       <button
         type="submit"
         disabled={!email || !password || (isSalon ? !salonName : !birthday) || saving}
-        className="w-full py-4 rounded-pill bg-s-ink shadow-elevation-2 text-white text-xs font-heading uppercase tracking-[.04em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
+        className="w-full h-12 rounded-btn bg-s-ink text-white text-[15px] font-medium active:scale-[0.99] transition-transform duration-150 disabled:opacity-50 flex items-center justify-center gap-2 mt-1">
         {saving && <Spinner size="sm" invert />}
         Registrieren
       </button>
 
-      <p className="text-center text-xs text-s-ink/50 font-body mt-2">
+      <p className="text-center text-[13px] text-s-ink-2 mt-2">
         Du hast bereits ein Konto?{" "}
-        <a href="/auth/login" className="text-s-accent hover:underline">
+        <a href="/auth/login" className="text-s-ink font-medium underline underline-offset-2">
           Anmelden
         </a>
       </p>
@@ -614,25 +606,8 @@ export default function RegisterPage() {
   const currentStepNum = step === -1 ? 0 : step === "done" ? totalSteps : Number(step);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
-      {/* Single ambient glow — Zone 3 exception */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
-        <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full"
-          style={{ background: "rgba(27, 77, 27,.07)", filter: "blur(120px)" }} />
-      </div>
-
+    <div className="min-h-screen bg-white flex flex-col items-center px-4 pt-8 pb-12">
       <div className="w-full max-w-sm">
-        {/* Logo lockup */}
-        <div className="text-center mb-6">
-          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-warning mb-3">
-            solen.ch
-          </p>
-          <Link href={`/${locale}`}
-            className="inline-block font-heading text-[32px] text-s-ink leading-none hover:opacity-80 transition-opacity">
-            solen<span className="text-s-accent">.</span>ch
-          </Link>
-        </div>
-
         {/* Progress bar — linear track */}
         {step !== -1 && step !== "done" && (
           <div className="mb-5 px-1">
@@ -641,23 +616,20 @@ export default function RegisterPage() {
                 <div key={s} className={`flex-1 h-1 rounded-full transition-[width] duration-[350ms] ${(s as number) <= (step as number) ? "bg-s-ink" : "bg-s-ink/[0.08]"}`} />
               ))}
             </div>
-            <p className="text-right text-[9px] font-heading uppercase tracking-[.14em] text-s-ink/50 mt-1.5">
+            <p className="text-right text-[12px] text-s-ink-2 mt-1.5">
               Schritt {currentStepNum} von {totalSteps}
             </p>
           </div>
         )}
 
-        {/* Auth card — Zone 3, warm shadow */}
-        <div className="rounded-card border border-white/70 overflow-hidden"
-          style={{ background: "rgba(255,255,255,.90)", backdropFilter: "blur(20px) saturate(1.2)",
-                   WebkitBackdropFilter: "blur(20px) saturate(1.2)",
-                   boxShadow: "0 4px 12px rgba(26,18,9,.08), 0 16px 40px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.90)" }}>
+        {/* Auth card — clean B&W surface (design-system) */}
+        <div className="rounded-card border border-s-border bg-white overflow-hidden">
           <div className="p-7">
             {(step === 2 || step === 3) && (
               <button
                 onClick={() => goTo((step - 1) as WizardStep)}
-                className="flex items-center gap-1.5 text-[11px] font-heading uppercase tracking-[.06em] text-s-ink/45 hover:text-s-ink transition-colors mb-4">
-                <ArrowLeft size={12} /> Zurück
+                className="flex items-center gap-1.5 text-[13px] text-s-ink-2 hover:text-s-ink transition-colors mb-4">
+                <ArrowLeft size={14} /> Zurück
               </button>
             )}
 
@@ -690,12 +662,10 @@ export default function RegisterPage() {
         </div>
 
         {step !== "done" && step === -1 && (
-          <p className="text-center mt-6">
-            <span className="text-[11px] font-heading uppercase tracking-[.08em] text-s-ink/50">
-              Bereits registriert?{" "}
-            </span>
+          <p className="text-center mt-8 text-[13px] text-s-ink-2">
+            Bereits registriert?{" "}
             <Link href={`/${locale}/auth/login`}
-              className="text-[11px] font-heading uppercase tracking-[.08em] text-s-accent hover:underline">
+              className="text-s-ink font-medium underline underline-offset-2">
               Anmelden
             </Link>
           </p>
