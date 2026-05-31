@@ -25,6 +25,7 @@ import MobileCategoriesRow from "./_components/homepage/MobileCategoriesRow";
 // V3-D348: client-side curation — "Weil du X magst" salon rows for the
 // categories the user picked during onboarding (renders null when logged-out).
 import ForYouSalonRows from "./_components/homepage/ForYouSalonRows";
+import ForYouGreeting from "./_components/homepage/ForYouGreeting";
 // V3-D124 (2026-05-24): FeatureBento was added then scrapped per user.
 // Component file kept at ./_components/homepage/FeatureBento.tsx and
 // illustrations at public/illustrations/features/ for easy revive — just
@@ -142,6 +143,7 @@ export default async function Page() {
           above RecentlyViewed and the rising-panel-over-Hero intent is
           preserved. Semantically also better — Für dich IS feed content. */}
       <FeedZone>
+        <ForYouGreeting />
         <MobileCategoriesRow />
         <ForYouSalonRows />
         <RecentlyViewed />

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
+import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
 
 /**
  * Recently Viewed — V3 (LIVE_TRUTH §Q51.0 + V2-D34 cards).
@@ -122,7 +123,14 @@ function readStorage(): RecentEntry[] {
   }
 }
 
-export default function RecentlyViewed() {
+export default function RecentlyViewed({
+  prefsOverride,
+}: {
+  /** Test seam — bypasses the live fetch when provided (dev previews). */
+  prefsOverride?: CustomerPrefs | null;
+} = {}) {
+  const fetched = useCustomerPrefs();
+  const prefs = prefsOverride !== undefined ? prefsOverride : fetched;
   const [entries, setEntries] = React.useState<RecentEntry[] | null>(null);
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
@@ -136,7 +144,11 @@ export default function RecentlyViewed() {
   // to "Top auf Solen" with curated top-rated salons.
   // Pre-mount: render fallback (no flash, no hydration mismatch)
   const hasHistory = entries !== null && entries.length > 0;
-  const list: RecentEntry[] = hasHistory ? entries : DEMO_SALONS;
+  // V3-D348: bend the curated "Top auf Solen" fallback toward the user's picks.
+  // Real view history stays chronological (it's "recently viewed", not "for you").
+  const list: RecentEntry[] = hasHistory
+    ? entries
+    : sortByCategoryPicks(DEMO_SALONS, prefs?.categories ?? []);
   const title = hasHistory ? "Zuletzt angesehen" : "Top auf Solen";
   const linkLabel = hasHistory ? "Im Profil →" : "Alle entdecken →";
   const linkHref = hasHistory ? "/profile/recently-viewed" : "/search?sort=top-rated";

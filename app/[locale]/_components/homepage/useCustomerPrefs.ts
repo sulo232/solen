@@ -16,6 +16,8 @@ import * as React from "react";
 export interface CustomerPrefs {
   categories: string[];
   interests: string[];
+  /** First name for the greeting (from display_name), null if unset. */
+  name: string | null;
 }
 
 let cached: Promise<CustomerPrefs | null> | null = null;
@@ -29,12 +31,15 @@ function loadPrefs(): Promise<CustomerPrefs | null> {
     .then((r) => (r.ok ? r.json() : null))
     .then((data) => {
       if (!data || typeof data !== "object") return null;
-      const p = (data as Record<string, unknown>).customer_preferences as
-        | Record<string, unknown>
-        | undefined;
+      const obj = data as Record<string, unknown>;
+      const p = obj.customer_preferences as Record<string, unknown> | undefined;
+      const rawName = typeof obj.display_name === "string" ? obj.display_name.trim() : "";
+      // First name only — keeps the greeting short ("Willkommen zurück, Sarah").
+      const name = rawName ? rawName.split(/\s+/)[0] : null;
       return {
         categories: asStrArr(p?.categories),
         interests: asStrArr(p?.interests),
+        name,
       };
     })
     .catch((err) => {
@@ -42,6 +47,27 @@ function loadPrefs(): Promise<CustomerPrefs | null> {
       return null;
     });
   return cached;
+}
+
+/**
+ * Stable-sort a list so items in the user's picked categories float to the front
+ * (in pick order); everything else keeps its original order. Used to "bend"
+ * existing feed sections (Top auf Solen, In der Nähe) toward the user's picks
+ * WITHOUT dropping any salon — so a section never empties for an unusual pick.
+ */
+export function sortByCategoryPicks<T extends { category: string }>(
+  list: T[],
+  picked: string[],
+): T[] {
+  if (!picked.length) return list;
+  const rank = (c: string) => {
+    const i = picked.indexOf(c);
+    return i === -1 ? picked.length : i;
+  };
+  return list
+    .map((item, i) => ({ item, i }))
+    .sort((a, b) => rank(a.item.category) - rank(b.item.category) || a.i - b.i)
+    .map((x) => x.item);
 }
 
 export function useCustomerPrefs(): CustomerPrefs | null {
