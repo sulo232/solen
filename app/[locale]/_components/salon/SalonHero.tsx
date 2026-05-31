@@ -6,6 +6,9 @@ import { ArrowLeft, Share } from "lucide-react";
 import { HeartButton } from "../homepage/HeartButton";
 import type { SalonDetail } from "./_shared";
 import { cn } from "@/lib/utils";
+// V3-D420: FROST_GLASS promoted to a shared util (canonical "A" recipe, control-over-photo).
+// Was a local const here (V3-D72); consolidated so SaveHeart / card overlays stop re-deriving it.
+import { FROST_GLASS } from "@/lib/frost-glass";
 
 /**
  * SalonHero — V2-D53.3 (2026-05-11).
@@ -70,18 +73,11 @@ export function SalonHero({
           type="button"
           aria-label="Zurück"
           onClick={() => router.back()}
-          className="absolute left-4 top-4 grid h-10 w-10 place-items-center bg-transparent transition-transform hover:scale-110 active:scale-95"
+          className="group absolute left-4 top-4 grid h-11 w-11 place-items-center bg-transparent focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
         >
-          <ArrowLeft
-            size={24}
-            strokeWidth={2.25}
-            stroke="rgba(255, 255, 255, 0.95)"
-            style={{
-              filter:
-                "drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.3))",
-            }}
-            aria-hidden
-          />
+          <span aria-hidden style={FROST_GLASS} className="grid h-7 w-7 place-items-center rounded-full transition-transform duration-200 ease-glide group-hover:scale-110 group-active:scale-[0.97] group-active:duration-[80ms]">
+            <ArrowLeft size={16} strokeWidth={2.25} stroke="var(--color-heading)" aria-hidden />
+          </span>
         </button>
 
         <div className="absolute right-4 top-4 flex items-center gap-3">
@@ -93,18 +89,11 @@ export function SalonHero({
                 navigator.share({ title: salon.name, url: window.location.href }).catch(() => {});
               }
             }}
-            className="grid h-10 w-10 place-items-center bg-transparent transition-transform hover:scale-110 active:scale-95"
+            className="group grid h-11 w-11 place-items-center bg-transparent focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
           >
-            <Share
-              size={22}
-              strokeWidth={2.25}
-              stroke="rgba(255, 255, 255, 0.95)"
-              style={{
-                filter:
-                  "drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.3))",
-              }}
-              aria-hidden
-            />
+            <span aria-hidden style={FROST_GLASS} className="grid h-7 w-7 place-items-center rounded-full transition-transform duration-200 ease-glide group-hover:scale-110 group-active:scale-[0.97] group-active:duration-[80ms]">
+              <Share size={16} strokeWidth={2.25} stroke="var(--color-heading)" aria-hidden />
+            </span>
           </button>
           <HeartButton
             salonId={salon.id}
@@ -117,12 +106,13 @@ export function SalonHero({
           <button
             type="button"
             onClick={() => onOpenLightbox(0)}
-            // V3-D202 (A2): drop `backdrop-blur-md` (§13 mobile perf — backdrop-filter
-            // inside scrolling pages costs compositor layers). Flip pill from white-glass
-            // to ink-on-photo for stronger overlay legibility.
-            className="font-body absolute bottom-4 right-4 rounded-full bg-s-ink/85 px-3.5 py-2 text-[12px] font-semibold text-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-transform hover:scale-105 active:scale-95"
+            aria-label="Alle Fotos ansehen"
+            // Minimal photo counter (Fresha pattern) instead of a bulky pill — less visual noise.
+            // bottom-7 (not -4): the content card pulls up -mt-5 (20px) over the hero, so a lower
+            // counter would sit behind the rounded card. This keeps it clear, in the photo.
+            className="font-body absolute bottom-7 right-4 rounded-full bg-s-ink/55 px-2.5 py-1 text-[12px] font-semibold tabular-nums text-white shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-transform active:scale-95"
           >
-            Alle Fotos ansehen ({photos.length})
+            1 / {photos.length}
           </button>
         )}
       </div>

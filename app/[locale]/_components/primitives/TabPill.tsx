@@ -66,11 +66,11 @@ const tabPillVariants = cva(
         variant: "outline", tone: "active",
         className: "border-s-border bg-s-bg-sunken text-s-ink",
       },
-      // outline + inactive = white + hairline border; hover lifts with a soft shadow
-      // (NOT a black border — that read as a harsh outline).
+      // outline + inactive = white + hairline border. Hover deepens text + border,
+      // FLAT with no lift (V3-D420 CONTROL_ELEVATION: calm controls on white never cast a shadow).
       {
         variant: "outline", tone: "inactive",
-        className: "border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:shadow-[0_2px_10px_-2px_rgba(10,10,10,0.12)]",
+        className: "border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:border-s-ink/20",
       },
       // ghost + active = soft gray fill, no border
       {
