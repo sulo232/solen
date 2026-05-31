@@ -674,7 +674,10 @@ export default function RegisterPage() {
                   if (salonIntent) {
                     router.push(`/${locale}/onboarding/salon`);
                   } else {
-                    goTo(1);
+                    // V3-D348: customer onboarding now happens post-confirmation
+                    // via /api/auth/callback -> /onboarding. The old in-wizard
+                    // Step1/2/3 are retired; send them home after the email notice.
+                    router.push(`/${locale}`);
                   }
                 }} />}
                 {step === 1 && <Step1 onNext={() => goTo(2)} />}
