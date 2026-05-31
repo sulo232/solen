@@ -84,7 +84,7 @@
 - `s-atm-*` family (warm / cool / cream / terra / sage / bone / butter)
 - `s-cat-*` family (coiffeur / barbershop / nails / spa — and their `-text` variants)
 - `s-love` family (replaced by `--heart-active` for save, `s-error` for error)
-- `Inter Tight`, `Hanken Grotesk` — **RETIRED V3-D317 (2026-05-27)** type-swap to Geist Sans single-family. See §2.
+- `Geist` — **REJECTED 2026-05-30** ("no Geist anywhere"); V3-D317 swap reverted. `Hanken Grotesk` — **REPLACED by `Inter` V3-D410 (2026-05-31)**. Active type = Inter Tight + Inter + JetBrains Mono. See §2.
 
 Drift-check `RETIRED_TOKENS` list flags any new usage.
 
@@ -121,18 +121,19 @@ Drift-check `RETIRED_TOKENS` list flags any new usage.
 
 ## §2 — Typography (literal values)
 
-### Font families (V3-D317, 2026-05-27 — single-family swap)
+### Font families (V3-D410, 2026-05-31 — current; this section had drifted, corrected)
 
 ```ts
-display: ["'Geist'", "system-ui", "-apple-system", "sans-serif"]
-heading: ["'Geist'", "system-ui", "-apple-system", "sans-serif"]
-body:    ["'Geist'", "system-ui", "-apple-system", "sans-serif"]
+display: ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"]
+heading: ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"]
+body:    ["'Inter'", "system-ui", "-apple-system", "sans-serif"]
 mono:    ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"]
 ```
 
-**Why one family:** Inter Tight (display) + Hanken Grotesk (body) had a 3× weight ratio (800 ↔ 300) that the user flagged as "too heavy everywhere." Swapped to a single-family geometric sans (Geist, Vercel-issued, closest free analog to Uber Move). Weight contrast now carries hierarchy instead of family contrast. Result: lighter overall feel, fewer font loads, easier-to-tune type scale.
+**History (doc was stale — fixed 2026-05-31):** V3-D317 swapped everything to single-family **Geist**; that was **reverted app-wide 2026-05-30** per user ("no Geist anywhere") back to Inter Tight + Hanken Grotesk. V3-D410 (2026-05-31) then swapped **body Hanken → Inter**: Hanken's 400 read thin, and Inter mirrors Uber's own structure — one family in two optical cuts (`Inter Tight` + `Inter` ≈ Uber Move + Uber Move Text, verified against uber.com computed styles). Hierarchy = weight + size, not family contrast.
 
-**NEVER:** Inter Tight (retired V3-D317), Hanken Grotesk (retired V3-D317), Peace Sans (retired), Plus Jakarta Sans (retired V3-D189), Bricolage Grotesque (retired V3-D190), system-default-only (must specify family).
+**NEVER:** Geist (rejected by user — "no Geist anywhere"), Hanken Grotesk (replaced by Inter, V3-D410), Peace Sans (retired), Plus Jakarta Sans (retired V3-D189), Bricolage Grotesque (retired V3-D190), system-default-only (must specify family).
+**ACTIVE:** Inter Tight (display/headings) · Inter (body) · JetBrains Mono (codes).
 
 ### Scale (role × size × weight × line-height × tracking)
 
@@ -182,17 +183,16 @@ Sub → Search card:                 64px (mt-16 on SearchCard wrapper)
 Search card shadow:                NONE (was 4-layer white-glass rim — drift drop)
 ```
 
-### Geist weight scale (V3-D325 lock — supersedes V3-D317 + V3-D191)
+### Weight scale (V3-D410, 2026-05-31 — Geist refs corrected to current fonts)
 
-Geist is geometric + cleaner than Inter Tight/Hanken at every weight. Hierarchy uses **size** + **position** + **tracking** — NOT compound weight contrasts. Uber-aligned: all headings 600 semibold, body 400, with 500 only for emphasis chips/CTAs.
+Hierarchy uses **size** + **position** + **tracking** — NOT compound family contrast. Uber-aligned: body 400, 500 for emphasis chips / CTAs / nav / labels, headings 600. (uber.com itself runs 400 body / 500 nav-labels / 700 headings; Solen holds headings at 600 per V3-D325 — Inter Tight 600 carries section weight without going press-shouty.)
 
-- Body default = **400** (normal) — Geist 400 reads premium without thinness
-- CTA / chip / tile label = **500** (medium)
+- Body default = **400** (normal) — **Inter 400 reads solid. This is the V3-D410 fix: Hanken's 400 read thin, Inter's does not.**
+- CTA / chip / tile label / nav / interactive = **500** (medium)
 - ALL headings (Hero H1 / Page H2 / Section H2 / Subsection H3) = **600** (semibold)
-- Service-row price + star rating + secondary emphasis within text = **600**
-- NEVER 700 bold on headings — looks press-shouty against Geist's geometric forms
-- NEVER 800 / extrabold — Geist 800 is heavy + clumsy
-- NEVER 300 / light — Geist 300 reads thin on mobile
+- Service-row price + star rating + secondary emphasis within text = **600** ⚠️ code drifted to 400 on service price — bump to 600 to match this lock (PDP file; coordinate with the PDP worktree)
+- NEVER below 500 for nav / labels / prices / buttons — that's the thin look the user flagged
+- NEVER 800 / extrabold — clumsy · NEVER 300 / light — reads thin on mobile
 
 **Weight class sweeps applied:**
 - V3-D317: `font-extrabold` (800) → `font-bold` (700) — 82 callsites

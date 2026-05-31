@@ -213,12 +213,12 @@ module.exports = {
         // V3-D190 (2026-05-26): Inter Tight (display) — supersedes V3-D75
         // Bricolage Grotesque. Inter Tight at weight 900 reads as modern-
         // confident (Tap2/Linear/Vercel pattern) where Bricolage read as
-        // humanist-warm. Body font Hanken Grotesk unchanged.
-        // 2026-05-30: REVERTED V3-D317 Geist swap per user ("no Geist"). Back to
-        // Inter Tight (display/heading) + Hanken Grotesk (body). Do NOT reintroduce Geist.
+        // 2026-05-31 (V3-D410): body font Hanken Grotesk → Inter. Mirrors Uber's
+        // one-family display+text structure (Inter Tight + Inter ≈ Uber Move + Uber
+        // Move Text); Inter 400 reads solid where Hanken 400 read thin. No Geist.
         display: ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
         heading: ["'Inter Tight'", "system-ui", "-apple-system", "sans-serif"],
-        body:    ["'Hanken Grotesk'", "system-ui", "-apple-system", "sans-serif"],
+        body:    ["'Inter'", "system-ui", "-apple-system", "sans-serif"],
         // V3-D318 (2026-05-27): JetBrains Mono for codes/receipts (font-mono-code class)
         mono:    ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
       },
