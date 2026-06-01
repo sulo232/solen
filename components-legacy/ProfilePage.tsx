@@ -268,8 +268,8 @@ type BookingWithDetails = Booking & { salon_name: string; service_name: string; 
 
 // Status badges — semantic pill colours
 const STATUS_BADGE_MAP: Record<string, { bg: string; color: string }> = {
-  confirmed: { bg: "rgba(22,163,74,.12)",  color: "#15803D" },
-  cancelled: { bg: "rgba(27, 77, 27,.10)",   color: "#7A2415" },
+  confirmed: { bg: "rgba(22,163,74,.12)",  color: "#16A34A" },
+  cancelled: { bg: "rgba(10, 10, 10,.10)",   color: "#7A2415" },
   completed: { bg: "rgba(26,18,9,.06)",     color: "rgba(26,18,9,.50)" },
   no_show:   { bg: "rgba(26,18,9,.04)",     color: "rgba(26,18,9,.30)" },
 };

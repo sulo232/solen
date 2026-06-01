@@ -99,7 +99,7 @@ export default function CardFilterRow({
           borderRadius: 99,
           fontSize: 11,
           letterSpacing: ".04em",
-          ...(isActive ? { background: isBrand ? "#1B4D1B" : "#F3A864" } : {}),
+          ...(isActive ? { background: isBrand ? "#0A0A0A" : "#F3A864" } : {}),
         }}
       >
         {label}

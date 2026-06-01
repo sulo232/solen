@@ -1,9 +1,9 @@
 # Step
 
 **File:** [app/[locale]/_components/business/Step.tsx](../../app/[locale]/_components/business/Step.tsx)
-**Layer:** 2 (brand accent — `s-accent/30` blue numeral is the brand-emphasis use case from SOURCE.md §2.1)
-**Locked since:** V3-D218 (2026-05-26 · /business rebuild)
-**SOURCE.md links:** [§3 typography](../SOURCE.md) · [§2.1 accent use](../SOURCE.md)
+**Layer:** 1 (chrome — the numeral is muted ink `s-ink-3`, NOT accent. Accent is functional-only per CANON §2.)
+**Locked since:** V3-D218 (2026-05-26 · /business rebuild) · **CANON sweep:** 2026-06-01 (numeral de-accented)
+**SOURCE.md links:** [§3 typography](../SOURCE.md) · [§2 accent rule](../SOURCE.md)
 
 ---
 
@@ -11,7 +11,7 @@
 
 3-step "how it works" card primitive used in `/business` page's `<section id="how">`. Extracted from inline JSX so the same pattern can serve future "how it works" / "process" sections.
 
-The giant accent numeral (`text-s-accent/30`) is the primary brand-color moment on the /business page — V3-D192 royal blue shows up here as semi-decorative "data emphasis" per SOURCE.md §2.1.
+The giant numeral (`text-s-ink-3`) reads as a quiet, semi-decorative "data emphasis." It is muted ink, NOT accent blue: CANON §2 bans accent on decorative text / step numerals (accent is functional-only — focus ring / spinner / input).
 
 ---
 
@@ -33,9 +33,9 @@ export interface StepProps {
 ┌──────────────────────────────┐
 │                              │
 │   01                         │  ← font-display 40px (mobile) / 48px (desktop)
-│                              │     font-extrabold (800), text-s-accent/30
-│   Anmelden                   │  ← font-display clamp(18,2vw,23), font-bold (700)
-│   60 Sekunden Formular…      │  ← font-body 14px, font-light (300)
+│                              │     font-semibold (600), text-s-ink-3
+│   Anmelden                   │  ← font-display clamp(16,1.6vw,18), font-semibold (600)
+│   60 Sekunden Formular…      │  ← font-body 14px, font-normal (400)
 │                              │
 └──────────────────────────────┘
    ↑
@@ -43,19 +43,19 @@ export interface StepProps {
 ```
 
 **Typography (numeral):**
-- `font-display text-[40px] md:text-[48px] font-extrabold` (Inter Tight 800)
+- `font-display text-[40px] md:text-[48px] font-semibold` (Inter Tight 600 — NEVER 800)
 - `leading-none tracking-[-0.03em]`
-- `text-s-accent/30` (royal blue at 30% opacity → reads as decorative emphasis)
+- `text-s-ink-3` (muted ink → reads as quiet decorative emphasis; NOT accent, per CANON §2)
 - `tabular-nums` (aligned digits across all 3 cards)
 
 **Typography (h3):**
-- `font-display text-[clamp(18px,2vw,23px)] font-bold` (Section H2 spec from SOURCE.md §3 — Inter Tight 700)
+- `font-display text-[clamp(16px,1.6vw,18px)] font-semibold` (section heading = Inter Tight 600 per CANON §3)
 - `tracking-[-0.03em]`
 - `text-s-ink`
 - `mt-5` (20px gap below numeral)
 
 **Typography (body p):**
-- `font-body text-[14px] font-light leading-[1.55]` (Hanken Grotesk 300)
+- `font-body text-[14px] font-normal leading-[1.55]` (Inter 400 — body default per CANON §3)
 - `text-s-ink-2`
 - `mt-2` (8px gap below h3)
 

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Clock, Users, Info, Star, X, Check } from "lucide-react";
+import { Clock, Users, Info, Star, X } from "lucide-react";
+import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
 
 interface WalkInService {
   id: string;
@@ -205,13 +206,11 @@ export default function SalonWalkInPanel({
               aria-pressed={barberId === null}
               className="flex w-[88px] shrink-0 flex-col items-center text-center"
             >
-              <div className="relative grid h-[78px] w-[78px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken ring-1 ring-s-ink/[0.05]">
-                <Users className="h-7 w-7 text-s-ink-2" />
-                {barberId === null && (
-                  <span className="absolute inset-0 grid place-items-center bg-s-ink/45">
-                    <Check className="h-7 w-7 text-white" strokeWidth={3} />
-                  </span>
-                )}
+              <div className="relative">
+                <div className="grid h-[78px] w-[78px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken ring-1 ring-s-ink/[0.05]">
+                  <Users className="h-7 w-7 text-s-ink-2" />
+                </div>
+                <SelectedCheckBadge selected={barberId === null} size={24} />
               </div>
               <div className={`mt-3 font-body text-[14px] leading-tight text-s-ink ${barberId === null ? "font-semibold" : "font-medium"}`}>{l.anyone}</div>
               <div className="mt-1 font-body text-[12px] leading-snug text-s-ink-2">{l.noPref}</div>
@@ -238,12 +237,8 @@ export default function SalonWalkInPanel({
                       ) : (
                         <span className="font-display text-[28px] font-semibold text-s-ink-2">{b.name.charAt(0).toUpperCase()}</span>
                       )}
-                      {active && (
-                        <span className="absolute inset-0 grid place-items-center bg-s-ink/45">
-                          <Check className="h-7 w-7 text-white" strokeWidth={3} />
-                        </span>
-                      )}
                     </div>
+                    <SelectedCheckBadge selected={active} size={24} />
                     {showRating && (
                       <span className="absolute -bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-white px-2 py-[3px] shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]">
                         <Star size={11} fill="#FFC32B" stroke="none" />

@@ -1,7 +1,7 @@
 # Section / SectionFrame / SectionTitle / SectionMeta / ScrollRow / FeedZone
 
 **File:** [app/[locale]/_components/homepage/SectionHeader.tsx](../../app/[locale]/_components/homepage/SectionHeader.tsx)
-**Layer:** 1 chrome (Section / Frame / ScrollRow / FeedZone) + Layer 2 brand accent (SectionMeta eyebrow + ● bullet use `s-accent` royal blue per V3-D192)
+**Layer:** 1 chrome (Section / Frame / ScrollRow / FeedZone / SectionMeta). The SectionMeta eyebrow is plain `text-s-ink-3` with no dot — accent is functional-only and NEVER on eyebrows per CANON §2.
 **Locked since:** V2-D41-rising-panel-3 (architecture), V3-D132 (spacing), V3-D156 (chevron-draws-stem)
 **SOURCE.md links:** [§4 Spatial rhythm](../SOURCE.md#§4--spatial-rhythm) · [§8 Card grammar](../SOURCE.md#§8--card-grammar) · [§13 Mobile perf](../SOURCE.md#§13--mobile-perf-rules)
 
@@ -47,7 +47,7 @@ export function SectionMeta({ eyebrow }: { eyebrow: string })
 ```
 
 - Eyebrow label. Renders OUTSIDE the section frame, above the title.
-- Style: 13px Hanken Grotesk bold uppercase, tracking `0.18em`, color `s-ink-3`, with a 5×5 round bullet `::before` in `s-ink-3`.
+- Style: 11-12px Inter 600 uppercase, tracking `0.08em`, color `s-ink-3`, NO leading dot (CANON §3 eyebrow recipe).
 - Mobile padding: `px-2 mb-2`.
 
 ### `<SectionTitle>`
@@ -61,7 +61,7 @@ export function SectionTitle({
 ```
 
 - H2 + optional inline chevron→arrow link + optional desktop scroll-arrow controls.
-- Style: `font-body text-[clamp(20px,2.2vw,26px)] font-bold leading-[1.2] tracking-[-0.025em] text-s-ink`.
+- Style: `font-body text-[clamp(20px,2.2vw,26px)] font-semibold leading-[1.2] tracking-[-0.025em] text-s-ink` (section H2 weight = 600 per CANON §3, was font-bold/700).
 - **3 modes:**
   - `link` only → mobile + desktop both show inline chevron→arrow on the right.
   - `link + scrollRef` → mobile shows nothing; desktop shows two circle scroll buttons (Airbnb pattern).
@@ -111,7 +111,7 @@ export function FeedZone({ children, className }: { children: React.ReactNode; c
 
 ```
 ─────────────────────────  ← (no rule today; eyebrow handles the visual delineation)
-● BEI DIR ZULETZT         ← SectionMeta — eyebrow w bullet, ABOVE the frame
+BEI DIR ZULETZT           ← SectionMeta — plain eyebrow (no dot), ABOVE the frame
 
 Zuletzt angesehen     →   ← SectionTitle inside SectionFrame; chevron→arrow link
 ┌─────┐ ┌─────┐ ┌─────┐    ← ScrollRow — SalonCards w 12px gap, scroll-snap-x

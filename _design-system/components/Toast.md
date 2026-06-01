@@ -126,8 +126,8 @@ export interface ToastOptions {
 | `default` | (no dot) | — |
 | `success` | `#16A34A` | `s-success` |
 | `error` | `#D32F2F` | `s-error` |
-| `info` | `#1638C4` | `s-accent` — the only place blue appears in toast |
-| `warning` | `#F59E0B` | `s-warning` |
+| `info` | `#276EF1` | `s-accent` — the only place blue appears in toast |
+| `warning` | `#F1AE27` | `s-warning` |
 
 The 10 px dot is the entire color signal. Body never tints — keeps the toast register quiet and uniform.
 

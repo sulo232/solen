@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FROST_GLASS } from "@/lib/frost-glass";
 
 /**
  * SalonCard heart toggle — V3 (LIVE_TRUTH §16.3.3).
@@ -82,16 +83,10 @@ export function HeartButton({
       >
         <span
           aria-hidden
-          style={{
-            // V2-D60-cards / V3-D72: frosted-glass circle wrapper around heart.
-            // V3-D72 spec: 80% white + 4px backdrop blur + 1px white inner border.
-            background: "rgba(255, 255, 255, 0.80)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
-            border: "1px solid rgba(255, 255, 255, 0.6)",
-            boxShadow:
-              "0 1px 3px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.4)",
-          }}
+          // V2-D60-cards / V3-D72 / V3-D420: frosted-glass circle wrapper around
+          // heart. Recipe now sourced from the shared FROST_GLASS util (was
+          // re-derived inline) — 80% white + 4px backdrop blur + 1px white border.
+          style={FROST_GLASS}
           className={cn(
             "grid h-7 w-7 place-items-center rounded-full",
             "transition-transform duration-200 ease-glide",

@@ -177,7 +177,7 @@ export default function SalonHero({
                         letterSpacing: "0.06em",
                         padding: "5px 10px",
                         borderRadius: 99,
-                        background: offPeakBadge.tone === "amber" ? "#F3A864" : "#1B4D1B",
+                        background: offPeakBadge.tone === "amber" ? "#F3A864" : "#0A0A0A",
                         color: "#FFFFFF",
                         boxShadow: "0 2px 8px rgba(26,18,9,0.18)",
                       }}

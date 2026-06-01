@@ -66,7 +66,7 @@ It replaces the 40-line manual orchestration of Mobbin queries + Playwright navi
 
 **Mission lock — repeat with every section:**
 
-> Exact copy of Fresha section anatomy, spacing, hierarchy, animations, click states. Only exceptions: Solen primitives (SalonCard / HeartButton / SearchBar / StatusPill / StatusInline / TabPill / MetaDot / Toast / Skeleton / ComingSoon / Step / FAQItem / BentoCard / MarketplaceVisual), tokens (`s-accent #276EF1`, `s-star #FFC32B`, heart `#FF3366`, `s-urgency #9A3412`), fonts (Inter Tight display, Hanken Grotesk body), and CTA discipline (primary CTAs stay `bg-s-ink` per V3-D192-fix lock). Everything else is exact-copy Fresha.
+> Exact copy of Fresha section anatomy, spacing, hierarchy, animations, click states. Only exceptions: Solen primitives (SalonCard / HeartButton / SearchBar / StatusPill / StatusInline / TabPill / MetaDot / Toast / Skeleton / ComingSoon / Step / FAQItem / BentoCard / MarketplaceVisual), tokens (`s-accent #276EF1`, `s-star #FFC32B`, heart `#FF3366`, `s-urgency #9A3412`), fonts (Inter Tight display, Inter body), and CTA discipline (primary CTAs stay `bg-s-ink` per V3-D192-fix lock). Everything else is exact-copy Fresha.
 
 **Anti-pattern this kills:** "screenshot whack-a-mole" (user's V3-D229 → V3-D230 incident). Treating each pasted user screenshot as a new bug, patching the surface delta, missing the structural gap. The skill forces you to see motion + click states + sizes + colors that static screenshots hide. If you find yourself eyeballing — stop, fire the skill, get the spec.
 
@@ -94,8 +94,8 @@ D. Color rules (V3-D197):
    - Primary CTAs stay `bg-s-ink` (V3-D192-fix). Blue accent is small highlight only.
 
 E. Typography (V3-D190/D191/D193):
-   - Display = Inter Tight, weight 800 (Hero H1 + Page H2), 700 (Section H2). Tracking -0.03em.
-   - Body = Hanken Grotesk, weight 300 (body + meta), 500 (card names + sub), 600 (semibold). NEVER 400 default — explicit weights.
+   - Display = Inter Tight, weight 700 (Hero H1), 600 (all section + page headings). Tracking -0.02em. NEVER 800 (V3-D325/D327).
+   - Body = Inter, weight 400 (body + meta, the default), 500 (card names + sub), 600 (semibold). V3-D410: Inter 400 reads solid; Hanken + the 300 default are retired.
 
 F. Iconography (V3-D203):
    - Lucide icons ONLY. No emoji. No Phosphor, no Heroicons, no custom SVG.
@@ -149,10 +149,10 @@ INTENTIONAL DEVIATIONS (so verifier doesn't flag them)
 These differ from Fresha by design — verifier should NOT flag them as gaps:
 
 - Display font is Inter Tight (Fresha uses a different sans). Don't flag.
-- Body font is Hanken Grotesk 300 (Fresha is heavier). Don't flag.
+- Body font is Inter 400 (Fresha differs). Don't flag.
 - Primary CTAs are `bg-s-ink` (Fresha uses green). Don't flag.
 - Accent color is `#276EF1` blue (Fresha green for accent moments). Don't flag.
-- Eyebrows + section bullets are `text-s-accent` (Fresha doesn't have this pattern). Don't flag.
+- Eyebrows are plain ink text (`text-s-ink-3`), with NO accent and NO leading bullet (V3-D330/D331). Accent `#276EF1` is functional-only: focus rings, spinner, input fields. Don't flag.
 - Star rating uses yellow `#FFC32B` (universal convention — Fresha also yellow, so match).
 
 [Add more if your route has specific deviations]

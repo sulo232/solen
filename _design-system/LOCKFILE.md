@@ -149,7 +149,7 @@ mono:    ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"]
 | **Page H2** (section titles on /business) | 22px | 26px | 600 | 1.2 | -0.015em | display |
 | **Section H2** (homepage / PDP section heading) | 18px | 20px | 600 | 1.25 | -0.01em | display |
 | **Subsection H3** (card name in BentoCard) | 16px | 18px | 600 | 1.3 | -0.01em | display |
-| **Eyebrow** (uppercase small caps over sections) | 11px | 12px | 600 | — | 0.16em | body |
+| **Eyebrow** (uppercase small caps over sections) | 11px | 12px | 600 | — | 0.08em | body |
 | **Body large** (sub-headlines, lead text) | 14px | 16px | 400 | 1.4 | -0.015em | body |
 | **Body** (default paragraph) | 14px | 15px | 400 | 1.55 | normal | body |
 | **Body small** (meta rows, secondary) | 13px | 14px | 400 | 1.4 | normal | body |
@@ -171,7 +171,7 @@ Hero sub:     text-[clamp(16px,4vw,22px)]      font-normal leading-[1.3] trackin
 Page H2:      text-[clamp(22px,2.8vw,26px)]    font-semibold leading-[1.2] tracking-[-0.015em]
 Section H2:   text-[clamp(18px,2vw,20px)]      font-semibold leading-[1.25] tracking-[-0.01em]
 Subsection:   text-[clamp(16px,1.6vw,18px)]    font-semibold leading-[1.3] tracking-[-0.01em]
-Eyebrow:      text-[11px] md:text-[12px]       font-semibold uppercase tracking-[0.16em]
+Eyebrow:      text-[11px] md:text-[12px]       font-semibold uppercase tracking-[0.08em]
 Body:         text-[clamp(14px,3.5vw,16px)]    font-normal leading-[1.55]
 ```
 
@@ -440,7 +440,7 @@ interface StatusPillProps {
   showDot?: boolean;  // default true
   icon?: LucideIcon;  // optional override (e.g. Clock when closed)
 }
-// Open → text-s-success + green dot. Closed → text-s-ink-2 + grey dot.
+// Open → text-s-success + green dot. Closed → text-s-closed (red) + red dot. (V3-D421: was grey.)
 ```
 
 ### StatusInline
@@ -451,7 +451,7 @@ interface StatusInlineProps {
   label: string;  // "Geöffnet · Schliesst um HH:MM" or "Geschlossen · Öffnet Mittwoch um 09:00"
   size?: "sm" | "md" | "lg";  // sm=13, md=15, lg=16
 }
-// Split-color inline. First word "Geöffnet" green / "Geschlossen" amber.
+// Split-color inline. First word "Geöffnet" green / "Geschlossen" red (s-closed, V3-D421).
 // Rest of label in muted ink-2. NO pill chrome.
 ```
 

@@ -36,24 +36,24 @@ export interface FAQItemProps {
 
 ```
 ┌───────────────────────────────────────────────────────────┐
-│  Wie viel kostet Solen?                              ⌄    │  ← summary (15px, 600)
+│  Wie viel kostet Solen?                              ⌄    │  ← summary (15px, 600 Inter)
 └───────────────────────────────────────────────────────────┘
    ↓ click ↓
 ┌───────────────────────────────────────────────────────────┐
 │  Wie viel kostet Solen?                              ⌃    │  ← chevron rotates 180°
 │                                                           │
 │  Kostenlose Anmeldung, keine Setup-Gebühr, keine          │  ← answer body
-│  monatliche Grundgebühr. Du zahlst nur pro vermitteltem   │     (14px, 300)
+│  monatliche Grundgebühr. Du zahlst nur pro vermitteltem   │     (14px, 400)
 │  Termin — fair und transparent.                           │
 └───────────────────────────────────────────────────────────┘
 ```
 
 **Typography (question):**
-- `font-body text-[15px] font-semibold` (Hanken Grotesk 600)
+- `font-body text-[15px] font-semibold` (Inter 600)
 - `text-s-ink`
 
 **Typography (answer):**
-- `font-body text-[14px] font-light leading-[1.55]` (Hanken Grotesk 300)
+- `font-body text-[14px] font-normal leading-[1.55]` (Inter 400 — body default per CANON §3)
 - `text-s-ink-2`
 - `mt-3` (12px gap below question when open)
 

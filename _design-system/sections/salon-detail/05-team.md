@@ -25,7 +25,7 @@ H2 "Team" (Inter Tight 700 clamp 18-23px)
 ## Tokens
 - Avatar ring shadow: `shadow-elevation-1` (V3-D202 — was tinted emerald `rgba(31,92,66,0.10)`)
 - Star: `#FFC32B` (V3-D200 universal yellow)
-- Initial monogram fallback: `font-display 28px md:36px font-black text-s-ink` (Hanken Grotesk → wait that's font-display so Inter Tight) on `bg-white`
+- Initial monogram fallback: `font-display 28px md:36px font-black text-s-ink` (Inter Tight) on `bg-white`
 - Languages: `text-s-ink-3` muted
 
 ## Interaction

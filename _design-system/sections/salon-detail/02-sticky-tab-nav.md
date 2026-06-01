@@ -10,7 +10,7 @@
 - `border-b border-s-border bg-white`
 - Container: `mx-auto w-full max-w-[1180px] px-4 md:px-6`
 - Tab row: `flex gap-6 overflow-x-auto` w hidden scrollbar
-- Each tab: `relative shrink-0 py-3.5 md:py-4 text-[14px] font-semibold` (Hanken)
+- Each tab: `relative shrink-0 py-3.5 md:py-4 text-[14px] font-semibold` (Inter)
 - Active: `text-s-ink` + `<span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-s-ink" />` underline
 - Inactive: `text-s-ink-3 hover:text-s-ink`
 

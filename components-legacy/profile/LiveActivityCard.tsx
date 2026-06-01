@@ -69,7 +69,7 @@ const REGISTERS = {
   empty: {
     bg: "#ffffff",
     text: "#1A1209",
-    border: "rgba(27, 77, 27,.4)",
+    border: "rgba(10, 10, 10,.4)",
   },
 } as const;
 
@@ -142,7 +142,7 @@ function StandardContent({
   register: "upcoming" | "deal" | "reply" | "rebook";
 }) {
   // Eyebrow color shifts by register: amber on dark gradient, coral on light bg
-  const eyebrowColor = register === "deal" ? "#F3A864" : register === "upcoming" ? "rgba(255,255,255,.85)" : "#0F3010";
+  const eyebrowColor = register === "deal" ? "rgba(255,255,255,.70)" : register === "upcoming" ? "rgba(255,255,255,.85)" : "#0F3010";
 
   return (
     <div className="flex items-start justify-between gap-3">

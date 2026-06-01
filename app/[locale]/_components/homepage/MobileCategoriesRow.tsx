@@ -88,7 +88,7 @@ export default function MobileCategoriesRow({
                     group-active:scale-[0.97] group-active:duration-[80ms]
                     ${isPick
                       ? "bg-white border-[1.5px] border-s-ink"
-                      : "bg-[#F3F3F3] group-hover:bg-[#EFEFEF]"}
+                      : "bg-s-bg-sunken group-hover:bg-s-border"}
                   `}
                 >
                   {isPick && (

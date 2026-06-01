@@ -62,7 +62,7 @@
     --color-hover-bg: #F5F5F4;    /* s-bg-sunken */
     --color-error: #D32F2F;
     --color-success: #16A34A;
-    --color-warning: #F3A864;     /* s-amber */
+    --color-warning: #F1AE27;     /* s-warning, the amber twin (V3-D421) */
 
     /* V3-D138 (2026-05-25): substrate reset pure white #FFFFFF per Spotify-
        style palette swap. Accent #1DB954 reserved for CTA + logo dot only
@@ -103,7 +103,7 @@
 
   /* Tailwind v3 preflight defaults `border-color` to gray-200 (#e5e7eb — cool grey).
      Override globally so any `.border` without an explicit color uses our warm
-     `--color-border` (#EFE7DD). Eliminates rgb(229,231,235) drift from computed styles. */
+     `--color-border` (#E7E5E4). Eliminates rgb(229,231,235) drift from computed styles. */
   *, ::before, ::after {
     border-color: var(--color-border);
   }

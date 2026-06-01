@@ -1,7 +1,7 @@
 /**
  * StatusInline — V3-D232 (2026-05-27, extracted from SalonSidebar for reuse).
  *
- * Split-color inline open/closed status. Word in s-success/s-urgency,
+ * Split-color inline open/closed status. Word in s-success/s-closed,
  * time detail in muted ink. Replaces StatusPill in surfaces where the
  * pill chrome (background + radius) is too heavy (Fresha pattern —
  * inline text, no pill).
@@ -17,7 +17,7 @@
  * Split on the first " · " to isolate the leading word.
  *
  * Layer 3 semantic UI (color carries meaning — universal-color convention:
- * success=green, warning/urgency=amber).
+ * success=green, closed=red s-closed #DC2626, V3-D421).
  */
 import { cn } from "@/lib/utils";
 

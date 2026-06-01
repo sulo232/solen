@@ -2,7 +2,10 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { TAB_SECTIONS, type TabKey } from "./_shared";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Share } from "lucide-react";
+import { HeartButton } from "../homepage/HeartButton";
+import { TAB_SECTIONS, type TabKey, type SalonDetail } from "./_shared";
 import { cn } from "@/lib/utils";
 
 /**
@@ -24,10 +27,21 @@ import { cn } from "@/lib/utils";
 export function SalonStickyTabNav({
   availableSections,
   scrollAnchorRef,
+  salon,
 }: {
   availableSections: Set<TabKey>;
   scrollAnchorRef: React.RefObject<HTMLElement | null>;
+  salon: SalonDetail;
 }) {
+  const router = useRouter();
+  // V3-D421 (Hero B): share action mirrors SalonHero's, for the mobile scroll-header.
+  const shareSalon = React.useCallback(() => {
+    if (typeof navigator !== "undefined" && navigator.share) {
+      navigator.share({ title: salon.name, url: window.location.href }).catch(() => {});
+    } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href).catch(() => {});
+    }
+  }, [salon.name]);
   const [activeTab, setActiveTab] = React.useState<TabKey>("photos");
   const [visible, setVisible] = React.useState(false);
 
@@ -161,6 +175,31 @@ export function SalonStickyTabNav({
       )}
     >
       <div className="mx-auto w-full max-w-[1180px] px-4 md:px-6">
+        {/* V3-D421 (Hero B): mobile scroll-header — back + salon name + share/heart, above the
+            tabs. The hero's own floating icons scroll away above this; on desktop the global
+            site header carries these, so the row is mobile-only. */}
+        <div className="flex items-center gap-3 py-2 md:hidden">
+          <button
+            type="button"
+            aria-label="Zurück"
+            onClick={() => router.back()}
+            className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95"
+          >
+            <ArrowLeft size={20} strokeWidth={2.2} aria-hidden />
+          </button>
+          <span className="min-w-0 flex-1 truncate font-display text-[16px] font-semibold tracking-[-0.01em] text-s-ink">
+            {salon.name}
+          </span>
+          <button
+            type="button"
+            aria-label="Salon teilen"
+            onClick={shareSalon}
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95"
+          >
+            <Share size={18} strokeWidth={2.1} aria-hidden />
+          </button>
+          <HeartButton salonId={salon.id} salonName={salon.name} className="!relative !right-auto !top-auto" />
+        </div>
         <div className="flex gap-6 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {tabs.map((t) => (
             <button

@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { X, Star, Users, Check } from "lucide-react";
+import { X, Star, Users } from "lucide-react";
+import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
 import { motion } from "framer-motion";
 import StaffProfilePage from "@/components-legacy/staff/StaffProfilePage";
 import type { StaffMember } from "@/lib/types";
@@ -58,22 +59,18 @@ export default function StaffListSheet({
         <button
           type="button"
           onClick={() => pick("any")}
-          className={`mb-3 flex w-full items-center gap-3.5 rounded-2xl border-2 p-3 text-left transition-colors ${
-            selectedStaff === "any" ? "border-s-ink" : "border-s-ink/[0.08]"
-          }`}
+          className="mb-3 flex w-full items-center gap-3.5 rounded-2xl border border-s-ink/[0.08] p-3 text-left transition-colors"
         >
-          <span className="grid h-[60px] w-[60px] shrink-0 place-items-center rounded-full bg-s-bg-sunken">
-            <Users size={20} className="text-s-ink-2" strokeWidth={2} />
+          <span className="relative shrink-0">
+            <span className="grid h-[60px] w-[60px] place-items-center rounded-full bg-s-bg-sunken">
+              <Users size={20} className="text-s-ink-2" strokeWidth={2} />
+            </span>
+            <SelectedCheckBadge selected={selectedStaff === "any"} size={20} />
           </span>
           <span className="min-w-0 flex-1">
             <span className="block text-[16px] font-semibold text-s-ink">Keine Präferenz</span>
             <span className="block text-[13px] text-s-ink-2">Maximale Verfügbarkeit</span>
           </span>
-          {selectedStaff === "any" && (
-            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-s-ink">
-              <Check size={15} strokeWidth={2.5} className="text-white" />
-            </span>
-          )}
         </button>
 
         {/* Staff rows */}
@@ -86,9 +83,7 @@ export default function StaffListSheet({
             return (
               <div
                 key={s.id}
-                className={`flex items-center gap-3.5 rounded-2xl border p-3 ${
-                  selectedStaff === s.id ? "border-2 border-s-ink" : "border border-s-ink/[0.08]"
-                }`}
+                className="flex items-center gap-3.5 rounded-2xl border border-s-ink/[0.08] p-3"
               >
                 <div className="relative shrink-0">
                   <div className="grid h-[60px] w-[60px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken">
@@ -104,6 +99,7 @@ export default function StaffListSheet({
                       <span className="text-[11px] font-semibold leading-none tabular-nums text-s-ink">{rating.toFixed(1)}</span>
                     </span>
                   )}
+                  <SelectedCheckBadge selected={selectedStaff === s.id} size={20} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[16px] font-semibold text-s-ink">{s.name}</div>

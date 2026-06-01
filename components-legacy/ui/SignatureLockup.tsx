@@ -75,7 +75,7 @@ const EYEBROW_HEX: Record<EyebrowTone, string> = {
   // Default for section eyebrows — `.sec-eye` in reference uses coral text variant
   coral: "#0F3010",
   // Hero eyebrow — `.hero-eyebrow` in reference uses amber (line 114)
-  amber: "#F3A864",
+  amber: "#6B6B6B",
 };
 
 interface SignatureLockupProps {
@@ -145,7 +145,7 @@ export default function SignatureLockup({
         {accentLine && (
           <>
             <br />
-            <span style={{ color: "#F3A864" }}>{accentLine}</span>
+            <span style={{ color: "#6B6B6B" }}>{accentLine}</span>
           </>
         )}
       </Heading>

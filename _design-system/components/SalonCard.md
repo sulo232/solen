@@ -134,7 +134,7 @@ The card itself doesn't define a save heart pop — that lives in [HeartButton.m
 | Case | Behavior |
 |---|---|
 | `name` is `undefined` or empty | Renders "?" initial in monogram tile (V2-D67-fu13 defensive guard, line 404). Prevents homepage crash on stale localStorage entries. |
-| `photoUrl` is `undefined` | Falls back to category-color tile with name initial in Bricolage Black 64px (mobile) / 80px (desktop). Background color: `cardCategoryColors[category].bg` (paired-color identity). |
+| `photoUrl` is `undefined` | Falls back to category-color tile with name initial in Inter Tight Black 64px (mobile) / 80px (desktop). Background color: `cardCategoryColors[category].bg` (paired-color identity). |
 | `rating` is `null` | Row 1 renders `—` em-dash next to star. Star icon still renders (yellow `#FFC32B`). |
 | `nextSlotLabel` AND `priceFromCHF` both `null` | Row 3 renders empty (just whitespace from the `<div>`). Card height unchanged. |
 | `discountPercent` and `curation` both passed | Discount badge wins. Curation silently dropped. |

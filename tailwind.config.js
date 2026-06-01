@@ -79,12 +79,12 @@ module.exports = {
         // (`bg-s-coral/10`, `bg-s-coral/[0.06]`) correctly on plain-hex tokens.
         // To revert: delete these 7 lines + accept dashboard returns to broken state.
         "s-coral":        "#0A0A0A",  // was CTAs / active state / brand → alias to s-ink (B&W pivot)
-        "s-amber":        "#F59E0B",  // was warnings → alias to s-warning DEFAULT
-        "s-blue":         "#185CE0",  // was info chips / category-color → alias to s-accent DEFAULT
+        "s-amber":        "#F1AE27",  // was warnings → alias to s-warning DEFAULT
+        "s-blue":         "#276EF1",  // was info chips / category-color → alias to s-accent DEFAULT
         "s-plum":         "#6B6B6B",  // was secondary highlight → alias to s-ink-2
         "s-sand":         "#F5F5F4",  // was muted bg surface → alias to s-bg.sunken
-        "s-amber-subtle": "#FFF3E0",  // was warning pastel bg → alias to s-warning.bg
-        "s-amber-text":   "#F59E0B",  // was warning text → alias to s-warning DEFAULT
+        "s-amber-subtle": "#FDF6E7",  // was warning pastel bg → alias to s-warning.bg
+        "s-amber-text":   "#906309",  // was warning text → alias to s-warning DEFAULT
         // Section tints — values updated to fit Little Amps cream/dusty-blue palette
         // (V3-D120 removed bg-tint usage from homepage; tokens kept for back-compat).
         "s-wasabi":  "#F6EDE3",  // cream — was warm ivory (V3-D119), was green-yellow (V3-D107)
@@ -168,7 +168,7 @@ module.exports = {
         // hue-matched text on .soft backgrounds.
         "s-love":     { DEFAULT: "#CC4A60", soft: "#FAD2DA", deep: "#A23548" },
         "s-success": { DEFAULT: "#16A34A", bg: "#E8F5E9" },
-        "s-warning": { DEFAULT: "#F59E0B", bg: "#FFF3E0", text: "#B45309" },  // V3: aligned to LIVE_TRUTH §3 hex. `.text` = readable amber for text-on-pale (V3-D347 dashboard)
+        "s-warning": { DEFAULT: "#F1AE27", bg: "#FDF6E7", text: "#906309" },  // V3-D421: the "amber twin" of s-accent (Uber-blue HSL S+L, hue rotated to 40deg) so warning is cohesive with the accent. .text = deep amber for text-on-pale.  // V3: aligned to LIVE_TRUTH §3 hex. `.text` = readable amber for text-on-pale (V3-D347 dashboard)
         // V3-D347 — operator-dashboard CALENDAR service palette (vibrant, dashboard-only per LOCKFILE §12). Store-defined service types; NO makeup.
         "s-cal": { hair: "#2563EB", color: "#EC4899", nails: "#8B5CF6", spa: "#10B981", barber: "#F97316" },
         "s-error":   { DEFAULT: "#D32F2F", bg: "#FFEBEE" },  // V3: aligned to LIVE_TRUTH §3 hex
@@ -207,7 +207,8 @@ module.exports = {
         //     explicitly need the punchier hit (CTAs at large sizes, etc.)
         // The "deep" hex is now the DEFAULT; "deep" alias kept as itself for
         // backward compat with existing callsites that use s-accent-deep.
-        "s-accent":   { DEFAULT: "#185CE0", deep: "#185CE0", bright: "#276EF1", pale: "#EAEFFE" },
+        // V3-D421 (2026-06-01): DEFAULT reverted #185CE0 -> #276EF1 (Uber's exact blue, verified vs Uber brand palette). Accent is functional-only now (focus ring / spinner / input per CANON.md), so the old "blue text vibrates" reason for deepening is moot; #276EF1 = 4.6:1 on white (passes AA). Split collapsed: DEFAULT = deep = bright.
+        "s-accent":   { DEFAULT: "#276EF1", deep: "#276EF1", bright: "#276EF1", pale: "#EAEFFE" },
       },
       fontFamily: {
         // V3-D190 (2026-05-26): Inter Tight (display) — supersedes V3-D75

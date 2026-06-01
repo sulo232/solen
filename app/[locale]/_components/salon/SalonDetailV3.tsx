@@ -216,6 +216,7 @@ export function SalonDetailV3() {
       <SalonStickyTabNav
         availableSections={availableSections}
         scrollAnchorRef={heroRef}
+        salon={salon}
       />
 
       {/* V2-D53.3 (reverted layout): hero is FULL-WIDTH above the body grid

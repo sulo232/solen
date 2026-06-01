@@ -13,7 +13,7 @@ The single canonical "save" interaction primitive. Used on every salon-shaped su
 
 Two variants live in the codebase:
 
-1. **`HeartButton`** (this file) — 44×44 hit area + 32×32 visible glass circle. Used on `SalonCard` and any surface where the 44px hit zone fits.
+1. **`HeartButton`** (this file) — 44×44 hit area + 28×28 visible glass circle. Used on `SalonCard` and any surface where the 44px hit zone fits.
 2. **`SaveHeart`** (private to `FeaturedStylists`) — 28×28 compact variant for the 72px stylist photo. See [HeartButton.md#variants](#variants).
 
 If you need a third variant, ask in [QUESTIONS.md](../QUESTIONS.md) — don't clone-and-tweak.
@@ -47,7 +47,7 @@ export function HeartButton({
 ```
 ┌────────────────┐
 │                │
-│      ◯  ←─── 32×32 frosted-glass circle (80% white + 4px backdrop blur)
+│      ◯  ←─── 28×28 frosted-glass circle (80% white + 4px backdrop blur)
 │   ♡           │
 │                │   The 44×44 invisible button hit area extends beyond the
 │                │   glass circle in all directions. The button is transparent;
@@ -55,8 +55,8 @@ export function HeartButton({
 ```
 
 **Default (unsaved):**
-- Heart icon: `lucide-react` Heart, size 18, strokeWidth 2.25, stroke `var(--color-heading)` (ink).
-- Inner span: 32×32, `rounded-full`, white-glass at 80% alpha + 4px backdrop-blur + 1px white inner border + soft 0/1/3 black drop-shadow + inset 0/1/0 white highlight.
+- Heart icon: `lucide-react` Heart, size 16, strokeWidth 2.25, stroke `var(--color-heading)` (ink).
+- Inner span: 28×28, `rounded-full`, white-glass at 80% alpha + 4px backdrop-blur + 1px white inner border + soft 0/1/3 black drop-shadow + inset 0/1/0 white highlight.
 
 **Saved:**
 - Heart icon: fill `#FF3366` (universal `--heart-active`, V3-D103). No stroke.
@@ -68,8 +68,8 @@ export function HeartButton({
 **Geometry locks:**
 
 - Outer button: `h-11 w-11` (44×44). Position `absolute right-[2px] top-[2px]`. Background `bg-transparent`.
-- Inner glass: `h-8 w-8` (32×32), `rounded-full`. Centered via `grid place-items-center`.
-- Heart icon: `size={18}` (18px lucide spec), `strokeWidth={2.25}`.
+- Inner glass: `h-7 w-7` (28×28), `rounded-full`. Centered via `grid place-items-center`.
+- Heart icon: `size={16}` (16px lucide spec), `strokeWidth={2.25}`.
 
 ---
 
@@ -95,7 +95,7 @@ The pop-only-on-save is intentional: saves are the celebratory action; unsaves a
 | `aria-live="polite"` (sr-only span) | `"{salonName} gespeichert"` or `"{salonName} entfernt"` | Confirms save to screen-reader users without blocking focus |
 | Focus ring | `focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-full` | 2px ink outline matches [§16 focus ring](../SOURCE.md#§16--accessibility-rules) (pending [Q5](../QUESTIONS.md#q5) for color confirm) |
 
-**Hit area:** 44×44 — meets WCAG 2.5.5 ideal. The 32×32 visible glass + ~6px halo of invisible padding gives mis-tap forgiveness without enlarging the visual footprint.
+**Hit area:** 44×44 — meets WCAG 2.5.5 ideal. The 28×28 visible glass + ~8px halo of invisible padding gives mis-tap forgiveness without enlarging the visual footprint.
 
 **Event handling:**
 
@@ -109,7 +109,7 @@ The pop-only-on-save is intentional: saves are the celebratory action; unsaves a
 
 - Pass `salonName` always — it powers both the aria-label AND the announcement live region. Empty string makes the heart invisible to screen readers.
 - Pass `className="text-white/85"` when the parent photo is dark (spa cat). Heart stroke inherits via currentColor.
-- Trust the 44px hit area — don't add `pointer-events-auto` or wrappers thinking it's too small. It IS 44px (the inner glass just looks like 32px).
+- Trust the 44px hit area — don't add `pointer-events-auto` or wrappers thinking it's too small. It IS 44px (the inner glass just looks like 28px).
 
 ### Don't
 
@@ -130,14 +130,14 @@ Lives in [FeaturedStylists.tsx:243](../../app/[locale]/_components/homepage/Feat
 - Hit area: 32×32 (just under WCAG 44px ideal — acceptable trade-off for 72px avatar).
 - Visible glass: 32×32 (entire button is the glass, no inner-vs-outer split).
 - Position: `-right-1 -top-1` (slight overflow off photo corner for "applied sticker" feel).
-- Heart size: 14px (smaller than 18px).
+- Heart size: 14px (smaller than the main 16px).
 - Border: `border border-white/60` (visible white ring; HeartButton's main variant uses an inset).
 
 **When to use SaveHeart over HeartButton:**
 
 | Photo size | Use |
 |---|---|
-| ≥160px (SalonCard, search results) | `HeartButton` (44×44 hit area, 32×32 glass) |
+| ≥160px (SalonCard, search results) | `HeartButton` (44×44 hit area, 28×28 glass) |
 | 72-100px (FeaturedStylists, dense lists) | `SaveHeart` (32×32 hit, 32×32 glass) |
 | <72px | Probably wrong — surface a card-shaped wrapper instead |
 
@@ -160,7 +160,7 @@ Lives in [FeaturedStylists.tsx:243](../../app/[locale]/_components/homepage/Feat
 - **V2-D43** (Emil polish) — popKey re-mount pattern for spring-feel heart-pop animation.
 - **V2-D52** Tier 1 #15 — `salonId` prop added for future `/api/favorites/toggle` wiring.
 - **V3-D72** (2026-05-18) — frosted-glass circle wrapper spec finalized: 80% white + 4px backdrop-blur + 1px white inner border.
-- **V3-D73** (2026-05-18) — touch-target expansion: 44×44 hit area + 32×32 visible glass. Hover/focus/active states scale the inner glass, not the outer button.
+- **V3-D73** (2026-05-18) — touch-target expansion: 44×44 hit area + visible glass circle. Hover/focus/active states scale the inner glass, not the outer button. (Glass circle is 28×28 + 16px icon per CANON 2026-06-01; the V3-D73-era 32×32/18px values were tightened.)
 - **V3-D103** (2026-05-23) — saved fill aligned to universal `--heart-active` `#FF3366` (was held over at V2 muted `#CC4A60`).
 
 ---

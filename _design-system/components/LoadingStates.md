@@ -90,8 +90,8 @@ Or via Tailwind utility once `<Skeleton>` primitive is built (see [Q14](../QUEST
               │   icon  │      ← lucide icon (32-48px), text-s-ink-3
               └────────┘
 
-         Headline copy here       ← Bricolage Bold 18px, text-s-ink
-       One-line explanation       ← Hanken 14px, text-s-ink-2
+         Headline copy here       ← Inter Tight 600, 18px, text-s-ink
+       One-line explanation       ← Inter 14px, text-s-ink-2
 
        [   Primary action    ]    ← optional CTA, bg-s-ink, rounded-full
 ```
@@ -134,9 +134,9 @@ Or via Tailwind utility once `<Skeleton>` primitive is built (see [Q14](../QUEST
               │   ⚠️    │      ← AlertCircle (lucide), 32-48px, text-s-ink-3
               └────────┘
 
-      Etwas ist schiefgelaufen.   ← Bricolage Bold 18px, text-s-ink
+      Etwas ist schiefgelaufen.   ← Inter Tight 600, 18px, text-s-ink
       [retry-specific explanation]
-                                  ← Hanken 14px, text-s-ink-2
+                                  ← Inter 14px, text-s-ink-2
 
        [    Nochmal versuchen   ]  ← Primary action: retry
        Hilfe →                     ← Secondary: navigate to /help

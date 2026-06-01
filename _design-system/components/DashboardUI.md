@@ -20,7 +20,7 @@ The five reusable building blocks every dashboard route recomposes. Built fresh 
 
 ## Visual signature
 
-White surfaces on `bg-s-bg-sunken` page, `border-s-border` hairlines, `rounded-card-lg` (20px) cards, Geist. **Vibrant skin (V3-D347, LOCKFILE §12):** accent-blue `#276EF1` (`s-accent.bright`) is the PRIMARY for active nav + primary buttons; status/charts use the universal semantics at full saturation; status pills use saturated semantic TEXT (not ink). Star = `text-s-star`. Dashboard-only — the customer-facing site stays B&W.
+White surfaces on `bg-s-bg-sunken` page, `border-s-border` hairlines, `rounded-card-lg` (20px) cards, Inter Tight headings + Inter body (NEVER Geist). **Vibrant skin (V3-D347, LOCKFILE §12):** accent-blue `#276EF1` (`s-accent.bright`) is the PRIMARY for active nav + primary buttons; status/charts use the universal semantics at full saturation; status pills use saturated semantic TEXT (not ink). Star = `text-s-star`. Dashboard-only — the customer-facing site stays B&W.
 
 ## Do / Don't
 
