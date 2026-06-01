@@ -64,3 +64,13 @@
   2. `Entdecken.tsx` now fetches `/api/discovery/feed?category=hair&limit=8` on mount, falls back to DEMO if 0 items or error. IntersectionObserver re-attaches when looks swap in.
   3. New `app/api/discovery/thumb/[id]/route.ts` proxy — DB lookup → TikTok oEmbed → image fetch → pipe back with `Cache-Control: public, max-age=3600, stale-while-revalidate=86400`. Solves the signed-URL expiry for every consumer (homepage + any future caller).
 - **Known follow-ups**: the `/discover` detail page (`/de/entdecken/[id]`) still reads raw `tiktok_thumbnail_url` via `VideoCard` — same expiry bug applies there. If detail-page thumbnails go dead, point `VideoCard` at the new `/api/discovery/thumb/[id]` proxy too.
+
+---
+
+## Future: SMS + email notifications (flagged 2026-06-01 by user — NOT built)
+**SMS is not wired** — there is no provider integration (Twilio / MessageBird / etc.). The `/api/bookings/walk-in` route *references* sending an SMS link but no real SMS is sent. Email exists (`lib/email`) for booking confirmations only.
+Future scope (own folder/epic):
+- **SMS provider integration**: booking confirmations, walk-in ticket issued + "du bist als Nächstes dran" alerts, reminders, no-show warnings.
+- **Email parity + lifecycle**: walk-in ticket/queue emails, reschedule / cancel / no-show / review-request emails (currently only the confirmation exists).
+- Per-channel user preferences + opt-out (DSG/GDPR).
+- Decision: transactional provider (Resend already? for email) + an SMS provider; gate behind salon plan tier?
