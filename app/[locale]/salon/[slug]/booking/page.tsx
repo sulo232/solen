@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { createAdminSupabaseClient } from '@/lib/supabase';
+import { createAdminSupabaseClient, getSessionUser } from '@/lib/supabase';
 import { BookingProvider } from '@/lib/booking-context';
 import { BookingWizard } from '@/components-legacy/booking';
 import BookingExitButton from '@/components-legacy/booking/BookingExitButton';
@@ -31,6 +31,12 @@ export default async function BookingSalonPage({
   const { staff: staffParam, service: serviceParam, start: startParam } = await searchParams;
   const supabase = createAdminSupabaseClient();
   const t = await getTranslations({ locale, namespace: 'booking' });
+
+  // SP-1: surface logged-in state to the client so PayConfirmStep can show the guest form to
+  // logged-out visitors. The page reads the session server-side (no network call) and passes a
+  // single boolean down. The booking data above stays on the admin client (it's public salon data).
+  const { user } = await getSessionUser();
+  const isLoggedIn = Boolean(user);
 
   // Fetch salon
   const { data: salon, error: salonError } = await supabase
@@ -157,6 +163,7 @@ export default async function BookingSalonPage({
             staffServices={staffServices}
             serviceAddons={serviceAddons}
             serviceOptions={serviceOptions}
+            isLoggedIn={isLoggedIn}
           />
         </main>
       </div>

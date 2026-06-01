@@ -1,88 +1,31 @@
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
+export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminSupabaseClient } from "@/lib/supabase";
-import { getStripe, toRappen } from "@/lib/stripe";
 import { getServerEnv } from "@/lib/env";
 
 /**
- * Cron: Late cancellation fee processor
- * Runs every 30 minutes. Checks for bookings cancelled within the salon's
- * cancellation_hours window and charges the late_cancel_fee_percent.
+ * RETIRED (SP-AC §B4, REFUND_APPEAL_PLAN.md).
  *
- * Only applies to bookings that had a Stripe PaymentIntent (prepay/deposit modes).
+ * This cron is a no-op. It previously read four columns that DO NOT EXIST on the live
+ * `salons`/`bookings` tables (`cancellation_hours`, `late_cancel_fee_percent`,
+ * `payment_mode`, `late_fee_charged`) under an auth-and-hold capture model, so it was a
+ * dead no-op already. The late-cancellation fee is now handled by the ON-CANCEL HOOK
+ * inside app/api/bookings/[id]/cancel/route.ts (off-session charge of the SP-G2 saved
+ * card via lib/bookings/charge-fee.ts), per the canonical cancellation_fee_type/value +
+ * free_cancel_hours policy. Running this route alongside the on-cancel hook would risk a
+ * DOUBLE-CHARGE, so it is intentionally inert.
+ *
+ * Kept as a 200 no-op (rather than deleted) so the existing cron-jobs.yml ping does not
+ * 404; the orchestrator may drop /api/cron/late-cancel from the every-30-min `paths`
+ * list and delete this file. The fee_charge_status CAS in chargeFee is the backstop even
+ * if both ever run.
  */
 export async function GET(req: NextRequest) {
-  // Verify cron secret
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
   if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const admin = createAdminSupabaseClient();
-
-  // Find recently cancelled bookings that:
-  // 1. Were cancelled within the cancellation window (late cancel)
-  // 2. Have not been charged a late fee yet
-  // 3. Have a stripe_payment_intent_id
-  const { data: lateCancels, error } = await admin
-    .from("bookings")
-    .select("id, salon_id, price_paid, stripe_payment_intent_id, cancelled_at, starts_at, salons(cancellation_hours, late_cancel_fee_percent, payment_mode)")
-    .eq("status", "cancelled")
-    .eq("late_fee_charged", false)
-    .not("stripe_payment_intent_id", "is", null)
-    .not("cancelled_at", "is", null);
-
-  if (error || !lateCancels?.length) {
-    return NextResponse.json({ processed: 0, message: error?.message ?? "No late cancellations found" });
-  }
-
-  let processed = 0;
-  const stripe = getStripe();
-
-  for (const booking of lateCancels) {
-    try {
-      const salon = (booking as any).salons;
-      if (!salon || salon.payment_mode === "at_salon") continue;
-
-      const cancellationHours = salon.cancellation_hours ?? 24;
-      const lateFeePercent = salon.late_cancel_fee_percent ?? 50;
-
-      const cancelledAt = new Date(booking.cancelled_at!);
-      const startsAt = new Date(booking.starts_at);
-      const hoursBeforeStart = (startsAt.getTime() - cancelledAt.getTime()) / (1000 * 60 * 60);
-
-      // Only charge if cancelled within the cancellation window
-      if (hoursBeforeStart >= cancellationHours) continue;
-
-      // Calculate fee
-      const feeAmount = Math.round(booking.price_paid * (lateFeePercent / 100) * 100) / 100;
-      if (feeAmount <= 0) continue;
-
-      // Capture the fee from the held PaymentIntent
-      const pi = await stripe.paymentIntents.retrieve(booking.stripe_payment_intent_id!);
-
-      if (pi.status === "requires_capture") {
-        // Capture only the fee amount (partial capture)
-        await stripe.paymentIntents.capture(booking.stripe_payment_intent_id!, {
-          amount_to_capture: toRappen(feeAmount),
-        });
-      }
-      // If already captured (prepay mode), no additional charge needed
-
-      // Mark as charged
-      await admin
-        .from("bookings")
-        .update({ late_fee_charged: true, late_fee_amount: feeAmount })
-        .eq("id", booking.id);
-
-      processed++;
-    } catch (err) {
-      console.error(`[late-cancel] Failed to process booking ${booking.id}:`, err);
-    }
-  }
-
-  return NextResponse.json({ processed, total: lateCancels.length });
+  return NextResponse.json({ processed: 0, retired: true });
 }

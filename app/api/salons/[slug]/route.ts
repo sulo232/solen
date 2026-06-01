@@ -3,6 +3,8 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { autoTranslateDescription } from "@/lib/ai/translate";
+import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
+import { validateBody, salonPolicyUpdateSchema } from "@/lib/validations";
 
 export async function GET(
   _request: NextRequest,
@@ -106,18 +108,40 @@ export async function PATCH(
   }
 
   const body = await request.json();
+  // SP-AC §B5: dropped the four DEAD drifted keys (payment_mode / deposit_percent /
+  // cancellation_hours / late_cancel_fee_percent — columns ABSENT live, writes no-op'd).
+  // Added the canonical no-show fee (no_show_fee_type / no_show_fee_value) alongside the
+  // existing cancellation policy keys.
   const allowed = [
     "name", "address", "phone", "description_de", "description_en",
     "opening_hours", "categories", "cover_photo_url",
     "last_minute_discount_percent", "last_minute_window_hours",
     "accepts_online_payment", "no_show_deposit_amount",
     "cancellation_fee_type", "cancellation_fee_value", "free_cancel_hours",
-    "payment_mode", "deposit_percent", "cancellation_hours", "late_cancel_fee_percent",
+    "no_show_fee_type", "no_show_fee_value",
     "sms_reminder_24h", "sms_reminder_1h",
     "vacation_start", "vacation_end",
     "instagram_url", "facebook_url", "tiktok_url", "website_url",
     "is_top_pick",
   ];
+
+  // SP-AC §B5: validate the policy subset (money-adjacent) with Zod, and gate it behind
+  // the dedicated payment limiter (3/hour) — policy changes drive auto-charges. Only the
+  // policy keys are validated/throttled, so a salon editing its address/hours is unaffected.
+  const POLICY_KEYS = [
+    "cancellation_fee_type", "cancellation_fee_value", "free_cancel_hours",
+    "no_show_fee_type", "no_show_fee_value",
+  ] as const;
+  const touchesPolicy = POLICY_KEYS.some((k) => body[k] !== undefined);
+  if (touchesPolicy) {
+    const rateLimited = await applyRateLimit(paymentLimiter, { userId: user.id });
+    if (rateLimited) return rateLimited;
+
+    const policySubset: Record<string, unknown> = {};
+    for (const k of POLICY_KEYS) if (body[k] !== undefined) policySubset[k] = body[k];
+    const { error: policyErr } = validateBody(salonPolicyUpdateSchema, policySubset);
+    if (policyErr) return NextResponse.json({ error: policyErr.message }, { status: 400 });
+  }
 
   const updates: Record<string, unknown> = {};
   for (const key of allowed) {

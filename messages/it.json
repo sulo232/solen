@@ -3643,7 +3643,8 @@
     "phoneError": "Numero svizzero valido (+41XXXXXXXXX)",
     "emailError": "Email non valida",
     "disclaimer": "* La disponibilità mostrata potrebbe non essere in tempo reale. Il salone confermerà la tua richiesta.",
-    "submit": "Continua al pagamento →"
+    "submit": "Continua al pagamento →",
+    "fillRequired": "Inserisci prima i tuoi dati di contatto."
   },
   "staffPicker": {
     "title": "Scegli membro dello staff",

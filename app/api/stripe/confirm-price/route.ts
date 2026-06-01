@@ -2,8 +2,9 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
-import { stripe, toRappen, PLATFORM_FEE_PERCENT } from "@/lib/stripe";
+import { stripe, toRappen } from "@/lib/stripe";
 import { sendEmail } from "@/lib/email";
+import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { validateBody, confirmPriceSchema } from "@/lib/validations";
@@ -54,7 +55,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const platformFee = Math.round(toRappen(validated.final_price) * PLATFORM_FEE_PERCENT);
+  // Commission rate: configurable platform_settings.commission, with the canonical
+  // DEFAULT_COMMISSION_RATE_PERCENT fallback (same source as every other charge path).
+  // Was a hardcoded 1% (PLATFORM_FEE_PERCENT) that disagreed with the 15% platform
+  // default everywhere else — the silent fee drift billing.ts warns about.
+  const { data: commissionSetting } = await admin
+    .from("platform_settings")
+    .select("value")
+    .eq("key", "commission")
+    .single();
+  const ratePercent = commissionSetting?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
+  const platformFee = Math.round(toRappen(validated.final_price) * (ratePercent / 100));
 
   if (validated.final_price <= (booking.estimated_price ?? 0)) {
     // ── Capture at final price ───────────────────────────────────────────

@@ -1,0 +1,164 @@
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+import { NextRequest, NextResponse } from "next/server";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
+
+// SP-5 Endpoint 1 — Salon-scoped refund/complaint REVIEW QUEUE (list only).
+//
+// The at-a-glance triage view the owner wants: every OPEN case on the salon's
+// own bookings, enriched with the reference_code (order number), the Section 11
+// eligibility hint, the requested amount + the refundable cap. The DECISION
+// itself is NOT here — that already lives in SP-3's salon-review PATCH on
+// `/api/bookings/[id]/report` (approve full/partial / reject + reason). Per the
+// anti-duplication mandate this endpoint never moves money and never transitions
+// a case; it only reads. Money is INTEGER Rappen end-to-end (the FE converts at
+// its boundary).
+//
+// AUTHZ: authenticated SALON OWNER. We resolve the caller's salon(s) via
+// salons.owner_id, reject (403) if the caller owns none, then query with the
+// service-role client filtered to those salon ids — the same gate shape every
+// app/api/dashboard/* route uses, but scoped to ownership, not RLS.
+
+// Default OPEN set surfaced to the salon (active, not-yet-terminal refund cases).
+const DEFAULT_OPEN_STATUSES = ["open", "salon_reviewing", "escalated"];
+const ALLOWED_STATUSES = new Set([
+  "open", "salon_reviewing", "salon_approved", "salon_rejected", "escalated",
+  "admin_approved", "admin_rejected", "refunded", "charged", "void", "closed",
+]);
+
+export async function GET(req: NextRequest) {
+  const supabase = await createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Dedicated money/lookup limiter (§10b.12) — NOT the 30/min generalLimiter.
+  const rateLimited = await applyRateLimit(paymentLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
+
+  const admin = createAdminSupabaseClient();
+
+  // Resolve the caller's salon(s). A user may own more than one.
+  const { data: ownedSalons } = await admin
+    .from("salons")
+    .select("id, name, slug")
+    .eq("owner_id", user.id);
+  if (!ownedSalons || ownedSalons.length === 0) {
+    return NextResponse.json({ error: "No salon" }, { status: 403 });
+  }
+  const salonIds = ownedSalons.map((s) => s.id);
+
+  // Parse filters.
+  const sp = req.nextUrl.searchParams;
+  const statusParam = sp.get("status");
+  let statuses = DEFAULT_OPEN_STATUSES;
+  if (statusParam) {
+    const requested = statusParam.split(",").map((s) => s.trim()).filter(Boolean);
+    const valid = requested.filter((s) => ALLOWED_STATUSES.has(s));
+    if (valid.length > 0) statuses = valid;
+  }
+  const limit = Math.min(Math.max(Number(sp.get("limit")) || 50, 1), 100);
+  const cursor = sp.get("cursor"); // created_at keyset (descending)
+
+  // The salon owns the booking, not the dispute directly — scope through the
+  // booking. We need the booking ids for these salon(s), then the cases on them.
+  // booking_disputes has no salon_id of its own (single source of truth stays on
+  // bookings); the idx_booking_disputes_booking_id + status_created indexes keep
+  // this cheap.
+  const { data: salonBookings, error: bookingErr } = await admin
+    .from("bookings")
+    .select("id, reference_code, starts_at, service_id, user_id, guest_name, guest_email, paid_amount, refunded_amount, salon_id")
+    .in("salon_id", salonIds);
+  if (bookingErr) {
+    console.error("[dashboard/disputes] salon bookings query failed:", bookingErr.message);
+    return NextResponse.json({ error: bookingErr.message }, { status: 500 });
+  }
+  if (!salonBookings || salonBookings.length === 0) {
+    return NextResponse.json({ cases: [], next_cursor: null });
+  }
+  const bookingById = new Map(salonBookings.map((b) => [b.id, b]));
+  const bookingIds = salonBookings.map((b) => b.id);
+
+  // Cases on those bookings, filtered by status, recency-ordered, keyset paginated.
+  let query = admin
+    .from("booking_disputes")
+    .select(
+      "id, booking_id, direction, reason_code, issue_type, eligibility, fast_track_recommended, requested_amount, resolved_amount, status, description, reporter_id, created_at",
+    )
+    .in("booking_id", bookingIds)
+    .in("status", statuses)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (cursor) query = query.lt("created_at", cursor);
+
+  const { data: disputes, error: disputeErr } = await query;
+  if (disputeErr) {
+    console.error("[dashboard/disputes] dispute query failed:", disputeErr.message);
+    return NextResponse.json({ error: disputeErr.message }, { status: 500 });
+  }
+
+  // Resolve customer display names for logged-in reporters in one batch.
+  const reporterIds = Array.from(
+    new Set((disputes ?? []).map((d) => d.reporter_id).filter(Boolean) as string[]),
+  );
+  const nameById = new Map<string, string>();
+  if (reporterIds.length > 0) {
+    const { data: profiles } = await admin
+      .from("profiles")
+      .select("id, display_name")
+      .in("id", reporterIds);
+    for (const p of profiles ?? []) {
+      if (p.display_name) nameById.set(p.id, p.display_name);
+    }
+  }
+
+  // Resolve service names (name_de fallback name_en) in one batch.
+  const serviceIds = Array.from(
+    new Set(salonBookings.map((b) => b.service_id).filter(Boolean) as string[]),
+  );
+  const serviceNameById = new Map<string, string>();
+  if (serviceIds.length > 0) {
+    const { data: services } = await admin
+      .from("services")
+      .select("id, name_de, name_en")
+      .in("id", serviceIds);
+    for (const s of services ?? []) {
+      serviceNameById.set(s.id, s.name_de ?? s.name_en ?? "");
+    }
+  }
+
+  const cases = (disputes ?? []).map((d) => {
+    const b = bookingById.get(d.booking_id);
+    const customerName = d.reporter_id
+      ? nameById.get(d.reporter_id) ?? null
+      : b?.guest_name ?? null;
+    return {
+      id: d.id,
+      booking_id: d.booking_id,
+      reference_code: b?.reference_code ?? null,
+      direction: d.direction,
+      reason_code: d.reason_code,
+      issue_type: d.issue_type,
+      eligibility: d.eligibility,
+      fast_track: d.fast_track_recommended,
+      requested_amount: d.requested_amount,
+      resolved_amount: d.resolved_amount,
+      amount_paid: b?.paid_amount ?? 0,
+      already_refunded: b?.refunded_amount ?? 0,
+      status: d.status,
+      description: d.description,
+      customer_name: customerName,
+      created_at: d.created_at,
+      booking: {
+        starts_at: b?.starts_at ?? null,
+        service_name: b?.service_id ? serviceNameById.get(b.service_id) ?? null : null,
+      },
+    };
+  });
+
+  const nextCursor =
+    cases.length === limit ? cases[cases.length - 1].created_at : null;
+
+  return NextResponse.json({ cases, next_cursor: nextCursor });
+}

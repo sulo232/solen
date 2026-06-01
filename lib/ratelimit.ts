@@ -74,6 +74,16 @@ export const discoveryCommentLimiter = new Ratelimit({ redis, limiter: Ratelimit
 export const discoveryLikeLimiter = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(30, "1 m"), analytics: true, prefix: "rl:disc:like" });
 export const discoveryAdminLimiter = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, "1 m"), analytics: true, prefix: "rl:disc:admin" });
 
+// Guest booking-access surface (SP-2, §10b.12) — dedicated + TIGHT, NOT generalLimiter.
+// This is the enumeration / token-brute-force surface. Keyed by IP (guests have no userId).
+// A legit guest needs 1-2 attempts; 10/10min stops a reference_code scanner cold while not
+// hurting a fat-fingered user. (Token space is 256-bit so brute force is infeasible
+// regardless; the limiter defends the reference_code space + DB load.)
+export const guestLookupLimiter = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, "10 m"), analytics: true, prefix: "rl:guest:lookup" });
+// "Resend my access link" — strictest: resends are rare and abuse-prone (email bombing +
+// code probing). 3/hour per IP.
+export const resendAccessLimiter = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(3, "1 h"), analytics: true, prefix: "rl:guest:resend" });
+
 type RateLimitIdentifier = { ip: string } | { userId: string };
 
 export async function applyRateLimit(

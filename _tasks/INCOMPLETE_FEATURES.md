@@ -97,3 +97,106 @@ Future scope (own folder/epic):
 - **Email parity + lifecycle**: walk-in ticket/queue emails, reschedule / cancel / no-show / review-request emails (currently only the confirmation exists).
 - Per-channel user preferences + opt-out (DSG/GDPR).
 - Decision: transactional provider (Resend already? for email) + an SMS provider; gate behind salon plan tier?
+
+---
+
+## Booking write — two hardening gaps surfaced by G1 (2026-06-01, NOT fixed)
+G1 (the consumer booking contract) is fixed + verified, but two adjacent issues remain:
+- **Double-book race — no DB guard.** `app/api/bookings/route.ts` POST resolves an available slot, inserts the booking, THEN marks the slot booked (check-then-act, no lock). `bookings` has only a PK on `id` — NO unique constraint on `slot_id`. Two concurrent requests for the same slot can both insert. Pre-existing (the legacy slot_id path had the same race; G1 inherits, does not worsen). Fix: a partial unique index `CREATE UNIQUE INDEX ON bookings (slot_id) WHERE status IN ('confirmed','pending_approval')` (DB migration → needs approval per the schema-drift rule), or claim-then-insert with a `.eq("status","available")`-guarded update + rowcount check.
+- **G2 — appointment payment is a no-op.** PayConfirmStep sends `payment_method` + `promo_code` + `gift_card_code` + `total_price`, but `/api/bookings` ignores all of them: it writes `price_paid = slot.price_override ?? service.price` (server-authoritative, good) and never charges Stripe or applies the promo/gift discount. So a booking is created but (a) no money moves and (b) the price the user saw (with discounts) can differ from `price_paid`. Decision needed: deposit / full prepay / auth-hold (like walk-in) / pay-in-store. Until then "online payment" = a free booking.
+
+## Lane A charge-fee commission fallback drifts from canonical 15% (2026-06-01) — ✅ RESOLVED 2026-06-01
+**RESOLVED in the de-hardcode pass.** `lib/bookings/charge-fee.ts` now imports
+`DEFAULT_COMMISSION_RATE_PERCENT` and uses `?? DEFAULT_COMMISSION_RATE_PERCENT` instead of
+`?? 1`. The same fix was applied to the two OTHER divergent sites found in the same sweep:
+`app/api/cron/pre-charge/route.ts` (was `?? 1`) and `app/api/stripe/confirm-price/route.ts`
+(was a hardcoded `PLATFORM_FEE_PERCENT = 0.01` / 1%, now reads `platform_settings.commission`
+with the canonical fallback; the dead `PLATFORM_FEE_PERCENT` const was removed from
+`lib/stripe.ts`). All 11 commission-read sites now share the single canonical default.
+Original report kept below for history:
+
+`lib/bookings/charge-fee.ts` (the cancellation/no-show off-session chokepoint) reads the
+commission rate from `platform_settings.commission.rate_percent` but falls back to a bare
+literal `?? 1` (1%) when the row is absent. The canonical fallback is
+`DEFAULT_COMMISSION_RATE_PERCENT = 15` (`lib/constants/billing.ts`), used by
+`booking-pay-intent`, `create-payment-intent`, and the new upcharge executor
+(`lib/bookings/dispute-engine.ts` `chargeUpcharge`). When `platform_settings.commission`
+is unset, cancellation/no-show fees would take 1% commission while every other charge path
+takes 15% — silent revenue drift (the exact bug `lib/constants/billing.ts` documents it was
+created to kill). NOT changed in this pass to avoid altering live money behavior in the cron
+path without sign-off. Fix: import `DEFAULT_COMMISSION_RATE_PERCENT` in charge-fee.ts and
+replace `?? 1` with it. file:line — lib/bookings/charge-fee.ts ~line 145.
+
+---
+
+## De-hardcode + actor-wiring pass: still-open items (2026-06-01)
+
+### FE online-pay step is mockup-only — NOT wired to Stripe Elements (carried, still open)
+The customer-facing "pay online" step does not collect a real card or confirm a PaymentIntent
+client-side; it is a mockup/placeholder. The full-prepay BACKEND exists (SP-G2:
+`app/api/stripe/booking-pay-intent/route.ts` creates the PI + `application_fee` + Connect
+`transfer_data`; the `payment_intent.succeeded` webhook persists `paid_amount`/`platform_fee`/
+saved-card ids), but the FRONTEND does not mount Stripe Elements (`<PaymentElement>`), confirm
+with `stripe.confirmPayment`, nor handle SCA / 3DS.
+- file:line — `components-legacy/booking/PayConfirmStep.tsx` (sends `payment_method`/`total_price`
+  to `/api/bookings` but no Elements mount); `app/api/bookings/route.ts` POST still writes a
+  booking WITHOUT charging (see the existing "G2 — appointment payment is a no-op" entry above —
+  these are the same gap from the two ends).
+- **Blocker**: FE is owner-policy mockups-first (REFUND_APPEAL_PLAN §12); real Elements wiring is
+  a deliberate post-sign-off build. SP-G2's `booking-pay-intent` route + saved-card columns are
+  the server half waiting for it.
+- **Next step**: mount `<PaymentElement>` in the pay step against a `booking-pay-intent`
+  clientSecret, `confirmPayment` with `return_url`, handle `requires_action`/decline, and switch
+  `/api/bookings` POST to create-then-charge (or charge-then-confirm) instead of a free insert.
+  Tie the displayed (discounted) total to `paid_amount` so they can't diverge.
+
+### quick-action route NOT migrated to resolveBookingActor — intentional (2026-06-01)
+`app/api/bookings/[id]/quick-action/route.ts` was deliberately LEFT on its own auth: it is a
+PUBLIC one-click confirm/cancel link authorized by a signed `BOOKING_HMAC_SECRET` token in the
+URL (email action links), NOT a session. `resolveBookingActor` resolves session/admin/salon +
+the guest *cookie* — it has no notion of the HMAC action token, so wiring it in would BREAK the
+public link (every click would 404/403). Confirm/PATCH/GET/reschedule were migrated; quick-action
+is correctly out of scope.
+- file:line — `app/api/bookings/[id]/quick-action/route.ts:9` (`verifyActionToken`), `:47` (its
+  own gate).
+- **Next step (only if ever unified)**: teach `resolveBookingActor` an optional 5th branch that
+  accepts a validated HMAC action token → a scoped `'link'` actor, then migrate. Low priority;
+  the HMAC path is self-contained and already constant-time + expiring.
+
+### GET /api/bookings/[id] now additionally grants admin + token-guest read (2026-06-01)
+Wiring `resolveBookingActor` into the GET changed read access from "booking owner OR salon owner"
+to "any resolved actor" — which now ALSO lets a platform `admin` and a token-authorized `guest`
+read the booking. For logged-in NON-admin users behavior is identical (owner/salon pass, everyone
+else 403). The added admin-read (platform support) + guest-read (their own booking via the §10b.7
+token) are plan-aligned and intended, but flagged here as a deliberate access-surface change in
+case a stricter GET policy is ever wanted.
+- file:line — `app/api/bookings/[id]/route.ts` GET (~line 33).
+- **Next step**: none required; document-only. If GET must stay owner/salon-only, gate on
+  `actor === 'customer' || actor === 'salon'` instead of `actor !== null`.
+
+### Guest reschedule cannot complete (write path uses the session client) (2026-06-01)
+`reschedule` now authorizes via `resolveBookingActor` (which accepts a token `guest`), but the
+slot free/book + booking-update writes still go through the session-scoped `getSessionUser()`
+supabase client. A guest has no session, so those writes hit RLS and fail even though the actor
+check passed. Acceptable today because the guest reschedule FE is mockup-only, but the auth layer
+now advertises guest support the write layer doesn't honor.
+- file:line — `app/api/bookings/[id]/reschedule/route.ts:~42` (`getSessionUser()` client used for
+  all subsequent writes); `booked_by: userId ?? booking.user_id` is null-safe for guests but the
+  RLS write still fails.
+- **Next step**: when guest reschedule ships, route the slot/booking writes through a service-role
+  (`createAdminSupabaseClient`) client after the resolver proves entitlement, mirroring how
+  cancel/dispute/escalate do their privileged writes.
+
+### D7 refund_application_fee not yet sourced from a settings table (2026-06-01)
+`lib/bookings/refund-config.ts` `getRefundConfig()` resolves the D7 "refund the platform
+commission?" flag from env `REFUND_APP_FEE_DEFAULT` with a documented hardcoded default of `false`
+(keep the commission). The intended source-of-truth — a `platform_settings` row `'refund_policy'`
+(per-reason / global) — is NOT wired because the `platform_settings` table does NOT exist in the
+live DB (verified 2026-06-01; the `commission` reads everywhere also fall through to their
+constant for the same reason). This is a SAFE documented fallback, logged here per the
+no-speculative-tables rule.
+- file:line — `lib/bookings/refund-config.ts:30-42`.
+- **Next step**: when `platform_settings` is created (it backs `commission` too), read
+  `'refund_policy'` in `getRefundConfig()` BEFORE the env fallback; no caller change needed (the
+  function is already async). Same migration should seed `commission.rate_percent` so the 15%
+  fallback stops being load-bearing.

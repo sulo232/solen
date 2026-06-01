@@ -1,35 +1,30 @@
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { type EmailLocale } from "@/lib/email";
 import { sendNotification } from "@/lib/notifications";
+import { resolveBookingActor } from "@/lib/bookings/authorize";
 
 // POST /api/bookings/[id]/confirm
 // Called by salon owner to confirm a pending booking.
 export async function POST(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Centralized authorization (Task B). Confirming a booking is a salon-owner action,
+  // so only actor 'salon' is allowed — identical to the prior salons.owner_id check.
+  const { actor, booking } = await resolveBookingActor(request, id);
+  if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+  if (actor !== "salon") {
+    return actor === null
+      ? NextResponse.json({ error: "Booking not found" }, { status: 404 })
+      : NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   const admin = createAdminSupabaseClient();
-
-  // Load booking + verify caller is the salon owner
-  const { data: booking } = await admin
-    .from("bookings")
-    .select("id, user_id, salon_id, status, salons!salon_id(owner_id)")
-    .eq("id", id)
-    .single();
-
-  if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
-
-  const salonOwner = (booking.salons as any)?.owner_id;
-  if (salonOwner !== user.id) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
 
   if (booking.status !== "pending" && booking.status !== "confirmed") {
     return NextResponse.json({ error: "Booking cannot be confirmed in current state" }, { status: 400 });

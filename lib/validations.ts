@@ -21,13 +21,38 @@ export const tosAcceptSchema = z.object({
   version: z.string().min(1).max(100),
 });
 
-export const createBookingSchema = z.object({
-  slot_id: uuid,
-  service_id: uuid,
-  staff_member_id: uuid.optional(),
-  is_first_visit: z.boolean().optional(),
-  referral_code: z.string().min(1).max(30).transform((v) => v.toUpperCase().trim()).optional(),
-});
+// G1 (V3-D421, 2026-06-01): accept EITHER an explicit `slot_id` (legacy / dashboard path)
+// OR `salon_id` + `starts_at` (the consumer pay-confirm flow, which never had a slot id to
+// send). The route resolves (salon + service + staff + starts_at) -> an available slot
+// server-side. `staff_member_id` is nullable because the picker sends `null` for "any stylist".
+//
+// SP-1 (guest booking, 2026-06-01): the guest fields below are ALWAYS optional in the schema
+// because Zod has no session context — it cannot know whether the caller is logged in. The
+// ROUTE is the auth boundary: when there is no session it requires guest_name + guest_phone
+// (returns GUEST_INFO_REQUIRED otherwise). Keeping them optional here makes one schema serve
+// both actors and never rejects the logged-in path. (Mirrors the G1 "route decides" note above.)
+export const createBookingSchema = z
+  .object({
+    slot_id: uuid.optional(),
+    salon_id: uuid.optional(),
+    service_id: uuid,
+    staff_member_id: uuid.nullable().optional(),
+    starts_at: z.string().datetime().optional(),
+    is_first_visit: z.boolean().optional(),
+    referral_code: z.string().min(1).max(30).transform((v) => v.toUpperCase().trim()).optional(),
+    // SP-G2 full prepay: "online" creates the booking in a payable "pending"
+    // state (charged via /api/stripe/booking-pay-intent, confirmed by the
+    // webhook). Absent / "in_person" keeps the legacy instant-confirm behavior.
+    payment_method: z.enum(["online", "in_person"]).optional(),
+    // SP-1 guest fields (optional; route enforces when there is no session). The phone
+    // regex is the ONE Swiss contract shared with walkInSchema + GuestBookingForm.tsx.
+    guest_name: z.string().min(2).max(100).optional(),
+    guest_phone: z.string().regex(/^\+41[0-9]{9}$/).optional(),
+    guest_email: z.string().email().optional(),
+  })
+  .refine((d) => Boolean(d.slot_id) || Boolean(d.salon_id && d.starts_at), {
+    message: "Either slot_id or (salon_id + starts_at) is required",
+  });
 
 export const createReviewSchema = z.object({
   booking_id: uuid,
@@ -550,9 +575,14 @@ export const salonDisputeResponseSchema = z.object({
 
 export const adminDisputeBookingActionSchema = z.object({
   dispute_id: z.string().uuid(),
-  action: z.enum(['dismiss', 'warn_customer', 'warn_salon', 'escalate', 'resolve_with_note', 'refund']),
+  // SP-3 adds admin_approve / admin_reject (the review-first escalation decision).
+  // 'refund' / 'resolve_with_note' kept for the legacy generic-complaint path.
+  action: z.enum([
+    'dismiss', 'warn_customer', 'warn_salon', 'escalate', 'resolve_with_note', 'refund',
+    'admin_approve', 'admin_reject',
+  ]),
   resolution_note: z.string().max(500).optional(),
-  refund_amount: z.number().int().positive().optional(), // in cents (Stripe)
+  refund_amount: z.number().int().positive().optional(), // integer Rappen (Stripe smallest unit for CHF)
 });
 
 export const adminDisputeActionSchema = z.object({
@@ -680,6 +710,73 @@ export const bookingInspoSchema = z.object({
 export const bookingRefundSchema = z.object({
   amount: z.number().int().min(0).max(100000),
   reason: z.string().min(3).max(500),
+});
+
+// SP-AC (REFUND_APPEAL_PLAN tasks #16/#17): salon cancellation + no-show policy update.
+// Validates the canonical policy columns the auto-charge executor trusts. fee VALUES are
+// CHF at the settings boundary (the executor converts to Rappen). percentage fees are
+// capped at 100 (you can never charge more than the customer paid). All fields optional
+// so the PATCH can update a single control; the allowlist in the route filters keys.
+export const salonPolicyUpdateSchema = z
+  .object({
+    cancellation_fee_type: z.enum(["free", "flat", "percentage"]).optional(),
+    cancellation_fee_value: z.number().min(0).optional(),
+    no_show_fee_type: z.enum(["free", "flat", "percentage"]).optional(),
+    no_show_fee_value: z.number().min(0).optional(),
+    free_cancel_hours: z.number().int().min(1).max(168).optional(),
+  })
+  .refine(
+    (d) => d.cancellation_fee_type !== "percentage" || (d.cancellation_fee_value ?? 0) <= 100,
+    { message: "cancellation_fee_value must be <= 100 when type is percentage", path: ["cancellation_fee_value"] },
+  )
+  .refine(
+    (d) => d.no_show_fee_type !== "percentage" || (d.no_show_fee_value ?? 0) <= 100,
+    { message: "no_show_fee_value must be <= 100 when type is percentage", path: ["no_show_fee_value"] },
+  );
+
+// ---------------------------------------------------------------------------
+// SP-3: two-direction money-adjustment engine (booking_disputes).
+// All *_amount fields are INTEGER Rappen (CHF * 100); the FE converts at the
+// boundary. Review-first: nothing here auto-approves.
+// ---------------------------------------------------------------------------
+
+// Endpoint 1 — unified customer/guest "report a problem / request a refund".
+// One record; `wants_refund` + optional `requested_amount` distinguish a pure
+// complaint (no money ask) from a refund ask.
+export const createCaseSchema = z.object({
+  reason_code: z.enum([
+    'salon_cancelled', 'no_show_salon', 'not_delivered',
+    'wrong_amount', 'double_charge', 'quality', 'other',
+  ]),
+  description: z.string().min(20, 'Description must be at least 20 characters').max(1000),
+  // Rappen; omitted/null with wants_refund=true => full refund of remaining.
+  requested_amount: z.number().int().min(0).max(10000000).optional(),
+  wants_refund: z.boolean(),
+});
+
+// Endpoint 3 — salon reviews a refund case (the FIRST reviewer).
+export const salonReviewSchema = z.object({
+  action: z.enum(['approve', 'reject']),
+  // Rappen; required-ish on approve (omitted => full remaining), validated <= remaining in the route.
+  approved_amount: z.number().int().min(0).max(10000000).optional(),
+  salon_response: z.string().min(10, 'Response must be at least 10 characters').max(1000),
+});
+
+// Endpoint 4 — customer/guest escalates a salon-rejected refund.
+export const customerEscalateSchema = z.object({
+  note: z.string().max(1000).optional(),
+});
+
+// Endpoint 6 — salon upcharge request (re-points the old priceAdjustmentSchema usage).
+export const upchargeRequestSchema = z.object({
+  requested_amount: z.number().int().positive().max(10000000), // Rappen, > 0
+  salon_reason: z.string().min(3).max(500),
+});
+
+// Endpoint 7 — customer/guest responds to an upcharge (EXPLICIT approve/decline; no silent auto-approve).
+export const upchargeRespondSchema = z.object({
+  action: z.enum(['approve', 'decline']),
+  customer_response: z.string().max(500).optional(),
 });
 
 export const bookingRescheduleSchema = z.object({
@@ -926,4 +1023,19 @@ export const offPeakSlotSchema = z.object({
 export const offPeakDeleteSchema = z.object({
   id: uuid,
 });
+
+// ─── Guest Access (SP-2) ──────────────────────────────────────────────────────
+// "Resend my access link": a guest supplies their order number + exactly one contact
+// (email OR phone). The route is anti-enumeration — it ALWAYS returns an opaque 200 —
+// so this schema only guards malformed bodies (a pre-lookup 400 leaks nothing about a
+// code). `code` is normalized in the route; here we just require a non-empty string.
+export const resendAccessSchema = z
+  .object({
+    code: z.string().min(1).max(64),
+    email: z.string().email().optional(),
+    phone: z.string().min(3).max(32).optional(),
+  })
+  .refine((d) => (d.email ? 1 : 0) + (d.phone ? 1 : 0) === 1, {
+    message: "Provide exactly one of email or phone",
+  });
 

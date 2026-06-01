@@ -19,8 +19,6 @@ export const stripe = new Proxy({} as Stripe, {
   },
 });
 
-export const PLATFORM_FEE_PERCENT = 0.01; // 1%
-
 /** Convert CHF to Rappen (Stripe uses smallest unit) */
 export function toRappen(chf: number): number {
   return Math.round(chf * 100);

@@ -13,7 +13,7 @@ Grounded in a full read-only investigation of the booking / calendar / walk-in /
 
 | # | Gap | Effort | Risk | Disposition |
 |---|---|---|---|---|
-| G1 | Consumer booking can't write a booking (`slot_id` vs `starts_at` contract) | M | **HIGH (writes bookings)** | **GATED — your call** (contract design) |
+| G1 | Consumer booking can't write a booking (`slot_id` vs `starts_at` contract) | M | **HIGH (writes bookings)** | ✅ **DONE 2026-06-01** (Option A: backend resolves slot server-side; verified vs real DB) |
 | G2 | Consumer "online" payment is a no-op (no Stripe) | L | **HIGH (money)** | **GATED — product call** (deposit/full/hold) |
 | G3 | Calendar slot grid never loads (`?week=` 400s) | S | LOW | ✅ **BUILT tonight** |
 | G4 | Calendar slot creation dead (no POST / no bulk route) | M | MED | **GATED — presupposes the G5 model decision** |
@@ -28,6 +28,7 @@ Grounded in a full read-only investigation of the booking / calendar / walk-in /
 ## ✅ Built autonomously tonight (safe, additive, tsc-verified, NOT yet live-verified — 404 in this worktree's DB)
 - **G11 — your walk-in tab.** New barbershop-gated "Warteschlange" item in the dashboard DESKTOP rail → the live queue (`/dashboard/barber-ops`). The queue UI existed but was unreachable from the rail.
 - **G3 — calendar grid loads.** `/api/slots` GET now accepts `?week=` (7-day window) and returns the `slots` key the calendar actually reads. Off-peak price enrichment gated to single-day queries.
+- **G1 — consumer booking writes a booking (DONE 2026-06-01, in MAIN, verified vs real DB).** `createBookingSchema` now accepts EITHER `slot_id` (legacy / at-salon checkout) OR `salon_id`+`starts_at` (the pay-confirm flow); `/api/bookings` POST resolves the available slot server-side by (salon + service + staff + `starts_at` instant). `staff_member_id` made nullable (the picker sends `null` for "any"). Also fixed a latent TZ display bug in `/api/availability/time-slots` (getHours→getUTCHours; no-op on UTC prod, correct on non-UTC dev). Verified against the live DB: the resolution query returns the right slot for the UI's exact ISO payload (exact-staff + any-staff); every NOT-NULL booking column is supplied; tsc clean; both POST callers (PayConfirmStep + checkout at-salon) covered. Pre-existing follow-ups logged in INCOMPLETE_FEATURES: no unique constraint on `bookings.slot_id` (double-book race) + G2 payment still a no-op.
 
 Both are additive/read-only — they only *enable* currently-dead UI, can't regress a working flow. **NOT live-tested** (404 here) — verify on your working server.
 

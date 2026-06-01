@@ -3681,7 +3681,8 @@
     "phoneError": "Gültige Schweizer Nummer (+41XXXXXXXXX)",
     "emailError": "Ungültige E-Mail",
     "disclaimer": "* Die angezeigte Verfügbarkeit ist möglicherweise nicht in Echtzeit auf dem neuesten Stand. Der Salon bestätigt deinen Termin nach der Anfrage.",
-    "submit": "Weiter zur Zahlung →"
+    "submit": "Weiter zur Zahlung →",
+    "fillRequired": "Bitte gib zuerst deine Kontaktdaten ein."
   },
   "staffPicker": {
     "title": "Mitarbeiter wählen",

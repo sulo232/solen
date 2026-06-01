@@ -3671,7 +3671,8 @@
     "phoneError": "Valid Swiss number (+41XXXXXXXXX)",
     "emailError": "Invalid email",
     "disclaimer": "* Displayed availability may not be real-time. The salon will confirm your appointment request.",
-    "submit": "Continue to payment →"
+    "submit": "Continue to payment →",
+    "fillRequired": "Please enter your contact details first."
   },
   "staffPicker": {
     "title": "Choose staff member",

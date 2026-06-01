@@ -3654,7 +3654,8 @@
     "phoneError": "Numéro suisse valide (+41XXXXXXXXX)",
     "emailError": "Email invalide",
     "disclaimer": "* La disponibilité affichée peut ne pas être en temps réel. Le salon confirmera votre demande.",
-    "submit": "Continuer vers le paiement →"
+    "submit": "Continuer vers le paiement →",
+    "fillRequired": "Veuillez d'abord saisir vos coordonnées."
   },
   "staffPicker": {
     "title": "Choisir un membre du personnel",

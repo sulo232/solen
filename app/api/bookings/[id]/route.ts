@@ -1,13 +1,28 @@
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
+// nodejs (was edge): resolveBookingActor -> lib/bookings/guest-access uses Node `crypto`
+// (timingSafeEqual / sha256), matching every other resolveBookingActor consumer
+// (dispute/escalate/report are all nodejs). This route does Supabase + Stripe only, so
+// nodejs is functionally equivalent — no edge-specific behavior is lost.
+export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
+import { issueRefund } from "@/lib/bookings/issue-refund";
 import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
 import { validateBody, bookingPatchSchema } from "@/lib/validations";
+import { resolveBookingActor } from "@/lib/bookings/authorize";
+
+// ToS §4.2 default cancellation terms for the legacy PATCH-status cancel branch.
+// The CANONICAL customer-cancel path is app/api/bookings/[id]/cancel/route.ts, which
+// reads the salon's own policy columns (cancellation_fee_type/value, free_cancel_hours)
+// via calculateCancellationFee. This PATCH branch is the older platform-wide ToS fallback
+// (no per-salon override); the values are named here rather than left as bare magic
+// numbers. If/when this branch is retired in favour of the canonical route, drop these.
+const TOS_LATE_CANCEL_WINDOW_HOURS = 24; // customer cancel inside this window = partial refund
+const TOS_LATE_CANCEL_REFUND_FRACTION = 0.5; // fraction refunded for a late customer cancel
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -15,6 +30,17 @@ export async function GET(
   const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
+  // Centralized authorization (Task B). resolveBookingActor replaces the ad-hoc
+  // owner/salon-owner check: it grants customer (booking owner), salon (salon owner),
+  // and additionally admin — a strict superset of the prior logic for logged-in users.
+  // null booking -> 404; logged-in-but-not-entitled -> 403 (identical to before).
+  const { actor, booking: authBooking } = await resolveBookingActor(request, id);
+  if (!authBooking) return NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
+  if (actor === null) {
+    return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
+  }
+
+  // Entitlement proven; fetch the relational shape the client expects.
   const { data: booking, error } = await supabase
     .from("bookings")
     .select("*, salons(*), services(*), staff_members(*), availability_slots(*)")
@@ -23,15 +49,6 @@ export async function GET(
 
   if (error || !booking) {
     return NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
-  }
-
-  // Auth check: must be booking owner or salon owner
-  const isOwner = booking.user_id === user.id;
-  const { data: salon } = await supabase.from("salons").select("owner_id").eq("id", booking.salon_id).single();
-  const isSalonOwner = salon?.owner_id === user.id;
-
-  if (!isOwner && !isSalonOwner) {
-    return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
   }
 
   return NextResponse.json({ data: booking });
@@ -69,9 +86,23 @@ export async function PATCH(
 
   if (fetchErr || !booking) return NextResponse.json({ message: "Not found", code: "NOT_FOUND" }, { status: 404 });
 
+  // Centralized authorization (Task B). resolveBookingActor makes the entitlement
+  // decision (and is the one place that understands guests/admins). The
+  // isSalonOwner/isBookingOwner booleans below — which drive cancellation_reason, the
+  // refund actor, and strike attribution downstream — are still derived from the DIRECT
+  // row facts (not from the resolved actor) so this binary customer-vs-salon logic is
+  // byte-for-byte identical to before, even for the edge case of a salon owner who also
+  // holds the admin role (the resolver would label them 'admin', but their write here is
+  // still attributed as the salon owner).
+  const { actor } = await resolveBookingActor(request, id);
+  if (actor === null) {
+    return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
+  }
   const isSalonOwner = booking.salons?.owner_id === user.id;
   const isBookingOwner = booking.user_id === user.id;
-  
+
+  // A logged-in admin who is neither the customer nor the salon owner has no role in this
+  // binary status write — preserve the prior owner-only gate rather than silently granting it.
   if (!isSalonOwner && !isBookingOwner) {
     return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
   }
@@ -92,9 +123,9 @@ export async function PATCH(
         const intent = await stripe.paymentIntents.retrieve(pi_id);
         
         const hoursUntilAppointment = (new Date(booking.starts_at).getTime() - Date.now()) / (1000 * 60 * 60);
-        // By ToS §4.2: <24h gives 50% refund, >24h gives 100% refund. 
+        // By ToS §4.2: inside the late window gives a partial refund, outside gives 100%.
         // If salon cancels, always 100% refund.
-        const isLate = isBookingOwner && hoursUntilAppointment < 24;
+        const isLate = isBookingOwner && hoursUntilAppointment < TOS_LATE_CANCEL_WINDOW_HOURS;
         
         if (booking.payment_status === "deposit_held" && intent.status === "requires_capture") {
           // It's just a hold
@@ -103,11 +134,11 @@ export async function PATCH(
             await stripe.paymentIntents.cancel(pi_id);
             updates.payment_status = "refunded";
           } else {
-            // 50% retained (50% fee). Capture 50%, release rest.
-            const captureAmount = Math.round(intent.amount * 0.5);
+            // Late cancel: retain the fee, capture the kept fraction, release the rest.
+            const captureAmount = Math.round(intent.amount * (1 - TOS_LATE_CANCEL_REFUND_FRACTION));
             // Calculate new application fee proportionally
             const originalFee = intent.application_fee_amount || 0;
-            const newFee = Math.round(originalFee * 0.5);
+            const newFee = Math.round(originalFee * (1 - TOS_LATE_CANCEL_REFUND_FRACTION));
             await stripe.paymentIntents.capture(pi_id, {
               amount_to_capture: captureAmount,
               application_fee_amount: newFee > 0 ? newFee : undefined
@@ -116,27 +147,33 @@ export async function PATCH(
             updates.refunded_amount = intent.amount - captureAmount;
           }
         } else if (booking.payment_status === "paid" && intent.status === "succeeded") {
-          // It's already captured
-          if (!isLate) {
-            // 100% refund
-            await stripe.refunds.create({ 
-              payment_intent: pi_id, 
-              reverse_transfer: true, 
-              refund_application_fee: true 
+          // It's already captured -> refund through the single chokepoint
+          // (REFUND_APPEAL_PLAN §10b#3). issueRefund owns the Stripe refund,
+          // the reverse_transfer/refund_application_fee (D7) flags, the CAS
+          // write of refunded_amount + payment_status, and unit safety — so
+          // those columns are NOT stamped into `updates` here. Amounts are
+          // integer Rappen from the canonical paid_amount column (never
+          // intent.amount/CHF mixing). 100% refund = full remaining; late
+          // customer-cancel = 50% per ToS §4.2.
+          const paidCents = (booking.paid_amount as number | null) ?? 0;
+          const alreadyRefunded = (booking.refunded_amount as number | null) ?? 0;
+          const refundCents = isLate
+            ? Math.round(paidCents * TOS_LATE_CANCEL_REFUND_FRACTION)
+            : paidCents - alreadyRefunded;
+          if (refundCents > 0) {
+            const adminForRefund = createAdminSupabaseClient();
+            await issueRefund({
+              db: adminForRefund,
+              source: "booking",
+              id,
+              amountCents: refundCents,
+              actor: isSalonOwner ? "salon" : "customer",
+              reason: isLate
+                ? "customer cancelled <24h (50% refund, ToS §4.2)"
+                : isSalonOwner
+                  ? "salon cancelled the booking (full refund)"
+                  : "customer cancelled >24h (full refund, ToS §4.2)",
             });
-            updates.payment_status = "refunded";
-            updates.refunded_amount = intent.amount;
-          } else {
-            // 50% refund
-            const refundAmount = Math.round(intent.amount * 0.5);
-            await stripe.refunds.create({ 
-              payment_intent: pi_id, 
-              amount: refundAmount, 
-              reverse_transfer: true,
-              refund_application_fee: true
-            });
-            updates.payment_status = "partially_refunded";
-            updates.refunded_amount = refundAmount;
           }
         }
       } catch (err: any) {

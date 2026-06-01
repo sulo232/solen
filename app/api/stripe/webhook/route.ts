@@ -6,6 +6,7 @@ import { sendEmail, bookingConfirmation, type EmailLocale } from "@/lib/email";
 import { paymentFailedNotification } from "@/lib/email-templates/booking-notifications";
 import { trackServerEvent } from "@/lib/posthog-server";
 import { getServerEnv } from "@/lib/env";
+import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 
 export const runtime = "nodejs";
 
@@ -78,9 +79,32 @@ export async function POST(req: NextRequest) {
 
       const bookingId = pi.metadata?.booking_id;
       if (bookingId) {
-        await admin.from("bookings").update({
-          payment_status: "deposit_held",
-        }).eq("payment_intent_id", pi.id);
+        // SP-G2 full prepay: type:"booking" PIs are captured in full at booking
+        // (not a hold). Persist the paid state + the saved-card ids (for SP-AC /
+        // SP-3 off-session charges) and confirm the booking. Amounts are already
+        // integer Rappen straight from Stripe (pi.amount / pi.application_fee_amount).
+        if (pi.metadata?.type === "booking") {
+          const pmId = typeof pi.payment_method === "string" ? pi.payment_method : pi.payment_method?.id ?? null;
+          const custId = typeof pi.customer === "string" ? pi.customer : pi.customer?.id ?? null;
+          await admin.from("bookings").update({
+            status: "confirmed",
+            payment_status: "paid",
+            paid_amount: pi.amount ?? 0,                       // Rappen
+            platform_fee: pi.application_fee_amount ?? 0,      // Rappen (the fee issueRefund later reverses)
+            stripe_customer_id: custId,
+            stripe_payment_method_id: pmId,
+          }).eq("payment_intent_id", pi.id);
+          // Confirm the held slot (booking-pay-intent re-verified it before charging).
+          if (pi.metadata?.slot_id) {
+            await admin.from("availability_slots")
+              .update({ status: "booked", booking_id: bookingId })
+              .eq("id", pi.metadata.slot_id);
+          }
+        } else {
+          await admin.from("bookings").update({
+            payment_status: "deposit_held",
+          }).eq("payment_intent_id", pi.id);
+        }
 
         // Record commission payout for Stripe-processed bookings
         const grossAmount = (pi.amount ?? 0) / 100; // Rappen → CHF
@@ -91,11 +115,14 @@ export async function POST(req: NextRequest) {
             .select("value")
             .eq("key", "commission")
             .single();
-          const commissionPercent = commissionSetting?.value?.rate_percent ?? 15;
+          const commissionPercent = commissionSetting?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
           const commissionAmount = Math.round(grossAmount * (commissionPercent / 100) * 100) / 100;
           const netAmount = Math.round((grossAmount - commissionAmount) * 100) / 100;
 
-          await admin.from("salon_payouts").insert({
+          // Upsert on the unique stripe_payment_intent_id index so a webhook
+          // re-delivery after a mid-handler failure (claim released) doesn't
+          // create a second payout ledger row or 500 on the unique violation.
+          await admin.from("salon_payouts").upsert({
             booking_id: bookingId,
             salon_id: pi.metadata.salon_id,
             stripe_payment_intent_id: pi.id,
@@ -104,7 +131,7 @@ export async function POST(req: NextRequest) {
             commission_amount: commissionAmount,
             net_amount: netAmount,
             status: "recorded",
-          });
+          }, { onConflict: "stripe_payment_intent_id" });
         }
 
         // Send booking confirmation email to customer
@@ -114,7 +141,11 @@ export async function POST(req: NextRequest) {
           .eq("id", bookingId)
           .single();
 
-        if (booking) {
+        // Guest bookings (user_id IS NULL) skip the user-keyed notification +
+        // analytics here — guest email/SMS is the owner's later piece (SP-2).
+        // The auth.admin.getUserById / trackServerEvent calls below all require a
+        // real user_id, so guarding on it keeps the webhook from throwing on guests.
+        if (booking?.user_id) {
           trackServerEvent(booking.user_id, "payment_succeeded", {
             booking_id: bookingId,
             salon_id: pi.metadata?.salon_id,
@@ -199,7 +230,9 @@ export async function POST(req: NextRequest) {
           .eq("id", bookingId)
           .single();
 
-        if (booking) {
+        // Guest bookings skip the user-keyed failure notification (owner's later
+        // piece); the slot/booking release above already ran for them.
+        if (booking?.user_id) {
           trackServerEvent(booking.user_id, "payment_failed", {
             booking_id: bookingId,
             salon_id: pi.metadata?.salon_id,

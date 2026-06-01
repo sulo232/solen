@@ -82,6 +82,8 @@ interface BookingWizardProps {
   staffServices: StaffService[];
   serviceAddons: ServiceAddon[];
   serviceOptions: ServiceOption[];
+  // SP-1: surfaced from the server page so PayConfirmStep shows the guest form when logged out.
+  isLoggedIn: boolean;
 }
 
 // Opacity-only crossfade — deliberately NO x/y transform. A transformed
@@ -94,7 +96,7 @@ const slideVariants = {
   exit: { opacity: 0 },
 };
 
-export default function BookingWizard({ services, staffList, salon, staffServices, serviceAddons, serviceOptions }: BookingWizardProps) {
+export default function BookingWizard({ services, staffList, salon, staffServices, serviceAddons, serviceOptions, isLoggedIn }: BookingWizardProps) {
   const t = useTranslations('booking') as any;
   const { currentStep, goToStep, formData } = useBooking();
 
@@ -131,7 +133,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
       case 'datetime':
         return <DateTimeStep salonId={salon.id} staffList={staffList} />;
       case 'pay-confirm':
-        return <PayConfirmStep salon={salon} staff={selectedStaff} />;
+        return <PayConfirmStep salon={salon} staff={selectedStaff} isLoggedIn={isLoggedIn} />;
       default:
         return null;
     }

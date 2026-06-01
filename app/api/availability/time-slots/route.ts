@@ -66,8 +66,12 @@ export async function GET(req: NextRequest) {
       new Set(
         validSlots.map((slot) => {
           const date = new Date(slot.starts_at);
-          return `${date.getHours().toString().padStart(2, '0')}:${date
-            .getMinutes()
+          // V3-D421 (G1, 2026-06-01): read the slot's stored wall-clock with getUTC*, not
+          // getHours/getMinutes. Slots are stored wall-clock-tagged-UTC, so on a non-UTC
+          // server getHours() double-shifts the time (off by the server's offset). getUTC*
+          // is a no-op on UTC (prod / Netlify) and correct on any other server TZ.
+          return `${date.getUTCHours().toString().padStart(2, '0')}:${date
+            .getUTCMinutes()
             .toString()
             .padStart(2, '0')}`;
         })

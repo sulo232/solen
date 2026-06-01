@@ -4,8 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail } from "@/lib/email";
 import Stripe from "stripe";
-import { getStripe } from "@/lib/stripe";
+import { getStripe, toRappen } from "@/lib/stripe";
 import { getServerEnv } from "@/lib/env";
+import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 
 // Cron: Pre-charge saved cards 5 days before appointment. Daily.
 export async function GET(req: NextRequest) {
@@ -44,12 +45,20 @@ export async function GET(req: NextRequest) {
       .select("value")
       .eq("key", "commission")
       .single();
-    const ratePercent = settings?.value?.rate_percent ?? 1;
-    const platformFee = Math.round((booking.price_paid ?? 0) * (ratePercent / 100));
+    // Canonical fallback: platform_settings.commission is the source of truth; the
+    // ?? falls back to DEFAULT_COMMISSION_RATE_PERCENT (15) — the SAME default every
+    // other charge path uses (webhook, booking-pay-intent, charge-fee, dispute-engine).
+    // The old bare `?? 1` undercharged commission 15x vs the rest of the platform when
+    // the settings row was missing (it is absent on the live DB today).
+    const ratePercent = settings?.value?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
+    // price_paid is CHF (numeric); convert to Rappen at the boundary. Both the
+    // Stripe amount and platform_fee are integer Rappen (fixes the live 100x bug).
+    const amountRappen = toRappen(booking.price_paid ?? 0);
+    const platformFee = Math.round(amountRappen * (ratePercent / 100));
 
     try {
       const piParams: Stripe.PaymentIntentCreateParams = {
-        amount: booking.price_paid ?? 0,
+        amount: amountRappen,
         currency: "chf",
         customer: booking.stripe_customer_id,
         payment_method: booking.stripe_payment_method_id,
@@ -70,7 +79,7 @@ export async function GET(req: NextRequest) {
         .update({
           payment_status: "paid",
           payment_intent_id: pi.id,
-          paid_amount: booking.price_paid,
+          paid_amount: amountRappen,
           platform_fee: platformFee,
         })
         .eq("id", booking.id);

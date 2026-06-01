@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/supabase";
+import { resolveBookingActor } from "@/lib/bookings/authorize";
+
+// Reschedule is allowed up to this many hours before the appointment (platform rule).
+const RESCHEDULE_MIN_LEAD_HOURS = 24;
 
 export async function POST(
   req: NextRequest,
@@ -15,41 +19,40 @@ export async function POST(
     );
   }
 
-  const { supabase, user } = await getSessionUser();
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Centralized authorization (Task B). Replaces getSessionUser + the ad-hoc
+  // `.eq("customer_id", user.id)` ownership filter (which referenced a column that does
+  // not exist on `bookings` — only `user_id` does — so the old query always 404'd).
+  // Reschedule is a customer action: only the booking's customer (or token guest) may do
+  // it. The relational fetch for the slot's salon_id is kept below, entitlement proven.
+  const { actor, booking, userId } = await resolveBookingActor(req, bookingId);
+  if (!booking) {
+    return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+  }
+  if (actor !== "customer" && actor !== "guest") {
+    return actor === null
+      ? NextResponse.json({ error: "Booking not found" }, { status: 404 })
+      : NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  // Fetch the booking to verify ownership
-  const { data: booking, error: bookingError } = await supabase
-    .from("bookings")
-    .select("*, availability_slots!inner(salon_id)")
-    .eq("id", bookingId)
-    .eq("customer_id", user.id)
-    .single();
+  // We still need a query client for the slot reads/writes below. resolveBookingActor
+  // already proved entitlement, so this is no longer the ownership gate.
+  const { supabase } = await getSessionUser();
 
-  if (bookingError || !booking) {
-    console.error("[Reschedule] Booking fetch error:", bookingError);
-    return NextResponse.json(
-      { error: "Booking not found or not owned by user" },
-      { status: 404 }
-    );
-  }
-
-  // Check if cancellation window has passed (24 hour rule)
+  // Check if reschedule window has passed (platform lead-time rule).
   const bookingDate = new Date(booking.starts_at);
   const now = new Date();
   const hoursUntilBooking = (bookingDate.getTime() - now.getTime()) / (1000 * 60 * 60);
 
-  if (hoursUntilBooking < 24) {
+  if (hoursUntilBooking < RESCHEDULE_MIN_LEAD_HOURS) {
     return NextResponse.json(
       { error: "Cannot reschedule within 24 hours of booking" },
       { status: 403 }
     );
   }
 
-  const salonId = (booking.availability_slots as any).salon_id;
+  // booking.salon_id is on the row directly (resolveBookingActor selects *), so the old
+  // availability_slots!inner join is no longer needed to derive the salon.
+  const salonId = booking.salon_id;
 
   // Check if new slot is available
   const { data: newSlot, error: slotError } = await supabase
@@ -102,7 +105,7 @@ export async function POST(
       .update({
         status: "booked",
         booking_id: bookingId,
-        booked_by: user.id,
+        booked_by: userId ?? booking.user_id,
       })
       .eq("id", booking.slot_id);
 
@@ -119,7 +122,7 @@ export async function POST(
     .update({
       status: "booked",
       booking_id: bookingId,
-      booked_by: user.id,
+      booked_by: userId ?? booking.user_id,
     })
     .eq("id", newSlot.id);
 

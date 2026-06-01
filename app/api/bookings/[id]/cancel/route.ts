@@ -1,11 +1,14 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingCancellation } from "@/lib/email";
-import { calculateRefund } from "@/lib/cancellation-policy";
+import { calculateCancellationFee } from "@/lib/cancellation-policy";
 import { validateBody, bookingCancelSchema } from "@/lib/validations";
-import { getStripe } from "@/lib/stripe";
+import { toRappen } from "@/lib/stripe";
+import { chargeFee, FeeError } from "@/lib/bookings/charge-fee";
+import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
+import { logAuditEvent } from "@/lib/audit";
 
 export async function POST(
   request: NextRequest,
@@ -20,10 +23,13 @@ export async function POST(
   const { data: validated } = validateBody(bookingCancelSchema, body);
   const reason = validated?.reason;
 
-  // Fetch booking with relations (including salon owner_id for notification)
+  // Fetch booking with relations. Policy read switched to the CANONICAL live columns
+  // (SP-AC §B2): cancellation_fee_type / cancellation_fee_value / free_cancel_hours.
+  // The old cancellation_fee_percent / cancellation_window_hours reads are dropped —
+  // those columns are ABSENT live, so the legacy `?? 30` silently masked the drift.
   const { data: booking, error } = await supabase
     .from("bookings")
-    .select("*, salons(*, owner_id, cancellation_fee_percent, cancellation_window_hours, cancellation_count), services(*)")
+    .select("*, salons(*, owner_id, cancellation_fee_type, cancellation_fee_value, free_cancel_hours), services(*)")
     .eq("id", id)
     .single();
 
@@ -42,64 +48,110 @@ export async function POST(
     return NextResponse.json({ message: "Booking cannot be cancelled", code: "INVALID_STATUS" }, { status: 400 });
   }
 
-  // Calculate refund if booking was paid via Stripe
-  let refundResult = { refundAmount: 0, feeAmount: 0, isWithinWindow: false };
-  const paidAmount = booking.paid_amount ?? booking.price_paid ?? 0;
+  const salon = booking.salons as any;
+  // Fee base in Rappen: paid_amount (Rappen) ?? toRappen(price_paid CHF). NEVER mix units.
+  const baseCents = (booking.paid_amount as number | null) ?? toRappen(Number(booking.price_paid ?? 0));
   const paymentIntentId = booking.payment_intent_id;
 
-  if (paidAmount > 0 && paymentIntentId) {
-    const salon = booking.salons as any;
-    
-    if (isSalonOwner) {
-      refundResult = { refundAmount: paidAmount, feeAmount: 0, isWithinWindow: true };
-    } else {
-      refundResult = calculateRefund(
-        paidAmount,
-        salon?.cancellation_fee_percent ?? 30,
-        salon?.cancellation_window_hours ?? 24,
-        new Date(booking.starts_at)
-      );
-    }
-
-    // Process Stripe refund if there's an amount to refund
-    if (refundResult.refundAmount > 0) {
-      try {
-        await getStripe().refunds.create({
-          payment_intent: paymentIntentId,
-          amount: refundResult.refundAmount,
-          reason: "requested_by_customer",
-        });
-      } catch (stripeErr: any) {
-        return NextResponse.json({ message: `Refund failed: ${stripeErr.message}`, code: "STRIPE_ERROR" }, { status: 500 });
+  // SALON-OWNER cancel = full refund (Lane B fast-track, REFUND_APPEAL_PLAN §11).
+  // Kept as-is (SP-3/SP-0 own the refund-chokepoint migration of this branch); SP-AC
+  // does not touch the refund path beyond not breaking it.
+  let refundResult = { refundAmount: 0, feeAmount: 0, isWithinWindow: false };
+  if (isSalonOwner && baseCents > 0 && paymentIntentId) {
+    refundResult = { refundAmount: baseCents, feeAmount: 0, isWithinWindow: true };
+    // Route through the single refund chokepoint (REFUND_APPEAL_PLAN §10b#3) on the
+    // admin client so the CAS write isn't fighting RLS. issueRefund owns the Stripe
+    // call + the refunded_amount/payment_status persistence (so the booking update
+    // below no longer stamps them). amountCents is integer Rappen.
+    const adminForRefund = createAdminSupabaseClient();
+    try {
+      await issueRefund({
+        db: adminForRefund,
+        source: "booking",
+        id,
+        amountCents: baseCents,
+        actor: "salon",
+        reason: reason ?? "salon cancelled the booking (full refund)",
+      });
+    } catch (stripeErr: any) {
+      if (stripeErr instanceof RefundError) {
+        const status = stripeErr.code === "BOOKING_NOT_FOUND" ? 404
+          : stripeErr.code === "STRIPE_FAILED" || stripeErr.code === "CONCURRENT_RETRY" ? 500
+          : 400;
+        return NextResponse.json({ message: `Refund failed: ${stripeErr.message}`, code: stripeErr.code }, { status });
       }
+      return NextResponse.json({ message: `Refund failed: ${stripeErr.message}`, code: "STRIPE_ERROR" }, { status: 500 });
     }
   }
 
-  if (isSalonOwner) {
-    const adminClient = await import("@/lib/supabase").then((m) => m.createAdminSupabaseClient());
-    const currentCount = (booking.salons as any)?.cancellation_count ?? 0;
-    const newCount = currentCount + 1;
-    await adminClient.from("salons").update({ cancellation_count: newCount }).eq("id", booking.salon_id);
-    
-    if (newCount >= 3) {
-      const { logAuditEvent } = await import("@/lib/audit");
-      await logAuditEvent(request, user.id, "salon_excessive_cancellations", "salon", booking.salon_id, { count: newCount });
-    }
+  // CUSTOMER cancel = Lane A policy fee (SP-AC §B2). Compute in Rappen from the
+  // CANONICAL policy columns; charge the saved card AFTER the cancellation is honored.
+  let feeCents = 0;
+  let isWithinWindow = false;
+  if (isCustomer) {
+    const calc = calculateCancellationFee(
+      salon?.cancellation_fee_type,
+      salon?.cancellation_fee_value,
+      salon?.free_cancel_hours ?? 24,
+      baseCents,
+      new Date(booking.starts_at),
+    );
+    feeCents = calc.feeCents;
+    isWithinWindow = calc.isWithinWindow;
   }
 
-  // Update booking status
+  // Update booking status FIRST — the cancellation is honored regardless of the fee
+  // charge outcome (a requires_action/failed charge never rolls it back). The salon-owner
+  // refund's payment_status / refunded_amount are already persisted by issueRefund's CAS
+  // above (the single writer of those columns); the customer path leaves fee_charge_* to
+  // chargeFee.
   const { error: updateError } = await supabase
     .from("bookings")
     .update({
       status: "cancelled",
       cancellation_reason: reason ?? null,
       cancelled_at: new Date().toISOString(),
-      payment_status: refundResult.refundAmount > 0 ? "refunded" : (refundResult.feeAmount > 0 ? "partially_refunded" : undefined),
-      refunded_amount: refundResult.refundAmount > 0 ? refundResult.refundAmount : undefined,
     })
     .eq("id", id);
 
   if (updateError) return NextResponse.json({ message: updateError.message, code: "DB_ERROR" }, { status: 500 });
+
+  // Charge the cancellation fee off-session against the saved card (Lane A). Only when a
+  // fee is owed AND the booking was prepaid with a saved card. A failed/requires_action
+  // charge does not roll back the cancellation; it is pursued out-of-band.
+  let feeChargeStatus: "charged" | "requires_action" | "failed" | "none" = "none";
+  let feeChargedCents = 0;
+  if (isCustomer && feeCents > 0 && booking.stripe_customer_id && booking.stripe_payment_method_id) {
+    const admin = createAdminSupabaseClient();
+    try {
+      const result = await chargeFee({
+        db: admin,
+        source: "booking",
+        id,
+        amountCents: feeCents,
+        kind: "cancellation",
+        actor: "system",
+        reason: "customer cancellation inside policy window",
+      });
+      feeChargeStatus = result.status;
+      feeChargedCents = result.chargedCents ?? 0;
+      // Lane A audit -> audit_log (NOT case_events; no dispute parent). Caller owns this.
+      await logAuditEvent(request, user.id, "cancellation_fee_charged", "booking", id, {
+        kind: "cancellation",
+        fee_cents: feeCents,
+        charged_cents: feeChargedCents,
+        status: result.status,
+        payment_intent_id: result.paymentIntentId,
+      });
+    } catch (e) {
+      // NO_SAVED_CARD / INVALID_AMOUNT etc. — log, do not fail the cancellation.
+      if (e instanceof FeeError) {
+        console.error(`[cancel] chargeFee skipped for booking ${id} (${e.code}):`, e.message);
+      } else {
+        console.error(`[cancel] chargeFee threw for booking ${id}:`, e);
+      }
+    }
+  }
 
   // Free the slot
   await supabase
@@ -108,7 +160,6 @@ export async function POST(
     .eq("id", booking.slot_id);
 
   // Notify waitlist entries for the freed slot
-  const { createAdminSupabaseClient } = await import("@/lib/supabase");
   const adminForWaitlist = createAdminSupabaseClient();
   const cancelledDate = new Date(booking.starts_at).toISOString().split("T")[0];
   const { data: waitlistEntries } = await adminForWaitlist
@@ -192,8 +243,11 @@ export async function POST(
       id,
       status: "cancelled",
       refund_amount: refundResult.refundAmount,
-      fee_amount: refundResult.feeAmount,
-      within_cancellation_window: refundResult.isWithinWindow,
+      // SP-AC: the customer-cancellation policy fee (Lane A). All Rappen.
+      cancellation_fee: feeCents,
+      fee_charged: feeChargedCents,
+      fee_charge_status: feeChargeStatus,
+      within_cancellation_window: isWithinWindow,
     },
   });
 }

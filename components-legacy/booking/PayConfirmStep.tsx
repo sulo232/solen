@@ -9,6 +9,7 @@ import { useBooking } from '@/lib/booking-context';
 import { formatPrice } from '@/lib/format';
 import Spinner from '@/components-legacy/ui/Spinner';
 import SignatureLockup from '@/components-legacy/ui/SignatureLockup';
+import GuestBookingForm, { type GuestInfo } from '@/components-legacy/booking/GuestBookingForm';
 import type { Salon, StaffMember } from '@/lib/types';
 
 /**
@@ -33,10 +34,15 @@ import type { Salon, StaffMember } from '@/lib/types';
 interface PayConfirmStepProps {
   salon: Salon;
   staff: StaffMember | null;
+  // SP-1: false => render GuestBookingForm + send guest_name/phone/email to POST /api/bookings.
+  isLoggedIn: boolean;
 }
 
-export default function PayConfirmStep({ salon, staff }: PayConfirmStepProps) {
+export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmStepProps) {
   const t = useTranslations('booking') as any;
+  // SP-1: the guest-form copy lives in the top-level `guestBookingForm` namespace (shared with
+  // GuestBookingForm.tsx); read it directly rather than via a cross-namespace path.
+  const tg = useTranslations('guestBookingForm') as any;
   const locale = useLocale();
   const router = useRouter();
   const { formData } = useBooking();
@@ -45,6 +51,9 @@ export default function PayConfirmStep({ salon, staff }: PayConfirmStepProps) {
   const [paymentMethod, setPaymentMethod] = useState<'online' | 'in_person' | null>(
     formData.paymentMethod ?? null,
   );
+  // SP-1: a logged-out guest fills name/phone (email optional) via GuestBookingForm. Its onSubmit
+  // captures the validated GuestInfo here; the booking POST is gated on it being present.
+  const [guestInfo, setGuestInfo] = useState<GuestInfo | null>(null);
 
   const localeCode = locale === 'de' ? 'de-CH' : locale === 'fr' ? 'fr-CH' : locale === 'it' ? 'it-CH' : 'en-GB';
   const cancellationHours = (salon as any).cancellation_window_hours ?? 24;
@@ -68,6 +77,12 @@ export default function PayConfirmStep({ salon, staff }: PayConfirmStepProps) {
       setError('Bitte fülle alle erforderlichen Felder aus');
       return;
     }
+    // SP-1: a logged-out guest must supply contact info before booking. GuestBookingForm validates
+    // name/phone/email and stores GuestInfo via its onSubmit; gate the POST on it here.
+    if (!isLoggedIn && !guestInfo) {
+      setError(tg('fillRequired'));
+      return;
+    }
 
     setIsSubmitting(true);
     setError(null);
@@ -89,6 +104,15 @@ export default function PayConfirmStep({ salon, staff }: PayConfirmStepProps) {
           gift_card_code: formData.giftCardCode || null,
           total_price: totalPrice,
           is_first_visit: true,
+          // SP-1: send guest fields only when logged out. The route ignores them for a session
+          // user; for a guest it requires name + phone (email optional).
+          ...(!isLoggedIn && guestInfo
+            ? {
+                guest_name: guestInfo.name,
+                guest_phone: guestInfo.phone,
+                guest_email: guestInfo.email || undefined,
+              }
+            : {}),
         }),
       });
 
@@ -98,7 +122,21 @@ export default function PayConfirmStep({ salon, staff }: PayConfirmStepProps) {
       }
 
       const booking = await bookingRes.json();
-      router.push(`/confirmation?booking_id=${booking.data?.id ?? booking.id}`);
+      const bookingId = booking.data?.id ?? booking.id;
+      // SP-1: a guest response carries access_token + reference_code (a session user gets neither).
+      // Carry them to the confirmation route so it can show the order number + exchange the token
+      // for the httpOnly cookie. The exact param/cookie handoff is finalized in SP-2; passing them
+      // as query params here is the data wiring SP-1 owns.
+      if (!isLoggedIn && booking.access_token) {
+        const params = new URLSearchParams({
+          booking_id: bookingId,
+          access_token: booking.access_token,
+          ...(booking.reference_code ? { ref: booking.reference_code } : {}),
+        });
+        router.push(`/confirmation?${params.toString()}`);
+      } else {
+        router.push(`/confirmation?booking_id=${bookingId}`);
+      }
     } catch (err) {
       console.error('[PayConfirmStep] Booking failed:', err);
       setError(err instanceof Error ? err.message : t('payment.unknownError'));
@@ -174,6 +212,18 @@ export default function PayConfirmStep({ salon, staff }: PayConfirmStepProps) {
           Kostenlos bis {cancellationHours}h vorher stornieren.
         </p>
       </div>
+
+      {/* SP-1: guest contact form (logged-out only). Data wiring; final placement + visual is the
+          Section 12 #1 mockup's job. onSubmit stores validated GuestInfo; the Buchen CTA gates on it. */}
+      {!isLoggedIn && (
+        <GuestBookingForm
+          onSubmit={(info) => {
+            setGuestInfo(info);
+            setError(null);
+          }}
+          submitting={isSubmitting}
+        />
+      )}
 
       {/* (d) Payment method selector — radio chips */}
       <div>

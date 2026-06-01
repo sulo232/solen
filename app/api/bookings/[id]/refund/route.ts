@@ -1,11 +1,11 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
-import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, bookingRefundSchema } from "@/lib/validations";
-import { getStripe } from "@/lib/stripe";
+import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
 
 // POST /api/bookings/[id]/refund — Salon-triggered manual refund
 export async function POST(
@@ -22,7 +22,8 @@ export async function POST(
   const banned = await checkUserBanned(user.id);
   if (banned) return banned;
 
-  const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
+  // Money surface gets the dedicated payment limiter (3/hour), not generalLimiter (§10b#12).
+  const rateLimited = await applyRateLimit(paymentLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
   const body = await req.json();
@@ -30,10 +31,11 @@ export async function POST(
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { amount, reason } = validated;
 
-  // Fetch booking and verify salon ownership
+  // Ownership check runs on the RLS-scoped REQUEST client. The actual refund write
+  // uses the admin client inside issueRefund so the CAS update isn't fighting RLS.
   const { data: booking } = await supabase
     .from("bookings")
-    .select("id, paid_amount, price_paid, payment_intent_id, salon_id, status, refunded_amount, salons(owner_id)")
+    .select("id, salon_id, status, salons(owner_id)")
     .eq("id", bookingId)
     .single();
 
@@ -48,49 +50,35 @@ export async function POST(
     return NextResponse.json({ error: "Cannot refund this booking status" }, { status: 400 });
   }
 
-  const paidAmount = booking.paid_amount ?? booking.price_paid ?? 0;
-  const alreadyRefunded = booking.refunded_amount ?? 0;
-  const maxRefundable = paidAmount - alreadyRefunded;
-
-  if (amount > maxRefundable) {
-    return NextResponse.json({ error: `Max refundable: ${maxRefundable}` }, { status: 400 });
-  }
-
-  if (!booking.payment_intent_id) {
-    return NextResponse.json({ error: "No Stripe payment to refund" }, { status: 400 });
-  }
-
-  // Process Stripe refund
+  // The single Stripe refund chokepoint. amount is integer Rappen (validated).
+  const admin = createAdminSupabaseClient();
   try {
-    await getStripe().refunds.create({
-      payment_intent: booking.payment_intent_id,
-      amount,
-      reason: "requested_by_customer",
+    const result = await issueRefund({
+      db: admin,
+      source: "booking",
+      id: bookingId,
+      amountCents: amount,
+      actor: "salon",
+      reason,
+      // refundApplicationFee omitted -> resolves from D7 config.
     });
-  } catch (stripeErr: any) {
-    return NextResponse.json({ error: `Stripe refund failed: ${stripeErr.message}` }, { status: 500 });
+    return NextResponse.json({
+      data: {
+        booking_id: bookingId,
+        refunded_amount: amount,
+        total_refunded: result.totalRefundedCents,
+        payment_status: result.paymentStatus,
+      },
+    });
+  } catch (e) {
+    console.error("[refund] issueRefund failed:", e);
+    if (e instanceof RefundError) {
+      const status =
+        e.code === "BOOKING_NOT_FOUND" ? 404
+        : e.code === "STRIPE_FAILED" || e.code === "CONCURRENT_RETRY" ? 500
+        : 400; // INVALID_AMOUNT / NO_PAID_AMOUNT / EXCEEDS_REMAINING / NO_PAYMENT / UNSUPPORTED_SOURCE
+      return NextResponse.json({ error: e.message, code: e.code }, { status });
+    }
+    return NextResponse.json({ error: "Refund failed" }, { status: 500 });
   }
-
-  // Update booking
-  const newRefundedAmount = alreadyRefunded + amount;
-  const isFullRefund = newRefundedAmount >= paidAmount;
-
-  const { error: updateError } = await supabase
-    .from("bookings")
-    .update({
-      refunded_amount: newRefundedAmount,
-      payment_status: isFullRefund ? "refunded" : "partially_refunded",
-    })
-    .eq("id", bookingId);
-
-  if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 });
-
-  return NextResponse.json({
-    data: {
-      booking_id: bookingId,
-      refunded_amount: amount,
-      total_refunded: newRefundedAmount,
-      payment_status: isFullRefund ? "refunded" : "partially_refunded",
-    },
-  });
 }
