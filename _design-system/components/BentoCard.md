@@ -22,8 +22,8 @@ Three layers of interaction:
 
 ```ts
 export interface BentoCardProps {
-  title: string;             // h3 inside card (Section H2 spec — Inter Tight 700)
-  description: string;       // p body primary (Hanken Grotesk 300, 14px, leading 1.5)
+  title: string;             // h3 inside card (section H2 spec — Inter Tight 600)
+  description: string;       // p body primary (Inter 400, 14px, leading 1.5)
   visual: React.ReactNode;   // upper-card mockup — flex-1 height-driven
   className?: string;        // composer escape hatch (e.g. md:col-span-2)
 }
@@ -41,8 +41,8 @@ export interface BentoCardProps {
 │ │      (flex-1, ~50% h)          │   │
 │ │                                │   │
 │ └────────────────────────────────┘   │
-│  Title h3 (20-22px, 700, -0.03em)   │
-│  Description (14px, 300, lh 1.5)     │
+│  Title h3 (20-22px, 600, -0.03em)   │
+│  Description (14px, 400, lh 1.5)     │
 └──────────────────────────────────────┘
 ```
 
@@ -56,14 +56,14 @@ export interface BentoCardProps {
 **Padding:** `p-6` mobile / `p-7` desktop.
 
 **Typography (h3):**
-- `font-display text-[20px] md:text-[22px]` (Section H2 spec from SOURCE.md §3)
-- `font-bold` (700) — NOT `font-extrabold` (extrabold is reserved for Hero H1 / Page H2 roles)
+- `font-display text-[20px] md:text-[22px]` (section H2 spec from CANON §3)
+- `font-semibold` (600) — section headings are 600; NEVER `font-extrabold` (800 is banned app-wide per CANON §3)
 - `tracking-[-0.03em]`
 - `leading-tight`
 - `text-s-ink`
 
 **Typography (p):**
-- `font-body text-[14px] font-light leading-[1.5]`
+- `font-body text-[14px] font-normal leading-[1.5]` (Inter 400 — body default per CANON §3)
 - `text-s-ink-2`
 - 8px gap below h3 (`mt-2`)
 

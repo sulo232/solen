@@ -52,7 +52,7 @@ export default function CategoriesGrid({ categoryCounts = {} }: CategoriesGridPr
             (all section eyebrows use amber regardless of light/dark register). */}
         <span
           className="block font-body font-bold uppercase mb-2"
-          style={{ color: "#F3A864", fontSize: 11, letterSpacing: ".22em" }}
+          style={{ color: "#6B6B6B", fontSize: 11, letterSpacing: ".22em" }}
         >
           Kategorien
         </span>

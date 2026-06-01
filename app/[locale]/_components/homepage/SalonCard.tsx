@@ -35,14 +35,17 @@ import { CardName, CardMeta } from "../primitives";
  */
 
 const cardCategoryColors = {
-  // V3-D100 (2026-05-22): tile palette migrated to 5-stripe Orange identity.
-  // Each category gets one tile pulling from {cream, navy, orange, yellow, ink}
-  // — paired-color identity instead of mono-hue ladder. Letters use the
-  // contrasting partner for max legibility on each tile.
-  coiffeur:   { bg: "#E9DFC8", initial: "#142F4A" }, // cream + navy
-  barbershop: { bg: "#142F4A", initial: "#E9DFC8" }, // navy + cream (inverse pair)
-  nails:      { bg: "#E58840", initial: "#FFFFFF" }, // orange + white
-  spa:        { bg: "#F0C25A", initial: "#142F4A" }, // yellow + navy
+  // V3-D100 (2026-05-22): tile palette was the 5-stripe Orange identity (cream/
+  // navy/orange/yellow paired tiles).
+  // CANON sweep (2026-06-01): retired the V2 hues (#142F4A/#E58840/#E9DFC8/
+  // #F0C25A) — they're banned per CANON §1. Monogram fallback now mirrors the
+  // B&W ink-on-stone pattern from SalonReviews `avatarColor()` (_shared.ts):
+  // s-bg-sunken (#F5F5F4) tile + s-ink (#0A0A0A) letter. Same treatment for
+  // every category (chrome = no per-category semantic color).
+  coiffeur:   { bg: "#F5F5F4", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
+  barbershop: { bg: "#F5F5F4", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
+  nails:      { bg: "#F5F5F4", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
+  spa:        { bg: "#F5F5F4", initial: "#0A0A0A" }, // s-bg-sunken + s-ink
 } as const;
 
 /** V2-D60-cards-4 (2026-05-14): display labels for the category subtitle row. */
@@ -114,11 +117,13 @@ const availVariants = cva(
         //   angebot   → solid terracotta #D87352 + white text
         //   urgent/limited → Dusty Slate #EEF2F6 + navy slate #3A5B7C text (V2-D71)
         //   pause     → ink glass + white text (kept)
-        // V3-D126 (2026-05-24): text-s-ink-2 (cool grey) → text-[#15803D] (deep green)
-        // per user "more vibrant" + matches the comment above (V2-D70 spec said
-        // green text but the code had grey). Text now hue-matches the bg family.
-        now:     "text-[#15803D]",
-        week:    "text-[#15803D]",
+        // V3-D126 (2026-05-24): text-s-ink-2 (cool grey) → deep green per user
+        // "more vibrant" + matches the comment above (V2-D70 spec said green text
+        // but the code had grey). Text now hue-matches the bg family.
+        // CANON sweep (2026-06-01): #15803D literal → s-success token. `week`
+        // also carries bg-s-success-bg now (bg moved off the inline tealStyle).
+        now:     "text-s-success",
+        week:    "text-s-success bg-s-success-bg",
         urgent:  "text-[#9A3412]",    // V3-D173: warm-amber burnt-sienna on cream
         limited: "text-[#9A3412]",
         angebot: "text-s-ink",        // V3-D79: yellow solid → ink text (high contrast on yellow)
@@ -200,8 +205,12 @@ function layeredGlass(rgb: string, bgAlpha = 0.22, borderAlpha = 0.32) {
 // s-love warm-red family (#FAD2DA bg + s-love-deep text via discountClass) so
 // they share a semantic family with heart-saved per Airbnb collapsed-warm
 // pattern. Council-validated 5→4 color reduction.
-const amberStyle    = { background: "#FAD2DA", border: "1px solid rgba(204, 74, 96, 0.22)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
-const angebotStyle  = { background: "#FAD2DA", border: "1px solid rgba(204, 74, 96, 0.22)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
+// CANON sweep (2026-06-01): bg #FAD2DA literal removed — love/sale bg now comes
+// from the bg-s-love-soft token class on DiscountBadge. Border + shadow stay inline.
+const amberStyle    = { border: "1px solid rgba(204, 74, 96, 0.22)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
+// CANON sweep (2026-06-01): unused (no call site) — bg #FAD2DA literal removed to
+// purge the banned hex. If revived, use bg-s-love-soft via className, not inline bg.
+const angebotStyle  = { border: "1px solid rgba(204, 74, 96, 0.22)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
 // V2-D71 (2026-05-18): originally dusty-slate blue per Fresha pattern.
 // V3-D173 (2026-05-26): swapped to warm-amber per user "make it like
 // urgency". Blue read as informational, not urgent. Amber-cream bg +
@@ -211,8 +220,13 @@ const urgentStyle   = { background: "#FFF1E6", border: "1px solid rgba(154, 52, 
 // V3-D126 (2026-05-24): bumped saturation per user "make it abit more vibrant".
 // bg #E5F2EA → #D1F0DC (sat ~22% → ~36%, mint reads as actual green now).
 // border alpha 0.18 → 0.28 (more visible green ring).
-const greenStyle    = { background: "#D1F0DC", border: "1px solid rgba(22, 163, 74, 0.28)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
-const tealStyle     = { background: "#D1F0DC", border: "1px solid rgba(22, 163, 74, 0.28)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
+// CANON sweep (2026-06-01): unused (no call site) — bg #D1F0DC literal removed to
+// purge the banned hex. If revived, use bg-s-success-bg via className, not inline bg.
+const greenStyle    = { border: "1px solid rgba(22, 163, 74, 0.28)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
+// CANON sweep (2026-06-01): bg #D1F0DC literal removed — green availability bg
+// now comes from the bg-s-success-bg token class on the `week` tone (availVariants).
+// Border + shadow stay inline (hue-matched ring, not in token scope).
+const tealStyle     = { border: "1px solid rgba(22, 163, 74, 0.28)", boxShadow: "0 1px 3px rgba(26, 28, 25, 0.04)" } as const;
 // V2-D67-fu11 (2026-05-16): unified ALL badges on the layeredGlass formula
 // (was mixed — action badges layered, but favorit/pause/curation still on the
 // older single-layer glassStyle). Now every badge has consistent border + shadow.
@@ -263,7 +277,7 @@ function CurationBadge({ type }: CurationProps) {
 function DiscountBadge({ percentOff }: { percentOff: number }) {
   return (
     <span
-      className={discountClass}
+      className={cn(discountClass, "bg-s-love-soft")}
       style={amberStyle}
       aria-label={`${percentOff} Prozent Rabatt`}
     >

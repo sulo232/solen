@@ -45,7 +45,7 @@ export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProp
     return (
       <span
         className={`${BASE_CLASSES} text-white`}
-        style={{ background: "#1B4D1B", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
+        style={{ background: "#0A0A0A", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
       >
         ★ Top
       </span>
@@ -73,7 +73,7 @@ export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProp
     return (
       <span
         className={`${BASE_CLASSES} text-white`}
-        style={{ background: "#F3A864", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
+        style={{ background: "#9A3412", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
       >
         Angebot <span className="tabular-nums">−{salon.last_minute_discount_percent}%</span>
       </span>

@@ -43,8 +43,7 @@ export default function BrowseByCitySection() {
         {/* Q48 eyebrow — Figtree 700 tracked .22em uppercase coral */}
         <span
           id="city-section-heading"
-          className="block font-body text-[11px] font-bold uppercase tracking-[.22em] mb-8 md:mb-12"
-          style={{ color: "#F3A864" }}
+          className="block font-body text-[11px] font-bold uppercase tracking-[.22em] mb-8 md:mb-12 text-white/70"
         >
           {t("cities.title") || "Salons in deiner Nähe"}
         </span>
@@ -61,14 +60,14 @@ export default function BrowseByCitySection() {
               style={{
                 borderTop: "1px solid rgba(255,255,255,0.08)",
                 borderBottom: idx === CITIES.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",
-                borderLeft: city.active ? "4px solid #1B4D1B" : "4px solid transparent",
+                borderLeft: city.active ? "4px solid #FFFFFF" : "4px solid transparent",
                 paddingLeft: city.active ? 12 : 0,
                 transition: "padding-left 200ms ease, border-color 200ms ease",
               }}
               onMouseEnter={(e) => {
                 if (!city.active) {
                   const el = e.currentTarget as HTMLElement;
-                  el.style.borderLeft = "4px solid #1B4D1B";
+                  el.style.borderLeft = "4px solid #FFFFFF";
                   el.style.paddingLeft = "12px";
                 }
               }}
@@ -110,7 +109,7 @@ export default function BrowseByCitySection() {
                       : "opacity-0 group-hover:opacity-100"
                   }`}
                   style={{
-                    color: "#F3A864",
+                    color: "#FFFFFF",
                     transition: "opacity 200ms ease",
                   }}
                   aria-hidden={!city.active}

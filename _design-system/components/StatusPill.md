@@ -1,7 +1,7 @@
 # StatusPill
 
 **File:** [app/[locale]/_components/salon/StatusPill.tsx](../../app/[locale]/_components/salon/StatusPill.tsx)
-**Layer:** 3 (semantic UI — color IS the meaning: green = open, muted grey = closed. Universal "open/closed" convention per §1.)
+**Layer:** 3 (semantic UI — color IS the meaning: green = open, red = closed. Universal "open/closed" convention per §1.)
 **Locked since:** V3-D201 (2026-05-26 · salon Phase A A4)
 **SOURCE.md links:** [§1 universal colors](../SOURCE.md#§1--brand-positioning) · [§2.5 catalog](../SOURCE.md#§25--semantic-ui-surfaces-catalog-v3-d197-2026-05-26) · [§14.0 decision tree](../SOURCE.md#§140--the-color-layer-decision-tree-first-question-before-writing-any-class)
 
@@ -32,14 +32,14 @@ export interface StatusPillProps {
 ## Visual signature
 
 ```
-●  Geöffnet bis 19:30      ← isOpen=true,  size=sm, showDot=true
-●  Geschlossen · Öffnet 10:00   ← isOpen=false, size=sm
+●  Geöffnet bis 19:30      ← isOpen=true,  size=sm, showDot=true (green)
+●  Geschlossen · Öffnet 10:00   ← isOpen=false, size=sm (red)
    Geöffnet bis 19:30      ← size=sm, showDot=false (text-only carrier)
 ```
 
 **Color (Layer 3 — universal convention):**
 - Open → `text-s-success` `#16A34A` + dot `bg-s-success`
-- Closed → `text-s-ink-2` `#6B6B6B` + dot `bg-s-border` `#E7E5E4`
+- Closed → `text-s-closed` `#DC2626` + dot `bg-s-closed` (red dot + red/maroon text on pale-red bg; per CANON §4, not amber, not grey)
 
 **Size:**
 - `sm` (default) — `text-[13px]`, gap-1.5, dot 8×8
@@ -61,7 +61,7 @@ None. StatusPill is informational; no state-change animation needed. Color is se
 - Use `showDot={false}` when the surrounding meta row already has visual separators (e.g. inline meta with `·` dots — dot would look noisy)
 
 ### Don't
-- Don't hardcode `text-emerald-600` or `text-amber-700` anywhere — use `<StatusPill>`. The "emerald" Tailwind default is a different green from `s-success` and creates drift.
+- Don't hardcode `text-emerald-600` or `text-red-600` anywhere — use `<StatusPill>`. The "emerald" Tailwind default is a different green from `s-success` and creates drift; the closed red must be `s-closed #DC2626`, not a raw Tailwind red.
 - Don't use this for other binary semantic states (active/inactive tab, verified/unverified, etc.). Use `<TabPill>` or a specific component. Mixing roles dilutes the "color = open/closed" meaning.
 - Don't change the dot/text color via `className` override. If you need a different semantic, that's a different component.
 
@@ -80,6 +80,7 @@ None. StatusPill is informational; no state-change animation needed. Color is se
 ## Provenance
 
 - **V3-D201** (2026-05-26) — created during salon Phase A A4. Replaces inline `text-emerald-600` patterns in `SalonHeader` + `SalonSidebar`.
+- **CANON §4** (2026-06-01) — closed state set to red `s-closed #DC2626` (was muted grey ink-2 + border dot). Closed-as-grey retired per user call 2026-05-30.
 
 ---
 

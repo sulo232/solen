@@ -85,7 +85,7 @@ export default function QuartiersGrid() {
         >
           Entdecke
           <br />
-          <span style={{ color: "#1B4D1B" }}>
+          <span style={{ color: "#FFFFFF" }}>
             Basel
           </span>
         </h2>

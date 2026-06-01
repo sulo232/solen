@@ -71,7 +71,7 @@ export default function HeroAboveFold() {
             Figtree 600 13px, 7×7px dot before label. */}
         <div className="flex items-center justify-center gap-2 flex-wrap mb-8">
           {[
-            { label: "Sofort buchbar", bg: "#E8EFE4", color: "#0F3010", dot: "#1B4D1B" },
+            { label: "Sofort buchbar", bg: "#E8EFE4", color: "#0F3010", dot: "#16A34A" },
             { label: "Ohne Anrufen",   bg: "#FCEBD3", color: "#8C4A14", dot: "#D87E2D" },
             { label: "Heute frei",     bg: "#EAF3FB", color: "#1A4D72", dot: "#6BA3C8" },
           ].map(({ label, bg, color, dot }) => (

@@ -4,15 +4,16 @@
  * 3-step explainer card primitive for the "Wie es funktioniert" section
  * on /business. Extracted from inline JSX in `business/page.tsx`.
  *
- * Visual signature: rounded-card · bg-s-bg-sunken · accent numeral
- * ("01" / "02" / "03") at 30% opacity to read as semi-decorative
- * "data emphasis" per SOURCE.md §2.1 (royal-blue s-accent use case).
+ * Visual signature: rounded-card · bg-s-bg-sunken · muted-ink numeral
+ * ("01" / "02" / "03") in text-s-ink-3 to read as semi-decorative
+ * "data emphasis". (CANON sweep 2026-06-01: was text-s-accent/30 — accent is
+ * functional-only per CANON §2, so step numerals drop the blue.)
  *
  * Server component — no client-side state or motion. (Entrance animation
  * via the parent's scroll-trigger if needed; the card itself is static.)
  *
  * Typography:
- *   - numeral: Inter Tight 800, 40-48px, leading-none, tracking -0.03em, accent/30
+ *   - numeral: Inter Tight 600, 40-48px, leading-none, tracking -0.03em, s-ink-3
  *   - h3:     Inter Tight 700, clamp(18,2vw,23), tracking -0.03em
  *   - body:   Hanken Grotesk 300, 14px, leading 1.55
  */
@@ -26,7 +27,7 @@ export interface StepProps {
 export function Step({ n, title, copy }: StepProps) {
   return (
     <li className="rounded-card bg-s-bg-sunken p-7 md:p-8">
-      <p className="font-display text-[40px] font-semibold leading-none tracking-[-0.03em] text-s-accent/30 tabular-nums md:text-[48px]">
+      <p className="font-display text-[40px] font-semibold leading-none tracking-[-0.03em] text-s-ink-3 tabular-nums md:text-[48px]">
         {n}
       </p>
       <h3 className="mt-5 font-display text-[clamp(16px,1.6vw,18px)] font-semibold tracking-[-0.03em] text-s-ink">

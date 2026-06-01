@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Users, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { StaffMember } from "@/lib/types";
+import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
 
 interface StaffPickerProps {
   staffList: StaffMember[];
@@ -22,10 +23,9 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
   const t = useTranslations("staffPicker") as any;
   if (staffList.length === 0) return null;
 
-  const circle = (sel: boolean) =>
-    `h-[88px] w-[88px] rounded-full grid place-items-center overflow-hidden bg-s-bg-sunken ${
-      sel ? "ring-2 ring-s-ink" : ""
-    }`;
+  // V3-D421: selected-state is now the SelectedCheckBadge (corner check), not a ring.
+  const circle = () =>
+    "h-[88px] w-[88px] rounded-full grid place-items-center overflow-hidden bg-s-bg-sunken";
 
   const Pill = ({ rating }: { rating: number }) => (
     <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 inline-flex items-center gap-0.5 rounded-full bg-white px-2 py-[3px] shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]">
@@ -45,9 +45,10 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
         className="shrink-0 flex flex-col items-center w-[88px]"
       >
         <div className="relative">
-          <div className={circle(selectedStaff === "any")}>
+          <div className={circle()}>
             <Users size={26} className="text-s-ink-2" strokeWidth={2} />
           </div>
+          <SelectedCheckBadge selected={selectedStaff === "any"} />
         </div>
         <span className="mt-3 text-[14px] font-body font-medium text-s-ink text-center leading-tight">
           {t("any")}
@@ -66,7 +67,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
             className="shrink-0 flex flex-col items-center w-[88px]"
           >
             <div className="relative">
-              <div className={circle(selectedStaff === s.id)}>
+              <div className={circle()}>
                 {s.avatar_url ? (
                   <Image
                     src={s.avatar_url}
@@ -82,6 +83,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
                 )}
               </div>
               {rating != null && <Pill rating={rating} />}
+              <SelectedCheckBadge selected={selectedStaff === s.id} />
             </div>
             <span
               className={`text-[14px] font-body font-medium text-s-ink text-center leading-tight truncate max-w-[88px] ${

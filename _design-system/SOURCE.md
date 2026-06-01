@@ -100,12 +100,14 @@ This decision tree is the **canonical onboarding for every new component** (CLAU
 
 Solen uses **the colors humans already recognize** from a lifetime of UI exposure. We do not invent custom semantic colors. If a meaning has a universal hue, we adopt the universal hue and map to our token.
 
+> **HEX SUPERSEDED (2026-06-01, V3-D421), see `CANON.md` §1:** `s-accent` = **#276EF1** (Uber blue, not #1638C4) and is **functional-only** (focus / spinner / input, NOT eyebrows or links). `s-warning` = **#F1AE27** (the accent's amber twin). Closed status = **`s-closed #DC2626`** (red, distinct from `s-error #D32F2F`). Where a hex below conflicts with CANON, CANON wins.
+
 | Universal semantic | Standard hue | Solen token | Hex | Where it shows up |
 |---|---|---|---|---|
 | Success / Go / Open | Green | `s-success` | `#16A34A` | Toast success, StatusPill "Geöffnet", booking confirmed states |
 | Error / Danger / Closed | Red | `s-error` | `#D32F2F` | Toast error, FormFieldError border + text, "Geschlossen", critical alerts |
-| Warning / Caution | Amber | `s-warning` | `#F59E0B` | Toast warning, "Letzte Plätze" notices, validation that's not-blocking |
-| Info / Brand identity | Blue | `s-accent` | `#1638C4` | Toast info, link color, eyebrows, "NEW" pills, brand moments (also Layer 2) |
+| Warning / Caution | Amber | `s-warning` | `#F1AE27` | Toast warning, "Letzte Plätze" notices, validation that's not-blocking |
+| Info / Brand identity | Blue | `s-accent` | `#276EF1` | Toast info; focus rings, Spinner, input focus (functional-only per V3-D421 / §1.5, NOT eyebrows/links) |
 | Rating | Yellow | `s-star` | `#FFC32B` | Stars only, universal across review surfaces |
 | Save / Love | Hot pink | `--heart-active` | `#FF3366` | Saved-favorite heart fill only |
 | Urgency / Hot | Burnt amber | (inline) | `#9A3412` text on `#FFF1E6` bg | "Nur X heute" Flame badge only |
@@ -301,12 +303,14 @@ Surfaces that obey **Layer 3 semantic UI** (color IS the meaning). Each entry ma
 
 ## §3 · Typography — V3-D191 (2026-05-26)
 
+> **VALUES SUPERSEDED (2026-06-01, V3-D421).** The literal type values in this section predate the V3-D325/D327/D410 sweeps. Single source of truth is now `_design-system/CANON.md` §3 + LOCKFILE §2: body = **Inter 400** (not Hanken 300), display = **Inter Tight** (not Bricolage), headings **600** (Hero **700**, never 800), eyebrow tracking **0.08em**. This section stays for rationale; where a value here conflicts with CANON, CANON wins.
+
 ### Fonts (locked)
 
 | Family | Tailwind | Files using it |
 |---|---|---|
 | **Inter Tight** | `font-display`, `font-heading` (alias) | Page H1s ("Termin in 30 Sek."), Section H2s, MobileCategoriesRow H2 — all display headings. V3-D190 swap (supersedes Bricolage Grotesque). |
-| **Hanken Grotesk** | `font-body` (default) | Everything else: body, labels, buttons, captions, metadata, numerics. **V3-D191: weight range expanded to 300-800** for Uber-modern body-light contrast. |
+| **Inter** | `font-body` (default) | Everything else: body, labels, buttons, captions, metadata, numerics. **V3-D410: replaced Hanken Grotesk; default weight 400 (Inter 400 reads solid where Hanken 400 read thin).** |
 
 Both loaded via `app/globals.css` Google Fonts `@import` with `display=swap`. Inter Tight weights 500/600/700/800/900. Hanken weights **300/400/500/600/700/800**.
 
@@ -335,7 +339,7 @@ The canonical roles. Pick a role; use its exact spec. Don't invent new sizes.
 | Author/handle | `font-body text-[11px] font-semibold text-s-ink` | 11 | 600 | normal | 1.2 | sentence | EntdeckenCard `@rissa` pill |
 | Button CTA | `font-body text-[15px] font-bold tracking-[-0.01em]` | 15 | 700 | -0.01em | 1 | sentence | "Termine finden", "Solen durchsuchen" |
 | Marquee text | `font-body text-[11px] font-normal text-white` | 11 | 400 | normal | 1 | sentence | EntdeckenCard "TikTok · TikTok ·" attribution |
-| Eyebrow | `font-body text-[12px] font-bold uppercase tracking-[0.16em] text-s-ink-3` | 12 | 700 | +0.16em | 1 | UPPERCASE | BusinessTeaser "Für Salons" only |
+| Eyebrow | `font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-s-ink-3` | 12 | 600 | +0.08em | 1 | UPPERCASE | BusinessTeaser "Für Salons" only (V3-D421: 0.16em→0.08em, 700→600) |
 
 ### Numerics
 

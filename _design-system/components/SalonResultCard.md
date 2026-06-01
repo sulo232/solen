@@ -58,7 +58,7 @@ SearchTemplate passes `"card"` explicitly unless `?layout=grid|list` is set.)
   fallback. Supersedes the V3-D350 flat `rounded-card`
   look, per user "keep it consistent with the locked homepage." (§11 search-card
   rounding exception now reads 22px, same as the homepage card.)** Star `#FFC32B`.
-  Heart `#FF3366` (inside HeartButton). B&W chrome, Geist, no pastel, no eyebrow.
+  Heart `#FF3366` (inside HeartButton). B&W chrome, Inter Tight + Inter (NEVER Geist), no pastel, no eyebrow.
 
 ## API
 

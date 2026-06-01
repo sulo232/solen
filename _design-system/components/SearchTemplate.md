@@ -43,7 +43,7 @@ interface SearchTemplateProps {
 │  Header  (sticky z-50)                                   │
 │  ────────────────────────────────────────────────────────│
 │  Breadcrumb · Solen › Spa                                │
-│  H1: "Spa & Wellness in Basel" (Inter Tight 800)         │
+│  H1: "Spa & Wellness in Basel" (Inter Tight 700)         │
 │  SearchSummaryBar  (sticky z-40, "Spa · Schweizweit")    │
 │  FilterChipStrip   (sticky z-30, scrolls X on mobile)    │
 │      [Filter] [Spa & Wellness ×] [Beliebteste] [...]     │
