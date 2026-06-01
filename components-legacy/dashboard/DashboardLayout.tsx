@@ -128,6 +128,9 @@ const STAFF_NAV = [
 const RAIL_NAV = [
   { key: "overview",  href: "/dashboard",           icon: LayoutGrid, label: "Übersicht" },
   { key: "calendar",  href: "/dashboard/calendar",  icon: Calendar,   label: "Kalender" },
+  // V3-D421 (G11): walk-in queue rail item, barbershop-only (filtered at render). The live
+  // queue UI lives in /dashboard/barber-ops; this surfaces it in the desktop rail (was unreachable there).
+  { key: "queue",     href: "/dashboard/barber-ops", icon: UsersRound, label: "Warteschlange", barbershopOnly: true },
   { key: "catalog",   href: "/dashboard/services",  icon: Scissors,   label: "Katalog" },
   { key: "clients",   href: "/dashboard/clients",   icon: Users,         label: "Kund:innen" },
   { key: "messages",  href: "/dashboard/messages",  icon: MessageCircle, label: "Nachrichten" },
@@ -301,7 +304,7 @@ export default function DashboardLayout({
       <aside className="hidden md:flex fixed left-0 top-0 h-full w-[64px] bg-white border-r border-s-border flex-col items-center py-3 z-30">
         <Link href={`/${locale}/dashboard`} aria-label="Solen" className="w-9 h-9 grid place-items-center text-[20px] font-bold tracking-[-0.04em] text-s-ink mb-2">S</Link>
         <nav className="flex-1 flex flex-col gap-1 items-center w-full">
-          {RAIL_NAV.map(({ key, href, icon: Icon, label }) => {
+          {RAIL_NAV.filter((it) => !("barbershopOnly" in it) || salonCategories?.includes("barbershop")).map(({ key, href, icon: Icon, label }) => {
             const active = isActive(href);
             return (
               <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
