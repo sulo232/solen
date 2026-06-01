@@ -23,6 +23,8 @@ export function HeartButton({
   className,
   salonId: _salonId,
   tone: _tone,
+  size = 28,
+  iconSize = 16,
 }: {
   isSaved?: boolean;
   salonName: string;
@@ -31,6 +33,10 @@ export function HeartButton({
   salonId?: string;
   /** Optional visual variant hint (e.g. "spa" / "warm") — currently unused; surfaced for caller compatibility. */
   tone?: string;
+  /** Visible glass-circle size in px (default 28; salon hero uses 38, V3-D421). 44px hit area preserved. */
+  size?: number;
+  /** Heart glyph size in px (default 16). */
+  iconSize?: number;
 }) {
   const [isSaved, setIsSaved] = React.useState(initialSaved);
   const [announcement, setAnnouncement] = React.useState("");
@@ -86,9 +92,9 @@ export function HeartButton({
           // V2-D60-cards / V3-D72 / V3-D420: frosted-glass circle wrapper around
           // heart. Recipe now sourced from the shared FROST_GLASS util (was
           // re-derived inline) — 80% white + 4px backdrop blur + 1px white border.
-          style={FROST_GLASS}
+          style={{ ...FROST_GLASS, height: size, width: size }}
           className={cn(
-            "grid h-7 w-7 place-items-center rounded-full",
+            "grid place-items-center rounded-full",
             "transition-transform duration-200 ease-glide",
             "group-hover:scale-110 group-active:scale-[0.97] group-active:duration-[80ms]",
           )}
@@ -96,7 +102,7 @@ export function HeartButton({
           <Heart
             // V2-D43: key re-mounts SVG on each save → CSS animation restarts.
             key={popKey}
-            size={16}
+            size={iconSize}
             strokeWidth={2.25}
             // V3-D103 (2026-05-23): heart fill aligned with universal semantic
             // --heart-active #FF3366 per brand spec. Was held over at V2 muted

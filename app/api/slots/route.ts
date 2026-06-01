@@ -7,29 +7,36 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const salon_id = searchParams.get("salon_id");
-  const date = searchParams.get("date"); // YYYY-MM-DD
+  const date = searchParams.get("date"); // YYYY-MM-DD (single day)
+  const week = searchParams.get("week"); // YYYY-MM-DD anchor -> 7-day window (dashboard calendar, G3/V3-D421)
   const service_id = searchParams.get("service_id");
   const staff_member_id = searchParams.get("staff_member_id");
 
-  if (!salon_id || !date) {
+  if (!salon_id || (!date && !week)) {
     return NextResponse.json(
-      { message: "salon_id and date are required", code: "VALIDATION_ERROR" },
+      { message: "salon_id and (date or week) are required", code: "VALIDATION_ERROR" },
       { status: 400 }
     );
   }
 
   const supabase = await createServerSupabaseClient();
 
-  // Build time range for the given date
-  const startOfDay = `${date}T00:00:00`;
-  const endOfDay = `${date}T23:59:59`;
+  // Build time range: single day (`date`) or a 7-day window (`week` anchor).
+  // Date.UTC handles month/year rollover TZ-stably; comparison strings stay
+  // naive (matches the stored starts_at format / prior single-day behavior).
+  const anchor = (week ?? date) as string;
+  const span = week ? 7 : 1;
+  const [ay, am, ad] = anchor.split("-").map(Number);
+  const endDate = new Date(Date.UTC(ay, am - 1, ad + span));
+  const startOfRange = `${anchor}T00:00:00`;
+  const endOfRange = `${endDate.toISOString().slice(0, 10)}T00:00:00`;
 
   let query = supabase
     .from("availability_slots")
     .select("*, services(id, name_de, name_en, duration_minutes, price), staff_members(id, name, avatar_url)")
     .eq("salon_id", salon_id)
-    .gte("starts_at", startOfDay)
-    .lte("starts_at", endOfDay)
+    .gte("starts_at", startOfRange)
+    .lt("starts_at", endOfRange)
     .order("starts_at", { ascending: true });
 
   if (service_id) query = query.eq("service_id", service_id);
@@ -40,7 +47,7 @@ export async function GET(request: NextRequest) {
 
   // Apply off-peak discounts to matching slots
   const slots = data ?? [];
-  if (slots.length > 0) {
+  if (date && slots.length > 0) {
     const slotDate = new Date(date + "T00:00:00");
     const dayOfWeek = slotDate.getDay();
 
@@ -67,5 +74,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ items: slots, total: slots.length });
+  // `slots` alias: the dashboard calendar reads `data.slots`; `items` kept for back-compat.
+  return NextResponse.json({ items: slots, slots, total: slots.length });
 }
