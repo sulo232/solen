@@ -32,6 +32,7 @@ export type NotificationType =
   | 'no_show_charge'
   | 'late_cancellation_fee'
   | 'refund_processed'
+  | 'upcharge_charged'
   | 'new_review'
   | 'review_response'
   | 'review_flagged'

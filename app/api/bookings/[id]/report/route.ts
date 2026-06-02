@@ -237,6 +237,56 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   // Salon owner (reported party). booking.salon_id is on the row from resolveBookingActor.
   const admin = createAdminSupabaseClient();
+
+  // H7 — re-file cooldown. The partial unique index booking_disputes_one_open_per_dir
+  // EXCLUDES salon_rejected/admin_rejected from "open", so a customer whose refund was
+  // rejected can immediately spam a FRESH refund instead of using the proper path
+  // (ESCALATE → admin review). Guard ONLY the refund direction (wants_refund) — pure
+  // complaints and upcharges are unaffected. Block iff the most-recent refund case is
+  // still in a rejected state, was rejected within the last 24h, and has NOT been
+  // escalated. Tightly scoped: first filings (no prior case) and already-escalated
+  // cases pass; after the 24h cooldown a genuinely new problem can be re-filed.
+  if (validated.wants_refund) {
+    const COOLDOWN_MS = 24 * 60 * 60 * 1000;
+    const { data: lastRefundCase } = await admin
+      .from("booking_disputes")
+      .select("id, status, escalated_at, salon_responded_at, admin_responded_at, updated_at")
+      .eq("booking_id", bookingId)
+      .eq("direction", "refund")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (
+      lastRefundCase &&
+      (lastRefundCase.status === "salon_rejected" || lastRefundCase.status === "admin_rejected") &&
+      !lastRefundCase.escalated_at
+    ) {
+      // When was it rejected? salon_rejected → salon_responded_at; admin_rejected →
+      // admin_responded_at. Fall back to updated_at (the rejection was the last write).
+      const rejectedAtRaw =
+        lastRefundCase.status === "salon_rejected"
+          ? lastRefundCase.salon_responded_at
+          : lastRefundCase.admin_responded_at;
+      const rejectedAt = new Date(rejectedAtRaw ?? lastRefundCase.updated_at ?? 0).getTime();
+      const withinCooldown = Number.isFinite(rejectedAt) && Date.now() - rejectedAt < COOLDOWN_MS;
+
+      // Conservative: salon_rejected is still escalatable, so block it (point to ESCALATE).
+      // admin_rejected is terminal — only block during the cooldown to avoid a hard lock.
+      const shouldBlock = lastRefundCase.status === "salon_rejected" || withinCooldown;
+      if (shouldBlock) {
+        return NextResponse.json(
+          {
+            error:
+              "This refund was already reviewed and rejected. Re-filing is disabled — escalate the existing case to Solen for review instead.",
+            code: "REFUND_REJECTED_USE_ESCALATE",
+            dispute_id: lastRefundCase.id,
+          },
+          { status: 409 },
+        );
+      }
+    }
+  }
   let salonOwnerId: string | null = null;
   if (booking.salon_id) {
     const { data: salon } = await admin

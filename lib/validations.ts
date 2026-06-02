@@ -487,15 +487,6 @@ export const barberProfileSchema = z.object({
 
 // ─── Payment Security Schemas ─────────────────────────────────────────────────
 
-export const approveIncreaseSchema = z.object({
-  booking_id: z.string().uuid(),
-});
-
-export const confirmPriceSchema = z.object({
-  booking_id: z.string().uuid(),
-  final_price: z.number().min(0).max(100000),
-});
-
 export const giftCardRedeemSchema = z.object({
   code: z.string().min(1).max(30).transform((v) => v.toUpperCase().trim()),
   amount: z.number().int().min(1).max(100000),

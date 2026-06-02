@@ -188,6 +188,108 @@ export async function POST(req: NextRequest) {
           }
         }
       }
+
+      // ── ADDITIVE (off-session charge payout ledger + async upcharge finalize) ──
+      // Off-session UPCHARGE (type:'upcharge') and policy-FEE (type:'cancellation_fee' /
+      // 'no_show_fee') PaymentIntents move real Connect money + accrue an
+      // application_fee, but the booking branch above only writes a salon_payouts
+      // row for type:'booking'. Without the row below, the salon earnings ledger +
+      // generated invoices + the reconcile cron under-report these captures.
+      //
+      // These PIs are created by lib/bookings/off-session-charge.ts; their metadata
+      // (lib/bookings/dispute-engine.ts chargeUpcharge / lib/bookings/charge-fee.ts)
+      // carries type + booking_id (+ dispute_id for upcharge) but NOT salon_id, so
+      // salon_id is resolved from the booking (salon_payouts.salon_id is NOT NULL).
+      // Conservative: if we can't resolve the salon, write nothing.
+      const offSessionType = pi.metadata?.type;
+      const isUpchargeCharge = offSessionType === "upcharge";
+      const isFeeCharge = offSessionType === "cancellation_fee" || offSessionType === "no_show_fee";
+      if (isUpchargeCharge || isFeeCharge) {
+        try {
+          const chargeBookingId = pi.metadata?.booking_id ?? null;
+          // salon_id is not in the off-session PI metadata — resolve from the booking.
+          let chargeSalonId = pi.metadata?.salon_id ?? null;
+          if (!chargeSalonId && chargeBookingId) {
+            const { data: chargeBooking } = await admin
+              .from("bookings")
+              .select("salon_id")
+              .eq("id", chargeBookingId)
+              .maybeSingle();
+            chargeSalonId = chargeBooking?.salon_id ?? null;
+          }
+
+          // Same idempotent ledger row as the booking branch, keyed on the PI. Amounts
+          // come straight from the PI (real Rappen → CHF) — the upcharge/fee already
+          // carry the real application_fee_amount; we never recompute from a rate.
+          const grossCharge = (pi.amount ?? 0) / 100; // Rappen → CHF
+          if (grossCharge > 0 && chargeSalonId) {
+            const commissionCharge = Math.round((pi.application_fee_amount ?? 0)) / 100; // Rappen → CHF
+            const netCharge = Math.round((grossCharge - commissionCharge) * 100) / 100;
+            const commissionPercentCharge =
+              grossCharge > 0 ? Math.round((commissionCharge / grossCharge) * 100 * 100) / 100 : 0;
+            await admin.from("salon_payouts").upsert({
+              booking_id: chargeBookingId,
+              salon_id: chargeSalonId,
+              stripe_payment_intent_id: pi.id,
+              gross_amount: grossCharge,
+              commission_percent: commissionPercentCharge,
+              commission_amount: commissionCharge,
+              net_amount: netCharge,
+              status: "recorded",
+            }, { onConflict: "stripe_payment_intent_id" });
+          } else {
+            console.error(
+              "[stripe/webhook] off-session charge missing salon_id/amount, skipping payout row:",
+              { event_id: event.id, pi: pi.id, type: offSessionType, booking_id: chargeBookingId },
+            );
+          }
+
+          // N3 backend half — ASYNC upcharge finalize. chargeUpcharge advances
+          // booking_disputes salon_approved → 'charged' synchronously, but when the
+          // off-session charge needed 3-D Secure the PI was parked at 'salon_approved'
+          // and only succeeds later via this webhook. CAS-advance it here, idempotent
+          // (only flips a row still in 'salon_approved'); mirror chargeUpcharge's
+          // case_events 'charged' row on the winning CAS.
+          if (isUpchargeCharge) {
+            const disputeId = pi.metadata?.dispute_id ?? null;
+            if (disputeId) {
+              const { data: casDispute, error: casDisputeErr } = await admin
+                .from("booking_disputes")
+                .update({ status: "charged", resolved_amount: pi.amount ?? 0 })
+                .eq("id", disputeId)
+                .eq("status", "salon_approved") // CAS — idempotent: no-op if already 'charged'
+                .select("id")
+                .maybeSingle();
+              if (casDisputeErr) {
+                console.error(
+                  `[stripe/webhook] upcharge dispute CAS failed for dispute ${disputeId}:`,
+                  casDisputeErr.message,
+                );
+              } else if (casDispute) {
+                // Winning CAS only (the synchronous path lost the race or never ran).
+                const { writeCaseEvent } = await import("@/lib/bookings/dispute-engine");
+                await writeCaseEvent(admin, {
+                  disputeId,
+                  actorRole: "system",
+                  action: "charged",
+                  fromStatus: "salon_approved",
+                  toStatus: "charged",
+                  amount: pi.amount ?? 0,
+                  note: "upcharge difference charged to saved card (async 3-D Secure completion)",
+                });
+              }
+            }
+          }
+        } catch (chargeLedgerErr) {
+          // Non-fatal: never break the rest of the handler over the ledger/finalize
+          // write (mirrors the claim-release discipline — the money already moved).
+          console.error(
+            "[stripe/webhook] off-session charge ledger/finalize failed:",
+            chargeLedgerErr,
+            { event_id: event.id, pi: pi.id, type: offSessionType },
+          );
+        }
+      }
       break;
     }
 

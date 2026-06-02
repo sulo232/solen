@@ -3,8 +3,8 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail } from "@/lib/email";
-import Stripe from "stripe";
-import { getStripe, toRappen } from "@/lib/stripe";
+import { toRappen } from "@/lib/stripe";
+import { chargeOffSession } from "@/lib/bookings/off-session-charge";
 import { getServerEnv } from "@/lib/env";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 
@@ -57,28 +57,37 @@ export async function GET(req: NextRequest) {
     const platformFee = Math.round(amountRappen * (ratePercent / 100));
 
     try {
-      const piParams: Stripe.PaymentIntentCreateParams = {
-        amount: amountRappen,
-        currency: "chf",
-        customer: booking.stripe_customer_id,
-        payment_method: booking.stripe_payment_method_id,
-        off_session: true,
-        confirm: true,
+      // Off-session charge via the SHARED primitive (the single place that talks to
+      // Stripe paymentIntents.create off-session). It carries a DETERMINISTIC
+      // idempotencyKey so a cron retry / overlap before the row flips to 'paid'
+      // collapses to ONE Stripe charge instead of double-charging the customer the
+      // full amount (H2). Keyed on (booking, amount) — stable across retries.
+      const result = await chargeOffSession({
+        amountCents: amountRappen,
+        stripeCustomerId: booking.stripe_customer_id,
+        stripePaymentMethodId: booking.stripe_payment_method_id,
+        stripeAccountId: salonStripeId ?? null,
+        applicationFeeCents: platformFee,
+        idempotencyKey: `pre-charge:${booking.id}:${amountRappen}`,
         metadata: { type: "pre_charge", booking_id: booking.id },
-      };
+      });
 
-      if (salonStripeId) {
-        piParams.application_fee_amount = platformFee;
-        piParams.transfer_data = { destination: salonStripeId };
+      if (result.status !== "charged") {
+        // Decline / restricted account / SCA authentication_required. chargeOffSession
+        // never throws; route the non-success path through the same decline handling
+        // (notify customer) as a thrown Stripe error below.
+        throw new Error(
+          result.status === "requires_action"
+            ? "authentication_required (off-session SCA)"
+            : result.error,
+        );
       }
-
-      const pi = await getStripe().paymentIntents.create(piParams);
 
       await admin
         .from("bookings")
         .update({
           payment_status: "paid",
-          payment_intent_id: pi.id,
+          payment_intent_id: result.paymentIntentId,
           paid_amount: amountRappen,
           platform_fee: platformFee,
         })

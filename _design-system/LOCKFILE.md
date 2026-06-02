@@ -73,6 +73,8 @@
 
 **🟥 Outcome-driven color rule (V3-D425, 2026-06-02):** color IS the message — a case/order's focal amount + state elements inherit their OUTCOME automatically, never a neutral default: **declined / canceled / void → red (`s-error`)**, **refunded / approved / charged → green (`s-success`)**, **pending (open / in-review / escalated) → blue (`s-accent`)**, closed/unknown → neutral. A declined refund must NOT show its amount in neutral blue. Codified: `components-legacy/refund/shared.ts` → `caseAmountColor(status)` (returns the text-color class from the status).
 
+**🎨 Outcome-colored PRIMARY CTA (V3-D426, 2026-06-02):** extends V3-D425 to the *action itself* — on OUTCOME / RESULT / STATUS screens (payment result, refund status, 3-D Secure verification, dispute outcome), the primary CTA inherits the screen's semantic state colour: **verify / info / pending → blue (`s-accent`)**, **success / done → green (`s-success`)**, **error / failed → red (`s-error`)**, **surcharge / pay-the-extra → orange (`s-surcharge`)**. This is a **scoped EXCEPTION to the default ink primary CTA** (the V3-D192-fix marketing-CTA discipline + §3): it applies ONLY on outcome/status screens, never on marketing or standard booking CTAs (those stay `s-ink`). Reference: `public/solen-upcharge-payflow-states.html`. ⚠️ Caveat (owner discretion): a **red CTA on a constructive *retry* action** is debatable — red conventionally signals destructive/stop, so the alternative is to keep the error icon+message red but use ink/blue for the "try again" button.
+
 ### Chart-grey (Layer 4 — data visualization, V3-D315 2026-05-27)
 
 | Token | Hex | Usage |

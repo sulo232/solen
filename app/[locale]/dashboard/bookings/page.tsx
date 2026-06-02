@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { Check, UserX, RotateCcw, ChevronDown, X, BadgeCheck } from "lucide-react";
+import { Check, UserX, RotateCcw, ChevronDown, X } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
@@ -66,8 +66,6 @@ function SalonCancelModal({
       onDone(bookingId);
       onClose();
       // V3-D334 (overnight T2): error handling per CLAUDE.md (was silent catch).
-      // NOTE: Stripe confirm-price catch on line ~174 deliberately NOT swept here —
-      // needs user-visible Toast for payment failure, deferred to user-decision wave.
     } catch (err) { console.error("[Bookings] cancellation POST failed:", err); } finally {
       setLoading(false);
     }
@@ -116,7 +114,6 @@ export default function BookingsPage() {
     (searchParams.get("status") as BookingStatus) ?? "all"
   );
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
-  const [confirmingPrice, setConfirmingPrice] = useState<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -145,21 +142,6 @@ export default function BookingsPage() {
 
   const handleCancelled = (id: string) => {
     setBookings((prev) => prev.map((b) => b.id === id ? { ...b, status: "cancelled" as const } : b));
-  };
-
-  const confirmPrice = async (id: string) => {
-    setConfirmingPrice(id);
-    try {
-      await fetch(`/api/stripe/confirm-price`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ booking_id: id }),
-      });
-    } catch (err) {
-      console.error("[Bookings] Stripe confirm-price POST failed:", err);
-    } finally {
-      setConfirmingPrice(null);
-    }
   };
 
   return (
@@ -263,17 +245,6 @@ export default function BookingsPage() {
                         <X size={13} />
                       </button>
                     </div>
-                  )}
-                  {b.status === "completed" && (
-                    <button
-                      onClick={() => confirmPrice(b.id)}
-                      disabled={confirmingPrice === b.id}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-s-border text-s-ink text-[11px] font-medium hover:bg-s-bg-sunken transition-colors disabled:opacity-50"
-                      title="Preis bestätigen"
-                    >
-                      <BadgeCheck size={12} />
-                      {confirmingPrice === b.id ? "…" : "Preis bestätigen"}
-                    </button>
                   )}
                   {b.status === "cancelled" && b.cancellation_reason && (
                     <p className="text-[10px] text-s-ink/30 max-w-24 text-right">{b.cancellation_reason}</p>

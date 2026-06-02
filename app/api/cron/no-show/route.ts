@@ -6,6 +6,7 @@ import { getServerEnv } from "@/lib/env";
 import { toRappen } from "@/lib/stripe";
 import { calculateNoShowFee } from "@/lib/cancellation-policy";
 import { chargeFee, FeeError } from "@/lib/bookings/charge-fee";
+import { notifyNoShowFee } from "@/lib/bookings/notify-no-show-fee";
 import { logAuditEvent } from "@/lib/audit";
 
 export async function GET(req: NextRequest) {
@@ -27,7 +28,7 @@ export async function GET(req: NextRequest) {
   // was a drift bug — that column does not exist — so the fee step never fired).
   const { data: overdues } = await admin
     .from("bookings")
-    .select("id, user_id, salon_id, payment_intent_id, paid_amount, price_paid, stripe_customer_id, stripe_payment_method_id, fee_charge_status, policy_snapshot, status, salons(no_show_fee_type, no_show_fee_value)")
+    .select("id, user_id, salon_id, payment_intent_id, paid_amount, price_paid, stripe_customer_id, stripe_payment_method_id, fee_charge_status, policy_snapshot, status, starts_at, guest_email, salons(name, no_show_fee_type, no_show_fee_value), services(name_de, name_en)")
     .eq("status", "confirmed")
     .lt("ends_at", twentyFourHoursAgo)
     .gt("ends_at", sevenDaysAgo)
@@ -84,6 +85,26 @@ export async function GET(req: NextRequest) {
           status: result.status,
           payment_intent_id: result.paymentIntentId,
         });
+
+        // N4: notify the customer a no-show fee was actually charged (silent debit =
+        // chargeback magnet). Only on a real charge, with the amount actually taken.
+        // user_id → in-app + email; guest_email → email only. Never blocks the charge.
+        if (result.status === "charged") {
+          const salon = (booking as any).salons as { name?: string } | null;
+          const services = (booking as any).services as Record<string, string | null> | null;
+          await notifyNoShowFee({
+            admin,
+            userId: (booking.user_id as string | null) ?? null,
+            guestEmail: (booking as any).guest_email ?? null,
+            serviceName: services?.name_de ?? services?.name_en ?? "Service",
+            salonName: salon?.name ?? "Salon",
+            feeCents: result.chargedCents ?? feeCents,
+            dateStr: booking.starts_at
+              ? new Date(booking.starts_at as string).toLocaleDateString("de-CH")
+              : "",
+            logPrefix: "no-show",
+          }).catch((err) => console.error(`[no-show] fee notification failed for booking ${booking.id}:`, err));
+        }
       } catch (e) {
         // NO_SAVED_CARD / INVALID_AMOUNT etc. — log, continue the loop (never crash the cron).
         if (e instanceof FeeError) {

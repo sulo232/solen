@@ -5,10 +5,11 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, paymentLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, upchargeRequestSchema, upchargeRespondSchema } from "@/lib/validations";
-import { getServerEnv } from "@/lib/env";
+import { getServerEnv, getAppUrl } from "@/lib/env";
 import { logAuditEvent } from "@/lib/audit";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
 import { writeCaseEvent, chargeUpcharge, ChargeUpchargeError } from "@/lib/bookings/dispute-engine";
+import { notifyUpchargeCharged } from "@/lib/bookings/notify-upcharge";
 
 // SP-3 Endpoints 6 (POST salon upcharge request) + 7 (PATCH customer respond).
 //
@@ -103,7 +104,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Can only upcharge a completed booking" }, { status: 400 });
   }
 
-  // +50% cap against paid_amount (Rappen). Reject when there's no recorded payment
+  // +50% cap against NET retained payment (paid_amount − refunded_amount, Rappen).
+  // Netting the refund is the fairness fix: a gross-anchored cap would let a salon
+  // upcharge back what was already refunded. Reject when there's no recorded payment
   // to anchor the cap (G2 prepay populates paid_amount).
   const paidAmount: number = booking.paid_amount ?? 0;
   if (paidAmount <= 0) {
@@ -112,7 +115,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       { status: 400 },
     );
   }
-  const cap = Math.round(paidAmount * 0.5);
+  const refundedAmount: number = booking.refunded_amount ?? 0;
+  const netRetained = paidAmount - refundedAmount;
+  const cap = Math.max(0, Math.round(netRetained * 0.5));
   if (validated.requested_amount > cap) {
     return NextResponse.json(
       { error: `Upcharge cannot exceed 50% of the amount paid (max ${cap})` },
@@ -171,6 +176,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       customerEmail = cust?.email ?? null;
     }
     if (customerEmail) {
+      // H8: deep-link to the customer approve/decline screen so the email is actionable.
+      // Canonical origin (NEXT_PUBLIC_APP_URL → www.solen.ch fallback), same as booking-email.
+      let baseUrl: string;
+      try {
+        baseUrl = getAppUrl();
+      } catch {
+        baseUrl = "https://www.solen.ch";
+      }
+      const upchargeUrl = `${baseUrl}/de/bookings/${bookingId}/upcharge`;
       try {
         await fetch("https://api.resend.com/emails", {
           method: "POST",
@@ -180,7 +194,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             to: customerEmail,
             subject: "Ein Salon hat einen Aufpreis angefragt | A salon requested an additional charge",
             html: `<p>Der Salon hat für Buchung #${bookingId} einen Aufpreis angefragt.</p>
-                   <p>Sie müssen ausdrücklich zustimmen, bevor etwas berechnet wird. Wenn Sie nicht reagieren, passiert nichts.</p>`,
+                   <p>Sie müssen ausdrücklich zustimmen, bevor etwas berechnet wird. Wenn Sie nicht reagieren, passiert nichts.</p>
+                   <p><a href="${upchargeUrl}">Aufpreis prüfen und zustimmen oder ablehnen</a></p>`,
           }),
         });
       } catch (e) {
@@ -341,6 +356,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   });
 
   if (charge.status === "charged") {
+    // N2: notify the customer their card was charged for the approved upcharge. A silent
+    // off-session debit is a chargeback magnet. Never blocks/rolls back the money move
+    // (same discipline as the refund receipt / Stripe webhook).
+    await notifyUpchargeCharged(admin, bookingId, charge.chargedCents ?? 0, "booking-disputes").catch((err) =>
+      console.error("[booking-disputes] upcharge charged notification failed:", err),
+    );
     return NextResponse.json({ status: "charged", charged: charge.chargedCents });
   }
   if (charge.status === "requires_action") {

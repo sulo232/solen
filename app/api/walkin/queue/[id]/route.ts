@@ -7,6 +7,7 @@ import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, walkinUpdateSchema } from "@/lib/validations";
 import { getStripe } from "@/lib/stripe";
 import { calculateNoShowFee } from "@/lib/cancellation-policy";
+import { notifyNoShowFee } from "@/lib/bookings/notify-no-show-fee";
 
 // PATCH /api/walkin/queue/[id] — Salon owner/staff: update queue entry status
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -139,6 +140,32 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (["completed", "no_show", "cancelled"].includes(validated.status)) {
     const { error: reseqErr } = await admin.rpc("resequence_walkin_queue", { p_salon_id: entry.salon_id });
     if (reseqErr) console.error("[walkin/queue PATCH] resequence failed:", reseqErr);
+  }
+
+  // N4: notify the customer a no-show fee was actually CAPTURED out of their held card
+  // (silent debit = chargeback magnet). ONLY when a fee was really taken (> 0); a
+  // released hold (0) or cash entry (null) notifies nothing. A registered walk-in
+  // (customer_id) gets in-app + email; a phone-only guest has no email column on the
+  // queue, so nothing is sent (SMS is a logged future epic). Never blocks the capture.
+  if (validated.status === "no_show" && noShowFeeCaptured && noShowFeeCaptured > 0) {
+    const { data: salonRow } = await admin
+      .from("salons").select("name").eq("id", entry.salon_id).maybeSingle();
+    let serviceName = "Service";
+    if (entry.service_id) {
+      const { data: svc } = await admin
+        .from("services").select("name_de, name_en").eq("id", entry.service_id).maybeSingle();
+      serviceName = svc?.name_de ?? svc?.name_en ?? "Service";
+    }
+    await notifyNoShowFee({
+      admin,
+      userId: (entry.customer_id as string | null) ?? null,
+      guestEmail: null, // barber_walkin_queue has no email column (only customer_phone).
+      serviceName,
+      salonName: salonRow?.name ?? "Salon",
+      feeCents: noShowFeeCaptured,
+      dateStr: new Date().toLocaleDateString("de-CH"),
+      logPrefix: "walkin/queue",
+    }).catch((err) => console.error("[walkin/queue PATCH] no-show fee notification failed:", err));
   }
 
   return NextResponse.json({ entry: updated, payment_captured: paymentCaptured, no_show_fee_captured: noShowFeeCaptured });

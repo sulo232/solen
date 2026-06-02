@@ -223,6 +223,7 @@ interface UpchargeDisputeRow {
 interface UpchargeBookingRow {
   id: string;
   paid_amount: number | null;
+  refunded_amount: number | null;
   stripe_customer_id: string | null;
   stripe_payment_method_id: string | null;
   salon_id: string | null;
@@ -262,22 +263,27 @@ export async function chargeUpcharge(args: ChargeUpchargeArgs): Promise<ChargeUp
     throw new ChargeUpchargeError("INVALID_AMOUNT", "Upcharge requested_amount must be a positive integer (Rappen)");
   }
 
-  // 2. Load the booking: saved card (SP-G2) + Connect account + paid_amount (the cap base).
+  // 2. Load the booking: saved card (SP-G2) + Connect account + paid_amount/refunded_amount
+  //    (the cap base is the NET retained: paid_amount − refunded_amount).
   const { data: bookingData } = await db
     .from("bookings")
-    .select("id, paid_amount, stripe_customer_id, stripe_payment_method_id, salon_id, salons(stripe_account_id)")
+    .select("id, paid_amount, refunded_amount, stripe_customer_id, stripe_payment_method_id, salon_id, salons(stripe_account_id)")
     .eq("id", dispute.booking_id)
     .maybeSingle();
   if (!bookingData) throw new ChargeUpchargeError("DISPUTE_NOT_FOUND", `Booking ${dispute.booking_id} not found`);
   const booking = bookingData as unknown as UpchargeBookingRow;
 
-  // 3. Re-enforce the +50% cap against paid_amount (Rappen) — defense in depth; the
-  //    request route already capped it, but the dispute may be stale. NEVER price_paid.
+  // 3. Re-enforce the +50% cap against NET retained payment (paid_amount − refunded_amount,
+  //    Rappen) — defense in depth; the request route already capped it, but the dispute may
+  //    be stale AND a refund may have landed since (netting prevents re-charging a refund).
+  //    NEVER price_paid.
   const paidAmount = booking.paid_amount ?? 0;
   if (paidAmount <= 0) {
     throw new ChargeUpchargeError("INVALID_AMOUNT", "Booking has no recorded payment to upcharge against");
   }
-  const cap = Math.round(paidAmount * 0.5);
+  const refundedAmount = booking.refunded_amount ?? 0;
+  const netRetained = paidAmount - refundedAmount;
+  const cap = Math.max(0, Math.round(netRetained * 0.5));
   if (amountCents > cap) {
     throw new ChargeUpchargeError("EXCEEDS_CAP", `Upcharge ${amountCents} exceeds 50% cap ${cap}`);
   }
