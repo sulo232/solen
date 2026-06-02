@@ -113,6 +113,16 @@ export async function POST(request: NextRequest) {
 
   const resolvedSlotId = slot.id as string;
 
+  // Phase 2 toggle enforcement: a salon can switch OFF online booking (e.g. a walk-in-only
+  // shop). Reject online appointment bookings when disabled. `=== false` only (default is
+  // true + existing salons backfilled), so a missing/true flag fails OPEN and never blocks.
+  if ((slot.salons as any)?.online_booking_enabled === false) {
+    return NextResponse.json(
+      { message: "This salon is not accepting online bookings.", code: "ONLINE_BOOKING_DISABLED" },
+      { status: 403 },
+    );
+  }
+
   // 2. Get user profile for is_first_visit (logged-in only — a guest has no profile row).
   let profile: { is_first_visit_default?: boolean | null; locale?: string | null } | null = null;
   if (user) {
@@ -225,9 +235,26 @@ export async function POST(request: NextRequest) {
   const customerEmail = user?.email ?? guest_email ?? null;
   if (!isOnlinePay && customerEmail) {
     try {
+      // Price + VAT-inclusive breakdown (registered salon → Netto/MWST/Gesamt + UID; else just
+      // the total). slot.salons is salons(*), so it already carries vat_registered/vat_rate/vat_number.
+      const salonVat = slot.salons as { vat_registered?: boolean; vat_rate?: number; vat_number?: string } | null;
+      const grossRappen = Math.round(Number(price ?? 0) * 100);
+      const { computeVat } = await import("@/lib/vat");
+      const evb = salonVat?.vat_registered && grossRappen > 0
+        ? computeVat(grossRappen, { registered: true, ratePercent: salonVat.vat_rate ?? 8.1 })
+        : null;
       const emailData = bookingConfirmation(
         customerEmail,
-        { service: serviceName, salon: salonName, date: bookingDate, time: bookingTime },
+        {
+          service: serviceName, salon: salonName, date: bookingDate, time: bookingTime,
+          total: `CHF ${Number(price ?? 0).toFixed(2)}`,
+          ...(evb ? {
+            net: `CHF ${(evb.netRappen / 100).toFixed(2)}`,
+            vat: `CHF ${(evb.vatRappen / 100).toFixed(2)}`,
+            rate: evb.ratePercent % 1 === 0 ? String(evb.ratePercent) : evb.ratePercent.toFixed(1),
+            vatNumber: salonVat?.vat_number ?? undefined,
+          } : {}),
+        },
         locale
       );
       await sendEmail(emailData);

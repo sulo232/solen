@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     
     const { data: usersToDelete, error: fetchErr } = await admin
       .from("profiles")
-      .select("id")
+      .select("id, email, deletion_requested_at")
       .not("deletion_requested_at", "is", null)
       .lt("deletion_requested_at", thirtyDaysAgo.toISOString());
       
@@ -40,13 +40,32 @@ export async function GET(request: NextRequest) {
     // but in Supabase, the user deletion might not cascade to `public.profiles` unless the foreign key is set to CASCADE.
     // However, calling admin.auth.admin.deleteUser(id) is the official way.
     
+    // Tables the registered-user deletion path anonymizes/clears. The auth-user
+    // delete cascades to public.profiles, which fires the BEFORE DELETE trigger
+    // (migration 20260602083300) that anonymizes these dependent rows in place
+    // (keeps money, strips identity). Recorded verbatim in the audit row below.
+    const TABLES_CLEARED = ["profiles", "bookings", "booking_disputes", "case_events"];
+
     const results = [];
     for (const user of usersToDelete) {
       const { error } = await admin.auth.admin.deleteUser(user.id);
       if (error) {
         results.push({ id: user.id, success: false, error: error.message });
-      } else {
-        results.push({ id: user.id, success: true });
+        continue;
+      }
+      results.push({ id: user.id, success: true });
+
+      // Accountability trail (revDSG Art. 25 / GDPR Art. 5(2)): one log row per
+      // processed erasure. user_email is NOT NULL — fall back to a stable
+      // sentinel keyed by id if the profile carried no email.
+      const { error: logErr } = await admin.from("data_deletion_log").insert({
+        user_email: user.email ?? `deleted-user:${user.id}`,
+        requested_at: user.deletion_requested_at ?? null,
+        completed_at: new Date().toISOString(),
+        tables_cleared: TABLES_CLEARED,
+      });
+      if (logErr) {
+        console.error("[api/cron/process-deletions] deletion_log insert failed:", logErr);
       }
     }
 

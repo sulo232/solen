@@ -5,18 +5,17 @@
 // reaches status 'charged'). Without this the off-session debit is silent — a
 // chargeback magnet. Sibling of notify-refund.ts; same guest-vs-user guard.
 //
-//   - user_id present → in-app notification (locale resolved via profiles.locale)
-//   - user_id null     → GUEST: nothing here (notifications.user_id is NOT NULL
-//                         REFERENCES auth.users — a guest can't get an in-app row;
-//                         sendNotification would insert + log an FK error)
+//   - user_id present  → in-app notification + email (locale + email resolved via
+//                         profiles.locale + auth.admin.getUserById, like notify-refund)
+//   - user_id null      → GUEST: email only to bookings.guest_email, no in-app row
+//                         (notifications.user_id is NOT NULL REFERENCES auth.users —
+//                         a guest can't get an in-app row; sendNotification would
+//                         insert + log an FK error)
 //
-// EMAIL: deliberately NOT sent. There is NO `upcharge_charged` email template in
-// lib/email-templates yet, and inventing copy is out of scope. This helper wires
-// the IN-APP notification only; the email leg is flagged as missing (see the
-// task report). When a template lands, add an `emailParams` block here mirroring
-// notify-refund.ts + a `case 'upcharge_charged'` in lib/notifications.ts.
+// EMAIL: via the `upchargeChargedEmail` template (lib/email-templates/audit-notifications.ts)
+// + a `case 'upcharge_charged'` in lib/notifications.ts, mirroring notify-refund's receipt.
 //
-// Money is INTEGER Rappen end-to-end; we format Rappen → CHF for the body var only.
+// Money is INTEGER Rappen end-to-end; we format Rappen → CHF for the body/email var only.
 // The caller wraps this in `.catch(...)` — a notification failure must NEVER roll
 // back or block the money move (same discipline as the webhook / notify-refund).
 
@@ -32,7 +31,7 @@ const LOCALE_BCP47: Record<EmailLocale, string> = {
 };
 
 /**
- * Send the `upcharge_charged` IN-APP notification to a booking's customer.
+ * Send the `upcharge_charged` notification (in-app + email) to a booking's customer.
  *
  * @param admin       ADMIN (service-role) Supabase client (same one the caller holds).
  * @param bookingId   The booking whose saved card was charged.
@@ -50,7 +49,7 @@ export async function notifyUpchargeCharged(
   // back to name_de (same as notify-refund).
   const { data: bk } = await admin
     .from("bookings")
-    .select("user_id, services(name_de, name_en), salons(name)")
+    .select("user_id, guest_email, services(name_de, name_en), salons(name)")
     .eq("id", bookingId)
     .maybeSingle();
 
@@ -60,29 +59,53 @@ export async function notifyUpchargeCharged(
     return;
   }
 
-  // GUEST (user_id null): no in-app row possible (FK) and no email template — nothing to do.
-  if (!booking.user_id) return;
-
   const salonName = (booking.salons as { name?: string } | null)?.name ?? "Salon";
   const services = booking.services as Record<string, string | null> | null;
 
-  const { data: profile } = await admin
-    .from("profiles")
-    .select("locale")
-    .eq("id", booking.user_id)
-    .single();
-  const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
-  const serviceName = services?.[`name_${locale}`] ?? services?.name_de ?? "Service";
-  const amountStr = formatCurrency(amountCents / 100, LOCALE_BCP47[locale] ?? "de-CH");
-
   const { sendNotification } = await import("@/lib/notifications");
 
-  // In-app only (no emailParams → sendNotification skips the email switch entirely).
-  await sendNotification({
-    userId: booking.user_id,
-    type: "upcharge_charged",
-    title: "Aufpreis berechnet",
-    body: `Der von dir genehmigte Aufpreis von ${amountStr} für deine Buchung (${serviceName}) bei ${salonName} wurde deiner Karte belastet.`,
-    data: { bookingId, amount: amountCents },
-  });
+  if (booking.user_id) {
+    // Logged-in customer → in-app notification + email (mirror notify-refund.ts).
+    const { data: profile } = await admin
+      .from("profiles")
+      .select("locale")
+      .eq("id", booking.user_id)
+      .single();
+    const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
+    const serviceName = services?.[`name_${locale}`] ?? services?.name_de ?? "Service";
+    const amountStr = formatCurrency(amountCents / 100, LOCALE_BCP47[locale] ?? "de-CH");
+
+    const { data: authUser } = await admin.auth.admin.getUserById(booking.user_id);
+    const email = authUser?.user?.email;
+
+    await sendNotification({
+      userId: booking.user_id,
+      type: "upcharge_charged",
+      title: "Aufpreis berechnet",
+      body: `Der von dir genehmigte Aufpreis von ${amountStr} für deine Buchung (${serviceName}) bei ${salonName} wurde deiner Karte belastet.`,
+      data: { bookingId, amount: amountCents },
+      emailParams: email
+        ? { to: email, locale, vars: { service: serviceName, salonName, amount: amountStr } }
+        : undefined,
+    });
+    return;
+  }
+
+  // GUEST (user_id null) → EMAIL ONLY, no in-app notification. notifications.user_id is
+  // NOT NULL REFERENCES auth.users (migration 075), so a guest can't get an in-app row;
+  // sendNotification would always insert + log an FK error. So we call the upcharge template
+  // + sendEmail directly here (mirrors notify-refund.ts's guest branch).
+  const guestEmail = booking.guest_email as string | null;
+  if (!guestEmail) {
+    // Nothing to notify (e.g. a free/back-office booking with no contact); not an error.
+    return;
+  }
+  const serviceName = services?.name_de ?? "Service"; // no guest profile → de fallback.
+  const amountStr = formatCurrency(amountCents / 100, "de-CH");
+
+  const { upchargeChargedEmail } = await import("@/lib/email-templates/audit-notifications");
+  const { sendEmail } = await import("@/lib/email");
+  await sendEmail(
+    upchargeChargedEmail(guestEmail, { service: serviceName, salonName, amount: amountStr }, "de"),
+  );
 }

@@ -15,7 +15,7 @@ export const runtime = "nodejs";
 //   https://solen.ch/api/stripe/webhook
 // Events to enable: payment_intent.succeeded, payment_intent.payment_failed,
 //                   payment_intent.amount_capturable_updated (walk-in ticket backstop),
-//                   charge.dispute.created, account.updated
+//                   charge.dispute.created, charge.dispute.closed, account.updated
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const sig = req.headers.get("stripe-signature");
@@ -77,6 +77,14 @@ export async function POST(req: NextRequest) {
       const wasVoucherPurchase = await handleVoucherPurchase(pi);
       if (wasVoucherPurchase) break;
 
+      // Package + retail purchases: finalize the purchase row (paid_amount in
+      // Rappen, status) + write a salon_payouts ledger row so the canonical
+      // charge.refunded reconciler can adjust it when issuePurchaseRefund runs.
+      // Each handler is an early-return guard like handleVoucherPurchase.
+      const { handlePurchasePaid } = await import("./purchase-handler");
+      const wasPurchase = await handlePurchasePaid(pi);
+      if (wasPurchase) break;
+
       const bookingId = pi.metadata?.booking_id;
       if (bookingId) {
         // SP-G2 full prepay: type:"booking" PIs are captured in full at booking
@@ -86,11 +94,35 @@ export async function POST(req: NextRequest) {
         if (pi.metadata?.type === "booking") {
           const pmId = typeof pi.payment_method === "string" ? pi.payment_method : pi.payment_method?.id ?? null;
           const custId = typeof pi.customer === "string" ? pi.customer : pi.customer?.id ?? null;
+          const paidAmount = pi.amount ?? 0; // Rappen — the VAT-inclusive gross the customer paid.
+
+          // VAT/MWST (per-salon, VAT-inclusive). Read the salon's registration
+          // + rate; a registered salon's paid_amount is split into net + VAT by
+          // subtraction (computeVat), a non-registered salon stores no VAT.
+          // GRACEFUL: if the salon vat columns aren't present yet (migration not
+          // applied) the select errors → default to not-registered, never crash.
+          let vat = { netRappen: paidAmount, vatRappen: 0, ratePercent: 0 };
+          if (pi.metadata?.salon_id) {
+            const { data: vatSalon } = await admin
+              .from("salons")
+              .select("vat_registered, vat_rate")
+              .eq("id", pi.metadata.salon_id)
+              .maybeSingle();
+            const { computeVat } = await import("@/lib/vat");
+            vat = computeVat(paidAmount, {
+              registered: (vatSalon as any)?.vat_registered ?? false,
+              ratePercent: (vatSalon as any)?.vat_rate ?? 8.1,
+            });
+          }
+
           await admin.from("bookings").update({
             status: "confirmed",
             payment_status: "paid",
-            paid_amount: pi.amount ?? 0,                       // Rappen
+            paid_amount: paidAmount,                           // Rappen
             platform_fee: pi.application_fee_amount ?? 0,      // Rappen (the fee issueRefund later reverses)
+            vat_amount: vat.vatRappen,                         // Rappen — VAT portion of paid_amount.
+            net_amount: vat.netRappen,                         // Rappen — paid_amount − vat_amount.
+            vat_rate: vat.ratePercent,                         // rate applied (0 if salon not registered).
             stripe_customer_id: custId,
             stripe_payment_method_id: pmId,
           }).eq("payment_intent_id", pi.id);
@@ -137,7 +169,7 @@ export async function POST(req: NextRequest) {
         // Send booking confirmation email to customer
         const { data: booking } = await admin
           .from("bookings")
-          .select("user_id, starts_at, services(name_de), salons(name)")
+          .select("user_id, starts_at, paid_amount, vat_amount, net_amount, vat_rate, services(name_de), salons(name, vat_number)")
           .eq("id", bookingId)
           .single();
 
@@ -172,6 +204,20 @@ export async function POST(req: NextRequest) {
             const serviceName = (booking.services as any)?.[`name_${locale}`] ?? (booking.services as any)?.name_de ?? "Service";
             const salonName = (booking.salons as any)?.name ?? "Salon";
             
+            // Price + Swiss VAT breakdown, read back from the row this handler just wrote (cast —
+            // the generated types don't yet include the new VAT columns). rate 0/null ⇒ the
+            // template shows just the total (Kleinunternehmen / not registered).
+            const b = booking as any;
+            const bVatRate = Number(b.vat_rate ?? 0);
+            const priceVars = {
+              total: `CHF ${((b.paid_amount ?? 0) / 100).toFixed(2)}`,
+              ...(bVatRate > 0 ? {
+                net: `CHF ${((b.net_amount ?? 0) / 100).toFixed(2)}`,
+                vat: `CHF ${((b.vat_amount ?? 0) / 100).toFixed(2)}`,
+                rate: bVatRate % 1 === 0 ? String(bVatRate) : bVatRate.toFixed(1),
+                vatNumber: (booking.salons as any)?.vat_number ?? undefined,
+              } : {}),
+            };
             const { sendNotification } = await import("@/lib/notifications");
             await sendNotification({
               userId: booking.user_id,
@@ -182,7 +228,7 @@ export async function POST(req: NextRequest) {
               emailParams: {
                 to: email,
                 locale,
-                vars: { service: serviceName, salon: salonName, date: dateStr, time: timeStr }
+                vars: { service: serviceName, salon: salonName, date: dateStr, time: timeStr, ...priceVars }
               }
             }).catch((err) => console.error("[StripeWebhook] failed to send booking confirmation notification:", err));
           }
@@ -316,11 +362,16 @@ export async function POST(req: NextRequest) {
       const pi = event.data.object;
       const bookingId = pi.metadata?.booking_id;
       if (bookingId) {
-        // Release the booking slot
+        // Release the booking slot.
+        // ADVANCE-ONLY guard (Stripe does not guarantee event ordering). A late
+        // payment_failed must not cancel a booking that an earlier-but-later-
+        // delivered succeeded event already moved to 'paid' (or 'deposit_held') —
+        // only cancel from a pre-payment state.
         await admin.from("bookings").update({
           status: "cancelled",
           payment_status: "none",
-        }).eq("payment_intent_id", pi.id);
+        }).eq("payment_intent_id", pi.id)
+          .in("payment_status", ["pending", "none", "card_saved"]);
         // Free the slot
         await admin.from("availability_slots").update({ status: "available" })
           .eq("id", pi.metadata?.slot_id ?? "");
@@ -372,6 +423,137 @@ export async function POST(req: NextRequest) {
       } else {
         console.warn("[stripe/webhook] ADMIN_EMAIL not set — skipping dispute notification");
       }
+
+      // Link the chargeback to its booking + write an audit row. A card-network
+      // chargeback is a separate external system from booking_disputes, so we do
+      // NOT create a booking_disputes row — just an audit_log breadcrumb so the
+      // dispute is traceable to the booking. dispute.payment_intent can arrive as
+      // an expanded object, so normalize it the same way the booking branch does
+      // for pi.payment_method / pi.customer. actor_id is null: the card network,
+      // not a human, opened this (mirrors the cron audit-log inserts).
+      try {
+        const disputePiId =
+          typeof dispute.payment_intent === "string"
+            ? dispute.payment_intent
+            : dispute.payment_intent?.id ?? null;
+        let disputeBookingId: string | null = null;
+        if (disputePiId) {
+          const { data: disputeBooking } = await admin
+            .from("bookings")
+            .select("id")
+            .eq("payment_intent_id", disputePiId)
+            .maybeSingle();
+          disputeBookingId = disputeBooking?.id ?? null;
+        }
+        await admin.from("audit_log").insert({
+          actor_id: null,
+          action: "chargeback_opened",
+          target_type: "booking",
+          target_id: disputeBookingId,
+          metadata: {
+            note: "chargeback opened",
+            dispute_id: dispute.id,
+            amount: dispute.amount / 100, // Rappen → CHF
+            reason: dispute.reason,
+            status: dispute.status,
+            payment_intent: disputePiId,
+            booking_id: disputeBookingId,
+          },
+        });
+      } catch (chargebackAuditErr) {
+        // Non-fatal: the admin email already fired; never break the handler over
+        // the audit/link write (mirrors the off-session ledger discipline).
+        console.error(
+          "[stripe/webhook] chargeback created link/audit failed:",
+          chargebackAuditErr,
+          { event_id: event.id, dispute: dispute.id },
+        );
+      }
+      break;
+    }
+
+    case "charge.dispute.closed": {
+      // A card-network chargeback resolved. On `lost`, the funds were already
+      // withdrawn from the salon's connected balance (destination charge) — so
+      // decrement that PI's salon_payouts row like a refund, recomputing from the
+      // dispute's own amount (NOT from the already-mutated row) so repeated
+      // deliveries converge (idempotent; the top-level claim also dedups). On
+      // `won` the funds were returned: since `created` only logged (no ledger
+      // touch), there is nothing to restore — leave the ledger as-is. Either way,
+      // write an audit row with the outcome.
+      const dispute = event.data.object;
+      console.warn("[stripe/webhook] Dispute closed:", dispute.id, dispute.status, dispute.amount / 100, "CHF");
+      const disputePiId =
+        typeof dispute.payment_intent === "string"
+          ? dispute.payment_intent
+          : dispute.payment_intent?.id ?? null;
+
+      let disputeBookingId: string | null = null;
+      let ledgerAdjusted = false;
+      if (disputePiId) {
+        // Resolve the booking for the audit breadcrumb.
+        const { data: disputeBooking } = await admin
+          .from("bookings")
+          .select("id")
+          .eq("payment_intent_id", disputePiId)
+          .maybeSingle();
+        disputeBookingId = disputeBooking?.id ?? null;
+
+        if (dispute.status === "lost") {
+          // Mirror charge.refunded: derive the remaining gross from the charge's
+          // ORIGINAL capture minus the lost dispute amount, never from the
+          // (possibly already-decremented) row, so a duplicate delivery converges
+          // to the same value. Guarded read — no payout row ⇒ nothing to adjust.
+          const { data: payout } = await admin
+            .from("salon_payouts")
+            .select("*")
+            .eq("stripe_payment_intent_id", disputePiId)
+            .maybeSingle();
+          if (payout) {
+            const newGross = Math.max(0, payout.gross_amount - dispute.amount / 100); // Rappen → CHF
+            const newComm = Math.round(newGross * (payout.commission_percent / 100) * 100) / 100;
+            const newNet = Math.round((newGross - newComm) * 100) / 100;
+            await admin.from("salon_payouts").update({
+              gross_amount: newGross,
+              commission_amount: newComm,
+              net_amount: newNet,
+            }).eq("id", payout.id);
+            ledgerAdjusted = true;
+          }
+        }
+      }
+
+      try {
+        await admin.from("audit_log").insert({
+          actor_id: null,
+          action: dispute.status === "lost" ? "chargeback_lost" : "chargeback_closed",
+          target_type: "booking",
+          target_id: disputeBookingId,
+          metadata: {
+            note:
+              dispute.status === "lost"
+                ? "chargeback lost — salon payout decremented"
+                : dispute.status === "won"
+                  ? "chargeback won — ledger unchanged"
+                  : `chargeback closed (${dispute.status}) — ledger unchanged`,
+            dispute_id: dispute.id,
+            amount: dispute.amount / 100, // Rappen → CHF
+            reason: dispute.reason,
+            status: dispute.status,
+            ledger_adjusted: ledgerAdjusted,
+            payment_intent: disputePiId,
+            booking_id: disputeBookingId,
+          },
+        });
+      } catch (chargebackAuditErr) {
+        // Non-fatal: the ledger adjustment (the money-bearing part) already ran;
+        // never break the handler over the audit write.
+        console.error(
+          "[stripe/webhook] chargeback closed audit failed:",
+          chargebackAuditErr,
+          { event_id: event.id, dispute: dispute.id, status: dispute.status },
+        );
+      }
       break;
     }
 
@@ -379,12 +561,17 @@ export async function POST(req: NextRequest) {
       const si = event.data.object as any;
       const bookingId = si.metadata?.booking_id;
       if (bookingId && si.payment_method) {
+        // ADVANCE-ONLY guard (Stripe does not guarantee event ordering). A late
+        // setup_intent.succeeded must not downgrade a booking already advanced to
+        // a money-bearing state by an earlier-but-later-delivered payment event —
+        // only apply card_saved from a lower/none state.
         await admin.from("bookings").update({
           payment_status: "card_saved",
           stripe_setup_intent_id: si.id,
           stripe_customer_id: si.customer,
           stripe_payment_method_id: si.payment_method,
-        }).eq("id", bookingId);
+        }).eq("id", bookingId)
+          .in("payment_status", ["pending", "none", "card_saved"]);
       }
       break;
     }
@@ -420,11 +607,18 @@ export async function POST(req: NextRequest) {
     case "charge.refunded": {
       const charge = event.data.object as any;
       if (charge.payment_intent) {
-        const amountRefunded = charge.amount_refunded / 100;
         // Find corresponding salon payout and adjust it
-        const { data: payout } = await admin.from("salon_payouts").select("*").eq("stripe_payment_intent_id", charge.payment_intent).single();
+        const { data: payout } = await admin.from("salon_payouts").select("*").eq("stripe_payment_intent_id", charge.payment_intent).maybeSingle();
         if (payout) {
-          const newGross = payout.gross_amount - amountRefunded;
+          // Recompute from the CHARGE's OWN figures, never from the (already-
+          // mutated) row. charge.amount = originally captured Rappen;
+          // charge.amount_refunded = CUMULATIVE refunded Rappen. The old
+          // `payout.gross_amount - amount_refunded` double-subtracted on the 2nd+
+          // partial refund because gross_amount had already been decremented by
+          // the prior one. Deriving the remaining gross straight from the charge
+          // makes repeated/duplicate charge.refunded deliveries converge to the
+          // same value (idempotent across partials).
+          const newGross = (charge.amount - charge.amount_refunded) / 100; // Rappen → CHF
           const newComm = Math.round(newGross * (payout.commission_percent / 100) * 100) / 100;
           const newNet = Math.round((newGross - newComm) * 100) / 100;
           await admin.from("salon_payouts").update({

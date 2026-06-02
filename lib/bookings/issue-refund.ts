@@ -14,6 +14,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getStripe } from "@/lib/stripe";
 import { getRefundConfig } from "@/lib/bookings/refund-config";
+import { alertAdmin } from "@/lib/alert-admin";
 
 export type RefundSource = "booking" | "walkin"; // 'walkin' reserved for D10; SP-0 implements 'booking'.
 
@@ -134,6 +135,19 @@ export async function issueRefund(args: IssueRefundArgs): Promise<IssueRefundRes
   try {
     refund = await getStripe().refunds.create(refundParams as any, { idempotencyKey });
   } catch (stripeErr: any) {
+    // A refund that throws is a genuine money-path failure — unlike a charge there
+    // is no "decline" business outcome here (the funds already moved IN; a failing
+    // refund means already_refunded / insufficient platform balance / Stripe API
+    // error). Always worth an alert. Keep the typed throw so callers map it to 500.
+    void alertAdmin("Stripe refund threw", {
+      booking_id: id,
+      payment_intent: pi,
+      amount_cents: amountCents,
+      idempotency_key: idempotencyKey,
+      stripe_error_type: stripeErr?.type ?? stripeErr?.raw?.type ?? null,
+      stripe_error_code: stripeErr?.code ?? stripeErr?.raw?.code ?? null,
+      error: stripeErr?.message ?? String(stripeErr),
+    });
     throw new RefundError("STRIPE_FAILED", stripeErr?.message ?? "Stripe refund failed");
   }
 

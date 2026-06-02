@@ -541,6 +541,99 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 }
 
 // ─────────────────────────────────────────
+// VAT / MWST registration Tab
+// ─────────────────────────────────────────
+
+function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const ext = salon as Salon & { vat_registered?: boolean; vat_number?: string | null };
+  const [registered, setRegistered] = useState<boolean>(ext.vat_registered ?? false);
+  const [vatNumber, setVatNumber] = useState(ext.vat_number ?? "");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    // Not registered ⇒ clear the UID (a Kleinunternehmen carries none). Registered ⇒ trim,
+    // empty becomes null. vat_rate stays server-default (8.1%) — not owner-editable.
+    await onSave({
+      vat_registered: registered,
+      vat_number: registered ? (vatNumber.trim() || null) : null,
+    } as Partial<Salon>);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const options: { id: boolean; label: string; desc: string }[] = [
+    { id: true, label: "MWST-registriert", desc: "Du weist 8.1% MWST aus" },
+    { id: false, label: "Kleinunternehmen", desc: "Keine MWST · Umsatz < CHF 100k" },
+  ];
+
+  const previewText = registered
+    ? "Kunden sehen auf dem Beleg Netto + 8.1% MWST + Gesamt sowie deine MWST-Nummer."
+    : "Kunden sehen nur den Gesamtbetrag. Es wird keine MWST ausgewiesen.";
+
+  return (
+    <div className="py-4 max-w-md space-y-6">
+      {/* Registration status cards */}
+      <div>
+        <label className="block text-xs font-medium text-s-ink/50 mb-2">MWST-Status</label>
+        <div className="grid grid-cols-2 gap-2">
+          {options.map((opt) => (
+            <button
+              key={String(opt.id)}
+              type="button"
+              onClick={() => setRegistered(opt.id)}
+              className={[
+                "rounded-[12px] border p-3 text-left transition-colors",
+                registered === opt.id
+                  ? "border-s-coral bg-s-coral/5"
+                  : "border-s-ink/10 hover:border-s-ink/20",
+              ].join(" ")}
+            >
+              <p className={["text-sm font-medium", registered === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>
+                {opt.label}
+              </p>
+              <p className="text-[10px] text-s-ink/40 mt-0.5">{opt.desc}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* VAT number input (only when registered) */}
+      {registered && (
+        <div>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">MWST-Nummer (UID)</label>
+          <input
+            type="text"
+            value={vatNumber}
+            onChange={(e) => setVatNumber(e.target.value)}
+            placeholder="CHE-123.456.789 MWST"
+            className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-coral"
+          />
+          <p className="text-[10px] text-s-ink/40 mt-1">Deine Schweizer Unternehmens-Identifikationsnummer.</p>
+        </div>
+      )}
+
+      {/* Preview */}
+      <div className="bg-s-bg-surface rounded-[12px] px-4 py-3">
+        <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest mb-1">Vorschau für Kunden</p>
+        <p className="text-sm text-s-ink/70">{previewText}</p>
+      </div>
+
+      {/* Save */}
+      <div className="flex items-center gap-3">
+        <button onClick={handleSave} disabled={saving}
+          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+          {saving && <Spinner size="sm" invert />}Speichern
+        </button>
+        {saved && <span className="text-sm text-s-coral">Gespeichert ✓</span>}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
 // Verification Tab (Phase 11)
 // ─────────────────────────────────────────
 
@@ -1178,6 +1271,7 @@ export default function SettingsPage() {
               { id: "closures", label: "Feiertage", content: <ClosuresTab salon={salon} /> },
               { id: "scheduling", label: "Terminvergabe", content: <SchedulingTab salon={salon} onSave={handleSave} /> },
               { id: "commission", label: "Provision", content: <CommissionTab salon={salon} /> },
+              { id: "vat", label: "MWST", content: <VatRegistrationTab salon={salon} onSave={handleSave} /> },
               { id: "offpeak", label: "Nebenzeiten", content: <OffPeakManager salonId={salon.id} /> },
             ]}
           />

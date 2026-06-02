@@ -48,11 +48,29 @@ export function lateCancellationFeeEmail(to: string, vars: { service: string; sa
   };
 }
 
-export function refundProcessedEmail(to: string, vars: { service: string; salonName: string; amount: string }, locale: EmailLocale = "de"): EmailPayload {
+export function refundProcessedEmail(to: string, vars: { service: string; salonName: string; amount: string; net?: string; vat?: string; rate?: string; vatNumber?: string }, locale: EmailLocale = "de"): EmailPayload {
+  // Optional Swiss VAT credit-note (Gutschrift) breakdown — shown only when the refunded
+  // booking carried VAT (registered salon). Mirrors variant 3 of the approved receipt mockup.
+  const creditNote = vars.net && vars.vat && vars.rate
+    ? `<table style="margin-top:12px;border-collapse:collapse;font-size:14px">` +
+      `<tr><td style="padding:3px 24px 3px 0;color:#666">Erstattet (netto)</td><td style="padding:3px 0;text-align:right">${vars.net}</td></tr>` +
+      `<tr><td style="padding:3px 24px 3px 0;color:#666">davon MWST ${vars.rate}%</td><td style="padding:3px 0;text-align:right">${vars.vat}</td></tr>` +
+      `<tr><td style="padding:6px 24px 0 0;font-weight:700">Gutschrift gesamt</td><td style="padding:6px 0 0;text-align:right;font-weight:700">${vars.amount}</td></tr>` +
+      `</table>` +
+      (vars.vatNumber ? `<p style="margin-top:6px;color:#888;font-size:12px">Gutschrift zu MWST-Nr. ${vars.vatNumber}</p>` : "")
+    : "";
   return {
     to,
     subject: `Rückerstattung verarbeitet: ${vars.amount} für ${vars.salonName}`,
-    html: `<p>Hallo,</p><p>Eine Rückerstattung in Höhe von <strong>${vars.amount}</strong> für Ihre Buchung (<strong>${vars.service}</strong>) bei <strong>${vars.salonName}</strong> wurde verarbeitet. Es kann einige Tage dauern, bis das Geld auf Ihrem Konto eingeht.</p>`,
+    html: `<p>Hallo,</p><p>Eine Rückerstattung in Höhe von <strong>${vars.amount}</strong> für Ihre Buchung (<strong>${vars.service}</strong>) bei <strong>${vars.salonName}</strong> wurde verarbeitet. Es kann einige Tage dauern, bis das Geld auf Ihrem Konto eingeht.</p>${creditNote}`,
+  };
+}
+
+export function upchargeChargedEmail(to: string, vars: { service: string; salonName: string; amount: string }, locale: EmailLocale = "de"): EmailPayload {
+  return {
+    to,
+    subject: `Nachzahlung belastet: ${vars.salonName}`,
+    html: `<p>Hallo,</p><p>Der von Ihnen genehmigte Aufpreis in Höhe von <strong>${vars.amount}</strong> für Ihre Buchung (<strong>${vars.service}</strong>) bei <strong>${vars.salonName}</strong> wurde Ihrer hinterlegten Karte belastet.</p>`,
   };
 }
 

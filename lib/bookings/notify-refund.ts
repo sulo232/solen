@@ -42,7 +42,7 @@ export async function notifyRefundProcessed(
   // branch below. services only carry de/en today; fr/it fall back to name_de.
   const { data: bk } = await admin
     .from("bookings")
-    .select("user_id, guest_email, services(name_de, name_en), salons(name)")
+    .select("user_id, guest_email, vat_rate, services(name_de, name_en), salons(name, vat_number)")
     .eq("id", bookingId)
     .maybeSingle();
 
@@ -54,6 +54,19 @@ export async function notifyRefundProcessed(
 
   const salonName = (booking.salons as { name?: string } | null)?.name ?? "Salon";
   const services = booking.services as Record<string, string | null> | null;
+
+  // Swiss VAT credit-note split of THIS refund slice (VAT-inclusive). Only when the booking
+  // carried VAT at payment (registered salon, vat_rate > 0). Mirrors variant 3 of the receipt
+  // mockup; vatVars(bcp47) is spread into the email vars per locale (empty ⇒ no breakdown).
+  const vatRate = Number((booking.vat_rate as number | null) ?? 0);
+  const vatNumber = (booking.salons as { vat_number?: string } | null)?.vat_number ?? undefined;
+  const { computeVat } = await import("@/lib/vat");
+  const vb = vatRate > 0 ? computeVat(amountCents, { registered: true, ratePercent: vatRate }) : null;
+  const rateStr = vatRate % 1 === 0 ? String(vatRate) : vatRate.toFixed(1);
+  const vatVars = (bcp47: string) =>
+    vb
+      ? { net: formatCurrency(vb.netRappen / 100, bcp47), vat: formatCurrency(vb.vatRappen / 100, bcp47), rate: rateStr, vatNumber }
+      : {};
 
   const { sendNotification } = await import("@/lib/notifications");
 
@@ -79,7 +92,7 @@ export async function notifyRefundProcessed(
       body: `Eine Rückerstattung in Höhe von ${amountStr} für deine Buchung wurde verarbeitet.`,
       data: { bookingId, amount: amountCents },
       emailParams: email
-        ? { to: email, locale, vars: { service: serviceName, salonName, amount: amountStr } }
+        ? { to: email, locale, vars: { service: serviceName, salonName, amount: amountStr, ...vatVars(LOCALE_BCP47[locale] ?? "de-CH") } }
         : undefined,
     });
     return;
@@ -100,6 +113,6 @@ export async function notifyRefundProcessed(
   const { refundProcessedEmail } = await import("@/lib/email-templates/audit-notifications");
   const { sendEmail } = await import("@/lib/email");
   await sendEmail(
-    refundProcessedEmail(guestEmail, { service: serviceName, salonName, amount: amountStr }, "de"),
+    refundProcessedEmail(guestEmail, { service: serviceName, salonName, amount: amountStr, ...vatVars("de-CH") }, "de"),
   );
 }

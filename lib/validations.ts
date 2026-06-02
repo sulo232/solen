@@ -706,6 +706,25 @@ export const bookingRefundSchema = z.object({
   reason: z.string().min(3).max(500),
 });
 
+// Package / retail purchase refund (Connect-aware, lib/purchases/issue-purchase-refund.ts).
+// `amount` is integer Rappen (capped server-side at paid − already-refunded).
+// `mode: "prorata"` (packages only) ignores `amount` and refunds only UNUSED
+// sessions (paid_amount * sessions_remaining / sessions_total); the route validates
+// the source supports it. reason is required for the audit trail.
+export const purchaseRefundSchema = z.object({
+  amount: z.number().int().min(1).max(1000000).optional(),
+  mode: z.enum(["amount", "prorata"]).default("amount"),
+  reason: z.string().min(3).max(500),
+});
+
+// Admin variant of purchaseRefundSchema: the admin route is source-agnostic, so the
+// body carries which purchase table + id to act on (the salon routes encode source
+// in the path instead).
+export const adminPurchaseRefundSchema = purchaseRefundSchema.extend({
+  source: z.enum(["package", "retail"]),
+  id: z.string().uuid(),
+});
+
 // SP-AC (REFUND_APPEAL_PLAN tasks #16/#17): salon cancellation + no-show policy update.
 // Validates the canonical policy columns the auto-charge executor trusts. fee VALUES are
 // CHF at the settings boundary (the executor converts to Rappen). percentage fees are

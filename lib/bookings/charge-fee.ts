@@ -23,6 +23,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { toRappen } from "@/lib/stripe";
 import { chargeOffSession } from "@/lib/bookings/off-session-charge";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
+import { alertAdmin } from "@/lib/alert-admin";
 
 export type FeeKind = "cancellation" | "no_show";
 export type FeeSource = "booking" | "walkin"; // 'walkin' reserved (D10); SP-AC implements 'booking'.
@@ -241,5 +242,19 @@ async function casUpdate(
   if (error) {
     // Non-fatal: the money already moved (or didn't). Log so the row drift is visible.
     console.error(`[charge-fee] CAS status update failed for booking ${id}:`, error.message);
+    // Alert ONLY when this was the SUCCESS write (fee actually charged) — a captured
+    // fee whose fee_charge_status failed to persist is a money move with no record
+    // (the same drift class as the upcharge CAS). The 'failed' (decline) and
+    // 'requires_action' (parked PI) CAS writes moved NO money, so they don't alert.
+    if (patch.fee_charge_status === "charged") {
+      void alertAdmin("fee charged but status write failed", {
+        booking_id: id,
+        charged_cents: patch.fee_charged_amount ?? null,
+        payment_intent: patch.fee_charge_intent_id ?? null,
+        kind: patch.fee_charge_kind ?? null,
+        error: error.message,
+        note: "Money captured at Stripe; bookings.fee_charge_status did NOT advance to 'charged'. Reconcile manually.",
+      });
+    }
   }
 }

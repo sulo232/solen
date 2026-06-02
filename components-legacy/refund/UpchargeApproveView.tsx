@@ -34,6 +34,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+import { loadStripe } from "@stripe/stripe-js";
 import {
   ChevronLeft,
   Check,
@@ -44,6 +45,7 @@ import {
   CreditCard,
   MessageSquare,
   Receipt,
+  ShieldCheck,
 } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { cn } from "@/lib/utils";
@@ -72,6 +74,14 @@ interface UpchargeShape {
   created_at: string;
 }
 
+// Stripe.js singleton — loadStripe must run ONCE, outside render (same setup as
+// WalkInPaymentForm: platform publishable key, no `stripeAccount` option — the
+// upcharge PaymentIntent is created on the platform account by chargeUpcharge).
+// Used only to surface the bank's 3-D Secure challenge via confirmCardPayment when
+// the off-session charge returns requires_action; we never mount card Elements here
+// (the card is already attached server-side).
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "");
+
 // Primary "pay the surcharge" commit = solid VIVID orange (s-surcharge), NOT ink — the
 // surcharge IS the message (V3-D424, mockup .btn-primary). Caution=orange, not happy-blue.
 const ctaSurcharge =
@@ -83,8 +93,14 @@ const secondaryBtn =
 const declineBtn =
   "flex h-[46px] w-full items-center justify-center gap-2 rounded-btn border border-s-border bg-white font-display text-[14px] font-medium text-s-ink-2 transition-colors duration-150 ease-snap hover:bg-s-bg-sunken disabled:cursor-not-allowed disabled:opacity-50";
 
-/** Post-action outcome the FE renders (mockup views 4 / 5). */
-type Outcome = "approved" | "declined";
+/** Post-action outcome the FE renders (mockup states 4 success / 5 failed; plus the
+ *  explicit-decline view). "failed" = card declined, 3-D Secure cancelled, or the charge
+ *  was deferred (no saved card) — nothing was captured, so we offer a retry. */
+type Outcome = "approved" | "declined" | "failed";
+
+/** In-flight phase shown while a charge is being attempted (mockup state 2 processing;
+ *  during 3-D Secure, Stripe paints its own bank modal OVER this processing screen). */
+type Phase = null | "processing" | "3ds";
 
 export default function UpchargeApproveView({
   bookingId,
@@ -111,8 +127,11 @@ export default function UpchargeApproveView({
 
   const [submitting, setSubmitting] = useState<null | "approve" | "decline">(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  // Set after a successful PATCH so we render the confirmed view without a reload.
+  // Set after a resolved PATCH (+ any 3-D Secure step) so we render the confirmed view.
   const [outcome, setOutcome] = useState<Outcome | null>(null);
+  // In-flight phase: the charge is being attempted (processing), or Stripe is showing the
+  // bank's 3-D Secure challenge (3ds). Drives the mockup-state-2 processing screen.
+  const [phase, setPhase] = useState<Phase>(null);
 
   const load = useCallback(async () => {
     try {
@@ -151,50 +170,135 @@ export default function UpchargeApproveView({
   const expiresAt = dispute?.expires_at ? new Date(dispute.expires_at) : null;
   const isExpired = expiresAt ? expiresAt.getTime() < Date.now() : false;
 
-  // Which screen: a fresh post-action outcome wins; otherwise derive from the live status.
-  const view = useMemo<"pending" | "approved" | "declined" | "gone">(() => {
+  // Which screen: an in-flight charge (processing / 3-D Secure) wins, then a fresh
+  // post-action outcome, otherwise derive from the live status.
+  const view = useMemo<"pending" | "processing" | "approved" | "declined" | "failed" | "gone">(() => {
+    if (phase) return "processing";
     if (outcome) return outcome;
     const s = dispute?.status;
     if (!dispute) return "gone";
     if (s === "open") return isExpired ? "gone" : "pending";
-    // charged / salon_approved = the customer approved (charge may be pursued out-of-band).
+    // charged = the difference was actually captured. salon_approved = the customer
+    // approved but the off-session charge hasn't completed (SCA pending / declined / deferred);
+    // the approve handler below renders the right outcome live, so a reload of a stale
+    // salon_approved row falls back to the approved-intent view (the approval stands).
     if (s === "charged" || s === "salon_approved" || s === "admin_approved") return "approved";
     // void = declined or expired-without-response. We treat a void with a customer response
     // as a decline; a bare void (no response) is "no longer open".
     if (s === "void") return dispute.customer_responded_at ? "declined" : "gone";
     return "gone";
-  }, [outcome, dispute, isExpired]);
+  }, [phase, outcome, dispute, isExpired]);
+
+  // PATCH approve response shape (app/api/bookings/[id]/dispute/route.ts PATCH):
+  //   charged           → { status:'charged', charged:<Rappen> }
+  //   needs 3-D Secure  → { status:'salon_approved', charge_status:'requires_action', client_secret }
+  //   declined          → { status:'salon_approved', charge_status:'failed' }
+  //   deferred (no card)→ { status:'salon_approved', charge_status:'deferred', code, note }
+  //   expired (409)     → { error, status:'void' }
+  interface ApproveResponse {
+    status?: string;
+    charged?: number | null;
+    charge_status?: "requires_action" | "failed" | "deferred";
+    client_secret?: string | null;
+    error?: string;
+    code?: string;
+  }
+
+  // Drive the bank's 3-D Secure challenge for an off-session charge that came back
+  // requires_action. Stripe.js renders the challenge UI itself; we only react to the
+  // resolved PaymentIntent. On success the money is captured → approved; on any
+  // error/cancel nothing is captured → failed (retry).
+  async function confirm3ds(clientSecret: string): Promise<"approved" | "failed"> {
+    setPhase("3ds");
+    const stripe = await stripePromise;
+    if (!stripe) {
+      // Publishable key missing/misconfigured — the charge stays parked at salon_approved
+      // server-side; surface a retryable failure rather than a false success.
+      console.error("[UpchargeApproveView] Stripe.js failed to load — cannot run 3-D Secure");
+      return "failed";
+    }
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret);
+    if (error) {
+      // Declined, expired, or the customer dismissed the bank challenge. No capture.
+      console.error("[UpchargeApproveView] 3-D Secure confirmCardPayment failed:", error.message);
+      return "failed";
+    }
+    return paymentIntent?.status === "succeeded" ? "approved" : "failed";
+  }
 
   async function respond(action: "approve" | "decline") {
     if (submitting) return;
     setSubmitting(action);
     setActionError(null);
+    if (action === "approve") setPhase("processing");
     try {
       const res = await fetch(`/api/bookings/${bookingId}/dispute`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action }),
       });
-      const j = await res.json().catch(() => ({}));
-      if (res.ok) {
-        setOutcome(action === "approve" ? "approved" : "declined");
-        // Refresh the row so the confirmed view reads real persisted values.
-        await load();
-        return;
-      }
+      const j = (await res.json().catch(() => ({}))) as ApproveResponse;
+
       // 409 with status 'void' = expired while the page was open → show the gone state.
       if (res.status === 409 && j?.status === "void") {
+        setPhase(null);
         await load();
         setActionError(t("upExpired"));
         return;
       }
-      setActionError(j?.error || t("upActionError"));
+      if (!res.ok) {
+        setPhase(null);
+        setActionError(j?.error || t("upActionError"));
+        return;
+      }
+
+      // Decline: the approval-less void path. No money, no Stripe.
+      if (action === "decline") {
+        setOutcome("declined");
+        await load();
+        return;
+      }
+
+      // ── approve: consume the charge result ──────────────────────────────────────
+      // CHARGED — the difference was captured off-session, no 3-D Secure needed.
+      if (j.status === "charged") {
+        setPhase(null);
+        setOutcome("approved");
+        await load();
+        return;
+      }
+      // REQUIRES_ACTION — run the bank's 3-D Secure challenge with the returned secret.
+      if (j.charge_status === "requires_action" && j.client_secret) {
+        const result = await confirm3ds(j.client_secret);
+        setPhase(null);
+        setOutcome(result);
+        // Reload so the success view reflects the server-confirmed 'charged' row (the
+        // PaymentIntent webhook / next read advances salon_approved → charged).
+        await load();
+        return;
+      }
+      // FAILED / DEFERRED (no saved card) / requires_action without a secret — nothing
+      // was captured. Show the retryable failed state rather than a false success.
+      setPhase(null);
+      setOutcome("failed");
+      await load();
     } catch (err) {
       console.error("[UpchargeApproveView] respond failed:", err);
-      setActionError(t("upActionError"));
+      setPhase(null);
+      // A network error mid-approve leaves the charge state ambiguous; surface a retryable
+      // failure (the deterministic idempotency key server-side means a retry can't double-charge).
+      if (action === "approve") setOutcome("failed");
+      else setActionError(t("upActionError"));
     } finally {
       setSubmitting(null);
     }
+  }
+
+  // Reset back to the pending approve/decline screen for a retry (mockup state 5 → state 1).
+  function retry() {
+    setOutcome(null);
+    setActionError(null);
+    setPhase(null);
   }
 
   const subtitle = booking?.salon_name
@@ -232,6 +336,49 @@ export default function UpchargeApproveView({
             <Receipt size={16} aria-hidden />
             {t("viewBookingReceipt")}
           </Link>
+        </div>
+      </Frame>
+    );
+  }
+
+  // ── processing / 3-D Secure (mockup state 2; during 3ds Stripe paints the bank
+  //    challenge OVER this screen) ─────────────────────────────────────────────────
+  if (view === "processing") {
+    const is3ds = phase === "3ds";
+    return (
+      <Frame t={t} isGuest={isGuest} backHref={backHref} title={t("upTitle")} subtitle={subtitle}>
+        <div className="flex-1 overflow-y-auto pb-8 pt-[18px] md:pt-7">
+          <div className="mx-auto w-full max-w-[460px]">
+            <div className="flex flex-col items-center px-2 pb-1.5 pt-16 text-center md:pt-20">
+              <span
+                className={cn(
+                  "mb-4 flex h-16 w-16 items-center justify-center rounded-pill",
+                  is3ds ? "bg-s-accent-pale" : "bg-s-surcharge-bg",
+                )}
+              >
+                {is3ds ? (
+                  <Lock size={28} strokeWidth={2} className="text-s-accent" aria-hidden />
+                ) : (
+                  <Spinner size="lg" coral />
+                )}
+              </span>
+              <h2 className="font-display text-[20px] font-semibold tracking-[-0.018em]">
+                {t(is3ds ? "up3dsHead" : "upProcessingHead")}
+              </h2>
+              <p className="mt-2.5 max-w-[300px] text-[13px] leading-[1.55] text-s-ink-2">
+                {is3ds ? t("up3dsSub", { amount: fmtMoney(extra, locale) }) : t("upProcessingSub")}
+              </p>
+            </div>
+          </div>
+        </div>
+        {/* mockup state-2 footer note: encrypted via Stripe */}
+        <div className="sticky bottom-0 mt-auto border-t border-s-border bg-gradient-to-t from-white from-[78%] to-transparent px-4 pb-[18px] pt-3.5 md:px-8">
+          <div className="mx-auto w-full max-w-[460px]">
+            <div className="flex items-center justify-center gap-1.5 text-[12px] font-medium text-s-ink-2">
+              <ShieldCheck size={14} aria-hidden />
+              {t("upSecuredStripe")}
+            </div>
+          </div>
         </div>
       </Frame>
     );
@@ -326,6 +473,62 @@ export default function UpchargeApproveView({
                 {t("upReportProblem")}
               </Link>
             </div>
+          </div>
+        </div>
+      </Frame>
+    );
+  }
+
+  // ── payment failed: card declined / 3-D Secure cancelled / deferred (mockup state 5) ─
+  //    NOTHING was charged. Offer a retry (re-runs the same off-session charge; the
+  //    server's deterministic idempotency key makes a retry safe). The mockup's
+  //    "use another card" secondary is intentionally omitted — no card-swap flow exists
+  //    on this booking surface, and fabricating one would be a dead control.
+  if (view === "failed") {
+    return (
+      <Frame
+        t={t}
+        isGuest={isGuest}
+        backHref={backHref}
+        title={t("upFailedTitle")}
+        subtitle={subtitle}
+      >
+        <div className="flex-1 overflow-y-auto pb-8 pt-[18px] md:pt-7">
+          <div className="mx-auto w-full max-w-[460px]">
+            <div className="flex flex-col items-center pb-1.5 pt-3.5 text-center">
+              <span className="mb-4 flex h-16 w-16 items-center justify-center rounded-pill bg-s-error-bg">
+                <X size={28} strokeWidth={2.4} className="text-s-error" aria-hidden />
+              </span>
+              <h2 className="font-display text-[22px] font-semibold tracking-[-0.015em]">
+                {t("upFailedHead")}
+              </h2>
+              <p className="mt-2 max-w-[320px] text-[14px] leading-[1.5] text-s-ink-2">
+                {t("upFailedSub")}
+              </p>
+            </div>
+
+            {/* "Outstanding" block — the extra is still unpaid (mockup .block) */}
+            <div className="mt-5 rounded-card border border-s-border px-3.5 py-[13px]">
+              <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.06em] text-s-ink/40">
+                {t("upFailedOpenLabel")}
+              </div>
+              <p className="text-[13px] leading-[1.45] text-s-ink/[0.72]">
+                {t("upFailedOpenBody", { amount: fmtMoney(extra, locale) })}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* sticky CTA bar — "appointment unchanged" note + red retry (mockup state-5 .cta-bar) */}
+        <div className="sticky bottom-0 mt-auto border-t border-s-border bg-gradient-to-t from-white from-[78%] to-transparent px-4 pb-[18px] pt-3.5 md:px-8">
+          <div className="mx-auto w-full max-w-[460px]">
+            <div className="mb-3 flex items-center gap-2 text-[12px] text-s-ink/50">
+              <Info size={16} className="flex-shrink-0 text-s-ink/40" aria-hidden />
+              <span>{t("upUnchanged")}</span>
+            </div>
+            <button type="button" onClick={retry} className={cn(ctaSurcharge, "bg-s-error active:scale-[0.985]")}>
+              {t("upRetry")}
+            </button>
           </div>
         </div>
       </Frame>

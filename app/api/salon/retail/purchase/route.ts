@@ -71,6 +71,18 @@ export async function POST(req: NextRequest) {
     },
   });
 
+  // Record a pending purchase row (mirrors /api/packages/purchase). The webhook
+  // (type:'retail_purchase') flips it to paid + writes paid_amount in Rappen on
+  // settle; this row is what makes a retail purchase refundable
+  // (lib/purchases/issue-purchase-refund.ts). Keyed on the PI (unique index).
+  await admin.from("retail_purchases").insert({
+    salon_id,
+    user_id: user.id,
+    product_ids,
+    stripe_payment_intent_id: paymentIntent.id,
+    status: "pending",
+  });
+
   return NextResponse.json({
     clientSecret: paymentIntent.client_secret,
     amount: totalAmount,

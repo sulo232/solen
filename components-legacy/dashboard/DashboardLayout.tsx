@@ -12,7 +12,7 @@ import {
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
   UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid, FlaskConical,
-  Scale, RotateCcw, TrendingUp,
+  Scale, RotateCcw, TrendingUp, Percent,
 } from "lucide-react";
 
 import Skeleton from "@/components-legacy/ui/Skeleton";
@@ -39,6 +39,7 @@ const ADMIN_NAV = [
   { key: "allSalons",         href: "/dashboard/all-salons",          icon: Store },
   { key: "allUsers",         href: "/dashboard/all-users",           icon: UsersRound },
   { key: "revenue",              href: "/dashboard/revenue",             icon: DollarSign },
+  { key: "commission",           href: "/dashboard/commission-admin",    icon: Percent },
   { key: "platformAnalytics", href: "/dashboard/platform-analytics", icon: BarChart3 },
   { key: "badges",              href: "/dashboard/badge-manager",       icon: Award },
   { key: "content",             href: "/dashboard/content-editor",     icon: FileEdit },

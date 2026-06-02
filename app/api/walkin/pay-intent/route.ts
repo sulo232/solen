@@ -38,15 +38,30 @@ export async function POST(req: NextRequest) {
   // Salon must be a barbershop that accepts online payment.
   const { data: salon } = await admin
     .from("salons")
-    .select("name, categories, stripe_account_id, accepts_online_payment")
+    .select("name, walkin_enabled, walkin_paused, stripe_account_id, accepts_online_payment")
     .eq("id", salon_id)
     .single();
   if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
-  if (!(salon.categories as string[] | null)?.includes("barbershop")) {
-    return NextResponse.json({ error: "Not a barbershop" }, { status: 403 });
+  // Phase 2 de-gate: walk-in is universal now (any category), gated on walkin_enabled.
+  if (!(salon as any).walkin_enabled) {
+    return NextResponse.json({ error: "Walk-in is not enabled for this salon" }, { status: 403 });
+  }
+  if ((salon as any).walkin_paused) {
+    return NextResponse.json({ error: "This shop has paused new walk-ins right now" }, { status: 409 });
   }
   if (!salon.accepts_online_payment) {
     return NextResponse.json({ error: "Salon does not accept online payments" }, { status: 400 });
+  }
+  // PAY-IN-APP REQUIRES a connected Stripe account. Without one, the PaymentIntent
+  // below would be created with no transfer_data / application_fee → the money would
+  // land in SOLEN's platform account instead of the salon's, with no commission split
+  // (council landmine #3). Block it; the shop must finish Stripe Connect onboarding
+  // first (or run the free pay-at-counter mode instead).
+  if (!salon.stripe_account_id) {
+    return NextResponse.json(
+      { error: "This shop hasn't finished connecting payouts yet. Pay at the counter or try again later." },
+      { status: 409 },
+    );
   }
 
   // Server-trusted price — from the service row, NEVER the client.

@@ -27,17 +27,17 @@ export async function GET(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
-  // Restrict to barbershops — walk-in is barber-only.
-  const { data: salons } = await admin.from("salons").select("id, categories").in("id", salonIds);
-  const barbershopIds = (salons ?? [])
-    .filter((s) => (s.categories as string[] | null)?.includes("barbershop"))
+  // Restrict to salons with walk-in ENABLED (Phase 2 de-gate: was barbershop-only).
+  const { data: salons } = await admin.from("salons").select("id, walkin_enabled").in("id", salonIds);
+  const enabledIds = (salons ?? [])
+    .filter((s) => (s as any).walkin_enabled)
     .map((s) => s.id);
-  if (barbershopIds.length === 0) return NextResponse.json({ availability: {} });
+  if (enabledIds.length === 0) return NextResponse.json({ availability: {} });
 
   const [{ data: queue }, { data: staff }, { data: services }] = await Promise.all([
-    admin.from("barber_walkin_queue").select("salon_id").in("salon_id", barbershopIds).eq("status", "waiting"),
-    admin.from("staff_members").select("salon_id").in("salon_id", barbershopIds).eq("is_active", true),
-    admin.from("services").select("salon_id, duration_minutes").in("salon_id", barbershopIds).eq("is_active", true),
+    admin.from("barber_walkin_queue").select("salon_id").in("salon_id", enabledIds).eq("status", "waiting"),
+    admin.from("staff_members").select("salon_id").in("salon_id", enabledIds).eq("is_active", true),
+    admin.from("services").select("salon_id, duration_minutes").in("salon_id", enabledIds).eq("is_active", true),
   ]);
 
   const waitingBySalon = new Map<string, number>();
@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
   }
 
   const availability: Record<string, { waitMinutes: number; queueLength: number }> = {};
-  for (const id of barbershopIds) {
+  for (const id of enabledIds) {
     const waiting = waitingBySalon.get(id) ?? 0;
     const barbers = barbersBySalon.get(id) ?? 1;
     const d = durSum.get(id);

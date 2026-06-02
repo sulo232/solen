@@ -5,8 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, walkinJoinSchema } from "@/lib/validations";
-import { nanoid } from "nanoid";
-import { estimateWaitMinutes } from "@/lib/barber/wait-time-calculator";
+import { joinWalkinQueue } from "@/lib/walkin/join";
 
 // POST /api/walkin/queue/remote-join — Public: join queue remotely
 export async function POST(req: NextRequest) {
@@ -25,53 +24,34 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
+  // Walk-in must be enabled + not paused (Phase 2 de-gate: was barbershop-only).
   const { data: salon } = await admin
-    .from("salons").select("id, categories").eq("id", validated.salon_id).single();
-  if (!salon?.categories?.includes("barbershop")) {
-    return NextResponse.json({ error: "Not a barbershop" }, { status: 403 });
+    .from("salons").select("id, walkin_enabled, walkin_paused").eq("id", validated.salon_id).single();
+  if (!(salon as any)?.walkin_enabled) {
+    return NextResponse.json({ error: "Walk-in is not enabled for this salon" }, { status: 403 });
+  }
+  if ((salon as any).walkin_paused) {
+    return NextResponse.json({ error: "This shop has paused new walk-ins right now" }, { status: 409 });
   }
 
-  const { data: lastEntry } = await admin
-    .from("barber_walkin_queue")
-    .select("position")
-    .eq("salon_id", validated.salon_id)
-    .in("status", ["waiting", "in_chair"])
-    .order("position", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  const position = (lastEntry?.position ?? 0) + 1;
-  const trackingToken = nanoid(12);
-
-  const { data: activeStaff } = await admin
-    .from("staff_members").select("id")
-    .eq("salon_id", validated.salon_id).eq("is_active", true);
-
-  const estimatedWait = estimateWaitMinutes(position - 1, 30, activeStaff?.length ?? 1);
-
-  const { data: entry, error } = await admin
-    .from("barber_walkin_queue")
-    .insert({
-      salon_id: validated.salon_id,
-      customer_name: validated.customer_name,
-      customer_phone: validated.customer_phone ?? null,
-      service_id: validated.service_id ?? null,
-      preferred_barber_id: validated.preferred_barber_id ?? null,
-      position,
-      estimated_wait_minutes: estimatedWait,
-      tracking_token: trackingToken,
-      join_method: "remote",
-    })
-    .select()
-    .single();
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  // Race-safe insert via the shared helper.
+  const result = await joinWalkinQueue(admin, {
+    salonId: validated.salon_id,
+    customerName: validated.customer_name,
+    customerPhone: validated.customer_phone ?? null,
+    serviceId: validated.service_id ?? null,
+    preferredBarberId: validated.preferred_barber_id ?? null,
+    joinMethod: "remote",
+  });
+  if (!result) {
+    return NextResponse.json({ error: "Could not join the queue, please try again" }, { status: 503 });
+  }
 
   return NextResponse.json({
-    entry,
-    trackingToken,
-    position,
-    estimatedWait,
-    trackingUrl: `/queue/${trackingToken}`,
+    entry: result.entry,
+    trackingToken: result.trackingToken,
+    position: result.position,
+    estimatedWait: result.estimatedWait,
+    trackingUrl: `/queue/${result.trackingToken}`,
   });
 }

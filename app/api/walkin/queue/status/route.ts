@@ -5,6 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { estimateWaitMinutes } from "@/lib/barber/wait-time-calculator";
 import { recentAvgServiceMinutes } from "@/lib/barber/walkin-ticket";
+import { findQueueEntryByToken } from "@/lib/walkin/authz";
 
 // GET /api/walkin/queue/status?token={tracking_token}
 // Public — anonymous clients poll this every 30s to track their queue position.
@@ -18,15 +19,18 @@ export async function GET(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
-  const { data: entry, error } = await admin
-    .from("barber_walkin_queue")
-    .select(
-      "id, customer_name, position, status, estimated_wait_minutes, joined_at, called_at, started_at, completed_at, salon_id"
-    )
-    .eq("tracking_token", token)
-    .single();
+  // Single guest gate: resolve the entry by its tracking token (see lib/walkin/authz).
+  const entry = await findQueueEntryByToken<{
+    id: string; customer_name: string; position: number; status: string;
+    estimated_wait_minutes: number; joined_at: string; called_at: string | null;
+    started_at: string | null; completed_at: string | null; salon_id: string;
+  }>(
+    admin,
+    token,
+    "id, customer_name, position, status, estimated_wait_minutes, joined_at, called_at, started_at, completed_at, salon_id",
+  );
 
-  if (error || !entry) {
+  if (!entry) {
     return NextResponse.json({ error: "Queue entry not found" }, { status: 404 });
   }
 

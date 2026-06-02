@@ -9,6 +9,7 @@ import {
   noShowChargeEmail,
   lateCancellationFeeEmail,
   refundProcessedEmail,
+  upchargeChargedEmail,
   newReviewEmail,
   reviewResponseEmail,
   reviewFlaggedEmail,
@@ -112,6 +113,9 @@ export async function sendNotification(params: {
         break;
       case 'refund_processed':
         emailPayload = refundProcessedEmail(to, vars, locale);
+        break;
+      case 'upcharge_charged':
+        emailPayload = upchargeChargedEmail(to, vars, locale);
         break;
       case 'new_review':
         emailPayload = newReviewEmail(to, vars, locale);

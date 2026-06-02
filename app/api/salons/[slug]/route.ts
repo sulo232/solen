@@ -123,6 +123,9 @@ export async function PATCH(
     "vacation_start", "vacation_end",
     "instagram_url", "facebook_url", "tiktok_url", "website_url",
     "is_top_pick",
+    // VAT/MWST registration (owner-settable). The rate itself is NOT here — 8.1% is fixed by
+    // Swiss law; only whether the salon is registered + its UID. Mirrors /api/salons/mine.
+    "vat_registered", "vat_number",
   ];
 
   // SP-AC §B5: validate the policy subset (money-adjacent) with Zod, and gate it behind

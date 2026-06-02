@@ -20,6 +20,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { chargeOffSession } from "@/lib/bookings/off-session-charge";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
+import { alertAdmin } from "@/lib/alert-admin";
 
 // ───────────────────────────────────────────────────────────────────────────
 // Status enum (shared; the legal EDGES per direction live in the route guards).
@@ -360,8 +361,20 @@ export async function chargeUpcharge(args: ChargeUpchargeArgs): Promise<ChargeUp
 
   if (casErr) {
     // Money already moved; the status write lost. Log so the drift is visible — do NOT
-    // re-charge (Stripe collapsed via the idempotency key on any retry).
+    // re-charge (Stripe collapsed via the idempotency key on any retry). This is an
+    // UNEXPECTED failure (not a decline — the charge SUCCEEDED): a captured upcharge
+    // whose dispute row failed to record 'charged'. Exactly the "money move with no
+    // record" case that needs a human — alert.
     console.error(`[dispute-engine] upcharge CAS status update failed for dispute ${disputeId}:`, casErr.message);
+    void alertAdmin("upcharge charged but status write failed", {
+      dispute_id: disputeId,
+      booking_id: booking.id,
+      payment_intent: result.paymentIntentId ?? null,
+      charged_cents: amountCents,
+      idempotency_key: idempotencyKey,
+      error: casErr.message,
+      note: "Money captured at Stripe; booking_disputes did NOT advance to 'charged'. Reconcile manually.",
+    });
   } else if (!casRow) {
     console.error(
       `[dispute-engine] upcharge CAS no-op (concurrent charge) for dispute ${disputeId}; money already captured`,

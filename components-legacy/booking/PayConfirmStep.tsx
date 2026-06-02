@@ -13,6 +13,7 @@ import GuestBookingForm, {
   type GuestInfo,
   type GuestBookingFormHandle,
 } from '@/components-legacy/booking/GuestBookingForm';
+import BookingPaymentForm from '@/components-legacy/booking/BookingPaymentForm';
 import type { Salon, StaffMember } from '@/lib/types';
 
 /**
@@ -60,6 +61,21 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   const [guestInfo, setGuestInfo] = useState<GuestInfo | null>(null);
   const guestFormRef = useRef<GuestBookingFormHandle>(null);
 
+  // C1 create-then-charge: the online-pay step has two phases.
+  //   'select' — the payment-method selector (this view today).
+  //   'pay'    — the Stripe card form (BookingPaymentForm), shown AFTER the pending booking +
+  //              PaymentIntent are created once. in_person never enters 'pay' (it just books).
+  const [phase, setPhase] = useState<'select' | 'pay'>('select');
+  // The pending booking + its PaymentIntent are created ONCE and reused (retry uses the same
+  // client_secret → same PI, idempotent server-side). chargeRef guards against a double-create
+  // from a re-render / double-tap while the create round-trip is in flight.
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  // The /confirmation URL is built once at create time (carries the guest token/ref handoff) and
+  // reused for BOTH the success navigation and Stripe's redirect-3DS return_url, so an inline
+  // confirm and a redirect confirm land on the exact same page.
+  const [confirmationPath, setConfirmationPath] = useState<string | null>(null);
+  const chargeRef = useRef(false);
+
   const localeCode = locale === 'de' ? 'de-CH' : locale === 'fr' ? 'fr-CH' : locale === 'it' ? 'it-CH' : 'en-GB';
   const cancellationHours = (salon as any).cancellation_window_hours ?? 24;
 
@@ -72,6 +88,24 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
     : '';
   const timeLabel = formData.selectedTime ?? '';
   const totalPrice = formData.totalPrice ?? 0;
+
+  // Build the /confirmation path. A guest carries access_token (+ ref) so the page can show the
+  // order number + exchange the token for the httpOnly cookie; a logged-in user just gets the id.
+  const buildConfirmationPath = (
+    bookingId: string,
+    accessToken: string | null,
+    referenceCode: string | null,
+  ) => {
+    if (!isLoggedIn && accessToken) {
+      const params = new URLSearchParams({
+        booking_id: bookingId,
+        access_token: accessToken,
+        ...(referenceCode ? { ref: referenceCode } : {}),
+      });
+      return `/confirmation?${params.toString()}`;
+    }
+    return `/confirmation?booking_id=${bookingId}`;
+  };
 
   const handleConfirm = async () => {
     if (!paymentMethod) {
@@ -93,6 +127,9 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       }
     }
 
+    // C1: guard against a double-create (re-render / double-tap) while the round-trip is open.
+    if (chargeRef.current) return;
+    chargeRef.current = true;
     setIsSubmitting(true);
     setError(null);
 
@@ -100,6 +137,9 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       const dateStr = formData.selectedDate.toISOString().split('T')[0];
       const startsAt = new Date(`${dateStr}T${formData.selectedTime}:00Z`).toISOString();
 
+      // 1. Create the booking. For online-pay it lands as status "pending" / payment_status "none"
+      //    (the abandon-sweep cron cancels it if the card step is never completed). For in_person
+      //    it's created exactly as before (no charge) — behaviour below is byte-for-byte unchanged.
       const bookingRes = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -132,23 +172,40 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
       const booking = await bookingRes.json();
       const bookingId = booking.data?.id ?? booking.id;
-      // SP-1: a guest response carries access_token + reference_code (a session user gets neither).
-      // Carry them to the confirmation route so it can show the order number + exchange the token
-      // for the httpOnly cookie. The exact param/cookie handoff is finalized in SP-2; passing them
-      // as query params here is the data wiring SP-1 owns.
-      if (!isLoggedIn && booking.access_token) {
-        const params = new URLSearchParams({
-          booking_id: bookingId,
-          access_token: booking.access_token,
-          ...(booking.reference_code ? { ref: booking.reference_code } : {}),
-        });
-        router.push(`/confirmation?${params.toString()}`);
-      } else {
-        router.push(`/confirmation?booking_id=${bookingId}`);
+      const path = buildConfirmationPath(
+        bookingId,
+        !isLoggedIn ? (booking.access_token ?? null) : null,
+        booking.reference_code ?? null,
+      );
+
+      // 2a. IN-PERSON (and any non-online method): unchanged — the booking is created without a
+      //     charge; go straight to the confirmation page.
+      if (paymentMethod !== 'online') {
+        router.push(path);
+        return;
       }
+
+      // 2b. ONLINE: create the PaymentIntent for THIS booking and switch to the card step. The
+      //     PI + client_secret are created once here and reused on retry (idempotent server-side).
+      const piRes = await fetch('/api/stripe/booking-pay-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ booking_id: bookingId }),
+      });
+      const piData = await piRes.json().catch(() => null);
+      if (!piRes.ok || !piData?.client_secret) {
+        console.error('[PayConfirmStep] booking-pay-intent failed:', piData?.error ?? piRes.status);
+        throw new Error(piData?.error || t('payment.bookingFailed'));
+      }
+
+      setConfirmationPath(path);
+      setClientSecret(piData.client_secret);
+      setPhase('pay');
     } catch (err) {
       console.error('[PayConfirmStep] Booking failed:', err);
       setError(err instanceof Error ? err.message : t('payment.unknownError'));
+      // Allow another attempt — the booking either wasn't created or its PI step failed.
+      chargeRef.current = false;
     } finally {
       setIsSubmitting(false);
     }
@@ -219,6 +276,9 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         </p>
       </div>
 
+      {/* ── PHASE 'select' — payment-method selector + (guest) contact form + Buchen CTA ── */}
+      {phase === 'select' && (
+      <>
       {/* SP-1: guest contact form (logged-out only). Rebuilt to the review-and-confirm mockup
           (solen-refund-guest-booking-form.html): fields-only, lifts GuestInfo live; the single
           Buchen CTA force-validates via the form ref. */}
@@ -317,7 +377,8 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         </div>
       )}
 
-      {/* (e) Sticky bottom Buchen CTA */}
+      {/* (e) Sticky bottom CTA. Online → "Weiter zur Zahlung" (next is the card form);
+          in-person → "Buchen" (commits immediately). */}
       <div className="fixed bottom-0 left-0 right-0 border-t border-s-ink/[0.06] bg-white p-4 z-20">
         <div className="max-w-2xl mx-auto px-4">
           <button
@@ -327,10 +388,38 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
             className="w-full inline-flex items-center justify-center gap-2 min-h-[52px] px-5 rounded-full bg-s-ink text-white font-body text-[14px] font-bold uppercase tracking-[.04em] transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
           >
             {isSubmitting && <Spinner size="sm" invert />}
-            Buchen · {formatPrice(totalPrice, localeCode)}
+            {paymentMethod === 'online'
+              ? `${t('payment.continueToPayment')} · ${formatPrice(totalPrice, localeCode)}`
+              : `Buchen · ${formatPrice(totalPrice, localeCode)}`}
           </button>
         </div>
       </div>
+      </>
+      )}
+
+      {/* ── PHASE 'pay' — real Stripe card form (mockup states 1/2/3/5). On success the parent
+          routes to /confirmation; the payment_intent.succeeded webhook owns the "paid" flip. ── */}
+      {phase === 'pay' && clientSecret && confirmationPath && (
+        <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
+          <BookingPaymentForm
+            clientSecret={clientSecret}
+            amount={totalPrice}
+            locale={locale}
+            localeCode={localeCode}
+            returnUrl={`${typeof window !== 'undefined' ? window.location.origin : ''}/${locale}${confirmationPath}`}
+            onSucceeded={() => router.push(confirmationPath)}
+            onUseOtherMethod={() => {
+              // Drop back to the selector. The pending online booking is left for the
+              // abandon-sweep cron; a fresh selection creates its own booking.
+              setPhase('select');
+              setClientSecret(null);
+              setConfirmationPath(null);
+              setPaymentMethod(null);
+              chargeRef.current = false;
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

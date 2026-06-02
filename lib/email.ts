@@ -50,7 +50,14 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
 
 export function bookingConfirmation(
   to: string,
-  vars: { service: string; salon: string; date: string; time: string },
+  vars: {
+    service: string; salon: string; date: string; time: string;
+    // Optional price + Swiss VAT breakdown (VAT-INCLUSIVE), all pre-formatted CHF strings.
+    // When net+vat+rate are present (a VAT-registered salon) the email shows the
+    // Netto/MWST/Gesamt split + the salon's UID; when only `total` is present it shows
+    // just the amount; when none are present the email is unchanged (backward-compatible).
+    total?: string; net?: string; vat?: string; rate?: string; vatNumber?: string;
+  },
   locale: EmailLocale = "de"
 ): EmailPayload {
   const subjects: Record<EmailLocale, string> = {
@@ -59,11 +66,35 @@ export function bookingConfirmation(
     fr: `Réservation confirmée: ${vars.service} chez ${vars.salon}`,
     it: `Prenotazione confermata: ${vars.service} presso ${vars.salon}`,
   };
+
+  // Per-locale labels for the optional price/VAT block (mirrors the on-screen receipt).
+  const PL = {
+    de: { net: "Netto", vat: "MWST", total: "Gesamt (inkl. MWST)", amount: "Betrag", nr: "MWST-Nr." },
+    en: { net: "Net", vat: "VAT", total: "Total (incl. VAT)", amount: "Amount", nr: "VAT no." },
+    fr: { net: "Net", vat: "TVA", total: "Total (TVA incl.)", amount: "Montant", nr: "N° TVA" },
+    it: { net: "Netto", vat: "IVA", total: "Totale (IVA incl.)", amount: "Importo", nr: "N. IVA" },
+  }[locale];
+
+  let priceHtml = "";
+  if (vars.total) {
+    if (vars.net && vars.vat && vars.rate) {
+      priceHtml =
+        `<table style="margin-top:12px;border-collapse:collapse;font-size:14px">` +
+        `<tr><td style="padding:3px 24px 3px 0;color:#666">${PL.net}</td><td style="padding:3px 0;text-align:right">${vars.net}</td></tr>` +
+        `<tr><td style="padding:3px 24px 3px 0;color:#666">${PL.vat} ${vars.rate}%</td><td style="padding:3px 0;text-align:right">${vars.vat}</td></tr>` +
+        `<tr><td style="padding:6px 24px 0 0;font-weight:700">${PL.total}</td><td style="padding:6px 0 0;text-align:right;font-weight:700">${vars.total}</td></tr>` +
+        `</table>` +
+        (vars.vatNumber ? `<p style="margin-top:6px;color:#888;font-size:12px">${PL.nr} ${vars.vatNumber}</p>` : "");
+    } else {
+      priceHtml = `<p style="margin-top:12px;font-size:14px"><strong>${PL.amount}: ${vars.total}</strong></p>`;
+    }
+  }
+
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo,</p><p><strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> am ${vars.date} um ${vars.time} Uhr ist bestätigt. Wir freuen uns auf Sie!</p><p>solen.ch</p>`,
-    en: `<p>Hello,</p><p><strong>${vars.service}</strong> at <strong>${vars.salon}</strong> on ${vars.date} at ${vars.time} is confirmed. See you there!</p><p>solen.ch</p>`,
-    fr: `<p>Bonjour,</p><p><strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> le ${vars.date} à ${vars.time} est confirmé. À bientôt!</p><p>solen.ch</p>`,
-    it: `<p>Ciao,</p><p><strong>${vars.service}</strong> presso <strong>${vars.salon}</strong> il ${vars.date} alle ${vars.time} è confermato. A presto!</p><p>solen.ch</p>`,
+    de: `<p>Hallo,</p><p><strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> am ${vars.date} um ${vars.time} Uhr ist bestätigt. Wir freuen uns auf Sie!</p>${priceHtml}<p>solen.ch</p>`,
+    en: `<p>Hello,</p><p><strong>${vars.service}</strong> at <strong>${vars.salon}</strong> on ${vars.date} at ${vars.time} is confirmed. See you there!</p>${priceHtml}<p>solen.ch</p>`,
+    fr: `<p>Bonjour,</p><p><strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> le ${vars.date} à ${vars.time} est confirmé. À bientôt!</p>${priceHtml}<p>solen.ch</p>`,
+    it: `<p>Ciao,</p><p><strong>${vars.service}</strong> presso <strong>${vars.salon}</strong> il ${vars.date} alle ${vars.time} è confermato. A presto!</p>${priceHtml}<p>solen.ch</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }

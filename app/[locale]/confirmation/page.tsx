@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase';
 import { buildAlternates } from '@/lib/seo';
 import { formatCurrency } from '@/lib/format-currency';
+import { computeVat } from '@/lib/vat';
 import { verifyAccessToken } from '@/lib/bookings/guest-access';
 import BookingConfirmation from '@/components-legacy/booking/BookingConfirmation';
 
@@ -17,8 +18,8 @@ interface ConfirmationPageProps {
 // The fields the confirmation screen reads, selected identically on both the RLS (cookie)
 // and the service-role (guest) path.
 const BOOKING_SELECT = `id, salon_id, service_id, staff_member_id, starts_at, ends_at,
-  price_paid, status, reference_code, paid_via, user_id, access_token_hash, access_token_expires_at,
-  salons(id, name, slug, address, phone, cover_photo_url),
+  price_paid, status, payment_status, reference_code, paid_via, user_id, access_token_hash, access_token_expires_at, vat_rate,
+  salons(id, name, slug, address, phone, cover_photo_url, vat_number),
   services(id, name_de, name_en, duration_minutes),
   staff_members(name)`;
 
@@ -117,6 +118,18 @@ export default async function ConfirmationPage({
         )}&t=${encodeURIComponent(access_token)}`
       : null;
 
+  // VAT/MWST receipt breakdown. bookings.vat_rate is the rate actually applied at payment
+  // (>0 ⇒ a registered salon charged VAT; 0/NULL ⇒ none — non-registered/Kleinunternehmen).
+  // Recompute net + VAT from the SAME gross we display (price_paid CHF → Rappen) so Netto + MWST
+  // sum to the shown total exactly (computeVat derives VAT by subtraction). The component only
+  // renders the breakdown when the payment actually settled (payment_status 'paid').
+  const vatRateApplied = Number(booking.vat_rate ?? 0);
+  const grossRappen = Math.round(Number(booking.price_paid ?? 0) * 100);
+  const vat =
+    vatRateApplied > 0 && grossRappen > 0
+      ? computeVat(grossRappen, { registered: true, ratePercent: vatRateApplied })
+      : { netRappen: 0, vatRappen: 0, ratePercent: 0 };
+
   return (
     <BookingConfirmation
       referenceCode={booking.reference_code ?? ref ?? null}
@@ -131,9 +144,15 @@ export default async function ConfirmationPage({
       pricePaid={booking.price_paid}
       priceLabel={formatCurrency(booking.price_paid, localeCode)}
       paidVia={booking.paid_via ?? null}
+      status={booking.status ?? null}
+      paymentStatus={booking.payment_status ?? null}
       isGuest={isGuest}
       accessLink={accessLink}
       contactEmail={null}
+      vatRate={vat.ratePercent}
+      netLabel={formatCurrency(vat.netRappen / 100, localeCode)}
+      vatLabel={formatCurrency(vat.vatRappen / 100, localeCode)}
+      salonVatNumber={salon?.vat_number ?? null}
     />
   );
 }

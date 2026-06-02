@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { validateBody, packagePurchaseSchema } from "@/lib/validations";
@@ -71,8 +71,14 @@ export async function POST(req: NextRequest) {
   try {
     const paymentIntent = await getStripe().paymentIntents.create(piParams);
 
-    // Create purchase record (pending until payment succeeds via webhook)
-    await supabase.from("package_purchases").insert({
+    // Create purchase record (pending until payment succeeds via webhook).
+    // Service-role client: package_purchases has RLS enabled with SELECT-only
+    // policies (migration 071) and no INSERT policy, so the RLS request client
+    // would be silently blocked — the row (and thus the refundable paid_amount
+    // the webhook later writes) would never be created. Mirrors how the retail
+    // purchase route + the webhook + the refund chokepoint all write money rows.
+    const admin = createAdminSupabaseClient();
+    await admin.from("package_purchases").insert({
       package_id: pkg.id,
       user_id: user.id,
       salon_id: pkg.salon_id,
