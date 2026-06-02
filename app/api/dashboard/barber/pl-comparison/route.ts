@@ -5,6 +5,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 
 // GET /api/dashboard/barber/pl-comparison?salon_id=...
+//
+// Scheduled vs walk-in revenue split. There is no `is_walkin` column on bookings — a walk-in
+// is identified by its link to the live queue (bookings.walkin_queue_id) which is set when a
+// paid walk-in issues its ticket. So:
+//   • scheduled = completed bookings with walkin_queue_id IS NULL
+//   • walk-in   = completed bookings with walkin_queue_id IS NOT NULL  (the paid walk-in's booking)
+// Revenue is summed from bookings.price_paid (stored in CHF francs). The PLComparison component
+// formats with `v / 100`, so we send Rappen (price_paid * 100) to render "CHF 45" correctly.
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const salonId = searchParams.get("salon_id");
@@ -33,18 +41,21 @@ export async function GET(request: NextRequest) {
 
   const { data: bookings } = await admin
     .from("bookings")
-    .select("id, is_walkin, price_paid, status, starts_at, amount_paid")
+    .select("id, walkin_queue_id, price_paid, status, starts_at")
     .eq("salon_id", salonId)
     .gte("starts_at", start)
     .in("status", ["completed"]);
 
   const all = bookings ?? [];
 
-  const apptBookings = all.filter((b) => !b.is_walkin);
-  const walkinBookings = all.filter((b) => b.is_walkin);
+  // CHF francs → Rappen for the component's `/100` formatter.
+  const toRappen = (chf: number | null) => Math.round((chf ?? 0) * 100);
 
-  const apptRevenue = apptBookings.reduce((s, b) => s + (b.price_paid ?? 0), 0);
-  const walkinRevenue = walkinBookings.reduce((s, b) => s + (b.amount_paid ?? b.price_paid ?? 0), 0);
+  const apptBookings = all.filter((b) => b.walkin_queue_id == null);
+  const walkinBookings = all.filter((b) => b.walkin_queue_id != null);
+
+  const apptRevenue = apptBookings.reduce((s, b) => s + toRappen(b.price_paid), 0);
+  const walkinRevenue = walkinBookings.reduce((s, b) => s + toRappen(b.price_paid), 0);
 
   const stats = {
     appointment_revenue: apptRevenue,
@@ -66,8 +77,8 @@ export async function GET(request: NextRequest) {
       return d >= weekStart && d < weekEnd;
     });
     weeklyMap.set(label, {
-      appointments: weekBookings.filter((b) => !b.is_walkin).reduce((s, b) => s + (b.price_paid ?? 0), 0),
-      walkins: weekBookings.filter((b) => b.is_walkin).reduce((s, b) => s + (b.amount_paid ?? b.price_paid ?? 0), 0),
+      appointments: weekBookings.filter((b) => b.walkin_queue_id == null).reduce((s, b) => s + toRappen(b.price_paid), 0),
+      walkins: weekBookings.filter((b) => b.walkin_queue_id != null).reduce((s, b) => s + toRappen(b.price_paid), 0),
     });
   }
 

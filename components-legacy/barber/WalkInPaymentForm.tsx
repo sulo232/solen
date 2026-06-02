@@ -22,12 +22,22 @@ interface WalkInPaymentFormProps {
   secureLabel: string;
 }
 
+// Payment-error copy, keyed by locale (matches the inline-dict pattern on the pay page).
+// `failed` is the generic payment failure; `notConfirmed` is the unexpected-PI-status case.
+const PAY_ERRORS: Record<string, { failed: string; notConfirmed: string }> = {
+  de: { failed: "Zahlung fehlgeschlagen", notConfirmed: "Zahlung nicht bestätigt" },
+  en: { failed: "Payment failed", notConfirmed: "Payment not confirmed" },
+  fr: { failed: "Échec du paiement", notConfirmed: "Paiement non confirmé" },
+  it: { failed: "Pagamento non riuscito", notConfirmed: "Pagamento non confermato" },
+};
+
 // Inner form — must be a child of <Elements> to use the Stripe hooks.
 function PayInner({ amount, locale, onPaid, payLabel, secureLabel }: Omit<WalkInPaymentFormProps, "clientSecret">) {
   const stripe = useStripe();
   const elements = useElements();
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const e = PAY_ERRORS[locale] ?? PAY_ERRORS.de;
 
   const handlePay = async () => {
     if (!stripe || !elements) return;
@@ -36,7 +46,8 @@ function PayInner({ amount, locale, onPaid, payLabel, secureLabel }: Omit<WalkIn
     try {
       const { error: submitErr } = await elements.submit();
       if (submitErr) {
-        setError(submitErr.message ?? "Zahlung fehlgeschlagen");
+        // Stripe localizes its own validation messages via the Elements `locale`; fall back to ours.
+        setError(submitErr.message ?? e.failed);
         return;
       }
       // redirect: "if_required" keeps card payments on-page; only redirect-based
@@ -46,16 +57,17 @@ function PayInner({ amount, locale, onPaid, payLabel, secureLabel }: Omit<WalkIn
         redirect: "if_required",
       });
       if (confirmErr) {
-        setError(confirmErr.message ?? "Zahlung fehlgeschlagen");
+        setError(confirmErr.message ?? e.failed);
         return;
       }
       if (paymentIntent && (paymentIntent.status === "requires_capture" || paymentIntent.status === "succeeded")) {
         onPaid(paymentIntent.id);
       } else {
-        setError("Zahlung nicht bestätigt");
+        setError(e.notConfirmed);
       }
-    } catch {
-      setError("Zahlung fehlgeschlagen");
+    } catch (err) {
+      console.error("[WalkInPaymentForm] confirm failed:", err);
+      setError(e.failed);
     } finally {
       setPaying(false);
     }

@@ -277,9 +277,12 @@ export const staffInviteSchema = z.object({
   staff_name: z.string().min(2).max(100).optional(),
 });
 
+// Cash / in-person walk-in dropped straight into the live queue by staff: only the service is
+// required. Name is optional (no name → the issued ticket_code becomes the display name); phone
+// is optional but keeps the shared Swiss format when present.
 export const walkInSchema = z.object({
-  customer_name: z.string().min(2).max(100),
-  customer_phone: z.string().regex(/^\+41[0-9]{9}$/),
+  customer_name: z.string().min(2).max(100).optional(),
+  customer_phone: z.string().regex(/^\+41[0-9]{9}$/).optional(),
   service_id: z.string().uuid(),
   staff_member_id: z.string().uuid().optional(),
 });

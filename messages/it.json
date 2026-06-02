@@ -1503,7 +1503,9 @@
       "service": "Servizio",
       "stylist": "Stilista",
       "cancel": "Annulla",
-      "create": "Crea & SMS",
+      "create": "Aggiungi alla coda",
+      "added": "Aggiunto alla coda",
+      "done": "Fatto",
       "error": "Errore"
     },
     "event_booking_new": "Nuovo appuntamento",

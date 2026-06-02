@@ -109,8 +109,11 @@ export async function POST(req: NextRequest) {
       salon_name: salon.name,
       service_id,
       service_name: service.name_de ?? "",
-      customer_name,
-      customer_phone,
+      // Stripe rejects any metadata value >500 chars. customer_name/_phone are
+      // raw free text from the client — cap defensively so a long string can't
+      // throw inside paymentIntents.create.
+      customer_name: customer_name.slice(0, 200),
+      customer_phone: customer_phone.slice(0, 200),
       customer_id: customerId ?? "",
       booking_id,
       preferred_barber_id: preferredBarberId,
@@ -122,7 +125,16 @@ export async function POST(req: NextRequest) {
     intentParams.transfer_data = { destination: salon.stripe_account_id };
   }
 
-  const paymentIntent = await stripe.paymentIntents.create(intentParams);
+  let paymentIntent;
+  try {
+    paymentIntent = await stripe.paymentIntents.create(intentParams);
+  } catch (e) {
+    console.error("[walkin/pay-intent] create failed:", e);
+    return NextResponse.json(
+      { error: "Could not start payment. Please try again." },
+      { status: 502 },
+    );
+  }
 
   return NextResponse.json({
     client_secret: paymentIntent.client_secret,

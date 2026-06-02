@@ -90,6 +90,101 @@ function toResult(row: ExistingRow, paymentMethod: string | null, counts: { queu
   };
 }
 
+// Position = end of the active queue (waiting + in_chair).
+async function nextQueuePosition(admin: Admin, salonId: string): Promise<number> {
+  const { data: lastEntry } = await admin
+    .from("barber_walkin_queue")
+    .select("position")
+    .eq("salon_id", salonId)
+    .in("status", ["waiting", "in_chair"])
+    .order("position", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return (lastEntry?.position ?? 0) + 1;
+}
+
+// Daily per-salon ticket sequence base → "A01", "A47" … resets each day (date-scoped count, no cron).
+// Returns today's entry count; callers add (1 + attempt) to derive the next code.
+async function todayTicketCount(admin: Admin, salonId: string): Promise<number> {
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const { count } = await admin
+    .from("barber_walkin_queue")
+    .select("id", { count: "exact", head: true })
+    .eq("salon_id", salonId)
+    .gte("joined_at", startOfDay.toISOString());
+  return count ?? 0;
+}
+
+// Shared race-safe insert. The caller supplies the per-row fields that differ between the
+// paid (PI) path and the cash path; the daily ticket_code + position + 23505-retry loop are
+// identical for both. `onTicketCodeCollision` lets the paid path short-circuit when the dup
+// was on the payment_intent_id index (a concurrent process already issued the ticket) rather
+// than the (salon_id, ticket_code) index — for the cash path there is no PI, so it's omitted
+// and every 23505 is treated as a ticket_code collision (bump the code, retry).
+async function insertWalkinEntry(
+  admin: Admin,
+  opts: {
+    salonId: string;
+    position: number;
+    baseSeq: number; // todayTicketCount() result
+    counts: { queue_ahead: number; wait_minutes: number };
+    fields: {
+      customer_id: string | null;
+      customer_name: string | null; // null → fall back to the issued ticket_code
+      customer_phone?: string | null;
+      service_id: string | null;
+      preferred_barber_id: string | null;
+      join_method: "in_person" | "remote" | "kiosk";
+      payment_intent_id: string | null;
+    };
+    onTicketCodeCollision?: () => Promise<ExistingRow | null>;
+    errorLabel: string;
+  }
+): Promise<{ row: ExistingRow; recovered: boolean }> {
+  const { salonId, position, baseSeq, counts, fields, onTicketCodeCollision, errorLabel } = opts;
+  let lastErr: unknown = null;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const seq = baseSeq + 1 + attempt;
+    const ticketCode = `A${String(seq).padStart(2, "0")}`;
+    const { data, error } = await admin
+      .from("barber_walkin_queue")
+      .insert({
+        salon_id: salonId,
+        customer_id: fields.customer_id,
+        customer_name: fields.customer_name ?? ticketCode, // no name → staff call the number
+        customer_phone: fields.customer_phone ?? null,
+        service_id: fields.service_id,
+        preferred_barber_id: fields.preferred_barber_id,
+        status: "waiting",
+        position,
+        estimated_wait_minutes: counts.wait_minutes,
+        tracking_token: nanoid(12),
+        join_method: fields.join_method,
+        ticket_code: ticketCode,
+        payment_intent_id: fields.payment_intent_id,
+      })
+      .select("id, ticket_code, position, tracking_token")
+      .single();
+
+    if (!error && data) return { row: data, recovered: false };
+
+    lastErr = error;
+    if (error?.code === "23505") {
+      // Resolve which unique index tripped (the paid path guards payment_intent_id).
+      if (onTicketCodeCollision) {
+        const winner = await onTicketCodeCollision();
+        if (winner) return { row: winner, recovered: true };
+      }
+      continue; // otherwise it was just a ticket_code collision → try the next code
+    }
+    break; // non-unique error → stop
+  }
+
+  console.error(`[${errorLabel}] queue insert failed:`, lastErr);
+  throw new Error("Could not create queue entry");
+}
+
 /**
  * Create the walk-in queue entry + issue the ticket for an authorized PaymentIntent.
  * Shared by BOTH the client confirm route and the Stripe webhook backstop, so a dropped
@@ -123,82 +218,96 @@ export async function createWalkinTicket(
     return toResult(existing.data, paymentMethod, counts);
   }
 
-  // Position = end of the active queue.
-  const { data: lastEntry } = await admin
-    .from("barber_walkin_queue")
-    .select("position")
-    .eq("salon_id", salonId)
-    .in("status", ["waiting", "in_chair"])
-    .order("position", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  const position = (lastEntry?.position ?? 0) + 1;
-
-  // Daily per-salon sequence → "A01", "A47" … resets each day (date-scoped count, no cron).
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
-  const { count: todayCount } = await admin
-    .from("barber_walkin_queue")
-    .select("id", { count: "exact", head: true })
-    .eq("salon_id", salonId)
-    .gte("joined_at", startOfDay.toISOString());
-
+  const position = await nextQueuePosition(admin, salonId);
+  const baseSeq = await todayTicketCount(admin, salonId);
   const counts = await liveCounts(admin, salonId, position);
 
   // Insert with retry. Two unique indexes guard concurrency:
   //   (salon_id, ticket_code) → bump the code and retry
   //   (payment_intent_id)     → another process already created it → return that ticket
-  let lastErr: unknown = null;
-  for (let attempt = 0; attempt < 6; attempt++) {
-    const seq = (todayCount ?? 0) + 1 + attempt;
-    const ticketCode = `A${String(seq).padStart(2, "0")}`;
-    const { data, error } = await admin
-      .from("barber_walkin_queue")
-      .insert({
-        salon_id: salonId,
-        customer_id: null,
-        customer_name: ticketCode, // pay-gated ticket: staff call the number, not a name
-        service_id: serviceId,
-        preferred_barber_id: preferredBarberId,
-        status: "waiting",
-        position,
-        estimated_wait_minutes: counts.wait_minutes,
-        tracking_token: nanoid(12),
-        join_method: "remote",
-        ticket_code: ticketCode,
-        payment_intent_id: pi.id,
-      })
-      .select("id, ticket_code, position, tracking_token")
-      .single();
-
-    if (!error && data) {
-      if (linkBookingId) {
-        const { error: linkErr } = await admin
-          .from("bookings")
-          .update({ walkin_queue_id: data.id, payment_status: "deposit_held" })
-          .eq("id", linkBookingId);
-        if (linkErr) console.error("[createWalkinTicket] booking link failed:", linkErr);
-      }
-      return toResult(data, paymentMethod, counts);
-    }
-
-    lastErr = error;
-    if (error?.code === "23505") {
-      // A concurrent insert may have used this PI already → return the winner's ticket.
+  const { row, recovered } = await insertWalkinEntry(admin, {
+    salonId,
+    position,
+    baseSeq,
+    counts,
+    fields: {
+      customer_id: null,
+      customer_name: null, // pay-gated ticket: staff call the number, not a name (→ ticket_code)
+      service_id: serviceId,
+      preferred_barber_id: preferredBarberId,
+      join_method: "remote",
+      payment_intent_id: pi.id,
+    },
+    // A concurrent insert may have used this PI already → return the winner's ticket.
+    onTicketCodeCollision: async () => {
       const winner = await admin
         .from("barber_walkin_queue")
         .select("id, ticket_code, position, tracking_token")
         .eq("payment_intent_id", pi.id)
         .maybeSingle();
-      if (winner.data) {
-        const c = await liveCounts(admin, salonId, winner.data.position);
-        return toResult(winner.data, paymentMethod, c);
-      }
-      continue; // otherwise it was just a ticket_code collision → try the next code
-    }
-    break; // non-unique error → stop
-  }
+      return winner.data ?? null;
+    },
+    errorLabel: "createWalkinTicket",
+  });
 
-  console.error("[createWalkinTicket] queue insert failed:", lastErr);
-  throw new Error("Could not create queue entry");
+  // Concurrent winner → return its ticket with counts for ITS position (don't re-link the
+  // booking — the winning process already did). Fresh insert → link the booking as before.
+  if (recovered) {
+    const c = await liveCounts(admin, salonId, row.position);
+    return toResult(row, paymentMethod, c);
+  }
+  if (linkBookingId) {
+    const { error: linkErr } = await admin
+      .from("bookings")
+      .update({ walkin_queue_id: row.id, payment_status: "deposit_held" })
+      .eq("id", linkBookingId);
+    if (linkErr) console.error("[createWalkinTicket] booking link failed:", linkErr);
+  }
+  return toResult(row, paymentMethod, counts);
+}
+
+/**
+ * Create a CASH / in-person walk-in queue entry — no payment, no Stripe PI.
+ * Staff (the salon owner) drop a walk-in straight into the SAME live queue the paid path
+ * feeds. Reuses the identical ticket_code sequence + position + race-safe insert as
+ * createWalkinTicket; the only differences are join_method:'in_person', payment_intent_id:null,
+ * and an optional staff-entered name/phone (no name → the ticket_code becomes the name, mirroring
+ * the paid path so staff call the number).
+ */
+export async function createCashWalkinTicket(
+  admin: Admin,
+  opts: {
+    salonId: string;
+    serviceId: string | null;
+    customerName?: string | null;
+    customerPhone?: string | null;
+    preferredBarberId?: string | null;
+  }
+): Promise<WalkinTicketResult> {
+  const { salonId, serviceId, customerName = null, customerPhone = null, preferredBarberId = null } = opts;
+
+  const position = await nextQueuePosition(admin, salonId);
+  const baseSeq = await todayTicketCount(admin, salonId);
+  const counts = await liveCounts(admin, salonId, position);
+
+  const trimmedName = customerName?.trim() || null;
+  const { row } = await insertWalkinEntry(admin, {
+    salonId,
+    position,
+    baseSeq,
+    counts,
+    fields: {
+      customer_id: null,
+      customer_name: trimmedName, // null → falls back to ticket_code inside the helper
+      customer_phone: customerPhone?.trim() || null,
+      service_id: serviceId,
+      preferred_barber_id: preferredBarberId,
+      join_method: "in_person",
+      payment_intent_id: null, // cash: pay at the counter
+    },
+    // No PI → every 23505 is a ticket_code collision; no winner short-circuit.
+    errorLabel: "createCashWalkinTicket",
+  });
+
+  return toResult(row, null, counts);
 }

@@ -69,17 +69,19 @@ export async function GET(req: NextRequest) {
   let ticket_number: string | null = null;
   let queue_ahead: number | null = null;
   let wait_minutes: number | null = null;
+  let tracking_token: string | null = null;
   const queueId = (booking as any).walkin_queue_id;
   if (queueId) {
     const admin = createAdminSupabaseClient();
     const { data: q } = await admin
       .from("barber_walkin_queue")
-      .select("ticket_code, position, estimated_wait_minutes")
+      .select("ticket_code, position, estimated_wait_minutes, tracking_token")
       .eq("id", queueId)
       .single();
     if (q) {
       ticket_number = q.ticket_code;
       wait_minutes = q.estimated_wait_minutes;
+      tracking_token = q.tracking_token;
       const { count } = await admin
         .from("barber_walkin_queue")
         .select("id", { count: "exact", head: true })
@@ -109,6 +111,8 @@ export async function GET(req: NextRequest) {
       barber_avatar: staff?.avatar_url ?? null,
       is_walkin: true,
       ticket_number, // set once payment has issued the queue ticket; null = still unpaid
+      queue_id: queueId ?? null, // queue-entry row id — needed to cancel (DELETE) on reopen
+      tracking_token, // public capability token — gates the cancel + the live-queue page
       queue_ahead,
       wait_minutes,
       amount: booking.price_paid,

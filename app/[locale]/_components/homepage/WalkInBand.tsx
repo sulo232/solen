@@ -14,7 +14,7 @@ export default function WalkInBand() {
     <section aria-label="Walk-in" className="relative z-[1] mb-2 md:mb-4">
       <div className="mx-auto max-w-[1280px] px-4 md:px-6">
         <a
-          href={`/${locale}/walk-in`}
+          href={`/${locale}/barbershop`}
           className="block overflow-hidden rounded-card bg-s-ink px-5 py-6 md:px-8 md:py-8 transition-transform duration-200 ease-glide active:scale-[0.99]"
         >
           <p className="font-heading text-[11px] font-bold uppercase tracking-[0.14em] text-white/55">

@@ -208,3 +208,14 @@ The approved confirmation mockup (`public/solen-refund-confirmation-order-number
 - **Blocker**: needs an Apple PassKit pass-type id + signing certificate + a server endpoint that generates a signed `.pkpass` (order number / barcode / booking details), plus the Wallet button gated to iOS/Safari.
 - file:line — `components-legacy/booking/BookingConfirmation.tsx` (JSDoc notes the omission); confirmation route `app/[locale]/confirmation/page.tsx`.
 - **Next step**: stand up the `.pkpass` generation service + cert, add `/api/bookings/[id]/wallet-pass`, then render the Wallet button on the confirmation screen (Google Wallet optional twin).
+
+---
+
+## Walk-in analytics: 3 dashboard metrics intentionally returned as 0 — no data source in current schema (2026-06-02)
+Replaced the fabricated walk-in analytics (`Math.random`/`Math.sin` sparklines, `12 + total%10` waits, `40 + totalBookings` chair util, and a query on the nonexistent `is_walkin` column) with real metrics computed from `barber_walkin_queue`. Three metrics the dashboard UI still renders have NO real source in the live schema, so they are returned as `0` (honest) rather than fabricated:
+- `chair_utilization` (WalkinAnalytics) + `chair_utilization_pct` (BarberLeaderboard) — needs a per-chair schedule / open-hours occupancy model that does not exist.
+- `retention_pct` (BarberLeaderboard) — needs a client-recurrence calculation across booking history; not modelled in this route.
+- `avg_tip` (BarberLeaderboard) — there is NO tip/gratuity column anywhere on `bookings` (verified via information_schema 2026-06-02).
+- file:line — `app/api/dashboard/walkin-analytics/route.ts:80` (chair_utilization); `app/api/dashboard/barber-leaderboard/route.ts:81-86` (retention/tip/chair util).
+- **Also note**: `barber_walkin_queue` has no revenue column, so walk-in revenue in `pl-comparison` comes only from PAID walk-ins (bookings linked via `walkin_queue_id`). Cash walk-ins (payment_intent_id NULL, no linked booking) contribute to walk-in COUNT but not revenue — documented gap. file:line — `app/api/dashboard/barber/pl-comparison/route.ts:9-14`.
+- **Next step**: add a tips column (or tips table) to surface `avg_tip`; build a chair/occupancy model for chair utilization; add a recurrence query for retention. Until then these stay 0, not fabricated.

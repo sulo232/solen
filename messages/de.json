@@ -1548,7 +1548,9 @@
       "service": "Service",
       "stylist": "Stylist",
       "cancel": "Abbrechen",
-      "create": "Erstellen & SMS",
+      "create": "Zur Warteschlange",
+      "added": "Zur Warteschlange hinzugefügt",
+      "done": "Fertig",
       "error": "Fehler"
     },
     "event_booking_new": "Neuer Termin",

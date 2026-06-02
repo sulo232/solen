@@ -1538,7 +1538,9 @@
       "service": "Service",
       "stylist": "Stylist",
       "cancel": "Cancel",
-      "create": "Create & SMS",
+      "create": "Add to queue",
+      "added": "Added to queue",
+      "done": "Done",
       "error": "Error"
     },
     "event_booking_new": "New Appointment",

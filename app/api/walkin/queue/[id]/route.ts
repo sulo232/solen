@@ -6,6 +6,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, walkinUpdateSchema } from "@/lib/validations";
 import { getStripe } from "@/lib/stripe";
+import { calculateNoShowFee } from "@/lib/cancellation-policy";
 
 // PATCH /api/walkin/queue/[id] — Salon owner/staff: update queue entry status
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -40,7 +41,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     .from("salons").select("owner_id").eq("id", entry.salon_id).single();
   const { data: staffMember } = await admin
     .from("staff_members").select("id").eq("salon_id", entry.salon_id)
-    .eq("id", user.id).maybeSingle();
+    .eq("user_id", user.id).maybeSingle();
   if (salon?.owner_id !== user.id && !staffMember) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
@@ -75,13 +76,54 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
   }
 
-  // Salon-side cancel → release the held funds. (no_show is intentionally left alone so the
-  // salon's cancellation policy can decide whether to charge — that's the dashboard's call.)
+  // No-show → charge the salon's no-show policy fee out of the held card (PARTIAL CAPTURE of
+  // the existing manual-capture hold — NOT an off-session create like the booking path). A CASH
+  // entry (no payment_intent_id) has nothing to charge → just mark no_show. Idempotent: guarded
+  // on requires_capture so a double-tap can't double-capture.
+  let noShowFeeCaptured: number | null = null;
+  if (validated.status === "no_show" && entry.payment_intent_id) {
+    try {
+      const stripe = getStripe();
+      const pi = await stripe.paymentIntents.retrieve(entry.payment_intent_id);
+      if (pi.status === "requires_capture") {
+        // Policy: salons.no_show_fee_type ('free'|'flat'|'percentage') + no_show_fee_value
+        // (CHF for 'flat', percent 0-100 for 'percentage'). The held PI amount is the full
+        // service price in Rappen — the fee base. calculateNoShowFee converts CHF→Rappen and
+        // caps at the base (shared chokepoint, lib/cancellation-policy.ts).
+        const { data: policy } = await admin
+          .from("salons").select("no_show_fee_type, no_show_fee_value").eq("id", entry.salon_id).single();
+        const heldAmount = pi.amount; // Rappen
+        const { feeCents } = calculateNoShowFee(policy?.no_show_fee_type, policy?.no_show_fee_value, heldAmount);
+        if (feeCents <= 0) {
+          // Lenient / unset policy → release the hold, charge nothing.
+          await stripe.paymentIntents.cancel(entry.payment_intent_id);
+          noShowFeeCaptured = 0;
+        } else if (feeCents >= heldAmount) {
+          // Fee >= held → capture in full.
+          await stripe.paymentIntents.capture(entry.payment_intent_id);
+          noShowFeeCaptured = heldAmount;
+        } else {
+          // 0 < fee < held → partial capture; Stripe auto-releases the remainder.
+          await stripe.paymentIntents.capture(entry.payment_intent_id, { amount_to_capture: feeCents });
+          noShowFeeCaptured = feeCents;
+        }
+      } else if (pi.status === "succeeded") {
+        noShowFeeCaptured = pi.amount_received; // already captured on an earlier call (idempotent)
+      }
+    } catch (e) {
+      console.error("[walkin/queue PATCH] no-show fee capture failed:", e);
+    }
+  }
+
+  // Salon-side cancel → release the held funds, or REFUND + reverse the Connect transfer if the
+  // hold was already captured (a destination charge moved money to the salon; reverse_transfer
+  // pulls it back + refund_application_fee returns the platform commission — without this the
+  // refund leaks: salon keeps the funds, platform eats the loss).
   if (validated.status === "cancelled" && entry.payment_intent_id) {
     try {
       const stripe = getStripe();
       const pi = await stripe.paymentIntents.retrieve(entry.payment_intent_id);
-      if (pi.status === "succeeded") await stripe.refunds.create({ payment_intent: entry.payment_intent_id });
+      if (pi.status === "succeeded") await stripe.refunds.create({ payment_intent: entry.payment_intent_id, reverse_transfer: true, refund_application_fee: true });
       else if (pi.status !== "canceled") await stripe.paymentIntents.cancel(entry.payment_intent_id);
     } catch (e) {
       console.error("[walkin/queue PATCH] hold release on cancel failed:", e);
@@ -99,7 +141,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (reseqErr) console.error("[walkin/queue PATCH] resequence failed:", reseqErr);
   }
 
-  return NextResponse.json({ entry: updated, payment_captured: paymentCaptured });
+  return NextResponse.json({ entry: updated, payment_captured: paymentCaptured, no_show_fee_captured: noShowFeeCaptured });
 }
 
 // DELETE /api/walkin/queue/[id]?token=... — Public: client cancels own entry by tracking token
@@ -139,7 +181,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       const stripe = getStripe();
       const pi = await stripe.paymentIntents.retrieve(entry.payment_intent_id);
       if (pi.status === "succeeded") {
-        await stripe.refunds.create({ payment_intent: entry.payment_intent_id });
+        // Already captured → refund AND reverse the Connect transfer + return the platform fee,
+        // else the salon keeps the destination-charge funds and the platform eats the refund.
+        await stripe.refunds.create({ payment_intent: entry.payment_intent_id, reverse_transfer: true, refund_application_fee: true });
         payment = "refunded";
       } else if (pi.status !== "canceled") {
         await stripe.paymentIntents.cancel(entry.payment_intent_id);

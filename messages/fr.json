@@ -1521,7 +1521,9 @@
       "service": "Service",
       "stylist": "Styliste",
       "cancel": "Annuler",
-      "create": "Créer & SMS",
+      "create": "Ajouter à la file",
+      "added": "Ajouté à la file",
+      "done": "Terminé",
       "error": "Erreur"
     },
     "event_booking_new": "Nouveau rendez-vous",
