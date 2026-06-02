@@ -104,15 +104,29 @@ async function nextQueuePosition(admin: Admin, salonId: string): Promise<number>
 }
 
 // Daily per-salon ticket sequence base → "A01", "A47" … resets each day (date-scoped count, no cron).
-// Returns today's entry count; callers add (1 + attempt) to derive the next code.
-async function todayTicketCount(admin: Admin, salonId: string): Promise<number> {
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
+// Returns today's entry count; callers add (1 + attempt) to derive the next code. The day boundary
+// is the SALON's local midnight (not server-UTC): a Zürich shop resets at 00:00 CET, not 01:00/02:00.
+// Offset technique — DST-tolerant for the common case; a ticket reset needs no sub-hour precision.
+export async function todayTicketCount(admin: Admin, salonId: string, timezone = "Europe/Zurich"): Promise<number> {
+  const now = new Date();
+  let startUtcIso: string;
+  try {
+    const tzNow = new Date(now.toLocaleString("en-US", { timeZone: timezone }));
+    const offsetMs = now.getTime() - tzNow.getTime();
+    const tzMidnight = new Date(tzNow);
+    tzMidnight.setHours(0, 0, 0, 0);
+    startUtcIso = new Date(tzMidnight.getTime() + offsetMs).toISOString();
+  } catch {
+    // Bad/unknown tz → fall back to server-local midnight (prev behaviour).
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    startUtcIso = d.toISOString();
+  }
   const { count } = await admin
     .from("barber_walkin_queue")
     .select("id", { count: "exact", head: true })
     .eq("salon_id", salonId)
-    .gte("joined_at", startOfDay.toISOString());
+    .gte("joined_at", startUtcIso);
   return count ?? 0;
 }
 
@@ -126,7 +140,6 @@ async function insertWalkinEntry(
   admin: Admin,
   opts: {
     salonId: string;
-    position: number;
     baseSeq: number; // todayTicketCount() result
     counts: { queue_ahead: number; wait_minutes: number };
     fields: {
@@ -142,9 +155,12 @@ async function insertWalkinEntry(
     errorLabel: string;
   }
 ): Promise<{ row: ExistingRow; recovered: boolean }> {
-  const { salonId, position, baseSeq, counts, fields, onTicketCodeCollision, errorLabel } = opts;
+  const { salonId, baseSeq, counts, fields, onTicketCodeCollision, errorLabel } = opts;
   let lastErr: unknown = null;
   for (let attempt = 0; attempt < 6; attempt++) {
+    // Recompute position EACH attempt: the (salon_id, position) partial UNIQUE index means a
+    // concurrent join can 23505 on position too (not just ticket_code) — re-read max+1 to resolve.
+    const position = await nextQueuePosition(admin, salonId);
     const seq = baseSeq + 1 + attempt;
     const ticketCode = `A${String(seq).padStart(2, "0")}`;
     const { data, error } = await admin
@@ -227,7 +243,6 @@ export async function createWalkinTicket(
   //   (payment_intent_id)     → another process already created it → return that ticket
   const { row, recovered } = await insertWalkinEntry(admin, {
     salonId,
-    position,
     baseSeq,
     counts,
     fields: {
@@ -293,7 +308,6 @@ export async function createCashWalkinTicket(
   const trimmedName = customerName?.trim() || null;
   const { row } = await insertWalkinEntry(admin, {
     salonId,
-    position,
     baseSeq,
     counts,
     fields: {

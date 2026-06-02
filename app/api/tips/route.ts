@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { validateBody, tipSchema } from "@/lib/validations";
@@ -54,13 +54,16 @@ export async function POST(req: NextRequest) {
   try {
     const paymentIntent = await getStripe().paymentIntents.create(piParams);
 
-    // Record the tip
-    await supabase.from("tips").insert({
+    // Record the tip (service-role write — the tips table grants no public INSERT).
+    const admin = createAdminSupabaseClient();
+    await admin.from("tips").insert({
       booking_id: booking.id,
       staff_member_id: booking.staff_member_id,
       salon_id: booking.salon_id,
+      user_id: user.id,
       amount: validated.amount,
       stripe_payment_intent_id: paymentIntent.id,
+      status: "pending",
     });
 
     return NextResponse.json({ clientSecret: paymentIntent.client_secret }, { status: 201 });

@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
       .from("salons")
       .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score")
       .eq("is_active", true)
+      .eq("listed_on_marketplace", true)
       .neq("id", salonId)
       .order("explore_score", { ascending: false })
       .limit(4);
@@ -57,6 +58,7 @@ export async function GET(request: NextRequest) {
         .from("salons")
         .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score")
         .eq("is_active", true)
+        .eq("listed_on_marketplace", true)
         .order("explore_score", { ascending: false })
         .limit(8);
 
@@ -76,6 +78,7 @@ export async function GET(request: NextRequest) {
     .from("salons")
     .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score")
     .eq("is_active", true)
+    .eq("listed_on_marketplace", true)
     .order("explore_score", { ascending: false })
     .limit(8);
 

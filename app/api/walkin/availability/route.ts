@@ -54,13 +54,16 @@ export async function GET(req: NextRequest) {
     durSum.set(sv.salon_id, cur);
   }
 
-  const availability: Record<string, { waitMinutes: number; queueLength: number }> = {};
+  const availability: Record<string, { waitMinutes: number; waitMinutesMax: number; queueLength: number }> = {};
   for (const id of enabledIds) {
     const waiting = waitingBySalon.get(id) ?? 0;
     const barbers = barbersBySalon.get(id) ?? 1;
     const d = durSum.get(id);
     const avgDuration = d && d.count > 0 ? Math.round(d.total / d.count) : 30;
-    availability[id] = { waitMinutes: estimateWaitMinutes(waiting, avgDuration, barbers), queueLength: waiting };
+    // Conservative RANGE (council): expose "~X-Y min" so the card isn't a single number that
+    // becomes a broken promise the moment an untracked walk-up arrives. Upper bound = +40%.
+    const wait = estimateWaitMinutes(waiting, avgDuration, barbers);
+    availability[id] = { waitMinutes: wait, waitMinutesMax: Math.ceil(wait * 1.4), queueLength: waiting };
   }
 
   return NextResponse.json({ availability });

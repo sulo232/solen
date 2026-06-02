@@ -186,7 +186,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const admin = createAdminSupabaseClient();
 
   const { data: entry } = await admin
-    .from("barber_walkin_queue").select("id, tracking_token, status, payment_intent_id")
+    .from("barber_walkin_queue").select("id, salon_id, tracking_token, status, payment_intent_id")
     .eq("id", id).single();
 
   if (!entry) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -199,6 +199,12 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     .eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Advance the queue: re-sequence the remaining waiting entries so positions + ETAs close
+  // up behind the cancelled customer (same atomic RPC the operator PATCH uses). Without this,
+  // a customer self-cancel left everyone behind frozen at their old position.
+  const { error: reseqErr } = await admin.rpc("resequence_walkin_queue", { p_salon_id: entry.salon_id });
+  if (reseqErr) console.error("[walkin/queue DELETE] resequence after self-cancel failed:", reseqErr);
 
   // Release the card hold immediately (don't make the customer wait ~7 days for the auth
   // to expire). Manual-capture hold → cancel the intent; already-captured → refund.

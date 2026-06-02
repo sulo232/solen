@@ -72,6 +72,16 @@ export async function POST(req: NextRequest) {
       // amount_capturable_updated); skip the scheduled-booking/payout path here.
       if (pi.metadata?.type === "walk_in") break;
 
+      // Tips (booking or walk-in): recorded 'pending' at creation (app/api/tips,
+      // /api/walkin/tip) → flip to 'paid' here. 100% to the salon, so NO payout-ledger /
+      // commission row (tips aren't platform revenue). Idempotent on the PI id.
+      if (pi.metadata?.type === "tip") {
+        const { error: tipErr } = await admin
+          .from("tips").update({ status: "paid" }).eq("stripe_payment_intent_id", pi.id);
+        if (tipErr) console.error("[StripeWebhook] tip status update failed:", tipErr.message);
+        break;
+      }
+
       // Handle voucher purchases before booking handler
       const { handleVoucherPurchase } = await import("./voucher-handler");
       const wasVoucherPurchase = await handleVoucherPurchase(pi);

@@ -9,6 +9,7 @@ export async function GET() {
     .from("salons")
     .select("quartier, cover_photo_url")
     .eq("is_active", true)
+    .eq("listed_on_marketplace", true)
     .not("cover_photo_url", "is", null);
 
   if (error || !data) return NextResponse.json({ images: {} });

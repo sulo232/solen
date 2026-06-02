@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
     .from("salons")
     .select("*, services(price)")
     .eq("is_active", true)
+    .eq("listed_on_marketplace", true)
     .or(`name.ilike.%${q}%,description_de.ilike.%${q}%,description_en.ilike.%${q}%`)
     .limit(20);
 
@@ -52,6 +53,7 @@ export async function GET(request: NextRequest) {
       .from("salons")
       .select("*, services(price)")
       .eq("is_active", true)
+      .eq("listed_on_marketplace", true)
       .in("id", [...new Set(extraSalonIds)]);
     extraSalons = data ?? [];
   }

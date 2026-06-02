@@ -9,7 +9,8 @@ export async function GET() {
   const { data, error } = await supabase
     .from("salons")
     .select("quartier")
-    .eq("is_active", true);
+    .eq("is_active", true)
+    .eq("listed_on_marketplace", true);
 
   if (error || !data) return NextResponse.json({ items: [] });
   

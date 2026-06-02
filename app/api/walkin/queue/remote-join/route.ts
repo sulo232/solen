@@ -26,12 +26,16 @@ export async function POST(req: NextRequest) {
 
   // Walk-in must be enabled + not paused (Phase 2 de-gate: was barbershop-only).
   const { data: salon } = await admin
-    .from("salons").select("id, walkin_enabled, walkin_paused").eq("id", validated.salon_id).single();
+    .from("salons").select("id, walkin_enabled, walkin_paused, walkin_mode, timezone").eq("id", validated.salon_id).single();
   if (!(salon as any)?.walkin_enabled) {
     return NextResponse.json({ error: "Walk-in is not enabled for this salon" }, { status: 403 });
   }
   if ((salon as any).walkin_paused) {
     return NextResponse.json({ error: "This shop has paused new walk-ins right now" }, { status: 409 });
+  }
+  // Pay-first shops gate the number on payment — block the free remote-join too.
+  if ((salon as any).walkin_mode === "pay_first") {
+    return NextResponse.json({ error: "This shop requires payment to join the line", code: "PAYMENT_REQUIRED" }, { status: 402 });
   }
 
   // Race-safe insert via the shared helper.
@@ -42,6 +46,7 @@ export async function POST(req: NextRequest) {
     serviceId: validated.service_id ?? null,
     preferredBarberId: validated.preferred_barber_id ?? null,
     joinMethod: "remote",
+    timezone: (salon as any).timezone ?? undefined,
   });
   if (!result) {
     return NextResponse.json({ error: "Could not join the queue, please try again" }, { status: 503 });
@@ -52,6 +57,7 @@ export async function POST(req: NextRequest) {
     trackingToken: result.trackingToken,
     position: result.position,
     estimatedWait: result.estimatedWait,
+    ticketCode: result.ticketCode,
     trackingUrl: `/queue/${result.trackingToken}`,
   });
 }

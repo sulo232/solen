@@ -312,6 +312,13 @@ export const tipSchema = z.object({
   amount: z.number().int().min(100).max(10000),
 });
 
+// Walk-in tip: gated on the queue tracking token (the guest customer has no auth).
+// amount is integer Rappen (CHF 1.00 – 100.00), same bounds as the booking tip.
+export const walkinTipSchema = z.object({
+  token: z.string().min(8).max(64),
+  amount: z.number().int().min(100).max(10000),
+});
+
 export const formulaSchema = z.object({
   brand: z.string().max(100).optional(),
   product_line: z.string().max(100).optional(),

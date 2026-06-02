@@ -72,6 +72,7 @@ export async function GET(request: NextRequest) {
     .from("salons")
     .select("*", { count: "exact" })
     .eq("is_active", true)
+    .eq("listed_on_marketplace", true)
     .in("id", salonIds);
 
   if (city) {

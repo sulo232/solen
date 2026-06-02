@@ -50,6 +50,7 @@ export async function GET(request: NextRequest) {
       .from("salons")
       .select(`*, services(${servicesCols})`, { count: "exact" })
       .eq("is_active", true)
+      .eq("listed_on_marketplace", true)
       .eq("is_test", false);
 
     if (category) query = query.contains("categories", [category]);

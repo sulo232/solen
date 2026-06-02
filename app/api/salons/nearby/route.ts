@@ -53,7 +53,8 @@ export async function GET(request: NextRequest) {
   let query = supabase
     .from("salons")
     .select("id, name, slug, average_rating, review_count, cover_photo_url, address, categories, latitude, longitude")
-    .eq("is_active", true);
+    .eq("is_active", true)
+    .eq("listed_on_marketplace", true);
 
   if (cityId) query = query.eq("city_id", cityId);
 

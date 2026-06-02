@@ -63,7 +63,8 @@ export async function GET(req: NextRequest) {
     // zero salons). Fixed + aliased back to cover_image below so any existing consumer of this shape is unaffected.
     .select("id, name, slug, average_rating, cover_photo_url")
     .ilike("name", pattern)
-    .eq("is_active", true);
+    .eq("is_active", true)
+    .eq("listed_on_marketplace", true);
 
   if (category) {
     salonsQuery = salonsQuery.contains("categories", [category]);

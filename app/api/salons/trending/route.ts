@@ -13,6 +13,7 @@ export async function GET() {
       .from("salons")
       .select("id, name, slug, cover_photo_url, city_id, average_rating, review_count")
       .eq("is_active", true)
+      .eq("listed_on_marketplace", true)
       .eq("is_test", false)
       .limit(10);
       

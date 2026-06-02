@@ -56,6 +56,7 @@ export async function GET(request: NextRequest) {
     .select("id, name, slug, average_rating, review_count, cover_photo_url, address, categories, last_minute_discount_percent")
     .contains("categories", [cat])
     .eq("is_active", true)
+    .eq("listed_on_marketplace", true)
     .order("average_rating", { ascending: false })
     .order("review_count", { ascending: false });
 

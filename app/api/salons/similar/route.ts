@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
       .contains("categories", [category])
       .neq("id", currentId)
       .eq("is_active", true)
+      .eq("listed_on_marketplace", true)
       .order("solen_score", { ascending: false })
       .limit(limit);
 
