@@ -60,7 +60,7 @@
     --color-muted: #6B6B6B;       /* s-ink-2 (secondary text) — WCAG AA on white */
     --color-border: #E7E5E4;      /* s-border */
     --color-hover-bg: #F5F5F4;    /* s-bg-sunken */
-    --color-error: #D32F2F;
+    --color-error: #DC2626;
     --color-success: #16A34A;
     --color-warning: #F1AE27;     /* s-warning, the amber twin (V3-D421) */
 

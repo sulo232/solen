@@ -99,7 +99,7 @@ export default function WalkInPaymentForm({ clientSecret, ...rest }: WalkInPayme
           variables: {
             colorPrimary: "#0A0A0A",
             colorText: "#0A0A0A",
-            colorDanger: "#D32F2F",
+            colorDanger: "#DC2626",
             fontFamily: "'Inter', system-ui, sans-serif",
             borderRadius: "12px",
             spacingUnit: "4px",

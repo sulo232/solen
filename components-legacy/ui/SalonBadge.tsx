@@ -73,7 +73,7 @@ export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProp
     return (
       <span
         className={`${BASE_CLASSES} text-white`}
-        style={{ background: "#9A3412", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
+        style={{ background: "#C2410C", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
       >
         Angebot <span className="tabular-nums">−{salon.last_minute_discount_percent}%</span>
       </span>

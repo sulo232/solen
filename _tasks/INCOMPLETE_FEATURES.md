@@ -200,3 +200,11 @@ no-speculative-tables rule.
   `'refund_policy'` in `getRefundConfig()` BEFORE the env fallback; no caller change needed (the
   function is already async). Same migration should seed `commission.rate_percent` so the 15%
   fallback stops being load-bearing.
+
+---
+
+## Add to Apple Wallet on the confirmation screen — NOT built (no wallet-pass infra) (2026-06-01, owner-flagged "add later")
+The approved confirmation mockup (`public/solen-refund-confirmation-order-number.html`) shows an "Add to Apple Wallet" button. There is no PassKit / `.pkpass` signing infrastructure in the app, so it was omitted from the real confirmation screen. Calendar (ICS), Directions (maps), and Share (Web Share) are wired with real handlers instead.
+- **Blocker**: needs an Apple PassKit pass-type id + signing certificate + a server endpoint that generates a signed `.pkpass` (order number / barcode / booking details), plus the Wallet button gated to iOS/Safari.
+- file:line — `components-legacy/booking/BookingConfirmation.tsx` (JSDoc notes the omission); confirmation route `app/[locale]/confirmation/page.tsx`.
+- **Next step**: stand up the `.pkpass` generation service + cert, add `/api/bookings/[id]/wallet-pass`, then render the Wallet button on the confirmation screen (Google Wallet optional twin).

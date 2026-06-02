@@ -202,6 +202,7 @@ export async function middleware(request: NextRequest) {
         "/badge-manager", "/content-editor", "/segments",
         "/revenue", "/review-moderation", "/approvals",
         "/editor", "/discovery-admin", "/nail-admin",
+        "/cases",
       ];
       const dashboardSubpath = pathname.slice(`/${currentLocale}/dashboard`.length);
       const isAdminRoute = adminOnlyPaths.some((p) => dashboardSubpath.startsWith(p));

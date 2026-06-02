@@ -168,10 +168,10 @@ module.exports = {
         // hue-matched text on .soft backgrounds.
         "s-love":     { DEFAULT: "#CC4A60", soft: "#FAD2DA", deep: "#A23548" },
         "s-success": { DEFAULT: "#16A34A", bg: "#E8F5E9" },
-        "s-warning": { DEFAULT: "#F1AE27", bg: "#FDF6E7", text: "#906309" },  // V3-D421: the "amber twin" of s-accent (Uber-blue HSL S+L, hue rotated to 40deg) so warning is cohesive with the accent. .text = deep amber for text-on-pale.  // V3: aligned to LIVE_TRUTH §3 hex. `.text` = readable amber for text-on-pale (V3-D347 dashboard)
+        "s-warning": { DEFAULT: "#F1AE27", bg: "#FDF6E7", text: "#B45309" },  // V3-D421: the "amber twin" of s-accent (Uber-blue HSL S+L, hue rotated to 40deg) so warning is cohesive with the accent. .text = deep amber for text-on-pale.  // V3: aligned to LIVE_TRUTH §3 hex. `.text` = readable amber for text-on-pale (V3-D347 dashboard)
         // V3-D347 — operator-dashboard CALENDAR service palette (vibrant, dashboard-only per LOCKFILE §12). Store-defined service types; NO makeup.
         "s-cal": { hair: "#2563EB", color: "#EC4899", nails: "#8B5CF6", spa: "#10B981", barber: "#F97316" },
-        "s-error":   { DEFAULT: "#D32F2F", bg: "#FFEBEE" },  // V3: aligned to LIVE_TRUTH §3 hex
+        "s-error":   { DEFAULT: "#DC2626", bg: "#FEE2E2" },  // V3-D421: consolidated onto the locked red (was off-brand #D32F2F); error == closed, one red system
         // V3-D213 (2026-05-26, salon verifier fix #6): burnt-amber urgency for
         // "Last-Minute" / "Nur noch X" / off-peak deal pills. Distinct from
         // s-warning (system warning) and s-pop (vermilion urgency held in reserve).
@@ -179,7 +179,13 @@ module.exports = {
         // Per V3-D199 saturation contract: DEFAULT L=33% S=80% (deep burnt umber),
         // bg L=95% S=88% (pale apricot). Replaces 3 hardcoded hex usages in
         // SalonHeader's last-minute pill (was inline #FFF1E6 + #9A3412 + rgba).
-        "s-urgency": { DEFAULT: "#9A3412", bg: "#FFF1E6", border: "rgba(154,52,18,0.22)" },
+        "s-urgency": { DEFAULT: "#C2410C", bg: "#FFF1E6", border: "rgba(194,65,12,0.22)" },
+        // V3-D424 (2026-06-02): VIVID orange for FOCAL "surcharge / extra-charge" moments
+        // (customer Nachzahlung, dashboard upcharge). The missing vivid warm hue.
+        // ⚠ s-warning.text (#906309) + s-urgency (#9A3412) are DARK-for-text-on-pale
+        // (readability) — NOT focal colors; using them as a hero/focal number reads muddy.
+        // Vivid warm focal => s-surcharge.DEFAULT on a light s-surcharge.bg.
+        "s-surcharge": { DEFAULT: "#EA580C", bg: "#FFEDD5" },
         "s-closed":   "#DC2626",  // V3 added — distinct from error
         // V3-D200 (2026-05-26): s-star Q1 resolution — ink #1A1A1A → yellow #FFC32B
         // per universal-color convention (V3-D197). V3-D95 "never yellow" rule is

@@ -9,6 +9,7 @@ import {
   Calendar, Heart, Star, MapPin, X, RotateCcw,
   Settings, ChevronDown, ChevronUp, MessageCircle,
   Gift, Wallet, ChevronRight, Trophy, Share2, Copy, Check, Package, ClipboardList,
+  AlertTriangle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Spinner from "@/components-legacy/ui/Spinner";
@@ -21,7 +22,6 @@ import SolenExclusiveBadge from "@/components-legacy/ui/SolenExclusiveBadge";
 import ProfileDiscoverySections from "@/components-legacy/discovery/ProfileDiscoverySections";
 import { formatCurrency } from "@/lib/format-currency";
 import type { Profile, Booking, SalonCard, BeautyProfile } from "@/lib/types";
-import { ReportProblemButton } from "@/components-legacy/disputes/ReportProblemButton";
 import { ProfileHero } from "@/components-legacy/profile/ProfileHero";
 import { BeautyProfileCard } from "@/components-legacy/profile/BeautyProfileCard";
 import { BeautyProfileEditModal } from "@/components-legacy/profile/BeautyProfileEditModal";
@@ -347,7 +347,13 @@ const BookingCard = memo(function BookingCard({
           )}
 
           {b.status === "completed" && (
-            <ReportProblemButton bookingId={b.id} />
+            <Link
+              href={`/${locale}/bookings/${b.id}/report`}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-accent/25 text-[10px] font-heading uppercase tracking-[.06em] text-s-accent hover:bg-s-ink/[0.05] transition-colors"
+            >
+              <AlertTriangle size={12} />
+              {t("reportProblem")}
+            </Link>
           )}
 
           {tooLate && (

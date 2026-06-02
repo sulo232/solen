@@ -9,6 +9,7 @@ import { getServerEnv } from "@/lib/env";
 import { logAuditEvent } from "@/lib/audit";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
+import { notifyRefundProcessed } from "@/lib/bookings/notify-refund";
 import {
   resolveEligibility,
   reasonAllowedOnConfirmed,
@@ -101,7 +102,56 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     events = ev ?? [];
   }
 
-  return NextResponse.json({ case: shapeCase(dispute), events });
+  // Booking display facts for the status/timeline + entry screens. This is the ONLY
+  // guest-safe surface that serves these (the relational /api/bookings/[id] GET is
+  // session-only, 401s a guest), so it carries the minimal facts the case view renders:
+  // salon name/address, service, appointment, paid/refunded (Rappen), order number,
+  // booking status. No card PAN/last4 exists on the row (foundation migration) — never
+  // fabricate one. Pulled via the admin client we already hold (entitlement proven above).
+  const { data: bkData, error: bkErr } = await admin
+    .from("bookings")
+    .select(
+      "id, reference_code, status, starts_at, paid_amount, refunded_amount, " +
+        "guest_name, salons(name, address, postal_code, cover_photo_url), services(name_de, name_en), " +
+        "staff_members(name)",
+    )
+    .eq("id", bookingId)
+    .maybeSingle();
+  if (bkErr) console.error("[booking-disputes] booking facts query failed:", bkErr.message);
+
+  // The clients are intentionally untyped (lib/supabase.ts); narrow the joined shape here.
+  const bk = bkData as Record<string, any> | null;
+  const salon = (bk?.salons ?? null) as { name?: string; address?: string; postal_code?: string; cover_photo_url?: string | null } | null;
+  const service = (bk?.services ?? null) as Record<string, string | null> | null;
+  const staff = (bk?.staff_members ?? null) as { name?: string } | null;
+
+  const bookingFacts = bk
+    ? {
+        id: bk.id,
+        reference_code: bk.reference_code ?? null,
+        status: bk.status ?? null,
+        starts_at: bk.starts_at ?? null,
+        paid_amount: bk.paid_amount ?? 0, // Rappen
+        refunded_amount: bk.refunded_amount ?? 0, // Rappen
+        currency: "CHF",
+        salon_name: salon?.name ?? null,
+        salon_address: salon?.address ?? null,
+        salon_city: salon?.postal_code ?? null, // postal code stands in for the city line
+        salon_photo: salon?.cover_photo_url ?? null, // V3-D424: real salon photo (FE falls back to initials when null)
+        // services only carry de/en today; fr/it fall back via the FE serviceName() helper.
+        service_name: service
+          ? {
+              de: service.name_de ?? null,
+              en: service.name_en ?? null,
+              fr: null,
+              it: null,
+            }
+          : null,
+        staff_name: staff?.name ?? null,
+      }
+    : null;
+
+  return NextResponse.json({ case: shapeCase(dispute), events, booking: bookingFacts });
 }
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -152,6 +202,17 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const paidAmount: number = booking.paid_amount ?? 0;
   const refundedAmount: number = booking.refunded_amount ?? 0;
   const remaining = Math.max(0, paidAmount - refundedAmount);
+
+  // Empty-refund guard: a booking that was never charged (paid_amount null/0 — the
+  // "free booking" gap) has nothing to refund. Reject the refund REQUEST up front so
+  // issueRefund never throws NO_PAID_AMOUNT mid-flow and strands the case at
+  // salon_approved. A pure complaint (wants_refund=false) still goes through.
+  if (validated.wants_refund && remaining <= 0) {
+    return NextResponse.json(
+      { error: "Nothing to refund — this booking has no refundable payment", code: "NO_PAID_AMOUNT" },
+      { status: 400 },
+    );
+  }
 
   // Resolve the money ask. wants_refund=false → pure complaint (null amount).
   // wants_refund=true + provided → partial, must be <= remaining. omitted → full (null).
@@ -389,10 +450,23 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       reason: "requested_by_customer",
     });
   } catch (e) {
-    // Leave the case at salon_approved (checkpoint). A retry re-enters with the
-    // SAME idempotency key (Stripe dedupes) and the same checkpoint resumes.
+    // Default: leave the case at salon_approved (checkpoint). A retry re-enters with
+    // the SAME idempotency key (Stripe dedupes) and the same checkpoint resumes.
     console.error("[booking-disputes] salon refund via issueRefund failed:", e);
     if (e instanceof RefundError) {
+      // NO_PAID_AMOUNT / NO_PAYMENT are NON-retryable: there is no money to move, so a
+      // retry can never succeed and leaving the case at salon_approved misleadingly
+      // signals an issued refund. Roll the checkpoint back to open (CAS-guarded) and
+      // clear the idempotency key so the case reflects reality (no money moved).
+      if (e.code === "NO_PAID_AMOUNT" || e.code === "NO_PAYMENT") {
+        const { error: rbErr } = await admin
+          .from("booking_disputes")
+          .update({ status: "open", resolved_amount: null, idempotency_key: null })
+          .eq("id", dispute.id)
+          .eq("status", "salon_approved"); // CAS — only undo our own checkpoint.
+        if (rbErr) console.error("[booking-disputes] checkpoint rollback failed:", rbErr.message);
+        return NextResponse.json({ error: e.message, code: e.code, status: "open" }, { status: 400 });
+      }
       const httpStatus = e.code === "BOOKING_NOT_FOUND" ? 404
         : e.code === "STRIPE_FAILED" || e.code === "CONCURRENT_RETRY" ? 502
         : 400;
@@ -415,6 +489,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   await logAuditEvent(req, userId, "booking_dispute_salon_approved", "booking_dispute", dispute.id, {
     amount, stripe_refund_id: refundResult.refundId,
   });
+
+  // N1: notify the customer their refund was issued. Never blocks/rolls back the money
+  // move — the refund already committed above (same discipline as the Stripe webhook).
+  await notifyRefundProcessed(admin, bookingId, amount, "booking-disputes").catch((err) =>
+    console.error("[booking-disputes] refund notification failed:", err),
+  );
 
   return NextResponse.json({
     status: "refunded",

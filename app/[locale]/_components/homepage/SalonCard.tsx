@@ -124,8 +124,8 @@ const availVariants = cva(
         // also carries bg-s-success-bg now (bg moved off the inline tealStyle).
         now:     "text-s-success",
         week:    "text-s-success bg-s-success-bg",
-        urgent:  "text-[#9A3412]",    // V3-D173: warm-amber burnt-sienna on cream
-        limited: "text-[#9A3412]",
+        urgent:  "text-[#C2410C]",    // V3-D173: warm-amber burnt-sienna on cream
+        limited: "text-[#C2410C]",
         angebot: "text-s-ink",        // V3-D79: yellow solid → ink text (high contrast on yellow)
         pause:   "text-white",        // ink-2 muted glass (unchanged)
       },

@@ -6,6 +6,7 @@ import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, bookingRefundSchema } from "@/lib/validations";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
+import { notifyRefundProcessed } from "@/lib/bookings/notify-refund";
 
 // POST /api/bookings/[id]/refund — Salon-triggered manual refund
 export async function POST(
@@ -62,6 +63,13 @@ export async function POST(
       reason,
       // refundApplicationFee omitted -> resolves from D7 config.
     });
+
+    // N1: notify the customer their refund was issued (this action's slice, Rappen).
+    // Never blocks/rolls back the money move (same discipline as the Stripe webhook).
+    await notifyRefundProcessed(admin, bookingId, amount, "refund").catch((err) =>
+      console.error("[refund] refund notification failed:", err),
+    );
+
     return NextResponse.json({
       data: {
         booking_id: bookingId,

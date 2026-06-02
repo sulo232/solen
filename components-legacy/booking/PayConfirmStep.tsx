@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -9,7 +9,10 @@ import { useBooking } from '@/lib/booking-context';
 import { formatPrice } from '@/lib/format';
 import Spinner from '@/components-legacy/ui/Spinner';
 import SignatureLockup from '@/components-legacy/ui/SignatureLockup';
-import GuestBookingForm, { type GuestInfo } from '@/components-legacy/booking/GuestBookingForm';
+import GuestBookingForm, {
+  type GuestInfo,
+  type GuestBookingFormHandle,
+} from '@/components-legacy/booking/GuestBookingForm';
 import type { Salon, StaffMember } from '@/lib/types';
 
 /**
@@ -51,9 +54,11 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   const [paymentMethod, setPaymentMethod] = useState<'online' | 'in_person' | null>(
     formData.paymentMethod ?? null,
   );
-  // SP-1: a logged-out guest fills name/phone (email optional) via GuestBookingForm. Its onSubmit
-  // captures the validated GuestInfo here; the booking POST is gated on it being present.
+  // SP-1: a logged-out guest fills name/phone (email optional) via GuestBookingForm. It lifts a
+  // valid GuestInfo live (null while incomplete); the booking POST is gated on it being present.
+  // The single "Buchen" CTA force-validates via the form ref so errors surface on press.
   const [guestInfo, setGuestInfo] = useState<GuestInfo | null>(null);
+  const guestFormRef = useRef<GuestBookingFormHandle>(null);
 
   const localeCode = locale === 'de' ? 'de-CH' : locale === 'fr' ? 'fr-CH' : locale === 'it' ? 'it-CH' : 'en-GB';
   const cancellationHours = (salon as any).cancellation_window_hours ?? 24;
@@ -77,11 +82,15 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       setError('Bitte fülle alle erforderlichen Felder aus');
       return;
     }
-    // SP-1: a logged-out guest must supply contact info before booking. GuestBookingForm validates
-    // name/phone/email and stores GuestInfo via its onSubmit; gate the POST on it here.
-    if (!isLoggedIn && !guestInfo) {
-      setError(tg('fillRequired'));
-      return;
+    // SP-1: a logged-out guest must supply contact info before booking. Force-validate the form on
+    // press so field errors surface, and use the freshly-validated value (don't trust a stale state).
+    let resolvedGuest = guestInfo;
+    if (!isLoggedIn) {
+      resolvedGuest = guestFormRef.current?.validate() ?? null;
+      if (!resolvedGuest) {
+        setError(tg('fillRequired'));
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -106,11 +115,11 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           is_first_visit: true,
           // SP-1: send guest fields only when logged out. The route ignores them for a session
           // user; for a guest it requires name + phone (email optional).
-          ...(!isLoggedIn && guestInfo
+          ...(!isLoggedIn && resolvedGuest
             ? {
-                guest_name: guestInfo.name,
-                guest_phone: guestInfo.phone,
-                guest_email: guestInfo.email || undefined,
+                guest_name: resolvedGuest.name,
+                guest_phone: resolvedGuest.phone,
+                guest_email: resolvedGuest.email || undefined,
               }
             : {}),
         }),
@@ -155,7 +164,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       />
 
       {/* (b) Summary card */}
-      <div className="rounded-[12px] p-4" style={{ background: '#FAF7F3' }}>
+      <div className="rounded-[12px] p-4 bg-s-bg-sunken">
         <div className="flex items-start gap-3 mb-3 pb-3 border-b border-s-ink/[0.05]">
           {salon.cover_photo_url && (
             <Image
@@ -203,26 +212,32 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
       </div>
 
       {/* (c) Cancellation policy mini-banner */}
-      <div
-        className="flex items-start gap-2 rounded-[10px] px-3 py-2.5"
-        style={{ background: '#FFF4E8' }}
-      >
+      <div className="flex items-start gap-2 rounded-[10px] px-3 py-2.5 bg-s-warning-bg">
         <ShieldCheck size={14} className="text-s-amber shrink-0 mt-[1px]" aria-hidden />
         <p className="font-body text-[11px] text-s-ink/65 leading-[1.5]">
           Kostenlos bis {cancellationHours}h vorher stornieren.
         </p>
       </div>
 
-      {/* SP-1: guest contact form (logged-out only). Data wiring; final placement + visual is the
-          Section 12 #1 mockup's job. onSubmit stores validated GuestInfo; the Buchen CTA gates on it. */}
+      {/* SP-1: guest contact form (logged-out only). Rebuilt to the review-and-confirm mockup
+          (solen-refund-guest-booking-form.html): fields-only, lifts GuestInfo live; the single
+          Buchen CTA force-validates via the form ref. */}
       {!isLoggedIn && (
-        <GuestBookingForm
-          onSubmit={(info) => {
-            setGuestInfo(info);
-            setError(null);
-          }}
-          submitting={isSubmitting}
-        />
+        <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
+          <div className="mb-4">
+            <p className="font-heading text-[15px] font-semibold text-s-ink tracking-[-0.01em]">
+              {tg('title')}
+            </p>
+            <p className="text-[13px] text-s-ink-2 mt-0.5">{tg('subtitle')}</p>
+          </div>
+          <GuestBookingForm
+            ref={guestFormRef}
+            onChange={(info) => {
+              setGuestInfo(info);
+              if (info) setError(null);
+            }}
+          />
+        </div>
       )}
 
       {/* (d) Payment method selector — radio chips */}
@@ -296,9 +311,9 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
       {/* Error */}
       {error && (
-        <div role="alert" className="flex items-start gap-2 px-3 py-2.5 rounded-[10px]" style={{ background: 'rgba(211,47,47,0.08)' }}>
-          <AlertCircle size={14} className="shrink-0 mt-[1px]" style={{ color: '#D32F2F' }} aria-hidden />
-          <p className="font-body text-[12px] leading-[1.4]" style={{ color: '#D32F2F' }}>{error}</p>
+        <div role="alert" className="flex items-start gap-2 px-3 py-2.5 rounded-[10px] bg-s-error-bg">
+          <AlertCircle size={14} className="shrink-0 mt-[1px] text-s-error" aria-hidden />
+          <p className="font-body text-[12px] leading-[1.4] text-s-error">{error}</p>
         </div>
       )}
 

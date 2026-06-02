@@ -1,15 +1,26 @@
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { createServerSupabaseClient } from '@/lib/supabase';
+import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase';
 import { buildAlternates } from '@/lib/seo';
-import { CheckCircle, Calendar, Share2 } from 'lucide-react';
-import Link from 'next/link';
 import { formatCurrency } from '@/lib/format-currency';
+import { verifyAccessToken } from '@/lib/bookings/guest-access';
+import BookingConfirmation from '@/components-legacy/booking/BookingConfirmation';
 
 interface ConfirmationPageProps {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ booking_id?: string }>;
+  // SP-1: PayConfirmStep forwards `access_token` + `ref` for a guest booking (just
+  // `booking_id` for a logged-in customer). The raw token authorizes the guest read here
+  // (verified against the stored hash) and builds the "save your access link" link.
+  searchParams: Promise<{ booking_id?: string; access_token?: string; ref?: string }>;
 }
+
+// The fields the confirmation screen reads, selected identically on both the RLS (cookie)
+// and the service-role (guest) path.
+const BOOKING_SELECT = `id, salon_id, service_id, staff_member_id, starts_at, ends_at,
+  price_paid, status, reference_code, paid_via, user_id, access_token_hash, access_token_expires_at,
+  salons(id, name, slug, address, phone, cover_photo_url),
+  services(id, name_de, name_en, duration_minutes),
+  staff_members(name)`;
 
 export async function generateMetadata({
   params,
@@ -29,159 +40,100 @@ export default async function ConfirmationPage({
   searchParams,
 }: ConfirmationPageProps) {
   const { locale } = await params;
-  const { booking_id } = await searchParams;
-  const t = await getTranslations({ locale, namespace: 'ui.successPage' });
+  const { booking_id, access_token, ref } = await searchParams;
 
   if (!booking_id) {
     notFound();
   }
 
-  const supabase = await createServerSupabaseClient();
+  // Two read paths, because guest bookings (user_id IS NULL) are deny-by-default under RLS
+  // and reachable only via the token-gated service-role path (see
+  // supabase/migrations/20260601_sp1_bookings_guest_rls.sql + lib/bookings/authorize.ts):
+  //   - logged-in customer / salon owner -> cookie client, RLS `bookings_select_own`.
+  //   - guest (raw access_token in the URL) -> service-role read, then verifyAccessToken
+  //     against the stored SHA-256 hash. We never trust reference_code alone, and never log
+  //     the raw token.
+  let booking: any = null;
+  let isGuest = false;
 
-  // Fetch booking with salon and service details
-  const { data: booking, error } = await supabase
-    .from('bookings')
-    .select(
-      `id, salon_id, service_id, starts_at, ends_at, price_paid, status,
-       salons(id, name, slug, address, phone),
-       services(id, name_de, name_en, duration_minutes)`
-    )
-    .eq('id', booking_id)
-    .single();
+  if (access_token) {
+    const admin = createAdminSupabaseClient();
+    const { data: row } = await admin
+      .from('bookings')
+      .select(BOOKING_SELECT)
+      .eq('id', booking_id)
+      .maybeSingle();
 
-  if (error || !booking) {
-    console.error('[ConfirmationPage] Booking fetch error:', error);
-    notFound();
+    if (
+      row &&
+      !row.user_id &&
+      verifyAccessToken(
+        access_token,
+        (row as any).access_token_hash ?? null,
+        (row as any).access_token_expires_at ?? null,
+      )
+    ) {
+      booking = row;
+      isGuest = true;
+    }
   }
 
-  const startDate = new Date(booking.starts_at);
+  if (!booking) {
+    // Logged-in customer / salon owner: RLS does the entitlement check.
+    const supabase = await createServerSupabaseClient();
+    const { data: row, error } = await supabase
+      .from('bookings')
+      .select(BOOKING_SELECT)
+      .eq('id', booking_id)
+      .single();
 
-  const formatDate = (date: Date) => {
-    const formatter = new Intl.DateTimeFormat(locale === 'de' ? 'de-CH' : locale === 'fr' ? 'fr-CH' : locale === 'it' ? 'it-CH' : 'en-CH', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-    return formatter.format(date);
-  };
-
-  const getServiceName = (): string => {
-    const service = Array.isArray(booking.services) ? (booking.services[0] as any) : (booking.services as any);
-    if (locale === 'en' && service?.name_en) {
-      return service.name_en;
+    if (error || !row) {
+      console.error('[ConfirmationPage] Booking fetch error:', error);
+      notFound();
     }
-    return service?.name_de || service?.name_en || '';
-  };
+    booking = row;
+    isGuest = !row.user_id;
+  }
+
+  const localeCode =
+    locale === 'de' ? 'de-CH' : locale === 'fr' ? 'fr-CH' : locale === 'it' ? 'it-CH' : 'en-CH';
+
+  const salon = (Array.isArray(booking.salons) ? booking.salons[0] : booking.salons) as any;
+  const service = (Array.isArray(booking.services) ? booking.services[0] : booking.services) as any;
+  const staff = (Array.isArray(booking.staff_members)
+    ? booking.staff_members[0]
+    : booking.staff_members) as any;
+
+  const serviceName =
+    (locale === 'en' ? service?.name_en : service?.name_de) || service?.name_de || service?.name_en || '';
+
+  // Guest access link: the REAL guest-lookup route (?code=&t=) that exchanges the raw token
+  // once for an httpOnly cookie. Only build it when we carry both the reference_code and the
+  // raw token from the booking POST handoff.
+  const accessLink =
+    isGuest && booking.reference_code && access_token
+      ? `https://www.solen.ch/${locale}/booking/lookup?code=${encodeURIComponent(
+          booking.reference_code,
+        )}&t=${encodeURIComponent(access_token)}`
+      : null;
 
   return (
-    <div className="min-h-screen bg-[--base]">
-      <main className="max-w-2xl mx-auto px-4 py-8">
-        {/* Success animation */}
-        <div className="flex justify-center mb-8">
-          <div className="animate-[scale_.3s_ease-out_forwards] w-20 h-20 rounded-full bg-s-ink flex items-center justify-center">
-            <CheckCircle size={40} className="text-white" />
-          </div>
-        </div>
-
-        {/* Title */}
-        <h1 className="text-center font-display text-3xl text-s-ink mb-2">
-          {t('title')}
-        </h1>
-        <p className="text-center text-s-ink/60 mb-8">
-          {t('subtitle')}
-        </p>
-
-        {/* Booking summary card */}
-        <div className="border border-s-ink/[0.06] rounded-[16px] bg-[--raised] p-6 space-y-6 mb-8">
-          {/* Salon */}
-          <div>
-            <p className="text-xs font-heading uppercase tracking-[.16em] text-s-ink/40 mb-2">
-              {t('salon')}
-            </p>
-            <h2 className="font-heading text-lg text-s-ink">
-              {(Array.isArray(booking.salons) ? (booking.salons[0] as any)?.name : (booking.salons as any)?.name) || ''}
-            </h2>
-            <p className="text-sm text-s-ink/60">
-              {(Array.isArray(booking.salons) ? (booking.salons[0] as any)?.address : (booking.salons as any)?.address) || ''}
-            </p>
-          </div>
-
-          {/* Service */}
-          <div>
-            <p className="text-xs font-heading uppercase tracking-[.16em] text-s-ink/40 mb-2">
-              {t('service')}
-            </p>
-            <p className="font-heading text-sm text-s-ink">
-              {getServiceName()}
-            </p>
-          </div>
-
-          {/* Date and time */}
-          <div>
-            <p className="text-xs font-heading uppercase tracking-[.16em] text-s-ink/40 mb-2">
-              {t('dateTime')}
-            </p>
-            <p className="font-heading text-sm text-s-ink">
-              {formatDate(startDate)}
-            </p>
-          </div>
-
-          {/* Price divider */}
-          <div className="pt-4 border-t border-s-ink/[0.06]">
-            <div className="flex justify-between items-center">
-              <span className="font-heading text-s-ink">
-                {t('total')}
-              </span>
-              <span className="data-text font-bold text-2xl text-s-ink">
-                {formatCurrency(booking.price_paid, locale === 'de' ? 'de-CH' : locale === 'fr' ? 'fr-CH' : locale === 'it' ? 'it-CH' : 'en-CH')}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Action buttons */}
-        <div className="space-y-3 mb-8">
-          {/* Add to Calendar */}
-          <button
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill bg-s-ink text-white font-heading text-xs uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150"
-            aria-label={t('addToCalendar')}
-          >
-            <Calendar size={16} />
-            {t('addToCalendar')}
-          </button>
-
-          {/* Share Booking */}
-          <button
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading text-xs uppercase tracking-[.06em] hover:bg-s-bg-sunken active:scale-[0.97] transition-[transform,filter] duration-150"
-            aria-label={t('shareBooking')}
-          >
-            <Share2 size={16} />
-            {t('shareBooking')}
-          </button>
-
-          {/* Rebook */}
-          <Link
-            href={`/${locale}/salon/${(Array.isArray(booking.salons) ? (booking.salons[0] as any)?.slug : (booking.salons as any)?.slug) || ''}`}
-            className="block text-center py-4 rounded-pill border border-s-ink/[0.08] text-s-ink font-heading text-xs uppercase tracking-[.06em] hover:bg-s-bg-sunken active:scale-[0.97] transition-[transform,filter] duration-150"
-            aria-label={t('rebook')}
-          >
-            {t('rebook')}
-          </Link>
-        </div>
-
-        {/* Secondary CTA — continue exploring */}
-        <div className="text-center">
-          <Link
-            href={`/${locale}`}
-            className="inline text-s-accent hover:text-s-accent/80 transition-colors text-sm font-heading"
-          >
-            {t('continueExploring')}
-          </Link>
-        </div>
-      </main>
-    </div>
+    <BookingConfirmation
+      referenceCode={booking.reference_code ?? ref ?? null}
+      salonName={salon?.name || ''}
+      salonSlug={salon?.slug || ''}
+      salonAddress={salon?.address || ''}
+      salonCoverUrl={salon?.cover_photo_url || null}
+      serviceName={serviceName}
+      staffName={staff?.name || null}
+      startsAt={booking.starts_at}
+      durationMinutes={service?.duration_minutes ?? null}
+      pricePaid={booking.price_paid}
+      priceLabel={formatCurrency(booking.price_paid, localeCode)}
+      paidVia={booking.paid_via ?? null}
+      isGuest={isGuest}
+      accessLink={accessLink}
+      contactEmail={null}
+    />
   );
 }

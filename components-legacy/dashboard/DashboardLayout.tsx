@@ -12,6 +12,7 @@ import {
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
   UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid, FlaskConical,
+  Scale, RotateCcw, TrendingUp,
 } from "lucide-react";
 
 import Skeleton from "@/components-legacy/ui/Skeleton";
@@ -138,6 +139,9 @@ const RAIL_NAV = [
   { key: "sales",     href: "/dashboard/bookings",  icon: DollarSign, label: "Verkäufe" },
   { key: "team",      href: "/dashboard/staff",     icon: UserCheck,  label: "Team" },
   { key: "reports",   href: "/dashboard/analytics", icon: BarChart3,  label: "Berichte" },
+  { key: "refunds",   href: "/dashboard/refunds",   icon: RotateCcw,  label: "Rückerstattungen" },
+  { key: "upcharge",  href: "/dashboard/upcharge",  icon: TrendingUp, label: "Mehrbelastung" },
+  { key: "cases",     href: "/dashboard/cases",     icon: Scale,      label: "Fälle", adminOnly: true },
   { key: "settings",  href: "/dashboard/settings",  icon: Settings,   label: "Einstellungen" },
 ] as const;
 
@@ -304,7 +308,7 @@ export default function DashboardLayout({
       <aside className="hidden md:flex fixed left-0 top-0 h-full w-[64px] bg-white border-r border-s-border flex-col items-center py-3 z-30">
         <Link href={`/${locale}/dashboard`} aria-label="Solen" className="w-9 h-9 grid place-items-center text-[20px] font-bold tracking-[-0.04em] text-s-ink mb-2">S</Link>
         <nav className="flex-1 flex flex-col gap-1 items-center w-full">
-          {RAIL_NAV.filter((it) => !("barbershopOnly" in it) || salonCategories?.includes("barbershop")).map(({ key, href, icon: Icon, label }) => {
+          {RAIL_NAV.filter((it) => (!("barbershopOnly" in it) || salonCategories?.includes("barbershop")) && (!("adminOnly" in it) || role === "admin")).map(({ key, href, icon: Icon, label }) => {
             const active = isActive(href);
             return (
               <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}

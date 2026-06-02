@@ -78,7 +78,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
       label: t("abandonment_rate"),
       value: `${stats.abandonment_rate}%`,
       icon: BarChart3,
-      color: "#D32F2F",
+      color: "#DC2626",
       trend: trends?.abandonments,
     },
     {

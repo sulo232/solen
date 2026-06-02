@@ -3,12 +3,11 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { Check, UserX, RotateCcw, ChevronDown, X, BadgeCheck, AlertTriangle } from "lucide-react";
+import { Check, UserX, RotateCcw, ChevronDown, X, BadgeCheck } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
 import ClientTags from "@/components-legacy/chat/ClientTags";
-import DisputeNotification from "@/components-legacy/dashboard/DisputeNotification";
 import { formatCurrency } from "@/lib/format-currency";
 import type { Booking, BookingStatus } from "@/lib/types";
 
@@ -118,7 +117,6 @@ export default function BookingsPage() {
   );
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
   const [confirmingPrice, setConfirmingPrice] = useState<string | null>(null);
-  const [openDisputes, setOpenDisputes] = useState<Record<string, any>>({});
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -131,24 +129,6 @@ export default function BookingsPage() {
         const items = d.bookings ?? [];
         setBookings(items);
         if (items.length > 0 && !salonId) setSalonId(items[0].salon_id);
-        
-        // Fetch open disputes
-        if (items.length > 0) {
-          import("@/lib/supabase-browser").then(({ createBrowserSupabaseClient }) => {
-            const supabase = createBrowserSupabaseClient();
-            supabase.from("booking_disputes")
-              .select("*")
-              .in("booking_id", items.map((b: any) => b.id))
-              .eq("status", "open")
-              .then(({ data }) => {
-                if (data) {
-                  const map: Record<string, any> = {};
-                  data.forEach((d) => { map[d.booking_id] = d; });
-                  setOpenDisputes(map);
-                }
-              });
-          });
-        }
       })
       .catch((err) => console.error("[DashboardBookings] Failed to fetch bookings:", err))
       .finally(() => setLoading(false));
@@ -300,18 +280,6 @@ export default function BookingsPage() {
                   )}
                 </div>
               </div>
-              {openDisputes[b.id] && (
-                <DisputeNotification
-                  dispute={openDisputes[b.id]}
-                  onResponded={(bookingId) => {
-                    setOpenDisputes((prev) => {
-                      const copy = { ...prev };
-                      delete copy[bookingId];
-                      return copy;
-                    });
-                  }}
-                />
-              )}
             </div>
           ))}
         </div>

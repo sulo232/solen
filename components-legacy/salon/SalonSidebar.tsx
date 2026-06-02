@@ -111,10 +111,10 @@ export default function SalonSidebar({
             <div className="flex items-center gap-2 text-[13px]">
               <span
                 className="w-2 h-2 rounded-full"
-                style={{ background: isOpen ? "#16A34A" : "#D32F2F" }}
+                style={{ background: isOpen ? "#16A34A" : "#DC2626" }}
                 aria-hidden
               />
-              <span className="font-body font-medium" style={{ color: isOpen ? "#16A34A" : "#D32F2F" }}>
+              <span className="font-body font-medium" style={{ color: isOpen ? "#16A34A" : "#DC2626" }}>
                 {isOpen ? t("open") : t("closed")}
               </span>
             </div>

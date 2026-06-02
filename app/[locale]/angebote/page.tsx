@@ -190,7 +190,7 @@ export default function LastMinutePage() {
             <h1 className="font-heading text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-s-ink">
               Last-Minute Angebote
             </h1>
-            {/* Live indicator dot — V3-D313: coral → s-urgency (universal-color: urgency burnt amber #9A3412 per LOCKFILE §1) */}
+            {/* Live indicator dot — V3-D313: coral → s-urgency (universal-color: urgency burnt amber #C2410C per LOCKFILE §1) */}
             <span className="w-2.5 h-2.5 rounded-full bg-s-urgency animate-pulse shrink-0" aria-label="Live" />
           </div>
           {total > 0 && (

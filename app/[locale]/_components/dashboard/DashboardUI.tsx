@@ -11,13 +11,17 @@ import { cn } from "@/lib/utils";
 // semantic (StatusPill). Reused across all dashboard route archetypes.
 // ─────────────────────────────────────────────────────────────
 
-type Tone = "success" | "warning" | "error" | "neutral";
+// `urgent` = escalation/attention (V3-D421 refund system): the reserved s-pop
+// vermilion urgency-badge color on the pale s-urgency bg. Use with `pulse` for
+// "live, awaiting decision" states (shares the walk-in live-indicator language).
+type Tone = "success" | "warning" | "error" | "neutral" | "urgent";
 
 const TONE_BG: Record<Tone, string> = {
   success: "bg-s-success-bg",
   warning: "bg-s-warning-bg",
   error: "bg-s-error-bg",
   neutral: "bg-s-bg-sunken",
+  urgent: "bg-s-urgency-bg",
 };
 
 const TONE_DOT: Record<Tone, string> = {
@@ -25,6 +29,7 @@ const TONE_DOT: Record<Tone, string> = {
   warning: "bg-s-warning",
   error: "bg-s-error",
   neutral: "bg-s-ink-2",
+  urgent: "bg-s-pop",
 };
 
 // V3-D347: operator-dashboard vibrant skin — pills use SATURATED semantic TEXT
@@ -34,10 +39,23 @@ const TONE_TEXT: Record<Tone, string> = {
   warning: "text-s-warning-text",
   error: "text-s-error",
   neutral: "text-s-ink-2",
+  urgent: "text-s-pop",
 };
 
-/** Semantic status pill (vibrant skin): pale bg + saturated semantic text + dot. */
-export function DashStatusPill({ tone, children }: { tone: Tone; children: ReactNode }) {
+/**
+ * Semantic status pill (vibrant skin): pale bg + saturated semantic text + dot.
+ * `pulse` adds the walk-in live-indicator halo (ping 2.6s) behind the dot — for
+ * "live / awaiting decision" states. Respects prefers-reduced-motion.
+ */
+export function DashStatusPill({
+  tone,
+  children,
+  pulse,
+}: {
+  tone: Tone;
+  children: ReactNode;
+  pulse?: boolean;
+}) {
   return (
     <span
       className={cn(
@@ -46,7 +64,18 @@ export function DashStatusPill({ tone, children }: { tone: Tone; children: React
         TONE_TEXT[tone],
       )}
     >
-      <span className={cn("w-[7px] h-[7px] rounded-full", TONE_DOT[tone])} aria-hidden />
+      <span className="relative flex w-[7px] h-[7px]" aria-hidden>
+        {pulse && (
+          <span
+            className={cn(
+              "absolute inline-flex w-full h-full rounded-full opacity-60 motion-reduce:hidden",
+              TONE_DOT[tone],
+            )}
+            style={{ animation: "ping 2.6s cubic-bezier(0,0,.2,1) infinite" }}
+          />
+        )}
+        <span className={cn("relative inline-flex w-[7px] h-[7px] rounded-full", TONE_DOT[tone])} />
+      </span>
       {children}
     </span>
   );

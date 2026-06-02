@@ -22,7 +22,7 @@ interface FieldHelperProps {
  * Solen V3 form-field helper / error / warning / success message (LIVE_TRUTH §F.1.0).
  *
  * - `default` → ink-3 `#7A6957`, weight 400, no icon (general explanatory helper text)
- * - `error`   → red `#D32F2F`, weight 500, alert-circle icon, `role="alert"`
+ * - `error`   → red `#DC2626`, weight 500, alert-circle icon, `role="alert"`
  * - `warning` → amber `#F59E0B`, weight 500, alert-triangle icon
  * - `success` → green `#16A34A`, weight 500, check-circle icon
  *

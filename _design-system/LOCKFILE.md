@@ -59,13 +59,19 @@
 |---|---|---|---|
 | Success / open | `s-success.DEFAULT` / `.bg` | `#16A34A` | `#E8F5E9` |
 | Error | `s-error.DEFAULT` / `.bg` | `#D32F2F` | `#FFEBEE` |
-| Warning | `s-warning.DEFAULT` / `.bg` | `#F59E0B` | `#FFF3E0` |
+| Warning | `s-warning.DEFAULT` / `.bg` / `.text` | `#F1AE27` / `#FDF6E7` | `.text` `#B45309` (text-on-pale ONLY; de-muddied from #906309 V3-D424) |
 | Info | use `s-accent` | `#276EF1` | `#EAEFFE` |
 | Rating star | `s-star` | `#FFC32B` | — |
 | Save / heart | `--heart-active` | `#FF3366` | — |
-| Urgency (last-min / off-peak) | `s-urgency.DEFAULT` / `.bg` / `.border` | `#9A3412` | `#FFF1E6` / `rgba(154,52,18,0.22)` |
+| Urgency (last-min / off-peak) | `s-urgency.DEFAULT` / `.bg` / `.border` | `#C2410C` | `#FFF1E6` / `rgba(194,65,12,0.22)` |
+| Surcharge / extra-charge (FOCAL) | `s-surcharge.DEFAULT` / `.bg` | `#EA580C` | `#FFEDD5` |
+| Escalated / urgency badge (vivid) | `s-pop` | `#C03001` | — |
 | Closed | `s-closed` | `#DC2626` | (distinct from error) |
 | Disabled | `s-ink-3` | `#6B6B6B` | — |
+
+**🟠 Focal-vs-text rule (V3-D424, 2026-06-02):** the dark amber/orange tokens — `s-warning.text` (`#B45309`), `s-urgency` (`#C2410C`) — exist for **small text on a pale bg** (readability), and must **NEVER** be used as a focal/hero color (a big number, a status band): as a focal they read muddy/muted. For a vivid warm focal use **`s-surcharge`** (`#EA580C`) on its light `.bg`. General pattern: **focal/hero = the vivid `DEFAULT` token; small-text-on-pale = the dark `.text` token.** (Origin: repeatedly shipping muted oranges by grabbing `.text` tokens as focal fills.)
+
+**🟥 Outcome-driven color rule (V3-D425, 2026-06-02):** color IS the message — a case/order's focal amount + state elements inherit their OUTCOME automatically, never a neutral default: **declined / canceled / void → red (`s-error`)**, **refunded / approved / charged → green (`s-success`)**, **pending (open / in-review / escalated) → blue (`s-accent`)**, closed/unknown → neutral. A declined refund must NOT show its amount in neutral blue. Codified: `components-legacy/refund/shared.ts` → `caseAmountColor(status)` (returns the text-color class from the status).
 
 ### Chart-grey (Layer 4 — data visualization, V3-D315 2026-05-27)
 
@@ -79,7 +85,8 @@
 
 ### RETIRED — never use in new code
 
-- `s-coral`, `s-cream`, `s-butter`, `s-sage`, `s-wasabi`, `s-droplet`, `s-pop`, `s-cool`
+- `s-coral`, `s-cream`, `s-butter`, `s-sage`, `s-wasabi`, `s-droplet`, `s-cool`
+- ~~`s-pop`~~ — **UN-RETIRED V3-D424 (2026-06-02):** it's a vivid vermilion `#C03001`, actively used as the escalated/urgency badge dot+text (dashboard `DashStatusPill` `urgent` tone). Distinct from `s-surcharge` orange + `s-error` red. Tailwind keeps it ("urgency badges only") — this reconciles the doc with reality.
 - `s-amber` — **PERMANENTLY KILLED V3-D320 (2026-05-27)** per user pick on Q-W7-A. Was an orphan reference rendering invisible. All callsites swept: star/rating context → `s-star` (#FFC32B yellow), warning/alert context → `s-warning` (#F59E0B amber per LOCKFILE universal-color §3). NO alias added — drift-checker will reject any new `s-amber` usage. If you need amber for warnings use `s-warning`; if for rating-yellow use `s-star`.
 - `s-atm-*` family (warm / cool / cream / terra / sage / bone / butter)
 - `s-cat-*` family (coiffeur / barbershop / nails / spa — and their `-text` variants)

@@ -40,8 +40,20 @@ export default function HideInBooking({
   if (/\/discover\/(board|saved)(\/|$)/.test(pathname)) return null;
 
   // Booking flow, individual staff pages, onboarding, and the walk-in pay flow are
-  // self-contained — always drop the marketing chrome.
-  if (/\/(booking|staff\/[^/]+|walk-in-pay)\/?$/.test(pathname) || /\/onboarding(\/|$)/.test(pathname)) {
+  // self-contained — always drop the marketing chrome. The guest self-service
+  // recovery routes (/booking/lookup, /booking/resend-link) carry their own app bar
+  // + back affordance, so they drop it too (else the global header doubles the back).
+  if (
+    /\/(booking|staff\/[^/]+|walk-in-pay)\/?$/.test(pathname) ||
+    /\/booking\/(lookup|resend-link)\/?$/.test(pathname) ||
+    // Refund/appeal flows (report-a-problem + case status/timeline + escalate) and the
+    // salon-upcharge approve/decline screen are self-contained — own app bar + back
+    // affordance + sticky CTA. Drop the marketing chrome (same rationale as
+    // /booking/lookup) so it doesn't double the back or crowd the flow with the city
+    // bar + footer.
+    /\/bookings\/[^/]+\/(report|refund|upcharge)\/?$/.test(pathname) ||
+    /\/onboarding(\/|$)/.test(pathname)
+  ) {
     return null;
   }
 

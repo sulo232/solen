@@ -6,6 +6,7 @@ import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { logAuditEvent } from "@/lib/audit";
 import { validateBody, adminDisputeBookingActionSchema } from "@/lib/validations";
 import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
+import { notifyRefundProcessed } from "@/lib/bookings/notify-refund";
 import { writeCaseEvent } from "@/lib/bookings/dispute-engine";
 import { getServerEnv } from "@/lib/env";
 
@@ -156,6 +157,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       note: resolution_note ?? null,
     });
 
+    // N1: notify the customer their refund was issued (this action's slice, Rappen).
+    // Never blocks/rolls back the money move (same discipline as the Stripe webhook).
+    await notifyRefundProcessed(admin, disputeFetch.booking_id, refundCents, "booking-disputes").catch((err) =>
+      console.error("[booking-disputes] admin refund notification failed:", err),
+    );
+
   } else if (action === "admin_approve") {
     // SP-3 Endpoint 5 — admin final decision on an ESCALATED refund. Same
     // approve machinery as the salon path (Endpoint 3.3) but actor=admin:
@@ -244,6 +251,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       action: "refund_issued", fromStatus: "admin_approved", toStatus: "refunded",
       amount, note: resolution_note ?? null,
     });
+
+    // N1: notify the customer their refund was issued (this action's slice, Rappen).
+    // Never blocks/rolls back the money move (same discipline as the Stripe webhook).
+    await notifyRefundProcessed(admin, dispute.booking_id, amount, "booking-disputes").catch((err) =>
+      console.error("[booking-disputes] admin approve notification failed:", err),
+    );
 
   } else if (action === "admin_reject") {
     // SP-3 — admin denies an escalated refund. Terminal (admin_rejected).

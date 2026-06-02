@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 interface FieldLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   /**
-   * Render a trailing red dot 5px (`#D32F2F`) per LIVE_TRUTH §F.1.0.
+   * Render a trailing red dot 5px (`#DC2626`) per LIVE_TRUTH §F.1.0.
    * Mutually exclusive with `optional` — `required` wins if both are passed.
    */
   required?: boolean;
