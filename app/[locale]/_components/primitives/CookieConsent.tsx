@@ -100,6 +100,8 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
     setConsent(next);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      // Notify same-tab listeners (PostHogProvider opts analytics in/out immediately on this).
+      window.dispatchEvent(new Event("solen-consent-changed"));
     } catch {
       // localStorage may fail in private browsing — accept silently, consent state still in memory
     }
@@ -178,12 +180,12 @@ function CookieBanner() {
   const { acceptAll, acceptNecessary, openSettings } = useCookieConsent();
   const pathname = usePathname();
 
-  // Display-only suppression on the focused walk-in-pay checkout: the fixed
-  // bottom strip covered the pay CTA. Consent STATE is untouched — analytics
-  // stays off (necessary-only) until the user consents on any other page, so
-  // this is DSG/GDPR-safe. Mirrors HideInBooking's "no global chrome in
-  // self-contained flows" rule.
-  if (pathname && /\/walk-in-pay\/?$/.test(pathname)) return null;
+  // Display-only suppression on focused flows: the fixed bottom strip covered the
+  // pay CTA on /walk-in-pay, and on the owner /dashboard it overlapped page content
+  // + intercepted taps (the dashboard has its own chrome). Consent STATE is untouched
+  // — analytics stays off (necessary-only) until the user consents on any other page,
+  // so this is DSG/GDPR-safe. Mirrors HideInBooking's "no global chrome in self-contained flows" rule.
+  if (pathname && (/\/walk-in-pay\/?$/.test(pathname) || /\/dashboard(\/|$)/.test(pathname))) return null;
 
   return (
     <div

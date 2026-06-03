@@ -116,7 +116,6 @@ export async function POST(req: NextRequest) {
     serviceId: validated.service_id ?? null,
     preferredBarberId: validated.preferred_barber_id ?? null,
     joinMethod: validated.join_method,
-    timezone: (salon as any).timezone ?? undefined,
   });
   if (!result) {
     return NextResponse.json({ error: "Could not join the queue, please try again" }, { status: 503 });

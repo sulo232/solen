@@ -9,8 +9,8 @@ import { getStripe } from "@/lib/stripe";
 import { findQueueEntryByToken } from "@/lib/walkin/authz";
 import type Stripe from "stripe";
 
-// POST /api/walkin/tip — tip a walk-in barber, gated ONLY on the queue tracking token (the
-// customer is usually a guest, no auth). The tip is 100% to the salon — NO Solen commission
+// POST /api/walkin/tip, tip a walk-in barber, gated ONLY on the queue tracking token (the
+// customer is usually a guest, no auth). The tip is 100% to the salon, NO Solen commission
 // (tips are not platform revenue). On-session: returns a client_secret the ticket page
 // confirms with the Payment Element. Recorded 'pending' here; the webhook flips it to 'paid'.
 export async function POST(req: NextRequest) {
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
-  // The tracking token is the only authorization (guest walk-in) — resolve via the shared gate.
+  // The tracking token is the only authorization (guest walk-in), resolve via the shared gate.
   const entry = await findQueueEntryByToken<{
     id: string;
     salon_id: string;
@@ -41,7 +41,31 @@ export async function POST(req: NextRequest) {
     .from("salons").select("stripe_account_id").eq("id", entry.salon_id).maybeSingle();
   const stripeAccountId = (salon as any)?.stripe_account_id;
   if (!stripeAccountId) {
-    return NextResponse.json({ error: "This shop can't take tips in the app yet — tip at the counter." }, { status: 409 });
+    return NextResponse.json({ error: "This shop can't take tips online yet. Tip at the counter." }, { status: 409 });
+  }
+
+  // Single-screen tip = variable amount. Reuse + update a still-open pending intent for this queue
+  // entry instead of leaking duplicates (keeps the card field mounted across amount changes).
+  const { data: existingTip } = await admin
+    .from("tips")
+    .select("id, stripe_payment_intent_id")
+    .eq("walkin_queue_id", entry.id)
+    .eq("status", "pending")
+    .not("stripe_payment_intent_id", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (existingTip?.stripe_payment_intent_id) {
+    try {
+      const existingPi = await getStripe().paymentIntents.retrieve(existingTip.stripe_payment_intent_id);
+      if (!["succeeded", "processing", "canceled"].includes(existingPi.status)) {
+        const updated = await getStripe().paymentIntents.update(existingTip.stripe_payment_intent_id, { amount: validated.amount });
+        await admin.from("tips").update({ amount: validated.amount }).eq("id", existingTip.id);
+        return NextResponse.json({ clientSecret: updated.client_secret }, { status: 200 });
+      }
+    } catch (e) {
+      console.error("[walkin/tip] reuse/update of pending intent failed, creating fresh:", e);
+    }
   }
 
   const piParams: Stripe.PaymentIntentCreateParams = {

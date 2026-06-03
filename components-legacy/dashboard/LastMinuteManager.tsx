@@ -143,7 +143,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
     <div className="space-y-6">
       {/* Errors and success */}
       {error && (
-        <div className="p-4 rounded-[10px] bg-s-coral/5 border border-s-coral/20 text-sm text-s-coral">
+        <div className="p-4 rounded-[10px] bg-s-error/5 border border-s-error/20 text-sm text-s-error">
           {error}
         </div>
       )}
@@ -191,7 +191,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                     global_discount_percent: Math.max(1, parseInt(e.target.value) || 10),
                   })
                 }
-                className="w-24 px-4 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-s-ink focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
+                className="w-24 px-4 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-s-ink focus:border-s-accent-bright focus:ring-2 focus:ring-s-accent-bright/15 outline-none"
               />
               <span className="text-sm text-s-ink/60">
                 wird auf alle Slots angewendet
@@ -249,7 +249,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                               },
                             });
                           }}
-                          className="w-16 px-2 py-1.5 rounded-[6px] border border-s-ink/[0.08] bg-white text-s-ink text-sm text-center focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
+                          className="w-16 px-2 py-1.5 rounded-[6px] border border-s-ink/[0.08] bg-white text-s-ink text-sm text-center focus:border-s-accent-bright focus:ring-2 focus:ring-s-accent-bright/15 outline-none"
                         />
                         <span className="ml-1 text-sm text-s-ink/60">
                           %
@@ -257,7 +257,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                       </div>
                       <button
                         onClick={() => removeServiceOverride(serviceId)}
-                        className="p-1.5 rounded-[6px] text-s-ink/40 hover:bg-s-ink/5:bg-white/5 hover:text-s-coral transition-colors"
+                        className="p-1.5 rounded-[6px] text-s-ink/40 hover:bg-s-ink/5:bg-white/5 hover:text-s-error transition-colors"
                       >
                         <X size={16} />
                       </button>
@@ -274,7 +274,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
               <select
                 value={newServiceId}
                 onChange={(e) => setNewServiceId(e.target.value)}
-                className="flex-1 px-4 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-s-ink focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none"
+                className="flex-1 px-4 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-s-ink focus:border-s-accent-bright focus:ring-2 focus:ring-s-accent-bright/15 outline-none"
               >
                 <option value="">Wähle einen Dienst...</option>
                 {availableServices.map((service) => (
@@ -286,7 +286,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
               <button
                 onClick={addServiceOverride}
                 disabled={!newServiceId}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/[0.08] bg-white text-s-ink/70 hover:border-s-coral hover:text-s-coral disabled:opacity-50 transition-colors"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/[0.08] bg-white text-s-ink/70 hover:border-s-accent-bright hover:text-s-accent-bright disabled:opacity-50 transition-colors"
               >
                 <Plus size={14} />
                 Hinzufügen
@@ -323,7 +323,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                     <p className="text-sm font-heading text-s-ink">
                       {service.name_de}
                     </p>
-                    <span className="text-xs font-heading text-s-coral bg-s-coral/10 px-2 py-0.5 rounded-[4px]">
+                    <span className="text-xs font-heading text-s-accent-bright bg-s-accent-bright/10 px-2 py-0.5 rounded-[4px]">
                       -{discountPercent}%
                     </span>
                   </div>
@@ -352,7 +352,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 px-6 py-2 rounded-btn bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-60"
+          className="flex items-center gap-2 px-6 py-2 rounded-btn bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-60"
         >
           <Save size={14} />
           {saving ? "Speichert..." : "Speichern"}

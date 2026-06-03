@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { CreditCard, Wallet, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Wallet, ShieldCheck, AlertCircle } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
 import { formatPrice } from '@/lib/format';
 import Spinner from '@/components-legacy/ui/Spinner';
@@ -52,9 +52,8 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
   const { formData } = useBooking();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<'online' | 'in_person' | null>(
-    formData.paymentMethod ?? null,
-  );
+  // Phase D: paymentMethod is now DERIVED from the salon's payment_mode (computed below), not a
+  // free customer choice — at_salon books in person (no charge), deposit/prepay pay online.
   // SP-1: a logged-out guest fills name/phone (email optional) via GuestBookingForm. It lifts a
   // valid GuestInfo live (null while incomplete); the booking POST is gated on it being present.
   // The single "Buchen" CTA force-validates via the form ref so errors surface on press.
@@ -88,6 +87,19 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
     : '';
   const timeLabel = formData.selectedTime ?? '';
   const totalPrice = formData.totalPrice ?? 0;
+
+  // Phase D — the salon's payment_mode drives the pay step (was a free choice that ignored it):
+  //   at_salon → no online charge (pay in person);  deposit → deposit_percent% now;  prepay → full.
+  const salonExt = salon as Salon & { payment_mode?: string; deposit_percent?: number };
+  // Unset / unknown → at_salon (the DB default), the safe choice: book without an online charge.
+  const paymentMode: 'at_salon' | 'deposit' | 'prepay' =
+    salonExt.payment_mode === 'deposit' || salonExt.payment_mode === 'prepay' ? salonExt.payment_mode : 'at_salon';
+  const depositPct = Math.min(100, Math.max(1, Number(salonExt.deposit_percent) || 20));
+  const depositAmount = Math.round(totalPrice * depositPct) / 100;              // CHF charged now (deposit)
+  const remainingAtSalon = Math.round((totalPrice - depositAmount) * 100) / 100;
+  const chargeNow = paymentMode === 'at_salon' ? 0 : paymentMode === 'deposit' ? depositAmount : totalPrice;
+  // online for deposit/prepay (card step); in_person for at_salon (booked without a charge).
+  const paymentMethod: 'online' | 'in_person' = paymentMode === 'at_salon' ? 'in_person' : 'online';
 
   // Build the /confirmation path. A guest carries access_token (+ ref) so the page can show the
   // order number + exchange the token for the httpOnly cookie; a logged-in user just gets the id.
@@ -300,73 +312,51 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         </div>
       )}
 
-      {/* (d) Payment method selector — radio chips */}
+      {/* (d) Payment — driven by the salon's payment_mode (Phase D), not a free customer choice */}
       <div>
         <p className="font-body text-[10px] font-bold uppercase tracking-[.22em] text-s-accent mb-2">
           Zahlung
         </p>
-        <div className="space-y-2">
-          {/* Online */}
-          <button
-            type="button"
-            onClick={() => {
-              setPaymentMethod('online');
-              setError(null);
-            }}
-            className={[
-              'w-full flex items-center gap-3 px-4 py-3 rounded-[10px] border-2 min-h-[56px] text-left transition-[border-color,background-color] duration-150',
-              paymentMethod === 'online'
-                ? 'border-s-accent bg-s-ink/[0.04]'
-                : 'border-s-ink/10 hover:border-s-accent/30 bg-white',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2',
-            ].join(' ')}
-          >
-            <CreditCard size={20} className="text-s-ink/70 shrink-0" aria-hidden />
-            <div className="flex-1 min-w-0">
-              <p className="font-body text-[13px] font-semibold text-s-ink">Karte</p>
-              <p className="font-body text-[11px] text-s-ink/55 mt-0.5">Sofort online bezahlen</p>
+        {paymentMode === 'at_salon' ? (
+          <div className="flex items-start gap-3 px-4 py-3.5 rounded-[12px] border border-s-border">
+            <Wallet size={20} className="text-s-ink shrink-0 mt-0.5" aria-hidden />
+            <div>
+              <p className="font-body text-[14px] font-semibold text-s-ink">Zahlung im Salon</p>
+              <p className="font-body text-[12px] text-s-ink/55 mt-0.5">
+                Du bezahlst {formatPrice(totalPrice, localeCode)} direkt vor Ort. Keine Online-Zahlung nötig.
+              </p>
             </div>
-            <span
-              className={[
-                'w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-[border-color,background-color] duration-150',
-                paymentMethod === 'online' ? 'bg-s-ink border-s-accent' : 'border-s-ink/25',
-              ].join(' ')}
-              aria-hidden
-            >
-              {paymentMethod === 'online' && <span className="w-1.5 h-1.5 bg-white rounded-full" />}
-            </span>
-          </button>
-          {/* In person */}
-          <button
-            type="button"
-            onClick={() => {
-              setPaymentMethod('in_person');
-              setError(null);
-            }}
-            className={[
-              'w-full flex items-center gap-3 px-4 py-3 rounded-[10px] border-2 min-h-[56px] text-left transition-[border-color,background-color] duration-150',
-              paymentMethod === 'in_person'
-                ? 'border-s-accent bg-s-ink/[0.04]'
-                : 'border-s-ink/10 hover:border-s-accent/30 bg-white',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2',
-            ].join(' ')}
-          >
-            <Wallet size={20} className="text-s-amber shrink-0" aria-hidden />
-            <div className="flex-1 min-w-0">
-              <p className="font-body text-[13px] font-semibold text-s-ink">Vor Ort</p>
-              <p className="font-body text-[11px] text-s-ink/55 mt-0.5">Bezahlen beim Termin</p>
+          </div>
+        ) : paymentMode === 'deposit' ? (
+          <>
+            <div className="rounded-[12px] border border-s-border overflow-hidden">
+              <div className="flex items-center justify-between bg-s-accent-bright/10 px-4 py-3.5">
+                <span className="font-heading font-semibold text-[13.5px] text-s-accent-bright leading-tight">
+                  Anzahlung jetzt
+                  <span className="block font-body font-medium text-[11px] text-s-accent-bright/70 mt-0.5">{depositPct}% online</span>
+                </span>
+                <span className="font-heading font-bold text-[22px] text-s-accent-bright tabular-nums">{formatPrice(depositAmount, localeCode)}</span>
+              </div>
+              <div className="flex items-center justify-between px-4 py-3 text-[13px] border-t border-s-border">
+                <span className="text-s-ink-2">Rest im Salon</span>
+                <span className="font-heading font-semibold tabular-nums">{formatPrice(remainingAtSalon, localeCode)}</span>
+              </div>
+              <div className="flex items-center justify-between px-4 py-3 text-[13px] border-t border-s-border">
+                <span className="text-s-ink font-medium">Gesamt</span>
+                <span className="font-heading font-semibold tabular-nums">{formatPrice(totalPrice, localeCode)}</span>
+              </div>
             </div>
-            <span
-              className={[
-                'w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-[border-color,background-color] duration-150',
-                paymentMethod === 'in_person' ? 'bg-s-ink border-s-accent' : 'border-s-ink/25',
-              ].join(' ')}
-              aria-hidden
-            >
-              {paymentMethod === 'in_person' && <span className="w-1.5 h-1.5 bg-white rounded-full" />}
-            </span>
-          </button>
-        </div>
+            <p className="flex items-center gap-1.5 text-[11.5px] text-s-success mt-2">
+              <ShieldCheck size={14} aria-hidden /> Sichere deinen Termin mit {depositPct}% Anzahlung.
+            </p>
+          </>
+        ) : (
+          <div className="rounded-[12px] border border-s-border px-4 py-4 text-center">
+            <p className="font-body text-[12px] text-s-ink-2">Jetzt online bezahlen</p>
+            <p className="font-heading font-bold text-[28px] text-s-accent-bright tabular-nums mt-1">{formatPrice(totalPrice, localeCode)}</p>
+            <p className="font-body text-[11.5px] text-s-ink/40 mt-0.5">Vollständige Vorauszahlung</p>
+          </div>
+        )}
       </div>
 
       {/* Error */}
@@ -384,13 +374,15 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           <button
             type="button"
             onClick={handleConfirm}
-            disabled={!paymentMethod || isSubmitting}
-            className="w-full inline-flex items-center justify-center gap-2 min-h-[52px] px-5 rounded-full bg-s-ink text-white font-body text-[14px] font-bold uppercase tracking-[.04em] transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
+            disabled={isSubmitting}
+            className="w-full inline-flex items-center justify-center gap-2 min-h-[52px] px-5 rounded-full bg-s-accent-bright text-white font-body text-[14px] font-bold uppercase tracking-[.04em] transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-accent focus-visible:ring-offset-2"
           >
             {isSubmitting && <Spinner size="sm" invert />}
-            {paymentMethod === 'online'
-              ? `${t('payment.continueToPayment')} · ${formatPrice(totalPrice, localeCode)}`
-              : `Buchen · ${formatPrice(totalPrice, localeCode)}`}
+            {paymentMode === 'at_salon'
+              ? `Buchung bestätigen`
+              : paymentMode === 'deposit'
+                ? `Anzahlung bezahlen · ${formatPrice(depositAmount, localeCode)}`
+                : `${t('payment.continueToPayment')} · ${formatPrice(totalPrice, localeCode)}`}
           </button>
         </div>
       </div>
@@ -403,7 +395,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
           <BookingPaymentForm
             clientSecret={clientSecret}
-            amount={totalPrice}
+            amount={chargeNow}
             locale={locale}
             localeCode={localeCode}
             returnUrl={`${typeof window !== 'undefined' ? window.location.origin : ''}/${locale}${confirmationPath}`}
@@ -414,7 +406,6 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
               setPhase('select');
               setClientSecret(null);
               setConfirmationPath(null);
-              setPaymentMethod(null);
               chargeRef.current = false;
             }}
           />

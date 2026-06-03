@@ -24,6 +24,7 @@ export type RefundErrorCode =
   | "NO_PAID_AMOUNT"
   | "EXCEEDS_REMAINING"
   | "NO_PAYMENT"
+  | "NOT_CAPTURED"
   | "STRIPE_FAILED"
   | "CONCURRENT_RETRY"
   | "UNSUPPORTED_SOURCE";
@@ -64,6 +65,7 @@ interface BookingRow {
   payment_intent_id: string | null;
   paid_amount: number | null;
   refunded_amount: number | null;
+  payment_status: string | null;
   salon_id: string | null;
   salons: { stripe_account_id: string | null } | null;
 }
@@ -84,7 +86,7 @@ export async function issueRefund(args: IssueRefundArgs): Promise<IssueRefundRes
   // 2. Fetch booking (admin client). NB: never select price_paid.
   const { data: bookingData, error: fetchError } = await db
     .from("bookings")
-    .select("id, payment_intent_id, paid_amount, refunded_amount, salon_id, salons(stripe_account_id)")
+    .select("id, payment_intent_id, paid_amount, refunded_amount, payment_status, salon_id, salons(stripe_account_id)")
     .eq("id", id)
     .single();
 
@@ -108,6 +110,19 @@ export async function issueRefund(args: IssueRefundArgs): Promise<IssueRefundRes
   const pi = booking.payment_intent_id;
   if (!pi) {
     throw new RefundError("NO_PAYMENT", "Booking has no Stripe payment_intent_id");
+  }
+
+  // 4b. Require a CAPTURED payment before touching Stripe. The create-then-charge
+  //     flow can leave a row with a payment_intent_id + paid_amount>0 but
+  //     payment_status='none' (PI created, never captured/succeeded, then
+  //     abandoned). Such a row passes NO_PAYMENT + NO_PAID_AMOUNT yet would make
+  //     refunds.create fire against a PI that never took money. Only 'paid' /
+  //     'partially_refunded' mean funds actually moved IN and are refundable.
+  if (booking.payment_status !== "paid" && booking.payment_status !== "partially_refunded") {
+    throw new RefundError(
+      "NOT_CAPTURED",
+      `Booking payment_status '${booking.payment_status ?? "null"}' is not a captured state — cannot refund`
+    );
   }
 
   // 5. Resolve fee policy (D7).

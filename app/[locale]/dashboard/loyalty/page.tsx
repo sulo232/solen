@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Award, QrCode, History } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import LoyaltyConfig from "@/components-legacy/dashboard/barber/LoyaltyConfig";
@@ -14,12 +15,14 @@ interface RedemptionEntry {
 }
 
 export default function LoyaltyDashboardPage() {
+  const t = useTranslations("dashboard.loyaltyPage");
   const [salonId, setSalonId] = useState("");
   const [redemptions, setRedemptions] = useState<RedemptionEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [scanMode, setScanMode] = useState(false);
   const [scanToken, setScanToken] = useState("");
   const [scanResult, setScanResult] = useState<string | null>(null);
+  const [scanError, setScanError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,6 +43,7 @@ export default function LoyaltyDashboardPage() {
   const handleScanSubmit = async () => {
     if (!scanToken.trim()) return;
     setScanResult(null);
+    setScanError(false);
     try {
       const res = await fetch("/api/loyalty/stamp", {
         method: "POST",
@@ -48,13 +52,20 @@ export default function LoyaltyDashboardPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        setScanResult(`Stempel vergeben! ${data.stamps_collected}/${data.stamps_required}`);
+        setScanResult(
+          t("stampSuccess", {
+            collected: data.stamps_collected,
+            required: data.stamps_required,
+          })
+        );
         setScanToken("");
       } else {
-        setScanResult(`Fehler: ${data.error ?? "Unbekannt"}`);
+        setScanError(true);
+        setScanResult(t("stampError", { error: data.error ?? t("unknownError") }));
       }
     } catch {
-      setScanResult("Netzwerkfehler");
+      setScanError(true);
+      setScanResult(t("networkError"));
     }
   };
 
@@ -70,7 +81,7 @@ export default function LoyaltyDashboardPage() {
     <DashboardLayout>
       <div className="max-w-3xl mx-auto">
         <h1 className="font-heading text-xl font-semibold text-s-ink mb-6">
-          Treueprogramm
+          {t("title")}
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -82,19 +93,19 @@ export default function LoyaltyDashboardPage() {
             <div className="flex items-center gap-2 mb-4">
               <QrCode size={18} className="text-s-coral" />
               <h3 className="font-heading text-sm font-semibold text-s-ink">
-                Stempel scannen
+                {t("scanHeading")}
               </h3>
             </div>
 
             <div className="space-y-3">
               <p className="text-xs text-s-ink/50">
-                Token vom QR-Code des Kunden eingeben oder einscannen:
+                {t("scanInstruction")}
               </p>
               <input
                 type="text"
                 value={scanToken}
                 onChange={(e) => setScanToken(e.target.value)}
-                placeholder="Token eingeben..."
+                placeholder={t("tokenPlaceholder")}
                 className="w-full rounded-btn border border-s-ink/10 bg-white px-3 py-2 text-sm text-s-ink font-mono focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               />
               <button
@@ -102,10 +113,10 @@ export default function LoyaltyDashboardPage() {
                 disabled={!scanToken.trim()}
                 className="w-full rounded-btn bg-s-coral text-white font-medium py-2 text-sm hover:brightness-[1.06] disabled:opacity-50 transition-colors"
               >
-                Stempel vergeben
+                {t("stampButton")}
               </button>
               {scanResult && (
-                <p className={`text-sm ${scanResult.startsWith("Fehler") ? "text-s-error" : "text-s-sage"}`}>
+                <p className={`text-sm ${scanError ? "text-s-error" : "text-s-sage"}`}>
                   {scanResult}
                 </p>
               )}

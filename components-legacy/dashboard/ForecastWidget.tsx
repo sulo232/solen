@@ -43,14 +43,14 @@ export default function ForecastWidget({ data }: ForecastWidgetProps) {
   const chartData = [
     ...historical.map((w, i) => ({
       label: w.week,
-      revenue: Math.round(w.revenue / 100),
+      revenue: Math.round(w.revenue),
       forecast: undefined,
       forecastHigh: undefined,
       forecastLow: undefined,
     })),
     ...Array.from({ length: 2 }, (_, i) => {
       const x = n + i;
-      const projected = Math.max(0, Math.round((m * x + b) / 100));
+      const projected = Math.max(0, Math.round(m * x + b));
       return {
         label: `+${i + 1}W`,
         revenue: undefined,
@@ -62,11 +62,11 @@ export default function ForecastWidget({ data }: ForecastWidgetProps) {
   ];
 
   return (
-    <div className="bg-[--raised] rounded-[12px] border border-s-ink/[0.06] p-4">
+    <div className="bg-white rounded-[16px] border border-s-border p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-[8px] bg-s-amber/10 flex items-center justify-center">
-            <TrendingUp size={13} className="text-s-amber" />
+          <div className="w-7 h-7 rounded-[8px] bg-s-accent-bright/10 flex items-center justify-center">
+            <TrendingUp size={13} className="text-s-accent-bright" />
           </div>
           <div>
             <p className="text-sm font-heading text-s-ink">
@@ -92,10 +92,10 @@ export default function ForecastWidget({ data }: ForecastWidgetProps) {
             formatter={(v: number, name: string) => [`CHF ${v}`, name === "revenue" ? t("forecastRevenue") : t("forecastProjection")]}
             contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid rgba(26,18,9,0.08)" }}
           />
-          <Bar dataKey="revenue" fill="#1B4D1B" radius={[4, 4, 0, 0]} maxBarSize={28} name="revenue" />
-          <Area dataKey="forecastHigh" fill="#F3A864" fillOpacity={0.08} stroke="none" />
-          <Area dataKey="forecastLow" fill="var(--raised, #FFFFFF)" fillOpacity={1} stroke="none" />
-          <Line dataKey="forecast" stroke="#F3A864" strokeWidth={2} strokeDasharray="5 3" dot={{ r: 3, fill: "#F3A864" }} name="forecast" />
+          <Bar dataKey="revenue" fill="#276EF1" radius={[4, 4, 0, 0]} maxBarSize={28} name="revenue" />
+          <Area dataKey="forecastHigh" fill="#276EF1" fillOpacity={0.08} stroke="none" />
+          <Area dataKey="forecastLow" fill="#FFFFFF" fillOpacity={1} stroke="none" />
+          <Line dataKey="forecast" stroke="#9CA3AF" strokeWidth={2} strokeDasharray="5 3" dot={{ r: 3, fill: "#9CA3AF" }} name="forecast" />
         </ComposedChart>
       </ResponsiveContainer>
     </div>

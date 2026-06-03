@@ -66,8 +66,8 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
 
   if (loading) {
     return (
-      <div className="rounded-[12px] border border-s-ink/[0.06] bg-white p-4">
-        <p className="text-sm text-s-ink/40 text-center py-4">
+      <div className="rounded-[16px] border border-s-border bg-white p-4">
+        <p className="text-sm text-s-ink-3 text-center py-4">
           {t("loading")}
         </p>
       </div>
@@ -77,48 +77,36 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
   if (services.length === 0) return null;
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] bg-white p-4">
-      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber mb-3">
+    <div className="w-full">
+      <p className="font-heading font-bold text-base tracking-[-0.01em] text-s-ink mb-[9px] px-0.5">
         {t("express_menu")}
       </p>
 
       {createError && (
-        <p className="text-xs text-red-500 mb-2">{createError}</p>
+        <p className="text-xs text-s-error mb-2">{createError}</p>
       )}
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-[9px]">
         {services.map((svc) => (
           <button
             key={svc.id}
             onClick={() => createWalkin(svc.id)}
             disabled={creating === svc.id}
-            className={`rounded-[12px] border p-4 text-left transition-colors duration-150 ${
+            className={`rounded-[16px] border p-[13px] text-left transition-colors duration-150 ${
               creating === svc.id
-                ? "border-s-coral bg-s-coral/[0.06]"
-                : "border-s-ink/[0.06] bg-white hover:border-s-coral/40"
+                ? "border-s-ink bg-s-bg-sunken"
+                : "border-s-border bg-white hover:border-s-ink"
             } disabled:opacity-60`}
             aria-label={`${svc.name} — ${svc.duration_minutes} min, ${svc.price} CHF`}
           >
-            <div className="flex items-start gap-2">
-              <Scissors
-                size={14}
-                className="text-s-ink/30 mt-0.5 shrink-0"
-              />
-              <div className="min-w-0">
-                <p className="text-sm font-heading text-s-ink truncate">
-                  {svc.name}
-                </p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[10px] data-text text-s-ink/40 flex items-center gap-0.5">
-                    <Clock size={10} />
-                    {svc.duration_minutes} min
-                  </span>
-                  <span className="text-[10px] data-text font-bold text-s-coral">
-                    {svc.price} CHF
-                  </span>
-                </div>
-              </div>
-            </div>
+            <Scissors size={19} className="text-s-ink mb-[9px]" />
+            <p className="font-heading font-semibold text-[13.5px] text-s-ink truncate">
+              {svc.name}
+            </p>
+            <p className="text-[11.5px] text-s-ink-2 mt-[3px] flex items-center gap-1">
+              <Clock size={11} className="shrink-0" />
+              {svc.duration_minutes} min · CHF {svc.price}
+            </p>
           </button>
         ))}
       </div>

@@ -14,6 +14,7 @@ import {
   HelpCircle,
   LogIn,
   Info,
+  LayoutDashboard,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
@@ -93,6 +94,26 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
     if (persisted) setCurrentCity(persisted);
     // reset dropdown when menu re-opens
     setCityDropdownOpen(false);
+  }, [open]);
+
+  // V3: role-gated "Dashboard" entry — show it for salon owners / linked staff (managers) /
+  // admins so they can reach the operator dashboard from the site menu (same gate the
+  // DashboardLayout itself enforces). Checked via /api/profile when the menu opens; a
+  // signed-out user gets 401 → no card.
+  const [canDash, setCanDash] = React.useState(false);
+  React.useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    fetch("/api/profile")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((p) => {
+        if (cancelled) return;
+        setCanDash(
+          !!p && (p.role === "admin" || p.role === "salon_owner" || !!p.salon_id || !!p.staff_salon_id),
+        );
+      })
+      .catch((err) => console.error("[MobileMenu] dashboard-access check failed:", err));
+    return () => { cancelled = true; };
   }, [open]);
 
   // Body scroll lock + Esc handler. Mirrors MorphingDialog's escape behavior.
@@ -206,6 +227,33 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 dich" row), then utility rows below. Replaces the 3 plain text
                 rows (user: the menu "looks really dry"). Every destination is a
                 route verified to exist (no 404s). i18n via ui.mobileMenu. ─── */}
+            {/* V3: operator Dashboard entry — owners / managers / admins only (role-gated). */}
+            {canDash && (
+              <Link
+                href={`/${locale}/dashboard`}
+                onClick={onClose}
+                className={cn(
+                  "mb-4 flex items-center justify-between gap-4",
+                  "rounded-[16px] bg-s-bg-surface p-4",
+                  "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
+                  "transition-shadow duration-200 ease-glide",
+                  "hover:shadow-[0_4px_14px_rgba(26,18,9,0.08)]",
+                  "active:scale-[0.99] active:duration-[80ms]",
+                )}
+              >
+                <span className="flex min-w-0 items-center gap-3">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-ink text-white">
+                    <LayoutDashboard size={17} strokeWidth={2} aria-hidden />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block font-body text-[15px] font-bold text-s-ink">Dashboard</span>
+                    <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-3">Salon verwalten</span>
+                  </span>
+                </span>
+                <ChevronRight size={18} strokeWidth={2.2} className="shrink-0 text-s-ink-3" aria-hidden />
+              </Link>
+            )}
+
             <p className="mb-2 ml-1 font-body text-[11px] font-semibold uppercase tracking-[0.05em] text-s-ink-3">
               {t("quickAccess")}
             </p>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Store } from "lucide-react";
 import SetupWizard from "@/components-legacy/onboarding/SetupWizard";
@@ -21,6 +21,7 @@ interface Step {
 
 export default function SetupPage() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.setupPage");
   const router = useRouter();
   const [steps, setSteps] = useState<Step[]>([]);
   const [salonId, setSalonId] = useState<string | null>(null);
@@ -63,18 +64,16 @@ export default function SetupPage() {
             <Store size={48} className="text-s-ink/20" />
           </div>
           <h1 className="font-heading text-xl text-s-ink mb-2">
-            {locale === "de" ? "Kein Salon gefunden" : "No salon found"}
+            {t("noSalonTitle")}
           </h1>
           <p className="text-sm text-s-ink/50 mb-6">
-            {locale === "de"
-              ? "Du musst zuerst einen Salon erstellen, um das Setup zu starten."
-              : "You need to create a salon first to start the setup."}
+            {t("noSalonBody")}
           </p>
           <button
             onClick={() => router.push(`/${locale}/dashboard`)}
             className="px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium"
           >
-            {locale === "de" ? "Zum Dashboard" : "Go to Dashboard"}
+            {t("goToDashboard")}
           </button>
         </div>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import Skeleton from "@/components-legacy/ui/Skeleton";
 import GalleryManager from "@/components-legacy/dashboard/GalleryManager";
@@ -10,6 +10,7 @@ import SalonAboutEditor from "@/components-legacy/dashboard/SalonAboutEditor";
 export default function GalleryPage() {
   const locale = useLocale();
   const router = useRouter();
+  const t = useTranslations("dashboard.galleryPage");
   
   const [salon, setSalon] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -55,10 +56,10 @@ export default function GalleryPage() {
     <div className="max-w-5xl">
       <div className="mb-8">
         <h1 className="font-heading text-[28px] text-s-ink tracking-[0.01em]">
-          Fotos & Galerie
+          {t("title")}
         </h1>
         <p className="text-s-ink/60 mt-1">
-          Verwalte die Fotos deines Salons. Diese werden auf deiner Profilseite und in den Suchergebnissen angezeigt.
+          {t("description")}
         </p>
       </div>
 

@@ -6,7 +6,7 @@ import { TrendingUp, DollarSign, Calendar, ArrowUpRight, Percent, CreditCard, Ba
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from "recharts";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
@@ -39,6 +39,7 @@ function fmt(n: number) {
 
 export default function RevenuePage() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.revenuePage");
   const [data, setData] = useState<RevenueStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<"week" | "month" | "year">("month");
@@ -56,8 +57,8 @@ export default function RevenuePage() {
     <DashboardLayout>
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-heading text-2xl text-s-ink">Umsatz</h1>
-          <p className="text-sm text-s-ink/40 mt-0.5">Plattform-Einnahmen</p>
+          <h1 className="font-heading text-2xl text-s-ink">{t("title")}</h1>
+          <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
         </div>
         {/* Period picker */}
         <div className="flex rounded-btn overflow-hidden border border-s-ink/10 bg-white shadow-warm-md shrink-0">
@@ -70,7 +71,7 @@ export default function RevenuePage() {
                 period === p ? "bg-s-coral text-white" : "text-s-ink/50 hover:text-s-ink",
               ].join(" ")}
             >
-              {p === "week" ? "Woche" : p === "month" ? "Monat" : "Jahr"}
+              {p === "week" ? t("periodWeek") : p === "month" ? t("periodMonth") : t("periodYear")}
             </button>
           ))}
         </div>
@@ -79,7 +80,7 @@ export default function RevenuePage() {
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : !data ? (
-        <div className="text-center py-20 text-s-ink/30 text-sm">Keine Daten verfügbar.</div>
+        <div className="text-center py-20 text-s-ink/30 text-sm">{t("noData")}</div>
       ) : (
         <motion.div
           variants={containerVariants}
@@ -91,42 +92,42 @@ export default function RevenuePage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {[
               {
-                label: "GMV (Gesamtumsatz)",
+                label: t("kpiGmv"),
                 value: formatCurrency(data.total_revenue, locale),
                 icon: DollarSign,
                 color: "text-s-coral",
                 bg: "bg-s-coral/5",
               },
               {
-                label: `Kommission (${data.current_commission_rate > 0 ? `${data.current_commission_rate.toFixed(1)}%` : "—"})`,
+                label: t("kpiCommission", { rate: data.current_commission_rate > 0 ? `${data.current_commission_rate.toFixed(1)}%` : "—" }),
                 value: formatCurrency(data.total_commission, locale),
                 icon: Percent,
                 color: "text-s-coral",
                 bg: "bg-s-coral/5",
               },
               {
-                label: "Netto an Salons",
+                label: t("kpiNetToSalons"),
                 value: formatCurrency(data.total_net_to_salons, locale),
                 icon: Banknote,
                 color: "text-s-coral",
                 bg: "bg-s-coral/5",
               },
               {
-                label: "Transaktionen",
+                label: t("kpiTransactions"),
                 value: data.total_bookings.toString(),
                 icon: CreditCard,
                 color: "text-s-ink",
                 bg: "bg-s-ink/5",
               },
               {
-                label: "Ø Buchungswert",
+                label: t("kpiAvgBookingValue"),
                 value: formatCurrency(data.avg_booking_value, locale),
                 icon: Calendar,
                 color: "text-s-ink",
                 bg: "bg-s-ink/5",
               },
               {
-                label: "Wachstum",
+                label: t("kpiGrowth"),
                 value: `${data.growth_percent >= 0 ? "+" : ""}${data.growth_percent.toFixed(1)}%`,
                 icon: ArrowUpRight,
                 color: data.growth_percent >= 0 ? "text-s-coral" : "text-s-coral",
@@ -150,7 +151,7 @@ export default function RevenuePage() {
           {/* Revenue chart */}
           {data.daily.length > 0 && (
             <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
-              <h2 className="font-heading text-s-ink text-sm mb-4">Tagesumsatz (CHF)</h2>
+              <h2 className="font-heading text-s-ink text-sm mb-4">{t("dailyRevenueTitle")}</h2>
               <ResponsiveContainer width="100%" height={200}>
                 <AreaChart data={data.daily} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                   <defs>
@@ -175,7 +176,7 @@ export default function RevenuePage() {
                     width={40}
                   />
                   <Tooltip
-                    formatter={(v: unknown) => [formatCurrency(Number(v), locale), "Umsatz"]}
+                    formatter={(v: unknown) => [formatCurrency(Number(v), locale), t("chartTooltipRevenue")]}
                     labelFormatter={(d) => new Date(d).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" })}
                     contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #f0f0f0" }}
                   />
@@ -197,14 +198,14 @@ export default function RevenuePage() {
           {data.top_salons.length > 0 && (
             <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
               <div className="px-5 py-4 border-b border-s-ink/5">
-                <h2 className="font-heading text-s-ink text-sm">Top Salons</h2>
+                <h2 className="font-heading text-s-ink text-sm">{t("topSalonsTitle")}</h2>
               </div>
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-s-bg-surface/80">
-                    <th className="text-left px-5 py-2.5 text-xs font-semibold text-s-ink/40 uppercase tracking-wide">Salon</th>
-                    <th className="text-right px-5 py-2.5 text-xs font-semibold text-s-ink/40 uppercase tracking-wide">Buchungen</th>
-                    <th className="text-right px-5 py-2.5 text-xs font-semibold text-s-ink/40 uppercase tracking-wide">Umsatz</th>
+                    <th className="text-left px-5 py-2.5 text-xs font-semibold text-s-ink/40 uppercase tracking-wide">{t("colSalon")}</th>
+                    <th className="text-right px-5 py-2.5 text-xs font-semibold text-s-ink/40 uppercase tracking-wide">{t("colBookings")}</th>
+                    <th className="text-right px-5 py-2.5 text-xs font-semibold text-s-ink/40 uppercase tracking-wide">{t("colRevenue")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -232,18 +233,18 @@ export default function RevenuePage() {
           {data.staff_commissions && data.staff_commissions.length > 0 && (
             <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
               <div className="px-5 py-4 border-b border-s-ink/5">
-                <h2 className="font-heading text-s-ink text-sm">Provision pro Stylist</h2>
+                <h2 className="font-heading text-s-ink text-sm">{t("staffCommissionsTitle")}</h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="bg-s-bg-surface/80">
-                      <th className="text-left px-5 py-2.5 text-xs font-semibold text-s-ink/40">Stylist</th>
-                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40">Termine</th>
-                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40">Umsatz</th>
+                      <th className="text-left px-5 py-2.5 text-xs font-semibold text-s-ink/40">{t("colStylist")}</th>
+                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40">{t("colAppointments")}</th>
+                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40">{t("colRevenue")}</th>
                       <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40">%</th>
-                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40">Provision</th>
-                      <th className="text-right px-5 py-2.5 text-xs font-semibold text-s-ink/40">Trinkgeld</th>
+                      <th className="text-right px-3 py-2.5 text-xs font-semibold text-s-ink/40">{t("colCommission")}</th>
+                      <th className="text-right px-5 py-2.5 text-xs font-semibold text-s-ink/40">{t("colTips")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -273,7 +274,7 @@ export default function RevenuePage() {
                   </div>
                   <div>
                     <p className="data-text font-bold text-xl text-s-ink">{formatCurrency(data.gift_card_revenue, locale)}</p>
-                    <p className="text-xs text-s-ink/40">Geschenkkarten-Umsatz</p>
+                    <p className="text-xs text-s-ink/40">{t("giftCardRevenue")}</p>
                   </div>
                 </motion.div>
               )}
@@ -284,7 +285,7 @@ export default function RevenuePage() {
                   </div>
                   <div>
                     <p className="data-text font-bold text-xl text-s-ink">{formatCurrency(data.tips_total, locale)}</p>
-                    <p className="text-xs text-s-ink/40">Trinkgeld erhalten</p>
+                    <p className="text-xs text-s-ink/40">{t("tipsReceived")}</p>
                   </div>
                 </motion.div>
               )}

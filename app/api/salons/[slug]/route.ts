@@ -15,10 +15,13 @@ export async function GET(
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user ?? null;
 
+  // The [slug] param may be a UUID (owner settings page passes salon.id) or a slug.
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
+
   let query = supabase
     .from("salons")
     .select("*")
-    .eq("slug", slug);
+    .eq(isUuid ? "id" : "slug", slug);
 
   const { data: salon, error } = await query.single();
 
@@ -91,14 +94,14 @@ export async function PATCH(
 
   const admin = createAdminSupabaseClient();
 
-  // Find salon by slug or id
-  let salonQuery = admin.from("salons").select("id, owner_id").eq("slug", slug).maybeSingle();
-  let { data: salon } = await salonQuery;
-  if (!salon) {
-    // Try matching by UUID (settings page passes salon.id)
-    const res = await admin.from("salons").select("id, owner_id").eq("id", slug).maybeSingle();
-    salon = res.data;
-  }
+  // Find salon by slug or id. The [slug] param may be a UUID (settings page passes
+  // salon.id) or a slug — detect via UUID regex so a UUID resolves correctly.
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
+  const { data: salon } = await admin
+    .from("salons")
+    .select("id, owner_id")
+    .eq(isUuid ? "id" : "slug", slug)
+    .maybeSingle();
   if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
 
   // Verify ownership or admin
@@ -108,10 +111,11 @@ export async function PATCH(
   }
 
   const body = await request.json();
-  // SP-AC §B5: dropped the four DEAD drifted keys (payment_mode / deposit_percent /
-  // cancellation_hours / late_cancel_fee_percent — columns ABSENT live, writes no-op'd).
   // Added the canonical no-show fee (no_show_fee_type / no_show_fee_value) alongside the
-  // existing cancellation policy keys.
+  // existing cancellation policy keys. The payment-mode keys (payment_mode / deposit_percent /
+  // cancellation_hours / late_cancel_fee_percent) are RE-ADDED: their columns are now applied
+  // live (047_payment_modes drift migration) with DB CHECK constraints backstopping bad values,
+  // so PaymentsTab's save persists instead of no-op'ing.
   const allowed = [
     "name", "address", "phone", "description_de", "description_en",
     "opening_hours", "categories", "cover_photo_url",
@@ -119,10 +123,15 @@ export async function PATCH(
     "accepts_online_payment", "no_show_deposit_amount",
     "cancellation_fee_type", "cancellation_fee_value", "free_cancel_hours",
     "no_show_fee_type", "no_show_fee_value",
+    "payment_mode", "deposit_percent", "cancellation_hours", "late_cancel_fee_percent",
+    // SchedulingTab — booking_confirmation_mode is read by the booking engine (manual_approval);
+    // the other three persist the owner's choice (enforcement engines are a separate feature).
+    "booking_confirmation_mode", "auto_assign_method", "daily_limit_enabled", "daily_limit",
     "sms_reminder_24h", "sms_reminder_1h",
     "vacation_start", "vacation_end",
-    "instagram_url", "facebook_url", "tiktok_url", "website_url",
-    "is_top_pick",
+    // is_top_pick + facebook_url re-added: their columns are now applied live (drift migrations).
+    "is_top_pick", "facebook_url",
+    "instagram_url", "tiktok_url", "website_url",
     // VAT/MWST registration (owner-settable). The rate itself is NOT here — 8.1% is fixed by
     // Swiss law; only whether the salon is registered + its UID. Mirrors /api/salons/mine.
     "vat_registered", "vat_number",

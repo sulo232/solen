@@ -11,7 +11,7 @@ export async function GET() {
     // We fetch a bit more fields to ensure rendering works client-side
     const { data, error } = await supabase
       .from("salons")
-      .select("id, name, slug, cover_photo_url, city_id, average_rating, review_count")
+      .select("id, name, slug, cover_photo_url, city_id, average_rating, review_count, is_top_pick")
       .eq("is_active", true)
       .eq("listed_on_marketplace", true)
       .eq("is_test", false)

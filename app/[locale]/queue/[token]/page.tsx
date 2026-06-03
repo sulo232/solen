@@ -6,6 +6,7 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import { Clock, Check, Scissors, AlertCircle, RefreshCw } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
+import TipSheet from "@/app/[locale]/_components/tips/TipSheet";
 
 // Mirrors the public GET /api/walkin/queue/status?token= response.
 interface QueueStatus {
@@ -19,14 +20,20 @@ interface QueueStatus {
   calledAt: string | null;
   startedAt: string | null;
   completedAt: string | null;
+  recipientName?: string | null;
+  recipientPhoto?: string | null;
+  recipientRating?: number | null;
+  recipientReviewCount?: number | null;
+  serviceName?: string | null;
+  salonName?: string | null;
 }
 
 type Copy = Record<string, string>;
 const COPY: Record<string, Copy> = {
-  de: { yourNumber: "Deine Nummer", inQueue: "Du bist in der Schlange", ahead: "vor dir", waitSuffix: "Min Wartezeit", soon: "Gleich bist du dran", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", done: "Fertig — danke!", doneSub: "Wir hoffen, es hat dir gefallen", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieser Link ist ungültig oder abgelaufen", autoUpdate: "Aktualisiert sich automatisch", refresh: "Aktualisieren", home: "Zur Startseite", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?" },
-  en: { yourNumber: "Your number", inQueue: "You're in the queue", ahead: "ahead of you", waitSuffix: "min wait", soon: "You're up soon", youreUp: "You're up!", goToChair: "Head to the chair", done: "All done — thanks!", doneSub: "Hope you loved it", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This link is invalid or expired", autoUpdate: "Updates automatically", refresh: "Refresh", home: "Go home", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?" },
-  fr: { yourNumber: "Votre numéro", inQueue: "Vous êtes dans la file", ahead: "devant vous", waitSuffix: "min d'attente", soon: "Bientôt à vous", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", done: "Terminé — merci !", doneSub: "On espère que ça vous a plu", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce lien est invalide ou expiré", autoUpdate: "Mise à jour automatique", refresh: "Actualiser", home: "Accueil", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?" },
-  it: { yourNumber: "Il tuo numero", inQueue: "Sei in coda", ahead: "prima di te", waitSuffix: "min di attesa", soon: "Presto tocca a te", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", done: "Fatto — grazie!", doneSub: "Speriamo ti sia piaciuto", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo link non è valido o è scaduto", autoUpdate: "Si aggiorna automaticamente", refresh: "Aggiorna", home: "Home", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?" },
+  de: { yourNumber: "Deine Nummer", inQueue: "Du bist in der Schlange", ahead: "vor dir", waitSuffix: "Min Wartezeit", soon: "Gleich bist du dran", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", done: "Fertig — danke!", doneSub: "Wir hoffen, es hat dir gefallen", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieser Link ist ungültig oder abgelaufen", autoUpdate: "Aktualisiert sich automatisch", refresh: "Aktualisieren", home: "Zur Startseite", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", tip: "Trinkgeld geben" },
+  en: { yourNumber: "Your number", inQueue: "You're in the queue", ahead: "ahead of you", waitSuffix: "min wait", soon: "You're up soon", youreUp: "You're up!", goToChair: "Head to the chair", done: "All done — thanks!", doneSub: "Hope you loved it", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This link is invalid or expired", autoUpdate: "Updates automatically", refresh: "Refresh", home: "Go home", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", tip: "Leave a tip" },
+  fr: { yourNumber: "Votre numéro", inQueue: "Vous êtes dans la file", ahead: "devant vous", waitSuffix: "min d'attente", soon: "Bientôt à vous", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", done: "Terminé — merci !", doneSub: "On espère que ça vous a plu", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce lien est invalide ou expiré", autoUpdate: "Mise à jour automatique", refresh: "Actualiser", home: "Accueil", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?", tip: "Laisser un pourboire" },
+  it: { yourNumber: "Il tuo numero", inQueue: "Sei in coda", ahead: "prima di te", waitSuffix: "min di attesa", soon: "Presto tocca a te", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", done: "Fatto — grazie!", doneSub: "Speriamo ti sia piaciuto", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo link non è valido o è scaduto", autoUpdate: "Si aggiorna automaticamente", refresh: "Aggiorna", home: "Home", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", tip: "Lascia una mancia" },
 };
 
 export default function QueueTrackingPage() {
@@ -40,6 +47,7 @@ export default function QueueTrackingPage() {
   const [notFound, setNotFound] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [tipOpen, setTipOpen] = useState(false);
   const dataRef = useRef<QueueStatus | null>(null);
   useEffect(() => { dataRef.current = data; }, [data]);
 
@@ -195,12 +203,22 @@ export default function QueueTrackingPage() {
           )}
 
           {isDone && (
-            <div className="rounded-2xl bg-s-success/[0.08] p-6 text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-s-success">
-                <Check size={24} className="text-white" />
+            <div>
+              <div className="rounded-2xl bg-s-success/[0.08] p-6 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-s-success">
+                  <Check size={24} className="text-white" />
+                </div>
+                <h2 className="mt-3 font-heading text-[20px] font-bold text-s-ink">{l.done}</h2>
+                <p className="mt-1 text-[14px] text-s-ink-2">{l.doneSub}</p>
               </div>
-              <h2 className="mt-3 font-heading text-[20px] font-bold text-s-ink">{l.done}</h2>
-              <p className="mt-1 text-[14px] text-s-ink-2">{l.doneSub}</p>
+              {/* Tip entry — appears AFTER the cut. Blue tip action (matches the shared TipFlow). */}
+              <button
+                type="button"
+                onClick={() => setTipOpen(true)}
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-btn bg-s-accent py-3.5 font-heading text-[14px] font-semibold text-white transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98]"
+              >
+                {l.tip}
+              </button>
             </div>
           )}
 
@@ -234,6 +252,26 @@ export default function QueueTrackingPage() {
           </button>
         )}
       </div>
+
+      {data && (
+        <TipSheet
+          open={tipOpen}
+          onClose={() => setTipOpen(false)}
+          recipientName={data.recipientName || (locale === "en" ? "your stylist" : locale === "fr" ? "votre coiffeur" : locale === "it" ? "il tuo parrucchiere" : "dein Coiffeur")}
+          recipientPhoto={data.recipientPhoto}
+          recipientRating={data.recipientRating}
+          recipientReviewCount={data.recipientReviewCount}
+          contextLine={[data.serviceName, data.salonName].filter(Boolean).join(" · ") || undefined}
+          locale={locale}
+          createIntent={(amount) =>
+            fetch("/api/walkin/tip", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ token, amount }),
+            }).then((r) => r.json())
+          }
+        />
+      )}
     </div>
   );
 }

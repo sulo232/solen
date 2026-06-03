@@ -55,7 +55,10 @@ export async function POST(req: NextRequest) {
     .insert({
       salon_id,
       name_de,
-      name_en: name_en || null,
+      // services.name_en is NOT NULL live. The form sends "" when English is left blank, and
+      // "" || null → null → constraint violation. Fall back to the German name (always present)
+      // so the EN locale shows the service name instead of the create 500-ing.
+      name_en: name_en || name_de,
       category: category || null,
       duration_minutes: duration_minutes || 60,
       price: price || 0,
@@ -66,7 +69,9 @@ export async function POST(req: NextRequest) {
       suitable_for: suitable_for || [],
       suitable_gender: suitable_gender || [],
       is_active: is_active !== false,
-      photos: photos || [],
+      // DB column is photo_urls (canonical — matches lib/types.ts + /services/[id]/photos
+      // endpoint). The validated input field is named `photos`; map it to the real column.
+      photo_urls: photos || [],
     })
     .select()
     .single();

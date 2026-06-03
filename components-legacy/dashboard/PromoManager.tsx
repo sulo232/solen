@@ -111,7 +111,7 @@ export default function PromoManager() {
         <h2 className="font-heading text-lg text-s-ink">{t("title")}</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150"
         >
           <Plus className="w-4 h-4" />
           {t("newCode")}
@@ -119,7 +119,7 @@ export default function PromoManager() {
       </div>
 
       {error && (
-        <div className="rounded-btn bg-s-coral/10 border border-s-coral/20 px-3 py-2.5 text-sm text-s-coral">
+        <div className="rounded-btn bg-s-error/10 border border-s-error/20 px-3 py-2.5 text-sm text-s-error">
           {error}
         </div>
       )}
@@ -136,7 +136,7 @@ export default function PromoManager() {
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                 placeholder="SOMMER2026"
                 required
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:border-s-accent-bright focus:ring-2 focus:ring-s-accent-bright/20 outline-none"
               />
             </div>
             <div>
@@ -199,7 +199,7 @@ export default function PromoManager() {
             <button
               type="submit"
               disabled={creating}
-              className="px-4 py-2 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 disabled:opacity-60 flex items-center gap-1.5 transition-[transform,filter] duration-150"
+              className="px-4 py-2 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 disabled:opacity-60 flex items-center gap-1.5 transition-[transform,filter] duration-150"
             >
               {creating ? <Spinner size="sm" /> : <Plus className="w-3.5 h-3.5" />}
               {t("create")}
@@ -229,7 +229,7 @@ export default function PromoManager() {
               className="bg-white rounded-[16px] border border-s-ink/5 p-4 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-btn flex items-center justify-center ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-s-bg-sunken text-s-ink/30"}`}>
+                <div className={`w-9 h-9 rounded-btn flex items-center justify-center ${promo.is_active ? "bg-s-accent-bright/10 text-s-accent-bright" : "bg-s-bg-sunken text-s-ink/30"}`}>
                   {promo.discount_type === "percent" ? <Percent className="w-4 h-4" /> : <Tag className="w-4 h-4" />}
                 </div>
                 <div>
@@ -240,7 +240,7 @@ export default function PromoManager() {
                       aria-label={t("copyAriaLabel", { code: promo.code })}
                       className="p-0.5 hover:bg-s-bg-sunken:bg-white/10 rounded transition-colors"
                     >
-                      {copiedId === promo.id ? <Check className="w-3 h-3 text-s-coral" /> : <Copy className="w-3 h-3 text-s-ink/30" />}
+                      {copiedId === promo.id ? <Check className="w-3 h-3 text-s-success" /> : <Copy className="w-3 h-3 text-s-ink/30" />}
                     </button>
                   </div>
                   <p className="text-xs text-s-ink/50">
@@ -250,7 +250,7 @@ export default function PromoManager() {
                   </p>
                 </div>
               </div>
-              <span className={`text-xs px-2 py-1 rounded-full ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-s-bg-sunken text-s-ink/40"}`}>
+              <span className={`text-xs px-2 py-1 rounded-full ${promo.is_active ? "bg-s-accent-bright/10 text-s-accent-bright" : "bg-s-bg-sunken text-s-ink/40"}`}>
                 {promo.is_active ? t("active") : t("inactive")}
               </span>
             </div>

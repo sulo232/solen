@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
   // array contains "coiffeur".
   let query = supabase
     .from("salons")
-    .select("id, name, slug, average_rating, review_count, cover_photo_url, address, categories, last_minute_discount_percent")
+    .select("id, name, slug, average_rating, review_count, cover_photo_url, address, categories, last_minute_discount_percent, is_top_pick")
     .contains("categories", [cat])
     .eq("is_active", true)
     .eq("listed_on_marketplace", true)

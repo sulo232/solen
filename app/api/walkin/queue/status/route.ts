@@ -24,10 +24,11 @@ export async function GET(req: NextRequest) {
     id: string; customer_name: string; position: number; status: string;
     estimated_wait_minutes: number; joined_at: string; called_at: string | null;
     started_at: string | null; completed_at: string | null; salon_id: string;
+    assigned_barber_id: string | null; preferred_barber_id: string | null; service_id: string | null;
   }>(
     admin,
     token,
-    "id, customer_name, position, status, estimated_wait_minutes, joined_at, called_at, started_at, completed_at, salon_id",
+    "id, customer_name, position, status, estimated_wait_minutes, joined_at, called_at, started_at, completed_at, salon_id, assigned_barber_id, preferred_barber_id, service_id",
   );
 
   if (!entry) {
@@ -54,6 +55,19 @@ export async function GET(req: NextRequest) {
     estimatedWaitMinutes = estimateWaitMinutes(aheadCount, avg, staff?.length || 1);
   }
 
+  // Recipient + context for the tip screen and "bei <Barber>" labels. Best-effort; on any miss
+  // the tip page falls back to a generic recipient, never blocks the status poll.
+  const barberId = entry.assigned_barber_id ?? entry.preferred_barber_id;
+  const [staffRes, svcRes, salonRes] = await Promise.all([
+    barberId
+      ? admin.from("staff_members").select("name, avatar_url, average_rating, review_count").eq("id", barberId).maybeSingle()
+      : Promise.resolve({ data: null as any }),
+    entry.service_id
+      ? admin.from("services").select("name_de, name_en").eq("id", entry.service_id).maybeSingle()
+      : Promise.resolve({ data: null as any }),
+    admin.from("salons").select("name").eq("id", entry.salon_id).maybeSingle(),
+  ]);
+
   return NextResponse.json({
     id: entry.id,
     customerName: entry.customer_name,
@@ -65,5 +79,11 @@ export async function GET(req: NextRequest) {
     calledAt: entry.called_at,
     startedAt: entry.started_at,
     completedAt: entry.completed_at,
+    recipientName: (staffRes.data as any)?.name ?? null,
+    recipientPhoto: (staffRes.data as any)?.avatar_url ?? null,
+    recipientRating: (staffRes.data as any)?.average_rating ?? null,
+    recipientReviewCount: (staffRes.data as any)?.review_count ?? null,
+    serviceName: (svcRes.data as any)?.name_de ?? (svcRes.data as any)?.name_en ?? null,
+    salonName: (salonRes.data as any)?.name ?? null,
   });
 }

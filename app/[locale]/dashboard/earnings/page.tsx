@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { DollarSign, Wallet, FileText, Calendar, Clock, Users } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
@@ -46,17 +46,18 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } },
 };
 
-function getStatusBadge(status: string) {
+function getStatusBadge(status: string, t: (key: "statusPaid" | "statusPending" | "statusRecorded") => string) {
   switch (status) {
-    case "paid": return <span className="px-2 py-1 rounded-pill bg-s-success-bg text-s-success text-xs font-medium">Ausbezahlt</span>;
-    case "pending": return <span className="px-2 py-1 rounded-pill bg-s-amber-subtle text-s-amber-text text-xs font-medium">In Bearbeitung</span>;
-    case "recorded": return <span className="px-2 py-1 rounded-pill bg-s-blue-subtle text-s-blue-text text-xs font-medium">Offen (Hold)</span>;
+    case "paid": return <span className="px-2 py-1 rounded-pill bg-s-success-bg text-s-success text-xs font-medium">{t("statusPaid")}</span>;
+    case "pending": return <span className="px-2 py-1 rounded-pill bg-s-amber-subtle text-s-amber-text text-xs font-medium">{t("statusPending")}</span>;
+    case "recorded": return <span className="px-2 py-1 rounded-pill bg-s-blue-subtle text-s-blue-text text-xs font-medium">{t("statusRecorded")}</span>;
     default: return <span className="px-2 py-1 rounded-pill bg-s-ink/10 text-s-ink/70 text-xs font-medium">{status}</span>;
   }
 }
 
 export default function SalonEarningsPage() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.earningsPage");
   const [data, setData] = useState<EarningsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [staffEarnings, setStaffEarnings] = useState<StaffEarning[]>([]);
@@ -91,15 +92,15 @@ export default function SalonEarningsPage() {
     <DashboardLayout>
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-heading text-2xl text-s-ink">Guthaben & Auszahlungen</h1>
-          <p className="text-sm text-s-ink/40 mt-0.5">Übersicht deiner Online-Zahlungen via Stripe</p>
+          <h1 className="font-heading text-2xl text-s-ink">{t("title")}</h1>
+          <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
         </div>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : !data ? (
-        <div className="text-center py-20 text-s-ink/30 text-sm">Keine Zahlungsdaten gefunden.</div>
+        <div className="text-center py-20 text-s-ink/30 text-sm">{t("noPaymentData")}</div>
       ) : (
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -108,9 +109,9 @@ export default function SalonEarningsPage() {
                 <Wallet size={24} className="text-s-coral" />
               </div>
               <div>
-                <p className="text-xs font-medium text-s-ink/50 uppercase tracking-widest mb-1">Verfügbares Guthaben</p>
+                <p className="text-xs font-medium text-s-ink/50 uppercase tracking-widest mb-1">{t("availableBalance")}</p>
                 <p className="data-text font-bold text-3xl text-s-ink">{formatCurrency(data.pending_balance, locale)}</p>
-                <p className="text-xs text-s-ink/40 mt-1">Wird gemäss deinem Payout Schedule überwiesen.</p>
+                <p className="text-xs text-s-ink/40 mt-1">{t("availableBalanceHint")}</p>
               </div>
             </motion.div>
             
@@ -119,16 +120,16 @@ export default function SalonEarningsPage() {
                 <DollarSign size={24} className="text-green-600" />
               </div>
               <div>
-                <p className="text-xs font-medium text-s-ink/50 uppercase tracking-widest mb-1">Total Ausbezahlt</p>
+                <p className="text-xs font-medium text-s-ink/50 uppercase tracking-widest mb-1">{t("totalPaidOut")}</p>
                 <p className="data-text font-bold text-3xl text-s-ink">{formatCurrency(data.total_earnings, locale)}</p>
-                <p className="text-xs text-s-ink/40 mt-1">Summe aller bisherigen Auszahlungen.</p>
+                <p className="text-xs text-s-ink/40 mt-1">{t("totalPaidOutHint")}</p>
               </div>
             </motion.div>
           </div>
 
           <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
             <div className="px-5 py-4 border-b border-s-ink/5">
-              <h2 className="font-heading text-s-ink text-sm">Transaktionen & Gutschriften</h2>
+              <h2 className="font-heading text-s-ink text-sm">{t("transactionsTitle")}</h2>
             </div>
             
             {data.payouts && data.payouts.length > 0 ? (
@@ -136,12 +137,12 @@ export default function SalonEarningsPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="bg-s-bg-surface/80">
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-s-ink/40">Datum</th>
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-s-ink/40">Status</th>
-                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">Brutto</th>
-                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">Gebühr</th>
-                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">Netto</th>
-                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">Aktion</th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-s-ink/40">{t("colDate")}</th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-s-ink/40">{t("colStatus")}</th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">{t("colGross")}</th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">{t("colFee")}</th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">{t("colNet")}</th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">{t("colAction")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -152,7 +153,7 @@ export default function SalonEarningsPage() {
                           {new Date(p.created_at).toLocaleDateString("de-CH")}
                         </td>
                         <td className="px-5 py-4">
-                          {getStatusBadge(p.status)}
+                          {getStatusBadge(p.status, t)}
                         </td>
                         <td className="px-5 py-4 text-right text-s-ink/60">
                           {formatCurrency(p.gross_amount, locale)}
@@ -169,7 +170,7 @@ export default function SalonEarningsPage() {
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="inline-flex items-center justify-center p-2 rounded-full hover:bg-s-coral/10 text-s-coral transition-colors"
-                            title="Abrechnung drucken"
+                            title={t("printInvoice")}
                           >
                             <FileText size={16} />
                           </a>
@@ -182,7 +183,7 @@ export default function SalonEarningsPage() {
             ) : (
               <div className="p-8 text-center text-s-ink/40">
                 <Clock size={32} className="mx-auto mb-3 opacity-20" />
-                <p>Bisher keine Transaktionen vorhanden.</p>
+                <p>{t("noTransactions")}</p>
               </div>
             )}
           </motion.div>
@@ -191,24 +192,24 @@ export default function SalonEarningsPage() {
           <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
             <div className="px-5 py-4 border-b border-s-ink/5 flex items-center gap-2">
               <Users size={16} className="text-s-coral" />
-              <h2 className="font-heading text-s-ink text-sm">Mitarbeiter-Abrechnung</h2>
+              <h2 className="font-heading text-s-ink text-sm">{t("staffPayoutTitle")}</h2>
             </div>
             {staffLoading ? (
               <div className="flex justify-center py-8"><Spinner size="md" /></div>
             ) : staffEarnings.length === 0 ? (
               <div className="p-8 text-center text-s-ink/40 text-sm">
-                Keine Mitarbeiter mit Provision konfiguriert.
+                {t("noStaffCommission")}
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="bg-s-bg-surface/80">
-                      <th className="text-left px-5 py-3 text-xs font-semibold text-s-ink/40">Mitarbeiter</th>
-                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">Provision</th>
-                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">Brutto</th>
-                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">MA-Anteil</th>
-                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">Salon-Anteil</th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-s-ink/40">{t("colStaff")}</th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">{t("colCommission")}</th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">{t("colGross")}</th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">{t("colStaffShare")}</th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40">{t("colHouseShare")}</th>
                     </tr>
                   </thead>
                   <tbody>

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { Search, User, Tag, StickyNote, ChevronLeft, Calendar, Beaker, Camera, ClipboardList } from "lucide-react";
+import { Search, Tag, StickyNote, ChevronLeft, Calendar, Beaker, Camera, ClipboardList } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
@@ -43,10 +44,28 @@ interface ClientNote {
 type DetailTab = "termine" | "formeln" | "fotos" | "notizen" | "tags" | "fragebogen";
 
 // ─────────────────────────────────────────
+// Avatar helpers
+// ─────────────────────────────────────────
+
+const initials = (n: string) => {
+  const p = (n || "").trim().split(/\s+/);
+  return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toUpperCase() || "—";
+};
+const AV_GRADS = [
+  "from-[#276EF1] to-[#1B4DCB]",
+  "from-[#F0A868] to-[#C0524A]",
+  "from-[#16A34A] to-[#0E7A37]",
+  "from-[#8B5CF6] to-[#6D28D9]",
+  "from-[#EC4899] to-[#BE185D]",
+];
+const avGrad = (s: string) => AV_GRADS[[...(s || "")].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_GRADS.length];
+
+// ─────────────────────────────────────────
 // Client List
 // ─────────────────────────────────────────
 
 export default function ClientsPage() {
+  const t = useTranslations("dashboard.clientsPage");
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -55,11 +74,11 @@ export default function ClientsPage() {
   const [segmentFilter, setSegmentFilter] = useState<string>("Alle");
 
   const SEGMENTS = [
-    { key: "Alle", label: "Alle", color: "bg-s-bg-sunken text-s-ink-2" },
-    { key: "VIP", label: "VIP", color: "bg-s-bg-sunken text-s-ink" },
-    { key: "Gefährdet", label: "Gefährdet", color: "bg-s-error-bg text-s-error" },
-    { key: "Neu", label: "Neu", color: "bg-s-success-bg text-s-success" },
-    { key: "Regulär", label: "Regulär", color: "bg-s-bg-sunken text-s-ink-2" },
+    { key: "Alle", label: t("segmentAll"), color: "bg-s-bg-sunken text-s-ink-2" },
+    { key: "VIP", label: t("segmentVip"), color: "bg-s-bg-sunken text-s-ink" },
+    { key: "Gefährdet", label: t("segmentAtRisk"), color: "bg-s-error-bg text-s-error" },
+    { key: "Neu", label: t("segmentNew"), color: "bg-s-success-bg text-s-success" },
+    { key: "Regulär", label: t("segmentRegular"), color: "bg-s-bg-sunken text-s-ink-2" },
   ];
 
   useEffect(() => {
@@ -100,34 +119,37 @@ export default function ClientsPage() {
   return (
     <DashboardLayout>
       <div className="mb-5">
-        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Kunden</h1>
-        <p className="text-sm text-s-ink/40">Kundenkartei & CRM</p>
+        <h1 className="font-heading text-[26px] font-bold tracking-[-0.02em] text-s-ink leading-none">{t("title")}</h1>
+        <p className="text-[12.5px] text-s-ink-2 mt-1">{t("subtitle")}</p>
       </div>
 
       {/* Segment filter tabs */}
-      <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1">
+      <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1 -mx-px [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {SEGMENTS.map((s) => {
           const count = s.key === "Alle" ? clients.length : clients.filter((c) => c.segment_tag === s.key).length;
+          const active = segmentFilter === s.key;
           return (
             <button key={s.key} onClick={() => setSegmentFilter(s.key)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
-                segmentFilter === s.key ? "bg-s-ink text-white hover:bg-black" : s.color + " hover:opacity-80"
+              className={`shrink-0 rounded-full text-[12.5px] font-semibold px-3.5 py-2 whitespace-nowrap transition-colors ${
+                active
+                  ? "bg-s-accent-bright/10 text-s-accent-bright border border-transparent"
+                  : "bg-white border border-s-border text-s-ink-2"
               }`}>
               {s.label}
-              <span className={`data-text text-[10px] ${segmentFilter === s.key ? "text-white/70" : "opacity-50"}`}>{count}</span>
+              <span className="opacity-50 ml-1">{count}</span>
             </button>
           );
         })}
       </div>
 
       {/* Search */}
-      <div className="relative mb-4">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
+      <div className="flex items-center gap-2 border border-s-border rounded-[14px] px-3.5 py-2.5 text-s-ink-3 mb-4">
+        <Search size={17} className="shrink-0" />
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Name suchen…"
-          className="w-full pl-9 pr-3 py-2.5 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink"
+          placeholder={t("searchPlaceholder")}
+          className="flex-1 min-w-0 bg-transparent text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none"
         />
       </div>
 
@@ -135,49 +157,61 @@ export default function ClientsPage() {
         <div className="flex justify-center py-10"><Spinner size="md" /></div>
       ) : filtered.length === 0 ? (
         <p className="text-sm text-s-ink/30 text-center py-10">
-          {search ? "Keine Kunden gefunden" : "Noch keine Kunden"}
+          {search ? t("noClientsFound") : t("noClientsYet")}
         </p>
       ) : (
-        <div className="space-y-2">
-          {filtered.map((c) => (
-            <button
-              key={c.user_id}
-              onClick={() => setSelectedClient(c)}
-              className="w-full flex items-center gap-3 p-3 rounded-2xl border border-s-border bg-white hover:border-s-ink transition-colors text-left"
-            >
-              <div className="w-10 h-10 rounded-full bg-s-bg-sunken flex items-center justify-center shrink-0 overflow-hidden relative">
-                {c.avatar_url ? (
-                  <Image src={c.avatar_url} alt="" fill className="object-cover" unoptimized />
-                ) : (
-                  <User size={16} className="text-s-ink" />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-s-ink truncate">{c.display_name || "Unbekannt"}</p>
-                <div className="flex items-center gap-2 text-xs text-s-ink/40">
-                  <span>{c.total_bookings} Termine</span>
-                  {c.last_visit && <span>· Letzter: {new Date(c.last_visit).toLocaleDateString("de-CH")}</span>}
-                </div>
-              </div>
-              {c.segment_tag && c.segment_tag !== "Regulär" && (
-                <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-medium shrink-0 ${
-                  c.segment_tag === "VIP" ? "bg-s-bg-sunken text-s-ink" :
-                  c.segment_tag === "Gefährdet" ? "bg-s-error-bg text-s-error" :
-                  c.segment_tag === "Neu" ? "bg-s-success-bg text-s-success" :
-                  "bg-s-bg-sunken text-s-ink-2"
-                }`}>{c.segment_tag}</span>
-              )}
-              {c.tags?.length > 0 && (
-                <div className="flex gap-1 shrink-0">
-                  {c.tags.slice(0, 3).map((t) => (
-                    <span key={t.tag} className={`px-1.5 py-0.5 rounded text-[9px] font-medium ${tagColor(t.color)}`}>
-                      {t.tag}
+        <div className="rounded-[16px] border border-s-border bg-white overflow-hidden">
+          {filtered.map((c) => {
+            const name = c.display_name || t("unknownClient");
+            return (
+              <button
+                key={c.user_id}
+                onClick={() => setSelectedClient(c)}
+                className="w-full border-b border-s-border last:border-b-0 px-3.5 py-3 flex flex-col gap-2 text-left"
+              >
+                {/* head row */}
+                <div className="flex items-center gap-3">
+                  {c.avatar_url ? (
+                    <span className="relative w-[40px] h-[40px] rounded-full overflow-hidden shrink-0">
+                      <Image src={c.avatar_url} alt="" fill className="object-cover" unoptimized />
                     </span>
-                  ))}
+                  ) : (
+                    <span className={`grid place-items-center w-[40px] h-[40px] rounded-full bg-gradient-to-br ${avGrad(name)} text-white font-heading font-semibold text-[13px] shrink-0`}>
+                      {initials(name)}
+                    </span>
+                  )}
+                  <span className="flex-1 min-w-0 font-heading font-semibold text-[14.5px] text-s-ink truncate">{name}</span>
+                  {c.segment_tag && (
+                    <DashStatusPill
+                      tone={
+                        c.segment_tag === "VIP" ? "warning" :
+                        c.segment_tag === "Gefährdet" ? "error" :
+                        "neutral"
+                      }
+                    >
+                      {c.segment_tag}
+                    </DashStatusPill>
+                  )}
                 </div>
-              )}
-            </button>
-          ))}
+                {/* meta row */}
+                <div className="text-[12.5px] text-s-ink-2 flex gap-1.5 flex-wrap">
+                  <span><b className="font-heading font-semibold text-s-ink">{c.total_bookings}</b> {t("appointments")}</span>
+                  {c.last_visit && <span>· {t("lastVisit", { date: new Date(c.last_visit).toLocaleDateString("de-CH") })}</span>}
+                  {c.total_spent != null && <span>· <b className="font-heading font-semibold text-s-ink">CHF {c.total_spent}</b></span>}
+                </div>
+                {/* tags row */}
+                {c.tags?.length > 0 && (
+                  <div className="flex gap-1.5 flex-wrap">
+                    {c.tags.slice(0, 3).map((t) => (
+                      <span key={t.tag} className="text-[10.5px] font-semibold rounded-md px-2 py-0.5 bg-s-bg-sunken text-s-ink-2">
+                        {t.tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
     </DashboardLayout>
@@ -205,6 +239,7 @@ function tagColor(color: string): string {
 // ─────────────────────────────────────────
 
 function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: string; onBack: () => void }) {
+  const t = useTranslations("dashboard.clientsPage");
   const [tab, setTab] = useState<DetailTab>("termine");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [notes, setNotes] = useState<ClientNote[]>([]);
@@ -273,31 +308,33 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
   };
 
   const TABS: { key: DetailTab; label: string; icon: typeof Calendar }[] = [
-    { key: "termine", label: "Termine", icon: Calendar },
-    { key: "formeln", label: "Formeln", icon: Beaker },
-    { key: "fotos", label: "Fotos", icon: Camera },
-    { key: "notizen", label: "Notizen", icon: StickyNote },
-    { key: "tags", label: "Tags", icon: Tag },
-    { key: "fragebogen", label: "Fragebogen", icon: ClipboardList },
+    { key: "termine", label: t("tabAppointments"), icon: Calendar },
+    { key: "formeln", label: t("tabFormulas"), icon: Beaker },
+    { key: "fotos", label: t("tabPhotos"), icon: Camera },
+    { key: "notizen", label: t("tabNotes"), icon: StickyNote },
+    { key: "tags", label: t("tabTags"), icon: Tag },
+    { key: "fragebogen", label: t("tabIntakeForm"), icon: ClipboardList },
   ];
 
   return (
     <div>
       {/* Header */}
       <button onClick={onBack} className="flex items-center gap-1 text-sm text-s-ink-2 hover:text-s-ink transition-colors mb-4">
-        <ChevronLeft size={16} /> Zurück
+        <ChevronLeft size={16} /> {t("back")}
       </button>
       <div className="flex items-center gap-3 mb-5">
-        <div className="w-12 h-12 rounded-full bg-s-bg-sunken flex items-center justify-center overflow-hidden relative">
-          {client.avatar_url ? (
+        {client.avatar_url ? (
+          <span className="relative w-12 h-12 rounded-full overflow-hidden shrink-0">
             <img src={client.avatar_url} alt="" className="w-full h-full object-cover" />
-          ) : (
-            <User size={20} className="text-s-ink" />
-          )}
-        </div>
+          </span>
+        ) : (
+          <span className={`grid place-items-center w-12 h-12 rounded-full bg-gradient-to-br ${avGrad(client.display_name || t("unknownClient"))} text-white font-heading font-semibold text-base shrink-0`}>
+            {initials(client.display_name || t("unknownClient"))}
+          </span>
+        )}
         <div>
-          <h2 className="font-heading text-lg text-s-ink">{client.display_name || "Unbekannt"}</h2>
-          <p className="text-xs text-s-ink/40">{client.total_bookings} Termine</p>
+          <h2 className="font-heading text-lg text-s-ink">{client.display_name || t("unknownClient")}</h2>
+          <p className="text-xs text-s-ink/40">{client.total_bookings} {t("appointments")}</p>
         </div>
       </div>
 
@@ -326,13 +363,13 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
       {tab === "termine" && (
         loadingBookings ? <div className="flex justify-center py-6"><Spinner size="md" /></div> : (
           bookings.length === 0 ? (
-            <p className="text-xs text-s-ink/30 text-center py-6">Keine Termine</p>
+            <p className="text-xs text-s-ink/30 text-center py-6">{t("noAppointments")}</p>
           ) : (
             <div className="space-y-2">
               {bookings.map((b) => (
                 <div key={b.id} className="bg-white rounded-2xl border border-s-border p-3 flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-s-ink">{b.service_name || "Service"}</p>
+                    <p className="text-sm font-medium text-s-ink">{b.service_name || t("serviceFallback")}</p>
                     <p className="text-xs text-s-ink/40">
                       {new Date(b.starts_at).toLocaleDateString("de-CH")} · {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                     </p>
@@ -357,17 +394,17 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
       {tab === "notizen" && (
         <div>
           <div className="flex gap-2 mb-4">
-            <input value={newNote} onChange={(e) => setNewNote(e.target.value)} placeholder="Notiz hinzufügen…"
+            <input value={newNote} onChange={(e) => setNewNote(e.target.value)} placeholder={t("notePlaceholder")}
               className="flex-1 px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink"
               onKeyDown={(e) => { if (e.key === "Enter") handleAddNote(); }} />
             <button onClick={handleAddNote} disabled={!newNote.trim() || savingNote}
               className="px-3 py-2 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-50 transition-colors">
-              {savingNote ? <Spinner size="sm" invert /> : "Speichern"}
+              {savingNote ? <Spinner size="sm" invert /> : t("save")}
             </button>
           </div>
           {loadingNotes ? <div className="flex justify-center py-6"><Spinner size="md" /></div> : (
             notes.length === 0 ? (
-              <p className="text-xs text-s-ink/30 text-center py-6">Keine Notizen</p>
+              <p className="text-xs text-s-ink/30 text-center py-6">{t("noNotes")}</p>
             ) : (
               <div className="space-y-2">
                 {notes.map((n) => (
@@ -385,7 +422,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
       {tab === "tags" && (
         <div>
           <div className="flex gap-2 mb-4">
-            <input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder="Neues Tag…"
+            <input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder={t("newTagPlaceholder")}
               className="flex-1 px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
             <select value={tagColor_} onChange={(e) => setTagColor_(e.target.value)}
               className="px-2 py-2 rounded-btn border border-s-border bg-white text-xs text-s-ink focus:outline-none focus:border-s-ink">
@@ -395,7 +432,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
             </select>
             <button onClick={handleAddTag} disabled={!newTag.trim() || savingTag}
               className="px-3 py-2 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-50 transition-colors">
-              {savingTag ? <Spinner size="sm" invert /> : "Hinzufügen"}
+              {savingTag ? <Spinner size="sm" invert /> : t("add")}
             </button>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -404,7 +441,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
                 {t.tag}
               </span>
             ))}
-            {tags.length === 0 && <p className="text-xs text-s-ink/30">Keine Tags</p>}
+            {tags.length === 0 && <p className="text-xs text-s-ink/30">{t("noTags")}</p>}
           </div>
         </div>
       )}

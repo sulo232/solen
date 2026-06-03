@@ -8,9 +8,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Scale } from "lucide-react";
+import { Scale, Check, X } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { caseChipClasses } from "@/components-legacy/refund/shared";
 
@@ -149,10 +150,10 @@ export default function SalonRefundsPage() {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) load();
-      else alert(data?.error || t("actionError"));
+      else toast.error(data?.error || t("actionError"));
     } catch (err) {
       console.error("[SalonRefunds] review failed:", err);
-      alert(t("actionError"));
+      toast.error(t("actionError"));
     } finally {
       setActing(null);
     }
@@ -226,31 +227,33 @@ export default function SalonRefundsPage() {
                     <div className="mt-4 pt-3 border-t border-s-border">
                       <textarea value={note[c.id] || ""} onChange={(e) => setNote((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("notePlaceholder")} rows={2} className="w-full px-3 py-2 mb-1 rounded-[10px] border border-s-border text-[12.5px] resize-none focus:outline-none focus:border-s-accent" />
                       <p className="text-[11px] text-s-ink/40 mb-2.5">{noteOk ? " " : t("noteRequired")}</p>
-                      <div className="flex items-center gap-2 flex-wrap">
+                      <div className="flex flex-col gap-2">
                         <button
                           onClick={() => armOrRun(`${c.id}:approve`, () => review(c, "approve", false))}
                           disabled={acting === c.id || !noteOk}
-                          className={"h-9 px-3.5 rounded-[10px] bg-s-accent-bright text-white text-[12.5px] font-semibold hover:bg-s-accent disabled:opacity-50 transition-all" + (armed === `${c.id}:approve` ? " ring-2 ring-s-ink/30 ring-offset-1" : "")}
+                          className={"flex items-center justify-center gap-2 w-full min-h-[44px] px-3.5 rounded-[10px] bg-s-success text-white text-[13.5px] font-semibold hover:opacity-90 disabled:opacity-50 transition-all" + (armed === `${c.id}:approve` ? " ring-2 ring-s-ink/30 ring-offset-1" : "")}
                         >
+                          <Check size={15} strokeWidth={2.4} />
                           {armed === `${c.id}:approve` ? t("confirmShort") : t("approveFull")}
                         </button>
-                        <button
-                          onClick={() => armOrRun(`${c.id}:reject`, () => review(c, "reject"))}
-                          disabled={acting === c.id || !noteOk}
-                          className={"h-9 px-3.5 rounded-[10px] border border-s-error/40 text-s-error text-[12.5px] font-semibold hover:bg-s-error-bg disabled:opacity-50 transition-all" + (armed === `${c.id}:reject` ? " ring-2 ring-s-error/40 ring-offset-1" : "")}
-                        >
-                          {armed === `${c.id}:reject` ? t("confirmShort") : t("reject")}
-                        </button>
-                        <div className="ml-auto flex items-center gap-1.5">
-                          <input type="number" value={amt[c.id] || ""} onChange={(e) => setAmt((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("partialPlaceholder")} className="w-24 h-9 px-3 rounded-[10px] border border-s-border text-[12.5px] tabular-nums focus:outline-none focus:border-s-accent" />
+                        <div className="flex items-center gap-2">
+                          <input type="number" value={amt[c.id] || ""} onChange={(e) => setAmt((p) => ({ ...p, [c.id]: e.target.value }))} placeholder={t("partialPlaceholder")} className="flex-1 min-h-[44px] px-3 rounded-[10px] border border-s-border text-[13.5px] tabular-nums focus:outline-none focus:border-s-accent" />
                           <button
                             onClick={() => armOrRun(`${c.id}:partial`, () => review(c, "approve", true))}
                             disabled={acting === c.id || !noteOk || !amt[c.id]}
-                            className={"h-9 px-3.5 rounded-[10px] bg-white border border-s-border text-s-ink text-[12.5px] font-semibold hover:bg-s-bg-sunken disabled:opacity-50 transition-all" + (armed === `${c.id}:partial` ? " ring-2 ring-s-ink/30 ring-offset-1" : "")}
+                            className={"flex items-center justify-center min-h-[44px] px-3.5 rounded-[10px] bg-white border border-s-border text-s-ink text-[13.5px] font-semibold hover:bg-s-bg-sunken disabled:opacity-50 transition-all" + (armed === `${c.id}:partial` ? " ring-2 ring-s-ink/30 ring-offset-1" : "")}
                           >
                             {armed === `${c.id}:partial` ? t("confirmShort") : t("approvePartial")}
                           </button>
                         </div>
+                        <button
+                          onClick={() => armOrRun(`${c.id}:reject`, () => review(c, "reject"))}
+                          disabled={acting === c.id || !noteOk}
+                          className={"flex items-center justify-center gap-2 w-full min-h-[44px] px-3.5 rounded-[10px] bg-white border border-s-error/30 text-s-error text-[13.5px] font-semibold hover:bg-s-error-bg disabled:opacity-50 transition-all" + (armed === `${c.id}:reject` ? " ring-2 ring-s-error/40 ring-offset-1" : "")}
+                        >
+                          <X size={15} strokeWidth={2.4} />
+                          {armed === `${c.id}:reject` ? t("confirmShort") : t("reject")}
+                        </button>
                       </div>
                     </div>
                   ) : (

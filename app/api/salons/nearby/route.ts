@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
   // If no geo, the rating sort + limit is the answer.
   let query = supabase
     .from("salons")
-    .select("id, name, slug, average_rating, review_count, cover_photo_url, address, categories, latitude, longitude")
+    .select("id, name, slug, average_rating, review_count, cover_photo_url, address, categories, latitude, longitude, is_top_pick")
     .eq("is_active", true)
     .eq("listed_on_marketplace", true);
 

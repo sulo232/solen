@@ -44,13 +44,15 @@ jobs:
 
   hourly:
     if: github.event.schedule == '0 * * * *'
-    name: Hourly · reminders, review-prompt, pre-charge
+    name: Hourly · review-prompt, pre-charge
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: ./.github/actions/ping-cron
         with:
-          paths: /api/cron/reminders,/api/cron/review-prompt,/api/cron/pre-charge
+          # /api/cron/reminders removed 2026-06-03 — deprecated no-op; SMS reminders now run solely
+          # via the every-30-min /api/cron/sms-reminders (which honors the per-salon toggles).
+          paths: /api/cron/review-prompt,/api/cron/pre-charge
           secret: ${{ secrets.CRON_SECRET }}
 
   every-6-hours:

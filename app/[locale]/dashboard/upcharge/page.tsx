@@ -9,9 +9,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { TrendingUp, Send } from "lucide-react";
+import { TrendingUp, Send, ChevronDown } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
+import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import Spinner from "@/components-legacy/ui/Spinner";
 
 interface BookingItem {
@@ -20,6 +21,7 @@ interface BookingItem {
   starts_at: string | null;
   paid_amount: number; // Rappen
   guest_name: string | null;
+  customer_name?: string | null; // enriched by the salon-scoped /api/bookings
   services?: { name_de: string | null; name_en: string | null } | null;
 }
 
@@ -60,6 +62,7 @@ export default function SalonUpchargePage() {
   const [error, setError] = useState(false);
 
   const [selectedId, setSelectedId] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [newTotal, setNewTotal] = useState("");
   const [reason, setReason] = useState("");
   const [sending, setSending] = useState(false);
@@ -84,18 +87,22 @@ export default function SalonUpchargePage() {
   const loadAll = useCallback(() => {
     setLoading(true);
     setError(false);
-    Promise.all([
-      fetch("/api/profile").then((r) => r.json()),
-      fetch("/api/bookings?status=completed").then((r) => {
-        if (!r.ok) throw new Error(String(r.status));
-        return r.json();
-      }),
-    ])
-      .then(([profile, bk]) => {
+    fetch("/api/profile")
+      .then((r) => r.json())
+      .then((profile) => {
         setSalonName(profile?.salon_name);
         setSalonCategories(profile?.salon_categories);
-        setBookings(bk?.items ?? []);
+        const sid = profile?.salon_id;
+        // Salon-scoped completed bookings (the user-scoped /api/bookings returns the OWNER's
+        // own bookings, not the salon's — same fix as the Termine/overview repoint).
+        return sid
+          ? fetch(`/api/bookings?salon_id=${sid}&status=completed&limit=100`).then((r) => {
+              if (!r.ok) throw new Error(String(r.status));
+              return r.json();
+            })
+          : Promise.resolve({ bookings: [] });
       })
+      .then((bk) => setBookings(bk?.bookings ?? bk?.items ?? []))
       .catch((err) => {
         console.error("[Upcharge] init failed:", err);
         setError(true);
@@ -124,24 +131,50 @@ export default function SalonUpchargePage() {
         setReason("");
         loadSent();
       } else {
-        alert(data?.error || t("actionError"));
+        toast.error(data?.error || t("actionError"));
       }
     } catch (err) {
       console.error("[Upcharge] submit failed:", err);
-      alert(t("actionError"));
+      toast.error(t("actionError"));
     } finally {
       setSending(false);
     }
   };
 
   const svcName = (b: BookingItem) => b.services?.name_de || b.services?.name_en || "";
-  const bookingLabel = (b: BookingItem) =>
-    [b.guest_name || b.reference_code || b.id.slice(0, 8), svcName(b), fmtDate(b.starts_at), chf(b.paid_amount)]
-      .filter(Boolean)
-      .join(" · ");
+  const bookingName = (b: BookingItem) => b.customer_name || b.guest_name || b.reference_code || b.id.slice(0, 8);
 
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
+      {/* Booking picker — bottom-sheet (mirrors BookingActionSheet in dashboard/bookings) */}
+      {pickerOpen && (
+        <div className="fixed inset-0 z-50">
+          <div className="absolute inset-0 bg-s-ink/40" onClick={() => setPickerOpen(false)} />
+          <div className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-white shadow-[0_-10px_30px_rgba(10,10,10,0.09)] px-4 pb-[18px]">
+            <div className="mx-auto mt-2 mb-3.5 h-1 w-[38px] rounded-full bg-s-border" />
+            <p className="font-heading font-bold text-[16px] text-s-ink mb-1">{t("selectBooking")}</p>
+            <div className="flex flex-col">
+              {bookings.map((b) => (
+                <button
+                  key={b.id}
+                  type="button"
+                  onClick={() => { setSelectedId(b.id); setPickerOpen(false); }}
+                  className="w-full min-h-[44px] flex items-center justify-between gap-3 border-b border-s-border last:border-b-0 py-3 text-left transition-colors hover:bg-s-bg-sunken"
+                >
+                  <span className="min-w-0">
+                    <span className="block font-heading font-semibold text-[14px] text-s-ink truncate">{bookingName(b)}</span>
+                    <span className="block text-[11.5px] text-s-ink-2 truncate mt-0.5">
+                      {[svcName(b), fmtDate(b.starts_at)].filter(Boolean).join(" · ")}
+                    </span>
+                  </span>
+                  <span className="font-heading font-bold text-[13.5px] text-s-ink tabular-nums shrink-0">{chf(b.paid_amount)}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-1">
           <TrendingUp className="w-6 h-6 text-s-ink" />
@@ -169,18 +202,16 @@ export default function SalonUpchargePage() {
               {bookings.length === 0 ? (
                 <p className="text-[13px] text-s-ink-2 mb-4">{t("noBookings")}</p>
               ) : (
-                <select
-                  value={selectedId}
-                  onChange={(e) => setSelectedId(e.target.value)}
-                  className="w-full h-11 px-3 mb-4 rounded-[10px] border border-s-border text-[13.5px] text-s-ink bg-white focus:outline-none focus:border-s-accent"
+                <button
+                  type="button"
+                  onClick={() => setPickerOpen(true)}
+                  className="w-full min-h-[44px] mb-4 flex items-center justify-between gap-3 rounded-[12px] border border-s-border bg-white px-3.5 py-3 text-left transition-colors hover:bg-s-bg-sunken"
                 >
-                  <option value="">{t("selectPlaceholder")}</option>
-                  {bookings.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {bookingLabel(b)}
-                    </option>
-                  ))}
-                </select>
+                  <span className={"font-heading font-semibold text-[14px] truncate " + (selected ? "text-s-ink" : "text-s-ink-3")}>
+                    {selected ? `${selected.customer_name || selected.guest_name || selected.reference_code || selected.id.slice(0, 8)} · ${svcName(selected)}` : t("selectPlaceholder")}
+                  </span>
+                  <ChevronDown className="w-[18px] h-[18px] text-s-ink-3 shrink-0" />
+                </button>
               )}
 
               {selected && (
@@ -210,12 +241,12 @@ export default function SalonUpchargePage() {
                     </div>
                   </div>
 
-                  {/* computed difference (focal) + cap note */}
-                  <div className="flex items-baseline justify-between gap-3 px-3.5 py-3 rounded-xl bg-s-warning-bg mb-1.5">
-                    <span className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-warning-text">
+                  {/* computed difference (focal amber chip — s-surcharge per LOCKFILE §1) */}
+                  <div className="flex items-baseline justify-between gap-3 px-3.5 py-3 rounded-xl bg-s-surcharge-bg mb-1.5">
+                    <span className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-s-surcharge">
                       {t("difference")}
                     </span>
-                    <span className="font-heading text-[22px] font-bold text-s-warning-text tabular-nums tracking-[-0.015em]">
+                    <span className="font-heading text-[22px] font-bold text-s-surcharge tabular-nums tracking-[-0.015em]">
                       {difference > 0 ? `+ ${chf(difference)}` : chf(0)}
                     </span>
                   </div>
@@ -238,7 +269,7 @@ export default function SalonUpchargePage() {
                   <button
                     onClick={submit}
                     disabled={!valid || sending}
-                    className="inline-flex items-center gap-2 h-10 px-5 rounded-[10px] bg-s-accent-bright text-white text-[13px] font-semibold hover:bg-s-accent disabled:opacity-50 transition-colors"
+                    className="flex items-center justify-center gap-2 w-full min-h-[44px] px-5 rounded-xl bg-s-ink text-white text-[13.5px] font-heading font-semibold hover:opacity-90 disabled:opacity-50 transition-opacity"
                   >
                     <Send className="w-4 h-4" />
                     {sending ? t("sending") : t("send")}

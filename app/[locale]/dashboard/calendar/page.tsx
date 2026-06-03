@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, Plus, X, Lock, ArrowRight, Clock, UserPlus } from "lucide-react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -56,6 +56,13 @@ function getMonthCalendarDays(date: Date): Date[] {
   return days;
 }
 
+// Local YYYY-MM-DD. `toISOString()` converts to UTC, so in CH (UTC+1/+2) a Date at
+// local midnight serializes to the *previous* calendar day — wrong for the day a
+// salon owner clicked. Build the string from local getFullYear/Month/Date instead.
+function ymdLocal(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 // ─────────────────────────────────────────
 // Slot Create Modal
 // ─────────────────────────────────────────
@@ -70,6 +77,7 @@ interface SlotModalProps {
 }
 
 function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated }: SlotModalProps) {
+  const t = useTranslations("dashboard.calendarPage");
   const [serviceId, setServiceId] = useState("");
   const [staffId, setStaffId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -95,33 +103,33 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading text-base">Slot erstellen</h3>
+          <h3 className="font-heading text-base">{t("createSlotTitle")}</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
-        <p className="text-sm text-s-ink/50 mb-4">{date} um {startTime}</p>
+        <p className="text-sm text-s-ink/50 mb-4">{t("dateAtTime", { date, time: startTime })}</p>
         <div className="space-y-3 mb-5">
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">Service *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("serviceRequired")}</label>
             <select value={serviceId} onChange={(e) => setServiceId(e.target.value)}
               className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-accent">
-              <option value="">Wählen…</option>
+              <option value="">{t("choosePlaceholder")}</option>
               {services.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">Mitarbeiter</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("staffLabel")}</label>
             <select value={staffId} onChange={(e) => setStaffId(e.target.value)}
               className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-accent">
-              <option value="">Egal (wer verfügbar ist)</option>
+              <option value="">{t("anyStaffAvailable")}</option>
               {staff.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">{t("cancel")}</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
             className="flex-1 py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
-            {loading && <Spinner size="sm" invert />}Erstellen
+            {loading && <Spinner size="sm" invert />}{t("create")}
           </button>
         </div>
       </div>
@@ -143,6 +151,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
   onClose: () => void;
   onCreated: () => void;
 }) {
+  const t = useTranslations("dashboard.calendarPage");
   const [template, setTemplate] = useState<Record<string, { start: string; end: string } | null>>(
     Object.fromEntries(DAY_KEYS.map((k, i) => [k, i < 5 ? { start: "09:00", end: "18:00" } : null]))
   );
@@ -176,28 +185,28 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading text-base">Wochenplan erstellen</h3>
+          <h3 className="font-heading text-base">{t("createWeekScheduleTitle")}</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-4 mb-5">
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">Service *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("serviceRequired")}</label>
             <select value={serviceId} onChange={(e) => setServiceId(e.target.value)}
               className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-accent">
-              <option value="">Wählen…</option>
+              <option value="">{t("choosePlaceholder")}</option>
               {services.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">Mitarbeiter</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("staffLabel")}</label>
             <select value={staffId} onChange={(e) => setStaffId(e.target.value)}
               className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-accent">
-              <option value="">Egal</option>
+              <option value="">{t("anyStaff")}</option>
               {staff.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-2">Zeitplan</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("scheduleLabel")}</label>
             <div className="space-y-2">
               {DAY_KEYS.map((key, i) => {
                 const slot = template[key];
@@ -216,30 +225,30 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
                         <input type="time" value={slot.end} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, end: e.target.value } }))}
                           className="px-2 py-1 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-accent" />
                       </>
-                    ) : <span className="text-xs text-s-ink/30">Nicht verfügbar</span>}
+                    ) : <span className="text-xs text-s-ink/30">{t("notAvailable")}</span>}
                   </div>
                 );
               })}
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-2">Wochen</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("weeksLabel")}</label>
             <div className="flex gap-2">
               {([1, 2, 4] as const).map((w) => (
                 <button key={w} type="button" onClick={() => setWeeks(w)}
                   className={["flex-1 py-2 rounded-btn border text-sm font-medium transition-colors",
                     weeks === w ? "bg-s-accent-bright text-white border-s-accent-bright" : "border-s-ink/10 text-s-ink/60"].join(" ")}>
-                  {w} {w === 1 ? "Woche" : "Wochen"}
+                  {w} {w === 1 ? t("weekSingular") : t("weekPlural")}
                 </button>
               ))}
             </div>
           </div>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">{t("cancel")}</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
             className="flex-1 py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
-            {loading && <Spinner size="sm" invert />}Erstellen
+            {loading && <Spinner size="sm" invert />}{t("create")}
           </button>
         </div>
       </div>
@@ -260,6 +269,7 @@ interface SlotDetailModalProps {
 }
 
 function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotDetailModalProps) {
+  const t = useTranslations("dashboard.calendarPage");
   const [rescheduleMode, setRescheduleMode] = useState(false);
   const [newDate, setNewDate] = useState(slot.starts_at.split("T")[0]);
   const [newTime, setNewTime] = useState(new Date(slot.starts_at).toTimeString().slice(0, 5));
@@ -284,7 +294,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base">
-            {rescheduleMode ? "Termin verschieben" : "Termin-Details"}
+            {rescheduleMode ? t("rescheduleTitle") : t("detailsTitle")}
           </h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
@@ -292,43 +302,43 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
         {rescheduleMode ? (
           <div className="space-y-3 mb-5">
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">Neues Datum</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("newDate")}</label>
               <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)}
                 className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">Neue Uhrzeit</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("newTime")}</label>
               <input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)}
                 className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent" />
             </div>
             <div className="flex gap-2 mt-4">
               <button onClick={() => setRescheduleMode(false)}
-                className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Zurück</button>
+                className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">{t("back")}</button>
               <button onClick={handleReschedule} disabled={loading}
                 className="flex-1 py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-1">
                 {loading && <Spinner size="sm" invert />}
-                <ArrowRight size={14} /> Verschieben
+                <ArrowRight size={14} /> {t("reschedule")}
               </button>
             </div>
           </div>
         ) : (
           <>
             <div className="space-y-2 mb-5 text-sm text-s-ink/70">
-              <p><span className="text-s-ink/40">Status:</span> <span className="font-medium">{slot.status === "booked" ? "Gebucht" : slot.status === "blocked" ? "Blockiert" : "Frei"}</span></p>
-              <p><span className="text-s-ink/40">Zeit:</span> {startTime} – {endTime}</p>
-              <p><span className="text-s-ink/40">Datum:</span> {new Date(slot.starts_at).toLocaleDateString("de-CH")}</p>
-              <p><span className="text-s-ink/40">Mitarbeiter:</span> {staffName}</p>
+              <p><span className="text-s-ink/40">{t("statusLabel")}</span> <span className="font-medium">{slot.status === "booked" ? t("statusBooked") : slot.status === "blocked" ? t("statusBlocked") : t("statusFree")}</span></p>
+              <p><span className="text-s-ink/40">{t("timeLabel")}</span> {startTime} – {endTime}</p>
+              <p><span className="text-s-ink/40">{t("dateLabel")}</span> {new Date(slot.starts_at).toLocaleDateString("de-CH")}</p>
+              <p><span className="text-s-ink/40">{t("staffDetailLabel")}</span> {staffName}</p>
             </div>
             <div className="flex gap-2">
               {slot.status !== "blocked" && (
                 <button onClick={() => setRescheduleMode(true)}
                   className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-coral text-sm font-medium flex items-center justify-center gap-1 hover:bg-s-coral/5 transition-colors">
-                  <Clock size={14} /> Verschieben
+                  <Clock size={14} /> {t("reschedule")}
                 </button>
               )}
               <button onClick={() => { onDelete(slot.id); onClose(); }}
                 className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors">
-                Löschen
+                {t("delete")}
               </button>
             </div>
           </>
@@ -356,7 +366,10 @@ const STAFF_COLORS = [
 
 export default function CalendarPage() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.calendarPage");
   const [viewMode, setViewMode] = useState<ViewMode>("week");
+  // Mobile-only view switch (Tag / Woche / Monat). Independent of the desktop `viewMode`.
+  const [mobileView, setMobileView] = useState<"tag" | "woche" | "monat">("tag");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
   const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
@@ -416,6 +429,36 @@ export default function CalendarPage() {
     return () => { supabase.removeChannel(channel); };
   }, [salonId, loadSlots]);
 
+  // Mobile Monat view: slot count per day (key = YYYY-MM-DD) for the dot grid.
+  // The /api/slots endpoint only serves a single day or a 7-day `week` window,
+  // so we fetch the ~6 Mondays that span the visible month grid and merge counts.
+  // Reuses the endpoint as-is (no API change); degrades to no-dots on fetch error.
+  const [monthCounts, setMonthCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    if (mobileView !== "monat" || !salonId) return;
+    let cancelled = false;
+    const gridDays = getMonthCalendarDays(currentDate); // 42 days (6 weeks)
+    const mondays = Array.from(new Set(gridDays.map((d) => startOfWeek(d).toISOString().split("T")[0])));
+    Promise.all(
+      mondays.map((m) =>
+        fetch(`/api/slots?salon_id=${salonId}&week=${m}`)
+          .then((r) => r.json())
+          .then((d) => (d.slots ?? []) as AvailabilitySlot[])
+          .catch((err) => { console.error("[Calendar] month-range slot load failed:", err); return [] as AvailabilitySlot[]; })
+      )
+    ).then((weeks) => {
+      if (cancelled) return;
+      const counts: Record<string, number> = {};
+      weeks.flat().forEach((s) => {
+        const key = s.starts_at.split("T")[0];
+        counts[key] = (counts[key] ?? 0) + 1;
+      });
+      setMonthCounts(counts);
+    });
+    return () => { cancelled = true; };
+  }, [mobileView, salonId, currentDate]);
+
   const deleteSlot = async (id: string) => {
     await fetch(`/api/slots/${id}`, { method: "DELETE" });
     setSlots((prev) => prev.filter((s) => s.id !== id));
@@ -449,6 +492,7 @@ export default function CalendarPage() {
   const prevWeek = () => setWeekStart((w) => addDays(w, -7));
   const nextWeek = () => setWeekStart((w) => addDays(w, 7));
   const goToday = () => setWeekStart(startOfWeek(new Date()));
+  const goDay = (delta: number) => { const d = addDays(currentDate, delta); setCurrentDate(d); setWeekStart(startOfWeek(d)); };
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -515,6 +559,11 @@ export default function CalendarPage() {
     return `bg-s-coral/15 border border-s-accent-bright/30 text-s-coral ${catBorder}`;
   };
 
+  // Mobile agenda block fill by service category (approved skin: pastel, no bars / no last-minute).
+  const CAT_AGENDA_BG: Record<string, string> = {
+    coiffeur: "bg-[#EAEFFE]", barbershop: "bg-[#FFEDD5]", nails: "bg-[#F3E8FF]", spa: "bg-[#E8F5E9]", makeup: "bg-[#FCE7F3]", waxing: "bg-[#FEF3E2]",
+  };
+
   return (
     <DashboardLayout>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -558,6 +607,142 @@ export default function CalendarPage() {
         />
       )}
 
+      {/* ═══ MOBILE (lg:hidden) — Tag / Woche / Monat in the approved skin ═══ */}
+      <div className="lg:hidden">
+        {(() => {
+          // ── Agenda render (reused by Tag + Woche-selected-day). ──
+          const renderAgenda = (forDate: Date) => {
+            const dayIso = forDate.toISOString().split("T")[0];
+            const daySlots = slots.filter((s) => s.starts_at.startsWith(dayIso)).sort((a, b) => a.starts_at.localeCompare(b.starts_at));
+            if (daySlots.length === 0) return <div className="text-center py-12 text-s-ink-3 text-sm">{t("noSlotsThisDay")}</div>;
+            return (
+              <div className="rounded-[16px] border border-s-border bg-white p-3 space-y-2">
+                {daySlots.map((s) => {
+                  const time = new Date(s.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+                  const svc = services.find((sv) => sv.id === s.service_id)?.name;
+                  const stf = staff.find((st) => st.id === s.staff_member_id)?.name?.split(" ")[0];
+                  const cat = s.service_id ? serviceCategoryMap.get(s.service_id) : undefined;
+                  let bg = "bg-[#EAEFFE]", lab = svc ?? t("statusBooked"), labCls = "text-s-ink";
+                  let det: string | undefined = stf;
+                  if (s.status === "blocked") { bg = "bg-s-bg-sunken"; lab = t("statusBlocked"); labCls = "text-s-ink-3"; det = undefined; }
+                  else if (s.status === "available") { bg = "bg-s-success-bg"; lab = t("statusFree"); labCls = "text-s-success"; det = undefined; }
+                  else { bg = (cat && CAT_AGENDA_BG[cat]) || "bg-[#EAEFFE]"; }
+                  return (
+                    <button key={s.id} onClick={() => setDetailSlot(s)} className="w-full flex items-stretch gap-3 text-left">
+                      <span className="font-heading font-semibold text-[12px] text-s-ink-3 w-[40px] shrink-0 pt-3 tabular-nums">{time}</span>
+                      <span className={`flex-1 rounded-[12px] px-3 py-2.5 min-h-[44px] flex flex-col justify-center ${bg}`}>
+                        <span className={`font-heading font-semibold text-[13.5px] ${labCls}`}>{lab}</span>
+                        {det && <span className="text-[12px] text-s-ink-2 mt-0.5">{det}</span>}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            );
+          };
+
+          const isTodayDate = (d: Date) => d.toDateString() === new Date().toDateString();
+          const goPrev = () => mobileView === "monat" ? (() => { const d = new Date(currentDate); d.setMonth(d.getMonth() - 1); setCurrentDate(d); })() : goDay(-1);
+          const goNext = () => mobileView === "monat" ? (() => { const d = new Date(currentDate); d.setMonth(d.getMonth() + 1); setCurrentDate(d); })() : goDay(1);
+          const goTodayMobile = () => { const t = new Date(); setCurrentDate(t); setWeekStart(startOfWeek(t)); };
+          const headerLabel = mobileView === "monat"
+            ? currentDate.toLocaleDateString("de-CH", { month: "long", year: "numeric" })
+            : currentDate.toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
+
+          // Week strip days (Mon–Sun of the selected week).
+          const stripDays = Array.from({ length: 7 }, (_, i) => addDays(startOfWeek(currentDate), i));
+
+          return (
+            <>
+              {/* Header: chevrons + label + Heute */}
+              <div className="flex items-center gap-2 mb-3">
+                <button onClick={goPrev} aria-label={t("previous")} className="w-9 h-9 grid place-items-center text-s-ink"><ChevronLeft size={18} /></button>
+                <span className="flex-1 font-heading font-bold text-[17px] tracking-[-0.01em] text-s-ink">{headerLabel}</span>
+                <button onClick={goTodayMobile} className="text-[12px] font-semibold text-s-accent">{t("today")}</button>
+                <button onClick={goNext} aria-label={t("next")} className="w-9 h-9 grid place-items-center text-s-ink"><ChevronRight size={18} /></button>
+              </div>
+
+              {/* Segmented control (Tag / Woche / Monat) */}
+              <div className="flex bg-s-bg-sunken rounded-full p-[3px] gap-[2px] mb-3.5">
+                {([["tag", t("viewDay")], ["woche", t("viewWeek")], ["monat", t("viewMonth")]] as const).map(([key, lab]) => (
+                  <button key={key} onClick={() => setMobileView(key)}
+                    className={["flex-1 font-heading font-semibold text-[12.5px] py-[7px] rounded-full transition-colors",
+                      mobileView === key ? "bg-white text-s-ink shadow-[0_1px_3px_rgba(0,0,0,0.09)]" : "text-s-ink-2"].join(" ")}>
+                    {lab}
+                  </button>
+                ))}
+              </div>
+
+              {/* Week date-strip (Tag shows it for context; Woche uses it to pick a day) */}
+              {mobileView !== "monat" && (
+                <div className="flex gap-1.5 overflow-x-auto scrollbar-hide mb-3.5">
+                  {stripDays.map((d, i) => {
+                    const dIso = d.toISOString().split("T")[0];
+                    const on = d.toDateString() === currentDate.toDateString();
+                    const has = slots.some((s) => s.starts_at.startsWith(dIso));
+                    return (
+                      <button key={i} onClick={() => { setCurrentDate(d); setWeekStart(startOfWeek(d)); }}
+                        className={["w-[46px] shrink-0 rounded-[13px] py-2 text-center border transition-colors",
+                          on ? "bg-s-ink border-s-ink" : "bg-white border-s-border"].join(" ")}>
+                        <div className={`text-[10px] font-semibold ${on ? "text-white/60" : "text-s-ink-3"}`}>{DAYS_LABEL[i].toUpperCase()}</div>
+                        <div className={`font-heading font-bold text-[16px] mt-0.5 ${on ? "text-white" : "text-s-ink"}`}>{d.getDate()}</div>
+                        {has
+                          ? <div className={`w-[5px] h-[5px] rounded-full mx-auto mt-1 ${on ? "bg-white" : "bg-s-accent"}`} />
+                          : <div className="h-[5px] mt-1" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Body by view */}
+              {loading ? (
+                <div className="flex justify-center py-12"><Spinner size="lg" /></div>
+              ) : mobileView === "monat" ? (
+                <div className="rounded-[16px] border border-s-border bg-white p-3.5">
+                  <div className="grid grid-cols-7 gap-1">
+                    {["M", "D", "M", "D", "F", "S", "S"].map((h, i) => (
+                      <div key={i} className="text-[10px] text-s-ink-3 text-center font-semibold pb-1">{h}</div>
+                    ))}
+                    {getMonthCalendarDays(currentDate).map((d, i) => {
+                      const dIso = d.toISOString().split("T")[0];
+                      const out = d.getMonth() !== currentDate.getMonth();
+                      const today = isTodayDate(d);
+                      const count = monthCounts[dIso] ?? 0;
+                      const dots = Math.min(count, 3);
+                      return (
+                        <button key={i}
+                          onClick={() => { setCurrentDate(d); setWeekStart(startOfWeek(d)); setMobileView("tag"); }}
+                          className={["aspect-square rounded-[10px] flex flex-col items-center justify-center gap-[3px] font-heading font-semibold text-[12.5px] transition-colors",
+                            today ? "bg-s-ink text-white" : out ? "bg-transparent text-s-ink-3" : "bg-s-bg-sunken text-s-ink"].join(" ")}>
+                          {d.getDate()}
+                          <span className="flex gap-[2px] h-1">
+                            {Array.from({ length: dots }).map((_, k) => (
+                              <i key={k} className={`w-1 h-1 rounded-full ${today ? "bg-white" : "bg-s-accent"}`} />
+                            ))}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : (
+                renderAgenda(currentDate)
+              )}
+
+              {/* Slot / Walk-in / Plan — unchanged, kept under the views */}
+              <div className="flex gap-2 mt-3">
+                <button onClick={() => setCreateModal({ date: ymdLocal(currentDate), time: "09:00" })} className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-[12px] bg-s-ink text-white font-heading font-semibold text-[13.5px] py-2.5"><Plus size={15} strokeWidth={2.4} /> {t("slot")}</button>
+                <button onClick={() => setWalkInModal(true)} className="inline-flex items-center justify-center rounded-[12px] bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] px-4 py-2.5">{t("walkIn")}</button>
+                <button onClick={() => setBulkModal(true)} className="inline-flex items-center justify-center rounded-[12px] bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] px-4 py-2.5">{t("plan")}</button>
+              </div>
+            </>
+          );
+        })()}
+      </div>
+
+      {/* ═══ DESKTOP (toolbar + grids + legend) — unchanged, lg+ only ═══ */}
+      <div className="hidden lg:block">
       {/* Header */}
       <div className="mb-5 flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2">
@@ -570,7 +755,7 @@ export default function CalendarPage() {
           </button>
           <button onClick={() => { const today = new Date(); setCurrentDate(today); setWeekStart(startOfWeek(today)); }}
             className="px-3 py-1.5 rounded-btn border border-s-ink/10 text-sm text-s-ink hover:border-s-accent-bright transition-colors">
-            Heute
+            {t("today")}
           </button>
           <button onClick={() => {
             if (viewMode === "week") setWeekStart((w) => addDays(w, 7));
@@ -594,21 +779,21 @@ export default function CalendarPage() {
             {(["day", "week", "month"] as ViewMode[]).map((mode) => (
               <button key={mode} onClick={() => setViewMode(mode)}
                 className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-accent-bright text-white" : "text-s-ink/60 hover:bg-s-coral/5"}`}>
-                {mode === "day" ? "Tag" : mode === "week" ? "Woche" : "Monat"}
+                {mode === "day" ? t("viewDay") : mode === "week" ? t("viewWeek") : t("viewMonth")}
               </button>
             ))}
           </div>
           <button onClick={() => setWalkInModal(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 text-sm text-s-ink/60 hover:border-s-accent-bright hover:text-s-coral transition-colors">
-            <UserPlus size={14} /> Walk-in
+            <UserPlus size={14} /> {t("walkIn")}
           </button>
           <button onClick={() => setBulkModal(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 text-sm text-s-ink/60 hover:border-s-accent-bright hover:text-s-coral transition-colors">
-            Wochenplan
+            {t("weekSchedule")}
           </button>
-          <button onClick={() => setCreateModal({ date: new Date().toISOString().split("T")[0], time: "09:00" })}
+          <button onClick={() => setCreateModal({ date: ymdLocal(new Date()), time: "09:00" })}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-accent-bright text-white text-sm font-medium">
-            <Plus size={14} /> Slot
+            <Plus size={14} /> {t("slot")}
           </button>
         </div>
       </div>
@@ -629,7 +814,7 @@ export default function CalendarPage() {
                       className={`text-sm font-bold mt-0.5 hover:text-s-coral transition-colors ${isToday ? "text-s-coral" : "text-s-ink"}`}>
                       {d.getDate()}
                     </button>
-                    <button onClick={() => blockDay(dateStr)} title="Tag blockieren"
+                    <button onClick={() => blockDay(dateStr)} title={t("blockDay")}
                       className="mt-1 w-4 h-4 flex items-center justify-center mx-auto text-s-ink/20 hover:text-s-coral transition-colors">
                       <Lock size={10} />
                     </button>
@@ -672,7 +857,7 @@ export default function CalendarPage() {
                                         className={`relative rounded text-[9px] px-1 py-0.5 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
                                         style={{ ...dragProvided.draggableProps.style }}
                                         title={staffMember ? staffMember.name : undefined}>
-                                        {staffMember ? staffMember.name.split(" ")[0] : s.status === "booked" ? "Gebucht" : s.status === "blocked" ? "Blockiert" : "Frei"}
+                                        {staffMember ? staffMember.name.split(" ")[0] : s.status === "booked" ? t("statusBooked") : s.status === "blocked" ? t("statusBlocked") : t("statusFree")}
                                         <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
                                           className="absolute top-0 right-0 opacity-0 group-hover/slot:opacity-100 p-0.5 text-current"><X size={8} /></button>
                                       </div>
@@ -709,7 +894,7 @@ export default function CalendarPage() {
               </div>
             )) : (
               <div className="py-3 px-2 text-center border-l border-s-ink/5">
-                <p className="text-xs font-medium text-s-ink/50">Alle</p>
+                <p className="text-xs font-medium text-s-ink/50">{t("allStaff")}</p>
               </div>
             )}
           </div>
@@ -750,7 +935,7 @@ export default function CalendarPage() {
                                     onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
                                     className={`relative rounded text-[10px] px-1.5 py-1 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
                                     style={{ ...dragProvided.draggableProps.style }}>
-                                    {s.status === "booked" ? "Gebucht" : s.status === "blocked" ? "Blockiert" : "Frei"}
+                                    {s.status === "booked" ? t("statusBooked") : s.status === "blocked" ? t("statusBlocked") : t("statusFree")}
                                     <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
                                       className="absolute top-0 right-0 opacity-0 group-hover/slot:opacity-100 p-0.5 text-current"><X size={8} /></button>
                                   </div>
@@ -785,7 +970,7 @@ export default function CalendarPage() {
                                     onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
                                     className={`relative rounded text-[10px] px-1.5 py-1 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
                                     style={{ ...dragProvided.draggableProps.style }}>
-                                    {sm ? sm.name.split(" ")[0] : s.status === "booked" ? "Gebucht" : "Frei"}
+                                    {sm ? sm.name.split(" ")[0] : s.status === "booked" ? t("statusBooked") : t("statusFree")}
                                   </div>
                                 )}
                               </Draggable>
@@ -832,9 +1017,9 @@ export default function CalendarPage() {
                     </p>
                     {daySlots.length > 0 && (
                       <div className="flex flex-wrap gap-0.5">
-                        {bookedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink" title={`${bookedCount} gebucht`} />}
-                        {availableCount > 0 && <span className="w-2 h-2 rounded-full bg-s-coral/40" title={`${availableCount} frei`} />}
-                        {blockedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink/20" title={`${blockedCount} blockiert`} />}
+                        {bookedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink" title={t("bookedCount", { count: bookedCount })} />}
+                        {availableCount > 0 && <span className="w-2 h-2 rounded-full bg-s-coral/40" title={t("availableCount", { count: availableCount })} />}
+                        {blockedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink/20" title={t("blockedCount", { count: blockedCount })} />}
                         {daySlots.length > 3 && <span className="text-[8px] text-s-ink/40">{daySlots.length}</span>}
                       </div>
                     )}
@@ -848,15 +1033,15 @@ export default function CalendarPage() {
 
       {/* Legend */}
       <div className="flex flex-wrap gap-4 mt-3 text-xs text-s-ink/40">
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral/15 border border-s-accent-bright/30" />Frei</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-ink" />Gebucht</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-bg-sunken border border-dashed border-s-ink/20" />Blockiert</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral border-2 border-s-accent-bright" />Last-Minute</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral/15 border border-s-accent-bright/30" />{t("statusFree")}</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-ink" />{t("statusBooked")}</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-bg-sunken border border-dashed border-s-ink/20" />{t("statusBlocked")}</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral border-2 border-s-accent-bright" />{t("lastMinute")}</span>
         {/* Service category colors */}
         <span className="w-px h-4 bg-s-sand" />
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-coral bg-s-coral/10" />Hair</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-blue bg-s-blue/10" />Nails</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-sage bg-s-sage/10" />Spa</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-coral bg-s-coral/10" />{t("categoryHair")}</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-blue bg-s-blue/10" />{t("categoryNails")}</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-sage bg-s-sage/10" />{t("categorySpa")}</span>
         {staff.length > 0 && (
           <>
             <span className="w-px h-4 bg-s-sand" />
@@ -868,6 +1053,7 @@ export default function CalendarPage() {
             ))}
           </>
         )}
+      </div>
       </div>
       </DragDropContext>
     </DashboardLayout>

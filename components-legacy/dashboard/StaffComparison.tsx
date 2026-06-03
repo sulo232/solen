@@ -40,53 +40,82 @@ export default function StaffComparison({ salonId }: StaffComparisonProps) {
     <div>
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-heading text-sm text-s-ink">Team-Vergleich</h3>
-        <div className="flex rounded-btn border border-s-ink/10 overflow-hidden">
+        <div className="flex rounded-btn border border-s-border overflow-hidden">
           <button onClick={() => setViewMode("table")} aria-pressed={viewMode === "table"}
-            className={`px-2 py-1 text-xs transition-colors duration-150 ${viewMode === "table" ? "bg-s-coral text-white" : "text-s-ink/50"}`}>
+            className={`px-2 py-1 text-xs transition-colors duration-150 ${viewMode === "table" ? "bg-s-accent-bright/10 text-s-accent-bright" : "text-s-ink-2"}`}>
             <Table2 size={12} />
           </button>
           <button onClick={() => setViewMode("chart")} aria-pressed={viewMode === "chart"}
-            className={`px-2 py-1 text-xs transition-colors duration-150 ${viewMode === "chart" ? "bg-s-coral text-white" : "text-s-ink/50"}`}>
+            className={`px-2 py-1 text-xs transition-colors duration-150 ${viewMode === "chart" ? "bg-s-accent-bright/10 text-s-accent-bright" : "text-s-ink-2"}`}>
             <BarChart2 size={12} />
           </button>
         </div>
       </div>
 
       {viewMode === "table" ? (
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-s-ink/5">
-                <th className="text-left py-2 pr-3 font-medium text-s-ink/50">Stylist</th>
-                <th className="text-right py-2 px-2 font-medium text-s-ink/50">Termine</th>
-                <th className="text-right py-2 px-2 font-medium text-s-ink/50">Umsatz</th>
-                <th className="text-right py-2 px-2 font-medium text-s-ink/50">Bewertung</th>
-                <th className="text-right py-2 pl-2 font-medium text-s-ink/50">Retention</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((s) => (
-                <tr key={s.staff_member_id} className="border-b border-s-ink/5">
-                  <td className="py-2 pr-3 font-medium text-s-ink">{s.name}</td>
-                  <td className="py-2 px-2 text-right data-text text-s-ink">{s.bookings}</td>
-                  <td className="py-2 px-2 text-right data-text text-s-ink">CHF {(s.revenue / 100).toFixed(0)}</td>
-                  <td className="py-2 px-2 text-right data-text text-s-ink">{s.avg_rating?.toFixed(1) ?? "—"}</td>
-                  <td className="py-2 pl-2 text-right data-text text-s-ink">{s.retention_rate != null ? `${s.retention_rate.toFixed(0)}%` : "—"}</td>
+        <>
+          {/* Mobile: stacked cards (5-col table is unreadable at 390px) */}
+          <div className="space-y-2 sm:hidden">
+            {data.map((s) => (
+              <div key={s.staff_member_id} className="rounded-[12px] border border-s-border p-3">
+                <p className="text-sm font-medium text-s-ink mb-2">{s.name}</p>
+                <div className="grid grid-cols-4 gap-2">
+                  <div>
+                    <p className="text-[10px] text-s-ink-2">Termine</p>
+                    <p className="data-text text-sm font-bold text-s-ink tabular-nums">{s.bookings}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-s-ink-2">Umsatz</p>
+                    <p className="data-text text-sm font-bold text-s-ink tabular-nums">CHF {(s.revenue / 100).toFixed(0)}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-s-ink-2">Bewertung</p>
+                    <p className="data-text text-sm font-bold text-s-ink tabular-nums">{s.avg_rating?.toFixed(1) ?? "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-s-ink-2">Retention</p>
+                    <p className="data-text text-sm font-bold text-s-ink tabular-nums">{s.retention_rate != null ? `${s.retention_rate.toFixed(0)}%` : "—"}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Desktop: keep the table */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-s-border">
+                  <th className="text-left py-2 pr-3 font-medium text-s-ink-2">Stylist</th>
+                  <th className="text-right py-2 px-2 font-medium text-s-ink-2">Termine</th>
+                  <th className="text-right py-2 px-2 font-medium text-s-ink-2">Umsatz</th>
+                  <th className="text-right py-2 px-2 font-medium text-s-ink-2">Bewertung</th>
+                  <th className="text-right py-2 pl-2 font-medium text-s-ink-2">Retention</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {data.map((s) => (
+                  <tr key={s.staff_member_id} className="border-b border-s-border">
+                    <td className="py-2 pr-3 font-medium text-s-ink">{s.name}</td>
+                    <td className="py-2 px-2 text-right data-text text-s-ink">{s.bookings}</td>
+                    <td className="py-2 px-2 text-right data-text text-s-ink">CHF {(s.revenue / 100).toFixed(0)}</td>
+                    <td className="py-2 px-2 text-right data-text text-s-ink">{s.avg_rating?.toFixed(1) ?? "—"}</td>
+                    <td className="py-2 pl-2 text-right data-text text-s-ink">{s.retention_rate != null ? `${s.retention_rate.toFixed(0)}%` : "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       ) : (
         <div className="space-y-2">
           {data.map((s) => (
             <div key={s.staff_member_id} className="flex items-center gap-3">
               <span className="text-xs font-medium text-s-ink w-20 truncate">{s.name.split(" ")[0]}</span>
-              <div className="flex-1 h-5 bg-s-ink/5 rounded-btn overflow-hidden">
-                <div className="h-full bg-s-coral rounded-btn transition-[width] duration-200"
+              <div className="flex-1 h-5 bg-s-bg-sunken rounded-btn overflow-hidden">
+                <div className="h-full bg-s-accent-bright rounded-btn transition-[width] duration-200"
                   style={{ width: `${maxRevenue > 0 ? (s.revenue / maxRevenue) * 100 : 0}%` }} />
               </div>
-              <span className="text-xs data-text text-s-ink/60 w-16 text-right">
+              <span className="text-xs data-text text-s-ink-2 w-16 text-right">
                 CHF {(s.revenue / 100).toFixed(0)}
               </span>
             </div>

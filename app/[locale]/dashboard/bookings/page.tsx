@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Check, UserX, RotateCcw, ChevronDown, X } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -18,14 +18,14 @@ interface EnrichedBooking extends Booking {
   staff_name: string | null;
 }
 
-const STATUS_LABELS: Record<BookingStatus, string> = {
-  pending: "Ausstehend",
-  pending_approval: "Warte auf Bestätigung",
-  confirmed: "Bestätigt",
-  cancelled: "Storniert",
-  completed: "Abgeschlossen",
-  no_show: "Nicht erschienen",
-};
+const STATUS_LABEL_KEYS = {
+  pending: "statusPending",
+  pending_approval: "statusPendingApproval",
+  confirmed: "statusConfirmed",
+  cancelled: "statusCancelled",
+  completed: "statusCompleted",
+  no_show: "statusNoShow",
+} as const satisfies Record<BookingStatus, string>;
 const STATUS_TONE: Record<BookingStatus, "success" | "warning" | "error" | "neutral"> = {
   pending: "warning",
   pending_approval: "warning",
@@ -36,11 +36,22 @@ const STATUS_TONE: Record<BookingStatus, "success" | "warning" | "error" | "neut
 };
 
 const CANCEL_REASONS = [
-  { value: "illness", label: "Krankheit" },
-  { value: "technical", label: "Technisches Problem" },
-  { value: "understaffed", label: "Personalmangel" },
-  { value: "other", label: "Sonstiges" },
+  { value: "illness", labelKey: "reasonIllness" },
+  { value: "technical", labelKey: "reasonTechnical" },
+  { value: "understaffed", labelKey: "reasonUnderstaffed" },
+  { value: "other", labelKey: "reasonOther" },
+] as const;
+
+// Initials + deterministic avatar gradient (consistent colour per person), per the approved mobile skin.
+const initials = (n: string) => {
+  const p = n.trim().split(/\s+/);
+  return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toUpperCase() || "—";
+};
+const AV_GRADS = [
+  "from-[#276EF1] to-[#1B4DCB]", "from-[#F0A868] to-[#C0524A]",
+  "from-[#16A34A] to-[#0E7A37]", "from-[#8B5CF6] to-[#6D28D9]", "from-[#EC4899] to-[#BE185D]",
 ];
+const avGrad = (s: string) => AV_GRADS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_GRADS.length];
 
 // ─────────────────────────────────────────
 // Cancel Modal (salon-initiated)
@@ -51,6 +62,7 @@ function SalonCancelModal({
   onClose,
   onDone,
 }: { bookingId: string; onClose: () => void; onDone: (id: string) => void }) {
+  const t = useTranslations("dashboard.bookingsPage");
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -75,24 +87,88 @@ function SalonCancelModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-2xl shadow-warm-xl w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-s-ink">Termin stornieren</h3>
+          <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-s-ink">{t("cancelModalTitle")}</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink-2" /></button>
         </div>
-        <p className="text-sm text-s-ink-2 mb-4">Bitte wähle einen Grund. Der Kunde wird automatisch per E-Mail informiert.</p>
+        <p className="text-sm text-s-ink-2 mb-4">{t("cancelModalDescription")}</p>
         <div className="space-y-2 mb-5">
           {CANCEL_REASONS.map((r) => (
             <label key={r.value} className="flex items-center gap-3 p-3 rounded-xl border border-s-border cursor-pointer hover:border-s-ink transition-colors">
               <input type="radio" name="reason" value={r.value} checked={reason === r.value}
                 onChange={() => setReason(r.value)} className="accent-s-ink" />
-              <span className="text-sm">{r.label}</span>
+              <span className="text-sm">{t(r.labelKey)}</span>
             </label>
           ))}
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-full border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-full border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">{t("cancel")}</button>
           <button onClick={handleSubmit} disabled={!reason || loading}
             className="flex-1 py-2.5 rounded-full bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-colors">
-            {loading && <Spinner size="sm" invert />}Stornieren
+            {loading && <Spinner size="sm" invert />}{t("cancelBooking")}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
+// Action Sheet (tap a confirmed row → bottom-sheet, replaces the 3 cramped row icons)
+// ─────────────────────────────────────────
+
+function BookingActionSheet({
+  booking,
+  onClose,
+  onComplete,
+  onNoShow,
+  onCancel,
+}: {
+  booking: EnrichedBooking;
+  onClose: () => void;
+  onComplete: (id: string) => void;
+  onNoShow: (id: string) => void;
+  onCancel: (id: string) => void;
+}) {
+  const locale = useLocale();
+  const t = useTranslations("dashboard.bookingsPage");
+  return (
+    <div className="fixed inset-0 z-50">
+      <div className="absolute inset-0 bg-s-ink/40" onClick={onClose} />
+      <div className="absolute inset-x-0 bottom-0 rounded-t-2xl bg-white shadow-[0_-10px_30px_rgba(10,10,10,0.09)] px-4 pb-[18px]">
+        <div className="mx-auto mt-2 mb-3.5 h-1 w-[38px] rounded-full bg-s-border" />
+        {/* Header: gradient avatar + name·time, then service · staff · price */}
+        <div className="flex items-center gap-3 mb-3.5">
+          <span className={`grid place-items-center w-[38px] h-[38px] rounded-full bg-gradient-to-br ${avGrad(booking.customer_name)} text-white font-heading font-semibold text-[13px] shrink-0`}>
+            {initials(booking.customer_name)}
+          </span>
+          <div className="min-w-0">
+            <p className="font-heading font-bold text-[15px] text-s-ink leading-tight">
+              {booking.customer_name} · {new Date(booking.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+            </p>
+            <p className="text-[12px] text-s-ink-2 truncate mt-0.5">
+              {booking.service_name}{booking.staff_name ? ` · ${booking.staff_name}` : ""} · {formatCurrency(Number(booking.price_paid), locale)}
+            </p>
+          </div>
+        </div>
+        {/* Three full-width 44px actions */}
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={() => onComplete(booking.id)}
+            className="flex items-center justify-center gap-2 w-full min-h-[44px] rounded-xl bg-s-success text-white font-heading font-semibold text-[13.5px] transition-opacity hover:opacity-90"
+          >
+            <Check size={15} strokeWidth={2.4} />{t("complete")}
+          </button>
+          <button
+            onClick={() => onNoShow(booking.id)}
+            className="flex items-center justify-center gap-2 w-full min-h-[44px] rounded-xl bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] transition-colors hover:bg-s-bg-sunken"
+          >
+            <UserX size={15} strokeWidth={2.4} />{t("noShow")}
+          </button>
+          <button
+            onClick={() => onCancel(booking.id)}
+            className="flex items-center justify-center gap-2 w-full min-h-[44px] rounded-xl bg-white border border-s-error/30 text-s-error font-heading font-semibold text-[13.5px] transition-colors hover:bg-s-error/5"
+          >
+            <X size={15} strokeWidth={2.4} />{t("cancelBooking")}
           </button>
         </div>
       </div>
@@ -106,6 +182,7 @@ function SalonCancelModal({
 
 export default function BookingsPage() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.bookingsPage");
   const searchParams = useSearchParams();
   const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -114,22 +191,29 @@ export default function BookingsPage() {
     (searchParams.get("status") as BookingStatus) ?? "all"
   );
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
+  const [actionTarget, setActionTarget] = useState<EnrichedBooking | null>(null);
+
+  // Owner's salon id (the bookings list is salon-scoped, not user-scoped).
+  useEffect(() => {
+    fetch("/api/profile")
+      .then((r) => r.json())
+      .then((p) => { if (p?.salon_id) setSalonId(p.salon_id); else setLoading(false); })
+      .catch((err) => { console.error("[DashboardBookings] Failed to fetch profile:", err); setLoading(false); });
+  }, []);
 
   useEffect(() => {
+    if (!salonId) return;
     const params = new URLSearchParams();
+    params.set("salon_id", salonId);
     if (statusFilter !== "all") params.set("status", statusFilter);
     params.set("limit", "50");
     setLoading(true);
     fetch(`/api/bookings?${params}`)
       .then((r) => r.json())
-      .then((d) => {
-        const items = d.bookings ?? [];
-        setBookings(items);
-        if (items.length > 0 && !salonId) setSalonId(items[0].salon_id);
-      })
+      .then((d) => setBookings(d.bookings ?? []))
       .catch((err) => console.error("[DashboardBookings] Failed to fetch bookings:", err))
       .finally(() => setLoading(false));
-  }, [statusFilter]);
+  }, [statusFilter, salonId]);
 
   const updateStatus = async (id: string, status: "completed" | "no_show") => {
     await fetch(`/api/bookings/${id}`, {
@@ -154,22 +238,34 @@ export default function BookingsPage() {
         />
       )}
 
-      <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
-        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Termine</h1>
+      {actionTarget && (
+        <BookingActionSheet
+          booking={actionTarget}
+          onClose={() => setActionTarget(null)}
+          onComplete={(id) => { updateStatus(id, "completed"); setActionTarget(null); }}
+          onNoShow={(id) => { updateStatus(id, "no_show"); setActionTarget(null); }}
+          onCancel={(id) => { setCancelTarget(id); setActionTarget(null); }}
+        />
+      )}
+
+      <div className="mb-5">
+        <h1 className="font-heading text-[26px] font-bold tracking-[-0.02em] text-s-ink leading-none">{t("title")}</h1>
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar pb-1">
+      {/* Filters — light-blue active (approved skin) */}
+      <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar pb-1">
         {(["all", "confirmed", "completed", "cancelled", "no_show"] as const).map((s) => (
           <button
             key={s}
             onClick={() => setStatusFilter(s)}
             className={[
-              "px-3.5 py-1.5 rounded-full text-[14px] font-medium whitespace-nowrap transition-colors",
-              statusFilter === s ? "bg-s-ink text-white" : "bg-white border border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink",
+              "px-3.5 py-2 rounded-full text-[13px] font-semibold whitespace-nowrap transition-colors border",
+              statusFilter === s
+                ? "bg-s-accent-bright/10 text-s-accent-bright border-transparent"
+                : "bg-white border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink",
             ].join(" ")}
           >
-            {s === "all" ? "Alle" : STATUS_LABELS[s]}
+            {s === "all" ? t("filterAll") : t(STATUS_LABEL_KEYS[s])}
           </button>
         ))}
       </div>
@@ -177,80 +273,55 @@ export default function BookingsPage() {
       {loading ? (
         <div className="flex justify-center py-12"><Spinner size="lg" /></div>
       ) : bookings.length === 0 ? (
-        <div className="text-center py-12 text-s-ink/30">
-          <p className="text-sm">Keine Termine gefunden</p>
+        <div className="text-center py-12 text-s-ink-3">
+          <p className="text-sm">{t("emptyState")}</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="rounded-[16px] border border-s-border bg-white overflow-hidden">
           {bookings.map((b) => (
-            <div key={b.id} className="bg-white rounded-2xl border border-s-border p-4">
-              <div className="flex items-start gap-4">
+            <div key={b.id} className="border-b border-s-border last:border-b-0 px-3.5 py-3">
+              <div
+                className={`flex items-center gap-3${b.status === "confirmed" ? " cursor-pointer" : ""}`}
+                onClick={b.status === "confirmed" ? () => setActionTarget(b) : undefined}
+              >
                 {/* Time */}
-                <div className="shrink-0 text-center w-14">
-                  <p className="data-text font-semibold text-sm text-s-ink">
+                <div className="w-[46px] shrink-0">
+                  <p className="font-heading font-bold text-[13.5px] text-s-ink tabular-nums leading-none">
                     {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                   </p>
-                  <p className="text-[10px] text-s-ink/30">
+                  <p className="text-[10px] font-semibold text-s-ink-3 tabular-nums mt-1">
                     {new Date(b.starts_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" })}
                   </p>
                 </div>
-
+                {/* Avatar */}
+                <span className={`grid place-items-center w-[34px] h-[34px] rounded-full bg-gradient-to-br ${avGrad(b.customer_name)} text-white font-heading font-semibold text-[12px] shrink-0`}>
+                  {initials(b.customer_name)}
+                </span>
                 {/* Details */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <p className="text-sm font-medium text-s-ink">{b.customer_name}</p>
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-heading font-semibold text-[14.5px] text-s-ink leading-tight truncate">{b.customer_name}</p>
                     {b.is_first_visit && (
-                      <span className="px-2 py-0.5 rounded-full bg-s-bg-sunken border border-s-border text-s-ink-2 text-[10px] font-semibold uppercase tracking-[0.06em]">Neukunde</span>
+                      <span className="shrink-0 text-[10px] font-bold px-[7px] py-px rounded-full bg-s-accent-bright/10 text-s-accent-bright">{t("badgeNew")}</span>
                     )}
-                    {b.is_recurring && (
-                      <span className="flex items-center gap-0.5 text-[10px] text-s-ink/40">
-                        <RotateCcw size={10} /> Wiederkehrend
-                      </span>
-                    )}
+                    {b.is_recurring && <RotateCcw size={11} className="shrink-0 text-s-ink-3" aria-label={t("recurring")} />}
                   </div>
+                  <p className="text-[12.5px] text-s-ink-2 truncate mt-0.5">
+                    {b.service_name}{b.staff_name ? ` · ${b.staff_name}` : ""}
+                  </p>
                   {salonId && b.user_id && (
-                    <div className="mt-1">
-                      <ClientTags salonId={salonId} customerId={b.user_id} compact />
-                    </div>
+                    <div className="mt-1"><ClientTags salonId={salonId} customerId={b.user_id} compact /></div>
                   )}
-                  <p className="text-xs text-s-ink/50 mt-0.5">{b.service_name}</p>
-                  {b.staff_name && <p className="text-xs text-s-ink/30">{b.staff_name}</p>}
-                  <p className="text-xs data-text text-s-ink/50 mt-1">{formatCurrency(Number(b.price_paid), locale)}</p>
                 </div>
-
-                {/* Status + actions */}
-                <div className="flex flex-col items-end gap-2 shrink-0">
-                  <DashStatusPill tone={STATUS_TONE[b.status]}>{STATUS_LABELS[b.status]}</DashStatusPill>
-                  {b.status === "confirmed" && (
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => updateStatus(b.id, "completed")}
-                        className="p-1.5 rounded-full bg-s-bg-sunken text-s-ink hover:bg-s-border transition-colors"
-                        title="Abgeschlossen"
-                      >
-                        <Check size={13} />
-                      </button>
-                      <button
-                        onClick={() => updateStatus(b.id, "no_show")}
-                        className="p-1.5 rounded-full bg-s-bg-sunken text-s-ink-2 hover:bg-s-border hover:text-s-ink transition-colors"
-                        title="Nicht erschienen"
-                      >
-                        <UserX size={13} />
-                      </button>
-                      <button
-                        onClick={() => setCancelTarget(b.id)}
-                        className="p-1.5 rounded-full bg-s-bg-sunken text-s-error hover:bg-s-error-bg transition-colors"
-                        title="Stornieren"
-                      >
-                        <X size={13} />
-                      </button>
-                    </div>
-                  )}
-                  {b.status === "cancelled" && b.cancellation_reason && (
-                    <p className="text-[10px] text-s-ink/30 max-w-24 text-right">{b.cancellation_reason}</p>
-                  )}
+                {/* Price + status + quick actions */}
+                <div className="flex flex-col items-end gap-1.5 shrink-0">
+                  <span className="font-heading font-semibold text-[13.5px] text-s-ink tabular-nums">{formatCurrency(Number(b.price_paid), locale)}</span>
+                  <DashStatusPill tone={STATUS_TONE[b.status]}>{t(STATUS_LABEL_KEYS[b.status])}</DashStatusPill>
                 </div>
               </div>
+              {b.status === "cancelled" && b.cancellation_reason && (
+                <p className="text-[12px] text-s-ink-2 mt-2">{t("cancellationReasonLabel", { reason: b.cancellation_reason })}</p>
+              )}
             </div>
           ))}
         </div>

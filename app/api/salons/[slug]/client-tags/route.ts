@@ -19,6 +19,16 @@ const deleteTagSchema = z.object({
   tag_id: z.string().uuid(),
 });
 
+// Schema drift: the client_tags table may not exist yet (migration not applied).
+// Detect the Postgres "undefined_table" (42P01) / PostgREST schema-cache miss so the
+// dashboard degrades gracefully instead of 500-ing. Mirrors the GET handler.
+function isMissingTableError(error: { code?: string; message?: string } | null): boolean {
+  if (!error) return false;
+  if (error.code === "42P01") return true;
+  const msg = (error.message ?? "").toLowerCase();
+  return msg.includes("schema cache") || msg.includes("does not exist");
+}
+
 // GET /api/salons/[slug]/client-tags?customer_id=X — Get tags for a client
 export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -54,7 +64,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
 
   const { data: tags, error } = await query;
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  // Schema drift: the client_tags table may not exist yet (migration not applied). Don't 500
+  // the dashboard once per booking row — log server-side and degrade gracefully to empty tags.
+  if (error) {
+    console.error("[client-tags] GET failed (client_tags table may be missing):", error.message);
+    return NextResponse.json({ tags: [], allergy_tags: ALLERGY_TAGS });
+  }
 
   return NextResponse.json({
     tags: tags ?? [],
@@ -113,6 +128,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
     if (error.code === "23505") {
       return NextResponse.json({ error: "Tag existiert bereits für diesen Kunden" }, { status: 409 });
     }
+    if (isMissingTableError(error)) {
+      console.error("[client-tags] POST failed (client_tags table may be missing):", error.message);
+      return NextResponse.json({ error: "Kunden-Tags sind derzeit nicht verfügbar" }, { status: 409 });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
@@ -144,11 +163,20 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ s
 
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  await supabase
+  const { error } = await supabase
     .from("client_tags")
     .delete()
     .eq("id", data.tag_id)
     .eq("salon_id", slug);
+
+  if (error) {
+    if (isMissingTableError(error)) {
+      console.error("[client-tags] DELETE failed (client_tags table may be missing):", error.message);
+      return NextResponse.json({ success: true });
+    }
+    console.error("[client-tags] DELETE failed:", error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true });
 }

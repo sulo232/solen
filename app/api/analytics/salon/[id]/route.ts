@@ -231,7 +231,11 @@ export async function GET(
     no_show_rate: noShowRate,
     avg_rating: avgRating,
     total_reviews: totalReviews,
-    peak_hours_heatmap: heatmap,
+    // HeatmapChart expects day->hour->count, not the flat array (which every cell rendered as 0).
+    peak_hours_heatmap: heatmap.reduce((acc, { day, hour, count }) => {
+      (acc[String(day)] ??= {})[String(hour)] = count;
+      return acc;
+    }, {} as Record<string, Record<string, number>>),
     popular_services: popularServices,
     daily,
     retention_rate: retentionRate,

@@ -25,6 +25,10 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-component-edit-pixel-spec.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-build-exists-check.sh"
           }
         ]
       },

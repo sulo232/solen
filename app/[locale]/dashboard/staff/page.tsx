@@ -1,12 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Mail, Check, Clock as ClockIcon, Send } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import Spinner from "@/components-legacy/ui/Spinner";
 import type { StaffMember } from "@/lib/types";
+
+// Initials + deterministic avatar gradient (consistent colour per person), per the approved mobile skin.
+const initials = (n: string) => {
+  const p = n.trim().split(/\s+/);
+  return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toUpperCase() || "—";
+};
+const AV_GRADS = [
+  "from-[#276EF1] to-[#1B4DCB]", "from-[#F0A868] to-[#C0524A]",
+  "from-[#16A34A] to-[#0E7A37]", "from-[#8B5CF6] to-[#6D28D9]", "from-[#EC4899] to-[#BE185D]",
+];
+const avGrad = (s: string) => AV_GRADS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_GRADS.length];
 
 // ─────────────────────────────────────────
 // Staff Modal (Add / Edit) — now with services & permissions
@@ -26,6 +38,7 @@ interface StaffModalProps {
 }
 
 function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModalProps) {
+  const t = useTranslations("dashboard.staffPage");
   const [name, setName] = useState(initial?.name ?? "");
   const [avatar, setAvatar] = useState(initial?.avatar_url ?? "");
   const [specialties, setSpecialties] = useState<string[]>(initial?.specialties ?? []);
@@ -137,28 +150,28 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-2xl shadow-warm-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading text-base text-s-ink">{initial ? "Bearbeiten" : "Mitarbeiter hinzufügen"}</h3>
-          <button onClick={onClose} aria-label="Schliessen"><X size={18} className="text-s-ink/30" /></button>
+          <h3 className="font-heading text-base text-s-ink">{initial ? t("editTitle") : t("addTitle")}</h3>
+          <button onClick={onClose} aria-label={t("close")}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-5">
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">Name *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("nameLabel")}</label>
             <input value={name} onChange={(e) => setName(e.target.value)}
               className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">Foto URL</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("photoUrlLabel")}</label>
             <input value={avatar} onChange={(e) => setAvatar(e.target.value)}
               className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">Spezialitäten</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("specialtiesLabel")}</label>
             <div className="flex gap-2 mb-2">
               <input value={specInput} onChange={(e) => setSpecInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSpec(); } }}
-                placeholder="z. B. Balayage…"
+                placeholder={t("specialtyPlaceholder")}
                 className="flex-1 px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
-              <button type="button" onClick={addSpec} aria-label="Spezialisierung hinzufügen" className="px-2.5 rounded-btn bg-s-bg-sunken text-s-ink-2"><Plus size={14} /></button>
+              <button type="button" onClick={addSpec} aria-label={t("addSpecialty")} className="px-2.5 rounded-btn bg-s-bg-sunken text-s-ink-2"><Plus size={14} /></button>
             </div>
             <div className="flex flex-wrap gap-1">
               {specialties.map((s, i) => (
@@ -172,11 +185,11 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
           {/* Service assignment */}
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-2">Services zuweisen</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("assignServices")}</label>
             {loadingServices ? (
               <Spinner size="sm" />
             ) : services.length === 0 ? (
-              <p className="text-xs text-s-ink/30">Keine Services vorhanden</p>
+              <p className="text-xs text-s-ink/30">{t("noServices")}</p>
             ) : (
               <div className="space-y-1 max-h-32 overflow-y-auto">
                 {services.map(svc => (
@@ -196,44 +209,44 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
           {/* Permissions */}
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-2">Berechtigungen</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("permissions")}</label>
             <div className="space-y-2">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={canEditSchedule} onChange={e => setCanEditSchedule(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-ink" />
-                <span className="text-sm text-s-ink/70">Kalender bearbeiten</span>
+                <span className="text-sm text-s-ink/70">{t("permEditSchedule")}</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={canViewOwnBookings} onChange={e => setCanViewOwnBookings(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-ink" />
-                <span className="text-sm text-s-ink/70">Buchungen sehen</span>
+                <span className="text-sm text-s-ink/70">{t("permViewBookings")}</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={canManagePortfolio} onChange={e => setCanManagePortfolio(e.target.checked)} className="w-3.5 h-3.5 rounded accent-s-ink" />
-                <span className="text-sm text-s-ink/70">Portfolio verwalten</span>
+                <span className="text-sm text-s-ink/70">{t("permManagePortfolio")}</span>
               </label>
             </div>
           </div>
 
           {/* Commission rate */}
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">Provision (%)</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("commissionLabel")}</label>
             <input type="number" min="0" max="100" value={commissionRate}
               onChange={(e) => setCommissionRate(Math.max(0, Math.min(100, parseInt(e.target.value) || 0)))}
               className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
-            <p className="text-[10px] text-s-ink/30 mt-1">Anteil des Mitarbeiters am Umsatz (0–100%)</p>
+            <p className="text-[10px] text-s-ink/30 mt-1">{t("commissionHint")}</p>
           </div>
 
           <label className="flex items-center gap-3 cursor-pointer">
             <button type="button" onClick={() => setActive(!active)} className={active ? "text-s-ink" : "text-s-ink/30"}>
               {active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
             </button>
-            <span className="text-sm text-s-ink/60">Aktiv</span>
+            <span className="text-sm text-s-ink/60">{t("active")}</span>
           </label>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">{t("cancel")}</button>
           <button onClick={handleSave} disabled={!name || loading}
             className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-colors">
-            {loading && <Spinner size="sm" invert />}Speichern
+            {loading && <Spinner size="sm" invert />}{t("save")}
           </button>
         </div>
       </div>
@@ -246,6 +259,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 // ─────────────────────────────────────────
 
 function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: () => void; onSent: () => void }) {
+  const t = useTranslations("dashboard.staffPage");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [sending, setSending] = useState(false);
@@ -280,28 +294,28 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
             <Mail size={16} className="text-s-ink" />
-            <h3 className="font-heading text-base text-s-ink">Mitarbeiter einladen</h3>
+            <h3 className="font-heading text-base text-s-ink">{t("inviteTitle")}</h3>
           </div>
-          <button onClick={onClose} aria-label="Schliessen"><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose} aria-label={t("close")}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-4">
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">Name *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("nameLabel")}</label>
             <input value={name} onChange={e => setName(e.target.value)}
               className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">E-Mail *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("emailLabel")}</label>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)}
               className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-sm text-s-ink focus:outline-none focus:border-s-ink" />
           </div>
         </div>
         {error && <p className="text-xs text-s-error mb-3">{error}</p>}
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">{t("cancel")}</button>
           <button onClick={handleSend} disabled={!email || !name.trim() || sending}
             className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-colors">
-            {sending && <Spinner size="sm" invert />}<Send size={14} /> Einladen
+            {sending && <Spinner size="sm" invert />}<Send size={14} /> {t("invite")}
           </button>
         </div>
       </div>
@@ -318,6 +332,7 @@ function DeleteModal({ member, onClose, onDeleted }: {
   onClose: () => void;
   onDeleted: (id: string) => void;
 }) {
+  const t = useTranslations("dashboard.staffPage");
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -335,18 +350,18 @@ function DeleteModal({ member, onClose, onDeleted }: {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-2xl shadow-warm-lg w-full max-w-sm p-6">
-        <h3 className="font-heading text-base text-s-ink mb-3">Mitarbeiter löschen</h3>
-        <p className="text-sm text-s-ink/60 mb-2">Möchtest du <strong>{member.name}</strong> wirklich löschen?</p>
+        <h3 className="font-heading text-base text-s-ink mb-3">{t("deleteTitle")}</h3>
+        <p className="text-sm text-s-ink/60 mb-2">{t.rich("deleteConfirm", { name: member.name, strong: (chunks) => <strong>{chunks}</strong> })}</p>
         {member.future_bookings && member.future_bookings > 0 ? (
           <p className="text-sm text-s-warning font-medium mb-4">
-            Diese Person hat {member.future_bookings} Termine. Diese werden storniert.
+            {t("deleteBookingsWarning", { count: member.future_bookings })}
           </p>
         ) : null}
         <div className="flex gap-2 mt-4">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">{t("cancel")}</button>
           <button onClick={handleDelete} disabled={loading}
             className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-colors">
-            {loading && <Spinner size="sm" invert />}Löschen
+            {loading && <Spinner size="sm" invert />}{t("delete")}
           </button>
         </div>
       </div>
@@ -367,6 +382,7 @@ interface PendingInvite {
 }
 
 function PendingInvites({ salonId }: { salonId: string }) {
+  const t = useTranslations("dashboard.staffPage");
   const [invites, setInvites] = useState<PendingInvite[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -384,7 +400,7 @@ function PendingInvites({ salonId }: { salonId: string }) {
   return (
     <div className="mb-6">
       <h2 className="text-sm font-medium text-s-ink/50 mb-2 flex items-center gap-1.5">
-        <ClockIcon size={14} /> Ausstehende Einladungen
+        <ClockIcon size={14} /> {t("pendingInvites")}
       </h2>
       <div className="space-y-2">
         {invites.map(inv => (
@@ -393,7 +409,7 @@ function PendingInvites({ salonId }: { salonId: string }) {
               <p className="text-sm font-medium text-s-ink">{inv.name}</p>
               <p className="text-xs text-s-ink/40">{inv.email}</p>
             </div>
-            <DashStatusPill tone="warning">Ausstehend</DashStatusPill>
+            <DashStatusPill tone="warning">{t("pendingBadge")}</DashStatusPill>
           </div>
         ))}
       </div>
@@ -406,6 +422,7 @@ function PendingInvites({ salonId }: { salonId: string }) {
 // ─────────────────────────────────────────
 
 export default function StaffPage() {
+  const t = useTranslations("dashboard.staffPage");
   const [staff, setStaff] = useState<(StaffMember & { future_bookings?: number })[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
@@ -414,6 +431,7 @@ export default function StaffPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [inviteOpen, setInviteOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<(StaffMember & { future_bookings?: number }) | null>(null);
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
 
   const loadStaff = () => {
     fetch("/api/profile").then((r) => r.json()).then((p) => {
@@ -469,15 +487,15 @@ export default function StaffPage() {
       )}
 
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Team</h1>
+        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">{t("teamTitle")}</h1>
         <div className="flex items-center gap-2">
           <button onClick={() => setInviteOpen(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink text-s-ink text-sm font-medium hover:bg-s-bg-sunken transition-colors">
-            <Mail size={14} /> Einladen
+            <Mail size={14} /> {t("invite")}
           </button>
           <button onClick={() => setAddOpen(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black transition-colors">
-            <Plus size={14} /> Hinzufügen
+            <Plus size={14} /> {t("add")}
           </button>
         </div>
       </div>
@@ -485,20 +503,44 @@ export default function StaffPage() {
       {/* Pending invites */}
       {salonId && <PendingInvites salonId={salonId} />}
 
+      {/* Filter pills — light-blue active (approved skin) */}
+      <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar pb-1">
+        {(["all", "active", "inactive"] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setStatusFilter(f)}
+            className={[
+              "px-3.5 py-2 rounded-full text-[13px] font-semibold whitespace-nowrap transition-colors border",
+              statusFilter === f
+                ? "bg-s-accent-bright/10 text-s-accent-bright border-transparent"
+                : "bg-white border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink",
+            ].join(" ")}
+          >
+            {f === "all" ? t("filterAll") : f === "active" ? t("filterActive") : t("filterInactive")}
+          </button>
+        ))}
+      </div>
+
       {loading ? (
         <div className="flex justify-center py-12"><Spinner size="lg" /></div>
       ) : staff.length === 0 ? (
         <div className="text-center py-12 text-s-ink/30">
-          <p className="text-sm">Noch keine Mitarbeiter</p>
+          <p className="text-sm">{t("emptyState")}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {staff.map((s) => (
+          {staff
+            .filter((s) => statusFilter === "all" ? true : statusFilter === "active" ? s.is_active : !s.is_active)
+            .map((s) => (
             <div key={s.id} className="bg-white rounded-2xl border border-s-border p-4 flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-s-bg-sunken flex items-center justify-center shrink-0 text-sm font-bold text-s-ink overflow-hidden relative">
+              <div className="w-11 h-11 rounded-full shrink-0 overflow-hidden relative">
                 {s.avatar_url ? (
                   <Image src={s.avatar_url} alt="" fill className="object-cover" unoptimized />
-                ) : (s.name?.charAt(0) ?? "?").toUpperCase()}
+                ) : (
+                  <span className={`grid place-items-center w-full h-full bg-gradient-to-br ${avGrad(s.name)} text-white font-heading font-semibold text-[15px]`}>
+                    {initials(s.name)}
+                  </span>
+                )}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm text-s-ink">{s.name}</p>
@@ -509,15 +551,23 @@ export default function StaffPage() {
                     ))}
                   </div>
                 )}
+                {typeof s.commission_rate === "number" && s.commission_rate > 0 && (
+                  <p className="text-[11.5px] text-s-ink-2 mt-1.5">
+                    {t.rich("commissionCard", { rate: s.commission_rate, b: (chunks) => <b className="font-heading text-s-ink">{chunks}</b> })}
+                  </p>
+                )}
               </div>
-              <div className="flex items-center gap-1 shrink-0">
-                <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-ink" : "text-s-ink/20"}>
+              <div className="flex items-center gap-0.5 shrink-0 -mr-1.5">
+                <button onClick={() => toggleActive(s.id, s.is_active)} aria-label={s.is_active ? t("deactivate") : t("activate")}
+                  className={`grid place-items-center w-10 h-10 rounded-full transition-colors ${s.is_active ? "text-s-ink" : "text-s-ink/20"} hover:bg-s-bg-sunken`}>
                   {s.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                 </button>
-                <button onClick={() => setEditTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-ink transition-colors">
+                <button onClick={() => setEditTarget(s)} aria-label={t("edit")}
+                  className="grid place-items-center w-10 h-10 rounded-full text-s-ink/30 hover:text-s-ink hover:bg-s-bg-sunken transition-colors">
                   <Pencil size={14} />
                 </button>
-                <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-error transition-colors">
+                <button onClick={() => setDeleteTarget(s)} aria-label={t("delete")}
+                  className="grid place-items-center w-10 h-10 rounded-full text-s-ink/30 hover:text-s-error hover:bg-s-bg-sunken transition-colors">
                   <Trash2 size={14} />
                 </button>
               </div>

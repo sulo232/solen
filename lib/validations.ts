@@ -827,6 +827,52 @@ export const recurringBookingSchema = z.object({
 });
 
 // ---------------------------------------------------------------------------
+// Availability-slot creation (dashboard calendar: SlotCreateModal + BulkCreateModal
+// + the week-view blockDay() Lock button). The POST /api/slots single-slot path takes
+// `date` + `start_time` + `service_id` and derives ends_at from the service duration; it
+// does NOT carry salon_id (the route resolves it from the service and verifies ownership).
+// ---------------------------------------------------------------------------
+
+// SlotCreateModal -> POST /api/slots. `staff_member_id` is nullable ("Egal / wer
+// verfügbar ist" sends null). No salon_id by design — derived from the service.
+export const createSlotSchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  start_time: z.string().regex(/^\d{2}:\d{2}$/),
+  service_id: z.string().uuid(),
+  staff_member_id: z.string().uuid().nullable().optional(),
+});
+
+// One weekday lane in the BulkCreateModal template: an open window, or null (closed).
+const bulkDayWindow = z
+  .object({
+    start: z.string().regex(/^\d{2}:\d{2}$/),
+    end: z.string().regex(/^\d{2}:\d{2}$/),
+  })
+  .refine((w) => w.start < w.end, { message: "start must be before end" });
+
+// BulkCreateModal -> POST /api/slots/bulk. `template` keys are mon..sun; each value is a
+// window or null. `weeks` ∈ {1,2,4}. The route walks the current week + (weeks-1) forward,
+// emitting one slot per service-duration step inside each enabled window.
+export const bulkCreateSlotsSchema = z.object({
+  salon_id: z.string().uuid(),
+  service_id: z.string().uuid(),
+  staff_member_id: z.string().uuid().nullable().optional(),
+  weeks: z.union([z.literal(1), z.literal(2), z.literal(4)]),
+  template: z.record(
+    z.enum(["mon", "tue", "wed", "thu", "fri", "sat", "sun"]),
+    bulkDayWindow.nullable(),
+  ),
+});
+
+// blockDay() -> POST /api/slots/bulk (same endpoint, different shape). Marks that salon's
+// `available` slots on `block_date` as `blocked`. service_id is NOT NULL on the table, so
+// blocking flips existing rows rather than inserting placeholder rows.
+export const blockDaySchema = z.object({
+  salon_id: z.string().uuid(),
+  block_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+});
+
+// ---------------------------------------------------------------------------
 // Staff / Salon Management Schemas
 // ---------------------------------------------------------------------------
 
@@ -868,7 +914,8 @@ export const serviceCreateSchema = z.object({
   processing_minutes: z.number().int().min(0).max(120).optional(),
   finishing_minutes: z.number().int().min(0).max(120).optional(),
   suitable_for: z.array(z.string().max(50)).optional(),
-  suitable_gender: z.array(z.enum(["male", "female", "unisex"])).optional(),
+  // form sends male/female/non_binary; unisex kept for legacy rows. (Was missing non_binary -> 400.)
+  suitable_gender: z.array(z.enum(["male", "female", "unisex", "non_binary"])).optional(),
   is_active: z.boolean().optional(),
   photos: z.array(z.string().url()).max(10).optional(),
 });
@@ -881,6 +928,14 @@ export const serviceUpdateSchema = z.object({
   category: z.string().max(50).optional(),
   duration_minutes: z.number().int().min(5).max(480).optional(),
   price: z.number().int().min(0).max(100000).optional(),
+  // These were absent, so editing a service silently dropped description / time-breakdown /
+  // age + gender targeting (PATCH strips anything not in this schema). Mirror the create schema.
+  description_de: z.string().max(1000).optional(),
+  buffer_minutes: z.number().int().min(0).max(120).optional(),
+  processing_minutes: z.number().int().min(0).max(120).optional(),
+  finishing_minutes: z.number().int().min(0).max(120).optional(),
+  suitable_for: z.array(z.string().max(50)).optional(),
+  suitable_gender: z.array(z.enum(["male", "female", "unisex", "non_binary"])).optional(),
   is_active: z.boolean().optional(),
   reminder_cycle_days: z.number().int().min(1).max(365).nullable().optional(),
 });

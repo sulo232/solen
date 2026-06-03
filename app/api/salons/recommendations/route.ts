@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     // Find salons with overlapping categories in similar quartier
     let query = admin
       .from("salons")
-      .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score")
+      .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score, is_top_pick")
       .eq("is_active", true)
       .eq("listed_on_marketplace", true)
       .neq("id", salonId)
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     if (prefs?.favorite_quartiers?.length || prefs?.favorite_services?.length) {
       let query = admin
         .from("salons")
-        .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score")
+        .select("id, name, slug, categories, quartier, average_rating, review_count, cover_photo_url, explore_score, is_top_pick")
         .eq("is_active", true)
         .eq("listed_on_marketplace", true)
         .order("explore_score", { ascending: false })

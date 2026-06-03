@@ -103,44 +103,31 @@ async function nextQueuePosition(admin: Admin, salonId: string): Promise<number>
   return (lastEntry?.position ?? 0) + 1;
 }
 
-// Daily per-salon ticket sequence base → "A01", "A47" … resets each day (date-scoped count, no cron).
-// Returns today's entry count; callers add (1 + attempt) to derive the next code. The day boundary
-// is the SALON's local midnight (not server-UTC): a Zürich shop resets at 00:00 CET, not 01:00/02:00.
-// Offset technique — DST-tolerant for the common case; a ticket reset needs no sub-hour precision.
-export async function todayTicketCount(admin: Admin, salonId: string, timezone = "Europe/Zurich"): Promise<number> {
-  const now = new Date();
-  let startUtcIso: string;
-  try {
-    const tzNow = new Date(now.toLocaleString("en-US", { timeZone: timezone }));
-    const offsetMs = now.getTime() - tzNow.getTime();
-    const tzMidnight = new Date(tzNow);
-    tzMidnight.setHours(0, 0, 0, 0);
-    startUtcIso = new Date(tzMidnight.getTime() + offsetMs).toISOString();
-  } catch {
-    // Bad/unknown tz → fall back to server-local midnight (prev behaviour).
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    startUtcIso = d.toISOString();
+// Robust per-salon ticket code → "A01", "A47" … "A100", "A1000". MONOTONIC + atomic: backed by
+// next_walkin_ticket_seq(salon) = `UPDATE salons SET walkin_ticket_seq = seq+1 RETURNING seq` in
+// ONE statement, so concurrent joins can't get the same number. No daily reset, no timezone math,
+// no count-of-rows fragility — the number is always unique per salon and survives deletions.
+export async function nextWalkinTicketCode(admin: Admin, salonId: string): Promise<string> {
+  const { data, error } = await admin.rpc("next_walkin_ticket_seq", { p_salon_id: salonId });
+  if (error || typeof data !== "number") {
+    // The atomic counter is the source of truth; if the RPC ever fails, fall back to a HIGH random
+    // so the (salon_id, ticket_code) unique index still holds (never collides with the low sequence).
+    if (error) console.error("[walkin-ticket] next_walkin_ticket_seq failed:", error.message);
+    return `A${90000 + Math.floor(Math.random() * 9999)}`;
   }
-  const { count } = await admin
-    .from("barber_walkin_queue")
-    .select("id", { count: "exact", head: true })
-    .eq("salon_id", salonId)
-    .gte("joined_at", startUtcIso);
-  return count ?? 0;
+  return `A${String(data).padStart(2, "0")}`;
 }
 
-// Shared race-safe insert. The caller supplies the per-row fields that differ between the
-// paid (PI) path and the cash path; the daily ticket_code + position + 23505-retry loop are
-// identical for both. `onTicketCodeCollision` lets the paid path short-circuit when the dup
-// was on the payment_intent_id index (a concurrent process already issued the ticket) rather
-// than the (salon_id, ticket_code) index — for the cash path there is no PI, so it's omitted
-// and every 23505 is treated as a ticket_code collision (bump the code, retry).
+// Shared race-safe insert. The caller supplies the per-row fields + a pre-issued ticketCode
+// (from the atomic counter, already globally unique per salon). Position is the only thing that
+// can still collide under a concurrent join — the loop recomputes max(position)+1 and retries on
+// 23505. `onTicketCodeCollision` lets the PAID path short-circuit when the dup was on the
+// payment_intent_id index (a concurrent process already issued the ticket for this PI).
 async function insertWalkinEntry(
   admin: Admin,
   opts: {
     salonId: string;
-    baseSeq: number; // todayTicketCount() result
+    ticketCode: string; // pre-issued via nextWalkinTicketCode() — globally unique per salon
     counts: { queue_ahead: number; wait_minutes: number };
     fields: {
       customer_id: string | null;
@@ -155,14 +142,13 @@ async function insertWalkinEntry(
     errorLabel: string;
   }
 ): Promise<{ row: ExistingRow; recovered: boolean }> {
-  const { salonId, baseSeq, counts, fields, onTicketCodeCollision, errorLabel } = opts;
+  const { salonId, ticketCode, counts, fields, onTicketCodeCollision, errorLabel } = opts;
   let lastErr: unknown = null;
   for (let attempt = 0; attempt < 6; attempt++) {
     // Recompute position EACH attempt: the (salon_id, position) partial UNIQUE index means a
-    // concurrent join can 23505 on position too (not just ticket_code) — re-read max+1 to resolve.
+    // concurrent join can 23505 on position — re-read max+1 to resolve. ticketCode is fixed
+    // (already unique from the atomic counter), so a 23505 here is always a position collision.
     const position = await nextQueuePosition(admin, salonId);
-    const seq = baseSeq + 1 + attempt;
-    const ticketCode = `A${String(seq).padStart(2, "0")}`;
     const { data, error } = await admin
       .from("barber_walkin_queue")
       .insert({
@@ -192,7 +178,7 @@ async function insertWalkinEntry(
         const winner = await onTicketCodeCollision();
         if (winner) return { row: winner, recovered: true };
       }
-      continue; // otherwise it was just a ticket_code collision → try the next code
+      continue; // otherwise a position collision → recompute position + retry (ticketCode fixed)
     }
     break; // non-unique error → stop
   }
@@ -235,7 +221,7 @@ export async function createWalkinTicket(
   }
 
   const position = await nextQueuePosition(admin, salonId);
-  const baseSeq = await todayTicketCount(admin, salonId);
+  const ticketCode = await nextWalkinTicketCode(admin, salonId);
   const counts = await liveCounts(admin, salonId, position);
 
   // Insert with retry. Two unique indexes guard concurrency:
@@ -243,7 +229,7 @@ export async function createWalkinTicket(
   //   (payment_intent_id)     → another process already created it → return that ticket
   const { row, recovered } = await insertWalkinEntry(admin, {
     salonId,
-    baseSeq,
+    ticketCode,
     counts,
     fields: {
       customer_id: null,
@@ -302,13 +288,13 @@ export async function createCashWalkinTicket(
   const { salonId, serviceId, customerName = null, customerPhone = null, preferredBarberId = null } = opts;
 
   const position = await nextQueuePosition(admin, salonId);
-  const baseSeq = await todayTicketCount(admin, salonId);
+  const ticketCode = await nextWalkinTicketCode(admin, salonId);
   const counts = await liveCounts(admin, salonId, position);
 
   const trimmedName = customerName?.trim() || null;
   const { row } = await insertWalkinEntry(admin, {
     salonId,
-    baseSeq,
+    ticketCode,
     counts,
     fields: {
       customer_id: null,

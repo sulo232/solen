@@ -12,7 +12,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import { estimateWaitMinutes } from "@/lib/barber/wait-time-calculator";
-import { todayTicketCount } from "@/lib/barber/walkin-ticket";
+import { nextWalkinTicketCode } from "@/lib/barber/walkin-ticket";
 
 export interface JoinQueueParams {
   salonId: string;
@@ -22,7 +22,6 @@ export interface JoinQueueParams {
   serviceId?: string | null;
   preferredBarberId?: string | null;
   joinMethod: string; // 'in_person' | 'remote' | 'kiosk'
-  timezone?: string; // salon tz for the daily ticket-code reset (default Europe/Zurich)
 }
 
 export interface JoinQueueResult {
@@ -52,8 +51,8 @@ export async function joinWalkinQueue(
     .from("staff_members").select("id").eq("salon_id", params.salonId).eq("is_active", true);
   const estimatedWait = estimateWaitMinutes(waitingCount ?? 0, 30, activeStaff?.length || 1);
 
-  // Daily ticket sequence base (resets at the salon's local midnight).
-  const baseSeq = await todayTicketCount(admin, params.salonId, params.timezone);
+  // Pre-issue a unique ticket code from the atomic per-salon counter (no reset, no race, no TZ math).
+  const ticketCode = await nextWalkinTicketCode(admin, params.salonId);
 
   const MAX_TRIES = 6;
   for (let attempt = 0; attempt < MAX_TRIES; attempt++) {
@@ -66,7 +65,6 @@ export async function joinWalkinQueue(
       .limit(1)
       .maybeSingle();
     const position = (lastEntry?.position ?? 0) + 1;
-    const ticketCode = `A${String(baseSeq + 1 + attempt).padStart(2, "0")}`;
     const trackingToken = nanoid(12);
 
     const { data: entry, error } = await admin
@@ -88,7 +86,7 @@ export async function joinWalkinQueue(
       .select()
       .single();
     if (!error && entry) return { entry, trackingToken, position, estimatedWait, ticketCode };
-    // 23505 = position OR ticket_code collision under a concurrent join → recompute + retry.
+    // 23505 = position collision under a concurrent join (ticketCode is pre-issued unique) → retry.
     if ((error as any)?.code === "23505" && attempt < MAX_TRIES - 1) continue;
     console.error("[walkin/join] insert failed:", error?.message ?? "no row returned");
     return null;

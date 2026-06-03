@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import LiveQueuePanel from "@/components-legacy/dashboard/barber/LiveQueuePanel";
 
 export default function QueueDisplayPage() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.queueDisplayPage");
   const [salonId, setSalonId] = useState<string | undefined>();
   const [loading, setLoading] = useState(true);
 
@@ -34,10 +35,10 @@ export default function QueueDisplayPage() {
               href={`/${locale}/dashboard/barber-ops`}
               className="text-xs text-white/30 hover:text-white/60 transition-colors mb-4 inline-block font-heading uppercase tracking-[.08em]"
             >
-              ← Dashboard
+              ← {t("backToDashboard")}
             </Link>
             <h1 className="font-heading text-[28px] sm:text-[56px] leading-tight text-white">
-              Live Queue
+              {t("title")}
             </h1>
             <p className="text-white/35 font-heading uppercase tracking-[.14em] text-sm mt-2">
               {today}
@@ -47,7 +48,7 @@ export default function QueueDisplayPage() {
           <div className="flex items-center gap-2 px-4 py-2 rounded-[12px] border border-white/[0.08] bg-white/[0.04]">
             <div className="w-2 h-2 rounded-full bg-[#16A34A]" />
             <span className="text-xs font-heading text-white/60 uppercase tracking-[.10em]">
-              Live
+              {t("liveBadge")}
             </span>
           </div>
         </div>
@@ -62,7 +63,7 @@ export default function QueueDisplayPage() {
         ) : (
           <div className="text-center py-24">
             <p className="text-white/30 font-heading text-sm uppercase tracking-[.12em]">
-              Kein Salon gefunden
+              {t("noSalonFound")}
             </p>
           </div>
         )}

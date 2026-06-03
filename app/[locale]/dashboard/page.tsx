@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, Calendar, CheckCircle2, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import SetupBanner from "@/components-legacy/dashboard/SetupBanner";
 import ActivityFeed from "@/components-legacy/dashboard/ActivityFeed";
 import {
-  DashPanel, DashStatusPill, DashRow, DashButton, DashLineChart, DashBarChart,
+  DashPanel, DashStatusPill, DashRow, DashLineChart, DashBarChart,
 } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import { cn } from "@/lib/utils";
 import type { Booking } from "@/lib/types";
@@ -43,6 +44,25 @@ function Delta({ v }: { v?: number }) {
   );
 }
 
+// Mobile-only stat tile (2×2 grid replaces the cramped desktop charts on small screens).
+// Same data, glanceable. Delta sits below the value rather than inline.
+function StatTile({ label, children, delta }: { label: string; children: React.ReactNode; delta?: number }) {
+  const up = (delta ?? 0) > 0, flat = delta === 0;
+  return (
+    <div className="rounded-card-lg border border-s-border bg-white p-3.5">
+      <p className="text-[11.5px] font-semibold text-s-ink-2 mb-2">{label}</p>
+      <div className="text-[22px] font-semibold tracking-[-0.02em] leading-none text-s-ink flex items-baseline">{children}</div>
+      {delta !== undefined && (
+        <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold mt-2", up ? "text-s-success" : flat ? "text-s-ink-3" : "text-s-error")}>
+          {up && <ArrowUpRight size={12} strokeWidth={2.4} />}
+          {!up && !flat && <ArrowDownRight size={12} strokeWidth={2.4} />}
+          {Math.abs(delta)}%
+        </span>
+      )}
+    </div>
+  );
+}
+
 function statusPill(status: string) {
   switch (status) {
     case "confirmed": return <DashStatusPill tone="success">Bestätigt</DashStatusPill>;
@@ -55,6 +75,12 @@ const initials = (name: string) => {
   const p = name.trim().split(/\s+/);
   return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toUpperCase() || "—";
 };
+// Deterministic avatar gradient (consistent colour per person) — approved mobile skin.
+const AV_GRADS = [
+  "from-[#276EF1] to-[#1B4DCB]", "from-[#F0A868] to-[#C0524A]",
+  "from-[#16A34A] to-[#0E7A37]", "from-[#8B5CF6] to-[#6D28D9]", "from-[#EC4899] to-[#BE185D]",
+];
+const avGrad = (s: string) => AV_GRADS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_GRADS.length];
 const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
 const fmtChf = (n: number) => n.toLocaleString("de-CH");
 
@@ -87,7 +113,7 @@ export default function DashboardPage() {
         setSalonCategories(profile?.salon_categories);
         const sid = profile?.salon_id;
         setSalonId(sid);
-        const todayBookings = fetch(`/api/bookings?date=${today}&limit=20`).then((r) => r.json());
+        const todayBookings = sid ? fetch(`/api/bookings?salon_id=${sid}&date=${today}&limit=20`).then((r) => r.json()) : Promise.resolve(null);
         const analytics = sid ? fetch(`/api/analytics/salon/${sid}?period=week`).then((r) => r.json()) : Promise.resolve(null);
         const convos = sid ? fetch(`/api/conversations?salon_id=${sid}&unread=true`).then((r) => r.json()) : Promise.resolve(null);
         const staffStats = sid ? fetch(`/api/analytics/staff-comparison?salon_id=${sid}&period=month`).then((r) => r.json()) : Promise.resolve(null);
@@ -132,7 +158,12 @@ export default function DashboardPage() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-2">{today}</p>
           <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink leading-none">Übersicht</h1>
         </div>
-        <DashButton icon={Plus} href={`/${locale}/dashboard/calendar`}>Termin erstellen</DashButton>
+        <Link
+          href={`/${locale}/dashboard/calendar`}
+          className="inline-flex items-center gap-2 shrink-0 whitespace-nowrap rounded-full bg-s-ink px-[18px] py-2.5 text-[15px] font-medium tracking-[-0.005em] text-white transition-colors hover:bg-black"
+        >
+          <Plus size={17} strokeWidth={2} />Termin erstellen
+        </Link>
       </div>
 
       {loading ? (
@@ -141,8 +172,39 @@ export default function DashboardPage() {
         </div>
       ) : (
         <div className="space-y-3.5">
-          {/* Row 1 — charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
+          {/* Mobile stat tiles — same data as the desktop charts, glanceable on small screens */}
+          <div className="grid grid-cols-2 gap-2.5 lg:hidden">
+            <StatTile label="Umsatz" delta={prior?.revenue}>
+              <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
+            </StatTile>
+            <StatTile label="Termine" delta={prior?.bookings}>{stats?.total_bookings ?? 0}</StatTile>
+            <StatTile label="Neue Kund:innen" delta={prior?.new_customers}>{stats?.new_customers ?? 0}</StatTile>
+            <StatTile label="Bewertung" delta={(stats?.avg_rating ?? 0) > 0 ? prior?.rating : undefined}>
+              {(stats?.avg_rating ?? 0) > 0 ? (stats?.avg_rating ?? 0).toFixed(1) : "—"}
+              <span className="text-s-star text-[17px] ml-0.5 leading-none">★</span>
+            </StatTile>
+          </div>
+
+          {/* Mobile revenue mini-chart — reuses DashBarChart on the same stats.daily series (desktop keeps its own charts below) */}
+          <div className="rounded-[16px] border border-s-border bg-white px-4 py-[15px] lg:hidden">
+            <div className="flex items-end justify-between mb-3">
+              <div>
+                <p className="text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">Umsatz</p>
+                <p className="text-[11px] text-s-ink-3 mt-0.5">Letzte 7 Tage</p>
+              </div>
+              <p className="text-[20px] font-semibold tabular-nums tracking-[-0.02em] leading-none text-s-ink">
+                <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
+              </p>
+            </div>
+            <DashBarChart height={90} data={daily.map((d) => ({ primary: d.revenue }))} primaryClassName="fill-s-accent-bright" />
+            <div className="flex gap-3.5 mt-3">
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-s-ink-2"><span className="w-[9px] h-[9px] rounded-[3px] bg-s-accent-bright" />Umsatz</span>
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-s-ink-2"><span className="w-[9px] h-[9px] rounded-[3px] bg-s-accent-pale" />Vorwoche</span>
+            </div>
+          </div>
+
+          {/* Row 1 — charts (desktop only; mobile uses the tiles above) */}
+          <div className="hidden lg:grid lg:grid-cols-2 gap-3.5">
             <div className="rounded-card-lg border border-s-border bg-white p-5">
               <div className="flex items-center justify-between mb-1">
                 <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-s-ink">Umsatz</h2>
@@ -182,10 +244,10 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Row 2 — activity + today */}
+          {/* Row 2 — activity (desktop only) + today */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
             {salonId && (
-              <DashPanel title="Aktivität"><div className="p-4"><ActivityFeed salonId={salonId} /></div></DashPanel>
+              <div className="hidden lg:block"><DashPanel title="Aktivität"><div className="p-4"><ActivityFeed salonId={salonId} /></div></DashPanel></div>
             )}
             <DashPanel title="Heute" actionLabel="Alle ansehen" actionHref={`/${locale}/dashboard/bookings`}>
               {bookings.length === 0 ? (
@@ -198,7 +260,7 @@ export default function DashboardPage() {
                   {bookings.slice(0, 6).map((b) => (
                     <DashRow key={b.id} href={`/${locale}/dashboard/bookings`}>
                       <span className="text-[14px] font-semibold tracking-[-0.01em] text-s-ink w-[52px] shrink-0">{fmtTime(b.starts_at)}</span>
-                      <span className="grid place-items-center w-[30px] h-[30px] rounded-full bg-s-ink text-white text-[12px] font-semibold shrink-0">{initials(b.customer_name)}</span>
+                      <span className={`grid place-items-center w-[30px] h-[30px] rounded-full bg-gradient-to-br ${avGrad(b.customer_name)} text-white text-[12px] font-semibold shrink-0`}>{initials(b.customer_name)}</span>
                       <span className="flex-1 min-w-0">
                         <span className="block text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{b.customer_name}</span>
                         <span className="block text-[13px] text-s-ink-2 truncate">{b.service_name}</span>
@@ -211,9 +273,16 @@ export default function DashboardPage() {
             </DashPanel>
           </div>
 
+          {/* Mobile activity feed — same component as the desktop one above (which is hidden lg:block) */}
+          {salonId && (
+            <div className="lg:hidden">
+              <DashPanel title="Aktivität"><div className="p-4"><ActivityFeed salonId={salonId} /></div></DashPanel>
+            </div>
+          )}
+
           {/* Row 3 — top services + top team */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
-            <DashPanel title="Top Services">
+            <DashPanel title="Top Services" actionLabel="Alle ansehen" actionHref={`/${locale}/dashboard/services`}>
               {(stats?.popular_services?.length ?? 0) === 0 ? (
                 <div className="px-5 py-10 text-center text-[14px] text-s-ink-2">Noch keine Daten</div>
               ) : (
@@ -228,14 +297,14 @@ export default function DashboardPage() {
                 </div>
               )}
             </DashPanel>
-            <DashPanel title="Top Mitarbeiter">
+            <DashPanel title="Top Mitarbeiter" actionLabel="Alle ansehen" actionHref={`/${locale}/dashboard/staff`}>
               {staff.length === 0 ? (
                 <div className="px-5 py-10 text-center text-[14px] text-s-ink-2">Noch keine Daten</div>
               ) : (
                 <div>
                   {staff.slice(0, 5).map((m) => (
                     <DashRow key={m.id}>
-                      <span className="grid place-items-center w-[30px] h-[30px] rounded-full bg-s-ink text-white text-[12px] font-semibold shrink-0">{initials(m.name)}</span>
+                      <span className={`grid place-items-center w-[30px] h-[30px] rounded-full bg-gradient-to-br ${avGrad(m.name)} text-white text-[12px] font-semibold shrink-0`}>{initials(m.name)}</span>
                       <span className="flex-1 text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{m.name}</span>
                       {m.revenue !== undefined && <span className="text-[13px] font-semibold text-s-ink">CHF {fmtChf(Math.round(m.revenue))}</span>}
                       {m.bookings !== undefined && <span className="text-[13px] text-s-ink-2 w-14 text-right">{m.bookings} Term.</span>}

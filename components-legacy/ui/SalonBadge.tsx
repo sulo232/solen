@@ -24,6 +24,7 @@ interface SalonBadgeProps {
     | "created_at"
     | "walk_in_available"
     | "categories"
+    | "is_top_pick"
   >;
   availabilityStatus?: "available" | "unavailable" | "unknown";
 }
@@ -40,8 +41,8 @@ export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProp
   const MS_48H = 48 * 60 * 60 * 1000;
   const MS_30D = 30 * 24 * 60 * 60 * 1000;
 
-  // 1. ★ Top — coral (brand signal)
-  if (salon.average_rating >= 4.5 && salon.review_count >= 10) {
+  // 1. ★ Top — owner/admin-curated is_top_pick OR earned by rating (≥4.5 with ≥10 reviews)
+  if (salon.is_top_pick || (salon.average_rating >= 4.5 && salon.review_count >= 10)) {
     return (
       <span
         className={`${BASE_CLASSES} text-white`}

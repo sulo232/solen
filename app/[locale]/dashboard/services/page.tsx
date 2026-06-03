@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Image from "next/image";
-import { useLocale } from "next-intl";
-import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Camera, Check, Clock, Upload, GripVertical, FileUp } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Camera, Check, Clock, Upload, GripVertical, FileUp, ChevronDown, Search } from "lucide-react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
@@ -16,26 +16,28 @@ const CATEGORY_LABELS: Record<SalonCategory, string> = {
   coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nails",
   spa: "Spa / Massage", makeup: "Make-up", waxing: "Waxing",
 };
-const AGE_OPTIONS: { value: AgeGroup; label: string }[] = [
-  { value: "child", label: "Kinder" }, { value: "teenager", label: "Teenager" },
-  { value: "adult", label: "Erwachsene" }, { value: "senior", label: "Senioren" },
+const AGE_OPTIONS: { value: AgeGroup }[] = [
+  { value: "child" }, { value: "teenager" },
+  { value: "adult" }, { value: "senior" },
 ];
-const GENDER_OPTIONS: { value: Gender; label: string }[] = [
-  { value: "male", label: "Männlich" }, { value: "female", label: "Weiblich" },
-  { value: "non_binary", label: "Non-binary" },
+const GENDER_OPTIONS: { value: Gender }[] = [
+  { value: "male" }, { value: "female" },
+  { value: "non_binary" },
 ];
 
 // ─────────────────────────────────────────
 // Service Modal
 // ─────────────────────────────────────────
 
-function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
+function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onDelete }: {
   initial?: Service;
   salonId: string;
   salonCategories: SalonCategory[];
   onClose: () => void;
   onSaved: () => void;
+  onDelete?: (s: Service) => void;
 }) {
+  const t = useTranslations('dashboard.services');
   const [form, setForm] = useState({
     name_de: initial?.name_de ?? "",
     name_en: initial?.name_en ?? "",
@@ -50,7 +52,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
     suitable_gender: initial?.suitable_gender ?? [] as Gender[],
     is_active: initial?.is_active ?? true,
   });
-  const [photos, setPhotos] = useState<string[]>((initial as unknown as Record<string, string[]>)?.photos ?? []);
+  const [photos, setPhotos] = useState<string[]>((initial as unknown as Record<string, string[]>)?.photo_urls ?? []);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -83,72 +85,72 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading text-base">{initial ? "Service bearbeiten" : "Service hinzufügen"}</h3>
+          <h3 className="font-heading text-base">{initial ? t('editService') : t('addService')}</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-5">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">Name DE *</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('nameDeLabel')}</label>
               <input value={form.name_de} onChange={(e) => setForm({ ...form, name_de: e.target.value })}
-                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">Name EN</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('nameEnLabel')}</label>
               <input value={form.name_en} onChange={(e) => setForm({ ...form, name_en: e.target.value })}
-                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">Kategorie</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('categoryLabel')}</label>
               <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as SalonCategory })}
-                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-coral">
+                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-accent-bright">
                 {salonCategories.map((c) => <option key={c} value={c}>{CATEGORY_LABELS[c]}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">Dauer (Min)</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('durationLabel')}</label>
               <input type="number" min={15} step={15} value={form.duration_minutes}
                 onChange={(e) => setForm({ ...form, duration_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">Preis CHF</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('priceLabel')}</label>
               <input type="number" min={0} value={form.price}
                 onChange={(e) => setForm({ ...form, price: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">Beschreibung</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('descriptionLabel')}</label>
             <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
-              rows={2} className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none" />
+              rows={2} className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright resize-none" />
           </div>
           {/* Time breakdown fields */}
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">Aufbauzeit (Min)</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('bufferLabel')}</label>
               <input type="number" min={0} step={5} value={form.buffer_minutes}
                 onChange={(e) => setForm({ ...form, buffer_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">Einwirkzeit (Min)</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('processingLabel')}</label>
               <input type="number" min={0} step={5} value={form.processing_minutes}
                 onChange={(e) => setForm({ ...form, processing_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">Nachbereitung (Min)</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('finishingLabel')}</label>
               <input type="number" min={0} step={5} value={form.finishing_minutes}
                 onChange={(e) => setForm({ ...form, finishing_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
             </div>
           </div>
           {/* Service photos */}
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 mb-1">Fotos (max. 3)</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('photosLabel')}</label>
             <div className="flex gap-2">
               {photos.map((url, i) => (
                 <div key={i} className="relative w-16 h-16 rounded-btn overflow-hidden border border-s-ink/10">
@@ -160,7 +162,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
                 </div>
               ))}
               {photos.length < 3 && (
-                <label className="w-16 h-16 rounded-btn border-2 border-dashed border-s-ink/10 flex items-center justify-center cursor-pointer hover:border-s-coral/40 transition-colors">
+                <label className="w-16 h-16 rounded-btn border-2 border-dashed border-s-ink/10 flex items-center justify-center cursor-pointer hover:border-s-accent-bright/40 transition-colors">
                   {uploading ? <Spinner size="sm" /> : <Camera size={16} className="text-s-ink/30" />}
                   <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
                     const file = e.target.files?.[0];
@@ -181,44 +183,52 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
               )}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">Geeignet für</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('suitableForLabel')}</label>
               <div className="flex flex-wrap gap-1">
                 {AGE_OPTIONS.map((a) => (
                   <button key={a.value} type="button" onClick={() => toggle("suitable_for", a.value)}
-                    className={["px-2 py-0.5 rounded-pill text-xs border transition-colors",
-                      form.suitable_for.includes(a.value) ? "bg-s-coral text-white border-s-coral" : "border-s-ink/10 text-s-ink/50"].join(" ")}>
-                    {a.label}
+                    className={["inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium border transition-colors",
+                      form.suitable_for.includes(a.value) ? "bg-s-accent-bright/10 text-s-accent-bright border-s-accent-bright/10" : "border-s-border text-s-ink-2"].join(" ")}>
+                    {form.suitable_for.includes(a.value) && <Check size={13} strokeWidth={2.6} />}
+                    {t(`age_${a.value}`)}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-s-ink/50 mb-1">Geschlecht</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">{t('genderLabel')}</label>
               <div className="flex flex-wrap gap-1">
                 {GENDER_OPTIONS.map((g) => (
                   <button key={g.value} type="button" onClick={() => toggle("suitable_gender", g.value)}
-                    className={["px-2 py-0.5 rounded-pill text-xs border transition-colors",
-                      form.suitable_gender.includes(g.value) ? "bg-s-coral text-white border-s-coral" : "border-s-ink/10 text-s-ink/50"].join(" ")}>
-                    {g.label}
+                    className={["inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium border transition-colors",
+                      form.suitable_gender.includes(g.value) ? "bg-s-accent-bright/10 text-s-accent-bright border-s-accent-bright/10" : "border-s-border text-s-ink-2"].join(" ")}>
+                    {form.suitable_gender.includes(g.value) && <Check size={13} strokeWidth={2.6} />}
+                    {t(`gender_${g.value}`)}
                   </button>
                 ))}
               </div>
             </div>
           </div>
           <label className="flex items-center gap-3 cursor-pointer">
-            <button type="button" onClick={() => setForm({ ...form, is_active: !form.is_active })} className={form.is_active ? "text-s-coral" : "text-s-ink/30"}>
+            <button type="button" onClick={() => setForm({ ...form, is_active: !form.is_active })} className={form.is_active ? "text-s-accent-bright" : "text-s-ink/30"}>
               {form.is_active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
             </button>
-            <span className="text-sm text-s-ink/60">Aktiv</span>
+            <span className="text-sm text-s-ink/60">{t('active')}</span>
           </label>
         </div>
-        <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
+        <div className="flex gap-2 items-center">
+          {initial && onDelete && (
+            <button type="button" onClick={() => { onClose(); onDelete(initial); }} aria-label={t('delete')}
+              className="text-s-ink-2 hover:text-s-error transition-colors grid place-items-center px-1.5 py-2.5">
+              <Trash2 size={18} />
+            </button>
+          )}
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">{t('cancel')}</button>
           <button onClick={handleSave} disabled={!form.name_de || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
-            {loading && <Spinner size="sm" invert />}Speichern
+            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            {loading && <Spinner size="sm" invert />}{t('save')}
           </button>
         </div>
       </div>
@@ -237,6 +247,7 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
   onAdded: () => void;
   locale: string;
 }) {
+  const t = useTranslations('dashboard.services');
   const [collapsed, setCollapsed] = useState(true);
   const [adding, setAdding] = useState<string | null>(null);
 
@@ -272,9 +283,10 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
     <div className="mb-6">
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="text-xs font-medium text-s-ink/50 hover:text-s-coral transition-colors mb-2"
+        className="w-full border border-s-border rounded-[14px] px-3.5 py-3 text-[13px] text-s-ink-2 font-medium flex items-center justify-between mb-3.5"
       >
-        {collapsed ? "Vorlagen anzeigen +" : "Vorlagen ausblenden −"}
+        <span>{collapsed ? t('showTemplates') : t('hideTemplates')}</span>
+        <ChevronDown size={16} className={`transition-transform ${collapsed ? "" : "rotate-180"}`} />
       </button>
       {!collapsed && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -323,6 +335,7 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
 // ─────────────────────────────────────────
 
 export default function ServicesPage() {
+  const t = useTranslations('dashboard.services');
   const locale = useLocale();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
@@ -333,6 +346,33 @@ export default function ServicesPage() {
   const [deleteTarget, setDeleteTarget] = useState<Service | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<SalonCategory | "all" | "inactive">("all");
+
+  // Distinct categories present in the services, in first-seen order (for the filter pill row).
+  const presentCategories = useMemo(() => {
+    const seen: SalonCategory[] = [];
+    for (const s of services) if (!seen.includes(s.category)) seen.push(s.category);
+    return seen;
+  }, [services]);
+
+  // Render-time filter over the already-fetched services (search + category/Inaktiv pill).
+  const visibleServices = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return services.filter((s) => {
+      const matchesFilter =
+        categoryFilter === "all" ? true :
+        categoryFilter === "inactive" ? s.is_active === false :
+        s.category === categoryFilter;
+      const matchesQuery =
+        !q ||
+        s.name_de?.toLowerCase().includes(q) ||
+        s.name_en?.toLowerCase().includes(q);
+      return matchesFilter && matchesQuery;
+    });
+  }, [services, query, categoryFilter]);
+
+  const isFiltered = categoryFilter !== "all" || query.trim() !== "";
 
   const loadServices = () => {
     fetch("/api/profile").then((r) => r.json()).then((p) => {
@@ -381,34 +421,34 @@ export default function ServicesPage() {
     <DashboardLayout>
       {(addOpen || editTarget) && salonId && (
         <ServiceModal initial={editTarget ?? undefined} salonId={salonId} salonCategories={salonCategories}
-          onClose={() => { setAddOpen(false); setEditTarget(null); }} onSaved={loadServices} />
+          onClose={() => { setAddOpen(false); setEditTarget(null); }} onSaved={loadServices} onDelete={(s) => setDeleteTarget(s)} />
       )}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
           <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
-            <h3 className="font-heading text-base mb-3">Service löschen</h3>
-            <p className="text-sm text-s-ink/60 mb-4">Möchtest du <strong>{deleteTarget.name_de}</strong> löschen?</p>
+            <h3 className="font-heading text-base mb-3">{t('deleteService')}</h3>
+            <p className="text-sm text-s-ink/60 mb-4">{t.rich('deleteConfirm', { name: deleteTarget.name_de, b: (chunks) => <strong>{chunks}</strong> })}</p>
             <div className="flex gap-2">
-              <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
+              <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">{t('cancel')}</button>
               <button onClick={handleDelete} disabled={deleteLoading}
                 className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
-                {deleteLoading && <Spinner size="sm" invert />}Löschen
+                {deleteLoading && <Spinner size="sm" invert />}{t('delete')}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-heading text-2xl text-s-ink">Services</h1>
+      <div className="mb-6 flex items-center justify-between gap-2">
+        <h1 className="font-heading text-[26px] font-bold tracking-[-0.02em] text-s-ink leading-none">{t('title')}</h1>
         <div className="flex items-center gap-2">
           <button onClick={() => setImportOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/50 text-sm font-medium hover:border-s-coral hover:text-s-coral transition-colors">
-            <FileUp size={14} /> CSV Import
+            className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-[12px] border border-s-border text-s-ink-2 text-[13px] font-medium hover:border-s-ink transition-colors">
+            <FileUp size={14} /> {t('csvImport')}
           </button>
           <button onClick={() => setAddOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-coral text-white text-sm font-medium">
-            <Plus size={14} /> Hinzufügen
+            className="inline-flex items-center gap-1.5 bg-s-ink text-white font-heading font-semibold text-[13px] rounded-[12px] px-3.5 py-2.5">
+            <Plus size={15} strokeWidth={2.4} /> {t('add')}
           </button>
         </div>
       </div>
@@ -424,62 +464,94 @@ export default function ServicesPage() {
         />
       )}
 
+      {/* Search + filter pills (mobile parity — render-time filter over fetched services) */}
+      {services.length > 0 && (
+        <>
+          <div className="flex items-center gap-2 border border-s-border rounded-[14px] px-3.5 py-2.5 text-s-ink-3 mb-3.5">
+            <Search size={17} className="shrink-0" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t('searchPlaceholder')}
+              className="flex-1 min-w-0 bg-transparent text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none"
+            />
+          </div>
+          <div className="flex gap-2 mb-4 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-1">
+            {([
+              { key: "all", label: t('filterAll') } as const,
+              ...presentCategories.map((c) => ({ key: c, label: CATEGORY_LABELS[c] }) as const),
+              { key: "inactive", label: t('filterInactive') } as const,
+            ]).map((p) => {
+              const active = categoryFilter === p.key;
+              return (
+                <button
+                  key={p.key}
+                  onClick={() => setCategoryFilter(p.key)}
+                  className={[
+                    "shrink-0 px-3.5 py-2 rounded-full text-[12.5px] font-semibold whitespace-nowrap transition-colors border",
+                    active
+                      ? "bg-s-accent-bright/10 text-s-accent-bright border-transparent"
+                      : "bg-white border-s-border text-s-ink-2",
+                  ].join(" ")}
+                >
+                  {p.label}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+
       {loading ? (
         <div className="flex justify-center py-12"><Spinner size="lg" /></div>
       ) : services.length === 0 ? (
-        <div className="text-center py-12 text-s-ink/30"><p className="text-sm">Noch keine Services</p></div>
+        <div className="text-center py-12 text-s-ink/30"><p className="text-sm">{t('emptyNone')}</p></div>
+      ) : visibleServices.length === 0 ? (
+        <div className="text-center py-12 text-s-ink-3"><p className="text-sm">{t('emptyFiltered')}</p></div>
       ) : (
         <DragDropContext onDragEnd={onDragEnd}>
-        <div className="bg-white rounded-[12px] border border-s-ink/5 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-s-bg-surface border-b border-s-ink/5">
-              <tr>
-                {["", "Name", "Kategorie", "Dauer", "Preis", "Aktiv", ""].map((h) => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-medium text-s-ink/40">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <Droppable droppableId="services-list">
-              {(provided) => (
-              <tbody ref={provided.innerRef} {...provided.droppableProps} className="divide-y divide-s-border">
-                {services.map((s, index) => (
-                  <Draggable key={s.id} draggableId={s.id} index={index}>
-                    {(provided, snapshot) => (
-                    <tr ref={provided.innerRef} {...provided.draggableProps}
-                      className={`transition-colors ${snapshot.isDragging ? "bg-s-coral/5 shadow-warm-md" : "hover:bg-s-bg-surface"}`}>
-                      <td className="px-2 py-3 w-8">
-                        <span {...provided.dragHandleProps} className="cursor-grab active:cursor-grabbing text-s-ink/20 hover:text-s-ink/50 transition-colors">
-                          <GripVertical size={16} />
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <p className="font-medium text-s-ink">{s.name_de}</p>
-                        {s.name_en && <p className="text-xs text-s-ink/30">{s.name_en}</p>}
-                      </td>
-                      <td className="px-4 py-3 text-s-ink/60">{CATEGORY_LABELS[s.category]}</td>
-                      <td className="px-4 py-3 data-text text-s-ink/60">{s.duration_minutes} min</td>
-                      <td className="px-4 py-3 data-text text-s-ink">{formatCurrency(Number(s.price), locale)}</td>
-                      <td className="px-4 py-3">
-                        <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-coral" : "text-s-ink/20"}>
-                          {s.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
-                        </button>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-1">
-                          <button onClick={() => setEditTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors"><Pencil size={14} /></button>
-                          <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors"><Trash2 size={14} /></button>
-                        </div>
-                      </td>
-                    </tr>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </tbody>
-              )}
-            </Droppable>
-          </table>
-        </div>
+        <Droppable droppableId="services-list">
+          {(provided) => (
+          <div ref={provided.innerRef} {...provided.droppableProps}
+            className="rounded-[16px] border border-s-border bg-white overflow-hidden">
+            {visibleServices.map((s, index) => (
+              <Draggable key={s.id} draggableId={s.id} index={index} isDragDisabled={isFiltered}>
+                {(provided, snapshot) => (
+                <div ref={provided.innerRef} {...provided.draggableProps}
+                  className={`border-b border-s-border last:border-b-0 flex items-center gap-3 px-3.5 py-3 transition-colors ${snapshot.isDragging ? "bg-s-bg-sunken shadow-warm-md" : ""}`}>
+                  <span {...provided.dragHandleProps}
+                    className="cursor-grab active:cursor-grabbing text-s-ink-3 hover:text-s-ink-2 transition-colors shrink-0"
+                    aria-label={t('dragHandle')}>
+                    <GripVertical size={20} />
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-heading font-semibold text-[14.5px] text-s-ink truncate">{s.name_de}</p>
+                    {s.name_en && <p className="text-[12px] text-s-ink-3 truncate">{s.name_en}</p>}
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <span className="text-[10.5px] font-semibold rounded-md px-2 py-0.5 bg-s-bg-sunken text-s-ink-2">{CATEGORY_LABELS[s.category]}</span>
+                      <span className="text-[12.5px] text-s-ink-2">{s.duration_minutes} {t('minutesUnit')} · <b className="font-heading font-semibold text-s-ink">{formatCurrency(Number(s.price), locale)}</b></span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => toggleActive(s.id, s.is_active)}
+                    role="switch"
+                    aria-checked={s.is_active}
+                    aria-label={t('active')}
+                    className={`relative w-[38px] h-[23px] rounded-full shrink-0 transition-colors ${s.is_active ? "bg-s-accent-bright" : "bg-s-border"}`}>
+                    <span className={`absolute top-[2.5px] w-[18px] h-[18px] rounded-full bg-white shadow-warm-sm transition-[left] ${s.is_active ? "left-[17px]" : "left-[2.5px]"}`} />
+                  </button>
+                  <button onClick={() => setEditTarget(s)} aria-label={t('edit')} className="text-s-ink shrink-0 grid place-items-center">
+                    <Pencil size={19} />
+                  </button>
+                </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </div>
+          )}
+        </Droppable>
         </DragDropContext>
       )}
 
@@ -488,11 +560,11 @@ export default function ServicesPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
           <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6">
             <div className="flex items-start justify-between mb-4">
-              <h3 className="font-heading text-base">CSV Import</h3>
+              <h3 className="font-heading text-base">{t('csvImport')}</h3>
               <button onClick={() => setImportOpen(false)}><X size={18} className="text-s-ink/30" /></button>
             </div>
             <p className="text-sm text-s-ink/60 mb-4">
-              Lade eine CSV-Datei hoch (Treatwell, Fresha, oder eigenes Format). Die Spalten müssen mindestens &quot;Name&quot; (oder &quot;Behandlung&quot;) enthalten. Optional: &quot;Preis&quot;, &quot;Dauer&quot;, &quot;Kategorie&quot;.
+              {t('csvImportHelp')}
             </p>
             <form onSubmit={async (e) => {
               e.preventDefault();
@@ -509,14 +581,14 @@ export default function ServicesPage() {
                 setImportOpen(false);
                 loadServices();
               } else {
-                alert(data.error || 'Import fehlgeschlagen');
+                alert(data.error || t('importFailed'));
               }
             }}>
               <input type="file" accept=".csv,.txt" required
                 className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm mb-4 file:mr-3 file:px-3 file:py-1 file:rounded-btn file:border-0 file:bg-s-coral/10 file:text-s-coral file:font-medium file:text-xs file:cursor-pointer" />
               <button type="submit"
                 className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center justify-center gap-2">
-                <Upload size={14} /> Importieren
+                <Upload size={14} /> {t('importButton')}
               </button>
             </form>
           </div>

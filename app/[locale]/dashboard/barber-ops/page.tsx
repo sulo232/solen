@@ -61,10 +61,10 @@ export default function BarberOpsPage() {
             key={id}
             onClick={() => setActiveTab(id)}
             aria-label={t(labelKey)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading whitespace-nowrap transition-colors duration-150 shrink-0 ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading whitespace-nowrap transition-colors duration-150 shrink-0 border ${
               activeTab === id
-                ? "bg-s-coral text-white shadow-elevation-2"
-                : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
+                ? "bg-s-accent-bright/10 text-s-accent-bright border-transparent"
+                : "bg-white border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"
             }`}
           >
             <Icon size={12} />
@@ -75,8 +75,8 @@ export default function BarberOpsPage() {
 
       {loading ? (
         <div className="space-y-4 animate-pulse">
-          <div className="h-64 bg-s-ink/[0.04] rounded-[12px]" />
-          <div className="h-64 bg-s-ink/[0.04] rounded-[12px]" />
+          <div className="h-64 bg-s-bg-sunken rounded-[16px]" />
+          <div className="h-64 bg-s-bg-sunken rounded-[16px]" />
         </div>
       ) : !salonId ? null : (
         <>
@@ -103,8 +103,8 @@ export default function BarberOpsPage() {
           {activeTab === "blueprints" && (
             <div className="space-y-4">
               {/* Client selector — required to save/load blueprints */}
-              <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4">
-                <p className="text-[10px] font-heading uppercase tracking-[.15em] text-s-ink/40 mb-2">
+              <div className="bg-white rounded-[16px] border border-s-border p-4">
+                <p className="text-[10px] font-heading uppercase tracking-[.15em] text-s-ink-3 mb-2">
                   {t("selectClient")}
                 </p>
                 <ClientSelectorDropdown

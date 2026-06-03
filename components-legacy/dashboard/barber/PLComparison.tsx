@@ -58,16 +58,16 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
   const formatCHF = (v: number) => `CHF ${(v / 100).toFixed(0)}`;
 
   return (
-    <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-4">
+    <div className="bg-white rounded-[16px] border border-s-border p-4">
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-7 h-7 rounded-[8px] bg-s-sage/10 flex items-center justify-center">
-          <DollarSign size={13} className="text-s-sage" />
+        <div className="w-7 h-7 rounded-[8px] bg-s-success-bg flex items-center justify-center">
+          <DollarSign size={13} className="text-s-success" />
         </div>
         <div>
           <p className="text-sm font-heading text-s-ink">
             {t("plTitle")}
           </p>
-          <p className="text-[10px] text-s-ink/35">
+          <p className="text-[10px] text-s-ink-2">
             {t("plSubtitle")}
           </p>
         </div>
@@ -75,36 +75,36 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
 
       {loading ? (
         <div className="space-y-3 animate-pulse">
-          <div className="h-16 bg-s-ink/[0.04] rounded-[8px]" />
-          <div className="h-[160px] bg-s-ink/[0.04] rounded-[8px]" />
+          <div className="h-16 bg-s-bg-sunken rounded-[8px]" />
+          <div className="h-[160px] bg-s-bg-sunken rounded-[8px]" />
         </div>
       ) : !stats ? (
-        <p className="text-sm text-s-ink/40 text-center py-6">
+        <p className="text-sm text-s-ink-3 text-center py-6">
           {t("noData")}
         </p>
       ) : (
         <>
           {/* KPI row */}
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="bg-s-coral/[0.05] rounded-[8px] p-3">
-              <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-coral mb-0.5">
+            <div className="bg-s-bg-sunken rounded-[8px] p-3">
+              <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-ink-2 mb-0.5">
                 {t("appointments")}
               </p>
               <p className="text-xl font-heading text-s-ink data-text">
                 {formatCHF(stats.appointment_revenue)}
               </p>
-              <p className="text-[10px] text-s-ink/45">
+              <p className="text-[10px] text-s-ink-2">
                 {stats.appointment_count} × {formatCHF(stats.appointment_avg)} ⌀ · {apptShare}%
               </p>
             </div>
-            <div className="bg-s-amber/[0.05] rounded-[8px] p-3">
-              <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-amber mb-0.5">
+            <div className="bg-s-warning-bg rounded-[8px] p-3">
+              <p className="text-[9px] font-heading uppercase tracking-[.15em] text-s-warning-text mb-0.5">
                 {t("walkIns")}
               </p>
               <p className="text-xl font-heading text-s-ink data-text">
                 {formatCHF(stats.walkin_revenue)}
               </p>
-              <p className="text-[10px] text-s-ink/45">
+              <p className="text-[10px] text-s-ink-2">
                 {stats.walkin_count} × {formatCHF(stats.walkin_avg)} ⌀ · {walkinShare}%
               </p>
             </div>
@@ -113,11 +113,11 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
           {/* Share bar */}
           <div className="flex rounded-full overflow-hidden h-2 mb-4">
             <div
-              className="bg-s-coral transition-[width] duration-[250ms]"
+              className="bg-s-ink transition-[width] duration-[250ms]"
               style={{ width: `${apptShare}%` }}
             />
             <div
-              className="bg-s-amber transition-[width] duration-[250ms]"
+              className="bg-s-warning transition-[width] duration-[250ms]"
               style={{ width: `${walkinShare}%` }}
             />
           </div>
@@ -134,8 +134,9 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
                   contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid rgba(26,18,9,0.08)" }}
                 />
                 <Legend iconSize={8} wrapperStyle={{ fontSize: 10 }} formatter={(name) => name === "appointments" ? t("appointments") : t("walkIns")} />
-                <Bar dataKey="appointments" stackId="a" fill="#1B4D1B" radius={[0, 0, 0, 0]} maxBarSize={24} />
-                <Bar dataKey="walkins" stackId="a" fill="#F3A864" radius={[4, 4, 0, 0]} maxBarSize={24} />
+                {/* recharts needs literal colors — appointments=s-ink #0A0A0A, walkins=s-warning #F1AE27 (LOCKFILE §1) */}
+                <Bar dataKey="appointments" stackId="a" fill="#0A0A0A" radius={[0, 0, 0, 0]} maxBarSize={24} />
+                <Bar dataKey="walkins" stackId="a" fill="#F1AE27" radius={[4, 4, 0, 0]} maxBarSize={24} />
               </BarChart>
             </ResponsiveContainer>
           )}

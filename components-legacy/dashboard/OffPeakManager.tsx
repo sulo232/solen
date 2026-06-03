@@ -2,10 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Trash2, Plus, Clock } from "lucide-react";
+import { Plus } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
-
-const HOURS = Array.from({ length: 15 }, (_, i) => i + 7);
 
 type OffPeakRule = {
   id: string;
@@ -15,21 +13,27 @@ type OffPeakRule = {
   discount_percent: number;
 };
 
-function timeToHour(t: string) {
-  return parseInt(t.slice(0, 2), 10);
+// Compact time label: "10:00" → "10", "10:30" → "10:30" (drop only a zero-minute suffix).
+function fmtTime(t: string) {
+  const hhmm = t.slice(0, 5);
+  return hhmm.endsWith(":00") ? hhmm.slice(0, 2) : hhmm;
 }
 
 export default function OffPeakManager({ salonId }: { salonId: string }) {
   const t = useTranslations("dashboard.offPeak") as any;
   const tSchedule = useTranslations("dashboard.schedule");
 
+  // DAYS[di] where di is the JS day index (0 = Sunday … 6 = Saturday).
   const DAYS = (["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const).map(
     (d) => tSchedule(d).slice(0, 2)
   );
+  // Monday-first display order (European).
+  const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
 
   const [rules, setRules] = useState<OffPeakRule[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
   const [addDay, setAddDay] = useState(1);
   const [addStart, setAddStart] = useState("10:00");
   const [addEnd, setAddEnd] = useState("14:00");
@@ -73,6 +77,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
       }
       const created = await res.json();
       setRules((prev) => [...prev, created]);
+      setAddOpen(false);
     } catch {
       setError(t("networkError"));
     } finally {
@@ -97,118 +102,101 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
     }
   };
 
-  const cellMap = new Map<string, OffPeakRule>();
-  for (const rule of rules) {
-    const startH = timeToHour(rule.start_time);
-    const endH = timeToHour(rule.end_time);
-    for (let h = startH; h < endH; h++) {
-      cellMap.set(`${rule.day_of_week}-${h}`, rule);
-    }
+  // Group rules by day_of_week so each weekday row lists its own windows.
+  const byDay = new Map<number, OffPeakRule[]>();
+  for (const r of rules) {
+    const arr = byDay.get(r.day_of_week) ?? [];
+    arr.push(r);
+    byDay.set(r.day_of_week, arr);
   }
 
   if (loading) return <div className="py-6 flex justify-center"><Spinner size="md" /></div>;
 
   return (
-    <div className="py-4 space-y-6">
-      <div className="overflow-x-auto">
-        <div className="grid gap-px min-w-[500px]" style={{ gridTemplateColumns: "48px repeat(7, 1fr)" }}>
-          <div />
-          {DAYS.map((d, i) => (
-            <div key={i} className="text-center text-xs font-medium text-s-ink/50 py-1.5">
-              {d}
-            </div>
-          ))}
-          {HOURS.map((hour) => (
-            <div key={`row-${hour}`} className="contents">
-              <div className="text-right pr-2 text-[10px] text-s-ink/30 data-text">
-                {String(hour).padStart(2, "0")}:00
+    <div className="py-4 max-w-md">
+      {/* Per-day list — one row per weekday, windows as light-blue pills (tap a pill to remove). */}
+      <div className="rounded-[16px] border border-s-border overflow-hidden">
+        {WEEK_ORDER.map((di) => {
+          const dayRules = (byDay.get(di) ?? []).slice().sort((a, b) => a.start_time.localeCompare(b.start_time));
+          return (
+            <div key={di} className="flex items-center gap-3 px-3.5 py-3 border-b border-s-border last:border-b-0 min-h-[50px]">
+              <span className="font-heading font-semibold text-sm text-s-ink w-9 shrink-0">{DAYS[di]}</span>
+              <div className="flex-1 min-w-0 flex gap-1.5 flex-wrap">
+                {dayRules.length === 0 ? (
+                  <span className="text-s-ink-3 text-sm">—</span>
+                ) : (
+                  dayRules.map((r) => (
+                    <button
+                      key={r.id}
+                      type="button"
+                      onClick={() => handleDelete(r.id)}
+                      title={t("confirmDelete")}
+                      className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[11.5px] font-semibold bg-s-accent-bright/10 text-s-accent-bright tabular-nums transition-colors hover:bg-s-accent-bright/[0.18]"
+                    >
+                      {fmtTime(r.start_time)}–{fmtTime(r.end_time)} · −{r.discount_percent}%
+                    </button>
+                  ))
+                )}
               </div>
-              {Array.from({ length: 7 }, (_, day) => {
-                const rule = cellMap.get(`${day}-${hour}`);
-                return (
-                  <div
-                    key={`${day}-${hour}`}
-                    className={[
-                      "h-6 rounded-sm text-[9px] flex items-center justify-center transition-colors",
-                      rule
-                        ? "bg-s-sage-subtle text-s-sage-text font-medium"
-                        : "bg-s-bg-surface/50",
-                    ].join(" ")}
-                  >
-                    {rule ? `-${rule.discount_percent}%` : ""}
-                  </div>
-                );
-              })}
             </div>
-          ))}
-        </div>
+          );
+        })}
+        {/* Add-rule trigger */}
+        <button
+          type="button"
+          onClick={() => { setAddOpen((v) => !v); setError(""); }}
+          className="w-full flex items-center gap-2 px-3.5 py-3 text-s-accent-bright font-heading font-semibold text-[13.5px]"
+        >
+          <Plus size={16} strokeWidth={2.4} />{t("newRule")}
+        </button>
       </div>
 
-      {rules.length > 0 && (
-        <div className="space-y-1.5">
-          <p className="text-xs font-medium text-s-ink/50">{t("activeRules")}</p>
-          {rules.map((r) => (
-            <div
-              key={r.id}
-              className="flex items-center justify-between py-2 px-3 bg-s-bg-surface/50 rounded-btn border border-s-ink/5"
-            >
-              <div className="flex items-center gap-2">
-                <Clock size={13} className="text-s-sage" />
-                <span className="text-sm text-s-ink">
-                  {DAYS[r.day_of_week]} {r.start_time.slice(0, 5)}–{r.end_time.slice(0, 5)}
-                </span>
-                <span className="px-1.5 py-0.5 rounded-pill bg-s-sage-subtle text-s-sage-text text-[10px] font-medium">
-                  -{r.discount_percent}%
-                </span>
-              </div>
-              <button
-                onClick={() => handleDelete(r.id)}
-                aria-label={t("confirmDelete")}
-                className="text-s-ink/30 hover:text-s-coral transition-colors"
-              >
-                <Trash2 size={14} />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+      {/* Add-rule sheet (inline expander styled as a sheet) */}
+      {addOpen && (
+        <div className="mt-3 rounded-[16px] border border-s-border bg-white p-4 shadow-warm-lg">
+          <p className="font-heading font-bold text-base text-s-ink mb-3">{t("newRule")}</p>
 
-      <div className="border-t border-s-ink/5 pt-4 space-y-3">
-        <p className="text-xs font-medium text-s-ink/50 flex items-center gap-1.5">
-          <Plus size={12} /> {t("newRule")}
-        </p>
-        <div className="flex flex-wrap gap-2 items-end">
-          <div>
-            <label className="block text-[10px] text-s-ink/40 mb-1">{t("day")}</label>
-            <select
-              value={addDay}
-              onChange={(e) => setAddDay(+e.target.value)}
-              className="px-2 py-1.5 rounded-input border border-s-ink/10 text-sm bg-white text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
-            >
-              {DAYS.map((d, i) => (<option key={i} value={i}>{d}</option>))}
-            </select>
+          <p className="text-xs font-medium text-s-ink-2 mb-2">{t("day")}</p>
+          <div className="flex gap-1.5 mb-3.5">
+            {WEEK_ORDER.map((di) => (
+              <button
+                key={di}
+                type="button"
+                onClick={() => setAddDay(di)}
+                className={[
+                  "flex-1 text-center font-heading font-semibold text-xs rounded-[10px] py-2 border transition-colors",
+                  addDay === di ? "bg-s-accent-bright/10 text-s-accent-bright border-s-accent-bright/10" : "border-s-border text-s-ink-2",
+                ].join(" ")}
+              >
+                {DAYS[di]}
+              </button>
+            ))}
           </div>
-          <div>
-            <label className="block text-[10px] text-s-ink/40 mb-1">{t("from")}</label>
-            <input
-              type="time"
-              value={addStart}
-              onChange={(e) => { setAddStart(e.target.value); setError(""); }}
-              className="px-2 py-1.5 rounded-input border border-s-ink/10 text-sm bg-white text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
-            />
+
+          <div className="grid grid-cols-2 gap-2.5 mb-3.5">
+            <div>
+              <label className="block text-[10px] text-s-ink-3 mb-1">{t("from")}</label>
+              <input
+                type="time"
+                value={addStart}
+                onChange={(e) => { setAddStart(e.target.value); setError(""); }}
+                className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-accent-bright"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] text-s-ink-3 mb-1">{t("to")}</label>
+              <input
+                type="time"
+                value={addEnd}
+                onChange={(e) => { setAddEnd(e.target.value); setError(""); }}
+                className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-accent-bright"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-[10px] text-s-ink/40 mb-1">{t("to")}</label>
-            <input
-              type="time"
-              value={addEnd}
-              onChange={(e) => { setAddEnd(e.target.value); setError(""); }}
-              className="px-2 py-1.5 rounded-input border border-s-ink/10 text-sm bg-white text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
-            />
-          </div>
-          <div>
-            <label className="block text-[10px] text-s-ink/40 mb-1">{t("discount")}</label>
-            <div className="flex items-center gap-1">
+
+          <div className="mb-3.5">
+            <label className="block text-[10px] text-s-ink-3 mb-1">{t("discount")}</label>
+            <div className="flex items-center gap-2">
               <input
                 type="number"
                 min={5}
@@ -216,27 +204,26 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
                 step={5}
                 value={addDiscount}
                 onChange={(e) => setAddDiscount(Math.min(50, Math.max(5, +e.target.value)))}
-                className="w-16 px-2 py-1.5 rounded-input border border-s-ink/10 text-sm data-text bg-white text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+                className="w-20 px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-accent-bright"
               />
-              <span className="text-xs text-s-ink/40">%</span>
+              <span className="text-sm text-s-ink-2">%</span>
             </div>
           </div>
+
+          {error && <p role="alert" className="text-xs text-s-error mb-3">{error}</p>}
+
           <button
             onClick={handleAdd}
             disabled={saving}
-            className="px-4 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1.5 shadow-elevation-2 transition-[transform,filter] duration-150"
+            className="w-full py-3 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {saving && <Spinner size="sm" invert />}
-            {t("add")}
+            {saving ? <Spinner size="sm" invert /> : <Plus size={16} strokeWidth={2.4} />}{t("add")}
           </button>
         </div>
-        {error && <p role="alert" className="text-xs text-s-coral">{error}</p>}
-      </div>
+      )}
 
-      {rules.length === 0 && (
-        <p className="text-xs text-s-ink/30 text-center py-2">
-          {t("empty")}
-        </p>
+      {rules.length === 0 && !addOpen && (
+        <p className="text-xs text-s-ink-3 text-center py-3 mt-1">{t("empty")}</p>
       )}
     </div>
   );

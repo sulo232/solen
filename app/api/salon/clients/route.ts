@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
   // Get unique customers from bookings with their last visit and count
   const { data: bookings, error } = await supabase
     .from("bookings")
-    .select("user_id, starts_at")
+    .select("user_id, starts_at, price_paid, status")
     .eq("salon_id", salonId)
     .not("user_id", "is", null)
     .order("starts_at", { ascending: false });
@@ -33,14 +33,18 @@ export async function GET(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // Aggregate by user_id
-  const clientMap = new Map<string, { user_id: string; last_visit: string; total_bookings: number }>();
+  const clientMap = new Map<string, { user_id: string; last_visit: string; total_bookings: number; spent: number }>();
   for (const b of bookings ?? []) {
     if (!b.user_id) continue;
+    // Live "total spent" = sum of price_paid for completed bookings — used as the fallback
+    // when client_rfm_segments hasn't been computed for this salon yet (else it shows CHF 0).
+    const paid = b.status === "completed" ? Number(b.price_paid ?? 0) : 0;
     const existing = clientMap.get(b.user_id);
     if (existing) {
       existing.total_bookings++;
+      existing.spent += paid;
     } else {
-      clientMap.set(b.user_id, { user_id: b.user_id, last_visit: b.starts_at, total_bookings: 1 });
+      clientMap.set(b.user_id, { user_id: b.user_id, last_visit: b.starts_at, total_bookings: 1, spent: paid });
     }
   }
 
@@ -92,7 +96,7 @@ export async function GET(req: NextRequest) {
       total_bookings: c.total_bookings,
       tags: tagMap.get(c.user_id) ?? [],
       segment_tag: rfm?.segment_tag ?? "Regulär",
-      total_spent: rfm?.total_spent ?? 0,
+      total_spent: rfm?.total_spent ?? c.spent,
     };
   });
 

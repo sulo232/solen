@@ -39,7 +39,7 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
   return (
     <div>
       <h3 className="font-heading text-sm text-s-ink flex items-center gap-2 mb-4">
-        <Share2 size={14} className="text-s-coral" /> Empfehlungs-Programm
+        <Share2 size={14} className="text-s-accent-bright" /> Empfehlungs-Programm
       </h3>
 
       {/* Stats */}
@@ -50,7 +50,7 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
           { label: "Umsatz durch Empfehlungen", value: formatCurrency(data.total_revenue_from_referrals, locale), icon: TrendingUp },
         ].map((s) => (
           <div key={s.label} className="bg-s-bg-surface/50 rounded-[16px] border border-s-ink/5 p-3 text-center">
-            <s.icon size={16} className="text-s-coral mx-auto mb-1" />
+            <s.icon size={16} className="text-s-accent-bright mx-auto mb-1" />
             <p className="data-text font-bold text-lg text-s-ink">{s.value}</p>
             <p className="text-[10px] text-s-ink/40">{s.label}</p>
           </div>
@@ -65,7 +65,7 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
             {data.top_referrers.map((r, i) => (
               <div key={r.name} className="flex items-center justify-between text-xs py-2 border-b border-s-ink/5 last:border-0">
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full bg-s-coral/10 text-s-coral text-[10px] font-bold flex items-center justify-center shrink-0">
+                  <span className="w-5 h-5 rounded-full bg-s-accent-bright/10 text-s-accent-bright text-[10px] font-bold flex items-center justify-center shrink-0">
                     {i + 1}
                   </span>
                   <span className="font-medium text-s-ink">{r.name}</span>

@@ -17,6 +17,7 @@ export default function HideInBooking({
   children,
   showOnAuth = false,
   hideOnFeed = false,
+  hideOnDashboard = false,
   coverSalonDetail = false,
 }: {
   children: ReactNode;
@@ -24,6 +25,10 @@ export default function HideInBooking({
   /** V3-D414: also drop on the discovery experience (an infinite Pinterest-style scroll has no "bottom" for a
       marketing footer, it just crowded the feed). Opt-in, so only the footer uses it, not the header. */
   hideOnFeed?: boolean;
+  /** Also drop on the owner dashboard (/[locale]/dashboard...). The dashboard has its own
+      chrome (DashboardLayout topbar + icon rail); the marketing Footer + cookie banner
+      stacking in overlapped content + intercepted taps on mobile. Opt-in, footer only. */
+  hideOnDashboard?: boolean;
   /** Also hide on the salon detail PDP (/[locale]/salon/[slug]). The PDP is a
    *  self-contained hero with its own back arrow (Fresha pattern); opt the
    *  global Header + Breadcrumb out so the page leads with the hero. */
@@ -33,6 +38,8 @@ export default function HideInBooking({
   if (!pathname) return <>{children}</>;
 
   if (hideOnFeed && /\/discover(\/|$)/.test(pathname)) return null;
+
+  if (hideOnDashboard && /\/dashboard(\/|$)/.test(pathname)) return null;
 
   // V3-D414: board detail + saved (/discover/board/[id], /discover/saved, /discover/saved/[id]) are focused views
   // with their own back button. Drop the marketing chrome (city bar, header, breadcrumb, footer) so there aren't

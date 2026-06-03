@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trophy, Medal, ArrowUpDown, Eye, EyeOff, BarChart2, Table2 } from "lucide-react";
+import { Trophy, Eye, EyeOff, BarChart2, Table2 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
@@ -26,7 +26,7 @@ type SortKey = keyof Omit<BarberStats, "staff_id" | "staff_name">;
 type Period = "week" | "month";
 type ViewMode = "table" | "chart";
 
-const CHART_CORAL = "#1B4D1B";
+const CHART_ACCENT = "#276EF1";
 
 export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   const t = useTranslations("dashboard.barber_leaderboard") as any;
@@ -66,9 +66,9 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   ];
 
   const getRankIcon = (rank: number) => {
-    if (rank === 0) return <Trophy size={14} className="text-s-amber" />;
-    if (rank === 1) return <Medal size={14} className="text-s-ink/40" />;
-    if (rank === 2) return <Medal size={14} className="text-s-sand" />;
+    // #1 = yellow trophy (s-star, the universal achievement/rating signal, matches mockup).
+    // Ranks 2+ render as a plain number in the card (mockup 10b shows numbers, not medals).
+    if (rank === 0) return <Trophy size={18} className="text-s-star shrink-0" />;
     return null;
   };
 
@@ -81,10 +81,10 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   }));
 
   return (
-    <div className="rounded-[16px] bg-white border border-s-ink/5 p-4">
+    <div className="rounded-[16px] bg-white border border-s-border p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Trophy size={18} className="text-s-amber" />
+          <Trophy size={18} className="text-s-star" />
           <h3 className="font-heading text-sm font-semibold text-s-ink">{t("title")}</h3>
         </div>
         <div className="flex items-center gap-2">
@@ -92,7 +92,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           <button
             onClick={() => setViewMode(viewMode === "table" ? "chart" : "table")}
             aria-pressed={viewMode === "chart"}
-            className="p-1.5 rounded-btn text-s-ink/40 hover:bg-s-bg-surface transition-colors duration-150"
+            className="p-1.5 rounded-btn text-s-ink-2 hover:bg-s-bg-sunken transition-colors duration-150"
             title={viewMode === "table" ? t("view_chart") : t("view_table")}
             aria-label={viewMode === "table" ? t("view_chart") : t("view_table")}
           >
@@ -102,14 +102,14 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           <button
             onClick={() => setAnonymized(!anonymized)}
             aria-pressed={anonymized}
-            className="p-1.5 rounded-btn text-s-ink/40 hover:bg-s-bg-surface transition-colors duration-150"
+            className="p-1.5 rounded-btn text-s-ink-2 hover:bg-s-bg-sunken transition-colors duration-150"
             title={anonymized ? t("show_names") : t("anonymize")}
             aria-label={anonymized ? t("show_names") : t("anonymize")}
           >
             {anonymized ? <EyeOff size={14} /> : <Eye size={14} />}
           </button>
           {/* Period toggle */}
-          <div className="flex rounded-btn border border-s-ink/10 overflow-hidden">
+          <div className="flex rounded-btn border border-s-border overflow-hidden">
             {(["week", "month"] as Period[]).map((p) => (
               <button
                 key={p}
@@ -117,8 +117,8 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
                 onClick={() => setPeriod(p)}
                 className={`px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                   period === p
-                    ? "bg-s-coral text-white"
-                    : "text-s-ink/50 hover:bg-s-bg-surface"
+                    ? "bg-s-accent-bright/10 text-s-accent-bright"
+                    : "text-s-ink-2 hover:bg-s-bg-sunken"
                 }`}
               >
                 {p === "week" ? t("week") : t("month")}
@@ -143,8 +143,8 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
                 onClick={() => setSortBy(col.key)}
                 className={`px-2 py-1 rounded-btn text-xs whitespace-nowrap transition-colors duration-150 ${
                   sortBy === col.key
-                    ? "bg-s-coral/10 text-s-coral font-medium"
-                    : "text-s-ink/40 hover:text-s-ink"
+                    ? "bg-s-accent-bright/10 text-s-accent-bright font-medium"
+                    : "text-s-ink-2 hover:text-s-ink"
                 }`}
               >
                 {col.label}
@@ -153,60 +153,50 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           </div>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#EDE5D8" vertical={false} />
-              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#1A1209", fillOpacity: 0.4 }} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: "#1A1209", fillOpacity: 0.4 }} tickLine={false} axisLine={false} />
-              <Tooltip contentStyle={{ borderRadius: "12px", border: "1px solid #EDE5D8" }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E7E5E4" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#6B6B6B" }} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: "#6B6B6B" }} tickLine={false} axisLine={false} />
+              <Tooltip contentStyle={{ borderRadius: "12px", border: "1px solid #E7E5E4" }} />
               <Bar
                 dataKey={columns.find((c) => c.key === sortBy)?.label ?? t("value")}
-                fill={CHART_CORAL}
+                fill={CHART_ACCENT}
                 radius={[4, 4, 0, 0]}
               />
             </BarChart>
           </ResponsiveContainer>
         </div>
       ) : (
-        /* ═══ TABLE VIEW ═══ */
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-s-ink/5">
-                <th className="text-left py-2 text-xs font-medium text-s-ink/50 pr-4">#</th>
-                <th className="text-left py-2 text-xs font-medium text-s-ink/50 pr-4">{t("barber")}</th>
+        /* ═══ RANKED CARDS VIEW (was 8-col table — unreadable on mobile) ═══ */
+        <div className="space-y-2.5">
+          {sorted.map((barber, i) => (
+            <div key={barber.staff_id} className="rounded-[16px] border border-s-border p-3.5">
+              {/* Card header: rank/medal + name + Top pill for #1 */}
+              <div className="flex items-center gap-3 mb-3">
+                {getRankIcon(i) ?? (
+                  <span className="w-5 text-center font-heading font-bold text-[15px] text-s-ink-2 shrink-0">{i + 1}</span>
+                )}
+                <span className="flex-1 font-heading font-semibold text-[14.5px] text-s-ink truncate">
+                  {getDisplayName(barber, i)}
+                </span>
+                {i === 0 && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-s-success-bg text-s-success shrink-0">
+                    {t("top")}
+                  </span>
+                )}
+              </div>
+              {/* Metrics as a 3-up tile grid */}
+              <div className="grid grid-cols-3 gap-2.5">
                 {columns.map((col) => (
-                  <th
-                    key={col.key}
-                    onClick={() => setSortBy(col.key)}
-                    className="text-right py-2 text-xs font-medium text-s-ink/50 cursor-pointer hover:text-s-ink pr-3 whitespace-nowrap"
-                  >
-                    <span className="inline-flex items-center gap-1">
-                      {col.label}
-                      {sortBy === col.key && <ArrowUpDown size={10} />}
-                    </span>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {sorted.map((barber, i) => (
-                <tr key={barber.staff_id} className="border-b border-s-ink/5 last:border-0">
-                  <td className="py-2.5 pr-4">
-                    <span className="inline-flex items-center gap-1">
-                      {getRankIcon(i) ?? <span className="text-s-ink/40 font-medium">{i + 1}</span>}
-                    </span>
-                  </td>
-                  <td className="py-2.5 text-s-ink pr-4 font-medium whitespace-nowrap">
-                    {getDisplayName(barber, i)}
-                  </td>
-                  {columns.map((col) => (
-                    <td key={col.key} className="py-2.5 text-right text-s-ink/70 pr-3 tabular-nums whitespace-nowrap">
+                  <div key={col.key}>
+                    <p className="text-[10px] text-s-ink-2">{col.label}</p>
+                    <p className="font-heading font-bold text-[14.5px] text-s-ink mt-0.5 tabular-nums">
                       {col.format(barber[col.key] as number)}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

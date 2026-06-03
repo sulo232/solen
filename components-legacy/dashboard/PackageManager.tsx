@@ -124,11 +124,11 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-sm text-s-ink flex items-center gap-2">
-          <Package size={14} className="text-s-coral" /> {t("title")}
+          <Package size={14} className="text-s-accent-bright" /> {t("title")}
         </h3>
         <button
           onClick={() => { setShowForm(!showForm); setFormError(null); }}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150"
         >
           <Plus size={12} /> {t("newPkg")}
         </button>
@@ -186,7 +186,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
               />
             </div>
           </div>
-          {formError && <p role="alert" className="text-xs text-s-coral">{formError}</p>}
+          {formError && <p role="alert" className="text-xs text-s-error">{formError}</p>}
           <div className="flex gap-2 justify-end">
             <button
               onClick={() => { setShowForm(false); setFormError(null); }}
@@ -197,7 +197,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
             <button
               onClick={handleCreate}
               disabled={saving || !form.name.trim() || !form.service_id}
-              className="px-4 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 shadow-elevation-2 transition-[transform,filter] duration-150"
+              className="px-4 py-1.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 shadow-elevation-2 transition-[transform,filter] duration-150"
             >
               {saving ? t("saving") : t("create")}
             </button>
@@ -228,10 +228,10 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
                 <button
                   onClick={() => toggleActive(pkg)}
                   aria-label={pkg.is_active ? t("deactivate") : t("activate")}
-                  className="text-s-ink/30 hover:text-s-coral transition-colors"
+                  className="text-s-ink/30 hover:text-s-accent-bright transition-colors"
                 >
                   {pkg.is_active
-                    ? <ToggleRight size={20} className="text-s-coral" />
+                    ? <ToggleRight size={20} className="text-s-accent-bright" />
                     : <ToggleLeft size={20} />}
                 </button>
               </div>

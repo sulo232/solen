@@ -9,6 +9,7 @@ import { validateBody, createBookingSchema } from "@/lib/validations";
 // SP-2 owns guest-access primitives; SP-1 only CALLS them (no parallel token/code scheme).
 import { issueAccessToken } from "@/lib/bookings/guest-access";
 import { assignReferenceCode } from "@/lib/bookings/reference";
+import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/auto-assign";
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -17,10 +18,57 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   const status = searchParams.get("status");
+  const salonId = searchParams.get("salon_id");
+  const date = searchParams.get("date"); // YYYY-MM-DD — owner "today" filter
   const page = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
-  const limit = 20;
+  const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") ?? "20")));
   const offset = (page - 1) * limit;
 
+  // ── Owner / salon-scoped mode (G1, 2026-06-03): the dashboard passes ?salon_id.
+  //    The default GET below is USER-scoped (the customer "my bookings" view, keyed
+  //    `items`). The dashboard needs the SALON's bookings keyed `bookings`, enriched
+  //    with customer/service/staff names. Verify the caller owns the salon (or is admin)
+  //    first; salon owners can read their salon's bookings under RLS (same policy the
+  //    /api/salon/clients reader relies on).
+  if (salonId) {
+    const [{ data: salon }, { data: prof }] = await Promise.all([
+      supabase.from("salons").select("owner_id").eq("id", salonId).single(),
+      supabase.from("profiles").select("role").eq("id", user.id).single(),
+    ]);
+    if (salon?.owner_id !== user.id && prof?.role !== "admin") {
+      return NextResponse.json({ message: "Forbidden", code: "FORBIDDEN" }, { status: 403 });
+    }
+
+    let q = supabase
+      .from("bookings")
+      .select("*, services(name_de, name_en), staff_members(name)", { count: "exact" })
+      .eq("salon_id", salonId)
+      .order("starts_at", { ascending: false })
+      .range(offset, offset + limit - 1);
+    if (status) q = q.eq("status", status);
+    if (date) q = q.gte("starts_at", `${date}T00:00:00`).lte("starts_at", `${date}T23:59:59`);
+
+    const { data, error, count } = await q;
+    if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
+
+    // Enrich customer_name from public_profiles (logged-in) or guest_name (guest booking).
+    const userIds = [...new Set((data ?? []).map((b) => b.user_id).filter(Boolean) as string[])];
+    const nameMap = new Map<string, string | null>();
+    if (userIds.length) {
+      const { data: profs } = await supabase.from("public_profiles").select("id, display_name").in("id", userIds);
+      (profs ?? []).forEach((p) => nameMap.set(p.id, p.display_name));
+    }
+    const bookings = (data ?? []).map((b) => ({
+      ...b,
+      customer_name: (b.user_id ? nameMap.get(b.user_id) : null) ?? b.guest_name ?? "Gast",
+      customer_avatar: null as string | null,
+      service_name: b.services?.name_de ?? b.services?.name_en ?? "Service",
+      staff_name: b.staff_members?.name ?? null,
+    }));
+    return NextResponse.json({ bookings, total: count ?? 0, page, limit });
+  }
+
+  // ── Default: USER-scoped "my bookings" (unchanged contract → { items }).
   let query = supabase
     .from("bookings")
     .select("*, salons(name, slug, cover_photo_url), services(name_de, name_en, duration_minutes), staff_members(name)", { count: "exact" })
@@ -102,13 +150,38 @@ export async function POST(request: NextRequest) {
     if (staff_member_id) slotQuery = slotQuery.eq("staff_member_id", staff_member_id);
   }
 
-  const { data: slotRows, error: slotError } = await slotQuery
+  const { data: candidateSlots, error: slotError } = await slotQuery
     .order("starts_at", { ascending: true })
-    .limit(1);
-  const slot = slotRows?.[0];
+    .limit(30);
 
-  if (slotError || !slot) {
+  if (slotError || !candidateSlots?.length) {
     return NextResponse.json({ message: "Slot not available", code: "SLOT_TAKEN" }, { status: 409 });
+  }
+
+  // Phase E: pick the slot. Explicit slot_id or a specifically chosen staff → that one. "Any" staff
+  // → auto-assign per the salon's auto_assign_method + per-stylist daily limit. Opt-in: the defaults
+  // ('manual' + limit off) keep the previous "first available" behaviour exactly.
+  const sched = candidateSlots[0].salons as { auto_assign_method?: string; daily_limit_enabled?: boolean; daily_limit?: number } | null;
+  const autoMethod = sched?.auto_assign_method ?? "manual";
+  const dailyLimitOn = sched?.daily_limit_enabled === true;
+  const dailyLimit = Math.max(1, Number(sched?.daily_limit) || 20);
+  const slotSalonId = String((candidateSlots[0] as { salon_id?: string }).salon_id ?? salon_id ?? "");
+  const bookingDay = String(candidateSlots[0].starts_at).slice(0, 10);
+
+  let slot = candidateSlots[0];
+  if (!slot_id && !staff_member_id && (autoMethod !== "manual" || dailyLimitOn)) {
+    const picked = await pickSlotForAnyStaff(db, candidateSlots as never, {
+      method: autoMethod, dailyLimitOn, dailyLimit, salonId: slotSalonId, day: bookingDay,
+    });
+    if (!picked) {
+      return NextResponse.json({ message: "Alle Stylist:innen sind an diesem Tag ausgebucht.", code: "STAFF_DAILY_LIMIT" }, { status: 409 });
+    }
+    slot = picked;
+  } else if (dailyLimitOn && slot.staff_member_id) {
+    const cnt = await countStaffBookingsOnDay(db, slotSalonId, slot.staff_member_id as string, bookingDay);
+    if (cnt >= dailyLimit) {
+      return NextResponse.json({ message: "Diese:r Stylist:in ist an diesem Tag ausgebucht.", code: "STAFF_DAILY_LIMIT" }, { status: 409 });
+    }
   }
 
   const resolvedSlotId = slot.id as string;
@@ -121,6 +194,34 @@ export async function POST(request: NextRequest) {
       { message: "This salon is not accepting online bookings.", code: "ONLINE_BOOKING_DISABLED" },
       { status: 403 },
     );
+  }
+
+  // Vacation guard: when the salon set a vacation range, reject bookings whose date falls inside it
+  // (vacation_start/end are DATE; compare the slot's calendar date). Was decorative before — the
+  // settings saved but nothing blocked, so a salon on vacation would still accept appointments.
+  {
+    const sal = slot.salons as any;
+    if (sal?.vacation_start && sal?.vacation_end) {
+      const bookingDate = String(slot.starts_at).slice(0, 10); // YYYY-MM-DD (UTC; day-granular guard)
+      if (bookingDate >= sal.vacation_start && bookingDate <= sal.vacation_end) {
+        return NextResponse.json(
+          { message: "This salon is on vacation for the selected date.", code: "SALON_ON_VACATION" },
+          { status: 403 },
+        );
+      }
+    }
+  }
+
+  // Phase D: a salon on deposit/prepay requires online payment — reject an in-person booking that
+  // would bypass the required deposit/prepay. The pay step enforces this; this is the server backstop.
+  {
+    const salPayMode = (slot.salons as { payment_mode?: string } | null)?.payment_mode;
+    if ((salPayMode === "deposit" || salPayMode === "prepay") && payment_method !== "online") {
+      return NextResponse.json(
+        { message: "This salon requires online payment.", code: "ONLINE_PAYMENT_REQUIRED" },
+        { status: 400 },
+      );
+    }
   }
 
   // 2. Get user profile for is_first_visit (logged-in only — a guest has no profile row).

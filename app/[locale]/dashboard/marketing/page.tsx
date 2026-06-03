@@ -20,9 +20,9 @@ export default function MarketingPage() {
   const [loadingSalon, setLoadingSalon] = useState(true);
 
   useEffect(() => {
-    fetch("/api/salon/mine")
+    fetch("/api/profile")
       .then((r) => r.json())
-      .then((d) => setSalonId(d.salon?.id ?? d.id ?? null))
+      .then((d) => setSalonId(d.salon_id ?? null))
       .catch((err) => console.error("[DashboardMarketing] failed to fetch salon id:", err))
       .finally(() => setLoadingSalon(false));
   }, []);
@@ -49,10 +49,10 @@ export default function MarketingPage() {
             key={tab_item.key}
             onClick={() => setTab(tab_item.key)}
             className={[
-              "flex items-center gap-1.5 px-3 py-2 rounded-btn text-sm font-medium transition-colors whitespace-nowrap",
+              "flex items-center gap-1.5 px-3 py-2 rounded-btn text-sm font-medium transition-colors whitespace-nowrap border",
               tab === tab_item.key
-                ? "bg-s-coral text-white"
-                : "bg-white text-s-ink/50 hover:text-s-ink border border-s-ink/5",
+                ? "bg-s-accent-bright/10 text-s-accent-bright border-transparent"
+                : "bg-white border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink",
             ].join(" ")}
           >
             <tab_item.icon size={14} />
@@ -62,7 +62,7 @@ export default function MarketingPage() {
       </div>
 
       {/* Tab content */}
-      <div className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-5">
+      <div className="bg-white rounded-[16px] border border-s-ink/5 shadow-warm-md p-5">
         {loadingSalon ? (
           <div className="flex justify-center py-8"><Spinner size="md" /></div>
         ) : !salonId && tab !== "aktionen" ? (

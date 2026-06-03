@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { tipPromptEmail } from "@/lib/email";
 
 /**
  * Cron handler: send review prompt email 24h after completed appointment.
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest) {
 
   const resendApiKey = env.RESEND_API_KEY;
   if (!resendApiKey) {
-    console.warn("[review-prompt] RESEND_API_KEY not set — skipping emails");
+    console.warn("[review-prompt] RESEND_API_KEY not set,skipping emails");
     return NextResponse.json({ skipped: true, reason: "no_api_key" });
   }
 
@@ -33,7 +34,7 @@ export async function GET(req: NextRequest) {
   // Find bookings completed ~24h ago that haven't been prompted
   const { data: bookings } = await supabase
     .from("bookings")
-    .select("id, user_id, salon_id, starts_at, status, review_prompt_sent, salons(name, slug, google_place_id), profiles(display_name, banned_at, locale)")
+    .select("id, user_id, salon_id, starts_at, status, review_prompt_sent, salons(name, slug, google_place_id, stripe_account_id), staff_members(name, avatar_url), profiles(display_name, banned_at, locale)")
     .eq("status", "completed")
     .eq("review_prompt_sent", false)
     .gte("starts_at", windowStart.toISOString())
@@ -74,49 +75,49 @@ export async function GET(req: NextRequest) {
       de: {
         googleSubject: `Teile deine Erfahrung bei ${salon?.name ?? "deinem Salon"} auf Google`,
         googleTitle: "Danke für deine Bewertung!",
-        googleBody1: `Schön, dass dir dein Besuch bei <strong>${salon?.name}</strong> gefallen hat! Hilf anderen, diesen Salon zu entdecken — eine Google-Bewertung macht einen grossen Unterschied.`,
+        googleBody1: `Schön, dass dir dein Besuch bei <strong>${salon?.name}</strong> gefallen hat! Hilf anderen, diesen Salon zu entdecken, eine Google-Bewertung macht einen grossen Unterschied.`,
         googleBtn: "Auf Google bewerten",
         solenSubject: `Wie war dein Besuch bei ${salon?.name ?? "deinem Salon"}?`,
         solenTitle: "Wie war dein Besuch?",
         solenBody1: `Wir hoffen, du hattest einen tollen Besuch bei <strong>${salon?.name}</strong>. Dein Feedback hilft anderen bei der Entscheidung!`,
         solenBtn: "Jetzt bewerten",
-        signature: "— Dein Solen Team",
+        signature: "Dein Solen Team",
         greeting: `Hallo ${profile?.display_name ?? ""},`
       },
       en: {
         googleSubject: `Share your experience at ${salon?.name ?? "your salon"} on Google`,
         googleTitle: "Thanks for your review!",
-        googleBody1: `We're glad you enjoyed your visit at <strong>${salon?.name}</strong>! Help others discover this salon — a Google review makes a big difference.`,
+        googleBody1: `We're glad you enjoyed your visit at <strong>${salon?.name}</strong>! Help others discover this salon, a Google review makes a big difference.`,
         googleBtn: "Review on Google",
         solenSubject: `How was your visit at ${salon?.name ?? "your salon"}?`,
         solenTitle: "How was your visit?",
         solenBody1: `We hope you had a great visit at <strong>${salon?.name}</strong>. Your feedback helps others make a decision!`,
         solenBtn: "Review now",
-        signature: "— Your Solen Team",
+        signature: "Your Solen Team",
         greeting: `Hi ${profile?.display_name ?? ""},`
       },
       fr: {
         googleSubject: `Partagez votre expérience chez ${salon?.name ?? "votre salon"} sur Google`,
         googleTitle: "Merci pour votre avis !",
-        googleBody1: `Nous sommes ravis que votre visite chez <strong>${salon?.name}</strong> vous ait plu ! Aidez d'autres personnes à découvrir ce salon — un avis Google fait une grande différence.`,
+        googleBody1: `Nous sommes ravis que votre visite chez <strong>${salon?.name}</strong> vous ait plu ! Aidez d'autres personnes à découvrir ce salon, un avis Google fait une grande différence.`,
         googleBtn: "Donner un avis sur Google",
         solenSubject: `Comment s'est passée votre visite chez ${salon?.name ?? "votre salon"} ?`,
         solenTitle: "Comment s'est passée votre visite ?",
         solenBody1: `Nous espérons que vous avez passé un excellent moment chez <strong>${salon?.name}</strong>. Vos retours aident les autres à choisir !`,
         solenBtn: "Donner un avis maintenant",
-        signature: "— Votre Équipe Solen",
+        signature: "Votre Équipe Solen",
         greeting: `Bonjour ${profile?.display_name ?? ""},`
       },
       it: {
         googleSubject: `Condividi la tua esperienza da ${salon?.name ?? "il tuo salone"} su Google`,
         googleTitle: "Grazie per la tua recensione!",
-        googleBody1: `Siamo felici che la tua visita da <strong>${salon?.name}</strong> ti sia piaciuta! Aiuta altri a scoprire questo salone — una recensione su Google fa una grande differenza.`,
+        googleBody1: `Siamo felici che la tua visita da <strong>${salon?.name}</strong> ti sia piaciuta! Aiuta altri a scoprire questo salone, una recensione su Google fa una grande differenza.`,
         googleBtn: "Recensisci su Google",
         solenSubject: `Com'è andata la tua visita da ${salon?.name ?? "il tuo salone"}?`,
         solenTitle: "Com'è andata la tua visita?",
         solenBody1: `Speriamo che tu abbia trascorso un'ottima visita da <strong>${salon?.name}</strong>. Il tuo feedback aiuta gli altri a decidere!`,
         solenBtn: "Recensisci ora",
-        signature: "— Il tuo Team Solen",
+        signature: "Il tuo Team Solen",
         greeting: `Ciao ${profile?.display_name ?? ""},`
       }
     };
@@ -145,7 +146,7 @@ export async function GET(req: NextRequest) {
                 <p style="color: #666;">${lang.greeting}</p>
                 <p style="color: #666;">${lang.googleBody1}</p>
                 <a href="${googleReviewUrl}"
-                  style="display: inline-block; background: #C05038; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
+                  style="display: inline-block; background: #0A0A0A; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
                   ${lang.googleBtn}
                 </a>
                 <p style="color: #999; font-size: 12px; margin-top: 24px;">${lang.signature}</p>
@@ -173,7 +174,7 @@ export async function GET(req: NextRequest) {
                 <p style="color: #666;">${lang.greeting}</p>
                 <p style="color: #666;">${lang.solenBody1}</p>
                 <a href="https://www.solen.ch/${userLocale}/salon/${salon?.slug}#bewertungen"
-                  style="display: inline-block; background: #C05038; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
+                  style="display: inline-block; background: #0A0A0A; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
                   ${lang.solenBtn}
                 </a>
                 <p style="color: #999; font-size: 12px; margin-top: 24px;">${lang.signature}</p>
@@ -181,6 +182,32 @@ export async function GET(req: NextRequest) {
             `,
           }),
         });
+      }
+
+      // Tip nudge,same 24h-post-visit pass, sent ONCE (piggybacks review_prompt_sent, so no
+      // extra column/migration). Gated on the salon actually being able to take tips online
+      // (Connect) AND a known stylist,otherwise /tip/<id> would dead-end at "tip at the counter".
+      const staff = booking.staff_members as any;
+      const stylistName: string | null = staff?.name ?? null;
+      if (salon?.stripe_account_id && stylistName) {
+        const tipLocale = (["de", "en", "fr", "it"] as const).includes(userLocale as any)
+          ? (userLocale as "de" | "en" | "fr" | "it")
+          : "de";
+        const tip = tipPromptEmail(
+          email,
+          {
+            customerName: profile?.display_name ?? "",
+            stylistName,
+            stylistPhoto: staff?.avatar_url ?? "",
+            tipUrl: `https://www.solen.ch/${tipLocale}/tip/${booking.id}`,
+          },
+          tipLocale,
+        );
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ from: "Solen <noreply@solen.ch>", to: email, subject: tip.subject, html: tip.html }),
+        }).catch((err) => console.error(`[review-prompt] tip email failed for booking ${booking.id}:`, err));
       }
 
       await supabase.from("bookings").update({ review_prompt_sent: true }).eq("id", booking.id);

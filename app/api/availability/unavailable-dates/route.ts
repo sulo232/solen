@@ -45,6 +45,16 @@ export async function GET(req: NextRequest) {
       throw slotsError;
     }
 
+    // Vacation range — grey these days out even if slots still exist for them (the booking POST
+    // also hard-blocks them via the SALON_ON_VACATION guard; this keeps the calendar honest).
+    const { data: salonVac } = await adminClient
+      .from('salons')
+      .select('vacation_start, vacation_end')
+      .eq('id', salonId)
+      .single();
+    const vacStart = salonVac?.vacation_start ?? null;
+    const vacEnd = salonVac?.vacation_end ?? null;
+
     // Extract available dates from the slots
     const availableDates = new Set(
       (slots || []).map((slot) =>
@@ -62,8 +72,9 @@ export async function GET(req: NextRequest) {
       allDates.push(date.toISOString().split('T')[0]);
     }
 
-    // Unavailable = dates NOT in availableDates
-    const unavailableDates = allDates.filter((d) => !availableDates.has(d));
+    // Unavailable = dates with no available slots OR inside the salon's vacation range
+    const inVacation = (d: string) => !!(vacStart && vacEnd && d >= vacStart && d <= vacEnd);
+    const unavailableDates = allDates.filter((d) => !availableDates.has(d) || inVacation(d));
 
     return NextResponse.json({ unavailableDates });
   } catch (error) {

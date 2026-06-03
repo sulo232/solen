@@ -14,10 +14,20 @@ export interface Tab {
 interface ExpandableTabsProps {
   tabs: Tab[];
   defaultTab?: string;
+  /** Controlled active-tab id. When provided, the parent owns the state. */
+  activeTab?: string;
+  /** Called when a tab is clicked. Required for controlled mode. */
+  onTabChange?: (id: string) => void;
 }
 
-export default function ExpandableTabs({ tabs, defaultTab }: ExpandableTabsProps) {
-  const [active, setActive] = useState(defaultTab ?? tabs[0]?.id);
+export default function ExpandableTabs({ tabs, defaultTab, activeTab, onTabChange }: ExpandableTabsProps) {
+  const [internalActive, setInternalActive] = useState(defaultTab ?? tabs[0]?.id);
+  const isControlled = activeTab !== undefined;
+  const active = isControlled ? activeTab : internalActive;
+  const setActive = (id: string) => {
+    if (!isControlled) setInternalActive(id);
+    onTabChange?.(id);
+  };
 
   return (
     <div className="w-full">

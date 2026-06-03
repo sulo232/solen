@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Star, MessageCircle, Flag } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -28,6 +29,7 @@ function Stars({ rating }: { rating: number }) {
 }
 
 export default function SalonReviewsPage() {
+  const t = useTranslations("dashboard.reviewsPage") as any;
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [salonId, setSalonId] = useState<string | null>(null);
@@ -90,14 +92,14 @@ export default function SalonReviewsPage() {
   return (
     <DashboardLayout>
       <div className="mb-6">
-        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Bewertungen</h1>
-        <p className="text-sm text-s-ink/40 mt-0.5">Kundenbewertungen lesen und antworten</p>
+        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">{t("title")}</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : reviews.length === 0 ? (
-        <EmptyState icon={Star} title="Keine Bewertungen" message="Noch keine Bewertungen von Kunden erhalten." />
+        <EmptyState icon={Star} title={t("emptyTitle")} message={t("emptyMessage")} />
       ) : (
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-3">
           {reviews.map((r) => (
@@ -115,7 +117,7 @@ export default function SalonReviewsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-medium text-s-ink truncate">
-                        {r.profiles?.display_name ?? "Anonym"}
+                        {r.profiles?.display_name ?? t("anonymous")}
                       </p>
                       <Stars rating={r.rating} />
                     </div>
@@ -130,7 +132,7 @@ export default function SalonReviewsPage() {
                 <button
                   onClick={() => { setFlagging(r.id); setRespondingTo(null); }}
                   className="text-s-ink/30 hover:text-s-error p-1 transition-colors"
-                  title="Bewertung melden"
+                  title={t("flagTitle")}
                 >
                   <Flag size={14} />
                 </button>
@@ -144,7 +146,7 @@ export default function SalonReviewsPage() {
               {/* Existing salon response */}
               {r.review_replies && r.review_replies.length > 0 && (
                 <div className="bg-s-bg-sunken rounded-btn p-3 mb-3">
-                  <p className="text-[10px] font-bold text-s-ink mb-1">Deine Antwort</p>
+                  <p className="text-[10px] font-bold text-s-ink mb-1">{t("yourReply")}</p>
                   <p className="text-xs text-s-ink/70">{r.review_replies[0].reply_text}</p>
                 </div>
               )}
@@ -157,7 +159,7 @@ export default function SalonReviewsPage() {
                       <textarea
                         rows={3}
                         maxLength={500}
-                        placeholder="Antwort schreiben..."
+                        placeholder={t("replyPlaceholder")}
                         value={responseText}
                         onChange={(e) => setResponseText(e.target.value)}
                         className="w-full px-3 py-2 rounded-btn border border-s-border bg-white text-s-ink text-xs focus:outline-none focus:border-s-ink resize-none"
@@ -169,7 +171,7 @@ export default function SalonReviewsPage() {
                           onClick={() => { setRespondingTo(null); setResponseText(""); }}
                           className="px-3 py-1.5 rounded-btn border border-s-border text-s-ink-2 text-xs hover:bg-s-bg-sunken transition-colors"
                         >
-                          Abbrechen
+                          {t("cancel")}
                         </button>
                         <button
                           onClick={() => handleRespond(r.id)}
@@ -177,7 +179,7 @@ export default function SalonReviewsPage() {
                           className="px-3 py-1.5 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-50 flex items-center gap-1 transition-colors"
                         >
                           {saving && <Spinner size="sm" invert />}
-                          Senden
+                          {t("send")}
                         </button>
                       </div>
                     </div>
@@ -187,7 +189,7 @@ export default function SalonReviewsPage() {
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-ink text-s-ink text-xs font-medium hover:bg-s-bg-sunken transition-colors"
                     >
                       <MessageCircle size={12} />
-                      Antwort schreiben
+                      {t("writeReply")}
                     </button>
                   )}
                 </>
@@ -196,11 +198,11 @@ export default function SalonReviewsPage() {
               {/* Flagging form */}
               {flagging === r.id && (
                 <div className="space-y-2 mt-3 p-3 bg-s-error-bg rounded-btn border border-s-error/15">
-                  <p className="text-xs font-medium text-s-error">Warum meldest du diese Bewertung?</p>
+                  <p className="text-xs font-medium text-s-error">{t("flagQuestion")}</p>
                   <textarea
                     rows={2}
                     maxLength={250}
-                    placeholder="Begründung (z.B. Fake-Bewertung, Beleidigung)..."
+                    placeholder={t("flagPlaceholder")}
                     value={flagReason}
                     onChange={(e) => setFlagReason(e.target.value)}
                     className="w-full px-3 py-2 rounded-btn border border-s-error/20 bg-white text-s-ink text-xs focus:outline-none focus:border-s-error resize-none"
@@ -210,7 +212,7 @@ export default function SalonReviewsPage() {
                       onClick={() => { setFlagging(null); setFlagReason(""); }}
                       className="px-3 py-1.5 rounded-btn border border-s-border text-s-ink-2 text-xs hover:bg-s-bg-sunken transition-colors"
                     >
-                      Abbrechen
+                      {t("cancel")}
                     </button>
                     <button
                       onClick={() => handleFlag(r.id)}
@@ -218,7 +220,7 @@ export default function SalonReviewsPage() {
                       className="px-3 py-1.5 rounded-btn bg-s-error hover:brightness-110 text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1 transition-colors"
                     >
                       {saving && <Spinner size="sm" invert />}
-                      Melden
+                      {t("flagSubmit")}
                     </button>
                   </div>
                 </div>

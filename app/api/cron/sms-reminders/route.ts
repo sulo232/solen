@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
   const { data: bookings24h } = await supabase
     .from("bookings")
     .select(
-      "id, starts_at, profiles!bookings_user_id_fkey(display_name, phone), salons!bookings_salon_id_fkey(name, address)"
+      "id, starts_at, profiles!bookings_user_id_fkey(display_name, phone), salons!bookings_salon_id_fkey(name, address, sms_reminder_24h)"
     )
     .eq("status", "confirmed")
     .eq("sms_sent_24h", false)
@@ -55,6 +55,7 @@ export async function GET(req: NextRequest) {
     const salon = booking.salons as any;
     const phone = profile?.phone;
     if (!phone) continue;
+    if (!salon?.sms_reminder_24h) continue; // honor the per-salon 24h-reminder toggle
 
     const time = new Date(booking.starts_at).toLocaleTimeString("de-CH", {
       hour: "2-digit",
@@ -86,7 +87,7 @@ export async function GET(req: NextRequest) {
   const { data: bookings1h } = await supabase
     .from("bookings")
     .select(
-      "id, starts_at, profiles!bookings_user_id_fkey(display_name, phone), salons!bookings_salon_id_fkey(name)"
+      "id, starts_at, profiles!bookings_user_id_fkey(display_name, phone), salons!bookings_salon_id_fkey(name, sms_reminder_1h)"
     )
     .eq("status", "confirmed")
     .eq("sms_sent_1h", false)
@@ -99,6 +100,7 @@ export async function GET(req: NextRequest) {
     const salon = booking.salons as any;
     const phone = profile?.phone;
     if (!phone) continue;
+    if (!salon?.sms_reminder_1h) continue; // honor the per-salon 1h-reminder toggle
 
     const time = new Date(booking.starts_at).toLocaleTimeString("de-CH", {
       hour: "2-digit",

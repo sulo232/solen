@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
   // 2. Salon must accept online payment.
   const { data: salon } = await admin
     .from("salons")
-    .select("name, stripe_account_id, accepts_online_payment")
+    .select("name, stripe_account_id, accepts_online_payment, payment_mode, deposit_percent")
     .eq("id", booking.salon_id)
     .single();
   if (!salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
@@ -107,7 +107,20 @@ export async function POST(req: NextRequest) {
   if (!Number.isFinite(priceChf) || priceChf < 0.5) {
     return NextResponse.json({ error: "Service has no valid price" }, { status: 400 });
   }
-  const amountRappen = toRappen(priceChf);
+  // Charge per the salon's payment_mode (was: always the full price, ignoring the setting):
+  //   prepay / unset → full price now;  deposit → deposit_percent% now (rest paid at the salon);
+  //   at_salon → no online charge (book + pay in person) — reject the online pay step (fail-closed,
+  //   so an at-salon shop never wrongly charges online; the booking flow offers only in-person).
+  const paymentMode = String((salon as { payment_mode?: string }).payment_mode ?? "prepay");
+  if (paymentMode === "at_salon") {
+    return NextResponse.json({ error: "Dieser Salon kassiert vor Ort.", code: "AT_SALON" }, { status: 400 });
+  }
+  const fullRappen = toRappen(priceChf);
+  const depositPct = Math.min(100, Math.max(1, Number((salon as { deposit_percent?: number }).deposit_percent) || 20));
+  const amountRappen = paymentMode === "deposit"
+    ? Math.max(50, Math.round((fullRappen * depositPct) / 100))   // ≥ CHF 0.50 (Stripe minimum)
+    : fullRappen;
+  const chargeChf = amountRappen / 100;
 
   // 4. Re-verify the slot is still held by THIS booking (don't take a card for
   //    a slot that was released / re-booked under us).
@@ -190,6 +203,9 @@ export async function POST(req: NextRequest) {
       slot_id: booking.slot_id ?? "",
       starts_at: booking.starts_at ?? "",
       staff_member_id: booking.staff_member_id ?? "",
+      payment_mode: paymentMode,                                  // deposit | prepay
+      full_price_chf: String(priceChf),                           // full service price (for the remainder)
+      deposit_percent: paymentMode === "deposit" ? String(depositPct) : "",
     },
     description: `Buchung: ${service.name_de ?? "Service"} @ ${salon.name ?? "Salon"}`,
   };
@@ -227,7 +243,11 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     client_secret: paymentIntent.client_secret,
     payment_intent_id: paymentIntent.id,
-    amount: priceChf,
+    amount: chargeChf,                                   // charged NOW (deposit or full)
+    full_price: priceChf,                                // full service price
+    payment_mode: paymentMode,                           // deposit | prepay
+    deposit_percent: paymentMode === "deposit" ? depositPct : null,
+    remaining_at_salon: paymentMode === "deposit" ? Math.round((priceChf - chargeChf) * 100) / 100 : 0,
     service_name: service.name_de,
   });
 }

@@ -12,7 +12,7 @@ import {
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
   UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid, FlaskConical,
-  Scale, RotateCcw, TrendingUp, Percent,
+  Scale, RotateCcw, TrendingUp, Percent, ArrowLeft,
 } from "lucide-react";
 
 import Skeleton from "@/components-legacy/ui/Skeleton";
@@ -49,27 +49,6 @@ const ADMIN_NAV = [
   { key: "discovery",           href: "/dashboard/discovery-admin",    icon: Compass },
   { key: "homepage",            href: "/dashboard/homepage-admin",     icon: LayoutGrid },
   { key: "sandbox",             href: "/dashboard/admin-sandbox",      icon: FlaskConical },
-] as const;
-
-const OWNER_NAV = [
-  { key: "overview",    href: "/dashboard",            icon: Home },
-  { key: "bookings",      href: "/dashboard/bookings",   icon: Calendar },
-  { key: "calendar",     href: "/dashboard/calendar",   icon: Clock },
-  { key: "messages",  href: "/dashboard/messages",   icon: MessageCircle },
-  { key: "team",         href: "/dashboard/staff",      icon: Users },
-  { key: "clients",       href: "/dashboard/clients",    icon: UserCheck },
-  { key: "services",     href: "/dashboard/services",   icon: Scissors },
-  { key: "marketing",    href: "/dashboard/marketing",  icon: Megaphone },
-  { key: "analytics",  href: "/dashboard/analytics",  icon: BarChart },
-  { key: "reviews",        href: "/dashboard/reviews",    icon: Star },
-  { key: "gallery",        href: "/dashboard/gallery",    icon: ImageIcon },
-  { key: "posts",  href: "/dashboard/discovery-posts", icon: Camera },
-  { key: "nailClients",  href: "/dashboard/nail-clients", icon: Sparkles },
-  { key: "barberClients", href: "/dashboard/barber-clients", icon: Scissors },
-  { key: "barberOps",   href: "/dashboard/barber-ops",     icon: BarChart3 },
-  { label: "Treueprogramm",href: "/dashboard/loyalty",        icon: Award },
-  { label: "Einstellungen",href: "/dashboard/settings",   icon: Settings },
-  { label: "Verifizierung",href: "/dashboard/verification", icon: ShieldCheck },
 ] as const;
 
 const OWNER_NAV_GROUPS = [
@@ -127,33 +106,28 @@ const STAFF_NAV = [
 
 // V3-D347 (W1): Fresha icon-rail nav — the 9 operator sections. Labels are tooltips
 // (icon-only rail); i18n keys for the new taxonomy land in the i18n pass.
+// V3-D347 (W1): Fresha icon-rail nav — the operator sections. SINGLE source of truth
+// for BOTH the desktop icon-rail AND the mobile slide-out sidebar (the rail renders these
+// flat as icons; the sidebar renders them grouped by `group`). Keeps PC + mobile in sync.
 const RAIL_NAV = [
-  { key: "overview",  href: "/dashboard",           icon: LayoutGrid, label: "Übersicht" },
-  { key: "calendar",  href: "/dashboard/calendar",  icon: Calendar,   label: "Kalender" },
-  // V3-D421 (G11): walk-in queue rail item, barbershop-only (filtered at render). The live
-  // queue UI lives in /dashboard/barber-ops; this surfaces it in the desktop rail (was unreachable there).
-  { key: "queue",     href: "/dashboard/barber-ops", icon: UsersRound, label: "Warteschlange", barbershopOnly: true },
-  { key: "catalog",   href: "/dashboard/services",  icon: Scissors,   label: "Katalog" },
-  { key: "clients",   href: "/dashboard/clients",   icon: Users,         label: "Kund:innen" },
-  { key: "messages",  href: "/dashboard/messages",  icon: MessageCircle, label: "Nachrichten" },
-  { key: "marketing", href: "/dashboard/marketing", icon: Megaphone,     label: "Marketing" },
-  { key: "sales",     href: "/dashboard/bookings",  icon: DollarSign, label: "Verkäufe" },
-  { key: "team",      href: "/dashboard/staff",     icon: UserCheck,  label: "Team" },
-  { key: "reports",   href: "/dashboard/analytics", icon: BarChart3,  label: "Berichte" },
-  { key: "refunds",   href: "/dashboard/refunds",   icon: RotateCcw,  label: "Rückerstattungen" },
-  { key: "upcharge",  href: "/dashboard/upcharge",  icon: TrendingUp, label: "Mehrbelastung" },
-  { key: "cases",     href: "/dashboard/cases",     icon: Scale,      label: "Fälle", adminOnly: true },
-  { key: "settings",  href: "/dashboard/settings",  icon: Settings,   label: "Einstellungen" },
+  { key: "overview",  href: "/dashboard",           icon: LayoutGrid, label: "Übersicht",       group: "Betrieb" },
+  { key: "calendar",  href: "/dashboard/calendar",  icon: Calendar,   label: "Kalender",        group: "Betrieb" },
+  // V3-D421 (G11): walk-in queue rail item, barbershop-only (filtered at render).
+  { key: "queue",     href: "/dashboard/barber-ops", icon: UsersRound, label: "Warteschlange", barbershopOnly: true, group: "Betrieb" },
+  { key: "catalog",   href: "/dashboard/services",  icon: Scissors,   label: "Katalog",         group: "Verkauf & Kunden" },
+  { key: "clients",   href: "/dashboard/clients",   icon: Users,         label: "Kund:innen",    group: "Verkauf & Kunden" },
+  { key: "messages",  href: "/dashboard/messages",  icon: MessageCircle, label: "Nachrichten",   group: "Betrieb" },
+  { key: "marketing", href: "/dashboard/marketing", icon: Megaphone,     label: "Marketing",     group: "Business" },
+  { key: "sales",     href: "/dashboard/bookings",  icon: DollarSign, label: "Verkäufe",        group: "Verkauf & Kunden" },
+  { key: "team",      href: "/dashboard/staff",     icon: UserCheck,  label: "Team",            group: "Business" },
+  { key: "reports",   href: "/dashboard/analytics", icon: BarChart3,  label: "Berichte",        group: "Business" },
+  { key: "refunds",   href: "/dashboard/refunds",   icon: RotateCcw,  label: "Rückerstattungen", group: "Abrechnung" },
+  { key: "upcharge",  href: "/dashboard/upcharge",  icon: TrendingUp, label: "Mehrbelastung",   group: "Abrechnung" },
+  { key: "cases",     href: "/dashboard/cases",     icon: Scale,      label: "Fälle", adminOnly: true, group: "Abrechnung" },
+  { key: "settings",  href: "/dashboard/settings",  icon: Settings,   label: "Einstellungen",   group: "Mehr" },
 ] as const;
 
-// Mobile bottom nav shows 5 items: first 3 + Messages + "Mehr"
-const MOBILE_NAV = [
-  { key: "overview",   href: "/dashboard",           icon: Home },
-  { key: "bookings",     href: "/dashboard/bookings",  icon: Calendar },
-  { key: "messages", href: "/dashboard/messages",  icon: MessageCircle },
-  { key: "team",        href: "/dashboard/staff",     icon: Users },
-  { key: "more",        href: "/dashboard/settings",  icon: Menu },
-] as const;
+const NAV_GROUP_ORDER = ["Betrieb", "Verkauf & Kunden", "Business", "Abrechnung", "Mehr"] as const;
 
 // ─────────────────────────────────────────
 // Component
@@ -185,6 +159,7 @@ export default function DashboardLayout({
   const [isStaff, setIsStaff] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [previewSalonName, setPreviewSalonName] = useState<string | null>(null);
+  const [fetchedSalonName, setFetchedSalonName] = useState<string | null>(null);
   const [exitingPreview, setExitingPreview] = useState(false);
 
   // Global Ctrl+K / Cmd+K shortcut to open command palette
@@ -220,16 +195,6 @@ export default function DashboardLayout({
     }).filter((g): g is NonNullable<typeof g> => g !== null);
   }, [salonCategories]);
 
-  // Filter flat nav for mobile sidebar
-  const filteredOwnerNav = useMemo(() => {
-    if (!salonCategories || salonCategories.length === 0) return OWNER_NAV;
-    return OWNER_NAV.filter(item => {
-      const requiredCategory = CATEGORY_NAV_MAP["key" in item ? item.key : ""];
-      if (!requiredCategory) return true;
-      return salonCategories.includes(requiredCategory);
-    });
-  }, [salonCategories]);
-
   // Get category-specific nav groups
   const categoryNavGroups = useMemo(() => {
     if (!salonCategories || salonCategories.length === 0) return [];
@@ -263,6 +228,10 @@ export default function DashboardLayout({
           router.push(`/${locale}/profile`);
         } else {
           setRole(p.role);
+          // Fallback salon name for subpages that don't pass the salonName prop (the layout
+          // already fetches the profile here — reuse it so the topbar/sidebar show the real
+          // salon name instead of "Dein Salon").
+          setFetchedSalonName((p as any).salon_name ?? null);
           setIsStaff(!!(p as any).staff_salon_id && p.role !== "salon_owner" && p.role !== "admin");
           if ((p as any).is_previewing) {
             setIsPreviewing(true);
@@ -345,7 +314,7 @@ export default function DashboardLayout({
         {salonAvatar ? (
           <Image src={salonAvatar} alt={salonName ?? ""} width={34} height={34} className="rounded-full object-cover" />
         ) : (
-          <div className="w-[34px] h-[34px] rounded-full bg-s-ink text-white grid place-items-center text-[12px] font-semibold">{(salonName?.trim()?.[0] ?? "S").toUpperCase()}</div>
+          <div className="w-[34px] h-[34px] rounded-full bg-s-ink text-white grid place-items-center text-[12px] font-semibold">{((salonName ?? fetchedSalonName)?.trim()?.[0] ?? "S").toUpperCase()}</div>
         )}
       </aside>
 
@@ -366,89 +335,91 @@ export default function DashboardLayout({
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ duration: 0.15 }}
-              className="absolute left-0 top-0 h-full w-64 bg-white border-r border-s-ink/[0.06]"
+              className="absolute left-0 top-0 h-full w-[300px] max-w-[85vw] bg-white border-r border-s-border flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="px-4 py-4 border-b border-s-ink/[0.06] flex items-center justify-between">
-                <span className="font-heading text-base text-s-ink">Solen<span className="inline-block w-[5px] h-[5px] rounded-full bg-s-ink ml-1 align-middle" aria-hidden></span></span>
-                <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-s-ink/40" /></button>
+              {/* Salon header */}
+              <div className="px-4 py-4 border-b border-s-border flex items-center gap-3">
+                {salonAvatar ? (
+                  <Image src={salonAvatar} alt={salonName ?? ""} width={40} height={40} className="rounded-full object-cover shrink-0" />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-s-ink text-white grid place-items-center text-[15px] font-semibold shrink-0">{((salonName ?? fetchedSalonName)?.trim()?.[0] ?? "S").toUpperCase()}</div>
+                )}
+                <span className="flex-1 min-w-0 font-heading font-semibold text-[15px] tracking-[-0.01em] text-s-ink truncate">{salonName ?? fetchedSalonName ?? "Dein Salon"}</span>
+                <button onClick={() => setMobileSidebarOpen(false)} aria-label="Menü schließen" className="p-1 -mr-1 text-s-ink-3 hover:text-s-ink transition-colors"><X size={20} /></button>
               </div>
-              <nav className="py-3 px-1 overflow-y-auto">
-                {(isStaff ? STAFF_NAV : filteredOwnerNav).map((item) => {
-                  const { href, icon: Icon } = item;
-                  const label = "key" in item ? t(item.key as Parameters<typeof t>[0]) : ("label" in item ? item.label : "");
-                  const active = isActive(href);
-                  return (
-                    <Link
-                      key={href}
-                      href={`/${locale}${href}`}
-                      onClick={() => setMobileSidebarOpen(false)}
-                      aria-current={active ? "page" : undefined}
-                      className={`flex items-center gap-3 px-3 py-2 text-[14px] font-medium transition-colors duration-150 rounded-[10px] ${
-                        active
-                          ? "bg-s-bg-sunken text-s-ink"
-                          : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"
-                      }`}
-                    >
-                      <Icon size={15} className={active ? "text-s-ink" : "text-s-ink-2"} />
-                      <span className="flex-1">{label}</span>
-                      {href === "/dashboard/messages" && unreadCount > 0 && (
-                        <span className="ml-auto text-[10px] font-heading px-1.5 py-0.5 rounded-full bg-s-ink text-white">
-                          {unreadCount > 9 ? "9+" : unreadCount}
-                        </span>
-                      )}
-                    </Link>
-                  );
-                })}
-                {/* Category-specific nav items (mobile) */}
-                {!isStaff && categoryNavGroups.map(group => (
-                  <div key={`mobile-${group.category}`}>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-1 px-4 mt-4">
-                      {t(group.labelKey as any)}
-                    </p>
-                    {group.items.map(item => (
-                      <Link
-                        key={item.key}
-                        href={`/${locale}${item.href}`}
-                        onClick={() => setMobileSidebarOpen(false)}
-                        aria-current={isActive(item.href) ? "page" : undefined}
-                        className={`flex items-center gap-3 px-3 py-2 text-[14px] font-medium transition-colors duration-150 rounded-[10px] ${
-                          isActive(item.href)
-                            ? "bg-s-bg-sunken text-s-ink"
-                            : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"
-                        }`}
-                      >
-                        <item.icon size={15} className={isActive(item.href) ? "text-s-ink" : "text-s-ink-2"} />
-                        <span className="flex-1">{t(item.labelKey as any)}</span>
+
+              {/* Scrollable grouped nav */}
+              <nav className="flex-1 overflow-y-auto px-2 py-2">
+                {isStaff ? (
+                  STAFF_NAV.map(({ key, href, icon: Icon }) => {
+                    const active = isActive(href);
+                    return (
+                      <Link key={href} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-accent/[0.08] text-s-accent" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
+                        <Icon size={20} strokeWidth={1.9} className={active ? "text-s-accent" : "text-s-ink-3"} />
+                        <span className="flex-1">{t(key)}</span>
                       </Link>
-                    ))}
-                  </div>
-                ))}
-                {role === "admin" && (
+                    );
+                  })
+                ) : (
                   <>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-1 px-4 mt-4">Admin</p>
-                    {ADMIN_NAV.map(({ key, href, icon: Icon }) => {
-                      const active = isActive(href);
+                    {/* Unified nav — SAME set as the desktop rail (RAIL_NAV), grouped for the sidebar */}
+                    {NAV_GROUP_ORDER.map((groupLabel) => {
+                      const items = RAIL_NAV.filter((it) =>
+                        (it as any).group === groupLabel
+                        && (!("barbershopOnly" in it) || salonCategories?.includes("barbershop"))
+                        && (!("adminOnly" in it) || role === "admin"),
+                      );
+                      if (items.length === 0) return null;
                       return (
-                        <Link
-                          key={href}
-                          href={`/${locale}${href}`}
-                          onClick={() => setMobileSidebarOpen(false)}
-                          aria-current={active ? "page" : undefined}
-                          className={`flex items-center gap-3 px-3 py-2 text-[14px] font-medium transition-colors duration-150 rounded-[10px] ${
-                            active
-                              ? "bg-s-bg-sunken text-s-ink"
-                              : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"
-                          }`}
-                        >
-                          <Icon size={15} className={active ? "text-s-ink" : "text-s-ink-2"} />
-                          <span className="flex-1">{t(key)}</span>
-                        </Link>
+                        <div key={groupLabel}>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 px-3 mt-5 mb-1 first:mt-1">{groupLabel}</p>
+                          {items.map(({ key, href, icon: Icon, label }) => {
+                            const active = isActive(href);
+                            return (
+                              <Link key={key} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
+                                className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-accent/[0.08] text-s-accent" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
+                                <Icon size={20} strokeWidth={1.9} className={active ? "text-s-accent" : "text-s-ink-3"} />
+                                <span className="flex-1">{label}</span>
+                                {href === "/dashboard/messages" && unreadCount > 0 && (
+                                  <span className="ml-auto text-[10px] font-heading px-1.5 py-0.5 rounded-full bg-s-ink text-white">{unreadCount > 9 ? "9+" : unreadCount}</span>
+                                )}
+                              </Link>
+                            );
+                          })}
+                        </div>
                       );
                     })}
+
+                    {/* Admin */}
+                    {role === "admin" && (
+                      <div>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 px-3 mt-5 mb-1">Admin</p>
+                        {ADMIN_NAV.map(({ key, href, icon: Icon }) => {
+                          const active = isActive(href);
+                          return (
+                            <Link key={href} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
+                              className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-accent/[0.08] text-s-accent" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
+                              <Icon size={20} strokeWidth={1.9} className={active ? "text-s-accent" : "text-s-ink-3"} />
+                              <span className="flex-1">{t(key)}</span>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
                   </>
                 )}
               </nav>
+
+              {/* Footer */}
+              <div className="border-t border-s-border px-2 py-2">
+                <Link href={`/${locale}`} onClick={() => setMobileSidebarOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken transition-colors">
+                  <ArrowLeft size={20} strokeWidth={1.9} className="text-s-ink-3" />
+                  <span className="flex-1">{t("backToSite")}</span>
+                </Link>
+              </div>
             </motion.aside>
           </motion.div>
         )}
@@ -459,7 +430,7 @@ export default function DashboardLayout({
         {/* Desktop top bar */}
         <div className="hidden md:flex sticky top-0 z-20 bg-white/85 backdrop-blur-md border-b border-s-border h-[56px] items-center gap-3 px-6">
           <button className="inline-flex items-center gap-2 text-[14px] font-semibold tracking-[-0.01em] text-s-ink px-3 py-1.5 rounded-full border border-s-border hover:bg-s-bg-sunken transition-colors">
-            {salonName ?? "Dein Salon"}
+            {salonName ?? fetchedSalonName ?? "Dein Salon"}
             <ChevronDown size={14} className="text-s-ink-2" />
           </button>
           <div className="flex-1" />
@@ -473,7 +444,7 @@ export default function DashboardLayout({
           <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60" aria-label="Menu öffnen">
             <Menu size={20} />
           </button>
-          <span className="font-heading text-base flex-1">Solen<span className="inline-block w-[5px] h-[5px] rounded-full bg-s-ink ml-1 align-middle" aria-hidden></span></span>
+          <span className="font-heading text-base flex-1 truncate text-s-ink">{salonName ?? fetchedSalonName ?? "Dein Salon"}</span>
           <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="p-1.5 text-s-ink/40 hover:text-s-ink/70 transition-colors">
             <Search size={16} />
           </button>
@@ -498,43 +469,13 @@ export default function DashboardLayout({
           </div>
         )}
 
-        <main className="flex-1 px-4 sm:px-6 py-6 md:py-8">
+        <main className="flex-1 px-4 pt-6 pb-10 sm:px-6 md:py-8">
           {children}
         </main>
       </div>
 
       {/* ── Command Palette ── */}
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
-
-      {/* ── Mobile bottom nav ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-s-ink/[0.06] bg-white"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-        <div className="flex">
-          {MOBILE_NAV.map(({ key, href, icon: Icon }) => {
-            const active = isActive(href);
-            const isMessages = href === "/dashboard/messages";
-            return (
-              <Link
-                key={href}
-                href={`/${locale}${href}`}
-                className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 transition-colors ${
-                  active ? "text-s-accent-bright" : "text-s-ink-2"
-                }`}
-              >
-                <div className="relative">
-                  <Icon size={20} />
-                  {isMessages && unreadCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-s-ink" />
-                  )}
-                </div>
-                <span className="text-[8px] font-heading uppercase tracking-[.08em]">
-                  {t(key)}
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
     </div>
   );
 }

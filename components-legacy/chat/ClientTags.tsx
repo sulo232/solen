@@ -35,13 +35,6 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
   const [newColor, setNewColor] = useState("gray");
   const [adding, setAdding] = useState(false);
 
-  const allergyPresets = [
-    t("allergyPresets.allergy"),
-    t("allergyPresets.sensitiveSkin"),
-    t("allergyPresets.latexAllergy"),
-    t("allergyPresets.ammoniaFree"),
-  ];
-
   useEffect(() => {
     fetch(`/api/salons/${salonId}/client-tags?customer_id=${customerId}`)
       .then((r) => r.json())
@@ -100,6 +93,13 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
     );
   }
 
+  const allergyPresets = [
+    t("allergyPresets.allergy"),
+    t("allergyPresets.sensitiveSkin"),
+    t("allergyPresets.latexAllergy"),
+    t("allergyPresets.ammoniaFree"),
+  ];
+
   return (
     <div className="space-y-2">
       {/* Allergy warning banner */}
@@ -153,7 +153,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
             <input
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}
-              placeholder={t("customTagPlaceholder")}
+              placeholder={t("customPlaceholder")}
               maxLength={50}
               className="flex-1 px-2.5 py-1.5 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/20 bg-white"
             />

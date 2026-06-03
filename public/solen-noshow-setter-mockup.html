@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen — No-Show-Gebühr setter (Phase C) v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9A9A9A;
+    --border:#E7E5E4; --sunken:#F5F5F4; --white:#fff;
+    --accent:#276EF1; --accent-bg:#EAEFFE; --success:#16A34A; --success-bg:#E8F5E9;
+    --surcharge:#EA580C; --surcharge-bg:#FFEDD5; --surcharge-ink:#9A3412;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#E9E8E6;-webkit-font-smoothing:antialiased;padding:30px 24px 56px}
+  h1.t{font-family:'Inter Tight';font-weight:700;font-size:21px;letter-spacing:-.02em;margin-bottom:4px}
+  .lede{font-size:13px;color:rgba(10,10,10,.55);margin-bottom:24px;max-width:940px;line-height:1.5}
+  .lede b{color:var(--surcharge)}
+  .rail{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+  .col{display:flex;flex-direction:column}
+  .cap{font-family:'Inter Tight';font-weight:600;font-size:12.5px;color:var(--ink2);margin:0 0 9px 2px}
+  .cap span{color:var(--ink3);font-weight:500}
+  .phone{width:390px;background:var(--white);border-radius:30px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.17)}
+  .topbar{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border)}
+  .topbar .ic{width:21px;height:21px;color:var(--ink)}
+  .brand{font-family:'Inter Tight';font-weight:700;font-size:16px;flex:1}
+  .body{padding:18px 16px 24px}
+  .backrow{display:flex;align-items:center;gap:5px;font-size:13.5px;color:var(--ink2);font-weight:600;margin-bottom:14px}
+  .backrow .ic{width:17px;height:17px}
+  h2{font-family:'Inter Tight';font-weight:700;font-size:22px;letter-spacing:-.02em;margin-bottom:14px}
+  .setgrp{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);margin:0 2px 9px}
+
+  /* option-card: neutral / blue-selected / orange-selected (a charge) */
+  .optcard{border:1px solid var(--border);border-radius:13px;padding:12px 13px;margin-bottom:8px;display:flex;gap:11px;align-items:center;background:#fff}
+  .optcard .rad{width:18px;height:18px;border-radius:999px;border:2px solid var(--border);flex-shrink:0}
+  .optcard .mid{flex:1;min-width:0}
+  .ot{font-family:'Inter Tight';font-weight:600;font-size:13.5px}
+  .od{font-size:11.5px;color:var(--ink2);margin-top:2px}
+  .optcard.sel-blue{border-color:var(--accent);background:var(--accent-bg)}
+  .optcard.sel-blue .rad{border-color:var(--accent);background:radial-gradient(circle,var(--accent) 42%,#fff 46%)}
+  .optcard.sel-blue .ot{color:var(--accent)}
+  .optcard.sel-orange{border-color:var(--surcharge);background:var(--surcharge-bg)}
+  .optcard.sel-orange .rad{border-color:var(--surcharge);background:radial-gradient(circle,var(--surcharge) 42%,#fff 46%)}
+  .optcard.sel-orange .ot{color:var(--surcharge-ink)}
+  .optcard.sel-orange .od{color:#B45309}
+  /* the live amount riding on the selected charging card */
+  .amt{font-family:'Inter Tight';font-weight:700;font-size:15px;color:var(--surcharge);font-variant-numeric:tabular-nums;flex-shrink:0}
+
+  /* value editor (pale-orange, vivid orange number) */
+  .vfield{border:1px solid var(--surcharge-bg);background:var(--surcharge-bg);border-radius:12px;padding:11px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+  .vfield .vl{font-size:12.5px;color:var(--surcharge-ink);font-weight:600}
+  .vfield .vv{font-family:'Inter Tight';font-weight:700;font-size:20px;color:var(--surcharge);font-variant-numeric:tabular-nums}
+
+  /* preview — orange when a fee is charged, neutral-green when free */
+  .preview{display:flex;align-items:flex-start;gap:9px;border-radius:12px;padding:11px 13px;margin:6px 0 16px}
+  .preview .ic{width:16px;height:16px;flex-shrink:0;margin-top:1px}
+  .preview .pt{font-size:12px;line-height:1.45}
+  .preview.charge{background:var(--surcharge-bg)} .preview.charge .ic{color:var(--surcharge)} .preview.charge .pt{color:var(--surcharge-ink)}
+  .preview.charge .pt b{color:var(--surcharge);font-family:'Inter Tight';font-weight:700}
+  .preview.free{background:var(--success-bg)} .preview.free .ic{color:var(--success)} .preview.free .pt{color:#15803D}
+  .preview.free .pt b{color:var(--success);font-family:'Inter Tight';font-weight:700}
+
+  .save{display:block;width:100%;text-align:center;background:var(--ink);color:#fff;font-family:'Inter Tight';font-weight:600;font-size:14px;border-radius:12px;padding:13px;margin-top:4px}
+  .note{font-size:11.5px;color:rgba(10,10,10,.42);margin-top:11px;line-height:1.5;max-width:360px}
+  .note b{color:var(--ink2);font-weight:600} .note code{color:var(--surcharge-ink)}
+</style>
+</head>
+<body>
+  <h1 class="t">Phase C — No-Show-Gebühr setter · v2 (color = the message)</h1>
+  <p class="lede">You said v1 was too monochrome. Fix isn't random colour — it's the semantic one: a no-show fee is a <b>charge</b>, so it uses the surcharge <b>orange</b> (#EA580C) the system reserves for money-out, never flat ink. A charging option (Pauschale / Prozentual) lights up orange = "this bills the customer's card"; „Keine" stays calm (green = nothing charged). The amount rides on the selected card and in a pale-orange value field. Selection elsewhere in the app stays blue — orange here means money.</p>
+
+  <div class="rail">
+
+    <!-- KEINE (free) -->
+    <div class="col">
+      <p class="cap">„Keine" <span>· no charge (calm green)</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span></div>
+        <div class="body">
+          <div class="backrow"><i class="ic" data-lucide="chevron-left"></i>Einstellungen</div>
+          <h2>Zahlungen</h2>
+          <div class="setgrp">No-Show-Gebühr</div>
+          <div class="optcard sel-blue"><span class="rad"></span><div class="mid"><div class="ot">Keine</div><div class="od">Kein No-Show wird belastet</div></div></div>
+          <div class="optcard"><span class="rad"></span><div class="mid"><div class="ot">Pauschale</div><div class="od">Fester Betrag in CHF</div></div></div>
+          <div class="optcard"><span class="rad"></span><div class="mid"><div class="ot">Prozentual</div><div class="od">% des Buchungspreises</div></div></div>
+          <div class="preview free"><i class="ic" data-lucide="shield-check"></i><span class="pt"><b>Kund:innen sehen:</b> Bei Nichterscheinen wird keine Gebühr belastet.</span></div>
+          <span class="save">Speichern</span>
+        </div>
+      </div>
+      <p class="note"><b>Writes</b> <code>no_show_fee_type='free'</code>. „Keine" uses calm green (no money out), not orange.</p>
+    </div>
+
+    <!-- PROZENTUAL (orange charge) -->
+    <div class="col">
+      <p class="cap">„Prozentual" <span>· active charge (orange)</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span></div>
+        <div class="body">
+          <div class="backrow"><i class="ic" data-lucide="chevron-left"></i>Einstellungen</div>
+          <h2>Zahlungen</h2>
+          <div class="setgrp">No-Show-Gebühr</div>
+          <div class="optcard"><span class="rad"></span><div class="mid"><div class="ot">Keine</div><div class="od">Kein No-Show wird belastet</div></div></div>
+          <div class="optcard"><span class="rad"></span><div class="mid"><div class="ot">Pauschale</div><div class="od">Fester Betrag in CHF</div></div></div>
+          <div class="optcard sel-orange"><span class="rad"></span><div class="mid"><div class="ot">Prozentual</div><div class="od">% des Buchungspreises</div></div><span class="amt">50 %</span></div>
+          <div class="vfield"><span class="vl">Prozentsatz</span><span class="vv">50&nbsp;%</span></div>
+          <div class="preview charge"><i class="ic" data-lucide="alert-triangle"></i><span class="pt"><b>Kund:innen sehen:</b> Bei Nichterscheinen werden <b>50% (≈ CHF 24)</b> der hinterlegten Karte belastet.</span></div>
+          <span class="save">Speichern</span>
+        </div>
+      </div>
+      <p class="note"><b>Writes</b> <code>no_show_fee_type='percentage'</code>, <code>no_show_fee_value=50</code> — read by the no-show cron + walk-in path.</p>
+    </div>
+
+    <!-- PAUSCHALE (orange flat) -->
+    <div class="col">
+      <p class="cap">„Pauschale" <span>· fixed CHF (orange)</span></p>
+      <div class="phone">
+        <div class="topbar"><i class="ic" data-lucide="menu"></i><span class="brand">Cuts &amp; Culture</span></div>
+        <div class="body">
+          <div class="backrow"><i class="ic" data-lucide="chevron-left"></i>Einstellungen</div>
+          <h2>Zahlungen</h2>
+          <div class="setgrp">No-Show-Gebühr</div>
+          <div class="optcard"><span class="rad"></span><div class="mid"><div class="ot">Keine</div><div class="od">Kein No-Show wird belastet</div></div></div>
+          <div class="optcard sel-orange"><span class="rad"></span><div class="mid"><div class="ot">Pauschale</div><div class="od">Fester Betrag in CHF</div></div><span class="amt">CHF 20</span></div>
+          <div class="optcard"><span class="rad"></span><div class="mid"><div class="ot">Prozentual</div><div class="od">% des Buchungspreises</div></div></div>
+          <div class="vfield"><span class="vl">Betrag (CHF)</span><span class="vv">20</span></div>
+          <div class="preview charge"><i class="ic" data-lucide="alert-triangle"></i><span class="pt"><b>Kund:innen sehen:</b> Bei Nichterscheinen werden <b>CHF 20</b> der hinterlegten Karte belastet.</span></div>
+          <span class="save">Speichern</span>
+        </div>
+      </div>
+      <p class="note"><b>Writes</b> <code>no_show_fee_type='flat'</code>, <code>no_show_fee_value=20</code>. Replaces the two dead "No-Show-Schutz" sliders (cancellation policy stays in the Stornierung tab).</p>
+    </div>
+
+  </div>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

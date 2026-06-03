@@ -1,181 +1,74 @@
 "use client";
 
+// Booking tip deep-link (the tipPromptEmail target). Opens the shared <TipSheet> over a plain
+// backdrop, so the tip is the same bottom-sheet popup here as it is in-app. Dismiss → home.
+// /api/tips returns the clientSecret (100% to the salon's Connect account, no platform fee).
+
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { Heart, Check, AlertCircle } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
-import { formatCurrency } from "@/lib/format-currency";
+import TipSheet from "@/app/[locale]/_components/tips/TipSheet";
 
-const TIP_PRESETS = [500, 1000, 1500]; // in cents
-
-const labels = {
-  de: { thanks: "Danke für dein Trinkgeld!", sent: "gesendet", give: "Trinkgeld geben", custom: "Eigener Betrag", send: "Trinkgeld senden", error: "Fehler" },
-  en: { thanks: "Thank you for your tip!", sent: "sent", give: "Leave a tip", custom: "Custom amount", send: "Send tip", error: "Error" },
-  fr: { thanks: "Merci pour votre pourboire !", sent: "envoyé", give: "Laisser un pourboire", custom: "Montant personnalisé", send: "Envoyer le pourboire", error: "Erreur" },
-  it: { thanks: "Grazie per la mancia!", sent: "inviato", give: "Lascia una mancia", custom: "Importo personalizzato", send: "Invia mancia", error: "Errore" },
-};
-
-export default function TipPage() {
+export default function BookingTipPage() {
   const params = useParams();
+  const router = useRouter();
   const locale = useLocale();
-  const l = labels[locale as keyof typeof labels] ?? labels.de;
-  const bookingId = params.bookingId as string;
+  const bookingId = params?.bookingId as string;
   const [booking, setBooking] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedAmount, setSelectedAmount] = useState(1000);
-  const [customAmount, setCustomAmount] = useState("");
-  const [useCustom, setUseCustom] = useState(false);
-  const [paying, setPaying] = useState(false);
-  const [done, setDone] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(true);
 
   useEffect(() => {
+    if (!bookingId) return;
     fetch(`/api/bookings/${bookingId}`)
       .then((r) => r.json())
       .then((d) => setBooking(d.booking ?? d))
-      .catch((err) => console.error("[Tip] failed to load booking:", err))
+      .catch((err) => console.error("[BookingTip] failed to load booking:", err))
       .finally(() => setLoading(false));
   }, [bookingId]);
 
-  const tipAmount = useCustom ? Math.round(Number(customAmount) * 100) : selectedAmount;
-
-  const handlePay = async () => {
-    if (tipAmount < 100) return; // Min CHF 1
-    setPaying(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/tips", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ booking_id: bookingId, amount: tipAmount }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error ?? l.error);
-      }
-      // In a full implementation, we'd use Stripe Elements here to confirm the payment
-      // For now, the PaymentIntent is created and the tip is recorded
-      setDone(true);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : l.error);
-    } finally {
-      setPaying(false);
-    }
+  const close = () => {
+    setOpen(false);
+    setTimeout(() => router.push(`/${locale}`), 250);
   };
 
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <div className="flex gap-1.5">
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="w-1.5 h-1.5 rounded-full bg-s-ink/50 animate-pulse"
-            style={{ animationDelay: `${i * 0.2}s` }} />
-        ))}
-      </div>
-    </div>
-  );
-
-  if (done) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white px-4">
-        <div className="text-center">
-          <div className="w-16 h-16 rounded-[18px] flex items-center justify-center mx-auto mb-5 animate-bounce"
-            style={{ background: "rgba(27, 77, 27,.10)" }}>
-            <Check size={28} className="text-s-accent" />
-          </div>
-          <p className="text-[9px] font-heading uppercase tracking-[.22em] text-s-accent mb-2">
-            Trinkgeld gesendet
-          </p>
-          <h1 className="font-heading text-xl text-s-ink mb-2">
-            {l.thanks}
-          </h1>
-          <p className="text-xs font-heading text-s-ink/50">
-            {formatCurrency(tipAmount / 100, locale)} {l.sent}
-          </p>
-        </div>
+      <div className="flex min-h-screen items-center justify-center bg-s-bg-sunken">
+        <Spinner size="md" />
       </div>
     );
   }
 
-  const staffName = booking?.staff_name ?? booking?.staff_member_name ?? "Stylist";
-  const staffAvatar = booking?.staff_avatar_url ?? null;
-  const serviceName = booking?.service_name ?? "Service";
+  const staffName =
+    booking?.staff_name ?? booking?.staff_member_name ?? booking?.staff?.name ?? "Stylist";
+  const staffPhoto = booking?.staff_avatar_url ?? booking?.staff?.avatar_url ?? null;
+  const staffRating = booking?.staff_rating ?? booking?.staff?.average_rating ?? null;
+  const staffReviews = booking?.staff_review_count ?? booking?.staff?.review_count ?? null;
+  const serviceName = booking?.service_name ?? booking?.service?.name_de ?? null;
+  const salonName = booking?.salon_name ?? booking?.salon?.name ?? null;
+  const contextLine = [serviceName, salonName].filter(Boolean).join(" · ") || undefined;
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-6">
-          <div className="w-20 h-20 rounded-full bg-s-ink/10 flex items-center justify-center mx-auto mb-3 overflow-hidden relative">
-            {staffAvatar ? (
-              <Image src={staffAvatar} alt="" fill className="object-cover" unoptimized />
-            ) : (
-              <Heart size={28} className="text-s-accent" />
-            )}
-          </div>
-          <h1 className="font-heading text-xl text-s-ink">{staffName}</h1>
-          <p className="text-sm text-s-ink/40">{serviceName}</p>
-        </div>
-
-        <div className="bg-white rounded-card p-5 shadow-v5-card">
-          <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/45 mb-3">
-            {l.give}
-          </p>
-
-          {/* Preset amounts */}
-          <div className="grid grid-cols-3 gap-2 mb-3">
-            {TIP_PRESETS.map((amount) => (
-              <button key={amount}
-                onClick={() => { setSelectedAmount(amount); setUseCustom(false); }}
-                className={`py-3 rounded-btn text-xs font-heading transition-colors ${
-                  !useCustom && selectedAmount === amount
-                    ? "bg-s-ink text-white shadow-elevation-2"
-                    : "border border-s-ink/[0.08] text-s-ink/65 hover:border-s-accent/50"
-                }`}>
-                {formatCurrency(amount / 100, locale)}
-              </button>
-            ))}
-          </div>
-
-          {/* Custom amount */}
-          <button onClick={() => setUseCustom(true)}
-            className={`w-full py-2.5 rounded-btn text-[10px] font-heading uppercase tracking-[.06em] mb-3 transition-colors ${
-              useCustom
-                ? "border border-s-accent/25 text-s-accent"
-                : "border border-s-ink/[0.08] text-s-ink/45"
-            }`}
-            style={useCustom ? { background: "rgba(27, 77, 27,.06)" } : undefined}>
-            {l.custom}
-          </button>
-          {useCustom && (
-            <div className="relative mb-3">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-heading text-s-ink/45">
-                CHF
-              </span>
-              <input type="number" min="1" step="0.5"
-                value={customAmount}
-                onChange={(e) => setCustomAmount(e.target.value)}
-                placeholder="0.00"
-                className="w-full pl-12 pr-3 py-3 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink focus:outline-none focus:border-s-accent focus:ring-2 focus:ring-s-accent/15 transition-colors"
-                autoFocus />
-            </div>
-          )}
-
-          {error && (
-            <div className="flex items-center gap-1.5 mb-3">
-              <AlertCircle size={12} className="text-s-accent shrink-0" />
-              <p className="text-[10px] font-heading text-s-accent">{error}</p>
-            </div>
-          )}
-
-          <button onClick={handlePay}
-            disabled={paying || tipAmount < 100}
-            className="w-full py-3.5 rounded-btn bg-s-ink text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2 shadow-elevation-2">
-            {paying ? <Spinner size="sm" invert /> : <Heart size={13} />}
-            {formatCurrency(tipAmount / 100, locale)} — {l.send}
-          </button>
-        </div>
-      </div>
+    <div className="min-h-screen bg-s-bg-sunken">
+      <TipSheet
+        open={open}
+        onClose={close}
+        recipientName={staffName}
+        recipientPhoto={staffPhoto}
+        recipientRating={staffRating}
+        recipientReviewCount={staffReviews}
+        contextLine={contextLine}
+        locale={locale}
+        createIntent={(amount) =>
+          fetch("/api/tips", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ booking_id: bookingId, amount }),
+          }).then((r) => r.json())
+        }
+      />
     </div>
   );
 }

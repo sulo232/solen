@@ -4,6 +4,19 @@ Swiss beauty + wellness booking marketplace. Next.js App Router + Supabase + Str
 
 ---
 
+## 🗺️ Before you BUILD anything — check what already exists (V3-D440, 2026-06-02)
+
+**The #1 recurring failure: rebuilding something that already exists, because no file said it did.** (Almost re-mocked the walk-in join + queue screens that were already shipped; re-created the `tips` table that already existed.) Applies to **backend and frontend equally**.
+
+- **`npm run exists <keyword>`** — run this BEFORE creating any new page / endpoint / component / migration / lib util. It live-scans the repo and lists every existing route, endpoint (+ HTTP methods), component, lib module, and DB table that matches. **A hit → REUSE or EXTEND. Empty → safe to build new.** (e.g. `npm run exists walk-in` → all 25 existing pieces.)
+- **`_inventory/SURFACE.md`** — the full auto-generated map of what exists. Regenerate with **`npm run inventory`**. 🤖 Never hand-edit it; it's generated from the filesystem so it cannot rot like the old hand-written `UTILITIES_INDEX.md` / `KEY_FEATURES.md` did.
+- **`_inventory/STATUS.md`** — thin hand-kept layer for what a scan can't know: partial / deprecated / don't-reuse-for. Read it when `exists` returns a hit; append when you ship or deprecate.
+- DB tables + columns come from a LIVE snapshot (`_inventory/_db-snapshot.json` + `_db-columns.json`), NOT migration files — migrations drift from the live DB (the schema-drift bug). `npm run exists <column>` works. Refresh both together (ask Claude to re-run `list_tables` + the `information_schema.columns` query) before trusting backend table/column existence.
+- **Coverage:** routes · API endpoints (+ HTTP methods) · components (incl. colocated under `app/`) · lib + hooks · Supabase RPCs (parsed from migrations) · DB tables + columns.
+- **Enforced, not honor-system:** a PreToolUse hook (`.claude/hooks/pre-build-exists-check.sh`) BLOCKS creating a new `page.tsx` / `route.ts` / migration until `npm run exists` has run this turn (override: `touch .claude/exists-skip.flag`, 30-min TTL). CI (`.github/workflows/inventory-freshness.yml`) reds the PR if `SURFACE.*` is stale or the DB snapshot is > 30 days old.
+
+---
+
 ## 🎨 Design system — start here
 
 **Before any design / UI work: read `_design-system/SOURCE.md`.** It is the canonical, 22-section source-of-truth for tokens, motion, spacing, components, voice, a11y, and patterns.

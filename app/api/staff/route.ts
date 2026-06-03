@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("staff_members")
-      .select("id, name, avatar_url, specialties, is_active")
+      .select("id, name, avatar_url, specialties, is_active, commission_rate")
       .eq("salon_id", salonId)
       .eq("is_active", true)
       .order("name");

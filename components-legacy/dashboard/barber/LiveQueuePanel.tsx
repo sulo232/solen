@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
-import { UserCheck, UserX, XCircle } from "lucide-react";
+import { Scissors, Check, Play, UserX, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { BarberWalkinQueue } from "@/lib/types";
 
@@ -112,98 +112,120 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
 
   if (loading) {
     return (
-      <div className="rounded-[12px] border border-s-ink/[0.06] bg-white p-4">
-        <p className="text-sm text-s-ink/40 text-center py-4">
+      <div className="rounded-[16px] border border-s-border bg-white p-4">
+        <p className="text-sm text-s-ink-3 text-center py-4">
           {t("loading")}
         </p>
       </div>
     );
   }
 
+  // Waiting rows get a 1-based position number; in-chair rows show a scissors glyph.
+  let waitingPos = 0;
+
   return (
-    <div className="w-full lg:max-w-xl rounded-[12px] border border-s-ink/[0.06] bg-white p-4">
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink-3">
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-[9px] px-0.5">
+        <p className="font-heading font-bold text-base tracking-[-0.01em] text-s-ink">
           {t("live_queue")}
         </p>
-        <span className="text-xs data-text font-bold text-s-ink">
+        <span className="text-xs font-heading font-semibold text-s-ink-2">
           {waitingCount} {t("waiting")}
         </span>
       </div>
 
       {queue.length === 0 ? (
-        <p className="text-sm text-s-ink/40 text-center py-6">
-          {t("queue_empty")}
-        </p>
+        <div className="rounded-[16px] border border-s-border bg-white p-4">
+          <p className="text-sm text-s-ink-3 text-center py-6">
+            {t("queue_empty")}
+          </p>
+        </div>
       ) : (
         <div>
-          {queue.map((entry, i) => (
-            <div
-              key={entry.id}
-              className="flex items-center gap-3 py-3 border-b border-s-ink/[0.04] last:border-0"
-            >
-              <span className="text-sm data-text font-bold text-s-ink/40 w-6 text-center">
-                #{i + 1}
-              </span>
+          {queue.map((entry) => {
+            const inChair = entry.status === "in_chair";
+            if (!inChair) waitingPos += 1;
+            return (
               <div
-                className={`w-2 h-2 rounded-full shrink-0 ${
-                  entry.status === "in_chair" ? "bg-s-success" : "bg-s-warning"
+                key={entry.id}
+                className={`flex items-center gap-3 rounded-[16px] border px-[13px] py-3 mb-[9px] ${
+                  inChair
+                    ? "border-[#BBE3C6] bg-s-success-bg"
+                    : "border-s-border bg-white"
                 }`}
-              />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-heading text-s-ink truncate">
-                  {entry.customer_name}
-                </p>
-                <p className="text-[10px] text-s-ink/40">
-                  {entry.preferred_barber_id
-                    ? t("preferred_barber")
-                    : t("any_barber")}
-                </p>
-              </div>
-              <span className="text-xs data-text text-s-ink/50 shrink-0">
-                {entry.estimated_wait_minutes ?? "?"} min
-              </span>
+              >
+                <span
+                  className={`w-6 shrink-0 grid place-items-center font-heading font-bold text-lg tabular-nums ${
+                    inChair ? "text-s-success" : "text-s-ink-3"
+                  }`}
+                >
+                  {inChair ? <Scissors size={18} /> : waitingPos}
+                </span>
 
-              <div className="flex gap-1 shrink-0">
-                {entry.status === "waiting" && (
-                  <button
-                    onClick={() => updateStatus(entry.id, "in_chair")}
-                    className="p-1.5 rounded-[8px] bg-s-ink/[0.06] text-s-ink hover:bg-s-ink/10 transition-colors duration-150"
-                    aria-label={t("start")}
-                    title={t("start")}
-                  >
-                    <UserCheck size={14} />
-                  </button>
-                )}
-                {entry.status === "in_chair" && (
-                  <button
-                    onClick={() => updateStatus(entry.id, "completed")}
-                    className="p-1.5 rounded-[8px] bg-s-success/10 text-s-success hover:bg-s-success/20 transition-colors duration-150"
-                    aria-label={t("complete")}
-                    title={t("complete")}
-                  >
-                    <UserCheck size={14} />
-                  </button>
-                )}
-                <button
-                  onClick={() => updateStatus(entry.id, "no_show")}
-                  className="p-1.5 rounded-[8px] bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 transition-colors duration-150"
-                  aria-label={t("no_show")}
-                  title={t("no_show")}
-                >
-                  <UserX size={14} />
-                </button>
-                <button
-                  onClick={() => updateStatus(entry.id, "cancelled")}
-                  className="p-1.5 rounded-[8px] bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 transition-colors duration-150"
-                  aria-label={t("cancel")}
-                  title={t("cancel")}
-                >
-                  <XCircle size={14} />
-                </button>
+                <div className="flex-1 min-w-0">
+                  <p className="font-heading font-semibold text-[15px] text-s-ink truncate flex items-center gap-[7px]">
+                    {entry.customer_name}
+                    <span
+                      className={`w-2 h-2 rounded-full shrink-0 ${
+                        inChair ? "bg-s-success" : "bg-s-warning"
+                      }`}
+                    />
+                  </p>
+                  <p className="text-xs text-s-ink-2 mt-0.5 truncate">
+                    {inChair
+                      ? `${t("in_chair_label")} · ${entry.estimated_wait_minutes ?? "?"} min`
+                      : `→ ${
+                          entry.preferred_barber_id
+                            ? t("preferred_barber")
+                            : t("any_barber")
+                        } · ⌀ ${entry.estimated_wait_minutes ?? "?"} min`}
+                  </p>
+                </div>
+
+                <div className="flex gap-[7px] shrink-0">
+                  {inChair ? (
+                    <>
+                      <button
+                        onClick={() => updateStatus(entry.id, "completed")}
+                        className="w-9 h-9 rounded-[10px] grid place-items-center bg-s-success text-white transition-opacity duration-150 hover:opacity-90"
+                        aria-label={t("complete")}
+                        title={t("complete")}
+                      >
+                        <Check size={17} />
+                      </button>
+                      <button
+                        onClick={() => updateStatus(entry.id, "no_show")}
+                        className="w-9 h-9 rounded-[10px] grid place-items-center bg-s-bg-sunken text-s-ink transition-colors duration-150 hover:bg-s-border"
+                        aria-label={t("no_show")}
+                        title={t("no_show")}
+                      >
+                        <UserX size={17} />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => updateStatus(entry.id, "in_chair")}
+                        className="w-9 h-9 rounded-[10px] grid place-items-center bg-s-ink text-white transition-opacity duration-150 hover:opacity-90"
+                        aria-label={t("start")}
+                        title={t("start")}
+                      >
+                        <Play size={17} />
+                      </button>
+                      <button
+                        onClick={() => updateStatus(entry.id, "cancelled")}
+                        className="w-9 h-9 rounded-[10px] grid place-items-center bg-s-bg-sunken text-s-ink transition-colors duration-150 hover:bg-s-border"
+                        aria-label={t("cancel")}
+                        title={t("cancel")}
+                      >
+                        <X size={17} />
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

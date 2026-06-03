@@ -43,7 +43,8 @@ export default async function BookingSalonPage({
     .from('salons')
     .select(
       `id, name, slug, description_de, description_en, address, latitude, longitude,
-      cover_photo_url, average_rating, review_count, cancellation_window_hours`
+      cover_photo_url, average_rating, review_count, cancellation_window_hours,
+      payment_mode, deposit_percent`
     )
     .eq('slug', slug)
     .eq('is_active', true)

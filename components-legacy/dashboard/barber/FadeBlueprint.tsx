@@ -138,9 +138,9 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
   };
 
   return (
-    <div className="rounded-input border border-s-ink/[0.06] bg-white p-4">
+    <div className="rounded-[16px] border border-s-border bg-white p-4">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber">
+        <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink-2">
           {t("fade_blueprint")}
         </p>
         <div className="flex items-center gap-2">
@@ -149,8 +149,8 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
             onClick={() => setVisualMode(!visualMode)}
             className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading transition-colors duration-150 ${
               visualMode
-                ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
-                : "border-s-ink/[0.06] text-s-ink/40"
+                ? "border-s-ink bg-s-ink text-white"
+                : "border-s-border text-s-ink-2 hover:bg-s-bg-sunken"
             }`}
             aria-label={t(visualMode ? "text_mode" : "visual_mode")}
           >
@@ -159,7 +159,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           {clientId && (
             <button
               onClick={() => setBlueprint(EMPTY_STATE)}
-              className="p-1.5 rounded-[8px] bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 transition-colors duration-150"
+              className="p-1.5 rounded-[8px] bg-s-bg-sunken text-s-ink-2 hover:bg-s-border transition-colors duration-150"
               aria-label={t("reset")}
             >
               <RotateCcw size={14} />
@@ -188,7 +188,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           }}
         />
       ) : (
-        <div className="max-w-[260px] sm:max-w-[300px] aspect-square mx-auto rounded-input border border-s-ink/[0.06] overflow-hidden bg-[--base] relative">
+        <div className="max-w-[260px] sm:max-w-[300px] aspect-square mx-auto rounded-[16px] border border-s-border overflow-hidden bg-[--base] relative">
           <svg viewBox="0 0 200 170" className="w-full h-full">
             {HEAD_ZONES.map((zone) => {
               const guard = getZoneGuard(zone.id);
@@ -227,8 +227,8 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
 
           {/* Guard dropdown */}
           {activeZone && activeZone !== "neckline" && (
-            <div className="absolute top-2 right-2 z-10 rounded-input border border-s-ink/[0.06] bg-white p-2 shadow-elevation-2">
-              <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/40 mb-1">
+            <div className="absolute top-2 right-2 z-10 rounded-[12px] border border-s-border bg-white p-2 shadow-warm-lg">
+              <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink-2 mb-1">
                 {t("guard_size")}
               </p>
               <div className="grid grid-cols-3 gap-1">
@@ -238,8 +238,8 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                     onClick={() => setZoneGuard(activeZone, opt.value)}
                     className={`px-2 py-1 text-[10px] rounded-[8px] transition-colors duration-150 ${
                       getZoneGuard(activeZone) === opt.value
-                        ? "bg-s-coral text-white"
-                        : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
+                        ? "bg-s-ink text-white"
+                        : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-border"
                     }`}
                     aria-label={opt.label}
                   >
@@ -268,8 +268,8 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                 }
                 className={`px-3 py-1 text-[10px] rounded-[8px] transition-colors duration-150 ${
                   blueprint.neckline_style === style
-                    ? "bg-s-coral text-white"
-                    : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
+                    ? "bg-s-ink text-white"
+                    : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-border"
                 }`}
                 aria-label={style}
               >
@@ -293,8 +293,8 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                 }
                 className={`px-3 py-1 text-[10px] rounded-[8px] transition-colors duration-150 ${
                   blueprint.fade_type === ft
-                    ? "bg-s-coral text-white"
-                    : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
+                    ? "bg-s-ink text-white"
+                    : "bg-s-bg-sunken text-s-ink-2 hover:bg-s-border"
                 }`}
                 aria-label={ft}
               >
@@ -313,7 +313,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
               onChange={(e) =>
                 setBlueprint((prev) => ({ ...prev, lineup: e.target.checked }))
               }
-              className="rounded-[4px] border-s-ink/20 text-s-coral focus:ring-s-coral"
+              className="rounded-[4px] border-s-border accent-s-ink"
             />
             <span className="text-xs text-s-ink">
               {t("lineup")}
@@ -329,7 +329,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
                   beard_style: e.target.value,
                 }))
               }
-              className="w-full text-xs rounded-[8px] border border-s-ink/[0.06] bg-white text-s-ink p-2"
+              className="w-full text-xs rounded-[8px] border border-s-border bg-white text-s-ink p-2"
               aria-label={t("beard_style")}
             >
               {BEARD_STYLES.map((bs) => (
@@ -349,7 +349,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           }
           placeholder={t("blueprint_notes_placeholder")}
           rows={2}
-          className="w-full text-xs rounded-[8px] border border-s-ink/[0.06] bg-white text-s-ink p-2 resize-none"
+          className="w-full text-xs rounded-[8px] border border-s-border bg-white text-s-ink p-2 resize-none"
           aria-label={t("notes")}
         />
 
@@ -358,7 +358,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full flex items-center justify-center gap-2 py-2 rounded-[8px] bg-s-coral text-white text-sm font-heading hover:brightness-[1.06] active:scale-[0.97] shadow-elevation-2 transition-[transform,filter] duration-150 disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[12px] bg-s-ink text-white text-sm font-heading hover:bg-black active:scale-[0.98] transition-[transform,background-color] duration-150 disabled:opacity-50"
             aria-label={t("save_blueprint")}
           >
             <Save size={14} />

@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { AlertTriangle, Check, Plus, Trash2, Pencil, X, CreditCard, ExternalLink, Loader2, Palmtree, Globe, Facebook, Tag } from "lucide-react";
+import { AlertTriangle, Check, Plus, Trash2, Pencil, X, CreditCard, ExternalLink, Loader2, Palmtree, Globe, Facebook, Tag, Store, ShieldCheck, CalendarCheck, XCircle, Moon, Plane, CalendarX, Percent, Receipt, MessageSquare, Smartphone, ChevronRight, Eye, type LucideIcon } from "lucide-react";
 import type { SalonCategory } from "@/lib/types";
+import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
 
 // ─────────────────────────────────────────
 // Category options shared across Settings
@@ -15,7 +16,7 @@ import OffPeakManager from "@/components-legacy/dashboard/OffPeakManager";
 import ExpandableTabs from "@/components-legacy/ui/ExpandableTabs";
 import SalonCard from "@/components-legacy/SalonCard";
 import Spinner from "@/components-legacy/ui/Spinner";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
 import type { Salon } from "@/lib/types";
 
@@ -30,6 +31,7 @@ function HoursEditor({ hours, onChange }: {
   hours: Record<string, { open: string; close: string } | null>;
   onChange: (h: typeof hours) => void;
 }) {
+  const t = useTranslations("dashboard.settings");
   const toggle = (key: string) => {
     const curr = hours[key];
     onChange({ ...hours, [key]: curr ? null : { open: "09:00", close: "18:00" } });
@@ -58,7 +60,7 @@ function HoursEditor({ hours, onChange }: {
                 <input type="time" value={h.close} onChange={(e) => update(key, "close", e.target.value)}
                   className="px-2 py-1 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
               </>
-            ) : <span className="text-xs text-s-ink/30">Geschlossen</span>}
+            ) : <span className="text-xs text-s-ink/30">{t("closed")}</span>}
           </div>
         );
       })}
@@ -71,6 +73,7 @@ function HoursEditor({ hours, onChange }: {
 // ─────────────────────────────────────────
 
 function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const t = useTranslations("dashboard.settings");
   const ext = salon as Salon & { facebook_url?: string; tiktok_url?: string; website_url?: string };
   const salonExt = salon as Salon & { categories?: string[] };
   const [form, setForm] = useState({
@@ -109,16 +112,16 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
   return (
     <div className="py-4 space-y-4 max-w-xl">
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">Salon-Name *</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("salonNameLabel")}</label>
         <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
       </div>
 
       {/* ── Category selector ── */}
       <div>
         <label className="block text-xs font-medium text-s-ink/50 mb-2">
-          Kategorien
-          <span className="ml-1 text-s-ink/30 font-normal">(mehrere wählbar)</span>
+          {t("categoriesLabel")}
+          <span className="ml-1 text-s-ink/30 font-normal">{t("categoriesHint")}</span>
         </label>
         <div className="flex flex-wrap gap-2">
           {CATEGORY_OPTIONS.map((opt) => {
@@ -131,10 +134,9 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
                 className={[
                   "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading uppercase tracking-[.06em] transition-colors active:scale-[0.97]",
                   active
-                    ? "bg-s-coral text-white border-s-coral"
-                    : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-coral/50",
+                    ? "bg-s-accent-bright text-white border-s-accent-bright"
+                    : "border-s-ink/[0.08] text-s-ink/55 hover:border-s-accent-bright/50",
                 ].join(" ")}
-                style={active ? { boxShadow: "0 2px 4px rgba(27, 77, 27,.28), 0 4px 12px rgba(27, 77, 27,.16)" } : undefined}
               >
                 <span className="text-[13px] leading-none">{opt.emoji}</span>
                 {opt.label}
@@ -144,117 +146,83 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
           })}
         </div>
         {form.categories.length === 0 && (
-          <p className="text-xs text-s-coral mt-1">Bitte mindestens eine Kategorie auswählen.</p>
+          <p className="text-xs text-s-error mt-1">{t("categoriesRequired")}</p>
         )}
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">Cover-Foto URL</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("coverPhotoLabel")}</label>
         <input value={form.cover_photo_url} onChange={(e) => setForm({ ...form, cover_photo_url: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
       </div>
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">Beschreibung DE</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("descriptionDeLabel")}</label>
         <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
           rows={3} maxLength={500}
-          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none" />
+          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright resize-none" />
       </div>
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">Beschreibung EN</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("descriptionEnLabel")}</label>
         <textarea value={form.description_en} onChange={(e) => setForm({ ...form, description_en: e.target.value })}
           rows={2} maxLength={500}
-          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none" />
+          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright resize-none" />
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">Telefon</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("phoneLabel")}</label>
           <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">Instagram</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("instagramLabel")}</label>
           <input value={form.instagram_url} onChange={(e) => setForm({ ...form, instagram_url: e.target.value })}
             placeholder="https://instagram.com/..."
-            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">Facebook</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("facebookLabel")}</label>
           <input value={form.facebook_url} onChange={(e) => setForm({ ...form, facebook_url: e.target.value })}
             placeholder="https://facebook.com/..."
-            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">TikTok</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("tiktokLabel")}</label>
           <input value={form.tiktok_url} onChange={(e) => setForm({ ...form, tiktok_url: e.target.value })}
             placeholder="https://tiktok.com/@..."
-            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
         </div>
       </div>
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">Website</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("websiteLabel")}</label>
         <input value={form.website_url} onChange={(e) => setForm({ ...form, website_url: e.target.value })}
           placeholder="https://..."
-          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright" />
       </div>
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">Öffnungszeiten</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("openingHoursLabel")}</label>
         <HoursEditor hours={form.opening_hours} onChange={(h) => setForm({ ...form, opening_hours: h })} />
       </div>
       {/* Top Pick Toggle */}
       <div className="border-t border-s-ink/5 pt-4 mt-4">
         <label className="flex items-center gap-3 cursor-pointer">
           <input type="checkbox" checked={form.is_top_pick} onChange={(e) => setForm({ ...form, is_top_pick: e.target.checked })}
-            className="w-5 h-5 rounded border-s-ink/20 text-s-coral focus:ring-s-coral focus:ring-offset-0" />
+            className="w-5 h-5 rounded border-s-ink/20 accent-s-ink focus:ring-offset-0" />
           <div>
-            <span className="block text-sm font-medium text-s-ink">Solen Top Pick</span>
-            <span className="block text-xs text-s-ink/50">Zeigt einen "Solen Top Pick" Badge auf deiner Salon-Karte</span>
+            <span className="block text-sm font-medium text-s-ink">{t("topPickTitle")}</span>
+            <span className="block text-xs text-s-ink/50">{t("topPickDesc")}</span>
           </div>
         </label>
       </div>
-      {/* Structured info fields */}
-      <div className="border-t border-s-ink/5 pt-4 mt-4">
-        <p className="text-xs font-medium text-s-ink/50 mb-3">Salondetails (für Kunden sichtbar)</p>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-[10px] text-s-ink/40 mb-1">Atmosphäre</label>
-            <input placeholder="z.B. Modern, Gemütlich"
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
-          </div>
-          <div>
-            <label className="block text-[10px] text-s-ink/40 mb-1">Expertise</label>
-            <input placeholder="z.B. Balayage, Locken"
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
-          </div>
-          <div>
-            <label className="block text-[10px] text-s-ink/40 mb-1">Produkte</label>
-            <input placeholder="z.B. Olaplex, Kérastase"
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
-          </div>
-          <div>
-            <label className="block text-[10px] text-s-ink/40 mb-1">Anfahrt</label>
-            <input placeholder="z.B. Tram 8, Parkplätze"
-              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
-          </div>
-        </div>
-        <div className="mt-3">
-          <button type="button" disabled
-            className="px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium opacity-60 cursor-not-allowed"
-            title="Kommt bald">
-            Vorschlag generieren (Kommt bald)
-          </button>
-        </div>
-      </div>
-
       <div>
-        <p className="text-xs font-medium text-s-ink/50 mb-2">So sieht dein Salon für Kunden aus</p>
+        <p className="text-xs font-medium text-s-ink/50 mb-2">{t("customerPreviewLabel")}</p>
         <SalonCard salon={{ ...salon, ...form } as Salon} variant="compact" />
       </div>
-      <div className="flex items-center gap-3">
+      <div className="space-y-2">
         <button onClick={handleSave} disabled={saving || form.categories.length === 0}
-          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
-          {saving && <Spinner size="sm" invert />}Speichern
+          className="w-full min-h-[44px] rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+          {saving && <Spinner size="sm" invert />}{t("save")}
         </button>
-        {saved && <span className="text-sm text-s-coral">Gespeichert ✓</span>}
+        {saved && <span className="block text-center text-sm text-s-success">{t("saved")}</span>}
       </div>
     </div>
   );
@@ -265,6 +233,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
 // ─────────────────────────────────────────
 
 function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const t = useTranslations("dashboard.settings");
   const [enabled, setEnabled] = useState((salon.last_minute_discount_percent ?? 0) > 0);
   const [discount, setDiscount] = useState(salon.last_minute_discount_percent ?? 10);
   const [windowH, setWindowH] = useState(salon.last_minute_window_hours ?? 6);
@@ -280,8 +249,8 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
     <div className="py-4 max-w-sm space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-s-ink">Last-Minute aktivieren</p>
-          <p className="text-xs text-s-ink/40 mt-0.5">Freie Slots werden automatisch mit Rabatt angezeigt.</p>
+          <p className="text-sm font-medium text-s-ink">{t("offersEnableTitle")}</p>
+          <p className="text-xs text-s-ink/40 mt-0.5">{t("offersEnableDesc")}</p>
         </div>
         <button onClick={() => setEnabled(!enabled)}
           className={["w-11 h-6 rounded-full transition-colors relative", enabled ? "bg-s-coral" : "bg-s-sand"].join(" ")}>
@@ -293,7 +262,7 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
         <>
           <div>
             <div className="flex justify-between mb-2">
-              <label className="text-xs font-medium text-s-ink/50">Rabatt</label>
+              <label className="text-xs font-medium text-s-ink/50">{t("discountLabel")}</label>
               <span className="text-sm font-bold text-s-coral data-text">{discount}%</span>
             </div>
             <input type="range" min={5} max={50} step={5} value={discount}
@@ -301,7 +270,7 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
           </div>
           <div>
             <div className="flex justify-between mb-2">
-              <label className="text-xs font-medium text-s-ink/50">Zeitfenster</label>
+              <label className="text-xs font-medium text-s-ink/50">{t("timeWindowLabel")}</label>
               <span className="text-sm font-bold text-s-coral data-text">{windowH}h</span>
             </div>
             <input type="range" min={2} max={24} step={1} value={windowH}
@@ -311,7 +280,7 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
       )}
       <button onClick={handleSave} disabled={saving}
         className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
-        {saving && <Spinner size="sm" invert />}Speichern
+        {saving && <Spinner size="sm" invert />}{t("save")}
       </button>
     </div>
   );
@@ -321,9 +290,9 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
 // Quick Reply Templates Tab
 // ─────────────────────────────────────────
 
-const DEFAULT_REPLIES = ["Vielen Dank für Ihre Nachricht!", "Ihr Termin wurde bestätigt.", "Leider sind wir ausgebucht."];
-
 function QuickRepliesTab() {
+  const t = useTranslations("dashboard.settings");
+  const DEFAULT_REPLIES = [t("quickReplyDefault1"), t("quickReplyDefault2"), t("quickReplyDefault3")];
   const [replies, setReplies] = useState<string[]>(() => {
     if (typeof localStorage !== "undefined") {
       try { return JSON.parse(localStorage.getItem("solen_quick_replies") ?? "null") ?? DEFAULT_REPLIES; }
@@ -348,20 +317,20 @@ function QuickRepliesTab() {
             <>
               <input value={editValue} onChange={(e) => setEditValue(e.target.value)}
                 className="flex-1 text-sm focus:outline-none" autoFocus />
-              <button onClick={() => { const a = [...replies]; a[i] = editValue; save(a); setEditing(null); }} aria-label="Speichern" className="text-s-coral"><Check size={14} /></button>
-              <button onClick={() => setEditing(null)} aria-label="Abbrechen" className="text-s-ink/30"><X size={14} /></button>
+              <button onClick={() => { const a = [...replies]; a[i] = editValue; save(a); setEditing(null); }} aria-label={t("save")} className="text-s-coral"><Check size={14} /></button>
+              <button onClick={() => setEditing(null)} aria-label={t("cancel")} className="text-s-ink/30"><X size={14} /></button>
             </>
           ) : (
             <>
               <p className="flex-1 text-sm text-s-ink">{r}</p>
-              <button onClick={() => { setEditing(i); setEditValue(r); }} aria-label="Bearbeiten" className="text-s-ink/30 hover:text-s-coral"><Pencil size={13} /></button>
-              <button onClick={() => save(replies.filter((_, j) => j !== i))} aria-label="Löschen" className="text-s-ink/30 hover:text-s-coral"><Trash2 size={13} /></button>
+              <button onClick={() => { setEditing(i); setEditValue(r); }} aria-label={t("edit")} className="text-s-ink/30 hover:text-s-coral"><Pencil size={13} /></button>
+              <button onClick={() => save(replies.filter((_, j) => j !== i))} aria-label={t("delete")} className="text-s-ink/30 hover:text-s-coral"><Trash2 size={13} /></button>
             </>
           )}
         </div>
       ))}
       <div className="flex gap-2">
-        <input value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder="Neue Vorlage…"
+        <input value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder={t("newTemplatePlaceholder")}
           className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         <button onClick={() => { if (newValue.trim()) { save([...replies, newValue.trim()]); setNewValue(""); } }}
           className="px-3 py-2 rounded-btn bg-s-coral text-white text-sm"><Plus size={14} /></button>
@@ -375,6 +344,7 @@ function QuickRepliesTab() {
 // ─────────────────────────────────────────
 
 function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const t = useTranslations("dashboard.settings");
   const ext = salon as Salon & { sms_reminder_24h?: boolean; sms_reminder_1h?: boolean };
   const [reminder24h, setReminder24h] = useState(ext.sms_reminder_24h ?? true);
   const [reminder1h, setReminder1h] = useState(ext.sms_reminder_1h ?? true);
@@ -392,15 +362,15 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
   return (
     <div className="p-5 space-y-5">
       <p className="text-xs text-s-ink/50">
-        SMS-Erinnerungen werden automatisch an Kunden gesendet, um No-Shows zu reduzieren.
+        {t("smsIntro")}
       </p>
 
       <label className="flex items-center gap-3 cursor-pointer">
         <input type="checkbox" checked={reminder24h} onChange={(e) => setReminder24h(e.target.checked)}
           className="w-4 h-4 rounded border-s-ink/20 text-s-coral focus:ring-s-coral" />
         <div>
-          <span className="text-sm font-medium text-s-ink">24 Stunden vorher</span>
-          <p className="text-xs text-s-ink/40">Kunden erhalten eine SMS 24h vor dem Termin</p>
+          <span className="text-sm font-medium text-s-ink">{t("sms24hTitle")}</span>
+          <p className="text-xs text-s-ink/40">{t("sms24hDesc")}</p>
         </div>
       </label>
 
@@ -408,15 +378,15 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
         <input type="checkbox" checked={reminder1h} onChange={(e) => setReminder1h(e.target.checked)}
           className="w-4 h-4 rounded border-s-ink/20 text-s-coral focus:ring-s-coral" />
         <div>
-          <span className="text-sm font-medium text-s-ink">1 Stunde vorher</span>
-          <p className="text-xs text-s-ink/40">Kunden erhalten eine SMS 1h vor dem Termin</p>
+          <span className="text-sm font-medium text-s-ink">{t("sms1hTitle")}</span>
+          <p className="text-xs text-s-ink/40">{t("sms1hDesc")}</p>
         </div>
       </label>
 
       <div className="pt-2">
         <button onClick={handleSave} disabled={saving}
           className="px-4 py-2 bg-s-coral text-white text-sm font-medium rounded-btn hover:brightness-[1.06] transition-colors disabled:opacity-50">
-          {saving ? "Speichern…" : saved ? "Gespeichert ✓" : "Speichern"}
+          {saving ? t("saving") : saved ? t("saved") : t("save")}
         </button>
       </div>
     </div>
@@ -432,6 +402,7 @@ type FeeType = "free" | "flat" | "percentage";
 
 function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
   const locale = useLocale();
+  const t = useTranslations("dashboard.settings");
   const ext = salon as Salon & { cancellation_fee_type?: FeeType; cancellation_fee_value?: number; free_cancel_hours?: number };
   const [feeType, setFeeType] = useState<FeeType>(ext.cancellation_fee_type ?? "free");
   const [feeValue, setFeeValue] = useState(ext.cancellation_fee_value ?? 0);
@@ -452,39 +423,47 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
   };
 
   const feeOptions: { id: FeeType; label: string; desc: string }[] = [
-    { id: "free", label: "Kostenlos", desc: "Keine Stornogebühr" },
-    { id: "flat", label: "Pauschale", desc: "Fester Betrag in CHF" },
-    { id: "percentage", label: "Prozentual", desc: "% des Buchungspreises" },
+    { id: "free", label: t("cancelFeeFreeLabel"), desc: t("cancelFeeFreeDesc") },
+    { id: "flat", label: t("feeFlatLabel"), desc: t("feeFlatDesc") },
+    { id: "percentage", label: t("feePercentLabel"), desc: t("feePercentDesc") },
   ];
 
   const previewText = feeType === "free"
-    ? `Kunden können bis ${freeHours}h vor dem Termin kostenlos stornieren.`
+    ? t("cancelPreviewFree", { hours: freeHours })
     : feeType === "flat"
-      ? `Stornierung innerhalb von ${freeHours}h vor dem Termin kostet ${formatCurrency(feeValue, locale)}.`
-      : `Stornierung innerhalb von ${freeHours}h vor dem Termin kostet ${feeValue}% des Buchungspreises.`;
+      ? t("cancelPreviewFlat", { hours: freeHours, amount: formatCurrency(feeValue, locale) })
+      : t("cancelPreviewPercent", { hours: freeHours, percent: feeValue });
 
   return (
     <div className="py-4 max-w-md space-y-6">
-      {/* Fee type cards */}
+      {/* Fee type option-cards */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">Stornogebühr-Typ</label>
-        <div className="grid grid-cols-3 gap-2">
+        <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("cancelFeeTypeLabel")}</label>
+        <div className="space-y-2">
           {feeOptions.map((opt) => (
             <button
               key={opt.id}
               type="button"
               onClick={() => setFeeType(opt.id)}
               className={[
-                "rounded-[12px] border p-3 text-left transition-colors",
+                "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
                 feeType === opt.id
-                  ? "border-s-coral bg-s-coral/5"
-                  : "border-s-ink/10 hover:border-s-ink/20",
+                  ? "border-s-accent-bright bg-s-accent-bright/10"
+                  : "border-s-border hover:border-s-ink/20",
               ].join(" ")}
             >
-              <p className={["text-sm font-medium", feeType === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>
-                {opt.label}
-              </p>
-              <p className="text-[10px] text-s-ink/40 mt-0.5">{opt.desc}</p>
+              <div className={[
+                "w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center shrink-0",
+                feeType === opt.id ? "border-s-accent-bright" : "border-s-border"
+              ].join(" ")}>
+                {feeType === opt.id && <div className="w-2 h-2 rounded-full bg-s-accent-bright" />}
+              </div>
+              <div>
+                <p className={["text-sm font-medium", feeType === opt.id ? "text-s-accent-bright" : "text-s-ink"].join(" ")}>
+                  {opt.label}
+                </p>
+                <p className="text-[11px] text-s-ink-2 mt-0.5">{opt.desc}</p>
+              </div>
             </button>
           ))}
         </div>
@@ -494,7 +473,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
       {feeType !== "free" && (
         <div>
           <label className="block text-xs font-medium text-s-ink/50 mb-1">
-            {feeType === "flat" ? "Betrag (CHF)" : "Prozentsatz (%)"}
+            {feeType === "flat" ? t("amountChfLabel") : t("percentInputLabel")}
           </label>
           <input
             type="number"
@@ -503,38 +482,40 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
             step={feeType === "percentage" ? 5 : 1}
             value={feeValue}
             onChange={(e) => setFeeValue(Math.max(0, Number(e.target.value)))}
-            className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-coral"
+            className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-accent-bright"
           />
         </div>
       )}
 
-      {/* Free cancel window */}
+      {/* Free cancel window — hairline value-row */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">Kostenlose Stornierung bis</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("freeCancelUntilLabel")}</label>
         <select
           value={freeHours}
           onChange={(e) => setFreeHours(Number(e.target.value))}
-          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
+          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-accent-bright"
         >
           {CANCEL_HOURS_OPTIONS.map((h) => (
-            <option key={h} value={h}>{h} Stunden vor dem Termin</option>
+            <option key={h} value={h}>{t("hoursBeforeAppointment", { hours: h })}</option>
           ))}
         </select>
       </div>
 
-      {/* Preview */}
-      <div className="bg-s-bg-surface rounded-[12px] px-4 py-3">
-        <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest mb-1">Vorschau für Kunden</p>
-        <p className="text-sm text-s-ink/70">{previewText}</p>
+      {/* Guest preview */}
+      <div className="flex items-start gap-2 bg-s-bg-sunken rounded-[12px] px-3.5 py-3">
+        <Eye size={15} className="text-s-ink-3 shrink-0 mt-0.5" />
+        <p className="text-xs text-s-ink-2 leading-relaxed">
+          <span className="font-semibold text-s-ink">{t("customersSee")}</span> {previewText}
+        </p>
       </div>
 
-      {/* Save */}
-      <div className="flex items-center gap-3">
+      {/* Save — full-width ink (the one primary commit) */}
+      <div className="space-y-2">
         <button onClick={handleSave} disabled={saving}
-          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
-          {saving && <Spinner size="sm" invert />}Speichern
+          className="w-full py-3 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+          {saving && <Spinner size="sm" invert />}{t("save")}
         </button>
-        {saved && <span className="text-sm text-s-coral">Gespeichert ✓</span>}
+        {saved && <span className="block text-center text-sm text-s-success">{t("saved")}</span>}
       </div>
     </div>
   );
@@ -545,6 +526,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 // ─────────────────────────────────────────
 
 function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const t = useTranslations("dashboard.settings");
   const ext = salon as Salon & { vat_registered?: boolean; vat_number?: string | null };
   const [registered, setRegistered] = useState<boolean>(ext.vat_registered ?? false);
   const [vatNumber, setVatNumber] = useState(ext.vat_number ?? "");
@@ -565,19 +547,19 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
   };
 
   const options: { id: boolean; label: string; desc: string }[] = [
-    { id: true, label: "MWST-registriert", desc: "Du weist 8.1% MWST aus" },
-    { id: false, label: "Kleinunternehmen", desc: "Keine MWST · Umsatz < CHF 100k" },
+    { id: true, label: t("vatRegisteredLabel"), desc: t("vatRegisteredDesc") },
+    { id: false, label: t("vatSmallBusinessLabel"), desc: t("vatSmallBusinessDesc") },
   ];
 
   const previewText = registered
-    ? "Kunden sehen auf dem Beleg Netto + 8.1% MWST + Gesamt sowie deine MWST-Nummer."
-    : "Kunden sehen nur den Gesamtbetrag. Es wird keine MWST ausgewiesen.";
+    ? t("vatPreviewRegistered")
+    : t("vatPreviewSmallBusiness");
 
   return (
     <div className="py-4 max-w-md space-y-6">
       {/* Registration status cards */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">MWST-Status</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("vatStatusLabel")}</label>
         <div className="grid grid-cols-2 gap-2">
           {options.map((opt) => (
             <button
@@ -603,7 +585,7 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
       {/* VAT number input (only when registered) */}
       {registered && (
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">MWST-Nummer (UID)</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("vatNumberLabel")}</label>
           <input
             type="text"
             value={vatNumber}
@@ -611,13 +593,13 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
             placeholder="CHE-123.456.789 MWST"
             className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-coral"
           />
-          <p className="text-[10px] text-s-ink/40 mt-1">Deine Schweizer Unternehmens-Identifikationsnummer.</p>
+          <p className="text-[10px] text-s-ink/40 mt-1">{t("vatNumberHint")}</p>
         </div>
       )}
 
       {/* Preview */}
       <div className="bg-s-bg-surface rounded-[12px] px-4 py-3">
-        <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest mb-1">Vorschau für Kunden</p>
+        <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest mb-1">{t("customerPreviewHeader")}</p>
         <p className="text-sm text-s-ink/70">{previewText}</p>
       </div>
 
@@ -625,9 +607,9 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
       <div className="flex items-center gap-3">
         <button onClick={handleSave} disabled={saving}
           className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
-          {saving && <Spinner size="sm" invert />}Speichern
+          {saving && <Spinner size="sm" invert />}{t("save")}
         </button>
-        {saved && <span className="text-sm text-s-coral">Gespeichert ✓</span>}
+        {saved && <span className="text-sm text-s-coral">{t("saved")}</span>}
       </div>
     </div>
   );
@@ -638,6 +620,7 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
 // ─────────────────────────────────────────
 
 function VerificationTab({ salon }: { salon: Salon }) {
+  const t = useTranslations("dashboard.settings");
   const [confirming, setConfirming] = useState(false);
 
   const handleVerify = async () => {
@@ -655,23 +638,23 @@ function VerificationTab({ salon }: { salon: Salon }) {
         <div className="bg-s-coral/5 border border-s-coral/20 rounded-[12px] px-4 py-3 flex items-start gap-3">
           <AlertTriangle size={16} className="text-s-coral shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-medium text-s-ink">Dein Salon hat {warnings}/3 Warnungen.</p>
+            <p className="text-sm font-medium text-s-ink">{t("salonWarnings", { count: warnings })}</p>
             <button onClick={handleVerify} disabled={confirming}
               className="mt-2 px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium flex items-center gap-2">
-              {confirming && <Spinner size="sm" invert />}Jetzt bestätigen
+              {confirming && <Spinner size="sm" invert />}{t("confirmNow")}
             </button>
           </div>
         </div>
       )}
-      {!salon.is_active && (
+      {(salon as any).frozen_at && (
         <div className="bg-s-error-bg border border-s-error/20 rounded-[12px] px-4 py-3">
-          <p className="text-sm font-medium text-s-error">Dein Salon wurde eingefroren.</p>
-          <p className="text-xs text-s-error/70 mt-1">Kontaktiere support@solen.ch.</p>
+          <p className="text-sm font-medium text-s-error">{t("salonFrozen")}</p>
+          <p className="text-xs text-s-error/70 mt-1">{t("contactSupport")}</p>
         </div>
       )}
       <div className="bg-s-bg-surface rounded-[12px] px-4 py-3 text-sm text-s-ink/60 space-y-1">
-        <p><span className="font-medium">Letzte Verifizierung:</span> {salon.last_verified_at ? new Date(salon.last_verified_at).toLocaleDateString("de-CH") : "–"}</p>
-        <p><span className="font-medium">Stornierungsrichtlinie:</span> Kunden können bis 24h vor dem Termin stornieren.</p>
+        <p><span className="font-medium">{t("lastVerification")}</span> {salon.last_verified_at ? new Date(salon.last_verified_at).toLocaleDateString("de-CH") : "–"}</p>
+        <p><span className="font-medium">{t("cancellationPolicyLabel")}</span> {t("cancellationPolicyValue")}</p>
       </div>
     </div>
   );
@@ -682,6 +665,7 @@ function VerificationTab({ salon }: { salon: Salon }) {
 // ─────────────────────────────────────────
 
 function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const t = useTranslations("dashboard.settings");
   const ext = salon as Salon & { vacation_start?: string | null; vacation_end?: string | null };
   const [start, setStart] = useState(ext.vacation_start ?? "");
   const [end, setEnd] = useState(ext.vacation_end ?? "");
@@ -716,8 +700,8 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
           <Palmtree size={18} className="text-s-coral" />
         </div>
         <div>
-          <p className="text-sm font-medium text-s-ink">Ferienmodus</p>
-          <p className="text-xs text-s-ink/40">Während der Ferien werden keine Buchungen angenommen.</p>
+          <p className="text-sm font-medium text-s-ink">{t("vacationModeTitle")}</p>
+          <p className="text-xs text-s-ink/40">{t("vacationModeDesc")}</p>
         </div>
       </div>
 
@@ -725,20 +709,20 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
         <div className="bg-s-amber-subtle border border-s-amber/20 rounded-[12px] px-4 py-3 flex items-center gap-3">
           <Palmtree size={16} className="text-s-amber shrink-0" />
           <p className="text-sm text-s-amber-text">
-            Ferienmodus aktiv: {new Date(start).toLocaleDateString("de-CH")} – {new Date(end).toLocaleDateString("de-CH")}
+            {t("vacationActive", { start: new Date(start).toLocaleDateString("de-CH"), end: new Date(end).toLocaleDateString("de-CH") })}
           </p>
         </div>
       )}
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">Von</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("fromLabel")}</label>
           <input type="date" value={start} min={todayStr}
             onChange={(e) => setStart(e.target.value)}
             className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 mb-1">Bis</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("toLabel")}</label>
           <input type="date" value={end} min={start || todayStr}
             onChange={(e) => setEnd(e.target.value)}
             className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
@@ -748,15 +732,15 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
       <div className="flex items-center gap-3">
         <button onClick={handleSave} disabled={saving}
           className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
-          {saving && <Spinner size="sm" invert />}Speichern
+          {saving && <Spinner size="sm" invert />}{t("save")}
         </button>
         {(start || end) && (
           <button onClick={handleClear} disabled={saving}
             className="px-4 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/50 hover:border-s-coral hover:text-s-coral transition-colors">
-            Deaktivieren
+            {t("deactivate")}
           </button>
         )}
-        {saved && <span className="text-sm text-s-coral">Gespeichert ✓</span>}
+        {saved && <span className="text-sm text-s-coral">{t("saved")}</span>}
       </div>
     </div>
   );
@@ -771,15 +755,20 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 // ─────────────────────────────────────────
 
 type PaymentMode = "at_salon" | "deposit" | "prepay";
+type NoShowFeeType = "free" | "flat" | "percentage";
 
 function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
   const locale = useLocale();
-  const ext = salon as Salon & { payment_mode?: PaymentMode; deposit_percent?: number; cancellation_hours?: number; late_cancel_fee_percent?: number };
+  const t = useTranslations("dashboard.settings");
+  const ext = salon as Salon & { payment_mode?: PaymentMode; deposit_percent?: number; no_show_fee_type?: NoShowFeeType; no_show_fee_value?: number };
   const [connectStatus, setConnectStatus] = useState<"loading" | "not_connected" | "pending" | "connected">("loading");
   const [paymentMode, setPaymentMode] = useState<PaymentMode>(ext.payment_mode ?? "at_salon");
   const [depositPercent, setDepositPercent] = useState(ext.deposit_percent ?? 20);
-  const [cancellationHours, setCancellationHours] = useState(ext.cancellation_hours ?? 24);
-  const [lateCancelFee, setLateCancelFee] = useState(ext.late_cancel_fee_percent ?? 50);
+  // No-show fee — writes no_show_fee_type/value (the columns the no-show charging cron + walk-in
+  // path actually read). Replaced the old cancellation_hours/late_cancel_fee_percent sliders that
+  // duplicated the Stornierung tab + wrote dead columns.
+  const [noShowFeeType, setNoShowFeeType] = useState<NoShowFeeType>(ext.no_show_fee_type ?? "free");
+  const [noShowFeeValue, setNoShowFeeValue] = useState(ext.no_show_fee_value ?? 0);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [connectLoading, setConnectLoading] = useState(false);
@@ -807,8 +796,8 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
     await onSave({
       payment_mode: paymentMode,
       deposit_percent: depositPercent,
-      cancellation_hours: cancellationHours,
-      late_cancel_fee_percent: lateCancelFee,
+      no_show_fee_type: noShowFeeType,
+      no_show_fee_value: noShowFeeType === "free" ? 0 : noShowFeeValue,
     } as Partial<Salon>);
     setSaving(false);
     setSaved(true);
@@ -816,16 +805,16 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
   };
 
   const statusPill = {
-    loading: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-bg-sunken text-s-ink/40">Lädt...</span>,
-    not_connected: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-bg-sunken text-s-ink/50">Nicht verbunden</span>,
-    pending: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-amber-subtle text-s-amber-text">Ausstehend</span>,
-    connected: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-coral/10 text-s-coral font-medium">Verbunden ✓</span>,
+    loading: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-bg-sunken text-s-ink/40">{t("statusLoading")}</span>,
+    not_connected: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-bg-sunken text-s-ink/50">{t("statusNotConnected")}</span>,
+    pending: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-amber-subtle text-s-amber-text">{t("statusPending")}</span>,
+    connected: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-success/10 text-s-success font-medium">{t("statusConnected")}</span>,
   }[connectStatus];
 
   const modeOptions: { id: PaymentMode; label: string; desc: string }[] = [
-    { id: "at_salon", label: "Zahlung im Salon", desc: "Keine Online-Zahlung, Kunden zahlen vor Ort" },
-    { id: "deposit", label: "Anzahlung", desc: "Kunden zahlen X% online, Rest im Salon" },
-    { id: "prepay", label: "Vorauszahlung", desc: "Kunden zahlen den vollen Betrag online" },
+    { id: "at_salon", label: t("paymentModeAtSalonLabel"), desc: t("paymentModeAtSalonDesc") },
+    { id: "deposit", label: t("paymentModeDepositLabel"), desc: t("paymentModeDepositDesc") },
+    { id: "prepay", label: t("paymentModePrepayLabel"), desc: t("paymentModePrepayDesc") },
   ];
 
   return (
@@ -835,41 +824,41 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CreditCard className="w-4 h-4 text-s-ink/40" />
-            <p className="text-sm font-medium text-s-ink">Bankkonto verknüpfen</p>
+            <p className="text-sm font-medium text-s-ink">{t("linkBankAccount")}</p>
           </div>
           {statusPill}
         </div>
         <p className="text-xs text-s-ink/50">
-          Stripe Connect überweist Zahlungen direkt auf dein Konto. Benötigt einmalige Verifizierung.
+          {t("stripeConnectDesc")}
         </p>
         {connectStatus !== "connected" && (
           <button
             onClick={handleConnect}
             disabled={connectLoading || connectStatus === "loading"}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50"
           >
             {connectLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
-            {connectStatus === "pending" ? "Verifizierung fortsetzen" : "Jetzt verknüpfen"}
+            {connectStatus === "pending" ? t("continueVerification") : t("linkNow")}
           </button>
         )}
         {connectStatus === "connected" && (
-          <p className="text-xs text-[#16A34A] font-medium flex items-center gap-1">
-            ✓ Dein Bankkonto ist verknüpft — Auszahlungen erfolgen automatisch.
+          <p className="text-xs text-s-success font-medium flex items-center gap-1">
+            {t("bankAccountLinked")}
           </p>
         )}
       </div>
 
       {/* Marketing card */}
-      <div className="rounded-[12px] bg-s-coral/5 border border-s-coral/20 p-4">
-        <p className="text-sm font-semibold text-s-coral mb-1">Zahlungsmodus wählen</p>
+      <div className="rounded-[12px] bg-s-accent-bright/[0.06] border border-s-accent-bright/20 p-4">
+        <p className="text-sm font-semibold text-s-accent-bright mb-1">{t("choosePaymentModeTitle")}</p>
         <p className="text-xs text-s-ink/60 leading-relaxed">
-          Wähle, wie deine Kunden bezahlen. Anzahlung oder Vorauszahlung schützt vor No-Shows.
+          {t("choosePaymentModeDesc")}
         </p>
       </div>
 
       {/* Payment mode radio cards */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">Zahlungsmodus</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("paymentModeLabel")}</label>
         <div className="space-y-2">
           {modeOptions.map((opt) => (
             <button
@@ -877,21 +866,21 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
               type="button"
               onClick={() => setPaymentMode(opt.id)}
               className={[
-                "w-full rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
-                paymentMode === opt.id ? "border-s-coral bg-s-coral/5" : "border-s-ink/10 hover:border-s-ink/20",
+                "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
+                paymentMode === opt.id ? "border-s-accent-bright bg-s-accent-bright/[0.06]" : "border-s-border hover:border-s-ink/20",
               ].join(" ")}
             >
               <div className={[
-                "w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0",
-                paymentMode === opt.id ? "border-s-coral" : "border-s-ink/20"
+                "w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center shrink-0",
+                paymentMode === opt.id ? "border-s-accent-bright" : "border-s-border"
               ].join(" ")}>
-                {paymentMode === opt.id && <div className="w-2 h-2 rounded-full bg-s-coral" />}
+                {paymentMode === opt.id && <div className="w-2 h-2 rounded-full bg-s-accent-bright" />}
               </div>
               <div>
-                <p className={["text-sm font-medium", paymentMode === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>
+                <p className={["text-sm font-medium", paymentMode === opt.id ? "text-s-accent-bright" : "text-s-ink"].join(" ")}>
                   {opt.label}
                 </p>
-                <p className="text-[11px] text-s-ink/40 mt-0.5">{opt.desc}</p>
+                <p className="text-[11px] text-s-ink-2 mt-0.5">{opt.desc}</p>
               </div>
             </button>
           ))}
@@ -901,68 +890,113 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
       {/* Deposit percent slider */}
       {paymentMode === "deposit" && (
         <div>
-          <div className="flex justify-between mb-2">
-            <label className="text-xs font-medium text-s-ink/50">Anzahlung</label>
-            <span className="text-sm font-bold text-s-coral data-text">{depositPercent}%</span>
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-xs font-medium text-s-ink/50">{t("depositLabel")}</label>
+            <span className="text-sm font-semibold text-s-ink data-text bg-s-bg-sunken rounded-full px-2.5 py-0.5">{depositPercent}%</span>
           </div>
           <input
             type="range" min={5} max={50} step={5} value={depositPercent}
             onChange={(e) => setDepositPercent(+e.target.value)}
-            className="w-full accent-s-coral"
+            className="w-full accent-s-ink"
           />
           <div className="flex justify-between text-xs text-s-ink/30 mt-1">
             <span>5%</span><span>50%</span>
           </div>
           <p className="text-xs text-s-ink/40 mt-2">
-            Bei einer Buchung von {formatCurrency(100, locale)} zahlt der Kunde {formatCurrency(depositPercent, locale)} online und {formatCurrency(100 - depositPercent, locale)} im Salon.
+            {t("depositExample", { total: formatCurrency(100, locale), online: formatCurrency(depositPercent, locale), atSalon: formatCurrency(100 - depositPercent, locale) })}
           </p>
         </div>
       )}
 
-      {/* No-show protection settings */}
+      {/* No-show fee — only when a card is on file (deposit/prepay). Charging options light up
+          orange (surcharge = money-out); "Keine" stays calm green. Writes no_show_fee_type/value. */}
       {paymentMode !== "at_salon" && (
-        <div className="border-t border-s-ink/5 pt-4 space-y-4">
-          <p className="text-xs font-medium text-s-ink/50">No-Show-Schutz</p>
+        <div className="border-t border-s-ink/5 pt-4 space-y-2">
+          <p className="text-xs font-medium text-s-ink/50 mb-1">{t("noShowFeeLabel")}</p>
 
-          <div>
-            <div className="flex justify-between mb-2">
-              <label className="text-xs text-s-ink/50">Kostenlose Stornierung bis</label>
-              <span className="text-sm font-bold text-s-ink data-text">{cancellationHours}h vorher</span>
-            </div>
-            <input
-              type="range" min={2} max={72} step={2} value={cancellationHours}
-              onChange={(e) => setCancellationHours(+e.target.value)}
-              className="w-full accent-s-coral"
-            />
-          </div>
+          {([
+            { id: "free", label: t("noShowFreeLabel"), desc: t("noShowFreeDesc") },
+            { id: "flat", label: t("feeFlatLabel"), desc: t("feeFlatDesc") },
+            { id: "percentage", label: t("feePercentLabel"), desc: t("feePercentDesc") },
+          ] as { id: NoShowFeeType; label: string; desc: string }[]).map((opt) => {
+            const selected = noShowFeeType === opt.id;
+            const charging = selected && opt.id !== "free";
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setNoShowFeeType(opt.id)}
+                className={[
+                  "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
+                  charging ? "border-s-surcharge bg-s-surcharge-bg"
+                    : selected ? "border-s-accent-bright bg-s-accent-bright/10"
+                    : "border-s-border hover:border-s-ink/20",
+                ].join(" ")}
+              >
+                <div className={[
+                  "w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center shrink-0",
+                  charging ? "border-s-surcharge" : selected ? "border-s-accent-bright" : "border-s-border",
+                ].join(" ")}>
+                  {selected && <div className={["w-2 h-2 rounded-full", charging ? "bg-s-surcharge" : "bg-s-accent-bright"].join(" ")} />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={["text-sm font-medium", charging ? "text-s-surcharge" : selected ? "text-s-accent-bright" : "text-s-ink"].join(" ")}>{opt.label}</p>
+                  <p className="text-[11px] text-s-ink-2 mt-0.5">{opt.desc}</p>
+                </div>
+                {charging && (
+                  <span className="text-sm font-bold text-s-surcharge data-text shrink-0">
+                    {opt.id === "flat" ? `CHF ${noShowFeeValue}` : `${noShowFeeValue}%`}
+                  </span>
+                )}
+              </button>
+            );
+          })}
 
-          <div>
-            <div className="flex justify-between mb-2">
-              <label className="text-xs text-s-ink/50">Gebühr bei verspäteter Stornierung</label>
-              <span className="text-sm font-bold text-s-coral data-text">{lateCancelFee}%</span>
+          {noShowFeeType !== "free" && (
+            <div className="flex items-center justify-between rounded-[12px] border border-s-surcharge-bg bg-s-surcharge-bg px-3.5 py-2.5">
+              <label className="text-xs font-medium text-s-ink-2">
+                {noShowFeeType === "flat" ? t("amountChfLabel") : t("percentInputLabel")}
+              </label>
+              <input
+                type="number"
+                min={0}
+                max={noShowFeeType === "percentage" ? 100 : 500}
+                value={noShowFeeValue}
+                onChange={(e) => setNoShowFeeValue(Math.max(0, Math.min(noShowFeeType === "percentage" ? 100 : 500, Number(e.target.value))))}
+                className="w-20 bg-transparent text-right text-lg font-bold text-s-surcharge data-text focus:outline-none"
+              />
             </div>
-            <input
-              type="range" min={0} max={100} step={10} value={lateCancelFee}
-              onChange={(e) => setLateCancelFee(+e.target.value)}
-              className="w-full accent-coral"
-            />
-            <p className="text-xs text-s-ink/40 mt-1">
-              Wird automatisch bei Stornierung innerhalb der Frist belastet.
+          )}
+
+          <div className={[
+            "flex items-start gap-2 rounded-[12px] px-3.5 py-3 mt-1",
+            noShowFeeType === "free" ? "bg-s-success-bg" : "bg-s-surcharge-bg",
+          ].join(" ")}>
+            {noShowFeeType === "free"
+              ? <ShieldCheck size={15} className="text-s-success shrink-0 mt-0.5" />
+              : <AlertTriangle size={15} className="text-s-surcharge shrink-0 mt-0.5" />}
+            <p className="text-xs leading-relaxed text-s-ink/80">
+              <span className="font-semibold text-s-ink">{t("customersSee")}</span>{" "}
+              {noShowFeeType === "free"
+                ? t("noShowPreviewFree")
+                : noShowFeeType === "flat"
+                  ? t.rich("noShowPreviewFlat", { amount: noShowFeeValue, b: (c) => <span className="font-semibold text-s-surcharge">{c}</span> })
+                  : t.rich("noShowPreviewPercent", { percent: noShowFeeValue, b: (c) => <span className="font-semibold text-s-surcharge">{c}</span> })}
             </p>
           </div>
         </div>
       )}
 
-      <div className="flex items-center gap-3">
+      <div className="space-y-2">
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2"
+          className="w-full min-h-[44px] rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-          Speichern
+          {t("save")}
         </button>
-        {saved && <span className="text-sm text-s-coral">Gespeichert ✓</span>}
+        {saved && <span className="block text-center text-sm text-s-success">{t("saved")}</span>}
       </div>
     </div>
   );
@@ -973,6 +1007,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 // ─────────────────────────────────────────
 
 function ClosuresTab({ salon }: { salon: Salon }) {
+  const t = useTranslations("dashboard.settings");
   const [closures, setClosures] = useState<{ id: string; date: string; reason: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState("");
@@ -1010,11 +1045,11 @@ function ClosuresTab({ salon }: { salon: Salon }) {
 
   return (
     <div className="py-4 max-w-md space-y-4">
-      <p className="text-xs text-s-ink/50">Tage, an denen Ihr Salon geschlossen ist (Feiertage, Betriebsferien etc.)</p>
+      <p className="text-xs text-s-ink/50">{t("closuresIntro")}</p>
       <div className="flex gap-2">
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
           className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
-        <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Grund (optional)"
+        <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder={t("reasonPlaceholder")}
           className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         <button onClick={addClosure} disabled={!date}
           className="px-3 py-2 rounded-btn bg-s-coral text-white text-sm disabled:opacity-50">
@@ -1022,7 +1057,7 @@ function ClosuresTab({ salon }: { salon: Salon }) {
         </button>
       </div>
       {closures.length === 0 ? (
-        <p className="text-xs text-s-ink/30 text-center py-4">Keine Schließtage eingetragen</p>
+        <p className="text-xs text-s-ink/30 text-center py-4">{t("noClosures")}</p>
       ) : (
         <div className="space-y-1">
           {closures.map((c) => (
@@ -1047,6 +1082,7 @@ function ClosuresTab({ salon }: { salon: Salon }) {
 // ─────────────────────────────────────────
 
 function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const t = useTranslations("dashboard.settings");
   const ext = salon as Salon & { auto_assign_method?: string; daily_limit_enabled?: boolean; daily_limit?: number; booking_confirmation_mode?: "instant" | "manual_approval" };
   const [method, setMethod] = useState(ext.auto_assign_method ?? "manual");
   const [limitEnabled, setLimitEnabled] = useState(ext.daily_limit_enabled ?? false);
@@ -1063,61 +1099,88 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
     setTimeout(() => setSaved(false), 2000);
   };
 
+  const confirmOptions: { id: "instant" | "manual_approval"; label: string; desc?: string }[] = [
+    { id: "instant", label: t("confirmInstantLabel"), desc: t("confirmInstantDesc") },
+    { id: "manual_approval", label: t("confirmManualLabel"), desc: t("confirmManualDesc") },
+  ];
+  const methodOptions: { id: string; label: string; desc?: string }[] = [
+    { id: "manual", label: t("methodManualLabel") },
+    { id: "round_robin", label: t("methodRoundRobinLabel"), desc: t("methodRoundRobinDesc") },
+    { id: "least_busy", label: t("methodLeastBusyLabel") },
+  ];
+
   return (
-    <div className="py-4 max-w-md space-y-5">
+    <div className="py-4 max-w-md space-y-6">
+      {/* Buchungsbestätigung — option-cards */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">Buchungsbestätigung</label>
-        <div className="grid grid-cols-2 gap-2 mb-4">
-          {[
-            { id: "instant", label: "Sofortige Bestätigung", desc: "Autom. bestätigt" },
-            { id: "manual_approval", label: "Manuelle Freigabe", desc: "Sie bestätigen" },
-          ].map((opt) => (
-            <button key={opt.id} type="button" onClick={() => setConfirmMode(opt.id as any)}
-              className={["rounded-[12px] border p-3 text-left transition-colors",
-                confirmMode === opt.id ? "border-s-coral bg-s-coral/5" : "border-s-ink/10 hover:border-s-ink/20"].join(" ")}>
-              <p className={["text-sm font-medium", confirmMode === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>{opt.label}</p>
-              <p className="text-[10px] text-s-ink/40 mt-0.5">{opt.desc}</p>
+        <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("bookingConfirmationLabel")}</label>
+        <div className="space-y-2">
+          {confirmOptions.map((opt) => (
+            <button key={opt.id} type="button" onClick={() => setConfirmMode(opt.id)}
+              className={[
+                "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
+                confirmMode === opt.id ? "border-s-accent-bright bg-s-accent-bright/10" : "border-s-border hover:border-s-ink/20",
+              ].join(" ")}>
+              <div className={["w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center shrink-0", confirmMode === opt.id ? "border-s-accent-bright" : "border-s-border"].join(" ")}>
+                {confirmMode === opt.id && <div className="w-2 h-2 rounded-full bg-s-accent-bright" />}
+              </div>
+              <div>
+                <p className={["text-sm font-medium", confirmMode === opt.id ? "text-s-accent-bright" : "text-s-ink"].join(" ")}>{opt.label}</p>
+                {opt.desc && <p className="text-[11px] text-s-ink-2 mt-0.5">{opt.desc}</p>}
+              </div>
             </button>
           ))}
         </div>
       </div>
+
+      {/* Termin-Zuweisung — option-cards */}
       <div>
-        <label className="block text-xs font-medium text-s-ink/50 mb-2">Termin-Zuweisung</label>
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { id: "manual", label: "Manuell", desc: "Sie weisen selbst zu" },
-            { id: "round_robin", label: "Reihum", desc: "Gleichmäßig verteilt" },
-            { id: "least_busy", label: "Wenigster", desc: "Am wenigsten ausgelastet" },
-          ].map((opt) => (
+        <label className="block text-xs font-medium text-s-ink/50 mb-2">{t("appointmentAssignmentLabel")}</label>
+        <div className="space-y-2">
+          {methodOptions.map((opt) => (
             <button key={opt.id} type="button" onClick={() => setMethod(opt.id)}
-              className={["rounded-[12px] border p-3 text-left transition-colors",
-                method === opt.id ? "border-s-coral bg-s-coral/5" : "border-s-ink/10 hover:border-s-ink/20"].join(" ")}>
-              <p className={["text-sm font-medium", method === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>{opt.label}</p>
-              <p className="text-[10px] text-s-ink/40 mt-0.5">{opt.desc}</p>
+              className={[
+                "w-full min-h-[44px] rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
+                method === opt.id ? "border-s-accent-bright bg-s-accent-bright/10" : "border-s-border hover:border-s-ink/20",
+              ].join(" ")}>
+              <div className={["w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center shrink-0", method === opt.id ? "border-s-accent-bright" : "border-s-border"].join(" ")}>
+                {method === opt.id && <div className="w-2 h-2 rounded-full bg-s-accent-bright" />}
+              </div>
+              <div>
+                <p className={["text-sm font-medium", method === opt.id ? "text-s-accent-bright" : "text-s-ink"].join(" ")}>{opt.label}</p>
+                {opt.desc && <p className="text-[11px] text-s-ink-2 mt-0.5">{opt.desc}</p>}
+              </div>
             </button>
           ))}
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <button type="button" onClick={() => setLimitEnabled(!limitEnabled)}
-          className={limitEnabled ? "text-s-coral" : "text-s-ink/30"}>
-          {limitEnabled ? <Check size={18} /> : <X size={18} />}
-        </button>
-        <div className="flex-1">
-          <p className="text-sm text-s-ink">Tägliches Limit pro Stylist</p>
-          {limitEnabled && (
-            <input type="number" min={1} max={50} value={limit}
-              onChange={(e) => setLimit(+e.target.value)}
-              className="mt-1 w-24 px-2 py-1.5 rounded-btn border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-coral" />
-          )}
+
+      {/* Daily limit — hairline value-row with toggle */}
+      <div className="rounded-[16px] border border-s-border">
+        <div className="flex items-center justify-between gap-3 px-3.5 py-3">
+          <span className="text-sm text-s-ink">{t("dailyLimitPerStylist")}</span>
+          <div className="flex items-center gap-3">
+            {limitEnabled && (
+              <input type="number" min={1} max={50} value={limit}
+                onChange={(e) => setLimit(+e.target.value)}
+                className="w-14 px-2 py-1 rounded-btn border border-s-ink/10 text-sm data-text text-right focus:outline-none focus:border-s-accent-bright" />
+            )}
+            <button type="button" role="switch" aria-checked={limitEnabled} aria-label={t("dailyLimitToggleAria")}
+              onClick={() => setLimitEnabled(!limitEnabled)}
+              className={["w-[38px] h-[23px] rounded-full relative transition-colors shrink-0", limitEnabled ? "bg-s-accent-bright" : "bg-s-border"].join(" ")}>
+              <span className={["absolute top-[2.5px] w-[18px] h-[18px] rounded-full bg-white shadow transition-all", limitEnabled ? "left-[17px]" : "left-[2.5px]"].join(" ")} />
+            </button>
+          </div>
         </div>
       </div>
-      <div className="flex items-center gap-3">
+
+      {/* Save — full-width ink */}
+      <div className="space-y-2">
         <button onClick={handleSave} disabled={saving}
-          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
-          {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />} Speichern
+          className="w-full py-3 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+          {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}{t("save")}
         </button>
-        {saved && <span className="text-sm text-s-coral">Gespeichert ✓</span>}
+        {saved && <span className="block text-center text-sm text-s-success">{t("saved")}</span>}
       </div>
     </div>
   );
@@ -1128,6 +1191,7 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
 // ─────────────────────────────────────────
 
 function CommissionTab({ salon }: { salon: Salon }) {
+  const t = useTranslations("dashboard.settings");
   const [staff, setStaff] = useState<{ id: string; name: string; commission_pct: number }[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
@@ -1155,11 +1219,11 @@ function CommissionTab({ salon }: { salon: Salon }) {
   };
 
   if (loading) return <div className="py-6 flex justify-center"><Spinner size="md" /></div>;
-  if (staff.length === 0) return <p className="text-xs text-s-ink/30 text-center py-6">Kein Team eingerichtet</p>;
+  if (staff.length === 0) return <p className="text-xs text-s-ink/30 text-center py-6">{t("noTeam")}</p>;
 
   return (
     <div className="py-4 max-w-md space-y-3">
-      <p className="text-xs text-s-ink/50">Legen Sie den Provisionssatz (%) für jeden Stylisten fest.</p>
+      <p className="text-xs text-s-ink/50">{t("commissionIntro")}</p>
       {staff.map((s) => (
         <div key={s.id} className="flex items-center gap-3 py-2 border-b border-s-ink/5 last:border-0">
           <span className="text-sm font-medium text-s-ink flex-1">{s.name}</span>
@@ -1191,11 +1255,140 @@ function CommissionTab({ salon }: { salon: Salon }) {
   );
 }
 
+// ─────────────────────────────────────────
+// Mobile settings index (lg:hidden) — drives the SAME active-tab state
+// the desktop ExpandableTabs bar uses. Angebote (the Last-Minute mechanism,
+// rebranded — /angebote is the customer page) is now included here too so it's
+// reachable on mobile (V3 parity fix; was previously omitted).
+// ─────────────────────────────────────────
+
+type IndexRow = {
+  tabId: string;
+  icon: LucideIcon;
+  label: string;
+  pill?: { tone: "success" | "warning" | "neutral"; label: string };
+};
+
+function MobileSettingsIndex({
+  salon,
+  onSelect,
+}: {
+  salon: Salon;
+  onSelect: (tabId: string) => void;
+}) {
+  const t = useTranslations("dashboard.settings");
+  // Glance-status pills derived from live state.
+  const verificationWarnings = salon.verification_warnings ?? 0;
+  const verificationPill =
+    verificationWarnings > 0
+      ? ({ tone: "warning", label: t("statusPending") } as const)
+      : undefined;
+
+  const [paymentsPill, setPaymentsPill] = useState<IndexRow["pill"]>(undefined);
+  useEffect(() => {
+    fetch("/api/stripe/connect/status")
+      .then((r) => r.json())
+      .then((d) =>
+        setPaymentsPill(
+          d.status === "connected"
+            ? { tone: "success", label: t("pillConnected") }
+            : { tone: "neutral", label: t("pillNotConnected") },
+        ),
+      )
+      .catch((err) => {
+        console.error("[DashboardSettings] mobile index stripe status failed:", err);
+        setPaymentsPill({ tone: "neutral", label: t("pillNotConnected") });
+      });
+  }, []);
+
+  const groups: { label: string; rows: IndexRow[] }[] = [
+    {
+      label: t("groupProfile"),
+      rows: [
+        { tabId: "profile", icon: Store, label: t("rowProfileHours") },
+        { tabId: "verification", icon: ShieldCheck, label: t("tabVerification"), pill: verificationPill },
+      ],
+    },
+    {
+      label: t("groupBookings"),
+      rows: [
+        { tabId: "scheduling", icon: CalendarCheck, label: t("tabScheduling") },
+        { tabId: "cancellation", icon: XCircle, label: t("tabCancellation") },
+        { tabId: "offpeak", icon: Moon, label: t("tabOffpeak") },
+      ],
+    },
+    {
+      label: t("groupOffers"),
+      rows: [
+        { tabId: "lastminute", icon: Tag, label: t("tabOffers") },
+      ],
+    },
+    {
+      label: t("groupAbsence"),
+      rows: [
+        { tabId: "vacation", icon: Plane, label: t("tabVacation") },
+        { tabId: "closures", icon: CalendarX, label: t("tabClosures") },
+      ],
+    },
+    {
+      label: t("groupFinance"),
+      rows: [
+        { tabId: "payments", icon: CreditCard, label: t("tabPayments"), pill: paymentsPill },
+        { tabId: "commission", icon: Percent, label: t("tabCommission") },
+        { tabId: "vat", icon: Receipt, label: t("tabVat") },
+      ],
+    },
+    {
+      label: t("groupCommunication"),
+      rows: [
+        { tabId: "quickreplies", icon: MessageSquare, label: t("tabQuickReplies") },
+        { tabId: "sms", icon: Smartphone, label: t("tabSms") },
+      ],
+    },
+  ];
+
+  return (
+    <div>
+      {groups.map((group) => (
+        <div key={group.label}>
+          <p className="text-[10.5px] font-bold uppercase tracking-[0.09em] text-s-ink-3 mt-4 mb-2 first:mt-0">
+            {group.label}
+          </p>
+          <div className="rounded-[16px] border border-s-border bg-white overflow-hidden">
+            {group.rows.map((row) => {
+              const Icon = row.icon;
+              return (
+                <button
+                  key={row.tabId}
+                  type="button"
+                  onClick={() => onSelect(row.tabId)}
+                  className="w-full flex items-center gap-3 px-3.5 py-3 border-b border-s-border last:border-b-0 text-left"
+                >
+                  <Icon size={19} className="text-s-ink shrink-0" />
+                  <span className="flex-1 font-heading font-semibold text-[14.5px] text-s-ink">{row.label}</span>
+                  {row.pill && <DashStatusPill tone={row.pill.tone}>{row.pill.label}</DashStatusPill>}
+                  <ChevronRight size={18} className="text-s-ink-3 shrink-0" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function SettingsPage() {
+  const t = useTranslations("dashboard.settings");
   const params = useSearchParams();
   const [salon, setSalon] = useState<Salon | null>(null);
   const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState(params.get("verified") === "1" ? "Verifizierung erfolgreich! ✓" : "");
+  // Lifted active-tab state — the desktop ExpandableTabs bar AND the mobile
+  // index both drive this single setter. "profile" is the default panel.
+  const [activeTab, setActiveTab] = useState("profile");
+  // On mobile, a row tap reveals its panel; this gates the index-vs-panel view.
+  const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
+  const [toast, setToast] = useState(params.get("verified") === "1" ? t("verifiedToast") : "");
 
   useEffect(() => {
     if (!toast) return;
@@ -1217,26 +1410,39 @@ export default function SettingsPage() {
 
   const handleSave = async (updates: Partial<Salon>) => {
     if (!salon) return;
-    await fetch(`/api/salons/${salon.id}`, {
-      method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updates),
-    });
-    setSalon((prev) => prev ? { ...prev, ...updates } : prev);
+    try {
+      const res = await fetch(`/api/salons/${salon.id}`, {
+        method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updates),
+      });
+      if (!res.ok) {
+        const detail = await res.json().catch(() => ({}));
+        console.error("[DashboardSettings] salon save failed:", res.status, detail);
+        setToast(t("saveFailed"));
+        return;
+      }
+      // Only reflect the change locally once the server actually accepted it (was unconditional,
+      // which masked silent no-op saves as success).
+      setSalon((prev) => prev ? { ...prev, ...updates } : prev);
+    } catch (err) {
+      console.error("[DashboardSettings] salon save error:", err);
+      setToast(t("saveNetworkError"));
+    }
   };
 
   return (
     <DashboardLayout>
-      {salon && !salon.is_active && (
+      {salon && (salon as any).frozen_at && (
         <div className="fixed inset-0 z-40 bg-s-error-bg/90 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-white border border-s-error/20 rounded-[12px] p-8 text-center max-w-sm shadow-warm-lg">
             <AlertTriangle size={32} className="text-s-error mx-auto mb-3" />
-            <h2 className="font-heading text-lg text-s-ink mb-2">Salon eingefroren</h2>
+            <h2 className="font-heading text-lg text-s-ink mb-2">{t("salonFrozenTitle")}</h2>
             {(salon as any).frozen_reason && (
               <p className="text-sm text-s-ink/80 mb-2 bg-s-error-bg rounded-btn px-3 py-2">{(salon as any).frozen_reason}</p>
             )}
             {(salon as any).warning_count > 0 && (
-              <p className="text-xs text-s-error/70 mb-2">{(salon as any).warning_count}/3 Warnungen erhalten</p>
+              <p className="text-xs text-s-error/70 mb-2">{t("warningsReceived", { count: (salon as any).warning_count })}</p>
             )}
-            <p className="text-sm text-s-ink/60">Kontaktiere support@solen.ch für weitere Informationen.</p>
+            <p className="text-sm text-s-ink/60">{t("contactSupportInfo")}</p>
           </div>
         </div>
       )}
@@ -1247,35 +1453,86 @@ export default function SettingsPage() {
         </div>
       )}
 
-      <div className="mb-6">
-        <h1 className="font-heading text-2xl text-s-ink">Einstellungen</h1>
-      </div>
-
       {loading ? (
-        <div className="flex justify-center py-16"><Spinner size="lg" /></div>
+        <>
+          <div className="mb-6">
+            <h1 className="font-heading text-2xl lg:text-2xl text-s-ink">{t("pageTitle")}</h1>
+          </div>
+          <div className="flex justify-center py-16"><Spinner size="lg" /></div>
+        </>
       ) : !salon ? (
-        <div className="text-center py-12 text-s-ink/30 text-sm">Salon nicht gefunden</div>
+        <>
+          <div className="mb-6">
+            <h1 className="font-heading text-2xl text-s-ink">{t("pageTitle")}</h1>
+          </div>
+          <div className="text-center py-12 text-s-ink/30 text-sm">{t("salonNotFound")}</div>
+        </>
       ) : (
-        <div className="bg-white rounded-[12px] shadow-warm-md">
-          <ExpandableTabs
-            defaultTab="profile"
-            tabs={[
-              { id: "profile", label: "Profil", content: <ProfileTab salon={salon} onSave={handleSave} /> },
-              { id: "lastminute", label: "Last-Minute", content: <LastMinuteTab salon={salon} onSave={handleSave} /> },
-              { id: "payments", label: "Zahlungen", content: <PaymentsTab salon={salon} onSave={handleSave} /> },
-              { id: "quickreplies", label: "Schnellantworten", content: <QuickRepliesTab /> },
-              { id: "verification", label: "Verifizierung", content: <VerificationTab salon={salon} /> },
-              { id: "vacation", label: "Ferien", content: <VacationTab salon={salon} onSave={handleSave} /> },
-              { id: "sms", label: "SMS-Erinnerungen", content: <SmsRemindersTab salon={salon} onSave={handleSave} /> },
-              { id: "cancellation", label: "Stornierung", content: <CancellationTab salon={salon} onSave={handleSave} /> },
-              { id: "closures", label: "Feiertage", content: <ClosuresTab salon={salon} /> },
-              { id: "scheduling", label: "Terminvergabe", content: <SchedulingTab salon={salon} onSave={handleSave} /> },
-              { id: "commission", label: "Provision", content: <CommissionTab salon={salon} /> },
-              { id: "vat", label: "MWST", content: <VatRegistrationTab salon={salon} onSave={handleSave} /> },
-              { id: "offpeak", label: "Nebenzeiten", content: <OffPeakManager salonId={salon.id} /> },
-            ]}
-          />
-        </div>
+        (() => {
+          const tabs = [
+            { id: "profile", label: t("tabProfile"), content: <ProfileTab salon={salon} onSave={handleSave} /> },
+            { id: "lastminute", label: t("tabOffers"), content: <LastMinuteTab salon={salon} onSave={handleSave} /> },
+            { id: "payments", label: t("tabPayments"), content: <PaymentsTab salon={salon} onSave={handleSave} /> },
+            { id: "quickreplies", label: t("tabQuickReplies"), content: <QuickRepliesTab /> },
+            { id: "verification", label: t("tabVerification"), content: <VerificationTab salon={salon} /> },
+            { id: "vacation", label: t("tabVacation"), content: <VacationTab salon={salon} onSave={handleSave} /> },
+            { id: "sms", label: t("tabSms"), content: <SmsRemindersTab salon={salon} onSave={handleSave} /> },
+            { id: "cancellation", label: t("tabCancellation"), content: <CancellationTab salon={salon} onSave={handleSave} /> },
+            { id: "closures", label: t("tabClosures"), content: <ClosuresTab salon={salon} /> },
+            { id: "scheduling", label: t("tabScheduling"), content: <SchedulingTab salon={salon} onSave={handleSave} /> },
+            { id: "commission", label: t("tabCommission"), content: <CommissionTab salon={salon} /> },
+            { id: "vat", label: t("tabVat"), content: <VatRegistrationTab salon={salon} onSave={handleSave} /> },
+            { id: "offpeak", label: t("tabOffpeak"), content: <OffPeakManager salonId={salon.id} /> },
+          ];
+          const activeLabel = tabs.find((t) => t.id === activeTab)?.label ?? "";
+          return (
+            <>
+              {/* ── Mobile (lg:hidden): grouped-card index → tap a row → that panel ── */}
+              <div className="lg:hidden">
+                {!mobilePanelOpen ? (
+                  <>
+                    <div className="mb-2">
+                      <h1 className="font-heading text-[26px] font-bold tracking-[-0.02em] text-s-ink leading-none">{t("pageTitle")}</h1>
+                    </div>
+                    <MobileSettingsIndex
+                      salon={salon}
+                      onSelect={(tabId) => { setActiveTab(tabId); setMobilePanelOpen(true); }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setMobilePanelOpen(false)}
+                      className="inline-flex items-center gap-1.5 text-[14px] font-heading font-semibold text-s-ink mb-3"
+                    >
+                      <ChevronRight size={18} className="rotate-180" />
+                      {t("pageTitle")}
+                    </button>
+                    <h2 className="font-heading text-[22px] font-bold tracking-[-0.02em] text-s-ink leading-none mb-2">{activeLabel}</h2>
+                    <div className="bg-white rounded-[16px] border border-s-border overflow-hidden px-1">
+                      {tabs.find((t) => t.id === activeTab)?.content}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* ── Desktop (lg+): unchanged ExpandableTabs bar + panels ── */}
+              <div className="hidden lg:block">
+                <div className="mb-6">
+                  <h1 className="font-heading text-2xl text-s-ink">{t("pageTitle")}</h1>
+                </div>
+                <div className="bg-white rounded-[12px] shadow-warm-md">
+                  <ExpandableTabs
+                    activeTab={activeTab}
+                    onTabChange={setActiveTab}
+                    tabs={tabs}
+                  />
+                </div>
+              </div>
+            </>
+          );
+        })()
       )}
     </DashboardLayout>
   );
