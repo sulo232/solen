@@ -1380,7 +1380,7 @@ function MobileSettingsIndex({
 
 export default function SettingsPage() {
   const t = useTranslations("dashboard.settings");
-  const params = useSearchParams();
+  const params = useSearchParams() ?? new URLSearchParams();
   const [salon, setSalon] = useState<Salon | null>(null);
   const [loading, setLoading] = useState(true);
   // Lifted active-tab state — the desktop ExpandableTabs bar AND the mobile

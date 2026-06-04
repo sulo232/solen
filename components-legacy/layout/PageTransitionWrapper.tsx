@@ -9,6 +9,6 @@ interface PageTransitionWrapperProps {
 }
 
 export default function PageTransitionWrapper({ children }: PageTransitionWrapperProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   return <PageTransition pathname={pathname}>{children}</PageTransition>;
 }

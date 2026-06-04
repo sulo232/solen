@@ -9,7 +9,7 @@ import { formatCurrency } from "@/lib/format-currency";
 const AMOUNT_PRESETS = [2500, 5000, 10000, 20000]; // in cents
 
 export default function GiftCardPage() {
-  const params = useParams();
+  const params = useParams()!;
   const slug = params.slug as string;
   const [salon, setSalon] = useState<any>(null);
   const [loading, setLoading] = useState(true);

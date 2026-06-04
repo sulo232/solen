@@ -34,7 +34,7 @@ export default function HideInBooking({
    *  global Header + Breadcrumb out so the page leads with the hero. */
   coverSalonDetail?: boolean;
 }) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   if (!pathname) return <>{children}</>;
 
   if (hideOnFeed && /\/discover(\/|$)/.test(pathname)) return null;

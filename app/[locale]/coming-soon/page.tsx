@@ -19,7 +19,7 @@ const FEATURE_MAP: Record<string, { Icon: LucideIcon }> = {
 export default function ComingSoonPage() {
   const locale = useLocale();
   const t = useTranslations("comingSoon");
-  const params = useSearchParams();
+  const params = useSearchParams() ?? new URLSearchParams();
   const feature = params.get("feature") ?? "default";
   const meta = FEATURE_MAP[feature] ?? { Icon: Sparkles };
   const FeatureIcon = meta.Icon;

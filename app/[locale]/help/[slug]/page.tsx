@@ -20,7 +20,7 @@ type HelpArticle = {
 
 export default function HelpArticlePage() {
   const locale = useLocale();
-  const params = useParams();
+  const params = useParams()!;
   const slug = params.slug as string;
   const [article, setArticle] = useState<HelpArticle | null>(null);
   const [loading, setLoading] = useState(true);

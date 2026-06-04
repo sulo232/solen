@@ -87,7 +87,7 @@ const fmtChf = (n: number) => n.toLocaleString("de-CH");
 export default function DashboardPage() {
   const locale = useLocale();
   const t = useTranslations("dashboard.homePage");
-  const params = useSearchParams();
+  const params = useSearchParams() ?? new URLSearchParams();
   const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [staff, setStaff] = useState<StaffStat[]>([]);

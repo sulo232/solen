@@ -125,7 +125,7 @@ const PERIODS: { label: string; value: string; icon: LucideIcon }[] = [
 
 export function SearchBar() {
   const router = useRouter();
-  const params = useParams<{ locale: string }>();
+  const params = useParams<{ locale: string }>()!;
   const locale = params?.locale ?? "de";
 
   const [active, setActive] = React.useState<Segment | null>(null);

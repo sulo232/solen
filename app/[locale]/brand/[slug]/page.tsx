@@ -18,7 +18,7 @@ interface SalonGroup {
 }
 
 export default function BrandPage() {
-  const params = useParams();
+  const params = useParams()!;
   const slug = params.slug as string;
   const locale = (params.locale as string) ?? "de";
 

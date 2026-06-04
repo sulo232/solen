@@ -34,10 +34,10 @@ interface TreatmentSalon {
 }
 
 export default function TreatmentResultsPage() {
-  const params = useParams<{ slug: string[] }>();
-  const searchParams = useSearchParams();
+  const params = useParams<{ slug: string[] }>()!;
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const locale = useLocale();
   const t = useTranslations('filters') as any;
 

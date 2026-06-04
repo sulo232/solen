@@ -256,12 +256,12 @@ export default function SalonProfilePage() {
   // hooks fire (the legacy hook stack assumes the legacy layout).
   // History: V3-D202 Phase B introduced the opt-in `?v3=1` gate; the caveat it
   // named (analytics + JSON-LD only in legacy stack) is now resolved.
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   if (searchParams?.get("v3") !== "0") {
     return <SalonDetailV3 />;
   }
 
-  const { slug } = useParams<{ slug: string }>();
+  const { slug } = useParams<{ slug: string }>()!;
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("salonDetail");

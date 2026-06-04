@@ -11,9 +11,9 @@ interface SearchCriteriaChipsProps {
 const PARAM_KEYS = ["category", "q", "date", "time"] as const;
 
 export default function SearchCriteriaChips({ locale }: SearchCriteriaChipsProps) {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const t = useTranslations("ui.search");
   const tNav = useTranslations("navigation");
 

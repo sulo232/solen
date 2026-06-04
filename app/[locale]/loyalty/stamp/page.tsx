@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Check, AlertCircle, Award } from "lucide-react";
 
 export default function LoyaltyStampPage() {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const token = searchParams.get("token");
 
   const [status, setStatus] = useState<"loading" | "ready" | "stamped" | "error">("loading");

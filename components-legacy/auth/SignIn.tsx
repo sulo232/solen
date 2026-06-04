@@ -10,7 +10,7 @@ import { useToast } from "@/components-legacy/ui/Toast";
 
 export default function SignIn() {
   const t = useTranslations("auth") as any;
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const router = useRouter();
   const rawRedirect = searchParams.get("redirect") ?? "/";
   // SECURITY: Only allow internal relative paths — block external redirects and protocol-relative URLs

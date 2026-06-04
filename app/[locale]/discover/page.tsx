@@ -55,7 +55,7 @@ function DiscoverPageContent() {
   const locale = useLocale();
   const router = useRouter();
   const t = useTranslations("discover");
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
 
   const [items, setItems] = useState<DiscoveryItem[]>([]);
   const [loading, setLoading] = useState(true);

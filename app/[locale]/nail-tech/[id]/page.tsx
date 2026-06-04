@@ -25,7 +25,7 @@ interface TechProfile {
 }
 
 export default function NailTechProfilePage() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>()!;
   const locale = useLocale();
   const [tech, setTech] = useState<TechProfile | null>(null);
   const [loading, setLoading] = useState(true);

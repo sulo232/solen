@@ -682,7 +682,7 @@ export default function ProfilePage() {
   const locale = useLocale();
   const t = useTranslations("Profile") as any;
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const [profile, setProfile] = useState<Profile | null>(null);
   const [bookings, setBookings] = useState<BookingWithDetails[]>([]);
   const [favorites, setFavorites] = useState<SalonCard[]>([]);

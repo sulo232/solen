@@ -183,7 +183,7 @@ function BookingActionSheet({
 export default function BookingsPage() {
   const locale = useLocale();
   const t = useTranslations("dashboard.bookingsPage");
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [salonId, setSalonId] = useState<string | null>(null);

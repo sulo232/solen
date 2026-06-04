@@ -160,7 +160,7 @@ export default async function BookingSalonPage({
           <BookingWizard
             services={services}
             staffList={staff}
-            salon={salon as Salon}
+            salon={salon as unknown as Salon}
             staffServices={staffServices}
             serviceAddons={serviceAddons}
             serviceOptions={serviceOptions}

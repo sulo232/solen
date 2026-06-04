@@ -15,7 +15,7 @@ interface DeleteAccountModalProps {
 export function DeleteAccountModal({ open, onClose }: DeleteAccountModalProps) {
   const router = useRouter();
   const locale = useLocale();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const t = useTranslations("Profile") as any;
 
   const [confirmText, setConfirmText] = useState("");

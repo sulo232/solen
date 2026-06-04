@@ -59,7 +59,7 @@ import { generateSalonSchema } from "@/lib/seo";
  *   photos, services, team, reviews, portfolio, about, loyalty
  */
 export function SalonDetailV3() {
-  const params = useParams<{ locale: string; slug: string }>();
+  const params = useParams<{ locale: string; slug: string }>()!;
   const slug = params?.slug ?? "";
   const locale = params?.locale ?? "de";
 

@@ -19,8 +19,8 @@ interface SubCategoryChipsProps {
 
 export default function SubCategoryChips({ category }: SubCategoryChipsProps) {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const pathname = usePathname() ?? "/";
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const chips = SUBCATEGORY_DATA[category] ?? [];
   const activeService = searchParams.get("service");
 

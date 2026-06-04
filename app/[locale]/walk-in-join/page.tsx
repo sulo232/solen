@@ -26,7 +26,7 @@ interface QueueStats {
 
 export default function WalkInJoinPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const locale = useLocale();
 
   const salonId = searchParams.get("salon_id");

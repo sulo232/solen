@@ -200,7 +200,7 @@ function PurchaseModal({
 
 // ─── Main page ───────────────────────────────────────────────────────────────
 export default function SalonPackagesPage() {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug } = useParams<{ slug: string }>()!;
   const locale = useLocale();
   const [packages, setPackages] = useState<PackageData[]>([]);
   const [salonName, setSalonName] = useState("");

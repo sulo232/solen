@@ -942,7 +942,17 @@
       "menOnly": "Solo uomini",
       "womenOnly": "Solo donne",
       "continue": "Continua",
-      "selectAtLeastOne": "Seleziona almeno un servizio."
+      "selectAtLeastOne": "Seleziona almeno un servizio.",
+      "close": "Chiudi",
+      "chooseOption": "Scegli un'opzione",
+      "required": "Obbligatorio",
+      "addOns": "Extra",
+      "optional": "Facoltativo",
+      "from": "da",
+      "remove": "Rimuovi",
+      "update": "Aggiorna",
+      "add": "Aggiungi",
+      "categories": "Categorie"
     },
     "staffSelection": {
       "title": "Quale stilista preferisci?",
@@ -955,7 +965,8 @@
       "subtitle": "Seleziona una data per il tuo appuntamento",
       "back": "Indietro",
       "continue": "Continua",
-      "selectDate": "Seleziona una data"
+      "selectDate": "Seleziona una data",
+      "pickDate": "Scegli una data"
     },
     "timeSelection": {
       "title": "Seleziona un'ora",
@@ -991,6 +1002,12 @@
       "bookingFailed": "Prenotazione fallita",
       "unknownError": "Si è verificato un errore",
       "continueToPayment": "Continua al pagamento"
+    },
+    "leave": {
+      "title": "Uscire dalla prenotazione?",
+      "subtitle": "I tuoi progressi andranno persi.",
+      "cancel": "Annulla",
+      "exit": "Esci"
     }
   },
   "chat": {
@@ -5202,7 +5219,8 @@
     "upcoming": "Prossimi",
     "past": "Passato",
     "cancelled": "Annullato",
-    "noBookings": "Nessuna prenotazione ancora"
+    "noBookings": "Nessuna prenotazione ancora",
+    "myBookings": "Le mie prenotazioni"
   },
   "reviewPrompt": {
     "title": "Come ti è piaciuta la tua visita?",

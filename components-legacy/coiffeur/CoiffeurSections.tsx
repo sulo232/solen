@@ -36,8 +36,8 @@ const TRENDING_STYLES = [
 export function CoiffeurAboveGrid() {
   const t = useTranslations("coiffeur.sections");
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const pathname = usePathname() ?? "/";
+  const searchParams = useSearchParams() ?? new URLSearchParams();
 
   const SERVICES: PillOption[] = [
     { value: "schnitt", label: t("service_cut") },

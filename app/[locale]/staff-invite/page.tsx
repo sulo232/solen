@@ -9,7 +9,7 @@ import { Users, Check, AlertTriangle } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 
 export default function StaffInvitePage() {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const locale = useLocale();
   const token = searchParams.get("token");
 

@@ -13,7 +13,7 @@ import type { ReactNode } from "react";
  * as children so this only gates visibility, nothing else.
  */
 export default function FooterGate({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   if (pathname && /\/booking\/?$/.test(pathname)) return null;
   return <>{children}</>;
 }

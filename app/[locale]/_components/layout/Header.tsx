@@ -248,7 +248,7 @@ export default function Header({ locale }: { locale: string }) {
 
   // V3-D215 (verifier #1): pathname guard — only hide-on-scroll on salon-detail
   // PDPs (path matches `/{locale}/salon/{slug}`). Computed once per render.
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const isSalonDetail = React.useMemo(() => {
     if (!pathname) return false;
     const m = pathname.match(/^\/[a-z]{2}\/salon\/[^/]+\/?$/);

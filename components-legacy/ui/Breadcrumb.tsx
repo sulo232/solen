@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ChevronRight, ArrowLeft } from "lucide-react";
 
 export default function Breadcrumb() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const locale = useLocale();
   const router = useRouter();
   const t = useTranslations("breadcrumb");

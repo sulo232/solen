@@ -40,9 +40,9 @@ const BART_TYPES: PillOption[] = [
 // ── Above-grid: Walk-in teaser + filter pills ──────────────────────────────
 
 export function BarbershopAboveGrid() {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const locale = useLocale();
   const t = useTranslations("barber.sections") as any;
 

@@ -20,7 +20,7 @@ const TABS = [
 type TabKey = (typeof TABS)[number]["key"];
 
 export default function BottomTabBar() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const locale = useLocale();
   const t = useTranslations("navigation") as any;
   const tAuth = useTranslations("auth") as any;

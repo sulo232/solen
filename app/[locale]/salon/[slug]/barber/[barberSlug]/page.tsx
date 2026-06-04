@@ -35,7 +35,7 @@ interface PortfolioImage {
 }
 
 export default function BarberProfilePage() {
-  const params = useParams();
+  const params = useParams()!;
   const locale = useLocale();
   const barberSlug = params.barberSlug as string;
   const salonSlug = params.slug as string;

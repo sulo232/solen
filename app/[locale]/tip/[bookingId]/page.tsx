@@ -11,7 +11,7 @@ import Spinner from "@/components-legacy/ui/Spinner";
 import TipSheet from "@/app/[locale]/_components/tips/TipSheet";
 
 export default function BookingTipPage() {
-  const params = useParams();
+  const params = useParams()!;
   const router = useRouter();
   const locale = useLocale();
   const bookingId = params?.bookingId as string;

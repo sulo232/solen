@@ -113,7 +113,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
 export default function CheckoutPage() {
   const locale = useLocale();
   const tc = useTranslations("common");
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const [intent, setIntent] = useState<BookingIntent | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);

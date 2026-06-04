@@ -16,7 +16,7 @@ export default function TosPrompt() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const locale = useLocale();
   const t = useTranslations("auth.tos") as any;
 

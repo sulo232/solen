@@ -37,7 +37,7 @@ export default function SearchResultGrid({
 }: SearchResultGridProps) {
   const t = useTranslations("emptyStates");
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
 
   if (loading) {
     return (

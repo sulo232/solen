@@ -11,7 +11,7 @@ import type { DiscoveryItem } from "@/lib/types";
 
 // V3-D414 (Phase 2): a saved collection's detail — its looks in the feed masonry. Focused view (own back).
 export default function SavedCollectionPage() {
-  const params = useParams<{ id: string; locale: string }>();
+  const params = useParams<{ id: string; locale: string }>()!;
   const router = useRouter();
   const id = params.id;
   const locale = params.locale;

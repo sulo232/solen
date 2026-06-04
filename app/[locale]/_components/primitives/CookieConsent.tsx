@@ -178,7 +178,7 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
 
 function CookieBanner() {
   const { acceptAll, acceptNecessary, openSettings } = useCookieConsent();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
 
   // Display-only suppression on focused flows: the fixed bottom strip covered the
   // pay CTA on /walk-in-pay, and on the owner /dashboard it overlapped page content

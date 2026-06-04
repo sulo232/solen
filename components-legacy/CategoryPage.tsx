@@ -150,9 +150,9 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   const tc = useTranslations("common");
   const t = useTranslations('filters') as any;
   const tCategory = useTranslations('categoryPage') as any;
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const routerNav = useRouter();
-  const currentPathname = usePathname();
+  const currentPathname = usePathname() ?? "/";
   const isMapView = searchParams.get("view") === "map";
   const selectedDate = searchParams.get("date");
 

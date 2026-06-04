@@ -13,7 +13,7 @@ export default function ResetPasswordPage() {
   const locale = useLocale();
   const tc = useTranslations("common");
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const toast = useToast();
   const supabase = createBrowserSupabaseClient();
 

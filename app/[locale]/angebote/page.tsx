@@ -22,8 +22,8 @@ export default function LastMinutePage() {
   const t = useTranslations('filters') as any;
   const tEmpty = useTranslations('emptyStates');
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const pathname = usePathname() ?? "/";
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const [slots, setSlots] = useState<LastMinuteSlot[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);

@@ -77,7 +77,7 @@ type SortValue = typeof SORTS[number]["value"];
 
 export function SearchResults({ locale }: { locale: string }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
 
   // Read all params (V3 + legacy)
   const q = searchParams.get("q")?.trim() ?? "";

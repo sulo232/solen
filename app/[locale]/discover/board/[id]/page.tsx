@@ -13,7 +13,7 @@ import type { DiscoveryItem } from "@/lib/types";
 // the board's looks in the same masonry as the feed. Looks come from /api/discovery/boards/[id] (curated pins,
 // no search-logging). Back button returns to the feed.
 export default function BoardDetailPage() {
-  const params = useParams<{ id: string; locale: string }>();
+  const params = useParams<{ id: string; locale: string }>()!;
   const router = useRouter();
   const id = params.id;
   const locale = params.locale;

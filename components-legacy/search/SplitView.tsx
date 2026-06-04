@@ -28,9 +28,9 @@ interface SplitViewProps {
 }
 
 export default function SplitView({ locale, initialFilters }: SplitViewProps) {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const t = useTranslations('filters') as any;
 
   // Mobile view state: "grid" or "map"

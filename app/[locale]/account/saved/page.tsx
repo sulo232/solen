@@ -13,9 +13,9 @@ import type { SalonCard as SalonCardType } from "@/lib/types";
 
 export default function SavedPage() {
   const t = useTranslations("savedPage");
-  const params = useParams();
+  const params = useParams()!;
   const locale = (params?.locale as string) ?? "de";
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const router = useRouter();
 
   const [items, setItems] = useState<SalonCardType[]>([]);

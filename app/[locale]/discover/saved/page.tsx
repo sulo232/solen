@@ -9,7 +9,7 @@ import { ArrowLeft, Bookmark } from "lucide-react";
 interface Collection { id: string; name: string; count: number; covers: string[]; }
 
 export default function SavedPage() {
-  const params = useParams<{ locale: string }>();
+  const params = useParams<{ locale: string }>()!;
   const router = useRouter();
   const locale = params.locale;
   const [collections, setCollections] = useState<Collection[]>([]);

@@ -52,7 +52,7 @@ interface SearchAutocompleteProps {
 export default function SearchAutocomplete({ category, onServiceSelect }: SearchAutocompleteProps) {
   const locale = useLocale();
   const router = useRouter();
-  const params = useParams();
+  const params = useParams()!;
   const rawCity = params?.city as string | undefined;
   const t = useTranslations("ui.search") as any;
   const [query, setQuery] = useState("");

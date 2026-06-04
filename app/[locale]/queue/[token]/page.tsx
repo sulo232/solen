@@ -37,7 +37,7 @@ const COPY: Record<string, Copy> = {
 };
 
 export default function QueueTrackingPage() {
-  const params = useParams<{ token: string }>();
+  const params = useParams<{ token: string }>()!;
   const token = params?.token;
   const locale = useLocale();
   const l = COPY[locale] ?? COPY.de;

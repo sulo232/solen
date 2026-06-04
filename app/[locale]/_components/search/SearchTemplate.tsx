@@ -380,9 +380,9 @@ export default function SearchTemplate({
   aboveSlot = null,
   belowSlot = null,
 }: SearchTemplateProps) {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   // V3-D351 (2026-05-28): all search-chrome + filter-sheet strings via next-intl.
   // Keys live under ui.searchChrome / ui.filterSheet in messages/{de,en,fr,it}.json.
   const tChrome = useTranslations("ui.searchChrome");

@@ -986,7 +986,17 @@
       "menOnly": "Nur Männer",
       "womenOnly": "Nur Frauen",
       "continue": "Weiter",
-      "selectAtLeastOne": "Bitte wähle mindestens einen Service aus."
+      "selectAtLeastOne": "Bitte wähle mindestens einen Service aus.",
+      "close": "Schliessen",
+      "chooseOption": "Option wählen",
+      "required": "Erforderlich",
+      "addOns": "Zusatzleistungen",
+      "optional": "Optional",
+      "from": "ab",
+      "remove": "Entfernen",
+      "update": "Aktualisieren",
+      "add": "Hinzufügen",
+      "categories": "Kategorien"
     },
     "staffSelection": {
       "title": "Welcher Stylist darf's sein?",
@@ -999,7 +1009,8 @@
       "subtitle": "Wähle ein Datum für deinen Termin",
       "back": "Zurück",
       "continue": "Weiter",
-      "selectDate": "Bitte wähle ein Datum aus"
+      "selectDate": "Bitte wähle ein Datum aus",
+      "pickDate": "Datum wählen"
     },
     "timeSelection": {
       "title": "Wähle eine Uhrzeit",
@@ -1035,6 +1046,12 @@
       "bookingFailed": "Buchung fehlgeschlagen",
       "unknownError": "Ein Fehler ist aufgetreten",
       "continueToPayment": "Weiter zur Zahlung"
+    },
+    "leave": {
+      "title": "Buchung verlassen?",
+      "subtitle": "Dein bisheriger Fortschritt geht verloren.",
+      "cancel": "Abbrechen",
+      "exit": "Verlassen"
     }
   },
   "chat": {
@@ -5240,7 +5257,8 @@
     "upcoming": "Anstehend",
     "past": "Vergangen",
     "cancelled": "Storniert",
-    "noBookings": "Noch keine Buchungen"
+    "noBookings": "Noch keine Buchungen",
+    "myBookings": "Meine Buchungen"
   },
   "reviewPrompt": {
     "title": "Wie war dein Besuch?",

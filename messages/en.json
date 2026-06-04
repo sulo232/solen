@@ -976,7 +976,17 @@
       "menOnly": "Men only",
       "womenOnly": "Women only",
       "continue": "Continue",
-      "selectAtLeastOne": "Please select at least one service."
+      "selectAtLeastOne": "Please select at least one service.",
+      "close": "Close",
+      "chooseOption": "Choose an option",
+      "required": "Required",
+      "addOns": "Add-ons",
+      "optional": "Optional",
+      "from": "from",
+      "remove": "Remove",
+      "update": "Update",
+      "add": "Add",
+      "categories": "Categories"
     },
     "staffSelection": {
       "title": "Which stylist would you prefer?",
@@ -989,7 +999,8 @@
       "subtitle": "Select a date for your appointment",
       "back": "Back",
       "continue": "Continue",
-      "selectDate": "Please select a date"
+      "selectDate": "Please select a date",
+      "pickDate": "Pick a date"
     },
     "timeSelection": {
       "title": "Select a time",
@@ -1025,6 +1036,12 @@
       "bookingFailed": "Booking failed",
       "unknownError": "An error occurred",
       "continueToPayment": "Continue to payment"
+    },
+    "leave": {
+      "title": "Leave booking?",
+      "subtitle": "Your progress so far will be lost.",
+      "cancel": "Cancel",
+      "exit": "Leave"
     }
   },
   "chat": {
@@ -5230,7 +5247,8 @@
     "upcoming": "Upcoming",
     "past": "Past",
     "cancelled": "Cancelled",
-    "noBookings": "No bookings yet"
+    "noBookings": "No bookings yet",
+    "myBookings": "My bookings"
   },
   "reviewPrompt": {
     "title": "How was your visit?",

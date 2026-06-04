@@ -51,7 +51,7 @@ interface BookingData {
 const LOCALE_TAG: Record<string, string> = { de: "de-CH", en: "en-GB", fr: "fr-CH", it: "it-CH" };
 
 export default function WalkInPayPage() {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const router = useRouter();
   const locale = useLocale();
   const token = searchParams.get("token");

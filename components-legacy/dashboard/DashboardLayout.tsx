@@ -149,7 +149,7 @@ export default function DashboardLayout({
   salonCategories,
 }: DashboardLayoutProps) {
   const locale = useLocale();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const router = useRouter();
   const t = useTranslations("dashboard.nav") as any;
   const [authChecked, setAuthChecked] = useState(false);

@@ -27,8 +27,8 @@ interface SortDropdownProps {
 
 export default function SortDropdown({ locale }: SortDropdownProps) {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const pathname = usePathname() ?? "/";
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const [open, setOpen] = useState(false);
   const [hasGPS, setHasGPS] = useState(false);
   const ref = useRef<HTMLDivElement>(null);

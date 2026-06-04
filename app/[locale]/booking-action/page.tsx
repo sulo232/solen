@@ -8,7 +8,7 @@ import { Check, X, AlertTriangle } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 
 export default function BookingActionPage() {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const locale = useLocale();
   const bookingId = searchParams.get("id");
   const token = searchParams.get("token");
