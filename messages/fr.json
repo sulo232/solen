@@ -2222,7 +2222,7 @@
       "cancel": "Annuler",
       "save": "Enregistrer",
       "empty": "Aucune formule enregistrée",
-      "developerValue": "Oxydant: {volume}",
+      "developerValue": "Oxydant : {volume}",
       "minutes": "{n} min"
     },
     "heatmapChart": {
@@ -2268,7 +2268,7 @@
       "statusFrozen": "Gelé",
       "searchPlaceholder": "Rechercher un salon...",
       "emptyTitle": "Aucun salon trouvé",
-      "emptyMessage": "Modifie ton filtre ou ta recherche.",
+      "emptyMessage": "Modifiez votre filtre ou votre recherche.",
       "cancel": "Annuler",
       "activate": "Activer",
       "freeze": "Geler",
@@ -2276,7 +2276,7 @@
       "activateTitle": "Activer le salon",
       "freezeTitle": "Geler le salon",
       "activateMessage": "Activer le salon \"{name}\" ? Il deviendra visible pour les clients.",
-      "freezeMessage": "Es-tu sûr ? Le salon \"{name}\" ne sera plus visible pour les clients."
+      "freezeMessage": "Êtes-vous sûr ? Le salon \"{name}\" ne sera plus visible pour les clients."
     },
     "allUsersPage": {
       "title": "Tous les utilisateurs",
@@ -2590,7 +2590,7 @@
       "enableLabel": "Activer les offres de dernière minute",
       "enableHelp": "Affichez vos créneaux disponibles avec des réductions sur la page dernière minute",
       "globalDiscount": "Réduction globale (%)",
-      "appliedToAll": "appliqué à tous les créneaux",
+      "appliedToAll": "appliquée à tous les créneaux",
       "serviceSpecific": "Réductions par service",
       "serviceSpecificHelp": "Définissez des taux de réduction différents par service",
       "selectService": "Choisir un service...",
@@ -3864,7 +3864,7 @@
     "pricing_discount": "Réduction",
     "pricing_base": "Base",
     "pricing_premium": "Premium",
-    "retail_low_stock_alert": "{count, plural, one {# produit en stock faible} other {# produits en stock faible}}",
+    "retail_low_stock_alert": "{count, plural, one {# produit à faible stock} other {# produits à faible stock}}",
     "retail_stock": "Stock : {count}",
     "retail_stock_minus": "Diminuer le stock",
     "retail_stock_plus": "Augmenter le stock"

@@ -108,10 +108,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Service has no valid price" }, { status: 400 });
   }
   // Charge per the salon's payment_mode (was: always the full price, ignoring the setting):
-  //   prepay / unset → full price now;  deposit → deposit_percent% now (rest paid at the salon);
-  //   at_salon → no online charge (book + pay in person) — reject the online pay step (fail-closed,
-  //   so an at-salon shop never wrongly charges online; the booking flow offers only in-person).
-  const paymentMode = String((salon as { payment_mode?: string }).payment_mode ?? "prepay");
+  //   prepay → full price now;  deposit → deposit_percent% now (rest paid at the salon);
+  //   at_salon (and UNSET) → no online charge (book + pay in person) — reject the online pay step
+  //   (fail-closed, so an at-salon / unconfigured shop never wrongly charges online; the booking
+  //   flow offers only in-person). Unset defaults to at_salon to match the settings default,
+  //   PayConfirmStep, and the bookings-route guard (the other 3 of 4 places all treat unset as at_salon).
+  const paymentMode = String((salon as { payment_mode?: string }).payment_mode ?? "at_salon");
   if (paymentMode === "at_salon") {
     return NextResponse.json({ error: "Dieser Salon kassiert vor Ort.", code: "AT_SALON" }, { status: 400 });
   }

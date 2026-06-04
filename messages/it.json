@@ -1312,7 +1312,7 @@
       "vatPreviewRegistered": "Sulla ricevuta i clienti vedono netto + 8,1% di IVA + totale, oltre alla tua partita IVA.",
       "vatPreviewSmallBusiness": "I clienti vedono solo l'importo totale. Non viene indicata alcuna IVA.",
       "vatNumberLabel": "Partita IVA (IDI)",
-      "vatNumberHint": "Il tuo numero d'identificazione delle imprese svizzero.",
+      "vatNumberHint": "Il tuo numero svizzero di identificazione delle imprese.",
       "salonWarnings": "Il tuo salone ha {count}/3 avvertimenti.",
       "salonFrozen": "Il tuo salone è stato sospeso.",
       "contactSupport": "Contatta support@solen.ch.",
@@ -1388,7 +1388,7 @@
       "tabScheduling": "Pianificazione",
       "tabCommission": "Commissione",
       "tabVat": "IVA",
-      "tabOffpeak": "Orari di morbida"
+      "tabOffpeak": "Orari non di punta"
     },
     "availability": "Disponibilità",
     "today": "Oggi",
@@ -1990,8 +1990,8 @@
       "newBadge": "Nuovo",
       "selectConversation": "Seleziona una conversazione",
       "quickReply": "Risposta rapida",
-      "quickReplyThanks": "Grazie per il suo messaggio!",
-      "quickReplyConfirmed": "Il suo appuntamento è stato confermato.",
+      "quickReplyThanks": "Grazie per il tuo messaggio!",
+      "quickReplyConfirmed": "Il tuo appuntamento è stato confermato.",
       "quickReplyFullyBooked": "Purtroppo siamo al completo."
     },
     "loyaltyPage": {
@@ -2102,7 +2102,7 @@
     },
     "todayLive": {
       "statToday": "Oggi",
-      "statWalkIn": "Senza app.",
+      "statWalkIn": "Senza appunt.",
       "sectionAria": "Oggi in sintesi",
       "nowAt": "Ora · {time}",
       "readyForToday": "Pronti per oggi",
