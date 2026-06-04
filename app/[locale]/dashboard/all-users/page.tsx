@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Users, Search, ShieldCheck, Scissors, User, X, Ban, CheckCircle } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -22,17 +23,13 @@ interface AdminUser {
   is_suspended: boolean;
 }
 
-const ROLE_MAP: Record<UserRole, { label: string; icon: React.ElementType; cls: string }> = {
-  customer:    { label: "Kunde",          icon: User,       cls: "bg-s-bg-sunken text-s-ink-2" },
-  salon_owner: { label: "Salonbesitzer",  icon: Scissors,   cls: "bg-s-bg-sunken text-s-ink" },
-  admin:       { label: "Admin",          icon: ShieldCheck, cls: "bg-s-ink text-white" },
+const ROLE_MAP: Record<UserRole, { icon: React.ElementType; cls: string }> = {
+  customer:    { icon: User,       cls: "bg-s-bg-sunken text-s-ink-2" },
+  salon_owner: { icon: Scissors,   cls: "bg-s-bg-sunken text-s-ink" },
+  admin:       { icon: ShieldCheck, cls: "bg-s-ink text-white" },
 };
 
-const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
-  { value: "customer", label: "Kunde" },
-  { value: "salon_owner", label: "Salonbesitzer" },
-  { value: "admin", label: "Admin" },
-];
+const ROLE_ORDER: UserRole[] = ["customer", "salon_owner", "admin"];
 
 /* ─── Confirmation Modal ─── */
 function ConfirmModal({
@@ -52,6 +49,7 @@ function ConfirmModal({
   onClose: () => void;
   loading: boolean;
 }) {
+  const t = useTranslations("dashboard.allUsersPage");
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-input shadow-v5-float w-full max-w-sm p-6">
@@ -62,7 +60,7 @@ function ConfirmModal({
         <p className="text-sm text-s-ink/50 mb-5">{message}</p>
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">
-            Abbrechen
+            {t("cancel")}
           </button>
           <button
             onClick={onConfirm}
@@ -80,6 +78,14 @@ function ConfirmModal({
 
 /* ─── Main Page ─── */
 export default function AllUsersPage() {
+  const t = useTranslations("dashboard.allUsersPage");
+  const roleLabel = (role: UserRole): string => {
+    switch (role) {
+      case "customer": return t("roleCustomer");
+      case "salon_owner": return t("roleSalonOwner");
+      case "admin": return t("roleAdmin");
+    }
+  };
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -140,13 +146,13 @@ export default function AllUsersPage() {
       {/* Suspend/unsuspend modal */}
       {suspendTarget && (
         <ConfirmModal
-          title={suspendTarget.is_suspended ? "Benutzer freigeben" : "Benutzer sperren"}
+          title={suspendTarget.is_suspended ? t("unsuspendTitle") : t("suspendTitle")}
           message={
             suspendTarget.is_suspended
-              ? `Benutzer "${suspendTarget.display_name ?? suspendTarget.email}" wieder freigeben?`
-              : `Benutzer "${suspendTarget.display_name ?? suspendTarget.email}" sperren? Der Benutzer kann sich nicht mehr anmelden.`
+              ? t("unsuspendMessage", { name: suspendTarget.display_name ?? suspendTarget.email ?? "" })
+              : t("suspendMessage", { name: suspendTarget.display_name ?? suspendTarget.email ?? "" })
           }
-          confirmLabel={suspendTarget.is_suspended ? "Freigeben" : "Sperren"}
+          confirmLabel={suspendTarget.is_suspended ? t("unsuspendConfirm") : t("suspendConfirm")}
           confirmCls="bg-s-ink hover:bg-black"
           onConfirm={handleSuspendToggle}
           onClose={() => setSuspendTarget(null)}
@@ -156,8 +162,8 @@ export default function AllUsersPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Alle Nutzer</h1>
-        <p className="text-sm text-s-ink/40 mt-0.5">Registrierte Benutzer verwalten</p>
+        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">{t("title")}</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
       </div>
 
       {/* Search */}
@@ -165,7 +171,7 @@ export default function AllUsersPage() {
         <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
         <input
           type="text"
-          placeholder="Name oder E-Mail suchen..."
+          placeholder={t("searchPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-border bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-ink transition-colors"
@@ -176,7 +182,7 @@ export default function AllUsersPage() {
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : filtered.length === 0 ? (
-        <EmptyState icon={Users} title="Keine Nutzer gefunden" message="Ändere deine Suche." />
+        <EmptyState icon={Users} title={t("emptyTitle")} message={t("emptyMessage")} />
       ) : (
         <motion.div
           variants={containerVariants}
@@ -185,7 +191,7 @@ export default function AllUsersPage() {
           className="space-y-3"
         >
           {filtered.map((u) => {
-            const { label, icon: RoleIcon, cls } = ROLE_MAP[u.role];
+            const { icon: RoleIcon, cls } = ROLE_MAP[u.role];
             return (
               <motion.div
                 key={u.id}
@@ -211,17 +217,19 @@ export default function AllUsersPage() {
                         {u.display_name ?? "—"}
                       </p>
                       {u.is_suspended && (
-                        <DashStatusPill tone="error">GESPERRT</DashStatusPill>
+                        <DashStatusPill tone="error">{t("suspendedBadge")}</DashStatusPill>
                       )}
                     </div>
                     {u.email && (
                       <p className="text-xs text-s-ink/40 truncate">{u.email}</p>
                     )}
                     <p className="text-[10px] text-s-ink/30 mt-0.5">
-                      Registriert: {new Date(u.created_at).toLocaleDateString("de-CH", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
+                      {t("registeredOn", {
+                        date: new Date(u.created_at).toLocaleDateString("de-CH", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        }),
                       })}
                     </p>
                   </div>
@@ -232,7 +240,7 @@ export default function AllUsersPage() {
                   {/* Role pill */}
                   <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${cls}`}>
                     <RoleIcon size={10} />
-                    {label}
+                    {roleLabel(u.role)}
                   </span>
 
                   <div className="flex items-center gap-2">
@@ -242,8 +250,8 @@ export default function AllUsersPage() {
                       onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
                       className="px-2 py-1.5 rounded-btn border border-s-border text-xs text-s-ink-2 bg-white focus:outline-none focus:border-s-ink cursor-pointer"
                     >
-                      {ROLE_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      {ROLE_ORDER.map((role) => (
+                        <option key={role} value={role}>{roleLabel(role)}</option>
                       ))}
                     </select>
 
@@ -254,7 +262,7 @@ export default function AllUsersPage() {
                         className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-ink text-s-ink text-xs font-medium hover:bg-s-bg-sunken transition-colors"
                       >
                         <CheckCircle size={12} />
-                        Freigeben
+                        {t("unsuspendConfirm")}
                       </button>
                     ) : (
                       <button
@@ -262,7 +270,7 @@ export default function AllUsersPage() {
                         className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-error/40 text-s-error text-xs font-medium hover:bg-s-error-bg transition-colors"
                       >
                         <Ban size={12} />
-                        Sperren
+                        {t("suspendConfirm")}
                       </button>
                     )}
                   </div>

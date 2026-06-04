@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Store, UsersRound, Calendar, DollarSign, Star, BarChart3 } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
@@ -82,6 +82,7 @@ function StatCard({
 /* ─── Main Page ─── */
 export default function PlatformAnalyticsPage() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.platformAnalyticsPage");
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -97,8 +98,8 @@ export default function PlatformAnalyticsPage() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading text-2xl text-s-ink">Plattform Statistiken</h1>
-        <p className="text-sm text-s-ink/40 mt-0.5">Gesamtübersicht der Plattform</p>
+        <h1 className="font-heading text-2xl text-s-ink">{t("title")}</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
       </div>
 
       {/* Content */}
@@ -108,11 +109,11 @@ export default function PlatformAnalyticsPage() {
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
           {/* Stat cards */}
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-            <StatCard label="Salons" value={stats?.total_salons ?? 0} icon={Store} bg="bg-s-coral/5" color="text-s-coral" />
-            <StatCard label="Nutzer" value={stats?.total_users ?? 0} icon={UsersRound} bg="bg-s-ink/5" color="text-s-ink" />
-            <StatCard label="Buchungen (30T)" value={stats?.total_bookings_30d ?? 0} icon={Calendar} bg="bg-s-coral/5" color="text-s-coral" />
-            <StatCard label="Umsatz (30T)" value={stats?.total_revenue_30d ?? 0} formatValue={(v) => formatCurrency(Math.round(v), locale)} icon={DollarSign} bg="bg-s-coral/5" color="text-s-coral" />
-            <StatCard label="Ø Bewertung" value={stats?.avg_platform_rating ?? 0} icon={Star} bg="bg-s-amber-subtle" color="text-s-amber" decimals={1} />
+            <StatCard label={t("salons")} value={stats?.total_salons ?? 0} icon={Store} bg="bg-s-coral/5" color="text-s-coral" />
+            <StatCard label={t("users")} value={stats?.total_users ?? 0} icon={UsersRound} bg="bg-s-ink/5" color="text-s-ink" />
+            <StatCard label={t("bookings30d")} value={stats?.total_bookings_30d ?? 0} icon={Calendar} bg="bg-s-coral/5" color="text-s-coral" />
+            <StatCard label={t("revenue30d")} value={stats?.total_revenue_30d ?? 0} formatValue={(v) => formatCurrency(Math.round(v), locale)} icon={DollarSign} bg="bg-s-coral/5" color="text-s-coral" />
+            <StatCard label={t("avgRating")} value={stats?.avg_platform_rating ?? 0} icon={Star} bg="bg-s-amber-subtle" color="text-s-amber" decimals={1} />
           </div>
 
           {/* Charts placeholder */}
@@ -122,7 +123,7 @@ export default function PlatformAnalyticsPage() {
           >
             <BarChart3 size={36} className="mx-auto mb-3 text-s-coral opacity-40" />
             <p className="text-sm text-s-ink/40 font-body">
-              Detaillierte Charts werden bald verfügbar.
+              {t("chartsComingSoon")}
             </p>
           </motion.div>
         </motion.div>

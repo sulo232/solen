@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ShieldCheck, Check, X, MapPin, Mail, Calendar } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
@@ -19,6 +19,7 @@ interface PendingSalon {
 
 export default function ApprovalsPage() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.approvalsPage");
   const [salons, setSalons] = useState<PendingSalon[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -59,8 +60,8 @@ export default function ApprovalsPage() {
       <div className="mb-6 flex items-center gap-3">
         <ShieldCheck size={22} className="text-s-ink" />
         <div>
-          <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Genehmigungen</h1>
-          <p className="text-sm text-s-ink/40 mt-0.5">Neue Salons warten auf Freischaltung</p>
+          <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">{t("title")}</h1>
+          <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
         </div>
       </div>
 
@@ -69,7 +70,7 @@ export default function ApprovalsPage() {
       ) : salons.length === 0 ? (
         <div className="bg-white rounded-2xl border border-s-border p-12 text-center">
           <ShieldCheck size={36} className="mx-auto mb-3 text-s-ink opacity-40" />
-          <p className="text-s-ink/40 text-sm">Keine ausstehenden Genehmigungen</p>
+          <p className="text-s-ink/40 text-sm">{t("emptyState")}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -93,7 +94,7 @@ export default function ApprovalsPage() {
                   )}
                   <div className="flex items-center gap-1.5 text-sm text-s-ink/40">
                     <Calendar size={13} />
-                    <span>Registriert {new Date(salon.created_at).toLocaleDateString("de-CH")}</span>
+                    <span>{t("registered", { date: new Date(salon.created_at).toLocaleDateString("de-CH") })}</span>
                   </div>
 
                   {salon.categories.length > 0 && (
@@ -114,7 +115,7 @@ export default function ApprovalsPage() {
                     className="flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black transition-colors disabled:opacity-50"
                   >
                     <Check size={15} />
-                    Genehmigen
+                    {t("approve")}
                   </button>
                   <button
                     onClick={() => setRejectModal({ id: salon.id, name: salon.name })}
@@ -122,7 +123,7 @@ export default function ApprovalsPage() {
                     className="flex items-center gap-1.5 px-4 py-2 rounded-btn border border-s-error/40 text-s-error text-sm font-medium hover:bg-s-error-bg transition-colors disabled:opacity-50"
                   >
                     <X size={15} />
-                    Ablehnen
+                    {t("reject")}
                   </button>
                 </div>
               </div>
@@ -135,14 +136,17 @@ export default function ApprovalsPage() {
       {rejectModal && (
         <div className="fixed inset-0 z-50 bg-s-ink/40 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-input shadow-v5-float w-full max-w-md p-6">
-            <h3 className="font-heading text-lg text-s-ink mb-1">Salon ablehnen</h3>
+            <h3 className="font-heading text-lg text-s-ink mb-1">{t("modalTitle")}</h3>
             <p className="text-sm text-s-ink/50 mb-4">
-              Begründung für <strong>{rejectModal.name}</strong> (wird per E-Mail gesendet):
+              {t.rich("modalBody", {
+                name: rejectModal.name,
+                strong: (chunks) => <strong>{chunks}</strong>,
+              })}
             </p>
             <textarea
               className="w-full border border-s-border rounded-btn px-3 py-2 text-sm text-s-ink resize-none focus:outline-none focus:border-s-ink"
               rows={4}
-              placeholder="z.B. Unvollständige Angaben, kein Basel-Bezug..."
+              placeholder={t("rejectReasonPlaceholder")}
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
               autoFocus
@@ -152,14 +156,14 @@ export default function ApprovalsPage() {
                 onClick={() => { setRejectModal(null); setRejectReason(""); }}
                 className="px-4 py-2 rounded-btn text-sm text-s-ink-2 hover:text-s-ink transition-colors"
               >
-                Abbrechen
+                {t("cancel")}
               </button>
               <button
                 onClick={reject}
                 disabled={!rejectReason.trim() || actionLoading === rejectModal.id}
                 className="px-4 py-2 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black transition-colors disabled:opacity-50"
               >
-                Ablehnen & E-Mail senden
+                {t("rejectAndSendEmail")}
               </button>
             </div>
           </div>

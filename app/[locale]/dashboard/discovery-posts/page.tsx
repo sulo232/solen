@@ -2,28 +2,35 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Plus, Upload, Link as LinkIcon, Loader2, Eye, EyeOff, BarChart } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import ToSCheckbox from "@/components-legacy/discovery/ToSCheckbox";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender } from "@/lib/types";
 
-const CATEGORIES: { key: DiscoveryCategory; label: string }[] = [
-  { key: "hair", label: "Hair" },
-  { key: "beard", label: "Beard" },
-  { key: "nails", label: "Nails" },
-  { key: "makeup", label: "Makeup" },
-  { key: "waxing", label: "Waxing" },
-];
+const CATEGORY_KEYS = ["hair", "beard", "nails", "makeup", "waxing"] as const satisfies readonly DiscoveryCategory[];
+type FormCategory = (typeof CATEGORY_KEYS)[number];
 
-const GENDERS: { key: DiscoveryGender; label: string }[] = [
-  { key: "female", label: "Women" },
-  { key: "male", label: "Men" },
-  { key: "unisex", label: "Unisex" },
-];
+const GENDER_KEYS = ["female", "male", "unisex"] as const satisfies readonly DiscoveryGender[];
+type FormGender = (typeof GENDER_KEYS)[number];
 
 export default function DiscoveryPostsPage() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.discoveryPostsPage");
+
+  const categoryLabels: Record<FormCategory, string> = {
+    hair: t("categoryHair"),
+    beard: t("categoryBeard"),
+    nails: t("categoryNails"),
+    makeup: t("categoryMakeup"),
+    waxing: t("categoryWaxing"),
+  };
+
+  const genderLabels: Record<FormGender, string> = {
+    female: t("genderFemale"),
+    male: t("genderMale"),
+    unisex: t("genderUnisex"),
+  };
   const [tab, setTab] = useState<"new" | "history">("new");
   const [posts, setPosts] = useState<DiscoveryItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -60,7 +67,7 @@ export default function DiscoveryPostsPage() {
 
   async function handlePost() {
     if (!tosAccepted) {
-      setError("Please accept the Terms of Service");
+      setError(t("errorAcceptTos"));
       return;
     }
     setError("");
@@ -86,7 +93,7 @@ export default function DiscoveryPostsPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        setError(data.message || data.error || "Failed to post");
+        setError(data.message || data.error || t("errorFailedToPost"));
         return;
       }
 
@@ -100,7 +107,7 @@ export default function DiscoveryPostsPage() {
         setTosAccepted(false);
       }, 2000);
     } catch {
-      setError("Network error");
+      setError(t("errorNetwork"));
     } finally {
       setPosting(false);
     }
@@ -109,20 +116,20 @@ export default function DiscoveryPostsPage() {
   return (
     <DashboardLayout>
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-heading text-s-ink mb-4">Meine Posts</h1>
+        <h1 className="text-2xl font-heading text-s-ink mb-4">{t("title")}</h1>
 
         {/* Tabs */}
         <div className="flex gap-1 bg-s-ink/5 rounded-pill p-0.5 w-fit mb-6">
-          {(["new", "history"] as const).map((t) => (
+          {(["new", "history"] as const).map((tabKey) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`px-4 py-2 rounded-pill text-sm font-medium transition-colors ${tab === t ? "bg-white text-s-ink shadow-elevation-1" : "text-s-ink/40"}`}
+              key={tabKey}
+              onClick={() => setTab(tabKey)}
+              className={`px-4 py-2 rounded-pill text-sm font-medium transition-colors ${tab === tabKey ? "bg-white text-s-ink shadow-elevation-1" : "text-s-ink/40"}`}
             >
-              {t === "new" ? (
-                <span className="flex items-center gap-1.5"><Plus size={14} /> Neuer Post</span>
+              {tabKey === "new" ? (
+                <span className="flex items-center gap-1.5"><Plus size={14} /> {t("tabNew")}</span>
               ) : (
-                <span className="flex items-center gap-1.5"><BarChart size={14} /> Verlauf</span>
+                <span className="flex items-center gap-1.5"><BarChart size={14} /> {t("tabHistory")}</span>
               )}
             </button>
           ))}
@@ -132,14 +139,14 @@ export default function DiscoveryPostsPage() {
           <div className="space-y-4">
             {success && (
               <div className="p-3 rounded-[12px] bg-s-success-bg text-s-success text-sm">
-                Post erstellt!
+                {t("successCreated")}
               </div>
             )}
 
             {/* Mode toggle */}
             <div className="flex gap-2">
               <button onClick={() => setMode("photo")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
-                <Upload size={14} /> Foto
+                <Upload size={14} /> {t("modePhoto")}
               </button>
               <button onClick={() => setMode("tiktok")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>
                 <LinkIcon size={14} /> TikTok
@@ -151,33 +158,33 @@ export default function DiscoveryPostsPage() {
             )}
 
             <div>
-              <label className="text-xs font-medium text-s-ink/60 mb-1.5 block">Kategorie</label>
+              <label className="text-xs font-medium text-s-ink/60 mb-1.5 block">{t("labelCategory")}</label>
               <div className="flex flex-wrap gap-1.5">
-                {CATEGORIES.map(({ key, label }) => (
-                  <button key={key} onClick={() => setCategory(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>{label}</button>
+                {CATEGORY_KEYS.map((key) => (
+                  <button key={key} onClick={() => setCategory(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${category === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>{categoryLabels[key]}</button>
                 ))}
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-medium text-s-ink/60 mb-1.5 block">Geschlecht</label>
+              <label className="text-xs font-medium text-s-ink/60 mb-1.5 block">{t("labelGender")}</label>
               <div className="flex gap-1.5">
-                {GENDERS.map(({ key, label }) => (
-                  <button key={key} onClick={() => setGender(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>{label}</button>
+                {GENDER_KEYS.map((key) => (
+                  <button key={key} onClick={() => setGender(key)} className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${gender === key ? "bg-s-coral text-white" : "bg-s-ink/5 text-s-ink/60"}`}>{genderLabels[key]}</button>
                 ))}
               </div>
             </div>
 
-            <input type="text" value={styleName} onChange={(e) => setStyleName(e.target.value)} placeholder="Stilname (optional)" className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30" />
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Beschreibung (optional)" rows={2} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30 resize-none" />
-            <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Tags (Kommagetrennt)" className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30" />
+            <input type="text" value={styleName} onChange={(e) => setStyleName(e.target.value)} placeholder={t("placeholderStyleName")} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30" />
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t("placeholderDescription")} rows={2} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30 resize-none" />
+            <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} placeholder={t("placeholderTags")} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30" />
 
             <ToSCheckbox checked={tosAccepted} onChange={setTosAccepted} />
             {error && <p className="text-xs text-s-error">{error}</p>}
 
             <button onClick={handlePost} disabled={posting || !tosAccepted} className="w-full py-3 rounded-btn bg-s-coral hover:brightness-[1.06] text-white font-medium text-sm disabled:opacity-40 transition-[transform,filter] flex items-center justify-center gap-2">
               {posting && <Loader2 size={14} className="animate-spin" />}
-              Veröffentlichen
+              {t("publish")}
             </button>
           </div>
         )}
@@ -185,9 +192,9 @@ export default function DiscoveryPostsPage() {
         {tab === "history" && (
           <div>
             {loading ? (
-              <p className="text-sm text-s-ink/30 py-8 text-center">Laden...</p>
+              <p className="text-sm text-s-ink/30 py-8 text-center">{t("loading")}</p>
             ) : posts.length === 0 ? (
-              <p className="text-sm text-s-ink/30 py-8 text-center">Noch keine Posts</p>
+              <p className="text-sm text-s-ink/30 py-8 text-center">{t("emptyHistory")}</p>
             ) : (
               <div className="space-y-3">
                 {posts.map((post) => (
@@ -202,8 +209,8 @@ export default function DiscoveryPostsPage() {
                           {post.status === "published" ? <Eye size={10} /> : <EyeOff size={10} />}
                           {post.status}
                         </span>
-                        <span>{post.like_count} likes</span>
-                        <span>{post.view_count} views</span>
+                        <span>{t("likes", { n: post.like_count })}</span>
+                        <span>{t("views", { n: post.view_count })}</span>
                       </div>
                     </div>
                   </div>

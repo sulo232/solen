@@ -1,21 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Loader2, Check, LayoutGrid } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
-
-const SECTION_LABELS: Record<string, string> = {
-  quartier: "Entdecke dein Quartier",
-  trending: "Trending in Basel",
-  nearby: "In deiner Nahe",
-  new_salons: "Neue Salons",
-  rebook: "Wieder buchen?",
-  reviews: "Bewertungen Karussell",
-  last_minute: "Last-Minute Angebote",
-  featured: "Beliebte Salons",
-  social_proof: "Social Proof Strip",
-  partner_cta: "Partner CTA Banner",
-};
 
 const SECTION_ORDER = [
   "featured",
@@ -31,6 +19,21 @@ const SECTION_ORDER = [
 ];
 
 export default function HomepageAdminPage() {
+  const t = useTranslations("dashboard.homepageAdminPage");
+
+  const SECTION_LABELS: Record<string, string> = {
+    quartier: t("sectionQuartier"),
+    trending: t("sectionTrending"),
+    nearby: t("sectionNearby"),
+    new_salons: t("sectionNewSalons"),
+    rebook: t("sectionRebook"),
+    reviews: t("sectionReviews"),
+    last_minute: t("sectionLastMinute"),
+    featured: t("sectionFeatured"),
+    social_proof: t("sectionSocialProof"),
+    partner_cta: t("sectionPartnerCta"),
+  };
+
   const [sections, setSections] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -75,10 +78,10 @@ export default function HomepageAdminPage() {
     <DashboardLayout>
       <div className="mb-6">
         <h1 className="font-heading text-2xl text-s-ink">
-          Homepage Sektionen
+          {t("title")}
         </h1>
         <p className="text-sm text-s-ink/50 font-body mt-1">
-          Steuere welche Sektionen auf der Homepage sichtbar sind.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -128,11 +131,11 @@ export default function HomepageAdminPage() {
               className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               {saving && <Loader2 size={14} className="animate-spin" />}
-              Speichern
+              {t("save")}
             </button>
             {saved && (
               <span className="text-sm text-s-coral flex items-center gap-1">
-                <Check size={14} /> Gespeichert
+                <Check size={14} /> {t("saved")}
               </span>
             )}
           </div>

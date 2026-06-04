@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Star, MessageSquareWarning, Check, EyeOff, Trash2, X } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -48,20 +49,21 @@ function DeleteModal({
   onClose: () => void;
   loading: boolean;
 }) {
+  const t = useTranslations("dashboard.reviewModerationPage");
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-2xl shadow-v5-float w-full max-w-sm p-6">
-        <h3 className="font-heading text-base text-s-ink mb-2">Bewertung löschen</h3>
-        <p className="text-sm text-s-ink/50 mb-5">Bewertung endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.</p>
+        <h3 className="font-heading text-base text-s-ink mb-2">{t("deleteTitle")}</h3>
+        <p className="text-sm text-s-ink/50 mb-5">{t("deleteConfirm")}</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">{t("cancel")}</button>
           <button
             onClick={onConfirm}
             disabled={loading}
             className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-colors"
           >
             {loading && <Spinner size="sm" invert />}
-            Löschen
+            {t("delete")}
           </button>
         </div>
       </div>
@@ -71,6 +73,7 @@ function DeleteModal({
 
 /* ─── Main Page ─── */
 export default function ReviewModerationPage() {
+  const t = useTranslations("dashboard.reviewModerationPage");
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"flagged" | "all">("flagged");
@@ -93,7 +96,7 @@ export default function ReviewModerationPage() {
   const handleAction = async (id: string, action: "approve" | "hide") => {
     const body = action === "approve"
       ? { moderation_status: "active" }
-      : { moderation_status: "removed", removal_reason: "Versteckt durch Admin" };
+      : { moderation_status: "removed", removal_reason: t("removalReasonAdmin") };
     await fetch(`/api/admin/reviews/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -137,15 +140,15 @@ export default function ReviewModerationPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Bewertungs-Moderation</h1>
-        <p className="text-sm text-s-ink/40 mt-0.5">Gemeldete und neue Bewertungen prüfen</p>
+        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">{t("title")}</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-5">
         {([
-          { id: "flagged" as const, label: `Gemeldet (${flaggedCount})` },
-          { id: "all" as const, label: "Alle Bewertungen" },
+          { id: "flagged" as const, label: t("tabFlagged", { n: flaggedCount }) },
+          { id: "all" as const, label: t("tabAll") },
         ]).map((t) => (
           <button
             key={t.id}
@@ -163,7 +166,7 @@ export default function ReviewModerationPage() {
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : reviews.length === 0 ? (
-        <EmptyState icon={MessageSquareWarning} title="Keine Bewertungen" message={tab === "flagged" ? "Keine gemeldeten Bewertungen." : "Noch keine Bewertungen vorhanden."} />
+        <EmptyState icon={MessageSquareWarning} title={t("emptyTitle")} message={tab === "flagged" ? t("emptyFlagged") : t("emptyAll")} />
       ) : (
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-3">
           {reviews.map((r) => (
@@ -178,11 +181,11 @@ export default function ReviewModerationPage() {
               <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <Stars rating={r.rating} />
                 <span className="text-xs text-s-ink/50">
-                  Kunde: <strong className="text-s-ink/70">{r.profiles?.display_name ?? "Anonym"}</strong>
+                  {t("customerLabel")} <strong className="text-s-ink/70">{r.profiles?.display_name ?? t("anonymous")}</strong>
                 </span>
                 <span className="text-xs text-s-ink/30">·</span>
                 <span className="text-xs text-s-ink/50">
-                  Salon: <strong className="text-s-ink/70">{r.salons?.name ?? "—"}</strong>
+                  {t("salonLabel")} <strong className="text-s-ink/70">{r.salons?.name ?? "—"}</strong>
                 </span>
                 <span className="text-xs text-s-ink/30">·</span>
                 <span className="text-xs text-s-ink/30">
@@ -201,14 +204,14 @@ export default function ReviewModerationPage() {
                   <DashStatusPill tone="warning">{r.flag_reason}</DashStatusPill>
                 )}
                 {r.is_hidden && (
-                  <DashStatusPill tone="error">Versteckt</DashStatusPill>
+                  <DashStatusPill tone="error">{t("hidden")}</DashStatusPill>
                 )}
               </div>
 
               {/* Existing admin response */}
               {r.admin_response && (
                 <div className="bg-s-bg-sunken rounded-btn p-3 mb-3">
-                  <p className="text-[10px] font-bold text-s-ink mb-1">Admin-Antwort</p>
+                  <p className="text-[10px] font-bold text-s-ink mb-1">{t("adminResponse")}</p>
                   <p className="text-xs text-s-ink/70">{r.admin_response}</p>
                 </div>
               )}
@@ -218,7 +221,7 @@ export default function ReviewModerationPage() {
                 <div className="flex gap-2 mb-3">
                   <input
                     type="text"
-                    placeholder="Öffentliche Antwort schreiben..."
+                    placeholder={t("responsePlaceholder")}
                     value={adminResponses[r.id] ?? ""}
                     onChange={(e) => setAdminResponses((prev) => ({ ...prev, [r.id]: e.target.value }))}
                     className="flex-1 px-3 py-2 rounded-btn border border-s-border bg-white text-s-ink text-xs focus:outline-none focus:border-s-ink"
@@ -228,7 +231,7 @@ export default function ReviewModerationPage() {
                     disabled={!adminResponses[r.id]?.trim()}
                     className="px-3 py-2 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black disabled:opacity-50 transition-colors"
                   >
-                    Senden
+                    {t("send")}
                   </button>
                 </div>
               )}
@@ -240,21 +243,21 @@ export default function ReviewModerationPage() {
                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-black transition-colors"
                 >
                   <Check size={12} />
-                  Genehmigen
+                  {t("approve")}
                 </button>
                 <button
                   onClick={() => handleAction(r.id, "hide")}
                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-border text-s-ink-2 text-xs font-medium hover:bg-s-bg-sunken hover:text-s-ink transition-colors"
                 >
                   <EyeOff size={12} />
-                  Verstecken
+                  {t("hide")}
                 </button>
                 <button
                   onClick={() => setDeleteTarget(r.id)}
                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-error/40 text-s-error text-xs font-medium hover:bg-s-error-bg transition-colors"
                 >
                   <Trash2 size={12} />
-                  Löschen
+                  {t("delete")}
                 </button>
               </div>
             </motion.div>

@@ -21,7 +21,7 @@ interface Service {
 }
 
 export default function LastMinuteManager({ salonId }: { salonId: string }) {
-  const t = useTranslations("marketing") as any;
+  const t = useTranslations("dashboard.lastMinute");
   const [settings, setSettings] = useState<LastMinuteSettings | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,11 +83,11 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
       });
 
       if (!res.ok) throw new Error("Failed to save settings");
-      setSuccess("Einstellungen gespeichert!");
+      setSuccess(t("saved"));
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       console.error("[LastMinuteManager] save error:", err);
-      setError("Fehler beim Speichern");
+      setError(t("saveError"));
     } finally {
       setSaving(false);
     }
@@ -96,7 +96,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
   const addServiceOverride = () => {
     if (!newServiceId || !settings) return;
     if (settings.service_overrides[newServiceId] !== undefined) {
-      setError("Dienst ist bereits überschrieben");
+      setError(t("alreadyOverridden"));
       return;
     }
     setSettings({
@@ -130,7 +130,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
   if (!settings) {
     return (
       <p className="text-sm text-s-ink/50 text-center py-8">
-        Fehler beim Laden der Einstellungen
+        {t("loadError")}
       </p>
     );
   }
@@ -166,18 +166,18 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
               className="w-5 h-5 rounded border-s-ink/20 cursor-pointer"
             />
             <span className="font-heading text-s-ink">
-              Last-Minute Deals aktivieren
+              {t("enableLabel")}
             </span>
           </label>
           <p className="text-xs text-s-ink/50 mt-1 ml-8">
-            Zeige deine verfügbaren Slots mit Rabatten auf der Last-Minute Seite
+            {t("enableHelp")}
           </p>
         </div>
 
         {settings.enabled && (
           <div>
             <label className="block text-sm font-heading text-s-ink mb-2">
-              Globaler Rabatt (%)
+              {t("globalDiscount")}
             </label>
             <div className="flex items-center gap-3">
               <input
@@ -194,7 +194,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                 className="w-24 px-4 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-s-ink focus:border-s-accent-bright focus:ring-2 focus:ring-s-accent-bright/15 outline-none"
               />
               <span className="text-sm text-s-ink/60">
-                wird auf alle Slots angewendet
+                {t("appliedToAll")}
               </span>
             </div>
           </div>
@@ -205,10 +205,10 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
       {settings.enabled && (
         <div className="border-t border-s-ink/5 pt-6">
           <h3 className="font-heading text-base text-s-ink mb-4">
-            Dienst-spezifische Rabatte
+            {t("serviceSpecific")}
           </h3>
           <p className="text-xs text-s-ink/50 mb-4">
-            Setze unterschiedliche Rabattsätze für einzelne Dienste
+            {t("serviceSpecificHelp")}
           </p>
 
           {/* List of service overrides */}
@@ -276,7 +276,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                 onChange={(e) => setNewServiceId(e.target.value)}
                 className="flex-1 px-4 py-2.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-s-ink focus:border-s-accent-bright focus:ring-2 focus:ring-s-accent-bright/15 outline-none"
               >
-                <option value="">Wähle einen Dienst...</option>
+                <option value="">{t("selectService")}</option>
                 {availableServices.map((service) => (
                   <option key={service.id} value={service.id}>
                     {service.name_de}
@@ -289,14 +289,14 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                 className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/[0.08] bg-white text-s-ink/70 hover:border-s-accent-bright hover:text-s-accent-bright disabled:opacity-50 transition-colors"
               >
                 <Plus size={14} />
-                Hinzufügen
+                {t("add")}
               </button>
             </div>
           )}
 
           {availableServices.length === 0 && Object.keys(settings.service_overrides).length > 0 && (
             <p className="text-xs text-s-ink/50">
-              Alle Dienste haben benutzerdefinierte Rabatte
+              {t("allOverridden")}
             </p>
           )}
         </div>
@@ -307,7 +307,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
         <div className="border-t border-s-ink/5 pt-6">
           <h3 className="font-heading text-base text-s-ink mb-4 flex items-center gap-2">
             <Eye size={18} />
-            Rabatt-Vorschau
+            {t("preview")}
           </h3>
 
           <div className="space-y-2">
@@ -332,7 +332,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
                       CHF {service.base_price.toFixed(2)} → CHF {finalPrice.toFixed(2)}
                     </span>
                     <span className="text-s-success font-semibold">
-                      sparen CHF {discountAmount.toFixed(2)}
+                      {t("savings", { amount: discountAmount.toFixed(2) })}
                     </span>
                   </div>
                 </div>
@@ -340,7 +340,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
             })}
             {services.length > 3 && (
               <p className="text-xs text-s-ink/50 text-center py-2">
-                ... und {services.length - 3} weitere Dienste
+                {t("moreServices", { count: services.length - 3 })}
               </p>
             )}
           </div>
@@ -355,7 +355,7 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
           className="flex items-center gap-2 px-6 py-2 rounded-btn bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] disabled:opacity-60"
         >
           <Save size={14} />
-          {saving ? "Speichert..." : "Speichern"}
+          {saving ? t("saving") : t("saveButton")}
         </button>
       </div>
     </div>

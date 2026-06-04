@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import {
   Zap, DollarSign, AlertTriangle, UserPlus, Heart, Users,
@@ -32,6 +33,7 @@ interface Member {
 }
 
 export default function SegmentsPage() {
+  const t = useTranslations("dashboard.segmentsPage");
   const [segments, setSegments] = useState<Segment[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -70,14 +72,14 @@ export default function SegmentsPage() {
   return (
     <DashboardLayout>
       <div className="mb-6">
-        <h1 className="font-heading text-2xl text-s-ink">Kundensegmente</h1>
-        <p className="text-sm text-s-ink/40 mt-0.5">Automatisch berechnete Kundengruppen</p>
+        <h1 className="font-heading text-2xl text-s-ink">{t("title")}</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : segments.length === 0 ? (
-        <EmptyState icon={Users} title="Keine Segmente" message="Segmente werden automatisch berechnet." />
+        <EmptyState icon={Users} title={t("emptyTitle")} message={t("emptyMessage")} />
       ) : (
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {segments.map((seg) => {
@@ -109,7 +111,7 @@ export default function SegmentsPage() {
                     <span className="text-2xl font-heading data-text" style={{ color: seg.color }}>
                       {seg.member_count}
                     </span>
-                    <span className="text-xs text-s-ink/30">Mitglieder</span>
+                    <span className="text-xs text-s-ink/30">{t("members")}</span>
                   </div>
                 </div>
 
@@ -120,11 +122,11 @@ export default function SegmentsPage() {
                     className="inline-flex items-center gap-1 text-xs text-s-ink/50 hover:text-s-coral transition-colors"
                   >
                     {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-                    {isExpanded ? "Ausblenden" : "Mitglieder"}
+                    {isExpanded ? t("hide") : t("members")}
                   </button>
                   <button className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-btn border border-s-ink/10 text-xs text-s-ink/50 hover:border-s-coral hover:text-s-coral transition-colors">
                     <Mail size={11} />
-                    E-Mail senden
+                    {t("sendEmail")}
                   </button>
                 </div>
 

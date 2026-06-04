@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight, Calendar, DollarSign, Users, MessageCircle } from "lucide-react";
 
 /**
@@ -59,6 +59,7 @@ const FALLBACK: TodayState = {
 
 export default function TodayLiveCard() {
   const locale = useLocale();
+  const t = useTranslations('dashboard.todayLive');
   const [state, setState] = useState<TodayState>(FALLBACK);
   const [loading, setLoading] = useState(true);
 
@@ -93,9 +94,9 @@ export default function TodayLiveCard() {
   }, []);
 
   const stats = [
-    { key: "today", icon: Calendar, label: "Heute", value: state.today_count.toString() },
+    { key: "today", icon: Calendar, label: t('statToday'), value: state.today_count.toString() },
     { key: "revenue", icon: DollarSign, label: "CHF", value: state.today_revenue.toLocaleString("de-CH") },
-    { key: "walkin", icon: Users, label: "Walk-in", value: state.walk_in_count.toString() },
+    { key: "walkin", icon: Users, label: t('statWalkIn'), value: state.walk_in_count.toString() },
     { key: "inbox", icon: MessageCircle, label: "Inbox", value: state.inbox_unread.toString() },
   ];
 
@@ -104,7 +105,7 @@ export default function TodayLiveCard() {
   }
 
   return (
-    <section className="md:hidden mb-5" aria-label="Heute auf einen Blick">
+    <section className="md:hidden mb-5" aria-label={t('sectionAria')}>
       {/* Now hero (or "Bereit für heute" if no active booking) */}
       {state.now ? (
         <Link
@@ -115,7 +116,7 @@ export default function TodayLiveCard() {
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
               <p className="font-body text-[10px] font-bold uppercase tracking-[.20em] opacity-90">
-                Jetzt · {state.now.time}
+                {t('nowAt', { time: state.now.time })}
               </p>
               <h3 className="mt-1 font-heading text-[20px] uppercase leading-[0.98]" style={{ letterSpacing: "0.01em" }}>
                 {state.now.client}
@@ -143,12 +144,12 @@ export default function TodayLiveCard() {
           style={{ background: "linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%)", color: "#fff" }}
         >
           <p className="font-body text-[10px] font-bold uppercase tracking-[.20em] opacity-90">
-            Bereit für heute
+            {t('readyForToday')}
           </p>
           <h3 className="mt-1 font-heading text-[20px] uppercase leading-[0.98]" style={{ letterSpacing: "0.01em" }}>
             {state.today_count > 0
-              ? `${state.today_count} Termine`
-              : "Keine Termine heute"}
+              ? t('appointmentsCount', { count: state.today_count })
+              : t('noAppointmentsToday')}
           </h3>
         </div>
       )}
@@ -171,7 +172,7 @@ export default function TodayLiveCard() {
       {state.up_next.length > 0 && (
         <div className="mt-2 rounded-[10px] px-3 py-2.5" style={{ background: "#FAF7F3" }}>
           <p className="font-body text-[8px] font-bold uppercase tracking-[.18em] text-s-ink/40 mb-1.5">
-            Als Nächstes
+            {t('upNext')}
           </p>
           <div className="space-y-1">
             {state.up_next.slice(0, 3).map((row, i) => (

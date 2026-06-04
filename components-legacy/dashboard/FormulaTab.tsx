@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Plus, Beaker } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 
@@ -20,6 +21,7 @@ interface FormulaTabProps {
 }
 
 export default function FormulaTab({ customerId }: FormulaTabProps) {
+  const t = useTranslations("dashboard.formulaTab");
   const [formulas, setFormulas] = useState<Formula[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -74,10 +76,10 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-sm text-s-ink flex items-center gap-2">
-          <Beaker size={14} className="text-s-coral" /> Farbformeln
+          <Beaker size={14} className="text-s-coral" /> {t("title")}
         </h3>
         <button onClick={() => setShowAdd(!showAdd)} className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors">
-          <Plus size={12} /> Neue Formel
+          <Plus size={12} /> {t("addFormula")}
         </button>
       </div>
 
@@ -85,50 +87,50 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
         <div className="rounded-[16px] border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-s-ink/50 mb-1 block">Marke</label>
-              <input value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="z.B. Wella"
+              <label className="text-xs text-s-ink/50 mb-1 block">{t("brand")}</label>
+              <input value={brand} onChange={(e) => setBrand(e.target.value)} placeholder={t("brandPlaceholder")}
                 className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
             </div>
             <div>
-              <label className="text-xs text-s-ink/50 mb-1 block">Produktlinie</label>
-              <input value={productLine} onChange={(e) => setProductLine(e.target.value)} placeholder="z.B. Koleston"
+              <label className="text-xs text-s-ink/50 mb-1 block">{t("productLine")}</label>
+              <input value={productLine} onChange={(e) => setProductLine(e.target.value)} placeholder={t("productLinePlaceholder")}
                 className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
             </div>
           </div>
           <div>
-            <label className="text-xs text-s-ink/50 mb-1 block">Mischformel *</label>
-            <input value={mixFormula} onChange={(e) => setMixFormula(e.target.value)} placeholder="z.B. 7/0 + 8/1 (1:1)"
+            <label className="text-xs text-s-ink/50 mb-1 block">{t("mixFormula")} *</label>
+            <input value={mixFormula} onChange={(e) => setMixFormula(e.target.value)} placeholder={t("mixFormulaPlaceholder")}
               className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-s-ink/50 mb-1 block">Entwickler</label>
-              <input value={developerVolume} onChange={(e) => setDeveloperVolume(e.target.value)} placeholder="z.B. 6%"
+              <label className="text-xs text-s-ink/50 mb-1 block">{t("developer")}</label>
+              <input value={developerVolume} onChange={(e) => setDeveloperVolume(e.target.value)} placeholder={t("developerPlaceholder")}
                 className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
             </div>
             <div>
-              <label className="text-xs text-s-ink/50 mb-1 block">Einwirkzeit (Min.)</label>
+              <label className="text-xs text-s-ink/50 mb-1 block">{t("processingTime")}</label>
               <input type="number" value={processingMinutes} onChange={(e) => setProcessingMinutes(e.target.value)} placeholder="35"
                 className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
             </div>
           </div>
           <div>
-            <label className="text-xs text-s-ink/50 mb-1 block">Notizen</label>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} placeholder="Zusätzliche Hinweise…"
+            <label className="text-xs text-s-ink/50 mb-1 block">{t("notes")}</label>
+            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} placeholder={t("notesPlaceholder")}
               className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none" />
           </div>
           <div className="flex gap-2">
-            <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 rounded-pill border border-s-ink/10 text-xs text-s-ink/60">Abbrechen</button>
+            <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 rounded-pill border border-s-ink/10 text-xs text-s-ink/60">{t("cancel")}</button>
             <button onClick={handleAdd} disabled={!mixFormula.trim() || saving}
               className="px-3 py-1.5 rounded-pill active:scale-[0.97] bg-s-coral text-white text-[11px] font-heading uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-elevation-2 transition-[transform,filter] duration-150">
-              {saving && <Spinner size="sm" invert />} Speichern
+              {saving && <Spinner size="sm" invert />} {t("save")}
             </button>
           </div>
         </div>
       )}
 
       {formulas.length === 0 ? (
-        <p className="text-xs text-s-ink/30 text-center py-6">Keine Formeln gespeichert</p>
+        <p className="text-xs text-s-ink/30 text-center py-6">{t("empty")}</p>
       ) : (
         <div className="space-y-2">
           {formulas.map((f) => (
@@ -136,8 +138,8 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
               <p className="text-sm font-medium text-s-ink font-mono">{f.mix_formula}</p>
               <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-xs text-s-ink/40">
                 {f.brand && <span>{f.brand}{f.product_line ? ` · ${f.product_line}` : ""}</span>}
-                {f.developer_volume && <span>Entwickler: {f.developer_volume}</span>}
-                {f.processing_minutes && <span>{f.processing_minutes} Min.</span>}
+                {f.developer_volume && <span>{t("developerValue", { volume: f.developer_volume })}</span>}
+                {f.processing_minutes && <span>{t("minutes", { n: f.processing_minutes })}</span>}
               </div>
               {f.notes && <p className="text-xs text-s-ink/30 mt-1">{f.notes}</p>}
               <p className="text-[10px] text-s-ink/20 mt-1">{new Date(f.created_at).toLocaleDateString("de-CH")}</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 /**
  * DashboardHeaderStrip — Q61 (locked 2026-05-02) sticky stats strip for desktop.
@@ -35,6 +36,7 @@ const FALLBACK: TodayState = {
 };
 
 export default function DashboardHeaderStrip() {
+  const t = useTranslations("dashboard.headerStrip");
   const [state, setState] = useState<TodayState>(FALLBACK);
   const [loading, setLoading] = useState(true);
 
@@ -76,7 +78,7 @@ export default function DashboardHeaderStrip() {
     <div
       className="hidden md:flex items-center gap-2 px-3 py-2 mb-5 rounded-[10px] border border-s-amber/30"
       style={{ background: "#FFF4E8" }}
-      aria-label="Heute auf einen Blick"
+      aria-label={t("ariaLabel")}
     >
       {/* Gradient "Now" pill */}
       <div
@@ -84,7 +86,7 @@ export default function DashboardHeaderStrip() {
         style={{ background: "linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%)" }}
       >
         <span className="font-body text-[8px] font-bold uppercase tracking-[.18em] opacity-95">
-          Jetzt
+          {t("now")}
         </span>
         {state.now ? (
           <>
@@ -94,15 +96,15 @@ export default function DashboardHeaderStrip() {
             <span className="font-body text-[10px] opacity-90 tabular-nums">·  {state.now.time}</span>
           </>
         ) : (
-          <span className="font-heading text-[11px] uppercase opacity-90">Frei</span>
+          <span className="font-heading text-[11px] uppercase opacity-90">{t("free")}</span>
         )}
       </div>
 
       {/* Stat pills */}
       <div className="flex items-center gap-1.5 ml-auto">
-        <StatPill label="Heute" value={state.today_count.toString()} />
+        <StatPill label={t("today")} value={state.today_count.toString()} />
         <StatPill label="CHF" value={state.today_revenue.toLocaleString("de-CH")} />
-        <StatPill label="Walk-in" value={state.walk_in_count.toString()} />
+        <StatPill label={t("walkIn")} value={state.walk_in_count.toString()} />
         <StatPill label="★" value={state.avg_rating > 0 ? state.avg_rating.toFixed(1) : "–"} />
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { FileEdit, Save, Check } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -22,9 +23,9 @@ interface ContentRow {
 }
 
 const TABS = [
-  { id: "hero", label: "Hero" },
-  { id: "stats", label: "Statistiken" },
-  { id: "banner", label: "Banner" },
+  { id: "hero" },
+  { id: "stats" },
+  { id: "banner" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -37,6 +38,7 @@ function ContentField({
   row: ContentRow;
   onSaved: () => void;
 }) {
+  const t = useTranslations("dashboard.contentEditorPage");
   const [locale, setLocale] = useState<"de" | "en">("de");
   const [valueDe, setValueDe] = useState(row.value_de ?? "");
   const [valueEn, setValueEn] = useState(row.value_en ?? "");
@@ -103,8 +105,10 @@ function ContentField({
 
       <div className="flex items-center justify-between mt-2">
         <p className="text-[10px] text-s-ink/25">
-          Zuletzt geändert: {new Date(row.updated_at).toLocaleDateString("de-CH", {
-            day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
+          {t("lastChanged", {
+            date: new Date(row.updated_at).toLocaleDateString("de-CH", {
+              day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
+            }),
           })}
         </p>
         <button
@@ -113,7 +117,7 @@ function ContentField({
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50 hover:brightness-[1.06] transition-colors"
         >
           {saving ? <Spinner size="sm" invert /> : saved ? <Check size={12} /> : <Save size={12} />}
-          {saved ? "Gespeichert" : "Speichern"}
+          {saved ? t("saved") : t("save")}
         </button>
       </div>
     </motion.div>
@@ -122,9 +126,16 @@ function ContentField({
 
 /* ─── Main Page ─── */
 export default function ContentEditorPage() {
+  const t = useTranslations("dashboard.contentEditorPage");
   const [rows, setRows] = useState<ContentRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("hero");
+
+  const tabLabels = {
+    hero: t("tabHero"),
+    stats: t("tabStats"),
+    banner: t("tabBanner"),
+  } as const satisfies Record<TabId, string>;
 
   const fetchContent = useCallback(() => {
     setLoading(true);
@@ -145,8 +156,8 @@ export default function ContentEditorPage() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading text-2xl text-s-ink">Inhalte bearbeiten</h1>
-        <p className="text-sm text-s-ink/40 mt-0.5">Website-Texte und Inhalte verwalten</p>
+        <h1 className="font-heading text-2xl text-s-ink">{t("title")}</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
       </div>
 
       {/* Tabs */}
@@ -161,7 +172,7 @@ export default function ContentEditorPage() {
                 : "bg-white border border-s-ink/10 text-s-ink/60 hover:border-s-coral"
             }`}
           >
-            {tab.label}
+            {tabLabels[tab.id]}
           </button>
         ))}
       </div>
@@ -172,7 +183,7 @@ export default function ContentEditorPage() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-16">
           <FileEdit size={32} className="mx-auto mb-3 text-s-ink/20" />
-          <p className="text-sm text-s-ink/40">Keine Inhalte in dieser Kategorie.</p>
+          <p className="text-sm text-s-ink/40">{t("emptyState")}</p>
         </div>
       ) : (
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-3">

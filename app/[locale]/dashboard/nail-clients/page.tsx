@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import NailClientTab from "@/components-legacy/dashboard/nail/NailClientTab";
 import InfillReminderConfig from "@/components-legacy/dashboard/nail/InfillReminderConfig";
 
 export default function NailClientsPage() {
+  const t = useTranslations("dashboard.nailClientsPage");
   const [salonId, setSalonId] = useState<string | undefined>();
   const [salonName, setSalonName] = useState<string | undefined>();
   const [salonCategories, setSalonCategories] = useState<string[] | undefined>();
@@ -26,9 +28,9 @@ export default function NailClientsPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-8">
-        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/30 mb-1">Nails</p>
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/30 mb-1">{t("eyebrow")}</p>
         <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink leading-none">
-          Nagel Kunden
+          {t("title")}
         </h1>
       </div>
 

@@ -22,7 +22,7 @@ interface PromoCode {
 
 export default function PromoManager() {
   const locale = useLocale();
-  const t = useTranslations("dashboard.promo") as any;
+  const t = useTranslations("dashboard.promoManager");
   const [codes, setCodes] = useState<PromoCode[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);

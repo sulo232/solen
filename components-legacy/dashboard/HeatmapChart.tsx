@@ -1,6 +1,7 @@
 "use client";
 
-const DAYS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+import { useTranslations } from "next-intl";
+
 const HOURS = Array.from({ length: 12 }, (_, i) => i + 8); // 8-19
 
 interface HeatmapChartProps {
@@ -8,6 +9,18 @@ interface HeatmapChartProps {
 }
 
 export default function HeatmapChart({ data }: HeatmapChartProps) {
+  const t = useTranslations("dashboard.heatmapChart");
+
+  const DAYS = [
+    t("dayMon"),
+    t("dayTue"),
+    t("dayWed"),
+    t("dayThu"),
+    t("dayFri"),
+    t("daySat"),
+    t("daySun"),
+  ];
+
   // Find max value for intensity scaling
   let maxVal = 0;
   for (const day of Object.values(data)) {
@@ -43,7 +56,7 @@ export default function HeatmapChart({ data }: HeatmapChartProps) {
                     key={h}
                     className="h-6 rounded-sm cursor-default transition-colors"
                     style={{ backgroundColor: `rgba(39, 110, 241, ${opacity})` }}
-                    title={`${DAYS[dayIdx]} ${h}:00 — ${count} Buchungen`}
+                    title={t("cellTooltip", { day: DAYS[dayIdx], hour: h, count })}
                   />
                 );
               })}
@@ -53,11 +66,11 @@ export default function HeatmapChart({ data }: HeatmapChartProps) {
       </div>
       {/* Legend */}
       <div className="flex items-center justify-end gap-1 mt-2 text-[9px] text-s-ink/30">
-        <span>Weniger</span>
+        <span>{t("less")}</span>
         {[0.1, 0.3, 0.5, 0.7, 1].map((o) => (
           <div key={o} className="w-3 h-3 rounded-sm" style={{ backgroundColor: `rgba(39, 110, 241, ${o})` }} />
         ))}
-        <span>Mehr</span>
+        <span>{t("more")}</span>
       </div>
     </div>
   );

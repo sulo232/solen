@@ -31,20 +31,16 @@ const TYPE_CONFIG: Record<string, { Icon: React.ElementType; iconBg: string; ico
   verification: { Icon: ShieldAlert, iconBg: "bg-s-coral/10", iconColor: "text-s-coral" },
 };
 
-function makeRelativeTime(t: (key: string, opts?: Record<string, unknown>) => string) {
-  return function relativeTime(dateStr: string): string {
+export default function NotificationCenter({ salonId, unreadCount = 0, onCountChange }: NotificationCenterProps) {
+  const locale = useLocale();
+  const t = useTranslations("dashboard.notificationCenter");
+  function relativeTime(dateStr: string): string {
     const diff = Math.round((Date.now() - new Date(dateStr).getTime()) / 1000);
     if (diff < 60) return t("justNow");
     if (diff < 3600) return t("minutesAgo", { count: Math.floor(diff / 60) });
     if (diff < 86400) return t("hoursAgo", { count: Math.floor(diff / 3600) });
     return t("daysAgo", { count: Math.floor(diff / 86400) });
-  };
-}
-
-export default function NotificationCenter({ salonId, unreadCount = 0, onCountChange }: NotificationCenterProps) {
-  const locale = useLocale();
-  const t = useTranslations("dashboard");
-  const relativeTime = makeRelativeTime(t as any);
+  }
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
@@ -186,7 +182,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
                           </p>
                         </div>
                         {n.href && (
-                          <Link href={`/${locale}${n.href}`} className="shrink-0 mt-1" aria-label="Öffnen">
+                          <Link href={`/${locale}${n.href}`} className="shrink-0 mt-1" aria-label={t("open")}>
                             <ExternalLink size={11} className="text-s-ink/25 hover:text-s-coral transition-colors" />
                           </Link>
                         )}

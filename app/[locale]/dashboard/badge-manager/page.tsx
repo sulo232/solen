@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import {
   Star, TrendingUp, Sparkles, ShieldCheck, Award, Heart, Crown,
@@ -24,13 +25,13 @@ const getIcon = (name: string): LucideIcon => ICON_MAP[name] ?? Star;
 
 /* ─── Color presets ─── */
 const COLOR_PRESETS = [
-  { value: "#D4AF77", label: "Gold" },
-  { value: "#1B4D1B", label: "Coral" },
-  { value: "#F3A864", label: "Amber" },
-  { value: "#22C55E", label: "Green" },
-  { value: "#8B5CF6", label: "Purple" },
-  { value: "#F2C144", label: "Yellow" },
-];
+  { value: "#D4AF77", labelKey: "colorGold" },
+  { value: "#1B4D1B", labelKey: "colorCoral" },
+  { value: "#F3A864", labelKey: "colorAmber" },
+  { value: "#22C55E", labelKey: "colorGreen" },
+  { value: "#8B5CF6", labelKey: "colorPurple" },
+  { value: "#F2C144", labelKey: "colorYellow" },
+] as const satisfies ReadonlyArray<{ value: string; labelKey: string }>;
 
 function hexToBgColor(hex: string) {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -68,11 +69,23 @@ function BadgeModal({
   onClose: () => void;
   onSave: (data: { name_de: string; name_en: string; icon: string; color: string; bg_color: string }) => Promise<void>;
 }) {
+  const t = useTranslations("dashboard.badgeManagerPage");
   const [nameDe, setNameDe] = useState(badge?.name_de ?? "");
   const [nameEn, setNameEn] = useState(badge?.name_en ?? "");
   const [icon, setIcon] = useState(badge?.icon ?? "Star");
   const [color, setColor] = useState(badge?.color ?? "#1B4D1B");
   const [saving, setSaving] = useState(false);
+
+  const colorLabel = (labelKey: (typeof COLOR_PRESETS)[number]["labelKey"]): string => {
+    switch (labelKey) {
+      case "colorGold": return t("colorGold");
+      case "colorCoral": return t("colorCoral");
+      case "colorAmber": return t("colorAmber");
+      case "colorGreen": return t("colorGreen");
+      case "colorPurple": return t("colorPurple");
+      case "colorYellow": return t("colorYellow");
+    }
+  };
 
   const IconPreview = getIcon(icon);
 
@@ -81,7 +94,7 @@ function BadgeModal({
       <div className="bg-white rounded-[12px] shadow-v5-float w-full max-w-md p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base text-s-ink">
-            {badge?.id ? "Badge bearbeiten" : "Neues Badge erstellen"}
+            {badge?.id ? t("editBadgeTitle") : t("createBadgeTitle")}
           </h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
@@ -89,27 +102,27 @@ function BadgeModal({
         <div className="space-y-4">
           {/* Name DE */}
           <div>
-            <label className="text-xs font-medium text-s-ink/60 mb-1 block">Name (DE)</label>
+            <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("nameDeLabel")}</label>
             <input
               value={nameDe}
               onChange={(e) => setNameDe(e.target.value)}
               className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
-              placeholder="z.B. Beliebter Salon"
+              placeholder={t("nameDePlaceholder")}
             />
           </div>
           {/* Name EN */}
           <div>
-            <label className="text-xs font-medium text-s-ink/60 mb-1 block">Name (EN)</label>
+            <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("nameEnLabel")}</label>
             <input
               value={nameEn}
               onChange={(e) => setNameEn(e.target.value)}
               className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
-              placeholder="e.g. Popular Salon"
+              placeholder={t("nameEnPlaceholder")}
             />
           </div>
           {/* Icon picker */}
           <div>
-            <label className="text-xs font-medium text-s-ink/60 mb-1 block">Icon</label>
+            <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("iconLabel")}</label>
             <div className="grid grid-cols-5 gap-1.5">
               {ICON_OPTIONS.map((name) => {
                 const Ic = ICON_MAP[name];
@@ -130,7 +143,7 @@ function BadgeModal({
           </div>
           {/* Color picker */}
           <div>
-            <label className="text-xs font-medium text-s-ink/60 mb-1 block">Farbe</label>
+            <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("colorLabel")}</label>
             <div className="flex gap-2">
               {COLOR_PRESETS.map((c) => (
                 <button
@@ -140,27 +153,27 @@ function BadgeModal({
                     color === c.value ? "border-s-ink scale-110" : "border-transparent"
                   }`}
                   style={{ backgroundColor: c.value }}
-                  title={c.label}
+                  title={colorLabel(c.labelKey)}
                 />
               ))}
             </div>
           </div>
           {/* Preview */}
           <div>
-            <label className="text-xs font-medium text-s-ink/60 mb-1 block">Vorschau</label>
+            <label className="text-xs font-medium text-s-ink/60 mb-1 block">{t("previewLabel")}</label>
             <span
               className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill text-xs font-bold"
               style={{ backgroundColor: hexToBgColor(color), color }}
             >
               <IconPreview size={12} />
-              {nameDe || "Badge"}
+              {nameDe || t("badgeFallback")}
             </span>
           </div>
         </div>
 
         <div className="flex gap-2 mt-6">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">
-            Abbrechen
+            {t("cancel")}
           </button>
           <button
             onClick={async () => {
@@ -173,7 +186,7 @@ function BadgeModal({
             className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {saving && <Spinner size="sm" invert />}
-            Speichern
+            {t("save")}
           </button>
         </div>
       </div>
@@ -193,16 +206,17 @@ function DeleteModal({
   onClose: () => void;
   loading: boolean;
 }) {
+  const t = useTranslations("dashboard.badgeManagerPage");
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-[12px] shadow-v5-float w-full max-w-sm p-6">
-        <h3 className="font-heading text-base text-s-ink mb-2">Badge löschen</h3>
+        <h3 className="font-heading text-base text-s-ink mb-2">{t("deleteTitle")}</h3>
         <p className="text-sm text-s-ink/50 mb-5">
-          Badge &quot;{name}&quot; löschen? Es wird von allen Salons entfernt.
+          {t("deleteConfirmBody", { name })}
         </p>
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">
-            Abbrechen
+            {t("cancel")}
           </button>
           <button
             onClick={onConfirm}
@@ -210,7 +224,7 @@ function DeleteModal({
             className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading && <Spinner size="sm" invert />}
-            Löschen
+            {t("delete")}
           </button>
         </div>
       </div>
@@ -220,6 +234,7 @@ function DeleteModal({
 
 /* ─── Main Page ─── */
 export default function BadgeManagerPage() {
+  const t = useTranslations("dashboard.badgeManagerPage");
   const [badges, setBadges] = useState<Badge[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalBadge, setModalBadge] = useState<Partial<Badge> | null | "new">(null);
@@ -345,15 +360,15 @@ export default function BadgeManagerPage() {
       {/* Header */}
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-heading text-2xl text-s-ink">Badge-Verwaltung</h1>
-          <p className="text-sm text-s-ink/40 mt-0.5">Salon-Badges erstellen, bearbeiten und zuweisen</p>
+          <h1 className="font-heading text-2xl text-s-ink">{t("pageTitle")}</h1>
+          <p className="text-sm text-s-ink/40 mt-0.5">{t("pageSubtitle")}</p>
         </div>
         <button
           onClick={() => setModalBadge("new")}
           className="inline-flex items-center gap-1.5 bg-s-coral text-white rounded-btn px-4 py-2 text-sm font-medium hover:brightness-[1.06] transition-colors shrink-0"
         >
           <Plus size={15} />
-          Neues Badge
+          {t("newBadge")}
         </button>
       </div>
 
@@ -363,9 +378,9 @@ export default function BadgeManagerPage() {
         <div className="space-y-8">
           {/* Section 1: All Badges */}
           <div>
-            <h2 className="font-heading text-s-ink text-sm mb-3">Alle Badges</h2>
+            <h2 className="font-heading text-s-ink text-sm mb-3">{t("allBadges")}</h2>
             {badges.length === 0 ? (
-              <EmptyState icon={Award} title="Keine Badges" message="Erstelle dein erstes Badge." />
+              <EmptyState icon={Award} title={t("emptyTitle")} message={t("emptyMessage")} />
             ) : (
               <motion.div
                 variants={containerVariants}
@@ -396,7 +411,7 @@ export default function BadgeManagerPage() {
                               b.is_system ? "bg-s-bg-sunken text-s-ink/40" : "bg-s-coral/10 text-s-coral"
                             }`}
                           >
-                            {b.is_system ? "System" : "Custom"}
+                            {b.is_system ? t("systemBadge") : t("customBadge")}
                           </span>
                         </div>
                       </div>
@@ -406,7 +421,7 @@ export default function BadgeManagerPage() {
                           className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-ink/10 text-xs text-s-ink/60 hover:border-s-coral transition-colors"
                         >
                           <Edit2 size={11} />
-                          Bearbeiten
+                          {t("edit")}
                         </button>
                         {!b.is_system && (
                           <button
@@ -414,7 +429,7 @@ export default function BadgeManagerPage() {
                             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
                           >
                             <Trash2 size={11} />
-                            Löschen
+                            {t("delete")}
                           </button>
                         )}
                       </div>
@@ -427,14 +442,14 @@ export default function BadgeManagerPage() {
 
           {/* Section 2: Badge Assignments */}
           <div>
-            <h2 className="font-heading text-s-ink text-sm mb-3">Badge-Zuweisungen</h2>
+            <h2 className="font-heading text-s-ink text-sm mb-3">{t("assignmentsTitle")}</h2>
             <div className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-5 space-y-4">
               {/* Salon search */}
               <div className="relative max-w-sm">
                 <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
                 <input
                   type="text"
-                  placeholder="Salon suchen..."
+                  placeholder={t("salonSearchPlaceholder")}
                   value={salonSearch}
                   onChange={(e) => { setSalonSearch(e.target.value); setSelectedSalon(null); }}
                   className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
@@ -458,9 +473,9 @@ export default function BadgeManagerPage() {
                 <>
                   {/* Current badges */}
                   <div>
-                    <p className="text-xs text-s-ink/50 mb-2">Aktuelle Badges für <strong>{selectedSalon.name}</strong>:</p>
+                    <p className="text-xs text-s-ink/50 mb-2">{t.rich("currentBadgesFor", { name: selectedSalon.name, b: (chunks) => <strong>{chunks}</strong> })}</p>
                     {salonBadges.length === 0 ? (
-                      <p className="text-xs text-s-ink/30">Keine Badges zugewiesen.</p>
+                      <p className="text-xs text-s-ink/30">{t("noBadgesAssigned")}</p>
                     ) : (
                       <div className="flex flex-wrap gap-2">
                         {salonBadges.map((b) => {
@@ -493,7 +508,7 @@ export default function BadgeManagerPage() {
                       onChange={(e) => setAssignBadgeId(e.target.value)}
                       className="flex-1 max-w-xs px-3 py-2 rounded-btn border border-s-ink/10 text-xs text-s-ink/60 bg-white focus:outline-none focus:border-s-coral"
                     >
-                      <option value="">Badge auswählen...</option>
+                      <option value="">{t("selectBadgePlaceholder")}</option>
                       {badges
                         .filter((b) => !salonBadges.some((sb) => sb.id === b.id))
                         .map((b) => (
@@ -505,7 +520,7 @@ export default function BadgeManagerPage() {
                       disabled={!assignBadgeId}
                       className="px-3 py-2 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50"
                     >
-                      Zuweisen
+                      {t("assign")}
                     </button>
                   </div>
 
@@ -517,7 +532,7 @@ export default function BadgeManagerPage() {
                       onChange={(e) => setOverrideRemoval(e.target.checked)}
                       className="rounded border-s-ink/20"
                     />
-                    Auto-Badge blockieren (verhindert automatische Neuzuweisung)
+                    {t("blockAutoBadge")}
                   </label>
                 </>
               )}

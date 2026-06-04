@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Store, Search, X, ExternalLink } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -30,16 +30,21 @@ interface AdminSalon {
   owner_email: string | null;
 }
 
-const TABS: { label: string; value: StatusFilter }[] = [
-  { label: "Aktiv", value: "active" },
-  { label: "Ausstehend", value: "pending" },
-  { label: "Eingefroren", value: "frozen" },
-];
+const TAB_VALUES: StatusFilter[] = ["active", "pending", "frozen"];
 
-function getStatusPill(salon: AdminSalon): { label: string; tone: "success" | "warning" | "error" | "neutral" } {
-  if (salon.is_active) return { label: "Aktiv", tone: "success" };
-  if (!salon.approved_at) return { label: "Ausstehend", tone: "warning" };
-  return { label: "Eingefroren", tone: "error" };
+const TAB_LABEL_KEYS = {
+  active: "tabActive",
+  pending: "tabPending",
+  frozen: "tabFrozen",
+} as const satisfies Record<StatusFilter, string>;
+
+function getStatusPill(salon: AdminSalon): {
+  labelKey: "statusActive" | "statusPending" | "statusFrozen";
+  tone: "success" | "warning" | "error" | "neutral";
+} {
+  if (salon.is_active) return { labelKey: "statusActive", tone: "success" };
+  if (!salon.approved_at) return { labelKey: "statusPending", tone: "warning" };
+  return { labelKey: "statusFrozen", tone: "error" };
 }
 
 /* ─── Confirmation Modal ─── */
@@ -60,6 +65,7 @@ function ConfirmModal({
   onClose: () => void;
   loading: boolean;
 }) {
+  const t = useTranslations("dashboard.allSalonsPage");
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-input shadow-v5-float w-full max-w-sm p-6">
@@ -70,7 +76,7 @@ function ConfirmModal({
         <p className="text-sm text-s-ink/50 mb-5">{message}</p>
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">
-            Abbrechen
+            {t("cancel")}
           </button>
           <button
             onClick={onConfirm}
@@ -89,6 +95,7 @@ function ConfirmModal({
 /* ─── Main Page ─── */
 export default function AllSalonsPage() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.allSalonsPage");
   const [salons, setSalons] = useState<AdminSalon[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -144,13 +151,13 @@ export default function AllSalonsPage() {
       {/* Confirm modal */}
       {confirmTarget && (
         <ConfirmModal
-          title={confirmTarget.action === "activate" ? "Salon aktivieren" : "Salon einfrieren"}
+          title={confirmTarget.action === "activate" ? t("activateTitle") : t("freezeTitle")}
           message={
             confirmTarget.action === "activate"
-              ? `Salon "${confirmTarget.salon.name}" aktivieren? Der Salon wird für Kunden sichtbar.`
-              : `Bist du sicher? Der Salon "${confirmTarget.salon.name}" wird für Kunden nicht mehr sichtbar.`
+              ? t("activateMessage", { name: confirmTarget.salon.name })
+              : t("freezeMessage", { name: confirmTarget.salon.name })
           }
-          confirmLabel={confirmTarget.action === "activate" ? "Aktivieren" : "Einfrieren"}
+          confirmLabel={confirmTarget.action === "activate" ? t("activate") : t("freeze")}
           confirmCls="bg-s-ink hover:bg-black"
           onConfirm={handleToggle}
           onClose={() => setConfirmTarget(null)}
@@ -160,24 +167,24 @@ export default function AllSalonsPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">Alle Salons</h1>
-        <p className="text-sm text-s-ink/40 mt-0.5">Alle registrierten Salons verwalten</p>
+        <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">{t("title")}</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
       </div>
 
       {/* Tab filters */}
       <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar pb-1">
-        {TABS.map((t) => (
+        {TAB_VALUES.map((value) => (
           <button
-            key={t.value}
-            onClick={() => setTab(t.value)}
+            key={value}
+            onClick={() => setTab(value)}
             className={[
               "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
-              tab === t.value
+              tab === value
                 ? "bg-s-ink text-white hover:bg-black"
                 : "bg-white border border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink",
             ].join(" ")}
           >
-            {t.label}
+            {t(TAB_LABEL_KEYS[value])}
           </button>
         ))}
       </div>
@@ -187,7 +194,7 @@ export default function AllSalonsPage() {
         <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
         <input
           type="text"
-          placeholder="Salon suchen..."
+          placeholder={t("searchPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-border bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-ink transition-colors"
@@ -198,7 +205,7 @@ export default function AllSalonsPage() {
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : filtered.length === 0 ? (
-        <EmptyState icon={Store} title="Keine Salons gefunden" message="Ändere deinen Filter oder deine Suche." />
+        <EmptyState icon={Store} title={t("emptyTitle")} message={t("emptyMessage")} />
       ) : (
         <motion.div
           variants={containerVariants}
@@ -264,7 +271,7 @@ export default function AllSalonsPage() {
 
                 {/* Bottom row: status + actions */}
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-border">
-                  <DashStatusPill tone={status.tone}>{status.label}</DashStatusPill>
+                  <DashStatusPill tone={status.tone}>{t(status.labelKey)}</DashStatusPill>
 
                   <div className="flex items-center gap-2">
                     {/* Toggle active */}
@@ -273,14 +280,14 @@ export default function AllSalonsPage() {
                         onClick={() => setConfirmTarget({ salon, action: "deactivate" })}
                         className="px-3 py-1.5 rounded-btn border border-s-ink text-s-ink text-xs font-medium hover:bg-s-bg-sunken transition-colors"
                       >
-                        Einfrieren
+                        {t("freeze")}
                       </button>
                     ) : (
                       <button
                         onClick={() => setConfirmTarget({ salon, action: "activate" })}
                         className="px-3 py-1.5 rounded-btn border border-s-ink text-s-ink text-xs font-medium hover:bg-s-bg-sunken transition-colors"
                       >
-                        Aktivieren
+                        {t("activate")}
                       </button>
                     )}
 
@@ -289,7 +296,7 @@ export default function AllSalonsPage() {
                       href={`/${locale}/dashboard/settings`}
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn bg-s-bg-sunken text-s-ink-2 text-xs font-medium hover:bg-s-border transition-colors"
                     >
-                      Bearbeiten <ExternalLink size={10} />
+                      {t("edit")} <ExternalLink size={10} />
                     </a>
                   </div>
                 </div>

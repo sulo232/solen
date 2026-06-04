@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { Camera, Upload, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import Spinner from "@/components-legacy/ui/Spinner";
@@ -19,6 +20,7 @@ interface ClientPhotosTabProps {
 }
 
 export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
+  const t = useTranslations("dashboard.clientPhotosTab");
   const [photos, setPhotos] = useState<ClientPhoto[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -54,7 +56,7 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
     }
   };
 
-  const typeLabel = (t: string) => t === "before" ? "Vorher" : t === "after" ? "Nachher" : "Verlauf";
+  const typeLabel = (type: string) => type === "before" ? t("before") : type === "after" ? t("after") : t("progress");
 
   // Group photos into before/after pairs by date
   const beforePhotos = photos.filter((p) => p.photo_type === "before");
@@ -79,18 +81,18 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-sm text-s-ink flex items-center gap-2">
-          <Camera size={14} className="text-s-coral" /> Fotos
+          <Camera size={14} className="text-s-coral" /> {t("photos")}
         </h3>
         <div className="flex items-center gap-2">
           <select value={photoType} onChange={(e) => setPhotoType(e.target.value as "before" | "after" | "progress")}
             className="px-2 py-1 rounded-input border border-s-ink/10 bg-white text-xs text-s-ink focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
-            <option value="before">Vorher</option>
-            <option value="after">Nachher</option>
-            <option value="progress">Verlauf</option>
+            <option value="before">{t("before")}</option>
+            <option value="after">{t("after")}</option>
+            <option value="progress">{t("progress")}</option>
           </select>
           <button onClick={() => fileRef.current?.click()} disabled={uploading}
             className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors disabled:opacity-50">
-            {uploading ? <Spinner size="sm" /> : <Upload size={12} />} Hochladen
+            {uploading ? <Spinner size="sm" /> : <Upload size={12} />} {t("upload")}
           </button>
           <input ref={fileRef} type="file" accept="image/*" className="hidden"
             onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUpload(f); e.target.value = ""; }} />
@@ -100,13 +102,13 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
       {/* Before/After pairs */}
       {(beforePhotos.length > 0 || afterPhotos.length > 0) && (
         <div className="mb-4">
-          <p className="text-xs font-medium text-s-ink/50 mb-2">Vorher / Nachher</p>
+          <p className="text-xs font-medium text-s-ink/50 mb-2">{t("beforeAfter")}</p>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <p className="text-[10px] text-s-ink/30 uppercase tracking-wider">Vorher</p>
+              <p className="text-[10px] text-s-ink/30 uppercase tracking-wider">{t("before")}</p>
               {beforePhotos.map((p) => (
                 <div key={p.id} className="relative aspect-[3/4] rounded-[16px] overflow-hidden border border-s-ink/5">
-                  <Image src={p.photo_url} alt="Vorher" fill sizes="(max-width: 768px) 50vw, 200px" className="object-cover" />
+                  <Image src={p.photo_url} alt={t("before")} fill sizes="(max-width: 768px) 50vw, 200px" className="object-cover" />
                   <span className="absolute bottom-1 left-1 text-[9px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
                     {new Date(p.created_at).toLocaleDateString("de-CH")}
                   </span>
@@ -114,10 +116,10 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
               ))}
             </div>
             <div className="space-y-2">
-              <p className="text-[10px] text-s-ink/30 uppercase tracking-wider">Nachher</p>
+              <p className="text-[10px] text-s-ink/30 uppercase tracking-wider">{t("after")}</p>
               {afterPhotos.map((p) => (
                 <div key={p.id} className="relative aspect-[3/4] rounded-[16px] overflow-hidden border border-s-ink/5">
-                  <Image src={p.photo_url} alt="Nachher" fill sizes="(max-width: 768px) 50vw, 200px" className="object-cover" />
+                  <Image src={p.photo_url} alt={t("after")} fill sizes="(max-width: 768px) 50vw, 200px" className="object-cover" />
                   <span className="absolute bottom-1 left-1 text-[9px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
                     {new Date(p.created_at).toLocaleDateString("de-CH")}
                   </span>
@@ -131,11 +133,11 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
       {/* Progress photos */}
       {progressPhotos.length > 0 && (
         <div>
-          <p className="text-xs font-medium text-s-ink/50 mb-2">Verlauf</p>
+          <p className="text-xs font-medium text-s-ink/50 mb-2">{t("progress")}</p>
           <div className="grid grid-cols-3 gap-2">
             {progressPhotos.map((p) => (
               <div key={p.id} className="relative aspect-square rounded-[16px] overflow-hidden border border-s-ink/5">
-                <Image src={p.photo_url} alt="Verlauf" fill sizes="(max-width: 768px) 33vw, 150px" className="object-cover" />
+                <Image src={p.photo_url} alt={t("progress")} fill sizes="(max-width: 768px) 33vw, 150px" className="object-cover" />
                 <span className="absolute bottom-1 left-1 text-[9px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
                   {new Date(p.created_at).toLocaleDateString("de-CH")}
                 </span>
@@ -148,8 +150,8 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
       {photos.length === 0 && (
         <EmptyState
           icon={ImageIcon}
-          title="Noch keine Fotos"
-          message="Lade Vorher/Nachher-Fotos hoch, um den Verlauf zu dokumentieren."
+          title={t("emptyTitle")}
+          message={t("emptyMessage")}
           className="py-6"
         />
       )}

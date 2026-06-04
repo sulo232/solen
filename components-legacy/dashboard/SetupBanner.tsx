@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 
 interface Step {
@@ -13,6 +13,7 @@ interface Step {
 
 export default function SetupBanner() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.setupBanner");
   const isDE = locale === "de" || locale === "fr";
   const [data, setData] = useState<{ steps: Step[]; completed: number; total: number; percentage: number } | null>(null);
   const [dismissed, setDismissed] = useState(false);
@@ -42,9 +43,9 @@ export default function SetupBanner() {
 
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-6 bg-white">
-      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber mb-1">Einrichtung</p>
+      <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-amber mb-1">{t("eyebrow")}</p>
       <p className="font-heading text-sm text-s-ink mb-3">
-        {isDE ? "Salon-Setup" : "Salon Setup"} — {data.completed}/{data.total} {isDE ? "erledigt" : "done"}
+        {t("salonSetup")} — {data.completed}/{data.total} {t("done")}
       </p>
       {/* Progress bar */}
       <div className="h-1.5 rounded-full bg-s-ink/[0.06] mb-4 overflow-hidden">
@@ -61,12 +62,12 @@ export default function SetupBanner() {
           </p>
           <Link href={`/${locale}/dashboard/setup`}
             className="text-[10px] font-heading uppercase tracking-[.06em] text-s-coral">
-            Einrichten →
+            {t("setUp")} →
           </Link>
         </div>
       ))}
       {incompleteSteps.length > 3 && (
-        <p className="text-[10px] text-s-ink/30 mt-2">+{incompleteSteps.length - 3} weitere</p>
+        <p className="text-[10px] text-s-ink/30 mt-2">{t("more", { n: incompleteSteps.length - 3 })}</p>
       )}
     </div>
   );

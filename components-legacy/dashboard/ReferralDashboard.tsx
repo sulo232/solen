@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Users, TrendingUp, Gift, Share2 } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components-legacy/ui/Spinner";
@@ -19,6 +19,7 @@ interface ReferralDashboardProps {
 
 export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
   const locale = useLocale();
+  const t = useTranslations("dashboard.referralDashboard");
   const [stats, setStats] = useState<ReferralStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -39,15 +40,15 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
   return (
     <div>
       <h3 className="font-heading text-sm text-s-ink flex items-center gap-2 mb-4">
-        <Share2 size={14} className="text-s-accent-bright" /> Empfehlungs-Programm
+        <Share2 size={14} className="text-s-accent-bright" /> {t("heading")}
       </h3>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2 mb-4">
         {[
-          { label: "Empfehlungen gesamt", value: data.total_referrals, icon: Users },
-          { label: "Abgeschlossen", value: data.completed_referrals, icon: Gift },
-          { label: "Umsatz durch Empfehlungen", value: formatCurrency(data.total_revenue_from_referrals, locale), icon: TrendingUp },
+          { label: t("statTotal"), value: data.total_referrals, icon: Users },
+          { label: t("statCompleted"), value: data.completed_referrals, icon: Gift },
+          { label: t("statRevenue"), value: formatCurrency(data.total_revenue_from_referrals, locale), icon: TrendingUp },
         ].map((s) => (
           <div key={s.label} className="bg-s-bg-surface/50 rounded-[16px] border border-s-ink/5 p-3 text-center">
             <s.icon size={16} className="text-s-accent-bright mx-auto mb-1" />
@@ -60,7 +61,7 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
       {/* Top referrers */}
       {data.top_referrers.length > 0 ? (
         <div>
-          <h4 className="text-xs font-semibold text-s-ink/40 uppercase tracking-wide mb-2">Top Empfehler</h4>
+          <h4 className="text-xs font-semibold text-s-ink/40 uppercase tracking-wide mb-2">{t("topReferrers")}</h4>
           <div className="space-y-1">
             {data.top_referrers.map((r, i) => (
               <div key={r.name} className="flex items-center justify-between text-xs py-2 border-b border-s-ink/5 last:border-0">
@@ -71,7 +72,7 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
                   <span className="font-medium text-s-ink">{r.name}</span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-s-ink/40">{r.referrals} Empfehlungen</span>
+                  <span className="text-s-ink/40">{t("referralsCount", { n: r.referrals })}</span>
                   <span className="data-text font-semibold text-s-ink">{formatCurrency(r.revenue, locale)}</span>
                 </div>
               </div>
@@ -79,7 +80,7 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
           </div>
         </div>
       ) : (
-        <p className="text-xs text-s-ink/30 text-center py-6">Noch keine Empfehlungen erhalten</p>
+        <p className="text-xs text-s-ink/30 text-center py-6">{t("emptyState")}</p>
       )}
     </div>
   );

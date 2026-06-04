@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import BarberLeaderboard from "@/components-legacy/dashboard/barber/BarberLeaderboard";
 import SmartReminderConfig from "@/components-legacy/dashboard/barber/SmartReminderConfig";
 
 export default function BarberClientsPage() {
+  const t = useTranslations("dashboard.barberClientsPage");
   const [salonId, setSalonId] = useState<string | undefined>();
   const [salonName, setSalonName] = useState<string | undefined>();
   const [salonCategories, setSalonCategories] = useState<string[] | undefined>();
@@ -26,12 +28,12 @@ export default function BarberClientsPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-8">
-        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/30 mb-1">Barber</p>
+        <p className="text-[9px] font-heading uppercase tracking-[.20em] text-s-ink/30 mb-1">{t("eyebrow")}</p>
         <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink leading-none">
-          Barber Kunden
+          {t("title")}
         </h1>
         <p className="text-sm text-s-ink/40 mt-2">
-          Kundenverlauf, Leaderboard & automatische Erinnerungen
+          {t("subtitle")}
         </p>
       </div>
 

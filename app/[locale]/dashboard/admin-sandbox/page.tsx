@@ -110,7 +110,7 @@ export default function AdminSandboxPage() {
   }, [seedCities, loadSalons]);
 
   const platformDelete = useCallback(async () => {
-    if (!confirm("Alle Test-Salons aus der Datenbank löschen?")) return;
+    if (!confirm(t("confirmDeleteAll"))) return;
     setPlatformSeeding("deleting");
     try {
       await fetch("/api/admin/seed-test-salons", { method: "DELETE" });
@@ -237,7 +237,7 @@ export default function AdminSandboxPage() {
             className="flex items-center gap-1.5 px-3 py-2 rounded-[8px] bg-red-50 text-red-500 text-[11px] font-heading uppercase tracking-[.06em] hover:bg-red-100 active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-40"
           >
             {platformSeeding === "deleting" ? <Loader2 size={11} className="animate-spin" /> : <Trash2 size={11} />}
-            Alle löschen
+            {t("deleteAll")}
           </button>
         </div>
 

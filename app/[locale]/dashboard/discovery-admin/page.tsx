@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import AIProcessingIndicator from "@/components-legacy/discovery/AIProcessingIndicator";
@@ -20,15 +21,25 @@ const CATEGORIES: DiscoveryCategory[] = ["hair", "beard", "nails", "makeup", "wa
 const TABS = ["Stock Import", "TikTok Import", "Manual Upload", "Staging", "Published", "Flagged"] as const;
 type Tab = (typeof TABS)[number];
 
+const TAB_LABEL_KEYS = {
+  "Stock Import": "tabStockImport",
+  "TikTok Import": "tabTikTokImport",
+  "Manual Upload": "tabManualUpload",
+  Staging: "tabStaging",
+  Published: "tabPublished",
+  Flagged: "tabFlagged",
+} as const satisfies Record<Tab, string>;
+
 export default function DiscoveryAdminPage() {
+  const t = useTranslations("dashboard.discoveryAdminPage");
   const [activeTab, setActiveTab] = useState<Tab>("Stock Import");
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-heading text-s-ink">Discovery Content Studio</h1>
-          <p className="text-sm text-s-ink/50 mt-1">Import, review, and manage discovery content</p>
+          <h1 className="text-2xl font-heading text-s-ink">{t("title")}</h1>
+          <p className="text-sm text-s-ink/50 mt-1">{t("subtitle")}</p>
         </div>
 
         {/* Tab bar */}
@@ -44,7 +55,7 @@ export default function DiscoveryAdminPage() {
                   : "bg-s-ink/5 text-s-ink/60 hover:bg-s-ink/10:bg-white/10",
               ].join(" ")}
             >
-              {tab}
+              {t(TAB_LABEL_KEYS[tab])}
             </button>
           ))}
         </div>
@@ -63,6 +74,7 @@ export default function DiscoveryAdminPage() {
 
 // ─── Tab 1: Stock Import ───
 function StockImportTab() {
+  const t = useTranslations("dashboard.discoveryAdminPage");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<DiscoveryCategory>("hair");
   const [photos, setPhotos] = useState<any[]>([]);
@@ -130,7 +142,7 @@ function StockImportTab() {
         body: JSON.stringify({ category }),
       });
       const data = await res.json();
-      setBulkResult(`Imported ${data.imported ?? 0} photos to staging`);
+      setBulkResult(t("bulkImportedToStaging", { n: data.imported ?? 0 }));
     } finally {
       setBulkImporting(false);
     }
@@ -151,32 +163,32 @@ function StockImportTab() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          placeholder="Search photos (e.g. curly hair women)"
-          aria-label="Search stock photos"
+          placeholder={t("searchPhotosPlaceholder")}
+          aria-label={t("searchStockAria")}
           className="flex-1 min-w-[200px] px-4 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30"
         />
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
-          aria-label="Category filter"
+          aria-label={t("categoryFilterAria")}
           className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
         >
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
         <button onClick={handleSearch} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
-          {loading ? <Spinner size="sm" /> : <Search size={16} />} Search
+          {loading ? <Spinner size="sm" /> : <Search size={16} />} {t("searchBtn")}
         </button>
         <button onClick={handleBulkImport} disabled={bulkImporting} className="px-4 py-2.5 rounded-btn bg-s-amber text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
-          {bulkImporting ? <Spinner size="sm" /> : <Sparkles size={16} />} Auto-Import
+          {bulkImporting ? <Spinner size="sm" /> : <Sparkles size={16} />} {t("autoImportBtn")}
         </button>
       </div>
 
-      {importing && <ImportProgressBar current={importProgress.current} total={importProgress.total} label="Importing to staging..." />}
+      {importing && <ImportProgressBar current={importProgress.current} total={importProgress.total} label={t("importingToStaging")} />}
       {bulkResult && (
         <div className="flex items-center gap-2 p-3 rounded-[12px] bg-s-success-bg border border-s-success/20">
           <CheckCircle size={16} className="text-s-success" />
           <span className="text-sm text-s-success">{bulkResult}</span>
-          <button onClick={() => setBulkResult(null)} className="ml-auto text-s-ink/30 hover:text-s-ink/60" aria-label="Dismiss">
+          <button onClick={() => setBulkResult(null)} className="ml-auto text-s-ink/30 hover:text-s-ink/60" aria-label={t("dismiss")}>
             <XCircle size={14} />
           </button>
         </div>
@@ -184,7 +196,7 @@ function StockImportTab() {
 
       {selected.size > 0 && (
         <button onClick={handleImportSelected} disabled={importing} className="px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium">
-          Import {selected.size} Selected
+          {t("importSelected", { n: selected.size })}
         </button>
       )}
 
@@ -194,7 +206,7 @@ function StockImportTab() {
             key={photo.id}
             role="button"
             tabIndex={0}
-            aria-label={`${selected.has(photo.id) ? "Deselect" : "Select"} photo by ${photo.author || "unknown"}`}
+            aria-label={selected.has(photo.id) ? t("deselectPhotoBy", { author: photo.author || t("unknownAuthor") }) : t("selectPhotoBy", { author: photo.author || t("unknownAuthor") })}
             onClick={() => toggleSelect(photo.id)}
             onKeyDown={(e) => e.key === "Enter" && toggleSelect(photo.id)}
             className={[
@@ -216,7 +228,7 @@ function StockImportTab() {
       </div>
 
       {photos.length === 0 && !loading && (
-        <p className="text-center text-s-ink/30 py-12">Search for stock photos to import</p>
+        <p className="text-center text-s-ink/30 py-12">{t("stockEmpty")}</p>
       )}
     </div>
   );
@@ -224,6 +236,7 @@ function StockImportTab() {
 
 // ─── Tab 2: TikTok Import ───
 function TikTokImportTab() {
+  const t = useTranslations("dashboard.discoveryAdminPage");
   const [urls, setUrls] = useState("");
   const [category, setCategory] = useState<DiscoveryCategory>("hair");
   const [loading, setLoading] = useState(false);
@@ -250,11 +263,11 @@ function TikTokImportTab() {
 
   return (
     <div className="space-y-4 max-w-2xl">
-      <p className="text-sm text-s-ink/60">Paste TikTok video URLs, one per line. AI will auto-publish relevant content and reject irrelevant videos.</p>
+      <p className="text-sm text-s-ink/60">{t("tiktokIntro")}</p>
       <select
         value={category}
         onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
-        aria-label="TikTok import category"
+        aria-label={t("tiktokCategoryAria")}
         className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
       >
         {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -263,20 +276,20 @@ function TikTokImportTab() {
         value={urls}
         onChange={(e) => setUrls(e.target.value)}
         rows={8}
-        aria-label="TikTok video URLs"
+        aria-label={t("tiktokUrlsAria")}
         placeholder={"https://www.tiktok.com/@user/video/123...\nhttps://www.tiktok.com/@user/video/456..."}
         className="w-full px-4 py-3 rounded-[12px] bg-s-bg-sunken border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30 font-mono"
       />
-      {loading && <AIProcessingIndicator text="Fetching TikTok data & running AI analysis..." />}
+      {loading && <AIProcessingIndicator text={t("tiktokProcessing")} />}
       <button onClick={handleImport} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
-        {loading ? <Spinner size="sm" /> : <Video size={16} />} Import TikToks
+        {loading ? <Spinner size="sm" /> : <Video size={16} />} {t("importTikToksBtn")}
       </button>
       {result && (
         <div className="flex flex-wrap gap-4 text-sm">
-          {result.published > 0 && <span className="text-s-success flex items-center gap-1"><CheckCircle size={14} /> {result.published} published</span>}
-          {result.rejected > 0 && <span className="text-s-amber flex items-center gap-1"><AlertTriangle size={14} /> {result.rejected} auto-rejected</span>}
-          {result.pending > 0 && <span className="text-s-ink/50 flex items-center gap-1"><Eye size={14} /> {result.pending} sent to staging</span>}
-          {result.failed > 0 && <span className="text-s-error flex items-center gap-1"><XCircle size={14} /> {result.failed} failed</span>}
+          {result.published > 0 && <span className="text-s-success flex items-center gap-1"><CheckCircle size={14} /> {t("resultPublished", { n: result.published })}</span>}
+          {result.rejected > 0 && <span className="text-s-amber flex items-center gap-1"><AlertTriangle size={14} /> {t("resultAutoRejected", { n: result.rejected })}</span>}
+          {result.pending > 0 && <span className="text-s-ink/50 flex items-center gap-1"><Eye size={14} /> {t("resultSentToStaging", { n: result.pending })}</span>}
+          {result.failed > 0 && <span className="text-s-error flex items-center gap-1"><XCircle size={14} /> {t("resultFailed", { n: result.failed })}</span>}
         </div>
       )}
     </div>
@@ -285,6 +298,7 @@ function TikTokImportTab() {
 
 // ─── Tab 3: Manual Upload ───
 function ManualUploadTab() {
+  const t = useTranslations("dashboard.discoveryAdminPage");
   const [category, setCategory] = useState<DiscoveryCategory>("hair");
   const [uploading, setUploading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
@@ -322,7 +336,7 @@ function ManualUploadTab() {
       <select
         value={category}
         onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
-        aria-label="Upload category"
+        aria-label={t("uploadCategoryAria")}
         className="px-3 py-2.5 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
       >
         {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -338,7 +352,7 @@ function ManualUploadTab() {
         ) : (
           <>
             <Upload size={32} className="mx-auto text-s-ink/20 mb-2" />
-            <p className="text-sm text-s-ink/40">Click or drag to upload (max 5MB)</p>
+            <p className="text-sm text-s-ink/40">{t("uploadHint")}</p>
           </>
         )}
       </div>
@@ -348,7 +362,7 @@ function ManualUploadTab() {
       {uploadedItem && !analyzing && (
         <div className="flex items-center gap-3 p-3 rounded-[12px] bg-s-success-bg border border-s-success/20">
           <CheckCircle size={18} className="text-s-success" />
-          <span className="text-sm text-s-success">Uploaded and published successfully</span>
+          <span className="text-sm text-s-success">{t("uploadSuccess")}</span>
         </div>
       )}
     </div>
@@ -357,6 +371,7 @@ function ManualUploadTab() {
 
 // ─── Tab 4: Staging ───
 function StagingTab() {
+  const t = useTranslations("dashboard.discoveryAdminPage");
   const [items, setItems] = useState<DiscoveryStagingItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState<string>("");
@@ -410,27 +425,27 @@ function StagingTab() {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          aria-label="Staging category filter"
+          aria-label={t("stagingCategoryAria")}
           className="px-3 py-2 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
         >
-          <option value="">All Categories</option>
+          <option value="">{t("allCategories")}</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <button onClick={fetchItems} disabled={loading} aria-label="Load staging items" className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm flex items-center gap-1.5">
-          <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Load
+        <button onClick={fetchItems} disabled={loading} aria-label={t("loadStagingAria")} className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm flex items-center gap-1.5">
+          <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> {t("loadBtn")}
         </button>
         {items.length > 0 && (
           <>
-            <button onClick={selectAll} aria-label={selected.size === items.length ? "Deselect all items" : "Select all items"} className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm">
-              {selected.size === items.length ? "Deselect All" : "Select All"}
+            <button onClick={selectAll} aria-label={selected.size === items.length ? t("deselectAllAria") : t("selectAllAria")} className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm">
+              {selected.size === items.length ? t("deselectAll") : t("selectAll")}
             </button>
             {selected.size > 0 && (
               <>
                 <button onClick={() => handleAction("approve")} disabled={processing} className="px-3 py-2 rounded-btn bg-s-success text-white text-sm font-medium flex items-center gap-1.5 disabled:opacity-50">
-                  <CheckCircle size={14} /> Approve {selected.size}
+                  <CheckCircle size={14} /> {t("approveN", { n: selected.size })}
                 </button>
                 <button onClick={() => handleAction("reject")} disabled={processing} className="px-3 py-2 rounded-btn bg-s-error text-white text-sm font-medium flex items-center gap-1.5 disabled:opacity-50">
-                  <XCircle size={14} /> Reject {selected.size}
+                  <XCircle size={14} /> {t("rejectN", { n: selected.size })}
                 </button>
               </>
             )}
@@ -480,7 +495,7 @@ function StagingTab() {
       </div>
 
       {items.length === 0 && !loading && (
-        <p className="text-center text-s-ink/30 py-12">Click &quot;Load&quot; to see pending staging items</p>
+        <p className="text-center text-s-ink/30 py-12">{t("stagingEmpty")}</p>
       )}
     </div>
   );
@@ -488,6 +503,7 @@ function StagingTab() {
 
 // ─── Sortable Card ───
 function SortablePublishedCard({ item, onArchive }: { item: DiscoveryItem; onArchive: (id: string) => void }) {
+  const t = useTranslations("dashboard.discoveryAdminPage");
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -507,12 +523,12 @@ function SortablePublishedCard({ item, onArchive }: { item: DiscoveryItem; onArc
           <div className="flex items-center justify-center h-full"><Video size={24} className="text-s-ink/20" /></div>
         )}
         <div className="absolute top-2 left-2">
-          <button {...attributes} {...listeners} aria-label="Drag to reorder" className="w-7 h-7 rounded-full bg-s-ink/50 flex items-center justify-center cursor-grab active:cursor-grabbing touch-none">
+          <button {...attributes} {...listeners} aria-label={t("dragToReorderAria")} className="w-7 h-7 rounded-full bg-s-ink/50 flex items-center justify-center cursor-grab active:cursor-grabbing touch-none">
             <GripVertical size={14} className="text-white" />
           </button>
         </div>
         <div className="absolute top-2 right-2 flex gap-1">
-          <button onClick={() => onArchive(item.id)} aria-label="Archive item" className="w-6 h-6 rounded-full bg-s-ink/50 flex items-center justify-center hover:bg-s-error transition-colors">
+          <button onClick={() => onArchive(item.id)} aria-label={t("archiveItemAria")} className="w-6 h-6 rounded-full bg-s-ink/50 flex items-center justify-center hover:bg-s-error transition-colors">
             <Trash2 size={12} className="text-white" />
           </button>
         </div>
@@ -524,8 +540,8 @@ function SortablePublishedCard({ item, onArchive }: { item: DiscoveryItem; onArc
         </div>
         {item.style_name && <p className="text-xs text-s-ink/60 truncate">{item.style_name}</p>}
         <div className="flex items-center gap-2 text-[10px] text-s-ink/30">
-          <span>{item.like_count} likes</span>
-          <span>{item.view_count} views</span>
+          <span>{t("likesN", { n: item.like_count })}</span>
+          <span>{t("viewsN", { n: item.view_count })}</span>
         </div>
       </div>
     </div>
@@ -534,6 +550,7 @@ function SortablePublishedCard({ item, onArchive }: { item: DiscoveryItem; onArc
 
 // ─── Tab 5: Published ───
 function PublishedTab() {
+  const t = useTranslations("dashboard.discoveryAdminPage");
   const [items, setItems] = useState<DiscoveryItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState<string>("");
@@ -586,19 +603,19 @@ function PublishedTab() {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          aria-label="Published category filter"
+          aria-label={t("publishedCategoryAria")}
           className="px-3 py-2 rounded-btn bg-s-bg-sunken border border-s-ink/10 text-sm"
         >
-          <option value="">All Categories</option>
+          <option value="">{t("allCategories")}</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
         <button onClick={fetchItems} disabled={loading} className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm flex items-center gap-1.5">
-          <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Load
+          <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> {t("loadBtn")}
         </button>
-        <span className="text-sm text-s-ink/40">{items.length} items</span>
+        <span className="text-sm text-s-ink/40">{t("itemsCount", { n: items.length })}</span>
         {items.length > 0 && (
           <span className="text-xs text-s-ink/30 flex items-center gap-1">
-            <GripVertical size={12} /> Drag to reorder
+            <GripVertical size={12} /> {t("dragToReorder")}
           </span>
         )}
       </div>
@@ -614,7 +631,7 @@ function PublishedTab() {
       </DndContext>
 
       {items.length === 0 && !loading && (
-        <p className="text-center text-s-ink/30 py-12">Click &quot;Load&quot; to see published items</p>
+        <p className="text-center text-s-ink/30 py-12">{t("publishedEmpty")}</p>
       )}
     </div>
   );
@@ -622,6 +639,7 @@ function PublishedTab() {
 
 // ─── Tab 6: Flagged ───
 function FlaggedTab() {
+  const t = useTranslations("dashboard.discoveryAdminPage");
   const [items, setItems] = useState<DiscoveryItem[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -649,9 +667,9 @@ function FlaggedTab() {
     <div className="space-y-4">
       <div className="flex gap-3 items-center">
         <button onClick={fetchItems} disabled={loading} className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm flex items-center gap-1.5">
-          <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Load Flagged
+          <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> {t("loadFlaggedBtn")}
         </button>
-        <span className="text-sm text-s-ink/40">{items.length} flagged items</span>
+        <span className="text-sm text-s-ink/40">{t("flaggedItemsCount", { n: items.length })}</span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -674,10 +692,10 @@ function FlaggedTab() {
               )}
               <div className="flex gap-2">
                 <button onClick={() => handleAction(item.id, "approve")} className="flex-1 py-2 rounded-btn bg-s-success text-white text-sm font-medium flex items-center justify-center gap-1">
-                  <CheckCircle size={14} /> Approve
+                  <CheckCircle size={14} /> {t("approve")}
                 </button>
                 <button onClick={() => handleAction(item.id, "remove")} className="flex-1 py-2 rounded-btn bg-s-error text-white text-sm font-medium flex items-center justify-center gap-1">
-                  <Trash2 size={14} /> Remove
+                  <Trash2 size={14} /> {t("remove")}
                 </button>
               </div>
             </div>
@@ -686,7 +704,7 @@ function FlaggedTab() {
       </div>
 
       {items.length === 0 && !loading && (
-        <p className="text-center text-s-ink/30 py-12">No flagged content. Click &quot;Load Flagged&quot; to check.</p>
+        <p className="text-center text-s-ink/30 py-12">{t("flaggedEmpty")}</p>
       )}
     </div>
   );

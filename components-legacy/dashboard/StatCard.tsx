@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import MiniSparkline from "@/components-legacy/dashboard/MiniSparkline";
 import { itemVariants } from "@/lib/animations";
 
@@ -55,6 +56,7 @@ export function StatCard({
   sparklineColor,
   delta,
 }: StatCardProps) {
+  const t = useTranslations('dashboard.statCard');
   const count = useCountUp(value);
   const display = isRating ? (count / 10).toFixed(1) : count;
 
@@ -97,7 +99,7 @@ export function StatCard({
             {delta.direction === "flat" && "—"}
           </span>
           <span className="text-[9px] text-s-ink/30">
-            {delta.label ?? "vs. Vorwoche"}
+            {delta.label ?? t('vsPrevWeek')}
           </span>
         </div>
       )}

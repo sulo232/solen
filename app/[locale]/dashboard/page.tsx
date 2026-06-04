@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
@@ -63,11 +63,11 @@ function StatTile({ label, children, delta }: { label: string; children: React.R
   );
 }
 
-function statusPill(status: string) {
+function statusPill(status: string, t: ReturnType<typeof useTranslations<"dashboard.homePage">>) {
   switch (status) {
-    case "confirmed": return <DashStatusPill tone="success">Bestätigt</DashStatusPill>;
-    case "pending": return <DashStatusPill tone="warning">Ausstehend</DashStatusPill>;
-    case "cancelled": return <DashStatusPill tone="error">Storniert</DashStatusPill>;
+    case "confirmed": return <DashStatusPill tone="success">{t("statusConfirmed")}</DashStatusPill>;
+    case "pending": return <DashStatusPill tone="warning">{t("statusPending")}</DashStatusPill>;
+    case "cancelled": return <DashStatusPill tone="error">{t("statusCancelled")}</DashStatusPill>;
     default: return <DashStatusPill tone="neutral">{status}</DashStatusPill>;
   }
 }
@@ -86,6 +86,7 @@ const fmtChf = (n: number) => n.toLocaleString("de-CH");
 
 export default function DashboardPage() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.homePage");
   const params = useSearchParams();
   const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -144,8 +145,8 @@ export default function DashboardPage() {
             className="mb-6 rounded-card-lg bg-s-success-bg border border-s-success/20 px-5 py-4 flex items-center gap-3">
             <CheckCircle2 size={20} className="shrink-0 text-s-success" />
             <div>
-              <p className="text-[15px] font-semibold text-s-ink">Willkommen bei Solen</p>
-              <p className="text-[13px] text-s-ink-2 mt-0.5">Dein Salon ist live. Kund:innen können dich ab sofort buchen.</p>
+              <p className="text-[15px] font-semibold text-s-ink">{t("welcomeTitle")}</p>
+              <p className="text-[13px] text-s-ink-2 mt-0.5">{t("welcomeBody")}</p>
             </div>
           </motion.div>
         )}
@@ -156,13 +157,13 @@ export default function DashboardPage() {
       <div className="flex items-end justify-between gap-4 mb-6">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-s-ink-3 mb-2">{today}</p>
-          <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink leading-none">Übersicht</h1>
+          <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink leading-none">{t("title")}</h1>
         </div>
         <Link
           href={`/${locale}/dashboard/calendar`}
           className="inline-flex items-center gap-2 shrink-0 whitespace-nowrap rounded-full bg-s-ink px-[18px] py-2.5 text-[15px] font-medium tracking-[-0.005em] text-white transition-colors hover:bg-black"
         >
-          <Plus size={17} strokeWidth={2} />Termin erstellen
+          <Plus size={17} strokeWidth={2} />{t("createAppointment")}
         </Link>
       </div>
 
@@ -174,12 +175,12 @@ export default function DashboardPage() {
         <div className="space-y-3.5">
           {/* Mobile stat tiles — same data as the desktop charts, glanceable on small screens */}
           <div className="grid grid-cols-2 gap-2.5 lg:hidden">
-            <StatTile label="Umsatz" delta={prior?.revenue}>
+            <StatTile label={t("revenue")} delta={prior?.revenue}>
               <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
             </StatTile>
-            <StatTile label="Termine" delta={prior?.bookings}>{stats?.total_bookings ?? 0}</StatTile>
-            <StatTile label="Neue Kund:innen" delta={prior?.new_customers}>{stats?.new_customers ?? 0}</StatTile>
-            <StatTile label="Bewertung" delta={(stats?.avg_rating ?? 0) > 0 ? prior?.rating : undefined}>
+            <StatTile label={t("bookings")} delta={prior?.bookings}>{stats?.total_bookings ?? 0}</StatTile>
+            <StatTile label={t("newCustomers")} delta={prior?.new_customers}>{stats?.new_customers ?? 0}</StatTile>
+            <StatTile label={t("rating")} delta={(stats?.avg_rating ?? 0) > 0 ? prior?.rating : undefined}>
               {(stats?.avg_rating ?? 0) > 0 ? (stats?.avg_rating ?? 0).toFixed(1) : "—"}
               <span className="text-s-star text-[17px] ml-0.5 leading-none">★</span>
             </StatTile>
@@ -189,8 +190,8 @@ export default function DashboardPage() {
           <div className="rounded-[16px] border border-s-border bg-white px-4 py-[15px] lg:hidden">
             <div className="flex items-end justify-between mb-3">
               <div>
-                <p className="text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">Umsatz</p>
-                <p className="text-[11px] text-s-ink-3 mt-0.5">Letzte 7 Tage</p>
+                <p className="text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">{t("revenue")}</p>
+                <p className="text-[11px] text-s-ink-3 mt-0.5">{t("last7Days")}</p>
               </div>
               <p className="text-[20px] font-semibold tabular-nums tracking-[-0.02em] leading-none text-s-ink">
                 <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
@@ -198,8 +199,8 @@ export default function DashboardPage() {
             </div>
             <DashBarChart height={90} data={daily.map((d) => ({ primary: d.revenue }))} primaryClassName="fill-s-accent-bright" />
             <div className="flex gap-3.5 mt-3">
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-s-ink-2"><span className="w-[9px] h-[9px] rounded-[3px] bg-s-accent-bright" />Umsatz</span>
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-s-ink-2"><span className="w-[9px] h-[9px] rounded-[3px] bg-s-accent-pale" />Vorwoche</span>
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-s-ink-2"><span className="w-[9px] h-[9px] rounded-[3px] bg-s-accent-bright" />{t("revenue")}</span>
+              <span className="inline-flex items-center gap-1.5 text-[11px] text-s-ink-2"><span className="w-[9px] h-[9px] rounded-[3px] bg-s-accent-pale" />{t("priorWeek")}</span>
             </div>
           </div>
 
@@ -207,8 +208,8 @@ export default function DashboardPage() {
           <div className="hidden lg:grid lg:grid-cols-2 gap-3.5">
             <div className="rounded-card-lg border border-s-border bg-white p-5">
               <div className="flex items-center justify-between mb-1">
-                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-s-ink">Umsatz</h2>
-                <span className="text-[12px] text-s-ink-3">Diese Woche</span>
+                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{t("revenue")}</h2>
+                <span className="text-[12px] text-s-ink-3">{t("thisWeek")}</span>
               </div>
               <p className="text-[30px] font-semibold tracking-[-0.02em] leading-none text-s-ink">
                 <span className="text-[15px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
@@ -221,25 +222,25 @@ export default function DashboardPage() {
                 ]} />
               </div>
               <div className="flex gap-4 mt-2 text-[11.5px] text-s-ink-2">
-                <span className="inline-flex items-center gap-1.5"><span className="w-3.5 h-[3px] rounded bg-s-accent-bright" />Umsatz</span>
-                <span className="inline-flex items-center gap-1.5"><span className="w-3.5 h-[3px] rounded bg-s-success" />Termine</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-3.5 h-[3px] rounded bg-s-accent-bright" />{t("revenue")}</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-3.5 h-[3px] rounded bg-s-success" />{t("bookings")}</span>
               </div>
             </div>
             <div className="rounded-card-lg border border-s-border bg-white p-5">
               <div className="flex items-center justify-between mb-1">
-                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-s-ink">Termine</h2>
-                <span className="text-[12px] text-s-ink-3">Diese Woche</span>
+                <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{t("bookings")}</h2>
+                <span className="text-[12px] text-s-ink-3">{t("thisWeek")}</span>
               </div>
               <p className="text-[30px] font-semibold tracking-[-0.02em] leading-none text-s-ink">
-                {stats?.total_bookings ?? 0}<span className="text-[15px] font-semibold text-s-ink-2 ml-1">gebucht</span>
+                {stats?.total_bookings ?? 0}<span className="text-[15px] font-semibold text-s-ink-2 ml-1">{t("booked")}</span>
                 <Delta v={prior?.bookings} />
               </p>
               <div className="mt-4">
                 <DashBarChart data={daily.map((d) => ({ primary: d.confirmed, secondary: d.cancelled }))} />
               </div>
               <div className="flex gap-4 mt-2 text-[11.5px] text-s-ink-2">
-                <span className="inline-flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-s-accent-bright" />Bestätigt</span>
-                <span className="inline-flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-s-error" />Storniert</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-s-accent-bright" />{t("statusConfirmed")}</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-s-error" />{t("statusCancelled")}</span>
               </div>
             </div>
           </div>
@@ -247,13 +248,13 @@ export default function DashboardPage() {
           {/* Row 2 — activity (desktop only) + today */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
             {salonId && (
-              <div className="hidden lg:block"><DashPanel title="Aktivität"><div className="p-4"><ActivityFeed salonId={salonId} /></div></DashPanel></div>
+              <div className="hidden lg:block"><DashPanel title={t("activity")}><div className="p-4"><ActivityFeed salonId={salonId} /></div></DashPanel></div>
             )}
-            <DashPanel title="Heute" actionLabel="Alle ansehen" actionHref={`/${locale}/dashboard/bookings`}>
+            <DashPanel title={t("today")} actionLabel={t("viewAll")} actionHref={`/${locale}/dashboard/bookings`}>
               {bookings.length === 0 ? (
                 <div className="px-5 py-12 text-center">
                   <Calendar size={26} className="mx-auto mb-3 text-s-ink-3" strokeWidth={1.6} />
-                  <p className="text-[14px] text-s-ink-2">Keine Termine heute</p>
+                  <p className="text-[14px] text-s-ink-2">{t("noBookingsToday")}</p>
                 </div>
               ) : (
                 <div>
@@ -265,7 +266,7 @@ export default function DashboardPage() {
                         <span className="block text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{b.customer_name}</span>
                         <span className="block text-[13px] text-s-ink-2 truncate">{b.service_name}</span>
                       </span>
-                      {statusPill(b.status)}
+                      {statusPill(b.status, t)}
                     </DashRow>
                   ))}
                 </div>
@@ -276,30 +277,30 @@ export default function DashboardPage() {
           {/* Mobile activity feed — same component as the desktop one above (which is hidden lg:block) */}
           {salonId && (
             <div className="lg:hidden">
-              <DashPanel title="Aktivität"><div className="p-4"><ActivityFeed salonId={salonId} /></div></DashPanel>
+              <DashPanel title={t("activity")}><div className="p-4"><ActivityFeed salonId={salonId} /></div></DashPanel>
             </div>
           )}
 
           {/* Row 3 — top services + top team */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
-            <DashPanel title="Top Services" actionLabel="Alle ansehen" actionHref={`/${locale}/dashboard/services`}>
+            <DashPanel title={t("topServices")} actionLabel={t("viewAll")} actionHref={`/${locale}/dashboard/services`}>
               {(stats?.popular_services?.length ?? 0) === 0 ? (
-                <div className="px-5 py-10 text-center text-[14px] text-s-ink-2">Noch keine Daten</div>
+                <div className="px-5 py-10 text-center text-[14px] text-s-ink-2">{t("noData")}</div>
               ) : (
                 <div>
                   {stats!.popular_services!.map((s, i) => (
                     <DashRow key={s.id}>
                       <span className="text-[13px] font-semibold text-s-ink-3 w-5 shrink-0">{i + 1}</span>
                       <span className="flex-1 text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{s.name}</span>
-                      <span className="text-[13px] text-s-ink-2">{s.count}× gebucht</span>
+                      <span className="text-[13px] text-s-ink-2">{t("timesBooked", { n: s.count })}</span>
                     </DashRow>
                   ))}
                 </div>
               )}
             </DashPanel>
-            <DashPanel title="Top Mitarbeiter" actionLabel="Alle ansehen" actionHref={`/${locale}/dashboard/staff`}>
+            <DashPanel title={t("topStaff")} actionLabel={t("viewAll")} actionHref={`/${locale}/dashboard/staff`}>
               {staff.length === 0 ? (
-                <div className="px-5 py-10 text-center text-[14px] text-s-ink-2">Noch keine Daten</div>
+                <div className="px-5 py-10 text-center text-[14px] text-s-ink-2">{t("noData")}</div>
               ) : (
                 <div>
                   {staff.slice(0, 5).map((m) => (
@@ -307,7 +308,7 @@ export default function DashboardPage() {
                       <span className={`grid place-items-center w-[30px] h-[30px] rounded-full bg-gradient-to-br ${avGrad(m.name)} text-white text-[12px] font-semibold shrink-0`}>{initials(m.name)}</span>
                       <span className="flex-1 text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{m.name}</span>
                       {m.revenue !== undefined && <span className="text-[13px] font-semibold text-s-ink">CHF {fmtChf(Math.round(m.revenue))}</span>}
-                      {m.bookings !== undefined && <span className="text-[13px] text-s-ink-2 w-14 text-right">{m.bookings} Term.</span>}
+                      {m.bookings !== undefined && <span className="text-[13px] text-s-ink-2 w-14 text-right">{t("bookingsShort", { n: m.bookings })}</span>}
                     </DashRow>
                   ))}
                 </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Loader2, Check, Save, AlertTriangle } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { formatCurrency } from "@/lib/format-currency";
@@ -27,6 +28,7 @@ const PREVIEW_BASE_CHF = 45;
 type SaveState = "idle" | "saving" | "saved" | "error";
 
 export default function CommissionAdminPage() {
+  const t = useTranslations("dashboard.commissionAdminPage");
   const [rate, setRate] = useState<number>(15);
   const [loadedRate, setLoadedRate] = useState<number>(15);
   const [loading, setLoading] = useState(true);
@@ -74,9 +76,9 @@ export default function CommissionAdminPage() {
   return (
     <DashboardLayout>
       <div className="mb-6">
-        <h1 className="font-heading text-2xl text-s-ink">Provision</h1>
+        <h1 className="font-heading text-2xl text-s-ink">{t("title")}</h1>
         <p className="mt-1 font-body text-sm text-s-ink/50">
-          Was Solen bei jeder Buchung einbehält. Gilt nur für neue Buchungen.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -87,13 +89,13 @@ export default function CommissionAdminPage() {
       ) : (
         <div className="max-w-md rounded-[14px] border border-s-border bg-white p-6 shadow-warm-md">
           <div className="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-s-ink/40">
-            Plattform-Gebühr
+            {t("platformFeeEyebrow")}
           </div>
 
           {/* Rate input */}
           <div className="mt-4">
             <label htmlFor="commission-rate" className="mb-2 block text-xs font-medium text-s-ink-2">
-              Provisionssatz
+              {t("rateLabel")}
             </label>
             <div className="flex h-[62px] items-center rounded-[13px] border-[1.5px] border-s-ink px-4">
               <input
@@ -116,18 +118,18 @@ export default function CommissionAdminPage() {
           {/* Live impact preview */}
           <div className="mt-4 overflow-hidden rounded-[13px] border border-s-border">
             <div className="bg-[#fcfcfc] px-4 pb-2 pt-2.5 text-[11px] text-s-ink/40">
-              Beispiel: Buchung von {formatCurrency(PREVIEW_BASE_CHF, "de-CH")}
+              {t("exampleBooking", { amount: formatCurrency(PREVIEW_BASE_CHF, "de-CH") })}
             </div>
             <div className="flex items-center justify-between border-t border-s-border px-4 py-2.5 text-[13.5px]">
-              <span className="text-s-ink">Solen-Provision</span>
+              <span className="text-s-ink">{t("solenCommission")}</span>
               <span className="font-heading font-bold tabular-nums text-s-ink">{formatCurrency(commission, "de-CH")}</span>
             </div>
             <div className="flex items-center justify-between border-t border-s-border px-4 py-2.5 text-[13.5px]">
-              <span className="text-s-ink">Salon erhält</span>
+              <span className="text-s-ink">{t("salonReceives")}</span>
               <span className="font-heading font-bold tabular-nums text-s-ink">{formatCurrency(salonGets, "de-CH")}</span>
             </div>
             <div className="px-4 pb-2.5 pt-1 text-[10.5px] leading-[1.4] text-s-ink/40">
-              Vor Stripe-Gebühren. MWST auf die Provision separat in Solens Buchhaltung.
+              {t("feeNote")}
             </div>
           </div>
 
@@ -136,8 +138,8 @@ export default function CommissionAdminPage() {
             <div className="mt-4 flex items-center gap-2.5 rounded-[11px] bg-s-success-bg px-3.5 py-3">
               <Check size={18} strokeWidth={3} className="shrink-0 text-s-success" />
               <div>
-                <div className="font-heading text-[13px] font-semibold text-s-success">Provision aktualisiert</div>
-                <div className="mt-0.5 text-[11.5px] text-s-ink-2">Neue Buchungen verwenden jetzt {loadedRate}%.</div>
+                <div className="font-heading text-[13px] font-semibold text-s-success">{t("savedTitle")}</div>
+                <div className="mt-0.5 text-[11.5px] text-s-ink-2">{t("savedDescription", { rate: loadedRate })}</div>
               </div>
             </div>
           )}
@@ -146,7 +148,7 @@ export default function CommissionAdminPage() {
           {state === "error" && (
             <div className="mt-4 flex items-center gap-2.5 rounded-[11px] bg-s-error-bg px-3.5 py-3">
               <AlertTriangle size={17} className="shrink-0 text-s-error" />
-              <div className="text-[12px] text-s-error">Konnte nicht gespeichert werden. Bitte erneut versuchen.</div>
+              <div className="text-[12px] text-s-error">{t("errorMessage")}</div>
             </div>
           )}
 
@@ -169,22 +171,22 @@ export default function CommissionAdminPage() {
             {state === "saving" ? (
               <>
                 <Loader2 size={16} className="animate-spin" />
-                Wird gespeichert…
+                {t("saving")}
               </>
             ) : state === "saved" ? (
               <>
                 <Check size={16} strokeWidth={3} />
-                Gespeichert
+                {t("saved")}
               </>
             ) : state === "error" ? (
               <>
                 <AlertTriangle size={16} />
-                Erneut versuchen
+                {t("retry")}
               </>
             ) : (
               <>
                 <Save size={16} />
-                Speichern
+                {t("save")}
               </>
             )}
           </button>
