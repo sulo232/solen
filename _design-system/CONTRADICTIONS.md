@@ -1,5 +1,11 @@
 # Solen — Design Contradictions (systematic audit, 2026-06-08)
 
+> **STATUS — EXECUTED 2026-06-08. This is now a record, not a backlog.**
+> §0 bugs · §2 token sweep (185 files) · §1 filter state · §3 spacing/radius/shadow — done.
+> §4: all 4 consolidation primitives built + migrated app-wide (RatingStars / Avatar / PriceFrom / BackButton); legacy salon PDP tree retired (route 828→15 lines, 11 files); dead category/filter graveyard cleared (11 files); Toast + Skeleton consolidated; dead PhotoLightbox + ReportContentButton deleted.
+> **Left intentionally:** FilterBar→FilterSheet (live on `/angebote` + `/behandlungen`, works, recently restyled in §1 — a 3-route rebuild not worth the churn).
+> **Corrections to this doc's §4:** the Breadcrumb + Lightbox salon variants live in `app/_components/salon/`, NOT `components-legacy/salon/`; and Breadcrumb is a FALSE duplicate (global path-trail vs salon semantic trail) — both kept.
+
 The punch list of "one concept treated inconsistently across the app." Produced by a 4-axis
 read-only audit (state / colour / spacing-radius-shadow / duplication) over the customer-facing
 surface (`app/[locale]/_components/{search,salon,homepage,business,layout,primitives}` +
