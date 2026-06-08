@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
-import { RatingStars } from "@/app/[locale]/_components/primitives";
+import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
 import Spinner from "@/components-legacy/ui/Spinner";
 import StaffAvailability from "@/components-legacy/staff/StaffAvailability";
 import StaffReviewsSheet from "@/components-legacy/staff/StaffReviewsSheet";
@@ -227,13 +227,7 @@ export default function StaffProfilePage({
 
       {/* Centered hero */}
       <div ref={heroRef} className="flex flex-col items-center px-5 pt-6 text-center">
-        <div className="grid h-[104px] w-[104px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken">
-          {staff.avatar_url ? (
-            <Image src={staff.avatar_url} alt={staff.name} width={104} height={104} priority className="h-full w-full object-cover" />
-          ) : (
-            <span className="font-display text-[36px] font-semibold text-s-ink-2">{staff.name.charAt(0).toUpperCase()}</span>
-          )}
-        </div>
+        <Avatar src={staff.avatar_url} name={staff.name} size={104} />
         <h1 className="mt-3 font-heading text-[24px] font-bold leading-tight tracking-[-0.01em] text-s-ink">{staff.name}</h1>
         {langRole && <p className="mt-1 text-[14px] text-s-ink-2">{langRole}</p>}
         <div className="mt-2 flex items-center gap-3">

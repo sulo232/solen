@@ -217,26 +217,11 @@ export function computeOpenStatus(
 }
 
 /**
- * Initial-based avatar background color. Maps any character to a stable hue
- * so review avatars stay visually distinct without storing colors anywhere.
- *
- * V3-D202 (2026-05-26, salon Phase A · A1): retired the 8-tone warm/cream/sage
- * palette. New 4-tone B&W-with-restraint palette per V3-D193 + V3-D197 chrome
- * rule. Avatars are chrome (no semantic meaning per initial), so they live in
- * Layer 1. Variants are ink-on-pale-grey at 4 lightness steps for visual
- * variety without color invention.
+ * Initial-based avatar background color. Canonical palette now lives in the
+ * Avatar primitive (V3-D202 4-tone B&W ramp); re-exported here so existing
+ * `avatarColor` importers keep working off the single source of truth.
  */
-const AVATAR_PALETTE = [
-  { bg: "#F5F5F4", fg: "#0A0A0A" }, // s-bg-sunken + s-ink
-  { bg: "#E7E5E4", fg: "#0A0A0A" }, // s-border + s-ink
-  { bg: "#D6D3D1", fg: "#0A0A0A" }, // stone-300 + s-ink
-  { bg: "#A8A29E", fg: "#FFFFFF" }, // stone-400 + white (inverse for variety)
-];
-
-export function avatarColor(name: string | null | undefined): { bg: string; fg: string } {
-  const ch = (name ?? "?").charCodeAt(0) || 0;
-  return AVATAR_PALETTE[ch % AVATAR_PALETTE.length];
-}
+export { avatarColor } from "../primitives/Avatar";
 
 /**
  * Pretty date for review timestamps. Fresha format: "Fri, May 8, 2026 at 7:09 PM"

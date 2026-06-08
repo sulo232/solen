@@ -45,14 +45,15 @@ export interface AvatarProps {
   src?: string | null;
   /** Person/salon name — drives initials + fallback colour + alt text. */
   name: string;
-  size?: AvatarSize;
+  /** Named size token, or an explicit pixel number for sizes outside the scale (e.g. 88 on staff cards, 104 hero). */
+  size?: AvatarSize | number;
   /** Staff variant: floating star-rating badge at the bottom edge. */
   badge?: { rating: number };
   className?: string;
 }
 
 export function Avatar({ src, name, size = "md", badge, className }: AvatarProps) {
-  const px = SIZE_PX[size];
+  const px = typeof size === "number" ? size : SIZE_PX[size];
   const { bg, fg } = avatarColor(name);
 
   return (
@@ -67,9 +68,13 @@ export function Avatar({ src, name, size = "md", badge, className }: AvatarProps
         <span
           className={cn(
             "grid h-full w-full place-items-center rounded-full font-heading font-semibold",
-            FONT_CLS[size],
+            typeof size !== "number" ? FONT_CLS[size] : undefined,
           )}
-          style={{ background: bg, color: fg }}
+          style={{
+            background: bg,
+            color: fg,
+            fontSize: typeof size === "number" ? Math.round(px * 0.4) : undefined,
+          }}
           aria-label={name}
         >
           {initials(name)}

@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
 import { X, Users } from "lucide-react";
 import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
 import { motion } from "framer-motion";
-import { RatingStars } from "@/app/[locale]/_components/primitives";
+import { Avatar } from "@/app/[locale]/_components/primitives";
 import StaffProfilePage from "@/components-legacy/staff/StaffProfilePage";
 import type { StaffMember } from "@/lib/types";
 
@@ -87,20 +86,12 @@ export default function StaffListSheet({
                 className="flex items-center gap-3.5 rounded-2xl border border-s-border p-3"
               >
                 <div className="relative shrink-0">
-                  <div className="grid h-[60px] w-[60px] place-items-center overflow-hidden rounded-full bg-s-bg-sunken">
-                    {s.avatar_url ? (
-                      <Image src={s.avatar_url} alt={s.name} width={60} height={60} className="h-full w-full object-cover" />
-                    ) : (
-                      <span className="font-display text-[22px] font-semibold text-s-ink-2">{s.name.charAt(0).toUpperCase()}</span>
-                    )}
-                  </div>
-                  {rating != null && (
-                    <RatingStars
-                      value={rating}
-                      size="sm"
-                      className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 rounded-full bg-white px-1.5 py-[2px] text-[11px] font-semibold leading-none text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]"
-                    />
-                  )}
+                  <Avatar
+                    src={s.avatar_url}
+                    name={s.name}
+                    size={60}
+                    badge={rating != null ? { rating } : undefined}
+                  />
                   <SelectedCheckBadge selected={selectedStaff === s.id} size={20} />
                 </div>
                 <div className="min-w-0 flex-1">

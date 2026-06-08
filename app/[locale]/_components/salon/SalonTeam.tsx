@@ -3,8 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import type { StaffMember } from "./_shared";
-import { cn } from "@/lib/utils";
-import { RatingStars } from "@/app/[locale]/_components/primitives";
+import { Avatar } from "@/app/[locale]/_components/primitives";
 
 /**
  * SalonTeam — V3-D234 (2026-05-27, austerity rebuild per real Fresha capture).
@@ -100,35 +99,15 @@ function TeamMember({
 
   return (
     <div className="flex flex-col items-center text-center">
-      {/* Avatar — V3-D234: plain circle, no ring, no shadow. Bg s-bg-sunken
-          for the empty-state container so the initial letter has contrast. */}
-      {/* Avatar + Fresha rating pill overlapping the bottom edge */}
+      {/* Avatar + Fresha rating badge folded into the Avatar primitive
+          (V3-D234 rating-below pattern → primitive badge at bottom edge). */}
       <div className="relative transition-transform duration-200 group-hover:scale-[1.04]">
-        <div className="grid h-[88px] w-[88px] place-items-center overflow-hidden rounded-full bg-white ring-1 ring-s-ink/[0.05]">
-          {member.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={member.avatar_url}
-              alt=""
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
-          ) : (
-            <span className="font-display text-[32px] font-semibold text-s-ink-2">
-              {member.name.charAt(0).toUpperCase()}
-            </span>
-          )}
-        </div>
-        {showRating && (
-          <RatingStars
-            value={displayRating as number}
-            size="sm"
-            className={cn(
-              "absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-white px-2 py-[3px] text-[12px] font-semibold leading-none text-s-ink shadow-[0_2px_8px_rgba(0,0,0,0.14)] ring-1 ring-s-ink/[0.05]",
-              !hasRating && "opacity-70",
-            )}
-          />
-        )}
+        <Avatar
+          src={member.avatar_url}
+          name={member.name}
+          size={88}
+          badge={showRating ? { rating: displayRating as number } : undefined}
+        />
       </div>
 
       {/* Name */}

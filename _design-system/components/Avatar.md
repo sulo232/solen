@@ -12,7 +12,7 @@ The photo-or-initial block was rebuilt **6+×** (`salon/SalonReviews.tsx`, `salo
 - `badge` set → the staff floating star-rating pill at the bottom edge (white + hairline + `shadow-elevation-1`, 9px `#FFC32B` star + `rating.toFixed(1)`).
 
 ## API (props)
-`src?: string | null` (falls back to initials) · `name: string` (drives initials + fallback colour + alt/aria) · `size?: "xs" | "sm" | "md" | "lg"` (default `md`; 28/36/44/56px, font 11/13/15/18px) · `badge?: { rating: number }` (staff variant) · `className?`.
+`src?: string | null` (falls back to initials) · `name: string` (drives initials + fallback colour + alt/aria) · `size?: "xs" | "sm" | "md" | "lg" | number` (default `md`; tokens = 28/36/44/56px with font 11/13/15/18px, OR an explicit px for sizes outside the scale — e.g. `88` staff cards, `104` hero — where the initials font scales to ~0.4×px) · `badge?: { rating: number }` (staff variant) · `className?`.
 
 Helper export: `avatarColor(name): { bg, fg }` — the canonical deterministic greyscale picker.
 
@@ -23,4 +23,4 @@ Any person/salon avatar: review cards, team carousel, staff/barber pickers, staf
 The *selected* state on a picker (that's `SelectedCheckBadge`, dropped into the avatar's `relative` wrapper — Avatar renders the circle, the badge renders selection). Decorative non-person imagery (use a plain `<img>`/photo tile).
 
 ## Status
-new, 2026-06-08, not yet migrated into call-sites.
+new, 2026-06-08. Migrated: staff cluster — `SalonTeam`, `StaffPicker`, `StaffListSheet` (avatar + rating pill folded into `<Avatar badge>`), `StaffProfilePage` hero; `avatarColor()` repointed to here from `salon/_shared.ts`. Pending: review avatars (`SalonReviews`, `MarketplaceReviewsList`) — bundled with the five-star review-row wave.
